@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-23T19:50:56Z
 updated_at: 2024-06-07T00:34:14Z
 url: https://github.com/clap-rs/clap/issues/5502
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # [clap-completions] impl Generator for dyn Generator
 
 ---
 
-_Issue opened by @lolbinarycat on 2024-05-23 19:50_
+_@lolbinarycat_
 
 ### Please complete the following tasks
 

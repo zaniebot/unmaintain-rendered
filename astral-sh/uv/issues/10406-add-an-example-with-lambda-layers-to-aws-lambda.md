@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-08T19:21:39Z
 updated_at: 2025-01-08T22:12:54Z
 url: https://github.com/astral-sh/uv/issues/10406
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # Add an example with Lambda Layers to AWS Lambda docs
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-08 19:21_
+_@charliermarsh_
 
 See: https://x.com/sertherk/status/1877071200322556292
 

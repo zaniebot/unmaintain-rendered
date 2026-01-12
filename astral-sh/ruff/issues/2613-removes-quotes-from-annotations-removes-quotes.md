@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-06T22:51:13Z
 updated_at: 2023-02-07T19:28:10Z
 url: https://github.com/astral-sh/ruff/issues/2613
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `Removes quotes from annotations` removes quotes from literal values
 
 ---
 
-_Issue opened by @Czaki on 2023-02-06 22:51_
+_@Czaki_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

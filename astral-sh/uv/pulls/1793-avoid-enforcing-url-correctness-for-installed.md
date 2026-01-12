@@ -13,14 +13,14 @@ head: charlie/direct
 created_at: 2024-02-21T04:20:41Z
 updated_at: 2024-02-21T14:06:32Z
 url: https://github.com/astral-sh/uv/pull/1793
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:44Z
 ```
 
 # Avoid enforcing URL correctness for installed distributions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-21 04:20_
+_@charliermarsh_
 
 ## Summary
 

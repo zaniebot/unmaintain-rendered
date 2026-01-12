@@ -13,14 +13,14 @@ head: alex/get-protocol-members-validation
 created_at: 2025-04-22T13:55:10Z
 updated_at: 2025-04-23T10:14:09Z
 url: https://github.com/astral-sh/ruff/pull/17551
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Emit a diagnostic if a non-protocol is passed to `get_protocol_members`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-22 13:55_
+_@AlexWaygood_
 
 ## Summary
 

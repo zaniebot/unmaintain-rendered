@@ -12,14 +12,14 @@ head: charlie/star
 created_at: 2023-03-28T16:11:38Z
 updated_at: 2023-03-29T21:54:38Z
 url: https://github.com/astral-sh/ruff/pull/3776
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Remove star-import handling from `sys-exit-alias`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-28 16:11_
+_@charliermarsh_
 
 ## Summary
 

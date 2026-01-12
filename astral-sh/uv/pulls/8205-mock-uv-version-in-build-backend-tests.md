@@ -13,14 +13,14 @@ head: konsti/mock-uv-version-in-build-backend
 created_at: 2024-10-15T09:15:33Z
 updated_at: 2024-10-15T09:27:34Z
 url: https://github.com/astral-sh/uv/pull/8205
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:12Z
 ```
 
 # Mock uv version in build backend tests
 
 ---
 
-_Pull request opened by @konstin on 2024-10-15 09:15_
+_@konstin_
 
 Fix #8017 by always explicitly passing the current uv version into uv-build-backend and mocking it in tests.
 

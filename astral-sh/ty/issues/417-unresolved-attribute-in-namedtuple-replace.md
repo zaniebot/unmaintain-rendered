@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-16T05:49:39Z
 updated_at: 2025-11-29T18:36:28Z
 url: https://github.com/astral-sh/ty/issues/417
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [unresolved-attribute] in NamedTuple `_replace`
 
 ---
 
-_Issue opened by @varchasgopalaswamy on 2025-05-16 05:49_
+_@varchasgopalaswamy_
 
 ### Summary
 

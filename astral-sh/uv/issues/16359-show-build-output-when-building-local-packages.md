@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-19T12:10:26Z
 updated_at: 2025-10-19T12:10:26Z
 url: https://github.com/astral-sh/uv/issues/16359
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # Show build output when building (local?) packages
 
 ---
 
-_Issue opened by @davidhewitt on 2025-10-19 12:10_
+_@davidhewitt_
 
 ### Summary
 

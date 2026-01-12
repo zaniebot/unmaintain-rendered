@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-19T15:03:40Z
 updated_at: 2025-12-05T19:27:56Z
 url: https://github.com/astral-sh/ty/issues/1593
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Hovering over `Final` reveals `Unknown`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-19 15:03_
+_@MichaReiser_
 
 If you hover over the `Final` in `X: Final`, it shows `Unknown`
 

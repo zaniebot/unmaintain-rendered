@@ -13,14 +13,14 @@ head: tomer/narrow-chained-comparison
 created_at: 2024-10-19T19:19:06Z
 updated_at: 2024-10-21T19:38:08Z
 url: https://github.com/astral-sh/ruff/pull/13825
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Improve chained comparisons handling
 
 ---
 
-_Pull request opened by @TomerBin on 2024-10-19 19:19_
+_@TomerBin_
 
 
 <!--

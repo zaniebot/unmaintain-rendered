@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-08T09:06:05Z
 updated_at: 2023-04-04T16:44:50Z
 url: https://github.com/astral-sh/ruff/issues/128
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `F821` on use of `Literal` with strings, e.g. `Literal['foo']`
 
 ---
 
-_Issue opened by @samuelcolvin on 2022-09-08 09:06_
+_@samuelcolvin_
 
 Since #119 was fixed via #125, I tried ruff again (build from `main`) with pydantic.
 

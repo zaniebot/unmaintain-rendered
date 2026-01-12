@@ -12,14 +12,14 @@ head: refactor/with_added_extension
 created_at: 2025-11-04T10:47:34Z
 updated_at: 2025-11-04T10:52:02Z
 url: https://github.com/astral-sh/uv/pull/16588
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:20Z
 ```
 
 # Remove temporary with_added_extension in favour of stablised standard method
 
 ---
 
-_Pull request opened by @crh23 on 2025-11-04 10:47_
+_@crh23_
 
 ## Summary
 

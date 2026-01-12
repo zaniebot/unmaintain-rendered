@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-17T18:08:39Z
 updated_at: 2025-08-01T10:10:04Z
 url: https://github.com/astral-sh/uv/issues/14686
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # [Bug] Ignore the dependecies of gptqmodel
 
 ---
 
-_Issue opened by @shenmishajing on 2025-07-17 18:08_
+_@shenmishajing_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-18T13:00:55Z
 updated_at: 2025-01-10T17:51:50Z
 url: https://github.com/astral-sh/uv/issues/9996
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # Feature request: Default configuration when a venv is created
 
 ---
 
-_Issue opened by @faameunier on 2024-12-18 13:00_
+_@faameunier_
 
 I recently started using uv and it is awesome.
 

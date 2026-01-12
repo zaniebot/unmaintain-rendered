@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-19T21:08:42Z
 updated_at: 2025-11-29T14:16:22Z
 url: https://github.com/astral-sh/uv/issues/11641
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:42Z
 ```
 
 # Integrate with pre-commit (or replace it)
 
 ---
 
-_Issue opened by @cliebBS on 2025-02-19 21:08_
+_@cliebBS_
 
 ### Summary
 

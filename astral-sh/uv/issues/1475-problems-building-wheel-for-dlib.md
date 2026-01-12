@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-16T10:22:50Z
 updated_at: 2024-02-16T12:21:23Z
 url: https://github.com/astral-sh/uv/issues/1475
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # problems building wheel for dlib
 
 ---
 
-_Issue opened by @starenka on 2024-02-16 10:22_
+_@starenka_
 
 ```
 (tmp) starenka /tmp % uv pip install 'dlib==19.24.2'                                                                         

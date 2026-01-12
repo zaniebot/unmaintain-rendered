@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-07T23:51:02Z
 updated_at: 2025-04-14T22:04:17Z
 url: https://github.com/astral-sh/uv/issues/7992
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Installation of `pygraphviz` fails (but still updates uv.lock)
 
 ---
 
-_Issue opened by @david-waterworth on 2024-10-07 23:51_
+_@david-waterworth_
 
 I'm not sure if this is a `uv` issue - but this works with pip / poetry but fails with `uv`
 

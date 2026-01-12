@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-27T22:52:23Z
 updated_at: 2024-08-27T23:04:49Z
 url: https://github.com/astral-sh/uv/issues/6727
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # minor formatting: dependency grouping not preserved if there's an empty line between
 
 ---
 
-_Issue opened by @ChannyClaus on 2024-08-27 22:52_
+_@ChannyClaus_
 
 ```
 $ uv --version

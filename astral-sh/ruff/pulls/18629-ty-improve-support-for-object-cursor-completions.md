@@ -14,14 +14,14 @@ head: ag/completion-object-v2
 created_at: 2025-06-11T15:00:07Z
 updated_at: 2025-06-12T11:43:10Z
 url: https://github.com/astral-sh/ruff/pull/18629
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [ty] Improve support for `object.<CURSOR>` completions
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-06-11 15:00_
+_@BurntSushi_
 
 This makes it work for a number of additional cases, like nested
 attribute access and things like `[].<CURSOR>`.

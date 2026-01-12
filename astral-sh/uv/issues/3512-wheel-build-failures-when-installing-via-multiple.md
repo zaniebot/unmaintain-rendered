@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-10T17:15:09Z
 updated_at: 2024-05-13T14:42:21Z
 url: https://github.com/astral-sh/uv/issues/3512
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Wheel Build failures when installing via multiple simultaneous UV instances
 
 ---
 
-_Issue opened by @yeswalrus on 2024-05-10 17:15_
+_@yeswalrus_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

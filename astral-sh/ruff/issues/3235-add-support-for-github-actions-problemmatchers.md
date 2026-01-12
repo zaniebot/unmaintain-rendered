@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-26T09:14:17Z
 updated_at: 2023-02-26T15:34:33Z
 url: https://github.com/astral-sh/ruff/issues/3235
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Add support for GitHub Actions problemMatchers
 
 ---
 
-_Issue opened by @cclauss on 2023-02-26 09:14_
+_@cclauss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

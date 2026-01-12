@@ -12,14 +12,14 @@ head: charlie/arm-ci
 created_at: 2025-01-18T19:40:02Z
 updated_at: 2025-01-18T22:53:47Z
 url: https://github.com/astral-sh/uv/pull/10742
-synced_at: 2026-01-10T11:45:07Z
+synced_at: 2026-01-12T16:09:28Z
 ```
 
 # Benchmark ARM vs. x86_64 Linux
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-18 19:40_
+_@charliermarsh_
 
 Entirely for my own curiosity. (We don't use the GitHub runners for Linux CI anyway.)
 

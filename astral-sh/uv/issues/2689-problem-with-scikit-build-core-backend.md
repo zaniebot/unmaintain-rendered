@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-27T11:11:26Z
 updated_at: 2024-03-27T15:44:17Z
 url: https://github.com/astral-sh/uv/issues/2689
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Problem with `scikit-build-core` backend
 
 ---
 
-_Issue opened by @chainyo on 2024-03-27 11:11_
+_@chainyo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-13T00:11:07Z
 updated_at: 2024-03-14T08:35:26Z
 url: https://github.com/astral-sh/ruff/issues/10374
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # E303: missing detection
 
 ---
 
-_Issue opened by @spaceone on 2024-03-13 00:11_
+_@spaceone_
 
 E303 not detected for:
 

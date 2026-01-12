@@ -14,14 +14,14 @@ head: pre-allocate-elements-buffer
 created_at: 2023-08-16T11:02:23Z
 updated_at: 2023-08-16T13:31:32Z
 url: https://github.com/astral-sh/ruff/pull/6612
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Estimate expected `VecBuffer` size
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-16 11:02_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

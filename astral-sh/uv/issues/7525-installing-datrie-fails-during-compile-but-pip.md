@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-18T23:55:29Z
 updated_at: 2026-01-07T05:00:12Z
 url: https://github.com/astral-sh/uv/issues/7525
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # installing 'datrie' fails during compile (but pip succeeds)
 
 ---
 
-_Issue opened by @samimia-swks on 2024-09-18 23:55_
+_@samimia-swks_
 
 uv 0.4.11 on Ubuntu 22.04 
 

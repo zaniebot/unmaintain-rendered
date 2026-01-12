@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-24T09:32:27Z
 updated_at: 2025-12-31T15:34:32Z
 url: https://github.com/astral-sh/ty/issues/1430
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Goto-definition for binary operators only works if the relevant dunder has exactly the correct signature
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-10-24 09:32_
+_@AlexWaygood_
 
 ### Summary
 

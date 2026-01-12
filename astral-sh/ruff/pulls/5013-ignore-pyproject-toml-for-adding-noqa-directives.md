@@ -13,14 +13,14 @@ head: dhruv/no-noqa-in-pyproject
 created_at: 2023-06-11T13:02:06Z
 updated_at: 2023-06-12T00:21:25Z
 url: https://github.com/astral-sh/ruff/pull/5013
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Ignore pyproject.toml for adding noqa directives
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-11 13:02_
+_@dhruvmanila_
 
 ## Summary
 

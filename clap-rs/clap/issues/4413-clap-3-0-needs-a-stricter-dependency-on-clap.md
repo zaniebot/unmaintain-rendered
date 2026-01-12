@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-21T07:45:03Z
 updated_at: 2022-10-23T04:29:33Z
 url: https://github.com/clap-rs/clap/issues/4413
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # clap 3.0 needs a stricter dependency on clap_derive
 
 ---
 
-_Issue opened by @dimo414 on 2022-10-21 07:45_
+_@dimo414_
 
 ### Please complete the following tasks
 

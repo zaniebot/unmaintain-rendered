@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T07:58:07Z
 updated_at: 2025-04-14T12:23:22Z
 url: https://github.com/astral-sh/uv/issues/12872
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # how to set MAX_JOBS for ninja while using uv
 
 ---
 
-_Issue opened by @DefTruth on 2025-04-14 07:58_
+_@DefTruth_
 
 ### Question
 

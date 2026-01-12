@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-01T13:34:10Z
 updated_at: 2025-06-03T21:12:10Z
 url: https://github.com/astral-sh/uv/issues/10263
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # `python3-config` equivalent?
 
 ---
 
-_Issue opened by @YouJiacheng on 2025-01-01 13:34_
+_@YouJiacheng_
 
 I want to use ThunderKittens and its Makefile requires `python3-config`
 https://github.com/HazyResearch/ThunderKittens/blob/main/kernels/example_bind/Makefile

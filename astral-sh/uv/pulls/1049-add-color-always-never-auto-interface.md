@@ -13,14 +13,14 @@ head: zb/color-options
 created_at: 2024-01-22T22:01:22Z
 updated_at: 2024-01-23T05:41:50Z
 url: https://github.com/astral-sh/uv/pull/1049
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # Add `--color always|never|auto` interface
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-22 22:01_
+_@zanieb_
 
 Extends #1048 interface providing a more general interface that I think should be standard.
 

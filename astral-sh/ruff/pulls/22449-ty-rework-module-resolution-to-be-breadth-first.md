@@ -14,14 +14,14 @@ head: gankra/namespace-auto
 created_at: 2026-01-08T01:47:20Z
 updated_at: 2026-01-09T18:08:02Z
 url: https://github.com/astral-sh/ruff/pull/22449
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Rework module resolution to be breadth-first instead of depth-first
 
 ---
 
-_Pull request opened by @Gankra on 2026-01-08 01:47_
+_@Gankra_
 
 ## Summary
 

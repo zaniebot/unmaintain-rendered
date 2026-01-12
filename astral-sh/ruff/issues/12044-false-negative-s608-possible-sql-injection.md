@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-26T10:59:27Z
 updated_at: 2024-10-17T05:42:05Z
 url: https://github.com/astral-sh/ruff/issues/12044
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [FALSE NEGATIVE] "S608 Possible SQL injection"
 
 ---
 
-_Issue opened by @mpolyakov-plutoflume on 2024-06-26 10:59_
+_@mpolyakov-plutoflume_
 
 Hello.
 I'm very exited to migrate our codebase to ruff. However, while doing so I've noticed, that rule `S608` works different from the corresponding `B608`.

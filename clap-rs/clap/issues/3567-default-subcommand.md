@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-03-22T02:01:48Z
 updated_at: 2022-03-25T01:22:46Z
 url: https://github.com/clap-rs/clap/issues/3567
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Default Subcommand
 
 ---
 
-_Issue opened by @pvshvp-oss on 2022-03-22 02:01_
+_@pvshvp-oss_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/3566
 

@@ -14,14 +14,14 @@ head: david/generic-implicit-aliases-tests
 created_at: 2025-11-19T13:11:39Z
 updated_at: 2025-11-19T14:06:19Z
 url: https://github.com/astral-sh/ruff/pull/21522
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Add tests for generic implicit type aliases
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-19 13:11_
+_@sharkdp_
 
 ## Summary
 

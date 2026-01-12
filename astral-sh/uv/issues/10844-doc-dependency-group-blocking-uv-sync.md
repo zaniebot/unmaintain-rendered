@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T06:55:47Z
 updated_at: 2025-01-25T02:49:00Z
 url: https://github.com/astral-sh/uv/issues/10844
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # doc dependency group blocking uv sync
 
 ---
 
-_Issue opened by @JanEricNitschke on 2025-01-22 06:55_
+_@JanEricNitschke_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T01:08:12Z
 updated_at: 2025-11-18T16:10:31Z
 url: https://github.com/astral-sh/ty/issues/630
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # report unsafe operator type on subclasses
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-06-11 01:08_
+_@KotlinIsland_
 
 ### summary
 

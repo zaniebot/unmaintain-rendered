@@ -12,14 +12,14 @@ head: simple-tokenizer-ascii-shortpath
 created_at: 2023-08-16T06:57:09Z
 updated_at: 2023-08-16T11:15:02Z
 url: https://github.com/astral-sh/ruff/pull/6609
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fast path for ASCII only identifiers start
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-16 06:57_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-24T05:54:11Z
 updated_at: 2024-08-10T00:49:48Z
 url: https://github.com/clap-rs/clap/issues/5504
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Provide an attribute that implements a common `--completions <SHELL>` convention without boilerplate
 
 ---
 
-_Issue opened by @lgarron on 2024-05-24 05:54_
+_@lgarron_
 
 ### Please complete the following tasks
 

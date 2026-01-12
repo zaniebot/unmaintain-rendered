@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-09T02:39:52Z
 updated_at: 2024-11-22T17:10:32Z
 url: https://github.com/astral-sh/uv/issues/8031
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Problem installing fontawesomepro package from the extra fontawesome package index
 
 ---
 
-_Issue opened by @jacklinke on 2024-10-09 02:39_
+_@jacklinke_
 
 I am trying to install the fontawesomepro in my DOCKERFILE (in a docker compose project). I am installing the latest stable version of `uv`.
 

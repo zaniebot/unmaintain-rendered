@@ -13,14 +13,14 @@ head: charlie/universal-strategy
 created_at: 2024-10-29T18:59:48Z
 updated_at: 2024-10-29T20:18:45Z
 url: https://github.com/astral-sh/uv/pull/8679
-synced_at: 2026-01-10T12:54:15Z
+synced_at: 2026-01-12T16:08:26Z
 ```
 
 # Fix outdated documentation on `Requires-Python`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-29 18:59_
+_@charliermarsh_
 
 ## Summary
 

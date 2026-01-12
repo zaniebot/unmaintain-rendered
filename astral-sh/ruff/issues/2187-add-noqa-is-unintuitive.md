@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T05:47:48Z
 updated_at: 2023-02-03T04:43:07Z
 url: https://github.com/astral-sh/ruff/issues/2187
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `--add-noqa` is unintuitive
 
 ---
 
-_Issue opened by @not-my-profile on 2023-01-26 05:47_
+_@not-my-profile_
 
 I would expect `--add-noqa` to only add the directive to violations that ruff cannot fix but it in fact adds it everywhere.
 

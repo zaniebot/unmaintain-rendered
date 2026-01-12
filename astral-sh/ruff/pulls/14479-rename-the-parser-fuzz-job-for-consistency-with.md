@@ -13,14 +13,14 @@ head: zb/ci-parser
 created_at: 2024-11-20T05:07:21Z
 updated_at: 2024-11-20T07:54:45Z
 url: https://github.com/astral-sh/ruff/pull/14479
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Rename the parser fuzz job for consistency with the rest of CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-20 05:07_
+_@zanieb_
 
 _No description provided._
 

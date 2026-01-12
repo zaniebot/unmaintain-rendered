@@ -13,14 +13,14 @@ head: alex/redknot-calls
 created_at: 2024-10-01T16:44:40Z
 updated_at: 2024-10-01T16:58:16Z
 url: https://github.com/astral-sh/ruff/pull/13593
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] Fix a few details around `Type::call`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-01 16:44_
+_@AlexWaygood_
 
 ## Summary
 

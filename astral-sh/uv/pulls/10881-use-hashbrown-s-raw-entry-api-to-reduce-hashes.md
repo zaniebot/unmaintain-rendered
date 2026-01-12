@@ -13,14 +13,14 @@ head: charlie/raw
 created_at: 2025-01-23T02:40:35Z
 updated_at: 2025-01-23T14:34:40Z
 url: https://github.com/astral-sh/uv/pull/10881
-synced_at: 2026-01-10T11:45:16Z
+synced_at: 2026-01-12T16:09:33Z
 ```
 
 # Use Hashbrown's raw entry API to reduce hashes and clone in priority
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-23 02:40_
+_@charliermarsh_
 
 ## Summary
 

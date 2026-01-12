@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-05T14:51:39Z
 updated_at: 2023-01-05T19:36:20Z
 url: https://github.com/astral-sh/ruff/issues/1662
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # False error for D417 with multiline arguments
 
 ---
 
-_Issue opened by @cazador481 on 2023-01-05 14:51_
+_@cazador481_
 
 I am getting the following error:
 ```

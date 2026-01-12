@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-22T16:27:55Z
 updated_at: 2025-12-23T08:49:45Z
 url: https://github.com/astral-sh/ty/issues/2166
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Add `pyproject.toml`, `ty.toml` tag in the documentation
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-12-22 16:27_
+_@MatthewMckee4_
 
 
 

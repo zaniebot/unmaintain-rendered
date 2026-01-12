@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-04T17:02:26Z
 updated_at: 2025-02-12T18:58:45Z
 url: https://github.com/astral-sh/uv/issues/11220
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:31Z
 ```
 
 # uv run without --script forks thousands of processes, then fails, on file without .py extension
 
 ---
 
-_Issue opened by @ssanderson on 2025-02-04 17:02_
+_@ssanderson_
 
 ### Summary
 

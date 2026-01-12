@@ -14,14 +14,14 @@ head: ag/more-diagnostic-improvements
 created_at: 2025-04-23T16:36:26Z
 updated_at: 2025-05-07T15:21:49Z
 url: https://github.com/astral-sh/ruff/pull/17586
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] improve unsupported bool conversion diagnostics
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-04-23 16:36_
+_@BurntSushi_
 
 This mostly only improves things for incorrect arguments and for an
 incorrect return type on a `__bool__` method. It doesn't do much

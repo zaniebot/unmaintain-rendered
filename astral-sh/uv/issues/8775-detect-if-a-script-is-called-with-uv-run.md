@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-03T14:36:19Z
 updated_at: 2025-02-13T23:42:03Z
 url: https://github.com/astral-sh/uv/issues/8775
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # Detect if a script is called with `uv run`
 
 ---
 
-_Issue opened by @samuelcolvin on 2024-11-03 14:36_
+_@samuelcolvin_
 
 I'd like to know if my script was called with `uv run`, but there doesn't seem to be an obvious way to tell.
 

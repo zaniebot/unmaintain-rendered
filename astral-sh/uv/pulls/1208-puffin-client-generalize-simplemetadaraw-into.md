@@ -13,14 +13,14 @@ head: ag/rkyv-generic-view
 created_at: 2024-01-31T16:26:51Z
 updated_at: 2024-02-02T17:01:38Z
 url: https://github.com/astral-sh/uv/pull/1208
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:30Z
 ```
 
 # puffin-client: generalize SimpleMetadaRaw into OwnedArchive<A>
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-01-31 16:26_
+_@BurntSushi_
 
 It turns out that the pattern I coded up for SimpleMetadataRaw is
 generally useful when working with rkyv. This commit makes it generic by

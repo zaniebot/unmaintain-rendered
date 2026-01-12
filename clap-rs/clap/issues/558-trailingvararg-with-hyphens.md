@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-07-01T16:15:49Z
 updated_at: 2018-08-02T03:29:51Z
 url: https://github.com/clap-rs/clap/issues/558
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # TrailingVarArg with hyphens
 
 ---
 
-_Issue opened by @marcbowes on 2016-07-01 16:15_
+_@marcbowes_
 
 #278 shows how to use `TrailingVarArg` and a multiple arg to capture extra args. This works great, but I can't seem to get it working with args that start with hyphens:
 

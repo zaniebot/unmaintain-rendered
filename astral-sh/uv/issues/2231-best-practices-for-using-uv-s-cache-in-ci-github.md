@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-06T06:53:50Z
 updated_at: 2024-09-05T12:26:25Z
 url: https://github.com/astral-sh/uv/issues/2231
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Best practices for using uv's cache in CI / Github Actions?
 
 ---
 
-_Issue opened by @strickvl on 2024-03-06 06:53_
+_@strickvl_
 
 Wondering if there's any advice or best practices starting to develop around how to (re)use and share the `uv` cache across multiple Github Actions runners?
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-23T12:32:21Z
 updated_at: 2023-12-20T16:03:03Z
 url: https://github.com/astral-sh/ruff/issues/5331
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [Linter panic] when fixing `TCH003` violation for `typing` import
 
 ---
 
-_Issue opened by @bendoerry on 2023-06-23 12:32_
+_@bendoerry_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

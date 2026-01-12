@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T17:47:20Z
 updated_at: 2025-12-24T10:52:14Z
 url: https://github.com/astral-sh/uv/issues/16934
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # Support resumable downloads
 
 ---
 
-_Issue opened by @wrp on 2025-12-02 17:47_
+_@wrp_
 
 If a download is interrupted, uv should cache partial data and resume on the next run using HTTP range requests.
 

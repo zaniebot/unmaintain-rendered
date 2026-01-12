@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-29T16:46:16Z
 updated_at: 2024-05-22T03:38:52Z
 url: https://github.com/astral-sh/ruff/issues/11205
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PLR0912: Pylint counts `try: ... except:` statements as single branch
 
 ---
 
-_Issue opened by @Kakadus on 2024-04-29 16:46_
+_@Kakadus_
 
 PLR0912 is not equivalent to pylint. The following function is accepted by pylint but rejected by ruff:
 ```py

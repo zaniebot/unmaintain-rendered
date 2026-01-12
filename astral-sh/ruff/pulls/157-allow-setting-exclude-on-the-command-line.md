@@ -12,14 +12,14 @@ head: charlie/exclude
 created_at: 2022-09-11T14:36:52Z
 updated_at: 2022-09-11T14:44:24Z
 url: https://github.com/astral-sh/ruff/pull/157
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Allow setting --exclude on the command-line
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-11 14:36_
+_@charliermarsh_
 
 Resolves #147.
 

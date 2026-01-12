@@ -14,14 +14,14 @@ head: zb/corrupt-package
 created_at: 2025-07-15T19:49:21Z
 updated_at: 2025-07-15T21:47:36Z
 url: https://github.com/astral-sh/uv/pull/14636
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:19Z
 ```
 
 # Skip Windows Python interpreters that return a broken MSIX package code
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-15 19:49_
+_@zanieb_
 
 Currently we treat all spawn failures as fatal, because they indicate a broken interpreter. In this case, I think we should just skip these broken interpreters — though I don't know the root cause of why it's broken yet.
 

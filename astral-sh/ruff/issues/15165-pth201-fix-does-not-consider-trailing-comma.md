@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-28T08:09:18Z
 updated_at: 2024-12-30T03:31:37Z
 url: https://github.com/astral-sh/ruff/issues/15165
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `PTH201` fix does not consider trailing comma
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-12-28 08:09_
+_@InSyncWithFoo_
 
 ```python
 from pathlib import Path

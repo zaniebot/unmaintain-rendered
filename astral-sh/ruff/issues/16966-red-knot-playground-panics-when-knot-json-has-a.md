@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-25T12:29:52Z
 updated_at: 2025-03-25T13:03:32Z
 url: https://github.com/astral-sh/ruff/issues/16966
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Red Knot playground panics when `knot.json` has a path specified
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-03-25 12:29_
+_@InSyncWithFoo_
 
 Steps to reproduce:
 

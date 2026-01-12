@@ -13,14 +13,14 @@ head: konsti/bump-trampoline-ci-timeout
 created_at: 2025-01-28T10:15:48Z
 updated_at: 2025-02-03T14:38:59Z
 url: https://github.com/astral-sh/uv/pull/11015
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:38Z
 ```
 
 # Use dev drive for trampoline CI to avoid timeout
 
 ---
 
-_Pull request opened by @konstin on 2025-01-28 10:15_
+_@konstin_
 
 Sometimes that job is just slow: https://github.com/astral-sh/uv/actions/runs/12996921221/job/36247398606
 

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-04-07T12:37:37Z
 updated_at: 2025-04-07T13:21:29Z
 url: https://github.com/astral-sh/ruff/pull/17272
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [docs] fix formatting of "See Style Guide" link
 
 ---
 
-_Pull request opened by @browniebroke on 2025-04-07 12:37_
+_@browniebroke_
 
 
 

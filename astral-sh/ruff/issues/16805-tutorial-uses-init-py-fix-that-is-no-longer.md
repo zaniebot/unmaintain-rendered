@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-17T14:22:47Z
 updated_at: 2025-03-18T03:45:13Z
 url: https://github.com/astral-sh/ruff/issues/16805
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Tutorial uses `__init__.py` fix that is no longer active by default
 
 ---
 
-_Issue opened by @charliermarsh on 2025-03-17 14:22_
+_@charliermarsh_
 
 I wrote this so happy to update it quickly.
 

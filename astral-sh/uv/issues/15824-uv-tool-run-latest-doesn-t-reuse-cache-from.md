@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-13T01:58:31Z
 updated_at: 2025-09-14T13:10:47Z
 url: https://github.com/astral-sh/uv/issues/15824
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # uv tool run @latest doesn't reuse cache from specific version run
 
 ---
 
-_Issue opened by @domdomegg on 2025-09-13 01:58_
+_@domdomegg_
 
 ## Description
 

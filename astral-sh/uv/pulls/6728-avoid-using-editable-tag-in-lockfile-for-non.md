@@ -13,14 +13,14 @@ head: charlie/v
 created_at: 2024-08-27T23:08:33Z
 updated_at: 2024-08-28T01:19:06Z
 url: https://github.com/astral-sh/uv/pull/6728
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:30Z
 ```
 
 # Avoid using editable tag in lockfile for non-package dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-27 23:08_
+_@charliermarsh_
 
 ## Summary
 

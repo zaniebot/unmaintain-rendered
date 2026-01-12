@@ -13,14 +13,14 @@ head: zb/aarch64-em
 created_at: 2025-02-19T16:55:04Z
 updated_at: 2025-02-19T18:02:16Z
 url: https://github.com/astral-sh/uv/pull/11626
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:55Z
 ```
 
 # Add emulated test for x86-64 Python on aarch64 Windows
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-19 16:55_
+_@zanieb_
 
 Coverage of https://github.com/astral-sh/uv/pull/11625 for unmanaged Python.
 

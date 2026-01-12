@@ -13,14 +13,14 @@ head: charlie/dir
 created_at: 2023-11-10T17:35:55Z
 updated_at: 2023-11-10T18:17:53Z
 url: https://github.com/astral-sh/uv/pull/394
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # Delete any directories listed in the RECORD file
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-10 17:35_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: dhruv/parser-checkpoint
 created_at: 2024-05-16T09:29:01Z
 updated_at: 2024-05-27T15:55:02Z
 url: https://github.com/astral-sh/ruff/pull/11441
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Add checkpoint logic for the parser
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-16 09:29_
+_@dhruvmanila_
 
 ## Summary
 

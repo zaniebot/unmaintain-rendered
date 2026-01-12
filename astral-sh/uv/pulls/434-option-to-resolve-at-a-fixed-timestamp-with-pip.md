@@ -12,14 +12,14 @@ head: cutoff-option
 created_at: 2023-11-16T12:07:34Z
 updated_at: 2023-11-16T19:46:18Z
 url: https://github.com/astral-sh/uv/pull/434
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:56Z
 ```
 
 # Option to resolve at a fixed timestamp with `pip-compile --exclude-newer YYYY-MM-DD`
 
 ---
 
-_Pull request opened by @konstin on 2023-11-16 12:07_
+_@konstin_
 
 This works by filtering out files with a more recent upload time, so if the index you use does not provide upload times, the results might be inaccurate. pypi provides upload times for all files. This is, the field is non-nullable in the warehouse schema, but the simple API PEP does not know this field.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-17T15:00:53Z
 updated_at: 2024-07-17T17:41:24Z
 url: https://github.com/astral-sh/uv/issues/5146
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Suggestion: Custom error message when resolution fails and there are multiple indexes specified
 
 ---
 
-_Issue opened by @notatallshaw on 2024-07-17 15:00_
+_@notatallshaw_
 
 With the same reasoning as https://github.com/astral-sh/uv/pull/5041, a common support issue on this tracker is that the user needs to pick a different index strategy to replicate their pip workflow.
 

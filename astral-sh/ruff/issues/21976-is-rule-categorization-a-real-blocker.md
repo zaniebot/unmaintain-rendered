@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-14T09:34:17Z
 updated_at: 2025-12-15T10:11:38Z
 url: https://github.com/astral-sh/ruff/issues/21976
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Is rule categorization a real blocker?
 
 ---
 
-_Issue opened by @worldmind on 2025-12-14 09:34_
+_@worldmind_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: konsti/path-instead-of-local-file
 created_at: 2024-05-07T16:13:00Z
 updated_at: 2024-05-14T01:35:54Z
 url: https://github.com/astral-sh/uv/pull/3430
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:38Z
 ```
 
 # Use the term path instead of local file consistently
 
 ---
 
-_Pull request opened by @konstin on 2024-05-07 16:13_
+_@konstin_
 
 Rename `ParsedLocalFileUrl` to `ParsedPathUrl`, eliminating the term `LocalFile` in favor of path.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-27T01:41:35Z
 updated_at: 2024-10-28T13:48:28Z
 url: https://github.com/astral-sh/uv/issues/8601
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # `uv sync` reports no solution found when `python_version>=` is used
 
 ---
 
-_Issue opened by @njzjz on 2024-10-27 01:41_
+_@njzjz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

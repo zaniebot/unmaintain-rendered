@@ -13,14 +13,14 @@ head: zb/fix-toc
 created_at: 2024-09-28T03:57:28Z
 updated_at: 2024-09-28T03:59:39Z
 url: https://github.com/astral-sh/uv/pull/7751
-synced_at: 2026-01-10T12:53:54Z
+synced_at: 2026-01-12T16:07:58Z
 ```
 
 # Fix table of contents sizing
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-28 03:57_
+_@zanieb_
 
 Now
 <img width="864" alt="Screenshot 2024-09-27 at 10 57 40 PM" src="https://github.com/user-attachments/assets/84c99d34-9b5a-4522-a2b4-0ef3c9cdda49">

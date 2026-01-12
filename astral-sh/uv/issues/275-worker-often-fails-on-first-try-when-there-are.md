@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-01T15:18:38Z
 updated_at: 2023-11-30T01:57:05Z
 url: https://github.com/astral-sh/uv/issues/275
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Worker often fails on first try when there are parallel requests: The script will never generate a response
 
 ---
 
-_Issue opened by @konstin on 2023-11-01 15:18_
+_@konstin_
 
 The worker often fails and returns error 500 the first time we request, saying "The script will never generate a response." in the logs. Potentially zip.js is keeping internal state, which would also explain why this only happens with parallel requests.
 

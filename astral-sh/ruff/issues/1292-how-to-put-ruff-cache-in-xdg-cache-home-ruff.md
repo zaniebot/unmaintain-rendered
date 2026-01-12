@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-19T19:29:21Z
 updated_at: 2025-05-20T08:53:20Z
 url: https://github.com/astral-sh/ruff/issues/1292
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # how to put .ruff_cache in $XDG_CACHE_HOME/ruff
 
 ---
 
-_Issue opened by @jessebot on 2022-12-19 19:29_
+_@jessebot_
 
 I would like to have ruff cache go in `$XDG_CACHE_HOME/ruff` if it's configured (by default it could go in `$HOME/.cache/ruff`).
 

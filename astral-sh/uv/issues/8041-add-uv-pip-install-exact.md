@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-09T09:33:26Z
 updated_at: 2024-10-16T00:10:44Z
 url: https://github.com/astral-sh/uv/issues/8041
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Add `uv pip install --exact`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-10-09 09:33_
+_@charliermarsh_
 
 To remove extraneous packages, similar to `uv sync --inexact`.
 

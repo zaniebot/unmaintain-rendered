@@ -13,14 +13,14 @@ head: fix-metaclass_call-variable-name
 created_at: 2025-04-21T22:58:03Z
 updated_at: 2025-04-25T20:55:10Z
 url: https://github.com/astral-sh/ruff/pull/17532
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Fix variable name
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-04-21 22:58_
+_@MatthewMckee4_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: wasm-pack-fix
 created_at: 2023-01-14T04:07:19Z
 updated_at: 2023-01-14T04:20:21Z
 url: https://github.com/astral-sh/ruff/pull/1862
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Actually fix wasm-pack build command
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-14 04:07_
+_@not-my-profile_
 
 I initially attempted to run `wasm-pack build -p ruff` which gave the error message:
 

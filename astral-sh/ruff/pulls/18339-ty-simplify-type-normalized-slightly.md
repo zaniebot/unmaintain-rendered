@@ -14,14 +14,14 @@ head: alex/simplify-normalize
 created_at: 2025-05-27T18:06:01Z
 updated_at: 2025-05-27T18:09:24Z
 url: https://github.com/astral-sh/ruff/pull/18339
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Simplify `Type::normalized` slightly
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-27 18:06_
+_@AlexWaygood_
 
 ## Summary
 

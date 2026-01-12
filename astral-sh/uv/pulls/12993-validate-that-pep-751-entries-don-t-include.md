@@ -13,14 +13,14 @@ head: charlie/pep-751-validate
 created_at: 2025-04-21T01:31:24Z
 updated_at: 2025-04-21T22:22:05Z
 url: https://github.com/astral-sh/uv/pull/12993
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:29Z
 ```
 
 # Validate that PEP 751 entries don't include multiple sources
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-21 01:31_
+_@charliermarsh_
 
 ## Summary
 

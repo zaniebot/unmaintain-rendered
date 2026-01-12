@@ -13,14 +13,14 @@ head: fix-no-x-warnings
 created_at: 2024-10-12T08:36:13Z
 updated_at: 2024-10-12T12:53:19Z
 url: https://github.com/astral-sh/uv/pull/8143
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:10Z
 ```
 
 # Fix typos in --no-... option names in no-op warnings
 
 ---
 
-_Pull request opened by @maxfriedrich on 2024-10-12 08:36_
+_@maxfriedrich_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

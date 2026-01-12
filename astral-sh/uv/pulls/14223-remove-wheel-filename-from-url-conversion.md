@@ -14,14 +14,14 @@ head: charlie/de
 created_at: 2025-06-23T17:50:28Z
 updated_at: 2025-06-23T18:26:15Z
 url: https://github.com/astral-sh/uv/pull/14223
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:05Z
 ```
 
 # Remove wheel filename-from URL conversion
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-23 17:50_
+_@charliermarsh_
 
 ## Summary
 

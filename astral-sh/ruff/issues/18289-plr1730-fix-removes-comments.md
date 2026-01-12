@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-24T16:30:09Z
 updated_at: 2025-05-28T07:51:34Z
 url: https://github.com/astral-sh/ruff/issues/18289
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `PLR1730`: Fix removes comments
 
 ---
 
-_Issue opened by @kaddkaka on 2025-05-24 16:30_
+_@kaddkaka_
 
 ### Summary
 

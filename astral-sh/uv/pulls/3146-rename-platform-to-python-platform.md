@@ -13,14 +13,14 @@ head: charlie/python-platform
 created_at: 2024-04-19T22:02:02Z
 updated_at: 2024-04-19T22:24:24Z
 url: https://github.com/astral-sh/uv/pull/3146
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:27Z
 ```
 
 # Rename `--platform` to `--python-platform`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-19 22:02_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: brent/syn-star-index
 created_at: 2025-03-06T21:36:28Z
 updated_at: 2025-03-14T14:57:11Z
 url: https://github.com/astral-sh/ruff/pull/16544
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [syntax-errors] Star expression in index before Python 3.11
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-06 21:36_
+_@ntBre_
 
 Summary
 --

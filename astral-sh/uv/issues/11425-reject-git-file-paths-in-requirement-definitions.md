@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-11T17:40:54Z
 updated_at: 2025-04-04T14:17:14Z
 url: https://github.com/astral-sh/uv/issues/11425
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # Reject `git+file` paths in requirement definitions
 
 ---
 
-_Issue opened by @T-256 on 2025-02-11 17:40_
+_@T-256_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-21T12:00:04Z
 updated_at: 2024-03-21T16:22:51Z
 url: https://github.com/astral-sh/ruff/issues/10509
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # [v0.3.3 regression]: F811 incorrectly emitted if a symbol in a stub is re-exported and a symbol by the same name is defined in a different scope
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-03-21 12:00_
+_@AlexWaygood_
 
 Starting in v0.3.3, Ruff incorrectly emits F811 on this snippet if it's a `.pyi` file:
 

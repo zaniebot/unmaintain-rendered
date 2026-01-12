@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-11T15:06:57Z
 updated_at: 2023-02-14T22:25:00Z
 url: https://github.com/astral-sh/ruff/issues/2764
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Relative import autofix should respect `src`
 
 ---
 
-_Issue opened by @sbrugman on 2023-02-11 15:06_
+_@sbrugman_
 
 Thanks for this addition. It seems not to work for me in a src-layout, though. Coming here from the item in the changelog...
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-30T14:33:01Z
 updated_at: 2025-06-03T07:09:30Z
 url: https://github.com/astral-sh/ruff/issues/18386
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Allow for flake8-bugbear behavior for B008, trigger on any function call even if immutable
 
 ---
 
-_Issue opened by @blackary on 2025-05-30 14:33_
+_@blackary_
 
 ### Summary
 

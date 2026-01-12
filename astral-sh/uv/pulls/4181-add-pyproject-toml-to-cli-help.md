@@ -13,14 +13,14 @@ head: charlie/py
 created_at: 2024-06-10T00:15:10Z
 updated_at: 2024-06-10T02:48:40Z
 url: https://github.com/astral-sh/uv/pull/4181
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:04Z
 ```
 
 # Add `pyproject.toml` to CLI help
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-10 00:15_
+_@charliermarsh_
 
 _No description provided._
 

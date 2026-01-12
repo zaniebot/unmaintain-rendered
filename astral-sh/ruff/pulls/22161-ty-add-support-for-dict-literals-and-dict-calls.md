@@ -12,14 +12,14 @@ head: typed-dict-as-call-parameter
 created_at: 2025-12-23T13:07:37Z
 updated_at: 2026-01-08T15:23:07Z
 url: https://github.com/astral-sh/ruff/pull/22161
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Add support for dict literals and dict() calls as default values for parameters with TypedDict types
 
 ---
 
-_Pull request opened by @Hugo-Polloli on 2025-12-23 13:07_
+_@Hugo-Polloli_
 
 ## Summary
 

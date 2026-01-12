@@ -12,14 +12,14 @@ head: rulecode-to-rule
 created_at: 2023-01-18T01:45:29Z
 updated_at: 2023-01-19T05:06:25Z
 url: https://github.com/astral-sh/ruff/pull/1941
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Drop `RuleCode` in favor of `Rule` enum with human-friendly names
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-18 01:45_
+_@not-my-profile_
 
 Rules often exist in several linters for example UselessObjectInheritance is known as:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-16T15:46:27Z
 updated_at: 2024-07-16T15:58:21Z
 url: https://github.com/astral-sh/ruff/issues/12348
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # ruff did not return the original code
 
 ---
 
-_Issue opened by @ArtemIsmagilov on 2024-07-16 15:46_
+_@ArtemIsmagilov_
 
 ruff version 0.5.2
 OS ubuntu

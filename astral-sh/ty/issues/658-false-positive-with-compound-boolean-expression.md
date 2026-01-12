@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-14T14:45:21Z
 updated_at: 2025-06-15T06:12:33Z
 url: https://github.com/astral-sh/ty/issues/658
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # False positive with compound Boolean expression
 
 ---
 
-_Issue opened by @datawookie on 2025-06-14 14:45_
+_@datawookie_
 
 ### Summary
 

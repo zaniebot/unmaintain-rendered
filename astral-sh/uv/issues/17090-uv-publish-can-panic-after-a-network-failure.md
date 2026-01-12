@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-11T19:19:24Z
 updated_at: 2025-12-12T17:02:50Z
 url: https://github.com/astral-sh/uv/issues/17090
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # `uv publish` can panic after a network failure
 
 ---
 
-_Issue opened by @konstin on 2025-12-11 19:19_
+_@konstin_
 
 I can reliable get uv to panic by toggling network on and off during publishing a large wheel.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-21T11:21:38Z
 updated_at: 2025-04-29T21:37:08Z
 url: https://github.com/astral-sh/uv/issues/12362
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # Prevent fallback to PyPi when private index returns 401/403 (to mitigate dependency confusion risk)
 
 ---
 
-_Issue opened by @bendikhk on 2025-03-21 11:21_
+_@bendikhk_
 
 I’m using uv with a setup where a private package index requires both authentication and a VPN connection. My intention is to always prefer the private index and only fall back to PyPI if the package truly does not exist on the private index.
 

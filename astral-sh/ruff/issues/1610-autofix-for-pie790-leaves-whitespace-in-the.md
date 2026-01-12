@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-04T01:05:59Z
 updated_at: 2023-01-04T01:45:00Z
 url: https://github.com/astral-sh/ruff/issues/1610
-synced_at: 2026-01-10T12:05:31Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Autofix for `PIE790` leaves whitespace in the affected line
 
 ---
 
-_Issue opened by @edgarrmondragon on 2023-01-04 01:05_
+_@edgarrmondragon_
 
 Test file:
 

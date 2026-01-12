@@ -13,14 +13,14 @@ head: charlie/content
 created_at: 2025-11-22T03:05:15Z
 updated_at: 2025-12-02T12:41:26Z
 url: https://github.com/astral-sh/uv/pull/16816
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:27Z
 ```
 
 # Content-address distributions in the archive
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-22 03:05_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-26T11:53:18Z
 updated_at: 2025-11-26T14:35:51Z
 url: https://github.com/astral-sh/ty/issues/1645
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Instance attribute inferred as `Unknown | T` in method despite being assigned concrete type in `__init__`
 
 ---
 
-_Issue opened by @sinon on 2025-11-26 11:53_
+_@sinon_
 
 ### Summary
 

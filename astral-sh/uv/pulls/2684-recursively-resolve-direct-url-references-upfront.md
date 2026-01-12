@@ -13,14 +13,14 @@ head: charlie/recursive-locals
 created_at: 2024-03-27T03:02:11Z
 updated_at: 2024-04-01T21:16:21Z
 url: https://github.com/astral-sh/uv/pull/2684
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:10Z
 ```
 
 # Recursively resolve direct URL references upfront
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-27 03:02_
+_@charliermarsh_
 
 ## Summary
 

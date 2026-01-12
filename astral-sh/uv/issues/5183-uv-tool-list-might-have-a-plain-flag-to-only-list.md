@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-18T12:39:09Z
 updated_at: 2024-08-20T18:22:19Z
 url: https://github.com/astral-sh/uv/issues/5183
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # `uv tool list` might have a `--plain` flag to only list names?
 
 ---
 
-_Issue opened by @baggiponte on 2024-07-18 12:39_
+_@baggiponte_
 
 This might be a request of a solution for the wrong problem. Since I cannot install (or upgrade) multiple tools with `uv tool`, I thought of using a bit of a hack:
 

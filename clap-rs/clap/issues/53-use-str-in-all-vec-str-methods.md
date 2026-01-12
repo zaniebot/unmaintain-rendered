@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-04-02T03:49:48Z
 updated_at: 2015-04-02T23:44:07Z
 url: https://github.com/clap-rs/clap/issues/53
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # use &[&str] in "_all(Vec<&str>)" methods
 
 ---
 
-_Issue opened by @kbknapp on 2015-04-02 03:49_
+_@kbknapp_
 
 Allow slices in the `_all(&[&str])` methods instead of a `_all(Vec<&str>)` to not require an extra allocation. 
 

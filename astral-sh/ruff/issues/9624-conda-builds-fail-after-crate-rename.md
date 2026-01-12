@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-23T16:00:02Z
 updated_at: 2024-01-25T05:08:22Z
 url: https://github.com/astral-sh/ruff/issues/9624
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Conda builds fail after crate rename
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-23 16:00_
+_@charliermarsh_
 
 See: https://github.com/conda-forge/ruff-feedstock/pull/163
 

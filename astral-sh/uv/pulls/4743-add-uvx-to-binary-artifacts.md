@@ -13,14 +13,14 @@ head: zb/uvx-binaries
 created_at: 2024-07-02T22:02:59Z
 updated_at: 2024-07-02T22:27:04Z
 url: https://github.com/astral-sh/uv/pull/4743
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:25Z
 ```
 
 # Add `uvx` to binary artifacts
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-02 22:02_
+_@zanieb_
 
 We have a custom binary build step and we were not including the new `uvx` binary (from #4632) in the artifacts but the installer expects them to exist.
 

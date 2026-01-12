@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-16T10:16:30Z
 updated_at: 2025-04-19T01:13:18Z
 url: https://github.com/astral-sh/ruff/issues/13773
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Follow-up from unpacked tuple assignment work
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-10-16 10:16_
+_@dhruvmanila_
 
 As https://github.com/astral-sh/ruff/pull/13316 is merged, there are some follow-up work that needs to be done. The following is a list in the order of priority where the highest priority work is on the top:
 

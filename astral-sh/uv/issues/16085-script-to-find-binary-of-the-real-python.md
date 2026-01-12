@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-01T14:43:17Z
 updated_at: 2025-10-01T16:35:38Z
 url: https://github.com/astral-sh/uv/issues/16085
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:23Z
 ```
 
 # Script to find binary of the real Python executable fails to run
 
 ---
 
-_Issue opened by @jdumas on 2025-10-01 14:43_
+_@jdumas_
 
 ### Summary
 

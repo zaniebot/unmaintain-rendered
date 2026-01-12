@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-05T17:33:21Z
 updated_at: 2025-06-15T01:19:18Z
 url: https://github.com/astral-sh/uv/issues/13868
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # `uv sync` twice tries to install to /usr/local/lib the second time
 
 ---
 
-_Issue opened by @c0g on 2025-06-05 17:33_
+_@c0g_
 
 ### Summary
 

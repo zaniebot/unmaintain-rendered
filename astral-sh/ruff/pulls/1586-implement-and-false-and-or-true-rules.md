@@ -12,14 +12,14 @@ head: charlie/sim
 created_at: 2023-01-03T04:10:21Z
 updated_at: 2023-01-03T04:10:43Z
 url: https://github.com/astral-sh/ruff/pull/1586
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Implement and-false and or-true rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-03 04:10_
+_@charliermarsh_
 
 See: #998.
 

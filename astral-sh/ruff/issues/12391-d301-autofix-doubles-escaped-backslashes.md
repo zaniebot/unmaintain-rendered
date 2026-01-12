@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-18T19:33:44Z
 updated_at: 2024-07-18T22:45:45Z
 url: https://github.com/astral-sh/ruff/issues/12391
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # D301 autofix doubles escaped backslashes
 
 ---
 
-_Issue opened by @kbattocchi on 2024-07-18 19:33_
+_@kbattocchi_
 
 [D301](https://docs.astral.sh/ruff/rules/escape-sequence-in-docstring/) states that docstrings with literal backslashes should use raw (`r"""`) strings.  So something like
 

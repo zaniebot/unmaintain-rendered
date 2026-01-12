@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-17T06:45:51Z
 updated_at: 2023-05-08T22:20:39Z
 url: https://github.com/astral-sh/ruff/issues/3993
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Enhance ERA001 commented out code analysis
 
 ---
 
-_Issue opened by @mikeleppane on 2023-04-17 06:45_
+_@mikeleppane_
 
 Would it be possible to detect commented out code in case you have used triple-quoted strings? It probably won't be trivial thing to do because how to separate from an actual doc string. 
 

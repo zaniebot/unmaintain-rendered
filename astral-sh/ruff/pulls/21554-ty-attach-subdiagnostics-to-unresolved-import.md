@@ -14,14 +14,14 @@ head: alex/import-diagnostic-hints
 created_at: 2025-11-21T12:24:01Z
 updated_at: 2025-11-21T12:40:55Z
 url: https://github.com/astral-sh/ruff/pull/21554
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:27Z
 ```
 
 # [ty] Attach subdiagnostics to `unresolved-import` errors for relative imports as well as absolute imports
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-21 12:24_
+_@AlexWaygood_
 
 ## Summary
 

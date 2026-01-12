@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-07T12:31:02Z
 updated_at: 2022-09-08T02:34:44Z
 url: https://github.com/astral-sh/ruff/issues/119
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `F821 Undefined name` when definition is after usage
 
 ---
 
-_Issue opened by @samuelcolvin on 2022-09-07 12:31_
+_@samuelcolvin_
 
 Ruff looks great, congratulations. I'd love to use it one day on pydantic instead of flake8.
 

@@ -13,14 +13,14 @@ head: konsti/log-satisfies
 created_at: 2024-04-30T09:05:13Z
 updated_at: 2024-04-30T15:39:42Z
 url: https://github.com/astral-sh/uv/pull/3319
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:34Z
 ```
 
 # Log which requirements were or weren't satisfied
 
 ---
 
-_Pull request opened by @konstin on 2024-04-30 09:05_
+_@konstin_
 
 Previously, a noop `uv pip install` would only show "Audited {} package(s)" but no details, not even with `-vv`. Now it debug logs which requirements were met and it also debug logs which requirement was missing to trigger the full routine, allowing it investigate caching behaviour.
 

@@ -13,14 +13,14 @@ head: charlie/unit
 created_at: 2025-05-11T02:41:32Z
 updated_at: 2025-05-11T02:55:59Z
 url: https://github.com/astral-sh/uv/pull/13384
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:40Z
 ```
 
 # Avoid erroring on `pylock.toml` dependency entries
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-11 02:41_
+_@charliermarsh_
 
 ## Summary
 

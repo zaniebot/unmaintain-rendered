@@ -14,14 +14,14 @@ head: charlie/t
 created_at: 2024-07-04T20:03:56Z
 updated_at: 2024-07-04T22:31:41Z
 url: https://github.com/astral-sh/uv/pull/4820
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:28Z
 ```
 
 # Require at least one target for toolchain uninstalls
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-04 20:03_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/4816.
 

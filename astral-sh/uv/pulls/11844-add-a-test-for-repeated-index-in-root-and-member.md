@@ -13,14 +13,14 @@ head: charlie/t
 created_at: 2025-02-28T02:03:41Z
 updated_at: 2025-02-28T02:12:37Z
 url: https://github.com/astral-sh/uv/pull/11844
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:01Z
 ```
 
 # Add a test for repeated index in root and member
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-28 02:03_
+_@charliermarsh_
 
 ## Summary
 

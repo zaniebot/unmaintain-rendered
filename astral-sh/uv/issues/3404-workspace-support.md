@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-06T13:48:29Z
 updated_at: 2024-05-28T07:41:55Z
 url: https://github.com/astral-sh/uv/issues/3404
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Workspace support
 
 ---
 
-_Issue opened by @konstin on 2024-05-06 13:48_
+_@konstin_
 
 Workspaces are a feature aimed at supporting multiple packages in the same repository. It makes large projects easier to manage by splitting them into smaller packages with independent dependencies. They handle editable installs and publishing automatically.
 

@@ -13,14 +13,14 @@ head: charlie/dir
 created_at: 2024-05-11T16:52:21Z
 updated_at: 2024-05-13T12:06:40Z
 url: https://github.com/astral-sh/uv/pull/3524
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:41Z
 ```
 
 # Make cache clearing robust to directories without read permissions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-11 16:52_
+_@charliermarsh_
 
 ## Summary
 

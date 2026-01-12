@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-14T01:35:25Z
 updated_at: 2025-11-10T12:21:09Z
 url: https://github.com/astral-sh/uv/issues/7382
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Windows permissions errors on `uv remove X` with clean install.
 
 ---
 
-_Issue opened by @mcteo on 2024-09-14 01:35_
+_@mcteo_
 
 Hi all, just following the "Project management" section of the "Getting Started" guide, and got an error:
 

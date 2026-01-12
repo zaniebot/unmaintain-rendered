@@ -13,14 +13,14 @@ head: zb/fix-multiple-installed
 created_at: 2024-04-02T16:23:38Z
 updated_at: 2024-04-02T17:10:52Z
 url: https://github.com/astral-sh/uv/pull/2779
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:13Z
 ```
 
 # Exclude installed distributions with multiple versions from consideration in the resolver
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-02 16:23_
+_@zanieb_
 
 Addresses panic introduced in #2596 and reported in https://github.com/astral-sh/uv/issues/2763#issuecomment-2030674936
 

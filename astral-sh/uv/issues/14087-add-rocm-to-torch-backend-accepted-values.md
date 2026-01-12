@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-16T19:21:05Z
 updated_at: 2025-06-18T11:35:06Z
 url: https://github.com/astral-sh/uv/issues/14087
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # Add ROCm to `--torch-backend` accepted values
 
 ---
 
-_Issue opened by @charliermarsh on 2025-06-16 19:21_
+_@charliermarsh_
 
 _No description provided._
 

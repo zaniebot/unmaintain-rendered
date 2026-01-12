@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-05T09:59:05Z
 updated_at: 2024-06-05T18:12:00Z
 url: https://github.com/astral-sh/uv/issues/4040
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # `uv pip compile` perf regression in 0.2.6
 
 ---
 
-_Issue opened by @blueraft on 2024-06-05 09:59_
+_@blueraft_
 
 There's a significant performance regression in `uv 0.2.6` for projects that rely on [setuptools_scm](https://github.com/pypa/setuptools_scm/).
 

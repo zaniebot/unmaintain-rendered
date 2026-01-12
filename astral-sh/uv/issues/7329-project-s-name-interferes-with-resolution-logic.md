@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-12T13:26:21Z
 updated_at: 2024-10-11T23:30:32Z
 url: https://github.com/astral-sh/uv/issues/7329
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Project's name interferes with resolution logic
 
 ---
 
-_Issue opened by @nhedger on 2024-09-12 13:26_
+_@nhedger_
 
 When attempting to `add` or `sync` a dependency to a project, if the dependency depends on a package whose name matches the name in your pyproject.toml, resolution fails.
 

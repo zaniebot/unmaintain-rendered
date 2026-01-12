@@ -12,14 +12,14 @@ head: zanie/test-sccache
 created_at: 2023-10-18T15:29:19Z
 updated_at: 2023-10-24T15:23:01Z
 url: https://github.com/astral-sh/ruff/pull/8048
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add sccache to CI tests
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-18 15:29_
+_@zanieb_
 
 _No description provided._
 

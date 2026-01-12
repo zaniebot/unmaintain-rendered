@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-15T23:33:05Z
 updated_at: 2026-01-08T19:58:59Z
 url: https://github.com/astral-sh/ty/issues/1365
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Losing type with Pydantic RootModel
 
 ---
 
-_Issue opened by @vlashada on 2025-10-15 23:33_
+_@vlashada_
 
 ### Summary
 

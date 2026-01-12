@@ -12,14 +12,14 @@ head: pyproject-toml-readme
 created_at: 2023-01-28T07:00:54Z
 updated_at: 2023-01-28T12:18:41Z
 url: https://github.com/astral-sh/ruff/pull/2293
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add `readme` field to `pyproject.toml`
 
 ---
 
-_Pull request opened by @messense on 2023-01-28 07:00_
+_@messense_
 
 A quick workaround for https://github.com/PyO3/maturin/issues/1431
 

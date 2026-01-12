@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-04T23:53:33Z
 updated_at: 2024-03-05T04:59:25Z
 url: https://github.com/astral-sh/ruff/issues/10232
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Import of annotations from __future__ incorrectly enables use of | inplace of Optional
 
 ---
 
-_Issue opened by @daveisfera on 2024-03-04 23:53_
+_@daveisfera_
 
 Here's the incorrect output:
 ```

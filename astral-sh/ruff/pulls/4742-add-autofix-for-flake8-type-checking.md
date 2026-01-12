@@ -12,14 +12,14 @@ head: charlie/add-typing-import
 created_at: 2023-05-31T03:17:32Z
 updated_at: 2023-05-31T17:53:37Z
 url: https://github.com/astral-sh/ruff/pull/4742
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Add autofix for flake8-type-checking
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-31 03:17_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

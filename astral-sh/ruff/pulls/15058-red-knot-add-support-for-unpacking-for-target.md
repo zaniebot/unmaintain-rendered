@@ -13,14 +13,14 @@ head: dhruv/unpack-for-target
 created_at: 2024-12-19T11:37:12Z
 updated_at: 2024-12-23T06:15:41Z
 url: https://github.com/astral-sh/ruff/pull/15058
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Add support for unpacking `for` target
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-12-19 11:37_
+_@dhruvmanila_
 
 ## Summary
 

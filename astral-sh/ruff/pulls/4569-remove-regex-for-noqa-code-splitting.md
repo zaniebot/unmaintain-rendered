@@ -12,14 +12,14 @@ head: charlie/split-regex
 created_at: 2023-05-22T03:08:01Z
 updated_at: 2023-05-22T05:06:07Z
 url: https://github.com/astral-sh/ruff/pull/4569
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Remove regex for noqa code splitting
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-22 03:08_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-09T21:58:47Z
 updated_at: 2025-01-07T19:24:41Z
 url: https://github.com/astral-sh/uv/issues/9752
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # allow global configuration of project environments
 
 ---
 
-_Issue opened by @mbtuckersimm on 2024-12-09 21:58_
+_@mbtuckersimm_
 
 I recently encountered [this problem installing ansible-lint](https://github.com/ansible/ansible-lint/issues/4348) for a work project. I won't reproduce all of that info here, but the gist of it is that in order to install a recent version of `ansible-lint`, I had to include the following chunk in my `pyproject.toml` file:
 

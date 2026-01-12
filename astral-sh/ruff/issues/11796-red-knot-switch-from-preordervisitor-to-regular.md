@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-07T15:15:43Z
 updated_at: 2024-07-19T20:26:04Z
 url: https://github.com/astral-sh/ruff/issues/11796
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] switch from PreorderVisitor to regular Visitor
 
 ---
 
-_Issue opened by @carljm on 2024-06-07 15:15_
+_@carljm_
 
 We don't need the extra features provided by `PreorderVisitor` (`enter_node`, `TraversalSignal` etc), and we prefer evaluation-order visit (which the regular visitor does) over source-order visit (which `PreorderVisitor` does).
 

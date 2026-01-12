@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-02T09:29:08Z
 updated_at: 2024-10-10T07:26:57Z
 url: https://github.com/astral-sh/uv/issues/7862
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # requires-python specification not correctly resolved
 
 ---
 
-_Issue opened by @Wietse on 2024-10-02 09:29_
+_@Wietse_
 
 Hello,
 

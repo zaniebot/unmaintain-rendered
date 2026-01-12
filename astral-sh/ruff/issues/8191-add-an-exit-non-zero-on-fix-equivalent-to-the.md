@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-25T00:40:49Z
 updated_at: 2025-03-19T14:55:06Z
 url: https://github.com/astral-sh/ruff/issues/8191
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Add an `--exit-non-zero-on-fix` equivalent to the formatter.
 
 ---
 
-_Issue opened by @lwatsondev on 2023-10-25 00:40_
+_@lwatsondev_
 
 Title says it all really. `--exit-non-zero-on-change`? I think this would be useful when using tools like pre-commit with CI in the same way as the checker's `--exit-non-zero-on-fix`.
 

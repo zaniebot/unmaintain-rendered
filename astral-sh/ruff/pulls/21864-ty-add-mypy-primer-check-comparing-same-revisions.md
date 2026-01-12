@@ -14,14 +14,14 @@ head: micha/mypy-primer-same-revision
 created_at: 2025-12-09T12:27:05Z
 updated_at: 2025-12-10T16:37:18Z
 url: https://github.com/astral-sh/ruff/pull/21864
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] Add mypy primer check comparing same revisions
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-09 12:27_
+_@MichaReiser_
 
 ## Summary
 

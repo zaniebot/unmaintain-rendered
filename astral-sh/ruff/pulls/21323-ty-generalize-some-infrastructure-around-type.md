@@ -14,14 +14,14 @@ head: alex/generalize-visitor
 created_at: 2025-11-07T18:03:55Z
 updated_at: 2025-11-07T21:26:32Z
 url: https://github.com/astral-sh/ruff/pull/21323
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # [ty] Generalize some infrastructure around type visitors
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-07 18:03_
+_@AlexWaygood_
 
 We have lots of `TypeVisitor`s that end up having very similar `visit_type` implementations. This PR consolidates some of the code for these so that there's less repetition and duplication.
 

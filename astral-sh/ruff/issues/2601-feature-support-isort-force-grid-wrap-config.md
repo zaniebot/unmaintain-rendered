@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-06T01:49:33Z
 updated_at: 2024-09-23T20:36:39Z
 url: https://github.com/astral-sh/ruff/issues/2601
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Feature: Support isort force_grid_wrap config
 
 ---
 
-_Issue opened by @mikelane on 2023-02-06 01:49_
+_@mikelane_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

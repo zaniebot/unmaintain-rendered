@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-03T00:55:27Z
 updated_at: 2025-09-05T11:10:56Z
 url: https://github.com/astral-sh/ruff/issues/8451
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Implement flake8-async rules
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-03 00:55_
+_@charliermarsh_
 
 ## General Rules
 

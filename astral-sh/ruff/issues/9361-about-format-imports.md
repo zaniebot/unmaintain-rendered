@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-02T17:35:45Z
 updated_at: 2024-01-02T18:23:21Z
 url: https://github.com/astral-sh/ruff/issues/9361
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # About format imports
 
 ---
 
-_Issue opened by @Byxs20 on 2024-01-02 17:35_
+_@Byxs20_
 
 ![image](https://github.com/astral-sh/ruff/assets/64669718/a02559fe-7e81-4921-9e99-b385a8fc3fff)
 

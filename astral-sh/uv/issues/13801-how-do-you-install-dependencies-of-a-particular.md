@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T10:24:16Z
 updated_at: 2025-06-03T10:57:30Z
 url: https://github.com/astral-sh/uv/issues/13801
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # How do you install dependencies of a particular group?
 
 ---
 
-_Issue opened by @alexei on 2025-06-03 10:24_
+_@alexei_
 
 ### Question
 

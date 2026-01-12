@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-01T10:24:10Z
 updated_at: 2025-09-01T15:13:03Z
 url: https://github.com/astral-sh/uv/issues/15616
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # uv usage for non-python repositories
 
 ---
 
-_Issue opened by @julien-lecomte on 2025-09-01 10:24_
+_@julien-lecomte_
 
 ### Question
 

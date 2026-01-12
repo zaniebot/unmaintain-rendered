@@ -12,14 +12,14 @@ head: docs/add-missing-flake8-simplify-readme
 created_at: 2022-12-29T20:47:29Z
 updated_at: 2022-12-29T22:04:27Z
 url: https://github.com/astral-sh/ruff/pull/1449
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # docs(README): add missing `flake8-simplify`
 
 ---
 
-_Pull request opened by @mkniewallner on 2022-12-29 20:47_
+_@mkniewallner_
 
 Noticed that `flake8-simplify` is mentioned [here](https://github.com/charliermarsh/ruff#flake8-simplify-sim), but not in the list of tools that `ruff` can replace.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-19T10:09:48Z
 updated_at: 2023-05-13T13:05:45Z
 url: https://github.com/astral-sh/ruff/issues/1289
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # noqa for a portion of a file for a specific error
 
 ---
 
-_Issue opened by @tekumara on 2022-12-19 10:09_
+_@tekumara_
 
 I have a section of my file with lots of long lines, I'd like to be able to do this:
 

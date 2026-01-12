@@ -13,14 +13,14 @@ head: charlie/C416
 created_at: 2023-09-13T19:08:24Z
 updated_at: 2023-09-14T15:59:24Z
 url: https://github.com/astral-sh/ruff/pull/7363
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Extend C416 to catch tuple unpacking
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-13 19:08_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7307.
 

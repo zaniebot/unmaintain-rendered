@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-21T18:34:44Z
 updated_at: 2025-08-06T14:37:31Z
 url: https://github.com/astral-sh/uv/issues/6365
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Add a `--suffix` option to `uv tool install`
 
 ---
 
-_Issue opened by @edgarrmondragon on 2024-08-21 18:34_
+_@edgarrmondragon_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

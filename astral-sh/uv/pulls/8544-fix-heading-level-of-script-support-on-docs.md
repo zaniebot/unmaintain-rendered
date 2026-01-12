@@ -13,14 +13,14 @@ head: zb/fix-script
 created_at: 2024-10-24T20:45:23Z
 updated_at: 2024-10-24T20:56:50Z
 url: https://github.com/astral-sh/uv/pull/8544
-synced_at: 2026-01-10T12:54:11Z
+synced_at: 2026-01-12T16:08:22Z
 ```
 
 # Fix heading level of "Script support" on docs landing page
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-24 20:45_
+_@zanieb_
 
 _No description provided._
 

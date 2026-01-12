@@ -13,14 +13,14 @@ head: fix/tch002
 created_at: 2023-05-27T19:27:45Z
 updated_at: 2023-05-28T08:50:46Z
 url: https://github.com/astral-sh/ruff/pull/4685
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Handle dotted alias imports to check for implicit imports
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-05-27 19:27_
+_@dhruvmanila_
 
 ## Summary
 

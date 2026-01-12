@@ -13,14 +13,14 @@ head: typo_in_dependency_groups
 created_at: 2025-02-04T10:13:57Z
 updated_at: 2025-02-04T11:16:06Z
 url: https://github.com/astral-sh/uv/pull/11211
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:44Z
 ```
 
 # Fix typo "dependency-group" in error message and comments
 
 ---
 
-_Pull request opened by @mancellin on 2025-02-04 10:13_
+_@mancellin_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

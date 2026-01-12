@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-29T06:36:07Z
 updated_at: 2025-02-06T14:01:11Z
 url: https://github.com/astral-sh/ruff/issues/15804
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Improve docs for RUF012
 
 ---
 
-_Issue opened by @RayBB on 2025-01-29 06:36_
+_@RayBB_
 
 ### Description
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-28T19:48:38Z
 updated_at: 2024-07-26T01:23:48Z
 url: https://github.com/astral-sh/ruff/issues/12096
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ruff extension for Visual Studio Code not show error E501 (line-too-long)
 
 ---
 
-_Issue opened by @alejandro-kid on 2024-06-28 19:48_
+_@alejandro-kid_
 
 I am using Visual Studio Code Insider, version 1.85, in Fedora Linux version 39.
 Don't matter what config I set, never shows when the line exceeds de configured limit. The other features in RUFF work well.

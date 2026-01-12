@@ -13,14 +13,14 @@ head: readme-link-fix
 created_at: 2023-10-31T18:05:49Z
 updated_at: 2023-10-31T18:48:16Z
 url: https://github.com/astral-sh/ruff/pull/8386
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Editor integrations link fixed in README
 
 ---
 
-_Pull request opened by @niranjan-kurhade on 2023-10-31 18:05_
+_@niranjan-kurhade_
 
 This PR fixes #8385 
 Now it redirects to the correct link.

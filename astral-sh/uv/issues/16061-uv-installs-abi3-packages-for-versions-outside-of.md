@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-29T07:57:48Z
 updated_at: 2025-10-06T10:15:48Z
 url: https://github.com/astral-sh/uv/issues/16061
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:22Z
 ```
 
 # uv installs abi3 packages for versions outside of what is specified in requires-python
 
 ---
 
-_Issue opened by @IljaManakov on 2025-09-29 07:57_
+_@IljaManakov_
 
 ### Summary
 

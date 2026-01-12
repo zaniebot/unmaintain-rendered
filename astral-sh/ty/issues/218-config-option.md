@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-15T14:24:54Z
 updated_at: 2025-05-17T17:07:28Z
 url: https://github.com/astral-sh/ty/issues/218
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # `--config` option
 
 ---
 
-_Issue opened by @MichaReiser on 2025-01-15 14:24_
+_@MichaReiser_
 
 A `key=value` pair to set an arbitrary configuration option in addition to the project’s configuration
 

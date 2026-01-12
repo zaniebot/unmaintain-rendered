@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-01T16:03:23Z
 updated_at: 2025-12-18T10:15:17Z
 url: https://github.com/astral-sh/uv/issues/16087
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:23Z
 ```
 
 # Specify a path and index for package source
 
 ---
 
-_Issue opened by @zacharymostowsky on 2025-10-01 16:03_
+_@zacharymostowsky_
 
 ### Question
 

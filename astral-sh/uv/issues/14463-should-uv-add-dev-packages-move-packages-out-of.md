@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-04T20:06:20Z
 updated_at: 2025-07-07T21:26:56Z
 url: https://github.com/astral-sh/uv/issues/14463
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Should `uv add --dev <packages>` move packages out of `dependencies`?
 
 ---
 
-_Issue opened by @stdedos on 2025-07-04 20:06_
+_@stdedos_
 
 ### Question
 

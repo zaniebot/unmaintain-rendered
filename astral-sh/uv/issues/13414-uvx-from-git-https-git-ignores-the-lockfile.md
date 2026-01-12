@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-12T19:39:15Z
 updated_at: 2025-10-13T18:00:52Z
 url: https://github.com/astral-sh/uv/issues/13414
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:28Z
 ```
 
 # uvx --from git+https://....git@... ignores the lockfile
 
 ---
 
-_Issue opened by @Ark-kun on 2025-05-12 19:39_
+_@Ark-kun_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/statements
 created_at: 2023-06-02T03:58:19Z
 updated_at: 2023-06-02T04:30:30Z
 url: https://github.com/astral-sh/ruff/pull/4794
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Exclude function definition from too-many-statements rule
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-02 03:58_
+_@charliermarsh_
 
 ## Summary
 

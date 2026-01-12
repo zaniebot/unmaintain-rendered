@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-09T03:16:28Z
 updated_at: 2024-10-24T14:34:15Z
 url: https://github.com/astral-sh/ruff/issues/10844
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # New Rule: Disallow uncaught and unchecked exceptions
 
 ---
 
-_Issue opened by @Starz0r on 2024-04-09 03:16_
+_@Starz0r_
 
 Typically, if I'm writing a Python program, I want to be sure to handle or at least catch many exceptions. A program like so should not pass without warnings:
 ```py

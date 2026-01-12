@@ -12,14 +12,14 @@ head: generate-cell-uuid
 created_at: 2023-08-24T16:16:01Z
 updated_at: 2023-08-25T08:53:18Z
 url: https://github.com/astral-sh/ruff/pull/6853
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add jupyter notebook cell ids in 4.5+ if missing
 
 ---
 
-_Pull request opened by @konstin on 2023-08-24 16:16_
+_@konstin_
 
 **Summary** See https://github.com/astral-sh/ruff/issues/6834#issuecomment-1691202417
 

@@ -13,14 +13,14 @@ head: ag/revert-narrow
 created_at: 2024-07-08T16:44:06Z
 updated_at: 2024-07-08T16:57:00Z
 url: https://github.com/astral-sh/uv/pull/4902
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:31Z
 ```
 
 # uv-resolver: partially revert Requires-Python version narrowing
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-07-08 16:44_
+_@BurntSushi_
 
 The PR #4707 introduced the notion of "version narrowing," where a
 Requires-Python constraint was _possibly_ narrowed whenever the

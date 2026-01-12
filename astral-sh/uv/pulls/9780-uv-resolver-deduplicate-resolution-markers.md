@@ -14,14 +14,14 @@ head: ag/dedupe-resolution-markers
 created_at: 2024-12-10T18:13:40Z
 updated_at: 2024-12-10T19:58:40Z
 url: https://github.com/astral-sh/uv/pull/9780
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:58Z
 ```
 
 # uv-resolver: deduplicate resolution markers
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-12-10 18:13_
+_@BurntSushi_
 
 Since we don't (currently) include conflict markers with our
 `resolution-markers` in the lock file, it's possible that we end up

@@ -14,14 +14,14 @@ head: david/mypy_primer-do-not-specify-explicit-version
 created_at: 2025-04-04T11:52:10Z
 updated_at: 2025-04-04T11:55:42Z
 url: https://github.com/astral-sh/ruff/pull/17200
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] mypy_primer: do not specify Python version
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-04 11:52_
+_@sharkdp_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: alex/primer-zope
 created_at: 2025-07-08T14:58:45Z
 updated_at: 2025-07-25T13:12:19Z
 url: https://github.com/astral-sh/ruff/pull/19208
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [ty] Move `zope.interface` to `good.txt` for primer runs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-08 14:58_
+_@AlexWaygood_
 
 Stacked on top of #19187; see the PR summary for that PR
 

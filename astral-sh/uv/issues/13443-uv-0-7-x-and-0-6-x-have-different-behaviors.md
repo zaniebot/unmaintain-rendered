@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-14T05:17:05Z
 updated_at: 2025-05-16T08:10:38Z
 url: https://github.com/astral-sh/uv/issues/13443
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # uv 0.7.x and 0.6.x have different behaviors running the same command
 
 ---
 
-_Issue opened by @andy971022 on 2025-05-14 05:17_
+_@andy971022_
 
 ### Summary
 

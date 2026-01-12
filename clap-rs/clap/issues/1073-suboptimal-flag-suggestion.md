@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-10-21T22:42:48Z
 updated_at: 2020-04-12T16:58:38Z
 url: https://github.com/clap-rs/clap/issues/1073
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # suboptimal flag suggestion
 
 ---
 
-_Issue opened by @BurntSushi on 2017-10-21 22:42_
+_@BurntSushi_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

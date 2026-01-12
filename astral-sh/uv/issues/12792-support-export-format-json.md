@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T21:53:21Z
 updated_at: 2025-07-04T07:32:55Z
 url: https://github.com/astral-sh/uv/issues/12792
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # Support `export --format=json`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-04-09 21:53_
+_@InSyncWithFoo_
 
 I'm writing [a VS Code extension for uv](https://github.com/InSyncWithFoo/uv-for-vscode). One of the features it supports is editor commands, which helps with running uv commands from the editor. For `uv remove`, the user will choose the packages to remove from a given list.
 

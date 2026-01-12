@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-20T02:08:14Z
 updated_at: 2023-10-22T11:14:46Z
 url: https://github.com/astral-sh/ruff/issues/8084
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `D102` & `D103` should not warn on functions where all overloads have docstrings
 
 ---
 
-_Issue opened by @DetachHead on 2023-10-20 02:08_
+_@DetachHead_
 
 ```py
 from typing import overload

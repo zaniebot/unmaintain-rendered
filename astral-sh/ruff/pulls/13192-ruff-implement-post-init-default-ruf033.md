@@ -14,14 +14,14 @@ head: post-init-defaults
 created_at: 2024-09-01T11:34:55Z
 updated_at: 2024-09-02T12:28:23Z
 url: https://github.com/astral-sh/ruff/pull/13192
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`ruff`] Implement post-init-default (`RUF033`)
 
 ---
 
-_Pull request opened by @tjkuson on 2024-09-01 11:34_
+_@tjkuson_
 
 ## Summary
 

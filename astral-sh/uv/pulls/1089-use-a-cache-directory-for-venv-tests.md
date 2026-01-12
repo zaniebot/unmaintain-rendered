@@ -13,14 +13,14 @@ head: zb/venv-test
 created_at: 2024-01-25T02:04:13Z
 updated_at: 2024-01-25T04:09:38Z
 url: https://github.com/astral-sh/uv/pull/1089
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:25Z
 ```
 
 # Use a cache directory for venv tests
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-25 02:04_
+_@zanieb_
 
 _No description provided._
 

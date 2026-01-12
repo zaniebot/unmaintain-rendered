@@ -12,14 +12,14 @@ head: fix_cypthon_errors_set_2
 created_at: 2023-06-20T15:14:37Z
 updated_at: 2023-06-21T17:45:55Z
 url: https://github.com/astral-sh/ruff/pull/5210
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Fix remaining CPython formatter errors except for function argument separator comments
 
 ---
 
-_Pull request opened by @konstin on 2023-06-20 15:14_
+_@konstin_
 
 ## Summary
 

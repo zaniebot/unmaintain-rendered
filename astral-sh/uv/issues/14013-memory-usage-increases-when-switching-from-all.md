@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T02:23:44Z
 updated_at: 2025-06-25T02:20:42Z
 url: https://github.com/astral-sh/uv/issues/14013
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # Memory usage increases when switching from --all-packages to --frozen --no-dev --no-cache in Docker
 
 ---
 
-_Issue opened by @timothy-jeong on 2025-06-13 02:23_
+_@timothy-jeong_
 
 ### Question
 

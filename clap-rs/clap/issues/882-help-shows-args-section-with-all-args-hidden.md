@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-03-01T16:46:06Z
 updated_at: 2018-08-02T03:30:03Z
 url: https://github.com/clap-rs/clap/issues/882
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # HELP shows ARGS section with all args hidden
 
 ---
 
-_Issue opened by @nagisa on 2017-03-01 16:46_
+_@nagisa_
 
 app.arg(Arg::with_name("dummy").possible_value("some val").required(false).hidden(true));
 

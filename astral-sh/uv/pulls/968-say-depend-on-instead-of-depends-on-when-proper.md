@@ -13,14 +13,14 @@ head: zb/depend-s
 created_at: 2024-01-18T19:55:08Z
 updated_at: 2024-01-19T16:08:19Z
 url: https://github.com/astral-sh/uv/pull/968
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:19Z
 ```
 
 # Say "depend on" instead of "depends on" when proper in error messages
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-18 19:55_
+_@zanieb_
 
 I would like to spend some additional time working on the package range display abstractions, but maybe that is best done _after_ I've done a good bit of fiddling with the error messages.
 

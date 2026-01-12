@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-30T02:30:30Z
 updated_at: 2024-12-30T03:26:34Z
 url: https://github.com/astral-sh/uv/issues/10230
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # Missing `latest` tag for uv distroful images
 
 ---
 
-_Issue opened by @garysassano on 2024-12-30 02:30_
+_@garysassano_
 
 The `latest` tag is only available for the `ghcr.io/astral-sh/uv:latest` distroless image.
 

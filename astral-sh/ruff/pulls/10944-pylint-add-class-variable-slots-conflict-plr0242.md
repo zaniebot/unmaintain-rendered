@@ -11,14 +11,14 @@ head: add-E0242
 created_at: 2024-04-15T05:49:30Z
 updated_at: 2025-01-17T22:15:16Z
 url: https://github.com/astral-sh/ruff/pull/10944
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`pylint`] - add `class-variable-slots-conflict` (`PLR0242`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-04-15 05:49_
+_@diceroll123_
 
 ## Summary
 
@@ -30,5 +30,36 @@ See #970
 
 `cargo test`
 
+
+---
+
+_Comment by @github-actions[bot] on 2024-04-15 06:13_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_Comment by @MichaReiser on 2024-04-15 08:24_
+
+I think this PR and https://github.com/astral-sh/ruff/pull/10317 both implement the same rule
+
+---
+
+_Comment by @dylwil3 on 2025-01-17 22:15_
+
+Gonna close this as a duplicate - hopefully we'll get the first PR sorted soon, too. Thank you for the contribution though, and apologies for the delay in an admittedly unsatisfactory resolution!
+
+---
+
+_Closed by @dylwil3 on 2025-01-17 22:15_
 
 ---

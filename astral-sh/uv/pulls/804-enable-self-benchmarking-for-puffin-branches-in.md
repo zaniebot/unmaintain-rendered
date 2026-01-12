@@ -12,14 +12,14 @@ head: charlie/puffin-main
 created_at: 2024-01-05T22:11:33Z
 updated_at: 2024-01-06T15:44:23Z
 url: https://github.com/astral-sh/uv/pull/804
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:12Z
 ```
 
 # Enable self-benchmarking for Puffin branches in bench.py
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-05 22:11_
+_@charliermarsh_
 
 ## Summary
 

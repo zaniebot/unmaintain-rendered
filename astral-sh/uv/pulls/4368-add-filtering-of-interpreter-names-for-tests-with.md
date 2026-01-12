@@ -12,14 +12,14 @@ head: zb/filter-python-versions
 created_at: 2024-06-17T19:17:56Z
 updated_at: 2024-06-18T12:16:28Z
 url: https://github.com/astral-sh/uv/pull/4368
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:11Z
 ```
 
 # Add filtering of interpreter names for tests with multiple Python versions
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-17 19:17_
+_@zanieb_
 
 Extends new filters for interpreter paths to apply to tests with multiple Python versions. Adds patch version filtering for them as well, which is needed for #4360 tests.
 

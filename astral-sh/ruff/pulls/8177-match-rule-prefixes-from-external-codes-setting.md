@@ -14,14 +14,14 @@ head: zanie/external-prefix
 created_at: 2023-10-24T18:03:48Z
 updated_at: 2023-10-24T22:36:55Z
 url: https://github.com/astral-sh/ruff/pull/8177
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Match rule prefixes from `external` codes setting in `unused-noqa`
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-24 18:03_
+_@zanieb_
 
 Supersedes https://github.com/astral-sh/ruff/pull/8176
 Closes https://github.com/astral-sh/ruff/pull/8174

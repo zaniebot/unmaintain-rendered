@@ -14,14 +14,14 @@ head: parse-own-diagnostics
 created_at: 2025-01-09T12:22:39Z
 updated_at: 2025-01-09T13:38:13Z
 url: https://github.com/astral-sh/ruff/pull/15373
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`ruff`] Stop parsing diagnostics from other sources for code action requests
 
 ---
 
-_Pull request opened by @joouha on 2025-01-09 12:22_
+_@joouha_
 
 ### Summary
 

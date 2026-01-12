@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-26T21:25:04Z
 updated_at: 2025-04-21T02:58:39Z
 url: https://github.com/astral-sh/uv/issues/4567
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Allow updating sources with `uv add`
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-06-26 21:25_
+_@ibraheemdev_
 
 Follow up to https://github.com/astral-sh/uv/pull/4566, `uv add git+https://..foo` followed by `uv add foo --branch foo` should work as expected. Currently it errors. `cargo add` supports this.
 

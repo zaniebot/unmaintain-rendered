@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-14T17:19:54Z
 updated_at: 2025-11-20T18:09:43Z
 url: https://github.com/astral-sh/uv/issues/8178
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # uv init: Project layouts, defaults and terminology
 
 ---
 
-_Issue opened by @MikeHart85 on 2024-10-14 17:19_
+_@MikeHart85_
 
 Thank you for working on this wonderful tool.
 

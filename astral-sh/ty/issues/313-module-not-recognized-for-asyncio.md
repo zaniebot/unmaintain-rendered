@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-10T17:15:45Z
 updated_at: 2025-05-10T17:26:05Z
 url: https://github.com/astral-sh/ty/issues/313
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Module not recognized for `asyncio`
 
 ---
 
-_Issue opened by @ion-elgreco on 2025-05-10 17:15_
+_@ion-elgreco_
 
 ### Summary
 

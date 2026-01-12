@@ -14,14 +14,14 @@ head: zb/toolchain-uninstall
 created_at: 2024-06-29T15:46:17Z
 updated_at: 2024-07-02T02:48:28Z
 url: https://github.com/astral-sh/uv/pull/4646
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:22Z
 ```
 
 # Add `uv toolchain uninstall`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-29 15:46_
+_@zanieb_
 
 _No description provided._
 

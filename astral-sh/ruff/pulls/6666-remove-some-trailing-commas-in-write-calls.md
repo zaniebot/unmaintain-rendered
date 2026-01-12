@@ -13,14 +13,14 @@ head: charlie/trailing-comma
 created_at: 2023-08-18T04:03:02Z
 updated_at: 2023-08-18T04:32:39Z
 url: https://github.com/astral-sh/ruff/pull/6666
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Remove some trailing commas in write calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-18 04:03_
+_@charliermarsh_
 
 _No description provided._
 

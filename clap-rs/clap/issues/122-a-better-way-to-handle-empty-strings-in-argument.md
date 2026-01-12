@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-17T14:26:36Z
 updated_at: 2015-05-18T01:40:54Z
 url: https://github.com/clap-rs/clap/issues/122
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # A better way to handle empty strings in argument values
 
 ---
 
-_Issue opened by @Byron on 2015-05-17 14:26_
+_@Byron_
 
 Currently it is possible to pass an empty string to arguments defined like this (maybe it's a valid value to all of them):
 

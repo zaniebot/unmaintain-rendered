@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-06-06T13:43:04Z
 updated_at: 2020-07-10T10:13:37Z
 url: https://github.com/clap-rs/clap/issues/1962
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Arg::require_delimiter doesn't make sense in code
 
 ---
 
-_Issue opened by @pksunkara on 2020-06-06 13:43_
+_@pksunkara_
 
 Code from v2 branch is:
 

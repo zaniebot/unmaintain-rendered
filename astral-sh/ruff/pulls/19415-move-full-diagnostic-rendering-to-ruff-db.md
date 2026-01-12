@@ -14,14 +14,14 @@ head: brent/full
 created_at: 2025-07-17T22:19:32Z
 updated_at: 2025-08-08T16:58:55Z
 url: https://github.com/astral-sh/ruff/pull/19415
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # Move full diagnostic rendering to `ruff_db`
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-17 22:19_
+_@ntBre_
 
 ## Summary
 

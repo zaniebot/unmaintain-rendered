@@ -13,14 +13,14 @@ head: charlie/pac
 created_at: 2024-05-14T17:19:15Z
 updated_at: 2024-05-14T17:34:40Z
 url: https://github.com/astral-sh/uv/pull/3582
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:43Z
 ```
 
 # Remove `pacman` from README
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-14 17:19_
+_@charliermarsh_
 
 ## Summary
 

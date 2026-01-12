@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-09T16:11:45Z
 updated_at: 2021-12-09T16:41:14Z
 url: https://github.com/clap-rs/clap/issues/3115
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Expose related and mutually exclusive arguments via struct / enum?
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:11_
+_@epage_
 
 <a href="https://github.com/epage"><img src="https://avatars.githubusercontent.com/u/60961?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [epage](https://github.com/epage)**
 _Thursday May 03, 2018 at 02:38 GMT_

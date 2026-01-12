@@ -13,14 +13,14 @@ head: konsti/use-install-action
 created_at: 2025-01-27T11:16:05Z
 updated_at: 2025-01-27T17:06:20Z
 url: https://github.com/astral-sh/uv/pull/10983
-synced_at: 2026-01-10T11:45:21Z
+synced_at: 2026-01-12T16:09:37Z
 ```
 
 # Use install action for cargo shear
 
 ---
 
-_Pull request opened by @konstin on 2025-01-27 11:16_
+_@konstin_
 
 This is more consistent with the rest of the CI setup.
 

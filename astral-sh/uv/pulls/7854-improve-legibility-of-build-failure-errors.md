@@ -13,14 +13,14 @@ head: charlie/err
 created_at: 2024-10-02T00:22:44Z
 updated_at: 2024-10-03T12:52:54Z
 url: https://github.com/astral-sh/uv/pull/7854
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:02Z
 ```
 
 # Improve legibility of build failure errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-02 00:22_
+_@charliermarsh_
 
 ## Summary
 

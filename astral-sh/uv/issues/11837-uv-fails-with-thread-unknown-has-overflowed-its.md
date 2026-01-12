@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-27T18:14:19Z
 updated_at: 2025-04-16T14:44:57Z
 url: https://github.com/astral-sh/uv/issues/11837
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # uv fails with "thread '<unknown>' has overflowed its stack" on Windows
 
 ---
 
-_Issue opened by @ricrogz on 2025-02-27 18:14_
+_@ricrogz_
 
 ### Summary
 

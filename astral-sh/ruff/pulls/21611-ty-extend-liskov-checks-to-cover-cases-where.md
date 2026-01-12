@@ -14,14 +14,14 @@ head: alex/liskov-method-overridden-by-non-method
 created_at: 2025-11-24T11:47:34Z
 updated_at: 2025-12-22T13:07:09Z
 url: https://github.com/astral-sh/ruff/pull/21611
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # [ty] Extend Liskov checks to cover cases where methods are incompatibly overridden by non-methods
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-24 11:47_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

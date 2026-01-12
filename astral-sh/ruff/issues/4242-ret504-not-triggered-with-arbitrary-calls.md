@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-05T10:55:51Z
 updated_at: 2023-06-10T04:05:04Z
 url: https://github.com/astral-sh/ruff/issues/4242
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `RET504` not triggered with arbitrary calls
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-05-05 10:55_
+_@dhruvmanila_
 
 What about the following code:
 

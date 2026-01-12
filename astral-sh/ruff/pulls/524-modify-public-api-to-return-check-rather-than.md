@@ -12,14 +12,14 @@ head: charlie/check-api
 created_at: 2022-10-30T23:01:22Z
 updated_at: 2022-10-31T13:20:16Z
 url: https://github.com/astral-sh/ruff/pull/524
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Modify public API to return Check rather than Message
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-30 23:01_
+_@charliermarsh_
 
 _No description provided._
 

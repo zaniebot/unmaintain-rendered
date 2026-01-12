@@ -13,14 +13,14 @@ head: zb/missing-invalid
 created_at: 2025-08-27T19:36:58Z
 updated_at: 2025-08-27T21:19:33Z
 url: https://github.com/astral-sh/uv/pull/15562
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:49Z
 ```
 
 # Treat an invalid error on credential removal as a missing entry on Windows
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-27 19:36_
+_@zanieb_
 
 As in #15552 — I don't know what the cause of this is. Maybe we should be retrying on this instead?
 

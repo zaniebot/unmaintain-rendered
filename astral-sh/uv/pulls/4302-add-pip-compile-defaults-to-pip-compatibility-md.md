@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-06-13T04:32:13Z
 updated_at: 2024-06-13T14:03:24Z
 url: https://github.com/astral-sh/uv/pull/4302
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:08Z
 ```
 
 # Add `pip-compile` defaults to `PIP_COMPATIBILITY.md`
 
 ---
 
-_Pull request opened by @funkybob on 2024-06-13 04:32_
+_@funkybob_
 
 ## Summary
 

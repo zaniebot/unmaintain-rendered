@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-01T08:48:38Z
 updated_at: 2025-12-04T14:32:46Z
 url: https://github.com/astral-sh/uv/issues/2755
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Unspecific protocol error detected
 
 ---
 
-_Issue opened by @henryiii on 2024-04-01 08:48_
+_@henryiii_
 
 I moved Scientific-Python's cookie over to uv, which due to the large number of installs needed when testing a cookiecutter with 11 backends, really saved a lot of time, taking some jobs from 6 minutes to 3 minutes. However, the jobs have become flakey. I've first noticed it with the PyPy job, but just got it with the CPython 3.12 macOS job:
 

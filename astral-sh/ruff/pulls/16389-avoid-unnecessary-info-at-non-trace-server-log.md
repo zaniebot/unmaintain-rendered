@@ -13,14 +13,14 @@ head: dhruv/server-logging
 created_at: 2025-02-26T06:06:11Z
 updated_at: 2025-02-26T08:01:19Z
 url: https://github.com/astral-sh/ruff/pull/16389
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Avoid unnecessary info at non-trace server log level
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-26 06:06_
+_@dhruvmanila_
 
 ## Summary
 

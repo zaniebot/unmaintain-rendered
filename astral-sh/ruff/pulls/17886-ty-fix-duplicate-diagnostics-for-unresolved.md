@@ -13,14 +13,14 @@ head: alex/duplicate-import-diags
 created_at: 2025-05-06T11:11:58Z
 updated_at: 2025-05-06T11:37:11Z
 url: https://github.com/astral-sh/ruff/pull/17886
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [ty] Fix duplicate diagnostics for unresolved module when an `import from` statement imports multiple members
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-06 11:11_
+_@AlexWaygood_
 
 ## Summary
 

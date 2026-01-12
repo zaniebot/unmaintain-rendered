@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T15:16:18Z
 updated_at: 2025-02-20T22:29:30Z
 url: https://github.com/astral-sh/uv/issues/11668
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # Missing a closing bracket in the cache-keys setting in the document
 
 ---
 
-_Issue opened by @chilin0525 on 2025-02-20 15:16_
+_@chilin0525_
 
 ### Summary
 

@@ -11,14 +11,14 @@ head: ag/revert-pr7446
 created_at: 2024-09-18T13:04:28Z
 updated_at: 2024-09-18T13:47:32Z
 url: https://github.com/astral-sh/uv/pull/7495
-synced_at: 2026-01-10T12:53:48Z
+synced_at: 2026-01-12T16:07:51Z
 ```
 
 # Revert "Prune unzipped source distributions in `uv cache prune --ci` (#7446)"
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-09-18 13:04_
+_@BurntSushi_
 
 This reverts commit 9f7d9da449cab4119d07da3ecd2e3b868e092afd from PR #7446.
 

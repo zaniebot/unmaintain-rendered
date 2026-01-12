@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-30T09:47:22Z
 updated_at: 2025-10-02T18:10:48Z
 url: https://github.com/astral-sh/uv/issues/16071
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:22Z
 ```
 
 # uv run will install dev dependencies
 
 ---
 
-_Issue opened by @YornQiu on 2025-09-30 09:47_
+_@YornQiu_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-12T19:46:51Z
 updated_at: 2025-10-09T07:03:46Z
 url: https://github.com/astral-sh/uv/issues/6042
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # [feat] `uv config` command
 
 ---
 
-_Issue opened by @baggiponte on 2024-08-12 19:46_
+_@baggiponte_
 
 Now that `uv` is XDG compliant it might matter less; but I'd argue it'd be helpful to have a `uv config` namespace to access uv configurations:
 

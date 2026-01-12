@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-08-26T16:10:23Z
 updated_at: 2025-08-26T16:24:03Z
 url: https://github.com/astral-sh/uv/pull/15536
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:48Z
 ```
 
 # update uninstall docs to mention uvw[.exe] needs to be removed
 
 ---
 
-_Pull request opened by @pythonweb2 on 2025-08-26 16:10_
+_@pythonweb2_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-06-09T14:32:56Z
 updated_at: 2023-06-09T15:07:37Z
 url: https://github.com/clap-rs/clap/issues/4959
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Automatically defer subcommand initialization for derives
 
 ---
 
-_Issue opened by @epage on 2023-06-09 14:32_
+_@epage_
 
 ### Please complete the following tasks
 

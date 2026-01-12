@@ -11,14 +11,14 @@ head: konsti/cross-with-zig
 created_at: 2024-01-19T14:05:36Z
 updated_at: 2024-01-22T12:17:52Z
 url: https://github.com/astral-sh/uv/pull/1008
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:21Z
 ```
 
 # Add ARM Linux builds to release pipeline
 
 ---
 
-_Pull request opened by @konstin on 2024-01-19 14:05_
+_@konstin_
 
 _No description provided._
 

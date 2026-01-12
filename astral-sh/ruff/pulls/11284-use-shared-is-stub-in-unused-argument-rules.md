@@ -13,14 +13,14 @@ head: charlie/stub
 created_at: 2024-05-04T17:37:54Z
 updated_at: 2024-05-04T17:51:45Z
 url: https://github.com/astral-sh/ruff/pull/11284
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Use shared `is_stub` in unused argument rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-04 17:37_
+_@charliermarsh_
 
 ## Summary
 

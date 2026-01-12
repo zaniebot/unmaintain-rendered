@@ -14,14 +14,14 @@ head: alex/submodule-attribute-hint
 created_at: 2025-11-21T14:07:51Z
 updated_at: 2025-11-21T14:12:40Z
 url: https://github.com/astral-sh/ruff/pull/21560
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Reduce indentation of `TypeInferenceBuilder::infer_attribute_load`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-21 14:07_
+_@AlexWaygood_
 
 ## Summary
 

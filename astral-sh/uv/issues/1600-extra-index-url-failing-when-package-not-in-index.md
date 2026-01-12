@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-17T16:53:53Z
 updated_at: 2024-02-29T16:57:09Z
 url: https://github.com/astral-sh/uv/issues/1600
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # --extra-index-url failing when package not in --index-url (polygraphy 0.47.1)
 
 ---
 
-_Issue opened by @kafonek on 2024-02-17 16:53_
+_@kafonek_
 
 `polygraphy==0.47.1` is present on the nvidia package index but not regular PyPI. On `uv` 0.1.3, I can `uv pip install polygraphy==0.47.1 --index-url https://pypi.ngc.nvidia.com` but not `uv pip install polygraphy==0.47.1 --extra-index-url https://pypi.ngc.nvidia.com`. 
 

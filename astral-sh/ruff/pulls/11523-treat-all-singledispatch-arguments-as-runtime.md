@@ -13,14 +13,14 @@ head: charlie/singledispatch
 created_at: 2024-05-24T00:22:14Z
 updated_at: 2024-05-24T00:36:25Z
 url: https://github.com/astral-sh/ruff/pull/11523
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Treat all `singledispatch` arguments as runtime-required
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-24 00:22_
+_@charliermarsh_
 
 ## Summary
 

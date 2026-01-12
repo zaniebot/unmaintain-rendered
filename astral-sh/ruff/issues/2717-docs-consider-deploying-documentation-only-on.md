@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-10T16:03:09Z
 updated_at: 2023-02-11T03:14:51Z
 url: https://github.com/astral-sh/ruff/issues/2717
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # docs: consider deploying documentation only on tagged releases
 
 ---
 
-_Issue opened by @bastimeyer on 2023-02-10 16:03_
+_@bastimeyer_
 
 Hi, I've just migrated one of our projects from flake8 to ruff over the past few days and I've been slowly adding more of the available rules to the project's config since then.
 

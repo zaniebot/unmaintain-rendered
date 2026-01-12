@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-24T14:21:46Z
 updated_at: 2024-10-29T02:11:32Z
 url: https://github.com/astral-sh/ruff/issues/13912
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # INP001: Skip files with PEP 723 inline script metadata
 
 ---
 
-_Issue opened by @konstin on 2024-10-24 14:21_
+_@konstin_
 
 I have a single Python file in a directory with a PEP 723 inline script header at the top of the file:
 

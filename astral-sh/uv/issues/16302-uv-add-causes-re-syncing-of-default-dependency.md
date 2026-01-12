@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-14T20:31:07Z
 updated_at: 2025-10-29T13:22:40Z
 url: https://github.com/astral-sh/uv/issues/16302
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # `uv add` causes re-syncing of default dependency groups
 
 ---
 
-_Issue opened by @alechouse97 on 2025-10-14 20:31_
+_@alechouse97_
 
 ### Summary
 

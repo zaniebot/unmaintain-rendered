@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-02T21:21:09Z
 updated_at: 2025-09-03T00:34:29Z
 url: https://github.com/astral-sh/uv/issues/15643
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # uv sync --locked --no-install-project fails if only project version changes
 
 ---
 
-_Issue opened by @carlosjourdan on 2025-09-02 21:21_
+_@carlosjourdan_
 
 ### Summary
 

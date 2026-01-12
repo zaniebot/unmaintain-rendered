@@ -14,14 +14,14 @@ head: windows-path-discovery
 created_at: 2024-02-19T17:17:16Z
 updated_at: 2024-02-22T07:48:05Z
 url: https://github.com/astral-sh/uv/pull/1711
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # Search `PATH` when `python` can't be found with `py`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-19 17:17_
+_@MichaReiser_
 
 ## Summary
 

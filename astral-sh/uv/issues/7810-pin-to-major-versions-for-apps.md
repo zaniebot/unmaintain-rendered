@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-30T14:25:09Z
 updated_at: 2025-01-03T18:40:30Z
 url: https://github.com/astral-sh/uv/issues/7810
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Pin to major versions for apps
 
 ---
 
-_Issue opened by @vriesdemichael on 2024-09-30 14:25_
+_@vriesdemichael_
 
 With the project API we can now lock applications down to specific versions before invocations and during syncs. Which is great!
 

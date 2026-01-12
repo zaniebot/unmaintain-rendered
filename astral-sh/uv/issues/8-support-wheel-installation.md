@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-05T15:27:59Z
 updated_at: 2023-10-06T04:47:46Z
 url: https://github.com/astral-sh/uv/issues/8
-synced_at: 2026-01-10T05:49:12Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Support wheel installation
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-05 15:27_
+_@charliermarsh_
 
 _No description provided._
 

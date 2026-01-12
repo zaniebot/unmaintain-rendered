@@ -13,14 +13,14 @@ head: zb/pin-alias-no-project
 created_at: 2024-08-23T13:56:24Z
 updated_at: 2024-08-23T16:08:29Z
 url: https://github.com/astral-sh/uv/pull/6514
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:24Z
 ```
 
 # Add `--no-project` alias for `uv python pin --no-workspace`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-23 13:56_
+_@zanieb_
 
 This matches the other interfaces and seems like an oversight.
 

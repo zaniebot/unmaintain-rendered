@@ -13,14 +13,14 @@ head: david/fix-attributed_md-test
 created_at: 2024-12-11T19:40:20Z
 updated_at: 2024-12-11T19:46:28Z
 url: https://github.com/astral-sh/ruff/pull/14923
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Make `attributes.md` test future-proof
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-11 19:40_
+_@sharkdp_
 
 ## Summary
 

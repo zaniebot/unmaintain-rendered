@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T16:19:22Z
 updated_at: 2025-08-20T11:59:18Z
 url: https://github.com/astral-sh/uv/issues/11250
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # Add option to uv export to obtain version in workspace packages
 
 ---
 
-_Issue opened by @ivan94fi on 2025-02-05 16:19_
+_@ivan94fi_
 
 ### Summary
 

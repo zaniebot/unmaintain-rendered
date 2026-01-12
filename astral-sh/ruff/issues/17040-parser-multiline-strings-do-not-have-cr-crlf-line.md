@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-28T17:16:10Z
 updated_at: 2025-03-28T17:50:57Z
 url: https://github.com/astral-sh/ruff/issues/17040
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [parser] Multiline strings do not have CR/CRLF line endings normalized to LF
 
 ---
 
-_Issue opened by @coolreader18 on 2025-03-28 17:16_
+_@coolreader18_
 
 ### Summary
 

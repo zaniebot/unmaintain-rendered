@@ -13,14 +13,14 @@ head: charlie/public
 created_at: 2023-11-13T17:55:04Z
 updated_at: 2023-11-13T18:10:33Z
 url: https://github.com/astral-sh/ruff/pull/8658
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Fix lingering generated reference for MkDocs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-13 17:55_
+_@charliermarsh_
 
 Missed this in #8652.
 

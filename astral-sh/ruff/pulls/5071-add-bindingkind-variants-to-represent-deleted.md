@@ -12,14 +12,14 @@ head: charlie/deletions
 created_at: 2023-06-14T02:49:00Z
 updated_at: 2023-06-14T13:27:25Z
 url: https://github.com/astral-sh/ruff/pull/5071
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add `BindingKind` variants to represent deleted bindings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-14 02:49_
+_@charliermarsh_
 
 ## Summary
 

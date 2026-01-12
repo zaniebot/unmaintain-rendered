@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-06-11T19:33:19Z
 updated_at: 2025-06-17T05:39:44Z
 url: https://github.com/astral-sh/ruff/issues/18632
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Formatting produces invalid code on 3.13.4
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-11 19:33_
+_@MeGaGiGaGon_
 
 ### Summary
 

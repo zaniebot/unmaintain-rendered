@@ -13,14 +13,14 @@ head: micha/union-add-first
 created_at: 2024-11-20T20:45:08Z
 updated_at: 2024-11-20T20:55:32Z
 url: https://github.com/astral-sh/ruff/pull/14501
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Union builder perf improvements
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-20 20:45_
+_@MichaReiser_
 
 ## Summary
 

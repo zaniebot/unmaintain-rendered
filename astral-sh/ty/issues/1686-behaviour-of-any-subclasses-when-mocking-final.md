@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-30T07:53:42Z
 updated_at: 2025-12-02T03:00:01Z
 url: https://github.com/astral-sh/ty/issues/1686
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Behaviour of Any subclasses when mocking final classes
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-11-30 07:53_
+_@hauntsaninja_
 
 ### Summary
 

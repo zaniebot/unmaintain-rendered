@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-08T00:10:34Z
 updated_at: 2025-11-06T13:57:28Z
 url: https://github.com/astral-sh/ty/issues/1322
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support go-to-definition for functional `TypedDict`s
 
 ---
 
-_Issue opened by @ibraheemdev on 2025-10-08 00:10_
+_@ibraheemdev_
 
 See https://github.com/astral-sh/ruff/pull/20732#discussion_r2411961096.
 

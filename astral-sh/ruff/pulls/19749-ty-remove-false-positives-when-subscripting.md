@@ -13,14 +13,14 @@ head: alex/paramspec
 created_at: 2025-08-04T19:37:15Z
 updated_at: 2025-08-04T20:42:48Z
 url: https://github.com/astral-sh/ruff/pull/19749
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] Remove false positives when subscripting `Generic` or `Protocol` with a `ParamSpec` or `TypeVarTuple`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-04 19:37_
+_@AlexWaygood_
 
 ## Summary
 

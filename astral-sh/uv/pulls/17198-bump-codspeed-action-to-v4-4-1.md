@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-12-20T11:16:50Z
 updated_at: 2025-12-20T16:28:04Z
 url: https://github.com/astral-sh/uv/pull/17198
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # Bump CodSpeed action to v4.4.1
 
 ---
 
-_Pull request opened by @art049 on 2025-12-20 11:16_
+_@art049_
 
 ## Summary
 

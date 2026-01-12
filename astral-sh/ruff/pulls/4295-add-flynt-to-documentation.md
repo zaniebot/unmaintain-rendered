@@ -12,14 +12,14 @@ head: flynt-static-string-joins
 created_at: 2023-05-09T00:47:55Z
 updated_at: 2023-05-09T01:16:21Z
 url: https://github.com/astral-sh/ruff/pull/4295
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add `flynt` to documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-09 00:47_
+_@charliermarsh_
 
 ## Summary
 

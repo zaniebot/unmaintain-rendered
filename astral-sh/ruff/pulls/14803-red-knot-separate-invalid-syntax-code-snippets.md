@@ -13,14 +13,14 @@ head: dhruv/separate-code-snippets
 created_at: 2024-12-06T02:37:04Z
 updated_at: 2024-12-06T02:42:52Z
 url: https://github.com/astral-sh/ruff/pull/14803
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Separate invalid syntax code snippets
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-12-06 02:37_
+_@dhruvmanila_
 
 Ref: https://github.com/astral-sh/ruff/pull/14788#discussion_r1872242283
 

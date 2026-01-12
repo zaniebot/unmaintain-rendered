@@ -13,14 +13,14 @@ head: alex/property-test-failure
 created_at: 2025-05-20T17:41:47Z
 updated_at: 2025-05-20T18:11:06Z
 url: https://github.com/astral-sh/ruff/pull/18227
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Ensure that a function-literal type is always equivalent to itself
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-20 17:41_
+_@AlexWaygood_
 
 ## Summary
 

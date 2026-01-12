@@ -13,14 +13,14 @@ head: charlie/to-string
 created_at: 2025-01-08T23:46:33Z
 updated_at: 2025-01-09T00:00:36Z
 url: https://github.com/astral-sh/uv/pull/10419
-synced_at: 2026-01-10T11:44:48Z
+synced_at: 2026-01-12T16:09:17Z
 ```
 
 # Remove unnecessary `.to_string()` call
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-08 23:46_
+_@charliermarsh_
 
 _No description provided._
 

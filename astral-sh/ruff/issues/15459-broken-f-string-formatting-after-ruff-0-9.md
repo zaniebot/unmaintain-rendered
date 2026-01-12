@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-13T17:46:04Z
 updated_at: 2025-01-15T08:22:49Z
 url: https://github.com/astral-sh/ruff/issues/15459
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Broken f-string formatting after ruff 0.9
 
 ---
 
-_Issue opened by @AlexElvers on 2025-01-13 17:46_
+_@AlexElvers_
 
 Ruff 0.9.0/1 are introducing syntax syntax errors in f-strings with braces.
 

@@ -14,14 +14,14 @@ head: ww/rm-comments
 created_at: 2026-01-09T22:50:47Z
 updated_at: 2026-01-09T23:02:46Z
 url: https://github.com/astral-sh/ruff/pull/22485
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # Remove two old zizmor ignore comments
 
 ---
 
-_Pull request opened by @woodruffw on 2026-01-09 22:50_
+_@woodruffw_
 
 ## Summary
 

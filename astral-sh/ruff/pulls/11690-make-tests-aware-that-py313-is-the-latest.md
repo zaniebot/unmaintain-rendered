@@ -13,14 +13,14 @@ head: latest-version
 created_at: 2024-06-02T11:25:46Z
 updated_at: 2024-06-02T13:15:42Z
 url: https://github.com/astral-sh/ruff/pull/11690
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Make tests aware that py313 is the latest supported Python version
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-02 11:25_
+_@AlexWaygood_
 
 Working on a PR for #11413, I noticed that the linter tests still thought that py312 was the latest version. This affects which autofixes are displayed in the snapshots for several of the pyupgrade rules.
 

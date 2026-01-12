@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-27T07:36:11Z
 updated_at: 2025-03-27T17:12:59Z
 url: https://github.com/astral-sh/uv/issues/12506
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # uv python list error
 
 ---
 
-_Issue opened by @B0luo on 2025-03-27 07:36_
+_@B0luo_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/ref-run-tool
 created_at: 2024-06-28T16:46:22Z
 updated_at: 2024-06-28T17:10:58Z
 url: https://github.com/astral-sh/uv/pull/4628
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:21Z
 ```
 
 # Rename `tool_run` to `run_tool` for consistency
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-28 16:46_
+_@zanieb_
 
 _No description provided._
 

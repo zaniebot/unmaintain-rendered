@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-14T15:01:58Z
 updated_at: 2024-06-14T15:23:49Z
 url: https://github.com/astral-sh/ruff/issues/11877
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Support showing Bandit issues by severity
 
 ---
 
-_Issue opened by @rahult-graphcore on 2024-06-14 15:01_
+_@rahult-graphcore_
 
 Bandit supports reporting on only high-severity issues using the `-lll` flag e.g.
 `bandit examples/*.py -n 3 -lll`

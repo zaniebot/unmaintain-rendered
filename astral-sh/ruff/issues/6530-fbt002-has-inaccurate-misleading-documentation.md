@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-13T03:09:11Z
 updated_at: 2023-08-14T19:24:18Z
 url: https://github.com/astral-sh/ruff/issues/6530
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # FBT002 has inaccurate / misleading documentation
 
 ---
 
-_Issue opened by @benjamin-kirkbride on 2023-08-13 03:09_
+_@benjamin-kirkbride_
 
 The output is: "Boolean default value in function definition"
 

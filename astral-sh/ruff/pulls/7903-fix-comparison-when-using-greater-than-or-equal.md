@@ -13,14 +13,14 @@ head: zanie/fix-up036
 created_at: 2023-10-10T19:22:17Z
 updated_at: 2023-10-11T15:24:39Z
 url: https://github.com/astral-sh/ruff/pull/7903
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fix comparison when using greater than or equal in UP036
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-10 19:22_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/7902
 

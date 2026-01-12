@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-24T10:25:27Z
 updated_at: 2023-01-24T13:15:27Z
 url: https://github.com/astral-sh/ruff/issues/2119
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # RET503 - broken autofix/false positive
 
 ---
 
-_Issue opened by @akx on 2023-01-24 10:25_
+_@akx_
 
 I found a snippet where RET503 erroneously adds a `return` inside a loop.
 

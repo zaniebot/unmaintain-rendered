@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-16T19:22:15Z
 updated_at: 2023-02-16T22:56:05Z
 url: https://github.com/astral-sh/ruff/issues/2967
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Panic] "`__future__` imports should be marked as used"
 
 ---
 
-_Issue opened by @manueljacob on 2023-02-16 19:22_
+_@manueljacob_
 
 The following code was reduced from some output of pytype:
 

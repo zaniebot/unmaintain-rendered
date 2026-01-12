@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T09:20:36Z
 updated_at: 2024-10-31T15:49:46Z
 url: https://github.com/astral-sh/uv/issues/8718
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # `uv export` should allow `--universal`
 
 ---
 
-_Issue opened by @TiansuYu on 2024-10-31 09:20_
+_@TiansuYu_
 
 Currently, `uv export` compiles dependencies with different list of hashes on different OS. This causes consistency issues during CI remotely vs locally. Ideally, this should allow `--universal` option to compile all list of hashes available on all platforms. 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T08:45:14Z
 updated_at: 2026-01-01T01:51:42Z
 url: https://github.com/astral-sh/ty/issues/1986
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # LSP: pytest support
 
 ---
 
-_Issue opened by @MichaReiser on 2025-12-17 08:45_
+_@MichaReiser_
 
 * Code lense to run test
 * List tests in the test explorer

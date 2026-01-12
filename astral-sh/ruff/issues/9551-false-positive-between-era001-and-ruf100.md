@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-16T14:11:37Z
 updated_at: 2025-05-05T19:44:50Z
 url: https://github.com/astral-sh/ruff/issues/9551
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # False-positive between `ERA001` and `RUF100`
 
 ---
 
-_Issue opened by @flbraun on 2024-01-16 14:11_
+_@flbraun_
 
 ruff 0.1.13
 

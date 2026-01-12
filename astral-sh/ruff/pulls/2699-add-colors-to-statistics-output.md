@@ -12,14 +12,14 @@ head: charlie/stats
 created_at: 2023-02-10T00:40:25Z
 updated_at: 2023-02-10T00:40:30Z
 url: https://github.com/astral-sh/ruff/pull/2699
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # Add colors to statistics output
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-10 00:40_
+_@charliermarsh_
 
 _No description provided._
 

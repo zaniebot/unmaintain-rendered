@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-09T07:36:11Z
 updated_at: 2024-12-13T06:40:15Z
 url: https://github.com/astral-sh/ruff/issues/14861
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Narrowing for `while` loops
 
 ---
 
-_Issue opened by @sharkdp on 2024-12-09 07:36_
+_@sharkdp_
 
 We currently only narrow for `if`/`elif`, `match` and Boolean expressions. Narrowing for `while` loops should also be supported, for example:
 

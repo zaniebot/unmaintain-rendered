@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-04T16:54:20Z
 updated_at: 2025-12-04T16:54:20Z
 url: https://github.com/astral-sh/ty/issues/1760
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Auto-import should treat `__all__` as invalid if it references a symbol that does not exist
 
 ---
 
-_Issue opened by @BurntSushi on 2025-12-04 16:54_
+_@BurntSushi_
 
 Ref https://github.com/astral-sh/ruff/pull/21779/files/d314aa859dcf9a6ffb006a594d7ca0431dd4fab2#r2589451722
 

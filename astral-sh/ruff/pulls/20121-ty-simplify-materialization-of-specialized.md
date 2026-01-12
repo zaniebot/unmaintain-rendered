@@ -13,14 +13,14 @@ head: matrel2
 created_at: 2025-08-27T22:15:45Z
 updated_at: 2025-08-29T13:09:26Z
 url: https://github.com/astral-sh/ruff/pull/20121
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [ty] Simplify materialization of specialized generics
 
 ---
 
-_Pull request opened by @JelleZijlstra on 2025-08-27 22:15_
+_@JelleZijlstra_
 
 This is a variant of #20076 that moves some complexity out of `apply_type_mapping_impl` in `generics.rs`. The tradeoff is that now every place that applies `TypeMapping::Specialization` must take care to call `.materialize()` afterwards. (A previous version of this didn't work because I had missed a spot where I had to call `.materialize()`.)
 

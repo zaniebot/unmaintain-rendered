@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-09T14:03:22Z
 updated_at: 2024-08-02T20:20:22Z
 url: https://github.com/astral-sh/ruff/issues/6450
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # SIM118 false positive in for loops
 
 ---
 
-_Issue opened by @ilia-kats on 2023-08-09 14:03_
+_@ilia-kats_
 
 The SIM118 rule yields a false positive when iterating over a dict's keys. For example,
 ```python

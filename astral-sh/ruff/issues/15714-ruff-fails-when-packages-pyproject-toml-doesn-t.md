@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-24T12:08:33Z
 updated_at: 2025-01-27T09:23:18Z
 url: https://github.com/astral-sh/ruff/issues/15714
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Ruff fails when `packages/pyproject.toml` doesn't exist
 
 ---
 
-_Issue opened by @foges on 2025-01-24 12:08_
+_@foges_
 
 ### Description
 

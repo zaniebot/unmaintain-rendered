@@ -14,14 +14,14 @@ head: ag/fix-end-of-scope-symbols
 created_at: 2025-12-09T19:47:55Z
 updated_at: 2025-12-11T13:26:18Z
 url: https://github.com/astral-sh/ruff/pull/21872
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] Adjust scope completions to use all reachable symbols
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-12-09 19:47_
+_@BurntSushi_
 
 This PR adds a new `UseDefMap::all_reachable_symbols_with_definitions`
 API for use by the LSP for offerring scoped completions. In particular,

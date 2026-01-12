@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-31T15:16:33Z
 updated_at: 2023-08-07T15:09:42Z
 url: https://github.com/astral-sh/ruff/issues/6199
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [feature request]: custom lint rule for unittest mock.side_effect
 
 ---
 
-_Issue opened by @upstartjohnvandivier on 2023-07-31 15:16_
+_@upstartjohnvandivier_
 
 as a developer, I would like ruff to lint two improper uses of .side_effect, so that I can avoid hard-to-troubleshoot issues in writing unit tests and I can improve readility and test performance:
 1. side_effect arrays with a length less than two

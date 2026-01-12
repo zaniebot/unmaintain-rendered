@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-05T19:15:12Z
 updated_at: 2024-04-05T19:21:20Z
 url: https://github.com/astral-sh/uv/issues/2840
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Error with multiple requirements files, one containing an --extra-index-url
 
 ---
 
-_Issue opened by @davidhao3300 on 2024-04-05 19:15_
+_@davidhao3300_
 
 Consider the following contents:
 req1.txt: `filelock==3.12.4`

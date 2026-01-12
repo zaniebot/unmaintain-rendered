@@ -13,14 +13,14 @@ head: konsti/build-backend-fast-path
 created_at: 2024-12-01T20:39:09Z
 updated_at: 2024-12-03T16:50:32Z
 url: https://github.com/astral-sh/uv/pull/9556
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:52Z
 ```
 
 # Build backend: Add fast path 
 
 ---
 
-_Pull request opened by @konstin on 2024-12-01 20:39_
+_@konstin_
 
 Going through PEP 517 to build a package is slow, so when building a package with the uv build backend, we can call into the uv build backend directly. This is the basis for the `uv build --list`.
 

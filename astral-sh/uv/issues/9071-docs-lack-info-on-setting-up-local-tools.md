@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-12T21:23:02Z
 updated_at: 2024-12-14T20:46:01Z
 url: https://github.com/astral-sh/uv/issues/9071
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # Docs lack info on setting up local tools
 
 ---
 
-_Issue opened by @jbullion-astra on 2024-11-12 21:23_
+_@jbullion-astra_
 
 The docs have 3 pages that document "tools".
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-16T13:29:38Z
 updated_at: 2025-07-16T13:48:18Z
 url: https://github.com/astral-sh/uv/issues/14650
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # Warn on ignored `[sources]` in `uv.toml`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-07-16 13:29_
+_@charliermarsh_
 
 I thought we already warned for ignored `uv.toml` fields, but given:
 

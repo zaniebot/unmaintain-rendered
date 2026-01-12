@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-26T04:56:12Z
 updated_at: 2025-09-05T15:49:04Z
 url: https://github.com/astral-sh/ruff/issues/18310
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add `torch.nn.functional as F` to flake8-import-conventions aliases
 
 ---
 
-_Issue opened by @IlanCosman on 2025-05-26 04:56_
+_@IlanCosman_
 
 ### Summary
 

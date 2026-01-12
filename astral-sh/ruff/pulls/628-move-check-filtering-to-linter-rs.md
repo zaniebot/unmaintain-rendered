@@ -11,14 +11,14 @@ head: charlie/filter-rules
 created_at: 2022-11-06T22:55:16Z
 updated_at: 2022-12-11T15:23:13Z
 url: https://github.com/astral-sh/ruff/pull/628
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Move check filtering to linter.rs
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-06 22:55_
+_@charliermarsh_
 
 Right now, we rely on the various checkers _not_ adding disabled rules to the list of returned checks. This results in a lot of very rigorous validation against `settings.enabled` throughout the codebase. While this does guarantee that we avoid as much useless work as possible, I think it might be overkill, and makes for some very tedious code.
 

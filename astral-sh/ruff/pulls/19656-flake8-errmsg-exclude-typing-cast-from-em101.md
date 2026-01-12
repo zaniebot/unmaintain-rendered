@@ -14,14 +14,14 @@ head: fix-19596
 created_at: 2025-07-31T02:49:42Z
 updated_at: 2025-08-01T17:37:45Z
 url: https://github.com/astral-sh/ruff/pull/19656
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [`flake8-errmsg`] Exclude `typing.cast` from `EM101`
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-31 02:49_
+_@danparizher_
 
 ## Summary
 

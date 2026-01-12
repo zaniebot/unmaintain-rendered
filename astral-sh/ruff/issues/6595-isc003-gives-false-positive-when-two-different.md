@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-15T12:36:53Z
 updated_at: 2023-08-15T17:50:30Z
 url: https://github.com/astral-sh/ruff/issues/6595
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # ISC003 gives false positive when two different string types in one line are mandatory
 
 ---
 
-_Issue opened by @mmarras on 2023-08-15 12:36_
+_@mmarras_
 
 When defining `hovertemplates` they use a magic string (e.g. `%{x}` to denote the x-data)  that cannot be inside an fstring. If one wants to combine the former with an fstring on the same line it flags the thing and it is impossible to comply to ruff ISC without breaking the code. So even if one decides to keep the rule for same line, it should make exception for mixed string types.
 

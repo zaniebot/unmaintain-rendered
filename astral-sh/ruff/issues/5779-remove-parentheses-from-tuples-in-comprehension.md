@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-15T14:55:56Z
 updated_at: 2023-07-19T12:05:40Z
 url: https://github.com/astral-sh/ruff/issues/5779
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Remove parentheses from tuples in comprehension target
 
 ---
 
-_Issue opened by @MichaReiser on 2023-07-15 14:55_
+_@MichaReiser_
 
 ```python
 # Input

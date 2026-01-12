@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-08T20:27:25Z
 updated_at: 2023-09-08T20:32:04Z
 url: https://github.com/clap-rs/clap/issues/5115
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Parsing error on positional arguments after mixing a multiple-valued positional arg with a flag
 
 ---
 
-_Issue opened by @marcospb19 on 2023-09-08 20:27_
+_@marcospb19_
 
 ### Please complete the following tasks
 

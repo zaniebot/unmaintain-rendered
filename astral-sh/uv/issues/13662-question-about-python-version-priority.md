@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-26T17:37:01Z
 updated_at: 2025-05-27T08:34:07Z
 url: https://github.com/astral-sh/uv/issues/13662
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:34Z
 ```
 
 # question about Python version priority
 
 ---
 
-_Issue opened by @dotysan on 2025-05-26 17:37_
+_@dotysan_
 
 ### Question
 

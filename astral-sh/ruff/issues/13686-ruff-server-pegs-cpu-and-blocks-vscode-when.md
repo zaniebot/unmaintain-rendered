@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-09T00:19:25Z
 updated_at: 2025-03-05T03:08:49Z
 url: https://github.com/astral-sh/ruff/issues/13686
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Ruff server pegs CPU and blocks VSCode when changing many files
 
 ---
 
-_Issue opened by @adamh-oai on 2024-10-09 00:19_
+_@adamh-oai_
 
 In our large mostly-python monorepo, when using the VSCode ruff extension + ruff server, if I update to a commit has many changed files, `ruff server` will consume lots of CPU (up to 1000% in some cases), and I cannot save in VSCode because it is blocked on "Getting code actions (..., "Ruff")".
 

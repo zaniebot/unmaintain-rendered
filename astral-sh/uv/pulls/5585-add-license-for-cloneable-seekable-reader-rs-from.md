@@ -12,14 +12,14 @@ head: ripunzip-license
 created_at: 2024-07-30T02:03:29Z
 updated_at: 2024-07-30T02:16:02Z
 url: https://github.com/astral-sh/uv/pull/5585
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:54Z
 ```
 
 # Add LICENSE for cloneable_seekable_reader.rs from ripunzip
 
 ---
 
-_Pull request opened by @musicinmybrain on 2024-07-30 02:03_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

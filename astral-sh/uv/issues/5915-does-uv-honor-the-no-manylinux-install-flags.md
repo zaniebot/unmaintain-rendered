@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-08T15:43:34Z
 updated_at: 2024-08-21T01:57:43Z
 url: https://github.com/astral-sh/uv/issues/5915
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Does uv honor the no-manylinux install flags?
 
 ---
 
-_Issue opened by @harmstyler on 2024-08-08 15:43_
+_@harmstyler_
 
 PIP honors a flag for disabling the use of manylinux pre-built whl files. When I use uv and the no-manylinux package, my build finishes in seconds (yay), but that makes me think that uv is not building the manylinux whl files itself, as my normal pip install takes an hour.
 

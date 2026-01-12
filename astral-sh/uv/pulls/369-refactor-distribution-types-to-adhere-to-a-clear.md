@@ -12,14 +12,14 @@ head: charlie/source
 created_at: 2023-11-08T21:37:13Z
 updated_at: 2023-11-10T02:45:42Z
 url: https://github.com/astral-sh/uv/pull/369
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:54Z
 ```
 
 # Refactor distribution types to adhere to a clear hierarchy
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-08 21:37_
+_@charliermarsh_
 
 ## Summary
 

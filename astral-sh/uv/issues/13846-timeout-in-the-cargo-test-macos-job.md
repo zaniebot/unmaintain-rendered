@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-04T17:59:59Z
 updated_at: 2025-06-04T19:34:53Z
 url: https://github.com/astral-sh/uv/issues/13846
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # timeout in the `cargo test | macos` job
 
 ---
 
-_Issue opened by @oconnor663 on 2025-06-04 17:59_
+_@oconnor663_
 
 https://github.com/astral-sh/uv/actions/runs/15448450084/job/43484298158?pr=13844
 

@@ -14,14 +14,14 @@ head: ag/fix-dynamic-type-union
 created_at: 2026-01-07T12:43:11Z
 updated_at: 2026-01-07T15:15:37Z
 url: https://github.com/astral-sh/ruff/pull/22436
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Offer completions for `T` when a value has type `Unknown | T`
 
 ---
 
-_Pull request opened by @BurntSushi on 2026-01-07 12:43_
+_@BurntSushi_
 
 Fixes astral-sh/ty#2197
 

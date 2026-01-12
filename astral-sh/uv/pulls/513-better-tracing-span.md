@@ -12,14 +12,14 @@ head: better-spans
 created_at: 2023-11-29T10:30:36Z
 updated_at: 2023-11-29T10:34:19Z
 url: https://github.com/astral-sh/uv/pull/513
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:00Z
 ```
 
 # Better tracing span
 
 ---
 
-_Pull request opened by @konstin on 2023-11-29 10:30_
+_@konstin_
 
 This will help us get better insight into what is happening and how long it takes. I'm particularly interested in how long the different source dist steps take (download, extract, build step(s)), to make better decisions about their caching, which i want to report through tracing.
 

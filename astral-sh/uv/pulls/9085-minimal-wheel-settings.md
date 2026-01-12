@@ -13,14 +13,14 @@ head: konsti/build-backend-wheel-includes
 created_at: 2024-11-13T14:24:32Z
 updated_at: 2024-11-14T13:40:10Z
 url: https://github.com/astral-sh/uv/pull/9085
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:38Z
 ```
 
 # Minimal wheel settings
 
 ---
 
-_Pull request opened by @konstin on 2024-11-13 14:24_
+_@konstin_
 
 A small refactoring and minimal wheel settings. source tree -> source dist -> wheel is working, which we'll add tests for in the next PR.
 

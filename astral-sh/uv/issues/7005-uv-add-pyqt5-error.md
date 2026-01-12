@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T11:03:23Z
 updated_at: 2025-02-15T20:27:55Z
 url: https://github.com/astral-sh/uv/issues/7005
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # `uv add pyqt5` error
 
 ---
 
-_Issue opened by @rainzee on 2024-09-04 11:03_
+_@rainzee_
 
 `uv pip install pyqt5` works perfectly
 but `uv add pyqt5` result error:

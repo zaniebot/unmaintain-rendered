@@ -13,14 +13,14 @@ head: charlie/python-documentation
 created_at: 2023-06-15T00:37:18Z
 updated_at: 2023-06-15T01:08:28Z
 url: https://github.com/astral-sh/ruff/pull/5107
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Disambiguate all Python documentation references
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-15 00:37_
+_@charliermarsh_
 
 _No description provided._
 

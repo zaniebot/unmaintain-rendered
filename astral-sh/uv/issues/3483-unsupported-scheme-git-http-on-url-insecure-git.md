@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-09T12:20:26Z
 updated_at: 2024-05-13T02:15:00Z
 url: https://github.com/astral-sh/uv/issues/3483
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 #  Unsupported scheme `git+http` on URL (insecure Git protocol)
 
 ---
 
-_Issue opened by @my1e5 on 2024-05-09 12:20_
+_@my1e5_
 
 I'm trying to use `rye` (with `uv`) to install a python package which I'm hosting on a local [`gitea`](https://github.com/go-gitea/gitea)  server.
 

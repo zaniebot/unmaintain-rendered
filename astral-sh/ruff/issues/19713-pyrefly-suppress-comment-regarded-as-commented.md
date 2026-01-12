@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-03T16:49:09Z
 updated_at: 2025-08-04T08:15:38Z
 url: https://github.com/astral-sh/ruff/issues/19713
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # pyrefly suppress comment regarded as "commented-out code" by ERA001
 
 ---
 
-_Issue opened by @friday on 2025-08-03 16:49_
+_@friday_
 
 ### Summary
 

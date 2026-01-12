@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-06T17:29:16Z
 updated_at: 2024-05-06T18:12:30Z
 url: https://github.com/astral-sh/ruff/issues/11310
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Document glob support in isort `sections`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-06 17:29_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/ruff/discussions/11308
 

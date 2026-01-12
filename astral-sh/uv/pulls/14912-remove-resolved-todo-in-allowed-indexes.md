@@ -13,14 +13,14 @@ head: charlie/todo
 created_at: 2025-07-26T03:52:04Z
 updated_at: 2025-07-26T04:04:29Z
 url: https://github.com/astral-sh/uv/pull/14912
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:29Z
 ```
 
 # Remove resolved TODO in `allowed_indexes`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-26 03:52_
+_@charliermarsh_
 
 ## Summary
 

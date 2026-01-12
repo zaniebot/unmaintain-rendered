@@ -12,14 +12,14 @@ head: charlie/aliases
 created_at: 2022-11-15T01:21:39Z
 updated_at: 2022-11-15T02:29:31Z
 url: https://github.com/astral-sh/ruff/pull/746
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add support for import alias tracking
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-15 01:21_
+_@charliermarsh_
 
 This PR enables Ruff to follow aliased imports, like:
 

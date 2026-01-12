@@ -12,14 +12,14 @@ head: konsti/flat-indexes-2-find-links-urls
 created_at: 2024-01-14T15:40:04Z
 updated_at: 2024-01-15T14:11:45Z
 url: https://github.com/astral-sh/uv/pull/913
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:17Z
 ```
 
 # Support find links urls
 
 ---
 
-_Pull request opened by @konstin on 2024-01-14 15:40_
+_@konstin_
 
 The simple html format parser luckily seems to work for find links too, at least it can parse https://storage.googleapis.com/jax-releases/jax_cuda_releases.html.
 

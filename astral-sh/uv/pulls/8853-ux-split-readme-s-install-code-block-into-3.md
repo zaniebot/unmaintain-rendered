@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-11-06T03:44:33Z
 updated_at: 2024-11-08T00:14:51Z
 url: https://github.com/astral-sh/uv/pull/8853
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:32Z
 ```
 
 # [UX] Split README's install code block into 3
 
 ---
 
-_Pull request opened by @willingc on 2024-11-06 03:44_
+_@willingc_
 
 - Broke up the large code block into 3 blocks so that copy paste icon works
 

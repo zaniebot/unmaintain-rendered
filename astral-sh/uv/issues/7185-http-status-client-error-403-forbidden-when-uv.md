@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-08T08:52:04Z
 updated_at: 2024-09-26T11:58:20Z
 url: https://github.com/astral-sh/uv/issues/7185
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # HTTP status client error (403 Forbidden) when uv self upgrade
 
 ---
 
-_Issue opened by @geoqiao on 2024-09-08 08:52_
+_@geoqiao_
 
 HTTP status client error (403 Forbidden) when uv self upgrade.
 

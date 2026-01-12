@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-26T21:19:54Z
 updated_at: 2023-08-27T01:13:22Z
 url: https://github.com/clap-rs/clap/issues/5091
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Default value that panics only if neither `arg` nor `env` provided
 
 ---
 
-_Issue opened by @SamuelMarks on 2023-08-26 21:19_
+_@SamuelMarks_
 
 ### Please complete the following tasks
 

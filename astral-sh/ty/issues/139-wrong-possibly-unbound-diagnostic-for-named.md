@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-03T08:21:14Z
 updated_at: 2025-06-17T08:12:20Z
 url: https://github.com/astral-sh/ty/issues/139
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Wrong possibly-unbound diagnostic for named expression in Boolean chain
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-03 08:21_
+_@sharkdp_
 
 This seems like a control flow / statically-known-branches bug?
 ```py

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-05-27T11:12:13Z
 updated_at: 2025-06-06T16:03:39Z
 url: https://github.com/astral-sh/ty/issues/523
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Panic if `--typeshed` is set to a subdirectory of a first-party search path
 
 ---
 
-_Issue opened by @kkpattern on 2025-05-27 11:12_
+_@kkpattern_
 
 ## Reproduce step
 

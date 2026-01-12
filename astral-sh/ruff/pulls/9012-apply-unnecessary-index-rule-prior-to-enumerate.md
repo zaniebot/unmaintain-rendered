@@ -13,14 +13,14 @@ head: charlie/index
 created_at: 2023-12-05T20:08:38Z
 updated_at: 2023-12-05T20:25:29Z
 url: https://github.com/astral-sh/ruff/pull/9012
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Apply unnecessary index rule prior to enumerate rewrite
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-05 20:08_
+_@charliermarsh_
 
 This PR adds synthetic edits to `PLR1736` to avoid removing the referenced value as part of `FURB148`.
 

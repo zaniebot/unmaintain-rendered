@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-17T10:56:13Z
 updated_at: 2025-11-20T20:59:46Z
 url: https://github.com/astral-sh/ty/issues/1575
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Go-to definition in hover
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-17 10:56_
+_@MichaReiser_
 
 In rust-analyzer, I can click on `Command` to jump to its definition. 
 

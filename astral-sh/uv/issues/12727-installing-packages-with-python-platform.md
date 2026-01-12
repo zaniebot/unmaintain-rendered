@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T19:17:29Z
 updated_at: 2025-04-08T00:15:23Z
 url: https://github.com/astral-sh/uv/issues/12727
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # installing packages with --python-platform sometimes fails to choose wheel file
 
 ---
 
-_Issue opened by @falkben on 2025-04-07 19:17_
+_@falkben_
 
 ### Summary
 

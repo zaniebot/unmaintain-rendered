@@ -13,14 +13,14 @@ head: charlie/async
 created_at: 2023-06-15T18:46:41Z
 updated_at: 2023-06-15T19:00:20Z
 url: https://github.com/astral-sh/ruff/pull/5125
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Allow `async with` in `redefined-loop-name`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-15 18:46_
+_@charliermarsh_
 
 ## Summary
 

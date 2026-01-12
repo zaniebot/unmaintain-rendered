@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-04T13:39:51Z
 updated_at: 2023-11-04T15:46:44Z
 url: https://github.com/astral-sh/uv/issues/316
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Allow depending on two different subdirectories from the same Git repository
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-04 13:39_
+_@charliermarsh_
 
 _No description provided._
 

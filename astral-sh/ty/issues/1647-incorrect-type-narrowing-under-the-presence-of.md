@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-26T17:39:10Z
 updated_at: 2025-11-26T19:26:37Z
 url: https://github.com/astral-sh/ty/issues/1647
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Incorrect type narrowing under the presence of complex Union type
 
 ---
 
-_Issue opened by @mflova on 2025-11-26 17:39_
+_@mflova_
 
 ### Summary
 

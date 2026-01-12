@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-28T11:50:12Z
 updated_at: 2023-09-02T08:23:07Z
 url: https://github.com/astral-sh/ruff/issues/6938
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Multiline string followed by call expression
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-28 11:50_
+_@MichaReiser_
 
 I create this issue to document our decision on call expression formatting that directly follows a multiline string.
 

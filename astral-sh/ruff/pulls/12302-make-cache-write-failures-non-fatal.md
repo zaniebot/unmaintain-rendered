@@ -14,14 +14,14 @@ head: charlie/caches
 created_at: 2024-07-12T12:58:56Z
 updated_at: 2024-07-13T07:53:58Z
 url: https://github.com/astral-sh/ruff/pull/12302
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Make cache-write failures non-fatal
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-12 12:58_
+_@charliermarsh_
 
 ## Summary
 

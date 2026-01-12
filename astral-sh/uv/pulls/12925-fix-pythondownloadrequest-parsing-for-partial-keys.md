@@ -13,14 +13,14 @@ head: zb/fix-down-parse
 created_at: 2025-04-16T19:20:28Z
 updated_at: 2025-04-18T16:25:54Z
 url: https://github.com/astral-sh/uv/pull/12925
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:27Z
 ```
 
 # Fix `PythonDownloadRequest` parsing for partial keys
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-16 19:20_
+_@zanieb_
 
 In #12909, I noticed we failed to parse partial download keys with `any` placeholders. Here, parsing for that is fixed.
 

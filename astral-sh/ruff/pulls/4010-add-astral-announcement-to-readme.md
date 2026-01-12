@@ -12,14 +12,14 @@ head: astral_announcement
 created_at: 2023-04-18T18:48:46Z
 updated_at: 2023-10-09T20:51:45Z
 url: https://github.com/astral-sh/ruff/pull/4010
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add Astral announcement to README
 
 ---
 
-_Pull request opened by @JacobCoffee on 2023-04-18 18:48_
+_@JacobCoffee_
 
 Adds an announcement banner with a link to the blog post about Astral - the future of performant Python tooling.
 

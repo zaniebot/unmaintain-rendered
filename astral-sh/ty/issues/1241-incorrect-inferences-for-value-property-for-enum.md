@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-23T15:42:26Z
 updated_at: 2025-11-10T17:53:10Z
 url: https://github.com/astral-sh/ty/issues/1241
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Incorrect inferences for `.value` property for enum members that use `enum.auto()`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-09-23 15:42_
+_@AlexWaygood_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-08T08:49:05Z
 updated_at: 2025-10-23T13:42:30Z
 url: https://github.com/astral-sh/ty/issues/1151
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Goto definition on operators
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-08 08:49_
+_@sharkdp_
 
 It would be great if I could go to the definition of unary and binary operators by clicking on `~` and `@` in this snippet, for example:
 

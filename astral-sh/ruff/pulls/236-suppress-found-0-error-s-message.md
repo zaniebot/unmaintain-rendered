@@ -12,14 +12,14 @@ head: 0-errors
 created_at: 2022-09-20T23:09:11Z
 updated_at: 2022-09-20T23:34:57Z
 url: https://github.com/astral-sh/ruff/pull/236
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Suppress “Found 0 error(s)” message
 
 ---
 
-_Pull request opened by @andersk on 2022-09-20 23:09_
+_@andersk_
 
 When ruff is run from a script alongside many other linters, the noisy default messages from each one saying that no errors were found can easily drown out a real error. Only print the error count if it’s nonzero or `--verbose` was specified.
 

@@ -13,14 +13,14 @@ head: rename-length-options
 created_at: 2023-10-17T13:23:37Z
 updated_at: 2024-01-16T10:03:09Z
 url: https://github.com/astral-sh/ruff/pull/8010
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Rename `*-length` options to `-width`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-17 13:23_
+_@MichaReiser_
 
 ## Summary
 

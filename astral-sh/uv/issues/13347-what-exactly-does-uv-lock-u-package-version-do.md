@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T16:36:00Z
 updated_at: 2025-05-08T19:06:23Z
 url: https://github.com/astral-sh/uv/issues/13347
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # What, exactly, does `uv lock --U <package>==<version>` do?
 
 ---
 
-_Issue opened by @scrooks on 2025-05-08 16:36_
+_@scrooks_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: more-stability-checker-options
 created_at: 2023-06-22T12:52:43Z
 updated_at: 2023-06-22T16:09:00Z
 url: https://github.com/astral-sh/ruff/pull/5299
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # More stability checker options
 
 ---
 
-_Pull request opened by @konstin on 2023-06-22 12:52_
+_@konstin_
 
 ## Summary
 

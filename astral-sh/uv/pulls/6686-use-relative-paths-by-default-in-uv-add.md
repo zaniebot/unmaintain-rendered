@@ -13,14 +13,14 @@ head: charlie/rel-add
 created_at: 2024-08-27T13:15:18Z
 updated_at: 2024-08-27T14:02:10Z
 url: https://github.com/astral-sh/uv/pull/6686
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:29Z
 ```
 
 # Use relative paths by default in `uv add`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-27 13:15_
+_@charliermarsh_
 
 ## Summary
 

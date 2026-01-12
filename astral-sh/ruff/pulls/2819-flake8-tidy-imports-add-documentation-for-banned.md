@@ -12,14 +12,14 @@ head: docs-banned-api
 created_at: 2023-02-12T17:27:20Z
 updated_at: 2023-02-12T18:20:51Z
 url: https://github.com/astral-sh/ruff/pull/2819
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # [`flake8-tidy-imports`] add documentation for `banned-api`
 
 ---
 
-_Pull request opened by @sbrugman on 2023-02-12 17:27_
+_@sbrugman_
 
 Complete docs for `flake8-tidy-imports` (https://github.com/charliermarsh/ruff/issues/2646)
 

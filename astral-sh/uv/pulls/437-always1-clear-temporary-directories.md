@@ -12,14 +12,14 @@ head: clear-source-dists
 created_at: 2023-11-16T14:14:43Z
 updated_at: 2023-11-16T20:49:49Z
 url: https://github.com/astral-sh/uv/pull/437
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:57Z
 ```
 
 # Always¹ clear temporary directories
 
 ---
 
-_Pull request opened by @konstin on 2023-11-16 14:14_
+_@konstin_
 
 Always¹ clear the temporary directories we create.
 

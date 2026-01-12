@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-18T01:20:41Z
 updated_at: 2025-07-20T21:58:41Z
 url: https://github.com/astral-sh/ruff/issues/18739
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # RUF055 could support equivalent cases using byte strings
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-18 01:20_
+_@MeGaGiGaGon_
 
 ### Summary
 

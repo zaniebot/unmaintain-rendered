@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-04T22:51:20Z
 updated_at: 2025-09-05T00:19:04Z
 url: https://github.com/astral-sh/uv/issues/15691
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # Permission denied (os error 13)
 
 ---
 
-_Issue opened by @indrabasak on 2025-09-04 22:51_
+_@indrabasak_
 
 ### Summary
 

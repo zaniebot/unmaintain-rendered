@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-04T13:20:08Z
 updated_at: 2023-03-06T02:37:15Z
 url: https://github.com/astral-sh/ruff/issues/3336
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Panic] Expected docstring to start with a valid triple- or single-quote prefix
 
 ---
 
-_Issue opened by @qarmin on 2023-03-04 13:20_
+_@qarmin_
 
 Ruff 0.0.254
 

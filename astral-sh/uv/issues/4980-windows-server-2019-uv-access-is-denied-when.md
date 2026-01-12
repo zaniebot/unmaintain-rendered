@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-10T22:05:45Z
 updated_at: 2024-11-08T02:57:40Z
 url: https://github.com/astral-sh/uv/issues/4980
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Windows Server 2019 uv access is denied when executing
 
 ---
 
-_Issue opened by @Andrew-Chen-Wang on 2024-07-10 22:05_
+_@Andrew-Chen-Wang_
 
 I installed pyenv 3.12.4 in a Windows Server 2019 using AWS EC2. Created a virtualenv then tried running `uv pip install -r requirements.txt`. This results in 
 

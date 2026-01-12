@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T20:49:47Z
 updated_at: 2025-06-27T20:52:17Z
 url: https://github.com/astral-sh/uv/issues/14333
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # `OPENSSL_Applink` error on Windows with uv-managed Python
 
 ---
 
-_Issue opened by @QuartzWarrior on 2025-06-27 20:49_
+_@QuartzWarrior_
 
 Hello,
 

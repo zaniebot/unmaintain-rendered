@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-13T10:46:56Z
 updated_at: 2024-03-13T14:29:17Z
 url: https://github.com/astral-sh/uv/issues/2407
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Question/ docs: What is the difference, if any, between `pip install --pre` and `uv pip install --prerelease=allow`?
 
 ---
 
-_Issue opened by @ivirshup on 2024-03-13 10:46_
+_@ivirshup_
 
 As title, is `uv pip install --prerelease=allow` equivalent to `pip install --pre`? Are there differences I should be aware of?
 

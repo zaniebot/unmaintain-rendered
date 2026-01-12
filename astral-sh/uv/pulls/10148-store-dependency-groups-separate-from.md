@@ -13,14 +13,14 @@ head: charlie/store-dep-groups
 created_at: 2024-12-24T22:17:09Z
 updated_at: 2024-12-24T22:32:31Z
 url: https://github.com/astral-sh/uv/pull/10148
-synced_at: 2026-01-10T11:44:37Z
+synced_at: 2026-01-12T16:09:09Z
 ```
 
 # Store dependency groups separate from dependencies in lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-24 22:17_
+_@charliermarsh_
 
 ## Summary
 

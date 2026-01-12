@@ -13,14 +13,14 @@ head: zb/fix-relative-venv
 created_at: 2024-05-24T14:41:09Z
 updated_at: 2024-05-27T08:53:48Z
 url: https://github.com/astral-sh/uv/pull/3823
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:52Z
 ```
 
 # Fix interpreter cache collisions for relative virtualenv paths
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-24 14:41_
+_@zanieb_
 
 Closes #3784
 

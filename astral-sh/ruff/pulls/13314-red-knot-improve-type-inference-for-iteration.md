@@ -13,14 +13,14 @@ head: alex/tuples-iter
 created_at: 2024-09-10T18:09:34Z
 updated_at: 2024-09-10T19:13:52Z
 url: https://github.com/astral-sh/ruff/pull/13314
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Improve type inference for iteration over heterogenous tuples
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-10 18:09_
+_@AlexWaygood_
 
 Followup to #13295
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-24T08:15:55Z
 updated_at: 2025-05-06T15:42:24Z
 url: https://github.com/astral-sh/uv/issues/8518
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # How to config Jfrog api key in pyproject.toml
 
 ---
 
-_Issue opened by @yuhao-postnl on 2024-10-24 08:15_
+_@yuhao-postnl_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

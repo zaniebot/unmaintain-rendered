@@ -13,14 +13,14 @@ head: make-type-is-invariant
 created_at: 2025-09-16T02:33:28Z
 updated_at: 2025-09-18T14:53:13Z
 url: https://github.com/astral-sh/ruff/pull/20428
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # [ty] Make TypeIs invariant in its type argument
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2025-09-16 02:33_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

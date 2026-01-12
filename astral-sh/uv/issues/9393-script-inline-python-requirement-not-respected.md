@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-24T10:30:00Z
 updated_at: 2025-09-28T15:40:23Z
 url: https://github.com/astral-sh/uv/issues/9393
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:49Z
 ```
 
 # Script inline python requirement not respected when .python-version file is in project
 
 ---
 
-_Issue opened by @Magglish on 2024-11-24 10:30_
+_@Magglish_
 
 Hello,
 

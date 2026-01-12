@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-09T07:38:26Z
 updated_at: 2025-10-10T01:12:41Z
 url: https://github.com/astral-sh/uv/issues/16198
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # uv tool python, error: externally-managed-environment
 
 ---
 
-_Issue opened by @GKTheOne on 2025-10-09 07:38_
+_@GKTheOne_
 
 ### Question
 

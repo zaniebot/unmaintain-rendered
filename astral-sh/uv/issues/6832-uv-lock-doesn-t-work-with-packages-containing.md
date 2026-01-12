@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-29T21:13:51Z
 updated_at: 2024-09-03T01:21:40Z
 url: https://github.com/astral-sh/uv/issues/6832
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # `uv lock` doesn't work with packages containing period in name
 
 ---
 
-_Issue opened by @jamesbraza on 2024-08-29 21:13_
+_@jamesbraza_
 
 I have a workspace that looks like this:
 

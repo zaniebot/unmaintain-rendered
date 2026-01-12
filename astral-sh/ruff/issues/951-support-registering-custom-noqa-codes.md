@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-29T00:13:55Z
 updated_at: 2022-11-29T03:16:19Z
 url: https://github.com/astral-sh/ruff/issues/951
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Support registering custom noqa codes
 
 ---
 
-_Issue opened by @brandon-leapyear on 2022-11-29 00:13_
+_@brandon-leapyear_
 
 Until #872 is implemented, we would like to keep using `# noqa: V101` ignores. This is an [undocumented feature](https://github.com/jendrikseipp/vulture/commit/2488be07b115ef4c45c77c6ea8e500a5fc9c595a) in vulture, but we would still prefer using this for the time being. However, turning on M001 would remove these comments. It would be nice to tell the M001 rule what noqa rules third-party tools might use.
 

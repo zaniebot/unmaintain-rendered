@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T01:50:54Z
 updated_at: 2024-08-20T16:06:46Z
 url: https://github.com/astral-sh/ruff/issues/13000
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Importing and Referencing a Sub Module will eliminate necessary import code
 
 ---
 
-_Issue opened by @csotto on 2024-08-20 01:50_
+_@csotto_
 
 ### ruff 0.6.1  
 ruff check ruff_PR.py --isolated

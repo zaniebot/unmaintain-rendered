@@ -13,14 +13,14 @@ head: zb/eco-fix
 created_at: 2024-05-19T03:57:15Z
 updated_at: 2024-05-19T14:08:11Z
 url: https://github.com/astral-sh/ruff/pull/11469
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Fix division by zero error in ecosystem check
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-19 03:57_
+_@zanieb_
 
 e.g. https://github.com/astral-sh/ruff/actions/runs/9144809516/job/25143076896?pr=11468
 

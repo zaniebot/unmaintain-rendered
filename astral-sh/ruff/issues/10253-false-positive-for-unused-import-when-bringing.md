@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-06T19:12:42Z
 updated_at: 2025-02-23T08:08:47Z
 url: https://github.com/astral-sh/ruff/issues/10253
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # False positive for unused import when bringing things forward in __init__.py
 
 ---
 
-_Issue opened by @robvdl on 2024-03-06 19:12_
+_@robvdl_
 
 In `myapp/forms/__init__.py`:
 

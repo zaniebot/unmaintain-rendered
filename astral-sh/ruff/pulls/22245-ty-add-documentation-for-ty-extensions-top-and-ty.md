@@ -13,14 +13,14 @@ head: alex/document-top-bottom
 created_at: 2025-12-29T15:19:50Z
 updated_at: 2025-12-29T19:43:18Z
 url: https://github.com/astral-sh/ruff/pull/22245
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:45Z
 ```
 
 # [ty] Add documentation for `ty_extensions.Top` and `ty_extensions.Bottom`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-29 15:19_
+_@AlexWaygood_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-31T13:09:01Z
 updated_at: 2022-11-18T19:37:27Z
 url: https://github.com/astral-sh/ruff/issues/525
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement a `--show-source` setting
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-31 13:09_
+_@charliermarsh_
 
 _No description provided._
 

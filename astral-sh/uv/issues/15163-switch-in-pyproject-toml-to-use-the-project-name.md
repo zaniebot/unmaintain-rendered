@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-08T09:56:54Z
 updated_at: 2025-10-15T17:49:25Z
 url: https://github.com/astral-sh/uv/issues/15163
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # Switch in `pyproject.toml` to use the project name as the venv name - or setting to specify `UV_PROJECT`
 
 ---
 
-_Issue opened by @dmrauch on 2025-08-08 09:56_
+_@dmrauch_
 
 ### Summary
 

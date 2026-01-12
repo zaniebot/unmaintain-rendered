@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-08T16:40:56Z
 updated_at: 2024-10-09T09:28:45Z
 url: https://github.com/astral-sh/uv/issues/8008
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Problem upgrading to Python 3.13
 
 ---
 
-_Issue opened by @Odud on 2024-10-08 16:40_
+_@Odud_
 
 I have two alternative versions of python installed as shown below. Both were built from source, but I doubt that's relevant.
 

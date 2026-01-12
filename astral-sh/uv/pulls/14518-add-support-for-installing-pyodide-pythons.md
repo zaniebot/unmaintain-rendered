@@ -12,14 +12,14 @@ head: pyodide-installation
 created_at: 2025-07-09T13:56:12Z
 updated_at: 2025-09-10T16:13:12Z
 url: https://github.com/astral-sh/uv/pull/14518
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:15Z
 ```
 
 # Add support for installing pyodide Pythons
 
 ---
 
-_Pull request opened by @hoodmane on 2025-07-09 13:56_
+_@hoodmane_
 
 - [x] Add tests
 

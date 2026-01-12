@@ -14,14 +14,14 @@ head: printer-queue-experiment-with-cold
 created_at: 2024-02-25T20:01:04Z
 updated_at: 2024-02-26T07:19:41Z
 url: https://github.com/astral-sh/ruff/pull/10121
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Add cold attribute to less likely printer queue branches
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-25 20:01_
+_@MichaReiser_
 
 ## Summary
 

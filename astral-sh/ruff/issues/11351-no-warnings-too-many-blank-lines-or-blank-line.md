@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-09T12:34:46Z
 updated_at: 2024-05-27T10:20:20Z
 url: https://github.com/astral-sh/ruff/issues/11351
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # No warnings 'too-many-blank-lines' or 'blank-line-between-methods'.
 
 ---
 
-_Issue opened by @cdar on 2024-05-09 12:34_
+_@cdar_
 
 Thank you for the project!
 

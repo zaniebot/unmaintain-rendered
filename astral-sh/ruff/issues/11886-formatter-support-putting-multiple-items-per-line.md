@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-15T11:58:23Z
 updated_at: 2024-06-15T15:05:45Z
 url: https://github.com/astral-sh/ruff/issues/11886
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Formatter: Support putting multiple items per line for large sequences
 
 ---
 
-_Issue opened by @tdulcet on 2024-06-15 11:58_
+_@tdulcet_
 
 When formatting a large single dimensional sequence (list, tuple, set) of similar sized literals (ints, floats, strings, etc.), please consider adding support a compact representation by putting multiple items on each line, similar to what other autoformaters do by default. Ruff only supports putting all of the items on a single line if they fit within the configured line length or each item on a separate line otherwise. This forces large sequences use many more lines than they need to, which requires excessive vertical scrolling and thus makes them more difficult to read and understand.
 

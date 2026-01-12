@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-26T02:11:34Z
 updated_at: 2024-08-26T17:35:56Z
 url: https://github.com/astral-sh/uv/issues/6636
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # feature request: bump project version command
 
 ---
 
-_Issue opened by @phi-friday on 2024-08-26 02:11_
+_@phi-friday_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

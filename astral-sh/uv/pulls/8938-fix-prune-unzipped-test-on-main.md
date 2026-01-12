@@ -13,14 +13,14 @@ head: zb/fix-main-test
 created_at: 2024-11-08T13:29:26Z
 updated_at: 2024-11-08T13:40:28Z
 url: https://github.com/astral-sh/uv/pull/8938
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:33Z
 ```
 
 # Fix `prune_unzipped` test on `main`
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-08 13:29_
+_@zanieb_
 
 _No description provided._
 

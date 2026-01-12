@@ -14,14 +14,14 @@ head: dcreager/specialize-from-constraints
 created_at: 2025-11-12T21:06:18Z
 updated_at: 2025-11-19T19:20:35Z
 url: https://github.com/astral-sh/ruff/pull/21414
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] Create a specialization from a constraint set
 
 ---
 
-_Pull request opened by @dcreager on 2025-11-12 21:06_
+_@dcreager_
 
 This patch lets us create specializations from a constraint set. The constraint encodes the restrictions on which types each typevar can specialize to. Given a generic context and a constraint set, we iterate through all of the generic context's typevars. For each typevar, we abstract the constraint set so that it only mentions the typevar in question (propagating derived facts if needed). We then find the "best representative type" for the typevar given the abstracted constraint set.
 

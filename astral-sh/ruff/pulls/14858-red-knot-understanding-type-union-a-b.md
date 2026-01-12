@@ -13,14 +13,14 @@ head: rk-type-union
 created_at: 2024-12-09T05:13:56Z
 updated_at: 2024-12-09T12:52:52Z
 url: https://github.com/astral-sh/ruff/pull/14858
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Understanding `type[Union[A, B]]`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-09 05:13_
+_@InSyncWithFoo_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/r
 created_at: 2024-10-29T17:37:38Z
 updated_at: 2024-10-29T17:45:00Z
 url: https://github.com/astral-sh/uv/pull/8673
-synced_at: 2026-01-10T12:54:15Z
+synced_at: 2026-01-12T16:08:26Z
 ```
 
 # Fix flaky failure in `run_from_directory`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-29 17:37_
+_@charliermarsh_
 
 ## Summary
 

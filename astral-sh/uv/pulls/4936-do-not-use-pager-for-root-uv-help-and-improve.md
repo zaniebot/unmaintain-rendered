@@ -13,14 +13,14 @@ head: zb/help-root
 created_at: 2024-07-09T19:14:30Z
 updated_at: 2024-07-09T19:38:30Z
 url: https://github.com/astral-sh/uv/pull/4936
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:32Z
 ```
 
 # Do not use pager for root `uv help` and improve after help hint
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-09 19:14_
+_@zanieb_
 
 Adds a nice hint at the bottom of `uv help` output indicating how to get more details about a specific command, roughly matching Cargo's interface.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-08T16:06:19Z
 updated_at: 2023-12-14T15:09:15Z
 url: https://github.com/astral-sh/uv/issues/592
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Expand environment variables when resolving URLs
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-08 16:06_
+_@charliermarsh_
 
 Apparently pip supports, e.g., `file://${PWD}/...`. We need to do a bit more research into this.
 

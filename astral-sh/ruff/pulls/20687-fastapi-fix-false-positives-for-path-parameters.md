@@ -14,14 +14,14 @@ head: fix-20680
 created_at: 2025-10-02T22:46:38Z
 updated_at: 2025-10-09T20:58:11Z
 url: https://github.com/astral-sh/ruff/pull/20687
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [`fastapi`] Fix false positives for path parameters that FastAPI doesn't recognize (`FAST003`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-02 22:46_
+_@danparizher_
 
 ## Summary
 

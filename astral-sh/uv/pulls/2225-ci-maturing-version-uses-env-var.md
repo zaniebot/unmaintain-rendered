@@ -14,14 +14,14 @@ head: make-maturin-an-env-var
 created_at: 2024-03-06T02:06:15Z
 updated_at: 2024-03-06T12:36:48Z
 url: https://github.com/astral-sh/uv/pull/2225
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:55Z
 ```
 
 # ci: maturing version uses env var
 
 ---
 
-_Pull request opened by @samypr100 on 2024-03-06 02:06_
+_@samypr100_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

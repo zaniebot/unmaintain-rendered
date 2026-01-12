@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-04T17:20:20Z
 updated_at: 2024-12-22T18:02:29Z
 url: https://github.com/astral-sh/ruff/issues/13632
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] more precise types from chained boolean expressions
 
 ---
 
-_Issue opened by @carljm on 2024-10-04 17:20_
+_@carljm_
 
 We currently don't eliminate some impossible types in chained boolean or comparison expressions.
 

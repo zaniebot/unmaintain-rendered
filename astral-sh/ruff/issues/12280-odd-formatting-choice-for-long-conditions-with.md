@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-10T17:56:31Z
 updated_at: 2024-07-11T20:38:13Z
 url: https://github.com/astral-sh/ruff/issues/12280
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Odd formatting choice for long conditions with comments in list/dict comprehensions
 
 ---
 
-_Issue opened by @goodspark on 2024-07-10 17:56_
+_@goodspark_
 
 Previously used search terms: format for loop if comment
 

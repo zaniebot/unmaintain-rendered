@@ -12,14 +12,14 @@ head: zb/scenario-filters
 created_at: 2024-01-04T14:54:47Z
 updated_at: 2024-01-04T15:57:42Z
 url: https://github.com/astral-sh/uv/pull/779
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:11Z
 ```
 
 # Filter prefixes from scenario snapshots to improve readability
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-04 14:54_
+_@zanieb_
 
 I'm a _little_ unsure since this could be confusing but the prefixes can be pretty long and this is much easier to read.
 

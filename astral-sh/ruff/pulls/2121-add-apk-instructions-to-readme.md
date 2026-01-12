@@ -12,14 +12,14 @@ head: alpine
 created_at: 2023-01-24T11:44:17Z
 updated_at: 2023-01-24T12:29:04Z
 url: https://github.com/astral-sh/ruff/pull/2121
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add apk instructions to README
 
 ---
 
-_Pull request opened by @WhyNotHugo on 2023-01-24 11:44_
+_@WhyNotHugo_
 
 _No description provided._
 

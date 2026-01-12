@@ -14,14 +14,14 @@ head: dhruv/test-simple-stmts
 created_at: 2024-04-10T14:13:33Z
 updated_at: 2024-04-11T09:42:20Z
 url: https://github.com/astral-sh/ruff/pull/10860
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for top level statement parsing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-10 14:13_
+_@dhruvmanila_
 
 ## Summary
 

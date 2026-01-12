@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-10-16T20:35:23Z
 updated_at: 2018-08-02T03:30:12Z
 url: https://github.com/clap-rs/clap/issues/1069
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Macro cuts arg name on hyphens
 
 ---
 
-_Issue opened by @Keats on 2017-10-16 20:35_
+_@Keats_
 
 ### Affected Version of clap
 2.26.2

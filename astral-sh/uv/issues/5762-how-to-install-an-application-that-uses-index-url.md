@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-04T18:39:20Z
 updated_at: 2024-08-17T17:38:20Z
 url: https://github.com/astral-sh/uv/issues/5762
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # How to install an application that uses --index-url (in this example its pytorch/torch)
 
 ---
 
-_Issue opened by @theogbob on 2024-08-04 18:39_
+_@theogbob_
 
  Version: 
   ```

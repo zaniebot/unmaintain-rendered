@@ -13,14 +13,14 @@ head: charlie/unsafe
 created_at: 2023-11-30T01:42:21Z
 updated_at: 2023-11-30T01:55:36Z
 url: https://github.com/astral-sh/ruff/pull/8918
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Document fix safety for flake8-comprehensions and some pyupgrade rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-30 01:42_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/ruff/issues/7993.
 

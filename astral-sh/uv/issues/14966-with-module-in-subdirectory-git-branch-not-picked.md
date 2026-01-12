@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-30T08:48:49Z
 updated_at: 2025-08-12T10:57:58Z
 url: https://github.com/astral-sh/uv/issues/14966
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # With module in subdirectory, Git branch not picked up when using `uv add`, but works with `uv pip install ...`
 
 ---
 
-_Issue opened by @phinate on 2025-07-30 08:48_
+_@phinate_
 
 ### Summary
 

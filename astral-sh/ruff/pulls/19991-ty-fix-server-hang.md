@@ -15,14 +15,14 @@ head: micha/salsa-runaway
 created_at: 2025-08-19T16:55:48Z
 updated_at: 2025-08-20T08:28:32Z
 url: https://github.com/astral-sh/ruff/pull/19991
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] Fix server hang
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-19 16:55_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-26T20:10:38Z
 updated_at: 2022-12-27T00:25:51Z
 url: https://github.com/astral-sh/ruff/issues/1392
-synced_at: 2026-01-10T12:05:27Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [playground, bug] Autofix doesn't work on the playground
 
 ---
 
-_Issue opened by @Sawbez on 2022-12-26 20:10_
+_@Sawbez_
 
 As seen in this image, the online playground doesn't allow you to quickfix `F401`, which has an autofix programmed in. None of the sidebar settings are changed.
 ![image](https://user-images.githubusercontent.com/63512091/209580466-13c99fc9-41f2-430d-98e7-0df75c3b3c8a.png)

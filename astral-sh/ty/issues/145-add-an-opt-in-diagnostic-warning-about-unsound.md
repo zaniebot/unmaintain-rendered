@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-31T11:37:20Z
 updated_at: 2025-05-11T07:57:41Z
 url: https://github.com/astral-sh/ty/issues/145
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Add an opt-in diagnostic warning about unsound calls to `type[]`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-03-31 11:37_
+_@AlexWaygood_
 
 Red-knot allows you to call `type[]` types, and accurately infers the result of these calls:
 

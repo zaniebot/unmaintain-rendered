@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-24T23:08:17Z
 updated_at: 2023-08-24T23:40:28Z
 url: https://github.com/clap-rs/clap/issues/5087
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # The latest update enforces 1.7.9 rust version, breaking build pipelines.
 
 ---
 
-_Issue opened by @rikkigouda on 2023-08-24 23:08_
+_@rikkigouda_
 
 ### Please complete the following tasks
 

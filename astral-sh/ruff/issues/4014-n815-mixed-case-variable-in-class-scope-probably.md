@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-19T02:47:34Z
 updated_at: 2023-04-22T22:17:16Z
 url: https://github.com/astral-sh/ruff/issues/4014
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # N815 (mixed-case-variable-in-class-scope) probably should not check TypedDict
 
 ---
 
-_Issue opened by @sirrus233 on 2023-04-19 02:47_
+_@sirrus233_
 
 Hey, thanks for writing ruff!! The following example illustrates two violations of N815, on the mixed-case variable `myOtherVar`. The first violation is of course appropriate. **However, I think the second is misleading, and this rule should not apply to `TypedDict`.** 
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-05-18T00:21:26Z
 updated_at: 2022-07-25T19:46:29Z
 url: https://github.com/clap-rs/clap/issues/3733
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Setting external subcommand type is inconsistent with args
 
 ---
 
-_Issue opened by @epage on 2022-05-18 00:21_
+_@epage_
 
 ### Please complete the following tasks
 

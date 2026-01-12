@@ -13,14 +13,14 @@ head: syntax-error
 created_at: 2025-04-25T06:06:38Z
 updated_at: 2025-05-01T17:40:58Z
 url: https://github.com/astral-sh/ruff/pull/17624
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [syntax-errors] detect single starred expression assignment `x = *y`
 
 ---
 
-_Pull request opened by @abhijeetbodas2001 on 2025-04-25 06:06_
+_@abhijeetbodas2001_
 
 ## Summary
 

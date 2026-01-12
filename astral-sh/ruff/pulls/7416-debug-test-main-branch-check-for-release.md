@@ -12,14 +12,14 @@ head: zanie/debug-main-check
 created_at: 2023-09-15T19:22:59Z
 updated_at: 2023-09-15T19:58:36Z
 url: https://github.com/astral-sh/ruff/pull/7416
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # DEBUG: Test main branch check for release
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-15 19:22_
+_@zanieb_
 
 _No description provided._
 

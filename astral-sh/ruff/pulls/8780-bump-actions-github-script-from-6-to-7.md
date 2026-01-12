@@ -13,14 +13,14 @@ head: dependabot/github_actions/actions/github-script-7
 created_at: 2023-11-20T08:18:02Z
 updated_at: 2023-11-20T08:32:57Z
 url: https://github.com/astral-sh/ruff/pull/8780
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Bump actions/github-script from 6 to 7
 
 ---
 
-_Pull request opened by @dependabot on 2023-11-20 08:18_
+_@dependabot_
 
 Bumps [actions/github-script](https://github.com/actions/github-script) from 6 to 7.
 <details>

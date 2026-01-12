@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-22T12:46:55Z
 updated_at: 2024-08-30T01:43:41Z
 url: https://github.com/astral-sh/uv/issues/5283
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Is the brotli feature of the reqwest crate actually used/useful in uv?
 
 ---
 
-_Issue opened by @musicinmybrain on 2024-07-22 12:46_
+_@musicinmybrain_
 
 The maintainer (@decathorpe) of the [`rust-reqwest` package in Fedora](https://src.fedoraproject.org/rpms/rust-reqwest), and of much of the Rust stack in Fedora, “explicitly dropped the `brotli` feature [from the Fedora package] because the dependencies might not be available in the future. There have been multiple breaking releases of the `brotli` and `brotli-decompressor` crates recently, and dropbox upstream is ignoring any pull requests / issues we've filed since those crates were packaged for Fedora.” The maintainer is therefore trying to reduce dependencies on the https://github.com/dropbox/rust-brotli crates.
 

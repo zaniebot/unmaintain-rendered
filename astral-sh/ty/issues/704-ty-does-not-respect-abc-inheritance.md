@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-25T18:59:37Z
 updated_at: 2025-06-25T19:13:31Z
 url: https://github.com/astral-sh/ty/issues/704
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # ty does not respect ABC inheritance
 
 ---
 
-_Issue opened by @tonka3000 on 2025-06-25 18:59_
+_@tonka3000_
 
 ### Summary
 

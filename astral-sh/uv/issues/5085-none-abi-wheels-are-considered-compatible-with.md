@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-16T01:14:05Z
 updated_at: 2024-07-16T01:41:15Z
 url: https://github.com/astral-sh/uv/issues/5085
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `none` ABI wheels are considered compatible with `requires-python`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-16 01:14_
+_@charliermarsh_
 
 For example, we treat `torch-1.10.0-cp39-none-macosx_11_0_arm64.whl` as compatible with all Python versions -- but that's not true.
 

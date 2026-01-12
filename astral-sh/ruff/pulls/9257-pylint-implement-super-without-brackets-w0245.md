@@ -14,14 +14,14 @@ head: add-W0245
 created_at: 2023-12-23T07:05:21Z
 updated_at: 2024-01-02T22:05:45Z
 url: https://github.com/astral-sh/ruff/pull/9257
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [pylint] - implement `super-without-brackets`/`W0245`
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-12-23 07:05_
+_@diceroll123_
 
 ## Summary
 

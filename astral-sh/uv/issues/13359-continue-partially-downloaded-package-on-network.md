@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-09T06:25:22Z
 updated_at: 2025-08-29T23:35:59Z
 url: https://github.com/astral-sh/uv/issues/13359
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # Continue partially downloaded package on network error
 
 ---
 
-_Issue opened by @clouds56 on 2025-05-09 06:25_
+_@clouds56_
 
 ### Summary
 

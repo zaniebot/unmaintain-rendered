@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-24T18:18:05Z
 updated_at: 2023-10-01T02:28:22Z
 url: https://github.com/astral-sh/ruff/issues/7632
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Valid python files, that fails to parse in ruff
 
 ---
 
-_Issue opened by @qarmin on 2023-09-24 18:18_
+_@qarmin_
 
 Ruff 0.0.291
 Cpython 3.11.4

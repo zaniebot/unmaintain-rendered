@@ -13,14 +13,14 @@ head: charlie/ord
 created_at: 2024-09-01T17:37:13Z
 updated_at: 2024-09-04T21:35:53Z
 url: https://github.com/astral-sh/uv/pull/6918
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:35Z
 ```
 
 # Sort by implementation in `uv python list`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-01 17:37_
+_@charliermarsh_
 
 ## Summary
 

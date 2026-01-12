@@ -13,14 +13,14 @@ head: charlie/paren-comments
 created_at: 2023-08-23T17:09:38Z
 updated_at: 2023-08-25T04:18:06Z
 url: https://github.com/astral-sh/ruff/pull/6820
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Respect own-line leading comments before parenthesized nodes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-23 17:09_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-13T08:41:07Z
 updated_at: 2025-12-15T15:25:34Z
 url: https://github.com/astral-sh/ty/issues/1874
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Stack overflow in `GenericContext::inferable_typevars()`
 
 ---
 
-_Issue opened by @n-gao on 2025-12-13 08:41_
+_@n-gao_
 
 ### Summary
 

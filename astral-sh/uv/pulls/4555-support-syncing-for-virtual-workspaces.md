@@ -12,14 +12,14 @@ head: charlie/virtual
 created_at: 2024-06-26T17:01:10Z
 updated_at: 2024-07-29T14:10:19Z
 url: https://github.com/astral-sh/uv/pull/4555
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:18Z
 ```
 
 # Support syncing for virtual workspaces
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-26 17:01_
+_@charliermarsh_
 
 ## Summary
 

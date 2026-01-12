@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-07T02:48:59Z
 updated_at: 2024-04-18T00:47:06Z
 url: https://github.com/astral-sh/ruff/issues/10810
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # new feat: Jump to source 
 
 ---
 
-_Issue opened by @me-v2 on 2024-04-07 02:48_
+_@me-v2_
 
 ```
 ❯ ruff format .  --line-length 120 

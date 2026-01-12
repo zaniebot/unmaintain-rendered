@@ -13,14 +13,14 @@ head: charlie/preview-doc
 created_at: 2024-02-01T18:41:20Z
 updated_at: 2024-02-01T18:53:59Z
 url: https://github.com/astral-sh/ruff/pull/9759
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Remove stale preview documentation from stabilized rule behaviors
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-01 18:41_
+_@charliermarsh_
 
 These behaviors were stabilized, so the docs referring to them as preview-only are incorrect.
 

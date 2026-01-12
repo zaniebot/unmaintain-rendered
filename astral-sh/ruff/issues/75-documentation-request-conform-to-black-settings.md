@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-01T16:19:38Z
 updated_at: 2022-09-05T16:28:57Z
 url: https://github.com/astral-sh/ruff/issues/75
-synced_at: 2026-01-10T15:56:04Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Documentation request: conform to black settings
 
 ---
 
-_Issue opened by @ahonnecke on 2022-09-01 16:19_
+_@ahonnecke_
 
 https://pypi.org/project/black/ is a very popular auto code formatter / style guide.
 

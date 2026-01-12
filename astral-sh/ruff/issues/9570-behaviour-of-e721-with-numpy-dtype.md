@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-17T22:00:45Z
 updated_at: 2024-01-29T17:39:03Z
 url: https://github.com/astral-sh/ruff/issues/9570
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Behaviour of E721 with numpy.dtype
 
 ---
 
-_Issue opened by @nstarman on 2024-01-17 22:00_
+_@nstarman_
 
 `numpy.dtype` is tripping rule E721. I'm not sure it should be.
 

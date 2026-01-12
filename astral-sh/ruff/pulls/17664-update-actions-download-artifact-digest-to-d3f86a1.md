@@ -13,14 +13,14 @@ head: renovate/actions-download-artifact-digest
 created_at: 2025-04-28T03:25:44Z
 updated_at: 2025-04-28T17:34:08Z
 url: https://github.com/astral-sh/ruff/pull/17664
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # Update actions/download-artifact digest to d3f86a1
 
 ---
 
-_Pull request opened by @renovate on 2025-04-28 03:25_
+_@renovate_
 
 This PR contains the following updates:
 

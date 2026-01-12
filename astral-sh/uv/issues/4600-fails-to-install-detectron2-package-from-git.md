@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-27T19:51:27Z
 updated_at: 2024-06-28T03:49:07Z
 url: https://github.com/astral-sh/uv/issues/4600
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Fails to install detectron2 package from git
 
 ---
 
-_Issue opened by @alfa07 on 2024-06-27 19:51_
+_@alfa07_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

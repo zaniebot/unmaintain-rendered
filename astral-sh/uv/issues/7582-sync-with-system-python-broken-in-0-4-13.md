@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T11:56:21Z
 updated_at: 2024-09-20T17:44:23Z
 url: https://github.com/astral-sh/uv/issues/7582
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Sync with system python broken in 0.4.13
 
 ---
 
-_Issue opened by @b-phi on 2024-09-20 11:56_
+_@b-phi_
 
 For some use cases, I had been using `UV_PROJECT_ENVIRONMENT=/usr/local` to sync with the system python based on this comment https://github.com/astral-sh/uv/pull/6834#issuecomment-2319253359. With 0.4.13, this now breaks with 
 > Project virtual environment directory `/usr/local/` cannot be used because it is not a virtual environment and is non-empty

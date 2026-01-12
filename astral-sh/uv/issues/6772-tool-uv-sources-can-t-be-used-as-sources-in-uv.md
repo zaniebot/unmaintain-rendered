@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-28T19:02:44Z
 updated_at: 2025-12-20T17:25:00Z
 url: https://github.com/astral-sh/uv/issues/6772
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # `[tool.uv.sources]` can't be used as `[sources]` in `uv.toml`
 
 ---
 
-_Issue opened by @johnpyp on 2024-08-28 19:02_
+_@johnpyp_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

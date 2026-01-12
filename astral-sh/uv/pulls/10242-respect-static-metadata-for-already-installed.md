@@ -13,14 +13,14 @@ head: charlie/insta
 created_at: 2024-12-30T17:30:16Z
 updated_at: 2024-12-30T17:47:08Z
 url: https://github.com/astral-sh/uv/pull/10242
-synced_at: 2026-01-10T11:44:39Z
+synced_at: 2026-01-12T16:09:11Z
 ```
 
 # Respect static metadata for already-installed distributions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-30 17:30_
+_@charliermarsh_
 
 ## Summary
 

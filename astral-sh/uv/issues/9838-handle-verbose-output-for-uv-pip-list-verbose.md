@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-12T12:58:57Z
 updated_at: 2024-12-12T16:00:02Z
 url: https://github.com/astral-sh/uv/issues/9838
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # Handle verbose output for `uv pip list --verbose`
 
 ---
 
-_Issue opened by @julienp on 2024-12-12 12:58_
+_@julienp_
 
 Currently `uv pip list` does not handle the `-v/--verbose` flag.
 

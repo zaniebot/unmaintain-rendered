@@ -12,14 +12,14 @@ head: charlie/pubgrub
 created_at: 2023-11-09T00:21:13Z
 updated_at: 2023-11-19T17:25:11Z
 url: https://github.com/astral-sh/uv/pull/370
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:54Z
 ```
 
 # Upgrade PubGrub to `02a19f72d636119fb3f826a922122e21da69cfa5`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-09 00:21_
+_@charliermarsh_
 
 _No description provided._
 

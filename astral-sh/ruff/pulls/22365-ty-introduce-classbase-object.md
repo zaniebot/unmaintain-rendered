@@ -14,14 +14,14 @@ head: alex/classbase-object
 created_at: 2026-01-04T17:03:46Z
 updated_at: 2026-01-04T17:59:29Z
 url: https://github.com/astral-sh/ruff/pull/22365
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Introduce `ClassBase::Object`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-04 17:03_
+_@AlexWaygood_
 
 I'm not sure this is worth the increase in complexity, but I'm curious to see if this has any performance impact
 

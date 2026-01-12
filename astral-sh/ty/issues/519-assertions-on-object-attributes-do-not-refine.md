@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-26T23:55:52Z
 updated_at: 2025-05-27T00:07:16Z
 url: https://github.com/astral-sh/ty/issues/519
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Assertions on object attributes do not refine later checks
 
 ---
 
-_Issue opened by @adamh-oai on 2025-05-26 23:55_
+_@adamh-oai_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-20T17:20:26Z
 updated_at: 2025-10-20T17:51:17Z
 url: https://github.com/astral-sh/ty/issues/1407
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # ty doesn't check if all union variants support a given binary operation
 
 ---
 
-_Issue opened by @MichaReiser on 2025-10-20 17:20_
+_@MichaReiser_
 
 ### Summary
 

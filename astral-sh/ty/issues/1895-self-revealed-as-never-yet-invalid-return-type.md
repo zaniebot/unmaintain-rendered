@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-15T18:05:22Z
 updated_at: 2025-12-16T09:34:32Z
 url: https://github.com/astral-sh/ty/issues/1895
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `Self` revealed as Never yet `invalid-return-type` error is reported
 
 ---
 
-_Issue opened by @stefanboca on 2025-12-15 18:05_
+_@stefanboca_
 
 ### Summary
 

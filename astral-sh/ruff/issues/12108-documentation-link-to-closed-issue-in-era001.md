@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-30T04:36:11Z
 updated_at: 2024-07-01T02:03:21Z
 url: https://github.com/astral-sh/ruff/issues/12108
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [Documentation] Link to closed issue in ERA001
 
 ---
 
-_Issue opened by @JackDyre on 2024-06-30 04:36_
+_@JackDyre_
 
 [This](https://docs.astral.sh/ruff/rules/commented-out-code/) page on the documentation links to [this](https://github.com/astral-sh/ruff/issues/4845) issue as a known issue with the rule, but the issue is closed. 
 

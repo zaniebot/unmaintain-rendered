@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-28T18:42:41Z
 updated_at: 2025-08-24T07:13:28Z
 url: https://github.com/astral-sh/uv/issues/7764
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # When running project with uv run, homebrew-installed dynamic libraries on MacOS are not found.
 
 ---
 
-_Issue opened by @tcwalther on 2024-09-28 18:42_
+_@tcwalther_
 
 I'm using torchaudio to load audio files, which under the hood uses ffmpeg. On MacOS with Apple Silicon, ffmpeg's libraries will be installed to /opt/homebrew/lib.
 

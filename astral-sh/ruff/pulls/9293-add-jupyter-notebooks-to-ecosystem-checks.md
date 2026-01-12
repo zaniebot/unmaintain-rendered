@@ -13,14 +13,14 @@ head: zb/jupyter-ecosystem
 created_at: 2023-12-27T17:07:00Z
 updated_at: 2024-01-16T20:04:42Z
 url: https://github.com/astral-sh/ruff/pull/9293
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Add jupyter notebooks to ecosystem checks
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-27 17:07_
+_@zanieb_
 
 Implements https://github.com/astral-sh/ruff/pull/8873 via https://github.com/astral-sh/ruff/pull/9286
 

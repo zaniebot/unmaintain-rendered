@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T17:05:44Z
 updated_at: 2023-01-26T17:56:21Z
 url: https://github.com/astral-sh/ruff/issues/2202
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Issues with `B009` and `B010` autofix
 
 ---
 
-_Issue opened by @WilliamJamieson on 2023-01-26 17:05_
+_@WilliamJamieson_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -14,14 +14,14 @@ head: patch-1
 created_at: 2024-05-14T11:44:49Z
 updated_at: 2024-05-14T11:57:45Z
 url: https://github.com/astral-sh/uv/pull/3574
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:43Z
 ```
 
 # Fix typo in traits.rs
 
 ---
 
-_Pull request opened by @aochagavia on 2024-05-14 11:44_
+_@aochagavia_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-07T09:09:52Z
 updated_at: 2024-10-09T07:24:10Z
 url: https://github.com/astral-sh/uv/issues/7962
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Instal via brew results in an outdated/old version (i.e. 0.1.xx)
 
 ---
 
-_Issue opened by @mgiugliano on 2024-10-07 09:09_
+_@mgiugliano_
 
 On my mac (M3, Sonoma, 14.6.1 (23G93)), typing 
 

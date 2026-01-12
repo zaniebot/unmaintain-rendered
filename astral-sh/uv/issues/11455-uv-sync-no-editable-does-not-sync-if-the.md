@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T17:08:29Z
 updated_at: 2025-07-03T23:11:08Z
 url: https://github.com/astral-sh/uv/issues/11455
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # uv sync --no-editable does not sync if the `pyproject.toml` did not chage
 
 ---
 
-_Issue opened by @gaborbernat on 2025-02-12 17:08_
+_@gaborbernat_
 
 ### Summary
 

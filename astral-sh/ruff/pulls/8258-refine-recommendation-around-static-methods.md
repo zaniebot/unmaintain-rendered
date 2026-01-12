@@ -13,14 +13,14 @@ head: charlie/class
 created_at: 2023-10-26T17:16:23Z
 updated_at: 2023-10-26T19:03:54Z
 url: https://github.com/astral-sh/ruff/pull/8258
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Refine recommendation around static methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-26 17:16_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8025.
 

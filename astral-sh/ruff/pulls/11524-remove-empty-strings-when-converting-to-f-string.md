@@ -13,14 +13,14 @@ head: dhruv/remove-empty-string
 created_at: 2024-05-24T04:31:45Z
 updated_at: 2024-05-27T05:15:01Z
 url: https://github.com/astral-sh/ruff/pull/11524
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Remove empty strings when converting to f-string (`UP032`)
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-24 04:31_
+_@dhruvmanila_
 
 ## Summary
 

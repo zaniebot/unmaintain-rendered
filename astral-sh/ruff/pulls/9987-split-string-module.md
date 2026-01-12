@@ -13,14 +13,14 @@ head: split-string-module
 created_at: 2024-02-14T16:24:40Z
 updated_at: 2024-02-14T17:54:56Z
 url: https://github.com/astral-sh/ruff/pull/9987
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # split string module
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-14 16:24_
+_@MichaReiser_
 
 ## Summary
 

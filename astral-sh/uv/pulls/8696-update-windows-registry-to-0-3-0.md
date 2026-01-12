@@ -13,14 +13,14 @@ head: konsti/windows-registry-0.3.0
 created_at: 2024-10-30T11:51:12Z
 updated_at: 2024-10-30T12:00:34Z
 url: https://github.com/astral-sh/uv/pull/8696
-synced_at: 2026-01-10T12:54:15Z
+synced_at: 2026-01-12T16:08:27Z
 ```
 
 # Update windows-registry to 0.3.0
 
 ---
 
-_Pull request opened by @konstin on 2024-10-30 11:51_
+_@konstin_
 
 Closes #7796
 

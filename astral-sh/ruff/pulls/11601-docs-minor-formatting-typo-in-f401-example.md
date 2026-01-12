@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-05-29T14:58:25Z
 updated_at: 2024-05-29T15:22:11Z
 url: https://github.com/astral-sh/ruff/pull/11601
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # docs: Minor formatting typo in F401 example.
 
 ---
 
-_Pull request opened by @vitaliyf on 2024-05-29 14:58_
+_@vitaliyf_
 
 ## Summary
 

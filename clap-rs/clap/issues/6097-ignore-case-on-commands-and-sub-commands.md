@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-09T14:53:44Z
 updated_at: 2025-08-12T19:52:46Z
 url: https://github.com/clap-rs/clap/issues/6097
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Ignore case on commands and sub-commands
 
 ---
 
-_Issue opened by @Urgau on 2025-08-09 14:53_
+_@Urgau_
 
 ### Please complete the following tasks
 

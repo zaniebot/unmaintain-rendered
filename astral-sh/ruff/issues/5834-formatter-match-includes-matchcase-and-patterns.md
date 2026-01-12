@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-17T14:14:18Z
 updated_at: 2024-09-26T06:35:23Z
 url: https://github.com/astral-sh/ruff/issues/5834
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: `Match` (includes `MatchCase` and `Patterns`)
 
 ---
 
-_Issue opened by @konstin on 2023-07-17 14:14_
+_@konstin_
 
 This is a bigger project that includes the following nodes:
 

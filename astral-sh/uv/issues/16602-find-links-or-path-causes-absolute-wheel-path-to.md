@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-05T17:17:24Z
 updated_at: 2025-12-18T17:05:21Z
 url: https://github.com/astral-sh/uv/issues/16602
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # `find-links` or `path =` causes absolute wheel path to become relative path when creating lock file
 
 ---
 
-_Issue opened by @marcschachtsiek on 2025-11-05 17:17_
+_@marcschachtsiek_
 
 ### Summary
 

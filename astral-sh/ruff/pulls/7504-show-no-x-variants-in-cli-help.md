@@ -13,14 +13,14 @@ head: charlie/help
 created_at: 2023-09-19T02:36:13Z
 updated_at: 2023-09-19T12:36:06Z
 url: https://github.com/astral-sh/ruff/pull/7504
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Show `--no-X` variants in CLI help
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-19 02:36_
+_@charliermarsh_
 
 I'd really like this to render as `--preview / --no-preview`, but I looked for a while in the Clap internals and issue tracker (https://github.com/clap-rs/clap/issues/815) and I really can't figure out a way to do it -- this seems like the best we can do? It's also what they do in Orogene.
 

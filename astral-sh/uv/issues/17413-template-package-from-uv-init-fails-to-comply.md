@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-12T09:43:57Z
 updated_at: 2026-01-12T12:31:22Z
 url: https://github.com/astral-sh/uv/issues/17413
-synced_at: 2026-01-12T13:00:04Z
+synced_at: 2026-01-12T16:02:50Z
 ```
 
 # Template package from `uv init` fails to comply with RUF067
 
 ---
 
-_Issue opened by @martimlobao on 2026-01-12 09:43_
+_@martimlobao_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: dcreager/legacy-variance
 created_at: 2025-05-06T20:17:03Z
 updated_at: 2025-05-07T12:44:54Z
 url: https://github.com/astral-sh/ruff/pull/17897
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [ty] Handle explicit variance in legacy typevars
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-06 20:17_
+_@dcreager_
 
 We now track the variance of each typevar, and obey the `covariant` and `contravariant` parameters to the legacy `TypeVar` constructor. We still don't yet infer variance for PEP-695 typevars or for the `infer_variance` legacy constructor parameter.
 

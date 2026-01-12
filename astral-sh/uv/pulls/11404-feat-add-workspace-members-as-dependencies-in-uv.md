@@ -11,14 +11,14 @@ head: feature/5388-workspace-member-as-dependency
 created_at: 2025-02-10T20:48:30Z
 updated_at: 2025-09-11T22:52:38Z
 url: https://github.com/astral-sh/uv/pull/11404
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:09:50Z
 ```
 
 # feat: add workspace members as dependencies in uv init
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2025-02-10 20:48_
+_@Aditya-PS-05_
 
 closes #5388 
 ## Description

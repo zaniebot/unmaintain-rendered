@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-09T14:48:12Z
 updated_at: 2025-07-09T17:17:01Z
 url: https://github.com/astral-sh/uv/issues/14520
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # uv tool upgrade: add `--close-running` option to stop running .exe's before upgrading
 
 ---
 
-_Issue opened by @soredake on 2025-07-09 14:48_
+_@soredake_
 
 ### Summary
 

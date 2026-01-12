@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-05T17:49:11Z
 updated_at: 2025-03-05T17:55:32Z
 url: https://github.com/astral-sh/ruff/issues/16524
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # New rule to format `match` on its own line with `pytest.warns` or `pytest.raises`
 
 ---
 
-_Issue opened by @user27182 on 2025-03-05 17:49_
+_@user27182_
 
 ### Summary
 

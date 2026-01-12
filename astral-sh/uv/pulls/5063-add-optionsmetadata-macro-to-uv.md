@@ -14,14 +14,14 @@ head: charlie/docs-metadata
 created_at: 2024-07-15T01:56:15Z
 updated_at: 2024-07-15T19:24:09Z
 url: https://github.com/astral-sh/uv/pull/5063
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:37Z
 ```
 
 # Add `OptionsMetadata` macro to uv
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-15 01:56_
+_@charliermarsh_
 
 ## Summary
 

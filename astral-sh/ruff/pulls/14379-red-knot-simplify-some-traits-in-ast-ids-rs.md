@@ -14,14 +14,14 @@ head: alex/simplify-trait
 created_at: 2024-11-16T15:37:12Z
 updated_at: 2024-11-16T17:31:28Z
 url: https://github.com/astral-sh/ruff/pull/14379
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Simplify some traits in `ast_ids.rs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-16 15:37_
+_@AlexWaygood_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-28T17:48:40Z
 updated_at: 2025-04-01T16:54:21Z
 url: https://github.com/astral-sh/uv/issues/11028
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # Can't compile Meson extensions against managed Python due to pkg-config
 
 ---
 
-_Issue opened by @lgarrison on 2025-01-28 17:48_
+_@lgarrison_
 
 ### Summary
 

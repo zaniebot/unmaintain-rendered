@@ -14,14 +14,14 @@ head: cycle-union-order
 created_at: 2025-12-19T07:49:50Z
 updated_at: 2025-12-23T00:16:03Z
 url: https://github.com/astral-sh/ruff/pull/22070
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] stabilize union-type ordering in fixed-point iteration
 
 ---
 
-_Pull request opened by @mtshiba on 2025-12-19 07:49_
+_@mtshiba_
 
 ## Summary
 

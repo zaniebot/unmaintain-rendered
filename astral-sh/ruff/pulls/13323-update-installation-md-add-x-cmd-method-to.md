@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2024-09-11T08:17:06Z
 updated_at: 2024-09-12T00:38:35Z
 url: https://github.com/astral-sh/ruff/pull/13323
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Update installation.md: Add x-cmd method to install ruff
 
 ---
 
-_Pull request opened by @lunrenyi on 2024-09-11 08:17_
+_@lunrenyi_
 
 ## Summary
 

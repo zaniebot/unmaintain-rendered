@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T21:06:11Z
 updated_at: 2025-01-07T19:52:13Z
 url: https://github.com/astral-sh/uv/issues/1344
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # `uv pip compile --python-version ...` breaks when pyenv is used
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-02-15 21:06_
+_@ThiefMaster_
 
 ```
 $ uv pip compile --python-version 3.9 requirements.in -o requirements.txt

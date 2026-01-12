@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T15:56:18Z
 updated_at: 2025-08-07T16:10:12Z
 url: https://github.com/astral-sh/ruff/issues/19809
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Detect / Prohibit Implicit String Concatenation within a list, set, tuple
 
 ---
 
-_Issue opened by @lhegstrom on 2025-08-07 15:56_
+_@lhegstrom_
 
 ### Summary
 

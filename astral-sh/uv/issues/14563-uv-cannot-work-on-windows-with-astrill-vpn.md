@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-11T11:12:48Z
 updated_at: 2025-12-10T09:58:17Z
 url: https://github.com/astral-sh/uv/issues/14563
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # uv cannot work on Windows with Astrill VPN installed
 
 ---
 
-_Issue opened by @monchin on 2025-07-11 11:12_
+_@monchin_
 
 ### Summary
 

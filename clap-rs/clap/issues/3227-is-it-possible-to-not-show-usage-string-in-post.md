@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-28T00:40:52Z
 updated_at: 2022-02-07T21:37:28Z
 url: https://github.com/clap-rs/clap/issues/3227
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Is it possible to not show usage string in post validation errors?
 
 ---
 
-_Issue opened by @epage on 2021-12-28 00:40_
+_@epage_
 
 Maintainer's notes:
 - If we move error formatting to display time, we can provide all of the information the user needs that the user can build the error as they need (see also #2628)

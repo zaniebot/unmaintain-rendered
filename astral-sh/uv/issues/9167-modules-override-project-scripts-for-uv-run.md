@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-16T17:01:44Z
 updated_at: 2025-02-12T18:08:58Z
 url: https://github.com/astral-sh/uv/issues/9167
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # Modules override `[project.scripts]` for `uv run`
 
 ---
 
-_Issue opened by @JimDabell on 2024-11-16 17:01_
+_@JimDabell_
 
 If my project has a module called `foo` and a section in `pyproject.toml` with:
 

@@ -12,14 +12,14 @@ head: zb/fix-cl
 created_at: 2025-06-09T15:10:17Z
 updated_at: 2025-06-09T16:49:01Z
 url: https://github.com/astral-sh/uv/pull/13918
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:55Z
 ```
 
 # Fix extra newline in changelog
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-09 15:10_
+_@zanieb_
 
 _No description provided._
 

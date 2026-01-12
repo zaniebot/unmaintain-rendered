@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-23T16:45:59Z
 updated_at: 2024-01-27T08:22:50Z
 url: https://github.com/astral-sh/ruff/issues/9625
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # RET505/RET506 doesn't work for an else after a return/raise in a try/except block
 
 ---
 
-_Issue opened by @Greesb on 2024-01-23 16:45_
+_@Greesb_
 
 Hi,
 

@@ -11,14 +11,14 @@ head: ag/overlapping-markers
 created_at: 2024-08-02T18:30:23Z
 updated_at: 2024-08-16T12:14:43Z
 url: https://github.com/astral-sh/uv/pull/5733
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:59Z
 ```
 
 # use aggressive forking when encountering markers
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-08-02 18:30_
+_@BurntSushi_
 
 This PR completely rewrites forking in the resolver to follow the
 approach to dealing with overlapping markers as described in #4732.

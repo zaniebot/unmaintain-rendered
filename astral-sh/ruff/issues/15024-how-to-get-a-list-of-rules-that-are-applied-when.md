@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-16T20:16:49Z
 updated_at: 2024-12-17T04:40:24Z
 url: https://github.com/astral-sh/ruff/issues/15024
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # How to get a list of rules that are applied when running `ruff format --diff`?
 
 ---
 
-_Issue opened by @zachvalenta on 2024-12-16 20:16_
+_@zachvalenta_
 
 When viewing list of potential formats to make with `ruff format --diff`, would be nice to list the associated rule (e.g. `E117`) that's behind the proposed format. Not sure if one can config ruff to ignore particular rules, but would be useful to know for pedagogical reasons as well.
 

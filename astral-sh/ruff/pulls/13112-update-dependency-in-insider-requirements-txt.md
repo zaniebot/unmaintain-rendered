@@ -13,14 +13,14 @@ head: dhruv/fix-ci
 created_at: 2024-08-26T16:08:43Z
 updated_at: 2024-08-26T19:02:28Z
 url: https://github.com/astral-sh/ruff/pull/13112
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Update dependency in insider requirements.txt
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-26 16:08_
+_@dhruvmanila_
 
 _No description provided._
 

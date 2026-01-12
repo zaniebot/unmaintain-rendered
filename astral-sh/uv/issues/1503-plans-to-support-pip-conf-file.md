@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T15:41:15Z
 updated_at: 2024-02-16T15:57:48Z
 url: https://github.com/astral-sh/uv/issues/1503
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Plans to support pip.conf file?
 
 ---
 
-_Issue opened by @kvelicka on 2024-02-16 15:41_
+_@kvelicka_
 
 It appears (juding by `strace` output) that `uv` doesn't currently support reading pip's config files (e.g. `/etc/xdg/pip/pip.conf`). The feature I'm after specifically is already described in #1474 (support for the `cert` entry in the config file/via a cmdline flag) but I'm curious about the general stance the `uv` takes with reading pip's config files, and other potential users might be interested too.
 

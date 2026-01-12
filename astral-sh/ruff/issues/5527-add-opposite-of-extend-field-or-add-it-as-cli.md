@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-05T07:45:28Z
 updated_at: 2023-07-10T01:07:56Z
 url: https://github.com/astral-sh/ruff/issues/5527
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add opposite of `extend` field or add it as cli option
 
 ---
 
-_Issue opened by @axd1x8a on 2023-07-05 07:45_
+_@axd1x8a_
 
 So, I have many projects that may or may not use ruff and have a global config `ruff.toml` in the home directory. I want ruff to replace the settings from the global config with those in the project, as if every `pyproject.toml` had `extend`.
 

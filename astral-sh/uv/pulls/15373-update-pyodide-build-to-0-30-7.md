@@ -13,14 +13,14 @@ head: ci-pyodide-build-0.30.7
 created_at: 2025-08-19T08:42:59Z
 updated_at: 2025-08-19T13:33:39Z
 url: https://github.com/astral-sh/uv/pull/15373
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:43Z
 ```
 
 # Update pyodide-build to 0.30.7
 
 ---
 
-_Pull request opened by @hoodmane on 2025-08-19 08:42_
+_@hoodmane_
 
 And remove `--prerelease=allow`. We can remove this once I get the jsdelivr index set up.
 

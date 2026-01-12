@@ -12,14 +12,14 @@ head: macos_target
 created_at: 2024-02-09T11:55:10Z
 updated_at: 2024-04-03T23:35:03Z
 url: https://github.com/astral-sh/ruff/pull/9909
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Try set MACOSX_DEPLOYMENT_TARGET using env
 
 ---
 
-_Pull request opened by @Czaki on 2024-02-09 11:55_
+_@Czaki_
 
 ## Summary
 

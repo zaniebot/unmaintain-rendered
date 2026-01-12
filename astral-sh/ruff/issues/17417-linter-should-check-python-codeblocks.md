@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-16T01:21:50Z
 updated_at: 2025-04-16T10:15:54Z
 url: https://github.com/astral-sh/ruff/issues/17417
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # linter should check python codeblocks
 
 ---
 
-_Issue opened by @DetachHead on 2025-04-16 01:21_
+_@DetachHead_
 
 i just noticed that `ruff format` was not formatting a codeblock in my docstring despite `docstring-code-format` being enabled.
 

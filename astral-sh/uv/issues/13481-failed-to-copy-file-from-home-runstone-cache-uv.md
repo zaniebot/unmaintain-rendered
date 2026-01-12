@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T02:42:21Z
 updated_at: 2025-11-26T15:21:14Z
 url: https://github.com/astral-sh/uv/issues/13481
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # failed to copy file from /home/runstone/.cache/uv/archive-v0/xxx/h11-0.14.0.dist-info/RECORD to /home/runstone/work/git/deer-flow/.venv/lib/python3.12/site-packages/h11-0.14.0.dist-info/RECORD: Cannot allocate memory (os error 12)
 
 ---
 
-_Issue opened by @Abeautifulsnow on 2025-05-16 02:42_
+_@Abeautifulsnow_
 
 ### Summary
 

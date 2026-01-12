@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-26T10:24:05Z
 updated_at: 2024-11-10T16:30:07Z
 url: https://github.com/astral-sh/ruff/issues/10131
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Allow to declare modules/calls as deprecated
 
 ---
 
-_Issue opened by @CarliJoy on 2024-02-26 10:24_
+_@CarliJoy_
 
 Working in larger groups it is sometime hard to enforce a common style.
 Therefore we established a Pylint plugin in which we can define some modules as "deprecated" in order to inform all contributors of preferred alternatives.

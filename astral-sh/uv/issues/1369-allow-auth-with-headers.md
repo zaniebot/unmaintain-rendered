@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T22:08:49Z
 updated_at: 2025-11-22T09:41:07Z
 url: https://github.com/astral-sh/uv/issues/1369
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # allow auth with headers
 
 ---
 
-_Issue opened by @davidszotten on 2024-02-15 22:08_
+_@davidszotten_
 
 would you be open to allowing passing auth headers, eg something along the lines of https://github.com/pypa/pip/issues/8042
 

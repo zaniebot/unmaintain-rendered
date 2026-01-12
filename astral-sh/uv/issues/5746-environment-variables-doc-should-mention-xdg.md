@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-03T12:40:36Z
 updated_at: 2024-08-16T13:13:41Z
 url: https://github.com/astral-sh/uv/issues/5746
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # `Environment variables` doc should mention XDG_* variables
 
 ---
 
-_Issue opened by @j178 on 2024-08-03 12:40_
+_@j178_
 
 I think uv uses
 - XDG_CONFIG_HOME

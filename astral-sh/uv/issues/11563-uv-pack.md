@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-16T23:28:23Z
 updated_at: 2025-08-07T19:19:09Z
 url: https://github.com/astral-sh/uv/issues/11563
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:40Z
 ```
 
 # UV-pack?
 
 ---
 
-_Issue opened by @dipta007 on 2025-02-16 23:28_
+_@dipta007_
 
 ### Summary
 

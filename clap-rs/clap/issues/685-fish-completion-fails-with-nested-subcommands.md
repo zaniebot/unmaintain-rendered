@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-10-10T15:47:15Z
 updated_at: 2021-08-18T14:28:27Z
 url: https://github.com/clap-rs/clap/issues/685
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # fish completion fails with nested subcommands
 
 ---
 
-_Issue opened by @emk on 2016-10-10 15:47_
+_@emk_
 
 [cage](https://github.com/faradayio/cage) has nested subcommands:
 

@@ -13,14 +13,14 @@ head: class-type-params
 created_at: 2024-10-16T01:57:02Z
 updated_at: 2024-10-17T22:38:44Z
 url: https://github.com/astral-sh/ruff/pull/13766
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Use the right scope when considering class bases
 
 ---
 
-_Pull request opened by @rtpg on 2024-10-16 01:57_
+_@rtpg_
 
 Summary
 ---------

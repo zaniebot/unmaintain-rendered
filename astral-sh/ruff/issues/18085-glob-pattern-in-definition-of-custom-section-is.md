@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-14T06:24:45Z
 updated_at: 2025-05-14T06:42:46Z
 url: https://github.com/astral-sh/ruff/issues/18085
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Glob pattern in definition of custom section is not working
 
 ---
 
-_Issue opened by @FateXRebirth on 2025-05-14 06:24_
+_@FateXRebirth_
 
 ### Summary
 

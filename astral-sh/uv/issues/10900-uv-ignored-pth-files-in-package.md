@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-23T14:51:46Z
 updated_at: 2025-01-23T16:43:36Z
 url: https://github.com/astral-sh/uv/issues/10900
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # uv ignored .pth files in package
 
 ---
 
-_Issue opened by @sh1man999 on 2025-01-23 14:51_
+_@sh1man999_
 
 ### Summary
 

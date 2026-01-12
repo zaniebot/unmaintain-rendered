@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T10:17:31Z
 updated_at: 2025-01-22T12:30:59Z
 url: https://github.com/astral-sh/uv/issues/10848
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # How to ignore conflicts in transitive dependencies when publishing to PyPI?
 
 ---
 
-_Issue opened by @cthoyt on 2025-01-22 10:17_
+_@cthoyt_
 
 ### Question
 

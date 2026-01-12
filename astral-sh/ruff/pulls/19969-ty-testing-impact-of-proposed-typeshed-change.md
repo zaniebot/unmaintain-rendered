@@ -14,14 +14,14 @@ head: typeshed-experiment
 created_at: 2025-08-18T13:49:34Z
 updated_at: 2025-08-21T19:56:54Z
 url: https://github.com/astral-sh/ruff/pull/19969
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] [testing impact of proposed typeshed change]
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-18 13:49_
+_@AlexWaygood_
 
 Testing the impact for us if https://github.com/python/typeshed/pull/14583 were merged upstream
 

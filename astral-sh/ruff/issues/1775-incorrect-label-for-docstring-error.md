@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-11T02:06:54Z
 updated_at: 2023-01-12T01:01:55Z
 url: https://github.com/astral-sh/ruff/issues/1775
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Incorrect label for docstring error
 
 ---
 
-_Issue opened by @colin99d on 2023-01-11 02:06_
+_@colin99d_
 
 
 <img width="766" alt="Screenshot 2023-01-10 at 9 04 07 PM" src="https://user-images.githubusercontent.com/72827203/211700931-26bf31e0-6885-490d-9330-9a892bf0926d.png">

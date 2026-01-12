@@ -13,14 +13,14 @@ head: sort-export-hashes
 created_at: 2024-11-19T19:35:02Z
 updated_at: 2024-11-19T19:54:28Z
 url: https://github.com/astral-sh/uv/pull/9237
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:43Z
 ```
 
 # Sort hashes in `uv export` output
 
 ---
 
-_Pull request opened by @blueraft on 2024-11-19 19:35_
+_@blueraft_
 
 ## Summary
 

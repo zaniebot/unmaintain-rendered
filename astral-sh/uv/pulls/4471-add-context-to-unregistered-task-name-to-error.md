@@ -13,14 +13,14 @@ head: konsti/unregistered-context
 created_at: 2024-06-24T13:19:05Z
 updated_at: 2024-06-24T14:42:57Z
 url: https://github.com/astral-sh/uv/pull/4471
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:15Z
 ```
 
 # Add context to unregistered task name to error context
 
 ---
 
-_Pull request opened by @konstin on 2024-06-24 13:19_
+_@konstin_
 
 I caused this error during development and having the name of the task on it is helpful for debugging.
 

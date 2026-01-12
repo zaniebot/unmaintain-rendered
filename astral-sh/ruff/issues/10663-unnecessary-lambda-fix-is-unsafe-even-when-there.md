@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-29T19:50:38Z
 updated_at: 2024-03-30T01:05:06Z
 url: https://github.com/astral-sh/ruff/issues/10663
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # unnecessary-lambda fix is unsafe even when there are no side-effects 
 
 ---
 
-_Issue opened by @arrdem on 2024-03-29 19:50_
+_@arrdem_
 
 - **Ruff version:** 0.3.3
 - **Linter rule:** unnecessary-lambda / PLW0108

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-14T14:02:25Z
 updated_at: 2025-09-14T14:52:03Z
 url: https://github.com/astral-sh/uv/issues/15835
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # Ban configuration of directories in the `pyproject.toml`
 
 ---
 
-_Issue opened by @zanieb on 2025-09-14 14:02_
+_@zanieb_
 
 Right now, the `pyproject.toml` allows setting the `cache-dir` which seems... weird?
 

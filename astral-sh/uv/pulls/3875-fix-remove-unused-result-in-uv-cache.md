@@ -12,14 +12,14 @@ head: fix/remove-unused-result
 created_at: 2024-05-28T08:50:28Z
 updated_at: 2024-05-28T09:19:09Z
 url: https://github.com/astral-sh/uv/pull/3875
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:54Z
 ```
 
 # fix: remove unused `Result` in uv-cache
 
 ---
 
-_Pull request opened by @tdejager on 2024-05-28 08:50_
+_@tdejager_
 
 
 ## Summary

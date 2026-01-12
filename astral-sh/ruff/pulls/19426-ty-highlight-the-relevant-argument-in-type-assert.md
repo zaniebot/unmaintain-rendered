@@ -14,14 +14,14 @@ head: jack/known_function_lints
 created_at: 2025-07-18T21:34:28Z
 updated_at: 2025-07-23T15:24:13Z
 url: https://github.com/astral-sh/ruff/pull/19426
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [ty] highlight the relevant argument in type assert error messages
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-07-18 21:34_
+_@oconnor663_
 
 Closes https://github.com/astral-sh/ty/issues/209.
 

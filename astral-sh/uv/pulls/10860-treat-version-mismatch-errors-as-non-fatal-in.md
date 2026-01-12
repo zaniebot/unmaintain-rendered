@@ -13,14 +13,14 @@ head: charlie/igno
 created_at: 2025-01-22T14:52:04Z
 updated_at: 2025-01-22T15:13:27Z
 url: https://github.com/astral-sh/uv/pull/10860
-synced_at: 2026-01-10T11:45:14Z
+synced_at: 2026-01-12T16:09:32Z
 ```
 
 # Treat version mismatch errors as non-fatal in fast paths
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-22 14:52_
+_@charliermarsh_
 
 ## Summary
 

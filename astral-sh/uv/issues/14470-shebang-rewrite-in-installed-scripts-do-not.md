@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-06T10:27:41Z
 updated_at: 2025-07-09T15:51:08Z
 url: https://github.com/astral-sh/uv/issues/14470
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # shebang rewrite in installed scripts do not respect extra args passed to the interpreter
 
 ---
 
-_Issue opened by @mayeut on 2025-07-06 10:27_
+_@mayeut_
 
 ### Summary
 

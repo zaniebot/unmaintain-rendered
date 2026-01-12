@@ -13,14 +13,14 @@ head: pylint-too-many-public-methods
 created_at: 2023-07-30T13:57:07Z
 updated_at: 2024-10-24T12:09:29Z
 url: https://github.com/astral-sh/ruff/pull/6179
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # [pylint] Implement `too-many-public-methods` rule (PLR0904)
 
 ---
 
-_Pull request opened by @jelly on 2023-07-30 13:57_
+_@jelly_
 
 Implement https://pylint.pycqa.org/en/latest/user_guide/messages/refactor/too-many-public-methods.html
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-01T03:03:16Z
 updated_at: 2025-07-01T13:58:52Z
 url: https://github.com/astral-sh/uv/issues/14382
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # uv build using temp env fail with Python_SITEARCH in CMake
 
 ---
 
-_Issue opened by @habaohaba on 2025-07-01 03:03_
+_@habaohaba_
 
 ### Summary
 

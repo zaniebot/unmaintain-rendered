@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-21T13:01:23Z
 updated_at: 2025-08-15T12:25:50Z
 url: https://github.com/astral-sh/ty/issues/689
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Add simple option/feature flag to disable memory leaks
 
 ---
 
-_Issue opened by @qarmin on 2025-06-21 13:01_
+_@qarmin_
 
 According to https://github.com/astral-sh/ruff/issues/14945, memory leaks at the end of executing ty are expected due to the lack of cleanup of the db variable in:
 

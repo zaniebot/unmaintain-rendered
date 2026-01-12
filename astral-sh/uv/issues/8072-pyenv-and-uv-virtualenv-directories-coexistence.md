@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T06:30:21Z
 updated_at: 2025-07-31T12:25:19Z
 url: https://github.com/astral-sh/uv/issues/8072
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Pyenv and UV virtualenv directories coexistence 
 
 ---
 
-_Issue opened by @WSF-SEO-AM on 2024-10-10 06:30_
+_@WSF-SEO-AM_
 
 I've a couple of projects of mine that have been started with pyenv only.. I'm now attracted by the idea of using UV as a factotum, but I'm unsure whether the existing pyenv virtual environment can be designated as a location for UV too.
 

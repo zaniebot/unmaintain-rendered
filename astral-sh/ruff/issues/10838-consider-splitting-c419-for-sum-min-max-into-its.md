@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-08T19:26:37Z
 updated_at: 2025-10-06T17:37:47Z
 url: https://github.com/astral-sh/ruff/issues/10838
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Consider splitting C419 for sum/min/max into its own rule
 
 ---
 
-_Issue opened by @carljm on 2024-04-08 19:26_
+_@carljm_
 
 As discussed in https://github.com/astral-sh/ruff/issues/3259#issuecomment-2033127339, the performance impact of switching from comprehension to generator is different if you are passing to a short-circuiting function (e.g. `any` or `all`) vs a non-short-circuiting one (`sum`, `min`, `max`). Given these differing tradeoffs, it would be reasonable for a project to want to enable the lint for short-circuiting cases, and not the others. This suggests that we should split them into separate rules (or add a config option), as requested in https://github.com/astral-sh/ruff/pull/10759#issuecomment-2037394814
 

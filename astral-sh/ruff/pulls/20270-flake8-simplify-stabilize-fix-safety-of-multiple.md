@@ -13,14 +13,14 @@ head: dylan/stabilize-sim-fix
 created_at: 2025-09-05T18:52:43Z
 updated_at: 2025-09-08T17:34:01Z
 url: https://github.com/astral-sh/ruff/pull/20270
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [`flake8-simplify`] Stabilize fix safety of `multiple-with-statements` (`SIM117`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-05 18:52_
+_@dylwil3_
 
 Introduced in #18208. Removed gating, updated tests and docs.
 

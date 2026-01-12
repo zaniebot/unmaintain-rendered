@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-31T10:19:04Z
 updated_at: 2023-05-25T00:43:50Z
 url: https://github.com/astral-sh/ruff/issues/3828
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # pydocstyle doesn't catch multiple blank lines between sections
 
 ---
 
-_Issue opened by @sanzoghenzo on 2023-03-31 10:19_
+_@sanzoghenzo_
 
 Hi there, thank you for this awesome tool!!!
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-26T03:38:20Z
 updated_at: 2025-04-28T18:23:56Z
 url: https://github.com/astral-sh/uv/issues/13114
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # Support GraalPy install with `uv python`
 
 ---
 
-_Issue opened by @paugier on 2025-04-26 03:38_
+_@paugier_
 
 There is already some kind of support for GraalPy (see https://github.com/astral-sh/uv/issues/4197 and https://github.com/astral-sh/uv/pull/5141).
 

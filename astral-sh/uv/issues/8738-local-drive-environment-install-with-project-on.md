@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T23:59:21Z
 updated_at: 2024-11-07T04:09:39Z
 url: https://github.com/astral-sh/uv/issues/8738
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # Local drive environment install with project on network drive
 
 ---
 
-_Issue opened by @marcelroed on 2024-10-31 23:59_
+_@marcelroed_
 
 I'm working in an academic machine learning environment, where most users work across many machines, and therefore have their projects on a network drive. In practice this means people either maintain a (horribly slow) environment on the network drive, or they set up an environment manually on each machine they want to use. The benefit of keeping projects on a network drive is that projects can be used across different machines when hardware availability changes, or on multiple machines at once when multi-node runs happen.
 

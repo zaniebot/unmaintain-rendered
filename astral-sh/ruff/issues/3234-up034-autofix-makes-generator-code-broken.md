@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-26T09:00:48Z
 updated_at: 2023-02-27T03:47:09Z
 url: https://github.com/astral-sh/ruff/issues/3234
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # UP034 autofix makes generator code broken
 
 ---
 
-_Issue opened by @Olegt0rr on 2023-02-26 09:00_
+_@Olegt0rr_
 
 ## 1. Let's take an example:
 

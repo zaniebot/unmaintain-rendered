@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-06T21:43:25Z
 updated_at: 2025-11-07T16:01:53Z
 url: https://github.com/astral-sh/ruff/issues/21307
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `UP029` false positive on relative imports from local `.builtins` module
 
 ---
 
-_Issue opened by @amyreese on 2025-11-06 21:43_
+_@amyreese_
 
 ### Summary
 

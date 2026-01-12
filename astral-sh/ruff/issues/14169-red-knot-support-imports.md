@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T16:24:58Z
 updated_at: 2025-04-15T15:50:41Z
 url: https://github.com/astral-sh/ruff/issues/14169
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] support * imports
 
 ---
 
-_Issue opened by @carljm on 2024-11-07 16:24_
+_@carljm_
 
 PRs:
 - https://github.com/astral-sh/ruff/pull/16873

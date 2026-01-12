@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-28T18:31:49Z
 updated_at: 2025-03-05T00:36:22Z
 url: https://github.com/astral-sh/uv/issues/11863
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # Available PyPy3.10 is listed as 3.10.19 but it's actually 3.10.16
 
 ---
 
-_Issue opened by @DavidCEllis on 2025-02-28 18:31_
+_@DavidCEllis_
 
 ### Summary
 

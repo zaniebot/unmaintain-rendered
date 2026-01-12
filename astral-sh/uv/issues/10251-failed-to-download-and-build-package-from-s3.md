@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-31T12:33:38Z
 updated_at: 2024-12-31T17:59:27Z
 url: https://github.com/astral-sh/uv/issues/10251
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # Failed to download and build package from S3
 
 ---
 
-_Issue opened by @duducp on 2024-12-31 12:33_
+_@duducp_
 
 I have some packages that are hosted on S3 but when I try to add them to the project I get an authentication error. This only occurs on UV, via Poetry and PIP itself works normally. This seems to be a bug since UV is removing the query param `AWSAccessKeyId` from the URL when trying to download the package.
 

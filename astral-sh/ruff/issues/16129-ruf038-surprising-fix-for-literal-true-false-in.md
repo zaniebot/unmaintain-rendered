@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T23:17:31Z
 updated_at: 2025-02-16T15:01:50Z
 url: https://github.com/astral-sh/ruff/issues/16129
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `RUF038` Surprising fix for  `Literal[True, False]` in functions with overloads
 
 ---
 
-_Issue opened by @Geo5 on 2025-02-12 23:17_
+_@Geo5_
 
 ### Description
 

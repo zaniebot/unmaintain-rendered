@@ -14,14 +14,14 @@ head: zb/lock-requires
 created_at: 2024-06-12T17:12:38Z
 updated_at: 2024-06-12T18:19:01Z
 url: https://github.com/astral-sh/uv/pull/4282
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:07Z
 ```
 
 # Respect `requires-python` in `uv lock`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-12 17:12_
+_@zanieb_
 
 We weren't using the common interface in `uv lock` because it didn't support finding an interpreter without touching the virtual environment. Here I refactor the project interface to support what we need and update `uv lock` to use the shared implementation.
 

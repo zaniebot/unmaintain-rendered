@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-03T10:31:41Z
 updated_at: 2025-12-08T12:16:18Z
 url: https://github.com/astral-sh/uv/issues/15653
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # Support reading index credentials from files.
 
 ---
 
-_Issue opened by @peter-facko on 2025-09-03 10:31_
+_@peter-facko_
 
 ### Summary
 

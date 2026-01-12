@@ -13,14 +13,14 @@ head: zb/183
 created_at: 2024-12-11T15:20:36Z
 updated_at: 2024-12-11T16:06:22Z
 url: https://github.com/astral-sh/uv/pull/9815
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:59Z
 ```
 
 # Upgrade minimum Rust version to 1.83
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-11 15:20_
+_@zanieb_
 
 This reverts commit 6cc7a560f72a9e34907df5309d61980dac52a044 to reapply #9511 since we've disabled ppc64le-musl per #9793 
 

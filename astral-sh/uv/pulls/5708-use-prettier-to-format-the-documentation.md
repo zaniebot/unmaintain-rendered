@@ -14,14 +14,14 @@ head: konsti/format-docs
 created_at: 2024-08-01T19:28:56Z
 updated_at: 2024-08-02T13:58:34Z
 url: https://github.com/astral-sh/uv/pull/5708
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:58Z
 ```
 
 # Use prettier to format the documentation
 
 ---
 
-_Pull request opened by @konstin on 2024-08-01 19:28_
+_@konstin_
 
 To enforce the 100 character line limit in markdown files introduced in https://github.com/astral-sh/uv/pull/5635, and to automate the formatting of markdown files, i've added prettier and formatted our markdown files with it.
 

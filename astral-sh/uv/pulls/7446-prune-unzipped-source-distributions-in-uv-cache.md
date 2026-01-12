@@ -14,14 +14,14 @@ head: charlie/prune
 created_at: 2024-09-16T23:01:48Z
 updated_at: 2024-09-16T23:18:22Z
 url: https://github.com/astral-sh/uv/pull/7446
-synced_at: 2026-01-10T12:53:47Z
+synced_at: 2026-01-12T16:07:50Z
 ```
 
 # Prune unzipped source distributions in `uv cache prune --ci`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-16 23:01_
+_@charliermarsh_
 
 ## Summary
 

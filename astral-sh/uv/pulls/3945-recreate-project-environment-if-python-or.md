@@ -13,14 +13,14 @@ head: konsti/take-interpreter-into-account
 created_at: 2024-05-31T17:34:49Z
 updated_at: 2024-06-10T14:36:15Z
 url: https://github.com/astral-sh/uv/pull/3945
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:56Z
 ```
 
 # Recreate project environment if `--python` or `requires-python` doesn't match
 
 ---
 
-_Pull request opened by @konstin on 2024-05-31 17:34_
+_@konstin_
 
 Fixes #4131
 Fixes #3895

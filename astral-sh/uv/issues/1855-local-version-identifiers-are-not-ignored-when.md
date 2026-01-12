@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-22T04:34:19Z
 updated_at: 2024-03-16T14:25:53Z
 url: https://github.com/astral-sh/uv/issues/1855
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Local version identifiers are not ignored when testing version equality
 
 ---
 
-_Issue opened by @SnoopJ on 2024-02-22 04:34_
+_@SnoopJ_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

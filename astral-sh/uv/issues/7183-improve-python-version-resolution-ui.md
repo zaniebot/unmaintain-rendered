@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-07T21:52:44Z
 updated_at: 2024-09-10T02:51:19Z
 url: https://github.com/astral-sh/uv/issues/7183
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Improve Python version resolution UI
 
 ---
 
-_Issue opened by @lmmx on 2024-09-07 21:52_
+_@lmmx_
 
 I just resurrected an old project (I suspect over 10 years old, changed hands entirely at one point and was rewritten from Python 2 to 3)
 

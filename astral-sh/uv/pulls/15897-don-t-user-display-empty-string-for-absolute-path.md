@@ -13,14 +13,14 @@ head: konsti/path-display-fix
 created_at: 2025-09-16T17:11:20Z
 updated_at: 2025-09-16T17:49:09Z
 url: https://github.com/astral-sh/uv/pull/15897
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:00Z
 ```
 
 # Don't user display empty string for absolute path CWD
 
 ---
 
-_Pull request opened by @konstin on 2025-09-16 17:11_
+_@konstin_
 
 With the previous order an absolute path would become an empty string.
 

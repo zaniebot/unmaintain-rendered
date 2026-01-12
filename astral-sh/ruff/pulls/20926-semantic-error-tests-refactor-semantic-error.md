@@ -14,14 +14,14 @@ head: refactor_tests
 created_at: 2025-10-16T18:35:54Z
 updated_at: 2025-10-27T21:28:26Z
 url: https://github.com/astral-sh/ruff/pull/20926
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [semantic error tests]: refactor semantic error tests to separate files
 
 ---
 
-_Pull request opened by @11happy on 2025-10-16 18:35_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

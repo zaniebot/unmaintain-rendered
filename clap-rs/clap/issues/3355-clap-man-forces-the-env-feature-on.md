@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-01-28T21:13:39Z
 updated_at: 2024-07-10T15:49:52Z
 url: https://github.com/clap-rs/clap/issues/3355
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `clap_man` forces the `env` feature on
 
 ---
 
-_Issue opened by @epage on 2022-01-28 21:13_
+_@epage_
 
 ### Please complete the following tasks
 

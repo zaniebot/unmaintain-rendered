@@ -14,14 +14,14 @@ head: ty-intersection-callable-final
 created_at: 2025-05-29T12:08:07Z
 updated_at: 2025-06-02T11:14:59Z
 url: https://github.com/astral-sh/ruff/pull/18368
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Callable types are disjoint from non-callable `@final` nominal instance types
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-05-29 12:08_
+_@InSyncWithFoo_
 
 ## Summary
 

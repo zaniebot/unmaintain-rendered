@@ -14,14 +14,14 @@ head: konsti/remove-winreg
 created_at: 2025-02-26T17:13:26Z
 updated_at: 2025-02-26T17:56:17Z
 url: https://github.com/astral-sh/uv/pull/11805
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:00Z
 ```
 
 # Remove the winreg crate
 
 ---
 
-_Pull request opened by @konstin on 2025-02-26 17:13_
+_@konstin_
 
 Currently, we're using both the official `windows-*` with `windows-registry` crates as well as `winreg`, an older, community-maintained crate.
 

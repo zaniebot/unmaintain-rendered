@@ -14,14 +14,14 @@ head: charlie/invalidate-index
 created_at: 2024-08-12T02:26:15Z
 updated_at: 2024-08-13T23:42:05Z
 url: https://github.com/astral-sh/uv/pull/6026
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:09Z
 ```
 
 # Invalidate `uv.lock` if registry sources are removed
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-12 02:26_
+_@charliermarsh_
 
 ## Summary
 

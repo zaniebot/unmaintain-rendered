@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-29T00:56:35Z
 updated_at: 2025-06-16T17:26:31Z
 url: https://github.com/astral-sh/ruff/issues/9664
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [Feature Request] [NPY] Detect accidental cubic runtime cost due to `numpy.trace`
 
 ---
 
-_Issue opened by @randolf-scholz on 2024-01-29 00:56_
+_@randolf-scholz_
 
 There is a very common mistake people make in numerical code that incurs an accidental cubic runtime cost: They implement `np.trace(A @ B)`, which costs $O(n^3)$ instead of the equivalent `np.tensordot(A.T, B)` which costs $O(n^2)$, or `np.einsum` if batch dimensions are involved. (see [Frobenius Inner Product](https://en.wikipedia.org/wiki/Frobenius_inner_product))
 

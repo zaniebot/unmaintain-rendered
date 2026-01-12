@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-09T20:22:03Z
 updated_at: 2026-01-10T10:03:13Z
 url: https://github.com/astral-sh/ruff/issues/21873
-synced_at: 2026-01-10T12:06:55Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Group unused range suppression codes into single diagnostic
 
 ---
 
-_Issue opened by @amyreese on 2025-12-09 20:22_
+_@amyreese_
 
 ### Summary
 

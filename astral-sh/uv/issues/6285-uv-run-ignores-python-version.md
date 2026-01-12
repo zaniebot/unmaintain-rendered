@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-20T23:49:10Z
 updated_at: 2024-08-22T00:17:34Z
 url: https://github.com/astral-sh/uv/issues/6285
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # `uv run` ignores `.python-version`
 
 ---
 
-_Issue opened by @ketozhang on 2024-08-20 23:49_
+_@ketozhang_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-04T03:24:43Z
 updated_at: 2024-02-05T16:47:16Z
 url: https://github.com/clap-rs/clap/issues/5340
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Option to toggle off comma separator in help?
 
 ---
 
-_Issue opened by @mentalisttraceur on 2024-02-04 03:24_
+_@mentalisttraceur_
 
 ### Please complete the following tasks
 

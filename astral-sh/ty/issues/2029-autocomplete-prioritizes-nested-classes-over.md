@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T18:55:01Z
 updated_at: 2025-12-31T15:43:32Z
 url: https://github.com/astral-sh/ty/issues/2029
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Autocomplete prioritizes nested classes over properties
 
 ---
 
-_Issue opened by @steved-stripe on 2025-12-17 18:55_
+_@steved-stripe_
 
 ### Summary
 

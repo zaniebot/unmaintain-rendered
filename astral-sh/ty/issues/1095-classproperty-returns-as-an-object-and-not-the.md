@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-25T01:41:57Z
 updated_at: 2025-08-27T00:08:20Z
 url: https://github.com/astral-sh/ty/issues/1095
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Classproperty returns as an object and not the type
 
 ---
 
-_Issue opened by @brentonmcs on 2025-08-25 01:41_
+_@brentonmcs_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T23:18:57Z
 updated_at: 2024-12-18T18:54:53Z
 url: https://github.com/astral-sh/uv/issues/9985
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # Conforming to the XDG specification
 
 ---
 
-_Issue opened by @NellyWhads on 2024-12-17 23:18_
+_@NellyWhads_
 
 Currently, `uv` prioritizes `$HOME/...` paths over `$XDG_*` paths in most cases. This behavior is contradictory to the [XDG specification](https://specifications.freedesktop.org/basedir-spec/latest/#variables).
 

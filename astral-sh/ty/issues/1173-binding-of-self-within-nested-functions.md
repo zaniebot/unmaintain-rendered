@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-11T20:42:07Z
 updated_at: 2025-09-17T18:58:55Z
 url: https://github.com/astral-sh/ty/issues/1173
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Binding of Self within nested functions
 
 ---
 
-_Issue opened by @Glyphack on 2025-09-11 20:42_
+_@Glyphack_
 
 ### Summary
 

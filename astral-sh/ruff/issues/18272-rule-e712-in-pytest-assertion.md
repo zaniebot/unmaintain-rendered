@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-23T09:05:01Z
 updated_at: 2025-05-28T07:06:40Z
 url: https://github.com/astral-sh/ruff/issues/18272
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Rule E712 in pytest assertion
 
 ---
 
-_Issue opened by @EricDepagne on 2025-05-23 09:05_
+_@EricDepagne_
 
 ### Summary
 

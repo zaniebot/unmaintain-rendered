@@ -11,14 +11,14 @@ head: issue-forms
 created_at: 2023-06-21T19:52:51Z
 updated_at: 2023-06-29T17:18:24Z
 url: https://github.com/astral-sh/ruff/pull/5267
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Use issue forms instead of an issue template
 
 ---
 
-_Pull request opened by @namurphy on 2023-06-21 19:52_
+_@namurphy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

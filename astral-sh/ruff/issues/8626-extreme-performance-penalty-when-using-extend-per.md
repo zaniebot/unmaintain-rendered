@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-12T02:42:56Z
 updated_at: 2023-11-17T02:13:25Z
 url: https://github.com/astral-sh/ruff/issues/8626
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Extreme performance penalty when using `--extend-per-file-ignores` and leading recursive glob patterns
 
 ---
 
-_Issue opened by @ofek on 2023-11-12 02:42_
+_@ofek_
 
 ```
 git clone https://github.com/pypa/hatch

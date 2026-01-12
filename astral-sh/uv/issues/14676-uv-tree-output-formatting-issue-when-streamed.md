@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-17T07:21:48Z
 updated_at: 2025-08-11T12:42:43Z
 url: https://github.com/astral-sh/uv/issues/14676
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # uv tree output formatting issue, when streamed into textfile.
 
 ---
 
-_Issue opened by @666hwll on 2025-07-17 07:21_
+_@666hwll_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-26T10:26:06Z
 updated_at: 2025-05-27T06:55:43Z
 url: https://github.com/astral-sh/uv/issues/13655
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:34Z
 ```
 
 # Support for Dual Git/Editable Dependencies Configuration
 
 ---
 
-_Issue opened by @heelee-amitai-hs on 2025-05-26 10:26_
+_@heelee-amitai-hs_
 
 ## Summary
 We're looking for a way to support both Git dependencies and local editable dependencies for the same packages in UV, which would be essential for multi-package development workflows.

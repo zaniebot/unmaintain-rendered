@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-16T17:49:52Z
 updated_at: 2024-10-14T17:34:57Z
 url: https://github.com/astral-sh/uv/issues/7435
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # uv add `numpy` on legacy PyPI mirror does not respect Python version
 
 ---
 
-_Issue opened by @cambriancoder on 2024-09-16 17:49_
+_@cambriancoder_
 
 platform: `linux`
 `uv` version: `0.4.10`

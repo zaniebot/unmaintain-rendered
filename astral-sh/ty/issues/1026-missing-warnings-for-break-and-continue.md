@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-17T13:37:42Z
 updated_at: 2025-08-17T13:40:35Z
 url: https://github.com/astral-sh/ty/issues/1026
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Missing warnings for break and continue statements outside of loops
 
 ---
 
-_Issue opened by @correctmost on 2025-08-17 13:37_
+_@correctmost_
 
 ### Summary
 

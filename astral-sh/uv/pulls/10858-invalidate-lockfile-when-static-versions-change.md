@@ -13,14 +13,14 @@ head: charlie/v
 created_at: 2025-01-22T14:38:19Z
 updated_at: 2025-01-22T17:58:16Z
 url: https://github.com/astral-sh/uv/pull/10858
-synced_at: 2026-01-10T11:45:14Z
+synced_at: 2026-01-12T16:09:32Z
 ```
 
 # Invalidate lockfile when static versions change
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-22 14:38_
+_@charliermarsh_
 
 ## Summary
 

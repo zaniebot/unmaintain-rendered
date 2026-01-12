@@ -12,14 +12,14 @@ head: glob-errors
 created_at: 2022-11-21T18:23:33Z
 updated_at: 2022-11-21T19:24:22Z
 url: https://github.com/astral-sh/ruff/pull/858
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Propagate errors from glob::Pattern::new
 
 ---
 
-_Pull request opened by @andersk on 2022-11-21 18:23_
+_@andersk_
 
 Fixes #853.
 

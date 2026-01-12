@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-20T21:33:25Z
 updated_at: 2024-07-21T12:17:41Z
 url: https://github.com/astral-sh/ruff/issues/12425
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Inconsistent removal of whitespace around operators
 
 ---
 
-_Issue opened by @robin-weiland on 2024-07-20 21:33_
+_@robin-weiland_
 
 In the snippet below, there are two occurrences of the `**`-operator.
 Following pep8, I added spaces around them.

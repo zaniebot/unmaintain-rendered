@@ -12,14 +12,14 @@ head: charlie/tidy
 created_at: 2023-03-03T03:59:48Z
 updated_at: 2023-03-03T04:38:53Z
 url: https://github.com/astral-sh/ruff/pull/3319
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Abort when unable to fix relative imports past module root
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-03 03:59_
+_@charliermarsh_
 
 Closes the syntax error portion of #3318.
 

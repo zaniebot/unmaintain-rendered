@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-04T12:56:51Z
 updated_at: 2025-12-31T15:54:20Z
 url: https://github.com/astral-sh/ruff/issues/17203
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Use new diagnostic functionality
 
 ---
 
-_Issue opened by @ntBre on 2025-04-04 12:56_
+_@ntBre_
 
 ## Background
 

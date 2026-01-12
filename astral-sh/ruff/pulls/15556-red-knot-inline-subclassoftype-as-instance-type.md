@@ -13,14 +13,14 @@ head: alex/inline-dubious-method
 created_at: 2025-01-17T18:56:30Z
 updated_at: 2025-01-17T19:04:20Z
 url: https://github.com/astral-sh/ruff/pull/15556
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Inline `SubclassOfType::as_instance_type_of_metaclass()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-17 18:56_
+_@AlexWaygood_
 
 Addresses the review comment at https://github.com/astral-sh/ruff/pull/15547#discussion_r1920553392
 

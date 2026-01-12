@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-15T19:21:19Z
 updated_at: 2025-07-15T19:23:25Z
 url: https://github.com/astral-sh/uv/issues/14635
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # Active venv using uv
 
 ---
 
-_Issue opened by @ChaitanyaYeole02 on 2025-07-15 19:21_
+_@ChaitanyaYeole02_
 
 ### Summary
 

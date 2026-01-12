@@ -12,14 +12,14 @@ head: is-macro
 created_at: 2023-02-23T17:54:28Z
 updated_at: 2023-02-24T12:46:42Z
 url: https://github.com/astral-sh/ruff/pull/3182
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Adapt is-macro for a few enums
 
 ---
 
-_Pull request opened by @youknowone on 2023-02-23 17:54_
+_@youknowone_
 
 _No description provided._
 

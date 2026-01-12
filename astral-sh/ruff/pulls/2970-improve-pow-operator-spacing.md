@@ -13,14 +13,14 @@ head: charlie/pow
 created_at: 2023-02-16T20:14:07Z
 updated_at: 2023-02-16T20:17:33Z
 url: https://github.com/astral-sh/ruff/pull/2970
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Improve pow operator spacing
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-16 20:14_
+_@charliermarsh_
 
 Ensure that we add spaces to expressions like `foo.bar() ** 2`.
 

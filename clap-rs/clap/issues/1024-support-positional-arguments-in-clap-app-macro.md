@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-08-09T11:36:43Z
 updated_at: 2021-04-16T04:02:32Z
 url: https://github.com/clap-rs/clap/issues/1024
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Support positional arguments in `clap_app!` macro
 
 ---
 
-_Issue opened by @droundy on 2017-08-09 11:36_
+_@droundy_
 
 I would like for the `clap_app!` macro to support positional arguments.  If it does support them, then I would love for this to be documented.
 

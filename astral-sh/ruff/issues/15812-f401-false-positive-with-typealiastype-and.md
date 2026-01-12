@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-29T16:14:17Z
 updated_at: 2025-01-30T23:06:39Z
 url: https://github.com/astral-sh/ruff/issues/15812
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `F401` false positive with `TypeAliasType` and forward annotation
 
 ---
 
-_Issue opened by @Viicos on 2025-01-29 16:14_
+_@Viicos_
 
 ### Description
 

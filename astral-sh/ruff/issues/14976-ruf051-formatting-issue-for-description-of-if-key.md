@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-14T21:51:35Z
 updated_at: 2024-12-15T16:07:31Z
 url: https://github.com/astral-sh/ruff/issues/14976
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [RUF051] Formatting issue for description of `if-key-in-dict-del` (RUF051) in docs
 
 ---
 
-_Issue opened by @echoix on 2024-12-14 21:51_
+_@echoix_
 
 In the new rule [if-key-in-dict-del (RUF051)](https://docs.astral.sh/ruff/rules/if-key-in-dict-del/#if-key-in-dict-del-ruf051), there seems to be a formatting issue, as shown in the following screenshot.
 ![Image](https://github.com/user-attachments/assets/5d528cd7-d923-43ea-aced-9531753885ae)

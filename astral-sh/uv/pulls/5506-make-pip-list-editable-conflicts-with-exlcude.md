@@ -13,14 +13,14 @@ head: arg
 created_at: 2024-07-27T09:09:40Z
 updated_at: 2024-07-27T13:01:53Z
 url: https://github.com/astral-sh/uv/pull/5506
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:51Z
 ```
 
 # Make `pip list --editable` conflicts with `--exlcude-editable`
 
 ---
 
-_Pull request opened by @j178 on 2024-07-27 09:09_
+_@j178_
 
 ## Summary
 

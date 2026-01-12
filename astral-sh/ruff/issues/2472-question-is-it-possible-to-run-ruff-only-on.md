@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-02T12:33:04Z
 updated_at: 2025-03-28T13:09:00Z
 url: https://github.com/astral-sh/ruff/issues/2472
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # [Question] is it possible to run ruff only on edited lines of a branch/commit?
 
 ---
 
-_Issue opened by @tharwan on 2023-02-02 12:33_
+_@tharwan_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

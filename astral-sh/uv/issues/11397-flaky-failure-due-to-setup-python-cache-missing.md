@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T19:23:17Z
 updated_at: 2025-02-10T20:36:02Z
 url: https://github.com/astral-sh/uv/issues/11397
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # Flaky failure due to `setup-python` cache missing
 
 ---
 
-_Issue opened by @charliermarsh on 2025-02-10 19:23_
+_@charliermarsh_
 
 In: https://github.com/astral-sh/uv/actions/runs/13248696681/job/36981416581?pr=11395
 

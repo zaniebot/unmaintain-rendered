@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-17T13:28:32Z
 updated_at: 2024-07-09T11:34:30Z
 url: https://github.com/astral-sh/uv/issues/4357
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # universal-lock: non-conflicting requirements with non-overlapping marker expressions provoke a fork
 
 ---
 
-_Issue opened by @BurntSushi on 2024-06-17 13:28_
+_@BurntSushi_
 
 Consider these requirements:
 

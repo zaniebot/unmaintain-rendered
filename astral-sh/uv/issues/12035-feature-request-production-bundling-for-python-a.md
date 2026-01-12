@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T09:16:36Z
 updated_at: 2025-05-20T09:38:47Z
 url: https://github.com/astral-sh/uv/issues/12035
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # Feature Request: Production Bundling for Python – A Single File Deployment Approach
 
 ---
 
-_Issue opened by @ImreC on 2025-03-07 09:16_
+_@ImreC_
 
 ### Summary
 

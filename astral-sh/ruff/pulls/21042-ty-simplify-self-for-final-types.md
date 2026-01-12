@@ -15,14 +15,14 @@ head: david/self-for-final-classes
 created_at: 2025-10-23T08:35:53Z
 updated_at: 2025-10-29T20:31:03Z
 url: https://github.com/astral-sh/ruff/pull/21042
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [ty] Simplify `Self` for final types
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-23 08:35_
+_@sharkdp_
 
 ## Summary
 

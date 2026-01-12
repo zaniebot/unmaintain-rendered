@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-24T01:16:09Z
 updated_at: 2023-11-21T16:18:45Z
 url: https://github.com/astral-sh/uv/issues/176
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Explore the use of a secondary cache atop the HTTP cache
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-24 01:16_
+_@charliermarsh_
 
 When we fetch the list of files, we store the entire response in an HTTP cache. But we only need a subset of that response. Consider instead serializing the `Vec<File>` directly in a separate content-addressed cache? (This should at least be doable for wheel metadata, since it's immutable.)
 

@@ -14,14 +14,14 @@ head: david/implicit-type-aliases-literal
 created_at: 2025-11-06T15:38:26Z
 updated_at: 2025-11-07T16:48:19Z
 url: https://github.com/astral-sh/ruff/pull/21296
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [ty] Add support for `Literal`s in implicit type aliases
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-06 15:38_
+_@sharkdp_
 
 ## Summary
 

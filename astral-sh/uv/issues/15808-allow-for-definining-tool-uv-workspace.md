@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-12T12:36:57Z
 updated_at: 2025-09-12T13:33:17Z
 url: https://github.com/astral-sh/uv/issues/15808
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # Allow for definining `[tool.uv.workspace.dependencies]` or use the versions from the project root instead, so there can be workspace managed dependencies.
 
 ---
 
-_Issue opened by @sylbeth on 2025-09-12 12:36_
+_@sylbeth_
 
 ### Summary
 

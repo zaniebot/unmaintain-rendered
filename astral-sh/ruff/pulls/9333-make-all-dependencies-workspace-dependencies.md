@@ -13,14 +13,14 @@ head: charlie/workspace
 created_at: 2023-12-31T15:38:22Z
 updated_at: 2024-01-04T14:31:54Z
 url: https://github.com/astral-sh/ruff/pull/9333
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Make all dependencies workspace dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-31 15:38_
+_@charliermarsh_
 
 ## Summary
 

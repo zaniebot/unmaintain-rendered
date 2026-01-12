@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-30T04:00:46Z
 updated_at: 2025-10-30T16:50:57Z
 url: https://github.com/astral-sh/ruff/issues/21132
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `module-import-not-at-top-of-file` (`E402`) - false negative on `if TYPE_CHECKING` imports
 
 ---
 
-_Issue opened by @DetachHead on 2025-10-30 04:00_
+_@DetachHead_
 
 > It was unexpected to me, that, e.g., the following order is not flagged by isort (or any other rule like TCH or E402):
 > 

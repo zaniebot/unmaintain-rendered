@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T11:54:32Z
 updated_at: 2025-06-13T12:03:22Z
 url: https://github.com/astral-sh/uv/issues/14021
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # Add json output to 'uv pip tree'
 
 ---
 
-_Issue opened by @detlevo on 2025-06-13 11:54_
+_@detlevo_
 
 ### Summary
 

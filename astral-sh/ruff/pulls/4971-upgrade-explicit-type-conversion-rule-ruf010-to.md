@@ -13,14 +13,14 @@ head: charlie/str
 created_at: 2023-06-08T19:54:51Z
 updated_at: 2023-06-08T20:26:28Z
 url: https://github.com/astral-sh/ruff/pull/4971
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Upgrade explicit-type-conversion rule (`RUF010`) to remove unnecessary `str` calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-08 19:54_
+_@charliermarsh_
 
 ## Summary
 

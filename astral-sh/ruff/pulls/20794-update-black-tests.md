@@ -14,14 +14,14 @@ head: brent/import-black-tests
 created_at: 2025-10-09T21:54:55Z
 updated_at: 2025-10-14T14:15:02Z
 url: https://github.com/astral-sh/ruff/pull/20794
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # Update Black tests
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-09 21:54_
+_@ntBre_
 
 Summary
 --

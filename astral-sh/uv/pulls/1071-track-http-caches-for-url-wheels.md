@@ -13,14 +13,14 @@ head: charlie/http
 created_at: 2024-01-23T22:05:57Z
 updated_at: 2024-01-23T22:31:43Z
 url: https://github.com/astral-sh/uv/pull/1071
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:24Z
 ```
 
 # Track HTTP caches for URL wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-23 22:05_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-03-07T02:12:42Z
 updated_at: 2018-08-02T03:30:03Z
 url: https://github.com/clap-rs/clap/issues/889
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Easily replace only the messages for --help and --version
 
 ---
 
-_Issue opened by @porglezomp on 2017-03-07 02:12_
+_@porglezomp_
 
 I'm trying to help make a project's help messages consistent, and all of the messages are of the format "Start …", "Check …", "Print …", so the "Prints  version information" stands out. I was unable to find an easy way to replace only the help and version messages without re-wiring the commands themselves. Is there any easy solution I missed, or is this something that would have to be added.
 

@@ -14,14 +14,14 @@ assignees: []
 created_at: 2016-11-14T21:36:39Z
 updated_at: 2021-08-18T21:50:43Z
 url: https://github.com/clap-rs/clap/issues/751
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # use cases for value_of/values_of
 
 ---
 
-_Issue opened by @BurntSushi on 2016-11-14 21:36_
+_@BurntSushi_
 
 Sorry to keep opening issues, and this may indeed be more of a question because I've missed something, but what are the intended use cases of `value_of`/`values_of`? In particular, I notice that this is part of its contract:
 

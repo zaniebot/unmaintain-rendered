@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-06T09:06:51Z
 updated_at: 2024-12-06T14:46:00Z
 url: https://github.com/astral-sh/uv/issues/9671
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # allow `uv lock` to fail when lock file is "corrupted"
 
 ---
 
-_Issue opened by @Seluj78 on 2024-12-06 09:06_
+_@Seluj78_
 
 I recently switched to using `0.5.6` and when I do a rebase and run `uv lock` to update it, it now fails with the error
 

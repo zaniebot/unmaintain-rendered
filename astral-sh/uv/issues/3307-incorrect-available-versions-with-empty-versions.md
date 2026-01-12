@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-29T13:06:47Z
 updated_at: 2024-10-04T16:14:20Z
 url: https://github.com/astral-sh/uv/issues/3307
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Incorrect available versions with empty versions range
 
 ---
 
-_Issue opened by @konstin on 2024-04-29 13:06_
+_@konstin_
 
 I requested `ruff>=0.4.3,<0.5`, while 0.4.2 is currently the latest version. This shows:
 ```

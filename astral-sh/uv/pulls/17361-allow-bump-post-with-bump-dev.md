@@ -12,14 +12,14 @@ head: claude/allow-post-prerelease-bump-nfrvn
 created_at: 2026-01-08T14:38:30Z
 updated_at: 2026-01-08T19:02:57Z
 url: https://github.com/astral-sh/uv/pull/17361
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:44Z
 ```
 
 # Allow `--bump post` with `--bump dev`
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-08 14:38_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/17359
 

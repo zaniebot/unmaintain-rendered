@@ -14,14 +14,14 @@ head: zb/uv-run-no-workspace
 created_at: 2024-04-17T22:00:26Z
 updated_at: 2024-04-19T14:52:06Z
 url: https://github.com/astral-sh/uv/pull/3108
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:25Z
 ```
 
 # Allow workspace requirements to be ignored during `uv run`
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-17 22:00_
+_@zanieb_
 
 _No description provided._
 

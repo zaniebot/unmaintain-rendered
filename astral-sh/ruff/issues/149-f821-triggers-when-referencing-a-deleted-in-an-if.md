@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-11T03:20:32Z
 updated_at: 2022-09-11T14:28:08Z
 url: https://github.com/astral-sh/ruff/issues/149
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # F821 triggers when referencing a deleted (in an if) variable in an else/elif
 
 ---
 
-_Issue opened by @Jackenmen on 2022-09-11 03:20_
+_@Jackenmen_
 
 Example reproduction code:
 ```py

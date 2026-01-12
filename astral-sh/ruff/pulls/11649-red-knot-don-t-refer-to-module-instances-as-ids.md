@@ -12,14 +12,14 @@ head: module-rs-comments
 created_at: 2024-05-31T19:31:39Z
 updated_at: 2024-05-31T20:15:28Z
 url: https://github.com/astral-sh/ruff/pull/11649
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # red-knot: Don't refer to `Module` instances as IDs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-05-31 19:31_
+_@AlexWaygood_
 
 This PR is a followup to #11638.
 

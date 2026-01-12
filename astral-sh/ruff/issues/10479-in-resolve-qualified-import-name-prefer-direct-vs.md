@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-19T18:02:55Z
 updated_at: 2024-03-20T07:32:51Z
 url: https://github.com/astral-sh/ruff/issues/10479
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # In `resolve_qualified_import_name`, prefer direct vs. attribute names
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-19 18:02_
+_@charliermarsh_
 
 If both `import logging` and `from logging import error` are in scope, and the user asks for the symbol `logging.error`, I _think_ it makes sense to prefer `"error"` over `"logging.error"`.
 

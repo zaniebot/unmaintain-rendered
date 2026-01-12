@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-05T12:20:59Z
 updated_at: 2024-09-11T13:18:24Z
 url: https://github.com/astral-sh/uv/issues/7079
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Specifying external dependencies in pyproject.toml
 
 ---
 
-_Issue opened by @BlueMagma2 on 2024-09-05 12:20_
+_@BlueMagma2_
 
 # Introduction
 

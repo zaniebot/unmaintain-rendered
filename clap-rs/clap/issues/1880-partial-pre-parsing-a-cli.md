@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-04-29T15:38:15Z
 updated_at: 2023-09-09T00:05:58Z
 url: https://github.com/clap-rs/clap/issues/1880
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Partial / Pre Parsing a CLI
 
 ---
 
-_Issue opened by @kbknapp on 2020-04-29 15:38_
+_@kbknapp_
 
 [Comment on closing](https://github.com/clap-rs/clap/issues/1880#issuecomment-990173791):
 > In the short term, we now have IgnoreErrors.

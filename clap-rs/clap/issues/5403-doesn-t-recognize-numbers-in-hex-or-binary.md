@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-20T11:55:14Z
 updated_at: 2024-03-22T11:40:52Z
 url: https://github.com/clap-rs/clap/issues/5403
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # doesn't recognize numbers in hex or binary notation
 
 ---
 
-_Issue opened by @zahash on 2024-03-20 11:55_
+_@zahash_
 
 ### Please complete the following tasks
 

@@ -12,14 +12,14 @@ head: zb/cargo-dev
 created_at: 2024-06-06T12:05:42Z
 updated_at: 2024-06-06T12:56:27Z
 url: https://github.com/astral-sh/uv/pull/4090
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:02Z
 ```
 
 # Fix tracing output in `cargo dev` commands
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-06 12:05_
+_@zanieb_
 
 There's probably a more succinct way to do this, but I figure we should have it be similar to `uv::main` so I copied most of the content from there.
 

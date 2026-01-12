@@ -12,14 +12,14 @@ head: thin-lto
 created_at: 2023-11-07T16:02:02Z
 updated_at: 2023-12-01T07:46:07Z
 url: https://github.com/astral-sh/ruff/pull/8544
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Try thin lto
 
 ---
 
-_Pull request opened by @konstin on 2023-11-07 16:02_
+_@konstin_
 
 Let's see what impact on performance this has
 

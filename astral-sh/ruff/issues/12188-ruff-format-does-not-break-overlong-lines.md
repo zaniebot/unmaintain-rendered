@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-04T12:53:44Z
 updated_at: 2024-07-04T13:16:52Z
 url: https://github.com/astral-sh/ruff/issues/12188
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # ruff format does not break overlong lines
 
 ---
 
-_Issue opened by @PerMildner on 2024-07-04 12:53_
+_@PerMildner_
 
 I would expect `ruff format` to break overlong comment lines, but it does not seem to do this.
 

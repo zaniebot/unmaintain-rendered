@@ -14,14 +14,14 @@ head: micha/add-ignore-action
 created_at: 2025-11-22T21:29:52Z
 updated_at: 2025-11-25T13:08:24Z
 url: https://github.com/astral-sh/ruff/pull/21582
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Add 'remove unused ignore comment' code action
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-22 21:29_
+_@MichaReiser_
 
 ## Summary
 

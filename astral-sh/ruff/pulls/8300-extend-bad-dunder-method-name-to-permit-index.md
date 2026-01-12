@@ -13,14 +13,14 @@ head: add-index-dunder-method
 created_at: 2023-10-28T09:05:48Z
 updated_at: 2023-10-28T11:15:31Z
 url: https://github.com/astral-sh/ruff/pull/8300
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Extend `bad-dunder-method-name` to permit `__index__`
 
 ---
 
-_Pull request opened by @burgholzer on 2023-10-28 09:05_
+_@burgholzer_
 
 ## Summary
 

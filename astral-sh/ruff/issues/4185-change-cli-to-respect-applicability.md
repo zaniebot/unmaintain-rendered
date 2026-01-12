@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-05-02T09:24:05Z
 updated_at: 2023-10-06T03:41:44Z
 url: https://github.com/astral-sh/ruff/issues/4185
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Change CLI to respect `Applicability`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-05-02 09:24_
+_@MichaReiser_
 
 This task is part of #4181 and depends on #4183. The goal is to change the CLI to respect the `Fix::applicability`. 
 

@@ -13,14 +13,14 @@ head: charlie/ltt
 created_at: 2025-03-09T01:47:30Z
 updated_at: 2025-07-18T23:08:51Z
 url: https://github.com/astral-sh/uv/pull/12070
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:07Z
 ```
 
 # Automatically infer the PyTorch index via `--torch-backend=auto`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-09 01:47_
+_@charliermarsh_
 
 ## Summary
 

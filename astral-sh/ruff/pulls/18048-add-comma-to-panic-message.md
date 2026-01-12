@@ -13,14 +13,14 @@ head: charlie/comma
 created_at: 2025-05-12T15:47:25Z
 updated_at: 2025-05-12T16:26:56Z
 url: https://github.com/astral-sh/ruff/pull/18048
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # Add comma to panic message
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-12 15:47_
+_@charliermarsh_
 
 ## Summary
 

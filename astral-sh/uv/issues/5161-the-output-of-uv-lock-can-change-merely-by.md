@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-17T18:19:49Z
 updated_at: 2024-07-18T08:30:14Z
 url: https://github.com/astral-sh/uv/issues/5161
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # the output of `uv lock` can change merely by changing the order of requirements in `pyproject.toml`
 
 ---
 
-_Issue opened by @BurntSushi on 2024-07-17 18:19_
+_@BurntSushi_
 
 The easiest way to reproduce this is with a packse index running, as I discovered this bug with one of our existing scenarios.
 

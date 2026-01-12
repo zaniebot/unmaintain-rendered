@@ -12,14 +12,14 @@ head: ecosystem-typeshed
 created_at: 2023-03-16T14:15:10Z
 updated_at: 2023-03-17T06:42:34Z
 url: https://github.com/astral-sh/ruff/pull/3559
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # ci: add `python/typeshed` to ecosystem check
 
 ---
 
-_Pull request opened by @XuehaiPan on 2023-03-16 14:15_
+_@XuehaiPan_
 
 Add [`python/typeshed`](https://github.com/python/typeshed) to ecosystem check with the rule `PYI`.
 

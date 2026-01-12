@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-06T18:09:28Z
 updated_at: 2024-12-07T20:16:15Z
 url: https://github.com/astral-sh/uv/issues/9692
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # `--project` and `lock` produces incorrect relative path in lock file
 
 ---
 
-_Issue opened by @JamesMTSloan on 2024-12-06 18:09_
+_@JamesMTSloan_
 
 ## Minimal reproduction
 Running in `/home/user/projects/uv_test` with `uv` 0.5.6.

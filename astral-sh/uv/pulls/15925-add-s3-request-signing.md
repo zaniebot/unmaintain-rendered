@@ -14,14 +14,14 @@ head: charlie/s3
 created_at: 2025-09-18T03:00:16Z
 updated_at: 2025-09-22T23:59:53Z
 url: https://github.com/astral-sh/uv/pull/15925
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:01Z
 ```
 
 # Add S3 request signing
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-18 03:00_
+_@charliermarsh_
 
 ## Summary
 

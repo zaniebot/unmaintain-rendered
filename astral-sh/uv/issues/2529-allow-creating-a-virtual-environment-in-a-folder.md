@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-18T23:23:58Z
 updated_at: 2024-05-01T16:34:53Z
 url: https://github.com/astral-sh/uv/issues/2529
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Allow creating a virtual environment in a folder with existing files
 
 ---
 
-_Issue opened by @gaborbernat on 2024-03-18 23:23_
+_@gaborbernat_
 
 ```
 ❯ lsd --tree .venv/

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-04T13:12:46Z
 updated_at: 2025-11-04T15:01:34Z
 url: https://github.com/astral-sh/ruff/issues/21272
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # noqa: RET503 not working
 
 ---
 
-_Issue opened by @Siecje on 2025-11-04 13:12_
+_@Siecje_
 
 ### Summary
 

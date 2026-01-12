@@ -13,14 +13,14 @@ head: david/annotated-stringified
 created_at: 2025-11-14T11:14:35Z
 updated_at: 2025-11-14T13:09:10Z
 url: https://github.com/astral-sh/ruff/pull/21447
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [ty] Support stringified annotations in value-position `Annotated` instances
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-14 11:14_
+_@sharkdp_
 
 ## Summary
 

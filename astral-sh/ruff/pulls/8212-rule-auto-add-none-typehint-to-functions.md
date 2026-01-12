@@ -12,14 +12,14 @@ head: suggest-typehint-return-None
 created_at: 2023-10-25T12:22:31Z
 updated_at: 2023-11-14T07:15:01Z
 url: https://github.com/astral-sh/ruff/pull/8212
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Rule: Auto-add `-> None` typehint to functions
 
 ---
 
-_Pull request opened by @intgr on 2023-10-25 12:22_
+_@intgr_
 
 ## Summary
 

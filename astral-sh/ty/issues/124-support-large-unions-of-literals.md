@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-16T02:59:04Z
 updated_at: 2025-05-11T07:38:35Z
 url: https://github.com/astral-sh/ty/issues/124
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # support large unions of literals
 
 ---
 
-_Issue opened by @carljm on 2025-04-16 02:59_
+_@carljm_
 
 With https://github.com/astral-sh/ruff/pull/17419 we set a low limit on the size of unions-of-literals. We will probably want to increase this limit (maybe to somewhere in the 4-5000 range?), so we can support e.g. exhaustiveness checks on large code-generated enum types.
 

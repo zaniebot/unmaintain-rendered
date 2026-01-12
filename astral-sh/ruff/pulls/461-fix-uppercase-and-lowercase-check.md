@@ -12,14 +12,14 @@ head: fix-casing-check
 created_at: 2022-10-22T08:02:17Z
 updated_at: 2022-10-22T16:49:14Z
 url: https://github.com/astral-sh/ruff/pull/461
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Fix uppercase and lowercase check
 
 ---
 
-_Pull request opened by @harupy on 2022-10-22 08:02_
+_@harupy_
 
 `string.chars().all(|c| c.is_uppercase|is_lowercase())` retruns `False` when `string` contains `_`. This PR fixes it.
 

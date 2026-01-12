@@ -12,14 +12,14 @@ head: charlie/check
 created_at: 2023-10-03T18:19:49Z
 updated_at: 2023-10-03T18:57:51Z
 url: https://github.com/astral-sh/ruff/pull/7788
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Show changed files when running under `--check`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-03 18:19_
+_@charliermarsh_
 
 ## Summary
 

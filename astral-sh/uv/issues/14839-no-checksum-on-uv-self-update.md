@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-23T08:06:03Z
 updated_at: 2025-07-23T12:12:37Z
 url: https://github.com/astral-sh/uv/issues/14839
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # No checksum on "uv self update"
 
 ---
 
-_Issue opened by @jradxl on 2025-07-23 08:06_
+_@jradxl_
 
 ### Summary
 

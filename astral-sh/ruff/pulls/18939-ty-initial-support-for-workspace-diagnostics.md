@@ -14,14 +14,14 @@ head: dhruv/workspace-diagnostics
 created_at: 2025-06-25T16:30:25Z
 updated_at: 2025-07-07T13:31:17Z
 url: https://github.com/astral-sh/ruff/pull/18939
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [ty] Initial support for workspace diagnostics
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-06-25 16:30_
+_@dhruvmanila_
 
 ## Summary
 

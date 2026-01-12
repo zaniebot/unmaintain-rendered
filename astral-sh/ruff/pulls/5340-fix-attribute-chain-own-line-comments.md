@@ -12,14 +12,14 @@ head: fix_attribute_chain_own_line_comments_rebased
 created_at: 2023-06-23T16:40:12Z
 updated_at: 2023-06-26T09:32:15Z
 url: https://github.com/astral-sh/ruff/pull/5340
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix attribute chain own line comments
 
 ---
 
-_Pull request opened by @konstin on 2023-06-23 16:40_
+_@konstin_
 
 ## Motation
 

@@ -13,14 +13,14 @@ head: charlie/exe
 created_at: 2024-07-25T18:09:14Z
 updated_at: 2024-07-25T21:05:48Z
 url: https://github.com/astral-sh/uv/pull/5456
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:49Z
 ```
 
 # Infer missing `.exe` in Windows Python discovery
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-25 18:09_
+_@charliermarsh_
 
 ## Summary
 

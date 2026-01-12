@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-11-12T20:11:18Z
 updated_at: 2022-05-03T14:13:27Z
 url: https://github.com/clap-rs/clap/issues/1104
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Allow Enum Variants as Arg|ArgGroup|SubCommand keys
 
 ---
 
-_Issue opened by @kbknapp on 2017-11-12 20:11_
+_@kbknapp_
 
 I.e. remove the "stringly typed" nature of clap
 

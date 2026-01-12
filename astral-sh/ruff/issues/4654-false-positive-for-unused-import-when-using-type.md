@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-25T11:36:32Z
 updated_at: 2023-06-01T22:19:39Z
 url: https://github.com/astral-sh/ruff/issues/4654
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False positive for unused import when using type as string with generic class behind TYPE_CHECKING flag
 
 ---
 
-_Issue opened by @last-partizan on 2023-05-25 11:36_
+_@last-partizan_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: charlie/env-var
 created_at: 2024-04-18T20:58:56Z
 updated_at: 2024-04-18T21:08:53Z
 url: https://github.com/astral-sh/uv/pull/3126
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:26Z
 ```
 
 # Update list of shell environment variables
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-18 20:58_
+_@charliermarsh_
 
 _No description provided._
 

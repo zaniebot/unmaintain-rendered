@@ -12,14 +12,14 @@ head: charlie/configuration-i.5
 created_at: 2022-12-12T05:10:14Z
 updated_at: 2022-12-12T15:13:53Z
 url: https://github.com/astral-sh/ruff/pull/1205
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Resolve hierarchical settings and Python files in a single filesystem pass
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-12 05:10_
+_@charliermarsh_
 
 _No description provided._
 

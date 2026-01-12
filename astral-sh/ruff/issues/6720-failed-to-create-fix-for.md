@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-21T09:15:08Z
 updated_at: 2023-08-22T17:45:07Z
 url: https://github.com/astral-sh/ruff/issues/6720
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Failed to create fix for StringDotFormatExtraNamedArguments: Failed to extract expression from source
 
 ---
 
-_Issue opened by @qarmin on 2023-08-21 09:15_
+_@qarmin_
 
 Ruff 0.0.285
 

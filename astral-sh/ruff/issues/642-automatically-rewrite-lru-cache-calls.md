@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-11-07T14:57:11Z
 updated_at: 2022-11-16T04:08:21Z
 url: https://github.com/astral-sh/ruff/issues/642
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Automatically rewrite `lru_cache` calls
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-07 14:57_
+_@charliermarsh_
 
 See: https://github.com/asottile/pyupgrade#remove-parentheses-from-functoolslru_cache and https://github.com/asottile/pyupgrade#replace-functoolslru_cachemaxsizenone-with-shorthand.
 

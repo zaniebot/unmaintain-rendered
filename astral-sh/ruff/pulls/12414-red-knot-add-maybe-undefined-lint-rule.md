@@ -13,14 +13,14 @@ head: cjm/maybe-undef
 created_at: 2024-07-20T00:19:18Z
 updated_at: 2024-07-22T20:54:01Z
 url: https://github.com/astral-sh/ruff/pull/12414
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] add maybe-undefined lint rule
 
 ---
 
-_Pull request opened by @carljm on 2024-07-20 00:19_
+_@carljm_
 
 Add a lint rule to detect if a name is definitely or possibly undefined at a given usage.
 

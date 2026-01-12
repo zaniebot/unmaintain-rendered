@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-08T17:11:51Z
 updated_at: 2024-08-13T23:42:06Z
 url: https://github.com/astral-sh/uv/issues/5920
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # `uv lock` should invalidate lockfile if registries change
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-08 17:11_
+_@charliermarsh_
 
 If a lockfile lists a package from a registry that isn't part of the index URLs passed to `uv lock`, we should probably not reuse it.
 

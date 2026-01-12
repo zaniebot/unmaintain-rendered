@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-07-18T22:09:15Z
 updated_at: 2018-08-02T03:29:51Z
 url: https://github.com/clap-rs/clap/issues/585
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Please support combining flags and options into one list
 
 ---
 
-_Issue opened by @joshtriplett on 2016-07-18 22:09_
+_@joshtriplett_
 
 I don't want to make the distinction between "flags" (that don't take a value) and "options" (that do take a value); I'd like to just list all of them in one sorted list.  Would you consider providing a setting to do so?  (Would you consider making it the default?)
 

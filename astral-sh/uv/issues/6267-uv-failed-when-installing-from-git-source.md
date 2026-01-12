@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T18:49:23Z
 updated_at: 2024-08-20T18:52:26Z
 url: https://github.com/astral-sh/uv/issues/6267
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # uv failed when installing from git source
 
 ---
 
-_Issue opened by @robert1003 on 2024-08-20 18:49_
+_@robert1003_
 
 As titled, uv failed the following command while pip works. Am I missing anything here? Thank you!
 

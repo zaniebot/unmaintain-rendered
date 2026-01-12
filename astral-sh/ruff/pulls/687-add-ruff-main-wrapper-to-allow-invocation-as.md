@@ -12,14 +12,14 @@ head: __main__
 created_at: 2022-11-11T20:26:51Z
 updated_at: 2022-11-11T20:54:00Z
 url: https://github.com/astral-sh/ruff/pull/687
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add ruff.__main__ wrapper to allow invocation as ‘python -m ruff’
 
 ---
 
-_Pull request opened by @andersk on 2022-11-11 20:26_
+_@andersk_
 
 Fixes #658.
 

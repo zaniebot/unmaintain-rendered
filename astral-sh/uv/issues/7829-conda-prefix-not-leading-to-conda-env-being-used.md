@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-01T07:43:51Z
 updated_at: 2024-10-01T14:06:45Z
 url: https://github.com/astral-sh/uv/issues/7829
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # CONDA_PREFIX not leading to conda env being used
 
 ---
 
-_Issue opened by @mbspng on 2024-10-01 07:43_
+_@mbspng_
 
 The `CONDA_PREFIX` is not leading to my conda env (called `ssa`) being used with uv.
 

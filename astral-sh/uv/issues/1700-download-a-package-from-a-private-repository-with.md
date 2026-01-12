@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-19T15:53:39Z
 updated_at: 2024-06-27T11:42:33Z
 url: https://github.com/astral-sh/uv/issues/1700
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Download a package from a private repository with bad certificate
 
 ---
 
-_Issue opened by @frague59 on 2024-02-19 15:53_
+_@frague59_
 
 Hi, 
 

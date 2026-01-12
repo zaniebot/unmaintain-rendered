@@ -12,14 +12,14 @@ head: pin
 created_at: 2023-01-21T19:32:01Z
 updated_at: 2023-01-21T19:41:37Z
 url: https://github.com/astral-sh/ruff/pull/2069
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # fix: pin rustpython to the same revision to fix cargo vendor
 
 ---
 
-_Pull request opened by @figsoda on 2023-01-21 19:32_
+_@figsoda_
 
 I was trying to update ruff in nixpkgs and ran into this error when it was running `cargo vendor`
 ```

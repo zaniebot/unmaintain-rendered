@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-28T12:44:55Z
 updated_at: 2025-09-18T14:17:56Z
 url: https://github.com/astral-sh/ruff/issues/20134
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PTH101, PTH104, PTH105, and PTH121 ignore extra arguments
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-28 12:44_
+_@dscorbett_
 
 ### Summary
 

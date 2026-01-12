@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-18T03:41:59Z
 updated_at: 2025-04-23T13:58:20Z
 url: https://github.com/astral-sh/uv/issues/12960
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # Can we speed up installation/pyc compilation for reused inline packages.
 
 ---
 
-_Issue opened by @Light2Dark on 2025-04-18 03:41_
+_@Light2Dark_
 
 ### Question
 

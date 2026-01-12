@@ -14,14 +14,14 @@ head: redundant-ternary-rule
 created_at: 2024-09-02T21:16:10Z
 updated_at: 2024-09-04T06:22:17Z
 url: https://github.com/astral-sh/ruff/pull/13218
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [ruff] implement useless if-else (RUF034)
 
 ---
 
-_Pull request opened by @vieira127 on 2024-09-02 21:16_
+_@vieira127_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

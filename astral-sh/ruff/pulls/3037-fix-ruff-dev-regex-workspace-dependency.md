@@ -12,14 +12,14 @@ head: fix-cargo-toml
 created_at: 2023-02-19T17:57:33Z
 updated_at: 2023-02-19T18:20:40Z
 url: https://github.com/astral-sh/ruff/pull/3037
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Fix ruff_dev regex workspace dependency
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-02-19 17:57_
+_@JonathanPlasse_
 
 _No description provided._
 

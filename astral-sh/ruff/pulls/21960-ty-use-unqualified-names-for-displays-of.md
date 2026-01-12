@@ -14,14 +14,14 @@ head: alex/typevar-display
 created_at: 2025-12-13T16:09:40Z
 updated_at: 2025-12-13T20:23:18Z
 url: https://github.com/astral-sh/ruff/pull/21960
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Use unqualified names for displays of `TypeAliasType`s and unbound `ParamSpec`s/`TypeVar`s
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-13 16:09_
+_@AlexWaygood_
 
 ## Summary
 

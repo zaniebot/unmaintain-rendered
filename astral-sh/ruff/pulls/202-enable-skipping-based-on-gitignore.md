@@ -11,14 +11,14 @@ head: charlie/gitiginore
 created_at: 2022-09-15T15:02:45Z
 updated_at: 2023-02-03T05:06:14Z
 url: https://github.com/astral-sh/ruff/pull/202
-synced_at: 2026-01-12T04:51:59Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Enable skipping based on .gitignore
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-15 15:02_
+_@charliermarsh_
 
 This works but it's kind of slow -- it increases the benchmark time from ~300ms to ~420ms which feels like a lot for a nice-to-have feature, so I'd want to make this opt-in.
 

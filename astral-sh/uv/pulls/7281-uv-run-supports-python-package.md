@@ -14,14 +14,14 @@ head: run-package
 created_at: 2024-09-11T05:39:31Z
 updated_at: 2024-09-11T21:57:47Z
 url: https://github.com/astral-sh/uv/pull/7281
-synced_at: 2026-01-10T12:53:44Z
+synced_at: 2026-01-12T16:07:46Z
 ```
 
 # `uv run` supports python package
 
 ---
 
-_Pull request opened by @j178 on 2024-09-11 05:39_
+_@j178_
 
 ## Summary
 

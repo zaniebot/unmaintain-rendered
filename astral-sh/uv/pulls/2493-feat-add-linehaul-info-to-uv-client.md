@@ -13,14 +13,14 @@ head: linehaul
 created_at: 2024-03-17T03:29:44Z
 updated_at: 2024-03-20T17:41:44Z
 url: https://github.com/astral-sh/uv/pull/2493
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:04Z
 ```
 
 # feat: add linehaul info to uv-client
 
 ---
 
-_Pull request opened by @samypr100 on 2024-03-17 03:29_
+_@samypr100_
 
 ## Summary
 

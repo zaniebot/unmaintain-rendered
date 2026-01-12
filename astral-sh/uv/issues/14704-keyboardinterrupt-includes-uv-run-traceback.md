@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-18T07:40:05Z
 updated_at: 2025-07-18T13:07:37Z
 url: https://github.com/astral-sh/uv/issues/14704
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # KeyboardInterrupt includes `uv run` traceback
 
 ---
 
-_Issue opened by @Dobatymo on 2025-07-18 07:40_
+_@Dobatymo_
 
 ### Summary
 

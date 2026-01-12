@@ -13,14 +13,14 @@ head: charlie/serde-untagged
 created_at: 2024-09-30T23:55:45Z
 updated_at: 2024-10-01T15:49:08Z
 url: https://github.com/astral-sh/uv/pull/7823
-synced_at: 2026-01-10T12:53:56Z
+synced_at: 2026-01-12T16:08:01Z
 ```
 
 # Add detailed errors for `tool.uv.sources` deserialization failures
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-30 23:55_
+_@charliermarsh_
 
 ## Summary
 

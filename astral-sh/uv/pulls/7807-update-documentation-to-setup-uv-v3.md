@@ -13,14 +13,14 @@ head: refactor-docs
 created_at: 2024-09-30T11:40:53Z
 updated_at: 2024-09-30T20:23:46Z
 url: https://github.com/astral-sh/uv/pull/7807
-synced_at: 2026-01-10T12:53:56Z
+synced_at: 2026-01-12T16:08:01Z
 ```
 
 # Update documentation to setup-uv@v3
 
 ---
 
-_Pull request opened by @javadzarezadeh on 2024-09-30 11:40_
+_@javadzarezadeh_
 
 ## Summary
 

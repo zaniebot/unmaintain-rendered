@@ -12,14 +12,14 @@ head: charlie/nursery
 created_at: 2023-05-12T23:24:39Z
 updated_at: 2023-05-16T21:26:50Z
 url: https://github.com/astral-sh/ruff/pull/4407
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Enable `pycodestyle` rules under new "nursery" category
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-12 23:24_
+_@charliermarsh_
 
 ## Summary
 

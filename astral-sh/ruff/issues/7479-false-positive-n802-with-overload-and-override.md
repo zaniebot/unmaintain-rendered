@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-18T08:22:39Z
 updated_at: 2023-09-18T18:32:41Z
 url: https://github.com/astral-sh/ruff/issues/7479
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # False-positive `N802` with `overload` and `override`
 
 ---
 
-_Issue opened by @bersbersbers on 2023-09-18 08:22_
+_@bersbersbers_
 
 * A minimal code snippet that reproduces the bug.
 

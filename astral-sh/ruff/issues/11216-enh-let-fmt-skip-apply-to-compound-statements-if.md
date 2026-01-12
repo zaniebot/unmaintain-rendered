@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-30T16:55:50Z
 updated_at: 2025-11-18T18:02:10Z
 url: https://github.com/astral-sh/ruff/issues/11216
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # [ENH] Let `fmt: skip` apply to compound statements, if they share a line.
 
 ---
 
-_Issue opened by @randolf-scholz on 2024-04-30 16:55_
+_@randolf-scholz_
 
 ```python
 if True: x = 0  # fmt: skip

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-06T09:27:50Z
 updated_at: 2018-08-02T03:29:39Z
 url: https://github.com/clap-rs/clap/issues/109
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # greedy argument parsing introduced by obviously evil ;) commit: 6669f0a
 
 ---
 
-_Issue opened by @Byron on 2015-05-06 09:27_
+_@Byron_
 
 6669f0a introduces shorthand parsing for multiple values. However, this causes subcommands to be parsed as flag-values, thus making it impossible to properly call the program.
 

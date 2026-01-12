@@ -13,14 +13,14 @@ head: zb/aarch64-test
 created_at: 2025-07-02T18:23:55Z
 updated_at: 2025-07-02T20:18:48Z
 url: https://github.com/astral-sh/uv/pull/14427
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:12Z
 ```
 
 # Add linux aarch64 smoke tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-02 18:23_
+_@zanieb_
 
 Testing https://github.com/astral-sh/uv/pull/14426
 

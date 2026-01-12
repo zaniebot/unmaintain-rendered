@@ -14,14 +14,14 @@ head: UP015
 created_at: 2025-02-01T15:30:09Z
 updated_at: 2025-02-05T17:11:30Z
 url: https://github.com/astral-sh/ruff/pull/15872
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`pyupgrade`] Better messages and diagnostic range (`UP015`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-01 15:30_
+_@InSyncWithFoo_
 
 ## Summary
 

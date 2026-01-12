@@ -13,14 +13,14 @@ head: dhruv/token-kinds
 created_at: 2024-05-02T05:15:45Z
 updated_at: 2024-05-10T13:08:30Z
 url: https://github.com/astral-sh/ruff/pull/11237
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Expose `TokenKind` to the linter
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-02 05:15_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: renovate/serde-monorepo
 created_at: 2024-12-16T00:49:05Z
 updated_at: 2024-12-16T01:11:55Z
 url: https://github.com/astral-sh/uv/pull/9925
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:02Z
 ```
 
 # Update Rust crate serde to v1.0.216
 
 ---
 
-_Pull request opened by @renovate on 2024-12-16 00:49_
+_@renovate_
 
 This PR contains the following updates:
 

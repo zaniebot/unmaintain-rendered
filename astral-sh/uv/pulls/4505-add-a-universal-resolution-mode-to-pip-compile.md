@@ -13,14 +13,14 @@ head: charlie/universal
 created_at: 2024-06-25T01:56:20Z
 updated_at: 2024-06-25T21:28:51Z
 url: https://github.com/astral-sh/uv/pull/4505
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:16Z
 ```
 
 # Add a universal resolution mode to `pip compile`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-25 01:56_
+_@charliermarsh_
 
 ## Summary
 

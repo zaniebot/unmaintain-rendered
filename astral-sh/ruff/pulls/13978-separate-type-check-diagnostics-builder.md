@@ -13,14 +13,14 @@ head: dhruv/diagnostics-builder
 created_at: 2024-10-29T11:11:59Z
 updated_at: 2024-10-30T18:59:50Z
 url: https://github.com/astral-sh/ruff/pull/13978
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Separate type check diagnostics builder
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-10-29 11:11_
+_@dhruvmanila_
 
 ## Summary
 

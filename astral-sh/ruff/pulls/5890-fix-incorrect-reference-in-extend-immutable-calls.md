@@ -13,14 +13,14 @@ head: charle/doc
 created_at: 2023-07-19T17:21:22Z
 updated_at: 2023-07-19T20:11:45Z
 url: https://github.com/astral-sh/ruff/pull/5890
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Fix incorrect reference in `extend-immutable-calls` documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-19 17:21_
+_@charliermarsh_
 
 _No description provided._
 

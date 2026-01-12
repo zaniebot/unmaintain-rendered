@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-15T13:28:36Z
 updated_at: 2025-05-15T18:50:21Z
 url: https://github.com/astral-sh/ruff/issues/18119
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Tests using fixtures prefixed with underscore (_) are flagged as violating PT019
 
 ---
 
-_Issue opened by @ckutlu on 2025-05-15 13:28_
+_@ckutlu_
 
 ### Summary
 

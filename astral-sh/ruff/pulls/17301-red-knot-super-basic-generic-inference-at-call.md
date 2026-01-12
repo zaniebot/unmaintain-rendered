@@ -13,14 +13,14 @@ head: dcreager/infer-function-calls
 created_at: 2025-04-08T21:00:29Z
 updated_at: 2025-04-16T19:07:37Z
 url: https://github.com/astral-sh/ruff/pull/17301
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Super-basic generic inference at call sites
 
 ---
 
-_Pull request opened by @dcreager on 2025-04-08 21:00_
+_@dcreager_
 
 This PR adds **_very_** basic inference of generic typevars at call sites. It does not bring in a full unification algorithm, and there are a few TODOs in the test suite that are not discharged by this. But it handles a good number of useful cases! And the PR does not add anything that would go away with a more sophisticated constraint solver.
 

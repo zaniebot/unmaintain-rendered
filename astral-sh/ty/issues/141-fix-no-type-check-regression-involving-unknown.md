@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-02T07:36:35Z
 updated_at: 2025-12-17T14:07:56Z
 url: https://github.com/astral-sh/ty/issues/141
-synced_at: 2026-01-10T01:54:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Fix `@no_type_check` regression involving unknown decorators
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-02 07:36_
+_@sharkdp_
 
 astral-sh/ruff#17017 introduced a regression in our understanding of `@no_type_check`, leading to two open `TODO`s in the tests here:
 

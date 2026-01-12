@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T14:12:56Z
 updated_at: 2024-11-06T18:00:07Z
 url: https://github.com/astral-sh/uv/issues/8863
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # uv resolves to older numba version incompatible with python version
 
 ---
 
-_Issue opened by @MitchellAcoustics on 2024-11-06 14:12_
+_@MitchellAcoustics_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -12,14 +12,14 @@ head: charlie/clean
 created_at: 2024-01-29T02:11:25Z
 updated_at: 2024-01-29T02:15:12Z
 url: https://github.com/astral-sh/uv/pull/1159
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:28Z
 ```
 
 # Remove cache `purge` methods to `clean`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-29 02:11_
+_@charliermarsh_
 
 This is more consistent with the public interface.
 

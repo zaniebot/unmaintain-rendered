@@ -13,14 +13,14 @@ head: zb/yanked
 created_at: 2024-02-12T17:31:23Z
 updated_at: 2024-02-12T19:17:08Z
 url: https://github.com/astral-sh/uv/pull/1283
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:33Z
 ```
 
 # Add scenarios for yanked packages
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-12 17:31_
+_@zanieb_
 
 _No description provided._
 

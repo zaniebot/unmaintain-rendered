@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-16T12:16:23Z
 updated_at: 2025-12-23T12:49:21Z
 url: https://github.com/astral-sh/uv/issues/17142
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # `uv` couldn't find `ffmpeg` on macOS installed with `Homebrew` when running `demucs`
 
 ---
 
-_Issue opened by @setoelkahfi on 2025-12-16 12:16_
+_@setoelkahfi_
 
 ### Summary
 

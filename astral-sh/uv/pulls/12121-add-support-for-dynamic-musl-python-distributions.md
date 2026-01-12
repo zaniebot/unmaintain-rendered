@@ -12,14 +12,14 @@ head: zb/musl
 created_at: 2025-03-11T20:59:22Z
 updated_at: 2025-03-12T08:55:39Z
 url: https://github.com/astral-sh/uv/pull/12121
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:08Z
 ```
 
 # Add support for dynamic musl Python distributions on x86-64 Linux
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-11 20:59_
+_@zanieb_
 
 Following the upstream release and #12120, removes gating preventing installation of the managed musl Python versions.
 

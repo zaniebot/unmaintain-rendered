@@ -13,14 +13,14 @@ head: dylan/stabilize-raise-exception-bytes
 created_at: 2025-09-05T19:25:31Z
 updated_at: 2025-09-08T14:16:24Z
 url: https://github.com/astral-sh/ruff/pull/20273
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [`flake8-errmsg`] Stabilize extending `raw-string-in-exception` (`EM101`) to support byte strings
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-05 19:25_
+_@dylwil3_
 
 Introduced in #18867. Removed gating, updated tests, updated docs.
 

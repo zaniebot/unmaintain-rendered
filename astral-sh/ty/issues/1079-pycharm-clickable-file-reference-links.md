@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-21T10:44:33Z
 updated_at: 2025-10-22T17:36:15Z
 url: https://github.com/astral-sh/ty/issues/1079
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # PyCharm: clickable file reference links
 
 ---
 
-_Issue opened by @davidhyman on 2025-08-21 10:44_
+_@davidhyman_
 
 ### Summary
 

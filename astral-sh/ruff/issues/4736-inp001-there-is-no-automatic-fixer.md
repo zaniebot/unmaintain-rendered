@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-30T21:47:07Z
 updated_at: 2023-05-31T04:43:47Z
 url: https://github.com/astral-sh/ruff/issues/4736
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # INP001: there is no automatic fixer
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-05-30 21:47_
+_@saippuakauppias_
 
 There is no automatic fix for rule https://beta.ruff.rs/docs/rules/implicit-namespace-package/ , which could simply create a `__init__.py` file next to the file from the error.
 

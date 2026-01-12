@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-04-30T14:38:58Z
 updated_at: 2022-05-01T01:21:52Z
 url: https://github.com/clap-rs/clap/issues/3669
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Clap 3.1.13 fails to build by unwrapping a None value
 
 ---
 
-_Issue opened by @sondr3 on 2022-04-30 14:38_
+_@sondr3_
 
 ### Please complete the following tasks
 

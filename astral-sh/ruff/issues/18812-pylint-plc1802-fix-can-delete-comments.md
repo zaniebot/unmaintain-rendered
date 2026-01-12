@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-20T05:39:10Z
 updated_at: 2025-06-23T00:32:59Z
 url: https://github.com/astral-sh/ruff/issues/18812
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`Pylint`] `PLC1802` fix can delete comments
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-20 05:39_
+_@MeGaGiGaGon_
 
 ### Summary
 

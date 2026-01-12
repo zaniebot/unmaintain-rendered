@@ -13,14 +13,14 @@ head: dependabot/cargo/mimalloc-0.1.39
 created_at: 2023-09-15T08:33:00Z
 updated_at: 2023-09-15T09:02:36Z
 url: https://github.com/astral-sh/ruff/pull/7402
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Bump mimalloc from 0.1.38 to 0.1.39
 
 ---
 
-_Pull request opened by @dependabot on 2023-09-15 08:33_
+_@dependabot_
 
 Bumps [mimalloc](https://github.com/purpleprotocol/mimalloc_rust) from 0.1.38 to 0.1.39.
 <details>

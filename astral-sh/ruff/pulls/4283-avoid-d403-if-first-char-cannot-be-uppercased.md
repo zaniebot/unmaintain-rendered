@@ -12,14 +12,14 @@ head: fix/D403/skip-if-no-uppercase
 created_at: 2023-05-08T13:44:23Z
 updated_at: 2023-05-08T23:11:45Z
 url: https://github.com/astral-sh/ruff/pull/4283
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Avoid `D403` if first char cannot be uppercased
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-05-08 13:44_
+_@dhruvmanila_
 
 fixes: #4280 
 

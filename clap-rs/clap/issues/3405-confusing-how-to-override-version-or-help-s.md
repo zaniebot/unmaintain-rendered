@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-02-05T04:39:11Z
 updated_at: 2024-05-06T16:21:45Z
 url: https://github.com/clap-rs/clap/issues/3405
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Confusing how to override `version` or `help`s behavior
 
 ---
 
-_Issue opened by @bcantrill on 2022-02-05 04:39_
+_@bcantrill_
 
 Maintainer's notes
 - We'd remove the pre-generated help / version arguments

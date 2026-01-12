@@ -12,14 +12,14 @@ head: format-stmt-aug-assign
 created_at: 2023-07-10T15:38:38Z
 updated_at: 2023-07-11T07:06:25Z
 url: https://github.com/astral-sh/ruff/pull/5655
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Format StmtAugAssign
 
 ---
 
-_Pull request opened by @konstin on 2023-07-10 15:38_
+_@konstin_
 
 ## Summary
 

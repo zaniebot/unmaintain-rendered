@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-30T13:14:50Z
 updated_at: 2024-07-01T09:01:55Z
 url: https://github.com/astral-sh/ruff/issues/12111
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Command for Initializing Ruff Configuration
 
 ---
 
-_Issue opened by @erickguan on 2024-06-30 13:14_
+_@erickguan_
 
 Hey,
 

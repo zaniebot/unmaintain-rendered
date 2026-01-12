@@ -14,14 +14,14 @@ head: cjm/invalidtd
 created_at: 2025-10-31T14:54:44Z
 updated_at: 2025-10-31T15:51:23Z
 url: https://github.com/astral-sh/ruff/pull/21168
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] prefer declared type on invalid TypedDict creation
 
 ---
 
-_Pull request opened by @carljm on 2025-10-31 14:54_
+_@carljm_
 
 ## Summary
 

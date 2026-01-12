@@ -14,14 +14,14 @@ head: alex/nits
 created_at: 2026-01-01T14:57:05Z
 updated_at: 2026-01-01T15:01:02Z
 url: https://github.com/astral-sh/ruff/pull/22329
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Use `IntersectionType::from_elements` more
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-01 14:57_
+_@AlexWaygood_
 
 ## Summary
 

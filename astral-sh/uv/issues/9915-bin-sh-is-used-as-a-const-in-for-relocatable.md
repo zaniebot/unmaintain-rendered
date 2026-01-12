@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T14:59:23Z
 updated_at: 2025-01-06T20:47:42Z
 url: https://github.com/astral-sh/uv/issues/9915
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # /bin/sh is used as a const in for relocatable console_scripts in the shebang
 
 ---
 
-_Issue opened by @markmarkmarkthebest on 2024-12-15 14:59_
+_@markmarkmarkthebest_
 
 I have a console script which invokes a code that expects environments variables containing a dot (.) in their names to be passed. Sadly unlike "/bin/bash", /bin/sh does not support environment variable names in that format. It would be really nice if you could respect the "SHELL" env var to override the shebang in the relocatable console_scripts.
 This is the relevant line of code: 

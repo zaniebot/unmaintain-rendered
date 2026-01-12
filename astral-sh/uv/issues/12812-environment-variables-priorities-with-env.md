@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-10T16:39:00Z
 updated_at: 2025-04-16T14:37:54Z
 url: https://github.com/astral-sh/uv/issues/12812
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # environment variables priorities with .env
 
 ---
 
-_Issue opened by @baggiponte on 2025-04-10 16:39_
+_@baggiponte_
 
 ### Summary
 

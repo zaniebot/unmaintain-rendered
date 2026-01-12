@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-21T09:47:05Z
 updated_at: 2026-01-05T18:58:54Z
 url: https://github.com/astral-sh/uv/issues/17204
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:46Z
 ```
 
 # Feature Request: Option to disable HTTP/2 multiplexing / force separate TCP connections per download
 
 ---
 
-_Issue opened by @frankjoey2048 on 2025-12-21 09:47_
+_@frankjoey2048_
 
 
 ## Summary

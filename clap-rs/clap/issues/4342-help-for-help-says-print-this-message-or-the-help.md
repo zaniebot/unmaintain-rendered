@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-03T21:43:43Z
 updated_at: 2022-11-08T05:21:47Z
 url: https://github.com/clap-rs/clap/issues/4342
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # help for `help` says "Print this message or the help of the given subcommand(s)" but only takes one subcommand
 
 ---
 
-_Issue opened by @joshtriplett on 2022-10-03 21:43_
+_@joshtriplett_
 
 The help text for the `help` subcommand says:
 ```

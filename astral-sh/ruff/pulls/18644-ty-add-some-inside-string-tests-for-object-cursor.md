@@ -14,14 +14,14 @@ head: ag/object-attr-dot-string-tests
 created_at: 2025-06-12T11:43:33Z
 updated_at: 2025-06-12T11:57:20Z
 url: https://github.com/astral-sh/ruff/pull/18644
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [ty] Add some "inside string" tests for `object.<CURSOR>` completions
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-06-12 11:43_
+_@BurntSushi_
 
 Ref https://github.com/astral-sh/ruff/pull/18629#pullrequestreview-2919922754
 

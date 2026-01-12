@@ -13,14 +13,14 @@ head: zb/docker-plan
 created_at: 2025-06-16T19:07:51Z
 updated_at: 2025-06-17T20:04:41Z
 url: https://github.com/astral-sh/uv/pull/14083
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:01Z
 ```
 
 # Add a `docker-plan` step to consolidate push and tag logic
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-16 19:07_
+_@zanieb_
 
 The dist plan parsing is pretty hard to understand, and I want to add more images, e.g., for DockerHub in #14088. As a simplifying precursor... move the dist plan processing into a dedicated step.
 

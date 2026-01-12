@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-16T22:14:18Z
 updated_at: 2025-12-28T20:23:11Z
 url: https://github.com/astral-sh/uv/issues/17154
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # Add support for local venvs in workspace repositories
 
 ---
 
-_Issue opened by @danijar on 2025-12-16 22:14_
+_@danijar_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: charlie/docs
 created_at: 2023-01-25T18:09:12Z
 updated_at: 2023-01-25T18:09:18Z
 url: https://github.com/astral-sh/ruff/pull/2163
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add an FAQ on autofix
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-25 18:09_
+_@charliermarsh_
 
 _No description provided._
 

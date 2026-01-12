@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-02T14:50:50Z
 updated_at: 2025-10-30T06:09:48Z
 url: https://github.com/astral-sh/uv/issues/5727
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Should `uv sync` sync the full workspace by default?
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-02 14:50_
+_@charliermarsh_
 
 If you have a virtual workspace, we do this. But for non-virtual workspaces, we sync the workspace root. It's a little bit of a footgun (see, e.g., https://github.com/astral-sh/ruff/pull/12622#issuecomment-2265469492).
 

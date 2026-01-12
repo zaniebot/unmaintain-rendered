@@ -14,14 +14,14 @@ head: alex/build-rs
 created_at: 2024-10-14T11:07:14Z
 updated_at: 2024-10-14T18:23:38Z
 url: https://github.com/astral-sh/ruff/pull/13747
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Add a build.rs file to `red_knot_python_semantic`, and document pitfalls of using `rstest` in combination with `mdtest`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-14 11:07_
+_@AlexWaygood_
 
 ## Summary
 

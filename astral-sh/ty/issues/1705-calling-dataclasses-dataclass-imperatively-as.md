@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-01T13:32:56Z
 updated_at: 2025-12-03T08:05:27Z
 url: https://github.com/astral-sh/ty/issues/1705
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Calling dataclasses.dataclass imperatively (as opposed to as a decorator) produces errors
 
 ---
 
-_Issue opened by @alex on 2025-12-01 13:32_
+_@alex_
 
 ### Summary
 

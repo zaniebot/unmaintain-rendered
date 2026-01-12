@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-23T03:28:34Z
 updated_at: 2025-11-16T17:48:32Z
 url: https://github.com/astral-sh/uv/issues/16414
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # Add support for SSL_CERT_DIR
 
 ---
 
-_Issue opened by @samypr100 on 2025-10-23 03:28_
+_@samypr100_
 
 > Sidenote, `uv` doesn't support `SSL_CERT_DIR` directly but we should probably add explicit support so as its properly supported by `rustls-native-certs` as of a few months ago. 
 

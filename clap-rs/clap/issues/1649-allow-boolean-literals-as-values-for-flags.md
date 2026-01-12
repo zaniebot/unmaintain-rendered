@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-01-31T11:04:32Z
 updated_at: 2024-06-03T11:15:32Z
 url: https://github.com/clap-rs/clap/issues/1649
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Allow boolean literals as values for flags
 
 ---
 
-_Issue opened by @emilk on 2020-01-31 11:04_
+_@emilk_
 
 The behavior of `--flag=false` setting the flag to the value `true` has caused problems for me many times. The problem is that boolean arguments are treated differently than arguments of other types.
 

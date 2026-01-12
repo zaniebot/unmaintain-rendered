@@ -13,14 +13,14 @@ head: feature/PERF401PERF402
 created_at: 2023-06-22T12:20:52Z
 updated_at: 2023-07-06T17:34:34Z
 url: https://github.com/astral-sh/ruff/pull/5298
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # [`perflint`] Add `PERF401` and `PERF402` rules
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-06-22 12:20_
+_@qdegraaf_
 
 ## Summary
 

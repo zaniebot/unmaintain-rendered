@@ -14,14 +14,14 @@ head: charlie/fix-only
 created_at: 2023-04-29T04:08:31Z
 updated_at: 2023-05-04T19:26:10Z
 url: https://github.com/astral-sh/ruff/pull/4146
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Change `--fix-only` exit semantics to mirror `--fix`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-29 04:08_
+_@charliermarsh_
 
 ## Summary
 

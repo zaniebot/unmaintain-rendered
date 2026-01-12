@@ -13,14 +13,14 @@ head: charlie/D411
 created_at: 2023-09-13T16:13:21Z
 updated_at: 2023-09-13T16:56:08Z
 url: https://github.com/astral-sh/ruff/pull/7351
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Treat whitespace-only line as blank for D411
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-13 16:13_
+_@charliermarsh_
 
 This better aligns with the definition of "blank line" that we use throughout the docstring rules.
 

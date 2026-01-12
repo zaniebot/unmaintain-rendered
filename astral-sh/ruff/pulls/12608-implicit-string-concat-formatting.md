@@ -12,14 +12,14 @@ head: implicit-string-concat-formatting
 created_at: 2024-08-01T06:34:40Z
 updated_at: 2024-08-01T06:35:05Z
 url: https://github.com/astral-sh/ruff/pull/12608
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # implicit string concat formatting
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-01 06:34_
+_@MichaReiser_
 
 - **Extract `AnyString` nodes from `string/mod`**
 - **Extract `normalize` into its own submodule**

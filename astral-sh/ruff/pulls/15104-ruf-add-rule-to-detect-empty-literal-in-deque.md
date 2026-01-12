@@ -14,14 +14,14 @@ head: unnecessary_deque_literal
 created_at: 2024-12-22T23:42:44Z
 updated_at: 2025-01-04T12:52:33Z
 url: https://github.com/astral-sh/ruff/pull/15104
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`RUF`] Add rule to detect empty literal in deque call (`RUF025`)
 
 ---
 
-_Pull request opened by @w0nder1ng on 2024-12-22 23:42_
+_@w0nder1ng_
 
 ## Summary
 

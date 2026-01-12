@@ -13,14 +13,14 @@ head: alex/dry-ci
 created_at: 2025-10-18T15:26:41Z
 updated_at: 2025-10-18T17:00:58Z
 url: https://github.com/astral-sh/ruff/pull/20958
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # Reduce duplicated logic between the macOS and Windows CI jobs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-18 15:26_
+_@AlexWaygood_
 
 ## Summary
 

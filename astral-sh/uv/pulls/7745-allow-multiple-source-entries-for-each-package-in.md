@@ -13,14 +13,14 @@ head: charlie/multi-sources
 created_at: 2024-09-27T18:29:43Z
 updated_at: 2024-09-30T21:16:46Z
 url: https://github.com/astral-sh/uv/pull/7745
-synced_at: 2026-01-10T12:53:54Z
+synced_at: 2026-01-12T16:07:58Z
 ```
 
 # Allow multiple source entries for each package in `tool.uv.sources`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-27 18:29_
+_@charliermarsh_
 
 ## Summary
 

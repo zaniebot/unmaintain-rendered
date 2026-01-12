@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-13T23:27:10Z
 updated_at: 2024-11-15T19:08:07Z
 url: https://github.com/astral-sh/uv/issues/9104
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # Unable to configure basic HTTP auth via env for `UV_DEFAULT_INDEX`
 
 ---
 
-_Issue opened by @qbedard on 2024-11-13 23:27_
+_@qbedard_
 
 It looks like there's no way to configure the default index authentication via environment variables without incorporating it into the index URL itself. This gets a bit tricky when you need to set a rotating password separately from the URL (such as for CodeArtifact). The current hack is to do some string manipulation to jam the password into the URL when publishing, but it would be really nice to avoid that.
 

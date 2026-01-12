@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-08T23:20:33Z
 updated_at: 2025-02-14T20:54:38Z
 url: https://github.com/astral-sh/uv/issues/11344
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # Should my team's project structure work as a uv workspace?
 
 ---
 
-_Issue opened by @omer54463 on 2025-02-08 23:20_
+_@omer54463_
 
 ### Question
 

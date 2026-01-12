@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-05T22:51:35Z
 updated_at: 2024-10-24T14:33:07Z
 url: https://github.com/astral-sh/ruff/issues/12702
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Implement flake8-pydantic
 
 ---
 
-_Issue opened by @nakashima-hikaru on 2024-08-05 22:51_
+_@nakashima-hikaru_
 
 Is there any plan to support [flake8-pydantic](https://github.com/Viicos/flake8-pydantic)?
 This plugin can be found in pydantic official site.

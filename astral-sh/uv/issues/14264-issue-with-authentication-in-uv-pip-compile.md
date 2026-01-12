@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-25T18:00:53Z
 updated_at: 2025-07-02T13:39:30Z
 url: https://github.com/astral-sh/uv/issues/14264
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Issue with Authentication in uv pip compile Command Using Private Repository
 
 ---
 
-_Issue opened by @jmwachtel on 2025-06-25 18:00_
+_@jmwachtel_
 
 ### Summary
 

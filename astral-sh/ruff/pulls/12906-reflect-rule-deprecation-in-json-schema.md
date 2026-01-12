@@ -12,14 +12,14 @@ head: reflect-rule-deprecation-in-json-schema
 created_at: 2024-08-15T14:12:14Z
 updated_at: 2024-08-19T10:05:20Z
 url: https://github.com/astral-sh/ruff/pull/12906
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Reflect rule deprecation in JSON schema
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-15 14:12_
+_@MichaReiser_
 
 ## Summary
 

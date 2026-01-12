@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-05-20T13:01:59Z
 updated_at: 2021-05-20T20:44:17Z
 url: https://github.com/clap-rs/clap/issues/2491
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Setting to disable the usage of Environment Variables
 
 ---
 
-_Issue opened by @hasezoey on 2021-05-20 13:01_
+_@hasezoey_
 
 ### Please complete the following tasks
 

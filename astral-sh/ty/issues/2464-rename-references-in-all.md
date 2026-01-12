@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-12T13:16:16Z
 updated_at: 2026-01-12T13:50:46Z
 url: https://github.com/astral-sh/ty/issues/2464
-synced_at: 2026-01-12T14:02:46Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Rename references in `__all__`
 
 ---
 
-_Issue opened by @niclasvaneyk-teaminternet on 2026-01-12 13:16_
+_@niclasvaneyk-teaminternet_
 
 ### Summary
 

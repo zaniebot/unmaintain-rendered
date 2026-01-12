@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-04T21:07:57Z
 updated_at: 2024-02-05T06:25:21Z
 url: https://github.com/astral-sh/ruff/issues/9817
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # BUG: ruff 0.1.9 and 0.2.0 don't seem to respect noqa comments for NPY rules
 
 ---
 
-_Issue opened by @neutrinoceros on 2024-02-04 21:07_
+_@neutrinoceros_
 
 Following https://github.com/numpy/numpy/pull/25738, I tried updating my code to only use non-deprecated numpy API as follow
 

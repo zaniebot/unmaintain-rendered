@@ -12,14 +12,14 @@ head: charlie/quote
 created_at: 2023-07-23T02:03:38Z
 updated_at: 2023-12-13T03:19:38Z
 url: https://github.com/astral-sh/ruff/pull/6001
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Allow `flake8-type-checking` rules to automatically quote runtime-evaluated references
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-23 02:03_
+_@charliermarsh_
 
 ## Summary
 

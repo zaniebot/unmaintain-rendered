@@ -11,14 +11,14 @@ head: main
 created_at: 2023-04-25T15:58:25Z
 updated_at: 2023-06-12T16:55:40Z
 url: https://github.com/astral-sh/ruff/pull/4096
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # RUF008/9 for non-dataclasses as well
 
 ---
 
-_Pull request opened by @adampauls on 2023-04-25 15:58_
+_@adampauls_
 
 Closes #4053. 
 

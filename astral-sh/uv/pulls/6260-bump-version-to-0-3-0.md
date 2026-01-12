@@ -13,14 +13,14 @@ head: zb/030
 created_at: 2024-08-20T16:50:13Z
 updated_at: 2024-08-20T17:30:00Z
 url: https://github.com/astral-sh/uv/pull/6260
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:18Z
 ```
 
 # Bump version to 0.3.0
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-20 16:50_
+_@zanieb_
 
 [Rendered](https://github.com/astral-sh/uv/blob/zb/030/CHANGELOG.md#030)
 

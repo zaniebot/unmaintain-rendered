@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-29T00:24:06Z
 updated_at: 2024-11-29T20:48:05Z
 url: https://github.com/astral-sh/uv/issues/9515
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # Specifying different dependency versions for different platforms
 
 ---
 
-_Issue opened by @merajhashemi on 2024-11-29 00:24_
+_@merajhashemi_
 
 Hello,
 I've encountered an issue while trying to specify different versions of PyTorch for Intel macOS in my project.

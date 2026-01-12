@@ -12,14 +12,14 @@ head: charlie/false
 created_at: 2022-12-31T23:38:19Z
 updated_at: 2022-12-31T23:38:23Z
 url: https://github.com/astral-sh/ruff/pull/1521
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Avoid some false positives for ends-in-period checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-31 23:38_
+_@charliermarsh_
 
 Resolves: #1518.
 

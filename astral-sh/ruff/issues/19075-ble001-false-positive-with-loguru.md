@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-01T17:01:21Z
 updated_at: 2025-12-29T19:30:32Z
 url: https://github.com/astral-sh/ruff/issues/19075
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # BLE001 false-positive with Loguru
 
 ---
 
-_Issue opened by @jsleb333 on 2025-07-01 17:01_
+_@jsleb333_
 
 ### Summary
 

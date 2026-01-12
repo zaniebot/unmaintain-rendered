@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-30T10:55:15Z
 updated_at: 2024-03-18T20:55:23Z
 url: https://github.com/astral-sh/uv/issues/518
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # libgit2 shouldn't put write protection on git files in the cache
 
 ---
 
-_Issue opened by @konstin on 2023-11-30 10:55_
+_@konstin_
 
 Currently, when you try to remove a cache directory with a git checkout inside of it, `rm -r` complains.
 

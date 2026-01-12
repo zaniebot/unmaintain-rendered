@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-18T12:50:06Z
 updated_at: 2024-03-19T12:12:53Z
 url: https://github.com/astral-sh/ruff/issues/10455
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Some lines in PEP 723 blocks trigger ERA001
 
 ---
 
-_Issue opened by @zeevro on 2024-03-18 12:50_
+_@zeevro_
 
 Ruff (version 0.3.3) treats some lines from PEP 723 blocks as commented-out code.
 

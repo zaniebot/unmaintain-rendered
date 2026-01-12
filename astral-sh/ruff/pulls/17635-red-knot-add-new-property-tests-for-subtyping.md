@@ -13,14 +13,14 @@ head: dhruv/callable-bottom-property
 created_at: 2025-04-25T19:51:39Z
 updated_at: 2025-04-25T22:28:15Z
 url: https://github.com/astral-sh/ruff/pull/17635
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Add new property tests for subtyping with "bottom" callable
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-25 19:51_
+_@dhruvmanila_
 
 ## Summary
 

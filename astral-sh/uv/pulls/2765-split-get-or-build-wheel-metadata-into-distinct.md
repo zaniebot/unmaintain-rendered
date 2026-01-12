@@ -13,14 +13,14 @@ head: charlie/split-database-metadata
 created_at: 2024-04-01T23:22:42Z
 updated_at: 2024-04-01T23:52:22Z
 url: https://github.com/astral-sh/uv/pull/2765
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:12Z
 ```
 
 # Split `get_or_build_wheel_metadata` into distinct methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-01 23:22_
+_@charliermarsh_
 
 ## Summary
 

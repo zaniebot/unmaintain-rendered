@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-27T15:57:44Z
 updated_at: 2025-05-27T16:02:00Z
 url: https://github.com/astral-sh/ty/issues/524
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # narrow within `sys.version_info` conditional
 
 ---
 
-_Issue opened by @metaist on 2025-05-27 15:57_
+_@metaist_
 
 ### Summary
 

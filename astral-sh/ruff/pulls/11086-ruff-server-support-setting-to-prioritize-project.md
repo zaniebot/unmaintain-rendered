@@ -14,14 +14,14 @@ head: jane/server/settings/prioritize-workspace-settings
 created_at: 2024-04-22T01:38:43Z
 updated_at: 2024-04-26T08:23:22Z
 url: https://github.com/astral-sh/ruff/pull/11086
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # `ruff server`: Support setting to prioritize project configuration over editor configuration
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-22 01:38_
+_@snowsignal_
 
 ## Summary
 

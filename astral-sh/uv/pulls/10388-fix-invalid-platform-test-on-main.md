@@ -13,14 +13,14 @@ head: konsti/fix-open3d-test
 created_at: 2025-01-08T10:44:29Z
 updated_at: 2025-01-08T10:55:08Z
 url: https://github.com/astral-sh/uv/pull/10388
-synced_at: 2026-01-10T11:44:46Z
+synced_at: 2026-01-12T16:09:16Z
 ```
 
 # Fix `invalid_platform` test on main
 
 ---
 
-_Pull request opened by @konstin on 2025-01-08 10:44_
+_@konstin_
 
 This test started failing on main.
 

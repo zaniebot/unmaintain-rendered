@@ -14,14 +14,14 @@ head: ibraheem/duplicate-diagnostics
 created_at: 2025-10-24T05:37:09Z
 updated_at: 2025-10-24T17:21:41Z
 url: https://github.com/astral-sh/ruff/pull/21056
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [ty] Avoid duplicate diagnostics during multi-inference of standalone expressions
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-10-24 05:37_
+_@ibraheemdev_
 
 ## Summary
 

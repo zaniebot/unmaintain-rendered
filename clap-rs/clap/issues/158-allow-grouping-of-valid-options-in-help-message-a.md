@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-07-15T03:52:02Z
 updated_at: 2018-08-02T03:29:41Z
 url: https://github.com/clap-rs/clap/issues/158
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Allow grouping of valid options in help message (a-la docopt or getopts style)
 
 ---
 
-_Issue opened by @kbknapp on 2015-07-15 03:52_
+_@kbknapp_
 
 Instead of breaking up each type of argument into, `FLAGS`, `OPTIONS` and `ARGS`, add an option which combines them all into a single `OPTIONS` section a-la docopt or getopts style.
 

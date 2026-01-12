@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-21T18:31:32Z
 updated_at: 2024-10-22T15:43:41Z
 url: https://github.com/astral-sh/uv/issues/8423
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # `uv publish` doesn't respect the `--allow-insecure-host` flag
 
 ---
 
-_Issue opened by @oriori1703 on 2024-10-21 18:31_
+_@oriori1703_
 
 It seems like `uv publish` doesn't respect the `--allow-insecure-host` flag
 

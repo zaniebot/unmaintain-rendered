@@ -15,14 +15,14 @@ head: david/do-not-merge-requires-python-test
 created_at: 2025-04-15T07:19:57Z
 updated_at: 2025-05-19T18:07:07Z
 url: https://github.com/astral-sh/ruff/pull/17404
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Do not merge: Run ecosystem checks with 3.9
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-15 07:19_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/remove-deprecated-tests
 created_at: 2024-02-01T15:08:13Z
 updated_at: 2024-02-01T16:28:51Z
 url: https://github.com/astral-sh/ruff/pull/9752
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Use fake rules for testing deprecation and removal infrastructure
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-01 15:08_
+_@zanieb_
 
 Updates #9689 and #9691 to use rule testing infrastructure from #9747 
 

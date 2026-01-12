@@ -13,14 +13,14 @@ head: charlie/a
 created_at: 2024-11-08T13:59:30Z
 updated_at: 2024-11-08T14:12:27Z
 url: https://github.com/astral-sh/uv/pull/8939
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:33Z
 ```
 
 # Allow non-registry dependencies in `uv pip list --outdated`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-08 13:59_
+_@charliermarsh_
 
 ## Summary
 

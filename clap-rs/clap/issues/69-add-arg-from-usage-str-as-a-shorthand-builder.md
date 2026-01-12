@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-04-12T14:53:06Z
 updated_at: 2018-08-02T03:29:38Z
 url: https://github.com/clap-rs/clap/issues/69
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Add Arg::from_usage(&str) as a shorthand builder
 
 ---
 
-_Issue opened by @kbknapp on 2015-04-12 14:53_
+_@kbknapp_
 
 Currently creating simple arguments (those without relational rules) is just as verbose as more complex configurations. Adding something like a `Arg::from_usage()` would greatly simplify building simple arguments.
 

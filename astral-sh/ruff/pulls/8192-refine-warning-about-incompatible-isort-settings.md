@@ -13,14 +13,14 @@ head: refine-format-isort-warning
 created_at: 2023-10-25T01:33:16Z
 updated_at: 2025-04-22T17:27:04Z
 url: https://github.com/astral-sh/ruff/pull/8192
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Refine warning about incompatible `isort` settings
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-25 01:33_
+_@MichaReiser_
 
 ## Summary
 

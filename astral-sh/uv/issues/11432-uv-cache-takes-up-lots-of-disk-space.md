@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T03:01:47Z
 updated_at: 2025-02-12T04:47:11Z
 url: https://github.com/astral-sh/uv/issues/11432
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # uv cache takes up lots of disk space
 
 ---
 
-_Issue opened by @DetachHead on 2025-02-12 03:01_
+_@DetachHead_
 
 ### Summary
 

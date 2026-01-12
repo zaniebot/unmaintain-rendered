@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-07T18:06:36Z
 updated_at: 2025-11-07T21:02:19Z
 url: https://github.com/astral-sh/uv/issues/16639
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # Add an option to dump PEP 517 metadata
 
 ---
 
-_Issue opened by @leodevian on 2025-11-07 18:06_
+_@leodevian_
 
 ### Summary
 

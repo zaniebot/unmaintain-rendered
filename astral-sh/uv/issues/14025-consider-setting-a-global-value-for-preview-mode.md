@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-13T14:00:19Z
 updated_at: 2025-06-13T14:00:19Z
 url: https://github.com/astral-sh/uv/issues/14025
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # Consider setting a global value for preview mode
 
 ---
 
-_Issue opened by @jtfmumm on 2025-06-13 14:00_
+_@jtfmumm_
 
 In order to put new features behind the `--preview` flag, we currently need to thread `PreviewMode` through numerous places in the codebase. The more complex the change, the more sprawling those changes can be, which could help discourage preview releases. 
 

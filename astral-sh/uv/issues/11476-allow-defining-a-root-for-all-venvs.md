@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-13T12:15:01Z
 updated_at: 2025-02-13T15:41:26Z
 url: https://github.com/astral-sh/uv/issues/11476
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # Allow defining a root for all venvs
 
 ---
 
-_Issue opened by @mil-ad on 2025-02-13 12:15_
+_@mil-ad_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/bench-docs
 created_at: 2024-01-15T18:45:40Z
 updated_at: 2024-01-15T19:57:31Z
 url: https://github.com/astral-sh/ruff/pull/9535
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Update contributing docs to use `cargo bench -p ruff_benchmark`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-15 18:45_
+_@charliermarsh_
 
 ## Summary
 

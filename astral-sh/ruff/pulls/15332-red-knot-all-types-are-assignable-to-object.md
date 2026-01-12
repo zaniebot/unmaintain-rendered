@@ -13,14 +13,14 @@ head: cjm/assign-to-object
 created_at: 2025-01-07T21:21:34Z
 updated_at: 2025-01-07T23:19:09Z
 url: https://github.com/astral-sh/ruff/pull/15332
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] all types are assignable to object
 
 ---
 
-_Pull request opened by @carljm on 2025-01-07 21:21_
+_@carljm_
 
 ## Summary
 

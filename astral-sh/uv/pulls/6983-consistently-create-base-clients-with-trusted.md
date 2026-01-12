@@ -13,14 +13,14 @@ head: zb/trusted-host-wip
 created_at: 2024-09-03T22:17:02Z
 updated_at: 2024-11-07T20:30:00Z
 url: https://github.com/astral-sh/uv/pull/6983
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:07:37Z
 ```
 
 # Consistently create base clients with trusted host settings
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-03 22:17_
+_@zanieb_
 
 Reduces our duplication of base client builders — I'm not sure why we created several different ones in some cases.
 

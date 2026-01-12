@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T19:29:45Z
 updated_at: 2025-09-12T10:10:32Z
 url: https://github.com/astral-sh/ty/issues/637
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # False Negative when Enforcing Positional Arguments in regards to Protocols
 
 ---
 
-_Issue opened by @max-muoto on 2025-06-11 19:29_
+_@max-muoto_
 
 ### Summary
 

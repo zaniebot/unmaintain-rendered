@@ -13,14 +13,14 @@ head: salsa-7-symbol-table
 created_at: 2024-06-13T15:15:13Z
 updated_at: 2024-06-19T20:13:34Z
 url: https://github.com/astral-sh/ruff/pull/11860
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # red-knot: Symbol table
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-13 15:15_
+_@MichaReiser_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2022-09-11T02:49:52Z
 updated_at: 2022-09-11T15:43:11Z
 url: https://github.com/astral-sh/ruff/pull/148
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Fix ruff's pyproject.toml section name in README.md
 
 ---
 
-_Pull request opened by @Jackenmen on 2022-09-11 02:49_
+_@Jackenmen_
 
 That took me a bit to figure out why ruff isn't applying any of the settings I put in pyproject.toml :)
 

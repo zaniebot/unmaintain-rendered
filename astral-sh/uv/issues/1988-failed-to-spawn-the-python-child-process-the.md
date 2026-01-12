@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-26T18:09:00Z
 updated_at: 2024-02-28T12:50:58Z
 url: https://github.com/astral-sh/uv/issues/1988
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # `Failed to spawn the python child process: The system cannot find the file specified.`
 
 ---
 
-_Issue opened by @astrojuanlu on 2024-02-26 18:09_
+_@astrojuanlu_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

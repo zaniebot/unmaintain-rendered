@@ -13,14 +13,14 @@ head: zb/fix-active
 created_at: 2025-02-05T16:27:06Z
 updated_at: 2025-02-05T19:44:48Z
 url: https://github.com/astral-sh/uv/pull/11251
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:44Z
 ```
 
 # Allow the project `VIRTUAL_ENV` warning to be silenced with `--no-active`
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-05 16:27_
+_@zanieb_
 
 Follow-up to https://github.com/astral-sh/uv/pull/11189
 

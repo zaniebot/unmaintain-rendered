@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-05T08:34:05Z
 updated_at: 2025-08-05T10:07:06Z
 url: https://github.com/astral-sh/ty/issues/937
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Type qualifiers are not imported from stub declarations without a right hand side
 
 ---
 
-_Issue opened by @sharkdp on 2025-08-05 08:34_
+_@sharkdp_
 
 ### Summary
 

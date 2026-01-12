@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-11-18T02:30:51Z
 updated_at: 2024-11-18T02:43:05Z
 url: https://github.com/astral-sh/uv/pull/9185
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:41Z
 ```
 
 # Sort distributions when computing hash
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-18 02:30_
+_@charliermarsh_
 
 ## Summary
 

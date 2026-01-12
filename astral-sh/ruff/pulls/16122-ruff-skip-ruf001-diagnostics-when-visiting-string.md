@@ -13,14 +13,14 @@ head: alex/ruf1
 created_at: 2025-02-12T16:22:11Z
 updated_at: 2025-02-24T09:03:59Z
 url: https://github.com/astral-sh/ruff/pull/16122
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`ruff`] Skip RUF001 diagnostics when visiting string type definitions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-12 16:22_
+_@AlexWaygood_
 
 ## Summary
 

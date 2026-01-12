@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-29T08:36:56Z
 updated_at: 2024-01-28T19:24:37Z
 url: https://github.com/astral-sh/ruff/issues/8906
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # PIE810 gives wrong suggestions
 
 ---
 
-_Issue opened by @deliro on 2023-11-29 08:36_
+_@deliro_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

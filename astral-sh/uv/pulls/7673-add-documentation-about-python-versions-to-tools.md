@@ -12,14 +12,14 @@ head: tools-python-version-docs
 created_at: 2024-09-24T20:26:17Z
 updated_at: 2025-05-27T16:23:30Z
 url: https://github.com/astral-sh/uv/pull/7673
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Add documentation about Python versions to Tools concept page
 
 ---
 
-_Pull request opened by @jayqi on 2024-09-24 20:26_
+_@jayqi_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

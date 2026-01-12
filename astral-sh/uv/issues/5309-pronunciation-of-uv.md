@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-22T20:35:19Z
 updated_at: 2025-06-20T15:41:48Z
 url: https://github.com/astral-sh/uv/issues/5309
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # pronunciation of uv
 
 ---
 
-_Issue opened by @petergaultney on 2024-07-22 20:35_
+_@petergaultney_
 
 This is, I'm sure, a dumb question, but would y'all mind putting in the README a 'standard' pronunciation for this tool? I've been assuming it's "you-vee" - but somebody at work pointed out it might be a single syllable, maybe "oove"?
 

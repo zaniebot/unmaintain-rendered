@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-01T12:49:22Z
 updated_at: 2025-10-01T12:49:22Z
 url: https://github.com/astral-sh/uv/issues/16084
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:23Z
 ```
 
 # filter option for `uv tree` to easily check a subset of dependencies and their versions
 
 ---
 
-_Issue opened by @phinate on 2025-10-01 12:49_
+_@phinate_
 
 ### Summary
 

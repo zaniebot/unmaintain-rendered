@@ -12,14 +12,14 @@ head: thomas/cache
 created_at: 2023-06-15T09:43:11Z
 updated_at: 2023-06-19T15:46:15Z
 url: https://github.com/astral-sh/ruff/pull/5117
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Only use a single cache file per Python package
 
 ---
 
-_Pull request opened by @Thomasdezeeuw on 2023-06-15 09:43_
+_@Thomasdezeeuw_
 
 ## Summary
 

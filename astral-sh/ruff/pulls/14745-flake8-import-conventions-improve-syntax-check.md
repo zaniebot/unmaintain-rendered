@@ -14,14 +14,14 @@ head: validate-extend-alias
 created_at: 2024-12-03T00:08:39Z
 updated_at: 2024-12-03T04:41:55Z
 url: https://github.com/astral-sh/ruff/pull/14745
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`flake8-import-conventions`] Improve syntax check for aliases supplied in configuration for `unconventional-import-alias (ICN001)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-12-03 00:08_
+_@dylwil3_
 
 This PR improves on #14477 by:
 

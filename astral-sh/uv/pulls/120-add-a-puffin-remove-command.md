@@ -12,14 +12,14 @@ head: charlie/removal
 created_at: 2023-10-18T18:41:50Z
 updated_at: 2023-10-18T18:50:10Z
 url: https://github.com/astral-sh/uv/pull/120
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:45Z
 ```
 
 # Add a `puffin remove` command
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-18 18:41_
+_@charliermarsh_
 
 _No description provided._
 

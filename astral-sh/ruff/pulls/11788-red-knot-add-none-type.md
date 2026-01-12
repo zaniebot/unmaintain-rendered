@@ -13,14 +13,14 @@ head: cjm/none
 created_at: 2024-06-06T22:52:14Z
 updated_at: 2024-06-07T14:40:23Z
 url: https://github.com/astral-sh/ruff/pull/11788
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [red-knot] add None type
 
 ---
 
-_Pull request opened by @carljm on 2024-06-06 22:52_
+_@carljm_
 
 Add type for None.
 

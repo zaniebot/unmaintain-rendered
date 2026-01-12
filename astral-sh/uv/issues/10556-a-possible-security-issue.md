@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-13T07:39:31Z
 updated_at: 2025-01-14T08:45:13Z
 url: https://github.com/astral-sh/uv/issues/10556
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # A possible security issue
 
 ---
 
-_Issue opened by @mpagni12 on 2025-01-13 07:39_
+_@mpagni12_
 
 I saved my PyPI API token in a local file located in the git root directory (possibly not a great idea), which is not tracked by Git, but located in the git root directory.
 

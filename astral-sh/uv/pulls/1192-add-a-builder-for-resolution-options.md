@@ -13,14 +13,14 @@ head: charlie/build
 created_at: 2024-01-30T19:45:52Z
 updated_at: 2024-01-30T19:50:17Z
 url: https://github.com/astral-sh/uv/pull/1192
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:29Z
 ```
 
 # Add a builder for resolution options
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-30 19:45_
+_@charliermarsh_
 
 _No description provided._
 

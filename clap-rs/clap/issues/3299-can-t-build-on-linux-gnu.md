@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-01-16T21:27:47Z
 updated_at: 2022-01-17T13:51:27Z
 url: https://github.com/clap-rs/clap/issues/3299
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Can`t build on linux gnu
 
 ---
 
-_Issue opened by @nrot on 2022-01-16 21:27_
+_@nrot_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-11T00:27:41Z
 updated_at: 2025-11-11T12:47:46Z
 url: https://github.com/astral-sh/uv/issues/16677
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # why is the path priority of a disposable uvx cli lower than that of a cli with the same name in the windows path environment?
 
 ---
 
-_Issue opened by @candrapersada on 2025-11-11 00:27_
+_@candrapersada_
 
 ### Question
 

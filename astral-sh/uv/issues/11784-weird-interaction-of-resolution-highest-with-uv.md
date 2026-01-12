@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T00:13:16Z
 updated_at: 2025-03-05T19:02:12Z
 url: https://github.com/astral-sh/uv/issues/11784
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # Weird interaction of --resolution highest with uv.lock
 
 ---
 
-_Issue opened by @dimaqq on 2025-02-26 00:13_
+_@dimaqq_
 
 ### Question
 

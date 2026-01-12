@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-02T01:20:28Z
 updated_at: 2023-02-02T13:45:08Z
 url: https://github.com/astral-sh/ruff/issues/2461
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # No longer possible to pass --select=ALL and honor pyproject.toml's tool.ruff.ignore
 
 ---
 
-_Issue opened by @ppentchev on 2023-02-02 01:20_
+_@ppentchev_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

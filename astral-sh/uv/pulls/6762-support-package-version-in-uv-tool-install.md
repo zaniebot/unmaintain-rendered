@@ -14,14 +14,14 @@ head: charlie/at
 created_at: 2024-08-28T15:52:08Z
 updated_at: 2024-08-28T16:44:13Z
 url: https://github.com/astral-sh/uv/pull/6762
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:31Z
 ```
 
 # Support `{package}@{version}` in `uv tool install`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-28 15:52_
+_@charliermarsh_
 
 ## Summary
 

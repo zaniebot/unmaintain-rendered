@@ -13,14 +13,14 @@ head: pie804-unsafe
 created_at: 2023-11-03T00:48:11Z
 updated_at: 2023-12-12T23:25:54Z
 url: https://github.com/astral-sh/ruff/pull/8450
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # `PIE804`: Prevent keyword arguments duplication
 
 ---
 
-_Pull request opened by @T-256 on 2023-11-03 00:48_
+_@T-256_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

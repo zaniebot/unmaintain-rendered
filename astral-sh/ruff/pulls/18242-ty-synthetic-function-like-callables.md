@@ -13,14 +13,14 @@ head: david/function-like-callables
 created_at: 2025-05-21T13:55:07Z
 updated_at: 2025-05-28T09:59:05Z
 url: https://github.com/astral-sh/ruff/pull/18242
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Synthetic function-like callables
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-21 13:55_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

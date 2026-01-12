@@ -12,14 +12,14 @@ head: charlie/with_fix
 created_at: 2023-03-26T04:00:11Z
 updated_at: 2023-03-26T14:28:31Z
 url: https://github.com/astral-sh/ruff/pull/3738
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Rename setter methods on `Diagnostic`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-26 04:00_
+_@charliermarsh_
 
 _No description provided._
 

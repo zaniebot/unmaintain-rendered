@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T04:26:43Z
 updated_at: 2025-02-12T00:06:41Z
 url: https://github.com/astral-sh/uv/issues/6296
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Allow extras in `uvx` command
 
 ---
 
-_Issue opened by @dimaqq on 2024-08-21 04:26_
+_@dimaqq_
 
 How to specify package extras with `uvx`?
 

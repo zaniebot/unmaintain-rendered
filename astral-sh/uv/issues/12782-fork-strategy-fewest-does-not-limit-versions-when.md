@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T14:11:39Z
 updated_at: 2025-04-10T14:04:42Z
 url: https://github.com/astral-sh/uv/issues/12782
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # `fork-strategy` `fewest` does not limit versions when combined with `required-environments`
 
 ---
 
-_Issue opened by @johnthagen on 2025-04-09 14:11_
+_@johnthagen_
 
 ### Summary
 

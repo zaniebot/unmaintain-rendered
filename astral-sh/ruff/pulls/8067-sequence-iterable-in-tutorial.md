@@ -13,14 +13,14 @@ head: zanie/tutorial-2
 created_at: 2023-10-19T16:45:10Z
 updated_at: 2023-10-19T17:25:46Z
 url: https://github.com/astral-sh/ruff/pull/8067
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # sequence -> iterable in tutorial
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-19 16:45_
+_@zanieb_
 
 Very minor follow to https://github.com/astral-sh/ruff/pull/8066/
 

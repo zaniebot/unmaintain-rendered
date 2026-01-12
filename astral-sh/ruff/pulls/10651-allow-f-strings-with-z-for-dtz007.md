@@ -13,14 +13,14 @@ head: dhruv/f-strings-for-DTZ007
 created_at: 2024-03-29T03:20:57Z
 updated_at: 2024-03-29T04:27:14Z
 url: https://github.com/astral-sh/ruff/pull/10651
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Allow f-strings with `%z` for `DTZ007`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-29 03:20_
+_@dhruvmanila_
 
 ## Summary
 

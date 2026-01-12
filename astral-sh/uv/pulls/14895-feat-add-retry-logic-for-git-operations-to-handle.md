@@ -12,14 +12,14 @@ head: feat/add-git-retry-logic
 created_at: 2025-07-25T13:48:01Z
 updated_at: 2025-07-25T14:32:05Z
 url: https://github.com/astral-sh/uv/pull/14895
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:28Z
 ```
 
 # feat: Add retry logic for git operations to handle transient failures
 
 ---
 
-_Pull request opened by @jomcgi on 2025-07-25 13:48_
+_@jomcgi_
 
 testing idea
 

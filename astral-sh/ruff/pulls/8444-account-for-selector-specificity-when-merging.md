@@ -13,14 +13,14 @@ head: lukas/safe-unsafe-opts-specificity
 created_at: 2023-11-02T10:30:42Z
 updated_at: 2023-11-07T16:36:58Z
 url: https://github.com/astral-sh/ruff/pull/8444
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Account for selector specificity when merging `extend_unsafe_fixes` and `override extend_safe_fixes`
 
 ---
 
-_Pull request opened by @lukaspiatkowski on 2023-11-02 10:30_
+_@lukaspiatkowski_
 
 ## Summary
 

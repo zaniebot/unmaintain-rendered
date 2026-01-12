@@ -13,14 +13,14 @@ head: charlie/mypy
 created_at: 2024-02-07T21:12:23Z
 updated_at: 2024-02-07T21:27:32Z
 url: https://github.com/astral-sh/ruff/pull/9879
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Add a note regarding ignore-without-code
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-07 21:12_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9863.
 

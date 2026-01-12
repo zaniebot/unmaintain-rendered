@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-18T17:03:24Z
 updated_at: 2025-10-06T19:53:26Z
 url: https://github.com/astral-sh/ruff/issues/20471
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Linter: new rule regarding `=` in functions with complex expressions
 
 ---
 
-_Issue opened by @adamsol on 2025-09-18 17:03_
+_@adamsol_
 
 ### Summary
 

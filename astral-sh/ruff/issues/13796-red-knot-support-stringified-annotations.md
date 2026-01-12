@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T16:41:08Z
 updated_at: 2024-11-15T04:10:20Z
 url: https://github.com/astral-sh/ruff/issues/13796
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] support stringified annotations
 
 ---
 
-_Issue opened by @carljm on 2024-10-17 16:41_
+_@carljm_
 
 As a work-around for forward references (given that by default type annotations are eagerly evaluated at runtime), the Python type system supports type annotations written as string literals, where the contents of the string should be interpreted by the type checker as an annotation expression. See https://typing.readthedocs.io/en/latest/spec/annotations.html#string-annotations
 

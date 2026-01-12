@@ -14,14 +14,14 @@ head: zb/docs-tree
 created_at: 2024-08-07T15:27:05Z
 updated_at: 2024-08-07T16:59:28Z
 url: https://github.com/astral-sh/uv/pull/5870
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:04Z
 ```
 
 # Improve CLI documentation for `uv tree`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-07 15:27_
+_@zanieb_
 
 _No description provided._
 

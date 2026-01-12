@@ -13,14 +13,14 @@ head: david/fix-1120
 created_at: 2025-09-05T09:34:52Z
 updated_at: 2025-09-05T11:53:50Z
 url: https://github.com/astral-sh/ruff/pull/20263
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ty] Include `python` folder in `environment.root` if it exists
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-05 09:34_
+_@sharkdp_
 
 ## Summary
 

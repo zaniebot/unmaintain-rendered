@@ -12,14 +12,14 @@ head: rename-Cli-to-Args
 created_at: 2023-01-25T03:06:02Z
 updated_at: 2023-01-26T05:55:51Z
 url: https://github.com/astral-sh/ruff/pull/2145
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # refactor CLI (1/3): Cosmetic changes
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-25 03:06_
+_@not-my-profile_
 
 While working on the many-to-many mapping I wanted to introduce a new subcommand ... only to end up refactoring the whole `ruff_cli::cli::Cli` struct.
 

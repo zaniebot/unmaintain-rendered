@@ -13,14 +13,14 @@ head: charlie/prek
 created_at: 2026-01-11T18:30:58Z
 updated_at: 2026-01-11T19:17:13Z
 url: https://github.com/astral-sh/ruff/pull/22505
-synced_at: 2026-01-12T02:26:21Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # Use prek in documentation and CI
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-11 18:30_
+_@charliermarsh_
 
 ## Summary
 

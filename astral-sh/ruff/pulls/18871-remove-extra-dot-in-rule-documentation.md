@@ -13,14 +13,14 @@ head: charlie/dot
 created_at: 2025-06-23T00:30:11Z
 updated_at: 2025-06-23T00:40:59Z
 url: https://github.com/astral-sh/ruff/pull/18871
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # Remove extra dot in rule documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-23 00:30_
+_@charliermarsh_
 
 _No description provided._
 

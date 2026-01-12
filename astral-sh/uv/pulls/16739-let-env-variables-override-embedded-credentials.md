@@ -11,14 +11,14 @@ head: main
 created_at: 2025-11-14T16:53:51Z
 updated_at: 2025-11-15T13:29:05Z
 url: https://github.com/astral-sh/uv/pull/16739
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 # Let env variables override embedded credentials for private registries
 
 ---
 
-_Pull request opened by @MarthinusBosman on 2025-11-14 16:53_
+_@MarthinusBosman_
 
 
 This PR fixes an issue where environment variable credentials (`UV_INDEX_*_USERNAME` and `UV_INDEX_*_PASSWORD`) were not properly overriding credentials embedded in index URLs.

@@ -14,14 +14,14 @@ head: brent/full-file-diagnostics
 created_at: 2025-07-30T23:24:47Z
 updated_at: 2025-08-05T15:20:33Z
 url: https://github.com/astral-sh/ruff/pull/19653
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # Hide empty snippets for full-file diagnostics
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-30 23:24_
+_@ntBre_
 
 Summary
 --

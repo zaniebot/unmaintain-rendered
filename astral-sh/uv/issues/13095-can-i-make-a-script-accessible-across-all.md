@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-25T00:45:36Z
 updated_at: 2025-05-05T11:49:44Z
 url: https://github.com/astral-sh/uv/issues/13095
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # Can I make a script accessible across all directories within a python monorepo using uv?
 
 ---
 
-_Issue opened by @jbcoe on 2025-04-25 00:45_
+_@jbcoe_
 
 ### Question
 

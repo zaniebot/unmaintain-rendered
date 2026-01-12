@@ -13,14 +13,14 @@ head: all-groups
 created_at: 2024-11-07T16:59:47Z
 updated_at: 2024-11-20T16:33:42Z
 url: https://github.com/astral-sh/uv/pull/8892
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:32Z
 ```
 
 # Add `--all-groups` to `uv sync|run|export|tree`
 
 ---
 
-_Pull request opened by @j178 on 2024-11-07 16:59_
+_@j178_
 
 ## Summary
 

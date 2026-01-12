@@ -13,14 +13,14 @@ head: renovate/embarkstudios-cargo-deny-action-2.x
 created_at: 2025-06-23T03:27:35Z
 updated_at: 2025-06-23T10:06:23Z
 url: https://github.com/astral-sh/uv/pull/14206
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:05Z
 ```
 
 # Update EmbarkStudios/cargo-deny-action action to v2.0.12
 
 ---
 
-_Pull request opened by @renovate on 2025-06-23 03:27_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-27T13:30:08Z
 updated_at: 2023-11-27T16:21:03Z
 url: https://github.com/clap-rs/clap/issues/5226
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `flatten_help` ignores `about` on subcommands and repeats top-level `about`
 
 ---
 
-_Issue opened by @Apanatshka on 2023-11-27 13:30_
+_@Apanatshka_
 
 ### Please complete the following tasks
 

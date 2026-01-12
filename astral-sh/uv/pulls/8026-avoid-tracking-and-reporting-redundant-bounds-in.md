@@ -12,14 +12,14 @@ head: zb/req-bound
 created_at: 2024-10-08T23:15:40Z
 updated_at: 2024-10-09T22:28:51Z
 url: https://github.com/astral-sh/uv/pull/8026
-synced_at: 2026-01-10T12:54:01Z
+synced_at: 2026-01-12T16:08:07Z
 ```
 
 # Avoid tracking and reporting redundant bounds in Python requirements
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-08 23:15_
+_@zanieb_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: fix/conflict-locked-upgrade
 created_at: 2025-01-22T01:28:09Z
 updated_at: 2025-02-07T18:04:27Z
 url: https://github.com/astral-sh/uv/pull/10836
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:31Z
 ```
 
 # fix(cli): conflict `--locked` with `--upgrade`
 
 ---
 
-_Pull request opened by @mkniewallner on 2025-01-22 01:28_
+_@mkniewallner_
 
 ## Summary
 

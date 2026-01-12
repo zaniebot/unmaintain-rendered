@@ -11,14 +11,14 @@ head: zb/renovate-reqwest
 created_at: 2025-09-16T13:43:35Z
 updated_at: 2026-01-09T13:33:55Z
 url: https://github.com/astral-sh/uv/pull/15891
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:00Z
 ```
 
 # Add a 45-day cooldown to reqwest upgrades
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-16 13:43_
+_@zanieb_
 
 To approximate N-1.
 

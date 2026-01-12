@@ -14,14 +14,14 @@ head: alex/proto-optimize
 created_at: 2025-08-31T07:21:31Z
 updated_at: 2025-08-31T12:07:37Z
 url: https://github.com/astral-sh/ruff/pull/20174
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [ty] Optimize protocol assignability/subtyping
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-31 07:21_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

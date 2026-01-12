@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-04T16:11:26Z
 updated_at: 2025-06-19T09:30:30Z
 url: https://github.com/astral-sh/ruff/issues/18464
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [New rule] Octal literal for `chmod` mode bits
 
 ---
 
-_Issue opened by @opk12 on 2025-06-04 16:11_
+_@opk12_
 
 ### Summary
 

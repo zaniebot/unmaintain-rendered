@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-11T05:07:56Z
 updated_at: 2025-07-11T16:07:48Z
 url: https://github.com/astral-sh/ruff/issues/19274
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ban import style (`from module import thing` vs `import module`) (banned api)
 
 ---
 
-_Issue opened by @fraser-langton on 2025-07-11 05:07_
+_@fraser-langton_
 
 ### Summary
 

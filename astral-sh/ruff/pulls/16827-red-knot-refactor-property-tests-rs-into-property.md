@@ -13,14 +13,14 @@ head: cake/modulize-property-tests
 created_at: 2025-03-18T10:02:55Z
 updated_at: 2025-03-18T12:59:14Z
 url: https://github.com/astral-sh/ruff/pull/16827
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # [red-knot] Refactor `property_tests.rs` into `property_tests` module structure
 
 ---
 
-_Pull request opened by @cake-monotone on 2025-03-18 10:02_
+_@cake-monotone_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: charlie/call-path
 created_at: 2023-06-14T19:33:51Z
 updated_at: 2023-06-14T21:06:36Z
 url: https://github.com/astral-sh/ruff/pull/5099
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Use `matches!` for `CallPath` comparisons
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-14 19:33_
+_@charliermarsh_
 
 ## Summary
 

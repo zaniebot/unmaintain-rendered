@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-16T00:38:09Z
 updated_at: 2023-07-16T05:07:04Z
 url: https://github.com/astral-sh/ruff/issues/5791
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `# ruff: noqa` rejects comments after directive
 
 ---
 
-_Issue opened by @charliermarsh on 2023-07-16 00:38_
+_@charliermarsh_
 
 _No description provided._
 

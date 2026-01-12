@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-24T00:42:20Z
 updated_at: 2025-03-21T19:06:23Z
 url: https://github.com/astral-sh/ruff/issues/11119
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Ruff fails to detect duplicate type parameter names
 
 ---
 
-_Issue opened by @JelleZijlstra on 2024-04-24 00:42_
+_@JelleZijlstra_
 
 This is a SyntaxError:
 

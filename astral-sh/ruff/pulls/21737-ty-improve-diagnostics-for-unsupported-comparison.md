@@ -15,14 +15,14 @@ head: alex/operator-disambiguate
 created_at: 2025-12-01T18:37:01Z
 updated_at: 2025-12-02T20:12:16Z
 url: https://github.com/astral-sh/ruff/pull/21737
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] Improve diagnostics for unsupported comparison operations
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-01 18:37_
+_@AlexWaygood_
 
 ## Summary
 

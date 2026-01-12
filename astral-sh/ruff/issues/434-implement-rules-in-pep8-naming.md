@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-15T03:18:01Z
 updated_at: 2022-10-29T19:35:57Z
 url: https://github.com/astral-sh/ruff/issues/434
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement rules in `pep8-naming`
 
 ---
 
-_Issue opened by @harupy on 2022-10-15 03:18_
+_@harupy_
 
 https://pypi.org/project/pep8-naming/
 

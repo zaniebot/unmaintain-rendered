@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-03-23T15:14:14Z
 updated_at: 2022-05-04T18:19:59Z
 url: https://github.com/clap-rs/clap/issues/3569
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Add a proc_macro attribute for the main function similar to how paw does it
 
 ---
 
-_Issue opened by @x0f5c3 on 2022-03-23 15:14_
+_@x0f5c3_
 
 ### Please complete the following tasks
 

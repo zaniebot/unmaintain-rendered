@@ -13,14 +13,14 @@ head: alex-brent/class-cell
 created_at: 2025-08-22T17:42:58Z
 updated_at: 2025-08-26T13:49:11Z
 url: https://github.com/astral-sh/ruff/pull/20048
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # Add a `ScopeKind` for the `__class__` cell
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-22 17:42_
+_@ntBre_
 
 Summary
 --

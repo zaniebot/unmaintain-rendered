@@ -13,14 +13,14 @@ head: konsti/dont-panic-invalid-source
 created_at: 2024-06-10T10:49:07Z
 updated_at: 2024-06-10T15:51:25Z
 url: https://github.com/astral-sh/uv/pull/4191
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:05Z
 ```
 
 # Don't panic with invalid wheel source
 
 ---
 
-_Pull request opened by @konstin on 2024-06-10 10:49_
+_@konstin_
 
 Remove the panic when there is an invalid wheel source, instead surface the error. This error can only occur when manually editing the lock file, but since it's an external file, we should error and not panic.
 

@@ -13,14 +13,14 @@ head: micha/standalone-expressions
 created_at: 2024-11-05T12:33:40Z
 updated_at: 2024-11-05T14:50:33Z
 url: https://github.com/astral-sh/ruff/pull/14107
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # fix double inference of standalone expressions
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-05 12:33_
+_@MichaReiser_
 
 ## Summary
 

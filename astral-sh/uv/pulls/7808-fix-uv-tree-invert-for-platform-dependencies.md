@@ -13,14 +13,14 @@ head: tree-marker
 created_at: 2024-09-30T12:57:27Z
 updated_at: 2024-10-03T02:40:27Z
 url: https://github.com/astral-sh/uv/pull/7808
-synced_at: 2026-01-10T12:53:56Z
+synced_at: 2026-01-12T16:08:01Z
 ```
 
 # Fix `uv tree --invert` for platform dependencies
 
 ---
 
-_Pull request opened by @j178 on 2024-09-30 12:57_
+_@j178_
 
 ## Summary
 

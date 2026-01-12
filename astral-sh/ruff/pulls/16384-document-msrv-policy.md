@@ -13,14 +13,14 @@ head: cjm/msrvdoc
 created_at: 2025-02-25T20:42:05Z
 updated_at: 2025-02-26T15:09:25Z
 url: https://github.com/astral-sh/ruff/pull/16384
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # document MSRV policy
 
 ---
 
-_Pull request opened by @carljm on 2025-02-25 20:42_
+_@carljm_
 
 This documents our minimum supported Rust version policy. See https://github.com/astral-sh/ruff/issues/16370
 

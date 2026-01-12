@@ -13,14 +13,14 @@ head: charlie/const
 created_at: 2024-05-07T23:45:46Z
 updated_at: 2024-05-08T07:03:55Z
 url: https://github.com/astral-sh/uv/pull/3443
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:39Z
 ```
 
 # Remove unconstrained version error from requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-07 23:45_
+_@charliermarsh_
 
 ## Summary
 

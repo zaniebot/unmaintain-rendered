@@ -14,14 +14,14 @@ head: charlie/index-api-uv-add
 created_at: 2024-09-27T19:17:08Z
 updated_at: 2024-10-15T22:57:27Z
 url: https://github.com/astral-sh/uv/pull/7746
-synced_at: 2026-01-10T12:53:54Z
+synced_at: 2026-01-12T16:07:58Z
 ```
 
 # Add index URLs when provided via `uv add --index` or `--default-index`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-27 19:17_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-23T14:52:23Z
 updated_at: 2024-07-23T21:48:51Z
 url: https://github.com/astral-sh/uv/issues/5335
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `uv add` allows git-specific flags when irrelevant
 
 ---
 
-_Issue opened by @zanieb on 2024-07-23 14:52_
+_@zanieb_
 
 e.g.
 

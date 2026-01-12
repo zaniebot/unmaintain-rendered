@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-05T12:15:15Z
 updated_at: 2024-10-05T15:02:05Z
 url: https://github.com/astral-sh/uv/issues/7940
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Project environments docs have a bit of a contradiction
 
 ---
 
-_Issue opened by @vincentdavis on 2024-10-05 12:15_
+_@vincentdavis_
 
 `uv creates a virtual environment in a .venv directory next to the pyproject.toml.`
 

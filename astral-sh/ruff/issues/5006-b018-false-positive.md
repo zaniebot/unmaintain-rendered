@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-10T13:27:01Z
 updated_at: 2023-11-13T08:27:30Z
 url: https://github.com/astral-sh/ruff/issues/5006
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # B018: false positive
 
 ---
 
-_Issue opened by @spaceone on 2023-06-10 13:27_
+_@spaceone_
 
 ```
 try:

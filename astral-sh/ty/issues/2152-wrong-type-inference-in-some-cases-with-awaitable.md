@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-22T09:02:29Z
 updated_at: 2025-12-22T09:05:07Z
 url: https://github.com/astral-sh/ty/issues/2152
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Wrong type inference in some cases with Awaitable
 
 ---
 
-_Issue opened by @tkukushkin on 2025-12-22 09:02_
+_@tkukushkin_
 
 ### Summary
 

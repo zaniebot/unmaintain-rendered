@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-26T07:11:48Z
 updated_at: 2025-05-07T01:46:28Z
 url: https://github.com/astral-sh/uv/issues/6638
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # How to run a library module?
 
 ---
 
-_Issue opened by @ollimandoliini on 2024-08-26 07:11_
+_@ollimandoliini_
 
 What is the recommended way for running a library module like I would do in vanilla python with the `-m` flag.
 

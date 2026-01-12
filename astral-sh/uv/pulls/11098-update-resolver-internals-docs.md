@@ -13,14 +13,14 @@ head: konsti/update-internal-resolver-docs
 created_at: 2025-01-30T15:03:41Z
 updated_at: 2025-02-04T13:06:28Z
 url: https://github.com/astral-sh/uv/pull/11098
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:40Z
 ```
 
 # Update resolver internals docs
 
 ---
 
-_Pull request opened by @konstin on 2025-01-30 15:03_
+_@konstin_
 
 Since the resolver internals docs were written, we added a lot more features to the resolver, which should be documented.
 

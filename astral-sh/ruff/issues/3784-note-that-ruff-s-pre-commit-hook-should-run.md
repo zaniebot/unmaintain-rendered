@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-28T20:27:51Z
 updated_at: 2023-07-30T18:14:23Z
 url: https://github.com/astral-sh/ruff/issues/3784
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # "Note that Ruff's pre-commit hook should run before Black, isort, and other formatting tools." ???
 
 ---
 
-_Issue opened by @brucearctor on 2023-03-28 20:27_
+_@brucearctor_
 
 From:  https://github.com/charliermarsh/ruff/blob/main/docs/usage.md --> "Note that Ruff's pre-commit hook should run before Black, isort, and other formatting tools."
 

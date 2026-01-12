@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-01T09:59:27Z
 updated_at: 2024-03-05T03:12:33Z
 url: https://github.com/astral-sh/ruff/issues/10181
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # RUF028 claims `fmt: off` invalid in `else:` block
 
 ---
 
-_Issue opened by @mrcljx on 2024-03-01 09:59_
+_@mrcljx_
 
 RUF028 claims that the second `fmt: off` is illegal (the first one is fine). Both are actually respected by the formatter though.
 

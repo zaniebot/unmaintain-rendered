@@ -13,14 +13,14 @@ head: zb/lock-release
 created_at: 2025-05-08T15:58:46Z
 updated_at: 2025-05-08T16:02:18Z
 url: https://github.com/astral-sh/ty/pull/277
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Update the `uv.lock` on release
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-08 15:58_
+_@zanieb_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-19T16:00:31Z
 updated_at: 2023-02-19T16:17:16Z
 url: https://github.com/astral-sh/ruff/issues/3033
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Panic] ruff fix-import
 
 ---
 
-_Issue opened by @justinchuby on 2023-02-19 16:00_
+_@justinchuby_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

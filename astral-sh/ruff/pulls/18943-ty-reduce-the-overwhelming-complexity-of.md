@@ -14,14 +14,14 @@ head: alex/refactor-infer-call-expr
 created_at: 2025-06-25T19:32:10Z
 updated_at: 2025-06-25T20:10:56Z
 url: https://github.com/astral-sh/ruff/pull/18943
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [ty] Reduce the overwhelming complexity of `TypeInferenceBuilder::infer_call_expression`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-25 19:32_
+_@AlexWaygood_
 
 ## Summary
 

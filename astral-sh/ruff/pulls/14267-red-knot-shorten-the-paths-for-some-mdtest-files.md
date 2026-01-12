@@ -13,14 +13,14 @@ head: alex/shorten-mdtest-paths
 created_at: 2024-11-11T11:15:52Z
 updated_at: 2024-11-11T11:34:36Z
 url: https://github.com/astral-sh/ruff/pull/14267
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Shorten the paths for some mdtest files
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-11 11:15_
+_@AlexWaygood_
 
 ## Summary
 

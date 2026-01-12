@@ -13,14 +13,14 @@ head: ag/conflicting-groups
 created_at: 2024-11-09T18:11:43Z
 updated_at: 2024-12-30T12:59:16Z
 url: https://github.com/astral-sh/uv/pull/8976
-synced_at: 2026-01-10T11:44:29Z
+synced_at: 2026-01-12T16:08:35Z
 ```
 
 # add support for specifying conflicting extras
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-11-09 18:11_
+_@BurntSushi_
 
 This PR adds support for conflicting extras. For example, consider
 some optional dependencies like this:

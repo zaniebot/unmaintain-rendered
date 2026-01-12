@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-20T21:44:32Z
 updated_at: 2023-02-21T00:35:56Z
 url: https://github.com/astral-sh/ruff/issues/3071
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # False positive in RET503 since ruff 0.0.248
 
 ---
 
-_Issue opened by @link2xt on 2023-02-20 21:44_
+_@link2xt_
 
 Since version 0.0.248 ruff flags this code as having an error:
 ```python

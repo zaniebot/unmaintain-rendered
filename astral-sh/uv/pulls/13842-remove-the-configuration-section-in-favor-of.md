@@ -13,14 +13,14 @@ head: zb/config-overhaul
 created_at: 2025-06-04T16:09:36Z
 updated_at: 2025-06-05T17:09:49Z
 url: https://github.com/astral-sh/uv/pull/13842
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:53Z
 ```
 
 # Remove the configuration section in favor of concepts / reference
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-04 16:09_
+_@zanieb_
 
 Extends https://github.com/astral-sh/uv/pull/13841 — I'll drop that commit later after that pull request merges but it's small.
 

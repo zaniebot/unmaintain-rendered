@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-29T14:25:54Z
 updated_at: 2024-04-30T04:18:34Z
 url: https://github.com/astral-sh/uv/issues/3309
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Add environment variable for `--no-build-isolation`
 
 ---
 
-_Issue opened by @morotti on 2024-04-29 14:25_
+_@morotti_
 
 Hello,
 

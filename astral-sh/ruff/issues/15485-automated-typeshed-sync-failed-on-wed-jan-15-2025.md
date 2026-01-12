@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-15T05:09:05Z
 updated_at: 2025-01-15T10:21:02Z
 url: https://github.com/astral-sh/ruff/issues/15485
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Automated typeshed sync failed on Wed Jan 15 2025
 
 ---
 
-_Issue opened by @github-actions on 2025-01-15 05:09_
+_@github-actions_
 
 Runs are listed here: https://github.com/astral-sh/ruff/actions/workflows/sync_typeshed.yaml
 

@@ -13,14 +13,14 @@ head: renovate/serde-untagged-0.x-lockfile
 created_at: 2025-03-17T02:25:18Z
 updated_at: 2025-03-17T03:35:20Z
 url: https://github.com/astral-sh/uv/pull/12220
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:11Z
 ```
 
 # Update Rust crate serde-untagged to v0.1.7
 
 ---
 
-_Pull request opened by @renovate on 2025-03-17 02:25_
+_@renovate_
 
 This PR contains the following updates:
 

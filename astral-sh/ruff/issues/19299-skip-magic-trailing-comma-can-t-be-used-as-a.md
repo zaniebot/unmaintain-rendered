@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-12T13:38:19Z
 updated_at: 2025-07-12T13:39:53Z
 url: https://github.com/astral-sh/ruff/issues/19299
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `skip-magic-trailing-comma` can't be used as a command line flag
 
 ---
 
-_Issue opened by @samuelcolvin on 2025-07-12 13:38_
+_@samuelcolvin_
 
 ### Summary
 

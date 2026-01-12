@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-07-31T00:22:33Z
 updated_at: 2025-07-31T06:29:41Z
 url: https://github.com/astral-sh/ruff/pull/19654
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # Update pre-commit's `ruff` id
 
 ---
 
-_Pull request opened by @harshil21 on 2025-07-31 00:22_
+_@harshil21_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

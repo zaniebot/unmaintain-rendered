@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-29T23:23:52Z
 updated_at: 2023-11-15T23:17:04Z
 url: https://github.com/astral-sh/ruff/issues/8330
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: method call chain with comment, differs from black output
 
 ---
 
-_Issue opened by @robmoss on 2023-10-29 23:23_
+_@robmoss_
 
 Black 23.10.1 and Ruff 0.1.3 produced slightly different outputs for a method call chain that includes a comment, and I couldn't find a relevant issue in the issue tracker. I've reduced to it to a much simpler example where both tools produce identical formatting for `x = ...` but different formatting for `y = ...` — black doesn't insert a newline before the closing `)` and `.f()`.
 

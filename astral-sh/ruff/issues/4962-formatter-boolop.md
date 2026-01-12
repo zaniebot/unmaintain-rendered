@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-08T14:22:51Z
 updated_at: 2023-06-21T09:27:59Z
 url: https://github.com/astral-sh/ruff/issues/4962
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: `BoolOp`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-06-08 14:22_
+_@MichaReiser_
 
 _No description provided._
 

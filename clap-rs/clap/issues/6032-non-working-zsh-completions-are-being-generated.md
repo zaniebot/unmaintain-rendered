@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T19:58:25Z
 updated_at: 2025-06-10T20:07:34Z
 url: https://github.com/clap-rs/clap/issues/6032
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Non-working zsh completions are being generated
 
 ---
 
-_Issue opened by @werdahias on 2025-06-10 19:58_
+_@werdahias_
 
 At least for two programs I maintain in Debian have broken completions in zsh (but not fish and bash).
 Both use clap-complete: `wormhole-rs` and `prs`.

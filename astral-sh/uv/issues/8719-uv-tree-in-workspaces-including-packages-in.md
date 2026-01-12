@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T10:55:25Z
 updated_at: 2024-10-31T20:09:37Z
 url: https://github.com/astral-sh/uv/issues/8719
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # uv tree in workspaces including packages in dependency groups
 
 ---
 
-_Issue opened by @jackvreeken on 2024-10-31 10:55_
+_@jackvreeken_
 
 Running uv version `uv 0.4.28 (debe67ffd 2024-10-28)`
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-11T10:28:36Z
 updated_at: 2025-05-12T12:41:01Z
 url: https://github.com/astral-sh/ruff/issues/18016
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # How to fix ERROR: Failed to build installable wheels for some pyproject.toml based projects (ruff)?
 
 ---
 
-_Issue opened by @ZeusKC52 on 2025-05-11 10:28_
+_@ZeusKC52_
 
 ### Summary
 

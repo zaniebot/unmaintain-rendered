@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-19T03:26:50Z
 updated_at: 2025-04-23T19:46:06Z
 url: https://github.com/astral-sh/ruff/issues/11934
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # ☂️ Syntax errors raised by the compiler
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-06-19 03:26_
+_@dhruvmanila_
 
 This is an umbrella issue to collect all the syntax errors that are raised by the CPython compiler. These are different than the ones that are raised by the parser. IOW, the source code which raises these errors are valid as per the grammar.
 

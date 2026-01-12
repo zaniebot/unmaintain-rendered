@@ -12,14 +12,14 @@ head: charlie/keep-runtime-typing
 created_at: 2022-11-30T01:04:39Z
 updated_at: 2022-11-30T01:05:33Z
 url: https://github.com/astral-sh/ruff/pull/965
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add pyupgrade's --keep-runtime-typing option
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-30 01:04_
+_@charliermarsh_
 
 Resolves #962.
 

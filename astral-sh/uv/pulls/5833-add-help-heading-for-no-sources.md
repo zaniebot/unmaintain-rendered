@@ -13,14 +13,14 @@ head: charlie/group
 created_at: 2024-08-06T21:18:43Z
 updated_at: 2024-08-06T21:29:57Z
 url: https://github.com/astral-sh/uv/pull/5833
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:03Z
 ```
 
 # Add help heading for `--no-sources`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-06 21:18_
+_@charliermarsh_
 
 _No description provided._
 

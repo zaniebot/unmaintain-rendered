@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-23T16:12:21Z
 updated_at: 2026-01-09T10:58:16Z
 url: https://github.com/astral-sh/uv/issues/14849
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # Binary installation Path for uv / uvx breaking with snap updates for vs code on Ubuntu 24
 
 ---
 
-_Issue opened by @gorbinphilip on 2025-07-23 16:12_
+_@gorbinphilip_
 
 ### Summary
 

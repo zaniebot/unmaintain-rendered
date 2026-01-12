@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-25T20:17:07Z
 updated_at: 2023-01-25T21:23:35Z
 url: https://github.com/astral-sh/ruff/issues/2171
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # TRY200 false positive for re-raising original/currently handled exception
 
 ---
 
-_Issue opened by @scop on 2023-01-25 20:17_
+_@scop_
 
 ruff 0.0.233 issues TRY200 for the following cases:
 

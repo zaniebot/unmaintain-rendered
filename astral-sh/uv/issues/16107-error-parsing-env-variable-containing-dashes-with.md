@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-02T20:28:40Z
 updated_at: 2025-10-02T20:47:47Z
 url: https://github.com/astral-sh/uv/issues/16107
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:24Z
 ```
 
 # Error parsing env variable containing dashes with --env-file flag
 
 ---
 
-_Issue opened by @gbassinello on 2025-10-02 20:28_
+_@gbassinello_
 
 ### Summary
 

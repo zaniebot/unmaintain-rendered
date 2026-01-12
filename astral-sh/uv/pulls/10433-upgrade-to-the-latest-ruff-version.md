@@ -13,14 +13,14 @@ head: charlie/f
 created_at: 2025-01-09T15:18:01Z
 updated_at: 2025-01-09T15:47:28Z
 url: https://github.com/astral-sh/uv/pull/10433
-synced_at: 2026-01-10T11:44:48Z
+synced_at: 2026-01-12T16:09:17Z
 ```
 
 # Upgrade to the latest Ruff version
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-09 15:18_
+_@charliermarsh_
 
 _No description provided._
 

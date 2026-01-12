@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-04T09:48:31Z
 updated_at: 2025-10-21T17:14:09Z
 url: https://github.com/astral-sh/ruff/issues/10227
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Linting for yaml and toml file
 
 ---
 
-_Issue opened by @VascoSch92 on 2024-03-04 09:48_
+_@VascoSch92_
 
 Hey 👋 
 

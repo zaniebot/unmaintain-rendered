@@ -14,14 +14,14 @@ head: amy/suppress-diagnostics
 created_at: 2025-11-25T02:02:01Z
 updated_at: 2025-12-09T00:12:02Z
 url: https://github.com/astral-sh/ruff/pull/21623
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # apply range suppressions to filter diagnostics
 
 ---
 
-_Pull request opened by @amyreese on 2025-11-25 02:02_
+_@amyreese_
 
 Builds on range suppressions from https://github.com/astral-sh/ruff/pull/21441 
 

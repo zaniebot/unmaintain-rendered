@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-05T11:11:15Z
 updated_at: 2024-07-12T00:53:21Z
 url: https://github.com/astral-sh/uv/issues/4831
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Namespace package's `__init__.py` is corrupted when multiple libraries in it are installed
 
 ---
 
-_Issue opened by @ods on 2024-07-05 11:11_
+_@ods_
 
 Given:
 

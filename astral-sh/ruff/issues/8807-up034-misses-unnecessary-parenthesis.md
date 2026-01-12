@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-21T15:08:27Z
 updated_at: 2023-11-21T21:51:00Z
 url: https://github.com/astral-sh/ruff/issues/8807
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # UP034 misses unnecessary parenthesis
 
 ---
 
-_Issue opened by @chbndrhnns on 2023-11-21 15:08_
+_@chbndrhnns_
 
 ```py
 class C:

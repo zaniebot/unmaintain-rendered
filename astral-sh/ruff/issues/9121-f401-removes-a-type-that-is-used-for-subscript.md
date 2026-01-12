@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-13T21:46:02Z
 updated_at: 2023-12-13T21:46:18Z
 url: https://github.com/astral-sh/ruff/issues/9121
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `F401` removes a type that is used for subscript
 
 ---
 
-_Issue opened by @tylerlaprade on 2023-12-13 21:46_
+_@tylerlaprade_
 
 <img width="604" alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/8be048ba-88c9-415f-8364-6ef4c78cb6d2">
 <img width="325" alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/c37154d6-974e-406d-a18b-77b10362b984">

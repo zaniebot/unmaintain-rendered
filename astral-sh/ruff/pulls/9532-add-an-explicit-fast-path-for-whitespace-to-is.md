@@ -14,14 +14,14 @@ head: lexer-explicit-id-false-brnaches
 created_at: 2024-01-15T15:35:34Z
 updated_at: 2024-01-16T08:37:22Z
 url: https://github.com/astral-sh/ruff/pull/9532
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Add an explicit fast path for whitespace to `is_identifier_continuation`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-01-15 15:35_
+_@MichaReiser_
 
 ## Summary
 

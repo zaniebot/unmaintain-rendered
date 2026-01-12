@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-07T11:50:21Z
 updated_at: 2025-08-19T10:27:44Z
 url: https://github.com/astral-sh/uv/issues/15128
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # Build error on AIX: libc::FIONREAD: expected i32, found i64
 
 ---
 
-_Issue opened by @mrichter-vw on 2025-08-07 11:50_
+_@mrichter-vw_
 
 ### Summary
 

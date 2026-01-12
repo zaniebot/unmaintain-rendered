@@ -13,14 +13,14 @@ head: renovate/flate2-1.x-lockfile
 created_at: 2025-10-13T01:16:14Z
 updated_at: 2025-10-13T02:21:19Z
 url: https://github.com/astral-sh/uv/pull/16264
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:11Z
 ```
 
 # Update Rust crate flate2 to v1.1.4
 
 ---
 
-_Pull request opened by @renovate on 2025-10-13 01:16_
+_@renovate_
 
 This PR contains the following updates:
 

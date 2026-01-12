@@ -13,14 +13,14 @@ head: charlie/ts
 created_at: 2025-07-03T23:23:10Z
 updated_at: 2025-07-03T23:32:07Z
 url: https://github.com/astral-sh/uv/pull/14450
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:13Z
 ```
 
 # Remove transparent variants in `uv-extract` to enable retries
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-03 23:23_
+_@charliermarsh_
 
 ## Summary
 

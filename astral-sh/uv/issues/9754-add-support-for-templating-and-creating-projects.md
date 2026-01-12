@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-09T22:34:34Z
 updated_at: 2025-10-14T05:50:49Z
 url: https://github.com/astral-sh/uv/issues/9754
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # Add support for templating and creating projects with uv
 
 ---
 
-_Issue opened by @hellmrf on 2024-12-09 22:34_
+_@hellmrf_
 
 ## Problem Statement
 

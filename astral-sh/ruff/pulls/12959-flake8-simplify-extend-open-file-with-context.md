@@ -14,14 +14,14 @@ head: extend-SIM115-to-tempfile
 created_at: 2024-08-18T00:04:50Z
 updated_at: 2024-08-22T13:18:56Z
 url: https://github.com/astral-sh/ruff/pull/12959
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [`flake8-simplify`] Extend open-file-with-context-handler to work with other standard-library IO modules (`SIM115`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-08-18 00:04_
+_@diceroll123_
 
 ## Summary
 

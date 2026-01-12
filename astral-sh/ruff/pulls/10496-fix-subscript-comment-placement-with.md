@@ -14,14 +14,14 @@ head: fix-subscript-with-parenthesized-value
 created_at: 2024-03-20T19:50:21Z
 updated_at: 2024-03-20T20:30:23Z
 url: https://github.com/astral-sh/ruff/pull/10496
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Fix subscript comment placement with parenthesized value
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-20 19:50_
+_@MichaReiser_
 
 ## Summary
 

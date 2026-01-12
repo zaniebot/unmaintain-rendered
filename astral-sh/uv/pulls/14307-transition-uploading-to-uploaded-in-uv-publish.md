@@ -12,14 +12,14 @@ head: 14196-publish-transition-uploading-to-uploaded
 created_at: 2025-06-27T09:43:10Z
 updated_at: 2025-06-27T10:25:43Z
 url: https://github.com/astral-sh/uv/pull/14307
-synced_at: 2026-01-10T07:01:23Z
+synced_at: 2026-01-12T16:11:08Z
 ```
 
 # Transition "Uploading" to "Uploaded" in `uv publish`
 
 ---
 
-_Pull request opened by @winstonallo on 2025-06-27 09:43_
+_@winstonallo_
 
 ## Summary
 

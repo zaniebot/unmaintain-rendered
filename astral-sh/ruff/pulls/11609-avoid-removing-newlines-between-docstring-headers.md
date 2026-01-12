@@ -14,14 +14,14 @@ head: charlie/sphinx-directive
 created_at: 2024-05-30T04:19:57Z
 updated_at: 2024-05-30T17:29:21Z
 url: https://github.com/astral-sh/ruff/pull/11609
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Avoid removing newlines between docstring headers and rST blocks
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-30 04:19_
+_@charliermarsh_
 
 Given:
 

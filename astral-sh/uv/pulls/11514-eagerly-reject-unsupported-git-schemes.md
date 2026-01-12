@@ -14,14 +14,14 @@ head: konsti/invalid-git-urls
 created_at: 2025-02-14T16:40:03Z
 updated_at: 2025-02-18T02:14:07Z
 url: https://github.com/astral-sh/uv/pull/11514
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:52Z
 ```
 
 # Eagerly reject unsupported Git schemes
 
 ---
 
-_Pull request opened by @konstin on 2025-02-14 16:40_
+_@konstin_
 
 
 Initially, we were limiting Git schemes to HTTPS and SSH as only supported schemes. We lost this validation in #3429. This incidentally allowed file schemes, which apparently work with Git out of the box.

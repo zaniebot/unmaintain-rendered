@@ -14,14 +14,14 @@ head: zb/create-tmp
 created_at: 2024-09-23T16:25:40Z
 updated_at: 2024-09-23T17:59:23Z
 url: https://github.com/astral-sh/uv/pull/7644
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:55Z
 ```
 
 # Explicitly create the DevDrive tmpdir before use
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-23 16:25_
+_@zanieb_
 
 A suggested solution to #6940 — unfortunately only time will tell if it works.
 

@@ -13,14 +13,14 @@ head: charlie/meta
 created_at: 2024-01-03T22:37:06Z
 updated_at: 2024-01-04T00:09:24Z
 url: https://github.com/astral-sh/uv/pull/761
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:10Z
 ```
 
 # Add context and diagnostics for missing `METADATA`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-03 22:37_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/717.
 

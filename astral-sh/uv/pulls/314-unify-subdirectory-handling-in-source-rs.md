@@ -12,14 +12,14 @@ head: charlie/source
 created_at: 2023-11-03T19:30:27Z
 updated_at: 2023-11-03T19:33:39Z
 url: https://github.com/astral-sh/uv/pull/314
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:52Z
 ```
 
 # Unify subdirectory handling in `source.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-03 19:30_
+_@charliermarsh_
 
 Avoids having to encode all the `git+` and `subdirectory=` logic in multiple places.
 

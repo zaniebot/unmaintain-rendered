@@ -13,14 +13,14 @@ head: micha/ci
 created_at: 2025-05-06T09:04:41Z
 updated_at: 2025-07-08T10:38:22Z
 url: https://github.com/astral-sh/ty/pull/57
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Basic CI workflow
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-06 09:04_
+_@MichaReiser_
 
 _No description provided._
 

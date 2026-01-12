@@ -13,14 +13,14 @@ head: zb/fix-project-system
 created_at: 2024-09-20T14:14:11Z
 updated_at: 2024-09-20T17:28:20Z
 url: https://github.com/astral-sh/uv/pull/7585
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:53Z
 ```
 
 # Allow system environments during project environment validity check
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-20 14:14_
+_@zanieb_
 
 _No description provided._
 

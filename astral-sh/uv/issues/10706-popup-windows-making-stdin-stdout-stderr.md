@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-17T10:21:31Z
 updated_at: 2025-02-11T09:37:57Z
 url: https://github.com/astral-sh/uv/issues/10706
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # Popup windows "Making stdin/stdout/stderr inheritable failed" when when running a gui-script on Windows
 
 ---
 
-_Issue opened by @deffi on 2025-01-17 10:21_
+_@deffi_
 
 ## Summary
 

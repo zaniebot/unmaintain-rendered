@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-10-23T16:18:55Z
 updated_at: 2021-10-24T19:02:22Z
 url: https://github.com/clap-rs/clap/issues/2933
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # 3.0.0-beta5 missing git tag?
 
 ---
 
-_Issue opened by @epage on 2021-10-23 16:18_
+_@epage_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/2929
 

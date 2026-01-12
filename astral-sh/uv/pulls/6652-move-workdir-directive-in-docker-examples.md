@@ -13,14 +13,14 @@ head: zb/docker-workdir
 created_at: 2024-08-26T19:44:43Z
 updated_at: 2024-08-26T20:09:02Z
 url: https://github.com/astral-sh/uv/pull/6652
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:28Z
 ```
 
 # Move `WORKDIR` directive in Docker examples
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-26 19:44_
+_@zanieb_
 
 _No description provided._
 

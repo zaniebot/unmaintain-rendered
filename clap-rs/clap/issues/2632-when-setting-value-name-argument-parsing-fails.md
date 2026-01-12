@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-07-28T14:03:05Z
 updated_at: 2021-07-30T09:40:34Z
 url: https://github.com/clap-rs/clap/issues/2632
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # When setting `value_name`, argument parsing fails
 
 ---
 
-_Issue opened by @epage on 2021-07-28 14:03_
+_@epage_
 
 ### Please complete the following tasks
 

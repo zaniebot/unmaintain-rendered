@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-31T15:17:32Z
 updated_at: 2023-07-10T01:33:26Z
 url: https://github.com/astral-sh/ruff/issues/1512
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # lint for overuse of argument defaults in non-public functions
 
 ---
 
-_Issue opened by @danieleades on 2022-12-31 15:17_
+_@danieleades_
 
 i'm working in a large, public python codebase that lints using ruff.
 

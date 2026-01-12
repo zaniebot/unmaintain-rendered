@@ -12,14 +12,14 @@ head: b024-b027
 created_at: 2023-01-13T15:22:31Z
 updated_at: 2023-01-13T17:03:52Z
 url: https://github.com/astral-sh/ruff/pull/1851
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # [`flake8-bugbear`] Fix False Positives for `B024` & `B027`
 
 ---
 
-_Pull request opened by @saadmk11 on 2023-01-13 15:22_
+_@saadmk11_
 
 closes https://github.com/charliermarsh/ruff/issues/1848
 

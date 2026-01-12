@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-08T16:33:40Z
 updated_at: 2023-07-08T16:51:38Z
 url: https://github.com/astral-sh/ruff/issues/5617
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Support `# flake8: noqa: F401`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-07-08 16:33_
+_@charliermarsh_
 
 Flake8 treats this equivalently to `# flake8: noqa` -- that is, it turns off all rules for the entire file. As of #5571, we emit a warning but don't respect it at all. I think better would be to just support it in the way the user expects (i.e., turn off `F401` for the entire file). It deviates from Flake8, but #5571 deviates from Flake8 too, in a way that's less useful.
 

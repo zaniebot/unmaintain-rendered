@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-27T03:48:13Z
 updated_at: 2024-06-12T14:11:57Z
 url: https://github.com/astral-sh/uv/issues/3857
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Managed toolchain discovery doesn't reflect ARM v6 vs. v7 differences
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-27 03:48_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/3855#discussion_r1615432492
 

@@ -13,14 +13,14 @@ head: david/possibly-unbound-instance-members
 created_at: 2025-02-25T10:01:20Z
 updated_at: 2025-02-25T21:07:14Z
 url: https://github.com/astral-sh/ruff/pull/16363
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Handle possibly-unbound instance members
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-25 10:01_
+_@sharkdp_
 
 ## Summary
 

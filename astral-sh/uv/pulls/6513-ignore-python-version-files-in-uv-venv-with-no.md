@@ -14,14 +14,14 @@ head: zb/venv-no-config
 created_at: 2024-08-23T13:48:57Z
 updated_at: 2024-08-23T13:56:12Z
 url: https://github.com/astral-sh/uv/pull/6513
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:24Z
 ```
 
 # Ignore `.python-version` files in `uv venv` with `--no-config`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-23 13:48_
+_@zanieb_
 
 Dupe of  #6373 — merged into the wrong branch by accident.
 

@@ -14,14 +14,14 @@ head: alex/generic-method-tests
 created_at: 2025-09-09T13:56:59Z
 updated_at: 2025-09-09T16:51:38Z
 url: https://github.com/astral-sh/ruff/pull/20316
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Add tests for protocols with generic method members
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-09 13:56_
+_@AlexWaygood_
 
 ## Summary
 

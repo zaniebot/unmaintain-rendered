@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-22T13:27:07Z
 updated_at: 2024-12-23T09:10:32Z
 url: https://github.com/astral-sh/uv/issues/10092
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # question: Private classifiers and their effect on alternate registries
 
 ---
 
-_Issue opened by @pawamoy on 2024-12-22 13:27_
+_@pawamoy_
 
 I recently learned that PyPI will reject package uploads if the package metadata has one or more classifiers starting with `Private ::`. I got interested because some of my projects have private version that should never end up on PyPI. But I was left wondering if I could really use this classifier, because my users must be able to upload the private packages to their own private registries, if they want to, and I was afraid the classifier would cause rejection in these alternate registries too. This is not addressed in official docs, but in [your own docs](https://docs.astral.sh/uv/guides/publish/) you do say:
 

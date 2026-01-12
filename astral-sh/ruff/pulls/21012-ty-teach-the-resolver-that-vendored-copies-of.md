@@ -13,14 +13,14 @@ head: gankra/goto-typeshed
 created_at: 2025-10-21T04:11:03Z
 updated_at: 2025-10-21T17:57:03Z
 url: https://github.com/astral-sh/ruff/pull/21012
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [ty] Teach the resolver that vendored copies of typeshed in the ty cache are in fact typeshed
 
 ---
 
-_Pull request opened by @Gankra on 2025-10-21 04:11_
+_@Gankra_
 
 Fixes https://github.com/astral-sh/ty/issues/1054
 

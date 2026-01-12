@@ -13,14 +13,14 @@ head: charlie/bin
 created_at: 2024-07-18T14:01:16Z
 updated_at: 2024-07-18T14:09:30Z
 url: https://github.com/astral-sh/uv/pull/5187
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:41Z
 ```
 
 # Remove executable alias; import anstream
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-18 14:01_
+_@charliermarsh_
 
 Post-push review from https://github.com/astral-sh/uv/pull/5160.
 

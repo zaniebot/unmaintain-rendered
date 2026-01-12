@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-21T07:10:35Z
 updated_at: 2024-05-03T01:30:31Z
 url: https://github.com/astral-sh/ruff/issues/11067
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # improve error message of PERF401 for extends
 
 ---
 
-_Issue opened by @trim21 on 2024-04-21 07:10_
+_@trim21_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

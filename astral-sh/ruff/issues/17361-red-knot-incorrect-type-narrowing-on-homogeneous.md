@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-11T18:17:55Z
 updated_at: 2025-04-11T18:21:17Z
 url: https://github.com/astral-sh/ruff/issues/17361
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Incorrect type narrowing on homogeneous tuple of literals
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-04-11 18:17_
+_@JelleZijlstra_
 
 ### Summary
 

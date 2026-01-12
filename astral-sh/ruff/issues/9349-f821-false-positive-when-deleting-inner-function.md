@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-01T17:21:00Z
 updated_at: 2024-01-02T18:07:11Z
 url: https://github.com/astral-sh/ruff/issues/9349
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # F821 false positive when deleting inner function after call inside of method
 
 ---
 
-_Issue opened by @Skylion007 on 2024-01-01 17:21_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

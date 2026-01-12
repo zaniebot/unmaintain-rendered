@@ -12,14 +12,14 @@ head: zb/auth-default-username
 created_at: 2024-04-16T00:05:40Z
 updated_at: 2024-05-21T20:53:12Z
 url: https://github.com/astral-sh/uv/pull/3048
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:23Z
 ```
 
 # Attempt keyring lookups for requests without usernames
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-16 00:05_
+_@zanieb_
 
 See discussion at https://github.com/astral-sh/uv/pull/2976#discussion_r1566521453
 

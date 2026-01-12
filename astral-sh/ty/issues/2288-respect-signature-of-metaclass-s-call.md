@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-31T06:48:36Z
 updated_at: 2026-01-08T18:12:16Z
 url: https://github.com/astral-sh/ty/issues/2288
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Respect signature of metaclass's `__call__`
 
 ---
 
-_Issue opened by @taminomara on 2025-12-31 06:48_
+_@taminomara_
 
 Another feature request similar to #281: respect signature of `__call__` defined on a metaclass.
 

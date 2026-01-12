@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-15T17:46:33Z
 updated_at: 2015-05-15T19:48:24Z
 url: https://github.com/clap-rs/clap/issues/119
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Implement Iterator for enums created with arg_enum! macro
 
 ---
 
-_Issue opened by @kbknapp on 2015-05-15 17:46_
+_@kbknapp_
 
 _No description provided._
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-01T19:46:40Z
 updated_at: 2023-02-06T13:15:45Z
 url: https://github.com/astral-sh/ruff/issues/2454
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Gitlab ci configuration
 
 ---
 
-_Issue opened by @arist0v on 2023-02-01 19:46_
+_@arist0v_
 
 Hello, i try settings up ruff for Gitlab Ci code quality, i checked up lot of google result, but still can'T figure out how to make it work
 

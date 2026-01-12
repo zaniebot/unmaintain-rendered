@@ -13,14 +13,14 @@ head: charlie/panci
 created_at: 2023-11-16T02:11:11Z
 updated_at: 2023-11-16T02:38:23Z
 url: https://github.com/astral-sh/ruff/pull/8709
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Run unicode prefix rule over tokens
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-16 02:11_
+_@charliermarsh_
 
 ## Summary
 

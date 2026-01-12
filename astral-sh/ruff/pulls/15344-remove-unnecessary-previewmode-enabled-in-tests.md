@@ -13,14 +13,14 @@ head: PT006-fix-bugfix
 created_at: 2025-01-08T10:11:25Z
 updated_at: 2025-01-08T10:19:17Z
 url: https://github.com/astral-sh/ruff/pull/15344
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Remove unnecessary `PreviewMode::Enabled` in tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-08 10:11_
+_@MichaReiser_
 
 
 ## Summary

@@ -13,14 +13,14 @@ head: zb/yanked-incompatibility
 created_at: 2024-02-12T21:49:29Z
 updated_at: 2024-02-13T04:02:29Z
 url: https://github.com/astral-sh/uv/pull/1290
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:34Z
 ```
 
 # Track yanked versions as incompatibilities
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-12 21:49_
+_@zanieb_
 
 Moves yanked version filtering from `VersionMap::from_metadata` to the resolver and tracks it as a PubGrub unavailable incompatibility so yanked versions are reflected in error messages.
 

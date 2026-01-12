@@ -13,14 +13,14 @@ head: zb/uv-toolchain-discovery
 created_at: 2024-04-09T14:08:10Z
 updated_at: 2024-04-10T14:01:03Z
 url: https://github.com/astral-sh/uv/pull/2931
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:19Z
 ```
 
 # Add discovery of Python versions installed with `uv-toolchain`
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-09 14:08_
+_@zanieb_
 
 Completes #2842 by fixing Windows tests.
 

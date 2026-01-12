@@ -14,14 +14,14 @@ head: brent/syn-unpacking-for-loop
 created_at: 2025-03-07T19:42:43Z
 updated_at: 2025-03-13T19:55:20Z
 url: https://github.com/astral-sh/ruff/pull/16558
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [syntax-errors] Tuple unpacking in `for` statement iterator clause before Python 3.9
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-07 19:42_
+_@ntBre_
 
 Summary
 --

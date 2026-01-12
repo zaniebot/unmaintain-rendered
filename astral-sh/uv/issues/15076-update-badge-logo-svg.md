@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-05T05:58:44Z
 updated_at: 2025-08-05T05:58:44Z
 url: https://github.com/astral-sh/uv/issues/15076
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # Update badge logo SVG
 
 ---
 
-_Issue opened by @Onyx-Nostalgia on 2025-08-05 05:58_
+_@Onyx-Nostalgia_
 
 ### Summary
 

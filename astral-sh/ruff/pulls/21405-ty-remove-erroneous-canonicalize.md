@@ -14,14 +14,14 @@ head: gankra/symlink2
 created_at: 2025-11-12T14:12:15Z
 updated_at: 2025-11-14T12:47:09Z
 url: https://github.com/astral-sh/ruff/pull/21405
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] remove erroneous canonicalize
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-12 14:12_
+_@Gankra_
 
 Alternative implementation to https://github.com/astral-sh/ruff/pull/21052
 

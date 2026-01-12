@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-06-02T07:03:45Z
 updated_at: 2024-06-02T17:15:25Z
 url: https://github.com/astral-sh/uv/pull/3963
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:57Z
 ```
 
 # fix: add missing ppc64le alias for powerpc64le
 
 ---
 
-_Pull request opened by @mayeut on 2024-06-02 07:03_
+_@mayeut_
 
 ## Summary
 

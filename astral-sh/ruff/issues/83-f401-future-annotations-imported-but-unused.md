@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-02T09:26:19Z
 updated_at: 2022-09-02T12:46:40Z
 url: https://github.com/astral-sh/ruff/issues/83
-synced_at: 2026-01-10T15:56:04Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # F401 `__future__.annotations` imported but unused
 
 ---
 
-_Issue opened by @orsinium on 2022-09-02 09:26_
+_@orsinium_
 
 ruff marks `from __future__ import annotations` imports as unused. They are not supposed to be used, and so shouldn't be reported.
 

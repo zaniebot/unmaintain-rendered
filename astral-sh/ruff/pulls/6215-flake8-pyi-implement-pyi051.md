@@ -13,14 +13,14 @@ head: PYI051
 created_at: 2023-08-01T00:15:02Z
 updated_at: 2023-08-02T20:15:22Z
 url: https://github.com/astral-sh/ruff/pull/6215
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # [`flake8-pyi`] Implement PYI051
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-08-01 00:15_
+_@LaBatata101_
 
 ## Summary
 Checks for the presence of redundant `Literal` types and builtin super types in an union. See [original source](https://github.com/PyCQA/flake8-pyi/blob/2a86db8271dc500247a8a69419536240334731cf/pyi.py#L1261).

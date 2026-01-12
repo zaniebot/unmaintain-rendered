@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2022-08-30T14:02:12Z
 updated_at: 2022-08-30T17:20:04Z
 url: https://github.com/astral-sh/ruff/pull/46
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Build on every push but only publish on tags
 
 ---
 
-_Pull request opened by @adriangb on 2022-08-30 14:02_
+_@adriangb_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: check-for-updates
 created_at: 2022-09-03T09:46:39Z
 updated_at: 2022-09-03T21:02:08Z
 url: https://github.com/astral-sh/ruff/pull/90
-synced_at: 2026-01-12T05:48:44Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Check for updates
 
 ---
 
-_Pull request opened by @mgrachev on 2022-09-03 09:46_
+_@mgrachev_
 
 Hi there!
 

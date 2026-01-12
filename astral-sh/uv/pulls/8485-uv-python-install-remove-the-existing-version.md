@@ -13,14 +13,14 @@ head: delay-remove
 created_at: 2024-10-23T03:50:30Z
 updated_at: 2024-10-24T14:30:06Z
 url: https://github.com/astral-sh/uv/pull/8485
-synced_at: 2026-01-10T12:54:10Z
+synced_at: 2026-01-12T16:08:20Z
 ```
 
 # `uv python install`: remove the existing version only after the new installation is downloaded successfully
 
 ---
 
-_Pull request opened by @j178 on 2024-10-23 03:50_
+_@j178_
 
 ## Summary
 

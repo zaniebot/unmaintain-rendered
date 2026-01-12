@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-03T17:38:25Z
 updated_at: 2025-08-04T17:48:42Z
 url: https://github.com/clap-rs/clap/issues/6086
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Better document what to do with the output of clap complete
 
 ---
 
-_Issue opened by @wetneb on 2025-08-03 17:38_
+_@wetneb_
 
 ### Please complete the following tasks
 

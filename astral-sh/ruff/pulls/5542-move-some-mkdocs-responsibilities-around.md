@@ -12,14 +12,14 @@ head: charlie/overrides
 created_at: 2023-07-05T21:56:18Z
 updated_at: 2023-07-05T22:27:44Z
 url: https://github.com/astral-sh/ruff/pull/5542
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Move some MkDocs responsibilities around
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-05 21:56_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: dhruv/callable-disjoint-literal
 created_at: 2025-04-02T21:21:13Z
 updated_at: 2025-04-02T22:08:15Z
 url: https://github.com/astral-sh/ruff/pull/17160
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Callable types are disjoint from literals
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-02 21:21_
+_@dhruvmanila_
 
 ## Summary
 

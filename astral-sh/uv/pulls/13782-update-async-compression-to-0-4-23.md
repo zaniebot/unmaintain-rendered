@@ -13,14 +13,14 @@ head: konsti/update-async-compression
 created_at: 2025-06-02T11:28:00Z
 updated_at: 2025-10-09T13:48:49Z
 url: https://github.com/astral-sh/uv/pull/13782
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:10:52Z
 ```
 
 # Update async-compression to 0.4.23
 
 ---
 
-_Pull request opened by @konstin on 2025-06-02 11:28_
+_@konstin_
 
 Our manual usage of the `xz2/static` blocks updates of async-compression as they switched from the unmaintained lzma-sys to liblzma-sys.
 

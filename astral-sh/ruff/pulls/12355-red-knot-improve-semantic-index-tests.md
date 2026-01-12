@@ -13,14 +13,14 @@ head: cjm/tests
 created_at: 2024-07-17T00:35:08Z
 updated_at: 2024-07-17T06:46:52Z
 url: https://github.com/astral-sh/ruff/pull/12355
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] improve semantic index tests
 
 ---
 
-_Pull request opened by @carljm on 2024-07-17 00:35_
+_@carljm_
 
 Improve semantic index tests with better assertions than just `.len()`, and re-add use-definition test that was commented out in the switch to Salsa initially.
 

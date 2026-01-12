@@ -11,14 +11,14 @@ head: main
 created_at: 2025-07-18T18:22:19Z
 updated_at: 2025-07-18T18:58:00Z
 url: https://github.com/astral-sh/uv/pull/14739
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:22Z
 ```
 
 # Add a hint to use uv self version in workspace.rs
 
 ---
 
-_Pull request opened by @farooqameen on 2025-07-18 18:22_
+_@farooqameen_
 
 ## Summary
 Fixes #14730 by adding the required hint in workspace.rs

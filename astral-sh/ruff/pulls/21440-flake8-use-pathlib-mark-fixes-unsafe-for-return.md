@@ -14,14 +14,14 @@ head: fix-21431
 created_at: 2025-11-13T22:20:16Z
 updated_at: 2025-12-01T22:36:41Z
 url: https://github.com/astral-sh/ruff/pull/21440
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [`flake8-use-pathlib`] Mark fixes unsafe for return type changes (`PTH104`, `PTH105`, `PTH109`, `PTH115`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-13 22:20_
+_@danparizher_
 
 ## Summary
 

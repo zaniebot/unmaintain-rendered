@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-13T14:44:08Z
 updated_at: 2024-05-13T17:06:28Z
 url: https://github.com/astral-sh/uv/issues/3548
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Constraints aren't enforced for editables
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-13 14:44_
+_@charliermarsh_
 
 If you run `uv pip install -e ./scripts/packages/black_editable --constraint constraints.txt` where `constraints.txt` contains `black==0.0.1`, the command succeeds.
 

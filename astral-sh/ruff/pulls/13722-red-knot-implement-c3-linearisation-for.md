@@ -12,14 +12,14 @@ head: alex/mro
 created_at: 2024-10-11T22:08:08Z
 updated_at: 2024-10-31T22:24:43Z
 url: https://github.com/astral-sh/ruff/pull/13722
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Implement C3 linearisation for calculating a class's Method Resolution Order
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-11 22:08_
+_@AlexWaygood_
 
 ## Summary
 

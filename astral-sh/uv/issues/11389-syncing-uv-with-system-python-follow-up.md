@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T16:13:25Z
 updated_at: 2025-02-10T20:44:43Z
 url: https://github.com/astral-sh/uv/issues/11389
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # Syncing UV with system python [follow up]
 
 ---
 
-_Issue opened by @Ben-Epstein on 2025-02-10 16:13_
+_@Ben-Epstein_
 
 ### Question
 

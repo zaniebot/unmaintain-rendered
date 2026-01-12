@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-04T04:47:57Z
 updated_at: 2024-07-04T08:22:37Z
 url: https://github.com/astral-sh/ruff/issues/12178
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [Rule request] Flag unsupported characters in logging method calls
 
 ---
 
-_Issue opened by @huonw on 2024-07-04 04:47_
+_@huonw_
 
 There's two rules (F509, PLE1300) that detect when a `%` formatted string include an invalid format character. However, these don't seem to flag format strings passed to logging functions (`debug`, `info`, etc.). These strings use `%` for formatting in the same way.
 

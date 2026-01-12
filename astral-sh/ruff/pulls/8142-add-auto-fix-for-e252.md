@@ -13,14 +13,14 @@ head: fix_E252
 created_at: 2023-10-23T12:20:09Z
 updated_at: 2023-10-23T19:06:04Z
 url: https://github.com/astral-sh/ruff/pull/8142
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # add auto-fix for E252
 
 ---
 
-_Pull request opened by @reswqa on 2023-10-23 12:20_
+_@reswqa_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-08T02:59:38Z
 updated_at: 2026-01-09T01:12:21Z
 url: https://github.com/astral-sh/ty/issues/2392
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Allow an option to hide inlay hints for built-in functions
 
 ---
 
-_Issue opened by @justinchuby on 2026-01-08 02:59_
+_@justinchuby_
 
 When `Call Argument Names` is on, calls like `enumerate()` or `str()` will have argument names displayed, which can make the source code noisy. It would be nice to have an option to selectively disable hints for built-in functions (and perhaps user specified packages).
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-05-29T16:28:47Z
 updated_at: 2018-08-02T03:29:50Z
 url: https://github.com/clap-rs/clap/issues/516
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # After Help and Before Help Issues
 
 ---
 
-_Issue opened by @mitsuhiko on 2016-05-29 16:28_
+_@mitsuhiko_
 
 Things I noticed
 - [x] Currently `before_help` does not seem to do anything for subcommands

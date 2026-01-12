@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-08T15:30:39Z
 updated_at: 2025-12-08T17:27:36Z
 url: https://github.com/astral-sh/ty/issues/1808
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `unused-ignore-comment` diagnostics are very verbose
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-08 15:30_
+_@AlexWaygood_
 
 Two `unused-ignore-comment` diagnostics are enough to take up most of my monitor with my terminal full screen. It feels like the rendering of the autofix doesn't add much on top of what the primary annotation shows:
 

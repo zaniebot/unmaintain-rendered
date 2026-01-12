@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-17T18:00:49Z
 updated_at: 2025-06-01T04:58:49Z
 url: https://github.com/astral-sh/uv/issues/12244
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # uv panics when resizing terminal window
 
 ---
 
-_Issue opened by @SteveMcGrath on 2025-03-17 18:00_
+_@SteveMcGrath_
 
 ### Summary
 

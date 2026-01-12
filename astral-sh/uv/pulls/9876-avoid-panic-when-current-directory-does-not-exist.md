@@ -13,14 +13,14 @@ head: main
 created_at: 2024-12-13T19:13:53Z
 updated_at: 2024-12-13T21:39:46Z
 url: https://github.com/astral-sh/uv/pull/9876
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:01Z
 ```
 
 # Avoid `panic!()` when current directory does not exist
 
 ---
 
-_Pull request opened by @bepri on 2024-12-13 19:13_
+_@bepri_
 
 ## Summary
 

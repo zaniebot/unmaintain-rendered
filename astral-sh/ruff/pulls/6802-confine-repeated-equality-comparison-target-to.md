@@ -13,14 +13,14 @@ head: charlie/yoda
 created_at: 2023-08-23T03:48:03Z
 updated_at: 2023-08-23T04:15:27Z
 url: https://github.com/astral-sh/ruff/pull/6802
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Confine repeated-equality-comparison-target to names and attributes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-23 03:48_
+_@charliermarsh_
 
 Empirically, Pylint does this, so seems reasonable to follow.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-11T07:43:47Z
 updated_at: 2023-07-15T14:51:53Z
 url: https://github.com/astral-sh/ruff/issues/5674
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: `SetComp` (depends on `ListComp`)
 
 ---
 
-_Issue opened by @MichaReiser on 2023-07-11 07:43_
+_@MichaReiser_
 
 _No description provided._
 

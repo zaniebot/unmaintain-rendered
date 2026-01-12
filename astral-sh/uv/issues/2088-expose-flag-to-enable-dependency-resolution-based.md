@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-29T16:45:18Z
 updated_at: 2024-03-04T17:51:21Z
 url: https://github.com/astral-sh/uv/issues/2088
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Expose flag to enable dependency resolution based on packages that were available on a target date
 
 ---
 
-_Issue opened by @namurphy on 2024-02-29 16:45_
+_@namurphy_
 
 It would be helpful to have a way to solve for dependencies with constraints on the dates that dependencies were released.  For example, I would like to be able to solve for an environment based on what was available two years ago.
 

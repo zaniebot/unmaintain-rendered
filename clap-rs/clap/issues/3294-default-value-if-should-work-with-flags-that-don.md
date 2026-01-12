@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-15T05:38:13Z
 updated_at: 2022-06-01T12:07:27Z
 url: https://github.com/clap-rs/clap/issues/3294
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # default_value_if should work with flags that don't take a value
 
 ---
 
-_Issue opened by @lefth on 2022-01-15 05:38_
+_@lefth_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-15T12:20:35Z
 updated_at: 2024-07-19T17:23:01Z
 url: https://github.com/astral-sh/uv/issues/5070
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Support for non-URL dependencies having URL dependencies?
 
 ---
 
-_Issue opened by @mchromin on 2024-07-15 12:20_
+_@mchromin_
 
 Hi!
 

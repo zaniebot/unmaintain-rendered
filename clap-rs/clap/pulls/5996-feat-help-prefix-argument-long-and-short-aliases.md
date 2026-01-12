@@ -12,14 +12,14 @@ head: push-kynozmuuzzuy
 created_at: 2025-05-10T14:13:05Z
 updated_at: 2025-06-05T08:44:52Z
 url: https://github.com/clap-rs/clap/pull/5996
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat(help): Prefix argument long and short aliases in output with `--` and `-`
 
 ---
 
-_Pull request opened by @cenviity on 2025-05-10 14:13_
+_@cenviity_
 
 Fixes #5997.
 

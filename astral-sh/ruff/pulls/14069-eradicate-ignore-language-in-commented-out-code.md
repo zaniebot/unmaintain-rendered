@@ -13,14 +13,14 @@ head: adds-language-to-era001
 created_at: 2024-11-03T21:23:21Z
 updated_at: 2024-11-04T16:33:59Z
 url: https://github.com/astral-sh/ruff/pull/14069
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [`eradicate`] ignore `# language=` in commented-out-code rule (ERA001)
 
 ---
 
-_Pull request opened by @fabiob on 2024-11-03 21:23_
+_@fabiob_
 
 Fixes one common case cited on #6019
 

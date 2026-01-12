@@ -13,14 +13,14 @@ head: force-reinstall
 created_at: 2024-07-04T14:41:03Z
 updated_at: 2024-07-04T15:59:44Z
 url: https://github.com/astral-sh/uv/pull/4807
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:28Z
 ```
 
 # Remove installed python for force installation
 
 ---
 
-_Pull request opened by @j178 on 2024-07-04 14:41_
+_@j178_
 
 ## Summary
 

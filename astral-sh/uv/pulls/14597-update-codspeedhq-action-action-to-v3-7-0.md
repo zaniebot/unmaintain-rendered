@@ -13,14 +13,14 @@ head: renovate/codspeedhq-action-3.x
 created_at: 2025-07-14T03:56:27Z
 updated_at: 2025-07-14T13:59:10Z
 url: https://github.com/astral-sh/uv/pull/14597
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:18Z
 ```
 
 # Update CodSpeedHQ/action action to v3.7.0
 
 ---
 
-_Pull request opened by @renovate on 2025-07-14 03:56_
+_@renovate_
 
 This PR contains the following updates:
 

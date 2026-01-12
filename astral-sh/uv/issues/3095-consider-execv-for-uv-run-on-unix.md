@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-17T16:20:17Z
 updated_at: 2025-09-17T13:12:54Z
 url: https://github.com/astral-sh/uv/issues/3095
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Consider `execv` for `uv run` on Unix
 
 ---
 
-_Issue opened by @zanieb on 2024-04-17 16:20_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/pull/3074#issuecomment-2060847595
 

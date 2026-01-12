@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-24T18:29:42Z
 updated_at: 2024-12-18T21:16:37Z
 url: https://github.com/astral-sh/uv/issues/7667
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # `uv init` hangs forever unless I add `--python-preference only-managed`
 
 ---
 
-_Issue opened by @will-henney on 2024-09-24 18:29_
+_@will-henney_
 
 Hi,
 

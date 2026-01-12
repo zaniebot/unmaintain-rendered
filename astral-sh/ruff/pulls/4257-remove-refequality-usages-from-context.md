@@ -12,14 +12,14 @@ head: charlie/ref
 created_at: 2023-05-06T19:30:57Z
 updated_at: 2023-05-06T20:03:53Z
 url: https://github.com/astral-sh/ruff/pull/4257
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Remove `RefEquality` usages from `Context`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-06 19:30_
+_@charliermarsh_
 
 ## Summary
 

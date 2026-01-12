@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-09T02:31:39Z
 updated_at: 2024-11-09T04:23:46Z
 url: https://github.com/astral-sh/ruff/issues/14219
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `D102` permits missing docstrings in public methods if Python file name starts with `_`
 
 ---
 
-_Issue opened by @yury-fedotov on 2024-11-09 02:31_
+_@yury-fedotov_
 
 ## Checks
 

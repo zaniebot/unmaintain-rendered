@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-19T08:35:10Z
 updated_at: 2025-12-22T22:46:13Z
 url: https://github.com/astral-sh/ty/issues/2103
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `dict` with known literal keys and values being assignable to a variable annotated with `Literal` is unsupported
 
 ---
 
-_Issue opened by @CarrotManMatt on 2025-12-19 08:35_
+_@CarrotManMatt_
 
 ### Summary
 

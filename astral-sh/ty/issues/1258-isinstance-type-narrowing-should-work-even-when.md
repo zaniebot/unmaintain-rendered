@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-25T16:21:18Z
 updated_at: 2025-11-18T16:10:39Z
 url: https://github.com/astral-sh/ty/issues/1258
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `isinstance` type narrowing should work even when the `isinstance` result is assigned to a variable
 
 ---
 
-_Issue opened by @benglewis on 2025-09-25 16:21_
+_@benglewis_
 
 ### Summary
 

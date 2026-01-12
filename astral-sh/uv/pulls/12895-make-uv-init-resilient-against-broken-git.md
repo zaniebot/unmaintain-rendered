@@ -13,14 +13,14 @@ head: konsti/resilient-uv-init
 created_at: 2025-04-15T10:48:14Z
 updated_at: 2025-04-17T15:45:26Z
 url: https://github.com/astral-sh/uv/pull/12895
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:26Z
 ```
 
 # Make `uv init` resilient against broken git
 
 ---
 
-_Pull request opened by @konstin on 2025-04-15 10:48_
+_@konstin_
 
 Currently, `uv init` works without a `git` executable, and with a working `git` executable, but not with a broken `git`, be it from GitHub Action's Windows CI or from the shim we insert.
 

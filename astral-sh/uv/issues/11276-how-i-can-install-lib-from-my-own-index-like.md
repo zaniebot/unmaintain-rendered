@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-06T08:55:10Z
 updated_at: 2025-02-06T11:12:30Z
 url: https://github.com/astral-sh/uv/issues/11276
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # How i can install lib from my own index like https://wheels.compamyname.com/python3.10?
 
 ---
 
-_Issue opened by @Ada-lave on 2025-02-06 08:55_
+_@Ada-lave_
 
 ### Question
 

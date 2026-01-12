@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-02-11T19:10:17Z
 updated_at: 2018-08-02T03:30:18Z
 url: https://github.com/clap-rs/clap/issues/1173
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Missing YAML for Arg::last
 
 ---
 
-_Issue opened by @AndrewGaspar on 2018-02-11 19:10_
+_@AndrewGaspar_
 
 ### Rust Version
 `rustc 1.23.0 (766bd11c8 2018-01-01)`

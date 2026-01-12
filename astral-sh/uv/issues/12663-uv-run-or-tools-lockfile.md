@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T06:40:32Z
 updated_at: 2025-04-04T06:40:32Z
 url: https://github.com/astral-sh/uv/issues/12663
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Uv run or tools lockfile
 
 ---
 
-_Issue opened by @gsemet on 2025-04-04 06:40_
+_@gsemet_
 
 ### Summary
 

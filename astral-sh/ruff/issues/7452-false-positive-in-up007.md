@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-17T10:40:55Z
 updated_at: 2023-09-19T03:37:40Z
 url: https://github.com/astral-sh/ruff/issues/7452
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # False Positive in UP007
 
 ---
 
-_Issue opened by @Matt-Ord on 2023-09-17 10:40_
+_@Matt-Ord_
 
 False positive when using Union of unpacked TypeVarTuple. As far as I know there is no way to represent this without using Union[].
 

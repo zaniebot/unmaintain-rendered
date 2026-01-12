@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-03-03T17:09:37Z
 updated_at: 2025-03-03T18:49:01Z
 url: https://github.com/astral-sh/uv/pull/11928
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:04Z
 ```
 
 # Fix typo in `no_default_groups` documentation and changelog
 
 ---
 
-_Pull request opened by @Viicos on 2025-03-03 17:09_
+_@Viicos_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

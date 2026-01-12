@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-12T09:43:19Z
 updated_at: 2023-09-16T08:12:51Z
 url: https://github.com/astral-sh/ruff/issues/7296
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Update `PLE2510`, `PLE2512-2515` to check in f-strings
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-12 09:43_
+_@dhruvmanila_
 
 `PLE2510`, `PLE2512`, `PLE2513`, `PLE2514`, and `PLE2515` checks for invalid string characters.
 

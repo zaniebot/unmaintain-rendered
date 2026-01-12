@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-18T18:10:29Z
 updated_at: 2025-11-21T15:02:05Z
 url: https://github.com/astral-sh/uv/issues/16771
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # Allow passing packages to `--excludes` option
 
 ---
 
-_Issue opened by @terror on 2025-11-18 18:10_
+_@terror_
 
 There are cases where users may want to exclude a single package, but end up having to [write it to a file](https://x.com/vllm_project/status/1988832111659479440) in order to do so, which I find a bit awkward. We should consider allowing `--excludes` for pip {compile, install, tool install} to accept package names alongside actual paths.
 

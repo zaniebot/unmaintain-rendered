@@ -13,14 +13,14 @@ head: charlie/build
 created_at: 2024-11-08T00:42:36Z
 updated_at: 2024-11-08T00:50:56Z
 url: https://github.com/astral-sh/uv/pull/8910
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:33Z
 ```
 
 # Add dedicated cache method for creating build directories
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-08 00:42_
+_@charliermarsh_
 
 ## Summary
 

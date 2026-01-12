@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T11:30:22Z
 updated_at: 2025-08-21T14:54:45Z
 url: https://github.com/astral-sh/uv/issues/14314
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # Support installation of executables of plugins with `uv tool install`
 
 ---
 
-_Issue opened by @mih on 2025-06-27 11:30_
+_@mih_
 
 ### Summary
 

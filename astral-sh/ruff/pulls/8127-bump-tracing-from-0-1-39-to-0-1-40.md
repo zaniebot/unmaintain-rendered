@@ -13,14 +13,14 @@ head: dependabot/cargo/tracing-0.1.40
 created_at: 2023-10-23T08:53:05Z
 updated_at: 2023-10-23T09:08:48Z
 url: https://github.com/astral-sh/ruff/pull/8127
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Bump tracing from 0.1.39 to 0.1.40
 
 ---
 
-_Pull request opened by @dependabot on 2023-10-23 08:53_
+_@dependabot_
 
 Bumps [tracing](https://github.com/tokio-rs/tracing) from 0.1.39 to 0.1.40.
 <details>

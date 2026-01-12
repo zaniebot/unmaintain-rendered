@@ -13,14 +13,14 @@ head: fix-analyze-dependencies-doc
 created_at: 2024-09-23T04:24:02Z
 updated_at: 2024-09-23T07:18:28Z
 url: https://github.com/astral-sh/ruff/pull/13476
-synced_at: 2026-01-10T21:08:14Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Fix formatting for analyze `direction` values
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-09-23 04:24_
+_@diceroll123_
 
 ## Summary
 

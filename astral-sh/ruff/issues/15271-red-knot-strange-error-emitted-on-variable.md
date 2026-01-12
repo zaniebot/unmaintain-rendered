@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-05T15:59:40Z
 updated_at: 2025-01-05T17:17:17Z
 url: https://github.com/astral-sh/ruff/issues/15271
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Strange error emitted on variable annotated with `type[EllipsisType]`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-01-05 15:59_
+_@AlexWaygood_
 
 I feel like this should be fine:
 

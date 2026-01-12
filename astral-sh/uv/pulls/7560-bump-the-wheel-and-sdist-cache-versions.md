@@ -12,14 +12,14 @@ head: charlie/bucket
 created_at: 2024-09-19T19:39:55Z
 updated_at: 2024-09-19T19:53:07Z
 url: https://github.com/astral-sh/uv/pull/7560
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:53Z
 ```
 
 # Bump the wheel and sdist cache versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-19 19:39_
+_@charliermarsh_
 
 ## Summary
 

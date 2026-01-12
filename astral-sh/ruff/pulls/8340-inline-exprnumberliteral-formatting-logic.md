@@ -13,14 +13,14 @@ head: dhruv/inline-number-formatting
 created_at: 2023-10-30T07:43:53Z
 updated_at: 2023-10-30T08:39:39Z
 url: https://github.com/astral-sh/ruff/pull/8340
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Inline `ExprNumberLiteral` formatting logic
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-30 07:43_
+_@dhruvmanila_
 
 ## Summary
 

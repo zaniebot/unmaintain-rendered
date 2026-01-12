@@ -12,14 +12,14 @@ head: charlie/ecosystem
 created_at: 2023-08-01T15:09:17Z
 updated_at: 2023-08-01T15:48:35Z
 url: https://github.com/astral-sh/ruff/pull/6245
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add Poetry and FastAPI to ecosystem checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-01 15:09_
+_@charliermarsh_
 
 Poetry in particular would be useful to avoid issues like https://github.com/astral-sh/ruff/issues/6233.
 

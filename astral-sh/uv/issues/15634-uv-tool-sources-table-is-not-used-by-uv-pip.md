@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-02T17:50:49Z
 updated_at: 2025-09-05T14:43:10Z
 url: https://github.com/astral-sh/uv/issues/15634
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # `uv.tool.sources` table is not used by `uv pip install` except for project installation
 
 ---
 
-_Issue opened by @wshanks on 2025-09-02 17:50_
+_@wshanks_
 
 ### Summary
 

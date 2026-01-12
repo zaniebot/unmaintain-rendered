@@ -13,14 +13,14 @@ head: dhruv/release
 created_at: 2025-06-11T10:54:42Z
 updated_at: 2025-06-11T11:27:37Z
 url: https://github.com/astral-sh/ty/pull/634
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Bump version to 0.0.1-alpha.9
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-06-11 10:54_
+_@dhruvmanila_
 
 _No description provided._
 

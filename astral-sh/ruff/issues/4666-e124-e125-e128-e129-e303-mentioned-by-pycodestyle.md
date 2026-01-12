@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-26T09:20:14Z
 updated_at: 2023-05-26T10:09:34Z
 url: https://github.com/astral-sh/ruff/issues/4666
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # E124 / E125 / E128 / E129 / E303: Mentioned by pycodestyle but not ruff
 
 ---
 
-_Issue opened by @buhtz on 2023-05-26 09:20_
+_@buhtz_
 
 Hello,
 maybe I misunderstand the intention of ruff. So please take my apology if this issue doesn't make sense.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-11T18:43:46Z
 updated_at: 2024-06-12T08:54:31Z
 url: https://github.com/astral-sh/uv/issues/4246
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # uv compile tries to fetch unnecesary old version of a package (and fails)
 
 ---
 
-_Issue opened by @jcugat on 2024-06-11 18:43_
+_@jcugat_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

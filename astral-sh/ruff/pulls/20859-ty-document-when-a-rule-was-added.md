@@ -14,14 +14,14 @@ head: micha/document-when-rule-was-added
 created_at: 2025-10-14T10:04:46Z
 updated_at: 2025-10-14T12:33:50Z
 url: https://github.com/astral-sh/ruff/pull/20859
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] Document when a rule was added
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-14 10:04_
+_@MichaReiser_
 
 ## Summary
 

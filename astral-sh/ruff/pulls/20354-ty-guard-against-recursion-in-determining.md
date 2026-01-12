@@ -14,14 +14,14 @@ head: cjm/lsp-so
 created_at: 2025-09-11T18:07:25Z
 updated_at: 2025-09-11T18:29:53Z
 url: https://github.com/astral-sh/ruff/pull/20354
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] guard against recursion in determining completion kind
 
 ---
 
-_Pull request opened by @carljm on 2025-09-11 18:07_
+_@carljm_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/self-bound
 created_at: 2024-07-28T17:51:40Z
 updated_at: 2024-07-28T18:35:20Z
 url: https://github.com/astral-sh/uv/pull/5518
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:52Z
 ```
 
 # Avoid warning users for missing self-extra lower bounds
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-28 17:51_
+_@charliermarsh_
 
 ## Summary
 

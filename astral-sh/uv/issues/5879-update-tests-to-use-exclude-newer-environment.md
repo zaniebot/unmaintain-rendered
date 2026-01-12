@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-07T17:24:50Z
 updated_at: 2024-08-09T13:28:43Z
 url: https://github.com/astral-sh/uv/issues/5879
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Update tests to use exclude newer environment variable
 
 ---
 
-_Issue opened by @zanieb on 2024-08-07 17:24_
+_@zanieb_
 
 Instead of using the `--exclude-newer` flag, we should use the `UV_EXCLUDE_NEWER` environment variable so we can replace all the "without_exclude_newer` methods with a simple `.clear_env("UV_EXCLUDE_NEWER")` in the relevant tests?
 

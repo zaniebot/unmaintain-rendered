@@ -14,14 +14,14 @@ head: zb/maturin-test
 created_at: 2024-05-21T18:33:35Z
 updated_at: 2024-05-21T19:17:49Z
 url: https://github.com/astral-sh/uv/pull/3714
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Move maturin test coverage into CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-21 18:33_
+_@zanieb_
 
 This test can take over 60s to run, which is too much for a unit test. We'll run it in a separate CI job to retain coverage.
 

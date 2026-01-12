@@ -14,14 +14,14 @@ head: micha/type-collector-default-hash-set
 created_at: 2026-01-04T18:20:59Z
 updated_at: 2026-01-04T18:58:32Z
 url: https://github.com/astral-sh/ruff/pull/22368
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Use default `HashSet` for `TypeCollector`
 
 ---
 
-_Pull request opened by @MichaReiser on 2026-01-04 18:20_
+_@MichaReiser_
 
 I might miss something but we don't rely on ordering. All that we do is track which types we've already seen.
 

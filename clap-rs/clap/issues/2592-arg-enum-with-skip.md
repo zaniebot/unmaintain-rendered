@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-07-14T20:18:42Z
 updated_at: 2021-07-17T03:57:08Z
 url: https://github.com/clap-rs/clap/issues/2592
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # arg_enum with skip?
 
 ---
 
-_Issue opened by @epage on 2021-07-14 20:18_
+_@epage_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/2561
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-11T14:41:16Z
 updated_at: 2024-01-11T14:43:27Z
 url: https://github.com/astral-sh/uv/issues/886
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Flaky test
 
 ---
 
-_Issue opened by @bojanserafimov on 2024-01-11 14:41_
+_@bojanserafimov_
 
 `dependency_excludes_range_of_compatible_versions` fails [here](https://github.com/astral-sh/puffin/actions/runs/7490137853/job/20388292564) but after re-running tests with no changes it passes. cc @zanieb 
 

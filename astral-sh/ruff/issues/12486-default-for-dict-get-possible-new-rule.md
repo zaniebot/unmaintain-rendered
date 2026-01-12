@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-24T07:35:22Z
 updated_at: 2024-07-25T06:41:03Z
 url: https://github.com/astral-sh/ruff/issues/12486
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Default for dict.get(). Possible new rule
 
 ---
 
-_Issue opened by @ashrub-holvi on 2024-07-24 07:35_
+_@ashrub-holvi_
 
 Hi,
 I am not fully sure, so, it's more about starting discussion, but have a feeling it might be good to have a rule for such cases.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-20T21:14:11Z
 updated_at: 2023-03-13T19:42:57Z
 url: https://github.com/astral-sh/ruff/issues/2039
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # RFE: infer `target-version` from project metadata
 
 ---
 
-_Issue opened by @scop on 2023-01-20 21:14_
+_@scop_
 
 `target-version` could in many cases be inferred from project metadata: 
 - https://packaging.python.org/en/latest/specifications/declaring-project-metadata/#requires-python

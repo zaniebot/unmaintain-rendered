@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T01:17:23Z
 updated_at: 2025-10-30T17:01:24Z
 url: https://github.com/astral-sh/ruff/issues/14185
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Request: Autofix for `redundant-numeric-union`/`PYI041` & `redundant-literal-union`/`PYI051`
 
 ---
 
-_Issue opened by @Avasam on 2024-11-08 01:17_
+_@Avasam_
 
 * [x] https://docs.astral.sh/ruff/rules/redundant-numeric-union/
 * [ ] https://docs.astral.sh/ruff/rules/redundant-literal-union/

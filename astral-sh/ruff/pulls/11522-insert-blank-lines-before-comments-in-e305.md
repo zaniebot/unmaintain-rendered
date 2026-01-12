@@ -12,14 +12,14 @@ head: charlie/line
 created_at: 2024-05-23T20:42:52Z
 updated_at: 2024-05-27T17:05:16Z
 url: https://github.com/astral-sh/ruff/pull/11522
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Insert blank lines before comments in E305
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-23 20:42_
+_@charliermarsh_
 
 ## Summary
 
@@ -72,11 +72,45 @@ _Comment by @github-actions[bot] on 2024-05-23 20:56_
 
 ---
 
+_Review comment by @dhruvmanila on `crates/ruff_linter/src/rules/pycodestyle/snapshots/ruff_linter__rules__pycodestyle__tests__E305_E30.py.snap`:20 on 2024-05-24 04:38_
+
+I think this is incorrect. The blank lines got added between the last statement and the comment within the same block (function body).
+
+---
+
 _@dhruvmanila reviewed on 2024-05-24 04:38_
 
 ---
 
 _@dhruvmanila reviewed on 2024-05-24 04:39_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ruff_linter/src/rules/pycodestyle/snapshots/ruff_linter__rules__pycodestyle__tests__E305_E30.py.snap`:38 on 2024-05-24 04:39_
+
+Same as above.
+
+The diagnostic highlights the correct location but the fix seems to be incorrect.
+
+```
+/Users/dhruv/playground/ruff/src/E305.py:7:1: E305 [*] Expected 2 blank lines after class or function definition, found (1)
+  |
+6 |     # another comment
+7 | a = 1
+  | ^ E305
+8 | # end
+  |
+  = help: Add missing blank line(s)
+
+ℹ Safe fix
+1 1 | class Class():
+2 2 |     pass
+3 3 | 
+  4 |+
+4 5 |     # comment
+5 6 | 
+6 7 |     # another comment
+```
 
 ---
 

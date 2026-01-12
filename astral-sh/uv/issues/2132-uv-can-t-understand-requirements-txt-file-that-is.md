@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-02T17:21:07Z
 updated_at: 2024-03-22T21:27:06Z
 url: https://github.com/astral-sh/uv/issues/2132
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # uv can't understand requirements.txt file that is valid for pip
 
 ---
 
-_Issue opened by @karpetrosyan on 2024-03-02 17:21_
+_@karpetrosyan_
 
 Hi! First and foremost, thank you for this fantastic tool!
 

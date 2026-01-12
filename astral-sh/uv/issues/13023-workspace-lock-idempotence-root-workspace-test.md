@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-21T20:04:11Z
 updated_at: 2025-06-03T14:39:06Z
 url: https://github.com/astral-sh/uv/issues/13023
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # `workspace_lock_idempotence_root_workspace` test flake on Windows
 
 ---
 
-_Issue opened by @zanieb on 2025-04-21 20:04_
+_@zanieb_
 
 https://github.com/astral-sh/uv/actions/runs/14580087321/job/40894722667?pr=10923
 

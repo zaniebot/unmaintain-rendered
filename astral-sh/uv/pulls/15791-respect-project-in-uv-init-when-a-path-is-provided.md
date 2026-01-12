@@ -13,14 +13,14 @@ head: zb/init-project-dir
 created_at: 2025-09-11T14:24:41Z
 updated_at: 2025-11-10T17:52:19Z
 url: https://github.com/astral-sh/uv/pull/15791
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:11:56Z
 ```
 
 # Respect `--project` in `uv init` when a path is provided
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-11 14:24_
+_@zanieb_
 
 Needs tests.
 

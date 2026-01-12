@@ -12,14 +12,14 @@ head: move-hindsight-violations
 created_at: 2023-02-03T13:25:50Z
 updated_at: 2023-02-03T13:40:57Z
 url: https://github.com/astral-sh/ruff/pull/2537
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Move flake8-2020 violations
 
 ---
 
-_Pull request opened by @akx on 2023-02-03 13:25_
+_@akx_
 
 _No description provided._
 

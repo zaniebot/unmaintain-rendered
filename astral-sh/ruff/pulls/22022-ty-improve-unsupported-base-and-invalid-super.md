@@ -14,14 +14,14 @@ head: alex/long-diagnostics
 created_at: 2025-12-17T12:39:39Z
 updated_at: 2025-12-17T14:43:13Z
 url: https://github.com/astral-sh/ruff/pull/22022
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Improve `unsupported-base` and `invalid-super-argument` diagnostics to avoid extremely long lines when encountering verbose types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-17 12:39_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: micha/fstring-debug-expression-tests
 created_at: 2024-12-12T09:28:43Z
 updated_at: 2024-12-12T09:35:08Z
 url: https://github.com/astral-sh/ruff/pull/14929
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Add tests demonstrating f-strings with debug expressions in replacements that contain escaped characters
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-12 09:28_
+_@MichaReiser_
 
 ## Summary
 

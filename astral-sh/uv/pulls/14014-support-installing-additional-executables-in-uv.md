@@ -12,14 +12,14 @@ head: tool-install
 created_at: 2025-06-13T05:23:08Z
 updated_at: 2025-08-06T10:05:36Z
 url: https://github.com/astral-sh/uv/pull/14014
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:10:58Z
 ```
 
 # Support installing additional executables in `uv tool install`
 
 ---
 
-_Pull request opened by @aaron-ang on 2025-06-13 05:23_
+_@aaron-ang_
 
 Close #6314
 

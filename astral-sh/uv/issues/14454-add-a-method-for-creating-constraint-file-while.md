@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-04T06:49:17Z
 updated_at: 2025-08-06T12:14:32Z
 url: https://github.com/astral-sh/uv/issues/14454
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # add a method for creating constraint file while using uv sync
 
 ---
 
-_Issue opened by @Devpmin on 2025-07-04 06:49_
+_@Devpmin_
 
 ### Summary
 

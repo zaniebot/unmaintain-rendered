@@ -14,14 +14,14 @@ head: fix-20610
 created_at: 2025-09-28T19:18:52Z
 updated_at: 2025-10-02T22:48:12Z
 url: https://github.com/astral-sh/ruff/pull/20612
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # [`flake8-annotations`] Fix return type annotations to handle shadowed builtin symbols (`ANN201`, `ANN202`, `ANN204`, `ANN205`, `ANN206`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-28 19:18_
+_@danparizher_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-15T21:17:25Z
 updated_at: 2023-02-17T14:21:30Z
 url: https://github.com/astral-sh/ruff/issues/2939
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # The major open source projects using ruff list has gotten very long
 
 ---
 
-_Issue opened by @not-my-profile on 2023-02-15 21:17_
+_@not-my-profile_
 
 It's obviously very cool that all of these (27) major open source projects are using ruff but the list has gotten so long that it has become a navigation hurdle for users looking for information in our README (you need to scroll further to get to the table of contents).
 

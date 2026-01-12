@@ -14,14 +14,14 @@ head: doc-copy-console
 created_at: 2024-07-24T04:36:45Z
 updated_at: 2024-07-31T14:52:18Z
 url: https://github.com/astral-sh/uv/pull/5397
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:47Z
 ```
 
 # Improve copy of console command examples
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-07-24 04:36_
+_@eth3lbert_
 
 ## Summary
 

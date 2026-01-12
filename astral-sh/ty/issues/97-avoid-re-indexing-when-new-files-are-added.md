@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-04T11:03:42Z
 updated_at: 2025-06-09T16:57:59Z
 url: https://github.com/astral-sh/ty/issues/97
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Avoid re-indexing when new files are added
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-04 11:03_
+_@MichaReiser_
 
 ty re-indexes all project files when a new file is added because it currently has no other way to determine if the file is ignored by a .gitignore (or some other rule). This is wasteful and can make ty unnecessarily slow when switching between commits. 
 

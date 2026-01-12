@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-22T07:48:30Z
 updated_at: 2023-08-23T17:00:08Z
 url: https://github.com/astral-sh/ruff/issues/6756
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rule UP009 causes to show autofix error
 
 ---
 
-_Issue opened by @qarmin on 2023-08-22 07:48_
+_@qarmin_
 
 Ruff 0.0.285
 

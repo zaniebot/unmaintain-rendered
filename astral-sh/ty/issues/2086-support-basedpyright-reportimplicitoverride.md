@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-18T19:46:51Z
 updated_at: 2025-12-18T19:51:59Z
 url: https://github.com/astral-sh/ty/issues/2086
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Support basedpyright `reportImplicitOverride`
 
 ---
 
-_Issue opened by @jaymegordo on 2025-12-18 19:46_
+_@jaymegordo_
 
 Not sure if there's a better place for this issue eg a list of 3rd party feature sets with planned support?
 

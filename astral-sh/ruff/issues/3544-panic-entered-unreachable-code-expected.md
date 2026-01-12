@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-15T17:12:11Z
 updated_at: 2023-03-17T00:54:31Z
 url: https://github.com/astral-sh/ruff/issues/3544
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Panic] entered unreachable code: Expected ImportNames::Aliases'
 
 ---
 
-_Issue opened by @qarmin on 2023-03-15 17:12_
+_@qarmin_
 
 Ruff 0.0.255
 

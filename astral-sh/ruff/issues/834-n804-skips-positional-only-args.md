@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-20T19:39:06Z
 updated_at: 2022-11-20T20:48:21Z
 url: https://github.com/astral-sh/ruff/issues/834
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # N804 skips positional-only args
 
 ---
 
-_Issue opened by @nstarman on 2022-11-20 19:39_
+_@nstarman_
 
 Rule N804 erroneously skips positional-only args. I found this in a piece of code similar to the following MWE.
 Ruff is saying that ``other`` should be `cls`.

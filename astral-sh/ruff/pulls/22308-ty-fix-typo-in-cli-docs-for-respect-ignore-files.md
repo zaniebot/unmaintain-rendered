@@ -14,14 +14,14 @@ head: fix-args-typo
 created_at: 2025-12-30T20:02:38Z
 updated_at: 2025-12-30T20:38:51Z
 url: https://github.com/astral-sh/ruff/pull/22308
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:46Z
 ```
 
 # [ty] Fix typo in cli docs for `respect_ignore_files` arg
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-12-30 20:02_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

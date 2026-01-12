@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-11T06:45:11Z
 updated_at: 2024-09-19T12:18:12Z
 url: https://github.com/astral-sh/ruff/issues/12800
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [feature] Add ability to specify `--range` option multiple times
 
 ---
 
-_Issue opened by @afontenot on 2024-08-11 06:45_
+_@afontenot_
 
 This feature would increase feature parity with `black`, which supports multiply specifying the equivalent `--line-ranges` option.
 

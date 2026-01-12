@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-25T05:19:07Z
 updated_at: 2025-08-26T06:35:17Z
 url: https://github.com/astral-sh/uv/issues/15509
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # Support using `uv sync` in pre-commit.ci
 
 ---
 
-_Issue opened by @vivodi on 2025-08-25 05:19_
+_@vivodi_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-09T12:10:06Z
 updated_at: 2025-09-23T20:01:23Z
 url: https://github.com/astral-sh/ty/issues/1155
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Enum union and intersection with Any not simplifying correctly
 
 ---
 
-_Issue opened by @github-actions on 2025-09-09 12:10_
+_@github-actions_
 
 Run listed here: https://github.com/astral-sh/ty/actions/runs/17581914325
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-18T11:36:32Z
 updated_at: 2023-10-20T07:08:49Z
 url: https://github.com/astral-sh/ruff/issues/8043
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Implement preview style assignment breaking
 
 ---
 
-_Issue opened by @konstin on 2023-10-18 11:36_
+_@konstin_
 
 Black (and our) stable style:
 ```python

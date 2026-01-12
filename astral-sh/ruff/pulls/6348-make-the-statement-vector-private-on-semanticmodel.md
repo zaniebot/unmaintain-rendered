@@ -13,14 +13,14 @@ head: charlie/statement
 created_at: 2023-08-04T17:33:39Z
 updated_at: 2023-08-07T15:21:09Z
 url: https://github.com/astral-sh/ruff/pull/6348
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Make the `statement` vector private on `SemanticModel`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-04 17:33_
+_@charliermarsh_
 
 ## Summary
 

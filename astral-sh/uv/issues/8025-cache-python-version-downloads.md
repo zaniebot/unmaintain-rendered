@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-08T23:08:53Z
 updated_at: 2025-01-23T17:26:20Z
 url: https://github.com/astral-sh/uv/issues/8025
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Cache Python version downloads
 
 ---
 
-_Issue opened by @zanieb on 2024-10-08 23:08_
+_@zanieb_
 
 I find myself sitting around a lot waiting for these to download again. It seems common enough to try uninstalling and installing versions that we should just cache the distributions?
 

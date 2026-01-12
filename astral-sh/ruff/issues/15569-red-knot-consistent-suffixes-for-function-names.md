@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-18T12:32:42Z
 updated_at: 2025-01-22T08:06:58Z
 url: https://github.com/astral-sh/ruff/issues/15569
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Consistent suffixes for function names
 
 ---
 
-_Issue opened by @sharkdp on 2025-01-18 12:32_
+_@sharkdp_
 
 We previously had a scheme where functions that had a `_ty` suffix would return a `Type<'db>`. This has been broken in a few places, for example:
 

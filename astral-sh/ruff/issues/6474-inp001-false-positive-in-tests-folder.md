@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-10T07:49:18Z
 updated_at: 2025-05-26T09:27:38Z
 url: https://github.com/astral-sh/ruff/issues/6474
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # INP001 false positive in tests folder
 
 ---
 
-_Issue opened by @flying-sheep on 2023-08-10 07:49_
+_@flying-sheep_
 
 The recommended Python + Pytest layout is
 

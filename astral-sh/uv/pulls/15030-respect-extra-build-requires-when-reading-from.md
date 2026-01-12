@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2025-08-02T18:11:34Z
 updated_at: 2025-08-02T19:26:04Z
 url: https://github.com/astral-sh/uv/pull/15030
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:32Z
 ```
 
 # Respect extra build requires when reading from wheel cache
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-02 18:11_
+_@charliermarsh_
 
 ## Summary
 

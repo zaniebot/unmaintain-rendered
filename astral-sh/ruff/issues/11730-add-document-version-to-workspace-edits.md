@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-04T06:11:24Z
 updated_at: 2025-04-03T13:48:10Z
 url: https://github.com/astral-sh/ruff/issues/11730
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Add document version to workspace edits
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-06-04 06:11_
+_@dhruvmanila_
 
 This was removed in https://github.com/astral-sh/ruff/pull/11206 to fix https://github.com/astral-sh/ruff/issues/11248.
 

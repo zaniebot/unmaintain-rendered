@@ -14,14 +14,14 @@ head: ag/fix-8565
 created_at: 2023-11-09T17:46:34Z
 updated_at: 2023-11-10T15:15:35Z
 url: https://github.com/astral-sh/ruff/pull/8587
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # refine pyupgrade's TimeoutErrorAlias lint (UP041) to remove false positives
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-11-09 17:46_
+_@BurntSushi_
 
 Previously, this lint had its alias detection logic a little
 backwards. That is, for Python 3.11+, it would *only* detect

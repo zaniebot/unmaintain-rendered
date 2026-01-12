@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-10T14:55:57Z
 updated_at: 2023-06-23T21:54:33Z
 url: https://github.com/clap-rs/clap/issues/4962
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Allow obtaining "about" text as a &str
 
 ---
 
-_Issue opened by @lufte on 2023-06-10 14:55_
+_@lufte_
 
 ### Please complete the following tasks
 

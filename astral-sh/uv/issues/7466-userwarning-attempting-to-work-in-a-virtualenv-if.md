@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-17T15:16:52Z
 updated_at: 2024-09-22T14:08:07Z
 url: https://github.com/astral-sh/uv/issues/7466
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # UserWarning: Attempting to work in a virtualenv. If you encounter problems, please install IPython inside the virtualenv
 
 ---
 
-_Issue opened by @kdheepak on 2024-09-17 15:16_
+_@kdheepak_
 
 On Windows, after running the following:
 

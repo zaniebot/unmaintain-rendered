@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T07:31:58Z
 updated_at: 2025-02-21T08:06:12Z
 url: https://github.com/astral-sh/uv/issues/11656
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # VS Code debugger fails to start using a venv created by uv
 
 ---
 
-_Issue opened by @StefanHemetsberger on 2025-02-20 07:31_
+_@StefanHemetsberger_
 
 ### Summary
 

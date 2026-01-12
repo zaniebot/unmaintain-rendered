@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-08T09:13:52Z
 updated_at: 2023-09-08T11:46:15Z
 url: https://github.com/astral-sh/ruff/issues/129
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `F401` when type used in annotation
 
 ---
 
-_Issue opened by @samuelcolvin on 2022-09-08 09:13_
+_@samuelcolvin_
 
 Kind of the opposite to #128.
 

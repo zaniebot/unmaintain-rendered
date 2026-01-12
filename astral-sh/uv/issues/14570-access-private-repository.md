@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-11T20:36:01Z
 updated_at: 2025-07-13T22:56:50Z
 url: https://github.com/astral-sh/uv/issues/14570
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # Access private repository
 
 ---
 
-_Issue opened by @jairhenrique on 2025-07-11 20:36_
+_@jairhenrique_
 
 ### Summary
 

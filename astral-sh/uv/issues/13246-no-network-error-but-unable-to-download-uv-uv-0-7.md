@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-01T05:47:04Z
 updated_at: 2025-05-01T18:15:36Z
 url: https://github.com/astral-sh/uv/issues/13246
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # No network error but unable to download uv (uv 0.7.2 x86_64-unknown-linux-gnu
 
 ---
 
-_Issue opened by @reginaldc on 2025-05-01 05:47_
+_@reginaldc_
 
 ### Summary
 

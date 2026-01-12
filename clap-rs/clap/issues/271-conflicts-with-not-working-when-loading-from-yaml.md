@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-09-22T18:29:44Z
 updated_at: 2018-08-02T03:29:45Z
 url: https://github.com/clap-rs/clap/issues/271
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # conflicts_with not working when loading from yaml
 
 ---
 
-_Issue opened by @XAMPPRocky on 2015-09-22 18:29_
+_@XAMPPRocky_
 
 Trying what was suggested in #267 I added the conflicts_with flag. This had no effect, and the clap still errors wince there is no input
 ### Command: `tokei -l`

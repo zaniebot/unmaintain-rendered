@@ -12,14 +12,14 @@ head: fix-n804-class-method-pos-only-args
 created_at: 2022-11-20T20:36:22Z
 updated_at: 2022-12-01T17:15:17Z
 url: https://github.com/astral-sh/ruff/pull/836
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix N804 class method with positional only args
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2022-11-20 20:36_
+_@JonathanPlasse_
 
 _No description provided._
 

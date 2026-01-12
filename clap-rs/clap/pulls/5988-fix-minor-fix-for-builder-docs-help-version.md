@@ -12,14 +12,14 @@ head: fix-builder-custom-version-docs
 created_at: 2025-05-06T05:07:46Z
 updated_at: 2025-05-06T13:44:42Z
 url: https://github.com/clap-rs/clap/pull/5988
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # fix: minor fix for builder docs (help -> version)
 
 ---
 
-_Pull request opened by @cordx56 on 2025-05-06 05:07_
+_@cordx56_
 
 Fixed the doc comment in the builder.
 The fixed part appears to be `version`, not `help`.   

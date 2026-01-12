@@ -13,14 +13,14 @@ head: charlie/mirror
 created_at: 2025-01-30T00:37:42Z
 updated_at: 2025-01-30T13:40:38Z
 url: https://github.com/astral-sh/uv/pull/11086
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:40Z
 ```
 
 # Use a mirror with upload timestamps for PyTorch
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-30 00:37_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-17T18:00:49Z
 updated_at: 2024-11-17T18:48:40Z
 url: https://github.com/astral-sh/ruff/issues/14404
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Feature request: undocumented-private-*
 
 ---
 
-_Issue opened by @duelafn on 2024-11-17 18:00_
+_@duelafn_
 
 Hello, great project! Our project requires documentation for all items, not just public, but the D100 through D107 checks will only apply to public items (listed in `__all__`). Would be possible to either add new additional checks against non-public items or else a setting that would make D100 through D107 flag non-public items as well?
 

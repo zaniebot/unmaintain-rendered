@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-17T12:02:15Z
 updated_at: 2025-11-19T11:12:31Z
 url: https://github.com/astral-sh/uv/issues/16758
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # Running `uv sync --locked` in a Dockerfile with workspace dependencies gives "the lockfile at `uv.lock` needs to be updated", even though no update is needed
 
 ---
 
-_Issue opened by @hakontonne on 2025-11-17 12:02_
+_@hakontonne_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-10T05:12:14Z
 updated_at: 2025-05-27T07:03:28Z
 url: https://github.com/astral-sh/ty/issues/303
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # vscode extension
 
 ---
 
-_Issue opened by @DetachHead on 2025-05-10 05:12_
+_@DetachHead_
 
 i'm assuming this is already planned, but i couldn't find an issue for it.
 

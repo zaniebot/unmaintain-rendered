@@ -13,14 +13,14 @@ head: konsti/explain-build-frontend-vs-build-backend
 created_at: 2025-01-30T13:05:28Z
 updated_at: 2025-01-30T19:48:48Z
 url: https://github.com/astral-sh/uv/pull/11094
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:40Z
 ```
 
 # Explain build frontend vs. build backend
 
 ---
 
-_Pull request opened by @konstin on 2025-01-30 13:05_
+_@konstin_
 
 We regularly get questions why `uv build` is missing certain files or using the wrong build tag, when that's done by the build backend and part of the build backend's docs. I tried to clarify this difference and to redirect users to look at the tool's docs instead of wondering why uv's docs don't explain that.
 

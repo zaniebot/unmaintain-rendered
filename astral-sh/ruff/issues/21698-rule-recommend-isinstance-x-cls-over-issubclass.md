@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-29T19:35:03Z
 updated_at: 2025-12-03T05:13:17Z
 url: https://github.com/astral-sh/ruff/issues/21698
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Rule: Recommend `isinstance(x, Cls)` over `issubclass(type(x), Cls)`
 
 ---
 
-_Issue opened by @KDruzhkin on 2025-11-29 19:35_
+_@KDruzhkin_
 
 ### Summary
 

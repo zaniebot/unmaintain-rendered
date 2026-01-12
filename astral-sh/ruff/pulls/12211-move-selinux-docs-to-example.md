@@ -13,14 +13,14 @@ head: charlie/dock
 created_at: 2024-07-05T20:40:01Z
 updated_at: 2024-07-05T20:42:44Z
 url: https://github.com/astral-sh/ruff/pull/12211
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Move SELinux docs to example
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-05 20:40_
+_@charliermarsh_
 
 _No description provided._
 

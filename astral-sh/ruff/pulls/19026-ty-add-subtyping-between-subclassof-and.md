@@ -13,14 +13,14 @@ head: subclass-of-callable-has-relation-to
 created_at: 2025-06-29T14:50:14Z
 updated_at: 2025-07-16T21:12:30Z
 url: https://github.com/astral-sh/ruff/pull/19026
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # [ty] Add subtyping between SubclassOf and CallableType
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-06-29 14:50_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

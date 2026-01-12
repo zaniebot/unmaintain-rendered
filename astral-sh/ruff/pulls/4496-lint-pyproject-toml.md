@@ -12,14 +12,14 @@ head: lint_pyproject_toml
 created_at: 2023-05-18T14:37:12Z
 updated_at: 2023-05-25T12:24:46Z
 url: https://github.com/astral-sh/ruff/pull/4496
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Lint pyproject.toml
 
 ---
 
-_Pull request opened by @konstin on 2023-05-18 14:37_
+_@konstin_
 
 This adds a new rule `InvalidPyprojectToml` that lints pyproject.toml by checking if https://github.com/PyO3/pyproject-toml-rs can parse it. This means the linting is currently very basic, e.g. we don't check whether the name is actually a valid python project name or appropriately normalized. It does catch errors e.g. with invalid dependency requirements or problems withs the license specifications. It is open to be extended in the future (validate name, SPDX expressions, classifiers, ...), either in ruff or in pyproject-toml-rs.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-05T18:48:39Z
 updated_at: 2025-05-07T18:11:37Z
 url: https://github.com/astral-sh/ruff/issues/17867
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Missing syntax error for unparenthesized generator expression in single-argument call
 
 ---
 
-_Issue opened by @ntBre on 2025-05-05 18:48_
+_@ntBre_
 
 >> generator expression must be parenthesized 
 > 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-01T08:53:41Z
 updated_at: 2026-01-06T10:08:23Z
 url: https://github.com/astral-sh/uv/issues/16546
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # report an error when installing a package that overrides another
 
 ---
 
-_Issue opened by @DetachHead on 2025-11-01 08:53_
+_@DetachHead_
 
 ### Summary
 

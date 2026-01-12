@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-24T22:32:47Z
 updated_at: 2024-11-25T17:35:08Z
 url: https://github.com/astral-sh/ruff/issues/14567
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Fixes for PYI061 and RUF020 can generate `None | None`
 
 ---
 
-_Issue opened by @dscorbett on 2024-11-24 22:32_
+_@dscorbett_
 
 The fixes for [`redundant-none-literal` (PYI061)](https://docs.astral.sh/ruff/rules/redundant-none-literal/) and [`never-union` (RUF020)](https://docs.astral.sh/ruff/rules/never-union/) in Ruff 0.8.0 can generate `None | None`, which raises an error at runtime.
 

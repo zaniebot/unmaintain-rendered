@@ -13,14 +13,14 @@ head: charlie/local
 created_at: 2024-01-14T17:21:24Z
 updated_at: 2024-01-14T18:02:14Z
 url: https://github.com/astral-sh/ruff/pull/9515
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`flake8-simplify`] Avoid some more `enumerate-for-loop` false positives (`SIM113`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-14 17:21_
+_@charliermarsh_
 
 Avoids, e.g., [this false positive](https://github.com/zulip/zulip/blob/a4fad5dda116048e22c3d559d370367e4e1c9b9a/zerver/data_import/slack.py#L634) from the ecosystem check.
 

@@ -13,14 +13,14 @@ head: renovate/ruff-0.x
 created_at: 2025-02-03T00:25:28Z
 updated_at: 2025-02-03T00:31:04Z
 url: https://github.com/astral-sh/ruff/pull/15897
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Update dependency ruff to v0.9.4
 
 ---
 
-_Pull request opened by @renovate on 2025-02-03 00:25_
+_@renovate_
 
 This PR contains the following updates:
 

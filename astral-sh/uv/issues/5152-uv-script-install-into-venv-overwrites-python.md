@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-17T17:31:42Z
 updated_at: 2024-07-17T19:44:27Z
 url: https://github.com/astral-sh/uv/issues/5152
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Uv script install into .venv overwrites python
 
 ---
 
-_Issue opened by @bluss on 2024-07-17 17:31_
+_@bluss_
 
 - Install python 3.12.3 with uv.
 - Create a new package (pyproject below)

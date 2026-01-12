@@ -13,14 +13,14 @@ head: dhruv/star-expr
 created_at: 2024-03-29T14:21:23Z
 updated_at: 2024-04-03T07:49:54Z
 url: https://github.com/astral-sh/ruff/pull/10657
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Limit `bitwise_or` precedence for starred expression with error
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-29 14:21_
+_@dhruvmanila_
 
 ## Summary
 

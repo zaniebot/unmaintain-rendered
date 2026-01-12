@@ -14,14 +14,14 @@ head: charlie/cache-control-headers
 created_at: 2025-07-14T23:54:34Z
 updated_at: 2025-07-15T14:00:06Z
 url: https://github.com/astral-sh/uv/pull/14620
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:18Z
 ```
 
 # Allow users to override index `cache-control` headers
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-14 23:54_
+_@charliermarsh_
 
 ## Summary
 

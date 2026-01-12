@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-22T13:04:23Z
 updated_at: 2024-02-22T15:12:25Z
 url: https://github.com/astral-sh/uv/issues/1863
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # uv venv fails to create a venv if the directory if not empty
 
 ---
 
-_Issue opened by @woutervh on 2024-02-22 13:04_
+_@woutervh_
 
 tested with:
 - uv --version 0.1.6

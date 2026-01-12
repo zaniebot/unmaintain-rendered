@@ -13,14 +13,14 @@ head: renovate/mimalloc-0.x-lockfile
 created_at: 2025-06-23T03:28:24Z
 updated_at: 2025-06-23T10:07:11Z
 url: https://github.com/astral-sh/uv/pull/14207
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:05Z
 ```
 
 # Update Rust crate mimalloc to v0.1.47
 
 ---
 
-_Pull request opened by @renovate on 2025-06-23 03:28_
+_@renovate_
 
 This PR contains the following updates:
 

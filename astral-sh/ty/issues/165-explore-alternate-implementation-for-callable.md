@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-21T03:35:01Z
 updated_at: 2025-11-18T16:10:20Z
 url: https://github.com/astral-sh/ty/issues/165
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Explore alternate implementation for callable type equivalence
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-03-21 03:35_
+_@dhruvmanila_
 
 Currently, the general callable type uses a manual implementation to check whether the two types are equivalent (`is_equivalent_to`). This is required for two reasons:
 1. The type of the default values don't participate in checking for equivalence, it's only the optionality that participates i.e., is the parameter required for both callable types or not?

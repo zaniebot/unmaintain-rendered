@@ -13,14 +13,14 @@ head: charlie/up-test
 created_at: 2025-08-20T14:17:31Z
 updated_at: 2025-08-20T15:27:20Z
 url: https://github.com/astral-sh/uv/pull/15393
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:43Z
 ```
 
 # Add tests to track `upgrade` and `upgrade-package` interactions
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-20 14:17_
+_@charliermarsh_
 
 ## Summary
 

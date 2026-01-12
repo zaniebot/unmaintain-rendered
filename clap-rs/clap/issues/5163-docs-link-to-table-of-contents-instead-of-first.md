@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-10-08T02:08:08Z
 updated_at: 2023-12-07T15:40:08Z
 url: https://github.com/clap-rs/clap/issues/5163
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # docs: link to table of contents instead of first chapter for tutorial
 
 ---
 
-_Issue opened by @Finchiedev on 2023-10-08 02:08_
+_@Finchiedev_
 
 ### Please complete the following tasks
 

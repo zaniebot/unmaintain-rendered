@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-08T07:41:26Z
 updated_at: 2025-06-05T13:27:48Z
 url: https://github.com/astral-sh/uv/issues/8923
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # Docs for generate-shell-autocompletion do not work with some existing profiles
 
 ---
 
-_Issue opened by @mtnpke on 2024-11-08 07:41_
+_@mtnpke_
 
 The docs on generate-shell-autocompletion at https://docs.astral.sh/uv/getting-started/installation/#shell-autocompletion list this command for powershell:
 

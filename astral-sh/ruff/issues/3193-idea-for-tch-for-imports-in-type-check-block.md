@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-23T23:48:18Z
 updated_at: 2023-02-27T10:01:25Z
 url: https://github.com/astral-sh/ruff/issues/3193
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Idea for TCH: for imports in `TYPE_CHECK` block
 
 ---
 
-_Issue opened by @hofrob on 2023-02-23 23:48_
+_@hofrob_
 
 Those two ideas are not part of `flake8-type-checking`, so I'm fully aware that this issue might not get a high priority. That's fine! I'm very thankful for this tool as it is already :slightly_smiling_face:.
 

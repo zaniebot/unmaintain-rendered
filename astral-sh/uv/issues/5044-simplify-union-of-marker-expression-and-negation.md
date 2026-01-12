@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-14T14:11:14Z
 updated_at: 2024-07-14T23:53:59Z
 url: https://github.com/astral-sh/uv/issues/5044
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Simplify union of marker expression and negation
 
 ---
 
-_Issue opened by @konstin on 2024-07-14 14:11_
+_@konstin_
 
 We currently don't simplify the union of marker expression and its negation, e.g. `sys_platform == 'darwin' or sys_platform != 'darwin'`.
 

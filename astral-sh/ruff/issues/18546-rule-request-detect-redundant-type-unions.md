@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-08T08:23:47Z
 updated_at: 2025-06-08T10:24:40Z
 url: https://github.com/astral-sh/ruff/issues/18546
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Rule request: detect redundant type unions
 
 ---
 
-_Issue opened by @robsdedude on 2025-06-08 08:23_
+_@robsdedude_
 
 ### Summary
 

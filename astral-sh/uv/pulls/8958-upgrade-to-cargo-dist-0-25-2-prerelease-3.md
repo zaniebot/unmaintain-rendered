@@ -12,14 +12,14 @@ head: zb/dist-pre
 created_at: 2024-11-08T22:54:01Z
 updated_at: 2024-11-08T23:08:25Z
 url: https://github.com/astral-sh/uv/pull/8958
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:34Z
 ```
 
 # Upgrade to cargo-dist `0.25.2-prerelease.3`
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-08 22:54_
+_@zanieb_
 
 Gets us the upstream fix (https://github.com/axodotdev/cargo-dist/pull/1538Z) for https://github.com/axodotdev/axoupdater/issues/210 so we don't need to patch releases manually for self update to work.
 

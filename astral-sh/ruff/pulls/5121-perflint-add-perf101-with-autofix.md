@@ -13,14 +13,14 @@ head: feature/PER101
 created_at: 2023-06-15T14:12:02Z
 updated_at: 2023-06-22T21:36:15Z
 url: https://github.com/astral-sh/ruff/pull/5121
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # [`perflint`] Add `PERF101` with autofix
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-06-15 14:12_
+_@qdegraaf_
 
 ## Summary
 

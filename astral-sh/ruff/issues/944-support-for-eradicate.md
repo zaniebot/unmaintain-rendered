@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-28T18:32:31Z
 updated_at: 2022-11-29T15:32:02Z
 url: https://github.com/astral-sh/ruff/issues/944
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Support for Eradicate
 
 ---
 
-_Issue opened by @patrick91 on 2022-11-28 18:32_
+_@patrick91_
 
 Hi there! 
 

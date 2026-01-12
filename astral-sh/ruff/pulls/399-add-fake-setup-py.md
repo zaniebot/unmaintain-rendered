@@ -12,14 +12,14 @@ head: charlie/setuppy
 created_at: 2022-10-11T15:49:14Z
 updated_at: 2022-10-11T16:38:49Z
 url: https://github.com/astral-sh/ruff/pull/399
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Add fake setup.py
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-11 15:49_
+_@charliermarsh_
 
 See https://github.com/encode/httpx/pull/2351/files for more.
 

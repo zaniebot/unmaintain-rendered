@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-21T13:04:46Z
 updated_at: 2025-03-23T08:55:25Z
 url: https://github.com/astral-sh/ruff/issues/16897
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Will be there any refactoring features in ruff lsp ?
 
 ---
 
-_Issue opened by @ZeyadMoustafaKamal on 2025-03-21 13:04_
+_@ZeyadMoustafaKamal_
 
 ### Question
 

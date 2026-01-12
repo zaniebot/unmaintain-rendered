@@ -13,14 +13,14 @@ head: docs/refurb_implicit_cwd
 created_at: 2025-07-13T14:52:36Z
 updated_at: 2025-07-14T16:23:02Z
 url: https://github.com/astral-sh/ruff/pull/19309
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [refurb] Make example error out-of-the-box (FURB177)
 
 ---
 
-_Pull request opened by @close2code-palm on 2025-07-13 14:52_
+_@close2code-palm_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

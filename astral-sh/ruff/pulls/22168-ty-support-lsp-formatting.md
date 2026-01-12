@@ -12,14 +12,14 @@ head: support_format
 created_at: 2025-12-24T03:07:03Z
 updated_at: 2025-12-24T09:25:26Z
 url: https://github.com/astral-sh/ruff/pull/22168
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] support lsp formatting
 
 ---
 
-_Pull request opened by @Decodetalkers on 2025-12-24 03:07_
+_@Decodetalkers_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

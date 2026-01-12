@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-14T06:34:28Z
 updated_at: 2025-12-03T19:47:02Z
 url: https://github.com/astral-sh/uv/issues/11502
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:38Z
 ```
 
 # how to add non-source files to package / build backends ?
 
 ---
 
-_Issue opened by @dd-ssc on 2025-02-14 06:34_
+_@dd-ssc_
 
 ### Question
 

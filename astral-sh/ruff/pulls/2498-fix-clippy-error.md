@@ -12,14 +12,14 @@ head: clippy/fix-error
 created_at: 2023-02-02T20:25:42Z
 updated_at: 2023-02-02T20:40:07Z
 url: https://github.com/astral-sh/ruff/pull/2498
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Fix clippy error
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-02-02 20:25_
+_@JonathanPlasse_
 
 _No description provided._
 

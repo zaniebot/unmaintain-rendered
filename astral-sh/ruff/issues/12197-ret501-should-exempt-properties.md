@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-05T07:18:50Z
 updated_at: 2024-07-09T02:39:31Z
 url: https://github.com/astral-sh/ruff/issues/12197
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # RET501 should exempt properties
 
 ---
 
-_Issue opened by @epenet on 2024-07-05 07:18_
+_@epenet_
 
 A property is normally meant to be consumed.
 

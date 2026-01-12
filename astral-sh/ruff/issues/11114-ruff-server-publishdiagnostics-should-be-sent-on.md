@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-23T19:40:47Z
 updated_at: 2024-04-25T02:38:55Z
 url: https://github.com/astral-sh/ruff/issues/11114
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server`: `publishDiagnostics` should be sent on `onClose` to clear diagnostics
 
 ---
 
-_Issue opened by @snowsignal on 2024-04-23 19:40_
+_@snowsignal_
 
 When clients don't support pull diagnostics, we'll need to send them an empty `publishDiagnostics` notification when a file is closed - otherwise, the previous diagnostics for that file will continue to exist.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-01T13:17:47Z
 updated_at: 2024-08-05T08:45:50Z
 url: https://github.com/astral-sh/ruff/issues/12612
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `TRY002` does not take into account `BaseException`
 
 ---
 
-_Issue opened by @epenet on 2024-08-01 13:17_
+_@epenet_
 
 Spotted in https://github.com/home-assistant/core/pull/123021
 

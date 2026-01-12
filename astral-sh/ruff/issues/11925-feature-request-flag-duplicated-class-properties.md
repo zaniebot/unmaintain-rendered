@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-18T13:26:37Z
 updated_at: 2024-06-25T23:45:32Z
 url: https://github.com/astral-sh/ruff/issues/11925
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # feature request: flag duplicated class properties
 
 ---
 
-_Issue opened by @santi-mir on 2024-06-18 13:26_
+_@santi-mir_
 
 I don't think there is a rule flagging this common mistake?
 

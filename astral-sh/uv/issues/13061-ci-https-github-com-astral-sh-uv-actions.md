@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-22T22:42:26Z
 updated_at: 2025-04-23T12:48:49Z
 url: https://github.com/astral-sh/uv/issues/13061
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # [![CI](https://github.com/astral-sh/uv/actions/workflows/ci.yml/badge.svg)](https://github.com/astral-sh/uv/actions/workflows/ci.yml)
 
 ---
 
-_Issue opened by @imann3198 on 2025-04-22 22:42_
+_@imann3198_
 
               [![CI](https://github.com/astral-sh/uv/actions/workflows/ci.yml/badge.svg)](https://github.com/astral-sh/uv/actions/workflows/ci.yml)
 

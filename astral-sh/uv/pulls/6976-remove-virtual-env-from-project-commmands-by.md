@@ -14,14 +14,14 @@ head: zb/context-venv
 created_at: 2024-09-03T19:02:58Z
 updated_at: 2024-09-03T19:11:25Z
 url: https://github.com/astral-sh/uv/pull/6976
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:37Z
 ```
 
 # Remove `VIRTUAL_ENV` from project commmands by default
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-03 19:02_
+_@zanieb_
 
 And use test context helpers for commands consistently.
 

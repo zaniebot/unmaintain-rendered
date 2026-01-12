@@ -14,14 +14,14 @@ head: david/mypy_primer-backtrace
 created_at: 2025-04-22T09:58:39Z
 updated_at: 2025-04-22T10:05:59Z
 url: https://github.com/astral-sh/ruff/pull/17543
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] mypy_primer: capture backtraces
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-22 09:58_
+_@sharkdp_
 
 ## Summary
 

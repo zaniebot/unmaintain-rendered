@@ -13,14 +13,14 @@ head: charlie/append
 created_at: 2024-02-12T16:59:45Z
 updated_at: 2024-02-12T17:18:02Z
 url: https://github.com/astral-sh/ruff/pull/9955
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # [`perflint`] Catch a wider range of mutations in `PERF101`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-12 16:59_
+_@charliermarsh_
 
 ## Summary
 

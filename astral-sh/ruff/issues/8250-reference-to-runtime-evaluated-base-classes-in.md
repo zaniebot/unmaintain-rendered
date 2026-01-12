@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-26T12:03:59Z
 updated_at: 2023-11-09T03:38:08Z
 url: https://github.com/astral-sh/ruff/issues/8250
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Reference to `runtime-evaluated-base-classes` in the same file don't work
 
 ---
 
-_Issue opened by @iurisilvio on 2023-10-26 12:03_
+_@iurisilvio_
 
 For some reason, `semantic.resolve_call_path(map_subscript(base))` resolves to `None` when the reference is in the same file.
 

@@ -14,14 +14,14 @@ head: blank-lines-isort
 created_at: 2024-02-23T13:20:08Z
 updated_at: 2024-03-05T10:20:59Z
 url: https://github.com/astral-sh/ruff/pull/10096
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`pycodestyle`] Respect `isort` settings in blank line rules (`E3*`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-23 13:20_
+_@MichaReiser_
 
 ## Summary
 

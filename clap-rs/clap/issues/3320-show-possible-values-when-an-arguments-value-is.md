@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-19T18:48:25Z
 updated_at: 2022-02-02T20:49:36Z
 url: https://github.com/clap-rs/clap/issues/3320
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Show possible values when an arguments value is missing
 
 ---
 
-_Issue opened by @epage on 2022-01-19 18:48_
+_@epage_
 
 ### Please complete the following tasks
 

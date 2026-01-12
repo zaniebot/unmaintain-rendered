@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-09T18:57:23Z
 updated_at: 2025-06-11T12:07:06Z
 url: https://github.com/astral-sh/uv/issues/9744
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # uv add chromadb fails, error Compiling with an SDK that doesn't seem to exist /Applications/Xcode
 
 ---
 
-_Issue opened by @bodadotsh on 2024-12-09 18:57_
+_@bodadotsh_
 
 Hi, when I tried to run `uv add chromadb` on macOS, it fails and returns error:
 

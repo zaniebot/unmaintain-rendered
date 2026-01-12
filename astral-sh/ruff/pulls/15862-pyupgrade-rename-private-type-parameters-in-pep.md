@@ -14,14 +14,14 @@ head: brent/rename-typevars
 created_at: 2025-01-31T22:04:48Z
 updated_at: 2025-02-04T18:37:04Z
 url: https://github.com/astral-sh/ruff/pull/15862
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`pyupgrade`] Rename private type parameters in PEP 695 generics (`UP049`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-01-31 22:04_
+_@ntBre_
 
 ## Summary
 

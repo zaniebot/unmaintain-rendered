@@ -12,14 +12,14 @@ assignees: []
 created_at: 2016-01-12T16:57:24Z
 updated_at: 2025-09-08T15:24:02Z
 url: https://github.com/clap-rs/clap/issues/380
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Support or document localization of messages and flags
 
 ---
 
-_Issue opened by @kamalmarhubi on 2016-01-12 16:57_
+_@kamalmarhubi_
 
 Make it easy for developers to support translations of their projects.
 

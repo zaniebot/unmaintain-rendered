@@ -14,14 +14,14 @@ head: dhruv/reset-ctx-in-parenthesized
 created_at: 2024-04-17T11:38:07Z
 updated_at: 2024-04-17T13:04:01Z
 url: https://github.com/astral-sh/ruff/pull/10994
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Reset parser context in parenthesized expression
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-17 11:38_
+_@dhruvmanila_
 
 ## Summary
 

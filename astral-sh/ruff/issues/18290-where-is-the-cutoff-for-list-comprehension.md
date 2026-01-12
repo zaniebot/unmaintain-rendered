@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-24T16:44:15Z
 updated_at: 2025-05-28T07:51:46Z
 url: https://github.com/astral-sh/ruff/issues/18290
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Where is the cutoff for list comprehension suggestion from PERF401
 
 ---
 
-_Issue opened by @kaddkaka on 2025-05-24 16:44_
+_@kaddkaka_
 
 ### Question
 

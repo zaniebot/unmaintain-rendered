@@ -13,14 +13,14 @@ head: micha/rust-1.81
 created_at: 2024-09-06T10:03:20Z
 updated_at: 2024-09-06T13:09:10Z
 url: https://github.com/astral-sh/ruff/pull/13265
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Upgrade to Rust 1.81
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-06 10:03_
+_@MichaReiser_
 
 ## Summary
 

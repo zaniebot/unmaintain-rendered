@@ -12,14 +12,14 @@ head: charlie/else
 created_at: 2023-02-14T03:55:15Z
 updated_at: 2023-02-14T03:58:17Z
 url: https://github.com/astral-sh/ruff/pull/2886
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Extend B904 to else branches
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-14 03:55_
+_@charliermarsh_
 
 Closes #2885.
 

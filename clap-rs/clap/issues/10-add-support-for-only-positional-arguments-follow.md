@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-03-17T01:28:10Z
 updated_at: 2018-08-02T03:29:36Z
 url: https://github.com/clap-rs/clap/issues/10
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Add support for "--" (only positional arguments follow)
 
 ---
 
-_Issue opened by @kbknapp on 2015-03-17 01:28_
+_@kbknapp_
 
 _No description provided._
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-12T21:24:17Z
 updated_at: 2024-12-12T22:39:11Z
 url: https://github.com/astral-sh/uv/issues/9852
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # Can't install private repo from lock file in docker (works in pip and poetry just fine and uv sync seems to create the uv.lock file just fine
 
 ---
 
-_Issue opened by @adiberk on 2024-12-12 21:24_
+_@adiberk_
 
 We have a private repo that we use in our app
 I have it formatted in pyproject.toml as such

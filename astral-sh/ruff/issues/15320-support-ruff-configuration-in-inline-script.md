@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-07T15:21:26Z
 updated_at: 2025-01-07T15:35:48Z
 url: https://github.com/astral-sh/ruff/issues/15320
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Support ruff configuration in inline script metadata via the `[tool]` table
 
 ---
 
-_Issue opened by @Julian on 2025-01-07 15:21_
+_@Julian_
 
 [PEP 723 introduced the ability](https://packaging.python.org/en/latest/specifications/inline-script-metadata/) for single python scripts to declare metadata about themselves, and in particular delegates a `tool` table.
 

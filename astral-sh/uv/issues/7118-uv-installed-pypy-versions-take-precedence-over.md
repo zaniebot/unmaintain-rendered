@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-06T06:18:23Z
 updated_at: 2024-09-24T17:52:16Z
 url: https://github.com/astral-sh/uv/issues/7118
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # uv-installed PyPy versions take precedence over non-uv CPython versions
 
 ---
 
-_Issue opened by @hynek on 2024-09-06 06:18_
+_@hynek_
 
 `uv 0.4.6 (84f25e8cf 2024-09-05)`
 

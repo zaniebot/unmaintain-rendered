@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-22T16:01:12Z
 updated_at: 2024-01-24T02:58:37Z
 url: https://github.com/astral-sh/ruff/issues/9615
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Support for allowing other context managers in SIM115
 
 ---
 
-_Issue opened by @AbdealiLoKo on 2024-01-22 16:01_
+_@AbdealiLoKo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

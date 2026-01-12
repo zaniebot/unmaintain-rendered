@@ -14,14 +14,14 @@ head: function-argument-inlay-hints
 created_at: 2025-07-10T18:04:33Z
 updated_at: 2025-08-14T08:47:31Z
 url: https://github.com/astral-sh/ruff/pull/19269
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [ty] Add inlay hints for call arguments
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-07-10 18:04_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

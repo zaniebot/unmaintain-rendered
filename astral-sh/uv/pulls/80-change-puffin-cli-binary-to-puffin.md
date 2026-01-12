@@ -12,14 +12,14 @@ head: charlie/bin
 created_at: 2023-10-09T21:06:07Z
 updated_at: 2023-10-09T21:19:34Z
 url: https://github.com/astral-sh/uv/pull/80
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:44Z
 ```
 
 # Change puffin-cli binary to puffin
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-09 21:06_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: micha/eslint-9
 created_at: 2025-03-03T08:31:15Z
 updated_at: 2025-03-03T09:00:03Z
 url: https://github.com/astral-sh/ruff/pull/16470
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Upgrade to ESlint 9
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-03 08:31_
+_@MichaReiser_
 
 Closes https://github.com/astral-sh/ruff/issues/12723
 

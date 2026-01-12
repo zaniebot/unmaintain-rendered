@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-25T11:13:42Z
 updated_at: 2025-09-25T13:24:44Z
 url: https://github.com/astral-sh/uv/issues/16024
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # Segfault on amd64 under QEMU
 
 ---
 
-_Issue opened by @lczyk on 2025-09-25 11:13_
+_@lczyk_
 
 ### Summary
 

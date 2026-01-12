@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-06T13:31:07Z
 updated_at: 2024-04-10T16:05:59Z
 url: https://github.com/astral-sh/uv/issues/2852
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Annotate the index from which a package is pulled in `uv pip compile`
 
 ---
 
-_Issue opened by @miccoli on 2024-04-06 13:31_
+_@miccoli_
 
 Awaiting that #171 gets resolved, it would be very useful if `uv pip compile` could generate annotations with the “source” index.
 

@@ -13,14 +13,14 @@ head: dhruv/custom-methods
 created_at: 2023-11-23T14:47:36Z
 updated_at: 2023-12-05T20:33:48Z
 url: https://github.com/astral-sh/ruff/pull/8826
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Explicit `as_str` (no deref), add no allocation methods
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-23 14:47_
+_@dhruvmanila_
 
 ## Summary
 

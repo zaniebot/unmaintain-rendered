@@ -14,14 +14,14 @@ head: phongddo/d417-unpack-args
 created_at: 2025-12-05T15:56:34Z
 updated_at: 2025-12-08T19:00:06Z
 url: https://github.com/astral-sh/ruff/pull/21816
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [`pydocstyle`] Suppress `D417` for parameters with `Unpack` annotations
 
 ---
 
-_Pull request opened by @phongddo on 2025-12-05 15:56_
+_@phongddo_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

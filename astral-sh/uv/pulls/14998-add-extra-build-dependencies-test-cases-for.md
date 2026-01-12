@@ -13,14 +13,14 @@ head: zb/extra-build-deps-setuptools
 created_at: 2025-07-31T15:56:58Z
 updated_at: 2025-07-31T16:17:56Z
 url: https://github.com/astral-sh/uv/pull/14998
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:31Z
 ```
 
 # Add `extra-build-dependencies` test cases for `setuptools`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-31 15:56_
+_@zanieb_
 
 _No description provided._
 

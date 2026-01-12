@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-15T10:30:50Z
 updated_at: 2023-09-25T09:39:54Z
 url: https://github.com/astral-sh/ruff/issues/7407
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter causes E501 for long variable and attributes
 
 ---
 
-_Issue opened by @aaravind100 on 2023-09-15 10:30_
+_@aaravind100_
 
 I'm testing the format option. Found that formatting scripts with long variables and attributes which are indented cases E501.
 

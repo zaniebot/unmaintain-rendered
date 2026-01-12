@@ -12,14 +12,14 @@ head: test-snapshots
 created_at: 2022-11-11T11:56:51Z
 updated_at: 2022-11-12T13:00:40Z
 url: https://github.com/astral-sh/ruff/pull/681
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Test snapshots with inline checks
 
 ---
 
-_Pull request opened by @squiddy on 2022-11-11 11:56_
+_@squiddy_
 
 This is a massive diff because I'm introducing new snapshots. The first and third commit are the relevant ones. To motivate this a bit:
 

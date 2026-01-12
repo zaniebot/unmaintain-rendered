@@ -13,14 +13,14 @@ head: format_dev_markdown_table
 created_at: 2023-08-11T09:24:53Z
 updated_at: 2023-08-11T14:13:55Z
 url: https://github.com/astral-sh/ruff/pull/6496
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Show a pretty markdown table in formatter ecosystem checks
 
 ---
 
-_Pull request opened by @konstin on 2023-08-11 09:24_
+_@konstin_
 
 **Summary** The formatter ecosystem checks will now print a markdown table you can copy&paste into your PR description. 
 

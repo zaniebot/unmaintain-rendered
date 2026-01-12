@@ -14,14 +14,14 @@ head: micha/workaround-better-toml-crash
 created_at: 2025-02-06T12:02:23Z
 updated_at: 2025-02-06T16:47:58Z
 url: https://github.com/astral-sh/ruff/pull/15992
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Workaround Even Better TOML crash related to `allOf`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-06 12:02_
+_@MichaReiser_
 
 ## Summary
 

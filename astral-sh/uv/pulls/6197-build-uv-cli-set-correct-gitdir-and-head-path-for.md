@@ -11,14 +11,14 @@ head: uv-cli-worktree
 created_at: 2024-08-19T03:46:23Z
 updated_at: 2024-08-29T18:23:01Z
 url: https://github.com/astral-sh/uv/pull/6197
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:16Z
 ```
 
 # build(uv-cli): Set correct gitdir and head path for worktree
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-08-19 03:46_
+_@eth3lbert_
 
 ## Summary
 

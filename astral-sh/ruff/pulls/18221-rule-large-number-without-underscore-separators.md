@@ -13,14 +13,14 @@ head: rule/large_number_without_separators
 created_at: 2025-05-20T15:05:35Z
 updated_at: 2025-08-07T15:35:34Z
 url: https://github.com/astral-sh/ruff/pull/18221
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # Rule: large number without underscore separators (PEP 515)
 
 ---
 
-_Pull request opened by @guillp on 2025-05-20 15:05_
+_@guillp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

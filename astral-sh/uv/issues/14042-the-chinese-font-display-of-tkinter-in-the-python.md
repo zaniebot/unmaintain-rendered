@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-15T07:34:17Z
 updated_at: 2025-08-08T18:06:57Z
 url: https://github.com/astral-sh/uv/issues/14042
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # The Chinese font display of Tkinter in the Python installed by uv is abnormal.
 
 ---
 
-_Issue opened by @mrarub on 2025-06-15 07:34_
+_@mrarub_
 
 ### Question
 

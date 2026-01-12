@@ -13,14 +13,14 @@ head: make-scope-bindings-private
 created_at: 2023-03-17T11:49:32Z
 updated_at: 2023-03-17T14:39:44Z
 url: https://github.com/astral-sh/ruff/pull/3575
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Make `scope.bindings` private
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-17 11:49_
+_@MichaReiser_
 
 This PR makes `Scope.bindings` private and instead adds semantic APIs to `Scope` that allow querying the bindings. 
 

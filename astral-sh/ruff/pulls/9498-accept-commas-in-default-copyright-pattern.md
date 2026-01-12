@@ -13,14 +13,14 @@ head: copyright-comma
 created_at: 2024-01-12T21:17:41Z
 updated_at: 2024-03-22T18:43:37Z
 url: https://github.com/astral-sh/ruff/pull/9498
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Accept commas in default copyright pattern
 
 ---
 
-_Pull request opened by @dopplershift on 2024-01-12 21:17_
+_@dopplershift_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

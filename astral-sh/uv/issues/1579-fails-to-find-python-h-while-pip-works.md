@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T08:56:14Z
 updated_at: 2025-02-09T00:36:29Z
 url: https://github.com/astral-sh/uv/issues/1579
-synced_at: 2026-01-10T03:50:29Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # fails to find "Python.h", while pip works
 
 ---
 
-_Issue opened by @wakamex on 2024-02-17 08:56_
+_@wakamex_
 
 regular command followed up by successful pip install
 

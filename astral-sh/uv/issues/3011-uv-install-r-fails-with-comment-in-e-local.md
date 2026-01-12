@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-12T08:12:52Z
 updated_at: 2024-04-12T19:56:59Z
 url: https://github.com/astral-sh/uv/issues/3011
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # `uv install -r …` fails with comment in `-e ./local_package   # via other_package`
 
 ---
 
-_Issue opened by @PeterW-LWL on 2024-04-12 08:12_
+_@PeterW-LWL_
 
 ## The Problem
 

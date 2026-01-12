@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T17:43:35Z
 updated_at: 2025-12-17T18:15:25Z
 url: https://github.com/astral-sh/ty/issues/2024
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # error[invalid-type-arguments] for TypeAlias involving ParamSpec Concatentate
 
 ---
 
-_Issue opened by @GalHorowitz on 2025-12-17 17:43_
+_@GalHorowitz_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: gankra/sync-version
 created_at: 2025-05-06T18:54:50Z
 updated_at: 2025-05-21T13:46:11Z
 url: https://github.com/astral-sh/uv/pull/13317
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:39Z
 ```
 
 # make `uv version` lock and sync
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-06 18:54_
+_@Gankra_
 
 This adopts the logic from `uv remove` for locking and syncing, as the scope of the changes made are ultimately similar. Unlike `uv remove` there is no support for modifying PEP723 scripts, as these are not versioned.
 

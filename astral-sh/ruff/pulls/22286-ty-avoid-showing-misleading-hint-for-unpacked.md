@@ -14,14 +14,14 @@ head: charlie/multi-param
 created_at: 2025-12-29T18:13:18Z
 updated_at: 2025-12-29T18:25:10Z
 url: https://github.com/astral-sh/ruff/pull/22286
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:45Z
 ```
 
 # [ty] Avoid showing misleading hint for unpacked tuple arguments
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-29 18:13_
+_@charliermarsh_
 
 ## Summary
 

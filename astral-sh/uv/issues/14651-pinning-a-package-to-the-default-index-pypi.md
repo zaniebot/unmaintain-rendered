@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-16T13:32:22Z
 updated_at: 2025-08-04T12:40:45Z
 url: https://github.com/astral-sh/uv/issues/14651
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # Pinning a package to the default index (PyPI)
 
 ---
 
-_Issue opened by @dmrauch on 2025-07-16 13:32_
+_@dmrauch_
 
 ### Question
 

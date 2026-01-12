@@ -13,14 +13,14 @@ head: zb/docker-jemalloc
 created_at: 2025-01-24T19:36:20Z
 updated_at: 2025-01-28T17:35:56Z
 url: https://github.com/astral-sh/uv/pull/10943
-synced_at: 2026-01-10T11:45:19Z
+synced_at: 2026-01-12T16:09:36Z
 ```
 
 # Set `JEMALLOC_SYS_WITH_LG_PAGE=16` in arm Docker builds
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-24 19:36_
+_@zanieb_
 
 We do this in our standard binary release pipeline, but not in our Docker images.
 

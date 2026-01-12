@@ -14,14 +14,14 @@ head: jane/server/fix-config-search
 created_at: 2024-05-24T22:16:49Z
 updated_at: 2024-05-26T18:20:48Z
 url: https://github.com/astral-sh/ruff/pull/11537
-synced_at: 2026-01-10T22:05:27Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # `ruff server` searches for configuration in parent directories
 
 ---
 
-_Pull request opened by @snowsignal on 2024-05-24 22:16_
+_@snowsignal_
 
 ## Summary
 

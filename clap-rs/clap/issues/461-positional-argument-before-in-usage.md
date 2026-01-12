@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-03-27T15:01:46Z
 updated_at: 2016-03-27T20:30:37Z
 url: https://github.com/clap-rs/clap/issues/461
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Positional argument before "--" in usage
 
 ---
 
-_Issue opened by @mbudde on 2016-03-27 15:01_
+_@mbudde_
 
 ``` rust
 extern crate clap;

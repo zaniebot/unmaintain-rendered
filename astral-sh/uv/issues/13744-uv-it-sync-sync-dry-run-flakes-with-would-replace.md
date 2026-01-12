@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-30T21:11:21Z
 updated_at: 2025-06-30T15:39:49Z
 url: https://github.com/astral-sh/uv/issues/13744
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # `uv::it sync::sync_dry_run` flakes with "Would replace existing virtual environment"
 
 ---
 
-_Issue opened by @zanieb on 2025-05-30 21:11_
+_@zanieb_
 
 ``` 
        FAIL [   2.647s] uv::it sync::sync_dry_run

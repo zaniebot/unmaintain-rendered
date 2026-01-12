@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-15T12:20:24Z
 updated_at: 2023-11-09T16:11:45Z
 url: https://github.com/clap-rs/clap/issues/4556
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Running panicked when flatten structs which have same struct field name
 
 ---
 
-_Issue opened by @yiv on 2022-12-15 12:20_
+_@yiv_
 
 ### Please complete the following tasks
 

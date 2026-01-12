@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-05-22T22:32:24Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/511
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Positional arguments with TrailingVarArgs shouldn't split on delim
 
 ---
 
-_Issue opened by @luser on 2016-05-22 22:32_
+_@luser_
 
 I'm using `AppSettings::TrailingVarArg` for a binary that wraps compiler execution to pass the rest of the commandline arguments down to the compiler. I found that compiler arguments were unexpectedly being split on commas (like `-Wl,-foo` => ["-Wl", "-foo"]).
 

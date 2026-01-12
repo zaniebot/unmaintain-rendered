@@ -13,14 +13,14 @@ head: charlie/bare-ii
 created_at: 2024-03-20T18:46:51Z
 updated_at: 2024-03-21T03:39:03Z
 url: https://github.com/astral-sh/uv/pull/2569
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:06Z
 ```
 
 # Enable unnamed requirements for direct URLs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-20 18:46_
+_@charliermarsh_
 
 ## Summary
 

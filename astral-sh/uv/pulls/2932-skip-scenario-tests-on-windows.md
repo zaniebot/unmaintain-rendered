@@ -14,14 +14,14 @@ head: zb/windows-scenarios
 created_at: 2024-04-09T14:22:20Z
 updated_at: 2024-04-12T06:56:42Z
 url: https://github.com/astral-sh/uv/pull/2932
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:19Z
 ```
 
 # Skip scenario tests on Windows
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-09 14:22_
+_@zanieb_
 
 These tests are about resolver correctness, which should not be platform dependent and Windows CI is horribly slow.
 

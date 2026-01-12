@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-15T10:48:32Z
 updated_at: 2023-03-17T02:36:27Z
 url: https://github.com/astral-sh/ruff/issues/3538
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # D400 auto-fix is incorrect
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-03-15 10:48_
+_@JonathanPlasse_
 
 I use PEP 257 convention and `select=ALL`.
 ```python

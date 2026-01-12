@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-09T05:23:16Z
 updated_at: 2025-07-04T18:52:28Z
 url: https://github.com/astral-sh/ruff/issues/14220
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [Feature Request] Guard against `==` for (sequence of) float comparison
 
 ---
 
-_Issue opened by @DanielYang59 on 2024-11-09 05:23_
+_@DanielYang59_
 
 ## Feature request: Guard against `==` for float comparison
 

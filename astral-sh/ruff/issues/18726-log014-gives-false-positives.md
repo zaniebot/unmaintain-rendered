@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-17T15:48:33Z
 updated_at: 2025-06-20T18:43:09Z
 url: https://github.com/astral-sh/ruff/issues/18726
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # LOG014 Gives false positives
 
 ---
 
-_Issue opened by @hmvp on 2025-06-17 15:48_
+_@hmvp_
 
 ### Summary
 

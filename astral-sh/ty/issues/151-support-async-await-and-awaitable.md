@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-26T18:13:10Z
 updated_at: 2025-07-31T10:59:43Z
 url: https://github.com/astral-sh/ty/issues/151
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # support async/await and Awaitable
 
 ---
 
-_Issue opened by @carljm on 2025-03-26 18:13_
+_@carljm_
 
 - [x] Infer correct return type for `async` functions https://github.com/astral-sh/ruff/pull/19595
 - [x] Support for `await` expressions https://github.com/astral-sh/ruff/pull/19595

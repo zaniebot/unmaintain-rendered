@@ -13,14 +13,14 @@ head: charlie/opt
 created_at: 2024-12-10T19:50:47Z
 updated_at: 2024-12-10T20:10:52Z
 url: https://github.com/astral-sh/uv/pull/9785
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:58Z
 ```
 
 # Don't fail with `--no-build` when static metadata is available
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-10 19:50_
+_@charliermarsh_
 
 ## Summary
 

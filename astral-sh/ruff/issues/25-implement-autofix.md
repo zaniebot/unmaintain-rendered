@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-08-24T13:17:12Z
 updated_at: 2022-09-06T14:15:18Z
 url: https://github.com/astral-sh/ruff/issues/25
-synced_at: 2026-01-10T15:56:04Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement autofix
 
 ---
 
-_Issue opened by @charliermarsh on 2022-08-24 13:17_
+_@charliermarsh_
 
 What's the right strategy for autofixing? Should we modify the AST? Should we use the generated rules, and modify via regex? (This is what [autoflake](https://github.com/PyCQA/autoflake) does, and there's a start on implementing autofix for F401 in #34.)
 

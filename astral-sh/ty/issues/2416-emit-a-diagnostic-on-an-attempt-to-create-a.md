@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-09T14:06:52Z
 updated_at: 2026-01-09T19:18:37Z
 url: https://github.com/astral-sh/ty/issues/2416
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Emit a diagnostic on an attempt to create a "generic enum"
 
 ---
 
-_Issue opened by @AlexWaygood on 2026-01-09 14:06_
+_@AlexWaygood_
 
 This class statement fails at runtime, but ty does not detect it:
 

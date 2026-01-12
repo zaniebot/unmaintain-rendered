@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-21T09:35:44Z
 updated_at: 2025-12-03T00:43:02Z
 url: https://github.com/astral-sh/uv/issues/16804
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # uv sync CI secrets leak
 
 ---
 
-_Issue opened by @matyx44 on 2025-11-21 09:35_
+_@matyx44_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T13:01:30Z
 updated_at: 2024-06-04T15:20:43Z
 url: https://github.com/astral-sh/ruff/issues/2393
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement `flake8-requests`
 
 ---
 
-_Issue opened by @takkaria on 2023-01-31 13:01_
+_@takkaria_
 
 It's really nice to have a linter catch when you don't provide a timeout to a request call (`r2c-requests-use-timeout`).
 

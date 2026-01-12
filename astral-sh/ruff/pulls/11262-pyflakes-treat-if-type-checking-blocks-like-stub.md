@@ -14,14 +14,14 @@ head: type-checking-f821
 created_at: 2024-05-03T12:45:09Z
 updated_at: 2024-05-11T14:54:55Z
 url: https://github.com/astral-sh/ruff/pull/11262
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [`pyflakes`] Treat `if TYPE_CHECKING` blocks like stub files for F821
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-05-03 12:45_
+_@AlexWaygood_
 
 ## Summary
 

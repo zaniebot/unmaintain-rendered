@@ -13,14 +13,14 @@ head: renovate/dashmap-6.x-lockfile
 created_at: 2024-09-23T02:05:28Z
 updated_at: 2024-09-23T02:39:26Z
 url: https://github.com/astral-sh/ruff/pull/13470
-synced_at: 2026-01-10T21:08:14Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Update Rust crate dashmap to v6.1.0
 
 ---
 
-_Pull request opened by @renovate on 2024-09-23 02:05_
+_@renovate_
 
 This PR contains the following updates:
 

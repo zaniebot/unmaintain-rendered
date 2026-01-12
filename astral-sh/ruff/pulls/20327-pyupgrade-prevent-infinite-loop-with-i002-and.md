@@ -13,14 +13,14 @@ head: UP026-Infinite-loop
 created_at: 2025-09-10T10:57:09Z
 updated_at: 2025-09-12T20:51:13Z
 url: https://github.com/astral-sh/ruff/pull/20327
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [`pyupgrade`] Prevent infinite loop with `I002` and `UP026`
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-09-10 10:57_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

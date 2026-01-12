@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-14T16:57:58Z
 updated_at: 2025-04-02T14:21:51Z
 url: https://github.com/astral-sh/uv/issues/8177
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # Issue with pyproj as dependency
 
 ---
 
-_Issue opened by @paulf81 on 2024-10-14 16:57_
+_@paulf81_
 
 I have a small uv project that includes a pyproject.toml:
 

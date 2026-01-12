@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-16T12:10:07Z
 updated_at: 2025-10-16T14:42:39Z
 url: https://github.com/clap-rs/clap/issues/6155
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # support reading from any of a set of env vars
 
 ---
 
-_Issue opened by @programmerjake on 2025-10-16 12:10_
+_@programmerjake_
 
 ### Please complete the following tasks
 

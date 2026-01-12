@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-05T22:02:26Z
 updated_at: 2025-12-02T20:52:37Z
 url: https://github.com/astral-sh/uv/issues/11991
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # Improve documentation on how to run uv script in a cron
 
 ---
 
-_Issue opened by @CedricRaison on 2025-03-05 22:02_
+_@CedricRaison_
 
 ### Summary
 

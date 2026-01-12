@@ -13,14 +13,14 @@ head: charlie/lambda
 created_at: 2023-02-11T17:21:56Z
 updated_at: 2023-02-11T17:22:55Z
 url: https://github.com/astral-sh/ruff/pull/2771
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Ignore colon-after-lambda in compound statement rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-11 17:21_
+_@charliermarsh_
 
 Closes #2759.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-13T19:42:14Z
 updated_at: 2025-05-22T22:32:49Z
 url: https://github.com/astral-sh/uv/issues/3560
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # RFC: Tool management
 
 ---
 
-_Issue opened by @zanieb on 2024-05-13 19:42_
+_@zanieb_
 
 This is a tracking issue and design for management of "tools" in uv, similar to `pipx` (see https://github.com/astral-sh/uv/issues/1173).
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-08T04:05:24Z
 updated_at: 2023-01-08T04:46:18Z
 url: https://github.com/astral-sh/ruff/issues/1734
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Implement W291 (trailing whitespace)?
 
 ---
 
-_Issue opened by @harupy on 2023-01-08 04:05_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

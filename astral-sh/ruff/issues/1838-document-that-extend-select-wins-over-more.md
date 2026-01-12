@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-12T22:56:59Z
 updated_at: 2024-11-22T01:03:49Z
 url: https://github.com/astral-sh/ruff/issues/1838
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Document that extend-select wins over more specific ignore
 
 ---
 
-_Issue opened by @jankatins on 2023-01-12 22:56_
+_@jankatins_
 
 I've the following `example.py` file:
 

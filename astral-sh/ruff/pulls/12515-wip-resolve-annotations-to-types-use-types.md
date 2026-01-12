@@ -13,14 +13,14 @@ head: moduletype-attrs
 created_at: 2024-07-25T17:36:18Z
 updated_at: 2024-10-24T09:58:02Z
 url: https://github.com/astral-sh/ruff/pull/12515
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 #  WIP: Resolve annotations to types; use `types.ModuleType` for unresolved global attributes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-25 17:36_
+_@AlexWaygood_
 
 (Don't look at this yet, just something I was pairing on with @carljm just now. Very much a work in progress right now!)
 

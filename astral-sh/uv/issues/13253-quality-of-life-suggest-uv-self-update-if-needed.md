@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-01T16:47:51Z
 updated_at: 2025-05-08T00:09:30Z
 url: https://github.com/astral-sh/uv/issues/13253
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # Quality of life - suggest `uv self update` if needed
 
 ---
 
-_Issue opened by @strangemonad on 2025-05-01 16:47_
+_@strangemonad_
 
 ### Summary
 

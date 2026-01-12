@@ -13,14 +13,14 @@ head: ruf008-docs-clarify
 created_at: 2024-03-13T21:14:49Z
 updated_at: 2024-03-14T23:29:10Z
 url: https://github.com/astral-sh/ruff/pull/10395
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [RUF008] Make it clearer that a mutable default in a dataclass is only valid if it is typed as a ClassVar
 
 ---
 
-_Pull request opened by @Guilherme-Vasconcelos on 2024-03-13 21:14_
+_@Guilherme-Vasconcelos_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

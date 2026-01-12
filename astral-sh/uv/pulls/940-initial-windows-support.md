@@ -13,14 +13,14 @@ head: konsti/initial-windows-support
 created_at: 2024-01-16T15:57:22Z
 updated_at: 2024-02-16T19:16:31Z
 url: https://github.com/astral-sh/uv/pull/940
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:18Z
 ```
 
 # Initial windows support
 
 ---
 
-_Pull request opened by @konstin on 2024-01-16 15:57_
+_@konstin_
 
 ## Summary
 

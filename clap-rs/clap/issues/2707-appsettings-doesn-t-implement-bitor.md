@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-17T13:15:39Z
 updated_at: 2021-09-24T15:14:51Z
 url: https://github.com/clap-rs/clap/issues/2707
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # AppSettings doesn't implement BitOr
 
 ---
 
-_Issue opened by @jplatte on 2021-08-17 13:15_
+_@jplatte_
 
 ### Please complete the following tasks
 

@@ -12,14 +12,14 @@ head: fix-up035
 created_at: 2023-06-22T08:43:11Z
 updated_at: 2023-07-10T09:55:15Z
 url: https://github.com/astral-sh/ruff/pull/5291
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix `deprecated-import` false positives
 
 ---
 
-_Pull request opened by @tjkuson on 2023-06-22 08:43_
+_@tjkuson_
 
 ## Summary
 

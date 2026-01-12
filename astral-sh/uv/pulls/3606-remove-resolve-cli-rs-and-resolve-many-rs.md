@@ -13,14 +13,14 @@ head: charlie/r
 created_at: 2024-05-15T15:57:54Z
 updated_at: 2024-05-15T16:04:49Z
 url: https://github.com/astral-sh/uv/pull/3606
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:44Z
 ```
 
 # Remove `resolve_cli.rs` and `resolve_many.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-15 15:57_
+_@charliermarsh_
 
 ## Summary
 

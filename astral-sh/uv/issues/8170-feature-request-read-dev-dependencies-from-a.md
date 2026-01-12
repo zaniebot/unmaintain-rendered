@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-14T09:04:20Z
 updated_at: 2024-10-16T06:38:21Z
 url: https://github.com/astral-sh/uv/issues/8170
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # Feature request: Read dev dependencies from a packaging extra
 
 ---
 
-_Issue opened by @czechnology on 2024-10-14 09:04_
+_@czechnology_
 
 Hi, first of all, thanks for this great tool which has significantly changed how I develop and work with Python!
 

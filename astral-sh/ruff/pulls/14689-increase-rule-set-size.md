@@ -13,14 +13,14 @@ head: rule-set
 created_at: 2024-11-30T14:00:53Z
 updated_at: 2024-11-30T14:13:25Z
 url: https://github.com/astral-sh/ruff/pull/14689
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Increase rule set size
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-30 14:00_
+_@InSyncWithFoo_
 
 ## Summary
 

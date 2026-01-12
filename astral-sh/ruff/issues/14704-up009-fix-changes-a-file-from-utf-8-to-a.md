@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-01T22:53:00Z
 updated_at: 2024-12-11T10:30:42Z
 url: https://github.com/astral-sh/ruff/issues/14704
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # UP009 fix changes a file from UTF-8 to a different declared encoding
 
 ---
 
-_Issue opened by @dscorbett on 2024-12-01 22:53_
+_@dscorbett_
 
 The fix for [`utf8-encoding-declaration` (UP009)](https://docs.astral.sh/ruff/rules/utf8-encoding-declaration/) in Ruff 0.8.1 changes the file’s declared encoding when the redundant UTF-8 encoding declaration is followed by a non-UTF-8 encoding declaration. In that case, the UTF-8 declaration is not completely redundant, because it blocks the following declaration from having an effect. The fix should insert up to 2 blank lines so the other declarations have no effect, or the fix should delete the other declarations, or the check should not report a violation.
 

@@ -13,14 +13,14 @@ head: zb/ruff-templates
 created_at: 2025-02-17T14:25:39Z
 updated_at: 2025-02-25T10:59:20Z
 url: https://github.com/astral-sh/ruff/pull/16213
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Add issue templates
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-17 14:25_
+_@zanieb_
 
 Follows https://github.com/astral-sh/ruff/pull/15651
 

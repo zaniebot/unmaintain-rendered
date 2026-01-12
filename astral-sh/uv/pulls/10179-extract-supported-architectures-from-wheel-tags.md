@@ -13,14 +13,14 @@ head: charlie/arm-wheel
 created_at: 2024-12-26T19:48:53Z
 updated_at: 2025-01-04T02:42:18Z
 url: https://github.com/astral-sh/uv/pull/10179
-synced_at: 2026-01-10T11:44:37Z
+synced_at: 2026-01-12T16:09:10Z
 ```
 
 # Extract supported architectures from wheel tags
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-26 19:48_
+_@charliermarsh_
 
 ## Summary
 

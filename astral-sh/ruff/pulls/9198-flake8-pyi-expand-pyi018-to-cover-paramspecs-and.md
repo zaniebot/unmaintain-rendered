@@ -13,14 +13,14 @@ head: pyi018-false-negs
 created_at: 2023-12-19T12:04:47Z
 updated_at: 2023-12-20T07:47:43Z
 url: https://github.com/astral-sh/ruff/pull/9198
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [flake8-pyi] Expand PYI018 to cover ParamSpecs and TypeVarTuples
 
 ---
 
-_Pull request opened by @AlexWaygood on 2023-12-19 12:04_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

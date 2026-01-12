@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-07T16:58:33Z
 updated_at: 2023-02-07T20:04:35Z
 url: https://github.com/astral-sh/ruff/issues/2629
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `FBT001` triggers for dunder methods where positional arguments have to be used
 
 ---
 
-_Issue opened by @trag1c on 2023-02-07 16:58_
+_@trag1c_
 
 Ruff version: `0.0.243`
 

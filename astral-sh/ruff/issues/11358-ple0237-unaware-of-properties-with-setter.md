@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-10T08:08:58Z
 updated_at: 2024-05-13T00:23:02Z
 url: https://github.com/astral-sh/ruff/issues/11358
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PLE0237 unaware of properties with setter
 
 ---
 
-_Issue opened by @mal on 2024-05-10 08:08_
+_@mal_
 
 Keywords: `PLE0237`, `setter`, `property`
 

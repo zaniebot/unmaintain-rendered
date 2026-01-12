@@ -14,14 +14,14 @@ head: zb/py-versions
 created_at: 2024-10-07T14:41:46Z
 updated_at: 2024-10-07T17:38:13Z
 url: https://github.com/astral-sh/uv/pull/7972
-synced_at: 2026-01-10T12:54:00Z
+synced_at: 2026-01-12T16:08:06Z
 ```
 
 # Bump patch Python versions for project
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-07 14:41_
+_@zanieb_
 
 _No description provided._
 

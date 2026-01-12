@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-23T20:52:34Z
 updated_at: 2025-04-23T22:23:35Z
 url: https://github.com/astral-sh/uv/issues/13075
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # uv pip install panic with invalid major version
 
 ---
 
-_Issue opened by @Disservin on 2025-04-23 20:52_
+_@Disservin_
 
 ### Summary
 

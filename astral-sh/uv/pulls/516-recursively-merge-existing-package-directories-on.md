@@ -12,14 +12,14 @@ head: zb/fix-race-clone
 created_at: 2023-11-29T19:08:35Z
 updated_at: 2023-11-30T16:15:08Z
 url: https://github.com/astral-sh/uv/pull/516
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:00Z
 ```
 
 # Recursively merge existing package directories on installation
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-29 19:08_
+_@zanieb_
 
 Previously, when installing a package we would delete the target directory before copying (or linking) the contents of the package. However, this means that we do not properly support namespace packages which can share a target directory. Instead the last package to be installed would be override existing packages. Since we install packages in parallel, this could result in a race condition where the target directory already exists which is not allowed when using `clonefile`. See example error in #515. https://github.com/astral-sh/puffin/pull/516/commits/c7e63d2dcebab6aa37427c58a9db7603db546a4f provides a regression test for this — it fails on `main`.
 

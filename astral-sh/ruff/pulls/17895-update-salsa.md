@@ -13,14 +13,14 @@ head: micha/salsa-fixpoint-2
 created_at: 2025-05-06T17:50:08Z
 updated_at: 2025-05-07T07:51:17Z
 url: https://github.com/astral-sh/ruff/pull/17895
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # Update salsa
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-06 17:50_
+_@MichaReiser_
 
 Pulls in https://github.com/salsa-rs/salsa/pull/843
 

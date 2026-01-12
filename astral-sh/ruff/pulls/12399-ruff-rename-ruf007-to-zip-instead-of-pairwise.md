@@ -13,14 +13,14 @@ head: rename-ruf007
 created_at: 2024-07-18T23:22:07Z
 updated_at: 2024-07-20T19:17:33Z
 url: https://github.com/astral-sh/ruff/pull/12399
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [`ruff`] Rename `RUF007` to `zip-instead-of-pairwise`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-07-18 23:22_
+_@dylwil3_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

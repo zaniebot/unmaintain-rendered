@@ -12,14 +12,14 @@ head: remove-needless-return
 created_at: 2022-11-05T11:43:31Z
 updated_at: 2022-11-05T18:11:27Z
 url: https://github.com/astral-sh/ruff/pull/597
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Remove needless return
 
 ---
 
-_Pull request opened by @harupy on 2022-11-05 11:43_
+_@harupy_
 
 _No description provided._
 

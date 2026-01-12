@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-23T22:19:18Z
 updated_at: 2026-01-08T21:37:43Z
 url: https://github.com/astral-sh/uv/issues/5381
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Allow `uv add` sources to be specified outside of the requirement
 
 ---
 
-_Issue opened by @zanieb on 2024-07-23 22:19_
+_@zanieb_
 
 e.g. 
 

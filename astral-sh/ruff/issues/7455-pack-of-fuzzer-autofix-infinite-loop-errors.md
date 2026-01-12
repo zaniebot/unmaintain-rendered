@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-17T11:46:07Z
 updated_at: 2024-01-30T07:15:59Z
 url: https://github.com/astral-sh/ruff/issues/7455
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Pack of fuzzer Autofix/Infinite loop errors
 
 ---
 
-_Issue opened by @qarmin on 2023-09-17 11:46_
+_@qarmin_
 
 - [x] - B006 - https://github.com/astral-sh/ruff/issues/7455#issuecomment-1722458825
 - [x] - B009 - https://github.com/astral-sh/ruff/issues/7455#issuecomment-1722458885

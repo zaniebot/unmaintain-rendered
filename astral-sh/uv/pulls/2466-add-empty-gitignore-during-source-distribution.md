@@ -12,14 +12,14 @@ head: charlie/gitingore
 created_at: 2024-03-14T19:50:36Z
 updated_at: 2024-03-14T20:19:42Z
 url: https://github.com/astral-sh/uv/pull/2466
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:03Z
 ```
 
 # Add empty gitignore during source distribution builds
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-14 19:50_
+_@charliermarsh_
 
 ## Summary
 

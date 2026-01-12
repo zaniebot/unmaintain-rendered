@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-04T04:13:59Z
 updated_at: 2015-05-06T02:10:15Z
 url: https://github.com/clap-rs/clap/issues/100
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Colorized output upon error
 
 ---
 
-_Issue opened by @kbknapp on 2015-05-04 04:13_
+_@kbknapp_
 
 via a `feature` probably using [rust-ansi-term](https://github.com/ogham/rust-ansi-term) or [term](https://github.com/rust-lang/term)
 

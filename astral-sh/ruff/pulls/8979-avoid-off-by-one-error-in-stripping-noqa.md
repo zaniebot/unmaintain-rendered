@@ -13,14 +13,14 @@ head: charlie/unicode
 created_at: 2023-12-03T15:43:15Z
 updated_at: 2023-12-03T16:09:20Z
 url: https://github.com/astral-sh/ruff/pull/8979
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Avoid off-by-one error in stripping noqa following multi-byte char
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-03 15:43_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8976.
 

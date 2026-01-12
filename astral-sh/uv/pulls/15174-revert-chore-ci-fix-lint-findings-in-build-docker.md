@@ -12,14 +12,14 @@ head: zb/rev-16cb6af6055a970b5e618f5e6819c4ecffb669b2
 created_at: 2025-08-08T20:11:19Z
 updated_at: 2025-08-08T20:15:27Z
 url: https://github.com/astral-sh/uv/pull/15174
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:37Z
 ```
 
 # Revert "chore(ci): fix lint findings in build-docker (#15145)"
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-08 20:11_
+_@zanieb_
 
 This reverts commit 16cb6af6055a970b5e618f5e6819c4ecffb669b2 from #15145
 

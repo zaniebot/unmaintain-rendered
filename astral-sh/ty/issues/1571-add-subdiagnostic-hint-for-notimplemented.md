@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-15T19:49:36Z
 updated_at: 2025-11-19T19:27:14Z
 url: https://github.com/astral-sh/ty/issues/1571
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Add subdiagnostic hint for `NotImplemented()`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-15 19:49_
+_@AlexWaygood_
 
 Callling `NotImplemented()` fails at runtime. If a user tries to call `NotImplemented()` (e.g. in `raise NotImplemented("my message here")`, we currently emit a `call-non-callable` diagnostic:
 

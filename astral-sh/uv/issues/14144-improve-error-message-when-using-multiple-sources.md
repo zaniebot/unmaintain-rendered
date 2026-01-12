@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-19T16:07:26Z
 updated_at: 2025-06-26T04:13:33Z
 url: https://github.com/astral-sh/uv/issues/14144
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # Improve error message when using multiple sources for a package without markers
 
 ---
 
-_Issue opened by @zanieb on 2025-06-19 16:07_
+_@zanieb_
 
 e.g.,
 

@@ -14,14 +14,14 @@ head: david/ty-ecosystem-analyzer-comment-workflow
 created_at: 2025-07-09T15:57:26Z
 updated_at: 2025-07-09T16:02:07Z
 url: https://github.com/astral-sh/ruff/pull/19237
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [ty] Ecosystem analyzer PR comment workflow
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-09 15:57_
+_@sharkdp_
 
 ## Summary
 

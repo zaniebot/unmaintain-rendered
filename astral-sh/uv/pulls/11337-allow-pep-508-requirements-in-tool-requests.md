@@ -14,14 +14,14 @@ head: charlie/ex
 created_at: 2025-02-08T02:41:15Z
 updated_at: 2025-02-12T00:06:42Z
 url: https://github.com/astral-sh/uv/pull/11337
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:48Z
 ```
 
 # Allow PEP 508 requirements in tool requests
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-08 02:41_
+_@charliermarsh_
 
 ## Summary
 

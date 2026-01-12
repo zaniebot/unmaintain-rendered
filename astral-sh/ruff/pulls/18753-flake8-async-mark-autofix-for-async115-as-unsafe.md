@@ -13,14 +13,14 @@ head: fix-ASYNC115
 created_at: 2025-06-18T14:16:01Z
 updated_at: 2025-06-19T13:15:10Z
 url: https://github.com/astral-sh/ruff/pull/18753
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [`flake8-async`] Mark autofix for `ASYNC115` as unsafe if the call expression contains comments
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-18 14:16_
+_@LaBatata101_
 
 
 <!--

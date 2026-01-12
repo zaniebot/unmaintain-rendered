@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-07T17:08:44Z
 updated_at: 2024-08-20T18:21:35Z
 url: https://github.com/astral-sh/uv/issues/5877
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Move "Searching for..." `python install` logging to verbose
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-07 17:08_
+_@charliermarsh_
 
 I think we should just show the progress bars here personally (by default).
 

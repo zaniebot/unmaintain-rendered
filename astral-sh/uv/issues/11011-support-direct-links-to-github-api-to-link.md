@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T01:12:10Z
 updated_at: 2025-01-28T14:01:58Z
 url: https://github.com/astral-sh/uv/issues/11011
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # Support direct links to Github API to link dependencies in tools.uv.sources
 
 ---
 
-_Issue opened by @begoon on 2025-01-28 01:12_
+_@begoon_
 
 ### Summary
 

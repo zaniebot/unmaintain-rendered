@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T09:08:14Z
 updated_at: 2025-04-07T10:00:31Z
 url: https://github.com/astral-sh/uv/issues/12710
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # docker build cache mount example gives permissions error
 
 ---
 
-_Issue opened by @marengaz on 2025-04-07 09:08_
+_@marengaz_
 
 ### Question
 

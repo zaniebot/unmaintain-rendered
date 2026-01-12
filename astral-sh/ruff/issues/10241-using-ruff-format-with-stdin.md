@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-05T21:00:29Z
 updated_at: 2024-04-12T02:09:50Z
 url: https://github.com/astral-sh/ruff/issues/10241
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Using "ruff format" with stdin
 
 ---
 
-_Issue opened by @Ga68 on 2024-03-05 21:00_
+_@Ga68_
 
 I've started using the Zed editor and want to have ruff format my code (as I'm switching from black). I can set up Zed to format-on-save using black as follows
 

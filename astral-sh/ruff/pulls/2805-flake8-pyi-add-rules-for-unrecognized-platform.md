@@ -13,14 +13,14 @@ head: pyi007-008
 created_at: 2023-02-12T10:18:51Z
 updated_at: 2023-02-12T18:02:48Z
 url: https://github.com/astral-sh/ruff/pull/2805
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # [`flake8-pyi`]: add rules for unrecognized platform check (PYI007, PYI008)
 
 ---
 
-_Pull request opened by @SigureMo on 2023-02-12 10:18_
+_@SigureMo_
 
 Add two [flake8-pyi](https://github.com/PyCQA/flake8-pyi) rules (Y007, Y008). ref: #848
 

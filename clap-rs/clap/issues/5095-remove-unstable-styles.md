@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-28T15:12:03Z
 updated_at: 2024-06-07T06:48:39Z
 url: https://github.com/clap-rs/clap/issues/5095
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Remove `unstable-styles`
 
 ---
 
-_Issue opened by @epage on 2023-08-28 15:12_
+_@epage_
 
 #3234 was stabilized in #5094 but we can't remove the feature flag until at least the next minor version
 

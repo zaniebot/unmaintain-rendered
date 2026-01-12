@@ -13,14 +13,14 @@ head: dhruv/limit-comp
 created_at: 2024-03-27T19:52:33Z
 updated_at: 2024-03-29T08:37:24Z
 url: https://github.com/astral-sh/ruff/pull/10633
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Limit comprehension as per the grammar
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-27 19:52_
+_@dhruvmanila_
 
 ## Summary
 

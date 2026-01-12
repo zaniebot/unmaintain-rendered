@@ -12,14 +12,14 @@ head: fix-F841-location-in-except-handler
 created_at: 2022-12-25T03:20:04Z
 updated_at: 2022-12-25T05:05:39Z
 url: https://github.com/astral-sh/ruff/pull/1367
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Fix F841 (`UnusedVariable`) range in except handler
 
 ---
 
-_Pull request opened by @harupy on 2022-12-25 03:20_
+_@harupy_
 
 Currently, `F841` spans the entire except handler, which is undesired. This PR fixes it.
 

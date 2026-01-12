@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-31T12:59:02Z
 updated_at: 2023-08-31T13:09:43Z
 url: https://github.com/astral-sh/ruff/issues/7019
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Auto fix for RUF015 is not safe
 
 ---
 
-_Issue opened by @jaap3 on 2023-08-31 12:59_
+_@jaap3_
 
 Using `ruff 0.0.286` the following:
 

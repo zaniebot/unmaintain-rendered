@@ -13,14 +13,14 @@ head: zb/override-satisfies
 created_at: 2024-07-11T17:24:55Z
 updated_at: 2024-07-19T20:48:49Z
 url: https://github.com/astral-sh/uv/pull/4995
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:34Z
 ```
 
 # Consider overrides when checking if an environment satisfies requirements
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-11 17:24_
+_@zanieb_
 
 I noticed this while implementing #4973 — it seems like an oversight.
 

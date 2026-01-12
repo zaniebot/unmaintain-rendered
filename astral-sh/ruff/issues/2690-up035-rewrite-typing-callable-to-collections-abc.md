@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-09T16:26:33Z
 updated_at: 2023-07-10T01:19:17Z
 url: https://github.com/astral-sh/ruff/issues/2690
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `UP035`: Rewrite `typing.Callable` to `collections.abc.Callable` for Python 3.9.2+
 
 ---
 
-_Issue opened by @ngnpope on 2023-02-09 16:26_
+_@ngnpope_
 
 There was a bug in Python 3.9.0 and 3.9.1 which resulted in `pyupgrade` only making this rewrite on 3.10+.
 

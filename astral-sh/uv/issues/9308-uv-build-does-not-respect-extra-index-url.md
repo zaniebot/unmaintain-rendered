@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-21T10:45:03Z
 updated_at: 2024-11-22T07:12:55Z
 url: https://github.com/astral-sh/uv/issues/9308
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # `uv build` does not respect extra-index-url configured in `uv.toml`
 
 ---
 
-_Issue opened by @befelix on 2024-11-21 10:45_
+_@befelix_
 
 In our `pyproject.toml` file, our `build-system` dependencies list a package that is only available on a private index. Running `uv build` complains that this package cannot be found, even though the index is configured in `~/.config/uv/uv.toml`. Both `uv pip install` and `python -m build` work fine. Also manually passing the relevant `--extra-index-url` flag to `uv build` resolves the issue.
 

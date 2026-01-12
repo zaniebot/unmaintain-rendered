@@ -13,14 +13,14 @@ head: konsti/workspaces
 created_at: 2024-05-21T17:12:07Z
 updated_at: 2024-05-28T07:41:56Z
 url: https://github.com/astral-sh/uv/pull/3705
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:48Z
 ```
 
 # Initial workspace support
 
 ---
 
-_Pull request opened by @konstin on 2024-05-21 17:12_
+_@konstin_
 
 Add workspace support when using `-r <path>/pyproject.toml` or `-e <path>` in the pip interface. It is limited to all-editable static-metadata workspaces, and tests only include a single main workspace, ignoring path dependencies in another workspace. This can be considered the MVP for workspace support: You can create a workspace, you can install from it, but some options and conveniences are still missing. I'll file follow-up tickets (support in lockfiles, support path deps in other workspace, #3625)
 

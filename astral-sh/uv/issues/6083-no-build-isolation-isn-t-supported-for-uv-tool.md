@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-14T13:35:41Z
 updated_at: 2024-08-20T18:21:39Z
 url: https://github.com/astral-sh/uv/issues/6083
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # `--no-build-isolation` isn't supported for `uv tool`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-14 13:35_
+_@charliermarsh_
 
 I think the use of `OnlySystem` for Python discovery means that users can't provide a pre-populated environment for (e.g.) PyTorch.
 

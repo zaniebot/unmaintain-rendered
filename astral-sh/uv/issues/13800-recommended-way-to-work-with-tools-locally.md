@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T09:40:29Z
 updated_at: 2025-06-03T11:27:15Z
 url: https://github.com/astral-sh/uv/issues/13800
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # Recommended way to work with tools locally
 
 ---
 
-_Issue opened by @FredrikNoren on 2025-06-03 09:40_
+_@FredrikNoren_
 
 ### Question
 

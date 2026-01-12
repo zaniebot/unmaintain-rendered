@@ -13,14 +13,14 @@ head: zb/sync-dry-run
 created_at: 2025-06-26T14:20:20Z
 updated_at: 2025-06-26T16:23:38Z
 url: https://github.com/astral-sh/uv/pull/14274
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # Restore snapshot for `sync_dry_run`
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-26 14:20_
+_@zanieb_
 
 In addition to our flake catch, keep a snapshot.
 

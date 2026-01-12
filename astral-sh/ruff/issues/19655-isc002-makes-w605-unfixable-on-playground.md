@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-31T01:18:42Z
 updated_at: 2025-09-23T13:15:33Z
 url: https://github.com/astral-sh/ruff/issues/19655
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ISC002 makes W605 unfixable on playground
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-07-31 01:18_
+_@MeGaGiGaGon_
 
 ### Summary
 

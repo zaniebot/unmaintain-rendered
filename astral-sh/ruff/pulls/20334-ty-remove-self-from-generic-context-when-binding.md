@@ -13,14 +13,14 @@ head: david/generic-context-bind-self
 created_at: 2025-09-10T15:12:22Z
 updated_at: 2025-09-12T07:32:53Z
 url: https://github.com/astral-sh/ruff/pull/20334
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Remove `Self` from generic context when binding `Self`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-10 15:12_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

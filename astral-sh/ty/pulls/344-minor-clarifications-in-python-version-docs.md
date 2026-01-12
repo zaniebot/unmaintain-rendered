@@ -13,14 +13,14 @@ head: david/docs-sys-version
 created_at: 2025-05-13T07:24:37Z
 updated_at: 2025-05-13T07:33:37Z
 url: https://github.com/astral-sh/ty/pull/344
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Minor clarifications in Python version docs
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-13 07:24_
+_@sharkdp_
 
 ## Summary
 

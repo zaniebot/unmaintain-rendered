@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-05T10:35:42Z
 updated_at: 2022-12-30T22:50:53Z
 url: https://github.com/astral-sh/ruff/issues/1052
-synced_at: 2026-01-10T12:05:22Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # handle noqa comment on multi line import
 
 ---
 
-_Issue opened by @xrmx on 2022-12-05 10:35_
+_@xrmx_
 
 In the following example where  something is imported but not used:
 

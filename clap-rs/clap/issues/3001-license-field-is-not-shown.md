@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-11-08T11:02:29Z
 updated_at: 2021-11-12T17:24:49Z
 url: https://github.com/clap-rs/clap/issues/3001
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # license field is not shown
 
 ---
 
-_Issue opened by @TheAlgorythm on 2021-11-08 11:02_
+_@TheAlgorythm_
 
 ### Please complete the following tasks
 

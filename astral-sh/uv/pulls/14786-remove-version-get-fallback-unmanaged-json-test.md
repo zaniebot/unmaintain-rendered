@@ -13,14 +13,14 @@ head: copilot/fix-14785
 created_at: 2025-07-21T12:27:38Z
 updated_at: 2025-07-21T14:17:07Z
 url: https://github.com/astral-sh/uv/pull/14786
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:25Z
 ```
 
 # Remove `version_get_fallback_unmanaged_json` test
 
 ---
 
-_Pull request opened by @copilot-swe-agent on 2025-07-21 12:27_
+_@copilot-swe-agent_
 
 The `version_get_fallback_unmanaged_json` test was failing when running tests outside of a git checkout (e.g., from a release tarball) due to inconsistent behavior based on git availability.
 

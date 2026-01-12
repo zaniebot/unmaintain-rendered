@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-29T12:04:52Z
 updated_at: 2025-09-05T14:24:19Z
 url: https://github.com/astral-sh/ruff/issues/7710
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Consider removing PD901
 
 ---
 
-_Issue opened by @charliermarsh on 2023-09-29 12:04_
+_@charliermarsh_
 
 PD901 disallows `df` as a variable name. This is an opinionated rule in `pandas-vet` so is typically only enabled via explicit opt-in. But we don't have that behavior for 900-level rules, so it's always enabled if you enable `PD`. The rule is overly strict for most cases, so I think it's a net-negative to have it in Ruff given our behavior.
 

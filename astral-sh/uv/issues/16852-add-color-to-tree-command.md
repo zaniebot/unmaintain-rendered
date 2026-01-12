@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-25T22:13:48Z
 updated_at: 2025-11-26T11:13:16Z
 url: https://github.com/astral-sh/uv/issues/16852
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # Add color to tree command
 
 ---
 
-_Issue opened by @FabriceSalvaire on 2025-11-25 22:13_
+_@FabriceSalvaire_
 
 ### Summary
 

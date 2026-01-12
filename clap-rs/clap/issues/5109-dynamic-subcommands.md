@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-01T22:53:20Z
 updated_at: 2023-09-04T23:26:53Z
 url: https://github.com/clap-rs/clap/issues/5109
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Dynamic subcommands
 
 ---
 
-_Issue opened by @diegofariasm on 2023-09-01 22:53_
+_@diegofariasm_
 
 ### Please complete the following tasks
 

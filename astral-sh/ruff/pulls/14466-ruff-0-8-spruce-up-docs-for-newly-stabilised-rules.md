@@ -13,14 +13,14 @@ head: alex/stabilised-docs
 created_at: 2024-11-19T17:55:20Z
 updated_at: 2024-11-20T08:03:31Z
 url: https://github.com/astral-sh/ruff/pull/14466
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [ruff-0.8] Spruce up docs for newly stabilised rules
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-19 17:55_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/pattern-ast
 created_at: 2023-08-25T20:20:58Z
 updated_at: 2023-08-26T14:50:34Z
 url: https://github.com/astral-sh/ruff/pull/6881
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Introduce AST nodes for `PatternMatchClass` arguments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-25 20:20_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: zb/fix-freebsd
 created_at: 2025-08-16T12:47:51Z
 updated_at: 2025-08-16T12:59:23Z
 url: https://github.com/astral-sh/uv/pull/15324
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:41Z
 ```
 
 # Use freebsd action fork with pinned checkout action
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-16 12:47_
+_@zanieb_
 
 Picks up https://github.com/acj/freebsd-firecracker-action/pull/5 to unblock CI
 

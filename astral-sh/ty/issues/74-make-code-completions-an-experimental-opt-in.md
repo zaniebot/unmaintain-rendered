@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-01T12:33:24Z
 updated_at: 2025-10-03T12:20:16Z
 url: https://github.com/astral-sh/ty/issues/74
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # make code completions an experimental opt-in before the alpha release
 
 ---
 
-_Issue opened by @BurntSushi on 2025-05-01 12:33_
+_@BurntSushi_
 
               We could do something similar to what r-a does with their "experimental" capabilities which requires explicit opt-in from client side. Refer to the first paragraph in https://github.com/rust-lang/rust-analyzer/blob/master/docs/book/src/contributing/lsp-extensions.md#lsp-extensions:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-22T18:42:41Z
 updated_at: 2023-10-23T18:53:13Z
 url: https://github.com/astral-sh/ruff/issues/8121
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Autofix for missing whitespace rules in E pycodestyle (preview)
 
 ---
 
-_Issue opened by @Skylion007 on 2023-10-22 18:42_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

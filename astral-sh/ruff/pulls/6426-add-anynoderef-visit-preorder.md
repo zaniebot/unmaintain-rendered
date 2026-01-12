@@ -13,14 +13,14 @@ head: any-node-ref-visit-preorder
 created_at: 2023-08-08T13:06:47Z
 updated_at: 2023-08-10T06:48:43Z
 url: https://github.com/astral-sh/ruff/pull/6426
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add `AnyNodeRef.visit_preorder`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-08 13:06_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

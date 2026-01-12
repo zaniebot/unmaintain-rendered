@@ -13,14 +13,14 @@ head: gankra/warn-precise
 created_at: 2025-06-27T19:01:04Z
 updated_at: 2025-07-20T22:54:52Z
 url: https://github.com/astral-sh/uv/pull/14325
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:09Z
 ```
 
 # Make warnings about masked `[tool.uv]` fields more precise
 
 ---
 
-_Pull request opened by @Gankra on 2025-06-27 19:01_
+_@Gankra_
 
 This is the second half of #14308
 

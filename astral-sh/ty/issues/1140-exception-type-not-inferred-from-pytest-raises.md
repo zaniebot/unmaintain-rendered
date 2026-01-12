@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-06T15:13:02Z
 updated_at: 2025-09-08T07:05:18Z
 url: https://github.com/astral-sh/ty/issues/1140
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `Exception` type not inferred from `pytest.raises`
 
 ---
 
-_Issue opened by @janosh on 2025-09-06 15:13_
+_@janosh_
 
 ### Summary
 

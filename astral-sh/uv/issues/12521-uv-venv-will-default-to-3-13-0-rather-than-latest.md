@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-28T02:01:15Z
 updated_at: 2025-03-28T14:30:57Z
 url: https://github.com/astral-sh/uv/issues/12521
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # uv venv will default to 3.13.0 rather than latest 3.13
 
 ---
 
-_Issue opened by @gaborbernat on 2025-03-28 02:01_
+_@gaborbernat_
 
 ### Summary
 

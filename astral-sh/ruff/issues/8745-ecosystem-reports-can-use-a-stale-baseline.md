@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-17T18:18:18Z
 updated_at: 2024-04-03T01:47:15Z
 url: https://github.com/astral-sh/ruff/issues/8745
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Ecosystem reports can use a stale baseline
 
 ---
 
-_Issue opened by @zanieb on 2023-11-17 18:18_
+_@zanieb_
 
 Ecosystem reports on pull requests can include "false" changes from a recently committed change.
 

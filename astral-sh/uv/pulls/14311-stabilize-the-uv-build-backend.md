@@ -13,14 +13,14 @@ head: konsti/stabilize-the-uv-build-backend
 created_at: 2025-06-27T10:42:41Z
 updated_at: 2025-07-02T20:37:46Z
 url: https://github.com/astral-sh/uv/pull/14311
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:09Z
 ```
 
 # Stabilize the uv build backend
 
 ---
 
-_Pull request opened by @konstin on 2025-06-27 10:42_
+_@konstin_
 
 The uv build backend has gone through some feedback cycles, we expect no more major configuration changes, and we're ready to take the next step: The uv build backend in stable.
 

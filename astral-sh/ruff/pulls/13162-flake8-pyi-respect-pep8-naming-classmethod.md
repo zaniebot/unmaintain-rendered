@@ -14,14 +14,14 @@ head: alex/dunder-new
 created_at: 2024-08-30T13:07:03Z
 updated_at: 2024-08-30T13:24:03Z
 url: https://github.com/astral-sh/ruff/pull/13162
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`flake8-pyi`] Respect `pep8_naming.classmethod-decorators` settings when determining if a method is a classmethod in `custom-type-var-return-type` (`PYI019`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-30 13:07_
+_@AlexWaygood_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-02-23T15:23:19Z
 updated_at: 2022-02-23T15:36:55Z
 url: https://github.com/clap-rs/clap/issues/3504
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # methods in attributes are not allowed for subcommand
 
 ---
 
-_Issue opened by @epage on 2022-02-23 15:23_
+_@epage_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/3497
 

@@ -13,14 +13,14 @@ head: AlexWaygood-patch-1
 created_at: 2025-07-15T17:20:16Z
 updated_at: 2025-07-15T18:07:40Z
 url: https://github.com/astral-sh/ruff/pull/19367
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # Fix typeshed-sync workflow
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-15 17:20_
+_@AlexWaygood_
 
 we need to either cd into the Ruff repo or use `-C` here to push to the upstream branch. An oversight in https://github.com/astral-sh/ruff/commit/8d7d02193e9baa094595ec8571478241cd5bc77d
 

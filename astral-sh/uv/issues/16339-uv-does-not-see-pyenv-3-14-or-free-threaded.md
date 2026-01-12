@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T09:44:13Z
 updated_at: 2025-10-20T12:20:39Z
 url: https://github.com/astral-sh/uv/issues/16339
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # `uv` does not see Pyenv 3.14 or free-threaded Python installs
 
 ---
 
-_Issue opened by @davidhewitt on 2025-10-17 09:44_
+_@davidhewitt_
 
 ### Summary
 

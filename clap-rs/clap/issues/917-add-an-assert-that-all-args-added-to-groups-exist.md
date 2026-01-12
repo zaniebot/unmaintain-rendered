@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-03-25T22:07:23Z
 updated_at: 2017-05-16T11:23:25Z
 url: https://github.com/clap-rs/clap/issues/917
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Add an assert that all args added to groups exist
 
 ---
 
-_Issue opened by @bruceadams on 2017-03-25 22:07_
+_@bruceadams_
 
 Please use the following template to assist with creating an issue, and getting a speedy resolution. If an area is not aplicable, feel free to delete the area, or mark with `N/A`
 

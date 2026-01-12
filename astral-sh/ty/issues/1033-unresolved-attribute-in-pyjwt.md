@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-18T05:02:54Z
 updated_at: 2025-08-18T15:34:19Z
 url: https://github.com/astral-sh/ty/issues/1033
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # unresolved-attribute in pyjwt
 
 ---
 
-_Issue opened by @CharlesPerrotMinot on 2025-08-18 05:02_
+_@CharlesPerrotMinot_
 
 ### Summary
 

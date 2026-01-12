@@ -12,14 +12,14 @@ head: merge-availablity-and-autofixkind
 created_at: 2023-03-20T16:05:20Z
 updated_at: 2023-03-20T17:06:35Z
 url: https://github.com/astral-sh/ruff/pull/3629
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Merge Availability and AutofixKind
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-20 16:05_
+_@JonathanPlasse_
 
 Implement suggestion from @MichaReiser 
 > NIt: Unrelated to this change: A `Availability::None` would remove the need for `Option<AutofixKind>`. It would then simply be `AUTOFX: AutofixKind = AutofixKind::NONE` (we could even inline `Availability` into `AutofixKind`

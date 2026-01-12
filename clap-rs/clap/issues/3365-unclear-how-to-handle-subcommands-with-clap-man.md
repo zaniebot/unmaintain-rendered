@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-28T21:57:33Z
 updated_at: 2022-11-23T18:00:02Z
 url: https://github.com/clap-rs/clap/issues/3365
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Unclear how to handle subcommands with `clap_man`
 
 ---
 
-_Issue opened by @epage on 2022-01-28 21:57_
+_@epage_
 
 ### Please complete the following tasks
 

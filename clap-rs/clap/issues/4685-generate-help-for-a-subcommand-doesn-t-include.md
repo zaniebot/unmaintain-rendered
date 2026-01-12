@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-30T03:54:59Z
 updated_at: 2023-02-01T16:56:52Z
 url: https://github.com/clap-rs/clap/issues/4685
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `generate_help` for a subcommand doesn't include the `bin_name`
 
 ---
 
-_Issue opened by @not-my-profile on 2023-01-30 03:54_
+_@not-my-profile_
 
 ```rust
 use clap::CommandFactory;

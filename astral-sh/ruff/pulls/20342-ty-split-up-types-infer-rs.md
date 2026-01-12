@@ -14,14 +14,14 @@ head: cjm/infer-split
 created_at: 2025-09-10T23:08:24Z
 updated_at: 2025-09-11T02:25:09Z
 url: https://github.com/astral-sh/ruff/pull/20342
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] split up `types/infer.rs`
 
 ---
 
-_Pull request opened by @carljm on 2025-09-10 23:08_
+_@carljm_
 
 ## Summary
 

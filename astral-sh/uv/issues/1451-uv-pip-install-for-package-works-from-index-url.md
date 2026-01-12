@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T08:15:26Z
 updated_at: 2024-04-03T06:49:42Z
 url: https://github.com/astral-sh/uv/issues/1451
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # uv pip install for package works from --index-url but not from --extra-index-url
 
 ---
 
-_Issue opened by @exs-avianello on 2024-02-16 08:15_
+_@exs-avianello_
 
 Hello!
 

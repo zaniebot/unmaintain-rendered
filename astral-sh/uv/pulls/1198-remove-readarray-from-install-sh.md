@@ -13,14 +13,14 @@ head: charlie/readarray
 created_at: 2024-01-31T00:21:52Z
 updated_at: 2024-01-31T15:22:15Z
 url: https://github.com/astral-sh/uv/pull/1198
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:30Z
 ```
 
 # Remove readarray from `install.sh`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-31 00:21_
+_@charliermarsh_
 
 ## Summary
 

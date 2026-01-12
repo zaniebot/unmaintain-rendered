@@ -13,14 +13,14 @@ head: charlie/pub
 created_at: 2025-09-09T16:01:03Z
 updated_at: 2025-09-09T16:13:33Z
 url: https://github.com/astral-sh/uv/pull/15759
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:55Z
 ```
 
 # Use token store credentials for `uv publish`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-09 16:01_
+_@charliermarsh_
 
 ## Summary
 

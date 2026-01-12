@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-17T02:51:08Z
 updated_at: 2025-06-17T08:36:56Z
 url: https://github.com/astral-sh/uv/issues/14097
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # my first error
 
 ---
 
-_Issue opened by @alanthian on 2025-06-17 02:51_
+_@alanthian_
 
 _No description provided._
 

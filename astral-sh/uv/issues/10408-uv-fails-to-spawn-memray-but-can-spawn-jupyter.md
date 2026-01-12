@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-08T19:48:36Z
 updated_at: 2025-01-14T23:49:17Z
 url: https://github.com/astral-sh/uv/issues/10408
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # uv fails to spawn memray but can spawn jupyter
 
 ---
 
-_Issue opened by @rbavery on 2025-01-08 19:48_
+_@rbavery_
 
 I've added `jupyter` and `memray` as dev dependencies
 

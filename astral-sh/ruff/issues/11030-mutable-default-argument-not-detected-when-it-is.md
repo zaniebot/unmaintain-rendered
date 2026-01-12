@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-19T08:03:42Z
 updated_at: 2024-09-26T16:38:02Z
 url: https://github.com/astral-sh/ruff/issues/11030
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Mutable default argument not detected when it is a constant (by B006 and others)
 
 ---
 
-_Issue opened by @omgMath on 2024-04-19 08:03_
+_@omgMath_
 
 Hi
 I found a case where my expectations does not meet the results reported by ruff. But first, let's start with the issue basics:

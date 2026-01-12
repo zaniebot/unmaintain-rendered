@@ -13,14 +13,14 @@ head: charlie/explain
 created_at: 2023-10-04T13:46:40Z
 updated_at: 2023-10-04T15:12:45Z
 url: https://github.com/astral-sh/ruff/pull/7812
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Consider nursery rules to be in-preview for `ruff rule`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-04 13:46_
+_@charliermarsh_
 
 ## Summary
 

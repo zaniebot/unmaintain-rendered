@@ -13,14 +13,14 @@ head: renovate/strum
 created_at: 2024-04-01T15:58:46Z
 updated_at: 2024-04-17T15:36:19Z
 url: https://github.com/astral-sh/ruff/pull/10715
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # chore(deps): update strum to 0.26.0
 
 ---
 
-_Pull request opened by @renovate on 2024-04-01 15:58_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

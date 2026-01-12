@@ -13,14 +13,14 @@ head: david/fix-332
 created_at: 2025-05-14T13:25:38Z
 updated_at: 2025-05-14T13:33:44Z
 url: https://github.com/astral-sh/ruff/pull/18092
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] Do not look up `__init__` on instances
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-14 13:25_
+_@sharkdp_
 
 ## Summary
 

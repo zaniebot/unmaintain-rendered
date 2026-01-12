@@ -15,14 +15,14 @@ head: micha/fix-missing-root-during-completion
 created_at: 2025-10-16T12:03:24Z
 updated_at: 2025-10-16T14:23:04Z
 url: https://github.com/astral-sh/ruff/pull/20917
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] Fix panic 'missing root' when handling completion request
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-16 12:03_
+_@MichaReiser_
 
 ## Summary
 

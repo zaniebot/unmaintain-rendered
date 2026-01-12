@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-11T04:39:18Z
 updated_at: 2025-11-11T17:05:32Z
 url: https://github.com/astral-sh/uv/issues/16683
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # Security Issue
 
 ---
 
-_Issue opened by @ghost on 2025-11-11 04:39_
+_@ghost_
 
 Found GITHUB_PAT in UV git history after conducting analysis on files:
 
@@ -60,7 +60,7 @@ _Closed by @ghost on 2025-11-11 05:11_
 
 ---
 
-_Locked by @woodruffw on 2025-11-11 12:55_
+_Locked by @astral-sh on 2025-11-11 12:55_
 
 ---
 

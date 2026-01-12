@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-24T09:04:54Z
 updated_at: 2025-01-19T19:52:57Z
 url: https://github.com/astral-sh/uv/issues/7655
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Environment variable for `uv venv seed`?
 
 ---
 
-_Issue opened by @ReubenFrankel on 2024-09-24 09:04_
+_@ReubenFrankel_
 
 Hi! I'm using a tool called [Meltano](https://docs.meltano.com/) which supports `uv` as an alternate virtual environment backend. In our case, I would be great if `pip` was still bundled with the venvs `uv` creates for legacy reasons, which I can see is possible with the `uv venv --seed`. Since we don't have direct control over how `uv venv` runs behind the scenes, would it be possible to expose configuration for this via an environment variable (e.g. `UV_VENV_SEED=true`)?
 

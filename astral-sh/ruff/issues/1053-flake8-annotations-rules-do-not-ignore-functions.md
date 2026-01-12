@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-05T12:03:05Z
 updated_at: 2022-12-06T17:46:40Z
 url: https://github.com/astral-sh/ruff/issues/1053
-synced_at: 2026-01-10T12:06:15Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # `flake8-annotations` rules do not ignore functions with type overloads
 
 ---
 
-_Issue opened by @joouha on 2022-12-05 12:03_
+_@joouha_
 
 Hello,
 

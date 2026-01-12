@@ -13,14 +13,14 @@ head: david/fix-365
 created_at: 2025-06-11T08:37:01Z
 updated_at: 2025-06-17T07:24:30Z
 url: https://github.com/astral-sh/ruff/pull/18621
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # [ty] Reachability constraints
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-11 08:37_
+_@sharkdp_
 
 ## Summary
 

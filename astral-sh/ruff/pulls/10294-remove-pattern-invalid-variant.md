@@ -13,14 +13,14 @@ head: dhruv/remove-invalid-pattern
 created_at: 2024-03-08T07:05:21Z
 updated_at: 2024-03-08T17:59:11Z
 url: https://github.com/astral-sh/ruff/pull/10294
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Remove `Pattern::Invalid` variant
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-08 07:05_
+_@dhruvmanila_
 
 ## Summary
 

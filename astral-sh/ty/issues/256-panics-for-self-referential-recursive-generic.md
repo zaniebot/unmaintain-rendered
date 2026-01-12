@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-07T20:10:43Z
 updated_at: 2025-11-26T16:50:28Z
 url: https://github.com/astral-sh/ty/issues/256
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Panics for self-referential (recursive) generic classes or type aliases
 
 ---
 
-_Issue opened by @davidbgk on 2025-05-07 20:10_
+_@davidbgk_
 
 When running it against https://github.com/numerique-gouv/ami-notifications-api @ f9fa495fcbad07244f9f7598ac47574c3ae99ef2
 

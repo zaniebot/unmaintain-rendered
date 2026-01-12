@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-26T00:50:40Z
 updated_at: 2025-05-26T11:42:03Z
 url: https://github.com/astral-sh/ty/issues/511
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # False positive for `PEP 604 union syntax is only available in Python 3.10 and later` when `requires-python = ">=3.9"`
 
 ---
 
-_Issue opened by @karlicoss on 2025-05-26 00:50_
+_@karlicoss_
 
 ### Summary
 

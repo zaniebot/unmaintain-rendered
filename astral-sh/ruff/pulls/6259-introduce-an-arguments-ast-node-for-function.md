@@ -12,14 +12,14 @@ head: charlie/class-base-comments
 created_at: 2023-08-01T22:48:33Z
 updated_at: 2023-08-03T13:26:57Z
 url: https://github.com/astral-sh/ruff/pull/6259
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Introduce an `Arguments` AST node for function calls and class definitions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-01 22:48_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-20T18:46:06Z
 updated_at: 2025-04-20T20:38:16Z
 url: https://github.com/astral-sh/uv/issues/12991
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # `uv add` fails for dependencies with sys_platform in escaped quotes, like `sys_platform != \"win32\"`
 
 ---
 
-_Issue opened by @bartlomiejcieszkowski on 2025-04-20 18:46_
+_@bartlomiejcieszkowski_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-18T23:50:18Z
 updated_at: 2024-12-22T13:57:37Z
 url: https://github.com/astral-sh/uv/issues/10012
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # uv.lock local cache path which causes sync fail when cache is empty
 
 ---
 
-_Issue opened by @jhurlb on 2024-12-18 23:50_
+_@jhurlb_
 
 # Environment
 Platform: MacOS (M2)

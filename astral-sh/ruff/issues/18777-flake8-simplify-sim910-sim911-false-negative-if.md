@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-19T01:04:57Z
 updated_at: 2025-06-20T17:25:37Z
 url: https://github.com/astral-sh/ruff/issues/18777
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [flake8-simplify] SIM910/SIM911 false negative if variable is named dict
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-19 01:04_
+_@MeGaGiGaGon_
 
 ### Summary
 

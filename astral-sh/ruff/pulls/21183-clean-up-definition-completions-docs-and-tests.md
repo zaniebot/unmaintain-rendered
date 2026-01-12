@@ -14,14 +14,14 @@ head: definition-completions-follow-up
 created_at: 2025-11-01T15:07:14Z
 updated_at: 2025-11-06T11:48:51Z
 url: https://github.com/astral-sh/ruff/pull/21183
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # Clean up definition completions docs and tests
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-11-01 15:07_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

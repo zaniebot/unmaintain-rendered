@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-17T22:34:13Z
 updated_at: 2024-06-18T14:19:31Z
 url: https://github.com/astral-sh/uv/issues/4372
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # uv installs really old version of web3 in the presence of numpy and streamlit on 3.10, unlike pip
 
 ---
 
-_Issue opened by @wakamex on 2024-06-17 22:34_
+_@wakamex_
 
 `uv` worked fine until a recent update to one of these packages (not uv itself, saw the same on 0.19) caused it to go into dependency resolution hell.
 - Find below my `pip freeze` results for `pip` and `uv` for 4 different configurations.

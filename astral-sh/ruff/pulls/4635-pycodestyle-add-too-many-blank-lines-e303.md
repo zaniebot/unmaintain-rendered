@@ -11,14 +11,14 @@ head: E303_too_many_blank_lines
 created_at: 2023-05-24T15:16:32Z
 updated_at: 2023-05-28T16:54:14Z
 url: https://github.com/astral-sh/ruff/pull/4635
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # [`pycodestyle`] Add `too many blank lines` (`E303`) 
 
 ---
 
-_Pull request opened by @hoel-bagard on 2023-05-24 15:16_
+_@hoel-bagard_
 
 ## Summary
 This PR is part of  https://github.com/charliermarsh/ruff/issues/2402, it adds the `E303` error rule with its fix.

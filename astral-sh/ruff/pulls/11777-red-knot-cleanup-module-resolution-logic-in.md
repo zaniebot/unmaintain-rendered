@@ -13,14 +13,14 @@ head: carl-review-fixup
 created_at: 2024-06-06T16:28:29Z
 updated_at: 2024-06-06T16:42:01Z
 url: https://github.com/astral-sh/ruff/pull/11777
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [red-knot] Cleanup module-resolution logic in `module.rs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-06 16:28_
+_@AlexWaygood_
 
 Various fixes addressing @carljm's post-merge review of #11767
 

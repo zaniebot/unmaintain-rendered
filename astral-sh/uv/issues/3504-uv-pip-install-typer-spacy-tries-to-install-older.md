@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-10T12:59:31Z
 updated_at: 2024-10-21T21:30:22Z
 url: https://github.com/astral-sh/uv/issues/3504
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # `uv pip install typer spacy` tries to install older versions of spacy and fails on Python 3.12
 
 ---
 
-_Issue opened by @skshetry on 2024-05-10 12:59_
+_@skshetry_
 
 ```bash
 cd "$(mktemp -d)"

@@ -12,14 +12,14 @@ head: copilot/fix-14730
 created_at: 2025-07-18T18:17:23Z
 updated_at: 2025-07-22T13:32:47Z
 url: https://github.com/astral-sh/uv/pull/14738
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:22Z
 ```
 
 # Add hint to use `uv self version` when `uv version` cannot find a project
 
 ---
 
-_Pull request opened by @copilot-swe-agent on 2025-07-18 18:17_
+_@copilot-swe-agent_
 
 When users run `uv version` in a directory without a `pyproject.toml` file, they often intend to check uv's own version rather than a project's version. This change adds a helpful hint to guide users to the correct command.
 

@@ -13,14 +13,14 @@ head: konsti/dont-use-walrus
 created_at: 2025-06-17T15:51:57Z
 updated_at: 2025-06-17T17:18:09Z
 url: https://github.com/astral-sh/uv/pull/14108
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:01Z
 ```
 
 # Don't use walrus operator in interpreter query script
 
 ---
 
-_Pull request opened by @konstin on 2025-06-17 15:51_
+_@konstin_
 
 Fix `uv run -p 3.7` by not using a walrus operator. Python 3.7 isn't really supported anymore, but there's no reason to break interpreter discovery for it.
 

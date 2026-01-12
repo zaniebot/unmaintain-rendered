@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-05T15:18:53Z
 updated_at: 2024-11-05T15:47:09Z
 url: https://github.com/astral-sh/uv/issues/8830
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # Virtual environments folder outside project
 
 ---
 
-_Issue opened by @tmct on 2024-11-05 15:18_
+_@tmct_
 
 Hi,
 

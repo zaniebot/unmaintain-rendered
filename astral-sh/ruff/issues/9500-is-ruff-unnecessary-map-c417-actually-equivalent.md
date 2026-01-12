@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-13T00:09:21Z
 updated_at: 2024-01-13T02:53:44Z
 url: https://github.com/astral-sh/ruff/issues/9500
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Is ruff unnecessary-map C417 actually equivalent to pylint use-a-generator R1729?
 
 ---
 
-_Issue opened by @dougthor42 on 2024-01-13 00:09_
+_@dougthor42_
 
 Is ruff unnecessary-map C417 actually equivalent to pylint use-a-generator R1729?
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-25T20:52:56Z
 updated_at: 2023-10-02T20:43:51Z
 url: https://github.com/astral-sh/ruff/issues/7660
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # C0103/`invalid-name`/N815/N806: Allow specifying valid identifier patterns (e.g. as regular expressions)
 
 ---
 
-_Issue opened by @richardebeling on 2023-09-25 20:52_
+_@richardebeling_
 
 For it's [`invalid-name`/C0103 rule](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/invalid-name.html), pylint allows [freely configuring what a legal name for an identifier is using regular expressions](https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/invalid-name.html#custom-regular-expressions).
 

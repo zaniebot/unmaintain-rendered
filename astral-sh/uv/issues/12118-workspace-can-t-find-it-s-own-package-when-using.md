@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-11T16:46:03Z
 updated_at: 2025-03-13T08:54:49Z
 url: https://github.com/astral-sh/uv/issues/12118
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # workspace can't find it's own package when using __main__.py
 
 ---
 
-_Issue opened by @andersfylling on 2025-03-11 16:46_
+_@andersfylling_
 
 ### Question
 

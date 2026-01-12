@@ -12,14 +12,14 @@ head: charlie/pydocstyle
 created_at: 2022-10-14T16:34:30Z
 updated_at: 2022-10-14T16:34:36Z
 url: https://github.com/astral-sh/ruff/pull/428
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Re-arrange some docstring modules
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-14 16:34_
+_@charliermarsh_
 
 _No description provided._
 

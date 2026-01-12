@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-12T13:54:38Z
 updated_at: 2023-01-12T15:25:30Z
 url: https://github.com/clap-rs/clap/issues/4631
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Extra blank lines when the argument name is long enough in `--help`
 
 ---
 
-_Issue opened by @madchicken on 2023-01-12 13:54_
+_@madchicken_
 
 ### Please complete the following tasks
 

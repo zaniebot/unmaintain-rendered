@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-29T05:43:09Z
 updated_at: 2025-07-31T02:28:46Z
 url: https://github.com/astral-sh/uv/issues/14947
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:02:00Z
 ```
 
 # sys_platform and case
 
 ---
 
-_Issue opened by @amcandio on 2025-07-29 05:43_
+_@amcandio_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-09T01:45:49Z
 updated_at: 2024-04-10T09:43:47Z
 url: https://github.com/astral-sh/ruff/issues/10842
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Add an enabled-by-default rule about imports from an src package
 
 ---
 
-_Issue opened by @pradyunsg on 2024-04-09 01:45_
+_@pradyunsg_
 
 This is meant to prevent misused of PEP 420 (namespace packages) with the src/ layout.
 

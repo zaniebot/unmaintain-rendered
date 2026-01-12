@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-07T11:59:17Z
 updated_at: 2024-12-24T06:10:16Z
 url: https://github.com/astral-sh/ruff/issues/4924
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # E731: Introduction of invalid indentation
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-07 11:59_
+_@addisoncrump_
 
 Python 3 allows for the use of different indentation styles, provided that they remain consistent within a single block and do not add tabs after spaces.
 

@@ -14,14 +14,14 @@ head: fix-19154
 created_at: 2025-07-08T23:59:48Z
 updated_at: 2025-07-12T00:11:19Z
 url: https://github.com/astral-sh/ruff/pull/19221
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [`flake8_django`] Fix DJ008 false positive for abstract models with type-annotated `abstract` field
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-08 23:59_
+_@danparizher_
 
 ## Summary
 

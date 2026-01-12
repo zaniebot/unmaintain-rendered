@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-06T23:48:28Z
 updated_at: 2025-06-10T11:00:28Z
 url: https://github.com/astral-sh/uv/issues/13894
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # Add autocomplete support for `uv add`
 
 ---
 
-_Issue opened by @hamirmahal on 2025-06-06 23:48_
+_@hamirmahal_
 
 ### Summary
 

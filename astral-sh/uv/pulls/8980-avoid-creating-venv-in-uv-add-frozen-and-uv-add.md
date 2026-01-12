@@ -13,14 +13,14 @@ head: charlie/fro
 created_at: 2024-11-10T02:10:27Z
 updated_at: 2024-11-10T02:21:13Z
 url: https://github.com/astral-sh/uv/pull/8980
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:35Z
 ```
 
 # Avoid creating `.venv in `uv add --frozen` and `uv add --no-sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-10 02:10_
+_@charliermarsh_
 
 ## Summary
 

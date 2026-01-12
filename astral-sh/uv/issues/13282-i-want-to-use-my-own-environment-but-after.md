@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-04T13:52:05Z
 updated_at: 2025-05-15T06:25:24Z
 url: https://github.com/astral-sh/uv/issues/13282
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # I want to use my own environment, but after executing UV sync -- locked, it will automatically create a virtual environment under the current project,
 
 ---
 
-_Issue opened by @zhaoxii on 2025-05-04 13:52_
+_@zhaoxii_
 
 ### Question
 

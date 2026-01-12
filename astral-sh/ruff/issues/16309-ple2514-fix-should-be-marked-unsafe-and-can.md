@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-21T19:51:37Z
 updated_at: 2025-04-30T17:23:02Z
 url: https://github.com/astral-sh/ruff/issues/16309
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PLE2514 fix should be marked unsafe and can modify octal escape sequences
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-21 19:51_
+_@dscorbett_
 
 ### Description
 

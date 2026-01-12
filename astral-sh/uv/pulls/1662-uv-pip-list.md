@@ -14,14 +14,14 @@ head: pip-list
 created_at: 2024-02-18T18:00:28Z
 updated_at: 2024-02-25T19:46:39Z
 url: https://github.com/astral-sh/uv/pull/1662
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # `uv pip list`
 
 ---
 
-_Pull request opened by @sbrugman on 2024-02-18 18:00_
+_@sbrugman_
 
 Hi, love your work on `uv` 👋! 
 

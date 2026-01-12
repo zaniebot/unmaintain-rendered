@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-15T17:36:50Z
 updated_at: 2025-08-16T15:03:15Z
 url: https://github.com/astral-sh/ruff/issues/14365
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Add lint.flake8-bandit setting to ignore specific argument names for S106 and S107
 
 ---
 
-_Issue opened by @jamesdow21 on 2024-11-15 17:36_
+_@jamesdow21_
 
 It'd be nice if there was a setting for `lint.flake8-bandit` to be able to ignore specific argument names from getting flagged as hard-coded passwords.
 

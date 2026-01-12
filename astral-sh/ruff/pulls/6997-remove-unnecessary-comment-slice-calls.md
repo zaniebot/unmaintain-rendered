@@ -13,14 +13,14 @@ head: charlie/slice
 created_at: 2023-08-30T00:30:24Z
 updated_at: 2023-08-30T00:44:12Z
 url: https://github.com/astral-sh/ruff/pull/6997
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Remove unnecessary `Comment#slice` calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-30 00:30_
+_@charliermarsh_
 
 _No description provided._
 

@@ -15,14 +15,14 @@ head: brent/fix-syntax-error-caching
 created_at: 2025-02-27T22:36:31Z
 updated_at: 2025-02-28T08:58:13Z
 url: https://github.com/astral-sh/ruff/pull/16425
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Avoid caching files with unsupported syntax errors
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-27 22:36_
+_@ntBre_
 
 ## Summary
 

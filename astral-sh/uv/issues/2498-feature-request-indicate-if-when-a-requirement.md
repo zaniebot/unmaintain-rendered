@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-17T19:26:29Z
 updated_at: 2024-03-17T19:29:08Z
 url: https://github.com/astral-sh/uv/issues/2498
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Feature request: indicate if/when a requirement came from an extra
 
 ---
 
-_Issue opened by @wimglenn on 2024-03-17 19:26_
+_@wimglenn_
 
 For example:
 

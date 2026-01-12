@@ -12,14 +12,14 @@ head: charlie/renames
 created_at: 2023-10-25T23:51:24Z
 updated_at: 2023-10-25T23:53:32Z
 url: https://github.com/astral-sh/uv/pull/184
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:47Z
 ```
 
 # Rename `SolverCache`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-25 23:51_
+_@charliermarsh_
 
 Everywhere else, we use cache to refer to a filesystem cache, so this is kind of confusing. It's really an in-memory index that we build up over the course of the solve.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-29T01:25:45Z
 updated_at: 2025-04-29T18:25:13Z
 url: https://github.com/astral-sh/uv/issues/13188
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # Inconsistent option spelling between `uv pip` and `pip`
 
 ---
 
-_Issue opened by @calebho on 2025-04-29 01:25_
+_@calebho_
 
 ### Summary
 

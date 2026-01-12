@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-03-20T17:21:42Z
 updated_at: 2023-06-15T19:27:10Z
 url: https://github.com/clap-rs/clap/issues/2419
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Using index_of()/indices_of() with optional arguments that take optional values
 
 ---
 
-_Issue opened by @cptpcrd on 2021-03-20 17:21_
+_@cptpcrd_
 
 ### Please complete the following tasks
 

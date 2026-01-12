@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-02T00:33:01Z
 updated_at: 2025-08-04T00:58:11Z
 url: https://github.com/astral-sh/uv/issues/15023
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # How to resolve workspace members for lsp in vscode
 
 ---
 
-_Issue opened by @Bryson14 on 2025-08-02 00:33_
+_@Bryson14_
 
 _note_ : I have threw this together and used Claude to polish my phrasing.
 

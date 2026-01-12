@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-23T15:17:20Z
 updated_at: 2023-08-17T06:00:28Z
 url: https://github.com/astral-sh/ruff/issues/5336
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: Suppression comments
 
 ---
 
-_Issue opened by @MichaReiser on 2023-06-23 15:17_
+_@MichaReiser_
 
 * [x] `fmt: off` and `fmt: on`
 	* [x] https://github.com/astral-sh/ruff/pull/6477

@@ -13,14 +13,14 @@ head: gankra/revertscript
 created_at: 2025-03-21T13:13:18Z
 updated_at: 2025-03-21T15:57:38Z
 url: https://github.com/astral-sh/uv/pull/12364
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:14Z
 ```
 
 # Revert "Support `python find --script` (#11891)"
 
 ---
 
-_Pull request opened by @Gankra on 2025-03-21 13:13_
+_@Gankra_
 
 This reverts commit b128aa04997abfcdb9c934e3ddcd1567ff57b0a7 (#11891)
 

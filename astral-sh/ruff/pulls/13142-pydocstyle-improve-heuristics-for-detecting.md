@@ -14,14 +14,14 @@ head: alex/pydocstyle-convention
 created_at: 2024-08-28T18:00:29Z
 updated_at: 2024-08-29T15:33:20Z
 url: https://github.com/astral-sh/ruff/pull/13142
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`pydocstyle`] Improve heuristics for detecting Google-style docstrings
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-28 18:00_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: fast002-preview-again
 created_at: 2024-11-19T18:24:45Z
 updated_at: 2024-11-20T12:04:02Z
 url: https://github.com/astral-sh/ruff/pull/14467
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [ruff-0.8] [`FAST`] Further improve docs for `fast-api-non-annotated-depencency` (`FAST002`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-19 18:24_
+_@AlexWaygood_
 
 This PR is stacked on top of #14466.
 

@@ -14,14 +14,14 @@ head: jane/server/settings/resolution
 created_at: 2024-04-21T01:24:39Z
 updated_at: 2024-04-23T18:19:18Z
 url: https://github.com/astral-sh/ruff/pull/11062
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # `ruff server`: Ruff configuration from client settings overrides project configuration
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-21 01:24_
+_@snowsignal_
 
 ## Summary
 

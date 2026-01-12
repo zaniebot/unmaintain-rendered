@@ -12,14 +12,14 @@ head: refactor/create-crates-folder
 created_at: 2023-01-22T16:01:20Z
 updated_at: 2023-02-05T21:47:48Z
 url: https://github.com/astral-sh/ruff/pull/2088
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # refactor: Introduce crates folder
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-01-22 16:01_
+_@MichaReiser_
 
 This PR introduces a new `crates` directory and moves all "product" crates into that folder. 
 

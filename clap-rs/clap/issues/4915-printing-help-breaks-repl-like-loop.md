@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-18T14:30:21Z
 updated_at: 2023-05-18T14:33:44Z
 url: https://github.com/clap-rs/clap/issues/4915
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Printing help breaks REPL-like loop
 
 ---
 
-_Issue opened by @dominicmeyer on 2023-05-18 14:30_
+_@dominicmeyer_
 
 ### Please complete the following tasks
 

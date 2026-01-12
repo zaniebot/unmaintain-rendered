@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T16:19:27Z
 updated_at: 2025-12-10T20:28:20Z
 url: https://github.com/astral-sh/ty/issues/1842
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Fix disjointness relation for class literals and generic aliases
 
 ---
 
-_Issue opened by @sharkdp on 2025-12-10 16:19_
+_@sharkdp_
 
 There are some inconsistencies in our disjointness relation modeling for class literals and generic aliases. They are documented in the failing tests here:
 

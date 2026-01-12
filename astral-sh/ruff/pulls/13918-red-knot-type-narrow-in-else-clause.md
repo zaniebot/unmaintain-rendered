@@ -13,14 +13,14 @@ head: tomer/type-narrow-in-else-clause
 created_at: 2024-10-24T22:26:46Z
 updated_at: 2024-10-26T16:57:16Z
 url: https://github.com/astral-sh/ruff/pull/13918
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Type narrow in else clause
 
 ---
 
-_Pull request opened by @TomerBin on 2024-10-24 22:26_
+_@TomerBin_
 
 Added support for type narrowing in elif and else scopes as part of #13694.
 

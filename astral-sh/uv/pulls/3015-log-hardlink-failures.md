@@ -13,14 +13,14 @@ head: konsti/improve-hardlink-failure-logging
 created_at: 2024-04-12T14:54:52Z
 updated_at: 2024-04-12T15:06:39Z
 url: https://github.com/astral-sh/uv/pull/3015
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:22Z
 ```
 
 # Log hardlink failures
 
 ---
 
-_Pull request opened by @konstin on 2024-04-12 14:54_
+_@konstin_
 
 Inspired by https://github.com/astral-sh/uv/issues/2964, we now properly log hardlink failures, e.g. when the cache is a docker container but the venv is in a bind mount, e.g.:
 

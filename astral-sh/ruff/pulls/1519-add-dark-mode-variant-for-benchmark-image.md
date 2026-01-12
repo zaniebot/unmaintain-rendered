@@ -12,14 +12,14 @@ head: charlie/dark
 created_at: 2022-12-31T22:44:59Z
 updated_at: 2023-01-28T16:48:51Z
 url: https://github.com/astral-sh/ruff/pull/1519
-synced_at: 2026-01-12T04:51:59Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add dark mode variant for benchmark image
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-31 22:44_
+_@charliermarsh_
 
 Resolves: #1515.
 

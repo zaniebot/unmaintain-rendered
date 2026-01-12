@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T19:27:36Z
 updated_at: 2024-09-04T19:48:22Z
 url: https://github.com/astral-sh/uv/issues/7043
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Documentation on non-existent functionality (building distributions)?
 
 ---
 
-_Issue opened by @seppzer0 on 2024-09-04 19:27_
+_@seppzer0_
 
 Hi, I was researching on how to build PIP distributions with uv and have found a piece of documentation on `uv build` command which as of 0.4.4 version does not exist.
 

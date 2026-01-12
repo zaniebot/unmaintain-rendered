@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-02-15T21:22:12Z
 updated_at: 2024-02-15T21:54:45Z
 url: https://github.com/astral-sh/uv/pull/1354
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:36Z
 ```
 
 # Fix diagram alignment
 
 ---
 
-_Pull request opened by @ysndr on 2024-02-15 21:22_
+_@ysndr_
 
 Drive by alignment PR for the trait structure diagram
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-05-22T14:47:00Z
 updated_at: 2015-05-23T03:38:15Z
 url: https://github.com/clap-rs/clap/issues/131
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # implement global arguments
 
 ---
 
-_Issue opened by @kbknapp on 2015-05-22 14:47_
+_@kbknapp_
 
 Global arguments are applicable and propagated through all subcommands. The catch is, they cannot be required.
 

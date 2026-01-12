@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-09T17:37:53Z
 updated_at: 2024-01-10T01:45:58Z
 url: https://github.com/astral-sh/uv/issues/852
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Support `--seed-packages` in `puffin venv`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-09 17:37_
+_@charliermarsh_
 
 It should be opt-in since we don't need it for Puffin itself, only if you want to use Puffin _just_ for virtualenv creation in other contexts.
 

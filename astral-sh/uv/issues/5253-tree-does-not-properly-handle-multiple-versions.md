@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-20T18:27:53Z
 updated_at: 2024-08-04T18:33:14Z
 url: https://github.com/astral-sh/uv/issues/5253
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `tree` does not properly handle multiple versions of the same package
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-20 18:27_
+_@charliermarsh_
 
 This is possible in `uv tree` (but not `pip tree` typically), since the lockfile can contain multiple versions. Notice the strange result here:
 

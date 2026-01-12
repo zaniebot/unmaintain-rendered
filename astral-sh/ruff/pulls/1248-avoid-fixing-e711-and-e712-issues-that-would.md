@@ -12,14 +12,14 @@ head: charlie/E711
 created_at: 2022-12-15T17:08:22Z
 updated_at: 2022-12-15T17:08:32Z
 url: https://github.com/astral-sh/ruff/pull/1248
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Avoid fixing E711 and E712 issues that would cause F632
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-15 17:08_
+_@charliermarsh_
 
 Resolves #1237.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-27T12:03:05Z
 updated_at: 2025-08-27T19:23:16Z
 url: https://github.com/astral-sh/uv/issues/15547
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # UV doesn't consider compatible version
 
 ---
 
-_Issue opened by @zivhadad24 on 2025-08-27 12:03_
+_@zivhadad24_
 
 ### Summary
 

@@ -15,14 +15,14 @@ head: david/update-mypy_primer-projects
 created_at: 2025-12-01T10:03:33Z
 updated_at: 2025-12-01T10:18:43Z
 url: https://github.com/astral-sh/ruff/pull/21721
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] Add missing projects to `good.txt`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-01 10:03_
+_@sharkdp_
 
 ## Summary
 

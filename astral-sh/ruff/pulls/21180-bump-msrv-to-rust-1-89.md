@@ -12,14 +12,14 @@ head: micha/msrv-1.89
 created_at: 2025-11-01T02:05:13Z
 updated_at: 2025-11-01T02:27:12Z
 url: https://github.com/astral-sh/ruff/pull/21180
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # Bump MSRV to Rust 1.89
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-01 02:05_
+_@MichaReiser_
 
 Requires https://github.com/conda-forge/ruff-feedstock/pull/305
 

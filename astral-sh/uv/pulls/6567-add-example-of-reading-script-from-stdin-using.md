@@ -13,14 +13,14 @@ head: sky/echo-stdin
 created_at: 2024-08-24T03:52:57Z
 updated_at: 2024-08-25T17:14:23Z
 url: https://github.com/astral-sh/uv/pull/6567
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:25Z
 ```
 
 # Add example of reading script from stdin using echo
 
 ---
 
-_Pull request opened by @skykasko on 2024-08-24 03:52_
+_@skykasko_
 
 As a non-shell-wizard, I was unfamiliar with the `EOF` syntax used in the existing example (just above the one I added). I thought including an example where the output of `echo` is piped to `uv run` might be more accessible. As a bonus, it should work across more shells: the `EOF` example doesn't work in fish because fish [doesn't support heredocs](https://fishshell.com/docs/current/fish_for_bash_users.html#heredocs), while the `echo` example does.
 

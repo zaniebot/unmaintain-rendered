@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-08T20:43:05Z
 updated_at: 2025-06-10T10:50:07Z
 url: https://github.com/astral-sh/uv/issues/13902
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # python3.13.0 issue -- `ModuleNotFoundError: No module named 'json'`
 
 ---
 
-_Issue opened by @mcint on 2025-06-08 20:43_
+_@mcint_
 
 ### Summary
 

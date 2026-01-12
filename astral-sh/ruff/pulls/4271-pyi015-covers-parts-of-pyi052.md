@@ -11,14 +11,14 @@ head: Y015-combine
 created_at: 2023-05-08T00:09:36Z
 updated_at: 2023-05-08T18:50:30Z
 url: https://github.com/astral-sh/ruff/pull/4271
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # PYI015 covers parts of PYI052 
 
 ---
 
-_Pull request opened by @sladyn98 on 2023-05-08 00:09_
+_@sladyn98_
 
 This PR attempts to combine the functionality of PY105 and PY1015 into one function according to pylint
 

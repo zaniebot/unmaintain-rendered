@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-30T01:09:40Z
 updated_at: 2025-10-30T14:17:00Z
 url: https://github.com/astral-sh/ty/issues/1455
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Module `nacl` has member `encoding`
 
 ---
 
-_Issue opened by @velikopter on 2025-10-30 01:09_
+_@velikopter_
 
 ### Summary
 

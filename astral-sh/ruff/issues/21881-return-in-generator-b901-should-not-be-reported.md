@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-09T23:08:50Z
 updated_at: 2025-12-12T18:26:49Z
 url: https://github.com/astral-sh/ruff/issues/21881
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # `return-in-generator` (`B901`) - should not be reported on pytest hook wrappers
 
 ---
 
-_Issue opened by @DetachHead on 2025-12-09 23:08_
+_@DetachHead_
 
 ### Summary
 

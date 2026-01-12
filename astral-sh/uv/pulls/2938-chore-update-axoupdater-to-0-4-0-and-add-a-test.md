@@ -12,14 +12,14 @@ head: updateit
 created_at: 2024-04-09T17:08:32Z
 updated_at: 2024-04-10T03:41:17Z
 url: https://github.com/astral-sh/uv/pull/2938
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:19Z
 ```
 
 # chore: update axoupdater to 0.4.0 and add a test
 
 ---
 
-_Pull request opened by @Gankra on 2024-04-09 17:08_
+_@Gankra_
 
 ## Summary
 

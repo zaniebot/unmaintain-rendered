@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-29T05:27:38Z
 updated_at: 2024-05-29T05:27:38Z
 url: https://github.com/astral-sh/ruff/issues/11594
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Request: prefer `%r`/`!r` marker instead of calling `repr` in string formatting
 
 ---
 
-_Issue opened by @Avasam on 2024-05-29 05:27_
+_@Avasam_
 
 See this PR for the kind of changes I'd like to see automated: https://github.com/mhammond/pywin32/pull/2272
 

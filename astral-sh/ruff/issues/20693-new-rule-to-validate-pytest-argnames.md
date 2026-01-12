@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-03T15:36:28Z
 updated_at: 2025-10-03T19:35:27Z
 url: https://github.com/astral-sh/ruff/issues/20693
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # New Rule to Validate Pytest Argnames
 
 ---
 
-_Issue opened by @George-Ogden on 2025-10-03 15:36_
+_@George-Ogden_
 
 ### Summary
 

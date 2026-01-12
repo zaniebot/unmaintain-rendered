@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T19:54:02Z
 updated_at: 2024-11-21T15:28:15Z
 url: https://github.com/astral-sh/ruff/issues/14139
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Philosophy Doc for Ruff and Two Scale Categorization System
 
 ---
 
-_Issue opened by @ParagEkbote on 2024-11-06 19:54_
+_@ParagEkbote_
 
  I believe Ruff supports several hundred rules and also has implemented rules from different linters/formatters like Pylint, Autoflake, Pycodestyle, Flake8, etc. As the project scope expands, it will be quite helpful to write a document outlining the design philosophy like the HF Transformers library to help beginners understand what rules Ruff supports, and which it does not support. Why HF Transformers? I see a correlation between the one of the goals of the project: Be as easy and fast to use as possible.
 

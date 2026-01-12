@@ -13,14 +13,14 @@ head: micha/remove-strip
 created_at: 2025-10-15T09:31:31Z
 updated_at: 2025-10-15T09:48:55Z
 url: https://github.com/astral-sh/ruff/pull/20885
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # Remove `strip` from release profile
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-15 09:31_
+_@MichaReiser_
 
 ## Summary
 

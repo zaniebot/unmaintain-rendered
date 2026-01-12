@@ -13,14 +13,14 @@ head: f841-rename-tuple
 created_at: 2023-12-12T16:33:00Z
 updated_at: 2023-12-12T18:56:48Z
 url: https://github.com/astral-sh/ruff/pull/9107
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # F841: support fixing unused assignments in tuples by renaming variables
 
 ---
 
-_Pull request opened by @sciyoshi on 2023-12-12 16:33_
+_@sciyoshi_
 
 ## Summary
 

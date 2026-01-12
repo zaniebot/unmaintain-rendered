@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-23T13:56:00Z
 updated_at: 2023-06-05T02:26:16Z
 url: https://github.com/astral-sh/ruff/issues/4601
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Blanket opt-in to nursery rules possible?
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-05-23 13:56_
+_@ThiefMaster_
 
 When converting my [flake8 config](https://raw.githubusercontent.com/indico/indico/master/.flake8) using `flake8-to-ruff`, I got some warnings about unsupported options, one of them being `E265`. But it turned out that these rules are in fact supported, just considered "beta" quality and thus in nursery (if i understood its purpose correctly).
 

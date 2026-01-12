@@ -13,14 +13,14 @@ head: charlie/gitignore
 created_at: 2024-02-19T23:13:38Z
 updated_at: 2024-02-19T23:54:46Z
 url: https://github.com/astral-sh/uv/pull/1721
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:42Z
 ```
 
 # Add Insta's pending snapshots to .gitignore
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-19 23:13_
+_@charliermarsh_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: main
 created_at: 2025-11-21T22:25:36Z
 updated_at: 2025-11-28T02:26:23Z
 url: https://github.com/astral-sh/uv/pull/16815
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:27Z
 ```
 
 # Clarify 'uv python upgrade' message when no versions exist
 
 ---
 
-_Pull request opened by @sinsniwal on 2025-11-21 22:25_
+_@sinsniwal_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

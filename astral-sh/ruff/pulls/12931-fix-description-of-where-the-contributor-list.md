@@ -14,14 +14,14 @@ head: alex/contributing-release
 created_at: 2024-08-16T13:55:15Z
 updated_at: 2024-08-16T14:37:23Z
 url: https://github.com/astral-sh/ruff/pull/12931
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Fix description of where the contributor list comes from in instructions for making a release
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-16 13:55_
+_@AlexWaygood_
 
 _No description provided._
 

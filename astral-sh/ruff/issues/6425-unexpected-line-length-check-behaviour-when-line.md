@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-08T12:38:57Z
 updated_at: 2023-08-11T02:28:26Z
 url: https://github.com/astral-sh/ruff/issues/6425
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Unexpected line length check behaviour when line has tabs.
 
 ---
 
-_Issue opened by @Nuno-Mota on 2023-08-08 12:38_
+_@Nuno-Mota_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-24T15:44:04Z
 updated_at: 2025-03-24T16:19:39Z
 url: https://github.com/astral-sh/uv/issues/12433
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # i686 release build fails with LLVM out of memory error
 
 ---
 
-_Issue opened by @zanieb on 2025-03-24 15:44_
+_@zanieb_
 
 We're using a machine with 16 GB of RAM and it spuriously fails to build on release pull requests with an LLVM error. See https://github.com/astral-sh/uv/actions/runs/14039048836/job/39304306163
 

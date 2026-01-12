@@ -12,14 +12,14 @@ head: charlie/tests
 created_at: 2023-11-06T05:28:54Z
 updated_at: 2023-11-06T05:32:45Z
 url: https://github.com/astral-sh/uv/pull/325
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:52Z
 ```
 
 # Add a git feature to tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-06 05:28_
+_@charliermarsh_
 
 _No description provided._
 

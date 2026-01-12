@@ -13,14 +13,14 @@ head: alex/covariant-generics
 created_at: 2025-08-05T14:25:40Z
 updated_at: 2025-08-05T14:30:49Z
 url: https://github.com/astral-sh/ruff/pull/19765
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] Do not promote literals in covariant contexts when solving `TypeVar`s
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-05 14:25_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

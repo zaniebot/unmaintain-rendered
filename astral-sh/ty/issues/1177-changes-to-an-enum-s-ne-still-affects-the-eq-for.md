@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-13T01:59:09Z
 updated_at: 2025-09-30T18:43:41Z
 url: https://github.com/astral-sh/ty/issues/1177
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Changes to an enum's `__ne__` still affects the `__eq__` for type narrowing
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-09-13 01:59_
+_@MeGaGiGaGon_
 
 ### Summary
 

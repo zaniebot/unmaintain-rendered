@@ -13,14 +13,14 @@ head: konsti/add-filename-to-lock-error
 created_at: 2024-04-03T08:56:52Z
 updated_at: 2024-04-03T16:00:17Z
 url: https://github.com/astral-sh/uv/pull/2800
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:13Z
 ```
 
 # Fix windows lock race: Lock exclusive after all try lock errors
 
 ---
 
-_Pull request opened by @konstin on 2024-04-03 08:56_
+_@konstin_
 
 We don't know what kind of error the OS gives us on `try_lock_exclusive` with an already locked file, so we assume all those errors are an already locked file and call `lock_exclusive`.
 

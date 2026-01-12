@@ -12,14 +12,14 @@ head: inikolaev/4246-implement-flake8-async-plugin
 created_at: 2023-05-14T18:58:07Z
 updated_at: 2024-12-29T17:57:14Z
 url: https://github.com/astral-sh/ruff/pull/4433
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Implement `flake8-async` plugin
 
 ---
 
-_Pull request opened by @inikolaev on 2023-05-14 18:58_
+_@inikolaev_
 
 Added implementation of [flake8-async](https://github.com/cooperlees/flake8-async) plugin and copied all the tests from it into `ruff`.
 

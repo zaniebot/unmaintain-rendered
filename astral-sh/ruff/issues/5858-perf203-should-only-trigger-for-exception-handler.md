@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-18T13:27:05Z
 updated_at: 2023-07-28T04:55:57Z
 url: https://github.com/astral-sh/ruff/issues/5858
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # PERF203 should only trigger for exception handler that unconditionally raises
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-07-18 13:27_
+_@NeilGirdhar_
 
 I think that PERF203 should only trigger when the exception handler unconditionally raises.
 ```python

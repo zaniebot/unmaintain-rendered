@@ -12,14 +12,14 @@ head: at-generated
 created_at: 2025-10-13T03:09:36Z
 updated_at: 2025-10-16T21:30:38Z
 url: https://github.com/astral-sh/uv/pull/16277
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:12Z
 ```
 
 # Add `@generated` marker to `uv.lock` files
 
 ---
 
-_Pull request opened by @jackrosenthal on 2025-10-13 03:09_
+_@jackrosenthal_
 
 ## Summary
 

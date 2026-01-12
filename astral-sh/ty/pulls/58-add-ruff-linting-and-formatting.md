@@ -13,14 +13,14 @@ head: micha/ruff
 created_at: 2025-05-06T12:01:32Z
 updated_at: 2025-07-08T10:38:24Z
 url: https://github.com/astral-sh/ty/pull/58
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add ruff linting and formatting
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-06 12:01_
+_@MichaReiser_
 
 Let's enable Ruff, now that we have some python files
 

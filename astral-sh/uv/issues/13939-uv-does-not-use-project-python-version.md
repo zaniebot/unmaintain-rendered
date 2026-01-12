@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T03:53:03Z
 updated_at: 2025-06-12T20:02:26Z
 url: https://github.com/astral-sh/uv/issues/13939
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # uv does not use project `.python-version`
 
 ---
 
-_Issue opened by @Microwave-WYB on 2025-06-10 03:53_
+_@Microwave-WYB_
 
 ### Summary
 

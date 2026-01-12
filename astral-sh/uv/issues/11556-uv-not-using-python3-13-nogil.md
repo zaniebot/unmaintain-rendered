@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-16T15:45:24Z
 updated_at: 2025-02-16T15:58:17Z
 url: https://github.com/astral-sh/uv/issues/11556
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:40Z
 ```
 
 # uv not using python3.13-nogil
 
 ---
 
-_Issue opened by @5hojib on 2025-02-16 15:45_
+_@5hojib_
 
 In my Ubuntu system, python3.13 and python3.13-nogil, python3.13-nogil can executable via python3, cause I have set symlink. When I use uv venv , it use python3.13, even if I try to install packages using --break-system-packages --system options, it install packages in python3.13, how can I python3.13-nogil environment?
 

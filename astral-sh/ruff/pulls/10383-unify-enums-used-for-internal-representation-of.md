@@ -13,14 +13,14 @@ head: simplify-quote-enums
 created_at: 2024-03-13T14:21:50Z
 updated_at: 2024-03-13T23:56:53Z
 url: https://github.com/astral-sh/ruff/pull/10383
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Unify enums used for internal representation of quoting style
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-13 14:21_
+_@AlexWaygood_
 
 ## Summary
 

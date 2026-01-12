@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-17T15:01:54Z
 updated_at: 2021-12-23T20:40:08Z
 url: https://github.com/clap-rs/clap/issues/3194
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Main documentation example doesn't build
 
 ---
 
-_Issue opened by @bestouff on 2021-12-17 15:01_
+_@bestouff_
 
 ### Please complete the following tasks
 

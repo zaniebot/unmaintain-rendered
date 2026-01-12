@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-29T21:04:05Z
 updated_at: 2025-11-06T14:08:58Z
 url: https://github.com/astral-sh/uv/issues/16503
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # uv export in a monorepo with workspaces: allow exporting dependencies for a subset of packages
 
 ---
 
-_Issue opened by @totternessZB on 2025-10-29 21:04_
+_@totternessZB_
 
 ### Summary
 

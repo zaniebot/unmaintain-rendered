@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-10-11T21:50:45Z
 updated_at: 2018-08-02T03:30:12Z
 url: https://github.com/clap-rs/clap/issues/1064
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Selectively hide arguments from '-h' text (but not '--help')
 
 ---
 
-_Issue opened by @sharkdp on 2017-10-11 21:50_
+_@sharkdp_
 
 I really like clap's feature to distinguish between a short and concise help text via `-h` and a longer and detailed help text via `--help` (see [`Arg::long_help`](https://docs.rs/clap/2.26.2/clap/struct.Arg.html#method.long_help)).
 

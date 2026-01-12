@@ -12,14 +12,14 @@ head: charlie/block
 created_at: 2023-01-26T23:04:09Z
 updated_at: 2023-01-26T23:09:30Z
 url: https://github.com/astral-sh/ruff/pull/2238
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Track type-checking blocks during tree traversal
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-26 23:04_
+_@charliermarsh_
 
 This is more efficient, as we don't have to go back and check if every statement is bounded by the existing blocks.
 

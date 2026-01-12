@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-20T16:09:23Z
 updated_at: 2025-12-16T23:49:27Z
 url: https://github.com/astral-sh/uv/issues/3163
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Support `pip download`
 
 ---
 
-_Issue opened by @idlsoft on 2024-04-20 16:09_
+_@idlsoft_
 
 This would be especially useful for buildng docker images.
 

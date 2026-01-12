@@ -13,14 +13,14 @@ head: dhruv/untitled-files
 created_at: 2024-07-24T14:35:22Z
 updated_at: 2024-08-02T15:49:29Z
 url: https://github.com/astral-sh/ruff/pull/12492
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Add support for untitled files
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-24 14:35_
+_@dhruvmanila_
 
 ## Summary
 

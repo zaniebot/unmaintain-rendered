@@ -13,14 +13,14 @@ head: zb/readme-fix
 created_at: 2025-11-25T18:34:12Z
 updated_at: 2025-11-25T18:47:33Z
 url: https://github.com/astral-sh/uv/pull/16848
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:28Z
 ```
 
 # Fix the links to uv in crates.io member READMEs
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-25 18:34_
+_@zanieb_
 
 _No description provided._
 

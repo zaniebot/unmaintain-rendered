@@ -12,14 +12,14 @@ head: charlie/lib
 created_at: 2022-09-29T22:30:31Z
 updated_at: 2022-09-30T23:28:26Z
 url: https://github.com/astral-sh/ruff/pull/289
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Expose a public 'check' method
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-29 22:30_
+_@charliermarsh_
 
 See: #271.
 

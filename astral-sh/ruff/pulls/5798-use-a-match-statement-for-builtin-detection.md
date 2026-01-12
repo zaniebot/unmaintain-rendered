@@ -13,14 +13,14 @@ head: charlie/builtin
 created_at: 2023-07-16T04:42:10Z
 updated_at: 2023-07-16T05:19:44Z
 url: https://github.com/astral-sh/ruff/pull/5798
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Use a match statement for builtin detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-16 04:42_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: konsti/wheel-error-is-off-by-one
 created_at: 2024-03-04T11:50:51Z
 updated_at: 2024-03-04T11:55:19Z
 url: https://github.com/astral-sh/uv/pull/2151
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # Make WHEEL parsing error line numbers one indexed.
 
 ---
 
-_Pull request opened by @konstin on 2024-03-04 11:50_
+_@konstin_
 
 Fixes an off-by-one from #2149. `enumerate` is zero-based, human line numbers are one based.
 

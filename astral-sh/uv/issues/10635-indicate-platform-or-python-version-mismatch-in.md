@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-15T16:41:14Z
 updated_at: 2025-01-20T17:46:47Z
 url: https://github.com/astral-sh/uv/issues/10635
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # Indicate platform or Python version mismatch in `uv sync` errors
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-15 16:41_
+_@charliermarsh_
 
 E.g.:
 

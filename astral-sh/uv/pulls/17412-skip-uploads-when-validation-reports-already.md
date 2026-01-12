@@ -12,14 +12,14 @@ head: charlie/val
 created_at: 2026-01-12T04:09:40Z
 updated_at: 2026-01-12T04:20:41Z
 url: https://github.com/astral-sh/uv/pull/17412
-synced_at: 2026-01-12T06:55:17Z
+synced_at: 2026-01-12T16:12:46Z
 ```
 
 # Skip uploads when validation reports 'Already uploaded'
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-12 04:09_
+_@charliermarsh_
 
 ## Summary
 

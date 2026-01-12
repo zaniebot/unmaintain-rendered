@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-11-13T19:30:02Z
 updated_at: 2022-07-25T18:45:48Z
 url: https://github.com/clap-rs/clap/issues/3021
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Remove parts of API marked as deprecated
 
 ---
 
-_Issue opened by @epage on 2021-11-13 19:30_
+_@epage_
 
 Before and during the 3.x series, we have different parts of the API that are deprecated, pending removal on 4.0.  We need to remember to do that.
 

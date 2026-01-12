@@ -15,14 +15,14 @@ head: chained-parens
 created_at: 2024-12-05T04:11:44Z
 updated_at: 2024-12-09T04:58:50Z
 url: https://github.com/astral-sh/ruff/pull/14781
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`pylint`]  Include parentheses and multiple comparators in check for `boolean-chained-comparison (PLR1716)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-12-05 04:11_
+_@dylwil3_
 
 This PR introduces three changes to the diagnostic and fix behavior (still under preview) for [boolean-chained-comparison (PLR1716)](https://docs.astral.sh/ruff/rules/boolean-chained-comparison/#boolean-chained-comparison-plr1716).
 

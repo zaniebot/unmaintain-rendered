@@ -14,14 +14,14 @@ head: dcreager/vc-api
 created_at: 2025-02-03T15:24:31Z
 updated_at: 2025-02-03T20:13:12Z
 url: https://github.com/astral-sh/ruff/pull/15913
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Internal refactoring of visibility constraints API
 
 ---
 
-_Pull request opened by @dcreager on 2025-02-03 15:24_
+_@dcreager_
 
 This extracts some pure refactoring noise from https://github.com/astral-sh/ruff/pull/15861.  This changes the API for creating and evaluating visibility constraints, but does not change how they are respresented internally.  There should be no behavioral or performance changes in this PR.
 

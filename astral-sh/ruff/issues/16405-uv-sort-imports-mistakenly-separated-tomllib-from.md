@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T18:34:12Z
 updated_at: 2025-03-06T07:19:37Z
 url: https://github.com/astral-sh/ruff/issues/16405
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # uv sort imports mistakenly separated `tomllib` from standard library group
 
 ---
 
-_Issue opened by @htv2012 on 2025-02-26 18:34_
+_@htv2012_
 
 ### Summary
 

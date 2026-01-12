@@ -14,14 +14,14 @@ head: alex/union-equivalence
 created_at: 2025-01-15T22:21:05Z
 updated_at: 2025-05-07T15:23:18Z
 url: https://github.com/astral-sh/ruff/pull/15516
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Ensure differently ordered unions and intersections are considered equivalent
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-15 22:21_
+_@AlexWaygood_
 
 ## Summary
 

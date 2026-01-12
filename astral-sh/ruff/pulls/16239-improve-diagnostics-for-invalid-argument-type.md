@@ -13,14 +13,14 @@ head: ag/multi-span
 created_at: 2025-02-18T19:25:07Z
 updated_at: 2025-02-20T13:12:22Z
 url: https://github.com/astral-sh/ruff/pull/16239
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # improve diagnostics for "invalid argument type"
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-02-18 19:25_
+_@BurntSushi_
 
 This PR takes a quick route toward prototyping multi-span diagnostics.
 As one concrete improvement, the diagnostics for invalid argument types

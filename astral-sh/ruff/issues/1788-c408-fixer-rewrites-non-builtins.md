@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-11T21:59:42Z
 updated_at: 2023-01-11T23:33:56Z
 url: https://github.com/astral-sh/ruff/issues/1788
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # C408 fixer rewrites non-builtins
 
 ---
 
-_Issue opened by @spaceone on 2023-01-11 21:59_
+_@spaceone_
 
 foo.py
 ```

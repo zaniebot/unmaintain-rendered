@@ -12,14 +12,14 @@ head: gankra/dist-sep
 created_at: 2025-05-05T17:19:38Z
 updated_at: 2025-05-05T18:07:48Z
 url: https://github.com/astral-sh/ruff/pull/17864
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # migrate to dist-workspace.toml, use new workspace.packages config
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-05 17:19_
+_@Gankra_
 
 _No description provided._
 

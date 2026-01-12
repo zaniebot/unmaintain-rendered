@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-19T00:23:31Z
 updated_at: 2025-01-15T18:44:35Z
 url: https://github.com/astral-sh/uv/issues/10014
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # `uv` command on Windows: Inconsistent PATH set by installer
 
 ---
 
-_Issue opened by @fdcastel on 2024-12-19 00:23_
+_@fdcastel_
 
 ## Problem
 

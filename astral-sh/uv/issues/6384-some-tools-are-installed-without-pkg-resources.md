@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T22:22:30Z
 updated_at: 2025-01-23T04:52:03Z
 url: https://github.com/astral-sh/uv/issues/6384
-synced_at: 2026-01-10T04:27:57Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Some tools are installed without pkg_resources
 
 ---
 
-_Issue opened by @acdha on 2024-08-21 22:22_
+_@acdha_
 
 Using `uv 0.3.0 (Homebrew 2024-08-20)` on macOS, I noticed that some packages are failing on a missing `pkg_resources` dependency. At first I thought this was the Python 3.12 deprecation but it's an issue with older version, too. This is package-specific and most things are not affected but I haven't looked into the common factor.
 

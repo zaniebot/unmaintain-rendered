@@ -13,14 +13,14 @@ head: charlie/provides
 created_at: 2025-09-13T02:52:04Z
 updated_at: 2025-09-14T13:27:46Z
 url: https://github.com/astral-sh/uv/pull/15825
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:57Z
 ```
 
 # Rename `provides_extras` to `provides_extra`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-13 02:52_
+_@charliermarsh_
 
 ## Summary
 

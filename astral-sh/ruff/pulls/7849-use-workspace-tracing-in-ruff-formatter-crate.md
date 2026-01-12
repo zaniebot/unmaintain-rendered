@@ -13,14 +13,14 @@ head: ruff-formatter-tracing
 created_at: 2023-10-07T18:53:44Z
 updated_at: 2023-10-08T14:02:35Z
 url: https://github.com/astral-sh/ruff/pull/7849
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Use workspace `tracing` in `ruff_formatter` crate
 
 ---
 
-_Pull request opened by @cnpryer on 2023-10-07 18:53_
+_@cnpryer_
 
 I noticed that `tracing::instrument` wasn't available with only the `"std"` feature enabled when trying to run `cargo doc -p ruff_formatter`.
 

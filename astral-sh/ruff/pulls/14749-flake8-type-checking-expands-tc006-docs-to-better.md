@@ -13,14 +13,14 @@ head: docs/tc006
 created_at: 2024-12-03T07:42:14Z
 updated_at: 2024-12-04T18:46:24Z
 url: https://github.com/astral-sh/ruff/pull/14749
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`flake8-type-checking`] Expands TC006 docs to better explain itself
 
 ---
 
-_Pull request opened by @Daverball on 2024-12-03 07:42_
+_@Daverball_
 
 Closes: #14676
 

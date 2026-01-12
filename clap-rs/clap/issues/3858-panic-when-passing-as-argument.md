@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-06-21T04:19:20Z
 updated_at: 2022-06-21T14:30:20Z
 url: https://github.com/clap-rs/clap/issues/3858
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Panic when passing `--=` as argument
 
 ---
 
-_Issue opened by @chrisduerr on 2022-06-21 04:19_
+_@chrisduerr_
 
 ### Please complete the following tasks
 

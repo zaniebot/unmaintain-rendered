@@ -14,14 +14,14 @@ head: brent/fix-nested-quotes-again
 created_at: 2025-10-17T19:26:40Z
 updated_at: 2025-10-20T13:03:17Z
 url: https://github.com/astral-sh/ruff/pull/20949
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # Catch syntax errors in nested interpolations before Python 3.12
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-17 19:26_
+_@ntBre_
 
 Summary
 --

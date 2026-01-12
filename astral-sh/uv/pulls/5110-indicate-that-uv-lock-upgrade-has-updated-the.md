@@ -14,14 +14,14 @@ head: lock-update-log
 created_at: 2024-07-16T15:15:08Z
 updated_at: 2024-07-17T09:18:03Z
 url: https://github.com/astral-sh/uv/pull/5110
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:38Z
 ```
 
 # Indicate that `uv lock --upgrade` has updated the lock file
 
 ---
 
-_Pull request opened by @blueraft on 2024-07-16 15:15_
+_@blueraft_
 
 ## Summary
 

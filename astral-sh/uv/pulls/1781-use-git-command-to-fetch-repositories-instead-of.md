@@ -13,14 +13,14 @@ head: zb/git-auth-ssh
 created_at: 2024-02-20T20:06:12Z
 updated_at: 2024-02-21T18:44:33Z
 url: https://github.com/astral-sh/uv/pull/1781
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:44Z
 ```
 
 # Use `git` command to fetch repositories instead of `libgit2` for robust SSH support
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-20 20:06_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/1775
 Closes https://github.com/astral-sh/uv/issues/1452

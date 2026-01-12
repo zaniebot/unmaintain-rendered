@@ -14,14 +14,14 @@ head: pip-list-freeze-help
 created_at: 2024-07-02T23:36:05Z
 updated_at: 2024-07-02T23:44:57Z
 url: https://github.com/astral-sh/uv/pull/4751
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:26Z
 ```
 
 # Differentiate `freeze` and `list` help text
 
 ---
 
-_Pull request opened by @dpoznik on 2024-07-02 23:36_
+_@dpoznik_
 
 `uv pip freeze` and `uv pip list` had identical help text. This PR differentiates them.
 

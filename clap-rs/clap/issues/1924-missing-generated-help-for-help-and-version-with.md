@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-05-13T10:37:38Z
 updated_at: 2020-05-13T11:55:32Z
 url: https://github.com/clap-rs/clap/issues/1924
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Missing generated help for --help and --version with `clap::App::write_help`
 
 ---
 
-_Issue opened by @SlooowAndFurious on 2020-05-13 10:37_
+_@SlooowAndFurious_
 
 ### Code
 This code shows the differences between calling this program with `--help` and displaying the help with `clap::App::write_help`.

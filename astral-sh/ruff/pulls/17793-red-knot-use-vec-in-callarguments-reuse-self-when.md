@@ -13,14 +13,14 @@ head: dcreager/vec-arguments
 created_at: 2025-05-02T13:39:10Z
 updated_at: 2025-05-02T18:37:16Z
 url: https://github.com/astral-sh/ruff/pull/17793
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [red-knot] Use `Vec` in `CallArguments`; reuse `self` when we can
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-02 13:39_
+_@dcreager_
 
 Quick follow-on to #17788.  If there is no bound `self` parameter, we can reuse the existing `CallArgument{,Type}s`, and we can use a straight `Vec` instead of a `VecDeque`.
 

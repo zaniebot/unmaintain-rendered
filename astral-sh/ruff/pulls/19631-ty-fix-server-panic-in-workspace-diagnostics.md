@@ -14,14 +14,14 @@ head: micha/workspace-diagnostic-panic
 created_at: 2025-07-30T08:43:09Z
 updated_at: 2025-07-30T15:40:43Z
 url: https://github.com/astral-sh/ruff/pull/19631
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [ty] Fix server panic in workspace diagnostics request handler when typing
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-30 08:43_
+_@MichaReiser_
 
 ## Summary
 

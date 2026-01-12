@@ -12,14 +12,14 @@ head: 09-05-Ignore_single_quote_docstrings_with_newline_escape
 created_at: 2023-09-05T19:52:18Z
 updated_at: 2023-09-06T08:51:52Z
 url: https://github.com/astral-sh/ruff/pull/7173
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Ignore single quote docstrings with newline escape
 
 ---
 
-_Pull request opened by @konstin on 2023-09-05 19:52_
+_@konstin_
 
 **Summary** Ignore the edge case where a single quoted string is multiple lines through an escape, previously emitting invalid code. Instead of implementing complex logic to handle escape newlines in single quoted strings, i skipped the case. Single quote docstrings in general are flagged by D300.
 ```python

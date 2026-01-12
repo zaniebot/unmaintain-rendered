@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-21T04:38:32Z
 updated_at: 2023-08-21T15:30:18Z
 url: https://github.com/astral-sh/ruff/issues/6711
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Add `next` to FBT003 exclusions
 
 ---
 
-_Issue opened by @Garrett-R on 2023-08-21 04:38_
+_@Garrett-R_
 
 Following on from [this discussion](https://github.com/astral-sh/ruff/discussions/6302) and [this PR](https://github.com/astral-sh/ruff/pull/6307), it might be good to add the Python builtin `next` to the exclusions list for [FBT003](https://beta.ruff.rs/docs/rules/boolean-positional-value-in-call/).
 

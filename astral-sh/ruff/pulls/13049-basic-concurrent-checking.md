@@ -13,14 +13,14 @@ head: concurrent=checking
 created_at: 2024-08-22T09:00:42Z
 updated_at: 2024-08-24T08:53:30Z
 url: https://github.com/astral-sh/ruff/pull/13049
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Basic concurrent checking
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-22 09:00_
+_@MichaReiser_
 
 ## Summary
 

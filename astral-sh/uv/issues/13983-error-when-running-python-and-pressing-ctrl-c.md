@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-12T06:58:53Z
 updated_at: 2025-06-12T13:42:09Z
 url: https://github.com/astral-sh/uv/issues/13983
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # Error when running python and pressing ctrl+c using uv
 
 ---
 
-_Issue opened by @obliqueresource on 2025-06-12 06:58_
+_@obliqueresource_
 
 ### Summary
 

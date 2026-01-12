@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T19:23:36Z
 updated_at: 2024-11-07T15:20:18Z
 url: https://github.com/astral-sh/ruff/issues/13168
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [red-knot] assert that we don't infer the same expression/definition in multiple regions
 
 ---
 
-_Issue opened by @carljm on 2024-08-30 19:23_
+_@carljm_
 
 We should not double-infer the same expression (or the same definition) in e.g. both "scope" region and "definition" region.
 

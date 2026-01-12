@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-14T20:10:11Z
 updated_at: 2024-09-14T20:16:46Z
 url: https://github.com/astral-sh/uv/issues/7398
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # uv uses old wheels in cache when building bindings locally
 
 ---
 
-_Issue opened by @pacjac on 2024-09-14 20:10_
+_@pacjac_
 
 For a project I'm using pybind11 to create python bindings. 
 

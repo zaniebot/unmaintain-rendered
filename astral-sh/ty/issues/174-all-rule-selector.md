@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-14T10:08:31Z
 updated_at: 2025-12-31T16:45:49Z
 url: https://github.com/astral-sh/ty/issues/174
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # `ALL` rule selector
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 10:08_
+_@MichaReiser_
 
 Add support for an `all` rule group that allows selecting (enabling, ignoring) all rules
 

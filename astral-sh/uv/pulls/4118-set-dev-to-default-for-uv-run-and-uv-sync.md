@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-06-06T23:48:29Z
 updated_at: 2024-06-07T00:06:06Z
 url: https://github.com/astral-sh/uv/pull/4118
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:02Z
 ```
 
 # Set `--dev` to default for `uv run` and `uv sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-06 23:48_
+_@charliermarsh_
 
 ## Summary
 

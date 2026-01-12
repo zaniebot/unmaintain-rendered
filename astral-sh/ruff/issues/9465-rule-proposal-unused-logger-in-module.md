@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-11T10:08:50Z
 updated_at: 2024-01-13T09:57:57Z
 url: https://github.com/astral-sh/ruff/issues/9465
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Rule Proposal: unused logger in module
 
 ---
 
-_Issue opened by @valentincalomme on 2024-01-11 10:08_
+_@valentincalomme_
 
 # unused-logger (RUF-0XX)
 

@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2024-12-06T16:32:46Z
 updated_at: 2026-01-05T09:28:20Z
 url: https://github.com/astral-sh/uv/pull/9689
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:08:56Z
 ```
 
 # Docs: Add details of `--seed` to pip environments docs
 
 ---
 
-_Pull request opened by @GCHQDeveloper314 on 2024-12-06 16:32_
+_@GCHQDeveloper314_
 
 Add a mention of how to include pip when creating a virtual environment. This will help avoid confusion for those who are expecting and/or require pip in the environment (e.g. #3876).
 

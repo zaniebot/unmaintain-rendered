@@ -14,14 +14,14 @@ head: issue-848
 created_at: 2025-08-10T21:36:15Z
 updated_at: 2025-08-27T20:46:13Z
 url: https://github.com/astral-sh/ruff/pull/19850
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # [ty] print diagnostics with fully qualified name to disambiguate some cases
 
 ---
 
-_Pull request opened by @leandrobbraga on 2025-08-10 21:36_
+_@leandrobbraga_
 
 There are some situations that we have a confusing diagnostics due to identical class names.
 

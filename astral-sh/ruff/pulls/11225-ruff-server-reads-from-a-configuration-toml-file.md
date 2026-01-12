@@ -13,14 +13,14 @@ head: jane/server/user-settings
 created_at: 2024-05-01T01:46:06Z
 updated_at: 2024-05-01T09:08:51Z
 url: https://github.com/astral-sh/ruff/pull/11225
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # `ruff server` reads from a configuration TOML file in the user configuration directory if no local configuration exists
 
 ---
 
-_Pull request opened by @snowsignal on 2024-05-01 01:46_
+_@snowsignal_
 
 ## Summary
 

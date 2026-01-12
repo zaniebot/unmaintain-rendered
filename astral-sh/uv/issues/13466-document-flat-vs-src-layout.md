@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-15T12:24:14Z
 updated_at: 2025-08-15T15:10:10Z
 url: https://github.com/astral-sh/uv/issues/13466
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # Document flat vs src layout
 
 ---
 
-_Issue opened by @travis-leith on 2025-05-15 12:24_
+_@travis-leith_
 
 ### Question
 

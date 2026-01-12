@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-18T21:07:13Z
 updated_at: 2025-06-20T06:24:00Z
 url: https://github.com/astral-sh/ruff/issues/18770
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [flake8-pytest-style] PT001/PT023 deletes comments inside the parenthesis
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-18 21:07_
+_@MeGaGiGaGon_
 
 ### Summary
 

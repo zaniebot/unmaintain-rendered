@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-16T05:25:11Z
 updated_at: 2024-07-16T13:24:35Z
 url: https://github.com/astral-sh/uv/issues/5095
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # uv can't read pyproject.toml with extra-index-url
 
 ---
 
-_Issue opened by @kimdwkimdw on 2024-07-16 05:25_
+_@kimdwkimdw_
 
 with pyproject.toml below, uv can't read pyproject.toml correctly.
 ```

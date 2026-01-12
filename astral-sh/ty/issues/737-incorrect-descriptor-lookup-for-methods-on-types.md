@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-01T10:55:17Z
 updated_at: 2025-11-14T15:31:27Z
 url: https://github.com/astral-sh/ty/issues/737
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Incorrect descriptor lookup for methods on types that are not disjoint from `None`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-07-01 10:55_
+_@AlexWaygood_
 
 ### Summary
 

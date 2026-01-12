@@ -12,14 +12,14 @@ head: mdbook
 created_at: 2023-02-13T08:04:18Z
 updated_at: 2023-02-14T05:23:28Z
 url: https://github.com/astral-sh/ruff/pull/2847
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Switch from mkdocs to mdbook
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-02-13 08:04_
+_@not-my-profile_
 
 In 28c9263722b77b0bd78eeebccfab98c33e92f2d2 I introduced automatic
 linkification of option references in rule documentation,

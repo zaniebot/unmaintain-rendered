@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-07T13:12:12Z
 updated_at: 2023-08-07T19:13:23Z
 url: https://github.com/astral-sh/ruff/issues/6388
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # error: Failed to create fix for FormatLiterals: Failed to extract argument at: 1
 
 ---
 
-_Issue opened by @domsj on 2023-08-07 13:12_
+_@domsj_
 
 ```
 $ ruff check .

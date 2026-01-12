@@ -13,14 +13,14 @@ head: charlie/venv
 created_at: 2024-02-20T14:45:14Z
 updated_at: 2024-02-20T14:49:17Z
 url: https://github.com/astral-sh/uv/pull/1755
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:43Z
 ```
 
 # Set index URLs for seeding venv
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-20 14:45_
+_@charliermarsh_
 
 Just an oversight due to builder pattern.
 

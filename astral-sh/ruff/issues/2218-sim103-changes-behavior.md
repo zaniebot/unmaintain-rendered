@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-26T20:09:51Z
 updated_at: 2023-01-31T21:31:27Z
 url: https://github.com/astral-sh/ruff/issues/2218
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # SIM103 changes behavior
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 20:09_
+_@spaceone_
 
 ```
 $ cat foo.py

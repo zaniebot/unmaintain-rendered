@@ -13,14 +13,14 @@ head: docs/fix-safety-nested-min-max
 created_at: 2025-05-06T03:34:32Z
 updated_at: 2025-05-12T21:34:45Z
 url: https://github.com/astral-sh/ruff/pull/17878
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [`pylint`] add fix safety section (`PLW3301`)
 
 ---
 
-_Pull request opened by @yunchipang on 2025-05-06 03:34_
+_@yunchipang_
 
 parent: #15584 
 issue: #16163 

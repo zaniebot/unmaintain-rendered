@@ -13,14 +13,14 @@ head: tomer/type-narrow-boolean-conditionals
 created_at: 2024-11-01T11:14:26Z
 updated_at: 2024-11-04T23:03:50Z
 url: https://github.com/astral-sh/ruff/pull/14037
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Implement type narrowing for boolean conditionals
 
 ---
 
-_Pull request opened by @TomerBin on 2024-11-01 11:14_
+_@TomerBin_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-15T06:49:55Z
 updated_at: 2025-09-20T20:37:42Z
 url: https://github.com/astral-sh/ruff/issues/19346
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # E501 (line-too-long) auto-fixing
 
 ---
 
-_Issue opened by @pwithams on 2025-07-15 06:49_
+_@pwithams_
 
 ### Question
 

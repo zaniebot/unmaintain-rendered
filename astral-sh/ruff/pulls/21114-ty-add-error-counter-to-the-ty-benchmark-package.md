@@ -14,14 +14,14 @@ head: ty-benchmark-error-counter
 created_at: 2025-10-28T21:04:49Z
 updated_at: 2025-11-23T12:17:11Z
 url: https://github.com/astral-sh/ruff/pull/21114
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [ty] Add error counter to the ty benchmark package
 
 ---
 
-_Pull request opened by @alex-gregory-ds on 2025-10-28 21:04_
+_@alex-gregory-ds_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

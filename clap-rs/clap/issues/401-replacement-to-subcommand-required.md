@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-01-29T21:32:30Z
 updated_at: 2018-08-02T03:29:47Z
 url: https://github.com/clap-rs/clap/issues/401
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Replacement to `subcommand_required`?
 
 ---
 
-_Issue opened by @untitaker on 2016-01-29 21:32_
+_@untitaker_
 
 The README lists all the deprecated methods, but doesn't suggest a migration path. I suspect I'm supposed to handle this case with my own program logic?
 

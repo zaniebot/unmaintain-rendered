@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-17T00:25:35Z
 updated_at: 2025-03-17T01:42:53Z
 url: https://github.com/astral-sh/uv/issues/12208
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # Security Issue - How should I communicate with you?
 
 ---
 
-_Issue opened by @zackees on 2025-03-17 00:25_
+_@zackees_
 
 ### Summary
 

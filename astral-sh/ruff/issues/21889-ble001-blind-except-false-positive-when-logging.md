@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T08:21:57Z
 updated_at: 2025-12-16T14:26:02Z
 url: https://github.com/astral-sh/ruff/issues/21889
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # BLE001 (blind-except): false positive when logging via `warning`
 
 ---
 
-_Issue opened by @bentheiii on 2025-12-10 08:21_
+_@bentheiii_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/not-found-on-query
 created_at: 2025-08-15T20:28:19Z
 updated_at: 2025-08-18T15:42:57Z
 url: https://github.com/astral-sh/uv/pull/15315
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:41Z
 ```
 
 # Skip interpreters that are not found on query
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-15 20:28_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/12155
 

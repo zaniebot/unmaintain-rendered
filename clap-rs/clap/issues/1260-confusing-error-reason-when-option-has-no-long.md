@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-04-23T16:44:31Z
 updated_at: 2018-08-02T03:30:22Z
 url: https://github.com/clap-rs/clap/issues/1260
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Confusing error reason when option has no "long" name
 
 ---
 
-_Issue opened by @vn971 on 2018-04-23 16:44_
+_@vn971_
 
 ### Rust Version
 

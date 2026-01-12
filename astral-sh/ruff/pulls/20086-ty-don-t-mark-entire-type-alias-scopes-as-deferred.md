@@ -13,14 +13,14 @@ head: cjm/typealias-deferred
 created_at: 2025-08-25T17:47:37Z
 updated_at: 2025-08-25T18:32:20Z
 url: https://github.com/astral-sh/ruff/pull/20086
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [ty] don't mark entire type-alias scopes as Deferred
 
 ---
 
-_Pull request opened by @carljm on 2025-08-25 17:47_
+_@carljm_
 
 ## Summary
 

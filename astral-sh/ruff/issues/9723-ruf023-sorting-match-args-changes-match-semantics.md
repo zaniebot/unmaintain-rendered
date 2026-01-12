@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-30T22:02:54Z
 updated_at: 2024-01-30T22:44:51Z
 url: https://github.com/astral-sh/ruff/issues/9723
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # RUF023: Sorting `__match_args__` changes match semantics
 
 ---
 
-_Issue opened by @dosisod on 2024-01-30 22:02_
+_@dosisod_
 
 RUF023 should not sort `__match_args__` because the order of `__match_args__` affects which elements are matched against when using positional args in class patterns.
 

@@ -13,14 +13,14 @@ head: charlie/dep
 created_at: 2025-11-20T22:05:01Z
 updated_at: 2025-11-20T22:24:18Z
 url: https://github.com/astral-sh/uv/pull/16795
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:27Z
 ```
 
 # Cache Dependabot lookup
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-20 22:05_
+_@charliermarsh_
 
 ## Summary
 

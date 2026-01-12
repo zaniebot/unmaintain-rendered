@@ -13,14 +13,14 @@ head: david/classvar
 created_at: 2025-01-17T12:47:14Z
 updated_at: 2025-01-18T12:51:37Z
 url: https://github.com/astral-sh/ruff/pull/15550
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Add support for `typing.ClassVar`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-17 12:47_
+_@sharkdp_
 
 ## Summary
 

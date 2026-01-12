@@ -13,14 +13,14 @@ head: renovate/unicode-ident-1.x-lockfile
 created_at: 2025-11-03T01:52:28Z
 updated_at: 2025-11-03T16:10:50Z
 url: https://github.com/astral-sh/ruff/pull/21228
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # Update Rust crate unicode-ident to v1.0.22
 
 ---
 
-_Pull request opened by @renovate on 2025-11-03 01:52_
+_@renovate_
 
 This PR contains the following updates:
 

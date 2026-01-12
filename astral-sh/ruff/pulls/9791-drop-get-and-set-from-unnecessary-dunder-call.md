@@ -13,14 +13,14 @@ head: zb/fix-get-set-dunder
 created_at: 2024-02-02T17:11:37Z
 updated_at: 2024-02-05T15:54:29Z
 url: https://github.com/astral-sh/ruff/pull/9791
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Drop `__get__` and `__set__` from `unnecessary-dunder-call`
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-02 17:11_
+_@zanieb_
 
 These are for descriptors which affects the behavior of the object _as a property_; I do not think they should be called directly but there is no alternative when working with the object directly.
 

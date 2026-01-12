@@ -12,14 +12,14 @@ head: random-formatter-change
 created_at: 2023-07-20T14:51:31Z
 updated_at: 2023-07-24T15:01:14Z
 url: https://github.com/astral-sh/ruff/pull/5924
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Test formatter branch for 5923
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-20 14:51_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

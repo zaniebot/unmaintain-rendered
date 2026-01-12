@@ -13,14 +13,14 @@ head: charlie/formatter-benchmark
 created_at: 2023-09-13T15:27:56Z
 updated_at: 2023-09-13T17:15:58Z
 url: https://github.com/astral-sh/ruff/pull/7340
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add a benchmarking script for the formatter CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-13 15:27_
+_@charliermarsh_
 
 ## Summary
 

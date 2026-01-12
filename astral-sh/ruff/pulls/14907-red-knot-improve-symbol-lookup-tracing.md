@@ -13,14 +13,14 @@ head: david/tracing-symbol-lookups
 created_at: 2024-12-11T08:41:18Z
 updated_at: 2025-01-07T13:54:23Z
 url: https://github.com/astral-sh/ruff/pull/14907
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Improve symbol-lookup tracing
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-11 08:41_
+_@sharkdp_
 
 ## Summary
 

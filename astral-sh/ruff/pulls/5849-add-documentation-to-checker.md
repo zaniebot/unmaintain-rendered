@@ -12,14 +12,14 @@ head: charlie/visitor-docs
 created_at: 2023-07-18T00:19:06Z
 updated_at: 2023-07-18T11:52:06Z
 url: https://github.com/astral-sh/ruff/pull/5849
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add documentation to `Checker`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-18 00:19_
+_@charliermarsh_
 
 ## Summary
 

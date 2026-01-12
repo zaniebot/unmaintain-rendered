@@ -13,14 +13,14 @@ head: zb/find-fix-ii
 created_at: 2025-03-21T18:27:12Z
 updated_at: 2025-03-21T18:35:54Z
 url: https://github.com/astral-sh/uv/pull/12378
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:15Z
 ```
 
 # Update `python_required_python_major_minor` with note about Homebrew
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-21 18:27_
+_@zanieb_
 
 Resolves https://github.com/astral-sh/uv/pull/12377#discussion_r2008114043
 

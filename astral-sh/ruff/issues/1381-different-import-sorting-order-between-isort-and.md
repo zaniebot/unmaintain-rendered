@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-26T10:30:22Z
 updated_at: 2023-01-23T17:33:24Z
 url: https://github.com/astral-sh/ruff/issues/1381
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Different import sorting order between isort and ruff if import is aliased.
 
 ---
 
-_Issue opened by @ghuls on 2022-12-26 10:30_
+_@ghuls_
 
 Differnt import sorting order between isort and ruff if import is aliased.
 

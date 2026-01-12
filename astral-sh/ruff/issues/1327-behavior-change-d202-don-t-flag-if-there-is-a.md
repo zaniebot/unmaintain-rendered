@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-22T02:54:42Z
 updated_at: 2023-05-19T12:28:50Z
 url: https://github.com/astral-sh/ruff/issues/1327
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [behavior-change] D202 don't flag if there is a leading comment
 
 ---
 
-_Issue opened by @smackesey on 2022-12-22 02:54_
+_@smackesey_
 
 Upgraded to black 22.12.0 (preview mode) and noticed that ruff now disagrees with black over how to format this:
 

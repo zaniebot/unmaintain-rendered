@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-16T12:51:05Z
 updated_at: 2024-09-25T21:47:42Z
 url: https://github.com/astral-sh/uv/issues/7424
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # uv GitHub actions on a server by SSH, not on the runner
 
 ---
 
-_Issue opened by @bolinocroustibat on 2024-09-16 12:51_
+_@bolinocroustibat_
 
 Is there a way to run the [uv GitHub actions](https://docs.astral.sh/uv/guides/integration/github/) on a server accessible by SSH, instead of running them on the GitHub Actions runner?
 

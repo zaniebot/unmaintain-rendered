@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-19T03:40:55Z
 updated_at: 2024-09-19T08:02:34Z
 url: https://github.com/astral-sh/ruff/issues/13404
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # previous import affects # noqa: I001 directive
 
 ---
 
-_Issue opened by @AntiSol on 2024-09-19 03:40_
+_@AntiSol_
 
 Hi, I'm seeing a weird issue when I ignore import sorting for one module. If I have another import statement before the `#noqa: I001` directive, ruff ignores the `noqa` directive and tries to sort imports for that file. However having an import statement _after_ the manually-sorted imports works as expected*.
 

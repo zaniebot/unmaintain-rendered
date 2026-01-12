@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-09T20:38:00Z
 updated_at: 2025-12-18T20:58:59Z
 url: https://github.com/astral-sh/ruff/issues/21878
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Report unmatched range suppression comments
 
 ---
 
-_Issue opened by @amyreese on 2025-12-09 20:38_
+_@amyreese_
 
 ### Summary
 

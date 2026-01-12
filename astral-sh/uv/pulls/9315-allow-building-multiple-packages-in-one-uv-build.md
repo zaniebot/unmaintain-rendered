@@ -12,14 +12,14 @@ head: multiple-package-build
 created_at: 2024-11-21T13:32:40Z
 updated_at: 2025-04-14T08:00:32Z
 url: https://github.com/astral-sh/uv/pull/9315
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:45Z
 ```
 
 # Allow building multiple packages in one `uv build` run
 
 ---
 
-_Pull request opened by @filmor on 2024-11-21 13:32_
+_@filmor_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

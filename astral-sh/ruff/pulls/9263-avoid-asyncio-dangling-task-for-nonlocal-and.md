@@ -13,14 +13,14 @@ head: charlie/non
 created_at: 2023-12-23T21:11:20Z
 updated_at: 2023-12-23T21:40:56Z
 url: https://github.com/astral-sh/ruff/pull/9263
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Avoid `asyncio-dangling-task` for nonlocal and global bindings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-23 21:11_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9262.
 

@@ -15,14 +15,14 @@ head: dhruv/from-import-dot-name
 created_at: 2024-04-12T08:28:17Z
 updated_at: 2024-04-12T08:51:20Z
 url: https://github.com/astral-sh/ruff/pull/10903
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Disallow dotted name in `from ... import` statement
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-12 08:28_
+_@dhruvmanila_
 
 ## Summary
 

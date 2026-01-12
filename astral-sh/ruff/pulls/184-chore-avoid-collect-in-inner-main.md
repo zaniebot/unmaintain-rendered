@@ -12,14 +12,14 @@ head: dd/avoid-cast
 created_at: 2022-09-14T08:41:52Z
 updated_at: 2022-09-14T12:16:05Z
 url: https://github.com/astral-sh/ruff/pull/184
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # chore: Avoid `collect` in `inner_main`
 
 ---
 
-_Pull request opened by @Stranger6667 on 2022-09-14 08:41_
+_@Stranger6667_
 
 I tried to guess if it was what you meant by the `todo` entry. With this change, there is a bit less monomorphization & no vector allocation. Additionally `load_config` has a simpler signature without `Result` (as one of the `clippy` lints suggests) + similarly `Settings::from_paths`. Let me know what you think :)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-23T03:43:28Z
 updated_at: 2025-06-01T01:23:48Z
 url: https://github.com/astral-sh/uv/issues/13610
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # `TypeError: must be str, not list` when appending subtype of `str` to a `list` in uv-managed python installation on linux
 
 ---
 
-_Issue opened by @DetachHead on 2025-05-23 03:43_
+_@DetachHead_
 
 ### Summary
 

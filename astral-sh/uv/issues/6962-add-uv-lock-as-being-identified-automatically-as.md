@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-03T09:44:54Z
 updated_at: 2024-10-07T12:26:01Z
 url: https://github.com/astral-sh/uv/issues/6962
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Add uv.lock as being identified automatically as TOML with VS Code's most common TOML extension
 
 ---
 
-_Issue opened by @thernstig on 2024-09-03 09:44_
+_@thernstig_
 
 Upstream issue: https://github.com/tamasfe/taplo/issues/667
 

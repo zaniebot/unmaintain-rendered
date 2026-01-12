@@ -13,14 +13,14 @@ head: fix-docstring
 created_at: 2025-01-26T16:08:20Z
 updated_at: 2025-01-27T13:34:07Z
 url: https://github.com/astral-sh/ruff/pull/15748
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Fix docstring in ruff_annotate_snippets
 
 ---
 
-_Pull request opened by @naslundx on 2025-01-26 16:08_
+_@naslundx_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: gankra/auto-imp2
 created_at: 2025-11-27T18:05:03Z
 updated_at: 2025-12-08T22:44:18Z
 url: https://github.com/astral-sh/ruff/pull/21668
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] followup: add-import action for `reveal_type` too
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-27 18:05_
+_@Gankra_
 
 _No description provided._
 

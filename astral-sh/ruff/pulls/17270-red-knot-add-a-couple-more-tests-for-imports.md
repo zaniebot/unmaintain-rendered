@@ -14,14 +14,14 @@ head: alex/more-star-import-tests
 created_at: 2025-04-07T11:09:42Z
 updated_at: 2025-04-09T17:47:40Z
 url: https://github.com/astral-sh/ruff/pull/17270
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Add a couple more tests for `*` imports
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-07 11:09_
+_@AlexWaygood_
 
 ## Summary
 

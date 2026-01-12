@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T17:53:39Z
 updated_at: 2025-03-02T00:48:11Z
 url: https://github.com/astral-sh/uv/issues/11806
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # Problem with `opencv-python-headless` installed via uv but not via pip
 
 ---
 
-_Issue opened by @Yc-Chen on 2025-02-26 17:53_
+_@Yc-Chen_
 
 ### Summary
 

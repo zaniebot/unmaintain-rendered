@@ -13,14 +13,14 @@ head: isort-no-sections
 created_at: 2023-11-13T17:39:17Z
 updated_at: 2023-11-14T21:51:43Z
 url: https://github.com/astral-sh/ruff/pull/8657
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # isort: Support disabling sections with ``no-sections = true``
 
 ---
 
-_Pull request opened by @jelmer on 2023-11-13 17:39_
+_@jelmer_
 
 ## Summary
 

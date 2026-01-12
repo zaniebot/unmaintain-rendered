@@ -13,14 +13,14 @@ head: dependabot/cargo/aho-corasick-1.1.3
 created_at: 2024-03-25T08:53:27Z
 updated_at: 2024-03-25T09:37:06Z
 url: https://github.com/astral-sh/ruff/pull/10560
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Bump aho-corasick from 1.1.2 to 1.1.3
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-25 08:53_
+_@dependabot_
 
 Bumps [aho-corasick](https://github.com/BurntSushi/aho-corasick) from 1.1.2 to 1.1.3.
 <details>

@@ -13,14 +13,14 @@ head: konsti/fix-main
 created_at: 2024-08-23T07:39:04Z
 updated_at: 2024-08-23T07:45:40Z
 url: https://github.com/astral-sh/uv/pull/6496
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:23Z
 ```
 
 # Fix generated docs
 
 ---
 
-_Pull request opened by @konstin on 2024-08-23 07:39_
+_@konstin_
 
 Follow-up to #6494
 

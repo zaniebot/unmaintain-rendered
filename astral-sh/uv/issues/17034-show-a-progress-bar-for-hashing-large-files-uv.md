@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-08T17:23:33Z
 updated_at: 2025-12-08T19:50:14Z
 url: https://github.com/astral-sh/uv/issues/17034
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # Show a progress bar for hashing large files `uv publish`
 
 ---
 
-_Issue opened by @konstin on 2025-12-08 17:23_
+_@konstin_
 
 Kinda low-priority since most publishing is from CI and for small files, but it would be nice to show a progress bar that we're hashing a file for upload in `uv publish`, which can take a few seconds for a large files on a slow disk.
 

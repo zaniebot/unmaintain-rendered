@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-11T05:18:09Z
 updated_at: 2025-08-19T16:22:29Z
 url: https://github.com/astral-sh/uv/issues/11413
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # Unable to run tool without "installing"
 
 ---
 
-_Issue opened by @ecpost on 2025-02-11 05:18_
+_@ecpost_
 
 ### Summary
 

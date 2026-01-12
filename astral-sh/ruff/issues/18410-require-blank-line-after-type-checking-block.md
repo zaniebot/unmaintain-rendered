@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-01T08:01:09Z
 updated_at: 2025-06-02T09:15:41Z
 url: https://github.com/astral-sh/ruff/issues/18410
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Require blank line after type-checking block
 
 ---
 
-_Issue opened by @injust on 2025-06-01 08:01_
+_@injust_
 
 ### Summary
 

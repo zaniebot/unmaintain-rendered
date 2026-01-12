@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-22T22:43:27Z
 updated_at: 2023-09-21T00:55:29Z
 url: https://github.com/astral-sh/ruff/issues/5991
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Ruff should consider adding rules first as a warning instead of a block
 
 ---
 
-_Issue opened by @leandrodamascena on 2023-07-22 22:43_
+_@leandrodamascena_
 
 First of all, thank you so much for working so hard to create and maintain Ruff, this is an amazing project and it has made our CI so much faster than using flak8 and other tools. This issue is not a bug, but a behavior that Ruff should consider before adding new rules/checks.
 

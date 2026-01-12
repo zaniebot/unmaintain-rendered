@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-03T16:53:38Z
 updated_at: 2025-12-20T20:54:30Z
 url: https://github.com/astral-sh/uv/issues/14445
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Consider feature to vendor-in distributions in workspace
 
 ---
 
-_Issue opened by @potiuk on 2025-07-03 16:53_
+_@potiuk_
 
 ### Summary
 

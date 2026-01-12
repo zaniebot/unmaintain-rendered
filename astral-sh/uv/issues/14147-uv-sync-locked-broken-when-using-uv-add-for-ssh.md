@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-19T23:30:39Z
 updated_at: 2025-06-20T16:38:13Z
 url: https://github.com/astral-sh/uv/issues/14147
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # `uv sync --locked` broken when using `uv add` for ssh git dependency
 
 ---
 
-_Issue opened by @ultrabear on 2025-06-19 23:30_
+_@ultrabear_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: remove-deprecated-cli-aliases
 created_at: 2024-08-12T09:00:00Z
 updated_at: 2024-10-08T11:52:31Z
 url: https://github.com/astral-sh/ruff/pull/12833
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Remove error messages for removed CLI aliases
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-12 09:00_
+_@MichaReiser_
 
 ## Summary
 

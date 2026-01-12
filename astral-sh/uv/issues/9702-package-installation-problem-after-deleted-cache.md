@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-07T10:18:52Z
 updated_at: 2025-02-01T03:51:54Z
 url: https://github.com/astral-sh/uv/issues/9702
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # Package Installation problem after deleted cache folder
 
 ---
 
-_Issue opened by @HyperUpscale on 2024-12-07 10:18_
+_@HyperUpscale_
 
 I deleted the cache folder ~\.cache\uv so no normal isnatllations of packages could have been done normally.
 

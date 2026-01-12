@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T09:38:00Z
 updated_at: 2025-02-21T09:42:07Z
 url: https://github.com/astral-sh/uv/issues/11693
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # Cannot run free-threading Python
 
 ---
 
-_Issue opened by @rinarakaki on 2025-02-21 09:38_
+_@rinarakaki_
 
 ### Summary
 

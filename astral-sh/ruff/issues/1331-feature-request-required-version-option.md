@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-22T11:30:36Z
 updated_at: 2022-12-26T00:53:51Z
 url: https://github.com/astral-sh/ruff/issues/1331
-synced_at: 2026-01-10T12:05:26Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [feature-request] `required-version` option
 
 ---
 
-_Issue opened by @smackesey on 2022-12-22 11:30_
+_@smackesey_
 
 Black has a nice little option called `required-version`:
 

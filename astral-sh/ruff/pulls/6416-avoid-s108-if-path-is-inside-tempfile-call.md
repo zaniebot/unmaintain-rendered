@@ -13,14 +13,14 @@ head: dhruv/s108-tempfile
 created_at: 2023-08-08T04:54:20Z
 updated_at: 2023-08-09T05:12:11Z
 url: https://github.com/astral-sh/ruff/pull/6416
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Avoid `S108` if path is inside `tempfile.*` call
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-08-08 04:54_
+_@dhruvmanila_
 
 ## Summary
 

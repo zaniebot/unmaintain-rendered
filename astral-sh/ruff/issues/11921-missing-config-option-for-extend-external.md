@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-18T10:12:30Z
 updated_at: 2024-06-23T15:14:43Z
 url: https://github.com/astral-sh/ruff/issues/11921
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Missing config option for `extend_external`
 
 ---
 
-_Issue opened by @jvacek on 2024-06-18 10:12_
+_@jvacek_
 
 I have two configs, `base.toml` that is shared for multiple projects, and my in-project `pyproject.toml` that extends the one above.
 

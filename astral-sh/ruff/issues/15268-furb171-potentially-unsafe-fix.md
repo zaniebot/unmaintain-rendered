@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-05T14:19:46Z
 updated_at: 2025-01-05T20:58:31Z
 url: https://github.com/astral-sh/ruff/issues/15268
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # FURB171: Potentially unsafe fix
 
 ---
 
-_Issue opened by @fedyakov on 2025-01-05 14:19_
+_@fedyakov_
 
 FURB171 auto-fixes
 ```python

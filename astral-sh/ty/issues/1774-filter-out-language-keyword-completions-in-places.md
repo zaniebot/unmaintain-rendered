@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-05T14:33:32Z
 updated_at: 2025-12-18T17:28:22Z
 url: https://github.com/astral-sh/ty/issues/1774
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Filter out language-keyword completions in places where only an expression can be valid syntax
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-05 14:33_
+_@AlexWaygood_
 
 For example, in this situation, `raise` should not be included as a completion suggestion, because `for x in raise` is invalid syntax (Python's grammar dictates that only an expression can follow the sequence `for <EXPR> in `):
 

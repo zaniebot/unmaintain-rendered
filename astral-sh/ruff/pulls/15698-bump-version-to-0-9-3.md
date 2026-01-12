@@ -13,14 +13,14 @@ head: dylan/bump-v0.9.3
 created_at: 2025-01-23T18:11:21Z
 updated_at: 2025-01-23T18:43:59Z
 url: https://github.com/astral-sh/ruff/pull/15698
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Bump version to 0.9.3
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-01-23 18:11_
+_@dylwil3_
 
 _No description provided._
 

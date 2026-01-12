@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-02T15:52:15Z
 updated_at: 2025-11-18T16:10:39Z
 url: https://github.com/astral-sh/ty/issues/1298
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Add Inlay Hints for variables in a for loop statement
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-10-02 15:52_
+_@MatthewMckee4_
 
 Type hint inlay hints would be nice to have in for loops, like this:
 

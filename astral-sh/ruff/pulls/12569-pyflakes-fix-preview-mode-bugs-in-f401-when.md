@@ -14,14 +14,14 @@ head: alex/f401-bug
 created_at: 2024-07-29T16:39:37Z
 updated_at: 2024-08-02T16:34:46Z
 url: https://github.com/astral-sh/ruff/pull/12569
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [`pyflakes`] Fix preview-mode bugs in `F401` when attempting to autofix unused first-party submodule imports in an `__init__.py` file
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-29 16:39_
+_@AlexWaygood_
 
 ## Summary
 

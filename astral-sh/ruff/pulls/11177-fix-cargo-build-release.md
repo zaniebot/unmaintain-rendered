@@ -13,14 +13,14 @@ head: release-me
 created_at: 2024-04-27T15:20:18Z
 updated_at: 2024-04-27T15:47:15Z
 url: https://github.com/astral-sh/ruff/pull/11177
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # Fix `cargo build --release`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-27 15:20_
+_@AlexWaygood_
 
 ## Summary
 

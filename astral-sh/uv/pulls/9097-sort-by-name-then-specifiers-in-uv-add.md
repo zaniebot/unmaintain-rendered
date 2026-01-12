@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-11-13T20:12:41Z
 updated_at: 2024-11-13T20:47:59Z
 url: https://github.com/astral-sh/uv/pull/9097
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:39Z
 ```
 
 # Sort by name, then specifiers in `uv add`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-13 20:12_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: bump-dependencies
 created_at: 2023-03-04T17:14:42Z
 updated_at: 2023-03-04T17:47:49Z
 url: https://github.com/astral-sh/ruff/pull/3340
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Bump dependencies
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-04 17:14_
+_@JonathanPlasse_
 
 Bump dependencies.
 Move some dependencies in workspace.

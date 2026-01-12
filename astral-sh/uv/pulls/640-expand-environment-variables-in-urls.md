@@ -12,14 +12,14 @@ head: charlie/env-var
 created_at: 2023-12-13T21:52:47Z
 updated_at: 2024-12-19T06:58:53Z
 url: https://github.com/astral-sh/uv/pull/640
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:04:05Z
 ```
 
 # Expand environment variables in URLs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-13 21:52_
+_@charliermarsh_
 
 ## Summary
 

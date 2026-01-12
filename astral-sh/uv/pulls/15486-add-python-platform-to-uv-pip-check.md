@@ -13,14 +13,14 @@ head: charlie/pt
 created_at: 2025-08-24T17:47:29Z
 updated_at: 2025-08-24T18:14:44Z
 url: https://github.com/astral-sh/uv/pull/15486
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:46Z
 ```
 
 # Add `--python-platform` to `uv pip check`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-24 17:47_
+_@charliermarsh_
 
 ## Summary
 

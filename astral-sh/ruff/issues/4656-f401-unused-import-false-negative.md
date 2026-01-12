@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-25T13:25:40Z
 updated_at: 2025-04-09T08:57:48Z
 url: https://github.com/astral-sh/ruff/issues/4656
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # F401 unused import false negative
 
 ---
 
-_Issue opened by @sbrugman on 2023-05-25 13:25_
+_@sbrugman_
 
 False negative
 ```

@@ -13,14 +13,14 @@ head: konsti/dont-crash-with-boolean-flags
 created_at: 2025-06-30T07:53:24Z
 updated_at: 2025-07-01T18:39:48Z
 url: https://github.com/astral-sh/uv/pull/14368
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:11Z
 ```
 
 # Workaround for panic due to missing global validation in clap
 
 ---
 
-_Pull request opened by @konstin on 2025-06-30 07:53_
+_@konstin_
 
 Clap does not perform global validation, so flag that are declared as overriding can be set at the same time: https://github.com/clap-rs/clap/issues/6049. This would previously cause a panic. We work around this by choosing the yes-value always and writing a warning.
 

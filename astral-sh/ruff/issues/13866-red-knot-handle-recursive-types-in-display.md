@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-21T19:21:10Z
 updated_at: 2024-12-13T09:36:32Z
 url: https://github.com/astral-sh/ruff/issues/13866
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Handle recursive types in `Display`
 
 ---
 
-_Issue opened by @MichaReiser on 2024-10-21 19:21_
+_@MichaReiser_
 
 I haven't verified this but I'm 99% sure that our `Type::Display` implementation stack overflows if there's a recursive type. 
 

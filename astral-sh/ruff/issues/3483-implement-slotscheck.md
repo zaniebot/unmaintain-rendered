@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-13T16:11:06Z
 updated_at: 2025-06-12T17:09:24Z
 url: https://github.com/astral-sh/ruff/issues/3483
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Implement slotscheck
 
 ---
 
-_Issue opened by @Goldziher on 2023-03-13 16:11_
+_@Goldziher_
 
 The [https://github.com/ariebovenberg/slotscheck](slotscheck) tool is pretty useful. We use it at Starlite to ensure all subclasses implement slots correctly. 
 

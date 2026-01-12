@@ -12,14 +12,14 @@ head: codeman/19145
 created_at: 2025-07-08T15:22:04Z
 updated_at: 2025-07-08T15:34:22Z
 url: https://github.com/astral-sh/ruff/pull/19209
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # refactor(ruff_workspace): remove macOS deprecation warning 
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-07-08 15:22_
+_@CodeMan62_
 
 ## Summary
 In https://github.com/astral-sh/ruff/pull/11115 we moved from defaulting to $HOME/Library/Application Support to $XDG_HOME on macOS and added a deprecation warning if we find files in the old location. So this PR removes the warning 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-30T11:08:59Z
 updated_at: 2025-07-10T13:45:19Z
 url: https://github.com/astral-sh/uv/issues/13223
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # Handling prerelease versions in `uv version --bump`
 
 ---
 
-_Issue opened by @tmke8 on 2025-04-30 11:08_
+_@tmke8_
 
 ### Summary
 

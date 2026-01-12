@@ -12,14 +12,14 @@ head: charlie/warn
 created_at: 2024-03-20T00:36:42Z
 updated_at: 2024-03-20T01:02:13Z
 url: https://github.com/astral-sh/uv/pull/2557
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:06Z
 ```
 
 # Treat uninstallable packages as warnings, rather than errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-20 00:36_
+_@charliermarsh_
 
 ## Summary
 

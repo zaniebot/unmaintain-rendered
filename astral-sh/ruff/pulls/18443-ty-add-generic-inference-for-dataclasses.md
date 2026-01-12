@@ -13,14 +13,14 @@ head: dataclass-generic-inference
 created_at: 2025-06-03T16:04:31Z
 updated_at: 2025-06-28T23:12:43Z
 url: https://github.com/astral-sh/ruff/pull/18443
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Add generic inference for dataclasses
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-06-03 16:04_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

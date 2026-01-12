@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-02-14T16:01:46Z
 updated_at: 2022-03-05T19:16:25Z
 url: https://github.com/clap-rs/clap/issues/3464
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Mention that env needs feature in dervie reference
 
 ---
 
-_Issue opened by @pksunkara on 2022-02-14 16:01_
+_@pksunkara_
 
 https://github.com/clap-rs/clap/blob/v3.0.14/examples/derive_ref/README.md#arg-attributes
 

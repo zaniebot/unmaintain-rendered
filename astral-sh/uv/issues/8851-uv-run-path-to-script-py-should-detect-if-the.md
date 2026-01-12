@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-06T01:45:04Z
 updated_at: 2025-09-29T06:45:25Z
 url: https://github.com/astral-sh/uv/issues/8851
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # `uv run /path/to/script.py` should detect if the script is in a project
 
 ---
 
-_Issue opened by @ceejatec on 2024-11-06 01:45_
+_@ceejatec_
 
 I've got a number of scripts that have associated `pyproject.toml` files to declare dependencies, so I can make use of `uv.lock` files. I'd like to then run them from other directories with `uv run /path/to/script.py`. However, I end up having to run `uv run --project /path/to /path/to/script.py` instead.
 

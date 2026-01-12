@@ -13,14 +13,14 @@ head: charlie/v
 created_at: 2024-11-30T13:50:32Z
 updated_at: 2024-11-30T13:59:22Z
 url: https://github.com/astral-sh/uv/pull/9538
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:51Z
 ```
 
 # Avoid using IDs across PubGrub states
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-30 13:50_
+_@charliermarsh_
 
 ## Summary
 

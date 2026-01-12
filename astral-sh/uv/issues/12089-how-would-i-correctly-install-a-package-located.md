@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-10T09:40:31Z
 updated_at: 2025-07-16T13:50:23Z
 url: https://github.com/astral-sh/uv/issues/12089
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:54Z
 ```
 
 # How would I correctly "install" a package located in /usr/lib/python3/dist-packages into uv venv
 
 ---
 
-_Issue opened by @michealroberts on 2025-03-10 09:40_
+_@michealroberts_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-11-06T21:33:13Z
 updated_at: 2023-11-06T22:21:54Z
 url: https://github.com/astral-sh/ruff/pull/8529
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add PyMC Marketing to Users
 
 ---
 
-_Pull request opened by @juanitorduz on 2023-11-06 21:33_
+_@juanitorduz_
 
 Add [PyMC-Marketing](https://github.com/pymc-labs/pymc-marketing) to users. See https://github.com/pymc-labs/pymc-marketing/pull/424
 

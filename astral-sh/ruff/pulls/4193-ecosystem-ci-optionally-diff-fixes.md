@@ -12,14 +12,14 @@ head: show_fixes_in_ecosystem_CI
 created_at: 2023-05-02T14:22:24Z
 updated_at: 2023-05-19T10:13:41Z
 url: https://github.com/astral-sh/ruff/pull/4193
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Ecosystem CI: Optionally diff fixes
 
 ---
 
-_Pull request opened by @konstin on 2023-05-02 14:22_
+_@konstin_
 
 Adds an option to the ecosystem CI to also diff fixes, which requires a ruff build with the `ecosystem_ci` feature.
 

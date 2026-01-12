@@ -13,14 +13,14 @@ head: charlie/sim103
 created_at: 2024-06-26T15:21:20Z
 updated_at: 2024-06-26T15:50:12Z
 url: https://github.com/astral-sh/ruff/pull/12048
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`flake8-simplify`] Stabilize implicit-`else` simplifications in `needless-bool` (`SIM103`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-26 15:21_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/request-system-explicit
 created_at: 2024-06-27T18:19:18Z
 updated_at: 2024-06-27T18:21:05Z
 url: https://github.com/astral-sh/uv/pull/4594
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:19Z
 ```
 
 # Improve error messages when system environments must be explicit
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-27 18:19_
+_@zanieb_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-20T07:33:48Z
 updated_at: 2025-07-04T02:14:43Z
 url: https://github.com/astral-sh/uv/issues/14148
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # `uv pip install` tries to connect and validate non-default indexes.
 
 ---
 
-_Issue opened by @m-walters on 2025-06-20 07:33_
+_@m-walters_
 
 ### Summary
 

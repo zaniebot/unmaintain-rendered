@@ -13,14 +13,14 @@ head: brent/ruf051-0.10
 created_at: 2025-03-12T03:13:42Z
 updated_at: 2025-03-12T12:37:13Z
 url: https://github.com/astral-sh/ruff/pull/16658
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`ruff`] Stabilize `if-key-in-dict-del` (`RUF051`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-12 03:13_
+_@ntBre_
 
 Summary
 --

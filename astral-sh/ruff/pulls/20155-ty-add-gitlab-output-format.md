@@ -14,14 +14,14 @@ head: brent/ty-gitlab
 created_at: 2025-08-29T17:00:49Z
 updated_at: 2025-09-03T13:08:15Z
 url: https://github.com/astral-sh/ruff/pull/20155
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] Add GitLab output format
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-29 17:00_
+_@ntBre_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-19T02:30:10Z
 updated_at: 2024-02-21T14:08:10Z
 url: https://github.com/astral-sh/uv/issues/1678
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Consider implementing `--annotation-style` parameter
 
 ---
 
-_Issue opened by @drjackild on 2024-02-19 02:30_
+_@drjackild_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

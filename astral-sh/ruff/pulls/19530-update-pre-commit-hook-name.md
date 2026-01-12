@@ -13,14 +13,14 @@ head: brent/update-pre-commit-name
 created_at: 2025-07-24T13:23:18Z
 updated_at: 2025-07-24T13:44:49Z
 url: https://github.com/astral-sh/ruff/pull/19530
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # Update pre-commit hook name
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-24 13:23_
+_@ntBre_
 
 ## Summary
 

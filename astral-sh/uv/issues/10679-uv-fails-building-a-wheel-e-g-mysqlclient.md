@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-16T13:57:41Z
 updated_at: 2025-03-31T07:44:45Z
 url: https://github.com/astral-sh/uv/issues/10679
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # uv fails building a wheel (e. g. mysqlclient)
 
 ---
 
-_Issue opened by @laxas on 2025-01-16 13:57_
+_@laxas_
 
 uv tryes to build a wheel for `mysqlclient` but fails. I had this problem bevor on another server and could solve it by installing clang. This time it did not. 
 

@@ -14,14 +14,14 @@ head: dcreager/self-binding-context
 created_at: 2025-08-06T13:26:04Z
 updated_at: 2025-08-06T21:26:20Z
 url: https://github.com/astral-sh/ruff/pull/19784
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] `typing.Self` is bound by the method, not the class
 
 ---
 
-_Pull request opened by @dcreager on 2025-08-06 13:26_
+_@dcreager_
 
 This fixes our logic for binding a legacy typevar with its binding context. (To recap, a legacy typevar starts out "unbound" when it is first created, and each time it's used in a generic class or function, we "bind" it with the corresponding `Definition`.)
 

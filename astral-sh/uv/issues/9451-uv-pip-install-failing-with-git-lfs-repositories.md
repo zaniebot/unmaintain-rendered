@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-26T20:18:06Z
 updated_at: 2024-12-02T19:28:09Z
 url: https://github.com/astral-sh/uv/issues/9451
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # `uv pip install` failing with Git LFS repositories
 
 ---
 
-_Issue opened by @dimk90 on 2024-11-26 20:18_
+_@dimk90_
 
 ## Description
 

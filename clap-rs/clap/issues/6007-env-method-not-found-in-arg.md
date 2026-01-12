@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-19T07:52:38Z
 updated_at: 2025-05-20T18:49:01Z
 url: https://github.com/clap-rs/clap/issues/6007
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `env` method not found in `Arg`
 
 ---
 
-_Issue opened by @pronebird on 2025-05-19 07:52_
+_@pronebird_
 
 ### Please complete the following tasks
 

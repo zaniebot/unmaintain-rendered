@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-21T11:50:18Z
 updated_at: 2023-12-19T21:03:32Z
 url: https://github.com/astral-sh/uv/issues/472
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Support editable installs
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-21 11:50_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/puffin/issues/436.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-03T05:40:55Z
 updated_at: 2025-04-12T17:24:08Z
 url: https://github.com/astral-sh/uv/issues/12643
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # How to use uv with pyenv?
 
 ---
 
-_Issue opened by @elcolie on 2025-04-03 05:40_
+_@elcolie_
 
 ### Question
 

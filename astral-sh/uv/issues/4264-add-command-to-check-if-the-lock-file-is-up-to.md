@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-12T03:28:38Z
 updated_at: 2025-12-06T00:17:51Z
 url: https://github.com/astral-sh/uv/issues/4264
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Add command to check if the lock file is up to date with the project metadata
 
 ---
 
-_Issue opened by @zanieb on 2024-06-12 03:28_
+_@zanieb_
 
 e.g. as in `poetry check --lock` (not yet sure why they deprecated `poetry lock --check`)
 

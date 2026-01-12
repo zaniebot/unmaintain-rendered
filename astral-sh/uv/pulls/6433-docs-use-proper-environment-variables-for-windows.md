@@ -13,14 +13,14 @@ head: localappdata
 created_at: 2024-08-22T13:28:37Z
 updated_at: 2024-08-23T18:04:47Z
 url: https://github.com/astral-sh/uv/pull/6433
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:22Z
 ```
 
 # docs: Use proper environment variables for Windows
 
 ---
 
-_Pull request opened by @T-256 on 2024-08-22 13:28_
+_@T-256_
 
 ref: https://github.com/astral-sh/uv/issues/6397#issuecomment-2304512872
 

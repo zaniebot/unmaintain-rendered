@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-11T18:02:50Z
 updated_at: 2023-07-04T09:09:12Z
 url: https://github.com/astral-sh/ruff/issues/1785
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Implement flake8-type-checking
 
 ---
 
-_Issue opened by @nstarman on 2023-01-11 18:02_
+_@nstarman_
 
 It's a useful tool for determining which imports aren't run-time required, reducing import time. Thanks!
 

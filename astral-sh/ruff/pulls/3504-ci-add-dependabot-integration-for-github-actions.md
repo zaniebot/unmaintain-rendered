@@ -12,14 +12,14 @@ head: dependabot
 created_at: 2023-03-14T07:49:44Z
 updated_at: 2023-03-14T15:18:47Z
 url: https://github.com/astral-sh/ruff/pull/3504
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # ci: add dependabot integration for GitHub Actions
 
 ---
 
-_Pull request opened by @XuehaiPan on 2023-03-14 07:49_
+_@XuehaiPan_
 
 Add dependabot to auto bump GitHub Actions weekly.
 

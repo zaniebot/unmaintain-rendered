@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-14T13:52:45Z
 updated_at: 2024-10-14T14:05:17Z
 url: https://github.com/astral-sh/ruff/issues/13751
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Every list element is on one line
 
 ---
 
-_Issue opened by @xJrJackBlack on 2024-10-14 13:52_
+_@xJrJackBlack_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

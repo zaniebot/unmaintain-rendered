@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-16T17:29:44Z
 updated_at: 2024-10-30T12:47:21Z
 url: https://github.com/astral-sh/ruff/issues/10980
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # RUF029 (unneeded async) needs nuance for class methods
 
 ---
 
-_Issue opened by @plredmond on 2024-04-16 17:29_
+_@plredmond_
 
 Issue #9951 lead to PR #9966 where we check for functions that are declared async, but do not use any async features, and flag them. However, this caused several false positives (e.g. for class methods implemented as `pass` intending to be overridden).
 

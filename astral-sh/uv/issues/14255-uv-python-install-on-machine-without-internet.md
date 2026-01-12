@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-25T08:58:33Z
 updated_at: 2025-06-27T23:17:47Z
 url: https://github.com/astral-sh/uv/issues/14255
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # uv python install on machine without internet access
 
 ---
 
-_Issue opened by @rajatm91 on 2025-06-25 08:58_
+_@rajatm91_
 
 ### Question
 

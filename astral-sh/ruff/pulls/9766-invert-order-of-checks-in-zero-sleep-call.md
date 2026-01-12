@@ -13,14 +13,14 @@ head: charlie/zero
 created_at: 2024-02-01T23:25:03Z
 updated_at: 2024-02-01T23:38:53Z
 url: https://github.com/astral-sh/ruff/pull/9766
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Invert order of checks in `zero-sleep-call`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-01 23:25_
+_@charliermarsh_
 
 The other conditions are cheaper and should eliminate the vast majority of these checks.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-07T14:03:51Z
 updated_at: 2025-02-07T14:40:32Z
 url: https://github.com/astral-sh/uv/issues/11316
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # Private package not found from Azure DevOps
 
 ---
 
-_Issue opened by @AndreuCodina on 2025-02-07 14:03_
+_@AndreuCodina_
 
 ### Summary
 

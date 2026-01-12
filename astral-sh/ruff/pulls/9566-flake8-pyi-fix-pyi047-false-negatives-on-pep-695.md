@@ -13,14 +13,14 @@ head: y047-695
 created_at: 2024-01-17T16:41:57Z
 updated_at: 2024-01-18T07:16:50Z
 url: https://github.com/astral-sh/ruff/pull/9566
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [flake8-pyi] Fix PYI047 false negatives on PEP-695 type aliases
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-01-17 16:41_
+_@AlexWaygood_
 
 ## Summary
 

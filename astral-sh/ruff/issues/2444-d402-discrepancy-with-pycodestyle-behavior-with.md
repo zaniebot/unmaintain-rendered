@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-01T16:03:52Z
 updated_at: 2023-02-01T16:38:11Z
 url: https://github.com/astral-sh/ruff/issues/2444
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # D402: Discrepancy with pycodestyle behavior with `noqa` annotation
 
 ---
 
-_Issue opened by @dalcinl on 2023-02-01 16:03_
+_@dalcinl_
 
 Here you have a minimal reproducer
 

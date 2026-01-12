@@ -14,14 +14,14 @@ head: micha/maybe-parenthesize-pattern
 created_at: 2024-09-25T11:32:53Z
 updated_at: 2024-09-26T06:35:24Z
 url: https://github.com/astral-sh/ruff/pull/13510
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Align formatting of patterns in match-cases with expression formatting in clause headers
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-25 11:32_
+_@MichaReiser_
 
 ## Summary
 

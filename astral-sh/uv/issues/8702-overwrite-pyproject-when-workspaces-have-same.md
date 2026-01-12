@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-30T15:42:00Z
 updated_at: 2024-10-31T14:19:27Z
 url: https://github.com/astral-sh/uv/issues/8702
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # Overwrite pyproject when workspaces have same normalized name
 
 ---
 
-_Issue opened by @juan-abia on 2024-10-30 15:42_
+_@juan-abia_
 
 I have the following folder structure:
 

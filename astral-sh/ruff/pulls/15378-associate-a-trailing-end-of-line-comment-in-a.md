@@ -14,14 +14,14 @@ head: micha/fix-implicit-concat-string-trailing-part-comment
 created_at: 2025-01-09T17:50:53Z
 updated_at: 2025-01-10T18:21:36Z
 url: https://github.com/astral-sh/ruff/pull/15378
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Associate a trailing end-of-line comment in a parenthesized implicit concatenated string with the last literal
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-09 17:50_
+_@MichaReiser_
 
 ## Summary
 

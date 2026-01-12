@@ -13,14 +13,14 @@ head: zanie/external-glob
 created_at: 2023-10-24T17:22:20Z
 updated_at: 2023-10-24T18:04:02Z
 url: https://github.com/astral-sh/ruff/pull/8176
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Allow globs in `external` codes setting
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-24 17:22_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/8174
 

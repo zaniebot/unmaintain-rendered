@@ -13,14 +13,14 @@ head: brent/up044-0.10
 created_at: 2025-03-11T16:12:40Z
 updated_at: 2025-03-11T18:01:12Z
 url: https://github.com/astral-sh/ruff/pull/16632
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`pyupgrade`] Stabilize `non-pep646-unpack` (`UP044`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-11 16:12_
+_@ntBre_
 
 Summary
 --

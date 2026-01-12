@@ -13,14 +13,14 @@ head: brent/rule-versions
 created_at: 2025-10-22T19:36:41Z
 updated_at: 2025-10-23T18:48:43Z
 url: https://github.com/astral-sh/ruff/pull/21035
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # Document when a rule was added
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-22 19:36_
+_@ntBre_
 
 Summary
 --

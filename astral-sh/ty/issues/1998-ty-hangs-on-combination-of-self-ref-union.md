@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T10:40:24Z
 updated_at: 2025-12-26T12:25:35Z
 url: https://github.com/astral-sh/ty/issues/1998
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # ty hangs on combination of self-ref Union, dataclass and Protocol
 
 ---
 
-_Issue opened by @sinon on 2025-12-17 10:40_
+_@sinon_
 
 ### Summary
 

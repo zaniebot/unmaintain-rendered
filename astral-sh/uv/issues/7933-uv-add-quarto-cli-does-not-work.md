@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-04T19:10:25Z
 updated_at: 2024-10-21T21:56:03Z
 url: https://github.com/astral-sh/uv/issues/7933
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # uv add quarto-cli does not work
 
 ---
 
-_Issue opened by @Yasin197 on 2024-10-04 19:10_
+_@Yasin197_
 
 I am trying to download quart-cli with the following command `uv add quarto-cli`:
 

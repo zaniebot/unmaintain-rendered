@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-14T11:11:32Z
 updated_at: 2024-04-14T11:19:59Z
 url: https://github.com/astral-sh/ruff/issues/10925
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PLR6104 false positive and false fix for augmented assignment.
 
 ---
 
-_Issue opened by @LefterisJP on 2024-04-14 11:11_
+_@LefterisJP_
 
 ### Problem
 

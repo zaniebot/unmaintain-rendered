@@ -14,14 +14,14 @@ head: dhruv/call-arguments
 created_at: 2024-04-02T06:35:35Z
 updated_at: 2024-04-03T10:07:08Z
 url: https://github.com/astral-sh/ruff/pull/10733
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for function call arguments
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-02 06:35_
+_@dhruvmanila_
 
 ## Summary
 

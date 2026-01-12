@@ -14,14 +14,14 @@ head: uv-init-desc
 created_at: 2024-12-27T22:41:28Z
 updated_at: 2024-12-28T00:44:41Z
 url: https://github.com/astral-sh/uv/pull/10209
-synced_at: 2026-01-10T11:44:38Z
+synced_at: 2026-01-12T16:09:11Z
 ```
 
 # Add support for optional `--description` in `uv init`
 
 ---
 
-_Pull request opened by @guptaarnav on 2024-12-27 22:41_
+_@guptaarnav_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: charlie/req-dist
 created_at: 2024-05-29T16:41:22Z
 updated_at: 2024-05-29T16:48:29Z
 url: https://github.com/astral-sh/uv/pull/3911
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:55Z
 ```
 
 # Split `requirements.txt`-style resolution distribution into its own type
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-29 16:41_
+_@charliermarsh_
 
 _No description provided._
 

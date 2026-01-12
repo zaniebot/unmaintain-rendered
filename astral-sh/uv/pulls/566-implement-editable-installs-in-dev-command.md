@@ -12,14 +12,14 @@ head: konstin/implement-editable-installs
 created_at: 2023-12-05T12:58:04Z
 updated_at: 2023-12-12T14:45:58Z
 url: https://github.com/astral-sh/uv/pull/566
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:02Z
 ```
 
 # Implement editable installs in dev command
 
 ---
 
-_Pull request opened by @konstin on 2023-12-05 12:58_
+_@konstin_
 
 First step, sufficient to run
 ```shell

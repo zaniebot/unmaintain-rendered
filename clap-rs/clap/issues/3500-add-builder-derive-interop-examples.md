@@ -14,14 +14,14 @@ assignees: []
 created_at: 2022-02-23T00:15:24Z
 updated_at: 2022-03-07T20:43:52Z
 url: https://github.com/clap-rs/clap/issues/3500
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Add builder / derive interop examples
 
 ---
 
-_Issue opened by @epage on 2022-02-23 00:15_
+_@epage_
 
 ### Please complete the following tasks
 

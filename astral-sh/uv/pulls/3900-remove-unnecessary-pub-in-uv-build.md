@@ -13,14 +13,14 @@ head: konsti/uv-build-visibility
 created_at: 2024-05-29T09:21:46Z
 updated_at: 2024-05-29T09:30:22Z
 url: https://github.com/astral-sh/uv/pull/3900
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:55Z
 ```
 
 # Remove unnecessary `pub` in uv-build
 
 ---
 
-_Pull request opened by @konstin on 2024-05-29 09:21_
+_@konstin_
 
 Expose only `SourceBuild` and the error type from `uv-build`, all other types are internal.
 

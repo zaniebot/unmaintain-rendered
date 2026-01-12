@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-31T10:47:48Z
 updated_at: 2024-07-31T12:47:17Z
 url: https://github.com/astral-sh/ruff/issues/12592
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # pyupgrade (`UP`) fixes do not include `dict`/`set` literal fixes
 
 ---
 
-_Issue opened by @stephenfin on 2024-07-31 10:47_
+_@stephenfin_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

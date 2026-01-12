@@ -13,14 +13,14 @@ head: charlie/feat
 created_at: 2025-01-02T16:53:31Z
 updated_at: 2025-01-02T17:31:20Z
 url: https://github.com/astral-sh/uv/pull/10277
-synced_at: 2026-01-10T11:44:40Z
+synced_at: 2026-01-12T16:09:12Z
 ```
 
 # Gate performance feature on cfg
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-02 16:53_
+_@charliermarsh_
 
 _No description provided._
 

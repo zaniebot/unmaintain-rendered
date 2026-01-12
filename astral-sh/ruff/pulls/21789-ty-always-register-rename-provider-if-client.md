@@ -14,14 +14,14 @@ head: micha/rename-registration
 created_at: 2025-12-04T11:04:44Z
 updated_at: 2025-12-04T13:40:18Z
 url: https://github.com/astral-sh/ruff/pull/21789
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Always register rename provider if client doesn't support dynamic registration
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-04 11:04_
+_@MichaReiser_
 
 ## Summary
 

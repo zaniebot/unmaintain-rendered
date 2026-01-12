@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-21T09:36:26Z
 updated_at: 2023-07-10T14:00:44Z
 url: https://github.com/astral-sh/ruff/issues/5246
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # TRY301 disregards whether the raised exeption type is actually caught or not
 
 ---
 
-_Issue opened by @runfalk on 2023-06-21 09:36_
+_@runfalk_
 
 I believe the following is a false positive:
 

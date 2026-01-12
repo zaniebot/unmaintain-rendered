@@ -13,14 +13,14 @@ head: rk-typing-type
 created_at: 2024-12-11T02:18:06Z
 updated_at: 2024-12-11T16:27:34Z
 url: https://github.com/astral-sh/ruff/pull/14904
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Understand `typing.Type`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-11 02:18_
+_@InSyncWithFoo_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-08T16:40:25Z
 updated_at: 2023-10-16T02:16:58Z
 url: https://github.com/astral-sh/uv/issues/59
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Explore parallelizing downloads, unzips, and installs together
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-08 16:40_
+_@charliermarsh_
 
 Right now, these steps are all parallelized to some degree, but the phases themselves are sequential. So, e.g., we don’t start unzipping (the slowest step) until we’ve downloaded everything.
 

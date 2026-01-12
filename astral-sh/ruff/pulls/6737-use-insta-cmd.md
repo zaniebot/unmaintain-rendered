@@ -13,14 +13,14 @@ head: insta-cmd
 created_at: 2023-08-21T19:00:30Z
 updated_at: 2023-09-05T12:28:51Z
 url: https://github.com/astral-sh/ruff/pull/6737
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Use insta_cmd
 
 ---
 
-_Pull request opened by @konstin on 2023-08-21 19:00_
+_@konstin_
 
 I've experimented with using [insta_cmd](https://github.com/mitsuhiko/insta-cmd) as a replacement for [assert_cmd](https://github.com/assert-rs/assert_cmd). I like it a lot, if we have consensus we want to do the switch i'll finish this PR. merging depends on the https://github.com/mitsuhiko/insta-cmd/issues/2 fix being shipped in a release.
 

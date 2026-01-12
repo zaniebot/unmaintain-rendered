@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-19T23:32:18Z
 updated_at: 2025-08-20T00:46:11Z
 url: https://github.com/astral-sh/ty/issues/1055
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Not selecting a valid return type with overloaded methods
 
 ---
 
-_Issue opened by @brentonmcs on 2025-08-19 23:32_
+_@brentonmcs_
 
 ### Summary
 

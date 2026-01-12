@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-13T17:48:25Z
 updated_at: 2025-08-15T15:16:12Z
 url: https://github.com/astral-sh/ty/issues/362
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Excessive runtime for large unions of tuples
 
 ---
 
-_Issue opened by @nijel on 2025-05-13 17:48_
+_@nijel_
 
 ### Summary
 

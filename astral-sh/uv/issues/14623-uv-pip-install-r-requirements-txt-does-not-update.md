@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-15T10:29:59Z
 updated_at: 2025-07-16T13:42:40Z
 url: https://github.com/astral-sh/uv/issues/14623
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # uv pip install -r requirements.txt does not update toml file
 
 ---
 
-_Issue opened by @jugeshPrajapati on 2025-07-15 10:29_
+_@jugeshPrajapati_
 
 ### Summary
 

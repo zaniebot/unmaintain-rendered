@@ -13,14 +13,14 @@ head: micha-owner
 created_at: 2024-02-19T10:19:56Z
 updated_at: 2024-02-19T10:26:13Z
 url: https://github.com/astral-sh/ruff/pull/10048
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Add Micha as owner to formatter and parser
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-19 10:19_
+_@MichaReiser_
 
 ^
 

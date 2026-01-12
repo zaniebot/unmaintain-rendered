@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-07T12:02:15Z
 updated_at: 2022-12-07T15:38:07Z
 url: https://github.com/astral-sh/ruff/issues/1117
-synced_at: 2026-01-10T12:06:17Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Undefined name `anext`
 
 ---
 
-_Issue opened by @rgilton on 2022-12-07 12:02_
+_@rgilton_
 
 Running ruff 0.0.166 against this file:
 ```py

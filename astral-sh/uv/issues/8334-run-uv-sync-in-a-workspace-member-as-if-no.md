@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-18T15:03:08Z
 updated_at: 2025-04-16T18:18:44Z
 url: https://github.com/astral-sh/uv/issues/8334
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # Run `uv sync` in a workspace member as if no workspace root was present
 
 ---
 
-_Issue opened by @thorbenk on 2024-10-18 15:03_
+_@thorbenk_
 
 I have the following setup:
 

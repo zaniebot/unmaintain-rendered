@@ -13,14 +13,14 @@ head: alex/typo
 created_at: 2024-09-01T11:54:19Z
 updated_at: 2024-09-01T12:08:01Z
 url: https://github.com/astral-sh/ruff/pull/13193
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Fix typo in `pydoclint` enum variant name
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-01 11:54_
+_@AlexWaygood_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: relocatable
 created_at: 2024-07-28T14:19:01Z
 updated_at: 2024-07-30T20:59:40Z
 url: https://github.com/astral-sh/uv/pull/5515
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:51Z
 ```
 
 # feat(venv): add relocatable flag
 
 ---
 
-_Pull request opened by @paveldikov on 2024-07-28 14:19_
+_@paveldikov_
 
 ## Summary
 

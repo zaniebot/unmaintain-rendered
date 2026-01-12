@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-04T18:43:33Z
 updated_at: 2024-11-04T19:56:58Z
 url: https://github.com/astral-sh/uv/issues/8814
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # Allow conflicting dependency groups
 
 ---
 
-_Issue opened by @ReinforcedKnowledge on 2024-11-04 18:43_
+_@ReinforcedKnowledge_
 
 I have noticed that `uv` doesn't the installation of a dependency group when there are conflicting dependency groups.
 

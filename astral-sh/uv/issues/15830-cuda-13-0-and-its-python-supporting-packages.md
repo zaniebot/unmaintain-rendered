@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-14T01:47:43Z
 updated_at: 2025-11-03T02:51:07Z
 url: https://github.com/astral-sh/uv/issues/15830
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # Cuda 13.0 and its python supporting packages
 
 ---
 
-_Issue opened by @whitesscott on 2025-09-14 01:47_
+_@whitesscott_
 
 ### Summary
 

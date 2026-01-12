@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-16T16:06:35Z
 updated_at: 2025-09-16T17:08:00Z
 url: https://github.com/astral-sh/ruff/issues/20436
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # logger-objects: allow log functions
 
 ---
 
-_Issue opened by @spaceone on 2025-09-16 16:06_
+_@spaceone_
 
 with config:
 ```toml

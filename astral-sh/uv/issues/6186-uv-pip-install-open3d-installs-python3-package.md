@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-18T22:16:31Z
 updated_at: 2024-08-20T18:36:50Z
 url: https://github.com/astral-sh/uv/issues/6186
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # `uv pip install open3d` installs python3 package but has python2 init file
 
 ---
 
-_Issue opened by @robert1003 on 2024-08-18 22:16_
+_@robert1003_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

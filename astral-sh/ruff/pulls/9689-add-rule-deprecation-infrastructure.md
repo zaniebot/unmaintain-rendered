@@ -12,14 +12,14 @@ head: zb/deprecated
 created_at: 2024-01-29T21:02:37Z
 updated_at: 2024-01-30T17:39:19Z
 url: https://github.com/astral-sh/ruff/pull/9689
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Add rule deprecation infrastructure
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-29 21:02_
+_@zanieb_
 
 Adds a new `Deprecated` rule group in addition to `Stable` and `Preview`.
 

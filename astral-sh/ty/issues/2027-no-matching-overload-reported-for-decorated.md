@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T18:44:42Z
 updated_at: 2026-01-07T16:52:37Z
 url: https://github.com/astral-sh/ty/issues/2027
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # no-matching-overload reported for decorated function with correct typing
 
 ---
 
-_Issue opened by @egorbn on 2025-12-17 18:44_
+_@egorbn_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-27T10:09:18Z
 updated_at: 2025-11-04T19:03:54Z
 url: https://github.com/astral-sh/uv/issues/16468
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # uv remove followed by uv add leaves package in incomplete state with missing RECORD file and package files
 
 ---
 
-_Issue opened by @rajav99 on 2025-10-27 10:09_
+_@rajav99_
 
 ### Summary
 

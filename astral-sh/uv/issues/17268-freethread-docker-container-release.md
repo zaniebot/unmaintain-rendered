@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-30T14:57:33Z
 updated_at: 2025-12-31T18:46:41Z
 url: https://github.com/astral-sh/uv/issues/17268
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # Freethread Docker container release?
 
 ---
 
-_Issue opened by @hemna on 2025-12-30 14:57_
+_@hemna_
 
 ### Question
 

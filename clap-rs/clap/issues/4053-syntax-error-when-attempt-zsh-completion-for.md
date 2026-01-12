@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-08-10T07:42:34Z
 updated_at: 2022-08-10T13:47:58Z
 url: https://github.com/clap-rs/clap/issues/4053
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Syntax error when attempt ZSH completion for `ValueEnum` variants
 
 ---
 
-_Issue opened by @KSXGitHub on 2022-08-10 07:42_
+_@KSXGitHub_
 
 ### Notes
 

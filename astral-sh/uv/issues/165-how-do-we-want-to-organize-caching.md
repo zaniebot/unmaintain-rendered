@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-22T14:52:58Z
 updated_at: 2023-11-30T01:55:47Z
 url: https://github.com/astral-sh/uv/issues/165
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # How do we want to organize caching?
 
 ---
 
-_Issue opened by @konstin on 2023-10-22 14:52_
+_@konstin_
 
 We need to cache:
 

@@ -13,14 +13,14 @@ head: format-cli-debug-output
 created_at: 2023-09-04T11:49:23Z
 updated_at: 2023-09-04T22:25:17Z
 url: https://github.com/astral-sh/ruff/pull/7129
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Better formatter CLI verbose output
 
 ---
 
-_Pull request opened by @konstin on 2023-09-04 11:49_
+_@konstin_
 
 **Summary** A bit of polishing for the formatter CLI verbose output. I'm trying to use more tracing in the main CLI without having to rewrite everything. I included the options for each file because we allow hierarchical configuration, for the formatter at least in theory.
 

@@ -13,14 +13,14 @@ head: fix-option-anchor
 created_at: 2023-07-13T16:51:29Z
 updated_at: 2023-07-14T00:28:26Z
 url: https://github.com/astral-sh/ruff/pull/5741
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Fix `Options` section of rule docs
 
 ---
 
-_Pull request opened by @eggplants on 2023-07-13 16:51_
+_@eggplants_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: venv-314
 created_at: 2025-05-08T06:13:46Z
 updated_at: 2025-10-07T18:31:23Z
 url: https://github.com/astral-sh/uv/pull/13341
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:10:39Z
 ```
 
 # Add virtualenv feature specific to Python 3.14
 
 ---
 
-_Pull request opened by @Rogdham on 2025-05-08 06:13_
+_@Rogdham_
 
 ## Summary
 

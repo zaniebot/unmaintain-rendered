@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-14T17:31:04Z
 updated_at: 2024-07-17T19:36:26Z
 url: https://github.com/astral-sh/ruff/issues/12320
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Possible False Positive: too-many-arguments (PLR0913) considers `self` and `cls`
 
 ---
 
-_Issue opened by @Bibo-Joshi on 2024-07-14 17:31_
+_@Bibo-Joshi_
 
 * List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
 

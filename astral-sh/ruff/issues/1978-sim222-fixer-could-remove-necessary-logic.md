@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-18T23:25:35Z
 updated_at: 2023-01-19T00:08:15Z
 url: https://github.com/astral-sh/ruff/issues/1978
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # SIM222 fixer could remove necessary logic
 
 ---
 
-_Issue opened by @spaceone on 2023-01-18 23:25_
+_@spaceone_
 
 I have a validation function which relies on a raised exception by `json.loads()` but that one is removed:
 

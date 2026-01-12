@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T00:24:31Z
 updated_at: 2025-03-08T14:12:19Z
 url: https://github.com/astral-sh/uv/issues/6393
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # uv init command got an error on windows
 
 ---
 
-_Issue opened by @joe-cho on 2024-08-22 00:24_
+_@joe-cho_
 
 # Symptom
 Whenever running ```uv init my-project```,  I am getting the same error:

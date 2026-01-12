@@ -13,14 +13,14 @@ head: codespell
 created_at: 2024-05-13T11:58:27Z
 updated_at: 2024-05-13T13:33:09Z
 url: https://github.com/astral-sh/ruff/pull/11404
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Fix a few typos found by codespell
 
 ---
 
-_Pull request opened by @DimitriPapadopoulos on 2024-05-13 11:58_
+_@DimitriPapadopoulos_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-20T16:03:20Z
 updated_at: 2022-09-20T20:15:20Z
 url: https://github.com/astral-sh/ruff/issues/234
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Regression with ruff 0.0.42 on relative exclude files
 
 ---
 
-_Issue opened by @amotl on 2022-09-20 16:03_
+_@amotl_
 
 Hi again,
 

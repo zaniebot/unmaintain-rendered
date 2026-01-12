@@ -14,14 +14,14 @@ head: micha/revert-astnoderef-eq-hash-change
 created_at: 2025-02-11T18:00:43Z
 updated_at: 2025-02-11T18:55:53Z
 url: https://github.com/astral-sh/ruff/pull/16100
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Remove `Hash` and `Eq` from `AstNodeRef` for types not implementing `Eq` or `Hash`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-11 18:00_
+_@MichaReiser_
 
 ## Summary
 

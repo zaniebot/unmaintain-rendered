@@ -13,14 +13,14 @@ head: charlie/dist-info-json
 created_at: 2024-05-21T14:13:10Z
 updated_at: 2024-05-21T15:52:39Z
 url: https://github.com/astral-sh/uv/pull/3698
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:48Z
 ```
 
 # Add PEP 714 support for JSON API client
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-21 14:13_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: micha/merge-ty-macros-into-ruff-macros
 created_at: 2025-07-09T11:22:07Z
 updated_at: 2025-07-09T11:37:30Z
 url: https://github.com/astral-sh/ruff/pull/19229
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [ty] Merge `ty_macros` into `ruff_macros`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-09 11:22_
+_@MichaReiser_
 
 ## Summary
 

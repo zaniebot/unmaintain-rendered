@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-11T21:37:35Z
 updated_at: 2023-03-20T14:27:33Z
 url: https://github.com/clap-rs/clap/issues/4757
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Man page synopsis doesn't use the bin_name
 
 ---
 
-_Issue opened by @arusahni on 2023-03-11 21:37_
+_@arusahni_
 
 ### Please complete the following tasks
 

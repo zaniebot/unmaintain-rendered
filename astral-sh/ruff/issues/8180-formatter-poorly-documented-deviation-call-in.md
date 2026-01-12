@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-24T20:03:04Z
 updated_at: 2023-11-10T04:32:31Z
 url: https://github.com/astral-sh/ruff/issues/8180
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter poorly(?) documented deviation: Call in right side of equality when call chain is on the left 
 
 ---
 
-_Issue opened by @henribru on 2023-10-24 20:03_
+_@henribru_
 
 [Black formatting:](https://black.vercel.app/?version=stable&state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AGKALddAD2IimZxl1N_WlbvK5V9KEd0suDTtKdXsuSmecKIW8jmn5kH8_9id80T9Kr3nUt8Gxk5CcrlmBskY9FxtGhW6TeDwB60yFYy1_WyhF1d5I90slg9OTGQEaPnk8kdAY--vRr_eRFvxIwm6vPfkSX5T5elM57XYDYLgzDY2c3D62IPNH0yZvQ9yN9nCYxm3yNGZR4_jPexvgHF19UkLQ-3fCOJ1Wc1PhW_fzUJ_dgIw8A6GCaMWJiYYAAAinzk79VuUhMAAdMBiwMAAI8cgVKxxGf7AgAAAAAEWVo=)
 ```

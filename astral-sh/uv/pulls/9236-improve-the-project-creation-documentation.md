@@ -13,14 +13,14 @@ head: zb/docs-project-init
 created_at: 2024-11-19T19:13:45Z
 updated_at: 2024-11-20T14:50:16Z
 url: https://github.com/astral-sh/uv/pull/9236
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:43Z
 ```
 
 # Improve the project creation documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-19 19:13_
+_@zanieb_
 
 _No description provided._
 

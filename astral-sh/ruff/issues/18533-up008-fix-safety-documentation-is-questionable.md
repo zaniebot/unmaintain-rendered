@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-07T13:19:28Z
 updated_at: 2025-06-30T13:42:06Z
 url: https://github.com/astral-sh/ruff/issues/18533
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # UP008 fix safety documentation is questionable
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-07 13:19_
+_@dscorbett_
 
 ### Summary
 

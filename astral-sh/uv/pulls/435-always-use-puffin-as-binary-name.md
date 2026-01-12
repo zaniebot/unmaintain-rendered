@@ -12,14 +12,14 @@ head: puffin-as-binary-name
 created_at: 2023-11-16T12:41:29Z
 updated_at: 2023-11-16T18:05:48Z
 url: https://github.com/astral-sh/uv/pull/435
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:56Z
 ```
 
 # Always use puffin as binary name
 
 ---
 
-_Pull request opened by @konstin on 2023-11-16 12:41_
+_@konstin_
 
 It doesn't matter how exactly the user called puffin, the lockfile should look the same either way.
 

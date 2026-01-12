@@ -13,14 +13,14 @@ head: linehaul-snapshot
 created_at: 2024-04-09T01:17:56Z
 updated_at: 2024-04-12T01:27:43Z
 url: https://github.com/astral-sh/uv/pull/2923
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:18Z
 ```
 
 # feat: convert linehaul tests to use snapshots
 
 ---
 
-_Pull request opened by @samypr100 on 2024-04-09 01:17_
+_@samypr100_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

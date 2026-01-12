@@ -11,14 +11,14 @@ head: implement-item-1
 created_at: 2025-12-03T04:03:39Z
 updated_at: 2026-01-08T17:51:22Z
 url: https://github.com/astral-sh/uv/pull/16953
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:32Z
 ```
 
 # Clarify UV_HTTP_TIMEOUT format in error message for streaming timeout
 
 ---
 
-_Pull request opened by @anoop-rehman on 2025-12-03 04:03_
+_@anoop-rehman_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

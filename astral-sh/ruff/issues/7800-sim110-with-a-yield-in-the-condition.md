@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-04T05:08:30Z
 updated_at: 2023-10-04T12:59:20Z
 url: https://github.com/astral-sh/ruff/issues/7800
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # SIM110 with a yield in the condition
 
 ---
 
-_Issue opened by @JelleZijlstra on 2023-10-04 05:08_
+_@JelleZijlstra_
 
 Using SIM110 I ran into this change:
 

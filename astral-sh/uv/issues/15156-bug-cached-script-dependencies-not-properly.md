@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-08T02:15:53Z
 updated_at: 2025-08-17T10:43:27Z
 url: https://github.com/astral-sh/uv/issues/15156
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # Bug: Cached Script Dependencies Not Properly Invalidated
 
 ---
 
-_Issue opened by @Alchemyst0x on 2025-08-08 02:15_
+_@Alchemyst0x_
 
 ### Summary
 

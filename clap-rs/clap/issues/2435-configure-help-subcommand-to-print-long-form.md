@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-04-06T12:54:41Z
 updated_at: 2021-04-12T23:12:52Z
 url: https://github.com/clap-rs/clap/issues/2435
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Configure help subcommand to print long form
 
 ---
 
-_Issue opened by @pwinckles on 2021-04-06 12:54_
+_@pwinckles_
 
 ### Please complete the following tasks
 

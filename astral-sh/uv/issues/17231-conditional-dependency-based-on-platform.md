@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-23T18:22:30Z
 updated_at: 2025-12-23T21:36:52Z
 url: https://github.com/astral-sh/uv/issues/17231
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:46Z
 ```
 
 # Conditional dependency based on platform
 
 ---
 
-_Issue opened by @setoelkahfi on 2025-12-23 18:22_
+_@setoelkahfi_
 
 ### Question
 

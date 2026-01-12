@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-29T14:47:29Z
 updated_at: 2025-05-02T08:10:34Z
 url: https://github.com/astral-sh/ruff/issues/17711
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PyUpgrade autofix fails when objects stem from factory
 
 ---
 
-_Issue opened by @TrevorWinstral on 2025-04-29 14:47_
+_@TrevorWinstral_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/furb118-fix
 created_at: 2024-09-26T00:02:30Z
 updated_at: 2024-09-26T14:29:16Z
 url: https://github.com/astral-sh/ruff/pull/13518
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Fix handling of slices in tuples for FURB118, e.g., `x[:, 1]`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-26 00:02_
+_@zanieb_
 
 There was already handling for the singleton `x[:]` case but not the tuple case.
 

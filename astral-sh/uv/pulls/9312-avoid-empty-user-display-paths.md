@@ -13,14 +13,14 @@ head: konsti/avoid-displaying-an-empty-path
 created_at: 2024-11-21T11:36:05Z
 updated_at: 2024-11-21T19:56:51Z
 url: https://github.com/astral-sh/uv/pull/9312
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:45Z
 ```
 
 # Avoid empty user display paths
 
 ---
 
-_Pull request opened by @konstin on 2024-11-21 11:36_
+_@konstin_
 
 Currently, user display returns an empty path if the current dir is the directory we are printing. This leads to odd messages such as
 

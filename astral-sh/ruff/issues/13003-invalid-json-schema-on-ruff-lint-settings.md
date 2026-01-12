@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-20T07:01:11Z
 updated_at: 2024-08-29T20:10:12Z
 url: https://github.com/astral-sh/ruff/issues/13003
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Invalid JSON schema on ruff lint settings
 
 ---
 
-_Issue opened by @mash180sx on 2024-08-20 07:01_
+_@mash180sx_
 
 Is there any reason I get this error in my pyproject.toml file, using VS Code?
 It seems it's related to the corresponding JSON Schema.

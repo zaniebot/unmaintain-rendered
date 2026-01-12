@@ -12,14 +12,14 @@ head: fix-mdtest-ignore-python
 created_at: 2025-08-28T16:18:14Z
 updated_at: 2025-11-06T11:48:23Z
 url: https://github.com/astral-sh/ruff/pull/20139
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # Fix mdtest ignore python code blocks
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-08-28 16:18_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

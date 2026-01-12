@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-07T14:34:54Z
 updated_at: 2025-01-07T16:00:34Z
 url: https://github.com/astral-sh/uv/issues/10363
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # Re-enable zlib-ng on x86
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-07 14:34_
+_@charliermarsh_
 
 This is meaningfully faster. It's my mistake as I only benchmarked zlib-rs on ARM.
 

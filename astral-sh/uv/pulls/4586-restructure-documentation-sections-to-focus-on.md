@@ -14,14 +14,14 @@ head: zb/docs-structure
 created_at: 2024-06-27T12:03:05Z
 updated_at: 2024-07-02T16:44:47Z
 url: https://github.com/astral-sh/uv/pull/4586
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:19Z
 ```
 
 # Restructure documentation sections to focus on new user experience
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-27 12:03_
+_@zanieb_
 
 Moving the preview features to top-level concepts and pushing the pip-compatible interface down.
 

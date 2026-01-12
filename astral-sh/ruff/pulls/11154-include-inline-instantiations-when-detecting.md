@@ -13,14 +13,14 @@ head: charlie/log
 created_at: 2024-04-26T00:41:55Z
 updated_at: 2024-04-26T01:00:12Z
 url: https://github.com/astral-sh/ruff/pull/11154
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:35Z
 ```
 
 # Include inline instantiations when detecting loggers
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-26 00:41_
+_@charliermarsh_
 
 ## Summary
 

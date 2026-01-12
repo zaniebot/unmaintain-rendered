@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-05T02:32:53Z
 updated_at: 2024-09-05T02:34:04Z
 url: https://github.com/astral-sh/uv/issues/7064
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # `--find-links` entries lack hashes in `uv.lock`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-05 02:32_
+_@charliermarsh_
 
 Because they're treated as registry distributions, but the hashes are computed as if they're URLs.
 

@@ -14,14 +14,14 @@ head: dhruv/refactor-binary-expr-parsing
 created_at: 2024-04-21T15:38:34Z
 updated_at: 2024-04-23T04:53:57Z
 url: https://github.com/astral-sh/ruff/pull/11073
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Refactor binary expression parsing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-21 15:38_
+_@dhruvmanila_
 
 ## Summary
 

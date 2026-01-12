@@ -13,14 +13,14 @@ head: dhruv/comparable
 created_at: 2023-11-02T05:57:28Z
 updated_at: 2023-11-02T07:52:53Z
 url: https://github.com/astral-sh/ruff/pull/8440
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Remove unicode flag from comparable
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-02 05:57_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-05T18:00:01Z
 updated_at: 2023-06-09T04:53:15Z
 url: https://github.com/astral-sh/ruff/issues/4249
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Autofix error] C408 - unnecessary-collection-call - syntax error when fixing within f-string
 
 ---
 
-_Issue opened by @Hnasar on 2023-05-05 18:00_
+_@Hnasar_
 
 Presumably replacing `dict()` with `{}` gets confused when inside an f-string when it comes to using `"` vs `'` (or maybe it's the nested `{`)
 

@@ -13,14 +13,14 @@ head: Rename_formatter_progress_to_formatter_ecosystem_checks
 created_at: 2023-07-31T12:52:26Z
 updated_at: 2023-07-31T18:48:23Z
 url: https://github.com/astral-sh/ruff/pull/6194
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Rename formatter_progress to formatter_ecosystem_checks
 
 ---
 
-_Pull request opened by @konstin on 2023-07-31 12:52_
+_@konstin_
 
 Rename the `scripts/formatter_progress.sh` to `formatter/formatter_ecosysytem_checks.sh` since it fits the actual task better.
 

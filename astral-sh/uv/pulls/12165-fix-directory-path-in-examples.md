@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-03-14T08:39:45Z
 updated_at: 2025-03-18T19:50:07Z
 url: https://github.com/astral-sh/uv/pull/12165
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:09Z
 ```
 
 # Fix `--directory` path in examples
 
 ---
 
-_Pull request opened by @jatinderjit on 2025-03-14 08:39_
+_@jatinderjit_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

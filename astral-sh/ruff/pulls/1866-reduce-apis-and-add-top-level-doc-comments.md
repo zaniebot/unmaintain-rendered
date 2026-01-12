@@ -12,14 +12,14 @@ head: reduce-apis-and-document
 created_at: 2023-01-14T07:31:33Z
 updated_at: 2023-01-14T15:11:30Z
 url: https://github.com/astral-sh/ruff/pull/1866
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Reduce APIs and add top-level doc comments
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-14 07:31_
+_@not-my-profile_
 
 Test by running:
 

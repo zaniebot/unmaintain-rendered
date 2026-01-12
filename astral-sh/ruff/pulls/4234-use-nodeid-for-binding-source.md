@@ -12,14 +12,14 @@ head: charlie/binding-id
 created_at: 2023-05-05T01:08:13Z
 updated_at: 2023-05-06T16:44:42Z
 url: https://github.com/astral-sh/ruff/pull/4234
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Use `NodeId` for `Binding` source
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-05 01:08_
+_@charliermarsh_
 
 ## Summary
 

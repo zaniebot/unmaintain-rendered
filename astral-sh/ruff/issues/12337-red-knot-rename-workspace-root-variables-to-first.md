@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-15T12:09:31Z
 updated_at: 2024-08-05T22:07:20Z
 url: https://github.com/astral-sh/ruff/issues/12337
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] Rename `workspace_root` variables to `first_party_root` in the module resolver
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-07-15 12:09_
+_@AlexWaygood_
 
 It's going to get confusing as we move towards proper workspace support, which might involve having multiple packages in one workspace, with each package having a different `first_party_root`.
 

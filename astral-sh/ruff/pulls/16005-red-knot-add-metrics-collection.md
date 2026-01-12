@@ -13,14 +13,14 @@ head: dcreager/metrics
 created_at: 2025-02-06T22:29:57Z
 updated_at: 2025-02-07T16:49:32Z
 url: https://github.com/astral-sh/ruff/pull/16005
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Add metrics collection
 
 ---
 
-_Pull request opened by @dcreager on 2025-02-06 22:29_
+_@dcreager_
 
 This adds metrics collection to red-knot.
 

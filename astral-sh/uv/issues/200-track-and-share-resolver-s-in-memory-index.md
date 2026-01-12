@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-26T13:32:15Z
 updated_at: 2024-01-16T05:37:16Z
 url: https://github.com/astral-sh/uv/issues/200
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Track and share resolver's in-memory index globally
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-26 13:32_
+_@charliermarsh_
 
 If we have to do a resolution as part of building a source distribution, we should be able to re-use the existing in-memory index that the resolver has already built up. How can we share this cache across the tree?
 

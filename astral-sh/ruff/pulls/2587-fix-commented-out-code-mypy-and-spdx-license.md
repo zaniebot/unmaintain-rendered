@@ -12,14 +12,14 @@ head: fix/era001-mypy-spdx
 created_at: 2023-02-05T19:51:54Z
 updated_at: 2023-02-05T20:14:38Z
 url: https://github.com/astral-sh/ruff/pull/2587
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # fix(commented-out-code): `mypy` and `SPDX-License-Identifier` false positives
 
 ---
 
-_Pull request opened by @scop on 2023-02-05 19:51_
+_@scop_
 
 https://mypy.readthedocs.io/en/stable/inline_config.html#configuration-comment-format
 https://spdx.github.io/spdx-spec/v2.3/using-SPDX-short-identifiers-in-source-files/#e2-format-for-spdx-license-identifier

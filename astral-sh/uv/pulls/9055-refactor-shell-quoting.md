@@ -13,14 +13,14 @@ head: konsti/shlex-refactor
 created_at: 2024-11-12T12:54:44Z
 updated_at: 2024-11-15T09:06:55Z
 url: https://github.com/astral-sh/uv/pull/9055
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:37Z
 ```
 
 # Refactor shell quoting
 
 ---
 
-_Pull request opened by @konstin on 2024-11-12 12:54_
+_@konstin_
 
 Move the shlex-like quoting utils in the uv-shell crate, so we only write `r#"'"'"'"#` once.
 

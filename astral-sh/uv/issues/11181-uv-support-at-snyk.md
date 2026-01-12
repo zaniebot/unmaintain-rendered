@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-03T12:08:06Z
 updated_at: 2025-09-08T21:12:40Z
 url: https://github.com/astral-sh/uv/issues/11181
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # UV support at SNYK
 
 ---
 
-_Issue opened by @etele on 2025-02-03 12:08_
+_@etele_
 
 ### Question
 

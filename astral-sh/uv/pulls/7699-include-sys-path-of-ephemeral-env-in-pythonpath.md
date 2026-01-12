@@ -12,14 +12,14 @@ head: tfsingh/jupyter
 created_at: 2024-09-26T08:35:00Z
 updated_at: 2024-10-01T22:33:58Z
 url: https://github.com/astral-sh/uv/pull/7699
-synced_at: 2026-01-10T12:53:53Z
+synced_at: 2026-01-12T16:07:57Z
 ```
 
 # Include sys.path of ephemeral env in PYTHONPATH
 
 ---
 
-_Pull request opened by @tfsingh on 2024-09-26 08:35_
+_@tfsingh_
 
 This PR ensures that the sys.path of an ephemeral environment is included in the PYTHONPATH of spawned processes (useful in the case of executing external commands). This addresses issue #7647.
 

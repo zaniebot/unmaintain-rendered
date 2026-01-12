@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-19T09:38:30Z
 updated_at: 2025-01-24T15:20:33Z
 url: https://github.com/astral-sh/uv/issues/10751
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # uv swallows segmentation fault
 
 ---
 
-_Issue opened by @tlinhart on 2025-01-19 09:38_
+_@tlinhart_
 
 While preparing another bug report, I accidentally found out that uv swallows a segmentation fault. Consider this minimal `test.py` script that causes a segfault:
 

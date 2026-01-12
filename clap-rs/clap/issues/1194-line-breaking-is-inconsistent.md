@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-02-25T01:32:14Z
 updated_at: 2018-08-02T03:30:19Z
 url: https://github.com/clap-rs/clap/issues/1194
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Line breaking is inconsistent
 
 ---
 
-_Issue opened by @spacekookie on 2018-02-25 01:32_
+_@spacekookie_
 
 ### System info
 

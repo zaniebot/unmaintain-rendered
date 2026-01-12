@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-14T13:20:01Z
 updated_at: 2025-12-20T01:12:49Z
 url: https://github.com/astral-sh/ty/issues/1352
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # T & ~T not assignable to Never when T is a `TypedDict`
 
 ---
 
-_Issue opened by @alecbarber on 2025-10-14 13:20_
+_@alecbarber_
 
 ### Summary
 

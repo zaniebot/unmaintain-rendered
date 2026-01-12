@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T18:24:42Z
 updated_at: 2024-12-15T18:57:28Z
 url: https://github.com/astral-sh/ruff/issues/14990
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Populate `[tool.ruff.lint.flake8-quotes.inline-quotes]` from `[tool.ruff.format.quote-style]`
 
 ---
 
-_Issue opened by @sobolevn on 2024-12-15 18:24_
+_@sobolevn_
 
 When configuring `flake8-quotes` together with the formatter, it seems strange to specify the type of quotes you use twice:
 

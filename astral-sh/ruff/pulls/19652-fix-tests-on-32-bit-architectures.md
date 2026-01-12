@@ -14,14 +14,14 @@ head: brent/fix-32bit-tests
 created_at: 2025-07-30T22:52:53Z
 updated_at: 2025-07-31T12:52:21Z
 url: https://github.com/astral-sh/ruff/pull/19652
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # Fix tests on 32-bit architectures
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-30 22:52_
+_@ntBre_
 
 Summary
 --

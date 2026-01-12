@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-24T22:12:46Z
 updated_at: 2024-10-16T05:14:13Z
 url: https://github.com/astral-sh/uv/issues/6592
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Add Prompts to use System or Managed Python versions or add "auto" option for python preferences
 
 ---
 
-_Issue opened by @vasudev-gm on 2024-08-24 22:12_
+_@vasudev-gm_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

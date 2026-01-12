@@ -13,14 +13,14 @@ head: charlie/up-test
 created_at: 2025-08-20T17:17:30Z
 updated_at: 2025-08-20T17:31:19Z
 url: https://github.com/astral-sh/uv/pull/15396
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:43Z
 ```
 
 # Add `uv sync` tests for upgrade CLI interaction
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-20 17:17_
+_@charliermarsh_
 
 Like #15393 but for `uv sync`, since the settings logic is a bit different than `uv pip`.
 

@@ -12,14 +12,14 @@ head: charlie/unimplemented
 created_at: 2022-10-10T14:00:00Z
 updated_at: 2022-10-10T14:03:41Z
 url: https://github.com/astral-sh/ruff/pull/388
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Flag unimplemented error codes in M001
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-10 14:00_
+_@charliermarsh_
 
 Resolves #384.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-05T22:15:55Z
 updated_at: 2023-02-05T23:48:30Z
 url: https://github.com/astral-sh/ruff/issues/2592
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `D202`: Conflict with black's 2023 style
 
 ---
 
-_Issue opened by @ngnpope on 2023-02-05 22:15_
+_@ngnpope_
 
 For the following code:
 ```python

@@ -12,14 +12,14 @@ head: claude/copy-pr-2422-Rn7vO
 created_at: 2026-01-09T23:10:47Z
 updated_at: 2026-01-09T23:12:08Z
 url: https://github.com/astral-sh/uv/pull/17398
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:45Z
 ```
 
 # Use a reactive benchmark image for the GitHub README
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-09 23:10_
+_@zanieb_
 
 _No description provided._
 

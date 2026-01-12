@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-28T21:00:12Z
 updated_at: 2024-10-07T20:58:52Z
 url: https://github.com/clap-rs/clap/issues/3354
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Ability to customize man pages
 
 ---
 
-_Issue opened by @epage on 2022-01-28 21:00_
+_@epage_
 
 ### Please complete the following tasks
 

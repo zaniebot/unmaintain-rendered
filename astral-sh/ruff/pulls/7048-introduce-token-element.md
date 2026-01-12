@@ -14,14 +14,14 @@ head: token-element
 created_at: 2023-09-01T16:30:56Z
 updated_at: 2023-09-22T21:01:24Z
 url: https://github.com/astral-sh/ruff/pull/7048
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Introduce Token element
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-01 16:30_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

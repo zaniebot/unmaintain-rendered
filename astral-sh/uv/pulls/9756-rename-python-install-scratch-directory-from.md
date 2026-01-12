@@ -13,14 +13,14 @@ head: zb/python-install-scratch
 created_at: 2024-12-10T00:15:26Z
 updated_at: 2024-12-10T19:39:47Z
 url: https://github.com/astral-sh/uv/pull/9756
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:58Z
 ```
 
 # Rename Python install scratch directory from `.cache` -> `.temp`
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-10 00:15_
+_@zanieb_
 
 Addressing the confusion in https://github.com/astral-sh/uv/issues/9749
 

@@ -13,14 +13,14 @@ head: konsti/reset-default-debug-level
 created_at: 2024-04-18T13:24:55Z
 updated_at: 2024-04-18T13:34:05Z
 url: https://github.com/astral-sh/uv/pull/3120
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:26Z
 ```
 
 # Reset default `-v` level to debug
 
 ---
 
-_Pull request opened by @konstin on 2024-04-18 13:24_
+_@konstin_
 
 Fixup from https://github.com/astral-sh/uv/pull/2815/files#diff-9b6f8f13cfc3c9d7ef554182fa52c7466fa6037da54a97c03855b6068b481848L127-R127
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-18T05:51:06Z
 updated_at: 2025-11-07T03:21:51Z
 url: https://github.com/astral-sh/uv/issues/3116
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # uv powershell windows only works if you are running powershell as admin
 
 ---
 
-_Issue opened by @Chris2L on 2024-04-18 05:51_
+_@Chris2L_
 
 Trying to run uv using VS code on windows.  Install uv on powershell using command 
 `powershell -c "irm https://astral.sh/uv/install.ps1 | iex"`

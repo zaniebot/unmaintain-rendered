@@ -13,14 +13,14 @@ head: charlie/xpu
 created_at: 2025-06-20T21:00:35Z
 updated_at: 2025-06-21T00:33:22Z
 url: https://github.com/astral-sh/uv/pull/14172
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:03Z
 ```
 
 # Add XPU to `--torch-backend`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-20 21:00_
+_@charliermarsh_
 
 ## Summary
 

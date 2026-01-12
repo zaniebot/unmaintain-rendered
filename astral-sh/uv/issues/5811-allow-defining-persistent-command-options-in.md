@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-06T10:48:14Z
 updated_at: 2024-08-09T13:33:41Z
 url: https://github.com/astral-sh/uv/issues/5811
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Allow defining persistent command options in `pyproject.toml`
 
 ---
 
-_Issue opened by @chrisrodrigue on 2024-08-06 10:48_
+_@chrisrodrigue_
 
 I’m wishing for a way to specify persistent options for `uv` commands in `pyproject.toml`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-17T00:27:00Z
 updated_at: 2023-05-17T00:35:59Z
 url: https://github.com/astral-sh/ruff/issues/4462
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Support for isorts add import functionality
 
 ---
 
-_Issue opened by @gaborbernat on 2023-05-17 00:27_
+_@gaborbernat_
 
 https://pycqa.github.io/isort/docs/configuration/options.html#add-imports
 example use case to add the import annotations:

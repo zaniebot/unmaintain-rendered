@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-06T13:01:28Z
 updated_at: 2025-03-06T13:01:28Z
 url: https://github.com/astral-sh/uv/issues/12002
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # Installing NumPy starts OpenBLAS/OpenMP in the uv process
 
 ---
 
-_Issue opened by @thormick on 2025-03-06 13:01_
+_@thormick_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-07T08:13:03Z
 updated_at: 2024-01-10T21:25:10Z
 url: https://github.com/astral-sh/ruff/issues/4266
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # providing settings for rules which are not generated should produce a warning
 
 ---
 
-_Issue opened by @joaompinto on 2023-05-07 08:13_
+_@joaompinto_
 
 
 ```toml

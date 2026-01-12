@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-28T21:21:57Z
 updated_at: 2024-09-02T07:33:10Z
 url: https://github.com/astral-sh/ruff/issues/13143
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # docstring-missing-returns (`DOC201`) reports on pytest fixtures
 
 ---
 
-_Issue opened by @tjkuson on 2024-08-28 21:21_
+_@tjkuson_
 
 Running `ruff check --select DOC201 --preview --isolated` (Ruff version 0.6.2) on
 

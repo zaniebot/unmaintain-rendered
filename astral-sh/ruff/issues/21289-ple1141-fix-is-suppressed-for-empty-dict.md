@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-05T21:19:03Z
 updated_at: 2025-11-21T22:07:20Z
 url: https://github.com/astral-sh/ruff/issues/21289
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PLE1141 fix is suppressed for empty `dict`
 
 ---
 
-_Issue opened by @dscorbett on 2025-11-05 21:19_
+_@dscorbett_
 
 ### Summary
 

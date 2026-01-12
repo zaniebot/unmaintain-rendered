@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-24T13:47:33Z
 updated_at: 2023-04-30T20:57:43Z
 url: https://github.com/astral-sh/ruff/issues/4078
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Broken refactor from UP032
 
 ---
 
-_Issue opened by @ionelmc on 2023-04-24 13:47_
+_@ionelmc_
 
 This:
 ```py

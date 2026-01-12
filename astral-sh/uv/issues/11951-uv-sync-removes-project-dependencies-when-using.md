@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-04T15:11:15Z
 updated_at: 2025-03-04T15:12:02Z
 url: https://github.com/astral-sh/uv/issues/11951
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # `uv sync` removes `[project.dependencies]` when using scikit-build-core as build backend
 
 ---
 
-_Issue opened by @mann-patwa on 2025-03-04 15:11_
+_@mann-patwa_
 
 ### Question
 

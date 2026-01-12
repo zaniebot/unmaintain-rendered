@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-31T20:58:40Z
 updated_at: 2025-02-01T17:05:23Z
 url: https://github.com/astral-sh/ruff/issues/15860
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # F401 raised when type is used in Generic
 
 ---
 
-_Issue opened by @vovchic17 on 2025-01-31 20:58_
+_@vovchic17_
 
 ### Description
 

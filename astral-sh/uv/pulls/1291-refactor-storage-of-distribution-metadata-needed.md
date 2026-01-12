@@ -13,14 +13,14 @@ head: zb/refactor-dist
 created_at: 2024-02-13T02:14:21Z
 updated_at: 2024-02-13T04:19:22Z
 url: https://github.com/astral-sh/uv/pull/1291
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:34Z
 ```
 
 # Refactor storage of distribution metadata needed in resolver
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-13 02:14_
+_@zanieb_
 
 Follows #1290 and https://github.com/astral-sh/puffin/pull/912 with some minor clean-up.
 

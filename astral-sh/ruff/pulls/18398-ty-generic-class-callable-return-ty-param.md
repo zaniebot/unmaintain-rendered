@@ -12,14 +12,14 @@ head: generic-class-callable-return-ty-param-infer
 created_at: 2025-05-31T00:41:32Z
 updated_at: 2025-07-16T21:12:26Z
 url: https://github.com/astral-sh/ruff/pull/18398
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # [ty] Generic class callable return ty param infererence
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-05-31 00:41_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-06-27T12:22:02Z
 updated_at: 2022-09-22T15:16:40Z
 url: https://github.com/clap-rs/clap/issues/3873
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Return help message as String for Command
 
 ---
 
-_Issue opened by @ychiguer on 2022-06-27 12:22_
+_@ychiguer_
 
 ### Please complete the following tasks
 

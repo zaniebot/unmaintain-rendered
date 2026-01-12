@@ -13,14 +13,14 @@ head: sort-json-schema-pre-commit
 created_at: 2024-02-29T15:45:30Z
 updated_at: 2024-02-29T18:33:23Z
 url: https://github.com/astral-sh/ruff/pull/10173
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Fix the sorting of the schema submited to schemastore
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-29 15:45_
+_@MichaReiser_
 
 ## Summary
 

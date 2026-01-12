@@ -13,14 +13,14 @@ head: charlie/is
 created_at: 2024-02-01T18:42:27Z
 updated_at: 2024-02-01T19:05:20Z
 url: https://github.com/astral-sh/ruff/pull/9760
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Use consistent method to detect preview enablement
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-01 18:42_
+_@charliermarsh_
 
 I missed these two in the v0.2.0 stabilizations because they use a match instead of the dedicated method.
 

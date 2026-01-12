@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-10T11:20:21Z
 updated_at: 2025-09-22T11:26:09Z
 url: https://github.com/astral-sh/uv/issues/15199
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # Non-base packages don't collapse versions in resolution conflict traces.
 
 ---
 
-_Issue opened by @konstin on 2025-08-10 11:20_
+_@konstin_
 
 **Summary** Error messages for non-base package, i.e. those with a marker, a badly verbose. 
 

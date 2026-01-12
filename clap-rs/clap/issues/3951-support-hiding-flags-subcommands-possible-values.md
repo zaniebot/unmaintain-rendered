@@ -14,14 +14,14 @@ assignees: []
 created_at: 2022-07-19T14:17:03Z
 updated_at: 2024-07-26T14:09:39Z
 url: https://github.com/clap-rs/clap/issues/3951
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Support hiding flags/subcommands/possible values/aliases for native compeletions
 
 ---
 
-_Issue opened by @epage on 2022-07-19 14:17_
+_@epage_
 
 We shouldn't offer hidden options by default but complete them if the user starts typing them
 

@@ -13,14 +13,14 @@ head: docs-editor-vim-ale-fix
 created_at: 2024-09-13T16:24:50Z
 updated_at: 2025-11-18T14:23:09Z
 url: https://github.com/astral-sh/ruff/pull/13348
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Fix documentation for editor vim plugin ALE
 
 ---
 
-_Pull request opened by @FinchPowers on 2024-09-13 16:24_
+_@FinchPowers_
 
 The documented configuration did not work. On failure, ALE suggest to run `ALEFixSuggest`, into with it documents the working configuration key
 

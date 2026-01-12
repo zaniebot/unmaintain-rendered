@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-06T15:25:23Z
 updated_at: 2025-05-21T19:05:44Z
 url: https://github.com/astral-sh/ruff/issues/16537
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # F841 treats `except` bindings differently from all other bindings
 
 ---
 
-_Issue opened by @dscorbett on 2025-03-06 15:25_
+_@dscorbett_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: bc/fix-ignore-var-parameters
 created_at: 2025-04-30T15:41:53Z
 updated_at: 2025-04-30T16:21:41Z
 url: https://github.com/astral-sh/ruff/pull/17740
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # Fix example syntax for pydocstyle ignore_var_parameters option
 
 ---
 
-_Pull request opened by @brendancooley on 2025-04-30 15:41_
+_@brendancooley_
 
 ## Summary
 

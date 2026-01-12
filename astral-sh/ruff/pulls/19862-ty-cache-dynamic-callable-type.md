@@ -13,14 +13,14 @@ head: perf-callable-type
 created_at: 2025-08-11T11:33:19Z
 updated_at: 2025-11-16T11:47:12Z
 url: https://github.com/astral-sh/ruff/pull/19862
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] Cache dynamic callable type
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-11 11:33_
+_@MichaReiser_
 
 ## Summary
 

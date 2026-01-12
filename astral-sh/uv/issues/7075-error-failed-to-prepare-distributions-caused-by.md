@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-05T10:34:40Z
 updated_at: 2024-10-21T21:43:07Z
 url: https://github.com/astral-sh/uv/issues/7075
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # error: Failed to prepare distributions, Caused by: Failed to fetch wheel: sentence-transformers==2.2.2
 
 ---
 
-_Issue opened by @B-M-S-West on 2024-09-05 10:34_
+_@B-M-S-West_
 
 I'm currently setting up a new project using uv following using
 uv init

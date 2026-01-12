@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-09T19:57:24Z
 updated_at: 2025-06-09T19:59:01Z
 url: https://github.com/astral-sh/ruff/issues/18597
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Deprecate `pytest-warns-without-warning` (`PT029`)?
 
 ---
 
-_Issue opened by @ntBre on 2025-06-09 19:57_
+_@ntBre_
 
 While preparing to stabilize the rule in 0.12, we realized that at a minimum the rationale in the rule docs:
 

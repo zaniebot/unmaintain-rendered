@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-05T15:17:44Z
 updated_at: 2025-03-08T13:53:32Z
 url: https://github.com/astral-sh/uv/issues/11980
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:51Z
 ```
 
 # `!uv add` not work
 
 ---
 
-_Issue opened by @millievn on 2025-03-05 15:17_
+_@millievn_
 
 `!uv add` not work as expected on mac.  
 the terminal always return previous command

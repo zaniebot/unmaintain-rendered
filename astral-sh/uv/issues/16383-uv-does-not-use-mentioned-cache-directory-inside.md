@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-21T11:39:39Z
 updated_at: 2025-10-22T05:45:16Z
 url: https://github.com/astral-sh/uv/issues/16383
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:30Z
 ```
 
 # uv does not use mentioned cache directory inside of docker containers when using cache mount.
 
 ---
 
-_Issue opened by @vaibhavmano on 2025-10-21 11:39_
+_@vaibhavmano_
 
 ### Summary
 

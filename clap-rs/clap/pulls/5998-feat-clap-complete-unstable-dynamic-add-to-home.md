@@ -11,14 +11,14 @@ head: home-dir-symbol
 created_at: 2025-05-10T15:35:18Z
 updated_at: 2025-08-26T19:46:33Z
 url: https://github.com/clap-rs/clap/pull/5998
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat(clap-complete/unstable-dynamic): add '~' to HOME dir completion support
 
 ---
 
-_Pull request opened by @eatradish on 2025-05-10 15:35_
+_@eatradish_
 
 if input starts with '~' will complete to `/home/USER`
 

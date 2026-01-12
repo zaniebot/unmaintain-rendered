@@ -13,14 +13,14 @@ head: not_in_nav
 created_at: 2023-07-04T01:27:37Z
 updated_at: 2023-09-19T12:29:56Z
 url: https://github.com/astral-sh/ruff/pull/5498
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Use MkDocs' `not_in_nav`
 
 ---
 
-_Pull request opened by @MicaelJarniac on 2023-07-04 01:27_
+_@MicaelJarniac_
 
 Closes #5497
 Needs MkDocs 1.5 to be released.

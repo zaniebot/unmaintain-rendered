@@ -13,14 +13,14 @@ head: charlie/sql
 created_at: 2023-08-14T19:24:01Z
 updated_at: 2023-08-14T20:04:42Z
 url: https://github.com/astral-sh/ruff/pull/6570
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Expand documentation around flake8-type-checking rules for SQLAlchemy
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-14 19:24_
+_@charliermarsh_
 
 ## Summary
 

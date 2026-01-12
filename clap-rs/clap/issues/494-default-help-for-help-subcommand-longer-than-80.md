@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-05-05T00:03:28Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/494
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Default help for "help" subcommand longer than 80 columns
 
 ---
 
-_Issue opened by @joshtriplett on 2016-05-05 00:03_
+_@joshtriplett_
 
 The help for the "help" subcommand runs longer than 80 columns:
 

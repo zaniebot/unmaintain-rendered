@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T12:21:29Z
 updated_at: 2025-03-07T19:49:57Z
 url: https://github.com/astral-sh/ruff/issues/16551
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Allow custom exceptions to N806, N815, N816
 
 ---
 
-_Issue opened by @janosh on 2025-03-07 12:21_
+_@janosh_
 
 ### Summary
 

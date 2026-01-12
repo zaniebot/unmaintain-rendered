@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-19T07:10:04Z
 updated_at: 2025-06-19T09:11:39Z
 url: https://github.com/astral-sh/ruff/issues/18785
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add version-aware autofix for RUF063 (access-annotations-from-class-dict)
 
 ---
 
-_Issue opened by @dericcrago on 2025-06-19 07:10_
+_@dericcrago_
 
 ### Summary
 

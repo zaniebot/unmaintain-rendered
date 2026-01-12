@@ -15,14 +15,14 @@ head: ruf060-use-helper-function
 created_at: 2025-09-04T19:13:22Z
 updated_at: 2025-09-04T20:28:55Z
 url: https://github.com/astral-sh/ruff/pull/20249
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [`ruff`] Use helper function for empty f-string detection in `in-empty-collection` (`RUF060`)
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-09-04 19:13_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

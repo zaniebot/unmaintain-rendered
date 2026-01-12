@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-18T13:43:46Z
 updated_at: 2025-06-18T14:02:22Z
 url: https://github.com/astral-sh/ruff/issues/18752
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`flake8-use-pathlib`] Autofixes for `PTH` rules 
 
 ---
 
-_Issue opened by @chirizxc on 2025-06-18 13:43_
+_@chirizxc_
 
 ### Summary
 

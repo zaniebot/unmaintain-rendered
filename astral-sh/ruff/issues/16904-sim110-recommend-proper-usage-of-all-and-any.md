@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-21T19:57:10Z
 updated_at: 2025-03-31T18:32:16Z
 url: https://github.com/astral-sh/ruff/issues/16904
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # SIM110: Recommend proper usage of `all` and `any`
 
 ---
 
-_Issue opened by @davfsa on 2025-03-21 19:57_
+_@davfsa_
 
 ### Summary
 

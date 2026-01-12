@@ -13,14 +13,14 @@ head: union-context-inference
 created_at: 2026-01-06T22:24:10Z
 updated_at: 2026-01-09T15:38:16Z
 url: https://github.com/astral-sh/ruff/pull/22426
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] retry generic call inference per union arm
 
 ---
 
-_Pull request opened by @Hugo-Polloli on 2026-01-06 22:24_
+_@Hugo-Polloli_
 
 ## Summary
 

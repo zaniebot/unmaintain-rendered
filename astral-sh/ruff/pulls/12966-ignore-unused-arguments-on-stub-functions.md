@@ -13,14 +13,14 @@ head: charlie/stu
 created_at: 2024-08-18T22:55:33Z
 updated_at: 2024-08-18T23:21:35Z
 url: https://github.com/astral-sh/ruff/pull/12966
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Ignore unused arguments on stub functions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-18 22:55_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-25T10:08:56Z
 updated_at: 2024-12-22T16:35:26Z
 url: https://github.com/astral-sh/uv/issues/9413
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:49Z
 ```
 
 # Installation fails for statsforecast due to llvmlite Python version constraint
 
 ---
 
-_Issue opened by @asdf8601 on 2024-11-25 10:08_
+_@asdf8601_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

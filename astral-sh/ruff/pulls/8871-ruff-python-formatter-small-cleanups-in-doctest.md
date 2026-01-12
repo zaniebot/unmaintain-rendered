@@ -13,14 +13,14 @@ head: ag/fmt/pr8811-review-response
 created_at: 2023-11-28T16:49:55Z
 updated_at: 2023-11-28T23:43:09Z
 url: https://github.com/astral-sh/ruff/pull/8871
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # ruff_python_formatter: small cleanups in doctest formatting
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-11-28 16:49_
+_@BurntSushi_
 
 This PR contains a few small clean-ups that are responses to @MichaReiser's review of my #8811 PR.
 

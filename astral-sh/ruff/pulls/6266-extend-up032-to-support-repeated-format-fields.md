@@ -13,14 +13,14 @@ head: UP032-repeated
 created_at: 2023-08-02T07:43:22Z
 updated_at: 2023-08-02T19:30:51Z
 url: https://github.com/astral-sh/ruff/pull/6266
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Extend `UP032` to support repeated format fields
 
 ---
 
-_Pull request opened by @harupy on 2023-08-02 07:43_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

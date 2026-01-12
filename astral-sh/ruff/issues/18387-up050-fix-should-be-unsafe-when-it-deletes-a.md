@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-30T17:15:50Z
 updated_at: 2025-06-03T13:10:16Z
 url: https://github.com/astral-sh/ruff/issues/18387
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # UP050 fix should be unsafe when it deletes a comment
 
 ---
 
-_Issue opened by @dscorbett on 2025-05-30 17:15_
+_@dscorbett_
 
 ### Summary
 

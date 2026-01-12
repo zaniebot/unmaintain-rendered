@@ -14,14 +14,14 @@ head: gankra/fix-cont
 created_at: 2025-08-19T19:50:48Z
 updated_at: 2025-08-20T06:03:16Z
 url: https://github.com/astral-sh/ruff/pull/19994
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] Fix namespace packages that behave like partial stubs
 
 ---
 
-_Pull request opened by @Gankra on 2025-08-19 19:50_
+_@Gankra_
 
 In implementing partial stubs I had observed that this continue in the namespace package code seemed erroneous since the same continue for partial stubs didn't work. Unfortunately I wasn't confident enough to push on that hunch. Fortunately I remembered that hunch to make this an easy fix.
 

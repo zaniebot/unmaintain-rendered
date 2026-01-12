@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-16T00:11:12Z
 updated_at: 2024-10-16T23:34:22Z
 url: https://github.com/astral-sh/uv/issues/8232
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # How can I test that my package will do the right thing when it is installed?
 
 ---
 
-_Issue opened by @vedantroy on 2024-10-16 00:11_
+_@vedantroy_
 
 I have written a simple Python package -- is there a way to test that people will be able to import it (if they install it from PyPi, etc.), and call the expected functions -- without me having to publish the package to the test PyPi registry.
 

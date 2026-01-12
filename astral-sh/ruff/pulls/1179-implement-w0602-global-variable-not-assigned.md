@@ -12,14 +12,14 @@ head: charlie/W0602
 created_at: 2022-12-10T16:33:19Z
 updated_at: 2022-12-10T16:33:25Z
 url: https://github.com/astral-sh/ruff/pull/1179
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement W0602 (global-variable-not-assigned)
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-10 16:33_
+_@charliermarsh_
 
 _No description provided._
 

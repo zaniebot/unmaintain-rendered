@@ -12,14 +12,14 @@ head: charlie/parallel-install
 created_at: 2023-10-10T19:21:25Z
 updated_at: 2023-10-11T03:46:31Z
 url: https://github.com/astral-sh/uv/pull/84
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:44Z
 ```
 
 # Parallelize wheel installations with Rayon
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-10 19:21_
+_@charliermarsh_
 
 It looks like using _either_ async Rust with a `JoinSet` _or_ parallelizing a fixed threadpool with Rayon provide about a ~5% speed-up over our current serial approach:
 

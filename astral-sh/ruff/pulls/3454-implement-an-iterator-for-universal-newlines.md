@@ -12,14 +12,14 @@ head: charlie/universal-newlines
 created_at: 2023-03-12T04:29:10Z
 updated_at: 2023-03-13T04:01:31Z
 url: https://github.com/astral-sh/ruff/pull/3454
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Implement an iterator for universal newlines
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-12 04:29_
+_@charliermarsh_
 
 # Summary
 

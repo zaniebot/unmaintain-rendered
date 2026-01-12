@@ -13,14 +13,14 @@ head: charlie/norm
 created_at: 2023-11-12T01:12:10Z
 updated_at: 2023-11-27T07:02:23Z
 url: https://github.com/astral-sh/ruff/pull/8624
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Compare formatted and unformatted ASTs during formatter tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-12 01:12_
+_@charliermarsh_
 
 ## Summary
 

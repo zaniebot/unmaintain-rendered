@@ -14,14 +14,14 @@ head: charlie/sha-strip
 created_at: 2024-08-15T00:01:05Z
 updated_at: 2024-08-15T00:12:34Z
 url: https://github.com/astral-sh/uv/pull/6097
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:12Z
 ```
 
 # Strip SHA when constructing package source
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-15 00:01_
+_@charliermarsh_
 
 ## Summary
 

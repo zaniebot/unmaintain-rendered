@@ -14,14 +14,14 @@ head: micha/diagnostic-id
 created_at: 2024-12-09T13:13:20Z
 updated_at: 2024-12-10T21:29:20Z
 url: https://github.com/astral-sh/ruff/pull/14869
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Typed diagnostic id
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-09 13:13_
+_@MichaReiser_
 
 ## Summary
 

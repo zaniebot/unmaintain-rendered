@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-05T14:55:35Z
 updated_at: 2025-12-05T23:05:47Z
 url: https://github.com/astral-sh/ty/issues/1777
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Use signature of `__init_subclass__` of superclasses to inform keyword-argument completion suggestions inside class definitions
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-05 14:55_
+_@AlexWaygood_
 
 In this snippet, the class definition `Bar` will fail because `Foo.__init_subclass__` states that subclasses must provide the `special_keyword` keyword argument when you inherit from `Foo`:
 

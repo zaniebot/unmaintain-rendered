@@ -14,14 +14,14 @@ head: alex/stdlib-fns
 created_at: 2024-09-02T15:14:06Z
 updated_at: 2024-09-05T15:27:07Z
 url: https://github.com/astral-sh/ruff/pull/13215
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Improve detection of whether a symbol refers to a builtin exception
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-02 15:14_
+_@AlexWaygood_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-04-21T05:22:50Z
 updated_at: 2022-12-28T20:09:10Z
 url: https://github.com/clap-rs/clap/issues/937
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # What is the correct way to do cargo subcommands?
 
 ---
 
-_Issue opened by @golddranks on 2017-04-21 05:22_
+_@golddranks_
 
 I have a crate `cargo-flamegraph` for which I'm trying to implement the command line argument parsing. It is used like this:
 

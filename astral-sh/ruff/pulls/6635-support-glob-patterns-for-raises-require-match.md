@@ -13,14 +13,14 @@ head: raises-match-glob
 created_at: 2023-08-16T23:26:59Z
 updated_at: 2023-08-17T02:51:16Z
 url: https://github.com/astral-sh/ruff/pull/6635
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Support glob patterns for `raises_require_match_for` and `raises_require_match_for`
 
 ---
 
-_Pull request opened by @harupy on 2023-08-16 23:26_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: dhruv/lhs-error-handling
 created_at: 2024-03-31T04:23:31Z
 updated_at: 2024-04-03T08:50:24Z
 url: https://github.com/astral-sh/ruff/pull/10679
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Add precedence error handling in parsing LHS expression
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-31 04:23_
+_@dhruvmanila_
 
 ## Summary
 

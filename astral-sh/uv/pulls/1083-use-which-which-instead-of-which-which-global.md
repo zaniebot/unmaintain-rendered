@@ -13,14 +13,14 @@ head: konsti/which-which-which
 created_at: 2024-01-24T21:06:07Z
 updated_at: 2024-01-25T00:35:58Z
 url: https://github.com/astral-sh/uv/pull/1083
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:24Z
 ```
 
 # Use `which::which` instead of `which::which_global`
 
 ---
 
-_Pull request opened by @konstin on 2024-01-24 21:06_
+_@konstin_
 
 `which::which_global` does not resolve relative paths, which we want to support, while `which::which` does.
 

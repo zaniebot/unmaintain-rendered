@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-26T19:00:46Z
 updated_at: 2024-07-18T20:21:03Z
 url: https://github.com/astral-sh/ruff/issues/1385
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Upload WASM packages for each release
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-26 19:00_
+_@charliermarsh_
 
 _No description provided._
 

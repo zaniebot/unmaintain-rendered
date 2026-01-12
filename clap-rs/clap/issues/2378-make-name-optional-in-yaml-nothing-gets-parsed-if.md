@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-03-02T15:20:15Z
 updated_at: 2021-03-04T11:22:06Z
 url: https://github.com/clap-rs/clap/issues/2378
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Make "name" optional in YAML -- nothing gets parsed if it's left out
 
 ---
 
-_Issue opened by @jaques-sam on 2021-03-02 15:20_
+_@jaques-sam_
 
 ### Please complete the following tasks
 

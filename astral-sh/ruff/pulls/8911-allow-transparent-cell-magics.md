@@ -13,14 +13,14 @@ head: dhruv/cell-magics
 created_at: 2023-11-29T21:26:14Z
 updated_at: 2023-12-07T20:15:45Z
 url: https://github.com/astral-sh/ruff/pull/8911
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Allow transparent cell magics
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-29 21:26_
+_@dhruvmanila_
 
 ## Summary
 

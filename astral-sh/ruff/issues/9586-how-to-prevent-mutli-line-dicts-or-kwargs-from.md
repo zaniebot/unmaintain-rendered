@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-19T23:46:00Z
 updated_at: 2024-01-20T00:57:40Z
 url: https://github.com/astral-sh/ruff/issues/9586
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # How to prevent mutli-line dicts or kwargs from being collapsed into single line?
 
 ---
 
-_Issue opened by @whalesalad on 2024-01-19 23:46_
+_@whalesalad_
 
 Here are a few examples:
 

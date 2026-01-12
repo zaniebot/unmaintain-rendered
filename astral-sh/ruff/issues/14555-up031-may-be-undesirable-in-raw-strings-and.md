@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-23T08:30:23Z
 updated_at: 2024-11-26T14:53:36Z
 url: https://github.com/astral-sh/ruff/issues/14555
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # UP031 may be undesirable in raw strings and regular expressions
 
 ---
 
-_Issue opened by @neutrinoceros on 2024-11-23 08:30_
+_@neutrinoceros_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

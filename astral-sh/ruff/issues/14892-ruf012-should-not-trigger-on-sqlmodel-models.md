@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-10T17:18:59Z
 updated_at: 2024-12-13T04:19:22Z
 url: https://github.com/astral-sh/ruff/issues/14892
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # RUF012 should not trigger on SQLModel models
 
 ---
 
-_Issue opened by @scy on 2024-12-10 17:18_
+_@scy_
 
 [SQLModel](https://sqlmodel.tiangolo.com/) is a project by FastAPI creator Sebastián Ramírez that combines SQLAlchemy models with Pydantic models, allowing you to use Pydantic-validated models for database interactions without duplicating classes.
 

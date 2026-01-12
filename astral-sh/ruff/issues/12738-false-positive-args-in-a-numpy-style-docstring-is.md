@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-08T04:18:37Z
 updated_at: 2024-08-08T06:07:51Z
 url: https://github.com/astral-sh/ruff/issues/12738
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # False positive: `args` in a numpy-style docstring is treated as a section header
 
 ---
 
-_Issue opened by @bzoracler on 2024-08-08 04:18_
+_@bzoracler_
 
 Possibly related to https://github.com/astral-sh/ruff/issues/9426
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-08-09T16:03:05Z
 updated_at: 2022-08-15T16:28:27Z
 url: https://github.com/clap-rs/clap/issues/4046
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `.action(ArgAction::Help)` and `ArgAction::Version` bypass `exclusive(true)`
 
 ---
 
-_Issue opened by @jarkonik on 2022-08-09 16:03_
+_@jarkonik_
 
 ### Please complete the following tasks
 

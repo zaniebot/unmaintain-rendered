@@ -14,14 +14,14 @@ head: gankra/str-types
 created_at: 2025-12-02T17:20:00Z
 updated_at: 2025-12-18T13:32:49Z
 url: https://github.com/astral-sh/ruff/pull/21758
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] Show types of non-trivial string annotations in hovers
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-02 17:20_
+_@Gankra_
 
 ## Summary
 

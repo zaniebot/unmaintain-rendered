@@ -11,14 +11,14 @@ head: tool-outdated
 created_at: 2024-12-04T11:28:57Z
 updated_at: 2025-02-13T13:41:56Z
 url: https://github.com/astral-sh/uv/pull/9636
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:55Z
 ```
 
 # Add `uv tool list --outdated` to show outdated tools
 
 ---
 
-_Pull request opened by @j178 on 2024-12-04 11:28_
+_@j178_
 
 ## Summary
 

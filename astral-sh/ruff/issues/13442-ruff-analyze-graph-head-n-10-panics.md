@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-21T20:28:10Z
 updated_at: 2024-09-23T13:48:45Z
 url: https://github.com/astral-sh/ruff/issues/13442
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `ruff analyze graph | head -n 10` panics
 
 ---
 
-_Issue opened by @tpgillam on 2024-09-21 20:28_
+_@tpgillam_
 
 It seems like `ruff analyze graph` is sometimes unhappy when its output isn't fully consumed.
 

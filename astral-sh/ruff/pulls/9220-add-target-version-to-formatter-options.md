@@ -14,14 +14,14 @@ head: add-target-version-to-formatter-options
 created_at: 2023-12-21T02:48:33Z
 updated_at: 2023-12-21T04:17:46Z
 url: https://github.com/astral-sh/ruff/pull/9220
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Add `target_version` to formatter options
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-21 02:48_
+_@MichaReiser_
 
 ## Summary
 

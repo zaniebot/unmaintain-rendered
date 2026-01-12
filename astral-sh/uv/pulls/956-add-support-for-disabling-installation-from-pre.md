@@ -13,14 +13,14 @@ head: zb/no-binary
 created_at: 2024-01-17T23:09:09Z
 updated_at: 2024-01-19T17:24:28Z
 url: https://github.com/astral-sh/uv/pull/956
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:19Z
 ```
 
 # Add support for disabling installation from pre-built wheels
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-17 23:09_
+_@zanieb_
 
 Adds support for disabling installation from pre-built wheels i.e. the package must be built from source locally. 
 We will still always use pre-built wheels for metadata during resolution.

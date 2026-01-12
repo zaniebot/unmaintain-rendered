@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-21T04:18:15Z
 updated_at: 2026-01-08T15:00:21Z
 url: https://github.com/astral-sh/uv/issues/8405
-synced_at: 2026-01-10T03:11:32Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # please add  feature of  `uv search `  to search  pip  source package 
 
 ---
 
-_Issue opened by @Super1Windcloud on 2024-10-21 04:18_
+_@Super1Windcloud_
 
 #  please add  feature of  `uv search `  to search  pip  source package   
 

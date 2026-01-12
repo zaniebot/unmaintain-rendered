@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-30T16:12:36Z
 updated_at: 2024-02-02T20:06:17Z
 url: https://github.com/astral-sh/uv/issues/520
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Lock package destination directories on install
 
 ---
 
-_Issue opened by @zanieb on 2023-11-30 16:12_
+_@zanieb_
 
 As a follow-up to https://github.com/astral-sh/puffin/pull/516, we should have in-process locks which prevent concurrent writes to a package directory ensuring that we end up with at least one complete package e.g. when installing packages that write files to the same module. Additionally, we should ensure that linking always overrides existing files.
 

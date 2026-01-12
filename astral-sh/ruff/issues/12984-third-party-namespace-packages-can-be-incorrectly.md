@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-19T09:32:31Z
 updated_at: 2025-05-05T16:40:02Z
 url: https://github.com/astral-sh/ruff/issues/12984
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Third-party namespace packages can be incorrectly considered first-party packages by `isort` rules
 
 ---
 
-_Issue opened by @tehkirill on 2024-08-19 09:32_
+_@tehkirill_
 
 Hi, team. Thanks for your hard work.
 

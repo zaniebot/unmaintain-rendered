@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-14T16:04:57Z
 updated_at: 2025-10-14T18:06:56Z
 url: https://github.com/clap-rs/clap/issues/6151
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # clap_builder builds non-deterministically with Bazel
 
 ---
 
-_Issue opened by @rejuvenile on 2025-10-14 16:04_
+_@rejuvenile_
 
 ### Please complete the following tasks
 

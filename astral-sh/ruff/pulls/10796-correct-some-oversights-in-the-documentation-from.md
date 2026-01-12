@@ -13,14 +13,14 @@ head: fix-pylint-doc
 created_at: 2024-04-05T22:43:16Z
 updated_at: 2024-04-05T22:53:23Z
 url: https://github.com/astral-sh/ruff/pull/10796
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Correct some oversights in the documentation from #10756
 
 ---
 
-_Pull request opened by @augustelalande on 2024-04-05 22:43_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

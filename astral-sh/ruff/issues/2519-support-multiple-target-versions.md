@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-03T09:11:30Z
 updated_at: 2023-03-13T23:09:38Z
 url: https://github.com/astral-sh/ruff/issues/2519
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Support multiple target versions
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-02-03 09:11_
+_@JonathanPlasse_
 
 - To implement #2039 we need to support multiple target versions.
 - We should use the minimum target version for pyupgrade.

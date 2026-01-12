@@ -12,14 +12,14 @@ head: refactor-violations
 created_at: 2023-01-26T22:06:24Z
 updated_at: 2023-01-26T22:30:43Z
 url: https://github.com/astral-sh/ruff/pull/2234
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # refactor: move violations to linters
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-26 22:06_
+_@sbrugman_
 
 Continueing on https://github.com/charliermarsh/ruff/pull/2138: violations should be located in the rules
 

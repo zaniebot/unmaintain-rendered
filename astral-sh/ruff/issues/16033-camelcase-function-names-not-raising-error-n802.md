@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-08T00:40:54Z
 updated_at: 2025-02-08T14:35:05Z
 url: https://github.com/astral-sh/ruff/issues/16033
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Camelcase function names not raising error (N802)
 
 ---
 
-_Issue opened by @plandrem on 2025-02-08 00:40_
+_@plandrem_
 
 ### Description
 

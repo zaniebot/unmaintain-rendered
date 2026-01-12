@@ -13,14 +13,14 @@ head: ruff.F401
 created_at: 2024-04-26T22:45:32Z
 updated_at: 2024-05-03T05:15:12Z
 url: https://github.com/astral-sh/ruff/pull/11168
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # F401 - Distinguish between imports we wish to remove and those we wish to make explicit-exports
 
 ---
 
-_Pull request opened by @plredmond on 2024-04-26 22:45_
+_@plredmond_
 
 Resolves #10390 and starts to address #10391
 

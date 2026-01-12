@@ -14,14 +14,14 @@ head: compact_str
 created_at: 2023-12-21T10:34:28Z
 updated_at: 2024-08-12T07:53:43Z
 url: https://github.com/astral-sh/ruff/pull/9229
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Use CompactStr
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-21 10:34_
+_@MichaReiser_
 
 ## Summary
 To get a comparison to `SmolStr` which seems to optimize for 

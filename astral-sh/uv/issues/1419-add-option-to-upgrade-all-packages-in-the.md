@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-16T03:48:14Z
 updated_at: 2025-12-17T21:02:10Z
 url: https://github.com/astral-sh/uv/issues/1419
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Add option to upgrade all packages in the environment, e.g., `upgrade --all`
 
 ---
 
-_Issue opened by @ikrommyd on 2024-02-16 03:48_
+_@ikrommyd_
 
 Something missing from pip is the ability to do `upgrade --all` like conda can do `update --all` in an environment.
 Wrappers around pip that do this are oftentimes slow because python. Given that you already have some resolution strategies available, it would be really nice to see something like that. And it's also gonna be very fast in your case I believe.

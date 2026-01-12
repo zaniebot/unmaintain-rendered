@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-12-09T13:51:14Z
 updated_at: 2019-12-09T15:04:38Z
 url: https://github.com/clap-rs/clap/issues/1604
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Arguments with default values conflict 
 
 ---
 
-_Issue opened by @Dylan-DPC-zz on 2019-12-09 13:51_
+_@Dylan-DPC-zz_
 
 
 

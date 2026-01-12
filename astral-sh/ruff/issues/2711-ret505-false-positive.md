@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-10T05:01:56Z
 updated_at: 2023-02-15T20:51:01Z
 url: https://github.com/astral-sh/ruff/issues/2711
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # RET505 false positive
 
 ---
 
-_Issue opened by @trag1c on 2023-02-10 05:01_
+_@trag1c_
 
 It seems like it's not looking behind enough:
 ```py

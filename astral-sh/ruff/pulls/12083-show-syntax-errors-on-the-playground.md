@@ -13,14 +13,14 @@ head: dhruv/playground-syntax-errors
 created_at: 2024-06-28T05:33:57Z
 updated_at: 2024-06-28T07:36:17Z
 url: https://github.com/astral-sh/ruff/pull/12083
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Show syntax errors on the playground
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-28 05:33_
+_@dhruvmanila_
 
 ## Summary
 

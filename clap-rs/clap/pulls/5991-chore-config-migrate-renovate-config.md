@@ -11,14 +11,14 @@ head: renovate/migrate-config
 created_at: 2025-05-07T11:10:26Z
 updated_at: 2025-05-30T19:42:01Z
 url: https://github.com/clap-rs/clap/pull/5991
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # chore(config): migrate renovate config
 
 ---
 
-_Pull request opened by @renovate on 2025-05-07 11:10_
+_@renovate_
 
 The Renovate config in this repository needs migrating. Typically this is because one or more configuration options you are using have been renamed.
 

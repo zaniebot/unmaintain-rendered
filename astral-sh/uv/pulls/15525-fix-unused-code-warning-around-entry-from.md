@@ -14,14 +14,14 @@ head: konsti/fix-unused-code-warning
 created_at: 2025-08-26T10:19:19Z
 updated_at: 2025-08-26T11:30:48Z
 url: https://github.com/astral-sh/uv/pull/15525
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:47Z
 ```
 
 # Fix unused code warning around `entry_from_constructor`
 
 ---
 
-_Pull request opened by @konstin on 2025-08-26 10:19_
+_@konstin_
 
 _No description provided._
 

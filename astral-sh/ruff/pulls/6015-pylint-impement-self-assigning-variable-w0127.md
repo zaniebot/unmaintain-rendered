@@ -13,14 +13,14 @@ head: self-assigning-variable
 created_at: 2023-07-23T12:05:38Z
 updated_at: 2023-07-24T22:30:41Z
 url: https://github.com/astral-sh/ruff/pull/6015
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # [`pylint`] Impement `self-assigning-variable` (`W0127`)
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-23 12:05_
+_@tjkuson_
 
 ## Summary
 

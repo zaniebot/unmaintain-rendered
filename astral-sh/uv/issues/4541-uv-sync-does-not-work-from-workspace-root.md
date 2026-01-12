@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-26T10:02:03Z
 updated_at: 2024-06-29T16:44:00Z
 url: https://github.com/astral-sh/uv/issues/4541
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # UV sync does not work from workspace root
 
 ---
 
-_Issue opened by @mjclarke94 on 2024-06-26 10:02_
+_@mjclarke94_
 
 `uv sync` bails out early if it sees there is no `[project]` table in `pyproject.toml`, but currently the absence of this table is used to imply that this is the workspace root. 
 

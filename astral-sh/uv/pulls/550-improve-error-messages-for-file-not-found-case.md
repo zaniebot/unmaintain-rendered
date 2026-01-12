@@ -13,14 +13,14 @@ head: charlie/err
 created_at: 2023-12-04T21:25:56Z
 updated_at: 2023-12-04T22:01:52Z
 url: https://github.com/astral-sh/uv/pull/550
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:02Z
 ```
 
 # Improve error messages for 'file not found' case
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-04 21:25_
+_@charliermarsh_
 
 Right now, if you specify a wheel that doesn't exist, you get: `no such file or directory` with no additional context. Oops!
 

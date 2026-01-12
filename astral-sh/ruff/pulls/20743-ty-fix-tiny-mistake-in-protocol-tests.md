@@ -14,14 +14,14 @@ head: david/fix-protocol-tests-mistake
 created_at: 2025-10-07T10:24:53Z
 updated_at: 2025-10-07T11:58:36Z
 url: https://github.com/astral-sh/ruff/pull/20743
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # [ty] Fix tiny mistake in protocol tests
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-07 10:24_
+_@sharkdp_
 
 _No description provided._
 

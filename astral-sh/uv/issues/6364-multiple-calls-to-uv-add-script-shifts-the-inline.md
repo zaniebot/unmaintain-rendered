@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T18:13:31Z
 updated_at: 2024-08-21T20:57:10Z
 url: https://github.com/astral-sh/uv/issues/6364
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Multiple calls to `uv add --script` shifts the inline metadata comment
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-08-21 18:13_
+_@dhruvmanila_
 
 Adding multiple dependencies using `uv add --script test.py "..."` would _shift_ the inline metadata comment by one line. I guess there must be some extra newline which is being added before the comment.
 

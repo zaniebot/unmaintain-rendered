@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-08-15T22:59:32Z
 updated_at: 2025-08-17T21:27:37Z
 url: https://github.com/astral-sh/uv/pull/15321
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:41Z
 ```
 
 # Update build-backend.md
 
 ---
 
-_Pull request opened by @RafalSkolasinski on 2025-08-15 22:59_
+_@RafalSkolasinski_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

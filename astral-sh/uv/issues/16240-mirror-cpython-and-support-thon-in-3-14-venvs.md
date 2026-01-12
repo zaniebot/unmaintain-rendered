@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-10T20:36:58Z
 updated_at: 2025-10-25T23:40:27Z
 url: https://github.com/astral-sh/uv/issues/16240
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # Mirror CPython and support 𝜋thon in 3.14 venvs
 
 ---
 
-_Issue opened by @TimPansino on 2025-10-10 20:36_
+_@TimPansino_
 
 ### Summary
 

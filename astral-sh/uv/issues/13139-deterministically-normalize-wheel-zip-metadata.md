@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-27T22:06:17Z
 updated_at: 2025-05-04T20:50:27Z
 url: https://github.com/astral-sh/uv/issues/13139
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # Deterministically normalize wheel ZIP metadata
 
 ---
 
-_Issue opened by @tabbyrobin on 2025-04-27 22:06_
+_@tabbyrobin_
 
 ### Summary
 

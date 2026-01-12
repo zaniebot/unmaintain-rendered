@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-23T07:05:48Z
 updated_at: 2023-03-23T22:44:04Z
 url: https://github.com/astral-sh/ruff/issues/3678
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Linter panic] ruff 0.0.258: 'internal error: entered unreachable code: Expected docstring to start with a valid triple- or single-quote prefix', crates/ruff_python_ast/src/str.rs:38:5
 
 ---
 
-_Issue opened by @XuehaiPan on 2023-03-23 07:05_
+_@XuehaiPan_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-25T17:55:56Z
 updated_at: 2025-05-08T14:58:42Z
 url: https://github.com/astral-sh/ty/issues/112
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # switch default Python version to latest
 
 ---
 
-_Issue opened by @carljm on 2025-04-25 17:55_
+_@carljm_
 
 If we don't find another Python version to use, our last-resort fallback should be the latest supported, not earliest supported, Python version. This minimizes first-experience false positives; if users need to support older Python versions, they can configure that to opt in to stricter checking.
 

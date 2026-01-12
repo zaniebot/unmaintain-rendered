@@ -13,14 +13,14 @@ head: dhruv/ignore-in-forward-ref
 created_at: 2024-03-25T18:32:00Z
 updated_at: 2024-03-25T18:58:12Z
 url: https://github.com/astral-sh/ruff/pull/10585
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Ignore `Q000`, `Q001` when string is inside forward ref
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-25 18:32_
+_@dhruvmanila_
 
 ## Summary
 

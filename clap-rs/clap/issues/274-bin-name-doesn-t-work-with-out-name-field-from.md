@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-09-23T10:42:33Z
 updated_at: 2018-08-02T03:29:45Z
 url: https://github.com/clap-rs/clap/issues/274
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # bin_name doesn't work with out name field. From YAML
 
 ---
 
-_Issue opened by @XAMPPRocky on 2015-09-23 10:42_
+_@XAMPPRocky_
 
 When I changed the cli.yml file from `name` to `bin_name` the everything outputed to the `help` was changed except the name.
 ## CLI.yml

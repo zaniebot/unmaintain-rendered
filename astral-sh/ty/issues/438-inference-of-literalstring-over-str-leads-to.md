@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-18T03:57:21Z
 updated_at: 2025-05-18T14:11:50Z
 url: https://github.com/astral-sh/ty/issues/438
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Inference of LiteralString over str leads to spurious variance error
 
 ---
 
-_Issue opened by @brk on 2025-05-18 03:57_
+_@brk_
 
 ### Summary
 

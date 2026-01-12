@@ -13,14 +13,14 @@ head: renovate/hyper-util-0.x-lockfile
 created_at: 2024-07-08T00:08:58Z
 updated_at: 2024-07-08T00:25:02Z
 url: https://github.com/astral-sh/uv/pull/4871
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:30Z
 ```
 
 # Update Rust crate hyper-util to v0.1.6
 
 ---
 
-_Pull request opened by @renovate on 2024-07-08 00:08_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-15T14:50:55Z
 updated_at: 2023-06-08T17:13:44Z
 url: https://github.com/astral-sh/ruff/issues/2924
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # warning: output filename collision on windows build
 
 ---
 
-_Issue opened by @messense on 2023-02-15 14:50_
+_@messense_
 
 ```
 warning: output filename collision.

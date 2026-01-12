@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-01-04T19:03:50Z
 updated_at: 2024-01-04T19:03:50Z
 url: https://github.com/clap-rs/clap/issues/5284
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Support subcommand flags in native completion engine
 
 ---
 
-_Issue opened by @epage on 2024-01-04 19:03_
+_@epage_
 
 #3656 added subcommand support but left out pacman-like flag subcommands.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-23T09:32:28Z
 updated_at: 2024-03-23T13:29:37Z
 url: https://github.com/astral-sh/ruff/issues/10534
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # GitHub release for ruff 0.3.4 missing
 
 ---
 
-_Issue opened by @tobbez on 2024-03-23 09:32_
+_@tobbez_
 
 The GitHub release for ruff 0.3.4 appears to be missing.
 

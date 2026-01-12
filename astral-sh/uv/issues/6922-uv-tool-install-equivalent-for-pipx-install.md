@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-01T20:25:32Z
 updated_at: 2024-09-08T13:35:43Z
 url: https://github.com/astral-sh/uv/issues/6922
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # uv tool install equivalent for pipx install --include-deps
 
 ---
 
-_Issue opened by @justin-yan on 2024-09-01 20:25_
+_@justin-yan_
 
 I searched through issues but didn't find anything similar - apologies if there's already an issue that I missed.
 

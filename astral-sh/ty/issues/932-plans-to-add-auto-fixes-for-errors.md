@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-04T00:24:07Z
 updated_at: 2025-08-04T06:19:56Z
 url: https://github.com/astral-sh/ty/issues/932
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Plans to add auto fixes for errors?
 
 ---
 
-_Issue opened by @L1ghtn1ng on 2025-08-04 00:24_
+_@L1ghtn1ng_
 
 ### Question
 

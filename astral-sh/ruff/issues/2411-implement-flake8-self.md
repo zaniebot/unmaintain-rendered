@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T20:25:05Z
 updated_at: 2023-02-02T12:58:16Z
 url: https://github.com/astral-sh/ruff/issues/2411
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement `flake8-self`
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-31 20:25_
+_@ngnpope_
 
 [GitHub](https://github.com/Korijn/flake8-self), [PyPI](https://pypi.org/project/flake8-self/).
 

@@ -14,14 +14,14 @@ head: dhruv/add-db-param
 created_at: 2025-11-28T12:22:57Z
 updated_at: 2025-11-28T12:29:59Z
 url: https://github.com/astral-sh/ruff/pull/21674
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] Add `db` parameter to `Parameters::new` method
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-11-28 12:22_
+_@dhruvmanila_
 
 ## Summary
 

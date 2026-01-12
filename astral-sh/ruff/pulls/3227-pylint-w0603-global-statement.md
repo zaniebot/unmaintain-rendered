@@ -13,14 +13,14 @@ head: plw0603-global-statement
 created_at: 2023-02-25T22:13:24Z
 updated_at: 2023-02-27T15:58:43Z
 url: https://github.com/astral-sh/ruff/pull/3227
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [pylint] W0603: global-statement
 
 ---
 
-_Pull request opened by @igozali on 2023-02-25 22:13_
+_@igozali_
 
 Implements pylint rule [W0603: global-statement](https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/global-statement.html).
 

@@ -13,14 +13,14 @@ head: konsti/smaller-dist
 created_at: 2025-01-08T11:57:31Z
 updated_at: 2025-01-08T15:50:29Z
 url: https://github.com/astral-sh/uv/pull/10389
-synced_at: 2026-01-10T11:44:46Z
+synced_at: 2026-01-12T16:09:16Z
 ```
 
 # Shrink `Dist` from 352 to 288 bytes
 
 ---
 
-_Pull request opened by @konstin on 2025-01-08 11:57_
+_@konstin_
 
 Found this when looking at #10385. Since we're constructing a lot of `Dist`s, we should keep it small.
 

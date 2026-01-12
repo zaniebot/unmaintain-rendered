@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T22:52:58Z
 updated_at: 2024-09-21T19:06:34Z
 url: https://github.com/astral-sh/uv/issues/7606
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 #  v0.4.14 seems to have resolver issues
 
 ---
 
-_Issue opened by @stas00 on 2024-09-20 22:52_
+_@stas00_
 
 our `uv pip compile -v setup.py  --extra replug` has just started failing on CI once `uv` has been updated:
 

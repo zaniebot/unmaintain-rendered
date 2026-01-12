@@ -12,14 +12,14 @@ head: normalize-docs-links
 created_at: 2023-02-23T19:47:47Z
 updated_at: 2023-02-23T22:23:42Z
 url: https://github.com/astral-sh/ruff/pull/3190
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Normalize relative markdown links
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-02-23 19:47_
+_@JonathanPlasse_
 
 Use `/docs/` instead of `https://beta.ruff.rs/docs/`
 Fix `hierarchical and cascading configuration` links

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-10T18:46:49Z
 updated_at: 2023-07-14T15:46:23Z
 url: https://github.com/astral-sh/ruff/issues/5664
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # B904 only triggered for error literals
 
 ---
 
-_Issue opened by @janosh on 2023-07-10 18:46_
+_@janosh_
 
 ```py
 err = ValueError("msg")

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-08T15:27:12Z
 updated_at: 2024-06-17T19:03:23Z
 url: https://github.com/astral-sh/uv/issues/4162
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Keyring stderr is not displayed
 
 ---
 
-_Issue opened by @Rogdham on 2024-06-08 15:27_
+_@Rogdham_
 
 When calling `keyring` as a subprocess, its `stderr` is hidden when using `uv` version 0.2.9 on Linux while `pip` version 24.0 displays it to the user.
 

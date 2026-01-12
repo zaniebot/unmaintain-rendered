@@ -14,14 +14,14 @@ head: syntax-error
 created_at: 2025-05-06T17:31:30Z
 updated_at: 2025-05-07T18:19:44Z
 url: https://github.com/astral-sh/ruff/pull/17893
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [parser] Flag single unparenthesized generator expr with trailing comma in arguments.
 
 ---
 
-_Pull request opened by @abhijeetbodas2001 on 2025-05-06 17:31_
+_@abhijeetbodas2001_
 
 Fixes #17867
 

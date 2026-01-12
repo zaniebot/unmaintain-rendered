@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-30T22:35:16Z
 updated_at: 2025-07-01T00:29:51Z
 url: https://github.com/astral-sh/ty/issues/732
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # ty can't resolve attributes in `msgspec`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-06-30 22:35_
+_@charliermarsh_
 
 For example:
 

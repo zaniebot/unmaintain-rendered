@@ -13,14 +13,14 @@ head: test-snapshots
 created_at: 2023-04-07T17:34:30Z
 updated_at: 2023-04-11T09:16:07Z
 url: https://github.com/astral-sh/ruff/pull/3906
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Pretty print `Diagnostic`s in snapshot tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-07 17:34_
+_@MichaReiser_
 
 This PR extends the `TextEmitter` to print diffs for fixes (explicit opt-in) and changes the snapshot tests to use the `TextEmitter` instead of `assert_yaml_snapshot`. 
 

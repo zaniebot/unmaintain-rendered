@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-20T10:30:44Z
 updated_at: 2025-11-21T08:44:39Z
 url: https://github.com/astral-sh/uv/issues/16786
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # weird behaviour of uv sync and the uv cache
 
 ---
 
-_Issue opened by @kforner on 2025-11-20 10:30_
+_@kforner_
 
 ### Summary
 

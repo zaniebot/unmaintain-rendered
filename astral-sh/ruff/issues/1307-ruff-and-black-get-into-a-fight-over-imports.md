@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-21T00:47:18Z
 updated_at: 2022-12-21T01:34:25Z
 url: https://github.com/astral-sh/ruff/issues/1307
-synced_at: 2026-01-10T12:05:25Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # ruff and black get into a fight over imports?
 
 ---
 
-_Issue opened by @alex on 2022-12-21 00:47_
+_@alex_
 
 Hi, I'm trying out using ruff on https://github.com/pyca/cryptography
 

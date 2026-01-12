@@ -13,14 +13,14 @@ head: invalid-envvar-value-pylint
 created_at: 2023-03-12T17:49:08Z
 updated_at: 2023-03-12T21:49:19Z
 url: https://github.com/astral-sh/ruff/pull/3467
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # pylint: E1507 invalid-envvar-value
 
 ---
 
-_Pull request opened by @latonis on 2023-03-12 17:49_
+_@latonis_
 
 Rule reference: https://pycodequ.al/docs/pylint-messages/e1507-invalid-envvar-value.html
 

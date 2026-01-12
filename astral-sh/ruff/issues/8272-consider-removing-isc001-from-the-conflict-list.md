@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-27T07:20:44Z
 updated_at: 2025-01-09T17:10:09Z
 url: https://github.com/astral-sh/ruff/issues/8272
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Consider removing `ISC001` from the conflict list with ruff format
 
 ---
 
-_Issue opened by @yakMM on 2023-10-27 07:20_
+_@yakMM_
 
 Reminder on the rule: [Checks for implicitly concatenated strings on a single line.](https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/)
 

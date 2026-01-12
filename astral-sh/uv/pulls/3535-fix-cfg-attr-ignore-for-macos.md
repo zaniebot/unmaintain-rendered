@@ -13,14 +13,14 @@ head: charlie/mac
 created_at: 2024-05-13T01:37:37Z
 updated_at: 2024-05-13T01:53:05Z
 url: https://github.com/astral-sh/uv/pull/3535
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:42Z
 ```
 
 # Fix `cfg_attr` ignore for macOS
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-13 01:37_
+_@charliermarsh_
 
 _No description provided._
 

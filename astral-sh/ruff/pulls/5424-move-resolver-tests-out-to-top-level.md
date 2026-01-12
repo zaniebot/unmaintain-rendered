@@ -13,14 +13,14 @@ head: charlie/tests
 created_at: 2023-06-28T16:51:50Z
 updated_at: 2023-06-28T17:25:38Z
 url: https://github.com/astral-sh/ruff/pull/5424
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Move resolver tests out to top-level
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-28 16:51_
+_@charliermarsh_
 
 ## Summary
 

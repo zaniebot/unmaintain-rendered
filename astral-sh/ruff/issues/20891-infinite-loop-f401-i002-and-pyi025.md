@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-15T13:50:13Z
 updated_at: 2025-10-28T16:59:22Z
 url: https://github.com/astral-sh/ruff/issues/20891
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [Infinite loop] F401, I002, and PYI025
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-15 13:50_
+_@dscorbett_
 
 ### Summary
 

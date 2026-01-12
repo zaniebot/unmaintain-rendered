@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-26T15:02:17Z
 updated_at: 2024-10-25T16:36:07Z
 url: https://github.com/astral-sh/ruff/issues/13528
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `ruff analyze graph` does not understand submodule imports
 
 ---
 
-_Issue opened by @minmax on 2024-09-26 15:02_
+_@minmax_
 
 ruff 0.6.8
 

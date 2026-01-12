@@ -12,14 +12,14 @@ head: charlie/shebang
 created_at: 2023-05-17T14:56:35Z
 updated_at: 2023-05-17T16:49:02Z
 url: https://github.com/astral-sh/ruff/pull/4473
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Allow shebang comments at start-of-file
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-17 14:56_
+_@charliermarsh_
 
 ## Summary
 

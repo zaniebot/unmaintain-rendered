@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-27T03:37:43Z
 updated_at: 2025-06-30T11:11:54Z
 url: https://github.com/astral-sh/ty/issues/713
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [possibly-unbound-attribute] False positive on result from while loop
 
 ---
 
-_Issue opened by @JP-Ellis on 2025-06-27 03:37_
+_@JP-Ellis_
 
 ## Summary
 

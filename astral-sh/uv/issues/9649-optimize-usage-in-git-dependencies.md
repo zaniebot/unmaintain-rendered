@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-04T22:05:58Z
 updated_at: 2024-12-06T00:13:29Z
 url: https://github.com/astral-sh/uv/issues/9649
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:55Z
 ```
 
 # Optimize '#' usage in git dependencies
 
 ---
 
-_Issue opened by @minmax on 2024-12-04 22:05_
+_@minmax_
 
 If i have this:
 

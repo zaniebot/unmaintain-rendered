@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-01T09:44:31Z
 updated_at: 2025-04-22T11:27:11Z
 url: https://github.com/astral-sh/uv/issues/11881
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # Using cl in Uv build causes garbled text on non-English encoding Windows
 
 ---
 
-_Issue opened by @sdbds on 2025-03-01 09:44_
+_@sdbds_
 
 ### Summary
 

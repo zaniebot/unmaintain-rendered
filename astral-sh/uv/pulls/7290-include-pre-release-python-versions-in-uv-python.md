@@ -13,14 +13,14 @@ head: zb/fix-list-pre
 created_at: 2024-09-11T13:54:34Z
 updated_at: 2024-09-11T19:46:18Z
 url: https://github.com/astral-sh/uv/pull/7290
-synced_at: 2026-01-10T12:53:44Z
+synced_at: 2026-01-12T16:07:46Z
 ```
 
 # Include pre-release Python versions in `uv python list`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-11 13:54_
+_@zanieb_
 
 Follows https://github.com/astral-sh/uv/pull/7278
 

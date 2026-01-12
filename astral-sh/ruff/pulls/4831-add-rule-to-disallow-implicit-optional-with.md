@@ -12,14 +12,14 @@ head: feat/implicit-optional
 created_at: 2023-06-03T11:27:16Z
 updated_at: 2023-06-13T02:44:41Z
 url: https://github.com/astral-sh/ruff/pull/4831
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Add rule to disallow implicit optional with autofix
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-03 11:27_
+_@dhruvmanila_
 
 ## Summary
 

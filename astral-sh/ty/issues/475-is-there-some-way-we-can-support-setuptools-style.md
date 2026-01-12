@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T18:15:12Z
 updated_at: 2025-11-24T08:19:29Z
 url: https://github.com/astral-sh/ty/issues/475
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Is there some way we can support setuptools-style editable installs?
 
 ---
 
-_Issue opened by @pythonweb2 on 2025-05-21 18:15_
+_@pythonweb2_
 
 ### Question
 

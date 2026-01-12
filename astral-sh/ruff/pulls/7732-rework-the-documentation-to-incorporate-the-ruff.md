@@ -13,14 +13,14 @@ head: charlie/formatter-docs
 created_at: 2023-10-01T03:10:11Z
 updated_at: 2023-10-20T23:17:26Z
 url: https://github.com/astral-sh/ruff/pull/7732
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Rework the documentation to incorporate the Ruff formatter
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-01 03:10_
+_@charliermarsh_
 
 ## Summary
 

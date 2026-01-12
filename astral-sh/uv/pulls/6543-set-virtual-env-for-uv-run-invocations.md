@@ -13,14 +13,14 @@ head: zb/ephemeral
 created_at: 2024-08-23T19:48:46Z
 updated_at: 2024-08-23T20:03:39Z
 url: https://github.com/astral-sh/uv/pull/6543
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:25Z
 ```
 
 # Set `VIRTUAL_ENV` for `uv run` invocations
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-23 19:48_
+_@zanieb_
 
 If we don't do this, and `uv run` invokes something like `uv run --isolated uv pip install foo` uv won't mutate the isolated environment, it'll mutate whatever outer environment it finds.
 

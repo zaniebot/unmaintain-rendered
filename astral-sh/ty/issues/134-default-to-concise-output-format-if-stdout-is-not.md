@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-07T07:04:43Z
 updated_at: 2025-05-11T07:58:43Z
 url: https://github.com/astral-sh/ty/issues/134
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Default to 'concise' output format if stdout is not a TTY
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-07 07:04_
+_@sharkdp_
 
 The `concise` output format is helpful when piping Red Knot's output to other tools. For example, I find myself frequently doing something like
 ```bash

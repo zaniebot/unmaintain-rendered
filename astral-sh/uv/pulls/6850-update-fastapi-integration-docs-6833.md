@@ -13,14 +13,14 @@ head: update-fastapi-docs
 created_at: 2024-08-30T02:56:35Z
 updated_at: 2024-08-30T14:00:26Z
 url: https://github.com/astral-sh/uv/pull/6850
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:33Z
 ```
 
 # Update FastAPI integration docs (#6833)
 
 ---
 
-_Pull request opened by @denkasyanov on 2024-08-30 02:56_
+_@denkasyanov_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

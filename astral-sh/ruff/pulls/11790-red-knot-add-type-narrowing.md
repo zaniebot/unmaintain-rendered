@@ -13,14 +13,14 @@ head: cjm/2narrow
 created_at: 2024-06-07T02:08:47Z
 updated_at: 2024-06-12T04:48:54Z
 url: https://github.com/astral-sh/ruff/pull/11790
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # [red-knot] add type narrowing
 
 ---
 
-_Pull request opened by @carljm on 2024-06-07 02:08_
+_@carljm_
 
 ## Summary
 

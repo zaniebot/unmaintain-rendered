@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-17T18:55:01Z
 updated_at: 2024-07-18T00:15:15Z
 url: https://github.com/astral-sh/ruff/issues/12372
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Turn on --document-private-items in CI `cargo doc` run?
 
 ---
 
-_Issue opened by @carljm on 2024-07-17 18:55_
+_@carljm_
 
 If you don't use `--document-private-items`, then `cargo doc` won't do anything with doc comments in private modules or on private items; they can have all kinds of issues (e.g. link to nonexistent things) and CI won't catch it.
 

@@ -13,14 +13,14 @@ head: charlie/reject
 created_at: 2024-09-28T19:53:11Z
 updated_at: 2024-09-28T20:02:13Z
 url: https://github.com/astral-sh/uv/pull/7766
-synced_at: 2026-01-10T12:53:55Z
+synced_at: 2026-01-12T16:07:59Z
 ```
 
 # Reject self-dependencies in `uv add`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-28 19:53_
+_@charliermarsh_
 
 ## Summary
 

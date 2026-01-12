@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-05T06:24:49Z
 updated_at: 2024-09-05T17:02:14Z
 url: https://github.com/astral-sh/uv/issues/7068
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Ability to invoke `uv run` without `[project]` in `pyproject.toml`
 
 ---
 
-_Issue opened by @jamesbraza on 2024-09-05 06:24_
+_@jamesbraza_
 
 I have a repo that I am slowly moving to use `uv`. For now, it doesn't have a `[project]` table in a particular `pyproject.toml`, but this seems to stop me from using `uv run`.
 

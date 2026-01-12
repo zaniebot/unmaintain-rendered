@@ -11,14 +11,14 @@ head: charlie/scope
 created_at: 2023-02-21T22:04:53Z
 updated_at: 2023-02-21T22:10:06Z
 url: https://github.com/astral-sh/ruff/pull/3100
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Treat each match case as a separate scope
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-21 22:04_
+_@charliermarsh_
 
 Closes #3099.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-07T11:47:56Z
 updated_at: 2025-01-07T18:17:44Z
 url: https://github.com/astral-sh/uv/issues/10355
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # `uv self update` is blocked by `required-version`
 
 ---
 
-_Issue opened by @tpgillam on 2025-01-07 11:47_
+_@tpgillam_
 
 Initial state:
 ```console

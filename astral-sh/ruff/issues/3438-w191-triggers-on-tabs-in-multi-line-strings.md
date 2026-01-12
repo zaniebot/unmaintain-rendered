@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-10T12:59:31Z
 updated_at: 2023-04-07T02:26:09Z
 url: https://github.com/astral-sh/ruff/issues/3438
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `W191` triggers on tabs in multi-line strings
 
 ---
 
-_Issue opened by @stinodego on 2023-03-10 12:59_
+_@stinodego_
 
 The following file gets flagged. 
 

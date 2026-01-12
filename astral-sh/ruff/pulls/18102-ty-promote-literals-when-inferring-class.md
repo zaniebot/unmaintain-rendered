@@ -13,14 +13,14 @@ head: dcreager/promote-literals
 created_at: 2025-05-14T18:08:48Z
 updated_at: 2025-05-19T19:42:56Z
 url: https://github.com/astral-sh/ruff/pull/18102
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] Promote literals when inferring class specializations from constructors
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-14 18:08_
+_@dcreager_
 
 This implements the stopgap approach described in https://github.com/astral-sh/ty/issues/336#issuecomment-2880532213 for handling literal types in generic class specializations.
 

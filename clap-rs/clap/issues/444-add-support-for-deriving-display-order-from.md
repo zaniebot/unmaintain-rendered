@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-03-10T14:01:57Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/444
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Add support for deriving display order from declaration order
 
 ---
 
-_Issue opened by @kbknapp on 2016-03-10 14:01_
+_@kbknapp_
 
 Derive the display order from the declaration order.
 

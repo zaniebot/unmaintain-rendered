@@ -13,14 +13,14 @@ head: zb/packse-extras
 created_at: 2024-01-15T19:46:19Z
 updated_at: 2024-01-17T19:25:49Z
 url: https://github.com/astral-sh/uv/pull/935
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:18Z
 ```
 
 # Bump to latest packse version with "extras" scenarios
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-15 19:46_
+_@zanieb_
 
 Includes:
 

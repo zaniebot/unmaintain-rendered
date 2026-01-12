@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-03T06:58:14Z
 updated_at: 2025-11-21T09:24:11Z
 url: https://github.com/astral-sh/ty/issues/1467
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Document how to suppress a rule on a line that already has a pragma comment
 
 ---
 
-_Issue opened by @hynek on 2025-11-03 06:58_
+_@hynek_
 
 ### Question
 

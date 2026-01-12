@@ -13,14 +13,14 @@ head: charlie/pip-sync
 created_at: 2024-05-14T01:26:51Z
 updated_at: 2024-05-14T01:34:15Z
 url: https://github.com/astral-sh/uv/pull/3565
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:43Z
 ```
 
 # Move `pip` commands into their own module
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-14 01:26_
+_@charliermarsh_
 
 ## Summary
 

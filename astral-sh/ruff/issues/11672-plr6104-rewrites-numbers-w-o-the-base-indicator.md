@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-01T02:13:34Z
 updated_at: 2024-12-19T12:58:26Z
 url: https://github.com/astral-sh/ruff/issues/11672
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PLR6104 rewrites numbers w/o the base indicator
 
 ---
 
-_Issue opened by @Avasam on 2024-06-01 02:13_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-28T20:49:15Z
 updated_at: 2025-11-06T13:28:11Z
 url: https://github.com/astral-sh/ruff/issues/20613
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Selecting RUF100 for autofix removes all `noqa:` comments
 
 ---
 
-_Issue opened by @smurfix on 2025-09-28 20:49_
+_@smurfix_
 
 ### Summary
 

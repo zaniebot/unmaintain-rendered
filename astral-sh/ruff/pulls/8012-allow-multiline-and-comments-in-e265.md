@@ -11,14 +11,14 @@ head: charlie/E265
 created_at: 2023-10-17T13:49:18Z
 updated_at: 2023-10-17T15:06:04Z
 url: https://github.com/astral-sh/ruff/pull/8012
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Allow multiline `#!` and `#%%` comments in E265
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-17 13:49_
+_@charliermarsh_
 
 ## Summary
 

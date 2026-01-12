@@ -12,14 +12,14 @@ head: charlie/rename
 created_at: 2023-01-31T21:07:57Z
 updated_at: 2023-01-31T21:08:02Z
 url: https://github.com/astral-sh/ruff/pull/2415
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Rename flake8-quotes snapshots and tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-31 21:07_
+_@charliermarsh_
 
 _No description provided._
 

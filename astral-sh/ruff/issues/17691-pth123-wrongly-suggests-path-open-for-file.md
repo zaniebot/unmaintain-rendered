@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-28T21:30:16Z
 updated_at: 2025-04-29T20:51:39Z
 url: https://github.com/astral-sh/ruff/issues/17691
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `PTH123` wrongly suggests `Path.open()` for file descriptors, only sometimes
 
 ---
 
-_Issue opened by @sbrudenell on 2025-04-28 21:30_
+_@sbrudenell_
 
 ### Summary
 

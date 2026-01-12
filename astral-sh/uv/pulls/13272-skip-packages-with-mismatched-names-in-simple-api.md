@@ -12,14 +12,14 @@ head: charlie/skip
 created_at: 2025-05-02T18:35:08Z
 updated_at: 2025-08-26T12:48:15Z
 url: https://github.com/astral-sh/uv/pull/13272
-synced_at: 2026-01-10T06:44:32Z
+synced_at: 2026-01-12T16:10:37Z
 ```
 
 # Skip packages with mismatched names in Simple API
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-02 18:35_
+_@charliermarsh_
 
 ## Summary
 

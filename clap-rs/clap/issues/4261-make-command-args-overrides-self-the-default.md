@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-09-26T18:08:29Z
 updated_at: 2022-09-26T18:37:15Z
 url: https://github.com/clap-rs/clap/issues/4261
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Make `Command::args_overrides_self` the default
 
 ---
 
-_Issue opened by @epage on 2022-09-26 18:08_
+_@epage_
 
 We had [talked about swapping the default for 3.0](https://github.com/clap-rs/clap/discussions/2627) but punted.
 

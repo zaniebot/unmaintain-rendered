@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-01-16T22:28:24Z
 updated_at: 2025-01-17T20:50:30Z
 url: https://github.com/astral-sh/uv/pull/10697
-synced_at: 2026-01-10T11:45:04Z
+synced_at: 2026-01-12T16:09:26Z
 ```
 
 # fix: ignore permission errors too when looking for user file
 
 ---
 
-_Pull request opened by @henryiii on 2025-01-16 22:28_
+_@henryiii_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

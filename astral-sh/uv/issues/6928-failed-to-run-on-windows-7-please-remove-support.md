@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-02T06:48:10Z
 updated_at: 2024-09-06T01:42:57Z
 url: https://github.com/astral-sh/uv/issues/6928
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Failed to run on Windows 7. Please, remove support for Python v3.8. Because Python v3.8 still supports Windows 7
 
 ---
 
-_Issue opened by @GaneJ on 2024-09-02 06:48_
+_@GaneJ_
 
 Started from version 0.1.40, uv failed to run on Windows 7.
 

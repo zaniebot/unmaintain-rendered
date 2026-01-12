@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-14T14:26:51Z
 updated_at: 2024-09-18T03:18:06Z
 url: https://github.com/astral-sh/uv/issues/7393
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Allow users to pre-define dependency metadata
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-14 14:26_
+_@charliermarsh_
 
 For packages that don't declare static metadata, it can be a pain to require building the package just to resolve. For example, you might have a dependency that can't be built on ARM, but doesn't declare static metadata. In that case, users can't resolve on ARM, even if the dependency is never installed on ARM (i.e., it has an environment marker).
 

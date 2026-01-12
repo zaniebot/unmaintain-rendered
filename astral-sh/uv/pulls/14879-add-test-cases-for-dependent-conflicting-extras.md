@@ -13,14 +13,14 @@ head: zb/extra-depends
 created_at: 2025-07-24T21:41:20Z
 updated_at: 2025-07-24T22:29:42Z
 url: https://github.com/astral-sh/uv/pull/14879
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:28Z
 ```
 
 # Add test cases for dependent conflicting extras
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-24 21:41_
+_@zanieb_
 
 Picked from #9130 
 

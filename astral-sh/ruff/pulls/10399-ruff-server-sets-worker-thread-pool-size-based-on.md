@@ -13,14 +13,14 @@ head: jane/server/configurable-threads
 created_at: 2024-03-14T00:57:12Z
 updated_at: 2024-03-18T21:14:39Z
 url: https://github.com/astral-sh/ruff/pull/10399
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # `ruff server` sets worker thread pool size based on the user's available cores
 
 ---
 
-_Pull request opened by @snowsignal on 2024-03-14 00:57_
+_@snowsignal_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T13:07:14Z
 updated_at: 2025-06-10T15:13:59Z
 url: https://github.com/astral-sh/uv/issues/13945
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # How to install in a different folder (on another drive)
 
 ---
 
-_Issue opened by @thistlillo on 2025-06-10 13:07_
+_@thistlillo_
 
 ### Question
 

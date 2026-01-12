@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-04T22:53:58Z
 updated_at: 2023-03-05T00:00:13Z
 url: https://github.com/astral-sh/ruff/issues/3349
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # SIM102 inconsistency
 
 ---
 
-_Issue opened by @diceroll123 on 2023-03-04 22:53_
+_@diceroll123_
 
 _Ruff 0.0.254_
 

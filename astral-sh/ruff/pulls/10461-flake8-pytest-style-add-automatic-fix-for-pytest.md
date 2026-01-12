@@ -13,14 +13,14 @@ head: ruff-pt007-fixes
 created_at: 2024-03-18T17:58:12Z
 updated_at: 2024-03-18T20:35:23Z
 url: https://github.com/astral-sh/ruff/pull/10461
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`flake8-pytest-style`] Add automatic fix for `pytest-parametrize-values-wrong-type` (`PT007`)
 
 ---
 
-_Pull request opened by @autinerd on 2024-03-18 17:58_
+_@autinerd_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-27T10:26:03Z
 updated_at: 2023-06-30T00:18:29Z
 url: https://github.com/astral-sh/ruff/issues/5385
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Ruff complains about a too long line which black does not format
 
 ---
 
-_Issue opened by @nbro10 on 2023-06-27 10:26_
+_@nbro10_
 
 Ruff complains about this (in file `issue.py`), although black doesn't change this code
 ```

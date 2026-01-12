@@ -13,14 +13,14 @@ head: ww/bump-cl
 created_at: 2025-10-21T17:20:49Z
 updated_at: 2025-10-21T17:33:29Z
 url: https://github.com/astral-sh/uv/pull/16393
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:14Z
 ```
 
 # CHANGELOG: include security note + entry for 0.9.5
 
 ---
 
-_Pull request opened by @woodruffw on 2025-10-21 17:20_
+_@woodruffw_
 
 ## Summary
 

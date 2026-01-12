@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-02T00:46:31Z
 updated_at: 2024-03-03T23:43:51Z
 url: https://github.com/astral-sh/ruff/issues/10192
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Support range in required-version setting
 
 ---
 
-_Issue opened by @kujenga on 2024-03-02 00:46_
+_@kujenga_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

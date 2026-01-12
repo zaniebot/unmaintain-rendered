@@ -13,14 +13,14 @@ head: dhruv/severity
 created_at: 2024-06-28T03:36:56Z
 updated_at: 2024-06-28T04:01:36Z
 url: https://github.com/astral-sh/ruff/pull/12080
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Remove `E999` to find diagnostic severity
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-28 03:36_
+_@dhruvmanila_
 
 ## Summary
 

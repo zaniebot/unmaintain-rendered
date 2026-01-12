@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-17T04:13:00Z
 updated_at: 2024-02-01T19:35:06Z
 url: https://github.com/astral-sh/ruff/issues/8736
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Misleading descriptions for raise-from exception chaining rules (B904 and TRY200)
 
 ---
 
-_Issue opened by @theemathas on 2023-11-17 04:13_
+_@theemathas_
 
 In my understanding, the description pages for rules [B904](https://docs.astral.sh/ruff/rules/raise-without-from-inside-except/) and [TRY200](https://docs.astral.sh/ruff/rules/reraise-no-cause/) say (paraphrased): "Re-raising an exception (i.e., catching an exception and then raising a different exception) without specifying a cause with the `from` keyword will make the raised exception not be chained, which means we won't have the full stack trace information."
 

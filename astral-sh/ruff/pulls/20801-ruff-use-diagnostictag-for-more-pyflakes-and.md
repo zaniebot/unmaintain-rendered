@@ -13,14 +13,14 @@ head: add-DiagnosticTag-to-pyflakes-rules
 created_at: 2025-10-10T10:41:35Z
 updated_at: 2025-10-19T09:07:17Z
 url: https://github.com/astral-sh/ruff/pull/20801
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [`ruff`] Use DiagnosticTag for more pyflakes and panda rules
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-10-10 10:41_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

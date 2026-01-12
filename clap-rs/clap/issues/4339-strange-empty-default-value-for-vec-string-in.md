@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-03T20:23:51Z
 updated_at: 2022-10-04T16:29:33Z
 url: https://github.com/clap-rs/clap/issues/4339
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Strange empty default value for Vec<String> in clap_derive
 
 ---
 
-_Issue opened by @JakkuSakura on 2022-10-03 20:23_
+_@JakkuSakura_
 
 ### Please complete the following tasks
 

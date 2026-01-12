@@ -15,14 +15,14 @@ head: david/fix-1702
 created_at: 2025-12-01T12:01:49Z
 updated_at: 2025-12-01T12:52:38Z
 url: https://github.com/astral-sh/ruff/pull/21726
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] Exhaustiveness checking for generic classes
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-01 12:01_
+_@sharkdp_
 
 ## Summary
 

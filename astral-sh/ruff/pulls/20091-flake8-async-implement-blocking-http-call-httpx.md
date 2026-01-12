@@ -14,14 +14,14 @@ head: async212
 created_at: 2025-08-26T00:18:42Z
 updated_at: 2025-08-28T16:56:31Z
 url: https://github.com/astral-sh/ruff/pull/20091
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [`flake8-async`] Implement `blocking-http-call-httpx` (`ASYNC212`)
 
 ---
 
-_Pull request opened by @amyreese on 2025-08-26 00:18_
+_@amyreese_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

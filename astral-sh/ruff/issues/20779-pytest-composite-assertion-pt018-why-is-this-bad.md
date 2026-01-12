@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-09T07:45:03Z
 updated_at: 2025-10-10T08:45:35Z
 url: https://github.com/astral-sh/ruff/issues/20779
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `pytest-composite-assertion` (`PT018`) - "Why is this bad?" documentation is misleading
 
 ---
 
-_Issue opened by @DetachHead on 2025-10-09 07:45_
+_@DetachHead_
 
 the ["Why is this bad?" section](https://docs.astral.sh/ruff/rules/pytest-composite-assertion/#why-is-this-bad) for this rule states:
 

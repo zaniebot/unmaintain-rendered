@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-21T14:46:55Z
 updated_at: 2024-09-21T14:46:55Z
 url: https://github.com/astral-sh/uv/issues/7614
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Provide better error message when python version is invalid in `.venv`
 
 ---
 
-_Issue opened by @CoderJoshDK on 2024-09-21 14:46_
+_@CoderJoshDK_
 
 When running a command that requires the `.venv` (such as `uv pip install ruff`), and the python version in that `.venv` is no longer a valid version, the following error is displayed:
 ```log

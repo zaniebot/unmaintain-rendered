@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-21T14:46:29Z
 updated_at: 2025-01-01T06:22:36Z
 url: https://github.com/astral-sh/ruff/issues/8106
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Improve line-length vs. autofix interactions (force-allow? force-disallows?)
 
 ---
 
-_Issue opened by @tdulcet on 2023-10-21 14:46_
+_@tdulcet_
 
 Please consider adding some method to force all autofixes regardless if they might make some lines too long. When using an autoformater (e.g. Ruff), any excessively long lines would be fixed anyway. Maybe do this automatically when `E501` (line-too-long) is not selected. This would save a considerable amount of time when switching a large project to Ruff, as it would eliminate the need for unnecessary manual fixes.
 

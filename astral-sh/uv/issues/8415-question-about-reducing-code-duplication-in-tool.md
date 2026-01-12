@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-21T11:20:09Z
 updated_at: 2025-02-25T14:45:51Z
 url: https://github.com/astral-sh/uv/issues/8415
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # Question about reducing code duplication in `[tool.uv.sources]`
 
 ---
 
-_Issue opened by @zmeir on 2024-10-21 11:20_
+_@zmeir_
 
 I'll start by saying this is probably not a very common use-case, but I wanted to ask this in case there is some better way of doing what I'm doing that I couldn't find in the documentation.
 

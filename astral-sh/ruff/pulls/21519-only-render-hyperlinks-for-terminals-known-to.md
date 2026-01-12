@@ -13,14 +13,14 @@ head: micha/supports-hyperlinks
 created_at: 2025-11-19T08:17:17Z
 updated_at: 2025-11-19T13:15:59Z
 url: https://github.com/astral-sh/ruff/pull/21519
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # Only render hyperlinks for terminals known to support them
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-19 08:17_
+_@MichaReiser_
 
 ## Summary
 

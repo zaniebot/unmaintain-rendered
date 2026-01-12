@@ -13,14 +13,14 @@ head: best-fits-call-expr
 created_at: 2023-08-23T12:10:18Z
 updated_at: 2023-08-24T12:09:27Z
 url: https://github.com/astral-sh/ruff/pull/6817
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Use BestFits for non-fluent attribute chains
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-23 12:10_
+_@MichaReiser_
 
 ## Summary
 

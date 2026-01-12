@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2025-04-18T02:42:46Z
 updated_at: 2025-04-18T03:10:05Z
 url: https://github.com/astral-sh/uv/pull/12956
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:28Z
 ```
 
 # Separate `requirements.txt` export logic from graph construction
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-18 02:42_
+_@charliermarsh_
 
 ## Summary
 

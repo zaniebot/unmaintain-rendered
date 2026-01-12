@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-18T17:49:07Z
 updated_at: 2023-03-20T14:37:04Z
 url: https://github.com/clap-rs/clap/issues/4772
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `term_width` docs on disabled `wrap_help` seem wrong
 
 ---
 
-_Issue opened by @CosmicHorrorDev on 2023-03-18 17:49_
+_@CosmicHorrorDev_
 
 ### Please complete the following tasks
 

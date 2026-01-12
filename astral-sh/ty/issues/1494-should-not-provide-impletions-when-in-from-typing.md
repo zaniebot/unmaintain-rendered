@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-06T11:55:57Z
 updated_at: 2025-11-10T17:58:53Z
 url: https://github.com/astral-sh/ty/issues/1494
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Should not provide impletions when in `from typing i<CURSOR>`.
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-11-06 11:55_
+_@MatthewMckee4_
 
 ### Summary
 

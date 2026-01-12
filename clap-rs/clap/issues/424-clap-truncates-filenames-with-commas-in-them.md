@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-02-13T16:27:52Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/424
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # clap truncates filenames with commas in them
 
 ---
 
-_Issue opened by @ketsuban on 2016-02-13 16:27_
+_@ketsuban_
 
 I recently received the nice surprise of [a pull request contributing an improved CLI to my project](https://github.com/Ketsuban/rustboyadvance/commit/16dca1e2233b0f84dd7d2575796f17329996f830) using this crate. When I went to try this out having merged it, I was met with a thread panic. Some `println!` debugging led me to this discovery.
 

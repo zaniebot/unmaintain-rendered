@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-20T15:39:17Z
 updated_at: 2024-07-22T11:43:05Z
 url: https://github.com/astral-sh/uv/issues/5249
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `uv init` should discover workspace from the target path
 
 ---
 
-_Issue opened by @j178 on 2024-07-20 15:39_
+_@j178_
 
 When running `uv init` outside the workspace to create a sub-package, the package is not added to the workspace.
 

@@ -13,14 +13,14 @@ head: config_logging_in_ruff_dev
 created_at: 2023-07-31T12:41:44Z
 updated_at: 2023-07-31T18:22:38Z
 url: https://github.com/astral-sh/ruff/pull/6193
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Log configuration in ruff_dev
 
 ---
 
-_Pull request opened by @konstin on 2023-07-31 12:41_
+_@konstin_
 
 **Summary** This includes two changes:
  * Allow setting `-v` in `ruff_dev`, using the `ruff_cli` implementation

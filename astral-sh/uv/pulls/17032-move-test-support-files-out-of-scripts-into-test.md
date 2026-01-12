@@ -12,7 +12,7 @@ head: zb/test-support
 created_at: 2025-12-08T15:44:26Z
 updated_at: 2025-12-09T16:06:07Z
 url: https://github.com/astral-sh/uv/pull/17032
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:34Z
 ```
 
 # Move test support files out of `scripts/` into `test/`
@@ -20,7 +20,7 @@ synced_at: 2026-01-10T05:49:14Z
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-08 15:44_
+_@zanieb_
 
 It's been bothering me that we have a bunch of stub packages and such in a `scripts` directory.
 

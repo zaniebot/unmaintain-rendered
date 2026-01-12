@@ -12,14 +12,14 @@ head: zb/no-install-package
 created_at: 2024-08-23T19:25:20Z
 updated_at: 2024-08-23T20:48:05Z
 url: https://github.com/astral-sh/uv/pull/6540
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:25Z
 ```
 
 # Add `uv sync --no-install-package` to skip installation of specific packages
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-23 19:25_
+_@zanieb_
 
 Extends #6538 / #6539
 See #4028

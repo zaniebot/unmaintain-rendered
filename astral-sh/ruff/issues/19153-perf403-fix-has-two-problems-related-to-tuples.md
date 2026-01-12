@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-05T13:57:58Z
 updated_at: 2025-09-01T14:51:59Z
 url: https://github.com/astral-sh/ruff/issues/19153
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PERF403 fix has two problems related to tuples
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-05 13:57_
+_@dscorbett_
 
 ### Summary
 

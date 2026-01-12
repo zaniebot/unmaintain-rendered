@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-13T13:03:22Z
 updated_at: 2024-12-16T10:39:51Z
 url: https://github.com/astral-sh/uv/issues/8157
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # Tracking issue: uv backtracks on the wrong package
 
 ---
 
-_Issue opened by @konstin on 2024-10-13 13:03_
+_@konstin_
 
 In this issue, I'm collecting cases where uv backtracks unnecessarily. Please feel free to edit and add your own cases.
 

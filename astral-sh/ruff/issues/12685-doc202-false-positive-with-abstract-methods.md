@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-05T11:27:37Z
 updated_at: 2024-08-09T06:38:39Z
 url: https://github.com/astral-sh/ruff/issues/12685
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # DOC202 false positive with abstract methods
 
 ---
 
-_Issue opened by @mhooreman on 2024-08-05 11:27_
+_@mhooreman_
 
 Hello,
 

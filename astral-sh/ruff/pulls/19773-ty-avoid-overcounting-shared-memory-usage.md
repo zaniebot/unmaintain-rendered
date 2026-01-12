@@ -14,14 +14,14 @@ head: ibraheem/get-size-tracker
 created_at: 2025-08-05T21:34:38Z
 updated_at: 2025-08-06T19:32:04Z
 url: https://github.com/astral-sh/ruff/pull/19773
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] Avoid overcounting shared memory usage
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-08-05 21:34_
+_@ibraheemdev_
 
 ## Summary
 

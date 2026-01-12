@@ -13,14 +13,14 @@ head: zb/auth-401
 created_at: 2024-04-18T22:42:54Z
 updated_at: 2024-04-22T18:06:58Z
 url: https://github.com/astral-sh/uv/pull/3130
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:26Z
 ```
 
 # Fix authentication for URLs with a shared realm
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-18 22:42_
+_@zanieb_
 
 In #2976 I made some changes that led to regressions:
 

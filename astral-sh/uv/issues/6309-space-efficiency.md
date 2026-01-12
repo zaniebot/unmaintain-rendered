@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T07:51:54Z
 updated_at: 2024-08-21T13:21:13Z
 url: https://github.com/astral-sh/uv/issues/6309
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # space efficiency
 
 ---
 
-_Issue opened by @max397574 on 2024-08-21 07:51_
+_@max397574_
 
 Regarding https://docs.astral.sh/uv/concepts/projects/#project-environments I'm a bit worried about the space this will required.
 Did you consider using links like e.g. https://github.com/pnpm/pnpm does it to be more space efficient than npm?

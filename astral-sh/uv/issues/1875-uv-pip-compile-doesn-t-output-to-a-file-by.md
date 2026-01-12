@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-22T16:01:35Z
 updated_at: 2024-02-22T16:41:47Z
 url: https://github.com/astral-sh/uv/issues/1875
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # uv pip compile doesn't output to a file by default (like pip-tools)
 
 ---
 
-_Issue opened by @ionelmc on 2024-02-22 16:01_
+_@ionelmc_
 
 
 Using `uv 0.1.7`. 

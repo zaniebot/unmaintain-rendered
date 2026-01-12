@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-10T14:47:09Z
 updated_at: 2023-11-11T15:25:27Z
 url: https://github.com/astral-sh/ruff/issues/8601
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Suppress RUF100 (unused noa) if we see a PGH004 (blanket noqa) error?
 
 ---
 
-_Issue opened by @alanhdu on 2023-11-10 14:47_
+_@alanhdu_
 
 This is potentially a very niche request, but I was wondering if there was a way to suppress RUF100 errors for blanket noqa when PGH004 is enabled (and `external` lints are on)?
 

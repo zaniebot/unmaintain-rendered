@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-13T16:21:19Z
 updated_at: 2025-08-29T13:53:06Z
 url: https://github.com/astral-sh/ruff/issues/7352
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # CLI: Show fixes by default in `ruff check`
 
 ---
 
-_Issue opened by @zanieb on 2023-09-13 16:21_
+_@zanieb_
 
 Requires #7350 for opt-out of display.
 

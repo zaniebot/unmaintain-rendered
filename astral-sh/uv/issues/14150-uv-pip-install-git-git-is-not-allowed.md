@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-20T13:05:06Z
 updated_at: 2025-08-26T02:27:27Z
 url: https://github.com/astral-sh/uv/issues/14150
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # uv pip install git+git:// is not allowed
 
 ---
 
-_Issue opened by @davidesba on 2025-06-20 13:05_
+_@davidesba_
 
 ### Summary
 

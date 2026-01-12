@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T19:54:58Z
 updated_at: 2025-09-22T20:23:26Z
 url: https://github.com/astral-sh/uv/issues/13497
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # Support exact `requires-python` version in generating `pylock.toml`
 
 ---
 
-_Issue opened by @ketozhang on 2025-05-16 19:54_
+_@ketozhang_
 
 ### Summary
 

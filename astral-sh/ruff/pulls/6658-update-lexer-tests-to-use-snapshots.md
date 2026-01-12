@@ -12,14 +12,14 @@ head: dhruv/lexer-tests
 created_at: 2023-08-17T19:24:33Z
 updated_at: 2023-08-22T18:52:04Z
 url: https://github.com/astral-sh/ruff/pull/6658
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Update lexer tests to use snapshots
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-08-17 19:24_
+_@dhruvmanila_
 
 ## Summary
 

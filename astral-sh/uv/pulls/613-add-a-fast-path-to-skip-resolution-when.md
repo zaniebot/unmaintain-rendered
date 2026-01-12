@@ -13,14 +13,14 @@ head: charlie/pip-install-noop
 created_at: 2023-12-12T04:33:51Z
 updated_at: 2023-12-12T17:43:14Z
 url: https://github.com/astral-sh/uv/pull/613
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:04Z
 ```
 
 # Add a fast-path to skip resolution when installation is complete
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-12 04:33_
+_@charliermarsh_
 
 For a very large resolution (a few hundred packages), I see 13ms vs. 400ms for a no-op. It's worth optimizing this case, in my opinion.
 

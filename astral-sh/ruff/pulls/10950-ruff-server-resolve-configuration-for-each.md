@@ -13,14 +13,14 @@ head: jane/server/per-document-config
 created_at: 2024-04-15T08:43:23Z
 updated_at: 2024-04-16T21:39:39Z
 url: https://github.com/astral-sh/ruff/pull/10950
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # `ruff server`: Resolve configuration for each document individually
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-15 08:43_
+_@snowsignal_
 
 ## Summary
 

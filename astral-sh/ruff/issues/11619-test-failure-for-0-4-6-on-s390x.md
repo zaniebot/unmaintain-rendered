@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-30T11:04:21Z
 updated_at: 2024-06-05T08:47:09Z
 url: https://github.com/astral-sh/ruff/issues/11619
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Test failure for 0.4.6 on s390x
 
 ---
 
-_Issue opened by @WhyNotHugo on 2024-05-30 11:04_
+_@WhyNotHugo_
 
 The test `rules::pyflakes::tests::preview_rules::rule_unusedimport_path_new_f401_28_all_multiple_init_py_expects` is failing on s390x:
 

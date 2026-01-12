@@ -14,14 +14,14 @@ head: david/fix-17863
 created_at: 2025-05-07T13:11:21Z
 updated_at: 2025-05-07T13:27:38Z
 url: https://github.com/astral-sh/ruff/pull/17916
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [ty] Ecosystem checks: activate running on 'manticore'
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-07 13:11_
+_@sharkdp_
 
 ## Summary
 

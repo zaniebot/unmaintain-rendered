@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-02-08T13:03:03Z
 updated_at: 2024-03-28T19:29:31Z
 url: https://github.com/clap-rs/clap/issues/4697
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Optional, nested flatten gets ignored (nested ArgGroups are unsupported)
 
 ---
 
-_Issue opened by @jeertmans on 2023-02-08 13:03_
+_@jeertmans_
 
 ### Please complete the following tasks
 

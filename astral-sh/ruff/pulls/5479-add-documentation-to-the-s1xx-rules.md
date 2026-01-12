@@ -13,14 +13,14 @@ head: s1-docs
 created_at: 2023-07-03T15:17:18Z
 updated_at: 2023-07-10T09:54:53Z
 url: https://github.com/astral-sh/ruff/pull/5479
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add documentation to the `S1XX` rules
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-03 15:17_
+_@tjkuson_
 
 ## Summary
 

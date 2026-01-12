@@ -13,14 +13,14 @@ head: jump-to-definition
 created_at: 2024-10-23T06:40:36Z
 updated_at: 2024-12-31T07:20:16Z
 url: https://github.com/astral-sh/ruff/pull/13883
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Jump to definition
 
 ---
 
-_Pull request opened by @rtpg on 2024-10-23 06:40_
+_@rtpg_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/cache
 created_at: 2023-10-28T22:00:02Z
 updated_at: 2023-10-29T16:22:37Z
 url: https://github.com/astral-sh/ruff/pull/8316
-synced_at: 2026-01-12T02:11:58Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Allow selective caching for `--fix` and `--diff`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-28 22:00_
+_@charliermarsh_
 
 ## Summary
 

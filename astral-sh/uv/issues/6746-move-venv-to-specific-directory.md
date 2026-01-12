@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-28T12:16:59Z
 updated_at: 2024-08-28T13:11:20Z
 url: https://github.com/astral-sh/uv/issues/6746
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # move venv to specific directory
 
 ---
 
-_Issue opened by @emcek on 2024-08-28 12:16_
+_@emcek_
 
 I try find out in documentation is there any way to tell `uv` where is my `venv` located. (not using default .venv) I like keep all my venvs in parent directory of my projects.
 

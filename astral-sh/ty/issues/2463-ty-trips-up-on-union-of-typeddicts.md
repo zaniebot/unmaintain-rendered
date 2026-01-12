@@ -7,20 +7,20 @@ author: adamjstewart
 labels: []
 assignees: []
 created_at: 2026-01-12T12:31:46Z
-updated_at: 2026-01-12T12:31:46Z
+updated_at: 2026-01-12T15:20:13Z
 url: https://github.com/astral-sh/ty/issues/2463
-synced_at: 2026-01-12T12:59:44Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # ty trips up on Union of TypedDicts
 
 ---
 
-_Issue opened by @adamjstewart on 2026-01-12 12:31_
+_@adamjstewart_
 
 ### Summary
 
-I have a rather complex hierarchy of optionals, unions, typed dicts, and data classes (from [here](https://github.com/Lightning-AI/pytorch-lightning/blob/2.6.0/src/lightning/pytorch/utilities/types.py) that I need to use for type hints:
+I have a rather complex hierarchy of optionals, unions, typed dicts, and data classes (from [here](https://github.com/Lightning-AI/pytorch-lightning/blob/2.6.0/src/lightning/pytorch/utilities/types.py)) that I need to use for type hints:
 ```python
 OptimizerLRScheduler = Optional[
     Union[

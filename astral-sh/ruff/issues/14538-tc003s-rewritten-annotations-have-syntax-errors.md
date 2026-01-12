@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-22T19:12:27Z
 updated_at: 2024-11-27T17:58:49Z
 url: https://github.com/astral-sh/ruff/issues/14538
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # TC003’s rewritten annotations have syntax errors and type-checking problems
 
 ---
 
-_Issue opened by @dscorbett on 2024-11-22 19:12_
+_@dscorbett_
 
 The fix for TC003 sometimes makes Ruff fail or introduces type-checking problems when `lint.flake8-type-checking.quote-annotations = true` in Ruff 0.8.0.
 

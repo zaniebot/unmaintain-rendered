@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-10T06:01:50Z
 updated_at: 2024-05-21T22:29:32Z
 url: https://github.com/astral-sh/ruff/issues/10858
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server`: Support `.ipynb` (Jupyter Notebook) files
 
 ---
 
-_Issue opened by @snowsignal on 2024-04-10 06:01_
+_@snowsignal_
 
 `ruff server` needs to support `.ipynb` (aka Jupyter Notebook) files to have feature parity with `ruff-lsp`. In the LSP specification, these files are represented as [notebook documents](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#notebookDocument_synchronization). Ruff can format and lint notebook documents, but their internal schema is different from the schema used by the LSP, so we'll need to convert between the two.
 

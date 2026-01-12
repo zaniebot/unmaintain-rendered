@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-11T18:53:19Z
 updated_at: 2024-12-02T23:30:14Z
 url: https://github.com/astral-sh/uv/issues/9027
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # Ability to set `--check-url` option in `pyproject.toml` or `uv.toml`
 
 ---
 
-_Issue opened by @bruckner on 2024-11-11 18:53_
+_@bruckner_
 
 I'm using the new `--check-url` feature introduced in https://github.com/astral-sh/uv/pull/8531 to support to ability to `uv publish` skip uploads when an artifact already exists. It's great!
 

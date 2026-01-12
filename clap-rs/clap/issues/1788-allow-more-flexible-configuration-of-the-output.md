@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-04-05T15:40:37Z
 updated_at: 2022-09-22T01:20:35Z
 url: https://github.com/clap-rs/clap/issues/1788
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Allow more flexible configuration of the output steam (stdout vs. stderr)
 
 ---
 
-_Issue opened by @tzakharko on 2020-04-05 15:40_
+_@tzakharko_
 
 ### Describe your use case
 

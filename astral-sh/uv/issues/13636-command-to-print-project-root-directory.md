@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-24T01:24:08Z
 updated_at: 2025-05-24T15:48:50Z
 url: https://github.com/astral-sh/uv/issues/13636
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # Command to print project root directory
 
 ---
 
-_Issue opened by @Hawk777 on 2025-05-24 01:24_
+_@Hawk777_
 
 ### Summary
 

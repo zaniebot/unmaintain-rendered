@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-28T13:49:54Z
 updated_at: 2024-07-01T12:25:41Z
 url: https://github.com/astral-sh/uv/issues/4617
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # universal-lock: use resolution of a fork as input preferences to its child forks
 
 ---
 
-_Issue opened by @BurntSushi on 2024-06-28 13:49_
+_@BurntSushi_
 
 @konstin brought this up as both a potential performance optimization _and_ a more solid guarantee that resolutions between forks settle on consistent versions.
 

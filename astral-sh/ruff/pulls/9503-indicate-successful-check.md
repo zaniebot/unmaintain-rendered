@@ -11,14 +11,14 @@ head: indicate-successful-check
 created_at: 2024-01-13T07:14:05Z
 updated_at: 2024-03-11T18:57:33Z
 url: https://github.com/astral-sh/ruff/pull/9503
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Indicate successful check
 
 ---
 
-_Pull request opened by @hughhan1 on 2024-01-13 07:14_
+_@hughhan1_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

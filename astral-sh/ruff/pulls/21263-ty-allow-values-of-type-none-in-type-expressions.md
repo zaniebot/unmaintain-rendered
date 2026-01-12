@@ -14,14 +14,14 @@ head: david/allow-none-in-type-expressions
 created_at: 2025-11-03T20:55:39Z
 updated_at: 2025-11-04T15:29:56Z
 url: https://github.com/astral-sh/ruff/pull/21263
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [ty] Allow values of type `None` in type expressions
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-03 20:55_
+_@sharkdp_
 
 ## Summary
 

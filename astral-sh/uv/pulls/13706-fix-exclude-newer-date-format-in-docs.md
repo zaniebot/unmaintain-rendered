@@ -13,14 +13,14 @@ head: exclude-newer-doc-fix
 created_at: 2025-05-28T19:57:03Z
 updated_at: 2025-05-28T20:42:45Z
 url: https://github.com/astral-sh/uv/pull/13706
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:49Z
 ```
 
 # Fix `exclude-newer` date format in docs
 
 ---
 
-_Pull request opened by @johnthagen on 2025-05-28 19:57_
+_@johnthagen_
 
 ## Summary
 

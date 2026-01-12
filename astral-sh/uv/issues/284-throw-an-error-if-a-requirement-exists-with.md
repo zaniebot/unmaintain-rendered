@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-02T03:07:24Z
 updated_at: 2024-08-13T14:14:16Z
 url: https://github.com/astral-sh/uv/issues/284
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Throw an error if a requirement exists with conflicting URLs
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-02 03:07_
+_@charliermarsh_
 
 E.g., if you depend on Flask at one URL, and one of your dependencies depends on Flask at a different URL, we need to throw an error.
 

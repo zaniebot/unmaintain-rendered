@@ -14,14 +14,14 @@ head: konsti/windows-filters
 created_at: 2024-02-01T17:26:24Z
 updated_at: 2024-02-06T14:58:17Z
 url: https://github.com/astral-sh/uv/pull/1231
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:31Z
 ```
 
 # Add windows specific filters for tests
 
 ---
 
-_Pull request opened by @konstin on 2024-02-01 17:26_
+_@konstin_
 
 Add more windows specific filters in various places.
 

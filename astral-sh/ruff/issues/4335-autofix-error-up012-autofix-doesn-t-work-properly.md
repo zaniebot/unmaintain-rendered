@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-10T01:07:36Z
 updated_at: 2023-05-10T02:57:11Z
 url: https://github.com/astral-sh/ruff/issues/4335
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Autofix error] UP012 autofix doesn't work properly with string using implicit concatenation
 
 ---
 
-_Issue opened by @lengau on 2023-05-10 01:07_
+_@lengau_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-27T10:10:06Z
 updated_at: 2025-11-28T03:41:55Z
 url: https://github.com/astral-sh/ruff/issues/21658
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Ruff format ignores quote-style = "single" configuration
 
 ---
 
-_Issue opened by @w0r1dhe110 on 2025-11-27 10:10_
+_@w0r1dhe110_
 
 ### Question
 

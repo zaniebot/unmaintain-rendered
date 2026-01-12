@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-14T22:52:41Z
 updated_at: 2023-03-15T07:03:30Z
 url: https://github.com/astral-sh/ruff/issues/3528
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # isort.combine-as-imports seems to act opposite to its definition
 
 ---
 
-_Issue opened by @davfsa on 2023-03-14 22:52_
+_@davfsa_
 
 Hey!
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-27T01:49:58Z
 updated_at: 2024-11-27T06:25:08Z
 url: https://github.com/astral-sh/ruff/issues/14620
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Feature: Detection of unused libraries from pyproject.toml
 
 ---
 
-_Issue opened by @akshaybabloo on 2024-11-27 01:49_
+_@akshaybabloo_
 
 A good to have feature would be to list out all unused libraries (dev and dependencies), so that they can be removed or used.
 

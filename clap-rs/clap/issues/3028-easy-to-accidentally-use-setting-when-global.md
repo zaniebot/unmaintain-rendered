@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-11-15T18:08:38Z
 updated_at: 2021-12-08T01:26:14Z
 url: https://github.com/clap-rs/clap/issues/3028
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Easy to accidentally use `setting` when `global_setting` is intended
 
 ---
 
-_Issue opened by @epage on 2021-11-15 18:08_
+_@epage_
 
 ### Please complete the following tasks
 

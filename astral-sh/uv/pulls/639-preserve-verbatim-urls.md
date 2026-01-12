@@ -12,14 +12,14 @@ head: charlie/relative
 created_at: 2023-12-13T21:45:50Z
 updated_at: 2023-12-14T15:03:41Z
 url: https://github.com/astral-sh/uv/pull/639
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:05Z
 ```
 
 # Preserve verbatim URLs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-13 21:45_
+_@charliermarsh_
 
 ## Summary
 

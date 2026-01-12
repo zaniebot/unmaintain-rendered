@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-09T15:04:40Z
 updated_at: 2024-05-09T17:59:21Z
 url: https://github.com/astral-sh/uv/issues/3486
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Unable to query interpreter information of MUSL standalone distribution
 
 ---
 
-_Issue opened by @ofek on 2024-05-09 15:04_
+_@ofek_
 
 The following illustrates that for some reason the standalone distribution's pip does not consider MUSL wheels and will download the source distribution:
 

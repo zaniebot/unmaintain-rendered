@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-08T09:12:42Z
 updated_at: 2025-12-17T15:40:09Z
 url: https://github.com/astral-sh/uv/issues/17024
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # Directly create a FastAPI sample project using the UV command
 
 ---
 
-_Issue opened by @BasterHapy on 2025-12-08 09:12_
+_@BasterHapy_
 
 ### Summary
 

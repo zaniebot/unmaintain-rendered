@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T08:56:27Z
 updated_at: 2025-06-24T12:52:38Z
 url: https://github.com/astral-sh/ty/issues/179
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Consider allowing globs for `src.root` or `environment.extra-paths`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 08:56_
+_@MichaReiser_
 
 Mono repos with multiple packages may need multiple src roots (see https://github.com/astral-sh/ruff/issues/16712) 
 

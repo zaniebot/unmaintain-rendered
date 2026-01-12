@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-16T20:28:10Z
 updated_at: 2025-12-16T20:29:21Z
 url: https://github.com/astral-sh/ty/issues/1958
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # uvx ty check fails
 
 ---
 
-_Issue opened by @kxzk on 2025-12-16 20:28_
+_@kxzk_
 
 ### Summary
 

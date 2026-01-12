@@ -13,14 +13,14 @@ head: zb/venv-system
 created_at: 2024-08-08T18:23:09Z
 updated_at: 2024-08-08T18:32:01Z
 url: https://github.com/astral-sh/uv/pull/5925
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:06Z
 ```
 
 # Deprecate `--system` and `--no-system` in `uv venv`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-08 18:23_
+_@zanieb_
 
 e.g.
 

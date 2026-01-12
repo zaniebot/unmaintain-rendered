@@ -15,14 +15,14 @@ head: dhruv/unpack-duplicate-diagnostic
 created_at: 2025-06-23T14:58:15Z
 updated_at: 2025-06-24T02:19:46Z
 url: https://github.com/astral-sh/ruff/pull/18897
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [ty] Avoid duplicate diagnostic in unpacking
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-06-23 14:58_
+_@dhruvmanila_
 
 ## Summary
 

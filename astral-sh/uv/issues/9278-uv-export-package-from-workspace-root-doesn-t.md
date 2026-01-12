@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T15:35:39Z
 updated_at: 2024-11-20T20:20:34Z
 url: https://github.com/astral-sh/uv/issues/9278
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # `uv export --package` from workspace root doesn't export root's dependencies
 
 ---
 
-_Issue opened by @ultrapoci on 2024-11-20 15:35_
+_@ultrapoci_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

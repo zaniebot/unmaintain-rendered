@@ -12,14 +12,14 @@ head: charlie/tag-preference
 created_at: 2024-09-14T00:17:55Z
 updated_at: 2025-02-11T02:36:17Z
 url: https://github.com/astral-sh/uv/pull/7381
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:07:48Z
 ```
 
 # Prefer compatible wheels in universal resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-14 00:17_
+_@charliermarsh_
 
 ## Summary
 

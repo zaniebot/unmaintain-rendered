@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-23T16:23:53Z
 updated_at: 2025-04-28T10:19:19Z
 url: https://github.com/astral-sh/uv/issues/13071
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # optional-dependency not synced with docker
 
 ---
 
-_Issue opened by @gabriel-vanzandycke on 2025-04-23 16:23_
+_@gabriel-vanzandycke_
 
 ### Summary
 

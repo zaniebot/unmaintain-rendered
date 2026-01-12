@@ -13,14 +13,14 @@ head: konsti/dont-preserve-timestamp-streaming
 created_at: 2024-02-20T12:27:25Z
 updated_at: 2024-02-20T14:54:30Z
 url: https://github.com/astral-sh/uv/pull/1749
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:42Z
 ```
 
 # Don't preserve timestamp in streaming unzip
 
 ---
 
-_Pull request opened by @konstin on 2024-02-20 12:27_
+_@konstin_
 
 ## Summary
 

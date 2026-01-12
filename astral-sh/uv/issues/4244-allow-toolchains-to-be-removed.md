@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-11T17:54:38Z
 updated_at: 2024-07-09T15:58:19Z
 url: https://github.com/astral-sh/uv/issues/4244
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Allow toolchains to be removed
 
 ---
 
-_Issue opened by @zanieb on 2024-06-11 17:54_
+_@zanieb_
 
 e.g., `uv toolchain uninstall`
 

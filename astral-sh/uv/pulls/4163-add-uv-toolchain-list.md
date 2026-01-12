@@ -13,14 +13,14 @@ head: zb/toolchain-v-i
 created_at: 2024-06-08T15:51:16Z
 updated_at: 2024-06-10T16:25:57Z
 url: https://github.com/astral-sh/uv/pull/4163
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:04Z
 ```
 
 # Add `uv toolchain list`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-08 15:51_
+_@zanieb_
 
 Adds the `uv toolchain` namespace and a `list` command to get us started.
 

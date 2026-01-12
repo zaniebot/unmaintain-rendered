@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T12:05:23Z
 updated_at: 2025-01-16T03:47:44Z
 url: https://github.com/astral-sh/uv/issues/10591
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # Use versions from requirements.txt during `uv lock`
 
 ---
 
-_Issue opened by @dionhaefner on 2025-01-14 12:05_
+_@dionhaefner_
 
 Our current workflow looks like this:
 - All direct dependencies are pinned in `requirements.txt` for reproducible installations (used during testing on CI and deployment).

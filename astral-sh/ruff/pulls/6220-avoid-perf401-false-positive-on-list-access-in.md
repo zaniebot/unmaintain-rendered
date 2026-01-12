@@ -13,14 +13,14 @@ head: charlie/PERF401
 created_at: 2023-08-01T03:48:46Z
 updated_at: 2023-08-01T04:22:14Z
 url: https://github.com/astral-sh/ruff/pull/6220
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Avoid PERF401 false positive on list access in loop
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-01 03:48_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6210.
 

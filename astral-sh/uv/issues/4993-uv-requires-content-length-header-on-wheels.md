@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-11T14:59:46Z
 updated_at: 2024-07-12T03:33:22Z
 url: https://github.com/astral-sh/uv/issues/4993
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # uv requires Content-Length Header on wheels, breaking compatibility with some package repositories
 
 ---
 
-_Issue opened by @philieeas on 2024-07-11 14:59_
+_@philieeas_
 
 When using uv as a drop-in replacement for pip, I encountered an issue where uv fails to download packages from a custom package repository due to the absence of the Content-Length Header in the response. The registry is getting proxied by nginx and it seems that strips that header(I unfortunately can't change that fact).
 

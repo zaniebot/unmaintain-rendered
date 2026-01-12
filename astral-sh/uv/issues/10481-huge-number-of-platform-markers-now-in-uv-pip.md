@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-10T22:36:45Z
 updated_at: 2025-01-11T03:30:06Z
 url: https://github.com/astral-sh/uv/issues/10481
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # Huge number of platform markers now in `uv pip compile` output (0.5.8+)
 
 ---
 
-_Issue opened by @notatallshaw on 2025-01-10 22:36_
+_@notatallshaw_
 
 uv 0.5.8+
 

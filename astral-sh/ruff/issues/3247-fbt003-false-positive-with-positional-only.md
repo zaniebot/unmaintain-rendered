@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-27T09:00:08Z
 updated_at: 2025-08-21T03:27:26Z
 url: https://github.com/astral-sh/ruff/issues/3247
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # FBT003: False positive with positional-only parameters
 
 ---
 
-_Issue opened by @aberres on 2023-02-27 09:00_
+_@aberres_
 
 `FBT003` is triggered even if only positional arguments are allowed.
 

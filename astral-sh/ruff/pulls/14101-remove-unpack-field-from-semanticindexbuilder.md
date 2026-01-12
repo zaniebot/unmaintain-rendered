@@ -13,14 +13,14 @@ head: dhruv/unpack-cleanup
 created_at: 2024-11-05T04:54:16Z
 updated_at: 2024-11-06T03:13:00Z
 url: https://github.com/astral-sh/ruff/pull/14101
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Remove `unpack` field from `SemanticIndexBuilder`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-05 04:54_
+_@dhruvmanila_
 
 ## Summary
 

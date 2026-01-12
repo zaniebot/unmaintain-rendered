@@ -12,14 +12,14 @@ head: feat/flake8-use-path-lib-refactor
 created_at: 2023-01-22T20:21:08Z
 updated_at: 2023-01-22T20:28:26Z
 url: https://github.com/astral-sh/ruff/pull/2091
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # refactor: remove redundant enum
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-22 20:21_
+_@sbrugman_
 
 Simplification of `src/rules/flake8_use_pathlib/helpers.rs`
 

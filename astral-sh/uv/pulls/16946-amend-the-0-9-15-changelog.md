@@ -12,14 +12,14 @@ head: zb/915-cl-fix
 created_at: 2025-12-03T00:56:20Z
 updated_at: 2025-12-03T00:57:58Z
 url: https://github.com/astral-sh/uv/pull/16946
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:31Z
 ```
 
 # Amend the 0.9.15 changelog
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-03 00:56_
+_@zanieb_
 
 See #16944 
 

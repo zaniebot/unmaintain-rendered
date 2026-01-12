@@ -15,14 +15,14 @@ head: fix/peek-definition-empty-previews
 created_at: 2025-07-28T07:44:34Z
 updated_at: 2025-07-29T20:12:11Z
 url: https://github.com/astral-sh/ruff/pull/19592
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [ty] Fix "peek definition" in playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-28 07:44_
+_@MichaReiser_
 
 ## Summary
 

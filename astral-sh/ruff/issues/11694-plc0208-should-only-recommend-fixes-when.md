@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-02T17:00:01Z
 updated_at: 2024-10-21T11:14:03Z
 url: https://github.com/astral-sh/ruff/issues/11694
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PLC0208 should only recommend fixes when iterating over literals
 
 ---
 
-_Issue opened by @Skylion007 on 2024-06-02 17:00_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

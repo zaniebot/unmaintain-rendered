@@ -13,14 +13,14 @@ head: alex/system-python-version
 created_at: 2025-06-08T13:29:27Z
 updated_at: 2025-06-12T06:08:19Z
 url: https://github.com/astral-sh/ruff/pull/18550
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # [ty] Infer the Python version from `--python=<system installation>` on Unix
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-08 13:29_
+_@AlexWaygood_
 
 ## Summary
 

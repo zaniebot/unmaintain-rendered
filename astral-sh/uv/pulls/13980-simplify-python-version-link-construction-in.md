@@ -13,14 +13,14 @@ head: zb/pyup-i
 created_at: 2025-06-11T22:40:46Z
 updated_at: 2025-06-11T23:59:14Z
 url: https://github.com/astral-sh/uv/pull/13980
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:57Z
 ```
 
 # Simplify Python version link construction in discovery
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-11 22:40_
+_@zanieb_
 
 _No description provided._
 

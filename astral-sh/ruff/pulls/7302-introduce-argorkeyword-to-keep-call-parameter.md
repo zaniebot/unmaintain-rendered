@@ -13,14 +13,14 @@ head: arg-or-keyword
 created_at: 2023-09-12T12:58:15Z
 updated_at: 2023-09-13T08:52:07Z
 url: https://github.com/astral-sh/ruff/pull/7302
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Introduce `ArgOrKeyword` to keep call parameter order
 
 ---
 
-_Pull request opened by @konstin on 2023-09-12 12:58_
+_@konstin_
 
 ## Motivation
 

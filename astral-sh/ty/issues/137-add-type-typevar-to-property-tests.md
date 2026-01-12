@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-03T23:47:32Z
 updated_at: 2025-11-13T16:12:07Z
 url: https://github.com/astral-sh/ty/issues/137
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # add Type::TypeVar to property tests
 
 ---
 
-_Issue opened by @carljm on 2025-04-03 23:47_
+_@carljm_
 
 _No description provided._
 

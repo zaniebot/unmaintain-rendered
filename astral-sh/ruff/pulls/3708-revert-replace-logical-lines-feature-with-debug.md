@@ -12,14 +12,14 @@ head: revert-replace-logical-lines
 created_at: 2023-03-24T03:14:21Z
 updated_at: 2023-03-24T03:44:31Z
 url: https://github.com/astral-sh/ruff/pull/3708
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Revert "Replace `logical_lines` feature with `debug_assertions` (#3648)"
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-24 03:14_
+_@JonathanPlasse_
 
 This reverts commit 27903cdb11cfa5988f5c704837e77ec5d7d4422e.
 

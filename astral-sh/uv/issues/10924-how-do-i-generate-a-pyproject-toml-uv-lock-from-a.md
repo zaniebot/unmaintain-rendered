@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T01:21:26Z
 updated_at: 2025-05-20T16:02:22Z
 url: https://github.com/astral-sh/uv/issues/10924
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # How do I generate a pyproject.toml/uv.lock from a pip requirements.txt file?
 
 ---
 
-_Issue opened by @tonydavis629 on 2025-01-24 01:21_
+_@tonydavis629_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: dhruv/preserve-comma-with-pep-646
 created_at: 2024-04-17T11:41:06Z
 updated_at: 2024-04-17T12:58:02Z
 url: https://github.com/astral-sh/ruff/pull/10997
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Preserve comma with starred expr in subscript
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-17 11:41_
+_@dhruvmanila_
 
 ## Summary
 

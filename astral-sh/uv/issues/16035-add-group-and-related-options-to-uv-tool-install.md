@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-26T07:44:55Z
 updated_at: 2025-09-26T13:40:48Z
 url: https://github.com/astral-sh/uv/issues/16035
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:22Z
 ```
 
 # Add `--group` and related options to `uv tool install`
 
 ---
 
-_Issue opened by @LmanTW on 2025-09-26 07:44_
+_@LmanTW_
 
 ### Summary
 

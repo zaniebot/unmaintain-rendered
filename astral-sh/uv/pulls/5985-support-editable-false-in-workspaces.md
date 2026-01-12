@@ -14,14 +14,14 @@ head: charlie/workspace-false
 created_at: 2024-08-09T23:33:52Z
 updated_at: 2024-08-10T00:59:43Z
 url: https://github.com/astral-sh/uv/pull/5985
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:08Z
 ```
 
 # Support `editable = false` in workspaces
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-09 23:33_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/add-failing-dev-test
 created_at: 2024-10-05T15:43:09Z
 updated_at: 2024-10-06T14:33:55Z
 url: https://github.com/astral-sh/uv/pull/7942
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:05Z
 ```
 
 # Add failing `uv add --dev` self-reference test
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-05 15:43_
+_@zanieb_
 
 Test case for https://github.com/astral-sh/uv/pull/7943
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-20T21:25:18Z
 updated_at: 2025-10-16T18:49:13Z
 url: https://github.com/astral-sh/ty/issues/1068
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # support field_specifiers in dataclass_transform
 
 ---
 
-_Issue opened by @carljm on 2025-08-20 21:25_
+_@carljm_
 
 This is important, because it is used by two of the most popular clients of `dataclass_transform`, attrs and pydantic.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T17:43:32Z
 updated_at: 2025-02-06T08:16:53Z
 url: https://github.com/astral-sh/ruff/issues/15975
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # ANN201 doesn't handle pytest.raises context manager
 
 ---
 
-_Issue opened by @jogo-openai on 2025-02-05 17:43_
+_@jogo-openai_
 
 ### Description
 

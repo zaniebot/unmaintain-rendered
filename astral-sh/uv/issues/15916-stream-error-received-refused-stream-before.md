@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-17T17:40:42Z
 updated_at: 2025-10-09T13:53:16Z
 url: https://github.com/astral-sh/uv/issues/15916
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # Stream error received: refused stream before processing any application logic
 
 ---
 
-_Issue opened by @konstin on 2025-09-17 17:40_
+_@konstin_
 
 Streaming downloads can fail with a new error: https://github.com/astral-sh/uv/actions/runs/17805600726/job/50616507485
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2018-10-18T19:07:23Z
 updated_at: 2020-04-16T17:45:24Z
 url: https://github.com/clap-rs/clap/issues/1364
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Empty OPTIONS in -h if all options exist but all are hidden_short_help
 
 ---
 
-_Issue opened by @FauxFaux on 2018-10-18 19:07_
+_@FauxFaux_
 
 ### Affected Version of clap
 

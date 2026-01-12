@@ -14,14 +14,14 @@ head: cjm/self-lazy-default
 created_at: 2025-10-07T20:44:47Z
 updated_at: 2025-10-08T01:46:34Z
 url: https://github.com/astral-sh/ruff/pull/20754
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] fix implicit Self on generic class with typevar default
 
 ---
 
-_Pull request opened by @carljm on 2025-10-07 20:44_
+_@carljm_
 
 ## Summary
 

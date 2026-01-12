@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-05-02T08:43:13Z
 updated_at: 2023-10-28T13:46:41Z
 url: https://github.com/clap-rs/clap/issues/4874
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # "Cookbook" entry for "just give me back the Clap 3.x colors"
 
 ---
 
-_Issue opened by @ssokolow on 2023-05-02 08:43_
+_@ssokolow_
 
 ### Please complete the following tasks
 

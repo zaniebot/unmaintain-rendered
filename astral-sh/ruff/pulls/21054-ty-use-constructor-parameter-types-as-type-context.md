@@ -14,14 +14,14 @@ head: ibraheem/bidi-constructors
 created_at: 2025-10-24T01:35:35Z
 updated_at: 2025-10-24T20:14:19Z
 url: https://github.com/astral-sh/ruff/pull/21054
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [ty] Use constructor parameter types as type context
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-10-24 01:35_
+_@ibraheemdev_
 
 ## Summary
 

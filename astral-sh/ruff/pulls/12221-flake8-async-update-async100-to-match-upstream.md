@@ -14,14 +14,14 @@ head: async100
 created_at: 2024-07-07T06:07:00Z
 updated_at: 2024-07-09T17:59:48Z
 url: https://github.com/astral-sh/ruff/pull/12221
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`flake8-async`] Update `ASYNC100` to match upstream
 
 ---
 
-_Pull request opened by @augustelalande on 2024-07-07 06:07_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

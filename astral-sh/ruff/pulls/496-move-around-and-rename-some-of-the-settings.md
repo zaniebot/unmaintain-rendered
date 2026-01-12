@@ -12,14 +12,14 @@ head: charlie/settings
 created_at: 2022-10-28T22:46:50Z
 updated_at: 2022-10-28T22:46:54Z
 url: https://github.com/astral-sh/ruff/pull/496
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Move around and rename some of the Settings structs
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-28 22:46_
+_@charliermarsh_
 
 _No description provided._
 

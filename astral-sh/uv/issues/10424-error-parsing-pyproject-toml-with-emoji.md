@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-09T09:00:28Z
 updated_at: 2025-01-09T12:01:14Z
 url: https://github.com/astral-sh/uv/issues/10424
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # Error parsing pyproject.toml with emoji 😮
 
 ---
 
-_Issue opened by @iwanbolzern on 2025-01-09 09:00_
+_@iwanbolzern_
 
 uv fails to parse the following pyproject.toml on Windows. The problem seems to be 🔍 in the description:
 

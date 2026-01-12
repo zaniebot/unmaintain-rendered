@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-25T21:05:53Z
 updated_at: 2025-09-19T02:36:31Z
 url: https://github.com/astral-sh/ruff/issues/13516
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # ANN401: Add option to only enforce on the standard spelling
 
 ---
 
-_Issue opened by @ofek on 2024-09-25 21:05_
+_@ofek_
 
 Although it's possible to annotate using the [inner type](https://peps.python.org/pep-0484/#arbitrary-argument-lists-and-default-argument-values), and more recently the ability to [`Unpack`](https://peps.python.org/pep-0692/) a `TypedDict`, there are many common situations where one would desire `Any`:
 

@@ -14,14 +14,14 @@ head: refactor-lexicographic-compares-inference
 created_at: 2024-11-18T03:25:55Z
 updated_at: 2024-11-20T01:32:43Z
 url: https://github.com/astral-sh/ruff/pull/14422
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Refactoring the inference logic of lexicographic comparisons
 
 ---
 
-_Pull request opened by @cake-monotone on 2024-11-18 03:25_
+_@cake-monotone_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

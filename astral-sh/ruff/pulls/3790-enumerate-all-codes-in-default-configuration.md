@@ -13,14 +13,14 @@ head: charlie/default
 created_at: 2023-03-28T23:29:07Z
 updated_at: 2023-03-28T23:59:26Z
 url: https://github.com/astral-sh/ruff/pull/3790
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Enumerate all codes in default configuration example
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-28 23:29_
+_@charliermarsh_
 
 _No description provided._
 

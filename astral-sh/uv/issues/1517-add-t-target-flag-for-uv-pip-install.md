@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T17:28:41Z
 updated_at: 2025-04-30T15:32:06Z
 url: https://github.com/astral-sh/uv/issues/1517
-synced_at: 2026-01-10T03:41:45Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Add `-t/--target` flag for `uv pip install`
 
 ---
 
-_Issue opened by @imdoroshenko on 2024-02-16 17:28_
+_@imdoroshenko_
 
 This option is used a lot for vendoring and for custom build systems. 
 

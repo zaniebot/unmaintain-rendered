@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-18T01:01:14Z
 updated_at: 2025-04-02T22:55:51Z
 url: https://github.com/astral-sh/uv/issues/4373
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # `uv add` appears to use the wrong python when requires-python, package, and .venv python version conflict
 
 ---
 
-_Issue opened by @WillDuke on 2024-06-18 01:01_
+_@WillDuke_
 
 I tried the running the following snippet with uv v0.2.12 on MacOS (x86_64):
 

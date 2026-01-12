@@ -14,14 +14,14 @@ head: fix-test-doc-typo
 created_at: 2025-09-03T22:03:37Z
 updated_at: 2025-09-03T23:00:58Z
 url: https://github.com/astral-sh/ruff/pull/20220
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ty] Fix small test typo
 
 ---
 
-_Pull request opened by @s-rigaud on 2025-09-03 22:03_
+_@s-rigaud_
 
 Small typo in the comment of a test 
 

@@ -12,14 +12,14 @@ head: charlie/ast-grep
 created_at: 2022-11-07T19:51:45Z
 updated_at: 2022-11-22T18:08:58Z
 url: https://github.com/astral-sh/ruff/pull/646
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Prototype support for ast-grep rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-07 19:51_
+_@charliermarsh_
 
 Going to use this branch to explore an ast-grep integration (i.e., allow users to define custom rules in YAML that can be executed via `ast-grep`, then automatically pick them up in Ruff).
 

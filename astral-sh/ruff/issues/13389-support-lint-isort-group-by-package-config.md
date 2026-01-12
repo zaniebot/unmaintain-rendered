@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-18T07:37:19Z
 updated_at: 2025-09-24T17:32:31Z
 url: https://github.com/astral-sh/ruff/issues/13389
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Support [lint.isort] group_by_package config
 
 ---
 
-_Issue opened by @an0o0nym on 2024-09-18 07:37_
+_@an0o0nym_
 
 Hi,
 isort linting works very nice, but I am missing a single option to finish my ruff setup - which is 'group_by_package'.

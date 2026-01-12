@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-03-26T22:56:02Z
 updated_at: 2018-08-02T03:29:37Z
 url: https://github.com/clap-rs/clap/issues/34
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Static lifetimes on Arg strings
 
 ---
 
-_Issue opened by @jhelwig on 2015-03-26 22:56_
+_@jhelwig_
 
 So, I went to do a bit more dynamic generation (this time with the help text of one of my app's arguments), and ran into the same static lifetime issue as #28.
 

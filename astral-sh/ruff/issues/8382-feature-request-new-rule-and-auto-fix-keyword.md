@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-31T17:27:57Z
 updated_at: 2024-02-06T12:08:43Z
 url: https://github.com/astral-sh/ruff/issues/8382
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Feature request: new rule (and auto fix?) keyword only parameters
 
 ---
 
-_Issue opened by @tiangolo on 2023-10-31 17:27_
+_@tiangolo_
 
 This is something I like to do and request people do as well, but I haven't seen a linter that implements my (personal) rule.
 

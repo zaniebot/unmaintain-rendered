@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-24T04:50:54Z
 updated_at: 2025-06-24T16:09:32Z
 url: https://github.com/astral-sh/uv/issues/14228
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # Tests reintroduced dependency on EOL Python 3.8 without `python-eol` feature
 
 ---
 
-_Issue opened by @mgorny on 2025-06-24 04:50_
+_@mgorny_
 
 ### Summary
 

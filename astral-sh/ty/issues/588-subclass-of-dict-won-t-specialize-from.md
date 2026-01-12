@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-05T23:19:26Z
 updated_at: 2025-08-01T19:29:20Z
 url: https://github.com/astral-sh/ty/issues/588
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # subclass of dict won't specialize from constructor call
 
 ---
 
-_Issue opened by @carljm on 2025-06-05 23:19_
+_@carljm_
 
 ```python
 from typing import TypeVar

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-10T17:28:21Z
 updated_at: 2025-10-11T17:41:35Z
 url: https://github.com/astral-sh/uv/issues/16237
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # Wishlist: option to let `uv tool list` show the version of the python interpreter for the tools
 
 ---
 
-_Issue opened by @sergiocallegari on 2025-10-10 17:28_
+_@sergiocallegari_
 
 ### Summary
 

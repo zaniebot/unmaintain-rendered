@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-06T05:15:56Z
 updated_at: 2023-11-14T05:44:31Z
 url: https://github.com/astral-sh/ruff/issues/8505
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Fix ruff.toml examples in the documentation
 
 ---
 
-_Issue opened by @CharlesPerrotMinot on 2023-11-06 05:15_
+_@CharlesPerrotMinot_
 
 Hi,
 Thank so much for tuff! Love it so far.

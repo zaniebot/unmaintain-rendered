@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-04T12:42:09Z
 updated_at: 2022-12-04T15:13:18Z
 url: https://github.com/astral-sh/ruff/issues/1032
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # T100 should not hit on import builtins
 
 ---
 
-_Issue opened by @LefterisJP on 2022-12-04 12:42_
+_@LefterisJP_
 
 Seen with `ruff==0.0.155`
 

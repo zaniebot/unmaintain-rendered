@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-15T03:41:19Z
 updated_at: 2025-04-04T10:39:14Z
 url: https://github.com/astral-sh/uv/issues/12183
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:57Z
 ```
 
 # uvx generate-shell-completion <shell> does not appear to work
 
 ---
 
-_Issue opened by @warp-9000 on 2025-03-15 03:41_
+_@warp-9000_
 
 ### Question
 

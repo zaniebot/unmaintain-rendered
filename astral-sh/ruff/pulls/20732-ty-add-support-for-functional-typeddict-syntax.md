@@ -14,14 +14,14 @@ head: ibraheem/typed-dict-constructor
 created_at: 2025-10-07T03:57:50Z
 updated_at: 2025-12-10T20:49:21Z
 url: https://github.com/astral-sh/ruff/pull/20732
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # [ty] Add support for functional `TypedDict` syntax
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-10-07 03:57_
+_@ibraheemdev_
 
 ## Summary
 

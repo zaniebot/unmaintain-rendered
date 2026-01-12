@@ -13,14 +13,14 @@ head: ag/fix-torch-marker-bug
 created_at: 2024-07-17T18:22:23Z
 updated_at: 2024-07-26T14:28:22Z
 url: https://github.com/astral-sh/uv/pull/5163
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:40Z
 ```
 
 # propagate markers to sibling dependencies of forks
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-07-17 18:22_
+_@BurntSushi_
 
 When a fork occurs, we divide not just the dependencies that
 provoked a fork into distinct groups, but we also add the

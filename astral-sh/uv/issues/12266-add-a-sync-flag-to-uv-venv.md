@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T09:11:25Z
 updated_at: 2025-03-18T13:50:58Z
 url: https://github.com/astral-sh/uv/issues/12266
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # Add a --sync flag to `uv venv`
 
 ---
 
-_Issue opened by @AtomToast on 2025-03-18 09:11_
+_@AtomToast_
 
 ### Summary
 

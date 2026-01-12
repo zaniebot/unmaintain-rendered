@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-16T19:19:01Z
 updated_at: 2025-07-10T16:28:55Z
 url: https://github.com/astral-sh/ty/issues/429
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [tool.ty.environment] extra-paths causes a lot of failures and in general works differently from `ty check --extra-search-path`
 
 ---
 
-_Issue opened by @Guitaricet on 2025-05-16 19:19_
+_@Guitaricet_
 
 ### Summary
 

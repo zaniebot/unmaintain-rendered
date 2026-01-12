@@ -11,14 +11,14 @@ head: mark-PT029-as-stable
 created_at: 2025-06-21T08:07:41Z
 updated_at: 2025-06-23T12:11:20Z
 url: https://github.com/astral-sh/ruff/pull/18848
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # Stabilize `pytest-warns-without-warning (PT029)`
 
 ---
 
-_Pull request opened by @harupy on 2025-06-21 08:07_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

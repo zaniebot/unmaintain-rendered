@@ -12,14 +12,14 @@ head: zanie/explicit-clone
 created_at: 2023-10-31T19:53:55Z
 updated_at: 2023-10-31T20:24:28Z
 url: https://github.com/astral-sh/uv/pull/262
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:50Z
 ```
 
 # Remove implicit clone from `ExtraName` and document requirement in `PackageName`
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-31 19:53_
+_@zanieb_
 
 per discussion in #137
 

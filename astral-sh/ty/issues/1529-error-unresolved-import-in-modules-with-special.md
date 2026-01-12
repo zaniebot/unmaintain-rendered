@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-12T08:15:47Z
 updated_at: 2025-11-14T09:12:13Z
 url: https://github.com/astral-sh/ty/issues/1529
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # error[unresolved-import] in modules with special names
 
 ---
 
-_Issue opened by @FaneTheEternal on 2025-11-12 08:15_
+_@FaneTheEternal_
 
 ### Summary
 

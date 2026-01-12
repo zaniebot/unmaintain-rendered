@@ -14,14 +14,14 @@ head: minimal-size-profile
 created_at: 2025-12-06T17:33:08Z
 updated_at: 2025-12-06T19:57:44Z
 url: https://github.com/astral-sh/ruff/pull/21826
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # Add a `minimal-size` cargo build profile for users who want to build a smaller binary
 
 ---
 
-_Pull request opened by @lmmx on 2025-12-06 17:33_
+_@lmmx_
 
 This PR adds the same `minimal-size` profile as `uv` repo workspace has
 

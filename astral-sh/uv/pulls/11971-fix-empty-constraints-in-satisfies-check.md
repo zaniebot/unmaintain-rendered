@@ -13,14 +13,14 @@ head: charlie/em
 created_at: 2025-03-05T03:02:57Z
 updated_at: 2025-03-05T03:11:21Z
 url: https://github.com/astral-sh/uv/pull/11971
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:05Z
 ```
 
 # Fix empty constraints in satisfies check
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-05 03:02_
+_@charliermarsh_
 
 ## Summary
 

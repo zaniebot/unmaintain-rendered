@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-03-12T16:01:50Z
 updated_at: 2021-12-08T20:01:18Z
 url: https://github.com/clap-rs/clap/issues/2409
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Conflicting arguments in group only work for first group in YAML file
 
 ---
 
-_Issue opened by @DocKDE on 2021-03-12 16:01_
+_@DocKDE_
 
 ### Please complete the following tasks
 

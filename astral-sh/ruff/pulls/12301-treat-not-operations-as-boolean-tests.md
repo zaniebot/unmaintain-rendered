@@ -13,14 +13,14 @@ head: charlie/unary
 created_at: 2024-07-12T12:45:10Z
 updated_at: 2024-07-12T12:58:01Z
 url: https://github.com/astral-sh/ruff/pull/12301
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Treat `not` operations as boolean tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-12 12:45_
+_@charliermarsh_
 
 ## Summary
 

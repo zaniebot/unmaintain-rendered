@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-13T12:52:15Z
 updated_at: 2024-07-13T19:22:19Z
 url: https://github.com/astral-sh/ruff/issues/12309
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # False positive on F811 "Redefinition of unused" when using contextlib.suppress
 
 ---
 
-_Issue opened by @masklinn on 2024-07-13 12:52_
+_@masklinn_
 
 I assume this is a generalised problem with context managers being able to influence control flow but I figure `contextlib.suppress` could be special-cased maybe?
 ```python

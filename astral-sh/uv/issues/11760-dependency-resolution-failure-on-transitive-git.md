@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-24T22:57:42Z
 updated_at: 2025-04-11T10:14:56Z
 url: https://github.com/astral-sh/uv/issues/11760
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # Dependency resolution failure on transitive Git build-system requirement
 
 ---
 
-_Issue opened by @astoeckel-abr on 2025-02-24 22:57_
+_@astoeckel-abr_
 
 ### Summary
 

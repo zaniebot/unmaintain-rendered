@@ -11,14 +11,14 @@ head: pd002-fix-bug
 created_at: 2024-03-23T17:50:37Z
 updated_at: 2024-03-31T15:59:10Z
 url: https://github.com/astral-sh/ruff/pull/10537
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Fix `PD002` autofix for chained calls
 
 ---
 
-_Pull request opened by @augustelalande on 2024-03-23 17:50_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

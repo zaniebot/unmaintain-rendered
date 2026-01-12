@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-28T23:01:38Z
 updated_at: 2025-03-02T15:58:35Z
 url: https://github.com/astral-sh/uv/issues/11871
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # uv sync with find-links not locating wheels in the provided folder
 
 ---
 
-_Issue opened by @stumpylog on 2025-02-28 23:01_
+_@stumpylog_
 
 ### Summary
 

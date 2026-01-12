@@ -13,14 +13,14 @@ head: micha/case-sensitive-module-resolver-tests
 created_at: 2025-03-05T12:42:15Z
 updated_at: 2025-03-06T09:19:25Z
 url: https://github.com/astral-sh/ruff/pull/16517
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Add tests for case-sensitive module resolution
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-05 12:42_
+_@MichaReiser_
 
 ## Summary
 

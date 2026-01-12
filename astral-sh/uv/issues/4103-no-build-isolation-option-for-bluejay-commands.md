@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-06T14:48:14Z
 updated_at: 2024-08-22T01:52:03Z
 url: https://github.com/astral-sh/uv/issues/4103
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # No build isolation option for bluejay commands
 
 ---
 
-_Issue opened by @konstin on 2024-06-06 14:48_
+_@konstin_
 
 Locking huggingface currently fails because it depends on [natten](https://pypi.org/project/natten/) which only hast source dists and can only be built without build isolation. `uv run`, `uv lock` and `uv sync` should support a `--no-build-isolation` flag.
 

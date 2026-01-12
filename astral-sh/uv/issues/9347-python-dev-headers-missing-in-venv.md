@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T05:41:20Z
 updated_at: 2025-07-11T03:10:42Z
 url: https://github.com/astral-sh/uv/issues/9347
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # Python dev headers missing in venv
 
 ---
 
-_Issue opened by @arogozhnikov on 2024-11-22 05:41_
+_@arogozhnikov_
 
 I think python dev headers are now missing when uv installs venv; repro (start from ubuntu 22.04):
 

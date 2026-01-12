@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-22T02:46:56Z
 updated_at: 2024-02-23T22:20:47Z
 url: https://github.com/astral-sh/uv/issues/1848
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Found duplicate package in environment
 
 ---
 
-_Issue opened by @amartani on 2024-02-22 02:46_
+_@amartani_
 
 In one of my pre-existing venvs, any `uv pip` command that I run results in the following error:
 

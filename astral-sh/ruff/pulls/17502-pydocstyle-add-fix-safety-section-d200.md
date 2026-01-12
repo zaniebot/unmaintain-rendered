@@ -13,14 +13,14 @@ head: document-fix-safety-one-linear
 created_at: 2025-04-20T21:23:10Z
 updated_at: 2025-04-26T13:59:05Z
 url: https://github.com/astral-sh/ruff/pull/17502
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`pydocstyle`] add fix safety section (`D200`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-04-20 21:23_
+_@VascoSch92_
 
 The PR add the fix safety section for rule `D200` (#15584 )
 

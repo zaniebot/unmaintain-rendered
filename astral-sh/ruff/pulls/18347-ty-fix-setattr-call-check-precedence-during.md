@@ -14,14 +14,14 @@ head: feature/setattr-return-type
 created_at: 2025-05-28T06:02:47Z
 updated_at: 2025-07-09T02:20:27Z
 url: https://github.com/astral-sh/ruff/pull/18347
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Fix __setattr__ call check precedence during attribute assignment
 
 ---
 
-_Pull request opened by @thejchap on 2025-05-28 06:02_
+_@thejchap_
 
 ## Summary
 Related:

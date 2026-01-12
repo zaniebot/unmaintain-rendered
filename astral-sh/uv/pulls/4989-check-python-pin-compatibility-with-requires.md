@@ -14,14 +14,14 @@ head: python-pin-compatibility
 created_at: 2024-07-11T09:43:11Z
 updated_at: 2024-07-19T19:16:28Z
 url: https://github.com/astral-sh/uv/pull/4989
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:34Z
 ```
 
 # Check `python pin` compatibility with `Requires-Python`
 
 ---
 
-_Pull request opened by @blueraft on 2024-07-11 09:43_
+_@blueraft_
 
 ## Summary
 

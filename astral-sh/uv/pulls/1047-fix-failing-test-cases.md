@@ -13,14 +13,14 @@ head: zb/fix-main
 created_at: 2024-01-22T21:25:40Z
 updated_at: 2024-01-22T21:31:18Z
 url: https://github.com/astral-sh/uv/pull/1047
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # Fix failing test cases
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-22 21:25_
+_@zanieb_
 
 These tests from #1041 failing on `main` https://github.com/astral-sh/puffin/actions/runs/7616995716/job/20745019216 due to conflict with #1042 
 

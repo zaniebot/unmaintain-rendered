@@ -13,14 +13,14 @@ head: ibraheem/once-map-cleanup
 created_at: 2024-07-01T19:01:35Z
 updated_at: 2024-07-01T19:17:38Z
 url: https://github.com/astral-sh/uv/pull/4704
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:24Z
 ```
 
 # Simplify `OnceMap::wait_blocking`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-01 19:01_
+_@ibraheemdev_
 
 ## Summary
 

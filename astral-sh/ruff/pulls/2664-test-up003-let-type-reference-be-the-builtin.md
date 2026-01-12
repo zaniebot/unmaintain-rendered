@@ -12,14 +12,14 @@ head: up003-test
 created_at: 2023-02-08T17:39:20Z
 updated_at: 2023-02-08T17:44:38Z
 url: https://github.com/astral-sh/ruff/pull/2664
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # test(UP003): let type reference be the builtin
 
 ---
 
-_Pull request opened by @spaceone on 2023-02-08 17:39_
+_@spaceone_
 
 Fixes: 7482a4a5b860e66f73a256bf43411b0fd422071f
 Issue #2663

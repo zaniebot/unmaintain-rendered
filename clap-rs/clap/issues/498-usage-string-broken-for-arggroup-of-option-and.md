@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-05-07T02:51:39Z
 updated_at: 2020-04-12T10:09:26Z
 url: https://github.com/clap-rs/clap/issues/498
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Usage string broken for ArgGroup of option and argument
 
 ---
 
-_Issue opened by @joshtriplett on 2016-05-07 02:51_
+_@joshtriplett_
 
 Consider the following subcommand definition:
 

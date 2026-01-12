@@ -12,14 +12,14 @@ head: charlie/tweak
 created_at: 2024-02-23T19:21:24Z
 updated_at: 2024-02-23T19:35:30Z
 url: https://github.com/astral-sh/uv/pull/1935
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:47Z
 ```
 
 # Tweak output message for `--no-emit-package`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-23 19:21_
+_@charliermarsh_
 
 Good feedback from: https://github.com/astral-sh/uv/pull/1889#discussion_r1501067901
 

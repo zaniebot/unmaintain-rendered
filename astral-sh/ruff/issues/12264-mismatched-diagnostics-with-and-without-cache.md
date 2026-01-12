@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-10T04:07:45Z
 updated_at: 2024-08-07T19:53:47Z
 url: https://github.com/astral-sh/ruff/issues/12264
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Mismatched diagnostics with and without cache with hierarchical configs
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-07-10 04:07_
+_@dhruvmanila_
 
 Consider the following project structure:
 

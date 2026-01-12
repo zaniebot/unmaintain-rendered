@@ -12,14 +12,14 @@ head: isort-options
 created_at: 2023-02-28T03:47:49Z
 updated_at: 2023-03-21T15:07:02Z
 url: https://github.com/astral-sh/ruff/pull/3266
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Supplement isort options
 
 ---
 
-_Pull request opened by @moreal on 2023-02-28 03:47_
+_@moreal_
 
 This pull request is related to the https://github.com/charliermarsh/ruff/issues/1749 issue but it doesn't resolve the problem perfectly yet. I opened this pull request to check the intermediate stage with reviewing.
 

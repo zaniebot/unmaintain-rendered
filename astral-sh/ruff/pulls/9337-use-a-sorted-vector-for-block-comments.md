@@ -13,14 +13,14 @@ head: charlie/bin
 created_at: 2023-12-31T19:47:56Z
 updated_at: 2023-12-31T20:04:02Z
 url: https://github.com/astral-sh/ruff/pull/9337
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Use a sorted vector for block comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-31 19:47_
+_@charliermarsh_
 
 ## Summary
 

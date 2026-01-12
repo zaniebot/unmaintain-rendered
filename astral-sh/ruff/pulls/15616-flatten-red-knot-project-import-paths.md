@@ -14,14 +14,14 @@ head: micha/flatten-project-structure
 created_at: 2025-01-20T13:05:19Z
 updated_at: 2025-01-20T13:57:59Z
 url: https://github.com/astral-sh/ruff/pull/15616
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Flatten `red_knot_project` import paths
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-20 13:05_
+_@MichaReiser_
 
 ## Summary
 

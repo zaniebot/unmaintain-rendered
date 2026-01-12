@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-05-13T22:49:07Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/506
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Run ignored doc tests only on unix systems.
 
 ---
 
-_Issue opened by @kbknapp on 2016-05-13 22:49_
+_@kbknapp_
 
 Some doc tests are only able to run on unix systems, but are currently ignored. I'd like to change that. An example would be the [`Arg::value_of_os`](http://kbknapp.github.io/clap-rs/clap/struct.ArgMatches.html#method.value_of_os) ([src](https://github.com/kbknapp/clap-rs/blob/0c6c4ad743f234774899a9e700d24c794e9aa23e/src/args/arg_matches.rs#L157-L168))
 

@@ -13,14 +13,14 @@ head: charlie/ahash
 created_at: 2023-12-09T16:07:08Z
 updated_at: 2023-12-09T16:23:36Z
 url: https://github.com/astral-sh/ruff/pull/9071
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Upgrade `ahash`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-09 16:07_
+_@charliermarsh_
 
 The version we're using now was yanked.
 

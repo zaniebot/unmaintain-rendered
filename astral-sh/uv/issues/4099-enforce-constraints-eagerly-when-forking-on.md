@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-06T14:21:11Z
 updated_at: 2024-06-07T19:57:03Z
 url: https://github.com/astral-sh/uv/issues/4099
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Enforce constraints eagerly when forking on markers
 
 ---
 
-_Issue opened by @blueraft on 2024-06-06 14:21_
+_@blueraft_
 
 Despite specifying urllib3>=1.22.0 in my dependencies, uv lock traverses down to an incompatible version urllib3==1.2.1, which fails to build on my machine.
 

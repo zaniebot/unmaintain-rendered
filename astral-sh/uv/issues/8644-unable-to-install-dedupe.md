@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-28T19:30:27Z
 updated_at: 2024-10-28T19:33:21Z
 url: https://github.com/astral-sh/uv/issues/8644
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # Unable to install dedupe
 
 ---
 
-_Issue opened by @mackenziedott on 2024-10-28 19:30_
+_@mackenziedott_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

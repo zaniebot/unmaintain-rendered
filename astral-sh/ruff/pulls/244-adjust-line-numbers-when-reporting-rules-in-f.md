@@ -12,14 +12,14 @@ head: charlie/f-string
 created_at: 2022-09-21T16:56:46Z
 updated_at: 2022-09-21T17:42:59Z
 url: https://github.com/astral-sh/ruff/pull/244
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Adjust line numbers when reporting rules in f-strings
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-21 16:56_
+_@charliermarsh_
 
 The best we can do until this is fixed in the parser itself: whenever reporting a rule in an f-string, just use the location of the f-string itself. This will be wrong in some cases, but at least it will be close.
 

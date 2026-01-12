@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T20:14:15Z
 updated_at: 2024-09-09T00:57:16Z
 url: https://github.com/astral-sh/uv/issues/1718
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # `uv pip compile` error message not readable.
 
 ---
 
-_Issue opened by @Czaki on 2024-02-19 20:14_
+_@Czaki_
 
 I try to play with `--resolution=lowest` for minimum requirements testing.
 However, it fails with following traceback. As the same command passes with `resolution=lowest-direct` it looks like there is a problem with some indirect dependecy dependecies not pinning setuptools to proer version. 

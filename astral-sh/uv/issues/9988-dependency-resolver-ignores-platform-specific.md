@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-18T03:35:04Z
 updated_at: 2025-02-15T20:35:06Z
 url: https://github.com/astral-sh/uv/issues/9988
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # Dependency Resolver Ignores Platform-Specific Version Constraints
 
 ---
 
-_Issue opened by @merajhashemi on 2024-12-18 03:35_
+_@merajhashemi_
 
 Hello,  
 

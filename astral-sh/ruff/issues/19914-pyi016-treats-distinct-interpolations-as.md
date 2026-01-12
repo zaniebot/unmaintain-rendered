@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-14T12:29:11Z
 updated_at: 2025-08-19T06:36:56Z
 url: https://github.com/astral-sh/ruff/issues/19914
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PYI016 treats distinct interpolations as duplicates
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-14 12:29_
+_@dscorbett_
 
 ### Summary
 

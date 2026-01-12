@@ -14,14 +14,14 @@ head: charlie/ensure
 created_at: 2024-07-10T18:42:38Z
 updated_at: 2024-07-12T22:09:35Z
 url: https://github.com/astral-sh/uv/pull/4975
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:33Z
 ```
 
 # Add a command to append uv's binary directory to PATH
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-10 18:42_
+_@charliermarsh_
 
 
 ## Summary

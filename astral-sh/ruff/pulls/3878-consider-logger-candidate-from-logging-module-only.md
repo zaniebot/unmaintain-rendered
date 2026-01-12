@@ -12,14 +12,14 @@ head: fix/logger-candidate-module
 created_at: 2023-04-04T17:52:24Z
 updated_at: 2023-04-05T01:28:55Z
 url: https://github.com/astral-sh/ruff/pull/3878
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Consider logger candidate from `logging` module only
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-04-04 17:52_
+_@dhruvmanila_
 
 Refer: https://github.com/charliermarsh/ruff/pull/3718#issuecomment-1496105349
 

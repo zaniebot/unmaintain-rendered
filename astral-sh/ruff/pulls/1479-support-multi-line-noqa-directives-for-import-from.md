@@ -12,14 +12,14 @@ head: charlie/noqa
 created_at: 2022-12-30T15:51:18Z
 updated_at: 2022-12-30T16:16:51Z
 url: https://github.com/astral-sh/ruff/pull/1479
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Support multi-line `noqa` directives for 'import from'
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-30 15:51_
+_@charliermarsh_
 
 Resolves #1052.
 

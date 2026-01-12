@@ -14,14 +14,14 @@ head: fix-20572
 created_at: 2025-09-26T03:11:46Z
 updated_at: 2025-10-28T21:55:11Z
 url: https://github.com/astral-sh/ruff/pull/20588
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # [`refurb`] Preserve digit separators in `Decimal` constructor (`FURB157`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-26 03:11_
+_@danparizher_
 
 ## Summary
 

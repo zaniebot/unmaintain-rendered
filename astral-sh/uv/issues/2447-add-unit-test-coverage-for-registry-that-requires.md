@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-14T03:36:32Z
 updated_at: 2024-03-15T14:50:05Z
 url: https://github.com/astral-sh/uv/issues/2447
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Add unit test coverage for registry that requires basic HTTP authentication
 
 ---
 
-_Issue opened by @zanieb on 2024-03-14 03:36_
+_@zanieb_
 
 We're missing coverage for this and it's fairly critical.
 

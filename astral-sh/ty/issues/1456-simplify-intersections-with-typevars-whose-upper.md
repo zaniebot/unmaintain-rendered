@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-10-30T14:37:38Z
 updated_at: 2025-10-31T20:51:13Z
 url: https://github.com/astral-sh/ty/issues/1456
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Simplify intersections with typevars whose upper bound is covered by a union of negative elements
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-30 14:37_
+_@sharkdp_
 
 There appear to be lots of other cases where you can have a TypeVar bound to a union (or type equivalent to a union) where we also exhibit similar issues with reachability and narrowing:
 

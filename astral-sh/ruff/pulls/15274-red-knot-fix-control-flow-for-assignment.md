@@ -13,14 +13,14 @@ head: cjm/ifelif
 created_at: 2025-01-05T17:57:11Z
 updated_at: 2025-01-05T18:36:45Z
 url: https://github.com/astral-sh/ruff/pull/15274
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] fix control flow for assignment expressions in elif tests
 
 ---
 
-_Pull request opened by @carljm on 2025-01-05 17:57_
+_@carljm_
 
 ## Summary
 

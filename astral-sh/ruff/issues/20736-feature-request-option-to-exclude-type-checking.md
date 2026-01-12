@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-07T06:40:34Z
 updated_at: 2025-11-16T12:30:25Z
 url: https://github.com/astral-sh/ruff/issues/20736
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [feature request] option to exclude type checking imports in `ruff analyze`
 
 ---
 
-_Issue opened by @gwdekker on 2025-10-07 06:40_
+_@gwdekker_
 
 tach by default ignores dependencies if the import statement is wrapped by if TYPE_CHECKING:. Is that something that is possible with ruff analyze graph as well, and would you consider adding it if not yet possible? (from another thread on the issue tracker I found [Grimp](https://grimp.readthedocs.io/en/stable/usage.html), which supports this with graph = grimp.build_graph('mypackage', exclude_type_checking_imports=True).
 

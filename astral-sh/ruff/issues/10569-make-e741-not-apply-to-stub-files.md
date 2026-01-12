@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-25T12:49:36Z
 updated_at: 2024-11-17T02:54:36Z
 url: https://github.com/astral-sh/ruff/issues/10569
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Make E741 not apply to stub files
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-03-25 12:49_
+_@AlexWaygood_
 
 I think it would make sense to have E741 ([`ambiguous-variable-name`](https://docs.astral.sh/ruff/rules/ambiguous-variable-name/)) not apply to stub files.
 

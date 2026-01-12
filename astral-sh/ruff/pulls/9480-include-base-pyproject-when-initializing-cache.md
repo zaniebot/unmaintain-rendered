@@ -13,14 +13,14 @@ head: charlie/resolver
 created_at: 2024-01-12T00:11:43Z
 updated_at: 2024-01-12T00:25:14Z
 url: https://github.com/astral-sh/ruff/pull/9480
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Include base pyproject when initializing cache settings
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-12 00:11_
+_@charliermarsh_
 
 ## Summary
 

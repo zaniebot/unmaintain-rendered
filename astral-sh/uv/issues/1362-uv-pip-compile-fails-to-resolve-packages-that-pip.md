@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-15T21:41:47Z
 updated_at: 2024-02-16T20:11:21Z
 url: https://github.com/astral-sh/uv/issues/1362
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # uv pip compile fails to resolve packages that pip-compile resolves with internal pypi artifactory repo
 
 ---
 
-_Issue opened by @merc1031 on 2024-02-15 21:41_
+_@merc1031_
 
 using pip-compile
 ```

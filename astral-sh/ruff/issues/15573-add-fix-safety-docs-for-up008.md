@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-18T21:39:33Z
 updated_at: 2025-04-21T13:48:06Z
 url: https://github.com/astral-sh/ruff/issues/15573
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Add fix safety docs for UP008
 
 ---
 
-_Issue opened by @joecox on 2025-01-18 21:39_
+_@joecox_
 
 Hello, as of Ruff 0.9.2, `UP008` produces unsafe fixes. Can the [documentation](https://docs.astral.sh/ruff/rules/super-call-with-parameters/) be updated to explain the fix safety, similar to rules like [`UP006`](https://docs.astral.sh/ruff/rules/non-pep585-annotation/#fix-safety)?
 

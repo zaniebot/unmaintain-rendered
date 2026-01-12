@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-13T14:34:23Z
 updated_at: 2024-03-17T21:38:39Z
 url: https://github.com/astral-sh/uv/issues/2414
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Unable to upload `uv>=0.1.17` to Azure Artifacts due to `Metadata-Version: 2.3`
 
 ---
 
-_Issue opened by @olivierlefloch on 2024-03-13 14:34_
+_@olivierlefloch_
 
 `uv==0.1.17`'s wheel seems to have switched to `Metadata-Version: 2.3`, which Azure Artifacts does not support:
 

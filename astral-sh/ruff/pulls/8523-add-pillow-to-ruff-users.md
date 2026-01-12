@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-11-06T18:52:19Z
 updated_at: 2023-11-06T18:59:13Z
 url: https://github.com/astral-sh/ruff/pull/8523
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add Pillow to Ruff users
 
 ---
 
-_Pull request opened by @akx on 2023-11-06 18:52_
+_@akx_
 
 ## Summary
 

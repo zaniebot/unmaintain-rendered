@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T09:48:48Z
 updated_at: 2025-03-21T01:49:01Z
 url: https://github.com/astral-sh/uv/issues/11794
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # Get path to virtual environment for script
 
 ---
 
-_Issue opened by @isak102 on 2025-02-26 09:48_
+_@isak102_
 
 ### Question
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-15T08:40:42Z
 updated_at: 2025-05-15T08:46:47Z
 url: https://github.com/astral-sh/ty/issues/403
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # False positive in invalid-argument-type
 
 ---
 
-_Issue opened by @dleifeld on 2025-05-15 08:40_
+_@dleifeld_
 
 ### Summary
 

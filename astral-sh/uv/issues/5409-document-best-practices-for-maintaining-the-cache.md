@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-24T14:30:38Z
 updated_at: 2024-08-20T20:10:17Z
 url: https://github.com/astral-sh/uv/issues/5409
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Document best practices for maintaining the cache
 
 ---
 
-_Issue opened by @zanieb on 2024-07-24 14:30_
+_@zanieb_
 
 e.g. as prompted in https://github.com/astral-sh/uv/issues/5222#issuecomment-2247510996
 

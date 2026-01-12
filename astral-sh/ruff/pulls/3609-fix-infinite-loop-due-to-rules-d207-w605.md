@@ -13,14 +13,14 @@ head: issue-3522
 created_at: 2023-03-19T15:57:26Z
 updated_at: 2023-03-19T18:46:44Z
 url: https://github.com/astral-sh/ruff/pull/3609
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Fix infinite loop due to rules `D207` & `W605`
 
 ---
 
-_Pull request opened by @vlindhol on 2023-03-19 15:57_
+_@vlindhol_
 
 Closes #3522
 

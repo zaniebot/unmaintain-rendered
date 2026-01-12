@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-17T10:53:29Z
 updated_at: 2025-04-18T07:55:07Z
 url: https://github.com/astral-sh/uv/issues/12939
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # Noob Here, What Does Your Python Setup Look Like With UV?
 
 ---
 
-_Issue opened by @Maple38 on 2025-04-17 10:53_
+_@Maple38_
 
 ### Question
 

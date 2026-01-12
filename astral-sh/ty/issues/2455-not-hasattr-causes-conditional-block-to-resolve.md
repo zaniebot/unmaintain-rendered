@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-12T08:08:37Z
 updated_at: 2026-01-12T08:12:32Z
 url: https://github.com/astral-sh/ty/issues/2455
-synced_at: 2026-01-12T08:52:44Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # not hasattr(...) causes conditional block to resolve self to Never
 
 ---
 
-_Issue opened by @moschi on 2026-01-12 08:08_
+_@moschi_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: david/unreachable-imports
 created_at: 2025-04-10T15:44:06Z
 updated_at: 2025-04-10T19:13:31Z
 url: https://github.com/astral-sh/ruff/pull/17336
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Silence `unresolved-import` in unreachable code
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-10 15:44_
+_@sharkdp_
 
 ## Summary
 

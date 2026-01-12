@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-22T22:11:19Z
 updated_at: 2024-04-07T00:15:28Z
 url: https://github.com/astral-sh/uv/issues/1884
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Trying to install torch fails
 
 ---
 
-_Issue opened by @sachit-menon on 2024-02-22 22:11_
+_@sachit-menon_
 
 Thanks for the great project! First time using uv, trying out my typical first install in a fresh conda environment. The same command nominally works with pip. 
 

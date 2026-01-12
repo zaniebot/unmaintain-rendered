@@ -13,14 +13,14 @@ head: konsti/build-failures-faq
 created_at: 2024-10-17T10:45:38Z
 updated_at: 2024-10-22T11:35:55Z
 url: https://github.com/astral-sh/uv/pull/8286
-synced_at: 2026-01-10T12:54:06Z
+synced_at: 2026-01-12T16:08:15Z
 ```
 
 # Add help page for build failures
 
 ---
 
-_Pull request opened by @konstin on 2024-10-17 10:45_
+_@konstin_
 
 One of the most common and most diverse are errors users encounter in Python packaging are build failures. They usually show lengthy, sometimes nested stack traces with no clear indication of what went wrong and how to fix it, while blocking the user.
 

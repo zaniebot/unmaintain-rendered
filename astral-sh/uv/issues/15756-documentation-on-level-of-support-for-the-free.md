@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-09T15:37:31Z
 updated_at: 2025-09-19T10:20:19Z
 url: https://github.com/astral-sh/uv/issues/15756
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # Documentation on level of support for the free-threaded build
 
 ---
 
-_Issue opened by @ngoldbaum on 2025-09-09 15:37_
+_@ngoldbaum_
 
 Right now, uv's solver considers the free-threaded build experimental and won't use it unless you explicitly specify a free-threaded interpreter with e.g. `--python`. This leads to some surprising behaviors. Some of these are marked as bugs in uv and will likely be fixed but some of them seem to be the expected behavior of uv considering free-threading experimental:
 

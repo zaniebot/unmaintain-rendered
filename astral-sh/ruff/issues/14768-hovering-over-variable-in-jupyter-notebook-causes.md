@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-04T09:51:30Z
 updated_at: 2025-01-10T13:13:57Z
 url: https://github.com/astral-sh/ruff/issues/14768
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # hovering over variable in jupyter notebook causes ruff server to crash
 
 ---
 
-_Issue opened by @TheOnlyWayUp on 2024-12-04 09:51_
+_@TheOnlyWayUp_
 
 https://files.rambhat.la/s/ySXwKiXNSLwcyde
 

@@ -14,14 +14,14 @@ head: zb/uv-run
 created_at: 2024-04-16T20:50:38Z
 updated_at: 2024-04-17T16:20:44Z
 url: https://github.com/astral-sh/uv/pull/3074
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:24Z
 ```
 
 # Add `uv run` command
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-16 20:50_
+_@zanieb_
 
 Adds `uv run` which executes a command in your current virtual environment.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-27T14:58:00Z
 updated_at: 2025-08-07T18:40:58Z
 url: https://github.com/astral-sh/uv/issues/10194
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # find_uv_bin fails to find uv when already inside a virtualenv
 
 ---
 
-_Issue opened by @ssbarnea on 2024-12-27 14:58_
+_@ssbarnea_
 
 I am inside a virtualenv that was created using mise and uv where uv is installed
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-23T10:19:26Z
 updated_at: 2021-08-23T13:47:06Z
 url: https://github.com/clap-rs/clap/issues/2735
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # MSRV broken in minor version
 
 ---
 
-_Issue opened by @TeXitoi on 2021-08-23 10:19_
+_@TeXitoi_
 
 ### Please complete the following tasks
 

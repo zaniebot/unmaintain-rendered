@@ -13,14 +13,14 @@ assignees: []
 created_at: 2020-04-08T13:18:55Z
 updated_at: 2025-08-15T13:44:16Z
 url: https://github.com/clap-rs/clap/issues/1794
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Conflicting with a positional should allow users to skip it, passing in another positional instead
 
 ---
 
-_Issue opened by @nayeemrmn on 2020-04-08 13:18_
+_@nayeemrmn_
 
 <!-- Issuehunt Badges -->
 [<img alt="Issuehunt badges" src="https://img.shields.io/badge/IssueHunt-%2420%20Funded-%2300A156.svg" />](https://issuehunt.io/r/clap-rs/clap/issues/1794)

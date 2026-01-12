@@ -13,14 +13,14 @@ head: gankra/bump-ring
 created_at: 2025-03-18T18:03:51Z
 updated_at: 2025-03-18T18:24:52Z
 url: https://github.com/astral-sh/uv/pull/12295
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:12Z
 ```
 
 # update ring
 
 ---
 
-_Pull request opened by @Gankra on 2025-03-18 18:03_
+_@Gankra_
 
 This resolves https://github.com/astral-sh/uv/security/dependabot/340 which doesn't meaningfully affect us but dependabot is screaming about it nonetheless.
 

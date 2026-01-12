@@ -14,14 +14,14 @@ head: david/initial-descriptor-protocol-tests
 created_at: 2025-02-05T14:52:00Z
 updated_at: 2025-02-05T18:49:39Z
 url: https://github.com/astral-sh/ruff/pull/15972
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Initial set of descriptor protocol tests
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-05 14:52_
+_@sharkdp_
 
 ## Summary
 

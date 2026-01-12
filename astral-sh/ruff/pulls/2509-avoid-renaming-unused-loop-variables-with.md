@@ -13,14 +13,14 @@ head: charlie/loop
 created_at: 2023-02-03T01:55:42Z
 updated_at: 2023-02-03T01:59:48Z
 url: https://github.com/astral-sh/ruff/pull/2509
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Avoid renaming unused loop variables with deferred usages
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-03 01:55_
+_@charliermarsh_
 
 Closes #2207.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-24T10:44:21Z
 updated_at: 2024-01-09T09:40:43Z
 url: https://github.com/astral-sh/uv/issues/497
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Investigate slow resolutions
 
 ---
 
-_Issue opened by @konstin on 2023-11-24 10:44_
+_@konstin_
 
 Looking at the top 8k pypi projects with
 

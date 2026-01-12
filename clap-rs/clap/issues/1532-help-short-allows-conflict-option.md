@@ -11,14 +11,14 @@ assignees: []
 created_at: 2019-08-22T04:59:32Z
 updated_at: 2020-04-10T02:00:15Z
 url: https://github.com/clap-rs/clap/issues/1532
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # help_short() allows conflict option
 
 ---
 
-_Issue opened by @maicallist on 2019-08-22 04:59_
+_@maicallist_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

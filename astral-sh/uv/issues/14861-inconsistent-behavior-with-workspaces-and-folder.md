@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-24T01:26:56Z
 updated_at: 2025-07-24T01:39:44Z
 url: https://github.com/astral-sh/uv/issues/14861
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # Inconsistent behavior with workspaces and folder names
 
 ---
 
-_Issue opened by @anuraaga on 2025-07-24 01:26_
+_@anuraaga_
 
 ### Summary
 

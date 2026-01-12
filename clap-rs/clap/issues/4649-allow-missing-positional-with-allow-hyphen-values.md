@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-01-18T18:04:13Z
 updated_at: 2023-01-31T22:09:43Z
 url: https://github.com/clap-rs/clap/issues/4649
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # allow_missing_positional with allow_hyphen_values not working
 
 ---
 
-_Issue opened by @ismell on 2023-01-18 18:04_
+_@ismell_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: zb/guides-collapse
 created_at: 2024-11-19T20:22:00Z
 updated_at: 2024-11-20T14:50:04Z
 url: https://github.com/astral-sh/uv/pull/9245
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:43Z
 ```
 
 # Move the integration guides into the "Guides" section as a collapsed group
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-19 20:22_
+_@zanieb_
 
 Let's have all the guides together!
 

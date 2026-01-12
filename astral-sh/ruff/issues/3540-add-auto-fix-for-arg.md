@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-15T12:40:28Z
 updated_at: 2023-03-15T16:58:59Z
 url: https://github.com/astral-sh/ruff/issues/3540
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Add auto-fix for ARG
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-03-15 12:40_
+_@JonathanPlasse_
 
 ```python
 def a(b):

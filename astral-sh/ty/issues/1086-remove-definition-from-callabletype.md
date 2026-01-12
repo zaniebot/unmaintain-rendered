@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-22T06:26:56Z
 updated_at: 2025-11-17T17:58:30Z
 url: https://github.com/astral-sh/ty/issues/1086
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Remove `Definition` from `CallableType`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-22 06:26_
+_@MichaReiser_
 
 Today, `CallableType` stores a `Definition` so that `signature_help` and `inlay_hints` can extract a docstring. However, it seems semantically wrong that two `CallableType` that are only different in their definition don't compare equal (and are interned twice):
 

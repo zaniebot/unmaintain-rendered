@@ -12,14 +12,14 @@ head: allow-dunder-html
 created_at: 2023-09-18T15:04:37Z
 updated_at: 2023-09-18T16:47:06Z
 url: https://github.com/astral-sh/ruff/pull/7492
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Extend `bad-dunder-method-name` to permit `__html__`
 
 ---
 
-_Pull request opened by @jaap3 on 2023-09-18 15:04_
+_@jaap3_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-16T19:53:04Z
 updated_at: 2022-12-14T20:58:42Z
 url: https://github.com/astral-sh/ruff/issues/777
-synced_at: 2026-01-10T12:06:14Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Missing skip_gitignore for isort configuration
 
 ---
 
-_Issue opened by @JonathanPlasse on 2022-11-16 19:53_
+_@JonathanPlasse_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-27T03:24:49Z
 updated_at: 2024-12-10T03:54:11Z
 url: https://github.com/astral-sh/uv/issues/9461
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # uv example file in full
 
 ---
 
-_Issue opened by @Mai0313 on 2024-11-27 03:24_
+_@Mai0313_
 
 Hi, I am from the Mediatek AI team.
 

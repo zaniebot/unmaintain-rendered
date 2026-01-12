@@ -13,14 +13,14 @@ head: match-or-narrowing
 created_at: 2025-03-28T06:07:04Z
 updated_at: 2025-03-28T22:59:33Z
 url: https://github.com/astral-sh/ruff/pull/17030
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 #  [red-knot] support narrowing on or patterns in matches
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2025-03-28 06:07_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

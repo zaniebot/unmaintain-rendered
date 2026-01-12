@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-31T09:56:59Z
 updated_at: 2024-05-31T13:54:17Z
 url: https://github.com/astral-sh/uv/issues/3934
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # `uv pip compile` chokes on requirements files with explicit `file:...` requirements
 
 ---
 
-_Issue opened by @Julian on 2024-05-31 09:56_
+_@Julian_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

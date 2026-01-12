@@ -15,14 +15,14 @@ head: alex/pyi-self-binding-2
 created_at: 2025-01-31T15:00:14Z
 updated_at: 2025-01-31T16:46:33Z
 url: https://github.com/astral-sh/ruff/pull/15853
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flake8-pyi`] Fix incorrect behaviour of `custom-typevar-return-type` preview-mode autofix if `typing` was already imported (`PYI019`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-31 15:00_
+_@AlexWaygood_
 
 ## Summary
 

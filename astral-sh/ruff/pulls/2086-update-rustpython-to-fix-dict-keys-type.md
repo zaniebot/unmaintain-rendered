@@ -12,14 +12,14 @@ head: update-RustPython
 created_at: 2023-01-22T14:31:19Z
 updated_at: 2023-01-22T20:21:21Z
 url: https://github.com/astral-sh/ruff/pull/2086
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Update RustPython to fix `Dict.keys` type
 
 ---
 
-_Pull request opened by @harupy on 2023-01-22 14:31_
+_@harupy_
 
 This PR upgrades RustPython to fix the type of `Dict.keys` to `Vec<Option<Expr>>` (see https://github.com/RustPython/RustPython/pull/4449 for why this change was needed) and unblock #1884.
 

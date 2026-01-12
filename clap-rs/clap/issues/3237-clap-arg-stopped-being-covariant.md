@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-01T05:29:23Z
 updated_at: 2022-11-08T04:56:38Z
 url: https://github.com/clap-rs/clap/issues/3237
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # clap::Arg stopped being covariant
 
 ---
 
-_Issue opened by @dtolnay on 2022-01-01 05:29_
+_@dtolnay_
 
 ### Please complete the following tasks
 

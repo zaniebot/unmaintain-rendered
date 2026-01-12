@@ -13,14 +13,14 @@ head: compatarg-pip-install
 created_at: 2024-05-07T14:50:15Z
 updated_at: 2024-05-07T15:28:48Z
 url: https://github.com/astral-sh/uv/pull/3424
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:37Z
 ```
 
 # add compat arg --user error message to pip install
 
 ---
 
-_Pull request opened by @blueraft on 2024-05-07 14:50_
+_@blueraft_
 
 Resolves [#3419](https://github.com/astral-sh/uv/issues/3419)
 

@@ -14,14 +14,14 @@ head: remove-up038
 created_at: 2025-07-05T17:45:25Z
 updated_at: 2025-09-08T17:34:40Z
 url: https://github.com/astral-sh/ruff/pull/19156
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # [`pyupgrade`] Remove `non-pep604-isinstance` (`UP038`)
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-07-05 17:45_
+_@CodeMan62_
 
 ## Summary
 This PR Removes deprecated UP038 as per instructed in #18727 

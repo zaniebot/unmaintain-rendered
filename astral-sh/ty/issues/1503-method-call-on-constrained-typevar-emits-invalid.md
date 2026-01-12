@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-08T10:14:55Z
 updated_at: 2025-12-26T09:11:31Z
 url: https://github.com/astral-sh/ty/issues/1503
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Method call on constrained typevar emits invalid-argument-type
 
 ---
 
-_Issue opened by @sharkdp on 2025-11-08 10:14_
+_@sharkdp_
 
 Consider the following example. ty currently emits two errors for the `t.method()` call because `t.method` creates a union of bound method objects where `C.method` and `D.method` are bound to `T@f`, respectively. Instead, attribute access should properly distribute across the union `C | D` and yield a union of bound method objects where `C.method` is bound to an instance of `C`, and `D.method` is bound to an instance of `D`:
 

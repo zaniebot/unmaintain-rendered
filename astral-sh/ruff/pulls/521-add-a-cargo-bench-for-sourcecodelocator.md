@@ -12,14 +12,14 @@ head: charlie/benches
 created_at: 2022-10-30T17:50:38Z
 updated_at: 2022-10-30T17:50:43Z
 url: https://github.com/astral-sh/ruff/pull/521
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add a cargo bench for SourceCodeLocator
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-30 17:50_
+_@charliermarsh_
 
 _No description provided._
 

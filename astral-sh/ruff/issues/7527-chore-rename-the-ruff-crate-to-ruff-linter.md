@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-19T21:12:10Z
 updated_at: 2023-09-20T06:38:29Z
 url: https://github.com/astral-sh/ruff/issues/7527
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # chore: Rename the `ruff` crate to `ruff_linter`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-19 21:12_
+_@MichaReiser_
 
 Ruff has become more than just a linter and the `ruff` crate now only contains the linter logic. Make this explicit by renaming the `ruff` crate to `ruff_linter`  and removing the following from the `ruff_cli/Cargo.toml`
 

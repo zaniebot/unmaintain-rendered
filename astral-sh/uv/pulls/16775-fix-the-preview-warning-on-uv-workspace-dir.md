@@ -13,14 +13,14 @@ head: zb/fix-workspace-dir-warning
 created_at: 2025-11-19T15:33:46Z
 updated_at: 2025-11-19T19:20:26Z
 url: https://github.com/astral-sh/uv/pull/16775
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:26Z
 ```
 
 # Fix the preview warning on `uv workspace dir`
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-19 15:33_
+_@zanieb_
 
 _No description provided._
 

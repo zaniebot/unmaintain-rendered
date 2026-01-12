@@ -11,14 +11,14 @@ head: bug/python-find-project
 created_at: 2025-03-07T15:48:23Z
 updated_at: 2025-08-04T11:39:28Z
 url: https://github.com/astral-sh/uv/pull/12049
-synced_at: 2026-01-10T06:44:32Z
+synced_at: 2026-01-12T16:10:06Z
 ```
 
 # Respect `--project` during virtual environment discovery
 
 ---
 
-_Pull request opened by @thejchap on 2025-03-07 15:48_
+_@thejchap_
 
 ## Summary
 Resolves #11990

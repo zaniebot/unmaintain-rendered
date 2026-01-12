@@ -13,14 +13,14 @@ head: renovate/which-8.x
 created_at: 2025-06-16T02:42:03Z
 updated_at: 2025-06-16T07:37:40Z
 url: https://github.com/astral-sh/uv/pull/14066
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:00Z
 ```
 
 # Update Rust crate which to v8
 
 ---
 
-_Pull request opened by @renovate on 2025-06-16 02:42_
+_@renovate_
 
 This PR contains the following updates:
 

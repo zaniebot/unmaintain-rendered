@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-04T02:59:06Z
 updated_at: 2025-09-05T09:53:48Z
 url: https://github.com/astral-sh/uv/issues/15672
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # How to manage two uv environments under one project?
 
 ---
 
-_Issue opened by @wzr0108 on 2025-09-04 02:59_
+_@wzr0108_
 
 ### Question
 

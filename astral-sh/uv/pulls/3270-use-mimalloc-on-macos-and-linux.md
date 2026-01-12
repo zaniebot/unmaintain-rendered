@@ -12,14 +12,14 @@ head: mimalloc
 created_at: 2024-04-25T20:30:02Z
 updated_at: 2024-05-01T14:37:44Z
 url: https://github.com/astral-sh/uv/pull/3270
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:32Z
 ```
 
 # Use mimalloc on MacOS and Linux
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-04-25 20:30_
+_@ibraheemdev_
 
 ## Summary
 

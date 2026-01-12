@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-04T13:51:54Z
 updated_at: 2024-10-04T13:51:54Z
 url: https://github.com/astral-sh/uv/issues/7925
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Write timout for publishing
 
 ---
 
-_Issue opened by @konstin on 2024-10-04 13:51_
+_@konstin_
 
 Currently, we use a high read timeout for reqwest in uploads (#7923) since reqwest is lacking a dedicated write timeout option (https://github.com/seanmonstar/reqwest/issues/2403). Instead, this should be properly solved by a write timeout (also 30s) and no total limit on the upload time.
 

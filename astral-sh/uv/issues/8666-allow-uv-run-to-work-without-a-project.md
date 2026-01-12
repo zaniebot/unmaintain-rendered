@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-29T16:29:02Z
 updated_at: 2025-09-17T15:48:57Z
 url: https://github.com/astral-sh/uv/issues/8666
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # allow "uv run" to work without a project
 
 ---
 
-_Issue opened by @mmerickel on 2024-10-29 16:29_
+_@mmerickel_
 
 It'd be nice if this flow worked simply to avoid needing to activate a virtualenv - regardless of whether I'm using a full uv project or not.
 

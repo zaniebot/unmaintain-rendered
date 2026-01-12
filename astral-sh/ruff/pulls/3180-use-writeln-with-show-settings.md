@@ -13,14 +13,14 @@ head: charlie/settings
 created_at: 2023-02-23T17:16:57Z
 updated_at: 2023-02-23T17:23:32Z
 url: https://github.com/astral-sh/ruff/pull/3180
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Use `writeln` with --show-settings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-23 17:16_
+_@charliermarsh_
 
 _No description provided._
 

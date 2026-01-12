@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-09-02T14:33:24Z
 updated_at: 2023-01-11T14:07:47Z
 url: https://github.com/clap-rs/clap/issues/2750
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Allow completion of partial commands [Powershell]
 
 ---
 
-_Issue opened by @benedictleejh on 2021-09-02 14:33_
+_@benedictleejh_
 
 ### Please complete the following tasks
 

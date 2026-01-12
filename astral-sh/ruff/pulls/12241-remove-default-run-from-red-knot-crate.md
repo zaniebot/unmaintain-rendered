@@ -13,14 +13,14 @@ head: red-knotremove-default-run
 created_at: 2024-07-08T09:27:38Z
 updated_at: 2024-07-08T09:40:49Z
 url: https://github.com/astral-sh/ruff/pull/12241
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Remove default-run from 'red_knot' crate
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-08 09:27_
+_@MichaReiser_
 
 ## Summary
 

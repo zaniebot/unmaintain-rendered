@@ -14,14 +14,14 @@ head: micha/knot-play-settings
 created_at: 2025-03-23T23:18:07Z
 updated_at: 2025-03-24T01:38:50Z
 url: https://github.com/astral-sh/ruff/pull/16929
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Add settings support to playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-23 23:18_
+_@MichaReiser_
 
 ## Summary
 

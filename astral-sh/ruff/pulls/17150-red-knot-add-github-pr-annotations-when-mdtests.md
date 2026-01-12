@@ -14,14 +14,14 @@ head: alex/mdtest-github-output-2
 created_at: 2025-04-02T12:33:44Z
 updated_at: 2025-04-02T20:51:54Z
 url: https://github.com/astral-sh/ruff/pull/17150
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Add GitHub PR annotations when mdtests fail in CI
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-02 12:33_
+_@AlexWaygood_
 
 ## Summary
 

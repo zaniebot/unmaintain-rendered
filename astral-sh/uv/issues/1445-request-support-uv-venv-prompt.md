@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T07:08:27Z
 updated_at: 2024-02-19T19:30:18Z
 url: https://github.com/astral-sh/uv/issues/1445
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Request: Support uv venv --prompt 
 
 ---
 
-_Issue opened by @frague59 on 2024-02-16 07:08_
+_@frague59_
 
 Hi,
 `venv` has an mainly undocumented feature :

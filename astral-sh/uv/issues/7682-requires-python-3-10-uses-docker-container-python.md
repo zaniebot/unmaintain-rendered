@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-25T08:44:46Z
 updated_at: 2024-10-23T00:02:28Z
 url: https://github.com/astral-sh/uv/issues/7682
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # `requires-python = "~=3.10"` uses docker container python 3.11 and not a managed python 3.10
 
 ---
 
-_Issue opened by @gabriel-vanzandycke on 2024-09-25 08:44_
+_@gabriel-vanzandycke_
 
 I use a docker container bundled with python 3.11.9 but my app requires python ~=3.10. 
 Running `uv sync` uses python system rather than the expected python version `~=3.10`.

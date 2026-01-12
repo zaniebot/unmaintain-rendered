@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-09T11:48:22Z
 updated_at: 2025-12-18T17:42:27Z
 url: https://github.com/astral-sh/ty/issues/791
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Solid semantic tokens
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-09 11:48_
+_@MichaReiser_
 
 Follow up on the TODOs in the semantic tokens provider
 

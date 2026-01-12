@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-05T09:28:35Z
 updated_at: 2024-05-02T18:48:54Z
 url: https://github.com/astral-sh/ruff/issues/10787
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `PERF402` triggers, incorrectly, on async for loops
 
 ---
 
-_Issue opened by @sliedes on 2024-04-05 09:28_
+_@sliedes_
 
 Searched keywords: PERF402. #10322 is similar, but more complicated (and closed by the submitter).
 

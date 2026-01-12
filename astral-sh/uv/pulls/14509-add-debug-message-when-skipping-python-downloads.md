@@ -14,14 +14,14 @@ head: debug-message-on-skip-download
 created_at: 2025-07-08T18:56:52Z
 updated_at: 2025-07-09T16:04:30Z
 url: https://github.com/astral-sh/uv/pull/14509
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:15Z
 ```
 
 # Add debug message when skipping Python downloads
 
 ---
 
-_Pull request opened by @Grinkers on 2025-07-08 18:56_
+_@Grinkers_
 
 # Description
 Several users, myself included, had some issues with Anki (recently migrated to uv). 

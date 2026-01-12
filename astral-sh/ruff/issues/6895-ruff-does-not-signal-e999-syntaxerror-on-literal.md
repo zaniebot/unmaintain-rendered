@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-26T12:28:59Z
 updated_at: 2023-11-07T12:16:07Z
 url: https://github.com/astral-sh/ruff/issues/6895
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Ruff does not signal E999 SyntaxError on literal assignment.
 
 ---
 
-_Issue opened by @0x6d6e647a on 2023-08-26 12:28_
+_@0x6d6e647a_
 
 I'm using Ruff v0.0.286 in the following.
 

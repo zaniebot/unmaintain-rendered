@@ -13,14 +13,14 @@ assignees: []
 created_at: 2018-09-06T23:45:12Z
 updated_at: 2021-12-08T20:01:22Z
 url: https://github.com/clap-rs/clap/issues/1338
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # YAML not parsed when name, version, author, about not specified in it
 
 ---
 
-_Issue opened by @Hellseher on 2018-09-06 23:45_
+_@Hellseher_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

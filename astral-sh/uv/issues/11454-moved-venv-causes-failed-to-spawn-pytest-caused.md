@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T16:54:49Z
 updated_at: 2025-10-08T14:01:34Z
 url: https://github.com/astral-sh/uv/issues/11454
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # Moved venv causes: Failed to spawn: `pytest` Caused by: No such file or directory (os error 2)
 
 ---
 
-_Issue opened by @michealroberts on 2025-02-12 16:54_
+_@michealroberts_
 
 ### Summary
 

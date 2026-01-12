@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-21T08:13:11Z
 updated_at: 2023-08-16T07:10:03Z
 url: https://github.com/astral-sh/ruff/issues/5941
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Preserve single `\` in raw string literals
 
 ---
 
-_Issue opened by @MichaReiser on 2023-07-21 08:13_
+_@MichaReiser_
 
 ```python
 # Input

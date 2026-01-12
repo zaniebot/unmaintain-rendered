@@ -13,14 +13,14 @@ head: ssl-cert-dir
 created_at: 2025-10-27T16:26:58Z
 updated_at: 2025-11-19T02:08:55Z
 url: https://github.com/astral-sh/uv/pull/16473
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:16Z
 ```
 
 # Add support for SSL_CERT_DIR
 
 ---
 
-_Pull request opened by @samypr100 on 2025-10-27 16:26_
+_@samypr100_
 
 ## Summary
 

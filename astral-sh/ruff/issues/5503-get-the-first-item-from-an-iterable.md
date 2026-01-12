@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-04T15:19:55Z
 updated_at: 2023-07-10T16:32:49Z
 url: https://github.com/astral-sh/ruff/issues/5503
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Get the first item from an iterable
 
 ---
 
-_Issue opened by @hoxbro on 2023-07-04 15:19_
+_@hoxbro_
 
 Sometimes I need to get the first item of an iterable like a `dict_keys()` object. A natural way to do this is to do it with `list(...)[0]`, though it can be much faster to do it with `next(iter(...))`. 
 

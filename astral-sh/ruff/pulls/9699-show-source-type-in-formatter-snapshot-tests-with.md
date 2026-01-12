@@ -14,14 +14,14 @@ head: test-snapshots-source-type
 created_at: 2024-01-30T10:03:06Z
 updated_at: 2024-01-30T10:13:16Z
 url: https://github.com/astral-sh/ruff/pull/9699
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Show source-type in formatter snapshot tests with options
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-01-30 10:03_
+_@MichaReiser_
 
 ## Summary
 

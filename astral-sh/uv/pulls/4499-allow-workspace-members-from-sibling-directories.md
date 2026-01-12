@@ -11,14 +11,14 @@ head: sibling_ws_members
 created_at: 2024-06-25T00:17:29Z
 updated_at: 2024-07-18T20:49:37Z
 url: https://github.com/astral-sh/uv/pull/4499
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:16Z
 ```
 
 # Allow workspace members from sibling directories
 
 ---
 
-_Pull request opened by @idlsoft on 2024-06-25 00:17_
+_@idlsoft_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

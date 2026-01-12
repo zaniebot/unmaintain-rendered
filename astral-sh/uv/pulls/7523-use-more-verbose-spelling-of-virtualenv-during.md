@@ -13,14 +13,14 @@ head: zb/verbose-creating
 created_at: 2024-09-18T23:43:28Z
 updated_at: 2024-09-19T02:22:39Z
 url: https://github.com/astral-sh/uv/pull/7523
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:52Z
 ```
 
 # Use more verbose spelling of "virtualenv" during creation
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-18 23:43_
+_@zanieb_
 
 This stands out alongside other messaging which uses the longer spelling "virtual environment"
 

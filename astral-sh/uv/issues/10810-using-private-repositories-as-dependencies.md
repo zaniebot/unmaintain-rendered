@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-21T11:38:00Z
 updated_at: 2025-01-21T11:50:01Z
 url: https://github.com/astral-sh/uv/issues/10810
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:21Z
 ```
 
 # using private repositories as dependencies
 
 ---
 
-_Issue opened by @c90x on 2025-01-21 11:38_
+_@c90x_
 
 _No description provided._
 

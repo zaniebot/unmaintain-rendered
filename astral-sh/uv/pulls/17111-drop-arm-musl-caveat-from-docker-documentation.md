@@ -13,14 +13,14 @@ head: zb/arm-musl
 created_at: 2025-12-12T19:11:01Z
 updated_at: 2025-12-12T19:15:16Z
 url: https://github.com/astral-sh/uv/pull/17111
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # Drop arm musl caveat from Docker documentation
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-12 19:11_
+_@zanieb_
 
 This works fine now
 

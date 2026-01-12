@@ -13,14 +13,14 @@ head: ibraheem/declared-generic-type
 created_at: 2025-10-25T02:50:37Z
 updated_at: 2025-11-03T00:32:22Z
 url: https://github.com/astral-sh/ruff/pull/21070
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [ty] Prefer declared type of generic classes
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-10-25 02:50_
+_@ibraheemdev_
 
 ## Summary
 

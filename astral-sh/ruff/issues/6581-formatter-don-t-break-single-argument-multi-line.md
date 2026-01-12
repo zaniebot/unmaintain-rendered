@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-15T03:01:04Z
 updated_at: 2023-09-02T08:21:57Z
 url: https://github.com/astral-sh/ruff/issues/6581
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: don't break single-argument multi-line strings if the first line "fits"
 
 ---
 
-_Issue opened by @charliermarsh on 2023-08-15 03:01_
+_@charliermarsh_
 
 See: https://github.com/psf/black/pull/1879/files.
 

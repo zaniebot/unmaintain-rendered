@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-23T19:52:43Z
 updated_at: 2023-01-23T21:58:39Z
 url: https://github.com/clap-rs/clap/issues/4666
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Singular used even when multiple suggestions exist `note: subcommand 'foo', 'bar' exist`
 
 ---
 
-_Issue opened by @corneliusroemer on 2023-01-23 19:52_
+_@corneliusroemer_
 
 ### Please complete the following tasks
 

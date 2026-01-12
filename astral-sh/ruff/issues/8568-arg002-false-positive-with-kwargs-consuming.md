@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-08T17:13:54Z
 updated_at: 2023-11-09T02:09:06Z
 url: https://github.com/astral-sh/ruff/issues/8568
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `ARG002` false positive with `kwargs`-consuming decorators
 
 ---
 
-_Issue opened by @rassie on 2023-11-08 17:13_
+_@rassie_
 
 My code goes something like this:
 

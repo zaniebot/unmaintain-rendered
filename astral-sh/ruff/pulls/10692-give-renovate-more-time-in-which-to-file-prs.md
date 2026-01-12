@@ -12,14 +12,14 @@ head: renovate-improve
 created_at: 2024-04-01T11:03:44Z
 updated_at: 2024-04-01T11:13:15Z
 url: https://github.com/astral-sh/ruff/pull/10692
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Give renovate more time in which to file PRs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-01 11:03_
+_@AlexWaygood_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-18T05:51:19Z
 updated_at: 2023-07-18T14:08:25Z
 url: https://github.com/astral-sh/ruff/issues/5855
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Invalid noqa warning should give the file name
 
 ---
 
-_Issue opened by @JanEricNitschke on 2023-07-18 05:51_
+_@JanEricNitschke_
 
 I am running ruff via pre-commit and this over multiple files. I just upgraded to v0.0.278 and got the following warning:
 

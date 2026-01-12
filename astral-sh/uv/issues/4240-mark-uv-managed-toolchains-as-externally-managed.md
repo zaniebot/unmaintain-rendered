@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-11T17:50:15Z
 updated_at: 2024-06-17T15:25:35Z
 url: https://github.com/astral-sh/uv/issues/4240
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Mark uv managed toolchains as `EXTERNALLY-MANAGED`
 
 ---
 
-_Issue opened by @zanieb on 2024-06-11 17:50_
+_@zanieb_
 
 We should not allow these toolchain environments to be modified by default
 

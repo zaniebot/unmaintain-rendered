@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-18T10:12:53Z
 updated_at: 2026-01-12T08:29:55Z
 url: https://github.com/astral-sh/ty/issues/2057
-synced_at: 2026-01-12T08:52:44Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # How to correctly type async context managers with overloads
 
 ---
 
-_Issue opened by @ddanier on 2025-12-18 10:12_
+_@ddanier_
 
 ### Question
 

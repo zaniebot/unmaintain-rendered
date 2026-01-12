@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-14T07:09:48Z
 updated_at: 2024-09-24T13:13:14Z
 url: https://github.com/astral-sh/ruff/issues/733
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # F821 Undefined name when using Literal from typing
 
 ---
 
-_Issue opened by @adilkhash on 2022-11-14 07:09_
+_@adilkhash_
 
 Hey 👋,
 

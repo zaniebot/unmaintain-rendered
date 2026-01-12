@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-06-06T13:54:59Z
 updated_at: 2023-06-22T21:12:03Z
 url: https://github.com/astral-sh/ruff/pull/4903
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Allow `@Author` format for "Missing Author" rule in `flake8-todos`
 
 ---
 
-_Pull request opened by @mayrholu on 2023-06-06 13:54_
+_@mayrholu_
 
 ## Summary
 

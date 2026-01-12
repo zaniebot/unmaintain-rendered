@@ -13,14 +13,14 @@ head: ag/fix-i1477
 created_at: 2024-02-16T19:03:50Z
 updated_at: 2024-02-16T20:52:45Z
 url: https://github.com/astral-sh/uv/pull/1529
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:38Z
 ```
 
 # pypi-types: fix lenient requirement parsing
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-16 19:03_
+_@BurntSushi_
 
 This fixes a bug where `uv pip install` failed to install `polars`:
 

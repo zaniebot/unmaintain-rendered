@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-29T03:14:07Z
 updated_at: 2024-04-30T06:32:19Z
 url: https://github.com/astral-sh/ruff/issues/11198
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # When can ruff suppor checking the error of using not exsiting attribution? 
 
 ---
 
-_Issue opened by @yangguoquan001 on 2024-04-29 03:14_
+_@yangguoquan001_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

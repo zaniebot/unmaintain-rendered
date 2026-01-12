@@ -13,14 +13,14 @@ head: konsti/edition-2024-fixes
 created_at: 2025-05-15T19:59:07Z
 updated_at: 2025-05-16T08:34:25Z
 url: https://github.com/astral-sh/uv/pull/13479
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:42Z
 ```
 
 # Apply some Edition 2024 fixes
 
 ---
 
-_Pull request opened by @konstin on 2025-05-15 19:59_
+_@konstin_
 
 Some `ref`-removal and `use<>` fixes for the Rust Edition 2024 migration, which are also compatible with Rust Edition 2021.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-16T17:15:58Z
 updated_at: 2025-01-19T02:07:40Z
 url: https://github.com/astral-sh/uv/issues/10687
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # how to get uv to run my app on a read-only volume?
 
 ---
 
-_Issue opened by @straz on 2025-01-16 17:15_
+_@straz_
 
 My `Dockerfile` implements a `FastAPI` web server, as follows:
 ```

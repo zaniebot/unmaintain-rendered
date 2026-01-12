@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-26T11:18:34Z
 updated_at: 2024-08-27T13:36:11Z
 url: https://github.com/clap-rs/clap/issues/5701
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Completing a CLI with `<mask>... <file>` never offers `<file>` completions with Rust native completions
 
 ---
 
-_Issue opened by @windsource on 2024-08-26 11:18_
+_@windsource_
 
 ### Please complete the following tasks
 

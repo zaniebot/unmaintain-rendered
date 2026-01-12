@@ -13,14 +13,14 @@ head: useless_return
 created_at: 2023-02-22T08:41:44Z
 updated_at: 2023-03-17T22:31:37Z
 url: https://github.com/astral-sh/ruff/pull/3116
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [`pylint`] Implement `useless-return` (`R1711`)
 
 ---
 
-_Pull request opened by @tomecki on 2023-02-22 08:41_
+_@tomecki_
 
 This PR implements https://pylint.pycqa.org/en/latest/user_guide/messages/refactor/useless-return.html , including autofixing.
 

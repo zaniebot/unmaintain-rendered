@@ -12,14 +12,14 @@ head: charlie/b904
 created_at: 2023-07-13T23:25:42Z
 updated_at: 2023-07-14T15:46:23Z
 url: https://github.com/astral-sh/ruff/pull/5751
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Remove `B904`'s lowercase exemption
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-13 23:25_
+_@charliermarsh_
 
 ## Summary
 

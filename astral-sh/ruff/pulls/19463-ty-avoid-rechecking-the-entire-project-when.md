@@ -14,14 +14,14 @@ head: micha/fix-reparse-open-change
 created_at: 2025-07-21T13:31:33Z
 updated_at: 2025-07-21T16:05:05Z
 url: https://github.com/astral-sh/ruff/pull/19463
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Avoid rechecking the entire project when changing the opened files
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-21 13:31_
+_@MichaReiser_
 
 ## Summary
 

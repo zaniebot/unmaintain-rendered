@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-03-08T17:14:23Z
 updated_at: 2022-02-08T23:47:29Z
 url: https://github.com/clap-rs/clap/issues/1734
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Error message templates
 
 ---
 
-_Issue opened by @ghosty141 on 2020-03-08 17:14_
+_@ghosty141_
 
 ### Describe your use case
 

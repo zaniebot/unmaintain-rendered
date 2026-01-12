@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-27T17:04:40Z
 updated_at: 2023-12-07T19:30:45Z
 url: https://github.com/astral-sh/ruff/issues/8860
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # docstring code formatter: add support for Markdown Python code snippets
 
 ---
 
-_Issue opened by @BurntSushi on 2023-11-27 17:04_
+_@BurntSushi_
 
 The initial implementation of the docstring code snippet formatter in #8811 only reformats doctest code snippets. This issue tracks the work for making it also reformat Markdown Python code snippets. Work should probably proceed by adding a new `CodeExampleKind`:
 

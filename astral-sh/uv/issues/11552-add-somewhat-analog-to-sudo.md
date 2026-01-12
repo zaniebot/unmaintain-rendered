@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-16T10:23:36Z
 updated_at: 2025-02-16T18:16:39Z
 url: https://github.com/astral-sh/uv/issues/11552
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:40Z
 ```
 
 # Add somewhat analog to "sudo !!"
 
 ---
 
-_Issue opened by @devitq on 2025-02-16 10:23_
+_@devitq_
 
 ### Description
 

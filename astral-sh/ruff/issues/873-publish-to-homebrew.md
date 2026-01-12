@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-22T18:29:16Z
 updated_at: 2022-11-26T17:59:37Z
 url: https://github.com/astral-sh/ruff/issues/873
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Publish to Homebrew
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-22 18:29_
+_@charliermarsh_
 
 _No description provided._
 

@@ -14,14 +14,14 @@ head: charlie/simplify-none
 created_at: 2025-12-29T20:04:01Z
 updated_at: 2025-12-30T03:19:30Z
 url: https://github.com/astral-sh/ruff/pull/22290
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:46Z
 ```
 
 # [ty] Fix match exhaustiveness for enum | None unions
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-29 20:04_
+_@charliermarsh_
 
 ## Summary
 

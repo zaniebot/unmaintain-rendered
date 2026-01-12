@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-15T16:55:41Z
 updated_at: 2024-06-29T18:35:18Z
 url: https://github.com/astral-sh/uv/issues/3037
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # bug: uv with vs code terminal
 
 ---
 
-_Issue opened by @TylerHillery on 2024-04-15 16:55_
+_@TylerHillery_
 
 There are two bugs with using uv venv with the VS Code terminal
 - I can't deactivate my environment "permission denied"

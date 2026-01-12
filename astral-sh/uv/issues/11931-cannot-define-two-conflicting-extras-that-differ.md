@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-03T18:24:24Z
 updated_at: 2025-03-03T18:34:45Z
 url: https://github.com/astral-sh/uv/issues/11931
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # Cannot define two conflicting extras that differ by "+cpu"
 
 ---
 
-_Issue opened by @vmarkovtsev on 2025-03-03 18:24_
+_@vmarkovtsev_
 
 ### Summary
 

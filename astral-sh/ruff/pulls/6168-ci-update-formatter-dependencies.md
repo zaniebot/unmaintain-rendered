@@ -12,14 +12,14 @@ head: ci-update-formatter-dependencies
 created_at: 2023-07-29T08:53:01Z
 updated_at: 2023-07-29T13:24:25Z
 url: https://github.com/astral-sh/ruff/pull/6168
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # CI: Update formatter dependencies
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-29 08:53_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

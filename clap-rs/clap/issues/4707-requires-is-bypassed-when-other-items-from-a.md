@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-02-13T16:49:49Z
 updated_at: 2025-07-03T16:07:50Z
 url: https://github.com/clap-rs/clap/issues/4707
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `requires` is bypassed when other items from a mutually-exclusive `group` are present
 
 ---
 
-_Issue opened by @mkeeter on 2023-02-13 16:49_
+_@mkeeter_
 
 ### Please complete the following tasks
 

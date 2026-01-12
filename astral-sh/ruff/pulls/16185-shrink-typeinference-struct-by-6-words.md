@@ -12,14 +12,14 @@ head: micha/shrinkg-type-inference
 created_at: 2025-02-16T14:32:26Z
 updated_at: 2025-02-19T18:21:57Z
 url: https://github.com/astral-sh/ruff/pull/16185
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Shrink `TypeInference` struct by 6 words
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-16 14:32_
+_@MichaReiser_
 
 ## Summary
 

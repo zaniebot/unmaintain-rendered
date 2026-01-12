@@ -12,14 +12,14 @@ head: zb/hide-requires
 created_at: 2024-01-05T17:53:08Z
 updated_at: 2024-01-05T20:49:11Z
 url: https://github.com/astral-sh/uv/pull/797
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:12Z
 ```
 
 # Bump packse to hide `requires-python` in docstrings when not relevant
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-05 17:53_
+_@zanieb_
 
 _No description provided._
 

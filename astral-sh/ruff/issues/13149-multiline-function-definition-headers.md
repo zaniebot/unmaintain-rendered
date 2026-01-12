@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-29T09:11:35Z
 updated_at: 2024-08-29T10:33:45Z
 url: https://github.com/astral-sh/ruff/issues/13149
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Multiline function definition headers
 
 ---
 
-_Issue opened by @RubenVanEldik on 2024-08-29 09:11_
+_@RubenVanEldik_
 
 I have a question about a quite opinionated formatting issue. Apologies if this has been discussed before, but it's quite hard to search for it in the exiting issues.
 

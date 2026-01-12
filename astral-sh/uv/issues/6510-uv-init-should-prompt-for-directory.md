@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T12:59:10Z
 updated_at: 2024-12-31T16:18:57Z
 url: https://github.com/astral-sh/uv/issues/6510
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # `uv init` should prompt for directory
 
 ---
 
-_Issue opened by @kdheepak on 2024-08-23 12:59_
+_@kdheepak_
 
 I accidentally run `uv init` in my `~/projects` folder assuming it would prompt me for the directory and it created `~/projects/src`, `~/projects/README.md`, `~/projects/pyproject.toml`. I would prefer if it prompted for a directory with the default as `.` so that a user can hit enter to get the same behaviour as current exists OR type in a folder. IMO, this makes it behave similarly to `uv init new-project` and is more intuitive behaviour. 
 

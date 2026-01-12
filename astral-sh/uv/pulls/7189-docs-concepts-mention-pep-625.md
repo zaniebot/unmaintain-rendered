@@ -13,14 +13,14 @@ head: docs/follow-up-source-distribution
 created_at: 2024-09-08T14:59:46Z
 updated_at: 2024-09-08T21:47:46Z
 url: https://github.com/astral-sh/uv/pull/7189
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:43Z
 ```
 
 # docs(concepts): mention PEP 625
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-09-08 14:59_
+_@mkniewallner_
 
 ## Summary
 

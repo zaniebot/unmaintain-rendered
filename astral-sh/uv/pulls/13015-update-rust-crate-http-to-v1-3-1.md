@@ -13,14 +13,14 @@ head: renovate/http-1.x-lockfile
 created_at: 2025-04-21T03:55:55Z
 updated_at: 2025-04-21T12:30:24Z
 url: https://github.com/astral-sh/uv/pull/13015
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:30Z
 ```
 
 # Update Rust crate http to v1.3.1
 
 ---
 
-_Pull request opened by @renovate on 2025-04-21 03:55_
+_@renovate_
 
 This PR contains the following updates:
 

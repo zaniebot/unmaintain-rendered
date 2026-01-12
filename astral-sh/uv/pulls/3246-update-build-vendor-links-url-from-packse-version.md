@@ -13,14 +13,14 @@ head: konsti/update-packse-findlinks
 created_at: 2024-04-24T15:46:51Z
 updated_at: 2024-04-24T15:54:39Z
 url: https://github.com/astral-sh/uv/pull/3246
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:31Z
 ```
 
 # Update BUILD_VENDOR_LINKS_URL from packse version
 
 ---
 
-_Pull request opened by @konstin on 2024-04-24 15:46_
+_@konstin_
 
 Make `generate.py` update the packse version used in `BUILD_VENDOR_LINKS_URL`.
 

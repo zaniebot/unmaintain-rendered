@@ -13,14 +13,14 @@ head: alex/takes-expr-arguments
 created_at: 2025-01-10T18:27:52Z
 updated_at: 2025-01-10T19:10:37Z
 url: https://github.com/astral-sh/ruff/pull/15406
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Refactor `KnownFunction::takes_expression_arguments()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-10 18:27_
+_@AlexWaygood_
 
 ## Summary
 

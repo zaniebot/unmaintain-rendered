@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-13T07:55:04Z
 updated_at: 2025-09-19T15:43:33Z
 url: https://github.com/astral-sh/uv/issues/15249
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Ability to configure `override-dependencies` for  a specific dependency group
 
 ---
 
-_Issue opened by @ramonvermeulen on 2025-08-13 07:55_
+_@ramonvermeulen_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: mkdocs-callout
 created_at: 2025-12-13T15:45:00Z
 updated_at: 2025-12-14T09:33:13Z
 url: https://github.com/astral-sh/ty/pull/1879
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Add support for callout syntax (#1875)
 
 ---
 
-_Pull request opened by @leandrobbraga on 2025-12-13 15:45_
+_@leandrobbraga_
 
 This resolves the issue of Markdown callouts not rendering in MkDocs.
 

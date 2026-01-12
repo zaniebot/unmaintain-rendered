@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-18T16:23:11Z
 updated_at: 2025-02-19T11:33:35Z
 url: https://github.com/astral-sh/ruff/issues/16234
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # C408 fix changes behavior for non-NFKC identifier
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-18 16:23_
+_@dscorbett_
 
 ### Description
 

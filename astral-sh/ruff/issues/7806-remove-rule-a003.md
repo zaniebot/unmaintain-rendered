@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-04T10:18:46Z
 updated_at: 2024-01-11T17:59:42Z
 url: https://github.com/astral-sh/ruff/issues/7806
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Remove rule A003
 
 ---
 
-_Issue opened by @joaoe on 2023-10-04 10:18_
+_@joaoe_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

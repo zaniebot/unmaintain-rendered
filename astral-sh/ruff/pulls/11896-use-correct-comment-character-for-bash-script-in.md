@@ -13,14 +13,14 @@ head: dhruv/fix-ecosystem
 created_at: 2024-06-17T06:05:43Z
 updated_at: 2024-06-17T10:38:02Z
 url: https://github.com/astral-sh/ruff/pull/11896
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Use correct comment character for bash script in CI
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-17 06:05_
+_@dhruvmanila_
 
 This should fix https://github.com/astral-sh/ruff/actions/runs/9542715937/job/26298008128
 

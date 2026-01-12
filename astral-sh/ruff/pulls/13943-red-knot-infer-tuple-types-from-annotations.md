@@ -13,14 +13,14 @@ head: alex/infer-tuples
 created_at: 2024-10-27T21:56:48Z
 updated_at: 2025-05-07T15:23:05Z
 url: https://github.com/astral-sh/ruff/pull/13943
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Infer `tuple` types from annotations
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-27 21:56_
+_@AlexWaygood_
 
 ## Summary
 

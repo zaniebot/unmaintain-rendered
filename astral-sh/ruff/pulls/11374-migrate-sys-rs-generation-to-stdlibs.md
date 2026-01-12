@@ -13,14 +13,14 @@ head: use-stdlibs
 created_at: 2024-05-12T06:18:09Z
 updated_at: 2024-05-13T16:07:59Z
 url: https://github.com/astral-sh/ruff/pull/11374
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Migrate sys.rs generation to stdlibs
 
 ---
 
-_Pull request opened by @rmodpur on 2024-05-12 06:18_
+_@rmodpur_
 
 ## Summary
 

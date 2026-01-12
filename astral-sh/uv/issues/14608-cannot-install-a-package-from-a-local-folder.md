@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-14T14:56:00Z
 updated_at: 2025-07-14T15:34:14Z
 url: https://github.com/astral-sh/uv/issues/14608
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:52Z
 ```
 
 # Cannot install a package from a local folder
 
 ---
 
-_Issue opened by @pschmutz on 2025-07-14 14:56_
+_@pschmutz_
 
 ### Summary
 

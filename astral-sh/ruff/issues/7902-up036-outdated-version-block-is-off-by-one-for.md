@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-10T18:59:29Z
 updated_at: 2023-10-11T19:33:45Z
 url: https://github.com/astral-sh/ruff/issues/7902
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # UP036 (outdated-version-block) is off-by-one for the target version
 
 ---
 
-_Issue opened by @oprypin on 2023-10-10 18:59_
+_@oprypin_
 
 If my `target-version` is `py38`, I expect the condition `if sys.version_info >= (3, 8):` to be dropped but it isn't.
 It gets dropped for `py37`, though.

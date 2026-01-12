@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-16T13:24:04Z
 updated_at: 2025-09-16T16:06:06Z
 url: https://github.com/astral-sh/ruff/issues/20435
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Class' instance variables (attributes) naming
 
 ---
 
-_Issue opened by @Jtachan on 2025-09-16 13:24_
+_@Jtachan_
 
 ### Summary
 

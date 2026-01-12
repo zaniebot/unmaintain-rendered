@@ -13,14 +13,14 @@ head: charlie/url-error
 created_at: 2023-12-16T21:11:01Z
 updated_at: 2023-12-16T21:14:35Z
 url: https://github.com/astral-sh/uv/pull/669
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:06Z
 ```
 
 # Add explicit error message for URLs without package names
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-16 21:11_
+_@charliermarsh_
 
 `pip` supports installing packages without names (e.g., `git+https://github.com/pallets/flask.git`), but it doesn't adhere to the PEP grammar, and we don't yet support it (and may never) (#313).
 

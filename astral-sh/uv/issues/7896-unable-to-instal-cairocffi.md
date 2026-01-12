@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-03T13:57:30Z
 updated_at: 2024-10-03T14:32:11Z
 url: https://github.com/astral-sh/uv/issues/7896
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Unable to instal cairocffi
 
 ---
 
-_Issue opened by @peterbe on 2024-10-03 13:57_
+_@peterbe_
 
 ```bash
 /tmp

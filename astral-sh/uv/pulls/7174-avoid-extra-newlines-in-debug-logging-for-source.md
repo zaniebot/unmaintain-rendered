@@ -14,14 +14,14 @@ head: charlie/o
 created_at: 2024-09-07T18:09:03Z
 updated_at: 2024-09-07T18:34:02Z
 url: https://github.com/astral-sh/uv/pull/7174
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:43Z
 ```
 
 # Avoid extra newlines in debug logging for source builds
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-07 18:09_
+_@charliermarsh_
 
 ## Summary
 

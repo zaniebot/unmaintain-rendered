@@ -13,14 +13,14 @@ head: fix-8644
 created_at: 2023-11-14T14:33:13Z
 updated_at: 2023-11-17T17:24:21Z
 url: https://github.com/astral-sh/ruff/pull/8676
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Fix instability with await fluent style
 
 ---
 
-_Pull request opened by @konstin on 2023-11-14 14:33_
+_@konstin_
 
 Fix an instability where await was followed by a breaking fluent style expression:
 

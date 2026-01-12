@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-26T22:54:34Z
 updated_at: 2023-05-29T02:50:37Z
 url: https://github.com/astral-sh/ruff/issues/4674
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `isort` forgetting 1st party below sub-config
 
 ---
 
-_Issue opened by @jamesbraza on 2023-05-26 22:54_
+_@jamesbraza_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

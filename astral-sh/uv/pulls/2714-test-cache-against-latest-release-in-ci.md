@@ -13,14 +13,14 @@ head: zb/cache-test
 created_at: 2024-03-28T17:35:13Z
 updated_at: 2024-03-28T18:49:55Z
 url: https://github.com/astral-sh/uv/pull/2714
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:11Z
 ```
 
 # Test cache against latest release in CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-28 17:35_
+_@zanieb_
 
 Detect cache incompatibility issues like #2711 by testing against the last version of uv continuously
 

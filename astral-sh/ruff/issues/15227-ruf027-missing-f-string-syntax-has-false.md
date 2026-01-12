@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-02T20:24:04Z
 updated_at: 2025-04-11T08:42:55Z
 url: https://github.com/astral-sh/ruff/issues/15227
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [RUF027] missing-f-string-syntax has false negatives if calling a function inside brackets or accessing attribute of interpolated variable
 
 ---
 
-_Issue opened by @sjdemartini on 2025-01-02 20:24_
+_@sjdemartini_
 
 With RUF027 enabled, I would expect it to flag both of these, which it currently does not:
 1. function calls within the bracketed expression, like `print("Hello {foo()}")`

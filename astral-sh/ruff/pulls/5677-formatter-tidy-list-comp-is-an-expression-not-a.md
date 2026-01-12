@@ -12,14 +12,14 @@ head: format-list-comp-is-an-expr
 created_at: 2023-07-11T07:52:21Z
 updated_at: 2023-07-11T08:19:07Z
 url: https://github.com/astral-sh/ruff/pull/5677
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # formatter: tidy: list_comp is an expression, not a statement
 
 ---
 
-_Pull request opened by @davidszotten on 2023-07-11 07:52_
+_@davidszotten_
 
 put the test fixture in the right folder
 

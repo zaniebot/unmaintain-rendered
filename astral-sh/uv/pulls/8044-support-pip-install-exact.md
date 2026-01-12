@@ -14,14 +14,14 @@ head: pip-install-exact
 created_at: 2024-10-09T11:25:43Z
 updated_at: 2024-10-09T13:31:34Z
 url: https://github.com/astral-sh/uv/pull/8044
-synced_at: 2026-01-10T12:54:01Z
+synced_at: 2026-01-12T16:08:08Z
 ```
 
 # Support `pip install --exact`
 
 ---
 
-_Pull request opened by @blueraft on 2024-10-09 11:25_
+_@blueraft_
 
 ## Summary
 

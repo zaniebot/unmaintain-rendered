@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-20T10:16:02Z
 updated_at: 2025-05-21T06:22:39Z
 url: https://github.com/astral-sh/uv/issues/13551
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # uv doesnt update the package version when installed with uv pip install
 
 ---
 
-_Issue opened by @jzr-supove on 2025-05-20 10:16_
+_@jzr-supove_
 
 ### Summary
 

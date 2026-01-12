@@ -13,14 +13,14 @@ head: alex/special-case-type
 created_at: 2025-02-21T12:21:10Z
 updated_at: 2025-02-22T01:41:54Z
 url: https://github.com/astral-sh/ruff/pull/16301
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Teach red-knot that `type(x)` is the same as `x.__class__`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-21 12:21_
+_@AlexWaygood_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: david/type-of-self-in-methods-integration-2
 created_at: 2025-10-22T14:50:59Z
 updated_at: 2025-10-22T15:08:14Z
 url: https://github.com/astral-sh/ruff/pull/21031
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [ty] type-of-self + #20856
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-22 14:50_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

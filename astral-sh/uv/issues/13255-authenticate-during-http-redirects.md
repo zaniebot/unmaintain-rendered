@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-01T18:26:46Z
 updated_at: 2025-06-18T08:28:37Z
 url: https://github.com/astral-sh/uv/issues/13255
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # Authenticate during HTTP redirects
 
 ---
 
-_Issue opened by @zanieb on 2025-05-01 18:26_
+_@zanieb_
 
 We previously rolled this out in 
 

@@ -13,14 +13,14 @@ head: charlie/pep723
 created_at: 2024-10-29T02:05:54Z
 updated_at: 2024-10-29T02:26:08Z
 url: https://github.com/astral-sh/ruff/pull/13974
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Skip namespace package enforcement for PEP 723 scripts
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-29 02:05_
+_@charliermarsh_
 
 ## Summary
 

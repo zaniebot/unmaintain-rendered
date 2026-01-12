@@ -13,14 +13,14 @@ head: plr0913
 created_at: 2023-01-28T19:06:30Z
 updated_at: 2023-01-30T13:04:38Z
 url: https://github.com/astral-sh/ruff/pull/2308
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Implement Pylint's `too-many-arguments` rule (`PLR0913`)
 
 ---
 
-_Pull request opened by @akhildevelops on 2023-01-28 19:06_
+_@akhildevelops_
 
 Pylint Rule: too-many-arguments / R0913 https://pylint.pycqa.org/en/latest/user_guide/messages/refactor/too-many-arguments.html
 

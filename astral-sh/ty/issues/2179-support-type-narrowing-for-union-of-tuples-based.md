@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-23T06:01:27Z
 updated_at: 2025-12-24T01:15:52Z
 url: https://github.com/astral-sh/ty/issues/2179
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Support type narrowing for union of tuples based on element types.
 
 ---
 
-_Issue opened by @tkukushkin on 2025-12-23 06:01_
+_@tkukushkin_
 
 ### Summary
 

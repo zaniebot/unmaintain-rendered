@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-29T19:20:28Z
 updated_at: 2025-12-29T19:22:02Z
 url: https://github.com/astral-sh/ruff/issues/22288
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Action Required: Fix Renovate Configuration
 
 ---
 
-_Issue opened by @renovate on 2025-12-29 19:20_
+_@renovate_
 
 There is an error with this repository's Renovate configuration that needs to be fixed. As a precaution, Renovate will stop PRs until it is resolved.
 

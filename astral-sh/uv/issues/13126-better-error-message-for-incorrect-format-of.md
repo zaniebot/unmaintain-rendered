@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-27T07:48:49Z
 updated_at: 2025-06-03T19:23:26Z
 url: https://github.com/astral-sh/uv/issues/13126
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # Better error message for incorrect format of (requires-python = "version") in *.toml
 
 ---
 
-_Issue opened by @Aweryc on 2025-04-27 07:48_
+_@Aweryc_
 
 ### Summary
 

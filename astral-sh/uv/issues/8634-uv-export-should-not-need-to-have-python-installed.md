@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-28T12:51:28Z
 updated_at: 2024-10-28T19:00:09Z
 url: https://github.com/astral-sh/uv/issues/8634
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # uv export should not need to have python installed
 
 ---
 
-_Issue opened by @mjpieters on 2024-10-28 12:51_
+_@mjpieters_
 
 We are running a CI pipeline that includes a mend.io license compliance scanner, which looks for a `requirements.txt` file (it doesn't yet support uv.lock as an input file). We run the mend scanner in a minimal docker container with no Python installed. I can trivially install uv into that container, but without a python installation, I can't export the lock file to `requirements.txt` file:
 

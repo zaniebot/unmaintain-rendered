@@ -13,14 +13,14 @@ head: ww/ci-lint-fixes
 created_at: 2025-08-07T21:19:39Z
 updated_at: 2025-08-07T21:47:36Z
 url: https://github.com/astral-sh/uv/pull/15152
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:36Z
 ```
 
 # chore(ci): fix linting findings in ci.yml
 
 ---
 
-_Pull request opened by @woodruffw on 2025-08-07 21:19_
+_@woodruffw_
 
 ## Summary
 

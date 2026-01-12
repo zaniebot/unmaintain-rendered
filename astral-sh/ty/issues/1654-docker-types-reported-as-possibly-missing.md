@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-27T10:45:25Z
 updated_at: 2025-12-18T12:01:22Z
 url: https://github.com/astral-sh/ty/issues/1654
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `docker.types` reported as `possibly-missing-attribute` after `import docker; from docker.types import Ulimit`
 
 ---
 
-_Issue opened by @sitsofe on 2025-11-27 10:45_
+_@sitsofe_
 
 ### Question
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-01-30T07:17:37Z
 updated_at: 2018-08-02T03:30:00Z
 url: https://github.com/clap-rs/clap/issues/833
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # require use of --option=value syntax
 
 ---
 
-_Issue opened by @adeschamps on 2017-01-30 07:17_
+_@adeschamps_
 
 I'm looking at the `follow` option of the Unix `tail` command, and I'm not sure how to implement it. From the help output:
 

@@ -12,14 +12,14 @@ head: charlie/extras
 created_at: 2024-05-29T17:15:02Z
 updated_at: 2024-05-29T19:26:27Z
 url: https://github.com/astral-sh/uv/pull/3913
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:55Z
 ```
 
 # Add extra dependency annotations to lockfile and sync commands
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-29 17:15_
+_@charliermarsh_
 
 ## Summary
 

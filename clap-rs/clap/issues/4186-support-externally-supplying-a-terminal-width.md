@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-06T21:31:47Z
 updated_at: 2022-09-13T02:18:00Z
 url: https://github.com/clap-rs/clap/issues/4186
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Support externally supplying a terminal width when running outside a tty
 
 ---
 
-_Issue opened by @Nemo157 on 2022-09-06 21:31_
+_@Nemo157_
 
 ### Please complete the following tasks
 

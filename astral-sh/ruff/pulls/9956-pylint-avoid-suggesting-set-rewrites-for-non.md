@@ -13,14 +13,14 @@ head: charlie/plr
 created_at: 2024-02-12T17:17:46Z
 updated_at: 2024-02-12T18:05:55Z
 url: https://github.com/astral-sh/ruff/pull/9956
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # [`pylint`] Avoid suggesting set rewrites for non-hashable types
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-12 17:17_
+_@charliermarsh_
 
 ## Summary
 

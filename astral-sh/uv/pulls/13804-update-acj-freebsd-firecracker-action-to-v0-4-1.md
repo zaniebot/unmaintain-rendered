@@ -14,14 +14,14 @@ head: konsti/firecracker-0.4.1
 created_at: 2025-06-03T12:49:25Z
 updated_at: 2025-06-03T13:12:06Z
 url: https://github.com/astral-sh/uv/pull/13804
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:52Z
 ```
 
 # Update acj/freebsd-firecracker-action to v0.4.1
 
 ---
 
-_Pull request opened by @konstin on 2025-06-03 12:49_
+_@konstin_
 
 This should hopefully fix the flakes we're seeing.
 

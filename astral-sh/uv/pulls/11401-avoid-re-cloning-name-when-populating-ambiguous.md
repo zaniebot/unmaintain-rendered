@@ -13,14 +13,14 @@ head: charlie/pop
 created_at: 2025-02-10T20:18:44Z
 updated_at: 2025-02-10T20:26:58Z
 url: https://github.com/astral-sh/uv/pull/11401
-synced_at: 2026-01-10T11:10:37Z
+synced_at: 2026-01-12T16:09:49Z
 ```
 
 # Avoid re-cloning name when populating ambiguous set
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-10 20:18_
+_@charliermarsh_
 
 _No description provided._
 

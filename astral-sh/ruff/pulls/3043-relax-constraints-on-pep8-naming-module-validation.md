@@ -12,14 +12,14 @@ head: charlie/relax
 created_at: 2023-02-19T21:36:29Z
 updated_at: 2023-02-19T22:34:24Z
 url: https://github.com/astral-sh/ruff/pull/3043
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Relax constraints on pep8-naming module validation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-19 21:36_
+_@charliermarsh_
 
 Closes #3042.
 

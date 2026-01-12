@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-17T21:26:32Z
 updated_at: 2025-11-20T00:21:15Z
 url: https://github.com/astral-sh/ty/issues/846
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Quoted type aliases not understood
 
 ---
 
-_Issue opened by @sterliakov on 2025-07-17 21:26_
+_@sterliakov_
 
 ### Summary
 

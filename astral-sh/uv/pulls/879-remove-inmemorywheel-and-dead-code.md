@@ -13,14 +13,14 @@ head: bojan/rm-sync-unzip
 created_at: 2024-01-11T00:07:33Z
 updated_at: 2024-01-11T15:11:09Z
 url: https://github.com/astral-sh/uv/pull/879
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:15Z
 ```
 
 # Remove InMemoryWheel and dead code
 
 ---
 
-_Pull request opened by @bojanserafimov on 2024-01-11 00:07_
+_@bojanserafimov_
 
 see https://github.com/astral-sh/puffin/pull/856#discussion_r1448087651
 

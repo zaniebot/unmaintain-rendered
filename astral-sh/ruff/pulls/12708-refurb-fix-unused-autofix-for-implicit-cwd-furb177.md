@@ -13,14 +13,14 @@ head: fix-unused-autofix
 created_at: 2024-08-06T05:21:54Z
 updated_at: 2024-08-06T06:09:35Z
 url: https://github.com/astral-sh/ruff/pull/12708
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [`refurb`] - fix unused autofix for `implicit-cwd` (`FURB177`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-08-06 05:21_
+_@diceroll123_
 
 ## Summary
 

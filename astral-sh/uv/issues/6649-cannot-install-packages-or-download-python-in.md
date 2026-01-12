@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-26T19:25:10Z
 updated_at: 2024-09-30T14:25:07Z
 url: https://github.com/astral-sh/uv/issues/6649
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Cannot install packages or download Python in Windows with Corporate Cisco Umbrella Certificate
 
 ---
 
-_Issue opened by @Syrus-at-Philips on 2024-08-26 19:25_
+_@Syrus-at-Philips_
 
 
 Using the _native TLS_ option, `uv` is able to do a self-update, create a virtual environment, and list available Python versions. It cannot download Python or install packages from pypi. The issue is that self-update and checking for available package versions does work, so the initial SSL queries are okay using native TLS and the corporate man-in-the-middle certificate. It's later in the process when `uv` tries to download, that certificate errors occur. I suspect that `uv` is not using native TLS during the download phase for Python distributions as well as for packages. Below are a number of responses to executing `uv` at the command line under bash for Windows:

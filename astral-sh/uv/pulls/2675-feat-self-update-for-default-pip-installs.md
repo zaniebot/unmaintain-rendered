@@ -11,14 +11,14 @@ head: self-update-pip
 created_at: 2024-03-26T20:03:41Z
 updated_at: 2024-04-04T16:27:52Z
 url: https://github.com/astral-sh/uv/pull/2675
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:10Z
 ```
 
 # feat: self-update for default pip installs
 
 ---
 
-_Pull request opened by @bschoenmaeckers on 2024-03-26 20:03_
+_@bschoenmaeckers_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

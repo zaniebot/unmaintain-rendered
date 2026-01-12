@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-28T20:57:46Z
 updated_at: 2024-10-28T21:30:49Z
 url: https://github.com/astral-sh/uv/issues/8647
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # offline package sync fails even when explicitly installing build dependency `hatchling`
 
 ---
 
-_Issue opened by @benniekiss on 2024-10-28 20:57_
+_@benniekiss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

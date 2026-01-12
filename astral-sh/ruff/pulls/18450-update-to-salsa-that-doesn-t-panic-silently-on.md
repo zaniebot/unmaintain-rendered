@@ -12,14 +12,14 @@ head: cjm/salsa-cycle-panic
 created_at: 2025-06-04T00:59:48Z
 updated_at: 2025-06-04T05:40:18Z
 url: https://github.com/astral-sh/ruff/pull/18450
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # update to salsa that doesn't panic silently on cycles
 
 ---
 
-_Pull request opened by @carljm on 2025-06-04 00:59_
+_@carljm_
 
 ## Summary
 

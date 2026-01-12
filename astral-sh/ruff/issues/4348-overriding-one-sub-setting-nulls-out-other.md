@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-10T14:56:19Z
 updated_at: 2023-05-15T02:35:00Z
 url: https://github.com/astral-sh/ruff/issues/4348
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Overriding one sub-setting nulls out other inherited settings
 
 ---
 
-_Issue opened by @hotpxl on 2023-05-10 14:56_
+_@hotpxl_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

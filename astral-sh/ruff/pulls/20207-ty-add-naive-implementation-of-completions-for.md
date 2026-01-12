@@ -14,14 +14,14 @@ head: ag/all-symbols
 created_at: 2025-09-02T15:00:51Z
 updated_at: 2025-09-03T13:57:28Z
 url: https://github.com/astral-sh/ruff/pull/20207
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [ty] Add naive implementation of completions for unimported symbols
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-09-02 15:00_
+_@BurntSushi_
 
 This PR takes a first step toward implementing auto-import (see #535).
 

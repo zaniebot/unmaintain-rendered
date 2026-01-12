@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-11T17:54:56Z
 updated_at: 2025-04-16T05:27:28Z
 url: https://github.com/astral-sh/ruff/issues/17360
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] `x != 0` is wrongly inferred as `Literal[True]` if type of `x` is any subtype of `~Literal[0]`
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-04-11 17:54_
+_@MatthewMckee4_
 
 ### Summary
 

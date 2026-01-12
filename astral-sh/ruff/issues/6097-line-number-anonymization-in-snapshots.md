@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-26T14:09:09Z
 updated_at: 2023-07-27T15:58:21Z
 url: https://github.com/astral-sh/ruff/issues/6097
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Line number anonymization in snapshots?
 
 ---
 
-_Issue opened by @harupy on 2023-07-26 14:09_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

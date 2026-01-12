@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-16T14:25:38Z
 updated_at: 2025-01-17T18:55:11Z
 url: https://github.com/astral-sh/uv/issues/10680
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # In a workspace, `uv sync` does not respect some environment variables for workspace members
 
 ---
 
-_Issue opened by @wsascha on 2025-01-16 14:25_
+_@wsascha_
 
 It seems that the `UV_INDEX_*_USERNAME` and `UV_INDEX_*_PASSWORD` env vars are not considered for / propagated to workspace members when calling `uv sync`.
 

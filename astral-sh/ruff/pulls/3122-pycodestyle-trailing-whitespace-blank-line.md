@@ -12,14 +12,14 @@ head: pycodestyle-trailing-whitespace
 created_at: 2023-02-22T13:17:51Z
 updated_at: 2023-02-24T00:04:45Z
 url: https://github.com/astral-sh/ruff/pull/3122
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [pycodestyle] trailing-whitespace, blank-line-contains-whitespace (W291, W293)
 
 ---
 
-_Pull request opened by @mknaw on 2023-02-22 13:17_
+_@mknaw_
 
 - [x] failing checks
 - [x] ~follow pycodestyle precedent on what constitutes whitespace~

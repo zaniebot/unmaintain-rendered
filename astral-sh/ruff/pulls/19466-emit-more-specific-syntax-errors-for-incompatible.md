@@ -13,14 +13,14 @@ head: prefix-syntax-errors
 created_at: 2025-07-21T15:08:35Z
 updated_at: 2025-12-10T18:02:51Z
 url: https://github.com/astral-sh/ruff/pull/19466
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # Emit more specific syntax errors for incompatible string prefixes
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-07-21 15:08_
+_@dylwil3_
 
 Following the CPython changes here:
 

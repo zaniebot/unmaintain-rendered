@@ -13,14 +13,14 @@ head: zb/show-rule-code
 created_at: 2024-04-17T19:54:24Z
 updated_at: 2024-04-17T20:22:54Z
 url: https://github.com/astral-sh/ruff/pull/11003
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Improve display of rules in `--show-settings`
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-17 19:54_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/11002
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-20T17:23:24Z
 updated_at: 2023-03-20T20:55:30Z
 url: https://github.com/astral-sh/ruff/issues/3632
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # False positive `TRY300` when there is no `except` clause
 
 ---
 
-_Issue opened by @Czaki on 2023-03-20 17:23_
+_@Czaki_
 
 In napari we have such a function https://github.com/napari/napari/blob/ab885957fb5a2220a3078851ad7dc97a7a82cc05/napari/utils/misc.py#L253
 

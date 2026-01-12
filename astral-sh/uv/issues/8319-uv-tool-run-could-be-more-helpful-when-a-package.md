@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-18T06:31:54Z
 updated_at: 2024-10-22T19:16:11Z
 url: https://github.com/astral-sh/uv/issues/8319
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # `uv tool run` could be more helpful when a package name and tool don't match
 
 ---
 
-_Issue opened by @akx on 2024-10-18 06:31_
+_@akx_
 
 macOS arm64, uv 0.4.24
 

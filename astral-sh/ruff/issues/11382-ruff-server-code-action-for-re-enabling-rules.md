@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-12T22:06:18Z
 updated_at: 2025-04-03T13:48:09Z
 url: https://github.com/astral-sh/ruff/issues/11382
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `ruff server`: Code action for re-enabling rules when cursor is on noqa comments
 
 ---
 
-_Issue opened by @T-256 on 2024-05-12 22:06_
+_@T-256_
 
 Could it possible instead of clearing noqa by hand, add code action when moving cursor on noqa code comments?
 For example, moving cursor on `# noqa:`, show these code actions:

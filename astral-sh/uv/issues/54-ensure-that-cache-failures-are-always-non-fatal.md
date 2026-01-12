@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-08T05:14:11Z
 updated_at: 2023-11-28T06:06:47Z
 url: https://github.com/astral-sh/uv/issues/54
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Ensure that cache failures are always non-fatal
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-08 05:14_
+_@charliermarsh_
 
 This is especially important for enabling backwards-compatible changes to the cached representations in the future.
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-05-27T11:39:43Z
 updated_at: 2022-06-08T14:35:02Z
 url: https://github.com/clap-rs/clap/issues/3763
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # multiple values and occurrences are not correctly counted / grouped for positionals
 
 ---
 
-_Issue opened by @epage on 2022-05-27 11:39_
+_@epage_
 
 ### Please complete the following tasks
 

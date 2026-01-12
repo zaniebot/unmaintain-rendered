@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-12T10:09:00Z
 updated_at: 2025-05-27T13:52:10Z
 url: https://github.com/astral-sh/ruff/issues/14293
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Explore comment and formatting preserving source code generator
 
 ---
 
-_Issue opened by @MichaReiser on 2024-11-12 10:09_
+_@MichaReiser_
 
 Explore if it's possible to preserve most comments and the source formatting in `Generator`. See [`recast`](https://github.com/benjamn/recast#source-maps).
 

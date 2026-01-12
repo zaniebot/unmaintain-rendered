@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-22T05:42:25Z
 updated_at: 2025-07-22T12:24:12Z
 url: https://github.com/astral-sh/uv/issues/14804
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # allow `--all-extras` with `uv tool install`
 
 ---
 
-_Issue opened by @sslivkoff on 2025-07-22 05:42_
+_@sslivkoff_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-14T14:07:16Z
 updated_at: 2025-12-18T17:37:01Z
 url: https://github.com/astral-sh/uv/issues/15837
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # Allow changing the base directory for all uv storage, e.g., with `UV_ROOT_DIR`
 
 ---
 
-_Issue opened by @zanieb on 2025-09-14 14:07_
+_@zanieb_
 
 Originally mentioned at https://github.com/astral-sh/uv/issues/11360#issuecomment-2943941428
 

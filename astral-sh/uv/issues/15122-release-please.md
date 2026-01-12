@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T05:02:42Z
 updated_at: 2025-08-07T12:04:28Z
 url: https://github.com/astral-sh/uv/issues/15122
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # Release, please!
 
 ---
 
-_Issue opened by @dimaqq on 2025-08-07 05:02_
+_@dimaqq_
 
 ### Summary
 

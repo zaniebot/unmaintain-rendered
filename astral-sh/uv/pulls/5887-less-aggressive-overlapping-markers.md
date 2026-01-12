@@ -12,14 +12,14 @@ head: ag/overlapping-markers-conservative
 created_at: 2024-08-07T18:51:46Z
 updated_at: 2024-08-13T15:35:49Z
 url: https://github.com/astral-sh/uv/pull/5887
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:05Z
 ```
 
 # less aggressive overlapping markers
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-08-07 18:51_
+_@BurntSushi_
 
 This is like #5733, but implements less aggressive forking. Namely, in
 #5733, we would possibly fork any time we say a marker expression, even
@@ -92,6 +92,16 @@ Note that `uv-overlapping-markers-{conservative,aggressive}` are both derived fr
 
 ---
 
+_@BurntSushi reviewed on 2024-08-09 18:59_
+
+---
+
+_Review comment by @BurntSushi on `crates/uv/tests/lock.rs`:1730 on 2024-08-09 18:59_
+
+These snapshots look wrong. I haven't investigated yet, but we probably shouldn't merge before fixing these.
+
+---
+
 _Comment by @codspeed-hq[bot] on 2024-08-09 19:05_
 
 ## [CodSpeed Performance Report](https://codspeed.io/astral-sh/uv/branches/ag/overlapping-markers-conservative)
@@ -120,8 +130,36 @@ _Comment by @codspeed-hq[bot] on 2024-08-09 19:05_
 
 ---
 
+_Review requested from @charliermarsh by @BurntSushi on 2024-08-13 15:04_
+
+---
+
+_Review requested from @konstin by @BurntSushi on 2024-08-13 15:04_
+
+---
+
+_Review requested from @ibraheemdev by @BurntSushi on 2024-08-13 15:04_
+
+---
+
 _Comment by @BurntSushi on 2024-08-13 15:18_
 
 This does regress the warm resolve for jupyter by about 10%, but I think that's acceptable for a change like this where we improve correctness at the known cost of possibly forking more. Of course, we should investigate further to improve perf and possibly even avoid forking if we can determine it won't be useful, but I think that should be reserved for future work.
+
+---
+
+_@charliermarsh approved on 2024-08-13 15:30_
+
+---
+
+_Merged by @BurntSushi on 2024-08-13 15:35_
+
+---
+
+_Closed by @BurntSushi on 2024-08-13 15:35_
+
+---
+
+_Branch deleted on 2024-08-13 15:35_
 
 ---

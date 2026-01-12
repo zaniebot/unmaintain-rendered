@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-08-31T21:17:46Z
 updated_at: 2021-09-04T10:13:03Z
 url: https://github.com/clap-rs/clap/issues/2748
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Pass `None` to `default_value_if`, or better adding `default_value_if_not_set`?
 
 ---
 
-_Issue opened by @runapp on 2021-08-31 21:17_
+_@runapp_
 
 ### Please complete the following tasks
 

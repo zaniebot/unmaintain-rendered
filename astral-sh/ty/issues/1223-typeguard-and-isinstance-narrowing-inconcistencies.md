@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-20T16:31:04Z
 updated_at: 2025-09-20T17:06:54Z
 url: https://github.com/astral-sh/ty/issues/1223
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # TypeGuard and isinstance narrowing inconcistencies
 
 ---
 
-_Issue opened by @tpgillam on 2025-09-20 16:31_
+_@tpgillam_
 
 ### Summary
 

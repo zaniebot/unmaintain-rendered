@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-18T10:06:07Z
 updated_at: 2026-01-06T03:47:05Z
 url: https://github.com/astral-sh/ty/issues/1202
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Add support for `functools.total_ordering`
 
 ---
 
-_Issue opened by @JimDabell on 2025-09-18 10:06_
+_@JimDabell_
 
 ### Summary
 

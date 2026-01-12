@@ -13,14 +13,14 @@ head: zb/ci-test-win
 created_at: 2024-11-19T14:36:59Z
 updated_at: 2024-11-20T00:01:01Z
 url: https://github.com/astral-sh/ruff/pull/14461
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Use larger GitHub runner for testing on Windows
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-19 14:36_
+_@zanieb_
 
 Reduces to 3m 50s (extra large) or 6m 5s (large) vs 9m 7s (standard)
 

@@ -11,14 +11,14 @@ head: docs-dependency-groups
 created_at: 2025-02-21T06:22:07Z
 updated_at: 2025-08-14T15:57:28Z
 url: https://github.com/astral-sh/uv/pull/11690
-synced_at: 2026-01-10T06:44:32Z
+synced_at: 2026-01-12T16:09:57Z
 ```
 
 # Docs: refactor/enhance dependency groups section
 
 ---
 
-_Pull request opened by @rsyring on 2025-02-21 06:22_
+_@rsyring_
 
 ## Summary
 

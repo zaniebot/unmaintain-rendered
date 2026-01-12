@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-14T04:15:33Z
 updated_at: 2025-12-15T14:13:47Z
 url: https://github.com/astral-sh/ruff/issues/21973
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # [G004] Fix resolve incorrect when `\n` is present in the literal.
 
 ---
 
-_Issue opened by @richardhapb on 2025-12-14 04:15_
+_@richardhapb_
 
 ### Summary
 

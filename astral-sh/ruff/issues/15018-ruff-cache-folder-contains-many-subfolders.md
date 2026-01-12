@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-16T11:14:43Z
 updated_at: 2024-12-16T14:39:23Z
 url: https://github.com/astral-sh/ruff/issues/15018
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # ruff cache folder contains many subfolders
 
 ---
 
-_Issue opened by @yabirgb on 2024-12-16 11:14_
+_@yabirgb_
 
 I noticed that I had a folder `.ruff_cache` and seems to have different subfolders
 

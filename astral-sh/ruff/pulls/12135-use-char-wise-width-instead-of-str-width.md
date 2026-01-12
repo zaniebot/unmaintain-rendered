@@ -13,14 +13,14 @@ head: dhruv/char-wise-width
 created_at: 2024-07-01T11:30:08Z
 updated_at: 2024-07-01T13:29:27Z
 url: https://github.com/astral-sh/ruff/pull/12135
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Use char-wise width instead of `str`-width
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-01 11:30_
+_@dhruvmanila_
 
 ## Summary
 

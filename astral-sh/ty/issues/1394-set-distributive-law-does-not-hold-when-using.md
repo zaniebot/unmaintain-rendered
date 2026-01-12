@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-18T06:55:09Z
 updated_at: 2025-10-24T18:50:07Z
 url: https://github.com/astral-sh/ty/issues/1394
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Set distributive law does not hold when using complements sometimes
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-10-18 06:55_
+_@MeGaGiGaGon_
 
 ### Summary
 

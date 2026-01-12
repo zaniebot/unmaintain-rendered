@@ -13,14 +13,14 @@ head: tk/completion-improvements
 created_at: 2025-12-10T23:11:38Z
 updated_at: 2025-12-28T11:29:16Z
 url: https://github.com/astral-sh/uv/pull/17080
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:36Z
 ```
 
 # Add value hints to command line arguments to improve shell completion accuracy
 
 ---
 
-_Pull request opened by @EliteTK on 2025-12-10 23:11_
+_@EliteTK_
 
 ## Summary
 

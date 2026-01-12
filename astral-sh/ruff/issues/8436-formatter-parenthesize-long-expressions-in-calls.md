@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-11-02T04:44:19Z
 updated_at: 2023-11-29T03:02:53Z
 url: https://github.com/astral-sh/ruff/issues/8436
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: Parenthesize long expressions in calls
 
 ---
 
-_Issue opened by @zanieb on 2023-11-02 04:44_
+_@zanieb_
 
 Stable formatting of calls with a long expression results in a wrap that reduces readability
 

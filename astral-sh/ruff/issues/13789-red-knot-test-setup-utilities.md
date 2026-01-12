@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-17T08:44:18Z
 updated_at: 2024-11-20T12:31:42Z
 url: https://github.com/astral-sh/ruff/issues/13789
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Test setup utilities
 
 ---
 
-_Issue opened by @sharkdp on 2024-10-17 08:44_
+_@sharkdp_
 
 This recently came up in a [discussion](https://github.com/astral-sh/ruff/pull/13758#discussion_r1800874483). A lot of red-knot tests require some form of "setup" in the sense that they create variables of a particular type. This is not always straightforward. For example, to create a variable of type `int`, you need to make sure that it doesn't end up as a `LiteralInt[…]`. So some tests use a pattern like this:
 ```py

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-22T20:47:35Z
 updated_at: 2025-06-26T14:51:39Z
 url: https://github.com/clap-rs/clap/issues/6042
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Using `ArgMatches::indicies_of` with an argument action of `ArgAction::Count` returns incorrect indicies
 
 ---
 
-_Issue opened by @MEhrn00 on 2025-06-22 20:47_
+_@MEhrn00_
 
 ### Please complete the following tasks
 

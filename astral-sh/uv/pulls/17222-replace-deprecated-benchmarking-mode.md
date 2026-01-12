@@ -13,14 +13,14 @@ head: ww/codspeed
 created_at: 2025-12-22T21:41:52Z
 updated_at: 2026-01-05T18:52:31Z
 url: https://github.com/astral-sh/uv/pull/17222
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:40Z
 ```
 
 # Replace deprecated benchmarking mode
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-22 21:41_
+_@woodruffw_
 
 ## Summary
 

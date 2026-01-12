@@ -14,14 +14,14 @@ head: ag/workspace-symbol-caching
 created_at: 2025-08-21T18:59:03Z
 updated_at: 2025-08-23T16:53:43Z
 url: https://github.com/astral-sh/ruff/pull/20030
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # [ty] Use Salsa to cache workspace symbols
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-08-21 18:59_
+_@BurntSushi_
 
 This PR pretty much does what astral-sh/ty#998 suggests: it turns the
 symbol gathering at the file level into a Salsa query while being

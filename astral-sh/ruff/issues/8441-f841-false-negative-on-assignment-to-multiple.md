@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-02T07:18:21Z
 updated_at: 2023-11-05T17:01:11Z
 url: https://github.com/astral-sh/ruff/issues/8441
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `F841` false negative on assignment to multiple variables
 
 ---
 
-_Issue opened by @DetachHead on 2023-11-02 07:18_
+_@DetachHead_
 
 ```py
 def foo():

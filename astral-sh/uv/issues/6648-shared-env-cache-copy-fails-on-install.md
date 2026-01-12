@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-26T19:05:19Z
 updated_at: 2024-08-27T06:27:33Z
 url: https://github.com/astral-sh/uv/issues/6648
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # shared env cache: copy fails on install
 
 ---
 
-_Issue opened by @stas00 on 2024-08-26 19:05_
+_@stas00_
 
 This is a continuation of trying to use `uv` in a shared uv-cache https://github.com/astral-sh/uv/issues/5581
 

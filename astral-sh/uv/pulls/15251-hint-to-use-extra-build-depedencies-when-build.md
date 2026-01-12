@@ -11,14 +11,14 @@ head: hint-extra-build-dependencies
 created_at: 2025-08-13T15:55:00Z
 updated_at: 2025-08-14T18:31:55Z
 url: https://github.com/astral-sh/uv/pull/15251
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:39Z
 ```
 
 # Hint to use `extra-build-depedencies` when build fails with a missing…
 
 ---
 
-_Pull request opened by @blueraft on 2025-08-13 15:55_
+_@blueraft_
 
 … package.
 

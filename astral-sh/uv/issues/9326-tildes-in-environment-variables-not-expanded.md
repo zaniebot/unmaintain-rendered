@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-21T15:58:13Z
 updated_at: 2024-11-21T17:32:17Z
 url: https://github.com/astral-sh/uv/issues/9326
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # `~` Tildes in environment variables not expanded before use
 
 ---
 
-_Issue opened by @fynnsu on 2024-11-21 15:58_
+_@fynnsu_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

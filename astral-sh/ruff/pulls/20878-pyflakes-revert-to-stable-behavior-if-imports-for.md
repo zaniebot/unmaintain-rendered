@@ -15,14 +15,14 @@ head: f401-branches
 created_at: 2025-10-15T01:25:21Z
 updated_at: 2025-10-28T12:57:01Z
 url: https://github.com/astral-sh/ruff/pull/20878
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [`pyflakes`] Revert to stable behavior if imports for module lie in alternate branches for `F401`
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-10-15 01:25_
+_@dylwil3_
 
 Closes #20839
 

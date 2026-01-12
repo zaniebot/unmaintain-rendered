@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-28T20:19:47Z
 updated_at: 2025-02-03T12:53:38Z
 url: https://github.com/astral-sh/ruff/issues/15168
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Pylint subcategories' codes are confusingly documented
 
 ---
 
-_Issue opened by @Avasam on 2024-12-28 20:19_
+_@Avasam_
 
 https://docs.astral.sh/ruff/rules/#pylint-pl
 ![Image](https://github.com/user-attachments/assets/fafff0b5-037d-4a6c-bc8b-eb244a9d2ae0)

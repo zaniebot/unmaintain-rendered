@@ -12,14 +12,14 @@ head: stmt-assign-and-expr-dummies
 created_at: 2023-06-07T20:27:50Z
 updated_at: 2023-06-08T10:20:27Z
 url: https://github.com/astral-sh/ruff/pull/4938
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # A basic StmtAssign formatter and better dummies for expressions
 
 ---
 
-_Pull request opened by @konstin on 2023-06-07 20:27_
+_@konstin_
 
 This PR was formatting StmtAssign since many nodes in the black tests (and in python in general) are after an assignment. This caused unstable formatting: The spacing of power op spacing depends on the type of the two involved expressions, but each expression was formatted as dummy string and re-parsed as a ExprName, so in the second round the different rules of ExprName (than say ExprConstant or ExprCall) were applied, causing unstable formatting.
 

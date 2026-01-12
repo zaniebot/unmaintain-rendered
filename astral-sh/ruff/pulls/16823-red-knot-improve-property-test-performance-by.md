@@ -14,14 +14,14 @@ head: cake/make-property-tests-faster
 created_at: 2025-03-18T07:46:55Z
 updated_at: 2025-03-18T08:19:31Z
 url: https://github.com/astral-sh/ruff/pull/16823
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # [red-knot] Improve property test performance by cloning db instead of holding `MutexGuard`
 
 ---
 
-_Pull request opened by @cake-monotone on 2025-03-18 07:46_
+_@cake-monotone_
 
 ## Summary
 

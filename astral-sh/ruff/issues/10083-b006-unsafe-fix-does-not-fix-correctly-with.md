@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-22T17:43:32Z
 updated_at: 2024-02-28T19:22:48Z
 url: https://github.com/astral-sh/ruff/issues/10083
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # B006 (unsafe fix) : does not fix correctly with @overload
 
 ---
 
-_Issue opened by @yoann9344 on 2024-02-22 17:43_
+_@yoann9344_
 
 ```diff
      @overload

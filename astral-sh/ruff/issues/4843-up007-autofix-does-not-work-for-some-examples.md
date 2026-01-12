@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-03T22:15:55Z
 updated_at: 2024-04-12T12:12:26Z
 url: https://github.com/astral-sh/ruff/issues/4843
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # UP007: autofix does not work for some examples
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-06-03 22:15_
+_@saippuakauppias_
 
 Example:
 ```python

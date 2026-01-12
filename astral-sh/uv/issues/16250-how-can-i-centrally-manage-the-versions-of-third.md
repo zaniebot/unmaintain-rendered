@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-11T06:56:20Z
 updated_at: 2025-10-21T00:56:56Z
 url: https://github.com/astral-sh/uv/issues/16250
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # How can I centrally manage the versions of third-party libraries?
 
 ---
 
-_Issue opened by @ya7010 on 2025-10-11 06:56_
+_@ya7010_
 
 ### Question
 

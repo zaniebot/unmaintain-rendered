@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-14T15:17:41Z
 updated_at: 2026-01-09T09:55:42Z
 url: https://github.com/astral-sh/ty/issues/1354
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support for ignoring unresolved-import per library
 
 ---
 
-_Issue opened by @miloszwatroba on 2025-10-14 15:17_
+_@miloszwatroba_
 
 ### Question
 

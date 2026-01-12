@@ -13,14 +13,14 @@ head: renovate/codspeed-criterion-compat-2.x-lockfile
 created_at: 2024-04-15T01:05:35Z
 updated_at: 2024-04-15T01:49:32Z
 url: https://github.com/astral-sh/ruff/pull/10931
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Update Rust crate codspeed-criterion-compat to v2.4.1
 
 ---
 
-_Pull request opened by @renovate on 2024-04-15 01:05_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

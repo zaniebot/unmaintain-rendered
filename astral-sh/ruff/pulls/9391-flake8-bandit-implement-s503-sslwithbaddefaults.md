@@ -14,14 +14,14 @@ head: rule/S403
 created_at: 2024-01-04T17:17:24Z
 updated_at: 2024-01-05T01:45:39Z
 url: https://github.com/astral-sh/ruff/pull/9391
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 #  [`flake8-bandit`] Implement `S503` `SslWithBadDefaults` rule
 
 ---
 
-_Pull request opened by @qdegraaf on 2024-01-04 17:17_
+_@qdegraaf_
 
 ## Summary
 

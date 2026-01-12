@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-22T13:43:44Z
 updated_at: 2024-02-22T16:44:38Z
 url: https://github.com/astral-sh/uv/issues/1866
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # uv pip compile conflicting URLs error for the same URL dependency
 
 ---
 
-_Issue opened by @blueraft on 2024-02-22 13:43_
+_@blueraft_
 
 Thanks for working on this! 
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-01-22T22:49:25Z
 updated_at: 2020-02-06T07:52:53Z
 url: https://github.com/clap-rs/clap/issues/1641
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Incorrect documentation for `derive(Clap)` example
 
 ---
 
-_Issue opened by @tiziano88 on 2020-01-22 22:49_
+_@tiziano88_
 
 I have just came across `clap`, and the first thing I tried was to use the `derive(Clap)` feature from the README, but it seems that is not actually working, and also the README mentions `examples/01d_quick_example.rs`, which does not seem to exist.
 

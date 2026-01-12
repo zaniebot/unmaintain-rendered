@@ -12,14 +12,14 @@ head: charlie/generator
 created_at: 2023-01-06T02:11:16Z
 updated_at: 2023-01-06T02:41:27Z
 url: https://github.com/astral-sh/ruff/pull/1677
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Remove Result from SourceCodeGenerator signature
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-06 02:11_
+_@charliermarsh_
 
 We populate this buffer ourselves, so I believe it's fine for us to use an unchecked UTF-8 cast here. It _dramatically_ simplifies so much downstream code.
 

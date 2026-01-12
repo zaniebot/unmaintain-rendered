@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-10-29T12:46:57Z
 updated_at: 2023-10-29T15:57:59Z
 url: https://github.com/astral-sh/ruff/pull/8323
-synced_at: 2026-01-12T02:11:58Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Update README.md
 
 ---
 
-_Pull request opened by @Techuuu on 2023-10-29 12:46_
+_@Techuuu_
 
 Fixed typos.
 

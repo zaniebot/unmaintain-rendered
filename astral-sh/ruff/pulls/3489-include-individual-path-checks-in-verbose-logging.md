@@ -12,14 +12,14 @@ head: charlie/log
 created_at: 2023-03-13T20:03:56Z
 updated_at: 2023-03-13T21:13:49Z
 url: https://github.com/astral-sh/ruff/pull/3489
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Include individual path checks in --verbose logging
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-13 20:03_
+_@charliermarsh_
 
 This modifies `ruff /path/to/file.py --verbose` to include a message for each file that's checked. `--verbose` is, in truth, more like `--debug`, but this generally fits with what we include in verbose logging.
 

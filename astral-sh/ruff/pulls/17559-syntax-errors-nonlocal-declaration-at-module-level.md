@@ -14,14 +14,14 @@ head: apb
 created_at: 2025-04-22T17:54:56Z
 updated_at: 2025-04-25T12:38:49Z
 url: https://github.com/astral-sh/ruff/pull/17559
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [syntax-errors] `nonlocal` declaration at module level
 
 ---
 
-_Pull request opened by @abhijeetbodas2001 on 2025-04-22 17:54_
+_@abhijeetbodas2001_
 
 ## Summary
 

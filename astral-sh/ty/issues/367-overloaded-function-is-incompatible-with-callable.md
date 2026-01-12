@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-13T18:51:44Z
 updated_at: 2025-05-13T19:12:21Z
 url: https://github.com/astral-sh/ty/issues/367
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Overloaded function is incompatible with Callable annotation that matches an overload
 
 ---
 
-_Issue opened by @effigies on 2025-05-13 18:51_
+_@effigies_
 
 ### Summary
 

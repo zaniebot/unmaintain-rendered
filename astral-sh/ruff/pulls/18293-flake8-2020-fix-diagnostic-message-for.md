@@ -14,14 +14,14 @@ head: codex/fix-misleading-diagnostic-for-!=-expressions-in-ytt201
 created_at: 2025-05-25T00:33:54Z
 updated_at: 2025-05-26T05:20:44Z
 url: https://github.com/astral-sh/ruff/pull/18293
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [`flake8-2020`] Fix diagnostic message for `!=` comparisons (`YTT201`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-25 00:33_
+_@charliermarsh_
 
 ## Summary
 

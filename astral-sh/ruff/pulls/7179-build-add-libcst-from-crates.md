@@ -13,14 +13,14 @@ head: add-libcst-from-crates
 created_at: 2023-09-06T05:43:18Z
 updated_at: 2023-09-06T18:07:12Z
 url: https://github.com/astral-sh/ruff/pull/7179
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # build: add libcst from crates
 
 ---
 
-_Pull request opened by @manmartgarc on 2023-09-06 05:43_
+_@manmartgarc_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

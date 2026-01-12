@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-17T03:44:02Z
 updated_at: 2025-11-17T20:02:29Z
 url: https://github.com/astral-sh/uv/issues/16756
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # Editable install with @ in path shown as non-editable with uv pip list (ambiguous user/pass - file:***@2) [0.9.9 Regression]
 
 ---
 
-_Issue opened by @matthuisman on 2025-11-17 03:44_
+_@matthuisman_
 
 ### Summary
 

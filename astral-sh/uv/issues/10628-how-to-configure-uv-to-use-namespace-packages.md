@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-15T10:55:19Z
 updated_at: 2025-10-10T08:29:58Z
 url: https://github.com/astral-sh/uv/issues/10628
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # How to configure uv to use namespace packages?
 
 ---
 
-_Issue opened by @rvhaasen on 2025-01-15 10:55_
+_@rvhaasen_
 
 While migrating a project from setuptools to uv I cannot get a namespace package correct:
 

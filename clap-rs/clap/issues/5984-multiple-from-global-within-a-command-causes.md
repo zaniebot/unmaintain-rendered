@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-04T22:34:55Z
 updated_at: 2025-05-05T19:02:59Z
 url: https://github.com/clap-rs/clap/issues/5984
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Multiple `from_global` within a `Command` causes "required argument" error with `clap_derive`
 
 ---
 
-_Issue opened by @soemre on 2025-05-04 22:34_
+_@soemre_
 
 ### Please complete the following tasks
 

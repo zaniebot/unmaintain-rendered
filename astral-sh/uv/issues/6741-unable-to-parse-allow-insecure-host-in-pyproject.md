@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-28T10:21:17Z
 updated_at: 2024-08-28T12:53:45Z
 url: https://github.com/astral-sh/uv/issues/6741
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Unable to parse `allow-insecure-host` in pyproject.toml
 
 ---
 
-_Issue opened by @frague59 on 2024-08-28 10:21_
+_@frague59_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

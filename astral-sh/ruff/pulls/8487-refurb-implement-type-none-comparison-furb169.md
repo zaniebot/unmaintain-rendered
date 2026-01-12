@@ -14,14 +14,14 @@ head: type-none-comparison
 created_at: 2023-11-04T14:50:02Z
 updated_at: 2023-11-06T09:21:55Z
 url: https://github.com/astral-sh/ruff/pull/8487
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # [`refurb`] Implement `type-none-comparison` (`FURB169`)
 
 ---
 
-_Pull request opened by @tjkuson on 2023-11-04 14:50_
+_@tjkuson_
 
 ## Summary
 

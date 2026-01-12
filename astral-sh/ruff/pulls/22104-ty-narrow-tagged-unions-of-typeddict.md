@@ -14,14 +14,14 @@ head: typeddict_union_narrowing
 created_at: 2025-12-20T03:07:11Z
 updated_at: 2025-12-23T19:38:56Z
 url: https://github.com/astral-sh/ruff/pull/22104
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] narrow tagged unions of `TypedDict`
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-12-20 03:07_
+_@oconnor663_
 
 Identify and narrow cases like this:
 

@@ -12,14 +12,14 @@ head: charlie/sync-non-member
 created_at: 2025-11-01T02:16:18Z
 updated_at: 2025-11-04T14:17:59Z
 url: https://github.com/astral-sh/uv/pull/16544
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:19Z
 ```
 
 # Allow non-root packages in `uv sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-01 02:16_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: users/bpl/show-full-path-cli-flag
 created_at: 2024-12-15T16:12:43Z
 updated_at: 2024-12-15T16:17:41Z
 url: https://github.com/astral-sh/ruff/pull/14987
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Add CLI flag to configure relative vs full path printing for emitters
 
 ---
 
-_Pull request opened by @brupelo on 2024-12-15 16:12_
+_@brupelo_
 
 Pending discussion of this PR lives on #14985
 

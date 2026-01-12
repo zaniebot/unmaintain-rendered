@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-10-27T12:41:06Z
 updated_at: 2018-08-02T03:29:46Z
 url: https://github.com/clap-rs/clap/issues/321
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # allow app names, options and subcommands with hyphens when using the macro
 
 ---
 
-_Issue opened by @flying-sheep on 2015-10-27 12:41_
+_@flying-sheep_
 
 the following code creates a `-b`/`--group` option, not a `-g`/`--group-by` option.
 

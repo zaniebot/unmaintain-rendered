@@ -13,14 +13,14 @@ head: docs/add-installation-guide
 created_at: 2024-10-05T05:24:39Z
 updated_at: 2024-10-16T18:03:37Z
 url: https://github.com/astral-sh/uv/pull/7937
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:05Z
 ```
 
 # Add upgrade note to README
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2024-10-05 05:24_
+_@Aditya-PS-05_
 
 closes #7858 
 

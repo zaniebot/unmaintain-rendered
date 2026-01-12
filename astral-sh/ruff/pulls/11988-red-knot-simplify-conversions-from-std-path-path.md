@@ -13,14 +13,14 @@ head: vendored-path-creation
 created_at: 2024-06-23T14:41:29Z
 updated_at: 2024-06-23T14:55:11Z
 url: https://github.com/astral-sh/ruff/pull/11988
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Simplify conversions from `std::path::Path` to `VendoredPath(Buf)`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-23 14:41_
+_@AlexWaygood_
 
 _No description provided._
 

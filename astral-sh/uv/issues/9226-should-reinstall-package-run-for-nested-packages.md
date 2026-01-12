@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-19T14:22:45Z
 updated_at: 2024-11-22T09:48:39Z
 url: https://github.com/astral-sh/uv/issues/9226
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # Should reinstall-package run for nested packages?
 
 ---
 
-_Issue opened by @jfun on 2024-11-19 14:22_
+_@jfun_
 
 - uv platform: `Windows`
 - uv version: `0.5.2 (195f4b634 2024-11-14)`

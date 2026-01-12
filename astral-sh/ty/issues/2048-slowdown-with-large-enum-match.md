@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T02:06:57Z
 updated_at: 2025-12-18T03:14:22Z
 url: https://github.com/astral-sh/ty/issues/2048
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Slowdown with large enum `match`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-12-18 02:06_
+_@charliermarsh_
 
 We received a report of a non-linear slowdown with the following:
 ```python

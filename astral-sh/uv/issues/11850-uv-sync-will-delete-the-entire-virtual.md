@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-28T12:35:04Z
 updated_at: 2025-02-28T14:06:11Z
 url: https://github.com/astral-sh/uv/issues/11850
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # `uv sync` will delete the entire virtual environment and recreate it every time
 
 ---
 
-_Issue opened by @rainzee on 2025-02-28 12:35_
+_@rainzee_
 
 ### Summary
 

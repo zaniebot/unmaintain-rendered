@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-11T11:17:53Z
 updated_at: 2024-03-11T22:20:56Z
 url: https://github.com/astral-sh/ruff/issues/10335
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # C413 fix for reversed(sorted(..., reverse=...)) needs parentheses when key is a boolop to avoid changing semantics
 
 ---
 
-_Issue opened by @jakkdl on 2024-03-11 11:17_
+_@jakkdl_
 
 ```python
 reversed(sorted([1, 2, 3], reverse=False or True)) # reverses twice -> 1, 2, 3

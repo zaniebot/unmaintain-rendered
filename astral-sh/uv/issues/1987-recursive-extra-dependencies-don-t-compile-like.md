@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-26T16:04:21Z
 updated_at: 2024-02-26T21:15:59Z
 url: https://github.com/astral-sh/uv/issues/1987
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Recursive extra dependencies don't compile like pip-tools
 
 ---
 
-_Issue opened by @jdawang on 2024-02-26 16:04_
+_@jdawang_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

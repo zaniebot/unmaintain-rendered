@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-16T09:01:08Z
 updated_at: 2025-12-02T11:00:24Z
 url: https://github.com/astral-sh/uv/issues/1457
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # `uv pip compile`: Add a nicer (more automated) way of dealing with multiple files (e.g. main + dev dependencies)
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-02-16 09:01_
+_@ThiefMaster_
 
 I suggested this in a [comment on another issue](https://github.com/astral-sh/uv/issues/1350#issuecomment-1947371031) but maybe this deserves its own issue since it's quite a bit more than what I suggested in that issue itself:
 

@@ -13,14 +13,14 @@ head: docs/PLE1300
 created_at: 2023-08-08T18:49:19Z
 updated_at: 2023-08-08T20:40:27Z
 url: https://github.com/astral-sh/ruff/pull/6430
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Improve documentation for `PLE1300`
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-08 18:49_
+_@zanieb_
 
 _No description provided._
 

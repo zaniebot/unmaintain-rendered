@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-24T16:51:46Z
 updated_at: 2024-07-25T10:58:45Z
 url: https://github.com/astral-sh/uv/issues/5417
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Support a list of python platforms
 
 ---
 
-_Issue opened by @JonZeolla on 2024-07-24 16:51_
+_@JonZeolla_
 
 To fit the space between `--python-platform` supporting a single platform at a time, and `--universal` which supports all platforms, I suggest allowing a list of platforms (perhaps a rename to `--python-platforms`) so lockfiles can be created that support only the supported/required runtime platforms. This would also reduce the surface area of issues, and speed up dependency resolution.
 

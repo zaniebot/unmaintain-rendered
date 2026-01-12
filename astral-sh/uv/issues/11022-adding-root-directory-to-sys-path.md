@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T16:00:31Z
 updated_at: 2025-02-02T18:25:22Z
 url: https://github.com/astral-sh/uv/issues/11022
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # Adding root directory to sys.path
 
 ---
 
-_Issue opened by @haikesan on 2025-01-28 16:00_
+_@haikesan_
 
 ### Summary
 

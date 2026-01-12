@@ -13,14 +13,14 @@ head: renovate/npm-development-dependencies
 created_at: 2024-08-12T02:01:34Z
 updated_at: 2024-08-12T06:56:11Z
 url: https://github.com/astral-sh/ruff/pull/12825
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Update NPM Development dependencies
 
 ---
 
-_Pull request opened by @renovate on 2024-08-12 02:01_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

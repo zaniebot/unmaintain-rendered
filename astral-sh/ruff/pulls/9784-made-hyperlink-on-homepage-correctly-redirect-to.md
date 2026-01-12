@@ -13,14 +13,14 @@ head: fix-whos-using-ruff
 created_at: 2024-02-02T11:44:33Z
 updated_at: 2024-02-02T14:32:24Z
 url: https://github.com/astral-sh/ruff/pull/9784
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Made hyperlink on homepage correctly redirect to GitHub
 
 ---
 
-_Pull request opened by @trag1c on 2024-02-02 11:44_
+_@trag1c_
 
 ## Summary
 

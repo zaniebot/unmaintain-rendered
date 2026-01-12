@@ -12,14 +12,14 @@ head: charlie/naned
 created_at: 2023-02-02T17:17:58Z
 updated_at: 2023-02-02T17:22:00Z
 url: https://github.com/astral-sh/ruff/pull/2484
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Visit NamedExpr values before targets
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-02 17:17_
+_@charliermarsh_
 
 Closes #2481.
 

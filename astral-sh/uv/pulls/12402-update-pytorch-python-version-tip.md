@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-03-23T14:41:46Z
 updated_at: 2025-03-23T21:27:45Z
 url: https://github.com/astral-sh/uv/pull/12402
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:16Z
 ```
 
 # Update PyTorch/Python version tip
 
 ---
 
-_Pull request opened by @punkeel on 2025-03-23 14:41_
+_@punkeel_
 
 PyTorch 2.6.0 supports Python 3.13, and publishes wheels for it. Update the tip to reflect this.
 

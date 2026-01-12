@@ -13,14 +13,14 @@ head: tjquillan/issue_6486
 created_at: 2024-08-23T15:31:54Z
 updated_at: 2024-08-23T17:54:51Z
 url: https://github.com/astral-sh/uv/pull/6526
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:24Z
 ```
 
 # Revert changes to pyproject.toml when sync fails duing `uv add`
 
 ---
 
-_Pull request opened by @tjquillan on 2024-08-23 15:31_
+_@tjquillan_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

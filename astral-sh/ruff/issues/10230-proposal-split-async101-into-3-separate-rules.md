@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-04T16:55:10Z
 updated_at: 2024-03-05T02:03:46Z
 url: https://github.com/astral-sh/ruff/issues/10230
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # [proposal] Split ASYNC101 into 3 separate rules
 
 ---
 
-_Issue opened by @aidandj on 2024-03-04 16:55_
+_@aidandj_
 
 Following the request [here](https://github.com/Zac-HD/flake8-async-archive/issues/11) in the original `flake8-async` repo (which is now archived) I think breaking the 3 rules into individual rules would be beneficial.
 

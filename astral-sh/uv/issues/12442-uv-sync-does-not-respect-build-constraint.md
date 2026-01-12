@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T17:04:36Z
 updated_at: 2025-03-24T17:28:35Z
 url: https://github.com/astral-sh/uv/issues/12442
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # `uv sync` does not respect `build-constraint-dependencies` in workspace subpackages
 
 ---
 
-_Issue opened by @alex-debrecht-kcftech on 2025-03-24 17:04_
+_@alex-debrecht-kcftech_
 
 ### Summary
 

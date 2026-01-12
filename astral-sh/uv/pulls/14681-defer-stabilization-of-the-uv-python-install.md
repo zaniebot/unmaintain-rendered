@@ -12,14 +12,14 @@ head: zb/no-stable-default
 created_at: 2025-07-17T13:06:24Z
 updated_at: 2025-07-17T13:29:07Z
 url: https://github.com/astral-sh/uv/pull/14681
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:20Z
 ```
 
 # Defer stabilization of the `uv python install --default` behavior
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-17 13:06_
+_@zanieb_
 
 I'm a little worried about the semantics of this flag and the "default install". We can make it more accessible while stabilizing the rest of the behaviors, while deferring final stabilization of this to a future release. I left some TODOs in the code covering open questions for the feature.
 

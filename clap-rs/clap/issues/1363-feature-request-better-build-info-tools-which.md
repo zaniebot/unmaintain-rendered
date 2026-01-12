@@ -12,14 +12,14 @@ assignees: []
 created_at: 2018-10-18T01:12:20Z
 updated_at: 2022-02-03T14:45:10Z
 url: https://github.com/clap-rs/clap/issues/1363
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Feature request: better build info tools (which features, codegen a binary was compiled with)
 
 ---
 
-_Issue opened by @jonathanstrong on 2018-10-18 01:12_
+_@jonathanstrong_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

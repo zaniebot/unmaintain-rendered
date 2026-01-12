@@ -13,14 +13,14 @@ head: relocatable
 created_at: 2024-10-10T09:48:12Z
 updated_at: 2024-10-10T12:01:06Z
 url: https://github.com/astral-sh/uv/pull/8079
-synced_at: 2026-01-10T12:54:02Z
+synced_at: 2026-01-12T16:08:09Z
 ```
 
 # fix(venv.relocatable): script entrypoints should work if symlinked to
 
 ---
 
-_Pull request opened by @paveldikov on 2024-10-10 09:48_
+_@paveldikov_
 
 Fixes: #8058
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-23T23:28:41Z
 updated_at: 2025-10-24T14:36:05Z
 url: https://github.com/clap-rs/clap/issues/6109
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Add default missing values of `Arg` to help message
 
 ---
 
-_Issue opened by @tvercruyssen on 2025-08-23 23:28_
+_@tvercruyssen_
 
 ### Please complete the following tasks
 

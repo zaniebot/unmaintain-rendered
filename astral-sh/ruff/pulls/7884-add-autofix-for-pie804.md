@@ -13,14 +13,14 @@ head: PIE804-autofix
 created_at: 2023-10-10T03:22:47Z
 updated_at: 2023-10-11T01:13:51Z
 url: https://github.com/astral-sh/ruff/pull/7884
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # add autofix for `PIE804`
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-10-10 03:22_
+_@diceroll123_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

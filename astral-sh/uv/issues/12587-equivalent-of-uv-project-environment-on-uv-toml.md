@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-31T15:20:47Z
 updated_at: 2025-10-28T19:52:45Z
 url: https://github.com/astral-sh/uv/issues/12587
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # Equivalent of UV_PROJECT_ENVIRONMENT on uv.toml
 
 ---
 
-_Issue opened by @carlosjourdan on 2025-03-31 15:20_
+_@carlosjourdan_
 
 ### Summary
 

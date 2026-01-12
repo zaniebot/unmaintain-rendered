@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-23T21:41:01Z
 updated_at: 2026-01-01T15:23:46Z
 url: https://github.com/astral-sh/ruff/issues/12481
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Flag potentially duplicate rules in CI
 
 ---
 
-_Issue opened by @dylwil3 on 2024-07-23 21:41_
+_@dylwil3_
 
 I wonder if it would be helpful to add a test or CI step to check for potentially duplicate rules.
 

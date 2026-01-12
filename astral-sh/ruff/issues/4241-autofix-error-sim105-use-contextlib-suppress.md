@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-05T10:19:55Z
 updated_at: 2023-05-05T13:02:48Z
 url: https://github.com/astral-sh/ruff/issues/4241
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Autofix error] SIM105 Use `contextlib.suppress(KeyError)` instead of `try`-`except`-`pass`
 
 ---
 
-_Issue opened by @bittner on 2023-05-05 10:19_
+_@bittner_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

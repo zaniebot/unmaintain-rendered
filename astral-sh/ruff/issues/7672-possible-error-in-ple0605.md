@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-26T21:39:39Z
 updated_at: 2023-09-27T04:36:57Z
 url: https://github.com/astral-sh/ruff/issues/7672
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Possible error in PLE0605
 
 ---
 
-_Issue opened by @nstarman on 2023-09-26 21:39_
+_@nstarman_
 
 In https://github.com/astropy/astropy/pull/15385 we are trying to fix some ``__all__`` statements and ran into the following
 

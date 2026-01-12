@@ -13,14 +13,14 @@ head: prelease-build-system
 created_at: 2025-11-02T04:22:28Z
 updated_at: 2025-11-02T20:03:46Z
 url: https://github.com/astral-sh/uv/pull/16550
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:19Z
 ```
 
 # Add prerelease guidance for build-system resolution failures
 
 ---
 
-_Pull request opened by @terror on 2025-11-02 04:22_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/16496
 

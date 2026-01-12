@@ -13,14 +13,14 @@ head: charlie/gha-setup-uv
 created_at: 2024-09-04T23:44:13Z
 updated_at: 2024-09-05T17:59:03Z
 url: https://github.com/astral-sh/uv/pull/7056
-synced_at: 2026-01-10T12:53:39Z
+synced_at: 2026-01-12T16:07:40Z
 ```
 
 # Document official `setup-uv` action
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-04 23:44_
+_@charliermarsh_
 
 ## Summary
 

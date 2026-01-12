@@ -12,14 +12,14 @@ head: list-panic
 created_at: 2024-07-30T15:20:57Z
 updated_at: 2024-09-12T06:18:14Z
 url: https://github.com/astral-sh/uv/pull/5602
-synced_at: 2026-01-10T12:53:32Z
+synced_at: 2026-01-12T16:06:55Z
 ```
 
 # `uv python list` don't panic on unsupported Python
 
 ---
 
-_Pull request opened by @j178 on 2024-07-30 15:20_
+_@j178_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

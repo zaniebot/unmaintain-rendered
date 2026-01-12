@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-17T23:50:30Z
 updated_at: 2023-11-17T23:51:01Z
 url: https://github.com/astral-sh/ruff/issues/8749
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add rule for classes/functions that start their body with a blank line
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-11-17 23:50_
+_@ThiefMaster_
 
 ```py
 class Foo:

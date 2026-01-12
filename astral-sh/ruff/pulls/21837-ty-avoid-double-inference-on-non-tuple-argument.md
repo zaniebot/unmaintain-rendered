@@ -14,14 +14,14 @@ head: charlie/x
 created_at: 2025-12-08T01:12:46Z
 updated_at: 2025-12-08T15:24:08Z
 url: https://github.com/astral-sh/ruff/pull/21837
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] Avoid double-inference on non-tuple argument to `Annotated`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-08 01:12_
+_@charliermarsh_
 
 ## Summary
 

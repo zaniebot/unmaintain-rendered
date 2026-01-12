@@ -12,14 +12,14 @@ head: feat/PLR1701/autofix
 created_at: 2023-06-01T18:23:28Z
 updated_at: 2023-06-02T02:32:17Z
 url: https://github.com/astral-sh/ruff/pull/4792
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Add autofix for `PLR1701` (repeated-isinstance-calls)
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-01 18:23_
+_@dhruvmanila_
 
 ## Summary
 

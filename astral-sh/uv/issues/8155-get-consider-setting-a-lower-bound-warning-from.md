@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-13T04:16:33Z
 updated_at: 2024-12-05T01:59:10Z
 url: https://github.com/astral-sh/uv/issues/8155
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # Get `Consider setting a lower bound` warning from root package
 
 ---
 
-_Issue opened by @DanielYang59 on 2024-10-13 04:16_
+_@DanielYang59_
 
 Presumably a partial duplicate of #5227, getting the following warning for the root package itself both [inside the Github workflow environment](https://github.com/materialsproject/pymatgen/actions/runs/11311329412/job/31457441329?pr=4073) (could also recreate in my MacOS machine), with [all dependencies in `ci,optional` have a lower bound](https://github.com/materialsproject/pymatgen/blob/4d5a319f300949ac345475f0d800653d32e95646/pyproject.toml#L92-L113):
 

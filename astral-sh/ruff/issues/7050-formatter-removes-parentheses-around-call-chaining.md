@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-01T19:51:37Z
 updated_at: 2023-09-04T09:57:06Z
 url: https://github.com/astral-sh/ruff/issues/7050
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter removes parentheses around call chaining
 
 ---
 
-_Issue opened by @cnpryer on 2023-09-01 19:51_
+_@cnpryer_
 
 Version: ruff 0.0.287
 

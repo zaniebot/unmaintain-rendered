@@ -13,14 +13,14 @@ head: add_to_doc_editable_dep_workspace
 created_at: 2024-11-22T18:57:54Z
 updated_at: 2024-12-16T18:36:33Z
 url: https://github.com/astral-sh/uv/pull/9363
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:46Z
 ```
 
 # Add a note to say that dependencies between workspace members are editable
 
 ---
 
-_Pull request opened by @ReinforcedKnowledge on 2024-11-22 18:57_
+_@ReinforcedKnowledge_
 
 Just a small note to say that dependencies between workspace members are editable as shown in #9362 
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-27T22:50:28Z
 updated_at: 2025-12-29T11:21:45Z
 url: https://github.com/astral-sh/ty/issues/2242
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # ty gets confused when reassigning to bound method
 
 ---
 
-_Issue opened by @Paillat-dev on 2025-12-27 22:50_
+_@Paillat-dev_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: renovate/pyodide-0.x
 created_at: 2025-07-07T02:48:22Z
 updated_at: 2025-07-07T08:38:31Z
 url: https://github.com/astral-sh/ruff/pull/19164
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # Update dependency pyodide to ^0.28.0
 
 ---
 
-_Pull request opened by @renovate on 2025-07-07 02:48_
+_@renovate_
 
 This PR contains the following updates:
 

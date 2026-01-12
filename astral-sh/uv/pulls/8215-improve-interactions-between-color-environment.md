@@ -12,14 +12,14 @@ head: bug/8173-force-color
 created_at: 2024-10-15T13:11:05Z
 updated_at: 2024-11-08T05:03:45Z
 url: https://github.com/astral-sh/uv/pull/8215
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:12Z
 ```
 
 # Improve interactions between color environment variables and CLI options
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2024-10-15 13:11_
+_@Aditya-PS-05_
 
 closes #8173 
 

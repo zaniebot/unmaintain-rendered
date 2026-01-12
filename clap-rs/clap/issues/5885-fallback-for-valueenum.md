@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-19T23:18:16Z
 updated_at: 2025-01-20T18:27:35Z
 url: https://github.com/clap-rs/clap/issues/5885
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Fallback for ValueEnum
 
 ---
 
-_Issue opened by @ModProg on 2025-01-19 23:18_
+_@ModProg_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: micha/try-salsa-update
 created_at: 2025-12-26T10:07:51Z
 updated_at: 2025-12-26T10:19:38Z
 url: https://github.com/astral-sh/ruff/pull/22202
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Test perf impact of https://github.com/salsa-rs/salsa/pull/1046
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-26 10:07_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

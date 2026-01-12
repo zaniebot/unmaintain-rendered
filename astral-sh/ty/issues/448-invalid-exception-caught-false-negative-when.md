@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-19T12:18:23Z
 updated_at: 2025-05-19T22:13:35Z
 url: https://github.com/astral-sh/ty/issues/448
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # invalid-exception-caught false negative when exception is not captured
 
 ---
 
-_Issue opened by @sk- on 2025-05-19 12:18_
+_@sk-_
 
 ### Summary
 

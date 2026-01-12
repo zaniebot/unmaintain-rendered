@@ -13,14 +13,14 @@ head: charlie/return
 created_at: 2024-08-02T21:43:25Z
 updated_at: 2024-08-02T22:14:19Z
 url: https://github.com/astral-sh/ruff/pull/12646
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [`flake8-bugbear`] Treat return as equivalent to break (`B909`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-02 21:43_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/12640.
 

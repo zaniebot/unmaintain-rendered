@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-30T22:03:59Z
 updated_at: 2025-04-21T19:38:32Z
 url: https://github.com/astral-sh/ruff/issues/17065
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Support control flow in Ruff
 
 ---
 
-_Issue opened by @dylwil3 on 2025-03-30 22:03_
+_@dylwil3_
 
 This is a tracking issue for the re-implementation/re-packaging of the control flow graph in Ruff. The hope is that may eventually power some finer analyses and improve the correctness of some of our lint rules.
 

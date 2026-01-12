@@ -13,14 +13,14 @@ head: dhruv/parser-api
 created_at: 2024-05-22T10:05:04Z
 updated_at: 2024-05-31T13:53:25Z
 url: https://github.com/astral-sh/ruff/pull/11494
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Update parser API to merge lexing and parsing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-22 10:05_
+_@dhruvmanila_
 
 ## Summary
 

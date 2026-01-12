@@ -13,14 +13,14 @@ head: dhruv/overload-step-4
 created_at: 2025-09-24T10:01:16Z
 updated_at: 2025-09-25T14:58:01Z
 url: https://github.com/astral-sh/ruff/pull/20547
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [ty] Filter overloads using variadic parameters
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-09-24 10:01_
+_@dhruvmanila_
 
 ## Summary
 

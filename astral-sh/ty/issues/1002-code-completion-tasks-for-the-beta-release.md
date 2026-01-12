@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-15T13:02:49Z
 updated_at: 2025-11-14T13:46:36Z
 url: https://github.com/astral-sh/ty/issues/1002
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Code completion tasks for the beta release
 
 ---
 
-_Issue opened by @BurntSushi on 2025-08-15 13:02_
+_@BurntSushi_
 
 - [x] [Auto-import](https://github.com/astral-sh/ty/issues/535)
 - [x] Add type signatures to completion suggestions

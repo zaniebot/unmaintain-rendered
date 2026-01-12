@@ -12,14 +12,14 @@ head: konstin/cached-by-timestamp
 created_at: 2023-12-06T11:02:52Z
 updated_at: 2023-12-06T16:47:02Z
 url: https://github.com/astral-sh/uv/pull/578
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:02Z
 ```
 
 #  Improve path source dist caching 
 
 ---
 
-_Pull request opened by @konstin on 2023-12-06 11:02_
+_@konstin_
 
 Path distribution cache reading errors are no longer fatal.
 

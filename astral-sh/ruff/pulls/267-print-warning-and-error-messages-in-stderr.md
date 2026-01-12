@@ -12,14 +12,14 @@ head: print-warnings-in-stderr
 created_at: 2022-09-24T08:13:46Z
 updated_at: 2022-09-24T13:27:36Z
 url: https://github.com/astral-sh/ruff/pull/267
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Print warning and error messages in stderr
 
 ---
 
-_Pull request opened by @harupy on 2022-09-24 08:13_
+_@harupy_
 
 I found this issue when I was parsing the JSON output. Warning messages should be written in stderr, not stdout:
 

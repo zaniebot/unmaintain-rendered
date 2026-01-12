@@ -13,14 +13,14 @@ head: charliermarsh/typeddict-negative
 created_at: 2025-12-30T17:07:50Z
 updated_at: 2025-12-30T18:45:09Z
 url: https://github.com/astral-sh/ruff/pull/22303
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:46Z
 ```
 
 # [ty] Support narrowing for tuple matches with literal elements
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-30 17:07_
+_@charliermarsh_
 
 ## Summary
 

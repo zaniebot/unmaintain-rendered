@@ -12,14 +12,14 @@ head: sync-python-releases
 created_at: 2025-03-05T00:22:24Z
 updated_at: 2025-03-05T00:36:22Z
 url: https://github.com/astral-sh/uv/pull/11965
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:05Z
 ```
 
 # Fix PyPy Python version label
 
 ---
 
-_Pull request opened by @github-actions on 2025-03-05 00:22_
+_@github-actions_
 
 Closes https://github.com/astral-sh/uv/issues/11863
 

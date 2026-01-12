@@ -12,14 +12,14 @@ head: dhruv/PERF401-false-positive
 created_at: 2023-07-08T06:47:44Z
 updated_at: 2023-07-09T19:53:28Z
 url: https://github.com/astral-sh/ruff/pull/5603
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Avoid `PERF401` if conditional depends on list var
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-08 06:47_
+_@dhruvmanila_
 
 ## Summary
 

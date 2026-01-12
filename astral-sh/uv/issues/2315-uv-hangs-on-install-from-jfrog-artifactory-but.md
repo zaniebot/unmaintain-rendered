@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-09T03:34:34Z
 updated_at: 2024-04-22T20:27:42Z
 url: https://github.com/astral-sh/uv/issues/2315
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # uv hangs on install from JFrog Artifactory, but only when building source distributions
 
 ---
 
-_Issue opened by @skellys on 2024-03-09 03:34_
+_@skellys_
 
 `uv` version 0.1.16 hangs indefinitely on certain installs for me when using `--index-url` to install from JFrog Artifactory. I am not able to get this to happen when installing from the usual Internet/pypi.org. Fortunately, I am able to reliably reproduce my issue with a particular mix of 3 old, simple packages together, or when they're a part of a larger `requirements.txt`:
 

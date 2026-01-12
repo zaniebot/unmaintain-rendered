@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-02T09:39:02Z
 updated_at: 2025-11-03T09:04:08Z
 url: https://github.com/astral-sh/ruff/issues/21201
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Extend `comparison-with-itself` to support any expressions
 
 ---
 
-_Issue opened by @harupy on 2025-11-02 09:39_
+_@harupy_
 
 ### Question
 

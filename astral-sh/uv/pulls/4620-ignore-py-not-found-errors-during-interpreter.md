@@ -14,14 +14,14 @@ head: zb/toolchain-py-missing
 created_at: 2024-06-28T15:07:10Z
 updated_at: 2024-06-29T04:39:28Z
 url: https://github.com/astral-sh/uv/pull/4620
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:20Z
 ```
 
 # Ignore `py` not found errors during interpreter discovery
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-28 15:07_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/4522
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-15T22:01:20Z
 updated_at: 2025-06-16T19:09:33Z
 url: https://github.com/astral-sh/ruff/issues/18689
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `UP008` does not trigger on `builtins.super`
 
 ---
 
-_Issue opened by @robsdedude on 2025-06-15 22:01_
+_@robsdedude_
 
 ### Summary
 

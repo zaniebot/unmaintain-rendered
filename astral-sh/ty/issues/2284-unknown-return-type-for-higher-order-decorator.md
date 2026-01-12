@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-31T02:52:55Z
 updated_at: 2025-12-31T11:11:54Z
 url: https://github.com/astral-sh/ty/issues/2284
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `Unknown` return type for higher order decorator wrapped functions
 
 ---
 
-_Issue opened by @jamestrew on 2025-12-31 02:52_
+_@jamestrew_
 
 ### Summary
 

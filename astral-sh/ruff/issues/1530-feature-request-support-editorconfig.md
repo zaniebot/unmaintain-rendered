@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-01T15:10:59Z
 updated_at: 2025-05-10T16:09:40Z
 url: https://github.com/astral-sh/ruff/issues/1530
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [Feature request] Support `.editorconfig`
 
 ---
 
-_Issue opened by @rassie on 2023-01-01 15:10_
+_@rassie_
 
 Would you be open to supporting `.editorconfig` for the `line-length` setting (called `max_line_length`)?
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-02T02:23:40Z
 updated_at: 2025-10-06T09:29:32Z
 url: https://github.com/astral-sh/uv/issues/4718
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Detect when managed toolchains are in use during uninstall
 
 ---
 
-_Issue opened by @zanieb on 2024-07-02 02:23_
+_@zanieb_
 
 We should track our uses of managed toolchains (e.g. when used in `uv venv`, `uv tool install` and `uv sync`) then ensure that the toolchain is no longer in use before removing it during uninstall or require opt-in to force removal.
 

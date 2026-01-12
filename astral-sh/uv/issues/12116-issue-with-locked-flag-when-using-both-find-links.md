@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-11T16:33:22Z
 updated_at: 2025-03-14T01:16:55Z
 url: https://github.com/astral-sh/uv/issues/12116
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # Issue with --locked flag when using both find-links and custom indices in workspaces
 
 ---
 
-_Issue opened by @rayanramoul on 2025-03-11 16:33_
+_@rayanramoul_
 
 First of all thanks Astral team for the amazing tool UV is!
 

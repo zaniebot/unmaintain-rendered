@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-05-08T02:41:05Z
 updated_at: 2020-05-08T10:35:25Z
 url: https://github.com/clap-rs/clap/issues/1915
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # v3 App Options no longer work on subcommand arguments
 
 ---
 
-_Issue opened by @publicarray on 2020-05-08 02:41_
+_@publicarray_
 
 ### Make sure you completed the following tasks
 

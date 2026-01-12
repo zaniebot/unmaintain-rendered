@@ -13,14 +13,14 @@ head: docs/fix-a-few-typos
 created_at: 2025-01-16T13:18:51Z
 updated_at: 2025-01-16T15:01:41Z
 url: https://github.com/astral-sh/uv/pull/10675
-synced_at: 2026-01-10T11:45:04Z
+synced_at: 2026-01-12T16:09:25Z
 ```
 
 # docs: fix a few typos
 
 ---
 
-_Pull request opened by @mkniewallner on 2025-01-16 13:18_
+_@mkniewallner_
 
 ## Summary
 

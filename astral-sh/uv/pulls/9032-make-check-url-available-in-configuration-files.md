@@ -13,14 +13,14 @@ head: check-url-setting
 created_at: 2024-11-11T21:15:16Z
 updated_at: 2024-12-03T14:19:40Z
 url: https://github.com/astral-sh/uv/pull/9032
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:37Z
 ```
 
 # Make `check-url` available in configuration files
 
 ---
 
-_Pull request opened by @bruckner on 2024-11-11 21:15_
+_@bruckner_
 
 ## Summary
 

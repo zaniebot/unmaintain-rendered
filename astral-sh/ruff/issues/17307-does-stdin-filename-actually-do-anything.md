@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T09:27:12Z
 updated_at: 2025-04-28T08:32:20Z
 url: https://github.com/astral-sh/ruff/issues/17307
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Does `--stdin-filename` actually do anything?
 
 ---
 
-_Issue opened by @fosskers on 2025-04-09 09:27_
+_@fosskers_
 
 ### Question
 

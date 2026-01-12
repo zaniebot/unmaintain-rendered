@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-13T20:55:17Z
 updated_at: 2024-03-13T21:18:12Z
 url: https://github.com/astral-sh/uv/issues/2428
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # manual uninstallation instructions for uv
 
 ---
 
-_Issue opened by @axiomofjoy on 2024-03-13 20:55_
+_@axiomofjoy_
 
 I installed and uninstalled `uv` via `brew` on my Mac. I am now seeing a Rust-related error message when running a project via a separate toolchain (`conda` with `hatch`). I am not sure if `uv` is the cause of the issue, but I'd like to ensure I successfully uninstalled `uv` from my system for the sake of debugging. Are there any locations I should check to ensure the uninstallation was successful?
 

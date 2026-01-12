@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-02-19T16:01:28Z
 updated_at: 2022-02-20T00:55:32Z
 url: https://github.com/clap-rs/clap/issues/3490
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Upgrading to clap v3 and the derive API with the current docs is painful
 
 ---
 
-_Issue opened by @edmorley on 2022-02-19 16:01_
+_@edmorley_
 
 Hi! Thank you for all your work on Clap :-)
 

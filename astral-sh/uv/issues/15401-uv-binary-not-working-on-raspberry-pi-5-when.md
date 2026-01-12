@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-21T07:11:56Z
 updated_at: 2025-08-21T16:45:12Z
 url: https://github.com/astral-sh/uv/issues/15401
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # UV binary not working on Raspberry Pi 5 when installed from Snap or Homebrew Linux
 
 ---
 
-_Issue opened by @jace on 2025-08-21 07:11_
+_@jace_
 
 ### Summary
 

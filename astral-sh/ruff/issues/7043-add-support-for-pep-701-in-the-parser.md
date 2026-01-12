@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-01T13:37:40Z
 updated_at: 2023-09-15T07:31:35Z
 url: https://github.com/astral-sh/ruff/issues/7043
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Add support for PEP 701 in the parser
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-01 13:37_
+_@dhruvmanila_
 
 The task is to use the new tokens emitted by the lexer (#7042) and create the `ExprFString` node using it. This will require major refactor in `string.rs` to support this.
 

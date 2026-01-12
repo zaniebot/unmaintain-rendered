@@ -13,14 +13,14 @@ assignees: []
 created_at: 2017-11-05T16:34:01Z
 updated_at: 2018-08-02T03:30:14Z
 url: https://github.com/clap-rs/clap/issues/1093
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # External subcommand is not printed 
 
 ---
 
-_Issue opened by @marmistrz on 2017-11-05 16:34_
+_@marmistrz_
 
 ### Rust Version
 

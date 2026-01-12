@@ -13,14 +13,14 @@ head: charlie/reuse-tool-env
 created_at: 2024-07-02T23:34:37Z
 updated_at: 2024-07-03T16:35:12Z
 url: https://github.com/astral-sh/uv/pull/4750
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:26Z
 ```
 
 # Use already-installed tools in `uv tool run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-02 23:34_
+_@charliermarsh_
 
 ## Summary
 

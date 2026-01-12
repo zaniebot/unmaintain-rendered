@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-24T14:55:36Z
 updated_at: 2023-04-25T23:58:39Z
 url: https://github.com/astral-sh/ruff/issues/4079
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # commandline length limit easily reached on windows shell invocations
 
 ---
 
-_Issue opened by @carpenterjc on 2023-04-24 14:55_
+_@carpenterjc_
 
 We use bazel to invoke ruff during the build so that the exclusions are contained in the bazel build files, and invoke ruff in a batch file which writes out a file on each batch when it is linted successfully. 
 

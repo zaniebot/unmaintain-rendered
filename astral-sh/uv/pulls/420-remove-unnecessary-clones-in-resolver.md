@@ -13,14 +13,14 @@ head: charlie/sdist
 created_at: 2023-11-14T01:31:06Z
 updated_at: 2023-11-14T02:00:53Z
 url: https://github.com/astral-sh/uv/pull/420
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:56Z
 ```
 
 # Remove unnecessary clones in resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-14 01:31_
+_@charliermarsh_
 
 _No description provided._
 

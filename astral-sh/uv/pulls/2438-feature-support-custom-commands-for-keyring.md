@@ -11,14 +11,14 @@ head: feature/custom-keyring-command
 created_at: 2024-03-14T00:00:24Z
 updated_at: 2024-03-15T16:11:19Z
 url: https://github.com/astral-sh/uv/pull/2438
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:02Z
 ```
 
 # feature:  Support custom commands for keyring
 
 ---
 
-_Pull request opened by @BakerNet on 2024-03-14 00:00_
+_@BakerNet_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

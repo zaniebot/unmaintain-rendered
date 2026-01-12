@@ -12,14 +12,14 @@ head: charlie/exclude
 created_at: 2022-09-08T02:22:11Z
 updated_at: 2022-09-08T02:34:52Z
 url: https://github.com/astral-sh/ruff/pull/126
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Support 'ignore' in pyproject.toml
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-08 02:22_
+_@charliermarsh_
 
 Resolves #124.
 

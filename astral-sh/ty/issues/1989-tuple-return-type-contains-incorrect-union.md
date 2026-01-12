@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T09:01:22Z
 updated_at: 2025-12-17T09:08:02Z
 url: https://github.com/astral-sh/ty/issues/1989
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Tuple return type contains incorrect union
 
 ---
 
-_Issue opened by @judahrand on 2025-12-17 09:01_
+_@judahrand_
 
 ### Summary
 

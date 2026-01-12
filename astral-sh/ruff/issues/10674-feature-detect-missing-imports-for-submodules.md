@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-30T18:52:32Z
 updated_at: 2024-04-01T02:03:31Z
 url: https://github.com/astral-sh/ruff/issues/10674
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # feature: detect missing imports for submodules
 
 ---
 
-_Issue opened by @jaraco on 2024-03-30 18:52_
+_@jaraco_
 
 In #10673, I stumbled on a piece of lint that if detected would have helped me avoid trouble when using isort. Although ruff does detect missing imports for top-level modules, it appears not to do so for submodules. Consider this simple example:
 

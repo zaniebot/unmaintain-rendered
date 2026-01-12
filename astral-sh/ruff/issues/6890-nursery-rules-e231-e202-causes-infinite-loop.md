@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-26T07:11:20Z
 updated_at: 2023-10-01T08:26:44Z
 url: https://github.com/astral-sh/ruff/issues/6890
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Nursery rules E231,E202 causes infinite loop
 
 ---
 
-_Issue opened by @qarmin on 2023-08-26 07:11_
+_@qarmin_
 
 Ruff 0.0.286 (latest changes from main branch)
 

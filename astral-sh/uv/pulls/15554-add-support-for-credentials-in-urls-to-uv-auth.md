@@ -12,14 +12,14 @@ head: zb/uv-auth-iiii
 created_at: 2025-08-27T17:30:11Z
 updated_at: 2025-08-28T15:31:29Z
 url: https://github.com/astral-sh/uv/pull/15554
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:49Z
 ```
 
 # Add support for credentials in URLs to `uv auth`
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-27 17:30_
+_@zanieb_
 
 Allows cases like `uv auth login https://username:password@example.com` for coherence with the rest of our interfaces.
 

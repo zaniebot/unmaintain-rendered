@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-21T04:50:00Z
 updated_at: 2024-11-21T07:26:23Z
 url: https://github.com/astral-sh/ruff/issues/14506
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Please host the output of `ruff rules -all --output-format json` on the docs website somewhere
 
 ---
 
-_Issue opened by @onerandomusername on 2024-11-21 04:50_
+_@onerandomusername_
 
 I've created an integration for ruff, but I don't want to regen the rules every time ruff is updated, so I'm wondering if its possible for the the json file to be published online.
 

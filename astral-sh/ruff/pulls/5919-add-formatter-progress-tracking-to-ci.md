@@ -12,14 +12,14 @@ head: add_format_testing_script
 created_at: 2023-07-20T13:28:13Z
 updated_at: 2023-07-24T09:34:34Z
 url: https://github.com/astral-sh/ruff/pull/5919
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add formatter progress tracking to CI
 
 ---
 
-_Pull request opened by @konstin on 2023-07-20 13:28_
+_@konstin_
 
 **Summary** Add a formatter progress testing script to CI. This script will 1) print the black compability on each run 2) catch regressions wrt to formatter stability, emitting invalid syntax and other kinds of bugs (e.g. #5917) before they land on main 3) have an additional layer of real world tests when implementing new nodes or other new formatter code.
 

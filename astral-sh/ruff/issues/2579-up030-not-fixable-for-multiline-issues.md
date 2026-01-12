@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-05T10:44:47Z
 updated_at: 2023-02-05T12:10:36Z
 url: https://github.com/astral-sh/ruff/issues/2579
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # UP030 not fixable for multiline issues
 
 ---
 
-_Issue opened by @spaceone on 2023-02-05 10:44_
+_@spaceone_
 
 ```python
 print(

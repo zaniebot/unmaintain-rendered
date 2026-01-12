@@ -12,14 +12,14 @@ head: feat/jupyter-notebook-autofix
 created_at: 2023-05-26T08:33:00Z
 updated_at: 2023-06-12T15:51:53Z
 url: https://github.com/astral-sh/ruff/pull/4665
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Add support for auto-fix in Jupyter notebooks
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-05-26 08:33_
+_@dhruvmanila_
 
 ## Summary
 

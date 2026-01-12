@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-22T21:53:31Z
 updated_at: 2025-07-09T10:15:59Z
 url: https://github.com/astral-sh/ruff/issues/10085
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [Feature Request] Sort dict keys
 
 ---
 
-_Issue opened by @Tatsh on 2024-02-22 21:53_
+_@Tatsh_
 
 Would be nice and I did not find this feature already being requested.
 

@@ -13,14 +13,14 @@ head: charlie/kw-data
 created_at: 2024-08-13T15:24:23Z
 updated_at: 2024-08-13T18:34:58Z
 url: https://github.com/astral-sh/ruff/pull/12863
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Avoid treating `dataclasses.KW_ONLY` as typing-only
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-13 15:24_
+_@charliermarsh_
 
 ## Summary
 

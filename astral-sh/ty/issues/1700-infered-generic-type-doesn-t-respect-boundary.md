@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-01T11:03:03Z
 updated_at: 2026-01-08T04:02:54Z
 url: https://github.com/astral-sh/ty/issues/1700
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Infered generic type doesn't respect boundary
 
 ---
 
-_Issue opened by @kalekseev on 2025-12-01 11:03_
+_@kalekseev_
 
 ### Summary
 

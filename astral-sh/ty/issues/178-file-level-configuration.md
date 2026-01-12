@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T09:59:32Z
 updated_at: 2025-06-15T13:27:40Z
 url: https://github.com/astral-sh/ty/issues/178
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # File-level configuration
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 09:59_
+_@MichaReiser_
 
 Add support for the `files` section
 

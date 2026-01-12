@@ -12,14 +12,14 @@ head: ww/release-ci-lint
 created_at: 2025-08-08T14:36:01Z
 updated_at: 2025-08-08T17:54:33Z
 url: https://github.com/astral-sh/uv/pull/15167
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:36Z
 ```
 
 # chore(ci): address lint findings in release workflow
 
 ---
 
-_Pull request opened by @woodruffw on 2025-08-08 14:36_
+_@woodruffw_
 
 ## Summary
 

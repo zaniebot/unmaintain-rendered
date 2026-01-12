@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-08T15:16:33Z
 updated_at: 2025-11-26T00:08:02Z
 url: https://github.com/astral-sh/uv/issues/11342
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # uv add private GitHub repository with PAT on Actions fails
 
 ---
 
-_Issue opened by @PhilipVinc on 2025-02-08 15:16_
+_@PhilipVinc_
 
 ### Summary
 

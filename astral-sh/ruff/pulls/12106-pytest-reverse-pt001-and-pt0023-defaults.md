@@ -14,14 +14,14 @@ head: fix/invert-flake8-pytest-style
 created_at: 2024-06-29T20:40:04Z
 updated_at: 2024-07-01T03:40:14Z
 url: https://github.com/astral-sh/ruff/pull/12106
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`pytest`] Reverse `PT001` and `PT0023` defaults
 
 ---
 
-_Pull request opened by @tjkuson on 2024-06-29 20:40_
+_@tjkuson_
 
 ## Summary
 

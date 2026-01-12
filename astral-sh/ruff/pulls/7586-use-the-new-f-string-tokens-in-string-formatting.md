@@ -14,14 +14,14 @@ head: dhruv/formatter-fstring
 created_at: 2023-09-22T03:30:26Z
 updated_at: 2023-09-28T03:58:57Z
 url: https://github.com/astral-sh/ruff/pull/7586
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Use the new f-string tokens in string formatting
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-22 03:30_
+_@dhruvmanila_
 
 ## Summary
 

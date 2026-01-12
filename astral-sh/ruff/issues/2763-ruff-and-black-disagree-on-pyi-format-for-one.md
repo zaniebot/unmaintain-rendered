@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-11T13:04:49Z
 updated_at: 2023-02-11T17:34:22Z
 url: https://github.com/astral-sh/ruff/issues/2763
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # ruff and black disagree on `.pyi` format for one line `def`
 
 ---
 
-_Issue opened by @messense on 2023-02-11 13:04_
+_@messense_
 
 ```python
 class DummyClass:

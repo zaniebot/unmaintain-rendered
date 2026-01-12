@@ -13,14 +13,14 @@ head: renovate/open-5.x-lockfile
 created_at: 2025-12-01T02:33:46Z
 updated_at: 2025-12-01T02:50:37Z
 url: https://github.com/astral-sh/uv/pull/16901
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:30Z
 ```
 
 # Update Rust crate open to v5.3.3
 
 ---
 
-_Pull request opened by @renovate on 2025-12-01 02:33_
+_@renovate_
 
 This PR contains the following updates:
 

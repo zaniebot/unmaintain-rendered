@@ -13,14 +13,14 @@ head: david/while-loop-boundness
 created_at: 2024-12-12T19:45:27Z
 updated_at: 2024-12-12T20:06:58Z
 url: https://github.com/astral-sh/ruff/pull/14944
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Tests for 'while' loop boundness
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-12 19:45_
+_@sharkdp_
 
 ## Summary
 

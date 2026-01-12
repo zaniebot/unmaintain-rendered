@@ -13,14 +13,14 @@ head: charlie/preserve
 created_at: 2024-05-22T22:50:23Z
 updated_at: 2024-05-22T22:59:36Z
 url: https://github.com/astral-sh/uv/pull/3776
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:50Z
 ```
 
 # Initialize cache in `tool run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-22 22:50_
+_@charliermarsh_
 
 ## Summary
 

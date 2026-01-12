@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-02T19:27:18Z
 updated_at: 2024-10-02T20:24:22Z
 url: https://github.com/astral-sh/uv/issues/7879
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # resolver struggles
 
 ---
 
-_Issue opened by @stas00 on 2024-10-02 19:27_
+_@stas00_
 
 using `uv-0.4.18`
 ```

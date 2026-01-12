@@ -14,14 +14,14 @@ head: charlie/tuple
 created_at: 2025-12-06T15:46:24Z
 updated_at: 2026-01-06T17:09:42Z
 url: https://github.com/astral-sh/ruff/pull/21824
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Support comparisons between variable-length tuples
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-06 15:46_
+_@charliermarsh_
 
 ## Summary
 

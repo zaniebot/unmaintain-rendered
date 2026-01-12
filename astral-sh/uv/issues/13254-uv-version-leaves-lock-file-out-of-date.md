@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-01T17:57:30Z
 updated_at: 2025-05-21T13:46:10Z
 url: https://github.com/astral-sh/uv/issues/13254
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # uv version leaves lock file out-of-date
 
 ---
 
-_Issue opened by @StephenRobin on 2025-05-01 17:57_
+_@StephenRobin_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-21T17:33:52Z
 updated_at: 2025-04-17T14:25:40Z
 url: https://github.com/astral-sh/uv/issues/2593
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Add test case for remote requirements file with HTTP basic authentication
 
 ---
 
-_Issue opened by @zanieb on 2024-03-21 17:33_
+_@zanieb_
 
 Test coverage for #2434 
 

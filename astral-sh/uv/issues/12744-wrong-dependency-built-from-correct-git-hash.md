@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T14:12:58Z
 updated_at: 2025-04-08T14:34:35Z
 url: https://github.com/astral-sh/uv/issues/12744
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # Wrong dependency built from correct git hash
 
 ---
 
-_Issue opened by @robtovey on 2025-04-08 14:12_
+_@robtovey_
 
 ### Summary
 

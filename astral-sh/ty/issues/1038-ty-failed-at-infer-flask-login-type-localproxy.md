@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-18T09:15:04Z
 updated_at: 2025-08-19T00:22:48Z
 url: https://github.com/astral-sh/ty/issues/1038
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # ty failed at infer flask_login type LocalProxy
 
 ---
 
-_Issue opened by @asukaminato0721 on 2025-08-18 09:15_
+_@asukaminato0721_
 
 ### Summary
 

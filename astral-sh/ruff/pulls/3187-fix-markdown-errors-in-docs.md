@@ -12,14 +12,14 @@ head: fix-mkdocs-headers
 created_at: 2023-02-23T19:09:47Z
 updated_at: 2023-02-24T18:29:10Z
 url: https://github.com/astral-sh/ruff/pull/3187
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Fix Markdown errors in docs
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-02-23 19:09_
+_@JonathanPlasse_
 
 Add missing titles
 Fix headers depth

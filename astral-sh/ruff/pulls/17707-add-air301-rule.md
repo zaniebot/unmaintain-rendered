@@ -14,14 +14,14 @@ head: add_AIR301_rule
 created_at: 2025-04-29T14:09:48Z
 updated_at: 2025-08-11T13:14:43Z
 url: https://github.com/astral-sh/ruff/pull/17707
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # Add AIR301 rule
 
 ---
 
-_Pull request opened by @prabhusneha on 2025-04-29 14:09_
+_@prabhusneha_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

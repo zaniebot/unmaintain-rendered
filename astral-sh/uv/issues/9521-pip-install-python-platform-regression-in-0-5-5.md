@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-29T12:47:46Z
 updated_at: 2024-11-29T17:26:26Z
 url: https://github.com/astral-sh/uv/issues/9521
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # pip install --python-platform regression in 0.5.5
 
 ---
 
-_Issue opened by @schlamar on 2024-11-29 12:47_
+_@schlamar_
 
 **Expected behavior**
 

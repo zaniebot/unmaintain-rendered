@@ -14,14 +14,14 @@ head: charlie/break
 created_at: 2024-04-11T15:42:45Z
 updated_at: 2024-04-11T15:58:01Z
 url: https://github.com/astral-sh/uv/pull/2995
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:21Z
 ```
 
 # Add `UV_BREAK_SYSTEM_PACKAGES` environment variable
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-11 15:42_
+_@charliermarsh_
 
 ## Summary
 

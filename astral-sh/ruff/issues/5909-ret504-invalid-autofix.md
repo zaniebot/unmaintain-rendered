@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-20T08:55:36Z
 updated_at: 2024-01-30T22:00:09Z
 url: https://github.com/astral-sh/ruff/issues/5909
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `RET504` invalid autofix
 
 ---
 
-_Issue opened by @tylerlaprade on 2023-07-20 08:55_
+_@tylerlaprade_
 
 ```
 def foo(data):

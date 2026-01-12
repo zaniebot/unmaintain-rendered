@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-07-08T16:09:20Z
 updated_at: 2021-07-26T14:54:01Z
 url: https://github.com/clap-rs/clap/issues/2575
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Custom exit status on clap::Error
 
 ---
 
-_Issue opened by @ceca69ec on 2021-07-08 16:09_
+_@ceca69ec_
 
 ### Please complete the following tasks
 

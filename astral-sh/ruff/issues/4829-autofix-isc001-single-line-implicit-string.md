@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-03T09:57:16Z
 updated_at: 2023-06-12T23:28:59Z
 url: https://github.com/astral-sh/ruff/issues/4829
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Autofix ISC001 (single-line-implicit-string-concatenation)
 
 ---
 
-_Issue opened by @tkukushkin on 2023-06-03 09:57_
+_@tkukushkin_
 
 ISC001 could have an autofixer. It can be difficult to combine strings of different kinds, but it shouldn't be difficult to combine strings of the same kind, so, IMHO, it would be ok to fix only such cases.
 

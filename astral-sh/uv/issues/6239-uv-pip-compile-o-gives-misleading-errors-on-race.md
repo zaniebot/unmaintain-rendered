@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T00:53:33Z
 updated_at: 2024-08-20T20:36:43Z
 url: https://github.com/astral-sh/uv/issues/6239
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # `uv pip compile ... -o` gives misleading errors on race conditions
 
 ---
 
-_Issue opened by @binarybana on 2024-08-20 00:53_
+_@binarybana_
 
 I completely understand if this is a `closedwontfix` scenario since I was obviously using it wrong, but figured I'd report it anyways in case you wanted to lock output files more defensively to protect against (perhaps more legitimate) failure modes.
 

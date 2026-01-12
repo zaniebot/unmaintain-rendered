@@ -14,14 +14,14 @@ head: zb/unavailable
 created_at: 2024-01-25T01:42:20Z
 updated_at: 2024-01-25T05:39:56Z
 url: https://github.com/astral-sh/uv/pull/1088
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:25Z
 ```
 
 # Consolidate `UnusableDependencies` into a generic `Unavailable` incompatibility
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-25 01:42_
+_@zanieb_
 
 Requires https://github.com/zanieb/pubgrub/pull/20
 

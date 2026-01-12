@@ -13,14 +13,14 @@ head: konsti/fix-python-discovery-for-tests
 created_at: 2024-05-23T08:11:39Z
 updated_at: 2024-05-23T12:56:20Z
 url: https://github.com/astral-sh/uv/pull/3785
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:51Z
 ```
 
 # Fix interpreter discovery for tests
 
 ---
 
-_Pull request opened by @konstin on 2024-05-23 08:11_
+_@konstin_
 
 The venv subcommand requires a system interpreter. The tests python path discovery would previously allow a venv interpreter, failing the venv tests that don't have system interpreter anymore.
 

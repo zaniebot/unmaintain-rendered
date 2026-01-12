@@ -12,14 +12,14 @@ head: improve-dev-readme
 created_at: 2023-01-20T13:57:26Z
 updated_at: 2023-01-20T14:23:39Z
 url: https://github.com/astral-sh/ruff/pull/2030
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Move readme dev details to CONTRIBUTING.md and fix contradictions
 
 ---
 
-_Pull request opened by @akx on 2023-01-20 13:57_
+_@akx_
 
 Following up on #2018/#2019 discussion, this moves the readme's development-related bits to `CONTRIBUTING.md` to avoid duplication, and fixes up the commands accordingly 😄 
 

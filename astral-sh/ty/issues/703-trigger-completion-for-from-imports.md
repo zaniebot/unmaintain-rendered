@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-25T16:14:37Z
 updated_at: 2025-10-03T12:19:37Z
 url: https://github.com/astral-sh/ty/issues/703
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Trigger completion for from-imports
 
 ---
 
-_Issue opened by @twoertwein on 2025-06-25 16:14_
+_@twoertwein_
 
 ### Summary
 

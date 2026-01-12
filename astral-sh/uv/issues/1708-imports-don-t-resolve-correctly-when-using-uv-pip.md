@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-19T16:58:54Z
 updated_at: 2024-06-19T09:44:25Z
 url: https://github.com/astral-sh/uv/issues/1708
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Imports don't resolve correctly when using `uv pip install -e`
 
 ---
 
-_Issue opened by @philipp-eisen on 2024-02-19 16:58_
+_@philipp-eisen_
 
 ## How to reproduce
 Say you have the following file structure:

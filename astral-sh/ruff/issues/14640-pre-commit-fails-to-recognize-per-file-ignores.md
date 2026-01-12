@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-27T17:53:16Z
 updated_at: 2024-11-27T18:15:39Z
 url: https://github.com/astral-sh/ruff/issues/14640
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `pre-commit` Fails to Recognize `per-file-ignores`
 
 ---
 
-_Issue opened by @adam-grant-hendry on 2024-11-27 17:53_
+_@adam-grant-hendry_
 
 ### System
 OS: Windows 10 22H2

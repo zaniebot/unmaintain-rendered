@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-30T19:29:06Z
 updated_at: 2025-06-02T00:16:19Z
 url: https://github.com/astral-sh/uv/issues/13740
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # Revisit and add `SAFETY` annotations to uses of `unsafe` in trampoline code
 
 ---
 
-_Issue opened by @jtfmumm on 2025-05-30 19:29_
+_@jtfmumm_
 
 The `uv-trampoline` crate has numerous uncommented instances of `unsafe`. We should (1) re-evaluate whether we actually need these and (2) add `SAFETY:` comments to any that we keep. 
 

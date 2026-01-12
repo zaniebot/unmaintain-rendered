@@ -13,14 +13,14 @@ head: konsti/no_warning_without_and_with_lower_bound
 created_at: 2025-10-07T08:40:11Z
 updated_at: 2025-10-07T15:59:03Z
 url: https://github.com/astral-sh/uv/pull/16149
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:08Z
 ```
 
 # Don't warn when dependency is constraint by other dependency
 
 ---
 
-_Pull request opened by @konstin on 2025-10-07 08:40_
+_@konstin_
 
 Currently, `uv lock --resolution lowest-direct` warns above the setup below, as we visit the unbounded `anyio[trio]` first.
 

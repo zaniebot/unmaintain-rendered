@@ -14,14 +14,14 @@ head: micha/fix-server-panic
 created_at: 2024-10-31T08:36:29Z
 updated_at: 2024-11-01T07:16:55Z
 url: https://github.com/astral-sh/ruff/pull/14010
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Fix server panic when undoing an edit
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-31 08:36_
+_@MichaReiser_
 
 ## Summary
 

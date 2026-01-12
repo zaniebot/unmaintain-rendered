@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-05T22:39:51Z
 updated_at: 2024-08-20T18:23:37Z
 url: https://github.com/astral-sh/uv/issues/4079
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Track `Requires-Python` at the distribution level in lockfile
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-05 22:39_
+_@charliermarsh_
 
 A wheel and a source distribution for the same package-version could have different `Requires-Python` values. We respect this when resolving, but we lose `Requires-Python` when we serialize the lockfile and then reify the resolution.
 

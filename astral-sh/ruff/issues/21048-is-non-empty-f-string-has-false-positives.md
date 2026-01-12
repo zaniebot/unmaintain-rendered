@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-23T15:48:56Z
 updated_at: 2025-10-24T20:54:26Z
 url: https://github.com/astral-sh/ruff/issues/21048
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `is_non_empty_f_string` has false positives
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-23 15:48_
+_@dscorbett_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-15T10:28:48Z
 updated_at: 2025-10-17T21:10:33Z
 url: https://github.com/astral-sh/uv/issues/16310
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # Hash mismatch for packages
 
 ---
 
-_Issue opened by @NourEldin-Osama on 2025-10-15 10:28_
+_@NourEldin-Osama_
 
 ### Summary
 

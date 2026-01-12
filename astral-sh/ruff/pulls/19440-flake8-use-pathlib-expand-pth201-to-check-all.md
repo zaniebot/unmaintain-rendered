@@ -14,14 +14,14 @@ head: fix-19437
 created_at: 2025-07-20T16:57:50Z
 updated_at: 2025-08-01T02:37:54Z
 url: https://github.com/astral-sh/ruff/pull/19440
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [`flake8-use-pathlib`] Expand `PTH201` to check all `PurePath` subclasses
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-20 16:57_
+_@danparizher_
 
 ## Summary
 

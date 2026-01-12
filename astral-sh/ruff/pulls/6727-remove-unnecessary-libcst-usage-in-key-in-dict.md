@@ -13,14 +13,14 @@ head: charlie/sim-cst
 created_at: 2023-08-21T14:18:26Z
 updated_at: 2023-08-21T15:04:45Z
 url: https://github.com/astral-sh/ruff/pull/6727
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Remove unnecessary LibCST usage in key-in-dict
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-21 14:18_
+_@charliermarsh_
 
 ## Summary
 

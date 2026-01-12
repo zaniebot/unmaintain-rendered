@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-10T15:48:22Z
 updated_at: 2024-10-14T15:16:00Z
 url: https://github.com/astral-sh/uv/issues/8098
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # [Feature Request] Fetch project metadata from user level `uv.toml` for `pyproject.toml`
 
 ---
 
-_Issue opened by @dpprdan on 2024-10-10 15:48_
+_@dpprdan_
 
 In #7718 we discussed to fetch project metadata from user level `uv.toml` to in insert in `pyproject.toml` on `uv init`. 
 

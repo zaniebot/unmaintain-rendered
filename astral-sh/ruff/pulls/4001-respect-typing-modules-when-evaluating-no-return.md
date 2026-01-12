@@ -12,14 +12,14 @@ head: charlie/never
 created_at: 2023-04-17T20:19:31Z
 updated_at: 2023-04-17T20:47:52Z
 url: https://github.com/astral-sh/ruff/pull/4001
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Respect typing-modules when evaluating no-return functions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-17 20:19_
+_@charliermarsh_
 
 ## Summary
 

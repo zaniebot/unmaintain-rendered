@@ -13,14 +13,14 @@ head: preorder-enter-leave-node
 created_at: 2023-08-08T10:42:28Z
 updated_at: 2023-08-09T09:29:41Z
 url: https://github.com/astral-sh/ruff/pull/6422
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add `enter` and `leave_node` methods to Preoder visitor
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-08 10:42_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

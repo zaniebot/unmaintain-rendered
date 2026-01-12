@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-24T01:25:43Z
 updated_at: 2025-10-24T09:32:59Z
 url: https://github.com/astral-sh/uv/issues/16428
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # `uv python find` does not detect venv Python in CPython 3.13t
 
 ---
 
-_Issue opened by @lmmx on 2025-10-24 01:25_
+_@lmmx_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-21T13:30:05Z
 updated_at: 2024-11-21T13:53:04Z
 url: https://github.com/astral-sh/ruff/issues/14516
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # F841 is disabled by following, unrelated code lines
 
 ---
 
-_Issue opened by @kud1ing on 2024-11-21 13:30_
+_@kud1ing_
 
 This is with ruff 0.7.4.
 

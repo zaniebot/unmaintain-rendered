@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-31T11:36:50Z
 updated_at: 2024-08-01T01:05:48Z
 url: https://github.com/clap-rs/clap/issues/5611
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Missing methods `Command::get_arg` and `Command::get_group`
 
 ---
 
-_Issue opened by @noc7c9 on 2024-07-31 11:36_
+_@noc7c9_
 
 ### Please complete the following tasks
 

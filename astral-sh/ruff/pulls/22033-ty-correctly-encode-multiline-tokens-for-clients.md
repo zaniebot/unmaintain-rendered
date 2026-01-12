@@ -14,14 +14,14 @@ head: micha/fix-multiline-encoding
 created_at: 2025-12-17T18:11:56Z
 updated_at: 2025-12-18T11:38:22Z
 url: https://github.com/astral-sh/ruff/pull/22033
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Correctly encode multiline tokens for clients not supporting multiline tokens
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-17 18:11_
+_@MichaReiser_
 
 ## Summary
 

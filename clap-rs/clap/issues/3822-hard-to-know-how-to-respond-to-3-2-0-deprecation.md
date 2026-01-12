@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-06-13T14:57:35Z
 updated_at: 2024-07-13T22:03:40Z
 url: https://github.com/clap-rs/clap/issues/3822
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Hard to know how to respond to 3.2.0 deprecation messages in the derive API
 
 ---
 
-_Issue opened by @Alexhuszagh on 2022-06-13 14:57_
+_@Alexhuszagh_
 
 Maintainer's note:
 - As of 3.2.3, deprecations are behind the `deprecated` feature which is off by default for now (see #3830)

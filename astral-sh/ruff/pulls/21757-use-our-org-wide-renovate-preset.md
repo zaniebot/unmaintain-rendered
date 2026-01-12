@@ -13,14 +13,14 @@ head: ww/renovate-org-preset
 created_at: 2025-12-02T17:19:05Z
 updated_at: 2025-12-02T17:57:36Z
 url: https://github.com/astral-sh/ruff/pull/21757
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # Use our org-wide Renovate preset
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-02 17:19_
+_@woodruffw_
 
 ## Summary
 

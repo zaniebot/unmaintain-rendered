@@ -12,14 +12,14 @@ head: pycodestyle-e201-e202-e203
 created_at: 2023-01-27T13:56:18Z
 updated_at: 2023-01-30T02:20:37Z
 url: https://github.com/astral-sh/ruff/pull/2252
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # [`pycodestyle`] Add `E201`, `E202`, `E203` Rule
 
 ---
 
-_Pull request opened by @saadmk11 on 2023-01-27 13:56_
+_@saadmk11_
 
 ref https://github.com/charliermarsh/ruff/issues/1073
 

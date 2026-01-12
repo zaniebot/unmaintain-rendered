@@ -12,14 +12,14 @@ head: charlie/pep440
 created_at: 2023-10-06T23:25:33Z
 updated_at: 2023-10-07T00:11:53Z
 url: https://github.com/astral-sh/uv/pull/30
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:42Z
 ```
 
 # Copy over `pep440-rs` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-06 23:25_
+_@charliermarsh_
 
 This PR copies over the `pep440-rs` crate at commit `a8303b01ffef6fccfdce562a887f6b110d482ef3` with no modifications.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-17T06:33:37Z
 updated_at: 2024-10-17T12:23:00Z
 url: https://github.com/astral-sh/uv/issues/8281
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # PEP 508 parsing panics when the input starts with whitespace
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-10-17 06:33_
+_@InSyncWithFoo_
 
 Minimal reproducible example:
 

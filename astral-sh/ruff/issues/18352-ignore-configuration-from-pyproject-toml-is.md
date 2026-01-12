@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T12:05:51Z
 updated_at: 2025-06-24T11:34:48Z
 url: https://github.com/astral-sh/ruff/issues/18352
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ignore configuration from pyproject.toml is ignored when using --select from the CLI
 
 ---
 
-_Issue opened by @YoniPrv on 2025-05-28 12:05_
+_@YoniPrv_
 
 ### Summary
 

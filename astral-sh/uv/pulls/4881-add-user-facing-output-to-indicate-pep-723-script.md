@@ -14,14 +14,14 @@ head: charlie/pep
 created_at: 2024-07-08T00:49:39Z
 updated_at: 2024-07-08T13:58:20Z
 url: https://github.com/astral-sh/uv/pull/4881
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:30Z
 ```
 
 # Add user-facing output to indicate PEP 723 script
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-08 00:49_
+_@charliermarsh_
 
 _No description provided._
 

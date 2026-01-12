@@ -12,14 +12,14 @@ head: update
 created_at: 2023-05-18T19:04:49Z
 updated_at: 2023-05-18T19:41:00Z
 url: https://github.com/astral-sh/ruff/pull/4503
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Update RustPython dependencies
 
 ---
 
-_Pull request opened by @figsoda on 2023-05-18 19:04_
+_@figsoda_
 
 When trying to update ruff in nixpkgs, I ran into this error:
 

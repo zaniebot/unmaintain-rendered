@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T21:49:24Z
 updated_at: 2025-07-23T22:52:18Z
 url: https://github.com/astral-sh/ty/issues/482
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # memory regression between 0.0.1a5 and 0.0.1a6?
 
 ---
 
-_Issue opened by @carljm on 2025-05-21 21:49_
+_@carljm_
 
 We've had a report of a significant memory regression between these two versions (like from 52GB on a5 to >80GB on a6) on a non-public codebase.
 

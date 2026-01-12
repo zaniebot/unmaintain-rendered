@@ -13,14 +13,14 @@ head: ruf031-slice-in-subscript
 created_at: 2024-08-09T01:29:14Z
 updated_at: 2024-08-15T02:44:05Z
 url: https://github.com/astral-sh/ruff/pull/12768
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [ruff] Skip tuples with slice expressions in `incorrectly-parenthesized-tuple-in-subscript (RUF031)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-08-09 01:29_
+_@dylwil3_
 
 ## Summary
 

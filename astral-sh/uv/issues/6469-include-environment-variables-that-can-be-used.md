@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T23:12:41Z
 updated_at: 2024-09-03T17:10:51Z
 url: https://github.com/astral-sh/uv/issues/6469
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Include environment variables that can be used for CLI options in reference docs
 
 ---
 
-_Issue opened by @zanieb on 2024-08-22 23:12_
+_@zanieb_
 
 The CLI reference documentation doesn't include environment variables for flags like `uv help` does.
 

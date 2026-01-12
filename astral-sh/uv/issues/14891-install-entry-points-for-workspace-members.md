@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-25T12:13:20Z
 updated_at: 2025-07-25T13:05:06Z
 url: https://github.com/astral-sh/uv/issues/14891
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:58Z
 ```
 
 # Install entry points for workspace members
 
 ---
 
-_Issue opened by @tuukkamustonen on 2025-07-25 12:13_
+_@tuukkamustonen_
 
 ### Summary
 

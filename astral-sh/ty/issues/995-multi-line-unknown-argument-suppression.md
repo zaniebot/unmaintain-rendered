@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T04:55:44Z
 updated_at: 2025-08-18T17:13:49Z
 url: https://github.com/astral-sh/ty/issues/995
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # multi-line unknown-argument suppression
 
 ---
 
-_Issue opened by @CharlesPerrotMinot on 2025-08-15 04:55_
+_@CharlesPerrotMinot_
 
 ### Summary
 

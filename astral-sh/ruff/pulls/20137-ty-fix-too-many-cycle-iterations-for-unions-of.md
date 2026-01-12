@@ -14,14 +14,14 @@ head: david/fix-660
 created_at: 2025-08-28T14:32:24Z
 updated_at: 2025-08-28T14:46:39Z
 url: https://github.com/astral-sh/ruff/pull/20137
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] Fix 'too many cycle iterations' for unions of literals
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-28 14:32_
+_@sharkdp_
 
 ## Summary
 

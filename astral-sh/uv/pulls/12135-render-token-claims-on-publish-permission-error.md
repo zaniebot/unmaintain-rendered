@@ -13,14 +13,14 @@ head: konsti/render-jwt-claims
 created_at: 2025-03-12T13:32:55Z
 updated_at: 2025-03-13T10:19:12Z
 url: https://github.com/astral-sh/uv/pull/12135
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:08Z
 ```
 
 # Render token claims on publish permission error
 
 ---
 
-_Pull request opened by @konstin on 2025-03-12 13:32_
+_@konstin_
 
 Match the official trusted publishing GitHub Action from https://github.com/pypa/gh-action-pypi-publish/blob/db8f07d3871a0a180efa06b95d467625c19d5d5f/oidc-exchange.py#L165-L184
 

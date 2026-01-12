@@ -13,14 +13,14 @@ head: konsti/build-backend-warn-10k
 created_at: 2024-11-29T14:22:46Z
 updated_at: 2024-12-02T14:25:51Z
 url: https://github.com/astral-sh/uv/pull/9523
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:50Z
 ```
 
 # Build backend: Warn when visiting over 10k files 
 
 ---
 
-_Pull request opened by @konstin on 2024-11-29 14:22_
+_@konstin_
 
 Also log how many files we visited in total as a debugging aid.
 

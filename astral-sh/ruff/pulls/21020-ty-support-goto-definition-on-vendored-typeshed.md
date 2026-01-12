@@ -14,14 +14,14 @@ head: gankra/goto-typeshed2
 created_at: 2025-10-21T16:02:47Z
 updated_at: 2025-10-21T17:38:43Z
 url: https://github.com/astral-sh/ruff/pull/21020
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [ty] Support goto-definition on vendored typeshed stubs
 
 ---
 
-_Pull request opened by @Gankra on 2025-10-21 16:02_
+_@Gankra_
 
 This is an alternative to #21012 that more narrowly handles this logic in the stub-mapping machinery rather than pervasively allowing us to identify cached files as typeshed stubs. Much of the logic is the same (pulling the logic out of ty_server so it can be reused).
 

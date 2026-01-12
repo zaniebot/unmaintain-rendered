@@ -13,14 +13,14 @@ head: files-use-absolute-paths
 created_at: 2024-07-06T14:34:16Z
 updated_at: 2024-07-09T07:52:15Z
 url: https://github.com/astral-sh/ruff/pull/12215
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Only store absolute paths in `Files`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-06 14:34_
+_@MichaReiser_
 
 ## Summary
 

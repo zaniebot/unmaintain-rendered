@@ -13,14 +13,14 @@ head: zb/path-pre
 created_at: 2024-09-17T16:12:33Z
 updated_at: 2024-09-18T15:19:12Z
 url: https://github.com/astral-sh/uv/pull/7470
-synced_at: 2026-01-10T12:53:48Z
+synced_at: 2026-01-12T16:07:50Z
 ```
 
 # Allow Python pre-releases to be used if they are first on the `PATH`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-17 16:12_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/7469
 

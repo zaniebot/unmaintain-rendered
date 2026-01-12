@@ -12,14 +12,14 @@ head: pdm-black-editable
 created_at: 2024-01-09T16:19:36Z
 updated_at: 2024-01-09T16:33:06Z
 url: https://github.com/astral-sh/uv/pull/848
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:14Z
 ```
 
 # Use pdm for black editable as PEP 621 test case
 
 ---
 
-_Pull request opened by @konstin on 2024-01-09 16:19_
+_@konstin_
 
 This gives us a PEP 621 test package in tree and increases the diversity for the editable tests a bit.
 

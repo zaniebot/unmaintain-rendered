@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-05T08:28:13Z
 updated_at: 2024-10-14T10:21:47Z
 url: https://github.com/astral-sh/ruff/issues/13638
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [flake8-todos] TD rules trigger on words beginning with todo
 
 ---
 
-_Issue opened by @autinerd on 2024-10-05 08:28_
+_@autinerd_
 
 Hi,
 

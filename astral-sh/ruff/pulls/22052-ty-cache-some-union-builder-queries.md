@@ -13,14 +13,14 @@ head: zb/cache-union-builder
 created_at: 2025-12-18T14:27:06Z
 updated_at: 2025-12-21T04:49:34Z
 url: https://github.com/astral-sh/ruff/pull/22052
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Cache some union builder queries
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-18 14:27_
+_@zanieb_
 
 Seeing if this shows anything interesting in CodSpeed.
 

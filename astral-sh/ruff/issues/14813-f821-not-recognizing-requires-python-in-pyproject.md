@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-06T11:50:00Z
 updated_at: 2025-03-14T08:59:14Z
 url: https://github.com/astral-sh/ruff/issues/14813
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # F821 not recognizing `requires-python` in `pyproject.toml`
 
 ---
 
-_Issue opened by @CNSeniorious000 on 2024-12-06 11:50_
+_@CNSeniorious000_
 
 I tried to use `anext` and `aiter` in a project configured with `requires-python = "~=3.10"`, but Ruff still complaining
 

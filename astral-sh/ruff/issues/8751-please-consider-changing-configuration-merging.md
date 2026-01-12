@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-18T02:53:14Z
 updated_at: 2023-11-19T15:59:25Z
 url: https://github.com/astral-sh/ruff/issues/8751
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Please consider changing configuration merging semantics
 
 ---
 
-_Issue opened by @ofek on 2023-11-18 02:53_
+_@ofek_
 
 I am trying to integrate with Ruff by having a default config that extends the user's config:
 

@@ -13,14 +13,14 @@ head: zb/rosetta
 created_at: 2024-03-14T14:36:06Z
 updated_at: 2024-03-20T20:38:03Z
 url: https://github.com/astral-sh/uv/pull/2458
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:03Z
 ```
 
 # Add system install test for Rosetta on macOS
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-14 14:36_
+_@zanieb_
 
 _No description provided._
 

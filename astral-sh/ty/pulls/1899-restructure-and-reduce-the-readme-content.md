@@ -13,14 +13,14 @@ head: zb/ty-docs-readme
 created_at: 2025-12-15T18:45:05Z
 updated_at: 2025-12-15T20:08:41Z
 url: https://github.com/astral-sh/ty/pull/1899
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Restructure and reduce the README content
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-15 18:45_
+_@zanieb_
 
 Loosely corresponding to https://github.com/astral-sh/ty/pull/1894 but with more aggressive simplifications.
 

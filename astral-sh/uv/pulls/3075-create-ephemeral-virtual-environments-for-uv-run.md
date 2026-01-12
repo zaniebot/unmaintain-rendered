@@ -14,14 +14,14 @@ head: zb/uv-run-ephemeral
 created_at: 2024-04-16T21:34:09Z
 updated_at: 2024-04-17T16:32:06Z
 url: https://github.com/astral-sh/uv/pull/3075
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:24Z
 ```
 
 # Create ephemeral virtual environments for `uv run`
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-16 21:34_
+_@zanieb_
 
 If a virtual environment does not exist, we will create one for the duration of the invocation.
 

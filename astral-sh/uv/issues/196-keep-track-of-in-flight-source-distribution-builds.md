@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-26T11:42:09Z
 updated_at: 2023-12-13T08:13:59Z
 url: https://github.com/astral-sh/uv/issues/196
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Keep track of in-flight source distribution builds
 
 ---
 
-_Issue opened by @konstin on 2023-10-26 11:42_
+_@konstin_
 
 This is only relevant when performing multiple resolutions in parallel, but we should only start one source distribution build at once
 

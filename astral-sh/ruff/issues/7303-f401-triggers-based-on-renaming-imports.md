@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-12T14:26:52Z
 updated_at: 2023-09-12T15:38:36Z
 url: https://github.com/astral-sh/ruff/issues/7303
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # F401 triggers based on renaming imports
 
 ---
 
-_Issue opened by @henryiii on 2023-09-12 14:26_
+_@henryiii_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

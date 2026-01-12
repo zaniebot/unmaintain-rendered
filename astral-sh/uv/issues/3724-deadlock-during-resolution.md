@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-21T22:02:51Z
 updated_at: 2024-06-03T16:27:12Z
 url: https://github.com/astral-sh/uv/issues/3724
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Deadlock during resolution
 
 ---
 
-_Issue opened by @zanieb on 2024-05-21 22:02_
+_@zanieb_
 
 We're observing non-deterministic deadlocks in our test suite that we believe comes from #3627 which would mean it's present in v0.1.45+.
 

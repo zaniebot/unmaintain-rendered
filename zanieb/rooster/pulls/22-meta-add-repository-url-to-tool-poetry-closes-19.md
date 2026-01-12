@@ -13,14 +13,14 @@ head: meta-repo-url
 created_at: 2024-03-18T04:45:18Z
 updated_at: 2024-03-24T16:49:52Z
 url: https://github.com/zanieb/rooster/pull/22
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # meta: add repository url to [tool.poetry]. closes #19
 
 ---
 
-_Pull request opened by @almahdi404 on 2024-03-18 04:45_
+_@almahdi404_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-27T02:20:23Z
 updated_at: 2023-11-28T06:23:34Z
 url: https://github.com/astral-sh/ruff/issues/8846
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # PD003 raise an error for xarray.DataArray
 
 ---
 
-_Issue opened by @seisman on 2023-11-27 02:20_
+_@seisman_
 
 Minimal code snippet to reproduce the bug:
 ```python

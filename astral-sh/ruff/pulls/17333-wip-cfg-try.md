@@ -12,14 +12,14 @@ head: cfg-try
 created_at: 2025-04-10T12:32:38Z
 updated_at: 2025-12-10T18:00:33Z
 url: https://github.com/astral-sh/ruff/pull/17333
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [WIP] Cfg try
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-04-10 12:32_
+_@dylwil3_
 
 _No description provided._
 

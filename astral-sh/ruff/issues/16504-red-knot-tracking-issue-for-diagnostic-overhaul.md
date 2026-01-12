@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-04T18:06:17Z
 updated_at: 2025-05-02T14:14:22Z
 url: https://github.com/astral-sh/ruff/issues/16504
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] tracking issue for diagnostic overhaul
 
 ---
 
-_Issue opened by @BurntSushi on 2025-03-04 18:06_
+_@BurntSushi_
 
 This issue is meant to track work on overhauling Red Knot's diagnostic system. Red Knot's diagnostic system (as of 2025-03-04) was is intentionally simplistic with the knowledge that we would beef it up later. This issue tracks that work.
 

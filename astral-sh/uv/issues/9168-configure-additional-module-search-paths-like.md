@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-16T17:16:22Z
 updated_at: 2025-11-20T21:01:48Z
 url: https://github.com/astral-sh/uv/issues/9168
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # Configure additional module search paths, like PYTHONPATH
 
 ---
 
-_Issue opened by @angeloc-dl on 2024-11-16 17:16_
+_@angeloc-dl_
 
 I would like to propose as enhancement to provide the capability to configure additional module search paths in pyproject.toml
 

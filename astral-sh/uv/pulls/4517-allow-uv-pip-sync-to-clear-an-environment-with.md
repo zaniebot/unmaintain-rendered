@@ -13,14 +13,14 @@ head: zb/sync-allow-empty
 created_at: 2024-06-25T14:36:44Z
 updated_at: 2024-07-02T13:14:28Z
 url: https://github.com/astral-sh/uv/pull/4517
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # Allow `uv pip sync` to clear an environment with opt-in
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-25 14:36_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/4516
 

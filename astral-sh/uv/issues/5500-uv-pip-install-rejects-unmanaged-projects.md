@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-27T00:21:40Z
 updated_at: 2024-07-27T02:10:19Z
 url: https://github.com/astral-sh/uv/issues/5500
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # `uv pip install` rejects unmanaged projects
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-27 00:21_
+_@charliermarsh_
 
 ```
 ❯ ./uv/target/debug/uv pip install ./uv

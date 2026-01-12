@@ -13,14 +13,14 @@ head: brent/refurb-preview-duplicate
 created_at: 2025-11-06T19:21:44Z
 updated_at: 2025-11-07T17:47:23Z
 url: https://github.com/astral-sh/ruff/pull/21303
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # Remove duplicate preview tests for `FURB101` and `FURB103`
 
 ---
 
-_Pull request opened by @ntBre on 2025-11-06 19:21_
+_@ntBre_
 
 Summary
 --

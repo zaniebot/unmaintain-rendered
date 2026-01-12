@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-06T14:04:52Z
 updated_at: 2024-07-26T01:58:24Z
 url: https://github.com/astral-sh/ruff/issues/7192
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # W505 not reported AND stripped
 
 ---
 
-_Issue opened by @RivenSkaye on 2023-09-06 14:04_
+_@RivenSkaye_
 
 W505 does not trigger for a multiline docstring that is too long, the relevant `noqa` added for `flake8` gets stripped off and it seems impossible to apply any `noqa` on multiline docstrings as a whole. [This is the code I noticed it on](https://github.com/RivenSkaye/rvsfunc/blob/34028dcdf33fc1f19f77ae033588e85d6b936def/rvsfunc/utils.py#L215-L237) after adding Ruff to the project. Either my `ruff.toml` is causing it to be skipped through some other matching rule, or I've hit a bug.
 

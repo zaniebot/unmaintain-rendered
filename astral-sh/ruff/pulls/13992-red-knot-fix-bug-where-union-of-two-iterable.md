@@ -13,14 +13,14 @@ head: alex/iter-bug
 created_at: 2024-10-30T11:40:43Z
 updated_at: 2024-10-31T11:24:18Z
 url: https://github.com/astral-sh/ruff/pull/13992
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Fix bug where union of two iterable types was not recognised as iterable
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-30 11:40_
+_@AlexWaygood_
 
 Fixes #13990. My favourite kind of bugfix: more accuracy for less code!
 

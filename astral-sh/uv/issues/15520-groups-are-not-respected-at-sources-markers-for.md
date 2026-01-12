@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-25T18:16:53Z
 updated_at: 2025-08-25T18:22:48Z
 url: https://github.com/astral-sh/uv/issues/15520
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # groups are not respected at sources' markers for `uv pip compile`
 
 ---
 
-_Issue opened by @ZzEeKkAa on 2025-08-25 18:16_
+_@ZzEeKkAa_
 
 ### Summary
 

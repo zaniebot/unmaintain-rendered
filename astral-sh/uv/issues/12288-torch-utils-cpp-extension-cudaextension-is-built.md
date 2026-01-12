@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T15:26:24Z
 updated_at: 2025-03-19T06:22:49Z
 url: https://github.com/astral-sh/uv/issues/12288
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # `torch.utils.cpp_extension.CUDAExtension` is built with `uv` but symbol not found
 
 ---
 
-_Issue opened by @jackalcooper on 2025-03-18 15:26_
+_@jackalcooper_
 
 ### Summary
 

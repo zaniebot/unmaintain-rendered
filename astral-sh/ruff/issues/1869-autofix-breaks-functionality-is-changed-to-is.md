@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-14T09:01:26Z
 updated_at: 2023-01-14T09:05:12Z
 url: https://github.com/astral-sh/ruff/issues/1869
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Autofix breaks functionality ('==' is changed to 'is')
 
 ---
 
-_Issue opened by @akanz1 on 2023-01-14 09:01_
+_@akanz1_
 
 For certain cases with e.g. pandas the autofix functionality causes undesirable changes as something along the lines of
 

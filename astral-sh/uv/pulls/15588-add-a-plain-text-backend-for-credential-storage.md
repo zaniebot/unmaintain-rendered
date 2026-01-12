@@ -12,14 +12,14 @@ head: zb/auth-plaintext
 created_at: 2025-08-30T13:59:38Z
 updated_at: 2025-08-30T16:55:19Z
 url: https://github.com/astral-sh/uv/pull/15588
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:50Z
 ```
 
 # Add a plain text backend for credential storage
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-30 13:59_
+_@zanieb_
 
 Adds a default plain text storage mechanism to `uv auth`.
 

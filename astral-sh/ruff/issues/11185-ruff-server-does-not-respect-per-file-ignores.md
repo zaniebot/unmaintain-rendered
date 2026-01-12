@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-28T13:07:44Z
 updated_at: 2024-05-02T02:24:36Z
 url: https://github.com/astral-sh/ruff/issues/11185
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server` does not respect `per-file-ignores`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-04-28 13:07_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/ruff/issues/11138#issuecomment-2081478587
 

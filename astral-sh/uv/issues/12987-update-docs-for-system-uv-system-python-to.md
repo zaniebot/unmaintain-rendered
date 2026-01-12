@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-20T11:51:09Z
 updated_at: 2025-10-21T19:33:25Z
 url: https://github.com/astral-sh/uv/issues/12987
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # Update docs for `system` / `UV_SYSTEM_PYTHON` to mention they only apply to `uv pip`
 
 ---
 
-_Issue opened by @edmorley on 2025-04-20 11:51_
+_@edmorley_
 
 The `system` config setting and the `UV_SYSTEM_PYTHON` env var only apply to the `uv pip` interface (and not eg `uv sync`), however, the docs for these don't mention that - so I suspect some users will get confused? 
 

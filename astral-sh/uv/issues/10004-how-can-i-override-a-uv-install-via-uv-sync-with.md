@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-18T15:32:08Z
 updated_at: 2024-12-18T20:35:45Z
 url: https://github.com/astral-sh/uv/issues/10004
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # How can I override a uv install (via uv sync) with an editable package that will stay up to date in running docker container
 
 ---
 
-_Issue opened by @adiberk on 2024-12-18 15:32_
+_@adiberk_
 
 I want to build my docker container as I normally do and then on run, install an editable version of a local package so that I can make sure to that I can update the package mid session and reflect those changes in the running container
 

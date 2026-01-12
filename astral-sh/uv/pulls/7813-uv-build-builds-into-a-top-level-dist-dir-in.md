@@ -13,14 +13,14 @@ head: build-dist-change
 created_at: 2024-09-30T15:39:35Z
 updated_at: 2024-10-01T08:47:45Z
 url: https://github.com/astral-sh/uv/pull/7813
-synced_at: 2026-01-10T12:53:56Z
+synced_at: 2026-01-12T16:08:01Z
 ```
 
 # `uv build` builds into a top-level `dist` dir in workspaces
 
 ---
 
-_Pull request opened by @blueraft on 2024-09-30 15:39_
+_@blueraft_
 
 ## Summary
 

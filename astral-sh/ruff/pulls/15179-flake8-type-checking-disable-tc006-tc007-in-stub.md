@@ -13,14 +13,14 @@ head: bugfix/tc-rules-in-stubs
 created_at: 2024-12-29T07:56:41Z
 updated_at: 2025-01-02T11:42:56Z
 url: https://github.com/astral-sh/ruff/pull/15179
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`flake8-type-checking`] Disable TC006 & TC007 in stub files
 
 ---
 
-_Pull request opened by @Daverball on 2024-12-29 07:56_
+_@Daverball_
 
 Fixes: #15176
 

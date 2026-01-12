@@ -13,14 +13,14 @@ head: alex/future-proof-disjointness
 created_at: 2025-01-04T19:27:53Z
 updated_at: 2025-01-05T22:57:47Z
 url: https://github.com/astral-sh/ruff/pull/15262
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Future-proof `Type::is_disjoint_from()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-04 19:27_
+_@AlexWaygood_
 
 (This PR is stacked on top of #15261; review that first.)
 

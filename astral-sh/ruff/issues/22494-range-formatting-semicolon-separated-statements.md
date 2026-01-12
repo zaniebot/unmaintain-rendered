@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-10T14:53:50Z
 updated_at: 2026-01-10T14:54:46Z
 url: https://github.com/astral-sh/ruff/issues/22494
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Range formatting semicolon-separated statements introduces whitespace
 
 ---
 
-_Issue opened by @dylwil3 on 2026-01-10 14:53_
+_@dylwil3_
 
 We currently do the following:
 

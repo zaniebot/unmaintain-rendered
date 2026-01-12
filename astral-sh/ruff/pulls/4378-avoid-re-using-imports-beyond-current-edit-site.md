@@ -13,14 +13,14 @@ head: charlie/import
 created_at: 2023-05-11T17:59:08Z
 updated_at: 2023-05-11T18:47:23Z
 url: https://github.com/astral-sh/ruff/pull/4378
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Avoid re-using imports beyond current edit site
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-11 17:59_
+_@charliermarsh_
 
 Given code like:
 

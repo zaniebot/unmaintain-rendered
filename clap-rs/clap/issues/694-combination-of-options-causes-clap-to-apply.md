@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-10-18T01:50:32Z
 updated_at: 2017-01-03T06:56:17Z
 url: https://github.com/clap-rs/clap/issues/694
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Combination of options causes clap to apply validator to both default and user-specified option
 
 ---
 
-_Issue opened by @ssokolow on 2016-10-18 01:50_
+_@ssokolow_
 
 rustc version: rustc 1.12.0 (3191fbae9 2016-09-23)
 clap Version: 2.14.0

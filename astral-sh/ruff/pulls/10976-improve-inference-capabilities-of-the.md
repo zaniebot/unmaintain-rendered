@@ -13,14 +13,14 @@ head: simple-builtins-improvements
 created_at: 2024-04-16T13:11:34Z
 updated_at: 2024-04-16T17:53:26Z
 url: https://github.com/astral-sh/ruff/pull/10976
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Improve inference capabilities of the `BuiltinTypeChecker`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-16 13:11_
+_@AlexWaygood_
 
 A small followup to #10919
 

@@ -14,14 +14,14 @@ head: zb/release-3
 created_at: 2025-03-06T21:56:47Z
 updated_at: 2025-03-06T22:53:40Z
 url: https://github.com/astral-sh/uv/pull/12024
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:06Z
 ```
 
 # Revert "Run the `uv-build` publish sequentially after `uv` (#12022)"
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-06 21:56_
+_@zanieb_
 
 This was not the problem
 

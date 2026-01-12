@@ -13,14 +13,14 @@ head: formatter/bool-op
 created_at: 2023-08-07T15:49:29Z
 updated_at: 2023-08-07T17:30:30Z
 url: https://github.com/astral-sh/ruff/pull/6394
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Fix formatting of chained boolean operations
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-07 15:49_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/6068
 

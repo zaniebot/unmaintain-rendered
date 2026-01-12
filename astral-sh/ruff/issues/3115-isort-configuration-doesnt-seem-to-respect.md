@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-22T06:09:08Z
 updated_at: 2023-07-15T05:07:11Z
 url: https://github.com/astral-sh/ruff/issues/3115
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # isort configuration doesnt seem to respect localfolder (vs real isort) in monorepo
 
 ---
 
-_Issue opened by @merc1031 on 2023-02-22 06:09_
+_@merc1031_
 
 ruff 0.0.249
 

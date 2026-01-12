@@ -14,14 +14,14 @@ head: isort-alias
 created_at: 2024-11-11T22:29:56Z
 updated_at: 2024-11-17T14:28:07Z
 url: https://github.com/astral-sh/ruff/pull/14287
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # enforce required imports even with useless alias
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-11-11 22:29_
+_@dylwil3_
 
 This PR handles a panic that occurs when applying unsafe fixes if a user inserts a required import (I002) that has a "useless alias" in it, like `import numpy as numpy`, and also selects PLC0414 (useless-import-alias)
 

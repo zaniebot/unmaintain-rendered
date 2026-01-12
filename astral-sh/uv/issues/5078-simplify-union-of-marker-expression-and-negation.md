@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-15T17:56:55Z
 updated_at: 2024-08-20T20:10:52Z
 url: https://github.com/astral-sh/uv/issues/5078
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Simplify union of marker expression and negation when split in disjunction
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-07-15 17:56_
+_@ibraheemdev_
 
 More complex case of https://github.com/astral-sh/uv/issues/5044, e.g. `(platform_machine == 'x86_64' and platform_system == 'Windows') or (platform_machine != 'x86_64' and platform_system == 'Windows')` could be simplified to `platform_system == 'Windows'`.
 

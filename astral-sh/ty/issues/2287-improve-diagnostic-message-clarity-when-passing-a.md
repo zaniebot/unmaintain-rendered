@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-31T06:40:08Z
 updated_at: 2026-01-05T16:51:39Z
 url: https://github.com/astral-sh/ty/issues/2287
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Improve diagnostic message clarity when passing a class type instead of an instance
 
 ---
 
-_Issue opened by @kkpattern on 2025-12-31 06:40_
+_@kkpattern_
 
 
 When passing a class object (e.g., `Foo`) to a function that expects an instance of that class (e.g., `a: Foo`), the current error message can be visually confusing.

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-06-01T15:12:22Z
 updated_at: 2022-07-22T18:23:07Z
 url: https://github.com/clap-rs/clap/issues/3776
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # help/version env parsing is different than other flags
 
 ---
 
-_Issue opened by @epage on 2022-06-01 15:12_
+_@epage_
 
 help/version flags just care about presence while other bool flags parse the value.  We should unifiy these so they all parse the value.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T14:16:33Z
 updated_at: 2026-01-12T11:57:32Z
 url: https://github.com/astral-sh/uv/issues/17378
-synced_at: 2026-01-12T13:00:04Z
+synced_at: 2026-01-12T16:02:50Z
 ```
 
 # `uv` incorrectly rolls back dependency between build-time and run-time
 
 ---
 
-_Issue opened by @AlexanderWells-diamond on 2026-01-09 14:16_
+_@AlexanderWells-diamond_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/toolchain-i
 created_at: 2024-06-04T19:11:51Z
 updated_at: 2024-06-05T12:27:31Z
 url: https://github.com/astral-sh/uv/pull/4020
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:59Z
 ```
 
 # Move `uv-interpreter::managed::*` modules into crate top-level
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-04 19:11_
+_@zanieb_
 
 Should be no functional changes, just some file renames in preparation for exposing toolchain management.
 

@@ -13,14 +13,14 @@ head: charlie/seed
 created_at: 2024-02-12T02:09:18Z
 updated_at: 2024-02-12T02:21:05Z
 url: https://github.com/astral-sh/uv/pull/1280
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:33Z
 ```
 
 # Set an exclude cutoff for virtualenv tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-12 02:09_
+_@charliermarsh_
 
 ## Summary
 

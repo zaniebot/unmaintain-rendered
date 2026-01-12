@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-20T03:46:08Z
 updated_at: 2025-12-24T17:25:31Z
 url: https://github.com/astral-sh/ty/issues/2149
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Inconsistent semantic highlighting for imports in VS Code
 
 ---
 
-_Issue opened by @GlobalMin on 2025-12-20 03:46_
+_@GlobalMin_
 
 I'm very excited to be using `ty` given how well `uv` and `ruff` have changed my Python dev experience, and so far it's clearly very fast. The one issue I'm having in VSCode is some 3rd party libraries, meaning needing to install with `uv add` are not highlighted like others and it looks off. See below for example where `pandas` is colored white while the other import paths are in green. Not all external libs have issues as shown in screenshot as well - `fastapi` looks fine.
 

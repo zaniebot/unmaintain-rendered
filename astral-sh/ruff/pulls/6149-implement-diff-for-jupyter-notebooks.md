@@ -12,14 +12,14 @@ head: dhruv/jupyter-diff
 created_at: 2023-07-28T12:49:02Z
 updated_at: 2023-07-29T04:43:58Z
 url: https://github.com/astral-sh/ruff/pull/6149
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Implement `--diff` for Jupyter Notebooks
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-28 12:49_
+_@dhruvmanila_
 
 ## Summary
 

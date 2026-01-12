@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-11T09:15:00Z
 updated_at: 2025-11-03T21:38:06Z
 url: https://github.com/astral-sh/ruff/issues/20809
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Extend TD003 to allow "Jira-style" issue IDs on the same line
 
 ---
 
-_Issue opened by @simonpercivall on 2025-10-11 09:15_
+_@simonpercivall_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/executable-name-system
 created_at: 2024-06-13T16:57:27Z
 updated_at: 2024-08-19T20:51:38Z
 url: https://github.com/astral-sh/uv/pull/4309
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:08Z
 ```
 
 # Apply system Python filtering to executable name requests
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-13 16:57_
+_@zanieb_
 
 Executable name requests were being treated as explicit requests to install into system environments, but I don't think it should be as it's implicit what environment you'll end up in. Following #4308, we allow multiple executables to be found so we can filter here.
 

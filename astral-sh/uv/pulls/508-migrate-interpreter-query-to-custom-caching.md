@@ -13,14 +13,14 @@ head: remove-cacache
 created_at: 2023-11-28T16:36:28Z
 updated_at: 2023-11-28T17:15:00Z
 url: https://github.com/astral-sh/uv/pull/508
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:59Z
 ```
 
 # Migrate interpreter query to custom caching
 
 ---
 
-_Pull request opened by @konstin on 2023-11-28 16:36_
+_@konstin_
 
 This removes the last usage of cacache by replacing it with a custom, flat json caching keyed by the digest of the executable path.
 

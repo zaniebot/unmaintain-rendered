@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-16T09:03:04Z
 updated_at: 2023-02-03T18:28:29Z
 url: https://github.com/astral-sh/ruff/issues/212
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Relative exclusion paths be relative to the project root (home of `pyproject.toml`)
 
 ---
 
-_Issue opened by @charliermarsh on 2022-09-16 09:03_
+_@charliermarsh_
 
 _No description provided._
 

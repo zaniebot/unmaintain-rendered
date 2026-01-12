@@ -14,14 +14,14 @@ head: micha/remove-legacy-concise-output
 created_at: 2025-12-08T15:01:01Z
 updated_at: 2025-12-08T16:19:03Z
 url: https://github.com/astral-sh/ruff/pull/21847
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] Remove legacy `concise_message` fallback behavior
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-08 15:01_
+_@MichaReiser_
 
 ## Summary
 

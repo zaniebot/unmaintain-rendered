@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T18:23:23Z
 updated_at: 2024-02-19T18:56:20Z
 url: https://github.com/astral-sh/uv/issues/1712
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # uv pip compile pyproject.toml doesn't resolve any dependency
 
 ---
 
-_Issue opened by @ClementWalter on 2024-02-19 18:23_
+_@ClementWalter_
 
 So I tried to migrate from `poetry` to `uv` for the repo https://github.com/kkrt-labs/kakarot but the documented command
 

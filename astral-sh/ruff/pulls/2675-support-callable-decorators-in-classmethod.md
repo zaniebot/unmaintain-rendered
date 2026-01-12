@@ -13,14 +13,14 @@ head: charlie/dec
 created_at: 2023-02-09T02:10:29Z
 updated_at: 2023-02-09T07:21:56Z
 url: https://github.com/astral-sh/ruff/pull/2675
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Support callable decorators in classmethod_decorators et al
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-09 02:10_
+_@charliermarsh_
 
 This was a regression introduced in `v0.0.244`.
 

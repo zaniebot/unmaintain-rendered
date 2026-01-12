@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-17T19:25:45Z
 updated_at: 2022-11-17T20:32:40Z
 url: https://github.com/astral-sh/ruff/issues/795
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # --fix for D202 removing docstring instead of line afterwards
 
 ---
 
-_Issue opened by @actionless on 2022-11-17 19:25_
+_@actionless_
 
 ```python
 def function() -> None:

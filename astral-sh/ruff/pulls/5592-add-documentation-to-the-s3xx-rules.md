@@ -12,14 +12,14 @@ head: s3-docs
 created_at: 2023-07-07T12:47:52Z
 updated_at: 2023-07-12T08:44:02Z
 url: https://github.com/astral-sh/ruff/pull/5592
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add documentation to the `S3XX` rules
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-07 12:47_
+_@tjkuson_
 
 ## Summary
 

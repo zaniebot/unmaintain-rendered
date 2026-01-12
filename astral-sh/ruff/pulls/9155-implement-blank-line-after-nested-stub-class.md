@@ -14,14 +14,14 @@ head: dhruv/empty-line-after-class
 created_at: 2023-12-16T01:04:32Z
 updated_at: 2024-01-30T18:39:39Z
 url: https://github.com/astral-sh/ruff/pull/9155
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Implement `blank_line_after_nested_stub_class` preview style
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-12-16 01:04_
+_@dhruvmanila_
 
 ## Summary
 

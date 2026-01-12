@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-23T10:01:22Z
 updated_at: 2024-08-24T12:57:28Z
 url: https://github.com/astral-sh/uv/issues/6505
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Provide an APE installer instead of curling scripts?
 
 ---
 
-_Issue opened by @ksamuel on 2024-08-23 10:01_
+_@ksamuel_
 
 Being easy to install is key for uv usage to spread. 
 

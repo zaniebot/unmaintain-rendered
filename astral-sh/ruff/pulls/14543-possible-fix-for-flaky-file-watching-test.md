@@ -14,14 +14,14 @@ head: micha/fix-file-watching
 created_at: 2024-11-22T21:28:44Z
 updated_at: 2024-12-03T07:22:44Z
 url: https://github.com/astral-sh/ruff/pull/14543
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Possible fix for flaky file watching test
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-22 21:28_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-28T21:47:42Z
 updated_at: 2025-03-31T10:09:10Z
 url: https://github.com/astral-sh/uv/issues/511
-synced_at: 2026-01-10T03:41:45Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Allow override of dependencies
 
 ---
 
-_Issue opened by @zanieb on 2023-11-28 21:47_
+_@zanieb_
 
 A user should be able to override the constraints of a package, ignoring transitive requirements that conflict.
 

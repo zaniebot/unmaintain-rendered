@@ -13,14 +13,14 @@ head: zb/macos-14
 created_at: 2025-10-15T14:14:20Z
 updated_at: 2025-10-16T14:07:20Z
 url: https://github.com/astral-sh/uv/pull/16316
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:13Z
 ```
 
 # Migrate from deprecated `macos-13` runner to `macos-15-intel`
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-15 14:14_
+_@zanieb_
 
 _No description provided._
 

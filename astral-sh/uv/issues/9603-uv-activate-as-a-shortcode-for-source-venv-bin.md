@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-03T11:09:56Z
 updated_at: 2024-12-03T16:13:06Z
 url: https://github.com/astral-sh/uv/issues/9603
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # uv activate as a shortcode for `source .venv/bin/activate`
 
 ---
 
-_Issue opened by @dmi3kno on 2024-12-03 11:09_
+_@dmi3kno_
 
 I would appreciate a short command which could abstract the environment activation
 

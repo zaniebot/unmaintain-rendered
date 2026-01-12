@@ -13,14 +13,14 @@ head: ban-most-instance-type-in-type-expression
 created_at: 2025-03-20T15:00:47Z
 updated_at: 2025-03-21T22:00:24Z
 url: https://github.com/astral-sh/ruff/pull/16872
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Ban most `Type::Instance` types in type expressions
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-03-20 15:00_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

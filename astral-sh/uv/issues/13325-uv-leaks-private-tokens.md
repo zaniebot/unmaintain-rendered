@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-07T09:11:36Z
 updated_at: 2025-05-07T14:29:17Z
 url: https://github.com/astral-sh/uv/issues/13325
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:25Z
 ```
 
 # uv leaks private tokens
 
 ---
 
-_Issue opened by @ChrisBr on 2025-05-07 09:11_
+_@ChrisBr_
 
 ### Summary
 

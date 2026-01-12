@@ -12,14 +12,14 @@ head: ci-concurrency
 created_at: 2023-01-05T02:42:00Z
 updated_at: 2023-01-05T03:03:58Z
 url: https://github.com/astral-sh/ruff/pull/1652
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Cancel outdated in-progress workflow automatically
 
 ---
 
-_Pull request opened by @messense on 2023-01-05 02:42_
+_@messense_
 
 https://docs.github.com/en/actions/using-jobs/using-concurrency
 

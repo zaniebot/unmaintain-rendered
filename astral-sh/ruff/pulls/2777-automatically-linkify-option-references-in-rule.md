@@ -12,14 +12,14 @@ head: option-references
 created_at: 2023-02-11T19:01:49Z
 updated_at: 2023-02-12T18:19:12Z
 url: https://github.com/astral-sh/ruff/pull/2777
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Automatically linkify option references in rule documentation
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-02-11 19:01_
+_@not-my-profile_
 
 Previously the rule documentation referenced configuration options
 via full https:// URLs, which was bad for several reasons:

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-17T12:27:11Z
 updated_at: 2025-11-10T17:36:50Z
 url: https://github.com/astral-sh/uv/issues/14105
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # confusing error message for `uv lock --check`
 
 ---
 
-_Issue opened by @RmStorm on 2025-06-17 12:27_
+_@RmStorm_
 
 ### Summary
 

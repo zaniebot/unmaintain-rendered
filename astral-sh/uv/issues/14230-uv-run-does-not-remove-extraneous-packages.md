@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-24T07:28:32Z
 updated_at: 2026-01-09T13:20:44Z
 url: https://github.com/astral-sh/uv/issues/14230
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # uv run does not remove extraneous packages
 
 ---
 
-_Issue opened by @stewit on 2025-06-24 07:28_
+_@stewit_
 
 ### Summary
 

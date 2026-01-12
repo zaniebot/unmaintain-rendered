@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-20T23:25:24Z
 updated_at: 2025-11-21T22:05:34Z
 url: https://github.com/astral-sh/ty/issues/1603
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Empty set from `set()` assignable to `MySet` but not to `MySet | None`
 
 ---
 
-_Issue opened by @BHSPitMonkey on 2025-11-20 23:25_
+_@BHSPitMonkey_
 
 ### Summary
 

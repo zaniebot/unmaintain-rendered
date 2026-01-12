@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-08T00:13:22Z
 updated_at: 2023-11-08T00:43:09Z
 url: https://github.com/clap-rs/clap/issues/5201
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # panic when using tracing::Level and PathBuf with value of "-"
 
 ---
 
-_Issue opened by @AndreasBackx on 2023-11-08 00:13_
+_@AndreasBackx_
 
 ### Please complete the following tasks
 

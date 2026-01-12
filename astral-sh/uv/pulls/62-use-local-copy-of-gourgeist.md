@@ -12,14 +12,14 @@ head: charlie/gourgeist-fixup
 created_at: 2023-10-08T18:38:08Z
 updated_at: 2023-10-08T18:45:09Z
 url: https://github.com/astral-sh/uv/pull/62
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:43Z
 ```
 
 # Use local copy of `gourgeist`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-08 18:38_
+_@charliermarsh_
 
 This PR gets `gourgeist` passing our local CI and integrated into the broader workspace.
 

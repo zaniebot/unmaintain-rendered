@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-17T12:39:14Z
 updated_at: 2024-09-19T09:10:00Z
 url: https://github.com/astral-sh/uv/issues/7455
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # PEP517 issues with poetry when installed using `uv tool`
 
 ---
 
-_Issue opened by @mil-ad on 2024-09-17 12:39_
+_@mil-ad_
 
 I installed `poetry` via `uv tool install poetry` and it mostly works well. However when I do `poetry self add "keyrings.google-artifactregistry-auth@latest"` I get the error trace below.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-09-20T13:31:11Z
 updated_at: 2023-09-20T13:37:17Z
 url: https://github.com/clap-rs/clap/issues/5131
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Action Required: Fix Renovate Configuration
 
 ---
 
-_Issue opened by @renovate on 2023-09-20 13:31_
+_@renovate_
 
 There is an error with this repository's Renovate configuration that needs to be fixed. As a precaution, Renovate will stop PRs until it is resolved.
 

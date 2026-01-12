@@ -13,14 +13,14 @@ head: charlie/up
 created_at: 2024-11-21T14:21:48Z
 updated_at: 2024-11-21T14:35:59Z
 url: https://github.com/astral-sh/uv/pull/9318
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:45Z
 ```
 
 # Remove `--upgrade`, `--no-upgrade`, and `--upgrade-package` from `uv tool upgrade`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-21 14:21_
+_@charliermarsh_
 
 ## Summary
 

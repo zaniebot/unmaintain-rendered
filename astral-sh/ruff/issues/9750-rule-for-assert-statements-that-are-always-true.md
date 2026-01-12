@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-01T09:52:48Z
 updated_at: 2024-02-02T09:09:27Z
 url: https://github.com/astral-sh/ruff/issues/9750
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Rule for assert statements that are always true
 
 ---
 
-_Issue opened by @valentincalomme on 2024-02-01 09:52_
+_@valentincalomme_
 
 I have been searching the documentation, but I cannot seem to find a rule that checks for "tautologies" in assert statements. I recently had a case in my codebase where I had an assert statement in the form of:
 

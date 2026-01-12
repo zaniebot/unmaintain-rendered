@@ -13,14 +13,14 @@ head: alex/try-iterate-simpler
 created_at: 2025-03-17T18:51:26Z
 updated_at: 2025-03-18T11:31:41Z
 url: https://github.com/astral-sh/ruff/pull/16820
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # [red-knot] Simplify `IterationError` and `ContextManagerError`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-17 18:51_
+_@AlexWaygood_
 
 ## Summary
 

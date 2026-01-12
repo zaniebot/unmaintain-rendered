@@ -13,14 +13,14 @@ head: charlie/sync-error-hint
 created_at: 2025-01-18T19:16:32Z
 updated_at: 2025-01-20T17:46:48Z
 url: https://github.com/astral-sh/uv/pull/10739
-synced_at: 2026-01-10T11:45:07Z
+synced_at: 2026-01-12T16:09:27Z
 ```
 
 # Add tag incompatibility hints to sync failures
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-18 19:16_
+_@charliermarsh_
 
 ## Summary
 

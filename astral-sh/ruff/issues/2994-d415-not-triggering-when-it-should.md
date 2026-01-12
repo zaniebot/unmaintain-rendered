@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-17T18:31:26Z
 updated_at: 2023-02-17T23:44:10Z
 url: https://github.com/astral-sh/ruff/issues/2994
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # D415 not triggering when it should
 
 ---
 
-_Issue opened by @cazador481 on 2023-02-17 18:31_
+_@cazador481_
 
 # Code snippet
 ```python

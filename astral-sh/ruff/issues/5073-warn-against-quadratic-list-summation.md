@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-14T03:40:58Z
 updated_at: 2024-02-26T00:38:27Z
 url: https://github.com/astral-sh/ruff/issues/5073
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Warn against quadratic list summation
 
 ---
 
-_Issue opened by @hauntsaninja on 2023-06-14 03:40_
+_@hauntsaninja_
 
 I can't find a linter that warns me about `sum(list_of_lists, [])`. Basically any time the `default` arg of `sum` is a list literal, I think something slow could happen. Maybe ruff could warn me about this? :-)
 

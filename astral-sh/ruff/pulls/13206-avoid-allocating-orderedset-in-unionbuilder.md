@@ -13,14 +13,14 @@ head: micha/union-builder-avoid-set
 created_at: 2024-09-02T08:14:45Z
 updated_at: 2024-09-02T09:17:03Z
 url: https://github.com/astral-sh/ruff/pull/13206
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Avoid allocating `OrderedSet` in `UnionBuilder::simplify`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-02 08:14_
+_@MichaReiser_
 
 
 ## Summary

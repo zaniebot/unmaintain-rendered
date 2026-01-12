@@ -14,14 +14,14 @@ head: konsti/stubs-in-the-build-backend
 created_at: 2025-05-20T21:35:21Z
 updated_at: 2025-05-22T17:02:23Z
 url: https://github.com/astral-sh/uv/pull/13563
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:44Z
 ```
 
 # Build backend: Support stubs packages
 
 ---
 
-_Pull request opened by @konstin on 2025-05-20 21:35_
+_@konstin_
 
 Stubs packages are different in that their name ends with `-stubs`, their module is `<module name>-stubs` (with a dash, not the generally legal underscore) and their modules contain a `__init__.pyi` instead of an `__init__.py` (https://typing.python.org/en/latest/spec/distributing.html#stub-only-packages).
 

@@ -14,14 +14,14 @@ head: alex/fixes
 created_at: 2025-11-27T17:14:45Z
 updated_at: 2025-11-29T16:10:06Z
 url: https://github.com/astral-sh/ruff/pull/21667
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] Add IDE autofixes for two "Did you mean...?" suggestions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-27 17:14_
+_@AlexWaygood_
 
 ## Summary
 

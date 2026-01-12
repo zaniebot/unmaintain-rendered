@@ -13,14 +13,14 @@ head: charlie/comp-var
 created_at: 2024-02-13T00:38:28Z
 updated_at: 2024-02-13T01:09:40Z
 url: https://github.com/astral-sh/ruff/pull/9967
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Add a binding kind for comprehension targets
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-13 00:38_
+_@charliermarsh_
 
 ## Summary
 

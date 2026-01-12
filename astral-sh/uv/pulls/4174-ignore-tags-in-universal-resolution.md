@@ -13,14 +13,14 @@ head: charlie/tags
 created_at: 2024-06-09T23:24:33Z
 updated_at: 2024-06-10T13:42:40Z
 url: https://github.com/astral-sh/uv/pull/4174
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:04Z
 ```
 
 # Ignore tags in universal resolution
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-09 23:24_
+_@charliermarsh_
 
 ## Summary
 

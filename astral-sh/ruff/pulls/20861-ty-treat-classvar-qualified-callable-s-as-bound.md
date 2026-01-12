@@ -14,14 +14,14 @@ head: david/treat-classvar-callables-as-bound-method-descriptors
 created_at: 2025-10-14T11:51:30Z
 updated_at: 2025-10-14T11:57:19Z
 url: https://github.com/astral-sh/ruff/pull/20861
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] Treat `ClassVar`-qualified `Callable`s as bound-method descriptors
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-14 11:51_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

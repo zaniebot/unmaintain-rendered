@@ -14,14 +14,14 @@ head: charlie/prune-cache
 created_at: 2025-05-10T18:28:16Z
 updated_at: 2025-05-10T18:39:12Z
 url: https://github.com/astral-sh/uv/pull/13379
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:40Z
 ```
 
 # Retain dot-separated wheel tags during cache prune
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-10 18:28_
+_@charliermarsh_
 
 ## Summary
 

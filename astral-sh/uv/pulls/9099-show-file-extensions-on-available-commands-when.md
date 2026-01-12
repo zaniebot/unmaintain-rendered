@@ -13,14 +13,14 @@ head: zb/extension
 created_at: 2024-11-13T20:36:37Z
 updated_at: 2024-11-14T16:21:22Z
 url: https://github.com/astral-sh/uv/pull/9099
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:39Z
 ```
 
 # Show file extensions on available commands when not `.exe`
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-13 20:36_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/8770
 

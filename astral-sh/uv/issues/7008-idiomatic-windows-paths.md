@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-04T12:06:16Z
 updated_at: 2025-06-21T09:53:38Z
 url: https://github.com/astral-sh/uv/issues/7008
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Idiomatic Windows paths
 
 ---
 
-_Issue opened by @2-5 on 2024-09-04 12:06_
+_@2-5_
 
 The paths used by `uv` on Windows are not very idiomatic.
 

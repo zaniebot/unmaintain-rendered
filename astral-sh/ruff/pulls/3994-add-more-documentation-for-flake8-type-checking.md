@@ -13,14 +13,14 @@ head: type_checking_docs
 created_at: 2023-04-17T13:34:05Z
 updated_at: 2023-04-17T14:00:48Z
 url: https://github.com/astral-sh/ruff/pull/3994
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add more documentation for flake8-type-checking
 
 ---
 
-_Pull request opened by @tjkuson on 2023-04-17 13:34_
+_@tjkuson_
 
 Add documentation to the flake8-type-checking rules that check for runtime imports inside type-checking blocks and empty type-checking blocks.
 

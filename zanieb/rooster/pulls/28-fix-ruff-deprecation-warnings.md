@@ -13,14 +13,14 @@ head: zb/ruff
 created_at: 2024-03-24T16:48:06Z
 updated_at: 2024-03-24T16:51:23Z
 url: https://github.com/zanieb/rooster/pull/28
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Fix Ruff deprecation warnings
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-24 16:48_
+_@zanieb_
 
 _No description provided._
 

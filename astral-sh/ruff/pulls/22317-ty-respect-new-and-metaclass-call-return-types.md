@@ -13,14 +13,14 @@ head: charlie/metaclass
 created_at: 2025-12-31T16:45:36Z
 updated_at: 2025-12-31T20:12:24Z
 url: https://github.com/astral-sh/ruff/pull/22317
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Respect `__new__` and metaclass `__call__` return types
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-31 16:45_
+_@charliermarsh_
 
 ## Summary
 

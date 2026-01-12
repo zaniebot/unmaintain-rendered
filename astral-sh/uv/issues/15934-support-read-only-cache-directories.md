@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-18T16:47:44Z
 updated_at: 2025-12-11T18:29:25Z
 url: https://github.com/astral-sh/uv/issues/15934
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # Support read-only cache directories
 
 ---
 
-_Issue opened by @konstin on 2025-09-18 16:47_
+_@konstin_
 
 Currently, uv fails if a populated cache is read-only. We should not need to modify a populated cache, so we should be able to support a read-only cache.
 

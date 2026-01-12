@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-06T16:24:44Z
 updated_at: 2024-03-07T15:33:13Z
 url: https://github.com/astral-sh/uv/issues/2245
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Sometimes bytecode compilations fails
 
 ---
 
-_Issue opened by @gozdal on 2024-03-06 16:24_
+_@gozdal_
 
 The compilation sometimes fails for us. Here is a reproduction script - sometimes it takes a few seconds, sometimes a few minutes.
 `uv 0.1.15`, `Python 3.12.2` on Ubuntu 22.04

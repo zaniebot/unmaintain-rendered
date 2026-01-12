@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-31T02:18:00Z
 updated_at: 2023-01-31T04:11:58Z
 url: https://github.com/astral-sh/ruff/issues/2373
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # A way to list per-file-ignore rules for debugging
 
 ---
 
-_Issue opened by @Alphasite on 2023-01-31 02:18_
+_@Alphasite_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

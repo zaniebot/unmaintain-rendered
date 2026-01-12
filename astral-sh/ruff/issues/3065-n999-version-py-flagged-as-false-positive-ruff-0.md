@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-20T18:53:24Z
 updated_at: 2023-02-20T19:27:15Z
 url: https://github.com/astral-sh/ruff/issues/3065
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [N999] `__version__.py` flagged as false positive (Ruff 0.0.248)
 
 ---
 
-_Issue opened by @eddiebergman on 2023-02-20 18:53_
+_@eddiebergman_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

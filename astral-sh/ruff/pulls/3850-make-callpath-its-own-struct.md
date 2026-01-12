@@ -12,14 +12,14 @@ head: charlie/call-path-struct
 created_at: 2023-04-01T16:07:10Z
 updated_at: 2023-04-23T04:00:11Z
 url: https://github.com/astral-sh/ruff/pull/3850
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Make `CallPath` its own struct
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-01 16:07_
+_@charliermarsh_
 
 ## Summary
 

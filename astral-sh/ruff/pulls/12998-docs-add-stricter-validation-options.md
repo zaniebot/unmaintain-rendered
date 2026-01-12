@@ -13,14 +13,14 @@ head: docs/stricter-validation-options
 created_at: 2024-08-19T22:23:41Z
 updated_at: 2024-08-20T05:44:29Z
 url: https://github.com/astral-sh/ruff/pull/12998
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # docs: add stricter validation options
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-08-19 22:23_
+_@mkniewallner_
 
 ## Summary
 

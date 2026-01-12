@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-27T01:59:44Z
 updated_at: 2023-08-05T02:08:15Z
 url: https://github.com/astral-sh/ruff/issues/6114
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Support namespace packages without `namespace-packages` setting
 
 ---
 
-_Issue opened by @charliermarsh on 2023-07-27 01:59_
+_@charliermarsh_
 
 Right now, our module discovery doesn't support namespace packages -- or rather, it requires that projects specify namespace packages explicitly via the [`namespace-packages`](https://beta.ruff.rs/docs/settings/#namespace-packages) setting.
 

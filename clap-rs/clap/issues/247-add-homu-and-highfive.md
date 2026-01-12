@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-09-10T04:08:47Z
 updated_at: 2018-08-02T03:29:44Z
 url: https://github.com/clap-rs/clap/issues/247
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Add Homu (?) and Highfive
 
 ---
 
-_Issue opened by @kbknapp on 2015-09-10 04:08_
+_@kbknapp_
 
 These could be good additions now that we have more collaborators.
 

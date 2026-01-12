@@ -13,14 +13,14 @@ head: zb/bench-3121
 created_at: 2024-02-15T18:25:19Z
 updated_at: 2024-02-17T18:00:51Z
 url: https://github.com/astral-sh/uv/pull/1322
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:35Z
 ```
 
 # Change benchmarks to use 3.12.1
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-15 18:25_
+_@zanieb_
 
 We can wait to merge this until later, but we explicitly bootstrap 3.12.1 and the benches should not pin 3.12.0
 

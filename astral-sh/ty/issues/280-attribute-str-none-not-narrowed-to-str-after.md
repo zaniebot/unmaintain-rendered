@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T17:29:09Z
 updated_at: 2025-05-08T17:57:39Z
 url: https://github.com/astral-sh/ty/issues/280
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Attribute `str | None` not narrowed to `str` after truthiness check
 
 ---
 
-_Issue opened by @blueraft on 2025-05-08 17:29_
+_@blueraft_
 
 ### Summary
 

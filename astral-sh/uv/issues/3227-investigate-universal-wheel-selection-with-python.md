@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-23T22:21:20Z
 updated_at: 2024-04-23T23:28:15Z
 url: https://github.com/astral-sh/uv/issues/3227
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Investigate universal wheel selection with `--python-platform`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-04-23 22:21_
+_@charliermarsh_
 
 > uv pip compile requirements.in --python-platform=macos also fails for open3d because the ARM64 wheels are only available for MacOS 13.0+ (or universal for 10.15+) while uv specifies MacOS 11.0 for ARM64.
 

@@ -12,14 +12,14 @@ head: autofix-g010-typo
 created_at: 2024-05-23T12:18:07Z
 updated_at: 2024-05-24T09:58:00Z
 url: https://github.com/astral-sh/ruff/pull/11514
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [`flake8-logging-format`] Fix the autofix title in `logging-warn` (`G010`)
 
 ---
 
-_Pull request opened by @monk-time on 2024-05-23 12:18_
+_@monk-time_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

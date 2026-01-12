@@ -14,14 +14,14 @@ head: dhruv/parser-line-continuation-at-eof
 created_at: 2025-04-15T14:55:24Z
 updated_at: 2025-04-15T15:56:14Z
 url: https://github.com/astral-sh/ruff/pull/17409
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Raise syntax error when `\` is at end of file
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-15 14:55_
+_@dhruvmanila_
 
 ## Summary
 

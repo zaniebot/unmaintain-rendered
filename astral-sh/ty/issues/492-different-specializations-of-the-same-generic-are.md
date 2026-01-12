@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-23T02:14:17Z
 updated_at: 2025-11-13T06:58:27Z
 url: https://github.com/astral-sh/ty/issues/492
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Different specializations of the same generic are considered different bases
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-05-23 02:14_
+_@InSyncWithFoo_
 
 Consider the following innocent-looking example ([playground](https://play.ty.dev/c7337e08-b762-456f-a988-91812a6e296e)):
 

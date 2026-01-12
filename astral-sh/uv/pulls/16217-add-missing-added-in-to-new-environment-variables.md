@@ -13,14 +13,14 @@ head: missing_added_in
 created_at: 2025-10-09T20:25:28Z
 updated_at: 2025-10-13T20:44:58Z
 url: https://github.com/astral-sh/uv/pull/16217
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:10Z
 ```
 
 # Add missing "added in" to new environment variables in reference
 
 ---
 
-_Pull request opened by @samypr100 on 2025-10-09 20:25_
+_@samypr100_
 
 ## Summary
 

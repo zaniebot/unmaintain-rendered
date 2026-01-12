@@ -13,14 +13,14 @@ head: main
 created_at: 2024-07-03T17:23:34Z
 updated_at: 2024-07-03T18:39:40Z
 url: https://github.com/astral-sh/ruff/pull/12173
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Fix typo in CHANGELOG for misplaced-bare-raise URL
 
 ---
 
-_Pull request opened by @ThomasFaivre on 2024-07-03 17:23_
+_@ThomasFaivre_
 
 Hi all!
 

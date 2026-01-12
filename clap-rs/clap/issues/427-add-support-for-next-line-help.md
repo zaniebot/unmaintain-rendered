@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-02-17T11:36:34Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/427
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Add support for next line help
 
 ---
 
-_Issue opened by @kbknapp on 2016-02-17 11:36_
+_@kbknapp_
 
 Add support, either by arg, or as a program whole for displaying the help string on the next line indented by one tab.
 

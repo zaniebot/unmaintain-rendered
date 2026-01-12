@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-24T00:54:49Z
 updated_at: 2025-09-25T10:25:05Z
 url: https://github.com/astral-sh/uv/issues/16008
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # Should/make `uv cache prune` delete packages that are not used anywhere via link count
 
 ---
 
-_Issue opened by @Tremeschin on 2025-09-24 00:54_
+_@Tremeschin_
 
 ### Summary
 

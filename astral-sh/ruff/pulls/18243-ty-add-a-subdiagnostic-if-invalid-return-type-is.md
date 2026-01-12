@@ -14,14 +14,14 @@ head: alex/invalid-return-proto-note
 created_at: 2025-05-21T16:17:49Z
 updated_at: 2025-05-21T17:38:08Z
 url: https://github.com/astral-sh/ruff/pull/18243
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Add a subdiagnostic if `invalid-return-type` is emitted on a method with an empty body on a non-protocol subclass of a protocol class
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-21 16:17_
+_@AlexWaygood_
 
 ## Summary
 

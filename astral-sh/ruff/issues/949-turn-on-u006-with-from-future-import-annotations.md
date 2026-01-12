@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-28T23:23:13Z
 updated_at: 2024-02-26T06:07:06Z
 url: https://github.com/astral-sh/ruff/issues/949
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Turn on U006 with 'from __future__ import annotations'
 
 ---
 
-_Issue opened by @brandon-leapyear on 2022-11-28 23:23_
+_@brandon-leapyear_
 
 It seems like if `target-version` is below 3.9, U006 doesn't get triggered _at all_, even if `from __future__ import annotations` is included:
 

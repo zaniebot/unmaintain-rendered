@@ -13,14 +13,14 @@ head: konsti/glob-error-message
 created_at: 2025-02-07T10:16:35Z
 updated_at: 2025-02-07T10:24:06Z
 url: https://github.com/astral-sh/uv/pull/11310
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:46Z
 ```
 
 # Fix walkdir error message
 
 ---
 
-_Pull request opened by @konstin on 2025-02-07 10:16_
+_@konstin_
 
 Fixes #11309
 

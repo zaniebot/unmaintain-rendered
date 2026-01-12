@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-13T09:41:32Z
 updated_at: 2025-08-15T15:16:41Z
 url: https://github.com/astral-sh/ty/issues/350
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # "Missing self argument" error after dynamically replacing method
 
 ---
 
-_Issue opened by @shiw-yang on 2025-05-13 09:41_
+_@shiw-yang_
 
 ### Summary
 

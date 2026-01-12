@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-05-11T11:43:34Z
 updated_at: 2025-05-12T08:40:51Z
 url: https://github.com/astral-sh/ty/pull/316
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Ensure ty runs at latest version
 
 ---
 
-_Pull request opened by @soof-golan on 2025-05-11 11:43_
+_@soof-golan_
 
 
 <!--

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-01-08T17:35:29Z
 updated_at: 2024-01-08T17:36:16Z
 url: https://github.com/clap-rs/clap/issues/5291
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Support `arg_require_else_help` natively in the derive
 
 ---
 
-_Issue opened by @epage on 2024-01-08 17:35_
+_@epage_
 
 Right now, users of `arg_required_else_help` must define their args as being overrideable by the subcommand, even if generally required:
 ```rust

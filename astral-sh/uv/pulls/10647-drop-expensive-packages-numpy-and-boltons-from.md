@@ -13,14 +13,14 @@ head: zb/sync-editable
 created_at: 2025-01-15T21:13:21Z
 updated_at: 2025-01-15T23:33:28Z
 url: https://github.com/astral-sh/uv/pull/10647
-synced_at: 2026-01-10T11:45:01Z
+synced_at: 2026-01-12T16:09:24Z
 ```
 
 # Drop expensive packages `numpy` and `boltons` from `sync_editable` test
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-15 21:13_
+_@zanieb_
 
 These were introduced in https://github.com/astral-sh/uv/pull/587 but are now showing up in our slow test list (#878) and we previously pared down the `poetry_editable` test case dependencies — I think these were just missed.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-09-28T21:36:26Z
 updated_at: 2022-09-29T20:46:16Z
 url: https://github.com/astral-sh/ruff/issues/275
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement A001, A002 (flake8-builtins)
 
 ---
 
-_Issue opened by @charliermarsh on 2022-09-28 21:36_
+_@charliermarsh_
 
 See: https://github.com/gforcada/flake8-builtins
 

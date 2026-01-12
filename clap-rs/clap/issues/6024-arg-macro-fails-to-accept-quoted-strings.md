@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-04T20:04:07Z
 updated_at: 2025-06-09T17:09:14Z
 url: https://github.com/clap-rs/clap/issues/6024
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `arg` macro fails to accept quoted strings
 
 ---
 
-_Issue opened by @sjmik on 2025-06-04 20:04_
+_@sjmik_
 
 ### Please complete the following tasks
 

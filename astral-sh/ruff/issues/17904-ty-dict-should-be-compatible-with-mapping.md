@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-07T03:24:23Z
 updated_at: 2025-05-07T15:17:58Z
 url: https://github.com/astral-sh/ruff/issues/17904
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ty: dict should be compatible with Mapping
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-05-07 03:24_
+_@JelleZijlstra_
 
 ### Summary
 

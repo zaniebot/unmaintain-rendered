@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-10T09:04:53Z
 updated_at: 2026-01-10T16:07:27Z
 url: https://github.com/astral-sh/uv/issues/17400
-synced_at: 2026-01-12T02:26:26Z
+synced_at: 2026-01-12T16:02:50Z
 ```
 
 # `uv python dir` reports incorrect location
 
 ---
 
-_Issue opened by @berzi on 2026-01-10 09:04_
+_@berzi_
 
 ### Summary
 

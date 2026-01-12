@@ -15,14 +15,14 @@ head: hoel/fix-blank-lines-classmethods
 created_at: 2024-02-25T10:47:05Z
 updated_at: 2024-03-01T09:37:09Z
 url: https://github.com/astral-sh/ruff/pull/10117
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Fix E301 not triggering on decorated methods.
 
 ---
 
-_Pull request opened by @hoel-bagard on 2024-02-25 10:47_
+_@hoel-bagard_
 
 Stacked on top of  #10098.
 

@@ -13,14 +13,14 @@ head: zb/incompatible-tag-other
 created_at: 2024-02-12T18:39:18Z
 updated_at: 2024-02-13T04:14:39Z
 url: https://github.com/astral-sh/uv/pull/1285
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:33Z
 ```
 
 # Add scenario coverage for wheels with incompatible ABI and Python tags
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-12 18:39_
+_@zanieb_
 
 We use
 

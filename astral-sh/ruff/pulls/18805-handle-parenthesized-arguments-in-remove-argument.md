@@ -14,14 +14,14 @@ head: fix-RUF056
 created_at: 2025-06-19T21:51:06Z
 updated_at: 2025-06-22T13:46:10Z
 url: https://github.com/astral-sh/ruff/pull/18805
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # Handle parenthesized arguments in `remove_argument`
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-19 21:51_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

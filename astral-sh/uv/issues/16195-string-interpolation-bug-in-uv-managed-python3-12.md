@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-08T20:56:09Z
 updated_at: 2025-10-09T05:33:37Z
 url: https://github.com/astral-sh/uv/issues/16195
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # String interpolation bug in uv-managed python3.12
 
 ---
 
-_Issue opened by @masalim2 on 2025-10-08 20:56_
+_@masalim2_
 
 ### Summary
 

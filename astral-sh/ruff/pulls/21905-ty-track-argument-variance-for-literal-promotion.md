@@ -14,14 +14,14 @@ head: dcreager/param-variance
 created_at: 2025-12-10T20:05:39Z
 updated_at: 2025-12-15T20:56:50Z
 url: https://github.com/astral-sh/ruff/pull/21905
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] Track argument variance for literal promotion without relying on `SpecializationBuilder` internals
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-10 20:05_
+_@dcreager_
 
 When inferring a specialization for a generic function call, we might want to promote `Literal` types that appear in the inferred specialization. Whether we do so depends (among other things) on the variance of those typevars in the parameter types that each argument is matched to. That means we need to track the variance of each typevar as we process the arguments during inference.
 

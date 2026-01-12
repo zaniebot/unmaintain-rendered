@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-07T04:26:53Z
 updated_at: 2022-11-07T14:03:11Z
 url: https://github.com/astral-sh/ruff/issues/635
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `ANN001` should maybe ignore `self`
 
 ---
 
-_Issue opened by @matteosantama on 2022-11-07 04:26_
+_@matteosantama_
 
 I notice that when I enable the `ANN001` code, I get the error
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-15T07:51:37Z
 updated_at: 2024-05-02T18:02:13Z
 url: https://github.com/astral-sh/ruff/issues/10948
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # misleading `E721 Do not compare types, use isinstance()` for bool
 
 ---
 
-_Issue opened by @Borda on 2024-04-15 07:51_
+_@Borda_
 
 just crossed [this case](https://github.com/unit8co/darts/pull/2323#discussion_r1565286329) where for `type(component_wise) is bool` ruff suggest generic `isinstance(component_wise, bool)` which is not the same as this comparison takes int as bool:
 ```py

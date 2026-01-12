@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T20:33:19Z
 updated_at: 2025-05-28T20:38:30Z
 url: https://github.com/astral-sh/uv/issues/13708
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # Add .python-version to docker integration
 
 ---
 
-_Issue opened by @mathijshenquet on 2025-05-28 20:33_
+_@mathijshenquet_
 
 https://github.com/astral-sh/uv/blob/72e2821d26d52f97268d318c5c70de6b336c291f/docs/guides/integration/docker.md?plain=1#L375-L379
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-27T19:11:02Z
 updated_at: 2025-12-23T04:42:40Z
 url: https://github.com/astral-sh/ruff/issues/4136
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # TRY400 flags log.error() + raise/sys.exit()
 
 ---
 
-_Issue opened by @jankatins on 2023-04-27 19:11_
+_@jankatins_
 
 In the following code snippet, a TRY400 violation is raised because I use log.error() and not log.exception() in an exception handler. In this case it's by design as I immediately re-raise the exception, I just want to add some message to the exception and I don't want the stacktrace shown twice.
 

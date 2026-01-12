@@ -13,14 +13,14 @@ head: konsti/pubgrub-06ec5a5f59ffaeb6cf5079c6cb184467da06c9db
 created_at: 2025-05-23T13:42:26Z
 updated_at: 2025-05-23T13:51:43Z
 url: https://github.com/astral-sh/uv/pull/13616
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:46Z
 ```
 
 # Update PubGrub to 06ec5a5
 
 ---
 
-_Pull request opened by @konstin on 2025-05-23 13:42_
+_@konstin_
 
 With https://github.com/pubgrub-rs/pubgrub/pull/338 merged, we update PubGrub to 06ec5a5f59ffaeb6cf5079c6cb184467da06c9db
 

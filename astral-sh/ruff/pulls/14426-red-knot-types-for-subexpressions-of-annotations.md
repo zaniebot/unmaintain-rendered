@@ -13,14 +13,14 @@ head: david/annotation-subexpressions-2
 created_at: 2024-11-18T08:36:36Z
 updated_at: 2024-11-18T12:04:03Z
 url: https://github.com/astral-sh/ruff/pull/14426
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Types for subexpressions of annotations
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-18 08:36_
+_@sharkdp_
 
 ## Summary
 

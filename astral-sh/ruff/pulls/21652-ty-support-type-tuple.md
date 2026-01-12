@@ -14,14 +14,14 @@ head: cjm/typetuple
 created_at: 2025-11-27T01:34:43Z
 updated_at: 2025-12-01T17:11:32Z
 url: https://github.com/astral-sh/ruff/pull/21652
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] support `type[tuple[...]]`
 
 ---
 
-_Pull request opened by @carljm on 2025-11-27 01:34_
+_@carljm_
 
 Fixes https://github.com/astral-sh/ty/issues/1649
 

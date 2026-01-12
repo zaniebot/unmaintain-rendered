@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T11:43:16Z
 updated_at: 2024-02-20T20:27:31Z
 url: https://github.com/astral-sh/uv/issues/1686
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Failure to Install Celery 4.4.2 Due to Version Parsing Error in Metadata
 
 ---
 
-_Issue opened by @iamnotagentleman on 2024-02-19 11:43_
+_@iamnotagentleman_
 
 I Encounter a problem when i tried to install celery package with uv
 

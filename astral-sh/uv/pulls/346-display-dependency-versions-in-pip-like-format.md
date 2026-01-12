@@ -12,14 +12,14 @@ head: zanie/equal-disp
 created_at: 2023-11-06T19:33:48Z
 updated_at: 2023-11-06T19:53:16Z
 url: https://github.com/astral-sh/uv/pull/346
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:53Z
 ```
 
 # Display dependency versions in pip-like format during solve failure
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-06 19:33_
+_@zanieb_
 
 - Display `==` for exact version ranges
 - Remove space between dependency and version range

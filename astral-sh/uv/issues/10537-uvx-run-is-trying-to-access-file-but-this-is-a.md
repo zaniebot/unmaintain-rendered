@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-12T09:42:58Z
 updated_at: 2025-01-12T15:08:07Z
 url: https://github.com/astral-sh/uv/issues/10537
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # uvx run is trying to access file() but this is a Python 2 function
 
 ---
 
-_Issue opened by @wsw70 on 2025-01-12 09:42_
+_@wsw70_
 
 I tried to run with `uvx` a simple script (`uv run` is fine):
 

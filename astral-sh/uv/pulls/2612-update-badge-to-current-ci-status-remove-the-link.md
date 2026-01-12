@@ -12,14 +12,14 @@ head: update-badge
 created_at: 2024-03-22T12:30:49Z
 updated_at: 2024-03-22T15:41:34Z
 url: https://github.com/astral-sh/uv/pull/2612
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:08Z
 ```
 
 # Update badge to current CI status. Remove the link to `/actions`
 
 ---
 
-_Pull request opened by @AucaCoyan on 2024-03-22 12:30_
+_@AucaCoyan_
 
 ## Summary
 

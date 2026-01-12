@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-12T09:43:23Z
 updated_at: 2023-09-27T08:34:28Z
 url: https://github.com/astral-sh/ruff/issues/7297
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Update `flake8_quotes` to account for the new f-string tokens
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-12 09:43_
+_@dhruvmanila_
 
 This needs to be looked at in more detail as of now.
 

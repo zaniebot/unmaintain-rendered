@@ -13,14 +13,14 @@ head: dhruv/single-file-support
 created_at: 2024-10-16T09:11:07Z
 updated_at: 2024-10-18T05:21:44Z
 url: https://github.com/astral-sh/ruff/pull/13770
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Avoid indexing the workspace for single-file mode
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-10-16 09:11_
+_@dhruvmanila_
 
 ## Summary
 

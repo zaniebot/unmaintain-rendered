@@ -13,14 +13,14 @@ head: charlie/rev
 created_at: 2024-08-20T23:39:48Z
 updated_at: 2024-08-20T23:56:26Z
 url: https://github.com/astral-sh/uv/pull/6284
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:18Z
 ```
 
 # Make cache robust to removed archives
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-20 23:39_
+_@charliermarsh_
 
 ## Summary
 

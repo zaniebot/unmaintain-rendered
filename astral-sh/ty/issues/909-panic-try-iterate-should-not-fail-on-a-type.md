@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-28T11:15:30Z
 updated_at: 2025-07-28T16:18:37Z
 url: https://github.com/astral-sh/ty/issues/909
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] try_iterate() should not fail on a type assignable to Iterable
 
 ---
 
-_Issue opened by @mermoldy on 2025-07-28 11:15_
+_@mermoldy_
 
 Hi, I found an issue while analyzing the [Peewee](https://github.com/coleifer/peewee) ORM code. I’ve reduced it to a minimal example:
 

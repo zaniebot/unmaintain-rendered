@@ -11,14 +11,14 @@ head: sim103-safe-applicability
 created_at: 2025-09-11T16:49:15Z
 updated_at: 2025-11-21T07:59:33Z
 url: https://github.com/astral-sh/ruff/pull/20351
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [`flake8-simplify`] Mark guaranteed-bool fixes as safe `SIM103`
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-09-11 16:49_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

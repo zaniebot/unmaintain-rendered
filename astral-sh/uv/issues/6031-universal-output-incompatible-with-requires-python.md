@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-12T09:41:02Z
 updated_at: 2026-01-06T20:38:21Z
 url: https://github.com/astral-sh/uv/issues/6031
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # `--universal` output incompatible with `requires-python`
 
 ---
 
-_Issue opened by @blueraft on 2024-08-12 09:41_
+_@blueraft_
 
 Simple MRE:
 

@@ -13,14 +13,14 @@ head: charlie/bound
 created_at: 2024-11-01T15:51:37Z
 updated_at: 2024-11-01T17:15:38Z
 url: https://github.com/astral-sh/ruff/pull/14044
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Handle maybe-unbound `__iadd__`-like operators in augmented assignments
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-01 15:51_
+_@charliermarsh_
 
 ## Summary
 

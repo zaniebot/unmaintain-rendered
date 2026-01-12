@@ -14,14 +14,14 @@ head: move-provider-no-replacement-to-removal-in-3
 created_at: 2025-08-31T01:32:57Z
 updated_at: 2025-09-03T14:18:17Z
 url: https://github.com/astral-sh/ruff/pull/20172
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [`airflow`] Move `airflow.operators.postgres_operator.Mapping` from `AIR302` to `AIR301`
 
 ---
 
-_Pull request opened by @Lee-W on 2025-08-31 01:32_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

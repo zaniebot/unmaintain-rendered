@@ -14,14 +14,14 @@ head: alex/cannot
 created_at: 2025-11-03T15:05:53Z
 updated_at: 2025-11-03T15:38:23Z
 url: https://github.com/astral-sh/ruff/pull/21255
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # [ty] Use "cannot" consistently over "can not"
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-03 15:05_
+_@AlexWaygood_
 
 ## Summary
 

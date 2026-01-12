@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-09T14:03:50Z
 updated_at: 2023-11-09T14:27:02Z
 url: https://github.com/astral-sh/uv/issues/375
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Cache only relevant wheel metadata
 
 ---
 
-_Issue opened by @konstin on 2023-11-09 14:03_
+_@konstin_
 
 Currently, we cache the entire `Metadata21`, which usually contains e.g. the project's readme. We should only store the relevant subset, [requirements](https://packaging.python.org/en/latest/specifications/core-metadata/#requires-dist-multiple-use) and [extras](https://packaging.python.org/en/latest/specifications/core-metadata/#provides-extra-multiple-use).
 

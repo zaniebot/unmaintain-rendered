@@ -13,14 +13,14 @@ head: charlie/negate
 created_at: 2024-04-10T04:02:14Z
 updated_at: 2024-04-10T04:35:55Z
 url: https://github.com/astral-sh/ruff/pull/10854
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Show negated condition in `needless-bool` diagnostics
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-10 04:02_
+_@charliermarsh_
 
 ## Summary
 

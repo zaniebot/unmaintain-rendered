@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-28T12:39:41Z
 updated_at: 2025-12-16T13:37:46Z
 url: https://github.com/astral-sh/uv/issues/7758
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Building docker image and then switching to non root user
 
 ---
 
-_Issue opened by @adiberk on 2024-09-28 12:39_
+_@adiberk_
 
 My company does a two part build process in the docker image
 We first install dependencies and then we build the image using a non root user

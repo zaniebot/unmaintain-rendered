@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-25T20:04:34Z
 updated_at: 2023-02-08T02:44:06Z
 url: https://github.com/astral-sh/ruff/issues/2169
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # T201 autofix can break code that actually should print things
 
 ---
 
-_Issue opened by @akx on 2023-01-25 20:04_
+_@akx_
 
 I'm applying (more!) Ruff to https://github.com/python-babel/babel/ and figured I'd try `--select=ALL --fix` and look through the diff, and found a surprising combination of breaking autofixes – maybe the autofix for T201 ("`print` found") should also be made a suggestion (as there's been discussion for some other rules in other issues here), not a default?
 

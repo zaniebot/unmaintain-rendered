@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-08T15:47:31Z
 updated_at: 2023-02-12T20:48:03Z
 url: https://github.com/astral-sh/ruff/issues/2661
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Add a flag to tell users which files were fixed, and via which rules
 
 ---
 
-_Issue opened by @charliermarsh on 2023-02-08 15:47_
+_@charliermarsh_
 
 _No description provided._
 

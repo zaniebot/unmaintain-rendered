@@ -13,14 +13,14 @@ head: fix-git-ref-with-existing-source
 created_at: 2025-04-15T12:57:35Z
 updated_at: 2025-04-21T02:58:38Z
 url: https://github.com/astral-sh/uv/pull/12897
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:26Z
 ```
 
 # Allow updating Git sources by name
 
 ---
 
-_Pull request opened by @maxmynter on 2025-04-15 12:57_
+_@maxmynter_
 
 
 <!--

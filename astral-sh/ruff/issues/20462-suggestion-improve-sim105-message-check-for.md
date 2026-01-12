@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-18T07:30:46Z
 updated_at: 2025-09-25T15:19:28Z
 url: https://github.com/astral-sh/ruff/issues/20462
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Suggestion: Improve SIM105 message, check for improper use of contextlib.suppress
 
 ---
 
-_Issue opened by @NMertsch on 2025-09-18 07:30_
+_@NMertsch_
 
 ### Summary
 

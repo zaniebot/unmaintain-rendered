@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T11:46:45Z
 updated_at: 2025-10-23T10:54:35Z
 url: https://github.com/astral-sh/ruff/issues/2389
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement C0325 to catch unnecessary parentheses
 
 ---
 
-_Issue opened by @spaceone on 2023-01-31 11:46_
+_@spaceone_
 
 not detected:
 `ruff --isolated --select UP034 - <<<"set(('1.3.6.1.4.1.4203.666.11.1.4.2.12.1'),)"`

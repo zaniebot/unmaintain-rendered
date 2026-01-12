@@ -13,14 +13,14 @@ head: zb/dev-cargo
 created_at: 2025-01-15T22:33:03Z
 updated_at: 2025-01-21T18:43:56Z
 url: https://github.com/astral-sh/uv/pull/10656
-synced_at: 2026-01-10T11:45:03Z
+synced_at: 2026-01-12T16:09:25Z
 ```
 
 # Move `cargo` to the Dev Drive in Windows CI
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-15 22:33_
+_@zanieb_
 
 This successfully changed the nextest install to target the dev drive
 

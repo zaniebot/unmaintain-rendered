@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2024-11-27T00:37:19Z
 updated_at: 2024-11-27T00:52:03Z
 url: https://github.com/astral-sh/uv/pull/9460
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:49Z
 ```
 
 # Add documentation on pyproject.toml plugin entry-points
 
 ---
 
-_Pull request opened by @CarrotManMatt on 2024-11-27 00:37_
+_@CarrotManMatt_
 
 Links & content can be adjusted as necessary.
 

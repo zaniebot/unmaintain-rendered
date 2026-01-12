@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-13T19:06:43Z
 updated_at: 2025-07-09T17:36:55Z
 url: https://github.com/astral-sh/ruff/issues/12870
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Comprehensions do not split as far as they can go, which preserves long line lengths
 
 ---
 
-_Issue opened by @rogersheu on 2024-08-13 19:06_
+_@rogersheu_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

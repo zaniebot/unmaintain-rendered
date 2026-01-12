@@ -14,14 +14,14 @@ head: gankra/ctor-hints
 created_at: 2025-11-10T19:12:13Z
 updated_at: 2025-11-10T19:51:15Z
 url: https://github.com/astral-sh/ruff/pull/21367
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # [ty] supress some trivial expr inlay hints
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-10 19:12_
+_@Gankra_
 
 I'm not 100% sold on this implementation, but it's a strict improvement and it adds a ton of snapshot tests for future iteration.
 

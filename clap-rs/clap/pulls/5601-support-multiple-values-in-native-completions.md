@@ -12,14 +12,14 @@ head: multi-values
 created_at: 2024-07-26T13:05:47Z
 updated_at: 2025-06-05T08:52:28Z
 url: https://github.com/clap-rs/clap/pull/5601
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Support multiple values in native completions
 
 ---
 
-_Pull request opened by @shannmu on 2024-07-26 13:05_
+_@shannmu_
 
 <!--
 Thanks for helping out!

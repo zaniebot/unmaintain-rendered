@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-31T22:56:16Z
 updated_at: 2023-11-10T02:04:27Z
 url: https://github.com/astral-sh/ruff/issues/8397
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # N805 not compatible with sqlalchemy hybrids
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-10-31 22:56_
+_@ThiefMaster_
 
 Apologies for opening a new issue for what's basically part of #4604, but considering that this is one closed even though half of it has not been addressed at all, and I'm not getting any replies to my comment there, I think opening a new one makes sense - this is clearly a missing feature / bug, and it makes this particular check from ruff pretty much unusable for any codebase using SQLAlchemy's hybrid properties.
 

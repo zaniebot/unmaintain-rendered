@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-06-09T01:33:27Z
 updated_at: 2022-05-23T20:23:00Z
 url: https://github.com/clap-rs/clap/issues/1968
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Validate argument with regex
 
 ---
 
-_Issue opened by @catleeball on 2020-06-09 01:33_
+_@catleeball_
 
 ### Describe your use case
 

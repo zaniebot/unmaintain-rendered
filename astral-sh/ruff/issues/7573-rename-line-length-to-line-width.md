@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-21T11:36:58Z
 updated_at: 2023-10-24T07:55:23Z
 url: https://github.com/astral-sh/ruff/issues/7573
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Rename `line-length` to `line-width`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-21 11:36_
+_@MichaReiser_
 
 Rename the `line-length` setting to `line-width`. Update the documentation to mention that is also used for the formatter and that it is the line **width** and not **length**. 
 

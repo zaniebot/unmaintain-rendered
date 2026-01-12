@@ -13,14 +13,14 @@ head: dhruv/avoid-lexer-in-ple
 created_at: 2024-05-13T13:24:34Z
 updated_at: 2024-05-13T14:50:41Z
 url: https://github.com/astral-sh/ruff/pull/11406
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Avoid lexer usage in `PLE1300` and `PLE1307`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-13 13:24_
+_@dhruvmanila_
 
 ## Summary
 

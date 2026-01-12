@@ -11,14 +11,14 @@ head: e402-fp
 created_at: 2023-02-18T18:11:57Z
 updated_at: 2023-02-20T18:00:25Z
 url: https://github.com/astral-sh/ruff/pull/3018
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Fix E402 false positive
 
 ---
 
-_Pull request opened by @carlosmiei on 2023-02-18 18:11_
+_@carlosmiei_
 
 Hello guys :) This is my first contribution to this fantastic project, sorry if I'm missing something. (I tried to follow all the `Contributing` recommendations)
 - fixes https://github.com/charliermarsh/ruff/issues/3010

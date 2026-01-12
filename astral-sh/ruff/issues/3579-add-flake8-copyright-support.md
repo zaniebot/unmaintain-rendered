@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-17T16:33:37Z
 updated_at: 2023-06-11T02:18:00Z
 url: https://github.com/astral-sh/ruff/issues/3579
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Add flake8-copyright support
 
 ---
 
-_Issue opened by @Ryang20718 on 2023-03-17 16:33_
+_@Ryang20718_
 
 Hi, would it be possible to add flake8-copyright to ruff please?
 

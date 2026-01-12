@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-27T13:06:54Z
 updated_at: 2025-02-03T21:52:18Z
 url: https://github.com/astral-sh/uv/issues/7737
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Suggestion when a `.python-version` file requirement is incompatible with the project
 
 ---
 
-_Issue opened by @zanieb on 2024-09-27 13:06_
+_@zanieb_
 
 We should suggest _changing_ the pin, right now we just say it's incompatible:
 

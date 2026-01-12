@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-09T17:35:01Z
 updated_at: 2025-09-08T14:45:10Z
 url: https://github.com/zanieb/rooster/issues/42
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Rooster links to fictitious PRs if you have `origin` pointing to a fork locally instead of the upstream repo
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-05-09 17:35_
+_@AlexWaygood_
 
 E.g. I tried running the release script at Ruff earlier and this happened (none of those "PRs to my fork" actually exist, the links are all 404s):
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-28T03:39:14Z
 updated_at: 2025-07-31T06:07:09Z
 url: https://github.com/astral-sh/uv/issues/12522
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # Make `python-install-mirror` configurable in single-file scripts
 
 ---
 
-_Issue opened by @l1xnan on 2025-03-28 03:39_
+_@l1xnan_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-09T17:04:26Z
 updated_at: 2024-10-24T00:13:34Z
 url: https://github.com/astral-sh/uv/issues/8050
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Inconsistent commit hash for git source
 
 ---
 
-_Issue opened by @tpgillam on 2024-10-09 17:04_
+_@tpgillam_
 
 uv 0.4.20 -- we've run into the following scenario with some internal packages:
 

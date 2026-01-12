@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T03:55:38Z
 updated_at: 2024-04-07T00:29:35Z
 url: https://github.com/astral-sh/uv/issues/1420
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Install `pip` by default in new environments
 
 ---
 
-_Issue opened by @ikrommyd on 2024-02-16 03:55_
+_@ikrommyd_
 
 I think it's more logical to automatically install pip in the newly created environments by `uv venv` so that the user can immediately have access to pip within the new environent. Now if you create a new environment and activate it, pip points to the system pip.
 

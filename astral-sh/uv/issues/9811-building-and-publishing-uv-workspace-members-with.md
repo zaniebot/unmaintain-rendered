@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-11T14:49:10Z
 updated_at: 2025-12-17T17:24:42Z
 url: https://github.com/astral-sh/uv/issues/9811
-synced_at: 2026-01-10T03:11:32Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # Building and publishing uv workspace members with pinned version constraints
 
 ---
 
-_Issue opened by @mtnmbr on 2024-12-11 14:49_
+_@mtnmbr_
 
 Hey,
 

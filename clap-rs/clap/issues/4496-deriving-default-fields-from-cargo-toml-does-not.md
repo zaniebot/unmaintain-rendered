@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-21T12:04:23Z
 updated_at: 2022-11-21T12:36:02Z
 url: https://github.com/clap-rs/clap/issues/4496
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Deriving default fields from Cargo.toml does not work
 
 ---
 
-_Issue opened by @laclouis5 on 2022-11-21 12:04_
+_@laclouis5_
 
 ### Please complete the following tasks
 

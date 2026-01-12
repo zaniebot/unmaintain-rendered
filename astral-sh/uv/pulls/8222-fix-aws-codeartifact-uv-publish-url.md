@@ -14,14 +14,14 @@ head: konsti/aws-codeartifact
 created_at: 2024-10-15T15:42:08Z
 updated_at: 2024-10-15T16:08:20Z
 url: https://github.com/astral-sh/uv/pull/8222
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:12Z
 ```
 
 # Fix AWS CodeArtifact UV_PUBLISH_URL
 
 ---
 
-_Pull request opened by @konstin on 2024-10-15 15:42_
+_@konstin_
 
 Fixes #7958
 

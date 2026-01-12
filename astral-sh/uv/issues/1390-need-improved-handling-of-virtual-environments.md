@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T23:47:15Z
 updated_at: 2024-07-01T21:49:09Z
 url: https://github.com/astral-sh/uv/issues/1390
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Need improved handling of virtual environments
 
 ---
 
-_Issue opened by @eabase on 2024-02-15 23:47_
+_@eabase_
 
 Hi, 
 

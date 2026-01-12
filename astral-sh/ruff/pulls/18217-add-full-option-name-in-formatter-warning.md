@@ -13,14 +13,14 @@ head: codeman/18199
 created_at: 2025-05-20T12:14:07Z
 updated_at: 2025-05-20T14:26:47Z
 url: https://github.com/astral-sh/ruff/pull/18217
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # add full option name in formatter warning
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-05-20 12:14_
+_@CodeMan62_
 
 ## Summary
 So this PR fixes #18199 in the issue mentioned the error message is as followed

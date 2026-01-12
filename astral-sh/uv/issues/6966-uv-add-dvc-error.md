@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-03T12:12:02Z
 updated_at: 2024-09-04T00:43:55Z
 url: https://github.com/astral-sh/uv/issues/6966
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # uv add dvc error
 
 ---
 
-_Issue opened by @actuaristai on 2024-09-03 12:12_
+_@actuaristai_
 
 
 ```

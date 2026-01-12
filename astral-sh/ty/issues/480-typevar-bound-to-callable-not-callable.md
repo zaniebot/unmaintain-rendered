@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-21T21:08:12Z
 updated_at: 2025-05-30T19:01:53Z
 url: https://github.com/astral-sh/ty/issues/480
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # TypeVar bound to Callable not callable
 
 ---
 
-_Issue opened by @danielhollas on 2025-05-21 21:08_
+_@danielhollas_
 
 ### Summary
 

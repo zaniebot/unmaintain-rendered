@@ -13,14 +13,14 @@ head: jtfm/vendor-keyring
 created_at: 2025-07-18T13:56:17Z
 updated_at: 2025-08-15T13:57:58Z
 url: https://github.com/astral-sh/uv/pull/14725
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:22Z
 ```
 
 # Add new `uv-keyring` crate that vendors the `keyring-rs` crate
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-07-18 13:56_
+_@jtfmumm_
 
 This PR is a first step toward support for storing credentials in the system keyring. The `keyring-rs` crate is the best option for system keyring integration, but the latest version (v4) requires either that Linux users have `libdbus` installed or that it is built with `libdbus` vendored in. This is because v4 depends on [dbus-secret-service](https://github.com/open-source-cooperative/dbus-secret-service), which was created as an alternative to [secret-service](https://github.com/open-source-cooperative/secret-service-rs) so that users are not required to use an async runtime. Since uv does use an async runtime, this is not a good tradeoff for uv.
 

@@ -14,14 +14,14 @@ head: alex/non-fully-static-subtyping
 created_at: 2025-09-30T16:14:55Z
 updated_at: 2025-10-01T10:15:27Z
 url: https://github.com/astral-sh/ruff/pull/20650
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [ty] Fix subtyping of invariant generics specialized with `Any`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-30 16:14_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-04T17:08:32Z
 updated_at: 2024-10-04T17:54:48Z
 url: https://github.com/astral-sh/uv/issues/7930
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Error when creating a lock file with disabled package management mode
 
 ---
 
-_Issue opened by @nightblure on 2024-10-04 17:08_
+_@nightblure_
 
 Hi! I finally took the time to try using this amazing tool in one of the working services but found the following problem. When I try to create a lock file with **disabled package control mode** (`package = false` in _tool.uv_ section), I get an error:
 ```

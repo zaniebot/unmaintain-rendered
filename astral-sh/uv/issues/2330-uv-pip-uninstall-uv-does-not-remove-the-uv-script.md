@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-10T09:15:01Z
 updated_at: 2024-03-10T23:02:04Z
 url: https://github.com/astral-sh/uv/issues/2330
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # `uv pip uninstall uv` does not remove the uv script from a venv
 
 ---
 
-_Issue opened by @layday on 2024-03-10 09:15_
+_@layday_
 
 ```
 $ uv pip install uv

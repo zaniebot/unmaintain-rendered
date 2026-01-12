@@ -14,14 +14,14 @@ head: ag/fix-toolchain-find-test
 created_at: 2024-06-25T17:02:02Z
 updated_at: 2024-06-25T17:23:37Z
 url: https://github.com/astral-sh/uv/pull/4523
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # uv/tests: tweak toolchain_find test
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-06-25 17:02_
+_@BurntSushi_
 
 I was getting this test failure locally on my Archlinux system:
 

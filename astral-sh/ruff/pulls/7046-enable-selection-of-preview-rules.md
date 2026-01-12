@@ -12,14 +12,14 @@ head: charlie/cli-preview
 created_at: 2023-09-01T15:38:48Z
 updated_at: 2023-09-06T19:13:39Z
 url: https://github.com/astral-sh/ruff/pull/7046
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Enable selection of preview rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-01 15:38_
+_@charliermarsh_
 
 One proposal for supporting workflows like:
 

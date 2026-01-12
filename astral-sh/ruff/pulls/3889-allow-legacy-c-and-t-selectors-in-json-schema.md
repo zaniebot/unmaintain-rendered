@@ -12,14 +12,14 @@ head: charlie/rules
 created_at: 2023-04-05T17:53:27Z
 updated_at: 2023-04-05T18:17:18Z
 url: https://github.com/astral-sh/ruff/pull/3889
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Allow legacy C and T selectors in JSON schema
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-05 17:53_
+_@charliermarsh_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-20T22:33:20Z
 updated_at: 2025-03-21T00:06:41Z
 url: https://github.com/astral-sh/uv/issues/12351
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # uv 0.6.9 fails to run pytest-xdist
 
 ---
 
-_Issue opened by @SummerStorm on 2025-03-20 22:33_
+_@SummerStorm_
 
 ### Summary
 

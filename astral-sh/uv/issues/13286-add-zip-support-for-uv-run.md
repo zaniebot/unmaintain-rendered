@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-04T19:35:57Z
 updated_at: 2025-05-04T19:40:48Z
 url: https://github.com/astral-sh/uv/issues/13286
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # Add zip support for uv run
 
 ---
 
-_Issue opened by @mraesener-aubex on 2025-05-04 19:35_
+_@mraesener-aubex_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/install-liblzma
 created_at: 2024-12-13T20:04:04Z
 updated_at: 2024-12-13T20:10:34Z
 url: https://github.com/astral-sh/uv/pull/9880
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:01Z
 ```
 
 # Install `liblzma-dev` in CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-13 20:04_
+_@zanieb_
 
 _No description provided._
 

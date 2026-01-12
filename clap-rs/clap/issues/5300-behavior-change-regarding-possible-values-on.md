@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-12T16:56:30Z
 updated_at: 2024-01-12T19:34:19Z
 url: https://github.com/clap-rs/clap/issues/5300
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # behavior change regarding `possible_values` on derived boolean args in 4.4.14
 
 ---
 
-_Issue opened by @ahl on 2024-01-12 16:56_
+_@ahl_
 
 ### Please complete the following tasks
 

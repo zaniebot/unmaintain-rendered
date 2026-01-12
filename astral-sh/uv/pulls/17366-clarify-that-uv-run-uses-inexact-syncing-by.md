@@ -13,14 +13,14 @@ head: claude/clarify-issue-discussion-5Oc13
 created_at: 2026-01-08T21:17:18Z
 updated_at: 2026-01-09T13:20:43Z
 url: https://github.com/astral-sh/uv/pull/17366
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:44Z
 ```
 
 # Clarify that `uv run` uses inexact syncing by default
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-08 21:17_
+_@zanieb_
 
 Closes #14230
 

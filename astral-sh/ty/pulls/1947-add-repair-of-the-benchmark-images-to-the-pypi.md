@@ -13,14 +13,14 @@ head: zb/pypi-readme
 created_at: 2025-12-16T17:10:39Z
 updated_at: 2025-12-16T17:25:01Z
 url: https://github.com/astral-sh/ty/pull/1947
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Add repair of the benchmark images to the PyPI readme transform
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-16 17:10_
+_@zanieb_
 
 ```diff
 diff --git a/README.md b/README.md

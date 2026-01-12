@@ -13,14 +13,14 @@ head: zb/list-variant
 created_at: 2024-12-06T04:28:44Z
 updated_at: 2024-12-06T14:28:30Z
 url: https://github.com/astral-sh/uv/pull/9669
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:55Z
 ```
 
 # Fix missing display of non-freethreaded Python 3.13 in `python list`
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-06 04:28_
+_@zanieb_
 
 Closes https://github.com/indygreg/python-build-standalone/issues/407
 

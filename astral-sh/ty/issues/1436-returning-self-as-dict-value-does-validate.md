@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-24T15:01:00Z
 updated_at: 2025-10-24T20:15:27Z
 url: https://github.com/astral-sh/ty/issues/1436
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Returning self as dict value does validate against return type
 
 ---
 
-_Issue opened by @gjcarneiro on 2025-10-24 15:01_
+_@gjcarneiro_
 
 ### Summary
 

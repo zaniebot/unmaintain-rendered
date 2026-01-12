@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-23T20:36:51Z
 updated_at: 2025-12-18T07:49:10Z
 url: https://github.com/astral-sh/uv/issues/14857
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # Reference docs sidebar can't be scrolled
 
 ---
 
-_Issue opened by @roy-work on 2025-07-23 20:36_
+_@roy-work_
 
 ### Summary
 

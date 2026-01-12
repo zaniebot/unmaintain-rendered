@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-09T07:42:47Z
 updated_at: 2024-10-16T13:38:06Z
 url: https://github.com/astral-sh/uv/issues/8037
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # There's no intuitive way to Managing Environments.
 
 ---
 
-_Issue opened by @farzbood on 2024-10-09 07:42_
+_@farzbood_
 
 Hi,
 I couldn't find any command or options to **Manage the Environments** created once by `uv venv `and needed to be **Modified/Removed/Switched Between** appropriately, like the ones available in [Poetry](https://python-poetry.org/docs/managing-environments/).

@@ -14,14 +14,14 @@ head: alex/unnecessary-node-calls
 created_at: 2025-09-29T14:25:53Z
 updated_at: 2025-09-29T15:05:14Z
 url: https://github.com/astral-sh/ruff/pull/20630
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # [ty] Remove unnecessary `parsed_module()` calls
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-29 14:25_
+_@AlexWaygood_
 
 ## Summary
 

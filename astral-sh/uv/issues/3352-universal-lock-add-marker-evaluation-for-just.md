@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-03T15:44:29Z
 updated_at: 2024-05-09T13:24:38Z
 url: https://github.com/astral-sh/uv/issues/3352
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # universal-lock: add marker evaluation for just extras
 
 ---
 
-_Issue opened by @BurntSushi on 2024-05-03 15:44_
+_@BurntSushi_
 
 The central way that a universal lock file is generated is by ignoring the markers in a list of dependencies. For example, given:
 

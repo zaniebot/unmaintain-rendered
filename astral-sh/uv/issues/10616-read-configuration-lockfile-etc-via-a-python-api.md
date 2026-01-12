@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T23:05:01Z
 updated_at: 2025-01-15T18:42:49Z
 url: https://github.com/astral-sh/uv/issues/10616
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # Read configuration, lockfile, etc. via a Python API
 
 ---
 
-_Issue opened by @itsmatthu on 2025-01-14 23:05_
+_@itsmatthu_
 
 we'd like to read and operate uv configuration and lockfiles from Python code.
 

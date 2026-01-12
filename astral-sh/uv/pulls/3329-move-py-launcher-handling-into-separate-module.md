@@ -13,14 +13,14 @@ head: zb/py-launcher
 created_at: 2024-05-01T17:15:38Z
 updated_at: 2024-05-02T11:44:08Z
 url: https://github.com/astral-sh/uv/pull/3329
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:34Z
 ```
 
 # Move `py` launcher handling into separate module
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-01 17:15_
+_@zanieb_
 
 Split out of #3266 
 

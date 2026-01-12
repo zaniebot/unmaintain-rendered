@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-28T12:20:13Z
 updated_at: 2025-12-07T07:16:15Z
 url: https://github.com/astral-sh/uv/issues/3876
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # uv and/or pip python package not installed by default in new venv created by uv
 
 ---
 
-_Issue opened by @mcrumiller on 2024-05-28 12:20_
+_@mcrumiller_
 
 When I create a new virtual environment using `uv`, I cannot use uv or pip in that environment, making it difficult to install other packages.
 

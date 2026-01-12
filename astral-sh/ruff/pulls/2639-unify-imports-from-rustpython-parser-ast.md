@@ -12,14 +12,14 @@ head: charlie/ast
 created_at: 2023-02-07T21:45:29Z
 updated_at: 2023-02-07T21:54:51Z
 url: https://github.com/astral-sh/ruff/pull/2639
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Unify imports from `rustpython_parser::ast`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-07 21:45_
+_@charliermarsh_
 
 _No description provided._
 

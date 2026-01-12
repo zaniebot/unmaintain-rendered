@@ -12,14 +12,14 @@ head: format-expr-set-comp
 created_at: 2023-07-15T10:19:52Z
 updated_at: 2023-07-16T07:51:13Z
 url: https://github.com/astral-sh/ruff/pull/5774
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Format `SetComp`
 
 ---
 
-_Pull request opened by @lkh42t on 2023-07-15 10:19_
+_@lkh42t_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ head: issue-1260
 created_at: 2025-10-08T10:11:05Z
 updated_at: 2025-10-08T10:16:36Z
 url: https://github.com/astral-sh/ty/pull/1325
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Fix dataclass_transform parameter overrides for kw_only and frozen
 
 ---
 
-_Pull request opened by @fatelei on 2025-10-08 10:11_
+_@fatelei_
 
 - Add support for eq, kw_only, and frozen parameter overrides in @dataclass_transform
 - Previously only order parameter override was supported

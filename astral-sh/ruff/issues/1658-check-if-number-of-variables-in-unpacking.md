@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-05T10:41:14Z
 updated_at: 2023-01-05T17:31:48Z
 url: https://github.com/astral-sh/ruff/issues/1658
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Check if number of variables in unpacking assignment matches slice notation
 
 ---
 
-_Issue opened by @not-my-profile on 2023-01-05 10:41_
+_@not-my-profile_
 
 ```python
 foo, bar = values[:1] # not enough values to unpack

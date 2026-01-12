@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-16T18:12:58Z
 updated_at: 2025-02-20T20:19:47Z
 url: https://github.com/astral-sh/uv/issues/11559
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:40Z
 ```
 
 # `uv export` includes duplicates for projects with conflicts
 
 ---
 
-_Issue opened by @charliermarsh on 2025-02-16 18:12_
+_@charliermarsh_
 
 E.g., given:
 

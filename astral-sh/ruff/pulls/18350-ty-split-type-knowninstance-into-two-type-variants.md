@@ -14,14 +14,14 @@ head: alex/singletons
 created_at: 2025-05-28T10:53:29Z
 updated_at: 2025-06-03T18:27:52Z
 url: https://github.com/astral-sh/ruff/pull/18350
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Split `Type::KnownInstance` into two type variants
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-28 10:53_
+_@AlexWaygood_
 
 ## Summary
 

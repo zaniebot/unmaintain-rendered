@@ -13,14 +13,14 @@ head: alex/micro-optimise-is-protocol
 created_at: 2025-04-29T12:32:26Z
 updated_at: 2025-04-29T12:35:55Z
 url: https://github.com/astral-sh/ruff/pull/17703
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [red-knot] micro-optimise `ClassLiteral::is_protocol`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-29 12:32_
+_@AlexWaygood_
 
 ## Summary
 

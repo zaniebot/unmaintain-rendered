@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T21:46:43Z
 updated_at: 2023-05-04T13:03:10Z
 url: https://github.com/astral-sh/ruff/issues/2419
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement `isort` custom sections and ordering
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-31 21:46_
+_@ngnpope_
 
 `isort` has support for configuring [custom sections and ordering](https://pycqa.github.io/isort/docs/configuration/custom_sections_and_ordering.html).
 

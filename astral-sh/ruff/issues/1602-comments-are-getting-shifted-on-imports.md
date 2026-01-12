@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-03T15:10:02Z
 updated_at: 2023-01-04T12:43:25Z
 url: https://github.com/astral-sh/ruff/issues/1602
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Comments are getting shifted on imports
 
 ---
 
-_Issue opened by @blink1073 on 2023-01-03 15:10_
+_@blink1073_
 
 I believe #1562 introduced a regression for us in [jupyter-server/jupyter_server_terminals@`b536f62` (#73)](https://github.com/jupyter-server/jupyter_server_terminals/pull/73/commits/b536f6252b138fcffcbb0bb61b38ed8faf2476f6).
 

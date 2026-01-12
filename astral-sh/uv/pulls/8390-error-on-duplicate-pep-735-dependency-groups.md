@@ -13,14 +13,14 @@ head: charlie/dulicate-dep-groups
 created_at: 2024-10-20T19:56:15Z
 updated_at: 2024-10-22T01:47:59Z
 url: https://github.com/astral-sh/uv/pull/8390
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:17Z
 ```
 
 # Error on duplicate PEP 735 dependency groups
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-20 19:56_
+_@charliermarsh_
 
 ## Summary
 

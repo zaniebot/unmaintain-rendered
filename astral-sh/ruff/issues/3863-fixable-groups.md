@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-03T13:45:58Z
 updated_at: 2023-10-06T03:41:45Z
 url: https://github.com/astral-sh/ruff/issues/3863
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # fixable groups
 
 ---
 
-_Issue opened by @ghost on 2023-04-03 13:45_
+_@ghost_
 
 How about supporting different groups of fixables in the configuration file?
 So you can e.g. add a group for safe fixes that you always want to be fixed automatically like e.g. sorting imports.

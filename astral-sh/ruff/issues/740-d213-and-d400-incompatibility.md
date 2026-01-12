@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-14T17:42:09Z
 updated_at: 2022-11-15T00:56:18Z
 url: https://github.com/astral-sh/ruff/issues/740
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # D213 and D400 incompatibility
 
 ---
 
-_Issue opened by @andriilahuta on 2022-11-14 17:42_
+_@andriilahuta_
 
 `D213` rule is not compatible with `D400` and some others.
 

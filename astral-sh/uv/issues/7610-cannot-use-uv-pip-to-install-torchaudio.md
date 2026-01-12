@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-21T07:01:26Z
 updated_at: 2024-09-24T07:22:24Z
 url: https://github.com/astral-sh/uv/issues/7610
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Cannot use `uv pip` to install torchaudio 
 
 ---
 
-_Issue opened by @JavaZeroo on 2024-09-21 07:01_
+_@JavaZeroo_
 
 # Running
 

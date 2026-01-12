@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-19T09:31:40Z
 updated_at: 2025-11-19T09:31:40Z
 url: https://github.com/astral-sh/ruff/issues/21520
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Better uv/ruff integration
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-19 09:31_
+_@MichaReiser_
 
 > A better integration story between our tools is very much on our minds and I outlined (internally) a few ideas on how it could be done. Unfortunately, I was kept busy with working on other parts of ty that prevented me to make much progress on it. I hope that I can come back to it soon, once we're further along with ty. 
 > 

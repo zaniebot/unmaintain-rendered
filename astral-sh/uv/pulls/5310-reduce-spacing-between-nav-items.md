@@ -14,14 +14,14 @@ head: zb/docs-nav
 created_at: 2024-07-22T20:56:23Z
 updated_at: 2024-07-23T16:50:03Z
 url: https://github.com/astral-sh/uv/pull/5310
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:45Z
 ```
 
 # Reduce spacing between nav items
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-22 20:56_
+_@zanieb_
 
 **Before**
 <img width="1475" alt="Screenshot 2024-07-22 at 3 56 46 PM" src="https://github.com/user-attachments/assets/a9c6b929-0569-45a6-9840-d49d955dd55a">

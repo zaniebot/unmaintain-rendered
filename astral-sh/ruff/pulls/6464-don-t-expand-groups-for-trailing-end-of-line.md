@@ -12,14 +12,14 @@ head: charlie/break
 created_at: 2023-08-09T23:35:11Z
 updated_at: 2023-08-11T15:58:42Z
 url: https://github.com/astral-sh/ruff/pull/6464
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Don't expand groups for trailing end-of-line comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-09 23:35_
+_@charliermarsh_
 
 ## Summary
 

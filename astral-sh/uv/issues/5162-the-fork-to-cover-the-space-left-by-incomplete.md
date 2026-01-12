@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-17T18:19:59Z
 updated_at: 2024-07-26T14:28:22Z
 url: https://github.com/astral-sh/uv/issues/5162
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # the fork to cover the space left by incomplete markers is probably not correctly constructed
 
 ---
 
-_Issue opened by @BurntSushi on 2024-07-17 18:19_
+_@BurntSushi_
 
 Whenever we have incomplete marker expressions that provoke a fork, we create an extra fork that spans the negation of the union of those marker expressions. I believe the way we are creating that fork today is not quite correct:
 

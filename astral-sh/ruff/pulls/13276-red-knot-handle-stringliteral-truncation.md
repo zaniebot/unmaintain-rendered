@@ -13,14 +13,14 @@ head: string-literals
 created_at: 2024-09-07T06:16:36Z
 updated_at: 2024-09-13T14:07:48Z
 url: https://github.com/astral-sh/ruff/pull/13276
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Handle StringLiteral truncation
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-09-07 06:16_
+_@dylwil3_
 
 When a type of the form `Literal["..."]` would be constructed with too large of a string, this PR converts it to `LiteralString` instead.
 

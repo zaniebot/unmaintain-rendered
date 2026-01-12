@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-02T04:37:21Z
 updated_at: 2025-11-05T02:58:06Z
 url: https://github.com/clap-rs/clap/issues/6174
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Compile-time error for naming an arg group the same as an arg
 
 ---
 
-_Issue opened by @lgarron on 2025-11-02 04:37_
+_@lgarron_
 
 ### Please complete the following tasks
 

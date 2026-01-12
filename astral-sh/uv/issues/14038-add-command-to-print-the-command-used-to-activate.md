@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-14T14:09:31Z
 updated_at: 2025-06-14T14:09:31Z
 url: https://github.com/astral-sh/uv/issues/14038
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # Add command to print the command used to activate the virtual environment depending on the current shell
 
 ---
 
-_Issue opened by @Kajiih on 2025-06-14 14:09_
+_@Kajiih_
 
 ### Summary
 

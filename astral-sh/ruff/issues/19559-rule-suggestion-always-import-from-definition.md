@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-25T15:09:20Z
 updated_at: 2025-07-28T10:18:08Z
 url: https://github.com/astral-sh/ruff/issues/19559
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Rule suggestion: always import from definition
 
 ---
 
-_Issue opened by @gorewilliams on 2025-07-25 15:09_
+_@gorewilliams_
 
 ### Summary
 

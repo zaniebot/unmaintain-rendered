@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T18:42:59Z
 updated_at: 2025-01-14T18:42:59Z
 url: https://github.com/astral-sh/uv/issues/10610
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # musl memcpy is slower than glibc memcpy
 
 ---
 
-_Issue opened by @konstin on 2025-01-14 18:42_
+_@konstin_
 
 Currently, the uv musl builds ("musllinux") are 10% slower than the uv glibc builds ("manylinux"). This seems to be mainly due to memcpy.
 

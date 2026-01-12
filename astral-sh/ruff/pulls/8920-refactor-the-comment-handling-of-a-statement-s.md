@@ -13,14 +13,14 @@ head: refactor-last-statement-expression-comment-formatting
 created_at: 2023-11-30T02:57:00Z
 updated_at: 2023-12-12T03:09:10Z
 url: https://github.com/astral-sh/ruff/pull/8920
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Refactor the comment handling of a statement's last expression
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-11-30 02:57_
+_@MichaReiser_
 
 ## Summary
 

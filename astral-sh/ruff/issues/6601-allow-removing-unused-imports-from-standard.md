@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-15T19:43:08Z
 updated_at: 2025-02-11T20:32:11Z
 url: https://github.com/astral-sh/ruff/issues/6601
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Allow removing unused imports from standard library only
 
 ---
 
-_Issue opened by @hotpxl on 2023-08-15 19:43_
+_@hotpxl_
 
 [autoflake](https://github.com/PyCQA/autoflake) can be configured to remove unused imports from standard library only. This is useful when we have [PEP 604](https://beta.ruff.rs/docs/rules/non-pep604-annotation/) and [PEP 585](https://beta.ruff.rs/docs/rules/non-pep585-annotation/) autofix enabled but not [unused-import](https://beta.ruff.rs/docs/rules/unused-import/). The reason I don't have unused-import enabled is because of legacy code that depends on implicit exports and/or side effects so it's not safe to just enable it yet.
 

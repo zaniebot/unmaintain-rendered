@@ -13,14 +13,14 @@ head: david/no-deep-tuple-specializations
 created_at: 2025-10-21T13:32:21Z
 updated_at: 2025-10-22T12:03:35Z
 url: https://github.com/astral-sh/ruff/pull/21018
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [ty] Fall back to `Divergent` for deep tuple specializations
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-21 13:32_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-12T14:55:49Z
 updated_at: 2025-12-17T15:05:22Z
 url: https://github.com/astral-sh/uv/issues/17102
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Support user installation when normal site-packages is not writeable
 
 ---
 
-_Issue opened by @NewUserHa on 2025-12-12 14:55_
+_@NewUserHa_
 
 ### Summary
 

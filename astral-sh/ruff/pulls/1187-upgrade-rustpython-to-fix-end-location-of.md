@@ -12,14 +12,14 @@ head: upgrade-RustPython
 created_at: 2022-12-10T23:52:15Z
 updated_at: 2022-12-11T02:11:47Z
 url: https://github.com/astral-sh/ruff/pull/1187
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Upgrade RustPython to fix end location of implicitly concatenated strings
 
 ---
 
-_Pull request opened by @harupy on 2022-12-10 23:52_
+_@harupy_
 
 To include https://github.com/RustPython/RustPython/pull/4324, upgrade RustPython.
 

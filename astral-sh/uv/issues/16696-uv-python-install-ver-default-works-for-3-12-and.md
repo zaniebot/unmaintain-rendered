@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-12T01:39:43Z
 updated_at: 2025-11-12T18:34:00Z
 url: https://github.com/astral-sh/uv/issues/16696
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # uv python install <ver> --default works for 3.12 and 3.14 but not 3.15
 
 ---
 
-_Issue opened by @johnyesberg on 2025-11-12 01:39_
+_@johnyesberg_
 
 ### Summary
 

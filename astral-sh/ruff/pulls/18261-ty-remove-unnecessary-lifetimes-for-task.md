@@ -14,14 +14,14 @@ head: micha/remove-unnecessary-lifetimes
 created_at: 2025-05-22T19:01:01Z
 updated_at: 2025-05-26T12:44:45Z
 url: https://github.com/astral-sh/ruff/pull/18261
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Remove unnecessary lifetimes for `Task`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-22 19:01_
+_@MichaReiser_
 
 ## Summary
 

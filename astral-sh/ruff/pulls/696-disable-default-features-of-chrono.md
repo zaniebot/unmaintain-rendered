@@ -12,14 +12,14 @@ head: chrono-features
 created_at: 2022-11-12T06:49:27Z
 updated_at: 2022-11-20T01:59:33Z
 url: https://github.com/astral-sh/ruff/pull/696
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Disable default features of chrono
 
 ---
 
-_Pull request opened by @andersk on 2022-11-12 06:49_
+_@andersk_
 
 By default, `chrono` depends on an obsolete insecure version of `time`.
 

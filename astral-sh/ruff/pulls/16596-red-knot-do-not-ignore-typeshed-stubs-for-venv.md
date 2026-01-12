@@ -13,14 +13,14 @@ head: david/typeshed-venv-stubs
 created_at: 2025-03-10T07:56:54Z
 updated_at: 2025-03-10T08:07:50Z
 url: https://github.com/astral-sh/ruff/pull/16596
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Do not ignore typeshed stubs for 'venv' module
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-10 07:56_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/windows-clippy
 created_at: 2024-04-15T21:08:56Z
 updated_at: 2024-04-16T07:55:50Z
 url: https://github.com/astral-sh/uv/pull/3044
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:23Z
 ```
 
 # Use the larger runner for Windows clippy runs
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-15 21:08_
+_@zanieb_
 
 Running clippy can apparently be longer than the tests in https://github.com/astral-sh/uv/pull/3040
 

@@ -12,14 +12,14 @@ head: charlie/pre
 created_at: 2024-02-04T19:50:13Z
 updated_at: 2024-06-11T11:29:34Z
 url: https://github.com/astral-sh/uv/pull/1246
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:04:32Z
 ```
 
 # Pre-fetch dependencies when resolving from a lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-04 19:50_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: konsti/prune-unzipped
 created_at: 2024-11-10T12:41:31Z
 updated_at: 2024-11-10T17:44:45Z
 url: https://github.com/astral-sh/uv/pull/8987
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:35Z
 ```
 
 # Fix prune unzipped snapshot
 
 ---
 
-_Pull request opened by @konstin on 2024-11-10 12:41_
+_@konstin_
 
 Fixes the tests on main, cause unknown.
 

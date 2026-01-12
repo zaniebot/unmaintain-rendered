@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-03T21:05:20Z
 updated_at: 2025-11-03T21:27:30Z
 url: https://github.com/astral-sh/ruff/issues/21264
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ruff check --fix ignores ruff.toml when --stdin-filename is present on the command line
 
 ---
 
-_Issue opened by @mgedmin on 2025-11-03 21:05_
+_@mgedmin_
 
 ### Summary
 

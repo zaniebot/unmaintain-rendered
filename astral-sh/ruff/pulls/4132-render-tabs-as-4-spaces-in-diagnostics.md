@@ -12,14 +12,14 @@ head: render-tabs-as-4-spaces
 created_at: 2023-04-27T14:41:55Z
 updated_at: 2023-05-02T13:37:29Z
 url: https://github.com/astral-sh/ruff/pull/4132
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Render tabs as 4 spaces in diagnostics
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-27 14:41_
+_@MichaReiser_
 
 Fixes #4018
 

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-10-18T16:49:12Z
 updated_at: 2024-10-18T17:27:15Z
 url: https://github.com/astral-sh/uv/pull/8339
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:16Z
 ```
 
 # Allow dashes and underscores in custom index names
 
 ---
 
-_Pull request opened by @vinibrsl on 2024-10-18 16:49_
+_@vinibrsl_
 
 Previously, `uv add --index` command threw an error when the index name included characters like hyphens or underscores.
 

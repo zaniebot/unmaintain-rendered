@@ -13,14 +13,14 @@ head: zb/metadata
 created_at: 2025-10-30T16:05:06Z
 updated_at: 2025-11-11T15:46:03Z
 url: https://github.com/astral-sh/uv/pull/16516
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:17Z
 ```
 
 # Add `uv workspace metadata`
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-30 16:05_
+_@zanieb_
 
 This adds the scaffolding for a `uv workspace metadata` command, as an equivalent to `cargo metadata`, for integration with downstream tools. I didn't do much here beyond emit the workspace root path and the paths of the workspace members. I explored doing a bit more in #16638, but I think we're actually going to want to come up with a fairly comprehensive schema like `cargo metadata` has. I've started exploring that too, but I don't have a concrete proposal to share yet.
 

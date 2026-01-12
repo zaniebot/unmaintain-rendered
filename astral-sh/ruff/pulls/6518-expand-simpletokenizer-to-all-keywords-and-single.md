@@ -13,14 +13,14 @@ head: charlie/tokenizer
 created_at: 2023-08-12T03:39:41Z
 updated_at: 2023-08-14T14:35:32Z
 url: https://github.com/astral-sh/ruff/pull/6518
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Expand `SimpleTokenizer` to all keywords and single-character tokens
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-12 03:39_
+_@charliermarsh_
 
 ## Summary
 

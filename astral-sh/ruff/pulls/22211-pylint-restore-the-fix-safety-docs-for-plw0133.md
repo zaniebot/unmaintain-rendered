@@ -13,14 +13,14 @@ head: brent/plw0133-docs
 created_at: 2025-12-26T16:22:43Z
 updated_at: 2025-12-26T16:45:17Z
 url: https://github.com/astral-sh/ruff/pull/22211
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [`pylint`] Restore the fix safety docs for `PLW0133`
 
 ---
 
-_Pull request opened by @ntBre on 2025-12-26 16:22_
+_@ntBre_
 
 Summary
 --

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-18T20:38:47Z
 updated_at: 2024-07-29T08:41:45Z
 url: https://github.com/astral-sh/ruff/issues/5871
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Detecting Any in generic types and variables
 
 ---
 
-_Issue opened by @ItsDrike on 2023-07-18 20:38_
+_@ItsDrike_
 
 This is a continuation from issue #5803, which assumed the lack of support for this is a bug, which it was not, making it a feature request.
 

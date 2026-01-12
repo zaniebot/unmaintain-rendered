@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-23T17:01:19Z
 updated_at: 2024-11-25T21:37:57Z
 url: https://github.com/astral-sh/ruff/issues/14558
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] support `typing.NoReturn` and `typing.Never` in annotations
 
 ---
 
-_Issue opened by @Glyphack on 2024-11-23 17:01_
+_@Glyphack_
 
 (part of #14172 created to claim the task)
 

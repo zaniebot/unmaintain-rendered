@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-03T06:19:50Z
 updated_at: 2024-01-22T15:44:13Z
 url: https://github.com/clap-rs/clap/issues/5239
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # clap_complete: File path is completed too early in bash
 
 ---
 
-_Issue opened by @sudotac on 2023-12-03 06:19_
+_@sudotac_
 
 ### Please complete the following tasks
 

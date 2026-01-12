@@ -14,14 +14,14 @@ head: konsti/workspace-docs
 created_at: 2024-05-27T16:14:56Z
 updated_at: 2024-06-01T20:13:12Z
 url: https://github.com/astral-sh/uv/pull/3866
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:54Z
 ```
 
 # Draft for user docs for workspaces
 
 ---
 
-_Pull request opened by @konstin on 2024-05-27 16:14_
+_@konstin_
 
 These docs are not yet meant to be consumed by end users, for now they allow sharing the state of workspace support in terms of features that are relevant to users, and to gather feedback on the design. We can progressively update this doc as workspace support matures.
 

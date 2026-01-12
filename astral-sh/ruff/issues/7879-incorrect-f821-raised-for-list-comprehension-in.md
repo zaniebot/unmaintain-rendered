@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-09T21:31:36Z
 updated_at: 2023-10-10T03:51:01Z
 url: https://github.com/astral-sh/ruff/issues/7879
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Incorrect F821 raised for list comprehension in `Annotated`
 
 ---
 
-_Issue opened by @Harry-Lees on 2023-10-09 21:31_
+_@Harry-Lees_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

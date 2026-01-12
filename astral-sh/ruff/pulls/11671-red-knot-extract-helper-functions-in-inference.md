@@ -13,14 +13,14 @@ head: cjm/cfg3
 created_at: 2024-06-01T02:00:44Z
 updated_at: 2024-06-03T23:46:06Z
 url: https://github.com/astral-sh/ruff/pull/11671
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [red-knot] extract helper functions in inference tests
 
 ---
 
-_Pull request opened by @carljm on 2024-06-01 02:00_
+_@carljm_
 
 There's a lot of repeat boilerplate in the type inference tests; this cuts it down a lot.
 

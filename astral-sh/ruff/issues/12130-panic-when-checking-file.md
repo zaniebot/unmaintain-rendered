@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-01T06:18:18Z
 updated_at: 2024-07-01T13:26:28Z
 url: https://github.com/astral-sh/ruff/issues/12130
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Panic when checking file
 
 ---
 
-_Issue opened by @qarmin on 2024-07-01 06:18_
+_@qarmin_
 
 ruff 0.5.0+114 (d1aeadc00 2024-07-01)
 ```

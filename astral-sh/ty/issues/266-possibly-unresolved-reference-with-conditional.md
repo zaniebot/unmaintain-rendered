@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-08T10:04:14Z
 updated_at: 2025-05-08T10:09:01Z
 url: https://github.com/astral-sh/ty/issues/266
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # `possibly-unresolved-reference` with conditional assignment and guarded usage
 
 ---
 
-_Issue opened by @my1e5 on 2025-05-08 10:04_
+_@my1e5_
 
 ### Summary
 

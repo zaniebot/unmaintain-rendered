@@ -13,14 +13,14 @@ head: konsti/pr-from-fork
 created_at: 2024-10-14T08:18:34Z
 updated_at: 2024-10-14T20:48:51Z
 url: https://github.com/astral-sh/uv/pull/8168
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:11Z
 ```
 
 # Don't run publish tests from fork
 
 ---
 
-_Pull request opened by @konstin on 2024-10-14 08:18_
+_@konstin_
 
 Only the astral-sh/uv repository has the secrets.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-25T01:12:08Z
 updated_at: 2024-12-29T01:03:09Z
 url: https://github.com/astral-sh/ruff/issues/14568
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # option for remapped/removed rules to report an error instead of a warning
 
 ---
 
-_Issue opened by @DetachHead on 2024-11-25 01:12_
+_@DetachHead_
 
 #14435 made it so that these are now reported as a warning instead of an error. however in my project i like having all checks as strict as possible, and would like my CI to fail if any outdated rules are present in my config. it would be nice if there was an option to enable the previous more strict behavior
 

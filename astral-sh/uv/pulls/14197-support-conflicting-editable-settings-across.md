@@ -14,14 +14,14 @@ head: charlie/ed
 created_at: 2025-06-22T02:15:54Z
 updated_at: 2025-07-11T02:20:03Z
 url: https://github.com/astral-sh/uv/pull/14197
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:04Z
 ```
 
 # Support conflicting editable settings across groups
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-22 02:15_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-17T15:00:13Z
 updated_at: 2023-09-18T10:28:17Z
 url: https://github.com/astral-sh/ruff/issues/7460
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter instability: String normalization inserts whitespace
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-17 15:00_
+_@MichaReiser_
 
 ## Input
 

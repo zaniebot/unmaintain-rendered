@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-26T12:51:45Z
 updated_at: 2024-08-26T20:45:58Z
 url: https://github.com/astral-sh/uv/issues/6644
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Constraint support for `uv lock` (as `uv pip install -r requirements.txt --constraint constraints.txt`)
 
 ---
 
-_Issue opened by @mthiboust on 2024-08-26 12:51_
+_@mthiboust_
 
 Is there an equivalent of  `uv pip install -r requirements.txt --constraint constraints.txt` for `uv lock`/`uv sync`?
 

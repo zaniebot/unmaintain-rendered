@@ -14,14 +14,14 @@ head: charlie/mixed-extra
 created_at: 2024-08-12T23:28:39Z
 updated_at: 2024-08-12T23:36:44Z
 url: https://github.com/astral-sh/uv/pull/6050
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:10Z
 ```
 
 # Add test coverage for transitive and cross-workspace extras
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-12 23:28_
+_@charliermarsh_
 
 ## Summary
 

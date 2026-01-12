@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-27T01:00:54Z
 updated_at: 2023-08-28T18:45:32Z
 url: https://github.com/astral-sh/ruff/issues/6908
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `E501` - option to customize line length
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-27 01:00_
+_@DetachHead_
 
 also, it seems weird that [the docs only mention PEP 8's 79 character recommendation](https://beta.ruff.rs/docs/rules/line-too-long/#why-is-this-bad) but the number it actually uses 88 characters
 

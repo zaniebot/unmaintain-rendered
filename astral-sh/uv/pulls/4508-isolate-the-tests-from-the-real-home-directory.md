@@ -14,14 +14,14 @@ head: zb/test-context-home
 created_at: 2024-06-25T04:59:15Z
 updated_at: 2024-06-25T12:47:56Z
 url: https://github.com/astral-sh/uv/pull/4508
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:16Z
 ```
 
 # Isolate the tests from the real home directory
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-25 04:59_
+_@zanieb_
 
 Nice to have for #4492 and seems like a good idea in general to avoid mutating a developer's machine.
 

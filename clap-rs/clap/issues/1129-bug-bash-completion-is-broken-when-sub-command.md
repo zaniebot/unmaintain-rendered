@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-12-16T11:41:46Z
 updated_at: 2018-08-02T03:30:16Z
 url: https://github.com/clap-rs/clap/issues/1129
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Bug: Bash completion is broken when sub-command names have hyphens
 
 ---
 
-_Issue opened by @fluffysquirrels on 2017-12-16 11:41_
+_@fluffysquirrels_
 
 ### Rust Version
 

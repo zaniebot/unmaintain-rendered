@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-30T17:16:47Z
 updated_at: 2025-12-10T04:21:55Z
 url: https://github.com/astral-sh/uv/issues/5611
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Document strategies for sharing the cache
 
 ---
 
-_Issue opened by @zanieb on 2024-07-30 17:16_
+_@zanieb_
 
 Per https://github.com/astral-sh/uv/issues/5581#issuecomment-2258832686, sharing the cache across users can be useful for system-wide uv installations.
 

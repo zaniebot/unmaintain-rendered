@@ -13,14 +13,14 @@ head: ag/optimize-without-extras
 created_at: 2025-01-10T15:48:00Z
 updated_at: 2025-01-10T16:23:21Z
 url: https://github.com/astral-sh/uv/pull/10472
-synced_at: 2026-01-10T11:44:51Z
+synced_at: 2026-01-12T16:09:18Z
 ```
 
 # uv-resolver: pre-compute PEP 508 markers from universal markers
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-01-10 15:48_
+_@BurntSushi_
 
 It turns out that we use `UniversalMarker::pep508` quite a bit. To the
 point that it makes sense to pre-compute it when constructing a

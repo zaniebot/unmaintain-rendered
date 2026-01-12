@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-28T12:09:52Z
 updated_at: 2025-04-28T19:53:45Z
 url: https://github.com/astral-sh/uv/issues/13174
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # Add a configuration like `default-groups` for optional dependencies
 
 ---
 
-_Issue opened by @etienne-monier on 2025-04-28 12:09_
+_@etienne-monier_
 
 ### Summary
 

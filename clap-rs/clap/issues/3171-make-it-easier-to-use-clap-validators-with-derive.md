@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-14T00:31:48Z
 updated_at: 2022-02-10T19:47:21Z
 url: https://github.com/clap-rs/clap/issues/3171
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Make it easier to use clap validators with derive by generating arg associated constants?
 
 ---
 
-_Issue opened by @epage on 2021-12-14 00:31_
+_@epage_
 
 ### Please complete the following tasks
 

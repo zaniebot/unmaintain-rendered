@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-17T11:25:41Z
 updated_at: 2025-02-18T01:52:58Z
 url: https://github.com/astral-sh/uv/issues/11575
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # uv export into Poetry lockfile
 
 ---
 
-_Issue opened by @Lenormju on 2025-02-17 11:25_
+_@Lenormju_
 
 ### Summary
 

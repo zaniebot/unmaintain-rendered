@@ -14,14 +14,14 @@ head: gankra/dunder-doc
 created_at: 2025-12-18T06:13:38Z
 updated_at: 2025-12-18T11:50:04Z
 url: https://github.com/astral-sh/ruff/pull/22047
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Support rendering `__doc__` on hover
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-18 06:13_
+_@Gankra_
 
 ## Summary
 

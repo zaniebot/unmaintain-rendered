@@ -13,14 +13,14 @@ head: remove-libc-dependency
 created_at: 2024-05-02T07:27:55Z
 updated_at: 2024-05-02T07:50:12Z
 url: https://github.com/astral-sh/ruff/pull/11241
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Make libc a platform specific dependency
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-05-02 07:27_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-10T22:20:55Z
 updated_at: 2025-03-11T03:00:10Z
 url: https://github.com/astral-sh/uv/issues/12105
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # `uv add` gives ambiguous error
 
 ---
 
-_Issue opened by @iloveitaly on 2025-03-10 22:20_
+_@iloveitaly_
 
 ### Summary
 

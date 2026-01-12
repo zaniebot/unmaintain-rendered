@@ -12,14 +12,14 @@ head: konsti/debug-release
 created_at: 2024-08-02T09:13:50Z
 updated_at: 2024-08-02T09:45:28Z
 url: https://github.com/astral-sh/uv/pull/5721
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:58Z
 ```
 
 # Debug release
 
 ---
 
-_Pull request opened by @konstin on 2024-08-02 09:13_
+_@konstin_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

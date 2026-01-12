@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-27T18:41:00Z
 updated_at: 2024-09-23T19:02:21Z
 url: https://github.com/astral-sh/uv/issues/5510
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Show dedicated hint for `--unsafe-first-match` with PyTorch index
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-27 18:41_
+_@charliermarsh_
 
 This is so common that we should special-case it for a list of packages (like `requests`): https://github.com/astral-sh/rye/issues/1282#issuecomment-2254213458
 

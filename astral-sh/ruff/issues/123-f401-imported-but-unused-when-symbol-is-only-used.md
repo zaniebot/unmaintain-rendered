@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-07T21:35:05Z
 updated_at: 2022-09-08T08:07:08Z
 url: https://github.com/astral-sh/ruff/issues/123
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `F401 imported but unused` when symbol is only used for type hints
 
 ---
 
-_Issue opened by @amotl on 2022-09-07 21:35_
+_@amotl_
 
 Hi Charlie,
 

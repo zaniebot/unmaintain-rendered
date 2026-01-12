@@ -13,14 +13,14 @@ head: jtfm/test-settingsref
 created_at: 2025-03-12T16:32:41Z
 updated_at: 2025-03-13T08:10:32Z
 url: https://github.com/astral-sh/uv/pull/12138
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:08Z
 ```
 
 # Refactor *Settings to clarify and reduce repetition
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-03-12 16:32_
+_@jtfmumm_
 
 When making changes to uv that require new (or altered) settings, there are many places in the code that need to change. This slows down work, reduces confidence in changes for new developers, and adds noise to PRs. The goal of this PR is to reduce the number of points that need to change (and that the developer needs to understand) when making changes to settings.
 

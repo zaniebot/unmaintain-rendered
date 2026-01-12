@@ -13,14 +13,14 @@ head: zb/astral-lock
 created_at: 2025-07-16T14:09:29Z
 updated_at: 2025-07-16T14:20:28Z
 url: https://github.com/astral-sh/uv/pull/14657
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:20Z
 ```
 
 # Use `astral.sh` instead of `example.com` in `lock_unique_named_index`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-16 14:09_
+_@zanieb_
 
 This test flakes a lot, maybe using a different domain will help
 

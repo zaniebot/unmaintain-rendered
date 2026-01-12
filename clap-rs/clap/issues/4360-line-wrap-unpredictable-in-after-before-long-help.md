@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-08T17:10:29Z
 updated_at: 2022-10-09T00:57:22Z
 url: https://github.com/clap-rs/clap/issues/4360
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # line wrap unpredictable in after|before_long_help on input containing ascii control sequences
 
 ---
 
-_Issue opened by @hargut on 2022-10-08 17:10_
+_@hargut_
 
 ### Please complete the following tasks
 

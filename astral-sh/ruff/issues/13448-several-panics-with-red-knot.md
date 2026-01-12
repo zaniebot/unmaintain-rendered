@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-22T20:21:05Z
 updated_at: 2024-11-14T14:43:41Z
 url: https://github.com/astral-sh/ruff/issues/13448
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Several panics with red_knot
 
 ---
 
-_Issue opened by @qarmin on 2024-09-22 20:21_
+_@qarmin_
 
 Red knot 7441da287fd8438c69d444a4df551f032167ebb2
 command:

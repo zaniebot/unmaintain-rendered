@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-15T20:57:14Z
 updated_at: 2023-09-16T17:19:36Z
 url: https://github.com/astral-sh/ruff/issues/7421
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter incompatibility: breaking multiple `if` clauses in comprehensions
 
 ---
 
-_Issue opened by @charliermarsh on 2023-09-15 20:57_
+_@charliermarsh_
 
 Given:
 

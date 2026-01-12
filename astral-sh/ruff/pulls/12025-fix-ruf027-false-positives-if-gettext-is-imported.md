@@ -13,14 +13,14 @@ head: fstring-rule-fixup
 created_at: 2024-06-25T11:03:40Z
 updated_at: 2024-06-25T18:10:26Z
 url: https://github.com/astral-sh/ruff/pull/12025
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Fix RUF027 false positives if `gettext` is imported using an alias
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-25 11:03_
+_@AlexWaygood_
 
 Noticed this while reviewing if it was ready to be stabilised
 

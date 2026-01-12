@@ -13,14 +13,14 @@ head: fix_pip_install_dev_stdin
 created_at: 2025-11-26T02:59:29Z
 updated_at: 2025-11-26T03:14:41Z
 url: https://github.com/astral-sh/uv/pull/16855
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:29Z
 ```
 
 # Fix ``uv pip install -r /dev/stdin``
 
 ---
 
-_Pull request opened by @nsoranzo on 2025-11-26 02:59_
+_@nsoranzo_
 
 ## Summary
 

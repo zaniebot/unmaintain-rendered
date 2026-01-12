@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-17T23:29:39Z
 updated_at: 2023-05-18T16:40:38Z
 url: https://github.com/astral-sh/ruff/issues/4485
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # RUF010 autofix error with dict variable
 
 ---
 
-_Issue opened by @fennerm on 2023-05-17 23:29_
+_@fennerm_
 
 (ruff=v0.0.267)
 

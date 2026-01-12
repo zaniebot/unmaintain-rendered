@@ -13,14 +13,14 @@ head: new-stdlibs-3.13.0b1
 created_at: 2024-05-15T21:50:52Z
 updated_at: 2024-05-15T22:17:43Z
 url: https://github.com/astral-sh/ruff/pull/11437
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Regenerate sys.rs with stdlibs==2024.5.15
 
 ---
 
-_Pull request opened by @thatch on 2024-05-15 21:50_
+_@thatch_
 
 ## Summary
 

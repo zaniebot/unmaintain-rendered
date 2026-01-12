@@ -13,14 +13,14 @@ head: ruff_python_formatter-serde
 created_at: 2023-10-05T13:16:10Z
 updated_at: 2023-10-08T13:47:14Z
 url: https://github.com/astral-sh/ruff/pull/7825
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Make serde a default feature of ruff_python_formatter
 
 ---
 
-_Pull request opened by @konstin on 2023-10-05 13:16_
+_@konstin_
 
 This makes `cargo test -p ruff_python_formatter` actually run the tests again
 

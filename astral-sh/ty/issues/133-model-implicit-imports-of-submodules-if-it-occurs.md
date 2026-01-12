@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-08T13:11:52Z
 updated_at: 2025-11-12T15:33:45Z
 url: https://github.com/astral-sh/ty/issues/133
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Model implicit imports of submodules, if it occurs in a parent module __init__.py
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-08 13:11_
+_@sharkdp_
 
 Consider the following case **([playground](https://playknot.ruff.rs/68b7810b-06b5-4914-b0a2-8bc1d5513181)):**
 

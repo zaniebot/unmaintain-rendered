@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-30T17:20:36Z
 updated_at: 2023-05-09T12:53:54Z
 url: https://github.com/astral-sh/ruff/issues/4163
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Add autofix for B027 (missing @abstractmethod decorator).
 
 ---
 
-_Issue opened by @Skylion007 on 2023-04-30 17:20_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

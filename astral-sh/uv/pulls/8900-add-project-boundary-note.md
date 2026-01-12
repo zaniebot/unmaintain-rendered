@@ -13,14 +13,14 @@ head: zb/project-boundary
 created_at: 2024-11-07T21:28:18Z
 updated_at: 2024-11-07T21:49:16Z
 url: https://github.com/astral-sh/uv/pull/8900
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:33Z
 ```
 
 # Add project boundary note
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-07 21:28_
+_@zanieb_
 
 _No description provided._
 

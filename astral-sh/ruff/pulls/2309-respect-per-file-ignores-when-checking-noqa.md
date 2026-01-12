@@ -12,14 +12,14 @@ head: per-file-ignore-noqa
 created_at: 2023-01-28T19:08:11Z
 updated_at: 2023-01-28T19:19:00Z
 url: https://github.com/astral-sh/ruff/pull/2309
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Respect per-file-ignores when checking noqa
 
 ---
 
-_Pull request opened by @sciyoshi on 2023-01-28 19:08_
+_@sciyoshi_
 
 `RUF100` does not take into account a rule ignored for a file via a `per-file-ignores` configuration. To see this, try the following pyproject.toml:
 

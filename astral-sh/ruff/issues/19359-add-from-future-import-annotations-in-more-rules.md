@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-15T15:20:05Z
 updated_at: 2025-07-15T15:27:36Z
 url: https://github.com/astral-sh/ruff/issues/19359
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add `from __future__ import annotations` in more rules
 
 ---
 
-_Issue opened by @ntBre on 2025-07-15 15:20_
+_@ntBre_
 
 https://github.com/astral-sh/ruff/pull/19100 added support for importing future annotations for TC001, TC002, TC003, UP037, and RUF013 as a proof of concept, but other rules could also be affected. In particular,
 

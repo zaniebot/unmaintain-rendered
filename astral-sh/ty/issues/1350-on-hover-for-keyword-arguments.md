@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-14T07:00:14Z
 updated_at: 2026-01-05T15:07:54Z
 url: https://github.com/astral-sh/ty/issues/1350
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # On-hover for keyword arguments
 
 ---
 
-_Issue opened by @MichaReiser on 2025-10-14 07:00_
+_@MichaReiser_
 
 Should show the documentation of the matching parameter
 

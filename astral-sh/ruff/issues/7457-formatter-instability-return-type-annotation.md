@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-17T14:52:34Z
 updated_at: 2023-09-20T20:20:23Z
 url: https://github.com/astral-sh/ruff/issues/7457
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter instability: Return type annotation
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-17 14:52_
+_@MichaReiser_
 
 ## Input
 

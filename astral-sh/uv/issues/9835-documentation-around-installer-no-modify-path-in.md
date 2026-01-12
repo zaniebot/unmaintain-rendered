@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-12T11:56:18Z
 updated_at: 2024-12-12T15:00:47Z
 url: https://github.com/astral-sh/uv/issues/9835
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # Documentation around `INSTALLER_NO_MODIFY_PATH` in "standalone installer" section
 
 ---
 
-_Issue opened by @rcastellotti on 2024-12-12 11:56_
+_@rcastellotti_
 
 Hello 🐻 
 

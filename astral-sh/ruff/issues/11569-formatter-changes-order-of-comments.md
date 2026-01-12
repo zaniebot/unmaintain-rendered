@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-27T14:58:49Z
 updated_at: 2024-05-31T12:06:19Z
 url: https://github.com/astral-sh/ruff/issues/11569
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Formatter changes order of comments.
 
 ---
 
-_Issue opened by @randolf-scholz on 2024-05-27 14:58_
+_@randolf-scholz_
 
 ```python
 class Foo:

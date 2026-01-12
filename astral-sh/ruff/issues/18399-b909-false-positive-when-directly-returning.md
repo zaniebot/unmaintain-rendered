@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-31T03:25:36Z
 updated_at: 2025-06-13T14:39:57Z
 url: https://github.com/astral-sh/ruff/issues/18399
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # B909 false positive when directly returning mutation
 
 ---
 
-_Issue opened by @TeamSpen210 on 2025-05-31 03:25_
+_@TeamSpen210_
 
 ### Summary
 

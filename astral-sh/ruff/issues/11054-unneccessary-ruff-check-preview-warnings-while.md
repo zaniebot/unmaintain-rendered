@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-20T09:21:19Z
 updated_at: 2025-06-02T17:21:55Z
 url: https://github.com/astral-sh/ruff/issues/11054
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # unneccessary ruff check preview warnings while running ruff format without preview
 
 ---
 
-_Issue opened by @57an on 2024-04-20 09:21_
+_@57an_
 
 When I run ruff format I get such warning:
 

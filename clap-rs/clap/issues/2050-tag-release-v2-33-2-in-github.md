@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-08-06T05:11:14Z
 updated_at: 2020-08-06T11:14:58Z
 url: https://github.com/clap-rs/clap/issues/2050
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # tag/release v2.33.2 in github?
 
 ---
 
-_Issue opened by @jensim on 2020-08-06 05:11_
+_@jensim_
 
 ### Clap version
 

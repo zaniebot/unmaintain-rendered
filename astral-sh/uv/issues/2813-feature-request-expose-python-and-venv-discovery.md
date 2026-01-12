@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-03T16:19:22Z
 updated_at: 2024-11-06T02:13:42Z
 url: https://github.com/astral-sh/uv/issues/2813
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Feature Request: Expose python and venv discovery as a machine interpretable uv subcommand
 
 ---
 
-_Issue opened by @strangemonad on 2024-04-03 16:19_
+_@strangemonad_
 
 Many tools in the python development process could benefit from a consistent way of resolving the current project's python executable and virtual env. Since uv already has [documented logic for python discovery](https://github.com/astral-sh/uv?tab=readme-ov-file#python-discovery) it would be nice if we could just build off of this mechanism.
 

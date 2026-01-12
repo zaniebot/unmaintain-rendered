@@ -13,14 +13,14 @@ head: zb/fix-typo
 created_at: 2025-12-15T20:40:16Z
 updated_at: 2025-12-15T20:42:22Z
 url: https://github.com/astral-sh/ty/pull/1901
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Fix a typo in the language server install ref
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-15 20:40_
+_@zanieb_
 
 _No description provided._
 

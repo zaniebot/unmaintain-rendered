@@ -13,14 +13,14 @@ head: zb/release-bin
 created_at: 2025-01-27T15:35:08Z
 updated_at: 2025-01-27T17:48:41Z
 url: https://github.com/astral-sh/uv/pull/10990
-synced_at: 2026-01-10T11:45:21Z
+synced_at: 2026-01-12T16:09:37Z
 ```
 
 # Update name of "Build binary" job to highlight that these are the "release" binaries
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-27 15:35_
+_@zanieb_
 
 I found this confusing since we have `build binary` jobs in regular CI 
 

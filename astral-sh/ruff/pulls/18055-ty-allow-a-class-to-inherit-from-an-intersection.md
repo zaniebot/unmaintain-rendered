@@ -13,14 +13,14 @@ head: alex/invalid-base-intersections
 created_at: 2025-05-12T20:16:06Z
 updated_at: 2025-05-12T23:07:53Z
 url: https://github.com/astral-sh/ruff/pull/18055
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] Allow a class to inherit from an intersection if the intersection contains a dynamic type and the intersection is not disjoint from `type`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-12 20:16_
+_@AlexWaygood_
 
 ## Summary
 

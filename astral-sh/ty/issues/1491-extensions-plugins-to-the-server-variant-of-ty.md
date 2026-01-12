@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-05T19:53:29Z
 updated_at: 2025-11-09T17:03:48Z
 url: https://github.com/astral-sh/ty/issues/1491
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Extensions/plugins to the server variant of ty
 
 ---
 
-_Issue opened by @mkarbo on 2025-11-05 19:53_
+_@mkarbo_
 
 ### Question
 

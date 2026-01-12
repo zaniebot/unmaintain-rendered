@@ -14,14 +14,14 @@ head: charlie/E26
 created_at: 2023-12-09T19:52:26Z
 updated_at: 2023-12-09T20:18:08Z
 url: https://github.com/astral-sh/ruff/pull/9075
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Add fix for comment-related whitespace rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-09 19:52_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9067.
 

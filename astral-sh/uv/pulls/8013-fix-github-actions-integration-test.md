@@ -13,14 +13,14 @@ head: zb/fix-github-actions
 created_at: 2024-10-08T17:37:31Z
 updated_at: 2024-10-08T17:53:57Z
 url: https://github.com/astral-sh/uv/pull/8013
-synced_at: 2026-01-10T12:54:01Z
+synced_at: 2026-01-12T16:08:07Z
 ```
 
 # Fix GitHub Actions integration test
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-08 17:37_
+_@zanieb_
 
 Fixes bug noted in https://github.com/astral-sh/uv/pull/8012
 

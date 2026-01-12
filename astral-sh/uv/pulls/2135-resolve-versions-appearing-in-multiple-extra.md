@@ -11,14 +11,14 @@ head: main
 created_at: 2024-03-02T23:22:08Z
 updated_at: 2024-03-03T22:44:57Z
 url: https://github.com/astral-sh/uv/pull/2135
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # Resolve versions appearing in multiple extra indexes
 
 ---
 
-_Pull request opened by @sapir on 2024-03-02 23:22_
+_@sapir_
 
 ## Summary
 

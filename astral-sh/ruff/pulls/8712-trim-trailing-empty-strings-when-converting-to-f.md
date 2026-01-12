@@ -13,14 +13,14 @@ head: charlie/up023
 created_at: 2023-11-16T03:59:10Z
 updated_at: 2023-11-16T04:14:51Z
 url: https://github.com/astral-sh/ruff/pull/8712
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Trim trailing empty strings when converting to f-strings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-16 03:59_
+_@charliermarsh_
 
 ## Summary
 

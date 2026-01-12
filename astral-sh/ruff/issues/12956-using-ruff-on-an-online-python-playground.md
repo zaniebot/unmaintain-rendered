@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-17T16:42:43Z
 updated_at: 2024-09-09T12:02:40Z
 url: https://github.com/astral-sh/ruff/issues/12956
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Using Ruff on an Online Python Playground, `CompileError: WebAssembly.instantiate(): expected magic word 00 61 73 6d, found 3c 21 64 6f @+0`
 
 ---
 
-_Issue opened by @jymchng on 2024-08-17 16:42_
+_@jymchng_
 
 I have a not-yet-announced [Python Playground](https://shiny-chebakia-638038.netlify.app/).
 

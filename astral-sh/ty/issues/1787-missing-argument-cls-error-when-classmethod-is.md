@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-05T21:57:19Z
 updated_at: 2025-12-16T17:16:42Z
 url: https://github.com/astral-sh/ty/issues/1787
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Missing argument (`cls`) error when `classmethod` is mixed with other decorators
 
 ---
 
-_Issue opened by @AA-Turner on 2025-12-05 21:57_
+_@AA-Turner_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-20T07:46:47Z
 updated_at: 2024-09-29T04:32:57Z
 url: https://github.com/clap-rs/clap/issues/5543
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # DisplayVersion "errors" don't really allow to distinguish between -V and --version
 
 ---
 
-_Issue opened by @glandium on 2024-06-20 07:46_
+_@glandium_
 
 ### Please complete the following tasks
 

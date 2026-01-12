@@ -13,14 +13,14 @@ head: konsti/hardlinks-tar-unpack
 created_at: 2025-02-04T17:10:06Z
 updated_at: 2025-02-04T17:38:24Z
 url: https://github.com/astral-sh/uv/pull/11221
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:44Z
 ```
 
 # Fix hardlinks in tar unpacking
 
 ---
 
-_Pull request opened by @konstin on 2025-02-04 17:10_
+_@konstin_
 
 In https://github.com/astral-sh/tokio-tar/pull/2, we accidentally changed the `target_base` from the target base to the parent of the file. This would cause hardlink unpacking to fail.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T01:26:13Z
 updated_at: 2025-07-11T02:23:03Z
 url: https://github.com/astral-sh/uv/issues/12765
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # 'classifiers' should be a list, got type 'tuple'
 
 ---
 
-_Issue opened by @yjc980121 on 2025-04-09 01:26_
+_@yjc980121_
 
 ### Summary
 

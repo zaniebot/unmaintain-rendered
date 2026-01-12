@@ -12,14 +12,14 @@ head: sbom-export-support
 created_at: 2025-09-22T16:24:53Z
 updated_at: 2025-09-22T16:25:25Z
 url: https://github.com/astral-sh/uv/pull/15986
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:03Z
 ```
 
 # SBOM export support
 
 ---
 
-_Pull request opened by @thomasschafer on 2025-09-22 16:24_
+_@thomasschafer_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

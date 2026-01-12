@@ -14,14 +14,14 @@ head: configurable-source-map-generation
 created_at: 2023-08-26T11:54:59Z
 updated_at: 2023-08-26T16:00:44Z
 url: https://github.com/astral-sh/ruff/pull/6894
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Optional source map generation
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-26 11:54_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

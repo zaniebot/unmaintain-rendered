@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-20T09:53:22Z
 updated_at: 2025-03-23T03:06:12Z
 url: https://github.com/astral-sh/uv/issues/12334
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # [documentation] `project.dependencies` is not a TOML table
 
 ---
 
-_Issue opened by @andrei-korshikov on 2025-03-20 09:53_
+_@andrei-korshikov_
 
 [Project dependencies](https://docs.astral.sh/uv/concepts/projects/dependencies/#project-dependencies) reads:
 

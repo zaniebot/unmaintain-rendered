@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-14T00:30:00Z
 updated_at: 2025-03-23T17:24:41Z
 url: https://github.com/astral-sh/ruff/issues/14328
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `subclass-builtin` (`FURB189`) - document exactly why `UserDict`, `UserList` etc are preferred over `dict` and `list`
 
 ---
 
-_Issue opened by @DetachHead on 2024-11-14 00:30_
+_@DetachHead_
 
 [the documentation for this rule](https://docs.astral.sh/ruff/rules/subclass-builtin) says that subclassing the builtins is "error prone" but doesn't provide an example of such an error.
 

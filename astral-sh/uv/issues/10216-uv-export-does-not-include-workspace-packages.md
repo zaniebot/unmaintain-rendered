@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-28T22:15:15Z
 updated_at: 2024-12-30T20:09:56Z
 url: https://github.com/astral-sh/uv/issues/10216
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # `uv export` does not include workspace packages
 
 ---
 
-_Issue opened by @brownj85 on 2024-12-28 22:15_
+_@brownj85_
 
 UV version: `0.5.13`
 

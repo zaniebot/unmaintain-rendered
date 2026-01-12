@@ -13,14 +13,14 @@ head: jane/server/root-uri
 created_at: 2024-03-14T00:15:05Z
 updated_at: 2024-03-18T15:46:45Z
 url: https://github.com/astral-sh/ruff/pull/10398
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # `ruff server` default to current working directory in environments without any root directories or workspaces
 
 ---
 
-_Pull request opened by @snowsignal on 2024-03-14 00:15_
+_@snowsignal_
 
 ## Summary
 

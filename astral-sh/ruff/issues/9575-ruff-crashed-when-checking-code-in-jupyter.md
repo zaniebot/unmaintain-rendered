@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-19T04:02:11Z
 updated_at: 2024-01-24T06:14:18Z
 url: https://github.com/astral-sh/ruff/issues/9575
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Ruff crashed when checking code in jupyter notebook. It failed to handle non-ascii characters correcly.
 
 ---
 
-_Issue opened by @LENAX on 2024-01-19 04:02_
+_@LENAX_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

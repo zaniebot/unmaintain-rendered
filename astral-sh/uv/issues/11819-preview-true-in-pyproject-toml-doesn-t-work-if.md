@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T03:07:06Z
 updated_at: 2025-03-17T08:11:05Z
 url: https://github.com/astral-sh/uv/issues/11819
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # `preview = true` in `pyproject.toml` doesn't work if build backend is using a different version of uv
 
 ---
 
-_Issue opened by @DetachHead on 2025-02-27 03:07_
+_@DetachHead_
 
 ### Question
 

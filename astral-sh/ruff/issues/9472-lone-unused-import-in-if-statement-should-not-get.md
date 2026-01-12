@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-11T16:34:54Z
 updated_at: 2024-10-25T07:03:35Z
 url: https://github.com/astral-sh/ruff/issues/9472
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Lone unused import in if-statement should not get autofixed, or the if-statement should removed
 
 ---
 
-_Issue opened by @jakkdl on 2024-01-11 16:34_
+_@jakkdl_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

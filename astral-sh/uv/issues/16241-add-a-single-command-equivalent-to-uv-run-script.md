@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-10T21:47:43Z
 updated_at: 2025-10-22T13:58:34Z
 url: https://github.com/astral-sh/uv/issues/16241
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # Add a single command equivalent to "uv run --script"
 
 ---
 
-_Issue opened by @treyhunner on 2025-10-10 21:47_
+_@treyhunner_
 
 ### Summary
 

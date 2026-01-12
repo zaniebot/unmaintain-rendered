@@ -12,14 +12,14 @@ head: ignore-quiet-flag-for-pip-list-and-tree
 created_at: 2024-10-20T20:24:56Z
 updated_at: 2024-10-20T23:24:34Z
 url: https://github.com/astral-sh/uv/pull/8392
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:18Z
 ```
 
 # Modify pip list and tree to print to stdout regardless of the --quiet flag
 
 ---
 
-_Pull request opened by @flyaroundme on 2024-10-20 20:24_
+_@flyaroundme_
 
 ## Summary
 

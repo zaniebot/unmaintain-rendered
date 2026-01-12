@@ -13,14 +13,14 @@ head: pre-commit/use-rust-language-system
 created_at: 2023-03-19T21:04:14Z
 updated_at: 2023-03-21T07:23:38Z
 url: https://github.com/astral-sh/ruff/pull/3616
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Use language: system for Rust hooks
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-19 21:04_
+_@JonathanPlasse_
 
 Avoid cache conflicts (i.e. having to recompile everything after running pre-commit)
 

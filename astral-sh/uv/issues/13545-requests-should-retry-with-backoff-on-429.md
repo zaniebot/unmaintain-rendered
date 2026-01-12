@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-19T21:22:40Z
 updated_at: 2025-10-29T11:16:12Z
 url: https://github.com/astral-sh/uv/issues/13545
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # Requests should retry with backoff on 429
 
 ---
 
-_Issue opened by @zanieb on 2025-05-19 21:22_
+_@zanieb_
 
 I saw this fail on https://github.com/astral-sh/uv/actions/runs/15123326059/job/42510461194?pr=13537
 

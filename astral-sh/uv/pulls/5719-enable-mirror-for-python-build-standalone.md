@@ -14,14 +14,14 @@ head: charlie/mirror
 created_at: 2024-08-02T02:37:25Z
 updated_at: 2024-08-08T01:34:21Z
 url: https://github.com/astral-sh/uv/pull/5719
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:06:58Z
 ```
 
 # Enable mirror for `python-build-standalone` downloads
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-02 02:37_
+_@charliermarsh_
 
 ## Summary
 

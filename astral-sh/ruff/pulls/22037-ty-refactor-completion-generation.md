@@ -15,14 +15,14 @@ head: ag/completion-refactor
 created_at: 2025-12-17T19:43:14Z
 updated_at: 2025-12-18T16:00:11Z
 url: https://github.com/astral-sh/ruff/pull/22037
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Refactor completion generation
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-12-17 19:43_
+_@BurntSushi_
 
 This refactor is intended to give more structure to how we generate
 completions. There's now a `Context` for "how do we figure out what kind

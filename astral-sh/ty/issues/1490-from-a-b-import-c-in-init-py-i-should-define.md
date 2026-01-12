@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-05T17:45:40Z
 updated_at: 2025-11-11T21:20:08Z
 url: https://github.com/astral-sh/ty/issues/1490
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `from .a.b import c` in `__init__.py(i)` should define submodule attributes for *all* files
 
 ---
 
-_Issue opened by @Gankra on 2025-11-05 17:45_
+_@Gankra_
 
 This is kind of a followup to https://github.com/astral-sh/ruff/pull/21173 and pertains to behaviours described in [imports/nonstandard_conventions.md](https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md)
 

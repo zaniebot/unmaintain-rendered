@@ -13,14 +13,14 @@ head: charlie/docs
 created_at: 2023-02-09T16:53:05Z
 updated_at: 2023-02-10T22:59:38Z
 url: https://github.com/astral-sh/ruff/pull/2691
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # Add documentation for mccabe, isort, and flake8-annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-09 16:53_
+_@charliermarsh_
 
 See: #2646.
 

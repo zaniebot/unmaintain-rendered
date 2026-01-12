@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-10T07:07:01Z
 updated_at: 2025-12-10T17:54:52Z
 url: https://github.com/astral-sh/ruff/issues/21888
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Unlike `pyflakes`, which correctly detects the problem, `redefined-while-unused (F811)` does not report duplicate imports when `if TYPE_CHECKING` is used
 
 ---
 
-_Issue opened by @alessio-locatelli on 2025-12-10 07:07_
+_@alessio-locatelli_
 
 ### Summary
 

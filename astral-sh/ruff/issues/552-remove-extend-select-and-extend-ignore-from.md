@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-02T23:02:54Z
 updated_at: 2022-12-16T05:26:50Z
 url: https://github.com/astral-sh/ruff/issues/552
-synced_at: 2026-01-10T12:05:21Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Remove extend-select and extend-ignore from pyproject.toml
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-02 23:02_
+_@charliermarsh_
 
 Flake8 has a lot of implicit behavior, and I'd like to make Ruff more explicit. For example, I think users should really be specifying a `select` rather than relying on auto-enabled plugins. If users are specifying a `select`, there's no need for `extend-select`, except as a command-line convenience.
 

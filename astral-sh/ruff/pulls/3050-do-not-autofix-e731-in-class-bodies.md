@@ -13,14 +13,14 @@ head: no-E731-in-class-bodies
 created_at: 2023-02-20T05:22:42Z
 updated_at: 2023-02-20T17:56:36Z
 url: https://github.com/astral-sh/ruff/pull/3050
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Do not autofix `E731` in class bodies
 
 ---
 
-_Pull request opened by @JoshKarpel on 2023-02-20 05:22_
+_@JoshKarpel_
 
 Resolves #3046 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-23T17:18:49Z
 updated_at: 2025-10-24T15:35:24Z
 url: https://github.com/astral-sh/ty/issues/1424
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # cli output is missing a newline
 
 ---
 
-_Issue opened by @zilto on 2025-10-23 17:18_
+_@zilto_
 
 ### Summary
 

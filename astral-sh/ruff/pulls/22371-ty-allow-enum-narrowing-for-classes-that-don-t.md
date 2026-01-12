@@ -12,14 +12,14 @@ head: charlie/tag-eq
 created_at: 2026-01-04T18:45:45Z
 updated_at: 2026-01-06T13:30:40Z
 url: https://github.com/astral-sh/ruff/pull/22371
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Allow enum narrowing for classes that don't override `__eq__`
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-04 18:45_
+_@charliermarsh_
 
 ## Summary
 

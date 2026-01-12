@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-04T00:55:45Z
 updated_at: 2025-06-04T13:35:17Z
 url: https://github.com/astral-sh/uv/issues/13828
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # uv run uninstalls ssh:// packages that are in dependencie list
 
 ---
 
-_Issue opened by @gertcuykens on 2025-06-04 00:55_
+_@gertcuykens_
 
 ### Summary
 

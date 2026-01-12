@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-14T20:21:42Z
 updated_at: 2023-11-16T07:47:21Z
 url: https://github.com/astral-sh/ruff/issues/8683
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # query: UP032 fix leaves bad formatting?
 
 ---
 
-_Issue opened by @lucascolley on 2023-11-14 20:21_
+_@lucascolley_
 
 noted by @ilayn https://github.com/scipy/scipy/pull/19516#issuecomment-1810150463
 

@@ -13,14 +13,14 @@ head: add-W1406
 created_at: 2023-12-23T05:41:09Z
 updated_at: 2023-12-23T17:06:04Z
 url: https://github.com/astral-sh/ruff/pull/9251
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [`pylint`] Implement `redundant-unicode-prefix` (`W1406`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-12-23 05:41_
+_@diceroll123_
 
 ## Summary
 

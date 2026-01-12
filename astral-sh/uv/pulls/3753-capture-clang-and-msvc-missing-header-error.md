@@ -13,14 +13,14 @@ head: capture-clang-and-msvc-missing-header-error
 created_at: 2024-05-22T18:31:48Z
 updated_at: 2024-05-22T18:41:21Z
 url: https://github.com/astral-sh/uv/pull/3753
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:50Z
 ```
 
 # Capture clang and msvc missing header error
 
 ---
 
-_Pull request opened by @SigureMo on 2024-05-22 18:31_
+_@SigureMo_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-16T14:59:01Z
 updated_at: 2025-01-17T04:00:09Z
 url: https://github.com/astral-sh/ruff/issues/15532
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [PYI] Suggest using `typing.IO[bytes]` instead of `io.BytesIO`.
 
 ---
 
-_Issue opened by @randolf-scholz on 2025-01-16 14:59_
+_@randolf-scholz_
 
 When type hinting, particularly in function arguments, using the more flexible abstract class `typing.IO[bytes]` is often more appropriate than the concrete type `io.Bytes`. 
 

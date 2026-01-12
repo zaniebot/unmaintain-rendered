@@ -13,14 +13,14 @@ head: micha/root-docs
 created_at: 2025-06-24T12:45:12Z
 updated_at: 2025-06-24T12:53:02Z
 url: https://github.com/astral-sh/ty/pull/694
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Use `environment.root` instead of `src.root` in README
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-24 12:45_
+_@MichaReiser_
 
 _No description provided._
 

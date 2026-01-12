@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-21T21:18:41Z
 updated_at: 2025-10-16T15:01:47Z
 url: https://github.com/astral-sh/ruff/issues/18247
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add `torch.Tensor.requires_grad_` to `flake8-boolean-trap` allowlist
 
 ---
 
-_Issue opened by @danra on 2025-05-21 21:18_
+_@danra_
 
 ### Summary
 

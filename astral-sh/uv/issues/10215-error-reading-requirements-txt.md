@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-28T18:40:50Z
 updated_at: 2024-12-29T00:42:59Z
 url: https://github.com/astral-sh/uv/issues/10215
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # Error reading requirements.txt
 
 ---
 
-_Issue opened by @ojio-san on 2024-12-28 18:40_
+_@ojio-san_
 
 Hello there,
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-16T12:47:13Z
 updated_at: 2025-11-27T19:35:32Z
 url: https://github.com/astral-sh/uv/issues/8253
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # Explicit index not respected for transitive dependency
 
 ---
 
-_Issue opened by @juzna on 2024-10-16 12:47_
+_@juzna_
 
 Hey, thanks for delivering explicit indexes in #7481 ❤️ I'm trying this with uv built from the last commit (e71b1d0c), but I have a problem with transitive dependencies & explicit index.
 

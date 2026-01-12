@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-11-16T03:58:33Z
 updated_at: 2022-11-21T12:44:06Z
 url: https://github.com/clap-rs/clap/issues/4485
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Feature gate term_width and max_term_width APIs
 
 ---
 
-_Issue opened by @SUPERCILEX on 2022-11-16 03:58_
+_@SUPERCILEX_
 
 They currently do nothing unless `wrap_help` is enabled which is extremely confusing. Those APIs should only be available when `wrap_help` is enabled.
 

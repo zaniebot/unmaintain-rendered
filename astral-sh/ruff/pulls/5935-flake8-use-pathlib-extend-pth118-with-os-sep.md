@@ -13,14 +13,14 @@ head: pth118-os-sep
 created_at: 2023-07-21T00:10:47Z
 updated_at: 2023-07-21T01:56:40Z
 url: https://github.com/astral-sh/ruff/pull/5935
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # [`flake8-use-pathlib`] extend PTH118 with `os.sep`
 
 ---
 
-_Pull request opened by @sbrugman on 2023-07-21 00:10_
+_@sbrugman_
 
 Closes https://github.com/astral-sh/ruff/issues/5905
 

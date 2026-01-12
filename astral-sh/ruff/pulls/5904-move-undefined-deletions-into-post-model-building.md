@@ -13,14 +13,14 @@ head: charlie/reorder
 created_at: 2023-07-20T05:05:22Z
 updated_at: 2023-07-20T05:38:14Z
 url: https://github.com/astral-sh/ruff/pull/5904
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Move undefined deletions into post-model-building pass
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-20 05:05_
+_@charliermarsh_
 
 ## Summary
 

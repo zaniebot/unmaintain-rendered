@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-03-26T18:24:54Z
 updated_at: 2025-05-07T15:54:55Z
 url: https://github.com/astral-sh/ty/issues/148
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # release pipeline
 
 ---
 
-_Issue opened by @carljm on 2025-03-26 18:24_
+_@carljm_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-30T05:30:00Z
 updated_at: 2025-12-11T14:40:41Z
 url: https://github.com/astral-sh/uv/issues/7803
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Debug uv applications with Visual Studio Code
 
 ---
 
-_Issue opened by @AndreuCodina on 2024-09-30 05:30_
+_@AndreuCodina_
 
 You can use Python or a Python tool (such as `.env/bin/fastapi`) to debug an application in Visual Studio Code. You just have to add a `.vscode/launch.json` file with the configuration. For example, you set a breakpoint and run a FastAPI application with `.venv/bin/fastapi dev src/main.py`.
 

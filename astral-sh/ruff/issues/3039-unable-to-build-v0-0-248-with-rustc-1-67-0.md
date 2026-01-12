@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-19T18:26:04Z
 updated_at: 2023-02-21T15:51:02Z
 url: https://github.com/astral-sh/ruff/issues/3039
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Unable to build v0.0.248 with rustc 1.67.0
 
 ---
 
-_Issue opened by @winterqt on 2023-02-19 18:26_
+_@winterqt_
 
 When building Ruff v0.0.248 with rustc 1.67.0, I receive the following compilation error:
 

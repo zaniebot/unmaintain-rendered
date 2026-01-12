@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-11T11:43:15Z
 updated_at: 2025-08-05T16:17:18Z
 url: https://github.com/astral-sh/ty/issues/815
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Remove `pull-types:skip` directive in `callable.md` mdtest
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-07-11 11:43_
+_@AlexWaygood_
 
 If this diff is applied to the Ruff main branch:
 

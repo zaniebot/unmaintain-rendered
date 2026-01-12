@@ -12,14 +12,14 @@ head: charlie/pep
 created_at: 2022-11-15T16:51:35Z
 updated_at: 2022-11-15T16:52:13Z
 url: https://github.com/astral-sh/ruff/pull/757
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Limit PEP 604 checks to Python 3.10+
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-15 16:51_
+_@charliermarsh_
 
 Resolves #755.
 

@@ -14,14 +14,14 @@ head: goto_attribute
 created_at: 2025-07-18T02:36:07Z
 updated_at: 2025-07-18T18:34:00Z
 url: https://github.com/astral-sh/ruff/pull/19417
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [ty] Added support for "go to definition" for attribute accesses and keyword arguments
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-18 02:36_
+_@UnboundVariable_
 
 This PR builds upon #19371. It addresses a few additional code review suggestions and adds support for attribute accesses (expressions of the form `x.y`) and keyword arguments within call expressions.
 

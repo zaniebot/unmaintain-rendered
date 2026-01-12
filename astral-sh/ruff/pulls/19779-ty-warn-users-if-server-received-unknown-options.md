@@ -14,14 +14,14 @@ head: dhruv/warn-unknown-options
 created_at: 2025-08-06T10:20:09Z
 updated_at: 2025-08-06T13:11:51Z
 url: https://github.com/astral-sh/ruff/pull/19779
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] Warn users if server received unknown options
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-08-06 10:20_
+_@dhruvmanila_
 
 ## Summary
 

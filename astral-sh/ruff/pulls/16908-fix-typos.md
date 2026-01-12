@@ -13,14 +13,14 @@ head: rk-typo
 created_at: 2025-03-22T02:40:57Z
 updated_at: 2025-07-09T20:31:25Z
 url: https://github.com/astral-sh/ruff/pull/16908
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # Fix typos
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-03-22 02:40_
+_@InSyncWithFoo_
 
 ## Summary
 

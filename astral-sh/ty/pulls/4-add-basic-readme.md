@@ -13,14 +13,14 @@ head: zb/readme
 created_at: 2025-05-02T18:19:16Z
 updated_at: 2025-07-08T10:38:47Z
 url: https://github.com/astral-sh/ty/pull/4
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Add basic README
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-02 18:19_
+_@zanieb_
 
 _No description provided._
 

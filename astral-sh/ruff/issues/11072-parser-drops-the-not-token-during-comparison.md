@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-21T14:51:36Z
 updated_at: 2024-04-23T04:42:42Z
 url: https://github.com/astral-sh/ruff/issues/11072
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Parser drops the `not` token during comparison expression parsing
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-04-21 14:51_
+_@dhruvmanila_
 
 For example:
 ```python

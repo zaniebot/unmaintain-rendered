@@ -13,14 +13,14 @@ head: renkai-refactor-config.rs
 created_at: 2025-10-18T03:44:03Z
 updated_at: 2025-10-19T10:31:59Z
 url: https://github.com/astral-sh/ruff/pull/20953
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # Refactor format tests to use CliTest helper
 
 ---
 
-_Pull request opened by @Renkai on 2025-10-18 03:44_
+_@Renkai_
 
 Part of https://github.com/astral-sh/ruff/issues/19016
 

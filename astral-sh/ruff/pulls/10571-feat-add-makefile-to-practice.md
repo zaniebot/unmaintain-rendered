@@ -11,14 +11,14 @@ head: main
 created_at: 2024-03-25T14:17:41Z
 updated_at: 2024-03-30T01:04:44Z
 url: https://github.com/astral-sh/ruff/pull/10571
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # feat: add makefile to practice
 
 ---
 
-_Pull request opened by @liuliuOD on 2024-03-25 14:17_
+_@liuliuOD_
 
 ## Summary
 

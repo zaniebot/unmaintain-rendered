@@ -12,14 +12,14 @@ head: charlie/phase
 created_at: 2023-07-17T18:30:12Z
 updated_at: 2023-07-17T18:57:23Z
 url: https://github.com/astral-sh/ruff/pull/5839
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add some "Phase" annotations to other visit methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-17 18:30_
+_@charliermarsh_
 
 ## Summary
 

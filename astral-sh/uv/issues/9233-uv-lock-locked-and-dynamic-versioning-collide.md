@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-19T16:26:51Z
 updated_at: 2024-11-19T16:28:47Z
 url: https://github.com/astral-sh/uv/issues/9233
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # uv lock --locked and dynamic versioning collide.
 
 ---
 
-_Issue opened by @mjpieters on 2024-11-19 16:26_
+_@mjpieters_
 
 As part of our CI lint check, we validate that the lock file is current:
 

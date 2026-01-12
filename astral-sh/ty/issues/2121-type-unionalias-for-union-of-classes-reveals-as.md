@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-19T21:22:26Z
 updated_at: 2025-12-21T23:45:31Z
 url: https://github.com/astral-sh/ty/issues/2121
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # type[UnionAlias] for union of classes reveals as @Todo instead of distributing over union
 
 ---
 
-_Issue opened by @sunny-zuo on 2025-12-19 21:22_
+_@sunny-zuo_
 
 ### Summary
 

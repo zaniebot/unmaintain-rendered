@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-11T05:14:37Z
 updated_at: 2025-05-11T07:21:00Z
 url: https://github.com/astral-sh/uv/issues/8123
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # vscode extension
 
 ---
 
-_Issue opened by @DetachHead on 2024-10-11 05:14_
+_@DetachHead_
 
 both [pdm](https://marketplace.visualstudio.com/items?itemName=GabDug.pdm) and [poetry](https://marketplace.visualstudio.com/items?itemName=zeshuaro.vscode-python-poetry) have vscode extensions that add tasks for common commands. the pdm one also registers scripts defined in `pyproject.toml` as tasks (#5903)
 

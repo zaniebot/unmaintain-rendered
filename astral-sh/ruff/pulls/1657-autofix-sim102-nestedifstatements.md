@@ -12,14 +12,14 @@ head: autofix-sim102
 created_at: 2023-01-05T09:08:34Z
 updated_at: 2023-01-18T14:08:41Z
 url: https://github.com/astral-sh/ruff/pull/1657
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Autofix SIM102 (NestedIfStatements)
 
 ---
 
-_Pull request opened by @andersk on 2023-01-05 09:08_
+_@andersk_
 
 I tried to write an autofixer for SIM102 (`NestedIfStatements`) using LibCST to preserve comments. But I ran into two issues that potentially point to general problems with the with the `SourceCodeLocator` API and/or the `Fix::replacement` API. So I’m opening this draft to discuss what the plan should be.
 

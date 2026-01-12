@@ -14,14 +14,14 @@ head: alex/moduletype-declarations
 created_at: 2025-05-13T19:28:58Z
 updated_at: 2025-05-13T20:37:23Z
 url: https://github.com/astral-sh/ruff/pull/18077
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] Check assignments to implicit global symbols are assignable to the types declared on `types.ModuleType`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-13 19:28_
+_@AlexWaygood_
 
 ## Summary
 

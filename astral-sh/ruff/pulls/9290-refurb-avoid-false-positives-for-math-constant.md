@@ -13,14 +13,14 @@ head: furb-152
 created_at: 2023-12-27T03:19:36Z
 updated_at: 2023-12-27T18:18:45Z
 url: https://github.com/astral-sh/ruff/pull/9290
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [`refurb`] Avoid false positives for `math-constant` (`FURB152`)
 
 ---
 
-_Pull request opened by @hauntsaninja on 2023-12-27 03:19_
+_@hauntsaninja_
 
 Fixes #9281
 

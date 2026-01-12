@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T15:22:31Z
 updated_at: 2024-02-16T18:55:25Z
 url: https://github.com/astral-sh/uv/issues/1501
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # venv must be activated even when running via `venv/bin/python -m uv`
 
 ---
 
-_Issue opened by @altendky on 2024-02-16 15:22_
+_@altendky_
 
 Seems likely related to https://github.com/astral-sh/uv/issues/1374.  I expect that even if usage outside of a venv is blocked, either universally by uv or because of `PIP_REQUIRE_VIRTUALENV=1`, activation should not be required as many people prefer to `venv/bin/python` instead of using `source venv/bin/activate; python`.
 

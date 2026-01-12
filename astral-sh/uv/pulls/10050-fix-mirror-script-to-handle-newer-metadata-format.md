@@ -13,14 +13,14 @@ head: fix-mirror-script-arch-filter
 created_at: 2024-12-20T09:46:04Z
 updated_at: 2024-12-20T13:42:29Z
 url: https://github.com/astral-sh/uv/pull/10050
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:06Z
 ```
 
 # Fix mirror script to handle newer metadata format.
 
 ---
 
-_Pull request opened by @bw513 on 2024-12-20 09:46_
+_@bw513_
 
 ## Summary
 

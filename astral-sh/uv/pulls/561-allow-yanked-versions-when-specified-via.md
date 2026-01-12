@@ -13,14 +13,14 @@ head: charlie/yank
 created_at: 2023-12-05T05:13:54Z
 updated_at: 2023-12-05T08:44:08Z
 url: https://github.com/astral-sh/uv/pull/561
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:02Z
 ```
 
 # Allow yanked versions when specified via `==`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-05 05:13_
+_@charliermarsh_
 
 ## Summary
 

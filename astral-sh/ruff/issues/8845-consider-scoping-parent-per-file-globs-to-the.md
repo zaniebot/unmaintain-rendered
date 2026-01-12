@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-26T21:37:05Z
 updated_at: 2023-11-27T15:53:18Z
 url: https://github.com/astral-sh/ruff/issues/8845
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Consider scoping parent per-file globs to the base project when 
 
 ---
 
-_Issue opened by @strangemonad on 2023-11-26 21:37_
+_@strangemonad_
 
 Summary: per-file-ignores globs in a parent config file seem to resolve relative to the parent's location rather than the base project.
 

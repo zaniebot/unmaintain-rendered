@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-07T23:45:26Z
 updated_at: 2024-05-08T00:04:13Z
 url: https://github.com/astral-sh/ruff/issues/11328
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Human-friendly `noqa` directives
 
 ---
 
-_Issue opened by @puddly on 2024-05-07 23:45_
+_@puddly_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

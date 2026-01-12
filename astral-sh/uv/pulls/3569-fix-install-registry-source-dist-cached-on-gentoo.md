@@ -13,14 +13,14 @@ head: dist_cached-test-inc
 created_at: 2024-05-14T05:45:44Z
 updated_at: 2024-05-14T18:27:22Z
 url: https://github.com/astral-sh/uv/pull/3569
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:43Z
 ```
 
 # Fix install_registry_source_dist_cached on Gentoo
 
 ---
 
-_Pull request opened by @mgorny on 2024-05-14 05:45_
+_@mgorny_
 
 ## Summary
 

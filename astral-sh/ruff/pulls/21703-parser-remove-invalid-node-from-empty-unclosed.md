@@ -12,14 +12,14 @@ head: parser_recovery_remove_invalid_node
 created_at: 2025-11-30T13:41:36Z
 updated_at: 2025-12-14T09:48:33Z
 url: https://github.com/astral-sh/ruff/pull/21703
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # parser: remove invalid node from empty & unclosed container types
 
 ---
 
-_Pull request opened by @11happy on 2025-11-30 13:41_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

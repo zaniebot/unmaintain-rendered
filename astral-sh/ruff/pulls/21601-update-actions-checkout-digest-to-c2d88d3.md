@@ -13,14 +13,14 @@ head: renovate/actions-checkout-digest
 created_at: 2025-11-24T02:03:13Z
 updated_at: 2025-11-24T05:27:55Z
 url: https://github.com/astral-sh/ruff/pull/21601
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # Update actions/checkout digest to c2d88d3
 
 ---
 
-_Pull request opened by @renovate on 2025-11-24 02:03_
+_@renovate_
 
 This PR contains the following updates:
 

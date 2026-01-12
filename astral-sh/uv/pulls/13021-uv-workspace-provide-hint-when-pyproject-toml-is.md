@@ -11,14 +11,14 @@ head: missing-pyproject-err
 created_at: 2025-04-21T19:35:35Z
 updated_at: 2025-04-21T21:58:28Z
 url: https://github.com/astral-sh/uv/pull/13021
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:31Z
 ```
 
 # uv-workspace: provide hint when pyproject.toml is missing
 
 ---
 
-_Pull request opened by @eduardorittner on 2025-04-21 19:35_
+_@eduardorittner_
 
 ## Summary
 

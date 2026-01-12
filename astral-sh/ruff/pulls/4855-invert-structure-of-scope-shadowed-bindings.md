@@ -13,14 +13,14 @@ head: charlie/shadow
 created_at: 2023-06-05T01:55:53Z
 updated_at: 2023-06-05T02:23:38Z
 url: https://github.com/astral-sh/ruff/pull/4855
-synced_at: 2026-01-12T03:50:04Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Invert structure of Scope#shadowed_bindings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-05 01:55_
+_@charliermarsh_
 
 ## Summary
 

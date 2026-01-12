@@ -13,14 +13,14 @@ head: doc_fix_safety_for_repeated_keys
 created_at: 2025-04-17T02:30:35Z
 updated_at: 2025-04-18T18:31:56Z
 url: https://github.com/astral-sh/ruff/pull/17440
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`pyflakes`] Add fix safety section to docs (`F601`, `F602`)
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-17 02:30_
+_@Kalmaegi_
 
 ## Summary
 

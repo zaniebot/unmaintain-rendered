@@ -12,14 +12,14 @@ head: partial-clone
 created_at: 2024-05-31T21:21:12Z
 updated_at: 2025-01-15T19:07:34Z
 url: https://github.com/astral-sh/uv/pull/3950
-synced_at: 2026-01-10T11:44:26Z
+synced_at: 2026-01-12T16:05:56Z
 ```
 
 # Fetch git trees on demand
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-05-31 21:21_
+_@ibraheemdev_
 
 ## Summary
 

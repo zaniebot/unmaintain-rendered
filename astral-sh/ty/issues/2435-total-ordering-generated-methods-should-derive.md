@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-10T12:26:52Z
 updated_at: 2026-01-10T19:36:00Z
 url: https://github.com/astral-sh/ty/issues/2435
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `total_ordering` generated methods should derive their signature from the user-provided comparison method
 
 ---
 
-_Issue opened by @behrmann on 2026-01-10 12:26_
+_@behrmann_
 
 ### Summary
 

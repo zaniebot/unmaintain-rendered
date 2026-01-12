@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T12:32:20Z
 updated_at: 2025-12-11T10:04:35Z
 url: https://github.com/astral-sh/uv/issues/8935
-synced_at: 2026-01-10T03:11:32Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # AWS Lambda Docker example
 
 ---
 
-_Issue opened by @tonymaynard97 on 2024-11-08 12:32_
+_@tonymaynard97_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

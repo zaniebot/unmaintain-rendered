@@ -12,14 +12,14 @@ head: zb/rooster-up
 created_at: 2025-09-25T13:48:45Z
 updated_at: 2025-09-25T14:11:06Z
 url: https://github.com/astral-sh/uv/pull/16025
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:04Z
 ```
 
 # Upgrade rooster to v0.1.0
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-25 13:48_
+_@zanieb_
 
 _No description provided._
 

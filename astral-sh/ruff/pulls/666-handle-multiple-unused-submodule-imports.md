@@ -11,14 +11,14 @@ head: handle-multiple-unused-submodule-imports
 created_at: 2022-11-10T06:03:22Z
 updated_at: 2022-12-26T07:18:24Z
 url: https://github.com/astral-sh/ruff/pull/666
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Handle multiple unused submodule imports
 
 ---
 
-_Pull request opened by @squiddy on 2022-11-10 06:03_
+_@squiddy_
 
 I've got the tests and the right behaviour in place, but the code is not pretty right now. 
 

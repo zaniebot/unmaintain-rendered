@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-21T20:31:13Z
 updated_at: 2025-01-26T22:03:55Z
 url: https://github.com/astral-sh/uv/issues/8426
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # Request for changing python versions more easily
 
 ---
 
-_Issue opened by @brenorb on 2024-10-21 20:31_
+_@brenorb_
 
 I just started trying uv, so I started
 

@@ -12,14 +12,14 @@ head: N801-805
 created_at: 2022-10-16T09:43:06Z
 updated_at: 2022-10-16T15:58:39Z
 url: https://github.com/astral-sh/ruff/pull/439
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement N801 ~ N805
 
 ---
 
-_Pull request opened by @harupy on 2022-10-16 09:43_
+_@harupy_
 
 See #434.
 

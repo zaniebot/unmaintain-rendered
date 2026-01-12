@@ -13,14 +13,14 @@ head: charlie/shard
 created_at: 2023-12-06T21:50:42Z
 updated_at: 2023-12-07T05:02:47Z
 url: https://github.com/astral-sh/uv/pull/583
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:03Z
 ```
 
 # Shard the registry cache by package
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-06 21:50_
+_@charliermarsh_
 
 ## Summary
 

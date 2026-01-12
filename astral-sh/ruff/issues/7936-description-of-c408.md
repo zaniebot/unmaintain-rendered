@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-13T08:42:42Z
 updated_at: 2023-10-16T00:13:16Z
 url: https://github.com/astral-sh/ruff/issues/7936
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # description of C408
 
 ---
 
-_Issue opened by @yuuuxt on 2023-10-13 08:42_
+_@yuuuxt_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

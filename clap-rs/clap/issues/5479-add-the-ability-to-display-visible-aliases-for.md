@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-01T22:23:13Z
 updated_at: 2024-05-01T22:27:05Z
 url: https://github.com/clap-rs/clap/issues/5479
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Add the Ability to Display Visible Aliases for PossibleValues
 
 ---
 
-_Issue opened by @naftulikay on 2024-05-01 22:23_
+_@naftulikay_
 
 ### Please complete the following tasks
 

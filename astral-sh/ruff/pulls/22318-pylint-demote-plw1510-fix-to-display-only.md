@@ -13,14 +13,14 @@ head: brent/plw1510-fix
 created_at: 2025-12-31T20:43:21Z
 updated_at: 2026-01-06T00:36:18Z
 url: https://github.com/astral-sh/ruff/pull/22318
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [`pylint`] Demote `PLW1510` fix to display-only
 
 ---
 
-_Pull request opened by @ntBre on 2025-12-31 20:43_
+_@ntBre_
 
 Summary
 --

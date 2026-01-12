@@ -13,14 +13,14 @@ head: mirror_configs
 created_at: 2024-10-30T11:31:12Z
 updated_at: 2024-11-13T19:12:06Z
 url: https://github.com/astral-sh/uv/pull/8695
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:27Z
 ```
 
 # Make Python and PyPy install mirrors configurable in uv.toml
 
 ---
 
-_Pull request opened by @owenbrooks on 2024-10-30 11:31_
+_@owenbrooks_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

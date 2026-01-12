@@ -12,14 +12,14 @@ head: create_workflow_dispatch
 created_at: 2023-05-23T12:04:22Z
 updated_at: 2023-05-23T18:55:37Z
 url: https://github.com/astral-sh/ruff/pull/4598
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Refactor and fix task trigger for dependent jobs in other repos
 
 ---
 
-_Pull request opened by @konstin on 2023-05-23 12:04_
+_@konstin_
 
 Refactor and fix task trigger for dependent jobs in other repos
 

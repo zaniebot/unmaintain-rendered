@@ -13,14 +13,14 @@ head: PYI055
 created_at: 2023-10-10T05:21:51Z
 updated_at: 2023-10-13T01:02:54Z
 url: https://github.com/astral-sh/ruff/pull/7886
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # add autofix for `PYI055`
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-10-10 05:21_
+_@diceroll123_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

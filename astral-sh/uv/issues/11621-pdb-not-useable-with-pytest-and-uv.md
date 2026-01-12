@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-19T15:19:37Z
 updated_at: 2025-02-19T17:06:07Z
 url: https://github.com/astral-sh/uv/issues/11621
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # `pdb` not useable with pytest and uv
 
 ---
 
-_Issue opened by @ccurme on 2025-02-19 15:19_
+_@ccurme_
 
 ### Summary
 

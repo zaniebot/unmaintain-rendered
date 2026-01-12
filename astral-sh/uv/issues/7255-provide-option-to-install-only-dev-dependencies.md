@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-10T14:10:53Z
 updated_at: 2024-09-16T20:06:22Z
 url: https://github.com/astral-sh/uv/issues/7255
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Provide option to install only dev dependencies
 
 ---
 
-_Issue opened by @paveldedik on 2024-09-10 14:10_
+_@paveldedik_
 
 Hi,
 

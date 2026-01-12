@@ -12,14 +12,14 @@ head: nir/bump-version
 created_at: 2024-09-10T09:15:11Z
 updated_at: 2025-03-20T21:55:13Z
 url: https://github.com/astral-sh/uv/pull/7248
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Implement bump mechanism (mostly ported from rye)
 
 ---
 
-_Pull request opened by @nrbnlulu on 2024-09-10 09:15_
+_@nrbnlulu_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

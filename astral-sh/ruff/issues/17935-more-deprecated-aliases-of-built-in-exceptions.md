@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T06:24:17Z
 updated_at: 2025-05-09T19:38:41Z
 url: https://github.com/astral-sh/ruff/issues/17935
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # More deprecated aliases of built-in exceptions
 
 ---
 
-_Issue opened by @DimitriPapadopoulos on 2025-05-08 06:24_
+_@DimitriPapadopoulos_
 
 ### Summary
 

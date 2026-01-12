@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-09T12:57:34Z
 updated_at: 2025-06-09T20:07:35Z
 url: https://github.com/astral-sh/ruff/issues/18590
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Fixes for FURB122 and FURB142 should parenthesize lambdas and ternary expressions
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-09 12:57_
+_@dscorbett_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-15T18:02:39Z
 updated_at: 2025-09-12T13:16:51Z
 url: https://github.com/astral-sh/uv/issues/12901
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # Managed Python sysconfig returns incorrect path to CC on Amazon Linux 2023
 
 ---
 
-_Issue opened by @nwalters512 on 2025-04-15 18:02_
+_@nwalters512_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: cjm/callable-instances
 created_at: 2025-05-22T18:40:56Z
 updated_at: 2025-05-27T19:04:47Z
 url: https://github.com/astral-sh/ruff/pull/18260
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # Fix instance vs callable subtyping/assignability
 
 ---
 
-_Pull request opened by @carljm on 2025-05-22 18:40_
+_@carljm_
 
 ## Summary
 

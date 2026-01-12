@@ -14,14 +14,14 @@ head: charlie/par
 created_at: 2025-01-02T22:28:24Z
 updated_at: 2025-01-02T22:44:39Z
 url: https://github.com/astral-sh/ruff/pull/15230
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Avoid syntax error when removing int over multiple lines
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-02 22:28_
+_@charliermarsh_
 
 ## Summary
 

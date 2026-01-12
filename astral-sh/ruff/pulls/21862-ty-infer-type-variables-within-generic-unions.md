@@ -14,14 +14,14 @@ head: david/fix-1772
 created_at: 2025-12-09T10:51:39Z
 updated_at: 2025-12-09T15:23:02Z
 url: https://github.com/astral-sh/ruff/pull/21862
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 #  [ty] Infer type variables within generic unions 
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-09 10:51_
+_@sharkdp_
 
 ## Summary
 

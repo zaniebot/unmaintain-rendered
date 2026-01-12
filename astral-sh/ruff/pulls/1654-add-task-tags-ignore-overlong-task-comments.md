@@ -12,14 +12,14 @@ head: charlie/revert
 created_at: 2023-01-05T04:28:27Z
 updated_at: 2023-01-05T04:54:51Z
 url: https://github.com/astral-sh/ruff/pull/1654
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add task-tags & ignore-overlong-task-comments settings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-05 04:28_
+_@charliermarsh_
 
 This is a revert and re-application of #1550, to preserve the individual commit messages.
 

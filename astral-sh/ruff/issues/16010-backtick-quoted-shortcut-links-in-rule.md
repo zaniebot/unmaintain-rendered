@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-07T04:29:51Z
 updated_at: 2025-02-10T08:54:23Z
 url: https://github.com/astral-sh/ruff/issues/16010
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Backtick-quoted shortcut links in rule documentation
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-02-07 04:29_
+_@InSyncWithFoo_
 
 `FAST002`'s rule documentation reads:
 

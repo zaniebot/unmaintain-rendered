@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-10T03:11:14Z
 updated_at: 2023-02-10T03:57:33Z
 url: https://github.com/astral-sh/ruff/issues/2706
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Do not suggest PTH115 for Python < 3.9
 
 ---
 
-_Issue opened by @adamtheturtle on 2023-02-10 03:11_
+_@adamtheturtle_
 
 Thank you for this great project.
 

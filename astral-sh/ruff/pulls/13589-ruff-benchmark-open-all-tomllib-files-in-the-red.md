@@ -13,14 +13,14 @@ head: redknot-bench-init
 created_at: 2024-10-01T13:34:17Z
 updated_at: 2024-10-01T16:47:38Z
 url: https://github.com/astral-sh/ruff/pull/13589
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # `ruff_benchmark`: open all `tomllib` files in the red-knot benchmark
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-01 13:34_
+_@AlexWaygood_
 
 ## Summary
 

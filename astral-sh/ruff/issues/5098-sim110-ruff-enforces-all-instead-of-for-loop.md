@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-06-14T19:29:35Z
 updated_at: 2023-06-15T19:42:15Z
 url: https://github.com/astral-sh/ruff/issues/5098
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [SIM110] Ruff enforces `all` instead of for loop inside async function.
 
 ---
 
-_Issue opened by @real-yfprojects on 2023-06-14 19:29_
+_@real-yfprojects_
 
 The following MRE violates the *SIM110* rule. 
 ```py

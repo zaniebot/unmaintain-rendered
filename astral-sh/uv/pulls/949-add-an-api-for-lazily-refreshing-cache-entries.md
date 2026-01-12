@@ -12,14 +12,14 @@ head: charlie/refresh
 created_at: 2024-01-17T15:12:41Z
 updated_at: 2024-01-23T03:25:38Z
 url: https://github.com/astral-sh/uv/pull/949
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:19Z
 ```
 
 # Add an API for lazily refreshing cache entries
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-17 15:12_
+_@charliermarsh_
 
 ## Summary
 

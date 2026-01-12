@@ -14,14 +14,14 @@ head: alex/fix-autocomplete-subscript-attrs
 created_at: 2025-06-16T13:36:31Z
 updated_at: 2025-06-17T06:45:39Z
 url: https://github.com/astral-sh/ruff/pull/18707
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # [ty] Fix panic when attempting to provide autocompletions for an instance of a class that assigns attributes to `self[0]`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-16 13:36_
+_@AlexWaygood_
 
 ## Summary
 

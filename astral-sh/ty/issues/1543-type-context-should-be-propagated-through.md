@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-14T02:04:01Z
 updated_at: 2025-11-14T20:19:09Z
 url: https://github.com/astral-sh/ty/issues/1543
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Type context should be propagated through conditional expressions
 
 ---
 
-_Issue opened by @ibraheemdev on 2025-11-14 02:04_
+_@ibraheemdev_
 
 For example, this should not error:
 ```py

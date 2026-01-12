@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-15T14:25:51Z
 updated_at: 2025-05-28T09:16:01Z
 url: https://github.com/astral-sh/ty/issues/217
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # `--config-file`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-01-15 14:25_
+_@MichaReiser_
 
 Path to a `knot.toml` configuration file (`pyproject.toml` files are not accepted). When provided, this file will be used in place of any discovered configuration (including user-level configuration). Red Knot will skip project discovery and default to the current working directory (or `--project` if specified). Paths are anchored at the current working directory.
 

@@ -13,14 +13,14 @@ head: charlie/gs
 created_at: 2025-09-12T16:57:26Z
 updated_at: 2025-09-12T17:57:59Z
 url: https://github.com/astral-sh/uv/pull/15817
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:57Z
 ```
 
 # Include SHA when listing lockfile changes
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-12 16:57_
+_@charliermarsh_
 
 ## Summary
 

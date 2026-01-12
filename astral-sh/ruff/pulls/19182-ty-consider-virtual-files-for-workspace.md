@@ -14,14 +14,14 @@ head: dhruv/virtual-files-for-workspace-diagnostics
 created_at: 2025-07-07T14:33:11Z
 updated_at: 2025-07-10T14:41:23Z
 url: https://github.com/astral-sh/ruff/pull/19182
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # [ty] Consider virtual files for workspace diagnostics
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-07 14:33_
+_@dhruvmanila_
 
 ## Summary
 

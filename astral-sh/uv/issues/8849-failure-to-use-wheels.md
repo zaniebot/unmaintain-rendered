@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T00:41:00Z
 updated_at: 2025-08-09T01:31:37Z
 url: https://github.com/astral-sh/uv/issues/8849
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # Failure to use wheels
 
 ---
 
-_Issue opened by @RedUndercover on 2024-11-06 00:41_
+_@RedUndercover_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

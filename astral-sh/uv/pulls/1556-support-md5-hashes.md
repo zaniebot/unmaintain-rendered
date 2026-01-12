@@ -13,14 +13,14 @@ head: charlie/md5
 created_at: 2024-02-17T00:13:53Z
 updated_at: 2024-02-17T00:25:17Z
 url: https://github.com/astral-sh/uv/pull/1556
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # Support MD5 hashes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-17 00:13_
+_@charliermarsh_
 
 ## Summary
 

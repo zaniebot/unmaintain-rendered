@@ -12,14 +12,14 @@ head: charlie/pyproject
 created_at: 2023-10-19T18:38:32Z
 updated_at: 2023-10-19T18:42:07Z
 url: https://github.com/astral-sh/uv/pull/141
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:46Z
 ```
 
 # Accept dependencies from `pyproject.toml`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-19 18:38_
+_@charliermarsh_
 
 Doesn't support extras yet. It's also supported for `pip uninstall`, which `pip` itself doesn't support, but whatever.
 

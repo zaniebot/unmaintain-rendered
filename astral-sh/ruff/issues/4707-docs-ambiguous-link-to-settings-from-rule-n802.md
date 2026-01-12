@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-29T20:13:47Z
 updated_at: 2023-05-29T21:26:12Z
 url: https://github.com/astral-sh/ruff/issues/4707
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # docs: ambiguous link to settings from rule N802
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-05-29 20:13_
+_@saippuakauppias_
 
 The current version of the documentation for rule [`invalid-function-name (N802)`](https://beta.ruff.rs/docs/rules/invalid-function-name/) has a link to option `pep8-naming.ignore-names`, but it leads to rule [`flake8-self.ignore-names`](https://beta.ruff.rs/docs/settings/#ignore-names), not [`pep8-naming.ignore-names`](https://beta.ruff.rs/docs/settings/#ignore-names_1)
 

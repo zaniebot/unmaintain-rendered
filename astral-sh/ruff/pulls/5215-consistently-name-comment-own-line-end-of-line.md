@@ -14,14 +14,14 @@ head: comment_line_position
 created_at: 2023-06-20T16:02:47Z
 updated_at: 2023-06-21T09:04:58Z
 url: https://github.com/astral-sh/ruff/pull/5215
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Consistently name comment own line/end-of-line `line_position()`
 
 ---
 
-_Pull request opened by @konstin on 2023-06-20 16:02_
+_@konstin_
 
 ## Summary
 

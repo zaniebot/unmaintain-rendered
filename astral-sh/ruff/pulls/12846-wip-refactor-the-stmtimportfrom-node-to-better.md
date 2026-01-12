@@ -13,14 +13,14 @@ head: alex/refactor-import-from
 created_at: 2024-08-12T15:42:36Z
 updated_at: 2025-01-31T15:05:29Z
 url: https://github.com/astral-sh/ruff/pull/12846
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [WIP] Refactor the `StmtImportFrom` node to better reflect invariants of Python syntax
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-12 15:42_
+_@AlexWaygood_
 
 (Very much a work in progress)
 

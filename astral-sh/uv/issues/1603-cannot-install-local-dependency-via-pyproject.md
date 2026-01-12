@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T17:33:12Z
 updated_at: 2024-02-17T20:20:24Z
 url: https://github.com/astral-sh/uv/issues/1603
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Cannot install local dependency via `pyproject.toml`: "URL dependencies must be expressed as direct requirements or constraints."
 
 ---
 
-_Issue opened by @bersbersbers on 2024-02-17 17:33_
+_@bersbersbers_
 
 Thanks for this! I have been putting off moving from `pip` to `poetry` (in order to circumvent `pip`s many limitations) due to `poetry`s many limitations. `uv` looks like my journey may finally come to an end. One issue, though:
 

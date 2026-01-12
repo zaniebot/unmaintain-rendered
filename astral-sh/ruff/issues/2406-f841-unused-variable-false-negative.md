@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-31T18:29:04Z
 updated_at: 2023-01-31T19:04:36Z
 url: https://github.com/astral-sh/ruff/issues/2406
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # F841 unused-variable false negative?
 
 ---
 
-_Issue opened by @spaceone on 2023-01-31 18:29_
+_@spaceone_
 
 ```sh
 $ cat foo.py                                                                                                       

@@ -13,14 +13,14 @@ head: charlie/verbatim
 created_at: 2024-01-19T04:38:10Z
 updated_at: 2024-01-19T14:00:38Z
 url: https://github.com/astral-sh/uv/pull/1000
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:21Z
 ```
 
 # Allow relative paths and environment variables in all editable representations
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-19 04:38_
+_@charliermarsh_
 
 ## Summary
 

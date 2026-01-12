@@ -13,14 +13,14 @@ head: zb/python
 created_at: 2024-01-19T00:33:06Z
 updated_at: 2024-01-22T06:32:04Z
 url: https://github.com/astral-sh/uv/pull/986
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:20Z
 ```
 
 # Use current and requested Python versions in `requires-python` incompatibility errors
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-19 00:33_
+_@zanieb_
 
 Closes https://github.com/astral-sh/puffin/issues/806
 

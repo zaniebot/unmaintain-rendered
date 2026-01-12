@@ -13,14 +13,14 @@ head: RET501-unsafe-comment
 created_at: 2025-06-19T03:00:00Z
 updated_at: 2025-06-19T09:12:12Z
 url: https://github.com/astral-sh/ruff/pull/18780
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # Mark `RET501` fix unsafe if comments are inside
 
 ---
 
-_Pull request opened by @njhearp on 2025-06-19 03:00_
+_@njhearp_
 
 ## Summary
 

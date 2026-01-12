@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-23T09:22:10Z
 updated_at: 2025-06-23T11:44:28Z
 url: https://github.com/astral-sh/ruff/issues/18885
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Rule request: `typing_extensions` import detected outside of `TYPE_CHECKING` block
 
 ---
 
-_Issue opened by @PerchunPak on 2025-06-23 09:22_
+_@PerchunPak_
 
 ### Summary
 

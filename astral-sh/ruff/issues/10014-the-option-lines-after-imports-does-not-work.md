@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T00:02:19Z
 updated_at: 2024-02-25T09:23:16Z
 url: https://github.com/astral-sh/ruff/issues/10014
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # The option lines-after-imports does not work after if block
 
 ---
 
-_Issue opened by @BranislavBajuzik on 2024-02-17 00:02_
+_@BranislavBajuzik_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

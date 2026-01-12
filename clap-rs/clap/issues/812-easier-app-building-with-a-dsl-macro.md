@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-01-08T12:41:25Z
 updated_at: 2018-08-02T03:29:59Z
 url: https://github.com/clap-rs/clap/issues/812
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Easier App building with a DSL macro
 
 ---
 
-_Issue opened by @theduke on 2017-01-08 12:41_
+_@theduke_
 
 Would you be open to a pull request that adds a DSL (domain specific language) like macro that allows even smoother building of an app?
 

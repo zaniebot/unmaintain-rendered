@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-23T02:47:22Z
 updated_at: 2025-05-24T12:40:33Z
 url: https://github.com/astral-sh/uv/issues/13609
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # Feature Request: Enable shared caching or linking for heavy binary wheels like jaxlib across projects
 
 ---
 
-_Issue opened by @mav3ri3k on 2025-05-23 02:47_
+_@mav3ri3k_
 
 ### Summary
 

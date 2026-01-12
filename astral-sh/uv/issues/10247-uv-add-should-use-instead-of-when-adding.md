@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-31T02:53:06Z
 updated_at: 2025-03-15T22:34:37Z
 url: https://github.com/astral-sh/uv/issues/10247
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # uv add should use ^ instead of >= when adding dependencies to pyproject.toml
 
 ---
 
-_Issue opened by @kishaningithub on 2024-12-31 02:53_
+_@kishaningithub_
 
 To add / remove dependencies i use the `uv add` and `uv remove` commands and i prefer not to edit `pyproject.toml` manually.
 

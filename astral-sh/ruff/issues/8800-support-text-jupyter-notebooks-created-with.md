@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-21T03:44:14Z
 updated_at: 2025-04-29T19:32:32Z
 url: https://github.com/astral-sh/ruff/issues/8800
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Support text Jupyter notebooks created with Jupytext
 
 ---
 
-_Issue opened by @owenlamont on 2023-11-21 03:44_
+_@owenlamont_
 
 I have a use case for Ruff and Ruff formatter that is a bit related to some of the other Markdown / Docstring feature requests but specifically I hoped to run Ruff and Ruff formatter on Jupyter notebooks that had been exported to markdown with [Jupytext](https://jupytext.readthedocs.io/en/latest/).
 

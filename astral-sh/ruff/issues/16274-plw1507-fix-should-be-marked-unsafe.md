@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T13:15:43Z
 updated_at: 2025-02-24T17:29:30Z
 url: https://github.com/astral-sh/ruff/issues/16274
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PLW1507 fix should be marked unsafe
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-20 13:15_
+_@dscorbett_
 
 ### Description
 

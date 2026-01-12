@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-23T12:36:37Z
 updated_at: 2024-10-23T15:35:03Z
 url: https://github.com/astral-sh/ruff/issues/13889
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Fixer for using typing_extensions for unsupported typing imports 
 
 ---
 
-_Issue opened by @fzimmermann89 on 2024-10-23 12:36_
+_@fzimmermann89_
 
 An automatic fix would be great if symbols are imported from `typing` that are not available at the lowest required python version but are available in `typing_extensions`,  if  `typing_extensions` is a dependency.
 This would fix the opposite issues of #7285 UP035.

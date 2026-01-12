@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-21T06:18:25Z
 updated_at: 2024-09-16T03:02:02Z
 url: https://github.com/astral-sh/uv/issues/2583
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Help add supporting uv in renovatebot
 
 ---
 
-_Issue opened by @staners2 on 2024-03-21 06:18_
+_@staners2_
 
 I open issue for supporting `uv` in `renovatebot`. Help me push this issue to release in prod and supplement with useful information that will simplify support for `renovatebot`
 

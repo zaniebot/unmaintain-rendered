@@ -13,14 +13,14 @@ head: dcreager/specialize-deep-dish
 created_at: 2025-05-12T19:51:13Z
 updated_at: 2025-05-13T17:13:02Z
 url: https://github.com/astral-sh/ruff/pull/18054
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] Infer parameter specializations of explicitly implemented generic protocols
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-12 19:51_
+_@dcreager_
 
 Follows on from (and depends on) https://github.com/astral-sh/ruff/pull/18021.
 

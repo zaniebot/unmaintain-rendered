@@ -13,14 +13,14 @@ head: search-path-consistent-type
 created_at: 2024-07-18T11:57:50Z
 updated_at: 2024-08-02T16:11:53Z
 url: https://github.com/astral-sh/ruff/pull/12376
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Improve validation for search paths
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-18 11:57_
+_@AlexWaygood_
 
 ## Summary
 

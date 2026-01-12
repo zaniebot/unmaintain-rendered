@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-07T19:36:32Z
 updated_at: 2024-10-31T19:05:54Z
 url: https://github.com/astral-sh/ruff/issues/13671
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] remove Type::Unbound
 
 ---
 
-_Issue opened by @carljm on 2024-10-07 19:36_
+_@carljm_
 
 We should not represent "unbound" as a type, because it's only meaningful within a scope, it shouldn't "travel" across scopes as a type.
 

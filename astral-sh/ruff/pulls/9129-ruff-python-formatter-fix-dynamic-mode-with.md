@@ -14,14 +14,14 @@ head: ag/fmt/fix-i9126
 created_at: 2023-12-14T13:11:13Z
 updated_at: 2023-12-14T14:53:45Z
 url: https://github.com/astral-sh/ruff/pull/9129
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # ruff_python_formatter: fix 'dynamic' mode with doctests
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-12-14 13:11_
+_@BurntSushi_
 
 This fixes a bug where the current indent level was not calculated correctly for doctests. Namely, it didn't account for the extra indent level (in terms of ASCII spaces) used by by the PS1 (`>>> `) and PS2 (`... `) prompts. As a result, lines could extend up to 4 spaces beyond the configured line length limit.
 

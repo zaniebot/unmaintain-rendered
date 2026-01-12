@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-23T18:09:33Z
 updated_at: 2023-09-26T09:07:37Z
 url: https://github.com/astral-sh/ruff/issues/7620
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # PTH123 suggest to use pathlib.Path.open() which does not implement opener
 
 ---
 
-_Issue opened by @M5oul on 2023-09-23 18:09_
+_@M5oul_
 
 ### Issue
 In case an `opener` is used into `open()` function, for creating a file with certain permission for instance, ruff `PTH123` suggests to use `pathlib.Path.open()` which does not implement the `opener`.

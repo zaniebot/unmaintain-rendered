@@ -13,14 +13,14 @@ head: cjm/red-knot-pass-tests
 created_at: 2024-04-23T18:03:40Z
 updated_at: 2024-04-26T20:06:45Z
 url: https://github.com/astral-sh/ruff/pull/11110
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [red-knot] Adjust node sizes test so red-knot can pass CI
 
 ---
 
-_Pull request opened by @carljm on 2024-04-23 18:03_
+_@carljm_
 
 This is needed because of the AST changes from `OnceCell` to `OnceLock`.
 

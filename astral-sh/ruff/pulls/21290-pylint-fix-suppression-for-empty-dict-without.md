@@ -14,14 +14,14 @@ head: fix-21289
 created_at: 2025-11-06T01:08:00Z
 updated_at: 2025-11-21T23:38:29Z
 url: https://github.com/astral-sh/ruff/pull/21290
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [`pylint`] Fix suppression for empty dict without tuple key annotation (`PLE1141`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-06 01:08_
+_@danparizher_
 
 ## Summary
 

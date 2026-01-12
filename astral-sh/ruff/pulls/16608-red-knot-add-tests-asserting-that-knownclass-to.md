@@ -14,14 +14,14 @@ head: alex/knownclass-tests
 created_at: 2025-03-10T17:44:37Z
 updated_at: 2025-03-11T16:14:37Z
 url: https://github.com/astral-sh/ruff/pull/16608
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Add tests asserting that `KnownClass::to_instance()` doesn't unexpectedly fallback to `Type::Unknown` with full typeshed stubs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-10 17:44_
+_@AlexWaygood_
 
 ## Summary
 

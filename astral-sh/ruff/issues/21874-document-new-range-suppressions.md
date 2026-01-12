@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-09T20:23:22Z
 updated_at: 2025-12-11T19:16:37Z
 url: https://github.com/astral-sh/ruff/issues/21874
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Document new range suppressions
 
 ---
 
-_Issue opened by @amyreese on 2025-12-09 20:23_
+_@amyreese_
 
 _No description provided._
 

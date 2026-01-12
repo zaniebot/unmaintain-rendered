@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-14T23:45:47Z
 updated_at: 2025-11-24T05:40:28Z
 url: https://github.com/astral-sh/ruff/issues/21465
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # panic: `internal error: entered unreachable code: IPython escape command expression is only allowed for % and !`
 
 ---
 
-_Issue opened by @correctmost on 2025-11-14 23:45_
+_@correctmost_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-05T19:28:38Z
 updated_at: 2025-06-09T16:45:34Z
 url: https://github.com/astral-sh/uv/issues/13872
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # `uv add` with source specified
 
 ---
 
-_Issue opened by @jackrosenthal on 2025-06-05 19:28_
+_@jackrosenthal_
 
 ### Summary
 

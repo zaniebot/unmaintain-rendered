@@ -11,14 +11,14 @@ head: docs/bitbucket-integration
 created_at: 2025-01-10T11:12:33Z
 updated_at: 2025-02-06T22:37:44Z
 url: https://github.com/astral-sh/uv/pull/10466
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:18Z
 ```
 
 # Add integration docs for bitbucket pipelines
 
 ---
 
-_Pull request opened by @ghost on 2025-01-10 11:12_
+_@ghost_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

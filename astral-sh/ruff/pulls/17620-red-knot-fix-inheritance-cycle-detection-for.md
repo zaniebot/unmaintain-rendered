@@ -13,14 +13,14 @@ head: cjm/gencyclemro
 created_at: 2025-04-25T00:59:42Z
 updated_at: 2025-04-25T17:11:15Z
 url: https://github.com/astral-sh/ruff/pull/17620
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] fix inheritance-cycle detection for generic classes
 
 ---
 
-_Pull request opened by @carljm on 2025-04-25 00:59_
+_@carljm_
 
 ## Summary
 

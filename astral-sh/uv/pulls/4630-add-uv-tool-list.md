@@ -14,14 +14,14 @@ head: zb/tool-list
 created_at: 2024-06-28T17:06:47Z
 updated_at: 2024-06-29T16:35:10Z
 url: https://github.com/astral-sh/uv/pull/4630
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:21Z
 ```
 
 # Add `uv tool list`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-28 17:06_
+_@zanieb_
 
 Closes #4486 
 

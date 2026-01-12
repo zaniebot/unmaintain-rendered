@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-13T13:42:09Z
 updated_at: 2022-11-14T03:26:49Z
 url: https://github.com/astral-sh/ruff/issues/717
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Don't mark re-exported symbols as unused (F401)
 
 ---
 
-_Issue opened by @layday on 2022-11-13 13:42_
+_@layday_
 
 Currently, an import in the form of:
 

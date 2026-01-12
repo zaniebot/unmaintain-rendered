@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-11T14:16:12Z
 updated_at: 2025-04-22T09:21:25Z
 url: https://github.com/astral-sh/ruff/issues/17352
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Suite of LLM-focused lint rules
 
 ---
 
-_Issue opened by @ezyang on 2025-04-11 14:16_
+_@ezyang_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: charlie/box-id
 created_at: 2024-02-10T02:20:24Z
 updated_at: 2024-03-28T17:29:40Z
 url: https://github.com/astral-sh/ruff/pull/9919
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Use boxed `str` in `Identifier`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-10 02:20_
+_@charliermarsh_
 
 _No description provided._
 

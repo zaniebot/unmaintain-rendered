@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-02T12:26:43Z
 updated_at: 2023-07-08T20:43:26Z
 url: https://github.com/astral-sh/ruff/issues/3303
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # COM812: correct?
 
 ---
 
-_Issue opened by @spaceone on 2023-03-02 12:26_
+_@spaceone_
 
 ```python
 foo = tuple

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T13:03:33Z
 updated_at: 2024-08-21T13:47:35Z
 url: https://github.com/astral-sh/uv/issues/6324
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Extras with leading "-" cause optional packages to be installed.
 
 ---
 
-_Issue opened by @AKuederle on 2024-08-21 13:03_
+_@AKuederle_
 
 I tried installing one of my own packages with uv, which has, admittedly, a little weird structure when it comes to extras.
 

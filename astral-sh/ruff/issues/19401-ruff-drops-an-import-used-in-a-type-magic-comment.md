@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-17T14:53:46Z
 updated_at: 2025-07-17T16:04:09Z
 url: https://github.com/astral-sh/ruff/issues/19401
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Ruff drops an import used in a `type: ` magic comment
 
 ---
 
-_Issue opened by @antonioan on 2025-07-17 14:53_
+_@antonioan_
 
 ### Summary
 

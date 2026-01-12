@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-07T03:47:28Z
 updated_at: 2025-01-07T14:52:15Z
 url: https://github.com/astral-sh/ruff/issues/15312
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # How to enable to detect camelCase identifiers?
 
 ---
 
-_Issue opened by @rinarakaki on 2025-01-07 03:47_
+_@rinarakaki_
 
 I want it to give warning messages when camelCase is used for an identifier (and it's hard to find the way partly because in ruff the word 'camel case' is used to mean PascalCase which makes it difficult to distinguish).
 I appreciate it if anyone could teach me how to do it. Thanks.

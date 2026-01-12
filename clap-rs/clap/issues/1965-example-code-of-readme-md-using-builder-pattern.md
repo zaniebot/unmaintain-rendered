@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-06-08T05:22:27Z
 updated_at: 2020-06-09T05:50:37Z
 url: https://github.com/clap-rs/clap/issues/1965
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Example code of README.md using builder pattern results in panic
 
 ---
 
-_Issue opened by @asteding on 2020-06-08 05:22_
+_@asteding_
 
 ### Make sure you completed the following tasks
 

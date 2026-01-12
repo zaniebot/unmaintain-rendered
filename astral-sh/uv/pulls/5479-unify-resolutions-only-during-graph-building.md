@@ -13,14 +13,14 @@ head: konsti/unify-resolutions-later
 created_at: 2024-07-26T13:05:49Z
 updated_at: 2024-08-23T15:35:24Z
 url: https://github.com/astral-sh/uv/pull/5479
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:50Z
 ```
 
 # Unify resolutions only during graph building
 
 ---
 
-_Pull request opened by @konstin on 2024-07-26 13:05_
+_@konstin_
 
 With our previous eager union, we were losing the fork markers. We now carry this information into the resolution graph construction and, in the next step, can read the markers there.
 

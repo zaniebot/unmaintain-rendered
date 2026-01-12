@@ -13,14 +13,14 @@ head: improve-ruff-python-formatter-docs
 created_at: 2023-08-22T15:52:52Z
 updated_at: 2023-08-24T11:14:30Z
 url: https://github.com/astral-sh/ruff/pull/6776
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Improve formatter contributor docs
 
 ---
 
-_Pull request opened by @konstin on 2023-08-22 15:52_
+_@konstin_
 
 The docs were out of date, and the new version incorporates some feedback.
 

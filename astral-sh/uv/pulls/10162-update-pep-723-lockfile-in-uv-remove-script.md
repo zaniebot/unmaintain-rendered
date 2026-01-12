@@ -13,14 +13,14 @@ head: charlie/script-remove
 created_at: 2024-12-25T22:54:17Z
 updated_at: 2025-01-08T22:05:38Z
 url: https://github.com/astral-sh/uv/pull/10162
-synced_at: 2026-01-10T11:44:37Z
+synced_at: 2026-01-12T16:09:09Z
 ```
 
 # Update PEP 723 lockfile in `uv remove --script`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-25 22:54_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-10T00:59:57Z
 updated_at: 2023-01-10T02:10:48Z
 url: https://github.com/astral-sh/ruff/issues/1759
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Update documentation to match rule and violation terminology
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-10 00:59_
+_@charliermarsh_
 
 _No description provided._
 

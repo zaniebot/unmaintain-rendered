@@ -14,14 +14,14 @@ head: tk/ci-profiles
 created_at: 2025-12-22T20:20:32Z
 updated_at: 2025-12-29T13:13:46Z
 url: https://github.com/astral-sh/uv/pull/17220
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # Use nextest profiles to configure CI
 
 ---
 
-_Pull request opened by @EliteTK on 2025-12-22 20:20_
+_@EliteTK_
 
 This centralises the configuration and allows certain overrides to be CI specific.
 

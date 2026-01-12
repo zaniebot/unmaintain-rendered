@@ -13,14 +13,14 @@ head: dhruv/broken-links
 created_at: 2024-08-05T05:31:10Z
 updated_at: 2024-08-05T05:49:37Z
 url: https://github.com/astral-sh/ruff/pull/12677
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Update broken links in the documentation
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-05 05:31_
+_@dhruvmanila_
 
 ## Summary
 

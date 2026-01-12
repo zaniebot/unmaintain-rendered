@@ -13,14 +13,14 @@ head: jack/nonlocal_skip_use_only
 created_at: 2025-07-14T21:47:57Z
 updated_at: 2025-07-15T14:55:42Z
 url: https://github.com/astral-sh/ruff/pull/19341
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [ty] distinguish references from definitions in `infer_nonlocal`
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-07-14 21:47_
+_@oconnor663_
 
 The initial implementation of `infer_nonlocal` landed in https://github.com/astral-sh/ruff/pull/19112 fails to report an error for this example:
 

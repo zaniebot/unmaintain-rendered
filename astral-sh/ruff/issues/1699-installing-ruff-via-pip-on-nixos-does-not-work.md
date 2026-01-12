@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-06T21:41:30Z
 updated_at: 2025-05-29T18:01:35Z
 url: https://github.com/astral-sh/ruff/issues/1699
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Installing ruff via pip on NixOs does not work
 
 ---
 
-_Issue opened by @heitorPB on 2023-01-06 21:41_
+_@heitorPB_
 
 Installing ruff via `pip` on NixOs systems does not work:
 

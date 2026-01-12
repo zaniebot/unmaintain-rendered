@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-08T08:29:59Z
 updated_at: 2026-01-08T23:28:41Z
 url: https://github.com/astral-sh/ty/issues/1323
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # support finding packages installed into Debian `dist-packages` directories
 
 ---
 
-_Issue opened by @Hyask on 2025-10-08 08:29_
+_@Hyask_
 
 ### Summary
 

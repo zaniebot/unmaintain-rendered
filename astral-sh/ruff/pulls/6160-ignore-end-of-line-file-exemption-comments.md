@@ -13,14 +13,14 @@ head: charlie/eol
 created_at: 2023-07-28T18:36:42Z
 updated_at: 2023-07-29T01:02:32Z
 url: https://github.com/astral-sh/ruff/pull/6160
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Ignore end-of-line file exemption comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-28 18:36_
+_@charliermarsh_
 
 ## Summary
 

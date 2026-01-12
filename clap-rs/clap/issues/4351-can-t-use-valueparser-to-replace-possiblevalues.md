@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-10-05T22:51:18Z
 updated_at: 2022-10-26T16:15:11Z
 url: https://github.com/clap-rs/clap/issues/4351
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Can't use ValueParser to replace PossibleValues in v4
 
 ---
 
-_Issue opened by @o2sh on 2022-10-05 22:51_
+_@o2sh_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-24T23:31:38Z
 updated_at: 2025-02-25T02:38:43Z
 url: https://github.com/astral-sh/ruff/issues/16358
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # F821 False Positive with `del var` in `try`, `except`, `else`
 
 ---
 
-_Issue opened by @cibere on 2025-02-24 23:31_
+_@cibere_
 
 ### Description
 

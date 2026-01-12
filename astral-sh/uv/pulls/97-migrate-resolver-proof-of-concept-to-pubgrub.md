@@ -12,14 +12,14 @@ head: charlie/pubgrub
 created_at: 2023-10-16T01:49:01Z
 updated_at: 2023-10-16T02:14:55Z
 url: https://github.com/astral-sh/uv/pull/97
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:45Z
 ```
 
 # Migrate resolver proof-of-concept to PubGrub
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-16 01:49_
+_@charliermarsh_
 
 ## Summary
 

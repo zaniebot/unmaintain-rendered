@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-29T22:21:52Z
 updated_at: 2023-02-01T02:01:22Z
 url: https://github.com/astral-sh/ruff/issues/2327
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # PIE794: Removes value assignment when type annotation is on the line above
 
 ---
 
-_Issue opened by @Jeremiah-England on 2023-01-29 22:21_
+_@Jeremiah-England_
 
 To avoid long lines for my variable declarations, sometimes I put the type hint for the variable on the line above. This avoids it getting reformatted into three lines by Black. A silly example:
 

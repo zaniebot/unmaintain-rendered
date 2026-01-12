@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-31T08:06:42Z
 updated_at: 2025-01-31T12:53:17Z
 url: https://github.com/astral-sh/uv/issues/11128
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # `uv sync` cannot find `triton==3.2.0` even when it exists
 
 ---
 
-_Issue opened by @steve2972 on 2025-01-31 08:06_
+_@steve2972_
 
 ### Summary
 

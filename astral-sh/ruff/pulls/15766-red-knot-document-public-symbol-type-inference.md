@@ -14,14 +14,14 @@ head: david/public-type-tests
 created_at: 2025-01-27T08:45:34Z
 updated_at: 2025-01-27T19:34:10Z
 url: https://github.com/astral-sh/ruff/pull/15766
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Document public symbol type inference
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-27 08:45_
+_@sharkdp_
 
 ## Summary
 

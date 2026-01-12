@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-23T21:44:54Z
 updated_at: 2024-12-23T21:52:54Z
 url: https://github.com/astral-sh/ruff/issues/15128
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Expected Jupyter Notebook format 4, found: 5
 
 ---
 
-_Issue opened by @amotl on 2024-12-23 21:44_
+_@amotl_
 
 Dear lovely authors and maintainers of Ruff,
 

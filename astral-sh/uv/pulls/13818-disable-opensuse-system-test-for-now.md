@@ -13,14 +13,14 @@ head: zb/opensuse
 created_at: 2025-06-03T14:28:40Z
 updated_at: 2025-06-03T14:53:10Z
 url: https://github.com/astral-sh/uv/pull/13818
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:53Z
 ```
 
 # Disable OpenSUSE system test for now
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-03 14:28_
+_@zanieb_
 
 ref #13811 
 

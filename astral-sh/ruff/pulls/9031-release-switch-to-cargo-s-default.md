@@ -13,14 +13,14 @@ head: ag/default-release-experiment
 created_at: 2023-12-07T00:37:05Z
 updated_at: 2023-12-15T13:19:36Z
 url: https://github.com/astral-sh/ruff/pull/9031
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # release: switch to Cargo's default
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-12-07 00:37_
+_@BurntSushi_
 
 This sets `lto = "thin"` instead of using "fat" LTO, and sets `codegen-units = 16`. These are the defaults for Cargo's `release` profile, and I think it may give us faster iteration times, especially when benchmarking. The point of this PR is to see what kind of impact this has on benchmarks. It is expected that benchmarks may regress to some extent.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-20T04:58:43Z
 updated_at: 2023-09-20T11:07:21Z
 url: https://github.com/astral-sh/ruff/issues/7530
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Incorrect NoQA placement for continuation with multi-line string
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-20 04:58_
+_@dhruvmanila_
 
 Take the following code snippet:
 

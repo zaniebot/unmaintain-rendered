@@ -12,14 +12,14 @@ head: Add_script_to_shrink_all_formatter_errors
 created_at: 2023-07-21T08:24:48Z
 updated_at: 2023-07-21T09:32:37Z
 url: https://github.com/astral-sh/ruff/pull/5943
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add script to shrink all formatter errors
 
 ---
 
-_Pull request opened by @konstin on 2023-07-21 08:24_
+_@konstin_
 
 **Summary** Add script to shrink all formatter errors: This started as a fun idea and turned out really useful: This script gives us a single Python file with all formatter stability errors. I want to keep it around to occasionally update #5828 so I added it to the git.
 

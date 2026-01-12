@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T00:55:40Z
 updated_at: 2024-09-22T04:39:38Z
 url: https://github.com/astral-sh/uv/issues/7566
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # AGPL License file in Source Distributes Confused License Scanners ...
 
 ---
 
-_Issue opened by @rlgloden on 2024-09-20 00:55_
+_@rlgloden_
 
 Sorry to bother for such a stupid problem but corporate scanners are flagging the AGPL license in the uv-0.4.13\ecosystem\pretix\license file in the uv source code zip ... which we have to scan before using the executable ... even if we use pip to install it.
 

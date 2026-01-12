@@ -13,14 +13,14 @@ head: ag/rustfmt
 created_at: 2025-06-16T13:49:15Z
 updated_at: 2025-06-16T14:05:58Z
 url: https://github.com/astral-sh/uv/pull/14072
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:00Z
 ```
 
 # Add `rustfmt.toml`
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-06-16 13:49_
+_@BurntSushi_
 
 We've gotten away without this file for a while. In particular, we
 explicitly use its default settings.

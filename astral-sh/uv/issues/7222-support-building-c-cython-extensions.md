@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-09T15:28:06Z
 updated_at: 2024-10-26T15:19:31Z
 url: https://github.com/astral-sh/uv/issues/7222
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Support building C/cython extensions
 
 ---
 
-_Issue opened by @albireox on 2024-09-09 15:28_
+_@albireox_
 
 Does `uv` support building C/cython extensions, and if so is it documented somewhere? This would be similar to what's described here
 

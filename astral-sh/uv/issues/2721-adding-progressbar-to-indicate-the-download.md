@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-28T21:38:22Z
 updated_at: 2024-03-28T22:15:50Z
 url: https://github.com/astral-sh/uv/issues/2721
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Adding progressbar to indicate the download status and ETA especially for packages with >=10MB
 
 ---
 
-_Issue opened by @detrin on 2024-03-28 21:38_
+_@detrin_
 
 I started using uv as it is neat and faster than pip. One feature that I miss from pip is the progressbar to indicate what part of the wheel was downloaded and what is the ETA. The progressbar has little to no value added except it is nice to watch of course. The ETA is useful, consider packages such as polars, or torch that have rather huge wheels andit can take a while to download. Sometimes my connection is poor (down to like 300 KB/s) and while those packages are downloading I use that time for something else, so it is nice to have some ETA on that. 
 

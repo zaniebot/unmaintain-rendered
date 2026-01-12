@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-28T16:40:47Z
 updated_at: 2024-05-15T05:56:12Z
 url: https://github.com/astral-sh/ruff/issues/2302
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement `TYP001` from `flake8-typing-imports`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-28 16:40_
+_@charliermarsh_
 
 This rule detects whether you've imported something from `typing` that's incompatible with your supported Python version.
 

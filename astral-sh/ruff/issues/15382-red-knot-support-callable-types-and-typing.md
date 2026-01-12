@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-09T18:54:44Z
 updated_at: 2025-04-01T19:38:38Z
 url: https://github.com/astral-sh/ruff/issues/15382
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Support callable types and `typing.Callable`
 
 ---
 
-_Issue opened by @carljm on 2025-01-09 18:54_
+_@carljm_
 
 Our "callable type" should be able to represent a callable of arbitrary signature; `typing.Callable` can only spell a limited subset of those types.
 

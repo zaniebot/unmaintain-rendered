@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-27T18:38:33Z
 updated_at: 2023-02-03T13:12:44Z
 url: https://github.com/astral-sh/ruff/issues/2273
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # flake8-logging-format catches more things than ruff
 
 ---
 
-_Issue opened by @alexprengere on 2023-01-27 18:38_
+_@alexprengere_
 
 Tested with ruff `0.0.236` and the latest flake8-logging-format. This is an error (G004) with flake8 but passes with ruff:
 

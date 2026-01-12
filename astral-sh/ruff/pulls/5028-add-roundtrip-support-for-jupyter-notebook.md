@@ -12,14 +12,14 @@ head: dhruv/jupyter-roundtrip
 created_at: 2023-06-12T15:59:05Z
 updated_at: 2023-06-12T18:00:16Z
 url: https://github.com/astral-sh/ruff/pull/5028
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add roundtrip support for Jupyter notebook
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-12 15:59_
+_@dhruvmanila_
 
 ## Summary
 

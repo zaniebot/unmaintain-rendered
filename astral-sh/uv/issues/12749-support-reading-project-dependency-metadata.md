@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-08T16:50:19Z
 updated_at: 2025-04-08T18:25:09Z
 url: https://github.com/astral-sh/uv/issues/12749
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # Support reading project dependency metadata
 
 ---
 
-_Issue opened by @kevinli1993 on 2025-04-08 16:50_
+_@kevinli1993_
 
 ### Summary
 

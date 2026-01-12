@@ -13,14 +13,14 @@ head: konsti/dont-install-cargo-insta
 created_at: 2024-01-12T17:43:57Z
 updated_at: 2024-01-12T17:45:39Z
 url: https://github.com/astral-sh/uv/pull/902
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:16Z
 ```
 
 # Don't install cargo insta on CI
 
 ---
 
-_Pull request opened by @konstin on 2024-01-12 17:43_
+_@konstin_
 
 We don't use it anymore on CI.
 

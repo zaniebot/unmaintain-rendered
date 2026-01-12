@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-02T13:35:35Z
 updated_at: 2024-05-24T13:25:45Z
 url: https://github.com/astral-sh/uv/issues/2775
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # UV pip compile fails with extra-index-url
 
 ---
 
-_Issue opened by @RobMcH on 2024-04-02 13:35_
+_@RobMcH_
 
 I am trying to use uv pip compile as a drop-in replacement for pip-compile and am running into issues with how extra-index-url is handled. A minimal working example would be the following requirements.in
 ```

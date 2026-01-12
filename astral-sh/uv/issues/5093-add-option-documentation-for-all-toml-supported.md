@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-16T02:39:57Z
 updated_at: 2024-07-16T23:49:10Z
 url: https://github.com/astral-sh/uv/issues/5093
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Add `#[option]` documentation for all TOML-supported settings
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-16 02:39_
+_@charliermarsh_
 
 _No description provided._
 

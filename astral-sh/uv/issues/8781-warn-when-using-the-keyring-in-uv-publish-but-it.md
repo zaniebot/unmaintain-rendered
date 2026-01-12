@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-03T20:08:59Z
 updated_at: 2024-11-27T19:54:50Z
 url: https://github.com/astral-sh/uv/issues/8781
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # Warn when using the keyring in `uv publish` but it doesn't have credentials
 
 ---
 
-_Issue opened by @konstin on 2024-11-03 20:08_
+_@konstin_
 
 See https://github.com/astral-sh/uv/issues/7963#issuecomment-2453558043: We should warn in this case that the keyring didn't return any password, since using the keyring with publishing only makes sense if it has a password for the publish URL
 

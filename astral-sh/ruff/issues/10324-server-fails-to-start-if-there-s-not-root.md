@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-11T05:08:01Z
 updated_at: 2024-03-18T15:46:45Z
 url: https://github.com/astral-sh/ruff/issues/10324
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Server fails to start if there's not root directory provided
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-03-11 05:08_
+_@dhruvmanila_
 
 (Posting from Discord for tracking purposes.)
 

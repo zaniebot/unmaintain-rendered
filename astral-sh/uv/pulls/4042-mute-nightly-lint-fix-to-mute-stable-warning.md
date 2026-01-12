@@ -13,14 +13,14 @@ head: konsti/remove-nightly-warning
 created_at: 2024-06-05T10:59:11Z
 updated_at: 2024-06-05T11:05:20Z
 url: https://github.com/astral-sh/uv/pull/4042
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:00Z
 ```
 
 # Mute nightly lint fix to mute stable warning
 
 ---
 
-_Pull request opened by @konstin on 2024-06-05 10:59_
+_@konstin_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T18:50:10Z
 updated_at: 2024-03-21T09:17:50Z
 url: https://github.com/astral-sh/uv/issues/1527
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # support CUSTOM_COMPILE_COMMAND
 
 ---
 
-_Issue opened by @raylu on 2024-02-16 18:50_
+_@raylu_
 
 https://github.com/jazzband/pip-tools?tab=readme-ov-file#configuration supports `CUSTOM_COMPILE_COMMAND`, which replaces the command in the header. this is particularly useful if you use a private repo, because otherwise your header looks like
 ```

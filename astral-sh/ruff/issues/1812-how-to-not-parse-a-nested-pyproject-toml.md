@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-12T10:06:57Z
 updated_at: 2023-01-13T08:33:51Z
 url: https://github.com/astral-sh/ruff/issues/1812
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # How to not parse a nested pyproject.toml?
 
 ---
 
-_Issue opened by @gbolmier on 2023-01-12 10:06_
+_@gbolmier_
 
 I love this project, keep up the good work ❤️ 
 

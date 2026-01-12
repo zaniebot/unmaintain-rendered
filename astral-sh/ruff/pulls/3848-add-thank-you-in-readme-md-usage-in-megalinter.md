@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-04-01T15:47:39Z
 updated_at: 2023-04-03T16:12:07Z
 url: https://github.com/astral-sh/ruff/pull/3848
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add thank you in README.md + usage in MegaLinter
 
 ---
 
-_Pull request opened by @nvuillam on 2023-04-01 15:47_
+_@nvuillam_
 
 _No description provided._
 

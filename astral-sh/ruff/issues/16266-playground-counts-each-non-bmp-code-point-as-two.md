@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-19T21:04:12Z
 updated_at: 2025-09-24T08:08:01Z
 url: https://github.com/astral-sh/ruff/issues/16266
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Playground counts each non-BMP code point as two code points
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-19 21:04_
+_@dscorbett_
 
 ### Description
 

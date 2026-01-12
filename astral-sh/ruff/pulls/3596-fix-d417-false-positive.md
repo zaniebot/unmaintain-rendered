@@ -13,14 +13,14 @@ head: fix-d417
 created_at: 2023-03-18T10:53:18Z
 updated_at: 2023-03-18T17:14:49Z
 url: https://github.com/astral-sh/ruff/pull/3596
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Fix D417 false positive
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-18 10:53_
+_@JonathanPlasse_
 
 - Close #3578
 

@@ -13,14 +13,14 @@ head: dify
 created_at: 2024-07-31T12:38:37Z
 updated_at: 2024-08-02T15:05:24Z
 url: https://github.com/astral-sh/ruff/pull/12593
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Add Dify to Ruff users
 
 ---
 
-_Pull request opened by @bowenliang123 on 2024-07-31 12:38_
+_@bowenliang123_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: zsol/jj-qpnoslvrymlk
 created_at: 2025-11-28T19:35:57Z
 updated_at: 2025-12-04T18:59:35Z
 url: https://github.com/astral-sh/uv/pull/16886
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:30Z
 ```
 
 # Add a `uv auth helper --protocol bazel` command
 
 ---
 
-_Pull request opened by @zsol on 2025-11-28 19:35_
+_@zsol_
 
 ## Summary
 

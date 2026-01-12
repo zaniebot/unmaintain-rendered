@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-11T13:19:00Z
 updated_at: 2023-05-11T18:47:23Z
 url: https://github.com/astral-sh/ruff/issues/4374
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Linter panic] SIM105 with cpython\Lib\http\server.py
 
 ---
 
-_Issue opened by @FishAlchemist on 2023-05-11 13:19_
+_@FishAlchemist_
 
 ## Ruff Version
 https://github.com/charliermarsh/ruff/tree/be6e00ef6e5efea68a8a1a0093611b26142b753d

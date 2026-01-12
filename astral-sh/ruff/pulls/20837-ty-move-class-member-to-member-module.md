@@ -14,14 +14,14 @@ head: david/refactor-member-module
 created_at: 2025-10-13T08:19:41Z
 updated_at: 2025-10-13T08:58:39Z
 url: https://github.com/astral-sh/ruff/pull/20837
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] Move `class_member` to `member` module
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-13 08:19_
+_@sharkdp_
 
 ## Summary
 

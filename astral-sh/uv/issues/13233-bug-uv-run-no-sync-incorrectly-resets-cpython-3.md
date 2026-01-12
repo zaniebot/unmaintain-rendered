@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-30T14:54:48Z
 updated_at: 2025-05-01T10:47:51Z
 url: https://github.com/astral-sh/uv/issues/13233
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # BUG: `uv run --no-sync` incorrectly resets CPython 3.14 venv in version 0.7
 
 ---
 
-_Issue opened by @neutrinoceros on 2025-04-30 14:54_
+_@neutrinoceros_
 
 ### Summary
 

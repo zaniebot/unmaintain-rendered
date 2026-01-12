@@ -12,14 +12,14 @@ head: charlie/path-hash
 created_at: 2024-12-21T14:19:05Z
 updated_at: 2024-12-21T14:31:31Z
 url: https://github.com/astral-sh/uv/pull/10080
-synced_at: 2026-01-10T11:44:33Z
+synced_at: 2026-01-12T16:09:06Z
 ```
 
 # Include hashes for local source archives
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-21 14:19_
+_@charliermarsh_
 
 ## Summary
 

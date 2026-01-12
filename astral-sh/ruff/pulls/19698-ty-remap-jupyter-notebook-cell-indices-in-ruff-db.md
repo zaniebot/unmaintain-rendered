@@ -14,14 +14,14 @@ head: brent/full-jupyter
 created_at: 2025-08-01T20:44:16Z
 updated_at: 2025-08-05T18:10:37Z
 url: https://github.com/astral-sh/ruff/pull/19698
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Remap Jupyter notebook cell indices in `ruff_db`
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-01 20:44_
+_@ntBre_
 
 ## Summary
 

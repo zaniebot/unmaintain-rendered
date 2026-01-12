@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-17T16:31:46Z
 updated_at: 2025-03-18T17:16:52Z
 url: https://github.com/astral-sh/ruff/issues/16816
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Emit errors for more AST nodes that are invalid (or only valid in specific contexts) in type expressions
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-03-17 16:31_
+_@AlexWaygood_
 
 Some AST nodes are always invalid in type expressions; we should emit an `invalid-type-form` diagnostic in red-knot if we see one of these in a type expression. This applies to all of these branches:
 

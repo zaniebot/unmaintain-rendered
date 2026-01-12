@@ -13,14 +13,14 @@ head: konsti/publish-test-timeout
 created_at: 2024-11-08T17:22:20Z
 updated_at: 2024-11-10T14:43:49Z
 url: https://github.com/astral-sh/uv/pull/8951
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:34Z
 ```
 
 # Pin publish test to 3.12
 
 ---
 
-_Pull request opened by @konstin on 2024-11-08 17:22_
+_@konstin_
 
 The bump to 3.13 broke the test
 

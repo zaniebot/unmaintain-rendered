@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-14T04:29:07Z
 updated_at: 2024-09-14T12:28:17Z
 url: https://github.com/astral-sh/uv/issues/7385
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 #  Hopefully, you can consider using a global configuration file instead of relying solely on adding environment variables to modify configuration one
 
 ---
 
-_Issue opened by @Super1Windcloud on 2024-09-14 04:29_
+_@Super1Windcloud_
 
 
 Hopefully, you can consider using a global configuration file instead of relying solely on adding environment variables to modify configuration one

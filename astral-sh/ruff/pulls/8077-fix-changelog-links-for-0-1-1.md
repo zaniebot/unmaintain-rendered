@@ -13,14 +13,14 @@ head: zanie/changelog-links
 created_at: 2023-10-19T20:58:49Z
 updated_at: 2023-10-19T21:19:19Z
 url: https://github.com/astral-sh/ruff/pull/8077
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fix changelog links for 0.1.1
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-19 20:58_
+_@zanieb_
 
 [Rendered](https://github.com/astral-sh/ruff/blob/zanie/changelog-links/CHANGELOG.md)
 

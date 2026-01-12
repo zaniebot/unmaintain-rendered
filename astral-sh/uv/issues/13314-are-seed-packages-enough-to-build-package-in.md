@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-06T11:28:10Z
 updated_at: 2025-05-06T16:53:03Z
 url: https://github.com/astral-sh/uv/issues/13314
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # Are seed packages enough to build package in offline mode?
 
 ---
 
-_Issue opened by @czechnology on 2025-05-06 11:28_
+_@czechnology_
 
 ### Question
 

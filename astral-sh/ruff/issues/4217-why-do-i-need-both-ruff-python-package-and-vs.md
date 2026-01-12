@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-04T09:01:01Z
 updated_at: 2023-05-04T10:40:00Z
 url: https://github.com/astral-sh/ruff/issues/4217
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Why do I need both ruff python package and VS Code extension to make it work?
 
 ---
 
-_Issue opened by @ddahan on 2023-05-04 09:01_
+_@ddahan_
 
 I'm not sure what's the clean installation for Ruff in VS Code because reading the [VS Code extension doc](https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff), i noticed `The extension ships with ruff==0.0.264.`
 

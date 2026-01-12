@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-02T07:08:40Z
 updated_at: 2024-05-02T17:59:41Z
 url: https://github.com/astral-sh/ruff/issues/11239
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Rule N805 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2024-05-02 07:08_
+_@qarmin_
 
 ruff 0.4.2 (latest changes from main branch)
 ```

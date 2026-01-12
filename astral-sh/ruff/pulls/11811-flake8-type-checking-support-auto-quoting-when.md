@@ -13,14 +13,14 @@ head: auto-quote-annotation-quotes
 created_at: 2024-06-09T22:17:46Z
 updated_at: 2024-10-23T11:28:37Z
 url: https://github.com/astral-sh/ruff/pull/11811
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # [`flake8-type-checking`] Support auto-quoting when annotations contain quotes
 
 ---
 
-_Pull request opened by @Glyphack on 2024-06-09 22:17_
+_@Glyphack_
 
 ## Summary
 

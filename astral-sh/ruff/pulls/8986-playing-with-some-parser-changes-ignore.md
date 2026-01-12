@@ -12,14 +12,14 @@ head: parser-playfield
 created_at: 2023-12-04T03:37:13Z
 updated_at: 2024-01-16T10:02:55Z
 url: https://github.com/astral-sh/ruff/pull/8986
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Playing with some parser changes, ignore
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-04 03:37_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-29T12:39:06Z
 updated_at: 2024-10-08T22:15:40Z
 url: https://github.com/astral-sh/uv/issues/6809
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Windows _netrc not recognized for pip auth
 
 ---
 
-_Issue opened by @corby on 2024-08-29 12:39_
+_@corby_
 
 I cross compile a python application with lots of C libraries.
 uv works fine on *nix based platforms, but on Windows the ~/.netrc file is called ~/_netrc (who knows why)

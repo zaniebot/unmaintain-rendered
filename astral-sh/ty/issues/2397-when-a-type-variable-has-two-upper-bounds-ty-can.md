@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-08T15:48:35Z
 updated_at: 2026-01-08T15:54:43Z
 url: https://github.com/astral-sh/ty/issues/2397
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # When a type variable has two upper bounds, ty can't deduce that they both satisfy a constraint
 
 ---
 
-_Issue opened by @mitya57 on 2026-01-08 15:48_
+_@mitya57_
 
 ### Summary
 

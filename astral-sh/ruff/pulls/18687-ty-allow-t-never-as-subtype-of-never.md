@@ -13,14 +13,14 @@ head: fix/never-as-subtype-of-type-variables
 created_at: 2025-06-15T18:43:18Z
 updated_at: 2025-06-16T17:46:17Z
 url: https://github.com/astral-sh/ruff/pull/18687
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [ty] allow `T: Never` as subtype of `Never`
 
 ---
 
-_Pull request opened by @felixscherz on 2025-06-15 18:43_
+_@felixscherz_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

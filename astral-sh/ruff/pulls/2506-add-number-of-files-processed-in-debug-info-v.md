@@ -12,14 +12,14 @@ head: verbose_ShowNumberOfFiles
 created_at: 2023-02-03T00:38:33Z
 updated_at: 2023-02-03T01:19:06Z
 url: https://github.com/astral-sh/ruff/pull/2506
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Add number of files processed in debug info (-v)
 
 ---
 
-_Pull request opened by @VictorGob on 2023-02-03 00:38_
+_@VictorGob_
 
 Added the number of files scanned in "-v", as discussed here https://github.com/charliermarsh/ruff/issues/2188#issuecomment-1413236168
 

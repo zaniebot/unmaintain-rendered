@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T19:55:10Z
 updated_at: 2025-04-02T07:41:54Z
 url: https://github.com/astral-sh/ruff/issues/17132
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PT019 `pytest-fixture-param-without-value` misses public fixture
 
 ---
 
-_Issue opened by @mschoettle on 2025-04-01 19:55_
+_@mschoettle_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: simplify-get_mark_decorators
 created_at: 2023-10-22T04:35:43Z
 updated_at: 2023-10-22T14:46:48Z
 url: https://github.com/astral-sh/ruff/pull/8116
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Refactor `get_mark_decorators` to return a marker name
 
 ---
 
-_Pull request opened by @harupy on 2023-10-22 04:35_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-12T22:24:04Z
 updated_at: 2023-02-12T22:39:31Z
 url: https://github.com/astral-sh/ruff/issues/2828
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # SIM111 fix: Double negative is probably not more understandable code
 
 ---
 
-_Issue opened by @cclauss on 2023-02-12 22:24_
+_@cclauss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-13T01:40:19Z
 updated_at: 2025-08-13T07:09:23Z
 url: https://github.com/astral-sh/ruff/issues/19889
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Ruff crashes when pyproject.toml is being edited
 
 ---
 
-_Issue opened by @luluxxxlulu on 2025-08-13 01:40_
+_@luluxxxlulu_
 
 While I was editing `pyproject.toml`, the Ruff extension crashed. I know why, because the syntax was temporarily invalid. However, I don't think this should cause a crash. Perhaps Ruff should keep its current configuration until the `pyproject.toml` file becomes parse-able again.
 

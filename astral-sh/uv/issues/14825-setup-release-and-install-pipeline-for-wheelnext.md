@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-22T17:34:15Z
 updated_at: 2025-08-05T10:55:29Z
 url: https://github.com/astral-sh/uv/issues/14825
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # Setup release and install pipeline for WheelNext build
 
 ---
 
-_Issue opened by @charliermarsh on 2025-07-22 17:34_
+_@charliermarsh_
 
 We need some way to build and install the WheelNext prototype.
 

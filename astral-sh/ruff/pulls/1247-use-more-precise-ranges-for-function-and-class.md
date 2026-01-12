@@ -12,14 +12,14 @@ head: charlie/names
 created_at: 2022-12-15T03:39:18Z
 updated_at: 2022-12-15T03:40:02Z
 url: https://github.com/astral-sh/ruff/pull/1247
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Use more precise ranges for function and class checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-15 03:39_
+_@charliermarsh_
 
 Resolves #1246.
 

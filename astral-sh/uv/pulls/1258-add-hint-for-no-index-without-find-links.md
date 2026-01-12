@@ -13,14 +13,14 @@ head: zb/find-links-err
 created_at: 2024-02-06T14:57:15Z
 updated_at: 2024-02-06T19:19:45Z
 url: https://github.com/astral-sh/uv/pull/1258
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:32Z
 ```
 
 # Add hint for `--no-index` without `--find-links`
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-06 14:57_
+_@zanieb_
 
 Since unavailable packages with `--no-index` can be confusing when the user does not also provide `--find-links` we add a hint for this case. Required some plumbing to get the required information to the `NoSolution` error.
 

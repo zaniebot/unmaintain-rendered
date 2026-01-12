@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-27T22:13:50Z
 updated_at: 2025-06-28T12:58:23Z
 url: https://github.com/clap-rs/clap/issues/4581
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Allow wrap_help without terminal_size dependency
 
 ---
 
-_Issue opened by @mitsuhiko on 2022-12-27 22:13_
+_@mitsuhiko_
 
 ### Please complete the following tasks
 

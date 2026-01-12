@@ -13,14 +13,14 @@ head: numeric-console-script-suffix-fix
 created_at: 2024-10-16T22:35:41Z
 updated_at: 2024-10-17T01:33:14Z
 url: https://github.com/astral-sh/uv/pull/8273
-synced_at: 2026-01-10T12:54:06Z
+synced_at: 2026-01-12T16:08:14Z
 ```
 
 # Narrow what the pip3.<minor> logic drops from entry points.
 
 ---
 
-_Pull request opened by @thatch on 2024-10-16 22:35_
+_@thatch_
 
 ## Summary
 

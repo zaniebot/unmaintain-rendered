@@ -13,14 +13,14 @@ head: cjm/remove
 created_at: 2024-11-22T20:30:32Z
 updated_at: 2024-11-22T21:17:18Z
 url: https://github.com/astral-sh/ruff/pull/14540
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] remove wrong typevar attribute implementations
 
 ---
 
-_Pull request opened by @carljm on 2024-11-22 20:30_
+_@carljm_
 
 ## Summary
 

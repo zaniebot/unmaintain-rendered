@@ -13,14 +13,14 @@ head: konsti/ios-support
 created_at: 2025-11-11T11:59:15Z
 updated_at: 2025-11-12T11:03:29Z
 url: https://github.com/astral-sh/uv/pull/16686
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:23Z
 ```
 
 # Add iOS support for Python discovery
 
 ---
 
-_Pull request opened by @konstin on 2025-11-11 11:59_
+_@konstin_
 
 iOS support exist nominally (https://github.com/astral-sh/uv/pull/15640), but Python discovery currently fails.
 

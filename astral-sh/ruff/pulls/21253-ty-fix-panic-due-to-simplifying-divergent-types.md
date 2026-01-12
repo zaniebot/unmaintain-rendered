@@ -14,14 +14,14 @@ head: divergent-is-not-redundant
 created_at: 2025-11-03T14:37:42Z
 updated_at: 2025-11-03T18:18:28Z
 url: https://github.com/astral-sh/ruff/pull/21253
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # [ty] Fix panic due to simplifying `Divergent` types out of intersections types
 
 ---
 
-_Pull request opened by @mtshiba on 2025-11-03 14:37_
+_@mtshiba_
 
 ## Summary
 

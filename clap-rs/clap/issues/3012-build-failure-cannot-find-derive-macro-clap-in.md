@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-11-10T15:00:53Z
 updated_at: 2021-11-10T15:08:03Z
 url: https://github.com/clap-rs/clap/issues/3012
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Build failure: cannot find derive macro `Clap` in this scope
 
 ---
 
-_Issue opened by @chandrakananandi on 2021-11-10 15:00_
+_@chandrakananandi_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

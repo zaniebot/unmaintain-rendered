@@ -13,14 +13,14 @@ head: charlie/format-cli-ii
 created_at: 2023-08-27T20:03:39Z
 updated_at: 2023-08-27T20:22:18Z
 url: https://github.com/astral-sh/ruff/pull/6925
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Use consistent formatting for user-facing formatter errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-27 20:03_
+_@charliermarsh_
 
 ## Summary
 

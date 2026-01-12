@@ -12,14 +12,14 @@ head: charlie/redefined
 created_at: 2023-01-21T17:45:48Z
 updated_at: 2023-01-21T17:50:22Z
 url: https://github.com/astral-sh/ruff/pull/2065
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Avoid flagging redefined imports as unused in same-scope
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-21 17:45_
+_@charliermarsh_
 
 This is effectively a revert of #1173, to favor false-negatives over false-positives in the same-scope case.
 

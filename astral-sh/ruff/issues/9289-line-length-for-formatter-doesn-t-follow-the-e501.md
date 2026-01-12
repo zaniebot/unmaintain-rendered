@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-27T03:15:36Z
 updated_at: 2023-12-27T22:32:10Z
 url: https://github.com/astral-sh/ruff/issues/9289
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # line-length for formatter doesn't follow the E501 lint rules.
 
 ---
 
-_Issue opened by @jungwookim on 2023-12-27 03:15_
+_@jungwookim_
 
 I want to set the proper line length but its behaviour is pretty weird. I've attached the reproducible example code and my configurations below.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-06T09:58:37Z
 updated_at: 2025-09-08T19:54:59Z
 url: https://github.com/astral-sh/ruff/issues/20280
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Relax DOC rules for private/inner methods
 
 ---
 
-_Issue opened by @cbornet on 2025-09-06 09:58_
+_@cbornet_
 
 ### Summary
 

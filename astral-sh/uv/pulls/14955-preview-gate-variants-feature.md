@@ -12,14 +12,14 @@ head: konsti/preview-gate-variants
 created_at: 2025-07-29T14:38:35Z
 updated_at: 2025-12-06T13:50:58Z
 url: https://github.com/astral-sh/uv/pull/14955
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-12T16:11:30Z
 ```
 
 # Preview-gate variants feature
 
 ---
 
-_Pull request opened by @konstin on 2025-07-29 14:38_
+_@konstin_
 
 _No description provided._
 

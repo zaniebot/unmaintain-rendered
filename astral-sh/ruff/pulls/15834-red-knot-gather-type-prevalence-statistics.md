@@ -13,14 +13,14 @@ head: coverage
 created_at: 2025-01-30T18:48:46Z
 updated_at: 2025-02-01T18:21:52Z
 url: https://github.com/astral-sh/ruff/pull/15834
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] gather type prevalence statistics
 
 ---
 
-_Pull request opened by @carljm on 2025-01-30 18:48_
+_@carljm_
 
 Something Alex and I threw together during our 1:1 this morning. Allows us to collect statistics on the prevalence of various types in a file, most usefully TODO types or other dynamic types.
 

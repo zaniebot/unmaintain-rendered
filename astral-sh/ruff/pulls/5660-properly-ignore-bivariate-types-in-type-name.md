@@ -12,14 +12,14 @@ head: bivariance
 created_at: 2023-07-10T17:55:22Z
 updated_at: 2023-07-16T11:52:12Z
 url: https://github.com/astral-sh/ruff/pull/5660
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Properly ignore bivariate types in `type-name-incorrect-variance`
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-10 17:55_
+_@tjkuson_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: sdist-filenames
 created_at: 2023-10-20T12:32:27Z
 updated_at: 2023-10-24T15:46:21Z
 url: https://github.com/astral-sh/uv/pull/154
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:46Z
 ```
 
 # Add source distribution filename abstraction
 
 ---
 
-_Pull request opened by @konstin on 2023-10-20 12:32_
+_@konstin_
 
 The need for this became clear when working on the source distribution
 integration into the resolver.

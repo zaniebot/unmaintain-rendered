@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T18:03:53Z
 updated_at: 2025-04-07T18:28:34Z
 url: https://github.com/astral-sh/uv/issues/12677
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # UV fails installing a python library with CRC mismatch
 
 ---
 
-_Issue opened by @unmultimedio on 2025-04-04 18:03_
+_@unmultimedio_
 
 ### Summary
 

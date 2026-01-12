@@ -13,14 +13,14 @@ head: zb/note-index
 created_at: 2024-08-29T17:44:43Z
 updated_at: 2024-08-29T20:27:49Z
 url: https://github.com/astral-sh/uv/pull/6826
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:32Z
 ```
 
 # Add a link to the multiple index docs in the alternative index guide
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-29 17:44_
+_@zanieb_
 
 _No description provided._
 

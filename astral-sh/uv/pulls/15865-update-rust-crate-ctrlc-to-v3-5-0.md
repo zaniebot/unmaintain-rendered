@@ -13,14 +13,14 @@ head: renovate/ctrlc-3.x-lockfile
 created_at: 2025-09-15T02:56:03Z
 updated_at: 2025-09-15T03:22:13Z
 url: https://github.com/astral-sh/uv/pull/15865
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:59Z
 ```
 
 # Update Rust crate ctrlc to v3.5.0
 
 ---
 
-_Pull request opened by @renovate on 2025-09-15 02:56_
+_@renovate_
 
 This PR contains the following updates:
 

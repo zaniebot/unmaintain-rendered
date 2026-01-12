@@ -12,14 +12,14 @@ head: name-confusables
 created_at: 2023-05-16T09:50:35Z
 updated_at: 2023-05-22T17:36:25Z
 url: https://github.com/astral-sh/ruff/pull/4448
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Name ambiguous characters
 
 ---
 
-_Pull request opened by @covracer on 2023-05-16 09:50_
+_@covracer_
 
 Name the ambiguous characters in prompts, to help clarify why one should be used over the other.
 

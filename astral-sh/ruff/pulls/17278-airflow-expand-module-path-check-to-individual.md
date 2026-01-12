@@ -14,14 +14,14 @@ head: get-rid-of-ImportPathMoved
 created_at: 2025-04-07T15:01:32Z
 updated_at: 2025-04-08T13:03:28Z
 url: https://github.com/astral-sh/ruff/pull/17278
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [`airflow`] Expand module path check to individual symbols (`AIR302`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-04-07 15:01_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

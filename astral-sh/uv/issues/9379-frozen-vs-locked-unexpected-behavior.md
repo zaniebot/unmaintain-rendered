@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-23T09:54:59Z
 updated_at: 2024-11-23T17:06:01Z
 url: https://github.com/astral-sh/uv/issues/9379
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # Frozen vs Locked unexpected behavior
 
 ---
 
-_Issue opened by @TurtleOrangina on 2024-11-23 09:54_
+_@TurtleOrangina_
 
 Hi,
 

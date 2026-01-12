@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-05T18:26:58Z
 updated_at: 2023-12-05T22:41:24Z
 url: https://github.com/astral-sh/uv/issues/573
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Remove `.whl` extension from unzipped wheels
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-05 18:26_
+_@charliermarsh_
 
 This causes a lot of confusion. It may complicate the filename parser but still worth it.
 

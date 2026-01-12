@@ -14,14 +14,14 @@ head: charlie/prepare-metadata
 created_at: 2024-01-08T22:14:21Z
 updated_at: 2024-01-10T00:07:38Z
 url: https://github.com/astral-sh/uv/pull/842
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:14Z
 ```
 
 # Add support for `prepare_metadata_for_build_wheel`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-08 22:14_
+_@charliermarsh_
 
 ## Summary
 
@@ -44,11 +44,29 @@ _@charliermarsh reviewed on 2024-01-08 22:15_
 
 ---
 
+_Review comment by @charliermarsh on `crates/puffin-dispatch/src/lib.rs`:226 on 2024-01-08 22:15_
+
+I think this should be enforced in the build step, not the setup step.
+
+---
+
 _@charliermarsh reviewed on 2024-01-08 22:15_
 
 ---
 
+_Review comment by @charliermarsh on `crates/puffin-distribution/src/distribution_database.rs`:274 on 2024-01-08 22:15_
+
+@konstin -- In this PR, I allow `prepare_metadata_for_build_wheel` even if `--no-build` is specified. Do you feel that's correct?
+
+---
+
 _@charliermarsh reviewed on 2024-01-08 22:16_
+
+---
+
+_Review comment by @charliermarsh on `crates/puffin-distribution/src/source/mod.rs`:512 on 2024-01-08 22:16_
+
+These methods are structurally similar to (e.g.) `async fn path`, but with the distinction that it will try to use `prepare_metadata_for_build_wheel`. If the build backend doesn't support it, it ends up being identical to calling `path`.
 
 ---
 
@@ -68,6 +86,14 @@ _@konstin reviewed on 2024-01-08 22:24_
 
 ---
 
+_Review comment by @konstin on `crates/puffin-distribution/src/distribution_database.rs`:274 on 2024-01-08 22:24_
+
+No, my idea was that `--no-build` doesn't run untrusted code, while `prepare_metadata_for_build_wheel` runs arbitrary code. (Less in a security way and more in a doesn't mess with my system way)
+
+(will review properly tomorrow)
+
+---
+
 _Review requested from @zanieb by @charliermarsh on 2024-01-08 22:45_
 
 ---
@@ -76,7 +102,57 @@ _@charliermarsh reviewed on 2024-01-08 22:47_
 
 ---
 
+_Review comment by @charliermarsh on `crates/puffin-distribution/src/distribution_database.rs`:274 on 2024-01-08 22:47_
+
+We _might_ want separate flags for this then? Since there seem to be two different intents here.
+
+---
+
 _@charliermarsh reviewed on 2024-01-09 00:13_
+
+---
+
+_Review comment by @charliermarsh on `crates/puffin-distribution/src/distribution_database.rs`:274 on 2024-01-09 00:13_
+
+Actually I agree with you. I'm gonna revert. It's hard to test now though.
+
+---
+
+_Review comment by @konstin on `crates/puffin-build/src/lib.rs`:403 on 2024-01-09 21:53_
+
+```suggestion
+        // The method could have been called before, so the directory may already exist.
+        fs::create_dir_all(&metadata_directory)?;
+```
+
+Feels wrong though, should we remove it before instead? (non-blocking for this PR, we aren't using this)
+
+---
+
+_Review comment by @konstin on `crates/puffin-distribution/src/source/manifest.rs`:12 on 2024-01-09 21:58_
+
+`build_wheel` returns only one wheel, aren't the others from the cache? (I think the code is correct but the comment misleading)
+
+---
+
+_Review comment by @konstin on `crates/puffin-distribution/src/source/mod.rs`:580 on 2024-01-09 22:12_
+
+It's already there, but i think this should be `read_cached_metadata`
+
+---
+
+_Review comment by @konstin on `crates/puffin-distribution/src/source/mod.rs`:972 on 2024-01-09 22:15_
+
+Complaining about my own oversight here:
+```suggestion
+    #[instrument(skip_all, fields(dist))]
+```
+
+---
+
+_Review comment by @konstin on `crates/puffin-distribution/src/source/mod.rs`:367 on 2024-01-09 22:16_
+
+I'd move that check into `build_source_dist_metadata`
 
 ---
 
@@ -89,6 +165,12 @@ Otherwise only very minor comments :shipit:
 ---
 
 _@charliermarsh reviewed on 2024-01-09 23:20_
+
+---
+
+_Review comment by @charliermarsh on `crates/puffin-build/src/lib.rs`:403 on 2024-01-09 23:20_
+
+I think you're right that we should use `create_dir` here...
 
 ---
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-30T20:14:08Z
 updated_at: 2024-06-30T23:42:07Z
 url: https://github.com/astral-sh/uv/issues/4665
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `uv pip tree` should omit `(*)` if package has no dependencies
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-30 20:14_
+_@charliermarsh_
 
 `cargo tree` does the same, I think.
 

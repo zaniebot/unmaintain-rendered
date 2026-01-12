@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-21T08:51:14Z
 updated_at: 2024-11-21T10:21:46Z
 url: https://github.com/astral-sh/ruff/issues/14508
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # False positive PD011
 
 ---
 
-_Issue opened by @Matt-Ord on 2024-11-21 08:51_
+_@Matt-Ord_
 
 I don't have pandas installed, but it is triggering PD011 on .values property that I have defined in my own class.
 

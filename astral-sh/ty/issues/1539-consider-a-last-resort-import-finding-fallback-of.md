@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-13T15:34:16Z
 updated_at: 2025-12-03T20:04:38Z
 url: https://github.com/astral-sh/ty/issues/1539
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Consider a last-resort import-finding fallback of "try all ancestor directories as candidate import roots"
 
 ---
 
-_Issue opened by @carljm on 2025-11-13 15:34_
+_@carljm_
 
 Pyright does this, see #6 in https://microsoft.github.io/pyright/#/import-resolution
 Pyrefly also does something similar (though not clear if its a fallback for each failed import, or a configuration-time fallback): https://pyrefly.org/en/docs/import-resolution/#fallback-search-path

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-19T13:31:00Z
 updated_at: 2025-05-19T13:59:49Z
 url: https://github.com/astral-sh/ruff/issues/18194
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Title: Ruff 0.11.10 Fails to Detect F-string SyntaxError with target-version = "py39"
 
 ---
 
-_Issue opened by @tmarquart on 2025-05-19 13:31_
+_@tmarquart_
 
 ### Summary
 

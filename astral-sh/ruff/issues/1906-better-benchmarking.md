@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-16T04:52:58Z
 updated_at: 2023-06-08T16:59:10Z
 url: https://github.com/astral-sh/ruff/issues/1906
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Better benchmarking
 
 ---
 
-_Issue opened by @not-my-profile on 2023-01-16 04:52_
+_@not-my-profile_
 
 * [ ] create a script for running the CPython benchmark
 * [ ] include the benchmark SVG shown in the README in the repository and add some script to regenerate it

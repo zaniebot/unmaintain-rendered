@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-01T14:03:07Z
 updated_at: 2024-05-01T14:34:27Z
 url: https://github.com/astral-sh/ruff/issues/11231
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Inconsistency in line breaks (ruff formatter)
 
 ---
 
-_Issue opened by @Romsik788 on 2024-05-01 14:03_
+_@Romsik788_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

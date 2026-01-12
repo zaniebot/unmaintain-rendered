@@ -13,14 +13,14 @@ head: dylan/stabilize-invalid-mock
 created_at: 2025-09-05T19:12:47Z
 updated_at: 2025-09-08T16:13:09Z
 url: https://github.com/astral-sh/ruff/pull/20272
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [`pygrep-hooks`] Stabilize using`AsyncMock` methods in `invalid-mock-access` (`PGH005`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-05 19:12_
+_@dylwil3_
 
 Introduced in #18547. Removed gating, updated tests. Not documented so documentation is the same.
 

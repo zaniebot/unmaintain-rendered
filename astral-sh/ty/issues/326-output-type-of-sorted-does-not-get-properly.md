@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-12T10:59:19Z
 updated_at: 2025-05-13T08:08:19Z
 url: https://github.com/astral-sh/ty/issues/326
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Output type of sorted() does not get properly evaluated
 
 ---
 
-_Issue opened by @skraeven on 2025-05-12 10:59_
+_@skraeven_
 
 ### Summary
 

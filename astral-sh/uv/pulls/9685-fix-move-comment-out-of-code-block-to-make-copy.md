@@ -11,14 +11,14 @@ head: update-docs
 created_at: 2024-12-06T15:06:36Z
 updated_at: 2025-04-28T12:56:47Z
 url: https://github.com/astral-sh/uv/pull/9685
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:56Z
 ```
 
 # fix: move comment out of code block to make copy/paste easier
 
 ---
 
-_Pull request opened by @lifehackett on 2024-12-06 15:06_
+_@lifehackett_
 
 ## Summary
 

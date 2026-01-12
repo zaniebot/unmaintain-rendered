@@ -13,14 +13,14 @@ head: ag/lock-optional-hash
 created_at: 2024-05-10T13:31:38Z
 updated_at: 2024-05-10T14:32:31Z
 url: https://github.com/astral-sh/uv/pull/3505
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:41Z
 ```
 
 # uv-resolver: make hashes optional
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-05-10 13:31_
+_@BurntSushi_
 
 This only makes hashes optional for wheels/sdists that come from
 registires or direct URLs. For wheels/sdists that come from other

@@ -13,14 +13,14 @@ head: claude/fix-platform-compatibility-1HdcT
 created_at: 2026-01-09T17:51:27Z
 updated_at: 2026-01-09T18:29:23Z
 url: https://github.com/astral-sh/uv/pull/17384
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:45Z
 ```
 
 # Recognize armv8l as an alias for armv7l in platform tag parsing
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-09 17:51_
+_@zanieb_
 
 Closes #17375
 

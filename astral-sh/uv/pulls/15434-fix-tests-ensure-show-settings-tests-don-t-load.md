@@ -13,14 +13,14 @@ head: fix/15403-show-settings-tests
 created_at: 2025-08-21T21:10:39Z
 updated_at: 2025-08-22T19:05:00Z
 url: https://github.com/astral-sh/uv/pull/15434
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:44Z
 ```
 
 # fix(tests): Ensure show_settings tests don't load user config
 
 ---
 
-_Pull request opened by @pposca on 2025-08-21 21:10_
+_@pposca_
 
 ## Summary
 

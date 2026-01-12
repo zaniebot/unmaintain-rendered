@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-23T20:44:53Z
 updated_at: 2025-11-13T06:28:34Z
 url: https://github.com/astral-sh/ty/issues/113
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Type inferred as `Never` from cyclic * import
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-04-23 20:44_
+_@MatthewMckee4_
 
 ### Summary
 

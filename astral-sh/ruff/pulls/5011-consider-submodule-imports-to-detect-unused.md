@@ -11,14 +11,14 @@ head: dhruv/unused-imports
 created_at: 2023-06-11T02:28:06Z
 updated_at: 2023-07-21T01:46:06Z
 url: https://github.com/astral-sh/ruff/pull/5011
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Consider submodule imports to detect unused imports
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-11 02:28_
+_@dhruvmanila_
 
 ## Summary
 

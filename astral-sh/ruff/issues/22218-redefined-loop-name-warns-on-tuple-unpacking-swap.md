@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-27T00:35:17Z
 updated_at: 2026-01-09T01:22:02Z
 url: https://github.com/astral-sh/ruff/issues/22218
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # `redefined-loop-name` warns on tuple unpacking swap
 
 ---
 
-_Issue opened by @injust on 2025-12-27 00:35_
+_@injust_
 
 ### Summary
 

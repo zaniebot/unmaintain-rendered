@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-13T12:02:45Z
 updated_at: 2025-01-15T19:40:58Z
 url: https://github.com/astral-sh/uv/issues/10561
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # Allow building and installing Python from source
 
 ---
 
-_Issue opened by @nazdridoy on 2025-01-13 12:02_
+_@nazdridoy_
 
 I am requesting a feature/enhancement for `uv` to include the ability to build Python from source during the virtual environment setup. This would align `uv` with tools like `pyenv` (this is preventing me from completely transitioning to uv), which allows users to compile Python from source, ensuring compatibility and reducing potential issues with pre-built binaries.
 

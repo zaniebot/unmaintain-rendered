@@ -13,14 +13,14 @@ head: dhruv/perms-2
 created_at: 2024-07-18T16:45:39Z
 updated_at: 2024-07-18T17:04:07Z
 url: https://github.com/astral-sh/ruff/pull/12386
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Provide custom job permissions to `cargo-dist`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-18 16:45_
+_@dhruvmanila_
 
 We can't just directly update the `release.yml` file because that's auto-generated using `cargo-dist`. So, update the permissions in `Cargo.toml` and then use `cargo dist generate` to make sure there's no diff.
 

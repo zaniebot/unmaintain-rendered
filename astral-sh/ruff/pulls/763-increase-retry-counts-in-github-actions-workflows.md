@@ -12,14 +12,14 @@ head: charlie/retries
 created_at: 2022-11-15T21:59:39Z
 updated_at: 2022-11-15T22:21:17Z
 url: https://github.com/astral-sh/ruff/pull/763
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Increase retry counts in GitHub Actions workflows
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-15 21:59_
+_@charliermarsh_
 
 These are taken from [`rust-analyzer`](https://github.com/rust-lang/rust-analyzer/blob/0dd0dfb7dfe723bbfa81197c23d73c9bdc4022c1/.github/workflows/release.yaml).
 

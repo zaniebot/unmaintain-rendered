@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-13T16:56:06Z
 updated_at: 2026-01-07T23:54:02Z
 url: https://github.com/astral-sh/uv/issues/15254
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Support for PEP 792
 
 ---
 
-_Issue opened by @woodruffw on 2025-08-13 16:56_
+_@woodruffw_
 
 ### Summary
 

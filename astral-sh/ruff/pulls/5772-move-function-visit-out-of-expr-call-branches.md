@@ -12,14 +12,14 @@ head: charlie/visit
 created_at: 2023-07-15T03:30:25Z
 updated_at: 2023-07-15T03:57:05Z
 url: https://github.com/astral-sh/ruff/pull/5772
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Move function visit out of `Expr::Call` branches
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-15 03:30_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-08T13:47:43Z
 updated_at: 2024-08-09T14:03:05Z
 url: https://github.com/astral-sh/uv/issues/4893
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Tracking issue: Stabilize `uv.lock` format
 
 ---
 
-_Issue opened by @konstin on 2024-07-08 13:47_
+_@konstin_
 
 This is a tracking issue for making breaking changes the schema and contents of `uv.lock` before the release.
 

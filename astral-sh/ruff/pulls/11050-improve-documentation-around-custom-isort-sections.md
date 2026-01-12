@@ -14,14 +14,14 @@ head: charlie/sections
 created_at: 2024-04-19T22:15:26Z
 updated_at: 2024-04-19T22:32:20Z
 url: https://github.com/astral-sh/ruff/pull/11050
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Improve documentation around custom isort sections
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-19 22:15_
+_@charliermarsh_
 
 ## Summary
 

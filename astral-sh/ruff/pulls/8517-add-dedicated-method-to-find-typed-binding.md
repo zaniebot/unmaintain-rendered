@@ -13,14 +13,14 @@ head: charlie/typing-binding
 created_at: 2023-11-06T15:54:32Z
 updated_at: 2023-11-06T16:25:34Z
 url: https://github.com/astral-sh/ruff/pull/8517
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add dedicated method to find typed binding
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-06 15:54_
+_@charliermarsh_
 
 ## Summary
 

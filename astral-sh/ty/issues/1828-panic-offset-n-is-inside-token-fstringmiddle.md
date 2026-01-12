@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-09T21:47:06Z
 updated_at: 2025-12-11T10:45:20Z
 url: https://github.com/astral-sh/ty/issues/1828
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # panic: Offset n is inside token FStringMiddle
 
 ---
 
-_Issue opened by @correctmost on 2025-12-09 21:47_
+_@correctmost_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-05T10:00:40Z
 updated_at: 2025-05-05T13:19:42Z
 url: https://github.com/astral-sh/ty/issues/21
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Code of conduct
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-05 10:00_
+_@MichaReiser_
 
 _No description provided._
 

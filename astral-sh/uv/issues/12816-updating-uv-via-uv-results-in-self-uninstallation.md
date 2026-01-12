@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-10T17:35:55Z
 updated_at: 2025-06-27T16:17:19Z
 url: https://github.com/astral-sh/uv/issues/12816
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # Updating uv via uv results in self-uninstallation and broken reinstall behavior
 
 ---
 
-_Issue opened by @CoderJackZhu on 2025-04-10 17:35_
+_@CoderJackZhu_
 
 ### Summary
 

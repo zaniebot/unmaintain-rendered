@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-06-30T13:20:43Z
 updated_at: 2022-07-25T19:18:11Z
 url: https://github.com/clap-rs/clap/issues/3888
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Duplicating a subcommand name as a subcommand alias is not prevented
 
 ---
 
-_Issue opened by @epage on 2022-06-30 13:20_
+_@epage_
 
 The following should panic in a debug assert but doesn't.  It should mirror the asserts for duplicate flags
 ```rust

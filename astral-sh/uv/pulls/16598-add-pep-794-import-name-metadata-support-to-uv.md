@@ -11,14 +11,14 @@ head: pep-794
 created_at: 2025-11-05T05:17:58Z
 updated_at: 2025-11-19T10:08:41Z
 url: https://github.com/astral-sh/uv/pull/16598
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:20Z
 ```
 
 # Add PEP 794 import name metadata support to uv build backend
 
 ---
 
-_Pull request opened by @terror on 2025-11-05 05:17_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/16435
 

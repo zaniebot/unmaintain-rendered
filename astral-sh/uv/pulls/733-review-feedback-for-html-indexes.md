@@ -13,14 +13,14 @@ head: charlie/html
 created_at: 2023-12-26T21:52:10Z
 updated_at: 2023-12-26T21:57:21Z
 url: https://github.com/astral-sh/uv/pull/733
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Review feedback for HTML indexes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-26 21:52_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/puffin/pull/719
 

@@ -13,14 +13,14 @@ head: charlie/sch
 created_at: 2025-03-27T02:15:49Z
 updated_at: 2025-03-27T02:23:21Z
 url: https://github.com/astral-sh/uv/pull/12503
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:18Z
 ```
 
 # Fix schemars macro usage in build backend enum
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-27 02:15_
+_@charliermarsh_
 
 ## Test Plan
 

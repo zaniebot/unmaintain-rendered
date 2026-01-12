@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-26T09:10:53Z
 updated_at: 2025-11-14T15:24:04Z
 url: https://github.com/astral-sh/ty/issues/708
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Ty does not support conditional imports
 
 ---
 
-_Issue opened by @Matt-Ord on 2025-06-26 09:10_
+_@Matt-Ord_
 
 ### Summary
 

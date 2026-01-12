@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-20T19:39:36Z
 updated_at: 2023-02-21T22:44:59Z
 url: https://github.com/astral-sh/ruff/issues/3066
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PLE0101: allow return super()?
 
 ---
 
-_Issue opened by @spaceone on 2023-02-20 19:39_
+_@spaceone_
 
 ```
 class Foo(Bar):

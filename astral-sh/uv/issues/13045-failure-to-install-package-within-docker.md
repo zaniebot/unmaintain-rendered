@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-22T08:06:25Z
 updated_at: 2025-05-05T06:53:43Z
 url: https://github.com/astral-sh/uv/issues/13045
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # Failure to install package within docker container using uv while poetry/pip works fine
 
 ---
 
-_Issue opened by @Skelmis on 2025-04-22 08:06_
+_@Skelmis_
 
 ### Summary
 

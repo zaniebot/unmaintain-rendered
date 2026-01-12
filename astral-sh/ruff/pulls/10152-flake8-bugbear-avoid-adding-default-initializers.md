@@ -13,14 +13,14 @@ head: B006_stubs
 created_at: 2024-02-28T15:46:00Z
 updated_at: 2024-02-28T18:30:10Z
 url: https://github.com/astral-sh/ruff/pull/10152
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 #  [`flake8-bugbear`] Avoid adding default initializers to stubs (`B006`)
 
 ---
 
-_Pull request opened by @Philipp-Thiel on 2024-02-28 15:46_
+_@Philipp-Thiel_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

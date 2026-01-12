@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-25T09:51:59Z
 updated_at: 2024-08-26T18:05:00Z
 url: https://github.com/astral-sh/uv/issues/6599
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # `--exact` has no effect when used with `--no-build-isolation` in `uv sync`
 
 ---
 
-_Issue opened by @kabouzeid on 2024-08-25 09:51_
+_@kabouzeid_
 
 `uv sync --no-build-isolation` is always inexact. Adding `--exact` has no effect.
 

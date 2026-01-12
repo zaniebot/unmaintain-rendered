@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-18T14:00:50Z
 updated_at: 2024-02-18T14:57:12Z
 url: https://github.com/astral-sh/uv/issues/1645
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # `uv pip install --resolution=lowest --upgrade "ruff"` gets stuck
 
 ---
 
-_Issue opened by @adamtheturtle on 2024-02-18 14:00_
+_@adamtheturtle_
 
 Run: `uv pip install --resolution=lowest --upgrade "ruff"`
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-13T01:13:02Z
 updated_at: 2024-04-13T01:23:40Z
 url: https://github.com/astral-sh/ruff/issues/10914
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PLW0602 false positive on list.append
 
 ---
 
-_Issue opened by @AaronDMarasco on 2024-04-13 01:13_
+_@AaronDMarasco_
 
 It seems to only look for things like `=` or `+=` and doesn't recognize `list.append`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-22T15:49:40Z
 updated_at: 2025-07-22T18:19:14Z
 url: https://github.com/astral-sh/uv/issues/14813
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # Pyproject.toml - deprecated fields, "uv pip install" fails while "pip install" not
 
 ---
 
-_Issue opened by @chemelli74 on 2025-07-22 15:49_
+_@chemelli74_
 
 ### Summary
 

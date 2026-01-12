@@ -12,14 +12,14 @@ head: ag/fork-refactor
 created_at: 2024-11-01T16:00:27Z
 updated_at: 2024-11-05T12:21:00Z
 url: https://github.com/astral-sh/uv/pull/8754
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:29Z
 ```
 
 # refactor resolver forking to make it easier to centralize decision making
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-11-01 16:00_
+_@BurntSushi_
 
 This PR is a step in the direction to supporting conflicting groups.
 While this PR doesn't make any specific effort to support conflicting

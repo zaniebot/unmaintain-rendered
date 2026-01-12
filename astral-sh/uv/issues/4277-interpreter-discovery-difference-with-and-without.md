@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-12T15:54:50Z
 updated_at: 2024-07-18T15:14:39Z
 url: https://github.com/astral-sh/uv/issues/4277
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Interpreter discovery difference with and without `--python` flag
 
 ---
 
-_Issue opened by @matterhorn103 on 2024-06-12 15:54_
+_@matterhorn103_
 
 Sorry for the spree of issue opening and comment writing, I'm just raising things as I find them. I'm very excited about what you're doing with uv :)
 

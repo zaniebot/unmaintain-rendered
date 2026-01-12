@@ -14,14 +14,14 @@ head: zb/certs
 created_at: 2024-02-16T16:40:01Z
 updated_at: 2024-02-27T16:11:04Z
 url: https://github.com/astral-sh/uv/pull/1512
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:38Z
 ```
 
 # Use the system trust store for HTTPS requests
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-16 16:40_
+_@zanieb_
 
 Closes #1474 
 

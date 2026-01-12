@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-09-01T16:04:38Z
 updated_at: 2019-09-03T13:28:39Z
 url: https://github.com/clap-rs/clap/issues/1540
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # [FeatureRequest] Set default Argument (NOT THE VALUE)
 
 ---
 
-_Issue opened by @Johanneslueke on 2019-09-01 16:04_
+_@Johanneslueke_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

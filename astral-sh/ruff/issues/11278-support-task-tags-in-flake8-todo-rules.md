@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-04T04:39:29Z
 updated_at: 2024-05-06T14:05:53Z
 url: https://github.com/astral-sh/ruff/issues/11278
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Support task-tags in flake8-todo rules
 
 ---
 
-_Issue opened by @benblank on 2024-05-04 04:39_
+_@benblank_
 
 It would be nice if the flake8-todo rules affecting TODO formatting (TD002-7) supported the [`lint.task-tags` setting](https://docs.astral.sh/ruff/settings/#lint_task-tags) rather than just the hard-coded "directives" supported by the original rules in flake8-todo. As it stands, there's no way to add enforcement for custom tags, which would be helpful for teams which use them and want to make sure they're used consistently. It also "incorrectly" flags my maybe-todo comments (e.g. `# TODO?: switch to using fooble instead`) as missing a colon. 🙂
 

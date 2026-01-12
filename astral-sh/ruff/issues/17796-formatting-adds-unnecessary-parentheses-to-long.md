@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-02T19:01:28Z
 updated_at: 2025-11-03T22:06:53Z
 url: https://github.com/astral-sh/ruff/issues/17796
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Formatting adds unnecessary parentheses to long patterns with `as` captures
 
 ---
 
-_Issue opened by @brandtbucher on 2025-05-02 19:01_
+_@brandtbucher_
 
 ### Summary
 

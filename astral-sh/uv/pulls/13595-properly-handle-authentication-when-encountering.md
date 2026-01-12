@@ -13,14 +13,14 @@ head: jtfm/fix-redirect-handling
 created_at: 2025-05-22T15:18:02Z
 updated_at: 2025-06-18T08:52:41Z
 url: https://github.com/astral-sh/uv/pull/13595
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:45Z
 ```
 
 # Properly handle authentication when encountering redirects
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-05-22 15:18_
+_@jtfmumm_
 
 This is mostly restoring #13215. It also includes a one-line fix for #13208 (which resulted from that PR). In particular, Azure was returning 303s which were not being correctly handled. 
 

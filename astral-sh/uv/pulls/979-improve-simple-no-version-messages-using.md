@@ -13,14 +13,14 @@ head: zb/no-versions
 created_at: 2024-01-18T23:36:36Z
 updated_at: 2024-01-19T16:48:21Z
 url: https://github.com/astral-sh/uv/pull/979
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:20Z
 ```
 
 # Improve simple no version messages using complement of range
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-18 23:36_
+_@zanieb_
 
 Improves some of the "no versions of <package> are available" messages by showing the complement or inversion of the package.
 

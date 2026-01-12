@@ -13,14 +13,14 @@ head: fix-sim105-builtin-import
 created_at: 2026-01-03T15:51:50Z
 updated_at: 2026-01-05T09:58:46Z
 url: https://github.com/astral-sh/ruff/pull/22358
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # flake8-simplify: avoid unnecessary builtins import for SIM105
 
 ---
 
-_Pull request opened by @Jkhall81 on 2026-01-03 15:51_
+_@Jkhall81_
 
 ## Summary
 

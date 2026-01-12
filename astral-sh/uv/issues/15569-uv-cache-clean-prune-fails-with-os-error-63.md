@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-28T11:53:26Z
 updated_at: 2025-11-03T19:25:49Z
 url: https://github.com/astral-sh/uv/issues/15569
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # uv cache {clean, prune} fails with os error 63
 
 ---
 
-_Issue opened by @barberogaston on 2025-08-28 11:53_
+_@barberogaston_
 
 ### Summary
 

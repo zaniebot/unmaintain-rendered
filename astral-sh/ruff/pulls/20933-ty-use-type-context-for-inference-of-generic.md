@@ -14,14 +14,14 @@ head: ibraheem/generic-constructor-tcx
 created_at: 2025-10-17T03:04:25Z
 updated_at: 2025-11-10T21:49:50Z
 url: https://github.com/astral-sh/ruff/pull/20933
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] Use type context for inference of generic constructors
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-10-17 03:04_
+_@ibraheemdev_
 
 ## Summary
 

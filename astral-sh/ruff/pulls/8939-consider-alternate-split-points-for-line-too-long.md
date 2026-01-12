@@ -12,14 +12,14 @@ head: charlie/split-points
 created_at: 2023-12-01T03:32:27Z
 updated_at: 2024-03-28T17:31:55Z
 url: https://github.com/astral-sh/ruff/pull/8939
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Consider alternate split points for line-too-long exemptions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-01 03:32_
+_@charliermarsh_
 
 Looking for ecosystem results here to make a call.
 

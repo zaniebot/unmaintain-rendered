@@ -13,14 +13,14 @@ head: B006_stubs
 created_at: 2024-04-17T09:02:52Z
 updated_at: 2024-04-19T05:06:44Z
 url: https://github.com/astral-sh/ruff/pull/10990
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [`flake8-bugbear`] Treat `raise NotImplemented`-only bodies as stub functions
 
 ---
 
-_Pull request opened by @Philipp-Thiel on 2024-04-17 09:02_
+_@Philipp-Thiel_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

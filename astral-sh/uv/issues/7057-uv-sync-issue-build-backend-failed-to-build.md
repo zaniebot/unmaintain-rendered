@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-05T00:19:33Z
 updated_at: 2024-09-05T00:46:04Z
 url: https://github.com/astral-sh/uv/issues/7057
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # `uv sync` issue `Build backend failed to build editable through build_editable()`
 
 ---
 
-_Issue opened by @sbdchd on 2024-09-05 00:19_
+_@sbdchd_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

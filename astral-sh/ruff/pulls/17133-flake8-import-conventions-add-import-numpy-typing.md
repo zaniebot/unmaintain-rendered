@@ -13,14 +13,14 @@ head: npt-import-convention
 created_at: 2025-04-01T20:13:26Z
 updated_at: 2025-04-02T07:25:46Z
 url: https://github.com/astral-sh/ruff/pull/17133
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [flake8-import-conventions] Add import `numpy.typing as npt` to default `flake8-import-conventions.aliases`
 
 ---
 
-_Pull request opened by @amin-not-found on 2025-04-01 20:13_
+_@amin-not-found_
 
 ## Summary
 Adds import `numpy.typing as npt` to `default in flake8-import-conventions.aliases`

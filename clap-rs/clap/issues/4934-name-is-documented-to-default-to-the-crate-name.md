@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-23T12:59:11Z
 updated_at: 2023-05-23T13:39:24Z
 url: https://github.com/clap-rs/clap/issues/4934
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `name` is documented to default to the crate name, but it defaults to the package name
 
 ---
 
-_Issue opened by @Nemo157 on 2023-05-23 12:59_
+_@Nemo157_
 
 ### Please complete the following tasks
 

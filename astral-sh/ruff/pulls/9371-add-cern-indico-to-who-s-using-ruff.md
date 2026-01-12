@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-01-02T22:36:50Z
 updated_at: 2024-01-02T22:48:02Z
 url: https://github.com/astral-sh/ruff/pull/9371
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Add CERN/Indico to "Who's Using Ruff?"
 
 ---
 
-_Pull request opened by @ThiefMaster on 2024-01-02 22:36_
+_@ThiefMaster_
 
 Might be a nice name to have in that list ;)
 

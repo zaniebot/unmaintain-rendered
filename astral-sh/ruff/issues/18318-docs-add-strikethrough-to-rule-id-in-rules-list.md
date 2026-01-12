@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-26T13:23:53Z
 updated_at: 2025-05-27T13:37:08Z
 url: https://github.com/astral-sh/ruff/issues/18318
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Docs: add strikethrough to rule ID in rules list if rule is removed
 
 ---
 
-_Issue opened by @MaddyGuthridge on 2025-05-26 13:23_
+_@MaddyGuthridge_
 
 As requested [here](https://github.com/astral-sh/ruff/pull/18297#issuecomment-2909545016), I've moved this to a separate issue. Apparently, adding a strikethrough was decided against early in the design of the docs, so I completely understand if there are good reasons not to do this.
 

@@ -12,14 +12,14 @@ head: charlie/nested-f-string
 created_at: 2023-05-18T02:59:56Z
 updated_at: 2023-06-02T04:24:24Z
 url: https://github.com/astral-sh/ruff/pull/4488
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Avoid enforcing native-literals rule within nested f-strings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-18 02:59_
+_@charliermarsh_
 
 ## Summary
 

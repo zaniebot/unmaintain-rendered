@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-13T18:43:06Z
 updated_at: 2024-11-13T19:27:20Z
 url: https://github.com/astral-sh/ruff/issues/14324
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Unused imports not being removed F401
 
 ---
 
-_Issue opened by @RossLote on 2024-11-13 18:43_
+_@RossLote_
 
 ```
 uv init tester --package --python 3.11

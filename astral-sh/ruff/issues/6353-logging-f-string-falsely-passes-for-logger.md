@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-04T21:13:44Z
 updated_at: 2023-08-04T23:25:35Z
 url: https://github.com/astral-sh/ruff/issues/6353
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # logging-f-string falsely passes for Logger instances
 
 ---
 
-_Issue opened by @jmelahman on 2023-08-04 21:13_
+_@jmelahman_
 
 [logging-f-string](https://beta.ruff.rs/docs/rules/logging-f-string/)
 

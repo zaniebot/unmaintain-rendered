@@ -10,14 +10,14 @@ assignees: []
 created_at: 2018-06-03T14:02:07Z
 updated_at: 2018-08-02T03:30:24Z
 url: https://github.com/clap-rs/clap/issues/1286
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Values doesn't implement Debug
 
 ---
 
-_Issue opened by @drrlvn on 2018-06-03 14:02_
+_@drrlvn_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-17T14:44:47Z
 updated_at: 2025-12-26T17:48:47Z
 url: https://github.com/astral-sh/ty/issues/1578
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Consider unsafely assuming in narrowing that multiple inheritance of user types and builtin containers won't happen
 
 ---
 
-_Issue opened by @RandomBrainCode on 2025-11-17 14:44_
+_@RandomBrainCode_
 
 ### Summary
 

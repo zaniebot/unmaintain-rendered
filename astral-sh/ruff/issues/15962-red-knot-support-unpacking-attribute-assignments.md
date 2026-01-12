@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T11:50:51Z
 updated_at: 2025-02-07T10:30:54Z
 url: https://github.com/astral-sh/ruff/issues/15962
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Support unpacking attribute assignments: `self.x, self.y = …`
 
 ---
 
-_Issue opened by @sharkdp on 2025-02-05 11:50_
+_@sharkdp_
 
 The goal of this ticket is to get rid of the `TODO`s in [this test](https://github.com/astral-sh/ruff/blob/eb08345fd5434ed3db243233df6dd91757a6af3b/crates/red_knot_python_semantic/resources/mdtest/attributes.md#attributes-defined-in-tuple-unpackings), and support attribute assignments in tuple/list unpackings:
 

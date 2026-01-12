@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-01-12T12:37:03Z
 updated_at: 2024-02-03T22:09:02Z
 url: https://github.com/astral-sh/ruff/pull/9492
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Fix message for __aenter__ in PLC2801
 
 ---
 
-_Pull request opened by @alex-700 on 2024-01-12 12:37_
+_@alex-700_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

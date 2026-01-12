@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-15T07:12:00Z
 updated_at: 2025-01-16T03:06:34Z
 url: https://github.com/astral-sh/uv/issues/10626
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # QUESTION: Python-3.13.1+freethreaded
 
 ---
 
-_Issue opened by @killcoder on 2025-01-15 07:12_
+_@killcoder_
 
 How do I make the python free threading version default for a new project? 
 

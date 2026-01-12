@@ -12,14 +12,14 @@ head: micha/pr-template
 created_at: 2025-05-07T14:13:32Z
 updated_at: 2025-07-08T10:37:57Z
 url: https://github.com/astral-sh/ty/pull/68
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add PR template
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-07 14:13_
+_@MichaReiser_
 
 _No description provided._
 

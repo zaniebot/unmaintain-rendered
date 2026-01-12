@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-19T09:43:25Z
 updated_at: 2024-01-10T21:13:40Z
 url: https://github.com/astral-sh/ruff/issues/1992
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Version 1 road map, or whatever you decide to call “stable”…
 
 ---
 
-_Issue opened by @ghost on 2023-01-19 09:43_
+_@ghost_
 
 _This is not really a bug, more a request for clarity._
 

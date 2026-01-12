@@ -13,14 +13,14 @@ head: fix-unnecessary-literal-within-tuple-call
 created_at: 2024-03-20T16:29:00Z
 updated_at: 2024-03-22T07:11:16Z
 url: https://github.com/astral-sh/ruff/pull/10491
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Avoid incorrect tuple transformation in single-element case (`C409`)
 
 ---
 
-_Pull request opened by @WindowGenerator on 2024-03-20 16:29_
+_@WindowGenerator_
 
 # Summary
 Fixed: incorrect rule transformation rule C409 with single element.

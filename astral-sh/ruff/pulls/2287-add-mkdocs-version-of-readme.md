@@ -12,14 +12,14 @@ head: charlie/docs
 created_at: 2023-01-28T02:45:09Z
 updated_at: 2023-01-28T16:17:59Z
 url: https://github.com/astral-sh/ruff/pull/2287
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add MkDocs version of README
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-28 02:45_
+_@charliermarsh_
 
 This was originally contributed in #2244 by @juftin.
 

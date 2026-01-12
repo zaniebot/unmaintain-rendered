@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-23T07:54:30Z
 updated_at: 2024-05-27T15:36:36Z
 url: https://github.com/astral-sh/ruff/issues/11507
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `ruff server` in `v0.4.5` doesn't consider the configuration setting in Neovim
 
 ---
 
-_Issue opened by @a1401358759 on 2024-05-23 07:54_
+_@a1401358759_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

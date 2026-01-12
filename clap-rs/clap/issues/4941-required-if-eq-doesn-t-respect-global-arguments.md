@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-05-26T11:12:04Z
 updated_at: 2023-06-01T15:06:40Z
 url: https://github.com/clap-rs/clap/issues/4941
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `required_if_eq` doesn't respect global arguments
 
 ---
 
-_Issue opened by @Gordon01 on 2023-05-26 11:12_
+_@Gordon01_
 
 ### Please complete the following tasks
 

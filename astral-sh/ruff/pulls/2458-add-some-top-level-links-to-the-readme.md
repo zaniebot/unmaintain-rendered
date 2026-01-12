@@ -12,14 +12,14 @@ head: charlie/cocs
 created_at: 2023-02-01T23:52:04Z
 updated_at: 2023-02-02T00:10:42Z
 url: https://github.com/astral-sh/ruff/pull/2458
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Add some top-level links to the README
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-01 23:52_
+_@charliermarsh_
 
 _No description provided._
 

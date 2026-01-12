@@ -13,14 +13,14 @@ head: david/embeddable-ty-playground
 created_at: 2025-12-05T07:54:15Z
 updated_at: 2025-12-10T19:16:49Z
 url: https://github.com/astral-sh/ty/pull/1766
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # [ty] Docs with embedded playground
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-05 07:54_
+_@sharkdp_
 
 ## Summary
 

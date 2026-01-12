@@ -13,14 +13,14 @@ head: zb/trampoline-native
 created_at: 2024-10-22T16:32:39Z
 updated_at: 2024-10-22T17:28:34Z
 url: https://github.com/astral-sh/uv/pull/8469
-synced_at: 2026-01-10T12:54:10Z
+synced_at: 2026-01-12T16:08:20Z
 ```
 
 # Use native Windows runner for trampoline checks
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-22 16:32_
+_@zanieb_
 
 As in https://github.com/astral-sh/uv/pull/8182 and #8468 
 

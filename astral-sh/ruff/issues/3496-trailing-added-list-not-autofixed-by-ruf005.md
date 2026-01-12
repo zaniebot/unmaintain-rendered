@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-13T22:46:59Z
 updated_at: 2023-05-24T01:26:35Z
 url: https://github.com/astral-sh/ruff/issues/3496
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Trailing added list not autofixed by RUF005
 
 ---
 
-_Issue opened by @Pierre-Sassoulas on 2023-03-13 22:46_
+_@Pierre-Sassoulas_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

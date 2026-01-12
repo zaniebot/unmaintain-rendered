@@ -14,14 +14,14 @@ head: dhruv/313-dunder
 created_at: 2024-11-07T04:05:15Z
 updated_at: 2024-11-07T06:09:02Z
 url: https://github.com/astral-sh/ruff/pull/14146
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Update known dunder methods for Python 3.13
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-07 04:05_
+_@dhruvmanila_
 
 ## Summary
 

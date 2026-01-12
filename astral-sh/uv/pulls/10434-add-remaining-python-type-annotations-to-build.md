@@ -13,14 +13,14 @@ head: build-backend-type-annotations
 created_at: 2025-01-09T15:50:27Z
 updated_at: 2025-01-13T00:28:14Z
 url: https://github.com/astral-sh/uv/pull/10434
-synced_at: 2026-01-10T11:44:48Z
+synced_at: 2026-01-12T16:09:17Z
 ```
 
 # Add remaining Python type annotations to build backend
 
 ---
 
-_Pull request opened by @cthoyt on 2025-01-09 15:50_
+_@cthoyt_
 
 ## Summary
 

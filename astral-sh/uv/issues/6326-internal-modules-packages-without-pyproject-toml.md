@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-21T13:38:35Z
 updated_at: 2024-08-21T14:50:30Z
 url: https://github.com/astral-sh/uv/issues/6326
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Internal modules / packages without pyproject.toml (Poetry transition)
 
 ---
 
-_Issue opened by @nunokaeru on 2024-08-21 13:38_
+_@nunokaeru_
 
 I want to transition to using UV but cannot understand how to transition the `tool.poetry.packages` toml variable to UV.
 

@@ -13,14 +13,14 @@ head: cjm/pylintcycle
 created_at: 2025-04-04T00:14:29Z
 updated_at: 2025-05-04T21:41:32Z
 url: https://github.com/astral-sh/ruff/pull/17192
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] add cycle handling to FunctionType::signature query
 
 ---
 
-_Pull request opened by @carljm on 2025-04-04 00:14_
+_@carljm_
 
 This fixes cycle panics in several ecosystem projects (moved to `good.txt` here), as well as in the minimal case in the added mdtest. It also fixes a number of panicking fuzzer seeds. It doesn't appear to cause any regression in any ecosystem project or any fuzzer seed.
 

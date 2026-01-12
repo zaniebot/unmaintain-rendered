@@ -14,14 +14,14 @@ head: alex/slightly-better-literals
 created_at: 2025-08-27T10:30:30Z
 updated_at: 2025-08-27T12:21:49Z
 url: https://github.com/astral-sh/ruff/pull/20111
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [ty] Infer slightly more precise types for comprehensions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-27 10:30_
+_@AlexWaygood_
 
 ## Summary
 

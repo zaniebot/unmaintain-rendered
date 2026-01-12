@@ -14,14 +14,14 @@ head: alex/simplify-mro
 created_at: 2024-12-11T13:09:44Z
 updated_at: 2024-12-11T13:28:46Z
 url: https://github.com/astral-sh/ruff/pull/14912
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Minor simplifications to `mro.rs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-11 13:09_
+_@AlexWaygood_
 
 ## Summary
 

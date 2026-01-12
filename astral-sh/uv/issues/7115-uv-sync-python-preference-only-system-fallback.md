@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-06T04:48:18Z
 updated_at: 2024-09-06T17:40:50Z
 url: https://github.com/astral-sh/uv/issues/7115
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # `uv sync --python-preference=only-system` fallback beyond `.python-version`
 
 ---
 
-_Issue opened by @jamesbraza on 2024-09-06 04:48_
+_@jamesbraza_
 
 With `uv==0.4.6`, running `uv sync --python-preference=only-system` in GitHub Actions runner `ubuntu-24.04`:
 

@@ -13,14 +13,14 @@ head: zb/matrix-ci
 created_at: 2024-06-25T14:56:21Z
 updated_at: 2024-06-25T15:29:31Z
 url: https://github.com/astral-sh/uv/pull/4518
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # Separate CI test runs from the matrix
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-25 14:56_
+_@zanieb_
 
 So we can skip them when there are not code changes and still enforce our required checks (xref #4438)
 

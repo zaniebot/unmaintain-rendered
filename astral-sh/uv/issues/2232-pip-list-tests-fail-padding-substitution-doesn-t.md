@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-06T07:17:48Z
 updated_at: 2024-03-06T13:32:08Z
 url: https://github.com/astral-sh/uv/issues/2232
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # pip_list tests fail (padding substitution doesn't work?)
 
 ---
 
-_Issue opened by @mgorny on 2024-03-06 07:17_
+_@mgorny_
 
 When running the test suite, I'm getting 3 test failures from `crates/uv/tests/pip_list.rs`. It seems that for some reason, the "padding substitution" related to `[WORKSPACE_DIR]` change doesn't work for me, though I can't really figure out what's different.
 

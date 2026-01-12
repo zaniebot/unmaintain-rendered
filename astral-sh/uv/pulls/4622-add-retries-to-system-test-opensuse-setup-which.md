@@ -14,14 +14,14 @@ head: zb/opensuse-retries
 created_at: 2024-06-28T15:18:19Z
 updated_at: 2024-06-28T20:24:45Z
 url: https://github.com/astral-sh/uv/pull/4622
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:21Z
 ```
 
 # Add retries to `system-test-opensuse` setup which flakes during database updates
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-28 15:18_
+_@zanieb_
 
 e.g. failure at https://github.com/astral-sh/uv/actions/runs/9714929523/job/26815318110
 

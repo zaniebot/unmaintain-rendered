@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-02T12:05:19Z
 updated_at: 2023-01-02T17:13:46Z
 url: https://github.com/astral-sh/ruff/issues/1552
-synced_at: 2026-01-10T12:05:30Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Using variable only in slice leads to false positive for F841: Locale variable is assigned but never used.
 
 ---
 
-_Issue opened by @Wooza on 2023-01-02 12:05_
+_@Wooza_
 
 Applying ruff on the following code leads to `repro.py:6:5: F841 Local variable 'shift_by' is assigned to but never used`:
 ```python

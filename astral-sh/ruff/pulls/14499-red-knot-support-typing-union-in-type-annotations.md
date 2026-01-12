@@ -13,14 +13,14 @@ head: redknot-typing-union
 created_at: 2024-11-20T20:12:09Z
 updated_at: 2025-05-21T20:26:45Z
 url: https://github.com/astral-sh/ruff/pull/14499
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] support `typing.Union` in type annotations
 
 ---
 
-_Pull request opened by @Glyphack on 2024-11-20 20:12_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

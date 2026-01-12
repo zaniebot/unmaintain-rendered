@@ -14,14 +14,14 @@ head: dhruv/overload-decorator-consistency
 created_at: 2025-04-28T15:40:57Z
 updated_at: 2025-04-30T15:04:23Z
 url: https://github.com/astral-sh/ruff/pull/17684
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [red-knot] Check decorator consistency on overloads
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-28 15:40_
+_@dhruvmanila_
 
 ## Summary
 

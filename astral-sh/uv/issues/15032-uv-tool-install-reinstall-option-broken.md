@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-02T19:08:27Z
 updated_at: 2025-08-12T16:27:59Z
 url: https://github.com/astral-sh/uv/issues/15032
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # uv tool install: "--reinstall" option broken
 
 ---
 
-_Issue opened by @hwine on 2025-08-02 19:08_
+_@hwine_
 
 ### Summary
 

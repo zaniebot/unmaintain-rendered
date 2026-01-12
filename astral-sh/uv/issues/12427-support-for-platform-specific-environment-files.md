@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T11:47:01Z
 updated_at: 2025-04-01T18:20:45Z
 url: https://github.com/astral-sh/uv/issues/12427
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # Support for Platform-Specific Environment Files in ``.python-version``
 
 ---
 
-_Issue opened by @meitham on 2025-03-24 11:47_
+_@meitham_
 
 ### Summary
 

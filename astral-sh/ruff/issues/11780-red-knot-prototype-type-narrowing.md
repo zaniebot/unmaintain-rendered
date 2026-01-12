@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-06T20:28:50Z
 updated_at: 2024-06-12T04:38:51Z
 url: https://github.com/astral-sh/ruff/issues/11780
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] prototype type narrowing
 
 ---
 
-_Issue opened by @carljm on 2024-06-06 20:28_
+_@carljm_
 
 e.g. in
 

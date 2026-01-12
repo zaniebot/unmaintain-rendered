@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-24T19:16:42Z
 updated_at: 2024-07-01T14:52:01Z
 url: https://github.com/astral-sh/uv/issues/4484
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Add `uv tool dir`
 
 ---
 
-_Issue opened by @zanieb on 2024-06-24 19:16_
+_@zanieb_
 
 Similar to `uv cache dir`, displays the directory we install tools to
 

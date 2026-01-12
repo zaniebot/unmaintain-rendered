@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-29T16:30:36Z
 updated_at: 2025-06-09T22:00:14Z
 url: https://github.com/astral-sh/ruff/issues/14681
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # New Metadata Version on ruff-0.8.1-py3-none-linux_armv6l.whl
 
 ---
 
-_Issue opened by @matthewakram on 2024-11-29 16:30_
+_@matthewakram_
 
 It seems that there is an issue with latest wheel. The metadata version on is at 2.4. The pkginfo package support only metadata versions up to 2.3. This is pretty important since this is a crucial part of how Poetry resolved the package to install. Would it be possible to roll that back, ensuring that none of the released wheels have metadata version >2.3? I am not sure what the metadata versions of all the other wheels are, but I am getting the error for ruff-0.8.1-py3-none-linux_armv6l.whl.
 

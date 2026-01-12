@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-28T18:55:55Z
 updated_at: 2025-07-17T14:09:55Z
 url: https://github.com/astral-sh/ruff/issues/17923
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Cannot checkout ruff repository on windows due to long file paths
 
 ---
 
-_Issue opened by @jvllmr on 2025-04-28 18:55_
+_@jvllmr_
 
 ### Summary
 

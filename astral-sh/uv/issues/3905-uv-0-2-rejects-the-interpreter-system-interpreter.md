@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-29T14:54:14Z
 updated_at: 2024-06-12T13:56:34Z
 url: https://github.com/astral-sh/uv/issues/3905
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # uv 0.2 rejects the interpreter, system interpreter not allowed
 
 ---
 
-_Issue opened by @morotti on 2024-05-29 14:54_
+_@morotti_
 
 Hello,
 

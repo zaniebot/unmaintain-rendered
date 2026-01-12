@@ -13,14 +13,14 @@ head: zb/python-releases
 created_at: 2024-10-08T16:54:19Z
 updated_at: 2024-10-10T09:11:04Z
 url: https://github.com/astral-sh/uv/pull/8010
-synced_at: 2026-01-10T12:54:01Z
+synced_at: 2026-01-12T16:08:07Z
 ```
 
 # Add managed downloads for CPython 3.13.0 final
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-08 16:54_
+_@zanieb_
 
 _No description provided._
 

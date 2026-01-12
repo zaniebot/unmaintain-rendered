@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-10-13T20:40:41Z
 updated_at: 2025-10-13T20:49:11Z
 url: https://github.com/astral-sh/ruff/pull/20852
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # Update Python compatibility from 3.13 to 3.14 in README.md
 
 ---
 
-_Pull request opened by @mgaitan on 2025-10-13 20:40_
+_@mgaitan_
 
 After #20725 ruff is compatible with Python 3.14 without preview enabled, so lets note it in the README
 

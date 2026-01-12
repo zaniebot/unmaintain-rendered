@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-17T01:15:41Z
 updated_at: 2025-09-09T16:45:32Z
 url: https://github.com/astral-sh/uv/issues/14675
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # Issues with indexes when trying to enable CPU and GPU extras
 
 ---
 
-_Issue opened by @sunildkumar on 2025-07-17 01:15_
+_@sunildkumar_
 
 ### Summary
 

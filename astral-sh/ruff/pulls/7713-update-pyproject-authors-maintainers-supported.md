@@ -13,14 +13,14 @@ head: zanie/pyproject-maintenance
 created_at: 2023-09-29T15:47:15Z
 updated_at: 2023-09-29T17:04:12Z
 url: https://github.com/astral-sh/ruff/pull/7713
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Update pyproject authors, maintainers, supported Python version labels
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-29 15:47_
+_@zanieb_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: dependabot/cargo/walkdir-2.5.0
 created_at: 2024-03-11T21:30:23Z
 updated_at: 2024-03-11T23:37:09Z
 url: https://github.com/astral-sh/uv/pull/2365
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:00Z
 ```
 
 # Bump walkdir from 2.4.0 to 2.5.0
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-11 21:30_
+_@dependabot_
 
 Bumps [walkdir](https://github.com/BurntSushi/walkdir) from 2.4.0 to 2.5.0.
 <details>

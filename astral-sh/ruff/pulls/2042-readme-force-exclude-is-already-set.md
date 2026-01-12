@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-01-20T22:18:42Z
 updated_at: 2023-01-20T22:39:05Z
 url: https://github.com/astral-sh/ruff/pull/2042
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # README: `--force-exclude` is already set
 
 ---
 
-_Pull request opened by @hugovk on 2023-01-20 22:18_
+_@hugovk_
 
 Re: https://github.com/charliermarsh/ruff-pre-commit/issues/19 / https://github.com/charliermarsh/ruff-pre-commit/pull/20
 

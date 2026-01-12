@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-05-26T02:44:58Z
 updated_at: 2024-06-06T20:12:31Z
 url: https://github.com/clap-rs/clap/issues/5507
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `exclusive` fails to take priority over `required_unless_present` flags
 
 ---
 
-_Issue opened by @obskyr on 2024-05-26 02:44_
+_@obskyr_
 
 ### Please complete the following tasks
 

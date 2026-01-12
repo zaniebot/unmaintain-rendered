@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-24T23:44:13Z
 updated_at: 2025-12-25T14:46:43Z
 url: https://github.com/astral-sh/uv/issues/17236
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:47Z
 ```
 
 # CUDA PyTorch wheel not auto-detected on GTX1650 (CUDA 7.5)
 
 ---
 
-_Issue opened by @aliphys on 2025-12-24 23:44_
+_@aliphys_
 
 ### Summary
 

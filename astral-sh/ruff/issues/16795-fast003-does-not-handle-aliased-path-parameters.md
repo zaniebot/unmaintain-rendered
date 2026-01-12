@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-17T10:22:30Z
 updated_at: 2025-03-17T13:23:41Z
 url: https://github.com/astral-sh/ruff/issues/16795
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # FAST003 does not handle aliased path parameters when defined in another file
 
 ---
 
-_Issue opened by @HenriBlacksmith on 2025-03-17 10:22_
+_@HenriBlacksmith_
 
 ### Summary
 

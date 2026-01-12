@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-04T05:44:06Z
 updated_at: 2025-05-05T17:48:29Z
 url: https://github.com/astral-sh/ruff/issues/17827
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # E722: not reported when raising original exception
 
 ---
 
-_Issue opened by @matejsp on 2025-05-04 05:44_
+_@matejsp_
 
 ### Summary
 

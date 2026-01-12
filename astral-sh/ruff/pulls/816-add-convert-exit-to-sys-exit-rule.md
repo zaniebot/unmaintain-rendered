@@ -12,14 +12,14 @@ head: add-sys-exit-rule
 created_at: 2022-11-19T09:36:38Z
 updated_at: 2022-12-01T17:15:18Z
 url: https://github.com/astral-sh/ruff/pull/816
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add convert exit() to sys.exit() rule
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2022-11-19 09:36_
+_@JonathanPlasse_
 
 - Close #787 
 - [x] Fix

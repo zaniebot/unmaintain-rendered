@@ -13,14 +13,14 @@ head: charlie/nightly
 created_at: 2023-06-21T19:59:34Z
 updated_at: 2023-06-22T00:29:02Z
 url: https://github.com/astral-sh/ruff/pull/5268
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Avoid including nursery rules in linter-level selectors
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-21 19:59_
+_@charliermarsh_
 
 ## Summary
 

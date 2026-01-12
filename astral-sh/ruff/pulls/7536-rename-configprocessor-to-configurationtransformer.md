@@ -13,14 +13,14 @@ head: rename-config-processor
 created_at: 2023-09-20T08:17:37Z
 updated_at: 2023-09-20T16:04:53Z
 url: https://github.com/astral-sh/ruff/pull/7536
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Rename `ConfigProcessor` to `ConfigurationTransformer`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-20 08:17_
+_@MichaReiser_
 
 ## Summary
 

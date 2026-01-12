@@ -13,14 +13,14 @@ head: charlie/sync-docs
 created_at: 2025-07-08T20:02:43Z
 updated_at: 2025-07-08T20:13:04Z
 url: https://github.com/astral-sh/uv/pull/14510
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:15Z
 ```
 
 # Remove `uv pip sync` suggestion with `pyproject.toml`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-08 20:02_
+_@charliermarsh_
 
 ## Summary
 

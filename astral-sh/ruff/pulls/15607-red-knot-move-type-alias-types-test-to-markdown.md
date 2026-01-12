@@ -14,14 +14,14 @@ head: david/move-type-alias-type-test
 created_at: 2025-01-20T08:48:28Z
 updated_at: 2025-01-20T08:55:57Z
 url: https://github.com/astral-sh/ruff/pull/15607
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Move `type_alias_types` test to Markdown
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-20 08:48_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: add-sort
 created_at: 2024-10-02T09:49:13Z
 updated_at: 2024-10-04T10:57:38Z
 url: https://github.com/astral-sh/uv/pull/7864
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:03Z
 ```
 
 # Preserve case-insensitive sorts in `uv add`
 
 ---
 
-_Pull request opened by @blueraft on 2024-10-02 09:49_
+_@blueraft_
 
 ## Summary
 

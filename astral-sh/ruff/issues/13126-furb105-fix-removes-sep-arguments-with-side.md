@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-27T18:46:26Z
 updated_at: 2024-08-30T16:17:48Z
 url: https://github.com/astral-sh/ruff/issues/13126
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # FURB105 fix removes `sep` arguments with side effects
 
 ---
 
-_Issue opened by @dscorbett on 2024-08-27 18:46_
+_@dscorbett_
 
 The fix for [FURB105](https://docs.astral.sh/ruff/rules/print-empty-string/) removes unneeded `sep` arguments even when they might have side effects. In that case, the fix should be omitted or marked unsafe.
 

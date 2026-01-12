@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-27T06:38:11Z
 updated_at: 2023-03-04T04:33:14Z
 url: https://github.com/astral-sh/ruff/issues/3246
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PTH-rules should name pathlib
 
 ---
 
-_Issue opened by @MartinThoma on 2023-02-27 06:38_
+_@MartinThoma_
 
 Currently, all [PTH rules](https://beta.ruff.rs/docs/rules/#flake8-use-pathlib-pth) are phrased rather confusingly.
 

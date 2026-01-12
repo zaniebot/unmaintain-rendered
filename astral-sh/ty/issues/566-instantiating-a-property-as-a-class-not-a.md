@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-02T11:14:26Z
 updated_at: 2025-06-02T16:16:47Z
 url: https://github.com/astral-sh/ty/issues/566
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Instantiating a property as a class (not a decorator) ends with `invalid-assignment`
 
 ---
 
-_Issue opened by @dmach on 2025-06-02 11:14_
+_@dmach_
 
 ### Summary
 

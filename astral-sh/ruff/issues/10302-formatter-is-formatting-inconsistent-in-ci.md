@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-08T22:56:46Z
 updated_at: 2024-03-09T10:04:08Z
 url: https://github.com/astral-sh/ruff/issues/10302
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Formatter is formatting inconsistent in CI
 
 ---
 
-_Issue opened by @joostlek on 2024-03-08 22:56_
+_@joostlek_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

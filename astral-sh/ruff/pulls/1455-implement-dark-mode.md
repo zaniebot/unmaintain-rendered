@@ -12,14 +12,14 @@ head: charlie/dark
 created_at: 2022-12-30T00:33:43Z
 updated_at: 2022-12-30T00:33:47Z
 url: https://github.com/astral-sh/ruff/pull/1455
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Implement dark mode
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-30 00:33_
+_@charliermarsh_
 
 Resolves #1442.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-27T04:28:33Z
 updated_at: 2024-07-17T15:49:28Z
 url: https://github.com/astral-sh/ruff/issues/12062
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Bug: PLR1714 auto-fix with multiple conditions
 
 ---
 
-_Issue opened by @Spectre5 on 2024-06-27 04:28_
+_@Spectre5_
 
 Ruff removes the `a == 1` condition in the example below when applying the (unsafe) auto-fix.
 

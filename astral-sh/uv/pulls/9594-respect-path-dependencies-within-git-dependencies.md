@@ -13,14 +13,14 @@ head: charlie/path
 created_at: 2024-12-03T03:40:00Z
 updated_at: 2024-12-03T05:13:31Z
 url: https://github.com/astral-sh/uv/pull/9594
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:53Z
 ```
 
 # Respect path dependencies within Git dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-03 03:40_
+_@charliermarsh_
 
 ## Summary
 

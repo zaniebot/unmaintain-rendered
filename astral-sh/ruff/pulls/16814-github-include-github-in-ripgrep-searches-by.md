@@ -13,14 +13,14 @@ head: ag/allowlist-github
 created_at: 2025-03-17T15:37:07Z
 updated_at: 2025-03-17T16:37:59Z
 url: https://github.com/astral-sh/ruff/pull/16814
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # github: include `/.github/` in ripgrep searches by default
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-03-17 15:37_
+_@BurntSushi_
 
 Previously, unless you had some other configuration that impacts
 ripgrep, `rg -tyaml uses:` would return zero results. After this

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-16T21:07:48Z
 updated_at: 2025-06-19T15:53:20Z
 url: https://github.com/astral-sh/uv/issues/14091
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # Stabilize `--torch-backend`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-06-16 21:07_
+_@charliermarsh_
 
 This is somewhat widely used now, including in the official vLLM documentation: https://docs.vllm.ai/en/latest/getting_started/installation/gpu.html?device=cuda#pre-built-wheels. I think we should stabilize it. (Stabilizing here indicates that we won't take it away or make breaking changes outside of our standard versioning policy.)
 

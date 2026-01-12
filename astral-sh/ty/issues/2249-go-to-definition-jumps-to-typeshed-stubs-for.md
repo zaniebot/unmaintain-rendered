@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-28T16:17:16Z
 updated_at: 2025-12-31T15:20:26Z
 url: https://github.com/astral-sh/ty/issues/2249
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Go-to-definition jumps to typeshed stubs for datetime module import 
 
 ---
 
-_Issue opened by @olzhasar on 2025-12-28 16:17_
+_@olzhasar_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-01T11:53:11Z
 updated_at: 2023-10-30T04:37:34Z
 url: https://github.com/astral-sh/ruff/issues/7738
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Refactor proposal for isort implementation
 
 ---
 
-_Issue opened by @bluthej on 2023-10-01 11:53_
+_@bluthej_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

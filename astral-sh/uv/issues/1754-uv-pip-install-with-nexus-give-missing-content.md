@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-20T14:36:47Z
 updated_at: 2024-03-06T23:21:45Z
 url: https://github.com/astral-sh/uv/issues/1754
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # `uv pip install` with Nexus give "Missing 'Content-Type"` error 
 
 ---
 
-_Issue opened by @kendallbailey on 2024-02-20 14:36_
+_@kendallbailey_
 
 uv version is 0.1.5 on Ubuntu 20.04, python 3.10
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-10T19:29:51Z
 updated_at: 2025-08-07T20:17:49Z
 url: https://github.com/clap-rs/clap/issues/6031
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `required` ignores `default_value`, making some requirements impossible to express
 
 ---
 
-_Issue opened by @lilyball on 2025-06-10 19:29_
+_@lilyball_
 
 clap v3.2.0 changed the behavior of required args to ignore default values. For simple cases this can be accounted for (though it’s not properly documented), but in the case of conditional defaults or conditional requires, this leads to some requirements being impossible to express that otherwise would have.
 

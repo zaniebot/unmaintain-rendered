@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-07-20T03:05:03Z
 updated_at: 2018-08-02T03:30:09Z
 url: https://github.com/clap-rs/clap/issues/1005
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Allow conditional usage of positional arguments
 
 ---
 
-_Issue opened by @kieraneglin on 2017-07-20 03:05_
+_@kieraneglin_
 
 This is version agnostic, but I am using the YAML option.
 

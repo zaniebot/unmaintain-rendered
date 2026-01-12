@@ -13,14 +13,14 @@ head: renovate/doc-comment-0.x-lockfile
 created_at: 2025-10-27T01:47:57Z
 updated_at: 2025-10-27T02:26:38Z
 url: https://github.com/astral-sh/uv/pull/16458
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:15Z
 ```
 
 # Update Rust crate doc-comment to v0.3.4
 
 ---
 
-_Pull request opened by @renovate on 2025-10-27 01:47_
+_@renovate_
 
 This PR contains the following updates:
 

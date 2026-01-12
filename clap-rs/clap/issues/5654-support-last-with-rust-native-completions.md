@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-10T02:09:01Z
 updated_at: 2024-08-10T02:09:55Z
 url: https://github.com/clap-rs/clap/issues/5654
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Support `last` with rust-native completions
 
 ---
 
-_Issue opened by @epage on 2024-08-10 02:09_
+_@epage_
 
 See #3166 for more context
 

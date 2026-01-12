@@ -13,14 +13,14 @@ head: any-over-dyn-dispatch
 created_at: 2023-08-27T09:40:15Z
 updated_at: 2023-08-27T13:54:02Z
 url: https://github.com/astral-sh/ruff/pull/6912
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Use dyn dispatch for `any_over_*`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-27 09:40_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

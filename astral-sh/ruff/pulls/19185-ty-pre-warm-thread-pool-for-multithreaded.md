@@ -13,14 +13,14 @@ head: micha/pre-warm-thread-pool
 created_at: 2025-07-07T15:19:55Z
 updated_at: 2025-11-16T11:47:45Z
 url: https://github.com/astral-sh/ruff/pull/19185
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # [ty] Pre-warm thread-pool for multithreaded benchmark
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-07 15:19_
+_@MichaReiser_
 
 ## Summary
 

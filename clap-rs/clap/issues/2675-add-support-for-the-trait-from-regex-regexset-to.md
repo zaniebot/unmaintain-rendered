@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-10T11:07:34Z
 updated_at: 2022-05-23T20:22:57Z
 url: https://github.com/clap-rs/clap/issues/2675
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Add support for the trait From<regex::RegexSet> to Arg
 
 ---
 
-_Issue opened by @PandH4cker on 2021-08-10 11:07_
+_@PandH4cker_
 
 ### Please complete the following tasks
 

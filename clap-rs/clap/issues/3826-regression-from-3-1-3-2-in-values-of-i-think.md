@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-06-13T22:47:22Z
 updated_at: 2022-06-28T14:13:51Z
 url: https://github.com/clap-rs/clap/issues/3826
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Regression from 3.1 -> 3.2 in `values_of` (i think)
 
 ---
 
-_Issue opened by @cgwalters on 2022-06-13 22:47_
+_@cgwalters_
 
 ### Please complete the following tasks
 

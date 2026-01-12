@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-22T19:47:07Z
 updated_at: 2025-07-19T12:54:40Z
 url: https://github.com/astral-sh/uv/issues/12397
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # More sophisticated quiet/verbose handling
 
 ---
 
-_Issue opened by @jaraco on 2025-03-22 19:47_
+_@jaraco_
 
 ### Summary
 

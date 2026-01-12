@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-20T13:51:46Z
 updated_at: 2025-03-20T13:52:01Z
 url: https://github.com/astral-sh/uv/issues/12340
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # `available_versions` doesn't account for `--exclude-newer`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-03-20 13:51_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/12330#issuecomment-2740523196
 

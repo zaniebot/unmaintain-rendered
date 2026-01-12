@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-25T20:21:31Z
 updated_at: 2024-10-25T20:42:31Z
 url: https://github.com/astral-sh/uv/issues/8576
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # UV Python Install will not find Homebrew Installed dylibs
 
 ---
 
-_Issue opened by @sonnen-coviance on 2024-10-25 20:21_
+_@sonnen-coviance_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T10:01:43Z
 updated_at: 2024-02-17T11:24:41Z
 url: https://github.com/astral-sh/uv/issues/1467
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Direct URL constraints are ignored
 
 ---
 
-_Issue opened by @sbidoul on 2024-02-16 10:01_
+_@sbidoul_
 
 It seems that uv does not honor constraints that are Direct URLs.
 

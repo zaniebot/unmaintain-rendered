@@ -13,14 +13,14 @@ head: renovate/camino-1.x-lockfile
 created_at: 2025-09-01T00:42:01Z
 updated_at: 2025-09-01T06:48:53Z
 url: https://github.com/astral-sh/ruff/pull/20185
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # Update Rust crate camino to v1.1.12
 
 ---
 
-_Pull request opened by @renovate on 2025-09-01 00:42_
+_@renovate_
 
 This PR contains the following updates:
 

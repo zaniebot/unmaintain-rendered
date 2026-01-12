@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-10T14:02:39Z
 updated_at: 2024-06-11T14:09:32Z
 url: https://github.com/astral-sh/uv/issues/3506
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # iron out how to represent path dependencies in the universal lock file
 
 ---
 
-_Issue opened by @BurntSushi on 2024-05-10 14:02_
+_@BurntSushi_
 
 We want to support path dependencies in our lock file. But the data model for path dependencies in our lock file is, at the time of writing, not quite right. I believe what we _ought_ to have for a path dependency is a single file URL to a directory, source distribution or wheel. But the data model currently allows for a source distribution _and_ zero or more wheels, but specifically does not allow for a directory.
 

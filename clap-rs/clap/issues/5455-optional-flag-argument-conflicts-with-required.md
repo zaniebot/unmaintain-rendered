@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-15T11:32:32Z
 updated_at: 2024-04-17T11:38:37Z
 url: https://github.com/clap-rs/clap/issues/5455
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Optional flag argument conflicts with required subcommand
 
 ---
 
-_Issue opened by @domenkozar on 2024-04-15 11:32_
+_@domenkozar_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T23:27:44Z
 updated_at: 2025-04-21T09:05:38Z
 url: https://github.com/astral-sh/uv/issues/12455
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # Installing secp256k1 fails on uv but not on pip?
 
 ---
 
-_Issue opened by @saschanaz on 2025-03-24 23:27_
+_@saschanaz_
 
 ### Summary
 

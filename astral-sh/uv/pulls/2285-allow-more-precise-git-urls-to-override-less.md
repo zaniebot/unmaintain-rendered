@@ -13,14 +13,14 @@ head: charlie/constraints
 created_at: 2024-03-07T19:18:06Z
 updated_at: 2024-03-07T23:47:32Z
 url: https://github.com/astral-sh/uv/pull/2285
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:57Z
 ```
 
 # Allow more-precise Git URLs to override less-precise Git URLs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-07 19:18_
+_@charliermarsh_
 
 ## Summary
 

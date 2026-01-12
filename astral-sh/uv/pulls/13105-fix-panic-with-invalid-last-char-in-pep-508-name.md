@@ -13,14 +13,14 @@ head: konsti/invalid-pep508-name-panic
 created_at: 2025-04-25T11:24:54Z
 updated_at: 2025-04-25T12:56:47Z
 url: https://github.com/astral-sh/uv/pull/13105
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Fix panic with invalid last char in PEP 508 name
 
 ---
 
-_Pull request opened by @konstin on 2025-04-25 11:24_
+_@konstin_
 
 Fixes #13102
 

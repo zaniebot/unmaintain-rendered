@@ -13,14 +13,14 @@ head: workspace-remove-unnecessary-clone
 created_at: 2024-07-26T13:26:20Z
 updated_at: 2024-07-26T15:19:06Z
 url: https://github.com/astral-sh/ruff/pull/12529
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Remove unnecessary clone in workspace API
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-26 13:26_
+_@MichaReiser_
 
 ## Summary
 I didn't know that the salsa setter removes the old value. 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-05T07:03:24Z
 updated_at: 2025-12-05T07:42:17Z
 url: https://github.com/astral-sh/ruff/issues/21805
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # docstrings on variables and type aliases are not treated as docstrings
 
 ---
 
-_Issue opened by @DetachHead on 2025-12-05 07:03_
+_@DetachHead_
 
 ### Summary
 

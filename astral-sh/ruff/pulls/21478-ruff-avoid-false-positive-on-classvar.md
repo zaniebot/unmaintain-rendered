@@ -13,14 +13,14 @@ head: main
 created_at: 2025-11-16T15:28:33Z
 updated_at: 2025-11-17T20:52:25Z
 url: https://github.com/astral-sh/ruff/pull/21478
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [`ruff`] Avoid false positive on `ClassVar` reassignment (`RUF012`)
 
 ---
 
-_Pull request opened by @Ruchir28 on 2025-11-16 15:28_
+_@Ruchir28_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

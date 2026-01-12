@@ -13,14 +13,14 @@ head: jtfm/restore-force-to-upgrade
 created_at: 2025-06-16T19:15:42Z
 updated_at: 2025-06-18T14:39:09Z
 url: https://github.com/astral-sh/uv/pull/14084
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:01Z
 ```
 
 # Warn when `uv python upgrade` tries to install over a non-managed `bin` installation
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-16 19:15_
+_@jtfmumm_
 
 `uv python upgrade` had originally had a `--force` option, but we thought it probably didn't make sense. However, switching `uv python upgrade` behind the preview flag revealed a bad interaction: upgrading a minor version when a non-managed interpreter of that version exists in the `bin` directory displays an error recommending the use of `--force`.
 

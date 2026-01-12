@@ -13,14 +13,14 @@ head: dhruv/add-missing-imports
 created_at: 2025-02-01T10:24:07Z
 updated_at: 2025-02-03T09:27:36Z
 url: https://github.com/astral-sh/ruff/pull/15869
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Add missing imports in mdtests
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-01 10:24_
+_@dhruvmanila_
 
 ## Summary
 

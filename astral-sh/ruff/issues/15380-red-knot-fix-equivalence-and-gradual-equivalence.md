@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-09T18:15:15Z
 updated_at: 2025-01-19T16:10:44Z
 url: https://github.com/astral-sh/ruff/issues/15380
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] fix equivalence (and gradual equivalence) for differently-ordered unions and intersections
 
 ---
 
-_Issue opened by @carljm on 2025-01-09 18:15_
+_@carljm_
 
 This issue relates to the TODO comment here:
 

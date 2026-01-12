@@ -13,14 +13,14 @@ head: david/boundness-declaredness-tests
 created_at: 2025-01-13T11:42:58Z
 updated_at: 2025-01-14T12:07:18Z
 url: https://github.com/astral-sh/ruff/pull/15453
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Add boundness and declaredness tests
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-13 11:42_
+_@sharkdp_
 
 ## Summary
 

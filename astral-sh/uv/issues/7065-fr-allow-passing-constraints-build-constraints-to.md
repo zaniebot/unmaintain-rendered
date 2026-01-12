@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-05T02:34:03Z
 updated_at: 2024-09-05T18:46:38Z
 url: https://github.com/astral-sh/uv/issues/7065
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # [FR] Allow passing --constraints/--build-constraints to uv build
 
 ---
 
-_Issue opened by @alex on 2024-09-05 02:34_
+_@alex_
 
 `uv build` will download dependencies that are needed to build the sdist/wheel.
 

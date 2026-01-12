@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T10:01:34Z
 updated_at: 2024-09-04T15:16:32Z
 url: https://github.com/astral-sh/uv/issues/7001
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Different venv prompts in `uv venv` and `uv sync`
 
 ---
 
-_Issue opened by @gusutabopb on 2024-09-04 10:01_
+_@gusutabopb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

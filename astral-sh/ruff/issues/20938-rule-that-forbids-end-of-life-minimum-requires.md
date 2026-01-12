@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-17T12:32:00Z
 updated_at: 2025-10-27T12:26:01Z
 url: https://github.com/astral-sh/ruff/issues/20938
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Rule that forbids end-of-life minimum `requires-python` version in `pyproject.toml`
 
 ---
 
-_Issue opened by @Jayman2000 on 2025-10-17 12:32_
+_@Jayman2000_
 
 ### Summary
 

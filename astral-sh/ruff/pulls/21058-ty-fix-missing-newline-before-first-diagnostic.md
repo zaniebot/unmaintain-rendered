@@ -14,14 +14,14 @@ head: micha/fix-newline-after-progress
 created_at: 2025-10-24T08:21:31Z
 updated_at: 2025-10-24T15:35:25Z
 url: https://github.com/astral-sh/ruff/pull/21058
-synced_at: 2026-01-10T17:28:45Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [ty] Fix missing newline before first diagnostic
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-24 08:21_
+_@MichaReiser_
 
 ## Summary
 

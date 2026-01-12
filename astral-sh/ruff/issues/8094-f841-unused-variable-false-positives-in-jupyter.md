@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-10-20T15:31:23Z
 updated_at: 2024-02-27T06:47:56Z
 url: https://github.com/astral-sh/ruff/issues/8094
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `F841` (unused-variable) false positives in Jupyter notebooks
 
 ---
 
-_Issue opened by @tdulcet on 2023-10-20 15:31_
+_@tdulcet_
 
 * A minimal code snippet that reproduces the bug.
 ```jupyter

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-19T11:14:11Z
 updated_at: 2025-12-19T12:02:12Z
 url: https://github.com/astral-sh/ty/issues/2109
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Configuration error: `possibly-unbound` is not a recognized rule name
 
 ---
 
-_Issue opened by @The-Red-Dragons on 2025-12-19 11:14_
+_@The-Red-Dragons_
 
 ### Summary
 

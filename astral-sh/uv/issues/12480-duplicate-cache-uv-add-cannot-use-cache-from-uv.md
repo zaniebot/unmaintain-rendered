@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-26T10:13:39Z
 updated_at: 2025-06-12T13:56:42Z
 url: https://github.com/astral-sh/uv/issues/12480
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # duplicate cache: uv add cannot use cache from uv pip install
 
 ---
 
-_Issue opened by @xiejx5 on 2025-03-26 10:13_
+_@xiejx5_
 
 ### Summary
 

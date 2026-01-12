@@ -14,14 +14,14 @@ head: alex/match-top-materialization
 created_at: 2025-10-30T19:15:46Z
 updated_at: 2025-10-30T20:44:52Z
 url: https://github.com/astral-sh/ruff/pull/21150
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] Use the top materialization of classes for narrowing in class-patterns for `match` statements
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-30 19:15_
+_@AlexWaygood_
 
 Fixes https://github.com/astral-sh/ty/issues/1458
 

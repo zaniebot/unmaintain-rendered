@@ -11,14 +11,14 @@ head: implement-for-styledstr
 created_at: 2024-11-01T07:28:00Z
 updated_at: 2025-04-21T11:51:25Z
 url: https://github.com/clap-rs/clap/pull/5799
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat: Implementation of `From<Cow<'static, str>>` for `StyledStr`
 
 ---
 
-_Pull request opened by @zaira-bibi on 2024-11-01 07:28_
+_@zaira-bibi_
 
 Implemented `From<Cow<'static, str>>` for `StyledStr` under #5785.
 

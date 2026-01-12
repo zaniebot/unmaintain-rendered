@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-06T18:56:36Z
 updated_at: 2025-01-06T20:19:59Z
 url: https://github.com/astral-sh/ruff/issues/15306
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # False positives when defering import of `typing.Literal`
 
 ---
 
-_Issue opened by @mikeshardmind on 2025-01-06 18:56_
+_@mikeshardmind_
 
 
 ```py

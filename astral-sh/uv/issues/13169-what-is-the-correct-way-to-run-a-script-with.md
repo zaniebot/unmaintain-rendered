@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-28T08:41:20Z
 updated_at: 2025-05-04T12:40:57Z
 url: https://github.com/astral-sh/uv/issues/13169
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # What is the correct way to run a script with declared dependencies alongside a module?
 
 ---
 
-_Issue opened by @TuringTrails on 2025-04-28 08:41_
+_@TuringTrails_
 
 ### Question
 

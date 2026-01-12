@@ -14,14 +14,14 @@ head: ibraheem/declared-attribute-type-context
 created_at: 2025-10-30T15:19:15Z
 updated_at: 2025-10-31T15:48:30Z
 url: https://github.com/astral-sh/ruff/pull/21143
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] Use declared attribute types as type context
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-10-30 15:19_
+_@ibraheemdev_
 
 ## Summary
 

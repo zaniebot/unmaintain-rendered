@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-04T11:11:01Z
 updated_at: 2026-01-07T10:40:53Z
 url: https://github.com/astral-sh/uv/issues/15055
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # Relative indexes are stored as absolute in the lockfile
 
 ---
 
-_Issue opened by @cwiede on 2025-08-04 11:11_
+_@cwiede_
 
 ### Question
 

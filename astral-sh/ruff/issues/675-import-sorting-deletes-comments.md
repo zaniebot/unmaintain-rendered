@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-11T00:51:33Z
 updated_at: 2022-11-16T03:02:53Z
 url: https://github.com/astral-sh/ruff/issues/675
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Import sorting deletes comments
 
 ---
 
-_Issue opened by @andersk on 2022-11-11 00:51_
+_@andersk_
 
 (This is a known limitation mentioned in https://github.com/charliermarsh/ruff/issues/465#issuecomment-1311075618, but might as well be tracked as an issue.)
 

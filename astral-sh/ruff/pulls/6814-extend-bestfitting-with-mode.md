@@ -13,14 +13,14 @@ head: re-introduce-mode-for-best-fitting
 created_at: 2023-08-23T12:10:05Z
 updated_at: 2023-08-24T10:14:11Z
 url: https://github.com/astral-sh/ruff/pull/6814
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Extend `BestFitting` with `mode`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-23 12:10_
+_@MichaReiser_
 
 ## Summary
 

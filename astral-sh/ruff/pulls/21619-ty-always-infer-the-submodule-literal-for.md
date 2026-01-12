@@ -14,14 +14,14 @@ head: alex/submodule-attr-fallback-ty
 created_at: 2025-11-24T19:34:42Z
 updated_at: 2025-11-27T03:25:52Z
 url: https://github.com/astral-sh/ruff/pull/21619
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # [ty] Always infer the submodule literal for submodule attribute-access, even when we emit a diagnostic
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-24 19:34_
+_@AlexWaygood_
 
 ## Summary
 

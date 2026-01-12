@@ -15,14 +15,14 @@ head: konsti/trusted-publishing-debugging
 created_at: 2024-10-28T12:49:02Z
 updated_at: 2024-10-28T20:13:45Z
 url: https://github.com/astral-sh/uv/pull/8633
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:24Z
 ```
 
 # Better trusted publishing error story
 
 ---
 
-_Pull request opened by @konstin on 2024-10-28 12:49_
+_@konstin_
 
 ## Summary
 

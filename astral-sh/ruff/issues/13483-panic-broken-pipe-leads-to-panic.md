@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-23T13:21:53Z
 updated_at: 2024-09-23T13:48:45Z
 url: https://github.com/astral-sh/ruff/issues/13483
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [Panic] broken pipe leads to panic
 
 ---
 
-_Issue opened by @mitsuhiko on 2024-09-23 13:21_
+_@mitsuhiko_
 
 ```
 ruff analyze graph --preview| bat -l json --color=always

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-10T12:13:32Z
 updated_at: 2022-09-10T18:51:44Z
 url: https://github.com/astral-sh/ruff/issues/139
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `F401 imported but unused` for imports used in forward reference type hints
 
 ---
 
-_Issue opened by @nikolaik on 2022-09-10 12:13_
+_@nikolaik_
 
 Similar to #123 but not quite.
 

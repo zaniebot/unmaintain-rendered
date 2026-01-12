@@ -14,14 +14,14 @@ head: konsti/check-keyring
 created_at: 2024-11-05T08:44:53Z
 updated_at: 2024-11-27T19:54:50Z
 url: https://github.com/astral-sh/uv/pull/8827
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:31Z
 ```
 
 # Publish: Warn when keyring has no password
 
 ---
 
-_Pull request opened by @konstin on 2024-11-05 08:44_
+_@konstin_
 
 When trying to upload without a password but with the keyring, check that the keyring has a password for the upload URL and username and warn if it doesn't.
 

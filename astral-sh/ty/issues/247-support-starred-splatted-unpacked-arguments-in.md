@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-07T16:30:44Z
 updated_at: 2025-10-06T15:27:15Z
 url: https://github.com/astral-sh/ty/issues/247
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Support starred/splatted/unpacked arguments in function calls
 
 ---
 
-_Issue opened by @dreid on 2025-05-07 16:30_
+_@dreid_
 
 Status:
 - [x] support single-starred arguments (https://github.com/astral-sh/ruff/pull/18996)

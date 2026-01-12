@@ -13,14 +13,14 @@ head: delte_python-preference_preview_value
 created_at: 2024-08-21T06:18:32Z
 updated_at: 2024-08-21T09:43:04Z
 url: https://github.com/astral-sh/uv/pull/6301
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:19Z
 ```
 
 # Delete the preview default value of python-preference in the document.
 
 ---
 
-_Pull request opened by @FishAlchemist on 2024-08-21 06:18_
+_@FishAlchemist_
 
 ## Summary
 I believe the default for the stable ``uv venv`` in [UV v0.3.0](https://github.com/astral-sh/uv/releases/tag/0.3.0) is managed.

@@ -13,14 +13,14 @@ head: gankra/popup
 created_at: 2025-02-06T20:11:31Z
 updated_at: 2025-02-07T18:33:14Z
 url: https://github.com/astral-sh/uv/pull/11295
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:46Z
 ```
 
 # don't use the Cool popup-generating eprintln in trampoline for warnings
 
 ---
 
-_Pull request opened by @Gankra on 2025-02-06 20:11_
+_@Gankra_
 
 Also I refactored the code a bit to centralize all the calls of eprintln.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T13:15:25Z
 updated_at: 2025-09-12T15:08:11Z
 url: https://github.com/astral-sh/uv/issues/15406
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # Deprecate `tool.uv.dev-dependencies`
 
 ---
 
-_Issue opened by @zanieb on 2025-08-21 13:15_
+_@zanieb_
 
 We should start warning this is deprecated and remove it in a future breaking release.
 

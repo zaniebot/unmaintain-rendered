@@ -14,14 +14,14 @@ head: zb/filter
 created_at: 2025-01-31T19:45:52Z
 updated_at: 2025-01-31T21:54:00Z
 url: https://github.com/astral-sh/uv/pull/11143
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:42Z
 ```
 
 # Filter discovered Python executables by source before querying
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-31 19:45_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/11138
 

@@ -14,14 +14,14 @@ head: charlie/dupe
 created_at: 2025-08-05T17:55:45Z
 updated_at: 2025-08-05T18:15:00Z
 url: https://github.com/astral-sh/uv/pull/15088
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:34Z
 ```
 
 # Remove duplicate `extra-build-dependencies` warnings for `uv pip`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-05 17:55_
+_@charliermarsh_
 
 ## Summary
 

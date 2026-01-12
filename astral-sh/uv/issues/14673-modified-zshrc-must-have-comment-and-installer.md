@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-16T22:24:07Z
 updated_at: 2025-07-16T22:24:07Z
 url: https://github.com/astral-sh/uv/issues/14673
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # modified `.zshrc` must have comment and installer must log about exact modified file.
 
 ---
 
-_Issue opened by @PaulVe2024 on 2025-07-16 22:24_
+_@PaulVe2024_
 
 ### Summary
 

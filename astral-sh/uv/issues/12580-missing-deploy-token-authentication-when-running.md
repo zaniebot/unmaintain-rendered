@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-31T09:18:22Z
 updated_at: 2026-01-09T14:27:05Z
 url: https://github.com/astral-sh/uv/issues/12580
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # Missing deploy token authentication when running export requirements.txt command
 
 ---
 
-_Issue opened by @sipa-echo-zaoa on 2025-03-31 09:18_
+_@sipa-echo-zaoa_
 
 ### Summary
 

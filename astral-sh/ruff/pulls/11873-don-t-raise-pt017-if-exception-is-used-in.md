@@ -12,14 +12,14 @@ head: fix-pt017
 created_at: 2024-06-14T13:23:23Z
 updated_at: 2024-08-12T07:54:22Z
 url: https://github.com/astral-sh/ruff/pull/11873
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Don't raise PT017 if exception is used in assertion message
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-14 13:23_
+_@MichaReiser_
 
 ## Summary
 

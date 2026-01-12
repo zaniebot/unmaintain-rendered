@@ -13,14 +13,14 @@ head: comment/class-scope
 created_at: 2023-07-26T19:06:01Z
 updated_at: 2023-07-26T19:55:11Z
 url: https://github.com/astral-sh/ruff/pull/6101
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add comment regarding class scope short circuit
 
 ---
 
-_Pull request opened by @zanieb on 2023-07-26 19:06_
+_@zanieb_
 
 _No description provided._
 

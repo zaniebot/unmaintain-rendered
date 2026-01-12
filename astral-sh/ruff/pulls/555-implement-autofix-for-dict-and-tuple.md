@@ -12,14 +12,14 @@ head: charlie/dict-literals
 created_at: 2022-11-03T01:36:04Z
 updated_at: 2022-11-03T01:36:21Z
 url: https://github.com/astral-sh/ruff/pull/555
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement autofix for dict and tuple comprehensions
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-03 01:36_
+_@charliermarsh_
 
 _No description provided._
 

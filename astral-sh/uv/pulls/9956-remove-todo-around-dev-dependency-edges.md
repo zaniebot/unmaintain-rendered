@@ -13,14 +13,14 @@ head: charlie/lo
 created_at: 2024-12-17T03:48:32Z
 updated_at: 2024-12-17T03:59:08Z
 url: https://github.com/astral-sh/uv/pull/9956
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:03Z
 ```
 
 # Remove TODO around dev dependency edges
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-17 03:48_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: renovate/ordermap-0.x-lockfile
 created_at: 2025-06-30T01:01:45Z
 updated_at: 2025-06-30T07:35:56Z
 url: https://github.com/astral-sh/ruff/pull/19036
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # Update Rust crate ordermap to v0.5.8
 
 ---
 
-_Pull request opened by @renovate on 2025-06-30 01:01_
+_@renovate_
 
 This PR contains the following updates:
 

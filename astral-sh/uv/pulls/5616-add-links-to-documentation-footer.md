@@ -14,14 +14,14 @@ head: zb/docs-footer
 created_at: 2024-07-30T17:39:04Z
 updated_at: 2024-07-30T17:42:19Z
 url: https://github.com/astral-sh/uv/pull/5616
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:55Z
 ```
 
 # Add links to documentation footer
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-30 17:39_
+_@zanieb_
 
 _No description provided._
 

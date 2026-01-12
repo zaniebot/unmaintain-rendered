@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-17T13:20:52Z
 updated_at: 2024-09-20T19:05:52Z
 url: https://github.com/astral-sh/uv/issues/7458
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Docker package page shows incorrect default suggestion
 
 ---
 
-_Issue opened by @zanieb on 2024-09-17 13:20_
+_@zanieb_
 
 <img width="783" alt="Screenshot 2024-09-17 at 8 20 00 AM" src="https://github.com/user-attachments/assets/19fe9fd0-e99c-44a3-a4d9-3e9760fc4d32">
 

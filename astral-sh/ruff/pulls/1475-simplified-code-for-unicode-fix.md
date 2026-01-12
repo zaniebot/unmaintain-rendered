@@ -12,14 +12,14 @@ head: fixunicodefix
 created_at: 2022-12-30T12:38:56Z
 updated_at: 2022-12-30T16:18:52Z
 url: https://github.com/astral-sh/ruff/pull/1475
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Simplified code for unicode fix
 
 ---
 
-_Pull request opened by @colin99d on 2022-12-30 12:38_
+_@colin99d_
 
 This morning I realized that all the unicode checker is doing is removing the first character. So I went ahead and simplified the code.
 

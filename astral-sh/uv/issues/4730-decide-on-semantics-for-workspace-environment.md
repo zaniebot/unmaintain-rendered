@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-02T14:08:32Z
 updated_at: 2024-08-20T18:22:12Z
 url: https://github.com/astral-sh/uv/issues/4730
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Decide on semantics for workspace environment syncing (with `--package`, `--extra`, and `--dev`)
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-02 14:08_
+_@charliermarsh_
 
 We had an extensive discussion about this in Discord. I'll try to summarize some of it here, but we still need to make some important decisions about how virtualenv syncing should behave for workspaces. Most of these changes aren't hard to implement, but they do have a lot of follow-on impact.
 

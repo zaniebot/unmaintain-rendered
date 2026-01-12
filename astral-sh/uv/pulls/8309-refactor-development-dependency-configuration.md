@@ -13,14 +13,14 @@ head: zb/dev-refactor
 created_at: 2024-10-17T21:41:57Z
 updated_at: 2024-10-18T16:58:01Z
 url: https://github.com/astral-sh/uv/pull/8309
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:15Z
 ```
 
 # Refactor development dependency configuration
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-17 21:41_
+_@zanieb_
 
 Part of #8090 
 Unblocks https://github.com/astral-sh/uv/pull/8274

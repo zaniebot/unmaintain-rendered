@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-18T20:45:47Z
 updated_at: 2025-12-18T23:07:17Z
 url: https://github.com/astral-sh/ruff/issues/22060
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # UP032 fix misinterprets `\N` in a raw string as an escape sequence
 
 ---
 
-_Issue opened by @dscorbett on 2025-12-18 20:45_
+_@dscorbett_
 
 ### Summary
 

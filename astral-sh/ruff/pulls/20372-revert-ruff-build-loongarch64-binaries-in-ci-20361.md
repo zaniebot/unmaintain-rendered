@@ -12,14 +12,14 @@ head: ww/revert-loong64-build
 created_at: 2025-09-12T21:04:16Z
 updated_at: 2025-09-12T21:21:06Z
 url: https://github.com/astral-sh/ruff/pull/20372
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:00Z
 ```
 
 # Revert "[ruff]: Build loongarch64 binaries in CI (#20361)"
 
 ---
 
-_Pull request opened by @woodruffw on 2025-09-12 21:04_
+_@woodruffw_
 
 This reverts commit ec863bcde760ff43e8afb6fc0b6d888568e86560.
 

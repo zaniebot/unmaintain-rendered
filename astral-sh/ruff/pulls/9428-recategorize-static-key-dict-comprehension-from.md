@@ -13,14 +13,14 @@ head: charlie/B035
 created_at: 2024-01-08T04:09:24Z
 updated_at: 2024-01-29T18:00:11Z
 url: https://github.com/astral-sh/ruff/pull/9428
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Recategorize `static-key-dict-comprehension` from `RUF011` to `B035`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-08 04:09_
+_@charliermarsh_
 
 ## Summary
 

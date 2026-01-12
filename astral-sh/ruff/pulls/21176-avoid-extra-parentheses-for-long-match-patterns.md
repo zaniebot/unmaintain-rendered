@@ -14,14 +14,14 @@ head: brent/format-match-as-captures
 created_at: 2025-10-31T20:54:58Z
 updated_at: 2025-11-03T22:06:54Z
 url: https://github.com/astral-sh/ruff/pull/21176
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # Avoid extra parentheses for long `match` patterns with `as` captures
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-31 20:54_
+_@ntBre_
 
 Summary
 --

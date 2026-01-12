@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T08:33:08Z
 updated_at: 2025-03-24T14:36:06Z
 url: https://github.com/astral-sh/ruff/issues/16943
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # False positive for starred arguments with Python 3.10
 
 ---
 
-_Issue opened by @je-cook on 2025-03-24 08:33_
+_@je-cook_
 
 ### Summary
 

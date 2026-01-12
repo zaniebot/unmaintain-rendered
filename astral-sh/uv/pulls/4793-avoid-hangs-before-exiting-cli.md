@@ -13,14 +13,14 @@ head: ibraheem/hang
 created_at: 2024-07-03T23:50:09Z
 updated_at: 2024-07-04T00:05:46Z
 url: https://github.com/astral-sh/uv/pull/4793
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:28Z
 ```
 
 # Avoid hangs before exiting CLI
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-03 23:50_
+_@ibraheemdev_
 
 ## Summary
 

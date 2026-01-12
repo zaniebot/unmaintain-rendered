@@ -14,14 +14,14 @@ head: fix-typo-has-definition-trait
 created_at: 2025-11-29T09:56:05Z
 updated_at: 2025-11-29T11:14:08Z
 url: https://github.com/astral-sh/ruff/pull/21689
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] fix typo in HasDefinition trait docstring
 
 ---
 
-_Pull request opened by @RasmusNygren on 2025-11-29 09:56_
+_@RasmusNygren_
 
 ## Summary
 Fixes a typo in the docstring for the definition method in the HasDefinition trait

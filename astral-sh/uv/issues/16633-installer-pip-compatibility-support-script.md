@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-07T15:39:13Z
 updated_at: 2025-11-12T11:20:32Z
 url: https://github.com/astral-sh/uv/issues/16633
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # installer/pip compatibility: support script entrypoints with slashes
 
 ---
 
-_Issue opened by @paveldikov on 2025-11-07 15:39_
+_@paveldikov_
 
 ### Summary
 

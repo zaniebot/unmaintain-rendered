@@ -12,14 +12,14 @@ head: charlie/a
 created_at: 2024-01-18T21:49:30Z
 updated_at: 2024-01-18T21:51:11Z
 url: https://github.com/astral-sh/uv/pull/973
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:20Z
 ```
 
 # Set URLs to non-empty in pyproject.toml
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-18 21:49_
+_@charliermarsh_
 
 _No description provided._
 

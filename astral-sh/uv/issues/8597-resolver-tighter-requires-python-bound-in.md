@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-26T16:57:22Z
 updated_at: 2024-10-28T00:52:57Z
 url: https://github.com/astral-sh/uv/issues/8597
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # Resolver: tighter requires-python bound in consumer fails to satisfy
 
 ---
 
-_Issue opened by @offbyone on 2024-10-26 16:57_
+_@offbyone_
 
 I have two projects, both of which I control -- so this is not a blocker for me, but I think it's doing the wrong thing.
 

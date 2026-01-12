@@ -13,14 +13,14 @@ head: micha/fixpoint-scc
 created_at: 2025-09-30T09:38:20Z
 updated_at: 2025-10-16T11:24:44Z
 url: https://github.com/astral-sh/ruff/pull/20645
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # Fix run-away for mutually referential instance attributes
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-09-30 09:38_
+_@MichaReiser_
 
 Update salsa to pull in https://github.com/salsa-rs/salsa/pull/999 which fixes https://github.com/astral-sh/ty/issues/1111
 

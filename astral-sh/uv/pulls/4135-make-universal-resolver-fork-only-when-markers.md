@@ -13,14 +13,14 @@ head: ag/fork-markers
 created_at: 2024-06-07T15:56:42Z
 updated_at: 2024-06-10T12:42:17Z
 url: https://github.com/astral-sh/uv/pull/4135
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:03Z
 ```
 
 # make universal resolver fork only when markers are disjoint
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-06-07 15:56_
+_@BurntSushi_
 
 The basic idea here is to make it so forking can only ever result in a resolution that, for a particular marker environment, will only install at most one version of a package. We can guarantee this by ensuring we only fork on conflicting dependency specifications only when their corresponding markers are completely disjoint. If they aren't, then resolution _must_ find a single version of the package in the intersection of the two dependency specifications.
 

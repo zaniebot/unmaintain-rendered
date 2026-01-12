@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-09-28T20:40:08Z
 updated_at: 2022-09-29T17:07:30Z
 url: https://github.com/clap-rs/clap/issues/4280
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Bash completion for `git diff log` doesn't give any suggestions
 
 ---
 
-_Issue opened by @martinvonz on 2022-09-28 20:40_
+_@martinvonz_
 
 ### Please complete the following tasks
 

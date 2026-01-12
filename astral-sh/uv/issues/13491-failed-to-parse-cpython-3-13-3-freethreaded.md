@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T14:03:27Z
 updated_at: 2025-05-16T22:06:40Z
 url: https://github.com/astral-sh/uv/issues/13491
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # Failed to parse: `cpython-3.13.3+freethreaded-windows-x86_64-none`
 
 ---
 
-_Issue opened by @Sergo1217 on 2025-05-16 14:03_
+_@Sergo1217_
 
 ### Summary
 

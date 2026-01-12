@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-22T16:55:55Z
 updated_at: 2025-01-25T16:51:18Z
 url: https://github.com/astral-sh/uv/issues/10098
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # Shared external list of path sources for use as an "index" analogue
 
 ---
 
-_Issue opened by @smackesey on 2024-12-22 16:55_
+_@smackesey_
 
 I'd like the ability to provide a list of sources in a file outside the package `pyproject.toml` to `uv pip install`. The reason the sources should be in an external file is that these sources will contain paths for all the packages in a monorepo, and the same file will be used whenever a package is installed in a test environment to ensure dependencies within the monorepo are resolved within the checked-out commit of the monorepo.
 

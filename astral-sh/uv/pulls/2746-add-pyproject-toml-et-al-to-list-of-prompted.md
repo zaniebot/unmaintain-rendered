@@ -13,14 +13,14 @@ head: charlie/toml
 created_at: 2024-04-01T01:44:27Z
 updated_at: 2024-04-01T02:02:07Z
 url: https://github.com/astral-sh/uv/pull/2746
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:12Z
 ```
 
 # Add `pyproject.toml` et al to list of prompted packages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-01 01:44_
+_@charliermarsh_
 
 ## Summary
 

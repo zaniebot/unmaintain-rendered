@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-18T00:47:40Z
 updated_at: 2024-11-18T04:02:31Z
 url: https://github.com/astral-sh/uv/issues/9177
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # maturin build system not always copying the compiled build into the .venv on uv build
 
 ---
 
-_Issue opened by @zwing99 on 2024-11-18 00:47_
+_@zwing99_
 
 When using the maturin build system, I cannot seem to run `uv build` or `uv run maturin develop` or any set of commands that both compiles the library (rust based) and installs it to the local `.venv`. It works once, but then future builds do not copy the binary into the virtualenv. I am not sure if this is 100% UV's fault, but it seems worth reporting as I suspect many folks will be using pyo3, maturin, uv, and rust to build performant libraries going forward. Below is an example toml file.
 

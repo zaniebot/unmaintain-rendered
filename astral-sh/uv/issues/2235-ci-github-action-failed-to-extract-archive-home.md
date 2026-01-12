@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-06T09:23:46Z
 updated_at: 2025-02-10T18:05:54Z
 url: https://github.com/astral-sh/uv/issues/2235
-synced_at: 2026-01-10T03:50:29Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # CI/Github Action Failed to extract archive: /home/runner/.cache/uv/.tmppavima/extracted
 
 ---
 
-_Issue opened by @anilbey on 2024-03-06 09:23_
+_@anilbey_
 
 Hello, 
 

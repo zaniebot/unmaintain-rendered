@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-06T18:56:05Z
 updated_at: 2024-12-08T04:17:25Z
 url: https://github.com/astral-sh/uv/issues/9693
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # `uv` incorrectly (?) installs `dbt-clickhouse`
 
 ---
 
-_Issue opened by @ivanychev on 2024-12-06 18:56_
+_@ivanychev_
 
 When installing `dbt-core` and `dbt-clickhouse`, dbt can't see ClickHouse plugin
  

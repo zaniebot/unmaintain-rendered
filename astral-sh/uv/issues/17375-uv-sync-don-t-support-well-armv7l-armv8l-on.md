@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T13:06:09Z
 updated_at: 2026-01-09T22:16:16Z
 url: https://github.com/astral-sh/uv/issues/17375
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # `uv sync` don't support well armv7l / armv8l on aarch64 cpu
 
 ---
 
-_Issue opened by @patryk4815 on 2026-01-09 13:06_
+_@patryk4815_
 
 ### Summary
 

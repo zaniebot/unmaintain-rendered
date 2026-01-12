@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T00:10:49Z
 updated_at: 2025-10-02T19:26:52Z
 url: https://github.com/astral-sh/uv/issues/9258
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # Development Dependency Overrides
 
 ---
 
-_Issue opened by @iloveitaly on 2024-11-20 00:10_
+_@iloveitaly_
 
 One of the things I've always missed from ruby is development dependency overrides. Here's the situation:
 

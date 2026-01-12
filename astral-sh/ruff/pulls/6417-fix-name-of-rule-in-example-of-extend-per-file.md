@@ -12,14 +12,14 @@ head: fix-docs-typo
 created_at: 2023-08-08T08:36:07Z
 updated_at: 2023-08-08T09:24:41Z
 url: https://github.com/astral-sh/ruff/pull/6417
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Fix name of rule in example of `extend-per-file-ignores` in options.rs
 
 ---
 
-_Pull request opened by @piotrgredowski on 2023-08-08 08:36_
+_@piotrgredowski_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

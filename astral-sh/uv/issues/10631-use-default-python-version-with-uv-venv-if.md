@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-15T13:01:59Z
 updated_at: 2025-09-11T14:40:50Z
 url: https://github.com/astral-sh/uv/issues/10631
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # Use Default Python Version with uv venv (if pyproject.toml already exists)
 
 ---
 
-_Issue opened by @sglbl on 2025-01-15 13:01_
+_@sglbl_
 
 I want to set a **global default python version** (like `asdf` does)?
 Because now when I initialize `uv`, it initializes with my latest python version installed (if I haven't created .python-version file already). It's the same for virtual environment.

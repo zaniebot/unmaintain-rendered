@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-03T13:30:47Z
 updated_at: 2024-01-03T14:47:45Z
 url: https://github.com/astral-sh/ruff/issues/9380
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Reformatted code quality in example is quite poor
 
 ---
 
-_Issue opened by @stefanoborini on 2024-01-03 13:30_
+_@stefanoborini_
 
 From the example:
 

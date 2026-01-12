@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-06T23:50:36Z
 updated_at: 2024-11-07T09:55:27Z
 url: https://github.com/astral-sh/uv/issues/8871
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # Strange resolution that downgrades dependencies to conflicing ones
 
 ---
 
-_Issue opened by @potiuk on 2024-11-06 23:50_
+_@potiuk_
 
 We had a very strange issue today in Airlfow. We are using `uv` to automatically upgrade our dependencies in `canary` builds regularly and we are using `--resolution highest` with complete set of airflow dependencies (`devel-ci` extra).  Then we are running `pip check` to verify if the resulting dependencies are good. And we are using `pip check` (not `uv pip` - just plain `pip`) to double-check if everything is right.
 

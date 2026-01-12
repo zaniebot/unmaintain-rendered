@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-05T06:42:57Z
 updated_at: 2025-12-06T04:52:10Z
 url: https://github.com/astral-sh/ty/issues/1764
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support dynamic import library such as gstreamer python binding
 
 ---
 
-_Issue opened by @hermeschen1116 on 2025-12-05 06:42_
+_@hermeschen1116_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-04T03:32:33Z
 updated_at: 2024-07-26T02:02:05Z
 url: https://github.com/astral-sh/ruff/issues/6327
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Cannot detect imported path does not exist
 
 ---
 
-_Issue opened by @redcray on 2023-08-04 03:32_
+_@redcray_
 
 xx.aa is a non-existent path, ruff indeed cannot resolve to this path, but did not give any hint.
 I don't know the specific rules of grammar detection, but I think this is a feature that can be supported?

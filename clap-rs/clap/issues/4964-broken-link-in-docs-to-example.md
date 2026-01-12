@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-11T00:47:21Z
 updated_at: 2023-06-12T15:45:00Z
 url: https://github.com/clap-rs/clap/issues/4964
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Broken link in docs to example
 
 ---
 
-_Issue opened by @c-git on 2023-06-11 00:47_
+_@c-git_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-27T16:12:33Z
 updated_at: 2024-12-27T17:39:14Z
 url: https://github.com/astral-sh/ruff/issues/15162
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [flake8-type-checking] TC010 false positive
 
 ---
 
-_Issue opened by @dacevedo12 on 2024-12-27 16:12_
+_@dacevedo12_
 
 Given a recursive type hint like the following:
 

@@ -13,14 +13,14 @@ head: feature/build_riscv64_bin
 created_at: 2025-08-08T03:27:10Z
 updated_at: 2025-08-17T23:48:58Z
 url: https://github.com/astral-sh/ruff/pull/19819
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # Feature/build riscv64 bin
 
 ---
 
-_Pull request opened by @ffgan on 2025-08-08 03:27_
+_@ffgan_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

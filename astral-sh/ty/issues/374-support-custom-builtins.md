@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-14T02:32:45Z
 updated_at: 2025-12-23T13:48:16Z
 url: https://github.com/astral-sh/ty/issues/374
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Support custom builtins
 
 ---
 
-_Issue opened by @kkpattern on 2025-05-14 02:32_
+_@kkpattern_
 
 Thanks for this awesome tool!
 

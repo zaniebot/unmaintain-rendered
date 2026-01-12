@@ -12,14 +12,14 @@ head: black-compatibility
 created_at: 2023-08-29T18:35:51Z
 updated_at: 2023-09-29T14:50:10Z
 url: https://github.com/astral-sh/ruff/pull/6992
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Fix test that checks for black and linter compatibility
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-29 18:35_
+_@zanieb_
 
 This test was disabled because the fixture files moved; here I enable the test again and update the directory to cover our the correct Python fixtures.
 

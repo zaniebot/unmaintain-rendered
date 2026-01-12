@@ -13,14 +13,14 @@ head: ww/disable-740
 created_at: 2025-12-03T00:35:43Z
 updated_at: 2025-12-03T01:11:09Z
 url: https://github.com/astral-sh/uv/pull/16944
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:31Z
 ```
 
 # Disable PEP 740 attestations for PyPI publishing
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-03 00:35_
+_@woodruffw_
 
 ## Summary
 

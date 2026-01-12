@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-01T12:49:08Z
 updated_at: 2024-07-01T16:22:39Z
 url: https://github.com/astral-sh/uv/issues/4691
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `uv tool install` omits `data` scripts
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-01 12:49_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/issues/4688#issuecomment-2200016362
 

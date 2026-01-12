@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-08T19:12:24Z
 updated_at: 2024-04-11T01:07:53Z
 url: https://github.com/astral-sh/uv/issues/2908
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Cache is not robust to moves
 
 ---
 
-_Issue opened by @charliermarsh on 2024-04-08 19:12_
+_@charliermarsh_
 
 If you use `--cache-dir foo`, then `mv foo bar`, and then `--cache-dir bar`, commands will fail, since we write absolute paths to various places in the cache.
 

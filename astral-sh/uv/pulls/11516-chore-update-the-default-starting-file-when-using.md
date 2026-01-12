@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-02-14T19:29:43Z
 updated_at: 2025-02-14T20:25:03Z
 url: https://github.com/astral-sh/uv/pull/11516
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:52Z
 ```
 
 # chore: Update the default starting file when using `uv init example-app`
 
 ---
 
-_Pull request opened by @abdallahshaban557 on 2025-02-14 19:29_
+_@abdallahshaban557_
 
 Update the default starting file name.
 

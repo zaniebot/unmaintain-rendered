@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-13T03:27:52Z
 updated_at: 2025-11-28T17:27:28Z
 url: https://github.com/astral-sh/uv/issues/16715
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # Add .env to .gitignore and optionally create requirements.txt in uv init
 
 ---
 
-_Issue opened by @aryanj10 on 2025-11-13 03:27_
+_@aryanj10_
 
 ### Summary
 

@@ -11,14 +11,14 @@ head: enforce-consistent-name
 created_at: 2023-01-20T15:57:23Z
 updated_at: 2023-01-20T23:44:42Z
 url: https://github.com/astral-sh/ruff/pull/2032
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # build: enforce consistent casing
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-20 15:57_
+_@sbrugman_
 
 Minor OCD fix, enforced in `build.rs`
 

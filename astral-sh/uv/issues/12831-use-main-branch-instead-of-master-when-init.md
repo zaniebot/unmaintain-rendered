@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-11T09:41:50Z
 updated_at: 2025-04-11T10:11:53Z
 url: https://github.com/astral-sh/uv/issues/12831
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # Use main branch instead of master when init project
 
 ---
 
-_Issue opened by @DamyanBG on 2025-04-11 09:41_
+_@DamyanBG_
 
 ### Summary
 

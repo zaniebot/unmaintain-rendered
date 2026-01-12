@@ -14,14 +14,14 @@ head: charlie/bench-zlib
 created_at: 2025-03-02T17:01:08Z
 updated_at: 2025-03-03T17:29:32Z
 url: https://github.com/astral-sh/uv/pull/11894
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:02Z
 ```
 
 # Migrate to `zlib-rs` (again)
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-02 17:01_
+_@charliermarsh_
 
 ## Summary
 

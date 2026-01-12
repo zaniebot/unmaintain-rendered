@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-18T18:25:15Z
 updated_at: 2026-01-09T02:47:12Z
 url: https://github.com/astral-sh/ty/issues/2083
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Import resolution... not the same as ruff (or pyright, pyrefly, etc)
 
 ---
 
-_Issue opened by @danielpopescu on 2025-12-18 18:25_
+_@danielpopescu_
 
 ### Summary
 

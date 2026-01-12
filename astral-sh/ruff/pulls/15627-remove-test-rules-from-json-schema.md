@@ -13,14 +13,14 @@ head: dhruv/test-rules
 created_at: 2025-01-21T03:24:00Z
 updated_at: 2025-01-24T04:48:01Z
 url: https://github.com/astral-sh/ruff/pull/15627
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Remove test rules from JSON schema
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-21 03:24_
+_@dhruvmanila_
 
 Closes: #15707
 

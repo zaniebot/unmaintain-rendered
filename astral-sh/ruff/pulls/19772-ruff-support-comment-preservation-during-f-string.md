@@ -13,14 +13,14 @@ head: fix(#19745)/RUF010-fix-deletes-comment
 created_at: 2025-08-05T20:59:42Z
 updated_at: 2025-08-06T17:15:03Z
 url: https://github.com/astral-sh/ruff/pull/19772
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [`ruff`] Support comment preservation during f-string conversion (`RU…
 
 ---
 
-_Pull request opened by @mikeleppane on 2025-08-05 20:59_
+_@mikeleppane_
 
 
 ## Summary

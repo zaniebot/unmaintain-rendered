@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T18:04:07Z
 updated_at: 2025-10-18T13:02:57Z
 url: https://github.com/astral-sh/ty/issues/1390
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # [panic] converting pandas dataframe to polars
 
 ---
 
-_Issue opened by @nicwest on 2025-10-17 18:04_
+_@nicwest_
 
 I'm not super familar with pandas or polars but just encountered this panic in some code I was looking at.
 

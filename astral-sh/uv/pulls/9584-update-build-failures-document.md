@@ -13,14 +13,14 @@ head: zb/build-failures
 created_at: 2024-12-02T21:59:46Z
 updated_at: 2024-12-04T17:05:29Z
 url: https://github.com/astral-sh/uv/pull/9584
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:53Z
 ```
 
 # Update build failures document
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-02 21:59_
+_@zanieb_
 
 In preparation for a dedicated "Troubleshooting" section, revitalizes the "Build failures" reference by adding more details, examples, and structure. This will be used as a model for a "Install failures" document.
 

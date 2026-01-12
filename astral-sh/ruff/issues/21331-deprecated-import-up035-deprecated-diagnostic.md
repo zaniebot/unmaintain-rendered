@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-08T03:30:17Z
 updated_at: 2025-11-12T07:19:31Z
 url: https://github.com/astral-sh/ruff/issues/21331
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `deprecated-import` (`UP035`) - `Deprecated` diagnostic tags should only span the symbol that's actually deprecated
 
 ---
 
-_Issue opened by @DetachHead on 2025-11-08 03:30_
+_@DetachHead_
 
 for example:
 

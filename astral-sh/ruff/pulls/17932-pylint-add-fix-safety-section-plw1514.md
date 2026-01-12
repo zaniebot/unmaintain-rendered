@@ -13,14 +13,14 @@ head: docs/fix-safety-unspecified-encoding
 created_at: 2025-05-08T03:59:09Z
 updated_at: 2025-05-11T17:25:13Z
 url: https://github.com/astral-sh/ruff/pull/17932
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [`pylint`] add fix safety section (`PLW1514`)
 
 ---
 
-_Pull request opened by @yunchipang on 2025-05-08 03:59_
+_@yunchipang_
 
 parent #15584 
 fix was made unsafe at #8928

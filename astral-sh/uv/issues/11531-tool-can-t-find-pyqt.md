@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-15T02:46:22Z
 updated_at: 2025-02-15T13:44:09Z
 url: https://github.com/astral-sh/uv/issues/11531
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # Tool can't find PyQt
 
 ---
 
-_Issue opened by @brccabral on 2025-02-15 02:46_
+_@brccabral_
 
 ### Summary
 

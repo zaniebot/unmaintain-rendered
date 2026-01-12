@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-10T23:54:00Z
 updated_at: 2025-01-11T04:01:53Z
 url: https://github.com/astral-sh/uv/issues/10485
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # uv add fails with gitlab index url
 
 ---
 
-_Issue opened by @npaolini2634 on 2025-01-10 23:54_
+_@npaolini2634_
 
 Hi, I love using UV, but I'm struggling with switching from uv pip to uv projects.
 

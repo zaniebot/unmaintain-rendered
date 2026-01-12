@@ -11,14 +11,14 @@ head: AIR302-enhancement
 created_at: 2025-02-07T10:01:41Z
 updated_at: 2025-02-08T04:08:10Z
 url: https://github.com/astral-sh/ruff/pull/16015
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [airflow] improve PY\d+ error message (AIR302)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-02-07 10:01_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

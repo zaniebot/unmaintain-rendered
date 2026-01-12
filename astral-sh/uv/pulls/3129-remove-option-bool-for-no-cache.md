@@ -14,14 +14,14 @@ head: charlie/no
 created_at: 2024-04-18T22:42:50Z
 updated_at: 2024-04-18T22:56:47Z
 url: https://github.com/astral-sh/uv/pull/3129
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:26Z
 ```
 
 # Remove `Option<bool>` for `--no-cache`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-18 22:42_
+_@charliermarsh_
 
 ## Summary
 

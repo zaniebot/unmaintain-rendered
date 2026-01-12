@@ -12,14 +12,14 @@ head: charlie/typing-module
 created_at: 2023-01-09T23:10:19Z
 updated_at: 2023-01-09T23:17:51Z
 url: https://github.com/astral-sh/ruff/pull/1754
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Enable project-specific typing module re-exports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-09 23:10_
+_@charliermarsh_
 
 Resolves #1744.
 

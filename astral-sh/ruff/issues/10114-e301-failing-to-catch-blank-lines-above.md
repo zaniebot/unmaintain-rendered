@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-24T20:19:48Z
 updated_at: 2024-03-01T09:30:55Z
 url: https://github.com/astral-sh/ruff/issues/10114
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [E301] Failing to catch blank lines above classmethods when compared to pycodestyle
 
 ---
 
-_Issue opened by @dfrtz on 2024-02-24 20:19_
+_@dfrtz_
 
 The closest I could find to this is #10039, but it appears to be a bit different, as it is talking about conflicts with format on pyi files, but this is impacting regular files and specifically classmethods. I also saw E301 mentioned in #10032 as potentially superfluous with formatter, but I don't see it listed in documentation as having conflicts. Blank line spacing around the E rules is also discussed in some PRs like https://github.com/astral-sh/ruff/pull/8720, but they do not appear to cover this specific scenario. I believe it should still be able to be caught when format is not used for parity with pycodestyle, which does catch these.
 

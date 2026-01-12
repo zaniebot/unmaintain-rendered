@@ -12,14 +12,14 @@ head: PLR0901-too-many-ancestors
 created_at: 2024-06-09T01:27:35Z
 updated_at: 2024-06-21T17:04:29Z
 url: https://github.com/astral-sh/ruff/pull/11808
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # [`pylint`] Implement `too-many-ancestors` (`PLR0901`)
 
 ---
 
-_Pull request opened by @Peiffap on 2024-06-09 01:27_
+_@Peiffap_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

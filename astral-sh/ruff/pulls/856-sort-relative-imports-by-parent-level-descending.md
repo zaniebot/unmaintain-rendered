@@ -12,14 +12,14 @@ head: charlie/level
 created_at: 2022-11-21T18:11:24Z
 updated_at: 2022-11-21T18:30:25Z
 url: https://github.com/astral-sh/ruff/pull/856
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Sort relative imports by parent level descending
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-21 18:11_
+_@charliermarsh_
 
 Resolves #849.
 

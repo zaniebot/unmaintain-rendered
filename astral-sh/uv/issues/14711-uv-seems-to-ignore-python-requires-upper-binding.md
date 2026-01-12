@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T10:35:38Z
 updated_at: 2025-08-24T20:45:42Z
 url: https://github.com/astral-sh/uv/issues/14711
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # uv seems to ignore python-requires upper-binding
 
 ---
 
-_Issue opened by @potiuk on 2025-07-18 10:35_
+_@potiuk_
 
 ### Summary
 

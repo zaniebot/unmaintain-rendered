@@ -13,14 +13,14 @@ head: brent/airflow
 created_at: 2025-09-04T19:46:32Z
 updated_at: 2025-09-08T14:01:14Z
 url: https://github.com/astral-sh/ruff/pull/20250
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # Stabilize the remaining Airflow rules
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-04 19:46_
+_@ntBre_
 
 - **Stabilize `airflow3-suggested-update` (`AIR311`)**
 - **Stabilize `airflow3-suggested-to-move-to-provider` (`AIR312`)**

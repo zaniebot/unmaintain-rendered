@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-19T16:34:31Z
 updated_at: 2024-10-23T20:35:49Z
 url: https://github.com/astral-sh/uv/issues/8367
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # Regression in 0.4.23: data did not match any variant of untagged enum CacheInfoWire
 
 ---
 
-_Issue opened by @KapJI on 2024-10-19 16:34_
+_@KapJI_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

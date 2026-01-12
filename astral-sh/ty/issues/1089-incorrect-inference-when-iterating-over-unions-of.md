@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-22T12:34:28Z
 updated_at: 2025-10-08T18:37:33Z
 url: https://github.com/astral-sh/ty/issues/1089
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Incorrect inference when iterating over unions of types
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-08-22 12:34_
+_@AlexWaygood_
 
 ### Summary
 

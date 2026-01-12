@@ -12,14 +12,14 @@ head: error-invalid-config
 created_at: 2022-09-23T22:04:21Z
 updated_at: 2022-09-26T11:26:24Z
 url: https://github.com/astral-sh/ruff/pull/264
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # error invalid pyproject.toml configs
 
 ---
 
-_Pull request opened by @adriangb on 2022-09-23 22:04_
+_@adriangb_
 
 Fixes #262 
 

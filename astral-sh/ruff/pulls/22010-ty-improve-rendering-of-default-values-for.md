@@ -13,14 +13,14 @@ head: gankra/default-val
 created_at: 2025-12-16T17:31:54Z
 updated_at: 2025-12-16T18:39:21Z
 url: https://github.com/astral-sh/ruff/pull/22010
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Improve rendering of default values for function args
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-16 17:31_
+_@Gankra_
 
 ## Summary
 

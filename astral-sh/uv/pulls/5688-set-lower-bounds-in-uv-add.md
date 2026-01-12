@@ -14,14 +14,14 @@ head: charlie/add-lower-bound
 created_at: 2024-08-01T14:58:36Z
 updated_at: 2024-08-01T17:06:58Z
 url: https://github.com/astral-sh/uv/pull/5688
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:57Z
 ```
 
 # Set lower bounds in `uv add`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-01 14:58_
+_@charliermarsh_
 
 ## Summary
 

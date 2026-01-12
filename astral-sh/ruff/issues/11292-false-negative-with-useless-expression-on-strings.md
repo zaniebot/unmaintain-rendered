@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-05T19:39:22Z
 updated_at: 2024-07-02T10:30:46Z
 url: https://github.com/astral-sh/ruff/issues/11292
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # False negative with useless-expression on strings
 
 ---
 
-_Issue opened by @NeilGirdhar on 2024-05-05 19:39_
+_@NeilGirdhar_
 
 For some reason useless-expression is not triggered by loose strings.  Should these be caught?  If comments are intended, then Ruff could suggest converting them comments?
 ```python

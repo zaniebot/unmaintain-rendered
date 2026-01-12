@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-07T23:16:51Z
 updated_at: 2024-01-08T14:59:18Z
 url: https://github.com/astral-sh/ruff/issues/9426
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Variable named "args" leads to ambiguous docstring parsing
 
 ---
 
-_Issue opened by @fjossandon on 2024-01-07 23:16_
+_@fjossandon_
 
 Hello!
 I usually use PyDocStyle to check my docstrings and recently found that that project was deprecated and archived, so they recommended using Ruff instead, so I installed it to test it.

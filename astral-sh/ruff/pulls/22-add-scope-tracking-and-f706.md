@@ -12,14 +12,14 @@ head: charlie/scope
 created_at: 2022-08-21T02:16:24Z
 updated_at: 2022-08-21T02:17:22Z
 url: https://github.com/astral-sh/ruff/pull/22
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Add scope tracking (and F706)
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-08-21 02:16_
+_@charliermarsh_
 
 _No description provided._
 

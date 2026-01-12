@@ -13,14 +13,14 @@ head: charlie/ver
 created_at: 2025-06-26T17:54:48Z
 updated_at: 2025-06-26T19:48:13Z
 url: https://github.com/astral-sh/uv/pull/14288
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # Avoid using path URL for workspace Git dependencies in `requirements.txt`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-26 17:54_
+_@charliermarsh_
 
 ## Summary
 

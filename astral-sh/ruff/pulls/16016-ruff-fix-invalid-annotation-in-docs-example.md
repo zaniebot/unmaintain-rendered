@@ -13,14 +13,14 @@ head: alex/invalid-docs-annotation
 created_at: 2025-02-07T10:42:10Z
 updated_at: 2025-02-07T10:48:39Z
 url: https://github.com/astral-sh/ruff/pull/16016
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`ruff`] Fix invalid annotation in docs example
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-07 10:42_
+_@AlexWaygood_
 
 ## Summary
 

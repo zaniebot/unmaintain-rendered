@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-26T07:52:09Z
 updated_at: 2024-01-30T17:41:02Z
 url: https://github.com/astral-sh/ruff/issues/6892
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # PTH123 shadows ASYNC101 and SIM115
 
 ---
 
-_Issue opened by @Olegt0rr on 2023-08-26 07:52_
+_@Olegt0rr_
 
 Let's ruff:
 

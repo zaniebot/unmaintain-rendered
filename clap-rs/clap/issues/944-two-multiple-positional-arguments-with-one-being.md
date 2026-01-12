@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-05-03T20:20:42Z
 updated_at: 2018-08-02T03:30:06Z
 url: https://github.com/clap-rs/clap/issues/944
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Two multiple positional arguments with one being "last" are displayed in usage incorrectly if the "last" one is required
 
 ---
 
-_Issue opened by @netvl on 2017-05-03 20:20_
+_@netvl_
 
 ### Rust Version
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-01T06:41:20Z
 updated_at: 2025-03-06T15:10:19Z
 url: https://github.com/astral-sh/uv/issues/2103
-synced_at: 2026-01-10T03:50:29Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # venv: --copies?
 
 ---
 
-_Issue opened by @gkze on 2024-03-01 06:41_
+_@gkze_
 
 Got it to compile on Nix (was a pain because of `openssl-sys` :) ). Now the problem is the venv being constructed with symlinks instead of copies. Would it make sense to have a `--copies`/`--symlinks` _a la_ `venv`? Or symlink the core installation and write installed packages to the venv instead of the system directory?
 

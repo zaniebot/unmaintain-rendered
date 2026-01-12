@@ -13,14 +13,14 @@ head: charlie/ed-constraint
 created_at: 2024-05-13T16:52:14Z
 updated_at: 2024-05-13T17:06:28Z
 url: https://github.com/astral-sh/uv/pull/3554
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:42Z
 ```
 
 # Respect constraints on editable dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-13 16:52_
+_@charliermarsh_
 
 ## Summary
 

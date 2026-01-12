@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-05T12:20:38Z
 updated_at: 2024-03-06T05:52:32Z
 url: https://github.com/astral-sh/uv/issues/2201
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Add `uv pip list --format json`
 
 ---
 
-_Issue opened by @Daverball on 2024-03-05 12:20_
+_@Daverball_
 
 This is very helpful for interpreting the output of `pip list` in e.g. shell scripts using `jq` and then further process it to generate follow-up commands.
 

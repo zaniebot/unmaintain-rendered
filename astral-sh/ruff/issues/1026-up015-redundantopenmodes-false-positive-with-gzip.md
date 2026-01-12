@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-04T08:21:21Z
 updated_at: 2022-12-04T14:12:04Z
 url: https://github.com/astral-sh/ruff/issues/1026
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # UP015 RedundantOpenModes false positive with gzip.open
 
 ---
 
-_Issue opened by @andersk on 2022-12-04 08:21_
+_@andersk_
 
 Ruff’s fix for UP015 (#843) incorrectly changes the behavior of `gzip.open(…, "rt")`. This mode should not be flagged as redundant because the default for `gzip.open` is `"rb"`.
 

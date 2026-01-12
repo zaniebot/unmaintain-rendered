@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-10-10T15:18:34Z
 updated_at: 2021-12-07T17:37:25Z
 url: https://github.com/clap-rs/clap/issues/2164
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Candidates for renaming before v3
 
 ---
 
-_Issue opened by @pksunkara on 2020-10-10 15:18_
+_@pksunkara_
 
 - AppSettings
   - [ ] [ArgsNegateSubcommands](https://docs.rs/clap/3.0.0-beta.2/clap/enum.AppSettings.html#variant.ArgsNegateSubcommands) -> ?

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-31T16:37:46Z
 updated_at: 2023-12-31T18:23:34Z
 url: https://github.com/astral-sh/ruff/issues/9334
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # False positive RUF013 PEP 484 prohibits implicit `Optional`
 
 ---
 
-_Issue opened by @randolf-scholz on 2023-12-31 16:37_
+_@randolf-scholz_
 
 The bug occurs if `Optional` is imported from `typing_extensions` instead of `typing`.
 

@@ -13,14 +13,14 @@ head: renovate/docs-actions-cache-5.x
 created_at: 2026-01-02T18:16:14Z
 updated_at: 2026-01-02T18:19:01Z
 url: https://github.com/astral-sh/uv/pull/17305
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:43Z
 ```
 
 # Update documentation references to actions/cache to v5
 
 ---
 
-_Pull request opened by @renovate on 2026-01-02 18:16_
+_@renovate_
 
 This PR contains the following updates:
 

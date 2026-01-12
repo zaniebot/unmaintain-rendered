@@ -13,14 +13,14 @@ head: main
 created_at: 2024-03-28T07:28:01Z
 updated_at: 2024-04-03T01:45:54Z
 url: https://github.com/astral-sh/uv/pull/2707
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:11Z
 ```
 
 # fixed uv can't create .venv for cpython-x86 on Windows 
 
 ---
 
-_Pull request opened by @Zander-1024 on 2024-03-28 07:28_
+_@Zander-1024_
 
 Adaptation to the win32 platform is added.
 

@@ -14,14 +14,14 @@ head: konsti/sources-preserve-path
 created_at: 2024-05-06T16:46:01Z
 updated_at: 2024-05-07T09:00:03Z
 url: https://github.com/astral-sh/uv/pull/3412
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:37Z
 ```
 
 # Preserve given for `tool.uv.sources` paths
 
 ---
 
-_Pull request opened by @konstin on 2024-05-06 16:46_
+_@konstin_
 
 We now correctly emit relative paths in `uv pip compile` with `tool.uv.sources` path inputs.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-27T10:09:03Z
 updated_at: 2023-03-07T17:29:13Z
 url: https://github.com/astral-sh/ruff/issues/2246
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Question about TRY003 and built-in exceptions
 
 ---
 
-_Issue opened by @divaltor on 2023-01-27 10:09_
+_@divaltor_
 
 Hello, thank you for great plugin! ❤️ 
 

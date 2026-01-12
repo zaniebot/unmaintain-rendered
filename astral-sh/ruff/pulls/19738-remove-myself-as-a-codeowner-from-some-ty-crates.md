@@ -13,14 +13,14 @@ head: alex/own-less-code
 created_at: 2025-08-04T10:10:45Z
 updated_at: 2025-08-04T10:23:14Z
 url: https://github.com/astral-sh/ruff/pull/19738
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # Remove myself as a codeowner from some ty crates
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-04 10:10_
+_@AlexWaygood_
 
 ## Summary
 

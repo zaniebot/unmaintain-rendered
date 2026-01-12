@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-06-06T02:22:09Z
 updated_at: 2018-08-02T03:29:50Z
 url: https://github.com/clap-rs/clap/issues/521
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Subcommand aliases should work with "help"
 
 ---
 
-_Issue opened by @joshtriplett on 2016-06-06 02:22_
+_@joshtriplett_
 
 If I have a subcommand `foo`, with an alias `bar`, then `cmd bar` will work, but `cmd help bar` will say `error: The subcommand 'bar' wasn't recognized`.
 

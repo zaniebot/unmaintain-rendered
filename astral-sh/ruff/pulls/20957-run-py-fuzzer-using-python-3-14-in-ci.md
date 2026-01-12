@@ -13,14 +13,14 @@ head: alex/fuzz-314
 created_at: 2025-10-18T14:17:34Z
 updated_at: 2025-10-18T14:49:15Z
 url: https://github.com/astral-sh/ruff/pull/20957
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # Run py-fuzzer using Python 3.14 in CI
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-18 14:17_
+_@AlexWaygood_
 
 ## Summary
 

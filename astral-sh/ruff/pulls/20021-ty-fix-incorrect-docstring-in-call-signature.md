@@ -15,14 +15,14 @@ head: micha/fix-wrong-function-in-call-signatures
 created_at: 2025-08-21T12:20:46Z
 updated_at: 2025-08-21T20:36:42Z
 url: https://github.com/astral-sh/ruff/pull/20021
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] Fix incorrect docstring in call signature completion
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-21 12:20_
+_@MichaReiser_
 
 ## Summary
 

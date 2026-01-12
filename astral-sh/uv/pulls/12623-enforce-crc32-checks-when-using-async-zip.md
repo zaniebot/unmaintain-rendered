@@ -13,14 +13,14 @@ head: gankra/crc
 created_at: 2025-04-02T14:31:54Z
 updated_at: 2025-04-02T15:21:26Z
 url: https://github.com/astral-sh/uv/pull/12623
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # enforce crc32 checks when using async-zip
 
 ---
 
-_Pull request opened by @Gankra on 2025-04-02 14:31_
+_@Gankra_
 
 Fixes #12618 
 

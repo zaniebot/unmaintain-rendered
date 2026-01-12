@@ -13,14 +13,14 @@ head: aidan/async-230-pathlib-read-write
 created_at: 2025-07-29T17:07:48Z
 updated_at: 2025-08-05T12:30:20Z
 url: https://github.com/astral-sh/ruff/pull/19619
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [`flake8-async`] Extend `ASYNC230` to detect blocking `pathlib` I/O methods
 
 ---
 
-_Pull request opened by @aidandj on 2025-07-29 17:07_
+_@aidandj_
 
 
 

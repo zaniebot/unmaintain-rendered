@@ -13,14 +13,14 @@ head: charlie/rel-build
 created_at: 2024-10-16T01:39:31Z
 updated_at: 2024-10-16T01:46:30Z
 url: https://github.com/astral-sh/uv/pull/8237
-synced_at: 2026-01-10T12:54:05Z
+synced_at: 2026-01-12T16:08:13Z
 ```
 
 # Respect relative paths in `uv build` sources
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-16 01:39_
+_@charliermarsh_
 
 ## Summary
 

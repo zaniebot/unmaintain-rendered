@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-14T13:24:21Z
 updated_at: 2025-10-15T01:14:02Z
 url: https://github.com/astral-sh/ruff/issues/20864
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # B006 preview fix adds an annotation to a previously annotated variable
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-14 13:24_
+_@dscorbett_
 
 ### Summary
 

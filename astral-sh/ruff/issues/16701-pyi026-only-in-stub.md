@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-13T09:48:49Z
 updated_at: 2025-03-13T11:12:21Z
 url: https://github.com/astral-sh/ruff/issues/16701
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PYI026 only in stub?
 
 ---
 
-_Issue opened by @ego-thales on 2025-03-13 09:48_
+_@ego-thales_
 
 ### Question
 

@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-03-21T10:51:58Z
 updated_at: 2025-05-04T16:57:50Z
 url: https://github.com/astral-sh/uv/pull/12361
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:14Z
 ```
 
 # Add Installation Option Using HTTPie
 
 ---
 
-_Pull request opened by @nenas1ya on 2025-03-21 10:51_
+_@nenas1ya_
 
 Added installation option using httpie
 

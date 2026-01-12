@@ -14,14 +14,14 @@ head: bad-staticmethod-argument
 created_at: 2024-04-04T22:57:29Z
 updated_at: 2024-04-05T22:10:45Z
 url: https://github.com/astral-sh/ruff/pull/10781
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`pylint`] Implement `bad-staticmethod-argument` (`PLW0211`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-04-04 22:57_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

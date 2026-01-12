@@ -13,14 +13,14 @@ head: charlie/x
 created_at: 2024-11-13T20:51:53Z
 updated_at: 2024-11-13T21:00:15Z
 url: https://github.com/astral-sh/uv/pull/9100
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:39Z
 ```
 
 # Remove unnecessary descriptions from test suite
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-13 20:51_
+_@charliermarsh_
 
 _No description provided._
 

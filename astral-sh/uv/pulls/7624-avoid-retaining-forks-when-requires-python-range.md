@@ -13,14 +13,14 @@ head: charlie/py
 created_at: 2024-09-22T17:21:23Z
 updated_at: 2024-09-23T07:33:38Z
 url: https://github.com/astral-sh/uv/pull/7624
-synced_at: 2026-01-10T12:53:51Z
+synced_at: 2026-01-12T16:07:55Z
 ```
 
 # Avoid retaining forks when `requires-python` range changes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-22 17:21_
+_@charliermarsh_
 
 ## Summary
 

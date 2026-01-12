@@ -14,14 +14,14 @@ head: alex/redundant-cast-unknown
 created_at: 2025-05-15T01:22:22Z
 updated_at: 2025-05-15T02:38:55Z
 url: https://github.com/astral-sh/ruff/pull/18111
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] Fix `redundant-cast` false positives when casting to `Unknown`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-15 01:22_
+_@AlexWaygood_
 
 ## Summary
 

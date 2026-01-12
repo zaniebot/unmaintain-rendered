@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-29T09:33:09Z
 updated_at: 2025-07-30T07:00:54Z
 url: https://github.com/astral-sh/uv/issues/14950
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:02:00Z
 ```
 
 # `uv venv` confirm prompt glitches
 
 ---
 
-_Issue opened by @Viicos on 2025-07-29 09:33_
+_@Viicos_
 
 ### Summary
 

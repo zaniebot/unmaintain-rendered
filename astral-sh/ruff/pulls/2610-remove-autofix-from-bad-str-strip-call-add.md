@@ -12,14 +12,14 @@ head: charlie/did-you-mean
 created_at: 2023-02-06T21:25:16Z
 updated_at: 2023-02-06T21:25:22Z
 url: https://github.com/astral-sh/ruff/pull/2610
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Remove autofix from bad-str-strip-call; add suggestions instead
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-06 21:25_
+_@charliermarsh_
 
 See discussion in #2570.
 

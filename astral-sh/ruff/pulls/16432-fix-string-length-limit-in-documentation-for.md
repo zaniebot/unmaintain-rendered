@@ -13,14 +13,14 @@ head: micha/fix-pyi054-doc
 created_at: 2025-02-28T07:22:22Z
 updated_at: 2025-02-28T07:32:11Z
 url: https://github.com/astral-sh/ruff/pull/16432
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Fix string-length limit in documentation for PYI054
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-28 07:22_
+_@MichaReiser_
 
 ## Summary
 

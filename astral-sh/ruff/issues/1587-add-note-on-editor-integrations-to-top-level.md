@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-03T04:15:40Z
 updated_at: 2023-01-03T04:19:35Z
 url: https://github.com/astral-sh/ruff/issues/1587
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add note on editor integrations to top-level highlights
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-03 04:15_
+_@charliermarsh_
 
 _No description provided._
 

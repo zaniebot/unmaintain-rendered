@@ -12,14 +12,14 @@ head: charlie/useless-iv
 created_at: 2023-04-01T03:31:09Z
 updated_at: 2023-04-01T04:11:59Z
 url: https://github.com/astral-sh/ruff/pull/3843
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Move logging resolver into `logging.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-01 03:31_
+_@charliermarsh_
 
 _No description provided._
 

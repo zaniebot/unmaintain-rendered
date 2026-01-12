@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-20T01:33:37Z
 updated_at: 2025-04-21T20:03:55Z
 url: https://github.com/astral-sh/uv/issues/10766
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # uv init --python-preference only-managed installs system python
 
 ---
 
-_Issue opened by @hyperknot on 2025-01-20 01:33_
+_@hyperknot_
 
 version
 

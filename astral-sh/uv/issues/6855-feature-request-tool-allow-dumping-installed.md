@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T07:38:45Z
 updated_at: 2024-08-30T12:46:31Z
 url: https://github.com/astral-sh/uv/issues/6855
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Feature Request [tool]: allow dumping installed packages to a file and re-installing from that file
 
 ---
 
-_Issue opened by @xavdid on 2024-08-30 07:38_
+_@xavdid_
 
 A useful feature of `pipx` is the ability to both: 
 

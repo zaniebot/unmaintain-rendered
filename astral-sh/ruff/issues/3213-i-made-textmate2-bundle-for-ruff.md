@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-24T20:47:50Z
 updated_at: 2023-02-24T22:57:35Z
 url: https://github.com/astral-sh/ruff/issues/3213
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # I made TextMate2 Bundle for ruff
 
 ---
 
-_Issue opened by @vigo on 2023-02-24 20:47_
+_@vigo_
 
 Hi, if you are a dinosaur like me :) you should probably like this;
 

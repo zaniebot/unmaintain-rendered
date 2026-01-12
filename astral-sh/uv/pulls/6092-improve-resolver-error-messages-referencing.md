@@ -14,14 +14,14 @@ head: zb/resolver-errors-workspaces
 created_at: 2024-08-14T19:47:35Z
 updated_at: 2024-08-15T13:20:12Z
 url: https://github.com/astral-sh/uv/pull/6092
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:12Z
 ```
 
 # Improve resolver error messages referencing workspace members
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-14 19:47_
+_@zanieb_
 
 An extension of #6090 that replaces #6066.
 

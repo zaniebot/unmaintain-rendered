@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-21T20:44:55Z
 updated_at: 2025-12-22T18:46:22Z
 url: https://github.com/astral-sh/ruff/issues/22131
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # TC006 fix creates quoted type expressions with escape sequences
 
 ---
 
-_Issue opened by @dscorbett on 2025-12-21 20:44_
+_@dscorbett_
 
 ### Summary
 

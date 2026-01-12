@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-12T17:15:11Z
 updated_at: 2023-06-20T05:44:09Z
 url: https://github.com/astral-sh/ruff/issues/1218
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Support formatting jupyter notebooks
 
 ---
 
-_Issue opened by @konstin on 2022-12-12 17:15_
+_@konstin_
 
 [black](https://github.com/psf/black) supports formatting jupyter notebook with the jupyter extra `black[jupyter]`. If installed like this, it formats jupyter notebooks just like python files. It would be nice if ruff could similarly lint and fix jupyter notebooks.
 

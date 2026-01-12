@@ -14,14 +14,14 @@ head: alex/deeply-normalize
 created_at: 2025-05-20T15:24:48Z
 updated_at: 2025-05-20T15:41:27Z
 url: https://github.com/astral-sh/ruff/pull/18222
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Deeply normalize many types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-20 15:24_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/typo
 created_at: 2025-03-01T03:14:27Z
 updated_at: 2025-03-01T03:22:28Z
 url: https://github.com/astral-sh/uv/pull/11874
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:01Z
 ```
 
 # Fix typo in unsatisfiable
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-01 03:14_
+_@charliermarsh_
 
 _No description provided._
 

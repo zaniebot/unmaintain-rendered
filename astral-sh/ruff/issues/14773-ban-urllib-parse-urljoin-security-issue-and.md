@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-04T15:50:42Z
 updated_at: 2024-12-10T06:36:57Z
 url: https://github.com/astral-sh/ruff/issues/14773
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Ban urllib.parse.urljoin (security issue and confusing name)
 
 ---
 
-_Issue opened by @ashrub-holvi on 2024-12-04 15:50_
+_@ashrub-holvi_
 
 Hi, idea for the rule - ban `urllib.parse.urljoin`, there are two issue with it:
 1. [Docs](https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urljoin) says:

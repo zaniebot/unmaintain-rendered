@@ -14,14 +14,14 @@ head: alex/tuple-derives
 created_at: 2025-08-12T14:49:09Z
 updated_at: 2025-08-12T14:53:36Z
 url: https://github.com/astral-sh/ruff/pull/19880
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] Remove unsafe `salsa::Update` implementations in `tuple.rs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-12 14:49_
+_@AlexWaygood_
 
 ## Summary
 

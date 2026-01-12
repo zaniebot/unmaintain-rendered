@@ -12,14 +12,14 @@ head: disitribution-types-docs
 created_at: 2023-11-23T13:35:28Z
 updated_at: 2023-11-23T13:43:28Z
 url: https://github.com/astral-sh/uv/pull/495
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:59Z
 ```
 
 # Write docs for distribution types
 
 ---
 
-_Pull request opened by @konstin on 2023-11-23 13:35_
+_@konstin_
 
 Document the type hierarchy, excluding the traits.
 

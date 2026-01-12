@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-08T16:30:14Z
 updated_at: 2023-12-08T17:05:20Z
 url: https://github.com/astral-sh/ruff/issues/9053
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # False positive runtime-import-in-type-checking-block (TCH004)
 
 ---
 
-_Issue opened by @jschippergoauto on 2023-12-08 16:30_
+_@jschippergoauto_
 
 Ruff (0.1.7) gives me a false positive TCH004.
 

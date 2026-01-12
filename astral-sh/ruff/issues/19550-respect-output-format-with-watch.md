@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-25T04:03:59Z
 updated_at: 2025-10-27T18:35:47Z
 url: https://github.com/astral-sh/ruff/issues/19550
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Respect `--output-format` with `--watch`
 
 ---
 
-_Issue opened by @sathishvj on 2025-07-25 04:03_
+_@sathishvj_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: charlie/dangling
 created_at: 2023-08-08T01:55:07Z
 updated_at: 2023-08-08T20:48:40Z
 url: https://github.com/astral-sh/ruff/pull/6413
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Treat comments on open parentheses in return annotations as dangling
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-08 01:55_
+_@charliermarsh_
 
 ## Summary
 

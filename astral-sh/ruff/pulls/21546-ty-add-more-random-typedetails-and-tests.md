@@ -14,14 +14,14 @@ head: gankra/more-click
 created_at: 2025-11-20T19:17:48Z
 updated_at: 2025-11-20T19:46:19Z
 url: https://github.com/astral-sh/ruff/pull/21546
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:27Z
 ```
 
 # [ty] Add more random TypeDetails and tests
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-20 19:17_
+_@Gankra_
 
 _No description provided._
 

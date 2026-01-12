@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-20T22:29:36Z
 updated_at: 2026-01-09T05:29:41Z
 url: https://github.com/astral-sh/ty/issues/2136
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Use type context from `__setitem__` signature to inform the type inferred on the right-hand side of subscript assignments
 
 ---
 
-_Issue opened by @nwalters512 on 2025-12-20 22:29_
+_@nwalters512_
 
 ### Summary
 

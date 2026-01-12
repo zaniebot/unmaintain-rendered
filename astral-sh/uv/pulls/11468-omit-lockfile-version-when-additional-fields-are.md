@@ -13,14 +13,14 @@ head: charlie/dep-dyn
 created_at: 2025-02-13T01:05:22Z
 updated_at: 2025-02-13T01:44:15Z
 url: https://github.com/astral-sh/uv/pull/11468
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:51Z
 ```
 
 # Omit lockfile version when additional fields are dynamic
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-13 01:05_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: jane/server/editors/helix/setup
 created_at: 2024-04-28T03:22:35Z
 updated_at: 2024-04-30T17:15:30Z
 url: https://github.com/astral-sh/ruff/pull/11183
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # Write `ruff server` setup guide for Helix
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-28 03:22_
+_@snowsignal_
 
 ## Summary
 

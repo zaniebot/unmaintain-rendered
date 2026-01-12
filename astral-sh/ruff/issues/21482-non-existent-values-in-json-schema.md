@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-16T18:10:17Z
 updated_at: 2025-11-16T18:53:47Z
 url: https://github.com/astral-sh/ruff/issues/21482
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Non-existent values in JSON schema
 
 ---
 
-_Issue opened by @chirizxc on 2025-11-16 18:10_
+_@chirizxc_
 
 ### Question
 

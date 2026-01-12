@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-22T23:19:37Z
 updated_at: 2022-01-24T16:55:50Z
 url: https://github.com/clap-rs/clap/issues/3330
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Conflicting args both present
 
 ---
 
-_Issue opened by @nissaofthesea on 2022-01-22 23:19_
+_@nissaofthesea_
 
 ### Please complete the following tasks
 

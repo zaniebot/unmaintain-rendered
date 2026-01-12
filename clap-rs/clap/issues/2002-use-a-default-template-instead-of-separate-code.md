@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-07-06T11:06:46Z
 updated_at: 2020-08-15T00:05:55Z
 url: https://github.com/clap-rs/clap/issues/2002
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Use a default template instead of separate code path in Help::write_help
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-07-06 11:06_
+_@CreepySkeleton_
 
 As @kitlith noticed in https://github.com/clap-rs/clap/pull/1986#issuecomment-653928929,:
 

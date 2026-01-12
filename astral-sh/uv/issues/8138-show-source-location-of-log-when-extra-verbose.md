@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-12T01:05:54Z
 updated_at: 2024-11-20T00:21:56Z
 url: https://github.com/astral-sh/uv/issues/8138
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:20Z
 ```
 
 # Show source location of log when extra verbose flag is enabled.
 
 ---
 
-_Issue opened by @Renkai on 2024-10-12 01:05_
+_@Renkai_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

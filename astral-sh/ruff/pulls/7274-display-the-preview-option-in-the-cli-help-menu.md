@@ -13,14 +13,14 @@ head: zanie/preview-hide
 created_at: 2023-09-11T17:35:53Z
 updated_at: 2023-09-11T23:09:59Z
 url: https://github.com/astral-sh/ruff/pull/7274
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Display the `--preview` option in the CLI help menu
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-11 17:35_
+_@zanieb_
 
 If we're going to warn on use of NURSERY in #7210 we probably ought to show the `--preview` option in our help menus.
 

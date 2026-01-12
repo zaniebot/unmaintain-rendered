@@ -12,14 +12,14 @@ head: konsti/clear-env-for-tests
 created_at: 2025-06-16T16:28:29Z
 updated_at: 2026-01-12T13:55:24Z
 url: https://github.com/astral-sh/uv/pull/14080
-synced_at: 2026-01-12T15:03:49Z
+synced_at: 2026-01-12T16:11:01Z
 ```
 
 # Clear known env vars for tests
 
 ---
 
-_Pull request opened by @konstin on 2025-06-16 16:28_
+_@konstin_
 
 Currently, it's possible to break our test suite by having an env var set that influences uv, either a `UV_*` var, or something more generic such as the XDG env vars. We previously fixed them env-var-by-env-var as we discovered. By clearing uv-specific env var for subcommands, we can invert this.
 

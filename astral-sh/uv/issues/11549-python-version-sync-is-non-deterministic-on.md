@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-16T04:07:43Z
 updated_at: 2025-02-17T14:36:39Z
 url: https://github.com/astral-sh/uv/issues/11549
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:40Z
 ```
 
 # Python version sync is non-deterministic on Windows "shared" builds
 
 ---
 
-_Issue opened by @zanieb on 2025-02-16 04:07_
+_@zanieb_
 
 See 
 

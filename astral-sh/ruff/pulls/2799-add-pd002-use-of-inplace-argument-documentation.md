@@ -13,14 +13,14 @@ head: add-PD002-docs
 created_at: 2023-02-12T04:20:34Z
 updated_at: 2023-02-12T18:10:35Z
 url: https://github.com/astral-sh/ruff/pull/2799
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Add PD002 use-of-inplace-argument documentation
 
 ---
 
-_Pull request opened by @Zeddicus414 on 2023-02-12 04:20_
+_@Zeddicus414_
 
 https://github.com/charliermarsh/ruff/issues/2646
 

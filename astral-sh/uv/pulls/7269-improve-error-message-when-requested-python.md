@@ -13,14 +13,14 @@ head: zb/err-version-supp
 created_at: 2024-09-10T18:51:29Z
 updated_at: 2024-09-10T19:01:37Z
 url: https://github.com/astral-sh/uv/pull/7269
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Improve error message when requested Python version is unsupported
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-10 18:51_
+_@zanieb_
 
 Follows test cases in #7265 and validation removal in https://github.com/astral-sh/uv/pull/7264
 

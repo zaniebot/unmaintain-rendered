@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-20T13:14:54Z
 updated_at: 2025-10-21T08:40:57Z
 url: https://github.com/astral-sh/uv/issues/16375
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:30Z
 ```
 
 # Is there a way to use a PEP 751 pylock.toml as input for `uv lock` or `uv sync`?
 
 ---
 
-_Issue opened by @astrojuanlu on 2025-10-20 13:14_
+_@astrojuanlu_
 
 ### Question
 

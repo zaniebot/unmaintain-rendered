@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-12T16:14:50Z
 updated_at: 2023-10-04T04:22:13Z
 url: https://github.com/astral-sh/ruff/issues/7309
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Develop rigorous benchmarks for formatter announcement
 
 ---
 
-_Issue opened by @charliermarsh on 2023-09-12 16:14_
+_@charliermarsh_
 
 We won't be focusing on benchmarks for the Alpha. But when we release the Beta, we'll want to include benchmarks against Black (with and without `--fast`, with and without caching), both on the CLI and for the VS Code extension if possible.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T18:43:02Z
 updated_at: 2025-06-04T16:53:59Z
 url: https://github.com/astral-sh/uv/issues/13826
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # Add environment variable for build --package
 
 ---
 
-_Issue opened by @pedro-avalos on 2025-06-03 18:43_
+_@pedro-avalos_
 
 ### Summary
 

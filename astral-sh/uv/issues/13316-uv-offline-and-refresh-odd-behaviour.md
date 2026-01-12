@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-06T16:25:13Z
 updated_at: 2026-01-06T20:43:06Z
 url: https://github.com/astral-sh/uv/issues/13316
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # UV_OFFLINE and --refresh odd behaviour
 
 ---
 
-_Issue opened by @RomainBrault on 2025-05-06 16:25_
+_@RomainBrault_
 
 ### Summary
 

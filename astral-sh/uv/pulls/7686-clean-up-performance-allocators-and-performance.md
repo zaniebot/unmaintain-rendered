@@ -12,14 +12,14 @@ head: konsti/fewer-deps-rebase
 created_at: 2024-09-25T14:29:51Z
 updated_at: 2024-09-25T15:41:41Z
 url: https://github.com/astral-sh/uv/pull/7686
-synced_at: 2026-01-10T12:53:53Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Clean up "performance allocators" and "performance flate2" backends
 
 ---
 
-_Pull request opened by @konstin on 2024-09-25 14:29_
+_@konstin_
 
 Rebased version of #7000, description copied below.
 

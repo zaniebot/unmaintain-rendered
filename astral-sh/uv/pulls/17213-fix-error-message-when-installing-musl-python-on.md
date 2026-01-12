@@ -11,14 +11,14 @@ head: diyor/fix-python-install-error
 created_at: 2025-12-22T00:42:11Z
 updated_at: 2026-01-08T16:45:51Z
 url: https://github.com/astral-sh/uv/pull/17213
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # Fix error message when installing musl python on armv7
 
 ---
 
-_Pull request opened by @dijor0310 on 2025-12-22 00:42_
+_@dijor0310_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

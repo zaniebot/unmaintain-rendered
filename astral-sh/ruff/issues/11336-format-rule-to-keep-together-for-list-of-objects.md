@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-08T12:00:23Z
 updated_at: 2024-05-08T12:19:19Z
 url: https://github.com/astral-sh/ruff/issues/11336
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Format rule  to keep together }, { for list of objects
 
 ---
 
-_Issue opened by @darowny on 2024-05-08 12:00_
+_@darowny_
 
 Is there a setting or a rule that will keep this style of formatting ? I mean keeping `}, {` together and then hugging `}]` at the end?
 ```

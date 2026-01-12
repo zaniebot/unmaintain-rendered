@@ -14,14 +14,14 @@ head: micha/place-table-hash-table
 created_at: 2025-06-20T09:51:47Z
 updated_at: 2025-06-20T16:43:53Z
 url: https://github.com/astral-sh/ruff/pull/18819
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [ty] Use `HashTable` in `PlaceTable`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-20 09:51_
+_@MichaReiser_
 
 ## Summary
 

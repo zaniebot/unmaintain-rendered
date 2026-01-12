@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-26T23:20:40Z
 updated_at: 2024-12-26T23:40:26Z
 url: https://github.com/astral-sh/uv/issues/10186
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # `uv publish` raise error `Caused by: error decoding response body`
 
 ---
 
-_Issue opened by @andrew000 on 2024-12-26 23:20_
+_@andrew000_
 
 Using `astral-sh/setup-uv@v5` and UV_VERSION `latest` or `0.5.12` causes error when publishing package: https://github.com/andrew000/FTL-Extract/actions/runs/12509313775/job/34898612613#step:8:12
 

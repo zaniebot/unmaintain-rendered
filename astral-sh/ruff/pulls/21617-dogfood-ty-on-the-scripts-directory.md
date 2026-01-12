@@ -14,14 +14,14 @@ head: alex/dogfood-ty
 created_at: 2025-11-24T18:05:29Z
 updated_at: 2025-11-24T23:13:46Z
 url: https://github.com/astral-sh/ruff/pull/21617
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # Dogfood ty on the `scripts` directory
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-24 18:05_
+_@AlexWaygood_
 
 ## Summary
 

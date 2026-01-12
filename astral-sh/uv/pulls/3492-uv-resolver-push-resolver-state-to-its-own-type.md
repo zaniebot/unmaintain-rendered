@@ -12,14 +12,14 @@ head: ag/resolver-state
 created_at: 2024-05-09T18:06:45Z
 updated_at: 2024-05-09T18:16:44Z
 url: https://github.com/astral-sh/uv/pull/3492
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # uv-resolver: push resolver state to its own type
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-05-09 18:06_
+_@BurntSushi_
 
 This still keeps the resolver state on the stack, but it organizes it
 into a more structured representation. This is a precursor to

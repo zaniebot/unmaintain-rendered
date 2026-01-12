@@ -14,14 +14,14 @@ head: david/typeddict-getitem
 created_at: 2025-08-05T13:02:06Z
 updated_at: 2025-08-06T11:32:14Z
 url: https://github.com/astral-sh/ruff/pull/19763
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] Infer types for key-based access on TypedDicts
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-05 13:02_
+_@sharkdp_
 
 ## Summary
 

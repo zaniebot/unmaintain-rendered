@@ -13,14 +13,14 @@ head: micha/red-knot-incremental
 created_at: 2024-11-01T08:39:01Z
 updated_at: 2024-11-01T08:53:42Z
 url: https://github.com/astral-sh/ruff/pull/14033
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Use named function in incremental red knot benchmark
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-01 08:39_
+_@MichaReiser_
 
 ## Summary
 

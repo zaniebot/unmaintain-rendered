@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-30T16:47:34Z
 updated_at: 2023-03-30T18:44:01Z
 url: https://github.com/astral-sh/ruff/issues/3818
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # PIE802 Autofix Breaks Code when List Comprehensions consume Async Generators
 
 ---
 
-_Issue opened by @so-rose on 2023-03-30 16:47_
+_@so-rose_
 
 # General Information
 Relevant system info:

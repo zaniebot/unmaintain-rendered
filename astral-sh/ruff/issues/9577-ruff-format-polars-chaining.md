@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-19T08:58:24Z
 updated_at: 2024-01-25T14:34:35Z
 url: https://github.com/astral-sh/ruff/issues/9577
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Ruff format - polars chaining
 
 ---
 
-_Issue opened by @mlarcane on 2024-01-19 08:58_
+_@mlarcane_
 
 First of all; thx for providing this neat framework! In our team, we write alot of polars code and we like to chain such that each new polars method "has it's own line" so to speak. We can't seem to find any configurations that allow for this. This is quite a big deal in data science in general, that people like to chain pandas and polars in this way.
 

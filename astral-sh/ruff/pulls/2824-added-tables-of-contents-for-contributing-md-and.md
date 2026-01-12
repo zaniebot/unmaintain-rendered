@@ -13,14 +13,14 @@ head: tocs
 created_at: 2023-02-12T21:09:16Z
 updated_at: 2023-02-12T21:38:24Z
 url: https://github.com/astral-sh/ruff/pull/2824
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Added Tables of Contents for CONTRIBUTING.md and CODE_OF_CONDUCT.md
 
 ---
 
-_Pull request opened by @trag1c on 2023-02-12 21:09_
+_@trag1c_
 
 Also made a few sections in `CONTRIBUTING.md` use title case.
 

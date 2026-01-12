@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T06:35:56Z
 updated_at: 2025-06-03T14:18:19Z
 url: https://github.com/astral-sh/uv/issues/13795
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # ssh username `git` obfuscated in 0.7.9
 
 ---
 
-_Issue opened by @stolpa4 on 2025-06-03 06:35_
+_@stolpa4_
 
 ### Summary
 

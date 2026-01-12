@@ -14,14 +14,14 @@ head: charlie/d
 created_at: 2024-11-03T19:20:53Z
 updated_at: 2024-11-04T03:21:30Z
 url: https://github.com/astral-sh/ruff/pull/14068
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Improve some rule messages and docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-03 19:20_
+_@charliermarsh_
 
 _No description provided._
 

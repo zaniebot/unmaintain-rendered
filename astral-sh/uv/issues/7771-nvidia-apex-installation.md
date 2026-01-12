@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-29T01:39:40Z
 updated_at: 2025-05-16T01:55:24Z
 url: https://github.com/astral-sh/uv/issues/7771
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Nvidia Apex Installation
 
 ---
 
-_Issue opened by @mishra-tapas on 2024-09-29 01:39_
+_@mishra-tapas_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-04T20:51:25Z
 updated_at: 2024-08-05T12:23:24Z
 url: https://github.com/astral-sh/uv/issues/5767
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Questions about dependency annotation in `pyproject.toml`
 
 ---
 
-_Issue opened by @chrisrodrigue on 2024-08-04 20:51_
+_@chrisrodrigue_
 
 Hello all,
 

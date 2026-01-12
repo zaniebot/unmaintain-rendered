@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-07T21:41:03Z
 updated_at: 2022-12-31T18:20:30Z
 url: https://github.com/astral-sh/ruff/issues/357
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Warn on unused `exclude` patterns from `pyproject.toml`
 
 ---
 
-_Issue opened by @adriangb on 2022-10-07 21:41_
+_@adriangb_
 
 I’m on mobile so I can’t confirm but I think M001 doesn’t warn about unused excludes in the config. I think it should since it's essentially the same reasoning as unused per-line ignores. Thoughts?
 

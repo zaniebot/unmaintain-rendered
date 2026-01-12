@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-28T07:41:32Z
 updated_at: 2024-11-28T13:56:11Z
 url: https://github.com/astral-sh/uv/issues/9494
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # why is `.python-version` a mandatory file?
 
 ---
 
-_Issue opened by @YoniChechik on 2024-11-28 07:41_
+_@YoniChechik_
 
 Can we have a uv setting in pyproject.toml that declers the python version (`dev python version` perheps)? This way we can remove this almost empty file.
 

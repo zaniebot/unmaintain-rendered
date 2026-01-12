@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-29T15:04:08Z
 updated_at: 2024-08-30T12:52:55Z
 url: https://github.com/astral-sh/uv/issues/6817
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Project links in pyproject.toml
 
 ---
 
-_Issue opened by @fschulze on 2024-08-29 15:04_
+_@fschulze_
 
 The "Documentation" link in pyproject.toml currently points to the repository. It should be https://docs.astral.sh/uv
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-09T23:30:51Z
 updated_at: 2025-02-06T22:38:05Z
 url: https://github.com/astral-sh/uv/issues/10451
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # Integration docs for Bitbucket Pipelines
 
 ---
 
-_Issue opened by @ghost on 2025-01-09 23:30_
+_@ghost_
 
 After looking for quite sometime I couldn't find anything related to using `uv` In Bitbucket Pipelines. I was thinking of writing a small article but I think adding to docs will be more helpful to everyone. 
 

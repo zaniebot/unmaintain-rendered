@@ -13,14 +13,14 @@ head: nit-reduce-code-duplication
 created_at: 2023-10-30T03:11:55Z
 updated_at: 2023-10-30T03:28:56Z
 url: https://github.com/astral-sh/ruff/pull/8336
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # File exclusion: Reduce code duplication
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-30 03:11_
+_@MichaReiser_
 
 ## Summary
 

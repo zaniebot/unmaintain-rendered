@@ -13,14 +13,14 @@ head: charlie/range
 created_at: 2024-04-02T18:22:26Z
 updated_at: 2024-04-03T02:10:28Z
 url: https://github.com/astral-sh/ruff/pull/10740
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Use section name range for all section-related docstring diagnostics
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-02 18:22_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: david/update-module-docs
 created_at: 2025-09-05T11:57:22Z
 updated_at: 2025-09-05T12:16:42Z
 url: https://github.com/astral-sh/ty/pull/1133
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Update first-party environment.root docs
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-05 11:57_
+_@sharkdp_
 
 ref. https://github.com/astral-sh/ruff/pull/20263
 

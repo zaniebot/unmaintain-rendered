@@ -14,14 +14,14 @@ head: charlie/fil
 created_at: 2024-05-09T03:27:33Z
 updated_at: 2024-05-09T03:55:55Z
 url: https://github.com/astral-sh/uv/pull/3477
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # Clean up and document some requirements.txt filters
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-09 03:27_
+_@charliermarsh_
 
 _No description provided._
 

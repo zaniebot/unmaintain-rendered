@@ -12,14 +12,14 @@ head: charlie/implicit-annotations
 created_at: 2023-03-23T22:45:23Z
 updated_at: 2023-03-23T23:20:00Z
 url: https://github.com/astral-sh/ruff/pull/3700
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Avoid panics for implicitly concatenated forward references
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-23 22:45_
+_@charliermarsh_
 
 ## Summary
 

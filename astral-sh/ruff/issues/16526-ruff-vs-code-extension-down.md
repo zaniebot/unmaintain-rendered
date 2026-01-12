@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-05T22:43:00Z
 updated_at: 2025-03-07T15:53:41Z
 url: https://github.com/astral-sh/ruff/issues/16526
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ruff vs code extension down
 
 ---
 
-_Issue opened by @tajhyar on 2025-03-05 22:43_
+_@tajhyar_
 
 ### Summary
 

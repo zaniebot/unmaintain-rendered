@@ -13,14 +13,14 @@ head: charlie/workspace-iii
 created_at: 2024-04-15T23:03:41Z
 updated_at: 2024-04-17T17:24:42Z
 url: https://github.com/astral-sh/uv/pull/3046
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:23Z
 ```
 
 # Add JSON Schema support
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-15 23:03_
+_@charliermarsh_
 
 ## Summary
 

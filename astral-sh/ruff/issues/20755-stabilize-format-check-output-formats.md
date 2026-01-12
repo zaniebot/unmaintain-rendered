@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-07T21:07:45Z
 updated_at: 2025-10-07T21:08:52Z
 url: https://github.com/astral-sh/ruff/issues/20755
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Stabilize `format --check` output formats
 
 ---
 
-_Issue opened by @ntBre on 2025-10-07 21:07_
+_@ntBre_
 
 Added in #20443
 

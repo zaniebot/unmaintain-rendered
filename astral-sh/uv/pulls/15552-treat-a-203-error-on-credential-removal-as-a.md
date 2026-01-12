@@ -14,14 +14,14 @@ head: zb/win-missing-creds
 created_at: 2025-08-27T15:02:25Z
 updated_at: 2025-08-27T15:48:13Z
 url: https://github.com/astral-sh/uv/pull/15552
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:49Z
 ```
 
 # Treat a 203 error on credential removal as a missing entry on Windows
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-27 15:02_
+_@zanieb_
 
 Attempting to address the failure at https://github.com/astral-sh/uv/actions/runs/17269216842/job/49009070733?pr=15539
 

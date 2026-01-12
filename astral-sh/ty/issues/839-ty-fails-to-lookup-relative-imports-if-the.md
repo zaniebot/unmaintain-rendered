@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-17T12:29:13Z
 updated_at: 2025-11-14T17:38:46Z
 url: https://github.com/astral-sh/ty/issues/839
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # ty fails to lookup relative imports if the relative path from the nearest import root includes an invalid module name
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-17 12:29_
+_@MichaReiser_
 
 Langchain has an [`__init__.py`](https://github.com/langchain-ai/langchain/blob/491f63ca82806a98b18f785d0d315e7f5d8de29f/libs/standard-tests/langchain_tests/unit_tests/__init__.py#L21) with the following content
 

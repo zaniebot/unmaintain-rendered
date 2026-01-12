@@ -13,14 +13,14 @@ head: evan-fix-add-rule
 created_at: 2024-05-21T19:35:29Z
 updated_at: 2024-05-22T03:40:11Z
 url: https://github.com/astral-sh/ruff/pull/11484
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # fixes invalid rule from hyphen
 
 ---
 
-_Pull request opened by @ekohilas on 2024-05-21 19:35_
+_@ekohilas_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

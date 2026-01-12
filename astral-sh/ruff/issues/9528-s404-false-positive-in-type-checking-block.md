@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-15T10:47:03Z
 updated_at: 2024-01-16T03:09:10Z
 url: https://github.com/astral-sh/ruff/issues/9528
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `S404` false positive in `TYPE_CHECKING` block
 
 ---
 
-_Issue opened by @DetachHead on 2024-01-15 10:47_
+_@DetachHead_
 
 ```py
 from typing import TYPE_CHECKING

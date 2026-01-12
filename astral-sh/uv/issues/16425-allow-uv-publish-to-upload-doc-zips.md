@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-23T16:40:28Z
 updated_at: 2025-10-24T10:11:21Z
 url: https://github.com/astral-sh/uv/issues/16425
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # allow uv publish to upload doc zips
 
 ---
 
-_Issue opened by @Ktlist on 2025-10-23 16:40_
+_@Ktlist_
 
 ### Question
 

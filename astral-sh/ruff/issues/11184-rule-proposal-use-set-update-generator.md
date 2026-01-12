@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-28T03:50:47Z
 updated_at: 2024-04-28T03:56:34Z
 url: https://github.com/astral-sh/ruff/issues/11184
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Rule proposal: Use set.update(generator comprehension) instead of set |= set comprehension
 
 ---
 
-_Issue opened by @57an on 2024-04-28 03:50_
+_@57an_
 
 ![image](https://github.com/astral-sh/ruff/assets/21130798/5175301d-17a1-4de1-b20d-fd8c8d01df57)
 

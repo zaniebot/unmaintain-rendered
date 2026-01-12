@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-24T13:08:59Z
 updated_at: 2025-12-16T10:47:52Z
 url: https://github.com/astral-sh/uv/issues/16436
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # lock upgrades some locked dependencies with no --upgrade flag
 
 ---
 
-_Issue opened by @ghost on 2025-10-24 13:08_
+_@ghost_
 
 ### Summary
 

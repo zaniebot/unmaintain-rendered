@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-17T17:06:24Z
 updated_at: 2024-09-19T07:35:32Z
 url: https://github.com/astral-sh/ruff/issues/13382
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # SLF001 when using Django Model `_meta` API
 
 ---
 
-_Issue opened by @bittner on 2024-09-17 17:06_
+_@bittner_
 
 In Django, there is the [Model `_meta` API](https://docs.djangoproject.com/en/stable/ref/models/meta/), an endorsed way to access internal information about a model.
 

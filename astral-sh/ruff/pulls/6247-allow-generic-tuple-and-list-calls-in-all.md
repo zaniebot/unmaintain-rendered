@@ -13,14 +13,14 @@ head: charlie/all
 created_at: 2023-08-01T15:47:05Z
 updated_at: 2023-08-01T16:13:38Z
 url: https://github.com/astral-sh/ruff/pull/6247
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Allow generic tuple and list calls in __all__
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-01 15:47_
+_@charliermarsh_
 
 ## Summary
 

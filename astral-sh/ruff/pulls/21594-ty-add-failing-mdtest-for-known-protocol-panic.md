@@ -14,14 +14,14 @@ head: alex/panicking-mdtest
 created_at: 2025-11-23T16:02:07Z
 updated_at: 2025-11-24T08:21:17Z
 url: https://github.com/astral-sh/ruff/pull/21594
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Add failing mdtest for known `Protocol` panic
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-23 16:02_
+_@AlexWaygood_
 
 ## Summary
 

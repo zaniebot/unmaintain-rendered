@@ -13,14 +13,14 @@ head: charlie/trio
 created_at: 2024-02-06T16:46:32Z
 updated_at: 2024-02-06T17:05:37Z
 url: https://github.com/astral-sh/ruff/pull/9859
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Respect `async with` in `timeout-without-await`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-06 16:46_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9855.
 

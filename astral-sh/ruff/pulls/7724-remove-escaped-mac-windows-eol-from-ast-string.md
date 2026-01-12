@@ -12,14 +12,14 @@ head: dhruv/string-escaped-eol
 created_at: 2023-09-30T19:06:01Z
 updated_at: 2023-10-01T02:08:01Z
 url: https://github.com/astral-sh/ruff/pull/7724
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Remove escaped mac/windows eol from AST string value
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-30 19:06_
+_@dhruvmanila_
 
 ## Summary
 

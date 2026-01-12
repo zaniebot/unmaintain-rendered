@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-31T15:37:09Z
 updated_at: 2026-01-06T21:10:53Z
 url: https://github.com/astral-sh/ty/issues/2292
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Wrong class seen from asyncio.create_datagram_endpoint
 
 ---
 
-_Issue opened by @romuald on 2025-12-31 15:37_
+_@romuald_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-24T10:57:13Z
 updated_at: 2024-05-24T21:03:20Z
 url: https://github.com/astral-sh/uv/issues/3818
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # `uv pip compile` causes "direct URL requirements without package names are not supported" error
 
 ---
 
-_Issue opened by @groodt on 2024-05-24 10:57_
+_@groodt_
 
 It appears that there is something strange happening when `uv pip compile` is creating a lockfile for direct url references when environment variable interpolation is occurring.
 

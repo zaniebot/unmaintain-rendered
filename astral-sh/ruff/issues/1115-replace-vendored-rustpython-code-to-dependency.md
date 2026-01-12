@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-07T07:48:49Z
 updated_at: 2023-01-11T01:22:18Z
 url: https://github.com/astral-sh/ruff/issues/1115
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Replace vendored RustPython code to dependency call
 
 ---
 
-_Issue opened by @youknowone on 2022-12-07 07:48_
+_@youknowone_
 
 I found ruff has a vendored code from RustPython
 https://github.com/charliermarsh/ruff/tree/main/src/vendored

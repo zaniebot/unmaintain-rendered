@@ -13,14 +13,14 @@ head: dhruv/deprecate-skip-until
 created_at: 2024-03-08T06:52:02Z
 updated_at: 2024-03-08T17:58:09Z
 url: https://github.com/astral-sh/ruff/pull/10293
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Remove `skip_until` parser method
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-08 06:52_
+_@dhruvmanila_
 
 ## Summary
 

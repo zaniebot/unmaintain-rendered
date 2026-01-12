@@ -13,14 +13,14 @@ head: zb/data-dir-toolchain-test-context
 created_at: 2024-05-24T21:20:47Z
 updated_at: 2024-05-27T04:18:20Z
 url: https://github.com/astral-sh/uv/pull/3832
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:53Z
 ```
 
 # Add test context utility to `uv-interpreter`
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-24 21:20_
+_@zanieb_
 
 Follow-up to https://github.com/astral-sh/uv/pull/3797 to clean up the test isolation in `uv-interpreter`.
 

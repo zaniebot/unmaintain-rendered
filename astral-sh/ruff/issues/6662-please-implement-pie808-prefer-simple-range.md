@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-17T20:47:36Z
 updated_at: 2023-08-19T21:59:13Z
 url: https://github.com/astral-sh/ruff/issues/6662
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Please implement PIE808 (prefer-simple-range)
 
 ---
 
-_Issue opened by @nth10sd on 2023-08-17 20:47_
+_@nth10sd_
 
 `range(0, 10)` will turn into `range(10)`.
 

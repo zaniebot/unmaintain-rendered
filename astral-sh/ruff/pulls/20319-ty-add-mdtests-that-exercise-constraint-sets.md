@@ -12,14 +12,14 @@ head: dcreager/constraint-mdtest
 created_at: 2025-09-09T18:09:33Z
 updated_at: 2025-09-10T17:22:21Z
 url: https://github.com/astral-sh/ruff/pull/20319
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Add mdtests that exercise constraint sets
 
 ---
 
-_Pull request opened by @dcreager on 2025-09-09 18:09_
+_@dcreager_
 
 This PR adds a new `ty_extensions.ConstraintSet` class, which is used to expose constraint sets to our mdtest framework. This lets us write a large collection of unit tests that exercise the invariants and rewrite rules of our constraint set implementation.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T16:50:16Z
 updated_at: 2025-03-10T11:42:34Z
 url: https://github.com/astral-sh/uv/issues/12052
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # Minor package upgrade not detected between x.9.y and x.10.z+
 
 ---
 
-_Issue opened by @lgatellier on 2025-03-07 16:50_
+_@lgatellier_
 
 ### Summary
 

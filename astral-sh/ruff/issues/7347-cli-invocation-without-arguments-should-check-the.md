@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-13T16:01:52Z
 updated_at: 2023-11-21T17:34:23Z
 url: https://github.com/astral-sh/ruff/issues/7347
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # CLI: Invocation without arguments should check the current directory
 
 ---
 
-_Issue opened by @zanieb on 2023-09-13 16:01_
+_@zanieb_
 
 Currently `ruff check` requires an input path. Instead, it should default to checking the current directory.
 

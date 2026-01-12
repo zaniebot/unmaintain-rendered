@@ -12,14 +12,14 @@ head: charlie/creds
 created_at: 2024-10-20T20:32:34Z
 updated_at: 2024-10-21T00:18:54Z
 url: https://github.com/astral-sh/uv/pull/8393
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:18Z
 ```
 
 # Check dependency groups for credentials
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-20 20:32_
+_@charliermarsh_
 
 ## Summary
 

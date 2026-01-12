@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-24T22:10:49Z
 updated_at: 2023-10-26T15:11:18Z
 url: https://github.com/astral-sh/ruff/issues/8188
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Unintentional formatter deviation: strange spacing around `TypeAlias` declarations
 
 ---
 
-_Issue opened by @stinodego on 2023-10-24 22:10_
+_@stinodego_
 
 Reproducible example:
 ```python

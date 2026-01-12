@@ -13,14 +13,14 @@ head: ci-tests
 created_at: 2024-08-27T09:30:59Z
 updated_at: 2024-09-05T00:32:26Z
 url: https://github.com/astral-sh/uv/pull/6680
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:28Z
 ```
 
 # ci: Make Windows tests ~27% faster by putting temp folder in dev drive
 
 ---
 
-_Pull request opened by @fasterthanlime on 2024-08-27 09:30_
+_@fasterthanlime_
 
 ## Summary
 

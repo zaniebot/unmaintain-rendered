@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-19T13:29:22Z
 updated_at: 2025-11-21T19:54:36Z
 url: https://github.com/astral-sh/ty/issues/1592
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Go to definition ignores `import as`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-19 13:29_
+_@MichaReiser_
 
 ### Summary
 

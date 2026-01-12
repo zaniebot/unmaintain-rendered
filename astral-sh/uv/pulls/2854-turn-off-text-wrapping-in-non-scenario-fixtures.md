@@ -13,14 +13,14 @@ head: charlie/wrap
 created_at: 2024-04-06T17:54:13Z
 updated_at: 2024-04-06T23:27:57Z
 url: https://github.com/astral-sh/uv/pull/2854
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:15Z
 ```
 
 # Turn off text wrapping in non-scenario fixtures
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-06 17:54_
+_@charliermarsh_
 
 ## Summary
 

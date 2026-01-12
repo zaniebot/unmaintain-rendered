@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-26T01:37:01Z
 updated_at: 2025-12-16T11:16:59Z
 url: https://github.com/astral-sh/uv/issues/13112
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # SHA mismatch if wheel has no sha in the index, but sdist has
 
 ---
 
-_Issue opened by @f3flight on 2025-04-26 01:37_
+_@f3flight_
 
 ### Summary
 

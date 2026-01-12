@@ -14,14 +14,14 @@ head: gankra/disable-possibly-missing
 created_at: 2025-12-17T23:54:35Z
 updated_at: 2025-12-18T20:06:35Z
 url: https://github.com/astral-sh/ruff/pull/22041
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Disable possibly-missing-imports by default
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-17 23:54_
+_@Gankra_
 
 @carljm put forth a reasonably compelling argument that just disabling this lint might be advisable. If we agree, here's the implementation.
 

@@ -13,14 +13,14 @@ head: dhruv/jupyter-ast-impl
 created_at: 2023-07-26T07:24:16Z
 updated_at: 2023-07-28T01:35:53Z
 url: https://github.com/astral-sh/ruff/pull/6086
-synced_at: 2026-01-12T03:23:56Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Integrate the new Jupyter AST nodes in Ruff
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-26 07:24_
+_@dhruvmanila_
 
 ## Summary
 

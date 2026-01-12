@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-19T13:24:45Z
 updated_at: 2024-08-20T16:31:48Z
 url: https://github.com/astral-sh/uv/issues/4411
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Store Python toolchains under XDG directory on macOS
 
 ---
 
-_Issue opened by @baggiponte on 2024-06-19 13:24_
+_@baggiponte_
 
 Hey there! Thanks for the amazing work. Using `uv` preview features and love it.
 

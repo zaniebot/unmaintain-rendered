@@ -12,14 +12,14 @@ head: uvcheck
 created_at: 2024-03-13T00:03:54Z
 updated_at: 2024-03-16T14:11:59Z
 url: https://github.com/astral-sh/uv/pull/2397
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:01Z
 ```
 
 # Add `uv pip check`
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-03-13 00:03_
+_@ChannyClaus_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

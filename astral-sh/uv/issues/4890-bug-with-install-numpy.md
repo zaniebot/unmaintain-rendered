@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-08T12:42:28Z
 updated_at: 2024-07-09T17:45:54Z
 url: https://github.com/astral-sh/uv/issues/4890
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Bug with install Numpy
 
 ---
 
-_Issue opened by @17Reset on 2024-07-08 12:42_
+_@17Reset_
 
 ```
 × No solution found when resolving dependencies:

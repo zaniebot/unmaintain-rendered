@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T20:22:48Z
 updated_at: 2025-11-04T17:29:07Z
 url: https://github.com/astral-sh/uv/issues/16349
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # Alpine Docker image failing to run Python libraries due to mismatched gnu vs musl libraries
 
 ---
 
-_Issue opened by @TaylorZowtuk on 2025-10-17 20:22_
+_@TaylorZowtuk_
 
 ### Question
 

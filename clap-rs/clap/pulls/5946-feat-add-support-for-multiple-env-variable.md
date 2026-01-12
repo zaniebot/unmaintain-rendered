@@ -12,14 +12,14 @@ head: 5925-envs
 created_at: 2025-03-10T12:26:06Z
 updated_at: 2025-04-16T12:18:21Z
 url: https://github.com/clap-rs/clap/pull/5946
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Feat: add support for multiple env variable
 
 ---
 
-_Pull request opened by @fahri-r on 2025-03-10 12:26_
+_@fahri-r_
 
 #5925 
 

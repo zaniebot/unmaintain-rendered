@@ -12,14 +12,14 @@ head: charlie/ambiguous-authority
 created_at: 2025-12-24T14:07:12Z
 updated_at: 2025-12-25T11:42:22Z
 url: https://github.com/astral-sh/uv/pull/17234
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:40Z
 ```
 
 # Avoid flagging proxied Git URLs as ambiguous authority
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-24 14:07_
+_@charliermarsh_
 
 ## Summary
 

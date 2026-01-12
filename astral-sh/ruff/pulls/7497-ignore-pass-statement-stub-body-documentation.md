@@ -13,14 +13,14 @@ head: fix-ci
 created_at: 2023-09-18T17:49:04Z
 updated_at: 2023-09-18T18:33:43Z
 url: https://github.com/astral-sh/ruff/pull/7497
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Ignore `pass-statement-stub-body` documentation formatting
 
 ---
 
-_Pull request opened by @tjkuson on 2023-09-18 17:49_
+_@tjkuson_
 
 ## Summary
 

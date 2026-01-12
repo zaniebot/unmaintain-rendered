@@ -12,14 +12,14 @@ head: charlie/w
 created_at: 2023-06-25T22:02:59Z
 updated_at: 2023-06-25T22:35:15Z
 url: https://github.com/astral-sh/ruff/pull/5358
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add space when migrating to raw string
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-25 22:02_
+_@charliermarsh_
 
 ## Summary
 

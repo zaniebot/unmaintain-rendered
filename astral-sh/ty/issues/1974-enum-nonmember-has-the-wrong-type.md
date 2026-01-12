@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T02:29:56Z
 updated_at: 2025-12-19T00:59:50Z
 url: https://github.com/astral-sh/ty/issues/1974
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # enum.nonmember has the wrong type
 
 ---
 
-_Issue opened by @refi64 on 2025-12-17 02:29_
+_@refi64_
 
 ### Summary
 

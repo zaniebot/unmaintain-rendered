@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-01T20:19:25Z
 updated_at: 2023-09-29T17:27:33Z
 url: https://github.com/astral-sh/ruff/issues/7052
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter removes line break between implicitly concatenated strings
 
 ---
 
-_Issue opened by @cnpryer on 2023-09-01 20:19_
+_@cnpryer_
 
 Couldn't find an *exact* issue, but I'm almost certain this has been reported already. 
 

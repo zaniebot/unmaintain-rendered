@@ -12,14 +12,14 @@ head: cjm/noanyover
 created_at: 2025-07-02T18:43:35Z
 updated_at: 2025-07-03T16:43:11Z
 url: https://github.com/astral-sh/ruff/pull/19099
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [ty] remove any_over_type
 
 ---
 
-_Pull request opened by @carljm on 2025-07-02 18:43_
+_@carljm_
 
 ## Summary
 

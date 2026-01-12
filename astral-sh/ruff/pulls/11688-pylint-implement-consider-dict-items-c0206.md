@@ -14,14 +14,14 @@ head: implement-consider-dict-items
 created_at: 2024-06-02T04:53:40Z
 updated_at: 2024-06-09T00:26:30Z
 url: https://github.com/astral-sh/ruff/pull/11688
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [`pylint`] Implement `consider-dict-items` (`C0206`)
 
 ---
 
-_Pull request opened by @max-muoto on 2024-06-02 04:53_
+_@max-muoto_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

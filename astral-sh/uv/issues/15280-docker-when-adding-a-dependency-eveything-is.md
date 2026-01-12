@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-14T13:33:15Z
 updated_at: 2025-08-14T13:59:40Z
 url: https://github.com/astral-sh/uv/issues/15280
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Docker - When adding a dependency eveything is installed
 
 ---
 
-_Issue opened by @errajibadr on 2025-08-14 13:33_
+_@errajibadr_
 
 ### Question
 

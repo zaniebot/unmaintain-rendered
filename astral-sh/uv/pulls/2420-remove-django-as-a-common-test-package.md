@@ -13,14 +13,14 @@ head: charlie/django
 created_at: 2024-03-13T18:53:06Z
 updated_at: 2024-03-13T19:46:58Z
 url: https://github.com/astral-sh/uv/pull/2420
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:02Z
 ```
 
 # Remove `django` as a common test package
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-13 18:53_
+_@charliermarsh_
 
 ## Summary
 

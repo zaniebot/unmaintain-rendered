@@ -12,14 +12,14 @@ head: charlie/cpa
 created_at: 2023-03-13T23:06:32Z
 updated_at: 2023-03-14T15:02:07Z
 url: https://github.com/astral-sh/ruff/pull/3498
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Make Clap an optional feature for ruff crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-13 23:06_
+_@charliermarsh_
 
 ## Summary
 

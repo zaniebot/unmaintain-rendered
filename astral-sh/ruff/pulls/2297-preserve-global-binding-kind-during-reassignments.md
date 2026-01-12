@@ -12,14 +12,14 @@ head: charlie/aug
 created_at: 2023-01-28T13:32:18Z
 updated_at: 2023-01-28T14:36:18Z
 url: https://github.com/astral-sh/ruff/pull/2297
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Preserve global binding kind during reassignments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-28 13:32_
+_@charliermarsh_
 
 Closes #2250.
 

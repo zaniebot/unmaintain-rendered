@@ -14,14 +14,14 @@ head: charlie/ellipsis
 created_at: 2023-12-03T20:47:06Z
 updated_at: 2023-12-04T00:15:42Z
 url: https://github.com/astral-sh/ruff/pull/8984
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Avoid unstable formatting in ellipsis-only body with trailing comment
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-03 20:47_
+_@charliermarsh_
 
 ## Summary
 

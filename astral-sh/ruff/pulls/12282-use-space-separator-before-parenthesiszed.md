@@ -14,14 +14,14 @@ head: if-leading-comment
 created_at: 2024-07-10T20:47:56Z
 updated_at: 2024-07-11T20:38:13Z
 url: https://github.com/astral-sh/ruff/pull/12282
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Use `space` separator before parenthesiszed expressions in comprehensions with leading comments.
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-10 20:47_
+_@MichaReiser_
 
 ## Summary
 

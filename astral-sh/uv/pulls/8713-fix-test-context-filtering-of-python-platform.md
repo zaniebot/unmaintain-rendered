@@ -13,14 +13,14 @@ head: zb/filter-platform-key
 created_at: 2024-10-31T01:11:01Z
 updated_at: 2024-10-31T03:34:39Z
 url: https://github.com/astral-sh/uv/pull/8713
-synced_at: 2026-01-10T12:54:15Z
+synced_at: 2026-01-12T16:08:28Z
 ```
 
 # Fix test context filtering of Python platform keys with elided patch versions
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-31 01:11_
+_@zanieb_
 
 Cherry-picked from #8650
 

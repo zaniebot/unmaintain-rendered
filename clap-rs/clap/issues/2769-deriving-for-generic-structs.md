@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-09-15T07:27:00Z
 updated_at: 2021-11-16T16:12:49Z
 url: https://github.com/clap-rs/clap/issues/2769
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Deriving for generic structs
 
 ---
 
-_Issue opened by @kuviman on 2021-09-15 07:27_
+_@kuviman_
 
 ### Please complete the following tasks
 

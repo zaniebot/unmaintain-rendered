@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-25T15:25:42Z
 updated_at: 2024-08-01T13:00:00Z
 url: https://github.com/astral-sh/uv/issues/5448
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # UV 0.2.29 Permission error
 
 ---
 
-_Issue opened by @lskbr on 2024-07-25 15:25_
+_@lskbr_
 
 I'm using uv with tox to build multiple versions of the same packet on Ubuntu Linux 22.04 LTS.
 

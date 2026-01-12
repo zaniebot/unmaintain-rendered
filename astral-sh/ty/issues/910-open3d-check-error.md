@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-29T02:08:12Z
 updated_at: 2026-01-09T02:03:35Z
 url: https://github.com/astral-sh/ty/issues/910
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # open3d check error
 
 ---
 
-_Issue opened by @hyhmrright on 2025-07-29 02:08_
+_@hyhmrright_
 
 ### Summary
 

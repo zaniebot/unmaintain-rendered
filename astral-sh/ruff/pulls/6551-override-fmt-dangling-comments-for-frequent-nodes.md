@@ -13,14 +13,14 @@ head: override-fmt-dangling
 created_at: 2023-08-14T07:46:58Z
 updated_at: 2023-08-14T13:29:07Z
 url: https://github.com/astral-sh/ruff/pull/6551
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Override fmt_dangling_comments for frequent nodes
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-14 07:46_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

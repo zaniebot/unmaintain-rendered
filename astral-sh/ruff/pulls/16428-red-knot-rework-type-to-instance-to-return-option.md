@@ -13,14 +13,14 @@ head: alex/to-instance-option
 created_at: 2025-02-28T00:20:41Z
 updated_at: 2025-03-11T16:43:46Z
 url: https://github.com/astral-sh/ruff/pull/16428
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Rework `Type::to_instance()` to return `Option<Type>`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-28 00:20_
+_@AlexWaygood_
 
 ## Summary
 

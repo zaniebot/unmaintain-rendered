@@ -14,14 +14,14 @@ head: tool-run-list-installed
 created_at: 2024-07-29T08:16:58Z
 updated_at: 2024-07-29T22:38:44Z
 url: https://github.com/astral-sh/uv/pull/5553
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:53Z
 ```
 
 # List installed tools when no command is provided to `uv tool run`
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-07-29 08:16_
+_@eth3lbert_
 
 ## Summary
 

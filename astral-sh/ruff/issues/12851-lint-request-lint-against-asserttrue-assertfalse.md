@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-12T19:55:35Z
 updated_at: 2024-08-13T08:09:22Z
 url: https://github.com/astral-sh/ruff/issues/12851
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [Lint Request] Lint against `assertTrue`/`assertFalse` instead of more specific asserts
 
 ---
 
-_Issue opened by @alanhdu on 2024-08-12 19:55_
+_@alanhdu_
 
 The default `unittest.TestCase` uses a set of specialized `assert*` functions to give better error messages (unlike `pytest` which does some metaprogramming to work with "bare" `assert` statements).
 

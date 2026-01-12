@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-12T17:36:37Z
 updated_at: 2023-04-12T21:30:17Z
 url: https://github.com/astral-sh/ruff/issues/3950
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False positive: `PYI015` does not allow assigning `typing_extensions.TypeVar`
 
 ---
 
-_Issue opened by @bryanforbes on 2023-04-12 17:36_
+_@bryanforbes_
 
 Ruff version: 0.0.261
 

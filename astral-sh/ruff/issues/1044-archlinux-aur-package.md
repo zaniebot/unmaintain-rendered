@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-04T21:20:36Z
 updated_at: 2022-12-10T14:56:57Z
 url: https://github.com/astral-sh/ruff/issues/1044
-synced_at: 2026-01-10T12:06:15Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Archlinux AUR package
 
 ---
 
-_Issue opened by @mortymacs on 2022-12-04 21:20_
+_@mortymacs_
 
 Hi,
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T15:59:02Z
 updated_at: 2024-11-08T03:40:37Z
 url: https://github.com/astral-sh/ruff/issues/14136
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Sort By Length Doesn't really sort by length
 
 ---
 
-_Issue opened by @scarere on 2024-11-06 15:59_
+_@scarere_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -14,14 +14,14 @@ head: uvx-no-exec-found
 created_at: 2024-07-31T21:32:58Z
 updated_at: 2024-07-31T22:27:41Z
 url: https://github.com/astral-sh/uv/pull/5675
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:57Z
 ```
 
 # `uvx` warn when no executables are available
 
 ---
 
-_Pull request opened by @blueraft on 2024-07-31 21:32_
+_@blueraft_
 
 ## Summary
 

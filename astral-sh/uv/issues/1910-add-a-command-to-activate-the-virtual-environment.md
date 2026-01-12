@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-23T12:26:49Z
 updated_at: 2026-01-01T22:54:31Z
 url: https://github.com/astral-sh/uv/issues/1910
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Add a command to activate the virtual environment, e.g., `uv shell`
 
 ---
 
-_Issue opened by @twiddles on 2024-02-23 12:26_
+_@twiddles_
 
 **Summary**
 I propose the introduction of a new command, `uv shell`. This command would provide users with a quick and straightforward way to enter the associated Python virtual environment (venv) for their projects.

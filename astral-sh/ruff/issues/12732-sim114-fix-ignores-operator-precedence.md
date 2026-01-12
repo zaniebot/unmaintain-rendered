@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-07T14:36:52Z
 updated_at: 2024-08-08T03:03:25Z
 url: https://github.com/astral-sh/ruff/issues/12732
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # SIM114 fix ignores operator precedence
 
 ---
 
-_Issue opened by @dscorbett on 2024-08-07 14:36_
+_@dscorbett_
 
 The fix for [SIM114](https://docs.astral.sh/ruff/rules/if-with-same-arms/) has a bug: it does not take operator precedence into account when combining two expressions with `or`. It should sometimes add parentheses around one expression or the other.
 

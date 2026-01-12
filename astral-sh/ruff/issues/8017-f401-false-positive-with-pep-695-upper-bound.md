@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-17T15:28:14Z
 updated_at: 2023-10-18T01:50:27Z
 url: https://github.com/astral-sh/ruff/issues/8017
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # F401 false positive with PEP-695 upper bound specification
 
 ---
 
-_Issue opened by @bryanforbes on 2023-10-17 15:28_
+_@bryanforbes_
 
 Running the following command with Ruff `0.1.0`:
 

@@ -13,14 +13,14 @@ head: charlie/deny
 created_at: 2024-08-22T17:08:21Z
 updated_at: 2024-08-23T14:09:23Z
 url: https://github.com/astral-sh/uv/pull/6450
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:22Z
 ```
 
 # Deny invalid members in workspace schema
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-22 17:08_
+_@charliermarsh_
 
 ## Summary
 

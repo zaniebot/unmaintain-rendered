@@ -14,14 +14,14 @@ head: deny-deprecated-rules-in-seleect-all-option
 created_at: 2024-03-20T21:06:19Z
 updated_at: 2024-06-25T10:38:40Z
 url: https://github.com/astral-sh/ruff/pull/10497
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Added ignoring deprecated rules for --select=ALL
 
 ---
 
-_Pull request opened by @WindowGenerator on 2024-03-20 21:06_
+_@WindowGenerator_
 
 ## Summary
 

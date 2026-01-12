@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-24T18:43:02Z
 updated_at: 2025-12-05T15:04:54Z
 url: https://github.com/astral-sh/uv/issues/16019
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # `--python-platform` can install source build for host instead of target
 
 ---
 
-_Issue opened by @NiklasRosenstein on 2025-09-24 18:43_
+_@NiklasRosenstein_
 
 ### Summary
 

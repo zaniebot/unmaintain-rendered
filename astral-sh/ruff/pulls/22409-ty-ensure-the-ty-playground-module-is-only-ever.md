@@ -14,14 +14,14 @@ head: fix-playground-bug
 created_at: 2026-01-05T20:21:33Z
 updated_at: 2026-01-06T09:52:02Z
 url: https://github.com/astral-sh/ruff/pull/22409
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Ensure the ty playground module is only ever loaded once
 
 ---
 
-_Pull request opened by @RasmusNygren on 2026-01-05 20:21_
+_@RasmusNygren_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-18T11:01:21Z
 updated_at: 2025-02-21T16:21:03Z
 url: https://github.com/astral-sh/uv/issues/11592
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # uv does not support --constraint with a URL in double quotes
 
 ---
 
-_Issue opened by @turbotankist on 2025-02-18 11:01_
+_@turbotankist_
 
 ### Summary
 

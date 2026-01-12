@@ -13,14 +13,14 @@ head: konsti/tool-editable-docs
 created_at: 2025-02-06T14:08:57Z
 updated_at: 2025-02-07T22:56:55Z
 url: https://github.com/astral-sh/uv/pull/11280
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:45Z
 ```
 
 # Add docs for `uv tool install --editable`
 
 ---
 
-_Pull request opened by @konstin on 2025-02-06 14:08_
+_@konstin_
 
 I also moved it down a bit below the more important options
 

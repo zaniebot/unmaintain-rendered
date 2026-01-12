@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T09:38:42Z
 updated_at: 2026-01-09T12:37:06Z
 url: https://github.com/astral-sh/uv/issues/17373
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # uv run has a hash mismatch
 
 ---
 
-_Issue opened by @senn-hermle on 2026-01-09 09:38_
+_@senn-hermle_
 
 ### Summary
 

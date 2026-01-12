@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-12T17:11:19Z
 updated_at: 2022-12-13T01:28:23Z
 url: https://github.com/astral-sh/ruff/issues/1215
-synced_at: 2026-01-10T12:06:19Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add support for `extend` in `pyproject.toml` files
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-12 17:11_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: david/fix-738
 created_at: 2025-07-01T13:12:51Z
 updated_at: 2025-07-09T06:46:35Z
 url: https://github.com/astral-sh/ruff/pull/19069
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [ty] Fix panic for attribute expressions with empty value
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-01 13:12_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-28T03:15:47Z
 updated_at: 2025-05-23T08:42:54Z
 url: https://github.com/astral-sh/uv/issues/2705
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Installing uv in Termux: Linux-aarch64 (by pip & curl)
 
 ---
 
-_Issue opened by @b9Joker108 on 2024-03-28 03:15_
+_@b9Joker108_
 
 Hi
 

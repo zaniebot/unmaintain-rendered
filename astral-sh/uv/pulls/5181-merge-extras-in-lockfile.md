@@ -14,14 +14,14 @@ head: konsti/merge-extras-in-lockfile
 created_at: 2024-07-18T10:48:18Z
 updated_at: 2024-07-23T14:32:05Z
 url: https://github.com/astral-sh/uv/pull/5181
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:41Z
 ```
 
 # Merge extras in lockfile
 
 ---
 
-_Pull request opened by @konstin on 2024-07-18 10:48_
+_@konstin_
 
 As user, you specify a list of extras. Internally, we decompose this into one virtual package per extra. We currently leak this abstraction by writing one entry per extra to the lockfile:
 

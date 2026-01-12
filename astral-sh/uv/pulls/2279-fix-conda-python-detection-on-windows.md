@@ -14,14 +14,14 @@ head: charlie/conda
 created_at: 2024-03-07T14:40:24Z
 updated_at: 2024-03-07T14:48:53Z
 url: https://github.com/astral-sh/uv/pull/2279
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:57Z
 ```
 
 # Fix Conda Python detection on Windows
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-07 14:40_
+_@charliermarsh_
 
 ## Summary
 

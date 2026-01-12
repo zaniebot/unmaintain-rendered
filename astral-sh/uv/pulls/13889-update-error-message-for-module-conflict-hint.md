@@ -12,14 +12,14 @@ head: zb/conflict-hint-review
 created_at: 2025-06-06T19:04:56Z
 updated_at: 2025-06-11T22:33:41Z
 url: https://github.com/astral-sh/uv/pull/13889
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:54Z
 ```
 
 # Update error message for module conflict hint
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-06 19:04_
+_@zanieb_
 
 Review for https://github.com/astral-sh/uv/pull/13437
 

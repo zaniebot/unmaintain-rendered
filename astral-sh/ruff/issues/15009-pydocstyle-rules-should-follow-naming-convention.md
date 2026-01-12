@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-16T03:44:27Z
 updated_at: 2024-12-23T21:49:53Z
 url: https://github.com/astral-sh/ruff/issues/15009
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `pydocstyle` rules should follow naming convention
 
 ---
 
-_Issue opened by @dylwil3 on 2024-12-16 03:44_
+_@dylwil3_
 
 The following rules should be renamed to conform to Ruff's [naming convention](https://github.com/astral-sh/ruff/blob/main/CONTRIBUTING.md#rule-naming-convention):
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-10T15:08:50Z
 updated_at: 2025-10-13T13:39:48Z
 url: https://github.com/astral-sh/uv/issues/16231
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # uv sync --inexact removes `.venv` and recreates it. It was not the case before.
 
 ---
 
-_Issue opened by @0gust1 on 2025-10-10 15:08_
+_@0gust1_
 
 ### Summary
 

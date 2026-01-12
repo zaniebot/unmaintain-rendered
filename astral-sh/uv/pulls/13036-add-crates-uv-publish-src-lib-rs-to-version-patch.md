@@ -13,14 +13,14 @@ head: zb/upload-request
 created_at: 2025-04-21T23:54:49Z
 updated_at: 2025-04-22T08:02:04Z
 url: https://github.com/astral-sh/uv/pull/13036
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:31Z
 ```
 
 # Add `crates/uv-publish/src/lib.rs` to version patch files
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-21 23:54_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/actions/runs/14583501775/job/40904734786?pr=13034
 

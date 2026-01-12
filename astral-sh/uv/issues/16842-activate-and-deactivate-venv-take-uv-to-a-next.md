@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-25T07:15:08Z
 updated_at: 2025-11-26T16:40:57Z
 url: https://github.com/astral-sh/uv/issues/16842
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # Activate and deactivate venv (take uv to a next level of convenience)
 
 ---
 
-_Issue opened by @bernd-wechner on 2025-11-25 07:15_
+_@bernd-wechner_
 
 ### Summary
 

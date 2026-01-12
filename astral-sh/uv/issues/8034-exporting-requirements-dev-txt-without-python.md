@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-09T06:31:52Z
 updated_at: 2024-10-09T07:55:09Z
 url: https://github.com/astral-sh/uv/issues/8034
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Exporting requirements-dev.txt without `python_full_version`
 
 ---
 
-_Issue opened by @Jkrox on 2024-10-09 06:31_
+_@Jkrox_
 
 uv version: 0.4.9
 

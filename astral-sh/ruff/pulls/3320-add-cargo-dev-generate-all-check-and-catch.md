@@ -12,14 +12,14 @@ head: check-docs-in-cargo-test
 created_at: 2023-03-03T12:30:19Z
 updated_at: 2023-03-07T20:35:45Z
 url: https://github.com/astral-sh/ruff/pull/3320
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add `cargo dev generate-all --check` and catch outdated docs in `cargo test`
 
 ---
 
-_Pull request opened by @konstin on 2023-03-03 12:30_
+_@konstin_
 
 `cargo test` now catches outdated generated docs. You can also run the checks manually with `cargo dev generate-all --check`.
 

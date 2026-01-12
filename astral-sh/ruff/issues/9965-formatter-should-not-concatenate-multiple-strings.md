@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-12T23:15:06Z
 updated_at: 2024-02-12T23:18:07Z
 url: https://github.com/astral-sh/ruff/issues/9965
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # formatter should not concatenate multiple strings on the same line
 
 ---
 
-_Issue opened by @DetachHead on 2024-02-12 23:15_
+_@DetachHead_
 
 # before
 ```py

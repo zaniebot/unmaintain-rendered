@@ -13,14 +13,14 @@ head: david/unions-with-object
 created_at: 2025-02-10T21:52:03Z
 updated_at: 2025-02-10T22:21:47Z
 url: https://github.com/astral-sh/ruff/pull/16088
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] `T | object == object`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-10 21:52_
+_@sharkdp_
 
 ## Summary
 

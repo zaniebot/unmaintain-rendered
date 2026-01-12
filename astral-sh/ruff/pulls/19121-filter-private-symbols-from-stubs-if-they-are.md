@@ -14,14 +14,14 @@ head: zb/filter-completions
 created_at: 2025-07-03T13:57:07Z
 updated_at: 2025-07-11T14:42:38Z
 url: https://github.com/astral-sh/ruff/pull/19121
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # Filter private symbols from stubs if they are internal types
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-03 13:57_
+_@zanieb_
 
 This implements filtering of private symbols from stub files based on type information as discussed in https://github.com/astral-sh/ruff/pull/19102. It extends the previous implementation to apply to all stub files, instead of just the `builtins` module, and uses type information to retain private names that are may be relevant at runtime.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-23T13:25:40Z
 updated_at: 2025-05-28T07:52:07Z
 url: https://github.com/astral-sh/ruff/issues/18276
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # S608 - SQL Injection vector through string-based query construction
 
 ---
 
-_Issue opened by @laguill on 2025-05-23 13:25_
+_@laguill_
 
 ### Summary
 

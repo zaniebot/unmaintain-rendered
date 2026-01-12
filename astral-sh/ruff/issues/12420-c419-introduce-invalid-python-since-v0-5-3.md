@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-20T15:55:39Z
 updated_at: 2024-07-20T16:45:05Z
 url: https://github.com/astral-sh/ruff/issues/12420
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `C419` introduce invalid python since `v0.5.3`
 
 ---
 
-_Issue opened by @UnknownPlatypus on 2024-07-20 15:55_
+_@UnknownPlatypus_
 
 HI,
 

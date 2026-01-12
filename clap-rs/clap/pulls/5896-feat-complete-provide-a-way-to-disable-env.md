@@ -12,14 +12,14 @@ head: env
 created_at: 2025-01-29T15:31:29Z
 updated_at: 2025-01-29T15:37:51Z
 url: https://github.com/clap-rs/clap/pull/5896
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat(complete): Provide a way to disable env completions
 
 ---
 
-_Pull request opened by @epage on 2025-01-29 15:31_
+_@epage_
 
 You can remove the env variable but sometimes you want to override it.
 

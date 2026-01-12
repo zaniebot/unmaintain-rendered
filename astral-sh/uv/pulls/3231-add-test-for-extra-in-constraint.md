@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2024-04-24T01:47:43Z
 updated_at: 2024-04-24T01:52:42Z
 url: https://github.com/astral-sh/uv/pull/3231
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:31Z
 ```
 
 # Add test for extra-in-constraint
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-24 01:47_
+_@charliermarsh_
 
 ## Summary
 

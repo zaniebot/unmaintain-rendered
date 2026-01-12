@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-24T05:10:03Z
 updated_at: 2024-09-25T07:04:12Z
 url: https://github.com/astral-sh/ruff/issues/13491
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Add new checks from flake8-errmsg
 
 ---
 
-_Issue opened by @wwuck on 2024-09-24 05:10_
+_@wwuck_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-23T13:59:52Z
 updated_at: 2023-05-23T14:29:16Z
 url: https://github.com/astral-sh/ruff/issues/4602
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Are there pyproject-exclusive options?
 
 ---
 
-_Issue opened by @SXHRYU on 2023-05-23 13:59_
+_@SXHRYU_
 
 Is there any way to have the following options be applicable through CLI?
 ```

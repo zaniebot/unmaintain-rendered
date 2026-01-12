@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-01T07:59:19Z
 updated_at: 2022-12-02T18:25:46Z
 url: https://github.com/astral-sh/ruff/issues/978
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # PyCharm Inspections support
 
 ---
 
-_Issue opened by @nikolaik on 2022-12-01 07:59_
+_@nikolaik_
 
 Hi there,
 

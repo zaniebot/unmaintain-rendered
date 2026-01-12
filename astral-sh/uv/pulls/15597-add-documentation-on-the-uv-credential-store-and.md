@@ -13,14 +13,14 @@ head: zb/auth-docs-ii
 created_at: 2025-08-30T16:27:14Z
 updated_at: 2025-08-30T17:26:40Z
 url: https://github.com/astral-sh/uv/pull/15597
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:50Z
 ```
 
 # Add documentation on the uv credential store and CLI
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-30 16:27_
+_@zanieb_
 
 _No description provided._
 

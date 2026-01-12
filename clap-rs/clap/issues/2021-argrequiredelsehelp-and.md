@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-07-18T07:30:43Z
 updated_at: 2020-10-11T08:44:13Z
 url: https://github.com/clap-rs/clap/issues/2021
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # ArgRequiredElseHelp and SubcommandRequiredElseHelp don't result in clap::ErrorKind::HelpDisplayed
 
 ---
 
-_Issue opened by @leighmcculloch on 2020-07-18 07:30_
+_@leighmcculloch_
 
 ### Make sure you completed the following tasks
 

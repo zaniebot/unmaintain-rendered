@@ -12,14 +12,14 @@ head: konsti/test-certificate
 created_at: 2023-12-12T10:50:03Z
 updated_at: 2023-12-14T18:27:32Z
 url: https://github.com/astral-sh/uv/pull/615
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:04Z
 ```
 
 # Allow injecting certificate for tests
 
 ---
 
-_Pull request opened by @konstin on 2023-12-12 10:50_
+_@konstin_
 
 Built on #609
 

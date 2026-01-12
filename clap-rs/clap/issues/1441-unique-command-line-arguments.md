@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-03-29T17:05:47Z
 updated_at: 2020-07-01T02:53:31Z
 url: https://github.com/clap-rs/clap/issues/1441
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # `unique` command line arguments
 
 ---
 
-_Issue opened by @suhr on 2019-03-29 17:05_
+_@suhr_
 
 This feature request is inspired by [this discussion](https://github.com/tox-rs/tox-node/issues/53).
 

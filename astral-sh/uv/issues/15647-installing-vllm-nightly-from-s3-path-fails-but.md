@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-03T00:22:00Z
 updated_at: 2025-09-30T00:14:17Z
 url: https://github.com/astral-sh/uv/issues/15647
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # Installing vllm nightly from S3 path fails but leaves `uv.lock` in a unparseable, bad state
 
 ---
 
-_Issue opened by @vadimkantorov on 2025-09-03 00:22_
+_@vadimkantorov_
 
 ### Summary
 

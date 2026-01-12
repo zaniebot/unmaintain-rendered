@@ -12,14 +12,14 @@ head: charlie/import-context
 created_at: 2023-05-25T01:14:34Z
 updated_at: 2023-05-27T00:36:40Z
 url: https://github.com/astral-sh/ruff/pull/4649
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Avoid using typing-imported symbols for runtime edits
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-25 01:14_
+_@charliermarsh_
 
 ## Summary
 

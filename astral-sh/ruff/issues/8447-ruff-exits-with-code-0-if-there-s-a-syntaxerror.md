@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-02T15:44:46Z
 updated_at: 2024-06-27T12:46:47Z
 url: https://github.com/astral-sh/ruff/issues/8447
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `ruff` exits with `code 0` if there's a SyntaxError but rule `E999` is not selected
 
 ---
 
-_Issue opened by @gavriil-deshaw on 2023-11-02 15:44_
+_@gavriil-deshaw_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

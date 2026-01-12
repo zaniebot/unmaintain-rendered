@@ -13,14 +13,14 @@ head: zb/data-dir
 created_at: 2024-05-21T22:58:23Z
 updated_at: 2024-05-24T15:19:49Z
 url: https://github.com/astral-sh/uv/pull/3726
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Add `StateStore` abstraction for persistent state storage
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-21 22:58_
+_@zanieb_
 
 In preparation for storing stateful data that is not considered cache or config e.g.
 

@@ -12,14 +12,14 @@ head: actually-set-default-target
 created_at: 2023-08-09T10:34:54Z
 updated_at: 2023-08-09T15:27:48Z
 url: https://github.com/astral-sh/ruff/pull/6444
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Set default version to py38
 
 ---
 
-_Pull request opened by @rco-ableton on 2023-08-09 10:34_
+_@rco-ableton_
 
 ## Summary
 

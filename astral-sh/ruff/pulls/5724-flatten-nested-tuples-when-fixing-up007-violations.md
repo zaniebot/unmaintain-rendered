@@ -12,14 +12,14 @@ head: charlie/flat
 created_at: 2023-07-13T04:03:24Z
 updated_at: 2023-07-13T04:28:46Z
 url: https://github.com/astral-sh/ruff/pull/5724
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Flatten nested tuples when fixing UP007 violations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-13 04:03_
+_@charliermarsh_
 
 ## Summary
 

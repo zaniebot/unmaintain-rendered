@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-15T17:45:13Z
 updated_at: 2015-05-15T18:14:54Z
 url: https://github.com/clap-rs/clap/issues/117
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # value_t*! macros don't color output on error
 
 ---
 
-_Issue opened by @kbknapp on 2015-05-15 17:45_
+_@kbknapp_
 
 _No description provided._
 

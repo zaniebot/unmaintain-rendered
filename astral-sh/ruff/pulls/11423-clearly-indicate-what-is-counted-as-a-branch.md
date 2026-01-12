@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-05-14T11:21:18Z
 updated_at: 2024-05-16T02:18:52Z
 url: https://github.com/astral-sh/ruff/pull/11423
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Clearly indicate what is counted as a branch
 
 ---
 
-_Pull request opened by @jaap3 on 2024-05-14 11:21_
+_@jaap3_
 
 ## Summary
 

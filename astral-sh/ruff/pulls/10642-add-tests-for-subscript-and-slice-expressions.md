@@ -14,14 +14,14 @@ head: dhruv/test-subscript-slice
 created_at: 2024-03-28T04:14:40Z
 updated_at: 2024-03-29T08:54:56Z
 url: https://github.com/astral-sh/ruff/pull/10642
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Add tests for subscript and slice expressions
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-28 04:14_
+_@dhruvmanila_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T00:19:05Z
 updated_at: 2024-11-20T08:02:08Z
 url: https://github.com/astral-sh/ruff/issues/14470
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # TCH: Remove requirement for the name `TYPE_CHECKING` to be from `typing[_extensions]`?
 
 ---
 
-_Issue opened by @bzoracler on 2024-11-20 00:19_
+_@bzoracler_
 
 Although it is canonical to import `TYPE_CHECKING` from `typing` or `typing_extensions`, type-checkers do not seem to actually require this (see playground demos: [mypy](https://mypy-play.net/?mypy=latest&python=3.12&gist=53c467ed82f6ec030c4c65b5e6cc189a), [pyre](https://pyre-check.org/play?input=TYPE_CHECKING%3A%20bool%20%3D%20bool()%0A%0Aif%20not%20TYPE_CHECKING%3A%0A%20%20%20%20a%3A%20int%20%3D%20%22%22%0Aelse%3A%0A%20%20%20%20b%3A%20str%20%3D%200), [pyright](https://pyright-play.net/?pythonVersion=3.13&strict=true&reportMissingModuleSource=true&enableExperimentalFeatures=true&code=CoTQCgog%2BgwgEhGBpAkgOQOIC4AEAjAewIBscBefI4gCgEoAoegSwDMcA7AgFx1ElgTJ02ejjE4AhribseFAETz6AU2IBnZVlHi8uNVwBO5HAAYgA)).
 

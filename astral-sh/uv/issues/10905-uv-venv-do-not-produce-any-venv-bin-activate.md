@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-23T16:53:40Z
 updated_at: 2025-01-24T11:40:23Z
 url: https://github.com/astral-sh/uv/issues/10905
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # `uv venv` do not produce any .venv/bin/activate
 
 ---
 
-_Issue opened by @mortenb-buypass on 2025-01-23 16:53_
+_@mortenb-buypass_
 
 ### Question
 

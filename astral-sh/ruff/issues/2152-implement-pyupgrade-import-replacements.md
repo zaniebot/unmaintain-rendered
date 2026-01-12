@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-25T11:23:23Z
 updated_at: 2023-01-25T12:27:05Z
 url: https://github.com/astral-sh/ruff/issues/2152
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement `pyupgrade` import replacements
 
 ---
 
-_Issue opened by @stinodego on 2023-01-25 11:23_
+_@stinodego_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: charlie/arc
 created_at: 2025-01-10T01:07:46Z
 updated_at: 2025-01-10T20:15:15Z
 url: https://github.com/astral-sh/uv/pull/10453
-synced_at: 2026-01-10T11:44:50Z
+synced_at: 2026-01-12T16:09:18Z
 ```
 
 # Use `ArcStr` for marker values
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-10 01:07_
+_@charliermarsh_
 
 N.B. After fixing #10430, `ArcStr` became the fastest implementation (and the gains were significantly reduced, down to 1-2%). See: https://github.com/astral-sh/uv/pull/10453#issuecomment-2583344414.
 

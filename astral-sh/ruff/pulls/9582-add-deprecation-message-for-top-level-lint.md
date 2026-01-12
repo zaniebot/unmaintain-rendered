@@ -13,14 +13,14 @@ head: warn-about-deprecated-top-level-lint-settings
 created_at: 2024-01-19T17:17:07Z
 updated_at: 2024-01-29T17:53:14Z
 url: https://github.com/astral-sh/ruff/pull/9582
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Add deprecation message for top-level lint settings
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-01-19 17:17_
+_@MichaReiser_
 
 
 

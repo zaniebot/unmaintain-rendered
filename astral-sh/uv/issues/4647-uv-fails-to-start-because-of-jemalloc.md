@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-29T16:38:43Z
 updated_at: 2024-08-26T16:49:24Z
 url: https://github.com/astral-sh/uv/issues/4647
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # uv fails to start because of jemalloc
 
 ---
 
-_Issue opened by @adminy on 2024-06-29 16:38_
+_@adminy_
 
 ```
 <jemalloc>: Unsupported system page size

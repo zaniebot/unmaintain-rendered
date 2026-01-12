@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-17T06:55:28Z
 updated_at: 2024-09-17T13:29:55Z
 url: https://github.com/astral-sh/uv/issues/7449
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # support uv run invoked via subprocess
 
 ---
 
-_Issue opened by @mraesener-aubex on 2024-09-17 06:55_
+_@mraesener-aubex_
 
 `system='Windows', release='10', version='10.0.20348', machine='AMD64'`
 `uv 0.4.10 (690716484 2024-09-13)`

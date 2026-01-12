@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-31T08:50:44Z
 updated_at: 2025-04-02T14:15:37Z
 url: https://github.com/astral-sh/uv/issues/12578
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # uv run python in vllm dir failed `No solution found when resolving dependencies for split`
 
 ---
 
-_Issue opened by @yihong0618 on 2025-03-31 08:50_
+_@yihong0618_
 
 error:
 

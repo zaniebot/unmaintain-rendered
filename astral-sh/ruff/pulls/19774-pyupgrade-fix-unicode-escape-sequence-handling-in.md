@@ -13,14 +13,14 @@ head: fix-19771
 created_at: 2025-08-05T22:16:38Z
 updated_at: 2025-09-30T07:13:29Z
 url: https://github.com/astral-sh/ruff/pull/19774
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [`pyupgrade`] Fix Unicode escape sequence handling in format string parsing
 
 ---
 
-_Pull request opened by @danparizher on 2025-08-05 22:16_
+_@danparizher_
 
 ## Summary
 

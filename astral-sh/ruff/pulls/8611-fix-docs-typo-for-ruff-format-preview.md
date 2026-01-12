@@ -13,14 +13,14 @@ head: fix-preview-format-docs-typo
 created_at: 2023-11-11T01:54:24Z
 updated_at: 2023-11-17T22:40:55Z
 url: https://github.com/astral-sh/ruff/pull/8611
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Fix docs typo for `ruff format` preview configuration
 
 ---
 
-_Pull request opened by @sjdemartini on 2023-11-11 01:54_
+_@sjdemartini_
 
 ## Summary
 

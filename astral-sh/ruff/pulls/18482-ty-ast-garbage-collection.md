@@ -14,14 +14,14 @@ head: ibraheem/ast-node-gc
 created_at: 2025-06-05T17:54:11Z
 updated_at: 2025-06-13T20:34:36Z
 url: https://github.com/astral-sh/ruff/pull/18482
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] AST garbage collection
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-06-05 17:54_
+_@ibraheemdev_
 
 ## Summary
 

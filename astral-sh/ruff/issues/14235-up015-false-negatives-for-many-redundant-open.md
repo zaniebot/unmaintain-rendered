@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-09T22:39:12Z
 updated_at: 2024-11-11T03:48:31Z
 url: https://github.com/astral-sh/ruff/issues/14235
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # UP015 false negatives for many redundant `open` modes
 
 ---
 
-_Issue opened by @dscorbett on 2024-11-09 22:39_
+_@dscorbett_
 
 [`redundant-open-modes` (UP015)](https://docs.astral.sh/ruff/rules/redundant-open-modes/) only recognizes seven redundant modes in Ruff 0.7.3:
 

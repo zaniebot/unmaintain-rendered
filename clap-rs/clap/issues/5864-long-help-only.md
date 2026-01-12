@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-01T23:55:30Z
 updated_at: 2025-06-10T15:31:58Z
 url: https://github.com/clap-rs/clap/issues/5864
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Long help only
 
 ---
 
-_Issue opened by @nic-hartley on 2025-01-01 23:55_
+_@nic-hartley_
 
 ### Please complete the following tasks
 

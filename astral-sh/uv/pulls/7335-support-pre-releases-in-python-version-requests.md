@@ -12,14 +12,14 @@ head: feat(pre-release)/support-pre-releases-in-python-version-requests
 created_at: 2024-09-12T16:06:44Z
 updated_at: 2024-09-17T14:46:47Z
 url: https://github.com/astral-sh/uv/pull/7335
-synced_at: 2026-01-10T12:53:45Z
+synced_at: 2026-01-12T16:07:47Z
 ```
 
 # Support pre-releases in Python version requests - `command --python <major.minor.pre-release>`
 
 ---
 
-_Pull request opened by @mikeleppane on 2024-09-12 16:06_
+_@mikeleppane_
 
 ## Summary
 

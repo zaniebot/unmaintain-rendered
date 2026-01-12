@@ -11,14 +11,14 @@ head: clarify-uv-run-python-in-document
 created_at: 2025-11-09T05:48:52Z
 updated_at: 2025-11-09T05:52:50Z
 url: https://github.com/astral-sh/uv/pull/16649
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:22Z
 ```
 
 # Clarify that uv run python starts an interactive REPL
 
 ---
 
-_Pull request opened by @chilin0525 on 2025-11-09 05:48_
+_@chilin0525_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

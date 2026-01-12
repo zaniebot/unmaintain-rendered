@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-13T14:30:33Z
 updated_at: 2026-01-10T16:29:46Z
 url: https://github.com/astral-sh/uv/issues/16722
-synced_at: 2026-01-12T02:26:26Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # uv prefers managed free-threaded Python over unmanaged non-freethreaded Python
 
 ---
 
-_Issue opened by @lengau on 2025-11-13 14:30_
+_@lengau_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: mikayla/workspace-dir
 created_at: 2025-11-11T00:30:12Z
 updated_at: 2025-11-11T19:31:14Z
 url: https://github.com/astral-sh/uv/pull/16678
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:23Z
 ```
 
 # Add `uv workspace dir` command
 
 ---
 
-_Pull request opened by @mikaylathompson on 2025-11-11 00:30_
+_@mikaylathompson_
 
 Addresses https://github.com/astral-sh/uv/issues/13636
 

@@ -13,14 +13,14 @@ head: charlie/updater
 created_at: 2024-03-06T05:13:03Z
 updated_at: 2024-03-19T20:02:54Z
 url: https://github.com/astral-sh/uv/pull/2228
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:55Z
 ```
 
 # Add a `uv self update` command
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-06 05:13_
+_@charliermarsh_
 
 ## Summary
 

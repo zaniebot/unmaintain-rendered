@@ -12,14 +12,14 @@ head: clarificationUsage
 created_at: 2023-01-02T16:23:03Z
 updated_at: 2023-01-02T18:40:17Z
 url: https://github.com/astral-sh/ruff/pull/1557
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add clarification
 
 ---
 
-_Pull request opened by @VictorGob on 2023-01-02 16:23_
+_@VictorGob_
 
 Just a little clarification on how to use Ruff
 

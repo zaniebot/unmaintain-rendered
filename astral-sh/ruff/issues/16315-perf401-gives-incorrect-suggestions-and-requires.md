@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-22T12:46:42Z
 updated_at: 2025-11-10T18:35:59Z
 url: https://github.com/astral-sh/ruff/issues/16315
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PERF401 gives incorrect suggestions and requires suboptimal workarounds with async iterators
 
 ---
 
-_Issue opened by @MarkusSintonen on 2025-02-22 12:46_
+_@MarkusSintonen_
 
 ### Description
 

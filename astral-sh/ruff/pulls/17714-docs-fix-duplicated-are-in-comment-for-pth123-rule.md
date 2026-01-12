@@ -13,14 +13,14 @@ head: fix_pth123_comment
 created_at: 2025-04-29T15:40:34Z
 updated_at: 2025-04-29T16:03:33Z
 url: https://github.com/astral-sh/ruff/pull/17714
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [docs] fix duplicated 'are' in comment for PTH123 rule
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-29 15:40_
+_@Kalmaegi_
 
 
 

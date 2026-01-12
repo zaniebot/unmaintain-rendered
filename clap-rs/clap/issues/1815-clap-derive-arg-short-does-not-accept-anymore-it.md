@@ -14,14 +14,14 @@ assignees: []
 created_at: 2020-04-12T21:16:03Z
 updated_at: 2020-06-27T01:32:42Z
 url: https://github.com/clap-rs/clap/issues/1815
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # clap_derive: Arg::short does not accept "..." anymore, it needs char
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-04-12 21:16_
+_@CreepySkeleton_
 
 `Arg::short` in clap 2.x is defined as `.short("...")` while in clap 3.0 it's going to take `char`.
 

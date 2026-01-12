@@ -13,14 +13,14 @@ head: zb/unsafe-hint-hide
 created_at: 2023-12-11T16:04:03Z
 updated_at: 2023-12-11T21:43:04Z
 url: https://github.com/astral-sh/ruff/pull/9095
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Hide unsafe fix suggestions when explicitly disabled
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-11 16:04_
+_@zanieb_
 
 Hides hints about unsafe fixes when they are disabled e.g. with `--no-unsafe-fixes` or `unsafe-fixes = false`. By default, unsafe fix hints are still displayed. This seems like a nice way to remove the nag for users who have chosen not to apply unsafe fixes.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-21T17:35:20Z
 updated_at: 2023-02-21T23:20:08Z
 url: https://github.com/astral-sh/ruff/issues/3086
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # cache defeats flake8-executable
 
 ---
 
-_Issue opened by @dimbleby on 2023-02-21 17:35_
+_@dimbleby_
 
 ```
 $ ruff .

@@ -14,14 +14,14 @@ head: charlie/PD002
 created_at: 2023-09-03T20:54:39Z
 updated_at: 2023-09-03T21:11:08Z
 url: https://github.com/astral-sh/ruff/pull/7111
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Handle parenthesized calls in PD002
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-03 20:54_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7096.
 

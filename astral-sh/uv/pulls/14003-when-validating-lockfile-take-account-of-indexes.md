@@ -12,14 +12,14 @@ head: jtfm/custom-indexes-lockfile
 created_at: 2025-06-12T18:24:27Z
 updated_at: 2025-07-25T05:06:50Z
 url: https://github.com/astral-sh/uv/pull/14003
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:58Z
 ```
 
 # When validating lockfile, take account of indexes defined as sources in path dependencies
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-12 18:24_
+_@jtfmumm_
 
 As described in #11419, when an index was defined as a source in a path dependency (and that index ended up in the lockfile), it would cause lockfile validation to incorrectly determine that the file had changed. This PR adds those indexes to the list uv uses to validate. 
 

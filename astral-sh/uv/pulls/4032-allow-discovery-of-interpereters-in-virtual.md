@@ -12,14 +12,14 @@ head: zb/discover-default
 created_at: 2024-06-05T00:12:35Z
 updated_at: 2025-02-04T15:55:56Z
 url: https://github.com/astral-sh/uv/pull/4032
-synced_at: 2026-01-10T11:10:33Z
+synced_at: 2026-01-12T16:05:59Z
 ```
 
 # Allow discovery of interpereters in virtual environments activated by a shim
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-05 00:12_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/4009
 Closes https://github.com/astral-sh/uv/issues/2109

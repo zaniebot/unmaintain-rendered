@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-31T03:17:20Z
 updated_at: 2024-08-09T02:23:37Z
 url: https://github.com/clap-rs/clap/issues/3234
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Allow good/warning/error/hint color to be customized
 
 ---
 
-_Issue opened by @milesj on 2021-12-31 03:17_
+_@milesj_
 
 ### Please complete the following tasks
 

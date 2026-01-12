@@ -13,14 +13,14 @@ head: bad-str-strip-call
 created_at: 2023-02-04T16:43:44Z
 updated_at: 2023-02-06T21:34:02Z
 url: https://github.com/astral-sh/ruff/pull/2570
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # [`pylint`]: bad-str-strip-call
 
 ---
 
-_Pull request opened by @colin99d on 2023-02-04 16:43_
+_@colin99d_
 
 ref #970 
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-04T17:52:41Z
 updated_at: 2024-09-04T17:56:19Z
 url: https://github.com/astral-sh/uv/issues/7040
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # [feat] Log parent package when erroring during dependency install
 
 ---
 
-_Issue opened by @benniekiss on 2024-09-04 17:52_
+_@benniekiss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

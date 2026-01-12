@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T08:41:32Z
 updated_at: 2025-06-03T08:43:12Z
 url: https://github.com/astral-sh/uv/issues/13798
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # `uv pip compile` to be able to generate a build constraints file
 
 ---
 
-_Issue opened by @paveldikov on 2025-06-03 08:41_
+_@paveldikov_
 
 ### Summary
 

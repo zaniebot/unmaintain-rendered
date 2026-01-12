@@ -13,14 +13,14 @@ head: zb/fix-pre
 created_at: 2024-09-24T17:53:57Z
 updated_at: 2024-09-24T18:00:30Z
 url: https://github.com/astral-sh/uv/pull/7666
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Use the first pre-release discovered when only pre-release Python versions are available
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-24 17:53_
+_@zanieb_
 
 _No description provided._
 

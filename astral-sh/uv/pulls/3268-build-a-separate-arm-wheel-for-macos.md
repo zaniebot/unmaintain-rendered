@@ -13,14 +13,14 @@ head: charlie/arm
 created_at: 2024-04-25T19:30:42Z
 updated_at: 2024-04-25T23:13:28Z
 url: https://github.com/astral-sh/uv/pull/3268
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:32Z
 ```
 
 # Build a separate ARM wheel for macOS
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-25 19:30_
+_@charliermarsh_
 
 ## Summary
 

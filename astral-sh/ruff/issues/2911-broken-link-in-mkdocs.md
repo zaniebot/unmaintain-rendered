@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-15T04:35:23Z
 updated_at: 2023-02-17T14:52:23Z
 url: https://github.com/astral-sh/ruff/issues/2911
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Broken link in mkdocs
 
 ---
 
-_Issue opened by @lbellomo on 2023-02-15 04:35_
+_@lbellomo_
 
 The [Near-parity](https://github.com/charliermarsh/ruff/blob/23d9309111c00daa6d4d70537a88118df22ca450/README.md?plain=1#L32) link is not in the [mkdocs](https://beta.ruff.rs/docs/#how-does-ruff-compare-to-flake8) because it is in a different section. It should have `faq/` at the beginning of the link.
 

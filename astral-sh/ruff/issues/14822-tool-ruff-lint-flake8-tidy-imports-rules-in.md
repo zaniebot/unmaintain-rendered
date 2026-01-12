@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-06T16:14:20Z
 updated_at: 2024-12-09T11:09:51Z
 url: https://github.com/astral-sh/ruff/issues/14822
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [tool.ruff.lint.flake8-tidy-imports] rules in pyproject.toml parent are ignore pyproject.toml child file
 
 ---
 
-_Issue opened by @FrancoisMasson1990 on 2024-12-06 16:14_
+_@FrancoisMasson1990_
 
 Rules present in pyproject.toml parent file are ignored in the child file one.
 

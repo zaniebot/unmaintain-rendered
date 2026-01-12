@@ -13,14 +13,14 @@ head: dependabot/cargo/memchr-2.7.1
 created_at: 2024-02-05T08:30:46Z
 updated_at: 2024-02-05T13:24:24Z
 url: https://github.com/astral-sh/ruff/pull/9827
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Bump memchr from 2.6.4 to 2.7.1
 
 ---
 
-_Pull request opened by @dependabot on 2024-02-05 08:30_
+_@dependabot_
 
 Bumps [memchr](https://github.com/BurntSushi/memchr) from 2.6.4 to 2.7.1.
 <details>

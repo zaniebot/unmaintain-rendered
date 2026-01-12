@@ -14,14 +14,14 @@ head: micha/salsa-panic-bugfix
 created_at: 2025-09-25T14:30:13Z
 updated_at: 2025-09-25T15:13:09Z
 url: https://github.com/astral-sh/ruff/pull/20577
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # [ty] Update salsa to fix hang when cycle head panics
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-09-25 14:30_
+_@MichaReiser_
 
 ## Summary
 

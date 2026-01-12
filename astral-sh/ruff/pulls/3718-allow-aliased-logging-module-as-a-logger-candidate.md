@@ -13,14 +13,14 @@ head: fix/detect-logging-alias
 created_at: 2023-03-24T18:46:52Z
 updated_at: 2023-04-04T16:22:22Z
 url: https://github.com/astral-sh/ruff/pull/3718
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Allow aliased `logging` module as a logger candidate
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-03-24 18:46_
+_@dhruvmanila_
 
 Currently, `is_logger_candidate` will only detect if the last part of the call path but before the level function is `log`, `logger` or `logging`. This expands so that the direct calls from the `logging` module are considered even if they're aliased to names other than the ones listed above.
 

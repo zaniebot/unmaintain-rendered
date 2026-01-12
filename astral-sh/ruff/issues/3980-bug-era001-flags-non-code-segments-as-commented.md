@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-15T20:22:08Z
 updated_at: 2023-04-16T23:11:02Z
 url: https://github.com/astral-sh/ruff/issues/3980
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # bug: `ERA001` flags non-code segments as commented-out code
 
 ---
 
-_Issue opened by @ksquarekumar on 2023-04-15 20:22_
+_@ksquarekumar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

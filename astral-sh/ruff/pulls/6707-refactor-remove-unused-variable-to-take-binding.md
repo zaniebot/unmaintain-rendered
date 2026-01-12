@@ -13,14 +13,14 @@ head: charlie/unused-variable
 created_at: 2023-08-20T15:39:07Z
 updated_at: 2023-08-20T16:19:06Z
 url: https://github.com/astral-sh/ruff/pull/6707
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Refactor `remove_unused_variable` to take `&Binding`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-20 15:39_
+_@charliermarsh_
 
 _No description provided._
 

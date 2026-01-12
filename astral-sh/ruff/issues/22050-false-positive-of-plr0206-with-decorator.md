@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-18T10:41:29Z
 updated_at: 2025-12-18T14:24:59Z
 url: https://github.com/astral-sh/ruff/issues/22050
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # False-positive of PLR0206 with decorator injecting parameter into method
 
 ---
 
-_Issue opened by @fritz-k on 2025-12-18 10:41_
+_@fritz-k_
 
 ### Summary
 

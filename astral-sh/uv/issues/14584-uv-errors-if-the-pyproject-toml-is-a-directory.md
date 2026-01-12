@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-13T03:22:38Z
 updated_at: 2025-08-06T07:35:12Z
 url: https://github.com/astral-sh/uv/issues/14584
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:52Z
 ```
 
 # uv errors if the `pyproject.toml` is a directory
 
 ---
 
-_Issue opened by @bsraya on 2025-07-13 03:22_
+_@bsraya_
 
 ### Summary
 

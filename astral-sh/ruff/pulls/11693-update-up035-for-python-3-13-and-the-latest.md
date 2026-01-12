@@ -14,14 +14,14 @@ head: typing-extensions
 created_at: 2024-06-02T14:18:22Z
 updated_at: 2024-06-02T21:59:49Z
 url: https://github.com/astral-sh/ruff/pull/11693
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Update UP035 for Python 3.13 and the latest version of typing_extensions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-02 14:18_
+_@AlexWaygood_
 
 ## Summary
 

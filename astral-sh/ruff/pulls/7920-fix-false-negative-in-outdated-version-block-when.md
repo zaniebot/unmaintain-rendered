@@ -12,14 +12,14 @@ head: zanie/fix-outdated-version-block
 created_at: 2023-10-11T15:24:20Z
 updated_at: 2023-10-11T19:33:45Z
 url: https://github.com/astral-sh/ruff/pull/7920
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fix false negative in `outdated-version-block` when using greater than comparisons
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-11 15:24_
+_@zanieb_
 
 Closes #7902 
 

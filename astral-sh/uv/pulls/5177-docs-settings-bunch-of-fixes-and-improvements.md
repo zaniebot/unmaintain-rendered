@@ -13,14 +13,14 @@ head: docs/improve-settings
 created_at: 2024-07-18T03:55:35Z
 updated_at: 2024-07-19T14:35:36Z
 url: https://github.com/astral-sh/uv/pull/5177
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:41Z
 ```
 
 # docs(settings): bunch of fixes and improvements
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-07-18 03:55_
+_@mkniewallner_
 
 ## Summary
 

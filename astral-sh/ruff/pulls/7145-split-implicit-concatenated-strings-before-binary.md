@@ -13,14 +13,14 @@ head: flatten-binary-expression
 created_at: 2023-09-05T09:53:36Z
 updated_at: 2023-09-21T10:38:43Z
 url: https://github.com/astral-sh/ruff/pull/7145
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Split implicit concatenated strings before binary expressions
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-05 09:53_
+_@MichaReiser_
 
 ## Summary
 

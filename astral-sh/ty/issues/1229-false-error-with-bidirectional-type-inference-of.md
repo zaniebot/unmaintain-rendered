@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-21T23:57:48Z
 updated_at: 2025-11-12T19:22:39Z
 url: https://github.com/astral-sh/ty/issues/1229
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # false error with bidirectional type inference of type variable resolution
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-21 23:57_
+_@KotlinIsland_
 
 ### Summary
 

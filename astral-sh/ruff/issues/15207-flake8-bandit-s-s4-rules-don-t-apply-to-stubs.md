@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-30T22:09:57Z
 updated_at: 2025-01-30T05:42:57Z
 url: https://github.com/astral-sh/ruff/issues/15207
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `flake8-bandit`'s `S4` rules don't apply to stubs
 
 ---
 
-_Issue opened by @Avasam on 2024-12-30 22:09_
+_@Avasam_
 
 When enabling the `flake8-bandit (S)` category (with preview mode), `S4` rules will trigger on imports in stubs of a project. I believe these will *always* be false-positives and there's no need no need to warn about importing insecure and vulnerable libraries in stubs. Since those are not runtime files. Nothing gets executed.
 

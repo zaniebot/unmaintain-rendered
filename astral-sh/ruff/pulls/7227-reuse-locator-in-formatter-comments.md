@@ -12,14 +12,14 @@ head: reuse-locator-in-comment-visitor
 created_at: 2023-09-07T17:27:02Z
 updated_at: 2023-09-07T18:08:30Z
 url: https://github.com/astral-sh/ruff/pull/7227
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Reuse locator in formatter comments
 
 ---
 
-_Pull request opened by @konstin on 2023-09-07 17:27_
+_@konstin_
 
 **Summary** The comment visitor used to rebuild the locator for every comment. Instead, we now keep the locator on the builder. Follow-up to #6813.
 

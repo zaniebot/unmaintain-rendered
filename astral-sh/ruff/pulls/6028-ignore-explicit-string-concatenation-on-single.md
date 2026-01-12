@@ -12,14 +12,14 @@ head: isc-fix
 created_at: 2023-07-24T12:16:57Z
 updated_at: 2023-07-26T01:15:50Z
 url: https://github.com/astral-sh/ruff/pull/6028
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Ignore `explicit-string-concatenation` on single line
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-24 12:16_
+_@tjkuson_
 
 ## Summary
 

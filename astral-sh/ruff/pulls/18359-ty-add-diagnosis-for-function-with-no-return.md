@@ -13,14 +13,14 @@ head: no-return-statement
 created_at: 2025-05-29T00:10:54Z
 updated_at: 2025-05-29T23:17:19Z
 url: https://github.com/astral-sh/ruff/pull/18359
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Add diagnosis for function with no return statement but with return type annotation
 
 ---
 
-_Pull request opened by @lipefree on 2025-05-29 00:10_
+_@lipefree_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

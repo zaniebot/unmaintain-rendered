@@ -13,14 +13,14 @@ head: dhruv/check-airflow-module
 created_at: 2024-11-27T07:20:20Z
 updated_at: 2024-11-27T08:36:30Z
 url: https://github.com/astral-sh/ruff/pull/14627
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Check that `airflow` module is seen for `AIR001`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-27 07:20_
+_@dhruvmanila_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-10T15:46:42Z
 updated_at: 2023-11-13T17:16:14Z
 url: https://github.com/astral-sh/ruff/issues/7259
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # E203 fix should leave equal amounts of space on either side of a slice operator
 
 ---
 
-_Issue opened by @bersbersbers on 2023-09-10 15:46_
+_@bersbersbers_
 
 ```python
 ham[lower + offset : upper + offset]

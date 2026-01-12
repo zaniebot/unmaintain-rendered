@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-12T09:42:51Z
 updated_at: 2023-09-21T02:30:24Z
 url: https://github.com/astral-sh/ruff/issues/7291
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Detect `noqa` directives inside f-strings
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-12 09:42_
+_@dhruvmanila_
 
 `noqa` comments for strings goes at the end of it. Similarly, for multi-line strings (triple-quoted), the `noqa` directive is expected on the last line of the string.
 

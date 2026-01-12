@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T05:53:45Z
 updated_at: 2025-01-24T14:44:08Z
 url: https://github.com/astral-sh/uv/issues/10928
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # npm style script support
 
 ---
 
-_Issue opened by @allenc97 on 2025-01-24 05:53_
+_@allenc97_
 
 ### Summary
 

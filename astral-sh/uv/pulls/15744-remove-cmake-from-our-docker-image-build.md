@@ -13,14 +13,14 @@ head: zb/cmake-req
 created_at: 2025-09-08T21:10:57Z
 updated_at: 2025-09-09T11:23:16Z
 url: https://github.com/astral-sh/uv/pull/15744
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:54Z
 ```
 
 # Remove cmake from our Docker image build
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-08 21:10_
+_@zanieb_
 
 We no longer depend on CMake
 

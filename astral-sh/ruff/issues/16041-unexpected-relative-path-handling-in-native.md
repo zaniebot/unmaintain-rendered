@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-07T22:47:41Z
 updated_at: 2025-02-10T04:57:16Z
 url: https://github.com/astral-sh/ruff/issues/16041
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Unexpected relative path handling in native server mode
 
 ---
 
-_Issue opened by @richtea on 2025-02-07 22:47_
+_@richtea_
 
 [Edit - see [my comment](https://github.com/astral-sh/ruff/issues/16041) below for problem description]
 

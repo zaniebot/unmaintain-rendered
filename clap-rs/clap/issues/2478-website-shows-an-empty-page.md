@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-05-10T14:02:29Z
 updated_at: 2021-05-18T22:46:29Z
 url: https://github.com/clap-rs/clap/issues/2478
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Website shows an empty page
 
 ---
 
-_Issue opened by @rugk on 2021-05-10 14:02_
+_@rugk_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

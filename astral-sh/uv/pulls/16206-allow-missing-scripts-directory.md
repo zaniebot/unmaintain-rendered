@@ -14,14 +14,14 @@ head: konsti/scripts-may-be-missing
 created_at: 2025-10-09T12:46:38Z
 updated_at: 2025-10-09T14:34:42Z
 url: https://github.com/astral-sh/uv/pull/16206
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:10Z
 ```
 
 # Allow missing `Scripts` directory
 
 ---
 
-_Pull request opened by @konstin on 2025-10-09 12:46_
+_@konstin_
 
 With the new Python install manager, the `Scripts` directory reported by Python may not exist.
 

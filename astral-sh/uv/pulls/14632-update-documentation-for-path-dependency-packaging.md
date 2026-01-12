@@ -12,14 +12,14 @@ head: zb/docs-package-source
 created_at: 2025-07-15T17:52:35Z
 updated_at: 2025-07-16T13:34:10Z
 url: https://github.com/astral-sh/uv/pull/14632
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:19Z
 ```
 
 # Update documentation for path dependency packaging
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-15 17:52_
+_@zanieb_
 
 Edits for https://github.com/astral-sh/uv/pull/14413
 

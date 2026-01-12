@@ -13,14 +13,14 @@ head: kcon-stackav/use-aws-lc-instead-of-ring
 created_at: 2024-07-02T18:39:32Z
 updated_at: 2026-01-02T15:05:26Z
 url: https://github.com/astral-sh/uv/pull/4734
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:06:25Z
 ```
 
 # Use aws-lc-rs instead of ring for TLS
 
 ---
 
-_Pull request opened by @kcon-stackav on 2024-07-02 18:39_
+_@kcon-stackav_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

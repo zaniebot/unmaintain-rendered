@@ -13,14 +13,14 @@ head: charlie/DOC
 created_at: 2024-08-03T00:01:22Z
 updated_at: 2024-08-03T12:17:57Z
 url: https://github.com/astral-sh/ruff/pull/12651
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Ignore `DOC` errors for stub functions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-03 00:01_
+_@charliermarsh_
 
 ## Summary
 

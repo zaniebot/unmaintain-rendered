@@ -13,14 +13,14 @@ head: funcion-literal-assignability
 created_at: 2025-03-31T14:57:01Z
 updated_at: 2025-03-31T15:43:01Z
 url: https://github.com/astral-sh/ruff/pull/17095
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Add assignability of function literals to callables
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-03-31 14:57_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

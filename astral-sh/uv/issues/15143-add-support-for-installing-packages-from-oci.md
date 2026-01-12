@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T18:27:50Z
 updated_at: 2025-08-26T15:34:36Z
 url: https://github.com/astral-sh/uv/issues/15143
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # Add support for installing packages from OCI registries
 
 ---
 
-_Issue opened by @lijok on 2025-08-07 18:27_
+_@lijok_
 
 ### Summary
 

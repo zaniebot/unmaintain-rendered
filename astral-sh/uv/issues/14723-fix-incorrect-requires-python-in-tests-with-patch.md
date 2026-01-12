@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-18T13:29:27Z
 updated_at: 2025-07-20T16:12:02Z
 url: https://github.com/astral-sh/uv/issues/14723
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # Fix incorrect `requires-python` in tests with patch versions
 
 ---
 
-_Issue opened by @zanieb on 2025-07-18 13:29_
+_@zanieb_
 
 e.g., if a test case has `requires-python = ">=3.13.2"` but the test context only requests `3.13` we will fail with a missing interpreter at test runtime if we happen to select an older interpreter, like `3.13.0`
 

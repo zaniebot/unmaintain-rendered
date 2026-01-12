@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-15T20:56:09Z
 updated_at: 2025-01-15T20:56:09Z
 url: https://github.com/astral-sh/uv/issues/10644
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # Feature request: Allow overriding `requires-python` value for all dependencies and sub-dependencies during install/sync
 
 ---
 
-_Issue opened by @keller-mark on 2025-01-15 20:56_
+_@keller-mark_
 
 Use case: I finally get a working environment with many dependencies and Python v3.9. Then, I need to install some new package X which has a `requires-python = ">=3.10"` and some of its sub-dependencies such as Y also have  `requires-python = ">=3.10"`, despite still working fine with v3.9. I need to create a whole new environment with a different python v3.10 version now, just to add this dependency.
 

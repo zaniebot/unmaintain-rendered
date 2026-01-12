@@ -13,14 +13,14 @@ head: micha/bump-rooster
 created_at: 2025-05-13T12:47:38Z
 updated_at: 2025-05-13T14:06:49Z
 url: https://github.com/astral-sh/ty/pull/357
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Bump rooster
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-13 12:47_
+_@MichaReiser_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/TCH004
 created_at: 2023-02-13T15:12:11Z
 updated_at: 2023-02-13T15:26:35Z
 url: https://github.com/astral-sh/ruff/pull/2863
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Avoid false-positives for runtime-types in type checking blocks
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-13 15:12_
+_@charliermarsh_
 
 Closes #2852.
 

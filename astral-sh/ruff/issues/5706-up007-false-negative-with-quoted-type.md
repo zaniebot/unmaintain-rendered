@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-12T10:15:00Z
 updated_at: 2023-07-13T11:34:06Z
 url: https://github.com/astral-sh/ruff/issues/5706
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # UP007 false negative with quoted type
 
 ---
 
-_Issue opened by @dorschw on 2023-07-12 10:15_
+_@dorschw_
 
 UP007 won't recognize cases like 
 ```python

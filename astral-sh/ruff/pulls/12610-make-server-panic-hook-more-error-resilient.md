@@ -14,14 +14,14 @@ head: server-panic-hook-error-resilience
 created_at: 2024-08-01T11:14:38Z
 updated_at: 2024-08-02T14:54:56Z
 url: https://github.com/astral-sh/ruff/pull/12610
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Make server panic hook more error resilient
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-01 11:14_
+_@MichaReiser_
 
 ## Summary
 

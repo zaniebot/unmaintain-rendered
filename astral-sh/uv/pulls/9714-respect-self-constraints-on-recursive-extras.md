@@ -13,14 +13,14 @@ head: charlie/rec-constraint
 created_at: 2024-12-08T04:16:29Z
 updated_at: 2024-12-08T04:53:43Z
 url: https://github.com/astral-sh/uv/pull/9714
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:57Z
 ```
 
 # Respect self-constraints on recursive extras
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-08 04:16_
+_@charliermarsh_
 
 ## Summary
 

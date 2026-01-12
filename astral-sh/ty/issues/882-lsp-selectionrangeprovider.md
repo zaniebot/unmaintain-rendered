@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-24T10:00:19Z
 updated_at: 2025-07-31T19:16:17Z
 url: https://github.com/astral-sh/ty/issues/882
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # LSP: SelectionRangeProvider
 
 ---
 
-_Issue opened by @guybuk on 2025-07-24 10:00_
+_@guybuk_
 
 Hello, 
 Thank you for this project.

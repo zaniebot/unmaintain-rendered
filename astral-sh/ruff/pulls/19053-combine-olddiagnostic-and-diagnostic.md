@@ -14,14 +14,14 @@ head: alex-brent/combine-diagnostics
 created_at: 2025-06-30T19:44:00Z
 updated_at: 2025-07-07T14:17:31Z
 url: https://github.com/astral-sh/ruff/pull/19053
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # Combine `OldDiagnostic` and `Diagnostic`
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-30 19:44_
+_@ntBre_
 
 ## Summary
 

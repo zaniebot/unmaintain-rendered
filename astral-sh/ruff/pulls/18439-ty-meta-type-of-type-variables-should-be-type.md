@@ -14,14 +14,14 @@ head: david/typevar-meta-type
 created_at: 2025-06-03T09:47:47Z
 updated_at: 2025-06-04T07:50:17Z
 url: https://github.com/astral-sh/ruff/pull/18439
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Meta-type of type variables should be type[..]
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-03 09:47_
+_@sharkdp_
 
 ## Summary
 

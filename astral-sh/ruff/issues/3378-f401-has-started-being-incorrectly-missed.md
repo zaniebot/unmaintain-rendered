@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-07T03:47:00Z
 updated_at: 2023-03-22T17:03:32Z
 url: https://github.com/astral-sh/ruff/issues/3378
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # F401 has started being incorrectly missed
 
 ---
 
-_Issue opened by @henryiii on 2023-03-07 03:47_
+_@henryiii_
 
 This pattern suddenly has stopped triggering F401:
 

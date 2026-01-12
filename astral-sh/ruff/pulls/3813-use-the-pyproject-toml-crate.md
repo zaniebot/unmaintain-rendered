@@ -11,14 +11,14 @@ head: 03-30-use_pyproject-toml
 created_at: 2023-03-30T12:39:52Z
 updated_at: 2023-06-12T12:37:57Z
 url: https://github.com/astral-sh/ruff/pull/3813
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Use the pyproject-toml crate
 
 ---
 
-_Pull request opened by @konstin on 2023-03-30 12:39_
+_@konstin_
 
 Finally puts pep508_rs and pep440_rs to good use :D
 

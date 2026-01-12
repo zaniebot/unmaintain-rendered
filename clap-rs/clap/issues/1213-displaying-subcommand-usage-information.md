@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-03-18T14:36:01Z
 updated_at: 2018-08-02T03:30:20Z
 url: https://github.com/clap-rs/clap/issues/1213
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Displaying subcommand usage information programmatically
 
 ---
 
-_Issue opened by @rollandjb on 2018-03-18 14:36_
+_@rollandjb_
 
 Sorry if this is has been asked and answered (I did search), but I am new to Rust and Clap, and can't figure it out from the source..
 

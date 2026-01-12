@@ -13,14 +13,14 @@ head: flake8-unused-arguments-docs
 created_at: 2023-04-29T09:42:39Z
 updated_at: 2023-05-10T14:55:03Z
 url: https://github.com/astral-sh/ruff/pull/4147
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Document `flake8-unused-arguments`
 
 ---
 
-_Pull request opened by @calumy on 2023-04-29 09:42_
+_@calumy_
 
 Add documentation for the flake8-unused-arguments rules.
 

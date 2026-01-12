@@ -13,14 +13,14 @@ head: david/lsp-features-fixes
 created_at: 2025-12-16T08:20:59Z
 updated_at: 2025-12-16T08:25:12Z
 url: https://github.com/astral-sh/ty/pull/1917
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Minor fixes to LSP docs
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-16 08:20_
+_@sharkdp_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-10-04T19:17:45Z
 updated_at: 2021-10-11T20:33:09Z
 url: https://github.com/clap-rs/clap/issues/2809
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Triage Structopt PRs since the fork
 
 ---
 
-_Issue opened by @epage on 2021-10-04 19:17_
+_@epage_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/2658
 

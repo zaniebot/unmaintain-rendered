@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-13T13:13:36Z
 updated_at: 2023-01-16T14:40:24Z
 url: https://github.com/clap-rs/clap/issues/4636
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Could not downcast to type alias
 
 ---
 
-_Issue opened by @2moe on 2023-01-13 13:13_
+_@2moe_
 
 ### Please complete the following tasks
 

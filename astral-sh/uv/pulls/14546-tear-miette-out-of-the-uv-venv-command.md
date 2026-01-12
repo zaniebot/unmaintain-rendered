@@ -14,14 +14,14 @@ head: zb/venv
 created_at: 2025-07-10T17:26:32Z
 updated_at: 2025-07-24T20:47:00Z
 url: https://github.com/astral-sh/uv/pull/14546
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:17Z
 ```
 
 # Tear miette out of the `uv venv` command
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-10 17:26_
+_@zanieb_
 
 This has some changes to the user-facing output, but makes it more consistent with the rest of uv.
 

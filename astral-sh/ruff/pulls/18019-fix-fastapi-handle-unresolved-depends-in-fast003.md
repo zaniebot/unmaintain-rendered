@@ -11,14 +11,14 @@ head: fix-fast003-unresolved-depends
 created_at: 2025-05-11T19:33:21Z
 updated_at: 2025-05-12T07:01:10Z
 url: https://github.com/astral-sh/ruff/pull/18019
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # fix(fastapi): Handle unresolved Depends in FAST003
 
 ---
 
-_Pull request opened by @danparizher on 2025-05-11 19:33_
+_@danparizher_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: cjm/more-tweaks
 created_at: 2025-06-07T02:18:15Z
 updated_at: 2025-06-10T20:22:27Z
 url: https://github.com/astral-sh/ruff/pull/18526
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [ty] more simplification of infer_parameterized_legacy_typing_alias
 
 ---
 
-_Pull request opened by @carljm on 2025-06-07 02:18_
+_@carljm_
 
 Address post-land review on https://github.com/astral-sh/ruff/pull/18489
 

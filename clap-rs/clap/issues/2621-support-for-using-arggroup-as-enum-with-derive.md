@@ -14,14 +14,14 @@ assignees: []
 created_at: 2021-07-25T20:41:21Z
 updated_at: 2024-08-25T16:48:01Z
 url: https://github.com/clap-rs/clap/issues/2621
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Support for using ArgGroup as Enum with derive
 
 ---
 
-_Issue opened by @ModProg on 2021-07-25 20:41_
+_@ModProg_
 
 Maintainer's notes
 - Deriving `Args` on an enum would create a `ArgGroup::new("T")::multiple(false)` 

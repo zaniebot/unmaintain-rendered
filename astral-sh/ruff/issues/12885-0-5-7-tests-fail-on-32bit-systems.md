@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-14T09:18:56Z
 updated_at: 2024-08-16T18:16:58Z
 url: https://github.com/astral-sh/ruff/issues/12885
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # 0.5.7 tests fail on 32bit systems
 
 ---
 
-_Issue opened by @WhyNotHugo on 2024-08-14 09:18_
+_@WhyNotHugo_
 
 ```
 failures:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T18:47:26Z
 updated_at: 2025-08-26T08:27:20Z
 url: https://github.com/astral-sh/uv/issues/1526
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Add flag to allow global installs e.g. for CI
 
 ---
 
-_Issue opened by @zanieb on 2024-02-16 18:47_
+_@zanieb_
 
 We require install into a virtual environment, but in ephemeral builds like CI or containers this may not be desired.
 

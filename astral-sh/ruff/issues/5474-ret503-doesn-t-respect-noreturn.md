@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-03T11:19:41Z
 updated_at: 2025-06-13T01:27:08Z
 url: https://github.com/astral-sh/ruff/issues/5474
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # RET503 doesn't respect NoReturn
 
 ---
 
-_Issue opened by @hynek on 2023-07-03 11:19_
+_@hynek_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

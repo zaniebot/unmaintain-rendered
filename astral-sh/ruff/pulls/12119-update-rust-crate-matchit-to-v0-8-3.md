@@ -13,14 +13,14 @@ head: renovate/matchit-0.x-lockfile
 created_at: 2024-07-01T00:57:34Z
 updated_at: 2024-07-01T01:18:53Z
 url: https://github.com/astral-sh/ruff/pull/12119
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Update Rust crate matchit to v0.8.3
 
 ---
 
-_Pull request opened by @renovate on 2024-07-01 00:57_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

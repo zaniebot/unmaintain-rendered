@@ -14,14 +14,14 @@ head: d406-docs
 created_at: 2024-04-03T10:49:06Z
 updated_at: 2024-04-03T21:34:03Z
 url: https://github.com/astral-sh/ruff/pull/10754
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Rework docs for pydocstyle rules
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-03 10:49_
+_@AlexWaygood_
 
 ## Summary
 

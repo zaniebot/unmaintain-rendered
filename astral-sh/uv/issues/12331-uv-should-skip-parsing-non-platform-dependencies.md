@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-20T08:14:48Z
 updated_at: 2025-09-12T13:51:39Z
 url: https://github.com/astral-sh/uv/issues/12331
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # uv should skip parsing non-platform dependencies or sources
 
 ---
 
-_Issue opened by @pplmx on 2025-03-20 08:14_
+_@pplmx_
 
 ### Summary
 

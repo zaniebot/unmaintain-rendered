@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-02T19:14:26Z
 updated_at: 2026-01-06T04:28:48Z
 url: https://github.com/astral-sh/uv/issues/17307
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # uv add results in relative path for a local package
 
 ---
 
-_Issue opened by @need47 on 2026-01-02 19:14_
+_@need47_
 
 ### Summary
 

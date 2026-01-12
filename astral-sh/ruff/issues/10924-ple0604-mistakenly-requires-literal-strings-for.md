@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-14T10:51:02Z
 updated_at: 2024-10-24T14:34:15Z
 url: https://github.com/astral-sh/ruff/issues/10924
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PLE0604 mistakenly requires literal strings for __all__
 
 ---
 
-_Issue opened by @andraxin on 2024-04-14 10:51_
+_@andraxin_
 
 Compared to PyLint, Ruff has a very literal, and arguably faulty, interpretation of "strings"
 in https://docs.astral.sh/ruff/rules/invalid-all-object/, as it only accepts LITERAL strings,

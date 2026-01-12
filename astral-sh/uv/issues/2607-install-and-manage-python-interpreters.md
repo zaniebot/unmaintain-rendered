@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-22T04:31:29Z
 updated_at: 2024-09-11T10:24:41Z
 url: https://github.com/astral-sh/uv/issues/2607
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Install and manage Python interpreters
 
 ---
 
-_Issue opened by @axiomofjoy on 2024-03-22 04:31_
+_@axiomofjoy_
 
 `uv venv` accepts  a `--python` flag that allows the user to specify a path to a particular Python interpreter or version if it is already installed on the machine. I would like for `uv` to install and manage Python for me, similar to `conda create --name env-name python=3.9`.
 

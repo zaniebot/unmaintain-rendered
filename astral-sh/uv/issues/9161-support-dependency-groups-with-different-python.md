@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-16T03:30:45Z
 updated_at: 2024-11-17T05:21:17Z
 url: https://github.com/astral-sh/uv/issues/9161
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # support dependency groups with different python versions
 
 ---
 
-_Issue opened by @DetachHead on 2024-11-16 03:30_
+_@DetachHead_
 
 my project supports python versions 3.8 to 3.13, but since some of my dev dependencies require python 3.9 or above, i need to split them into separate dependency groups:
 

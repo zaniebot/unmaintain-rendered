@@ -13,14 +13,14 @@ head: docs/mention-extras-uvx
 created_at: 2024-11-09T13:49:11Z
 updated_at: 2024-11-11T15:06:00Z
 url: https://github.com/astral-sh/uv/pull/8972
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:34Z
 ```
 
 # docs(tools): mention how to use extras
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-11-09 13:49_
+_@mkniewallner_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: self-reference-annotation
 created_at: 2025-03-20T04:40:57Z
 updated_at: 2025-03-24T14:29:28Z
 url: https://github.com/astral-sh/ruff/pull/16861
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] detect non-deferred self-references in annotations
 
 ---
 
-_Pull request opened by @mtshiba on 2025-03-20 04:40_
+_@mtshiba_
 
 ## Summary
 

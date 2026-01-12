@@ -13,14 +13,14 @@ head: zb/versioning-v2
 created_at: 2025-11-12T18:49:38Z
 updated_at: 2025-12-05T15:05:48Z
 url: https://github.com/astral-sh/uv/pull/16710
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:24Z
 ```
 
 # Update the versioning policy to retain the minor breaking scheme indefinitely
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-12 18:49_
+_@zanieb_
 
 _No description provided._
 

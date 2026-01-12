@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-19T03:00:22Z
 updated_at: 2024-08-29T18:11:52Z
 url: https://github.com/astral-sh/uv/issues/6196
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # `uv-cli` recompiles unnecessarily in worktree
 
 ---
 
-_Issue opened by @eth3lbert on 2024-08-19 03:00_
+_@eth3lbert_
 
 Currently, when working in a worktree, `uv-cli` still recompiles even when there are no changes. Running `cargo check --verbose` multiple times shows something similar to the following::
 

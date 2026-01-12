@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-06-02T09:42:12Z
 updated_at: 2024-11-03T11:49:05Z
 url: https://github.com/astral-sh/ruff/issues/11689
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [preview] RUF028 false positive in decorators.
 
 ---
 
-_Issue opened by @randolf-scholz on 2024-06-02 09:42_
+_@randolf-scholz_
 
 Rule RUF028 produces false positives for decorators:
 

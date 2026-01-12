@@ -13,14 +13,14 @@ head: zb/revert-requirement-sniff
 created_at: 2025-11-26T14:44:18Z
 updated_at: 2025-11-26T14:57:46Z
 url: https://github.com/astral-sh/uv/pull/16861
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:29Z
 ```
 
 # Revert "Allow `--with-requirements` to load extensionless inline-metadata scripts"
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-26 14:44_
+_@zanieb_
 
 Reverts https://github.com/astral-sh/uv/pull/16805 / https://github.com/astral-sh/uv/pull/16744
 

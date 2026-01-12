@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-10-31T21:07:14Z
 updated_at: 2022-01-11T18:41:11Z
 url: https://github.com/clap-rs/clap/issues/2196
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Allow templates to change the error message strings
 
 ---
 
-_Issue opened by @filipelbc on 2020-10-31 21:07_
+_@filipelbc_
 
 Before anything, this library is great! Thanks!
 

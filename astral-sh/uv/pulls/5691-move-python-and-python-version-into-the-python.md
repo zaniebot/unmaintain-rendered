@@ -13,14 +13,14 @@ head: zb/python-options
 created_at: 2024-08-01T16:19:56Z
 updated_at: 2024-08-01T16:55:22Z
 url: https://github.com/astral-sh/uv/pull/5691
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:57Z
 ```
 
 # Move `--python` and `--python-version` into the "Python options" help
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-01 16:19_
+_@zanieb_
 
 Part of #4454 
 

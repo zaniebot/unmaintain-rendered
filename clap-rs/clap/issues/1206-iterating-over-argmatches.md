@@ -13,14 +13,14 @@ assignees: []
 created_at: 2018-03-09T12:04:34Z
 updated_at: 2022-08-15T16:15:32Z
 url: https://github.com/clap-rs/clap/issues/1206
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Iterating over `ArgMatches`
 
 ---
 
-_Issue opened by @neysofu on 2018-03-09 12:04_
+_@neysofu_
 
 Maintainer's notes
 - This is blocked on https://github.com/clap-rs/clap/issues/1041 / https://github.com/clap-rs/clap/issues/2150 where we move away from opaque, non-public `Id`s for arguments to something the user can programmatically act on

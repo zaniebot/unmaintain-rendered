@@ -14,14 +14,14 @@ head: charlie/build-cache
 created_at: 2024-09-10T02:09:04Z
 updated_at: 2024-09-23T23:29:30Z
 url: https://github.com/astral-sh/uv/pull/7240
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Perform source distribution builds in archive directory
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-10 02:09_
+_@charliermarsh_
 
 ## Summary
 

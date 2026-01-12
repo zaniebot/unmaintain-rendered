@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-26T18:22:08Z
 updated_at: 2025-08-26T18:46:08Z
 url: https://github.com/astral-sh/ruff/issues/20102
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # pytest rules to ban xunit-style setup
 
 ---
 
-_Issue opened by @rouge8 on 2025-08-26 18:22_
+_@rouge8_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-13T18:02:08Z
 updated_at: 2024-09-13T19:55:24Z
 url: https://github.com/astral-sh/uv/issues/7370
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Can't install nvidia-cublas from a wheel despite a good looking lock
 
 ---
 
-_Issue opened by @wokalski on 2024-09-13 18:02_
+_@wokalski_
 
 I am trying to install torch using uv. I am developing on the mac and running `uv sync`[1] during docker build.
 

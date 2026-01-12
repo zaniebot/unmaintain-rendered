@@ -14,14 +14,14 @@ head: zb/venv-no-venv
 created_at: 2024-05-21T23:42:31Z
 updated_at: 2024-05-22T01:00:36Z
 url: https://github.com/astral-sh/uv/pull/3728
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Do not discover virtual environment interpreters in `uv venv --python ...`
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-21 23:42_
+_@zanieb_
 
 Otherwise `uv venv --python 3.12` can prefer `.venv/bin/python` over the system Python (which is always used if you don't provide a `--python` flag). I would find this confusing as a user.
 

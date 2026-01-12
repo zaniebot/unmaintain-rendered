@@ -14,14 +14,14 @@ head: david/revert-clippy-allow-change
 created_at: 2025-04-28T19:13:38Z
 updated_at: 2025-04-28T19:23:22Z
 url: https://github.com/astral-sh/ruff/pull/17688
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [red-knot] Revert blanket `clippy::too_many_arguments` allow
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-28 19:13_
+_@sharkdp_
 
 ## Summary
 

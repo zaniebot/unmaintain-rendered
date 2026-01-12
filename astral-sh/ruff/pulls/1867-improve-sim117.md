@@ -12,14 +12,14 @@ head: improve-SIM117
 created_at: 2023-01-14T07:50:53Z
 updated_at: 2023-01-14T12:59:25Z
 url: https://github.com/astral-sh/ruff/pull/1867
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Improve `SIM117`
 
 ---
 
-_Pull request opened by @harupy on 2023-01-14 07:50_
+_@harupy_
 
 This PR makes the following changes to improve `SIM117`:
 

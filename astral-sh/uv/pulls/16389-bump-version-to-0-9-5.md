@@ -12,14 +12,14 @@ head: ww/release
 created_at: 2025-10-21T15:00:10Z
 updated_at: 2025-10-21T16:14:24Z
 url: https://github.com/astral-sh/uv/pull/16389
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:14Z
 ```
 
 # Bump version to 0.9.5
 
 ---
 
-_Pull request opened by @woodruffw on 2025-10-21 15:00_
+_@woodruffw_
 
 ## Summary
 

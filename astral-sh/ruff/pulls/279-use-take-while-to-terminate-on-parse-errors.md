@@ -12,14 +12,14 @@ head: charlie/take-while
 created_at: 2022-09-29T01:15:23Z
 updated_at: 2022-09-29T02:06:36Z
 url: https://github.com/astral-sh/ruff/pull/279
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Use take-while to terminate on parse errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-29 01:15_
+_@charliermarsh_
 
 Resolves #277.
 

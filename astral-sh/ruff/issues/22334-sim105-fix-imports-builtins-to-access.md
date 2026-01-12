@@ -12,14 +12,14 @@ assignees: []
 created_at: 2026-01-01T22:48:54Z
 updated_at: 2026-01-05T09:58:47Z
 url: https://github.com/astral-sh/ruff/issues/22334
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # SIM105 fix imports `builtins` to access `BaseException`
 
 ---
 
-_Issue opened by @dscorbett on 2026-01-01 22:48_
+_@dscorbett_
 
 ### Summary
 

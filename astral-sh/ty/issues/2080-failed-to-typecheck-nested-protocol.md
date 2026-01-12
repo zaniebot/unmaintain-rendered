@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T16:52:11Z
 updated_at: 2025-12-18T18:22:37Z
 url: https://github.com/astral-sh/ty/issues/2080
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Failed to typecheck nested protocol
 
 ---
 
-_Issue opened by @xxchan on 2025-12-18 16:52_
+_@xxchan_
 
 ### Summary
 

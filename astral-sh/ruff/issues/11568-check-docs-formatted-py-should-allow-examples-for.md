@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-05-27T14:54:31Z
 updated_at: 2024-09-03T22:47:20Z
 url: https://github.com/astral-sh/ruff/issues/11568
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `check_docs_formatted.py` should allow examples for PYI rules to be formatted like stub files
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-05-27 14:54_
+_@AlexWaygood_
 
 Currently the script complains if you try to apply `.pyi`-style formatting to any examples. But many of the PYI rules are specific to stubs, so it makes sense to format the examples for these rules as though they are stubs.
 

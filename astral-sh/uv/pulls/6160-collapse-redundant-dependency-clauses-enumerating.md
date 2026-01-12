@@ -13,14 +13,14 @@ head: zb/collapse-no-versions-redundant
 created_at: 2024-08-16T18:11:49Z
 updated_at: 2024-08-19T18:02:03Z
 url: https://github.com/astral-sh/uv/pull/6160
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:14Z
 ```
 
 # Collapse redundant dependency clauses enumerating available versions
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-16 18:11_
+_@zanieb_
 
 In https://github.com/astral-sh/uv/issues/5046, we show the tautological proof:
 

@@ -13,14 +13,14 @@ head: lsp-refactr
 created_at: 2025-06-11T13:29:43Z
 updated_at: 2025-06-12T20:08:44Z
 url: https://github.com/astral-sh/ruff/pull/18627
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # Support cancellation requests
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-11 13:29_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-18T20:22:01Z
 updated_at: 2024-11-20T00:08:01Z
 url: https://github.com/astral-sh/uv/issues/4402
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # `UV_INDEX_URL` with AWS CodeArtifact index consistently fails on large packages
 
 ---
 
-_Issue opened by @ringohoffman on 2024-06-18 20:22_
+_@ringohoffman_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

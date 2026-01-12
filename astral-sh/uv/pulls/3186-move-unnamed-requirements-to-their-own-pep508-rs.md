@@ -13,14 +13,14 @@ head: konsti/move-unnamed-requirements
 created_at: 2024-04-22T13:52:00Z
 updated_at: 2024-04-22T14:02:41Z
 url: https://github.com/astral-sh/uv/pull/3186
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:29Z
 ```
 
 # Move unnamed requirements to their own pep508_rs module and requirements-txt
 
 ---
 
-_Pull request opened by @konstin on 2024-04-22 13:52_
+_@konstin_
 
 Another refactoring in preparation of using a richer requirements type. No functional changes, only moves code around
 

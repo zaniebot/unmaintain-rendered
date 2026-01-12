@@ -12,14 +12,14 @@ head: charlie/up012
 created_at: 2023-05-10T02:50:42Z
 updated_at: 2023-05-10T03:23:03Z
 url: https://github.com/astral-sh/ruff/pull/4338
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Handle `.encode` calls on parenthesized expressions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-10 02:50_
+_@charliermarsh_
 
 Closes #4335.
 

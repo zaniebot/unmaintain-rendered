@@ -14,14 +14,14 @@ head: charlie/iso
 created_at: 2024-05-13T17:45:34Z
 updated_at: 2024-05-13T19:43:27Z
 url: https://github.com/astral-sh/uv/pull/3558
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:42Z
 ```
 
 # Make isolated a global argument
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-13 17:45_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/3557.
 

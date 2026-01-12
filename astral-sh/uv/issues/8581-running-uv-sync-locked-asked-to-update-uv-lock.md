@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-25T23:41:20Z
 updated_at: 2024-10-27T09:02:57Z
 url: https://github.com/astral-sh/uv/issues/8581
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # Running `uv sync --locked` asked to update uv.lock even after `uv lock`
 
 ---
 
-_Issue opened by @ekzhu on 2024-10-25 23:41_
+_@ekzhu_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

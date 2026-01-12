@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-26T23:14:01Z
 updated_at: 2024-07-27T00:28:09Z
 url: https://github.com/astral-sh/uv/issues/5496
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # shared uv cache: `metadata.msgpack` gets too restrictive perms for `built-wheels`
 
 ---
 
-_Issue opened by @stas00 on 2024-07-26 23:14_
+_@stas00_
 
 we use a shared pip/uv cache and have to use a `umask` for it to work. But we end up with files that prevent sharing.
 

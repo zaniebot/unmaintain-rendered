@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-27T09:24:46Z
 updated_at: 2024-09-28T12:39:39Z
 url: https://github.com/astral-sh/uv/issues/7733
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # UTF-8 Encoding Errors Prevent Package Installation
 
 ---
 
-_Issue opened by @Paillat-dev on 2024-09-27 09:24_
+_@Paillat-dev_
 
 ## Summary
 uv is failing to install packages, reporting UTF-8 encoding errors. The root cause is likely non-ASCII characters in the Windows username, which uv may not be handling correctly.

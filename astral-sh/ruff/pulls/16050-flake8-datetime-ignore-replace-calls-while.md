@@ -13,14 +13,14 @@ head: DTZ005
 created_at: 2025-02-09T00:43:58Z
 updated_at: 2025-02-09T15:52:31Z
 url: https://github.com/astral-sh/ruff/pull/16050
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-datetime`] Ignore `.replace()` calls while looking for `.astimezone`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-09 00:43_
+_@InSyncWithFoo_
 
 ## Summary
 

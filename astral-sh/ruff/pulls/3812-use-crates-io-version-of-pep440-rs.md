@@ -12,14 +12,14 @@ head: 03-30-released_pep440_rs
 created_at: 2023-03-30T12:39:48Z
 updated_at: 2023-03-30T13:03:53Z
 url: https://github.com/astral-sh/ruff/pull/3812
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Use crates.io version of pep440_rs
 
 ---
 
-_Pull request opened by @konstin on 2023-03-30 12:39_
+_@konstin_
 
 _No description provided._
 

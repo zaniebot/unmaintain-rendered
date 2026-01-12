@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-28T19:42:27Z
 updated_at: 2025-11-28T19:50:31Z
 url: https://github.com/astral-sh/ty/issues/1669
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Signature output as markdown?
 
 ---
 
-_Issue opened by @klonuo on 2025-11-28 19:42_
+_@klonuo_
 
 When I use autocomplete, signature is returned as plaintext:
 

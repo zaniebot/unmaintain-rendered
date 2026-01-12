@@ -12,14 +12,14 @@ head: fix-source-frame-line-numbers
 created_at: 2023-06-09T14:02:15Z
 updated_at: 2023-06-09T15:21:20Z
 url: https://github.com/astral-sh/ruff/pull/4984
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Fix line numbers in source frames
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-09 14:02_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

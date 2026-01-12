@@ -14,14 +14,14 @@ head: ag/import-module-caching
 created_at: 2025-08-19T11:35:57Z
 updated_at: 2025-08-20T14:41:48Z
 url: https://github.com/astral-sh/ruff/pull/19987
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] Re-arrange "list modules" implementation for Salsa caching
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-08-19 11:35_
+_@BurntSushi_
 
 This basically splits `list_modules` into a higher level "aggregation"
 routine and a lower level "get modules for one search path" routine.

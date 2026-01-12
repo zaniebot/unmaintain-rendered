@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-03T14:54:05Z
 updated_at: 2023-03-03T22:13:12Z
 url: https://github.com/astral-sh/ruff/issues/3321
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # D406 auto-detect pydocstyle
 
 ---
 
-_Issue opened by @epenet on 2023-03-03 14:54_
+_@epenet_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

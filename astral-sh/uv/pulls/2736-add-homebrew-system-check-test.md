@@ -13,14 +13,14 @@ head: zb/add-brew-test
 created_at: 2024-03-30T14:51:51Z
 updated_at: 2024-04-01T14:50:46Z
 url: https://github.com/astral-sh/uv/pull/2736
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:11Z
 ```
 
 # Add Homebrew system check test
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-30 14:51_
+_@zanieb_
 
 Following #2735 adds a system check that uses Homebrew. I think we were never were actually using Homebrew's Python in the past, we were mislead or something changed in the runners recently that broke it.
 

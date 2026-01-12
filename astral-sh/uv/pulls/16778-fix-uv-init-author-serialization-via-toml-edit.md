@@ -13,14 +13,14 @@ head: author-toml-fmt
 created_at: 2025-11-19T17:29:11Z
 updated_at: 2025-11-20T19:10:21Z
 url: https://github.com/astral-sh/uv/pull/16778
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:26Z
 ```
 
 # Fix `uv init` author serialization via `toml_edit` inline tables
 
 ---
 
-_Pull request opened by @terror on 2025-11-19 17:29_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/16765
 

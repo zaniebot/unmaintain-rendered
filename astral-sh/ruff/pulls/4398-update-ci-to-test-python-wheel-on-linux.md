@@ -12,14 +12,14 @@ head: ci/4394-2
 created_at: 2023-05-12T18:47:50Z
 updated_at: 2023-05-12T20:27:19Z
 url: https://github.com/astral-sh/ruff/pull/4398
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Update CI to test Python wheel on Linux
 
 ---
 
-_Pull request opened by @zanieb on 2023-05-12 18:47_
+_@zanieb_
 
 Follow-up to https://github.com/charliermarsh/ruff/pull/4397 to prevent regressions like #4394 per pull request.
 

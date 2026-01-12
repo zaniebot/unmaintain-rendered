@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-01T16:42:17Z
 updated_at: 2023-05-11T03:26:30Z
 url: https://github.com/astral-sh/ruff/issues/980
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement pygrep-hooks
 
 ---
 
-_Issue opened by @JonathanPlasse on 2022-12-01 16:42_
+_@JonathanPlasse_
 
 # [pygrep-hooks](https://github.com/pre-commit/pygrep-hooks/blob/main/tests/hooks_test.py)
 

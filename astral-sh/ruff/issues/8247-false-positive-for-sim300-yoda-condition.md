@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-26T09:01:01Z
 updated_at: 2023-10-31T07:04:51Z
 url: https://github.com/astral-sh/ruff/issues/8247
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # False positive for SIM300 (yoda condition)?
 
 ---
 
-_Issue opened by @estyrke on 2023-10-26 09:01_
+_@estyrke_
 
 `sim300.py`:
 ```python

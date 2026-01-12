@@ -11,14 +11,14 @@ head: thin-vec
 created_at: 2023-05-15T09:48:05Z
 updated_at: 2023-07-24T15:01:37Z
 url: https://github.com/astral-sh/ruff/pull/4435
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Use `ThinVec` to shrink AST enum sizes
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-15 09:48_
+_@MichaReiser_
 
 See https://github.com/RustPython/Parser/pull/34
 

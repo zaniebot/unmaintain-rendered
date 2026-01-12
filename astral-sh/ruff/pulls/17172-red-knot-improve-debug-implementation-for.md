@@ -13,14 +13,14 @@ head: alex/symboltable-debug
 created_at: 2025-04-03T12:15:20Z
 updated_at: 2025-04-03T12:54:04Z
 url: https://github.com/astral-sh/ruff/pull/17172
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Improve `Debug` implementation for `semantic_index::SymbolTable`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-03 12:15_
+_@AlexWaygood_
 
 ## Summary
 

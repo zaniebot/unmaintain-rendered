@@ -13,14 +13,14 @@ head: konsti/update-trampolines
 created_at: 2024-07-06T20:59:16Z
 updated_at: 2024-07-07T20:18:10Z
 url: https://github.com/astral-sh/uv/pull/4850
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:29Z
 ```
 
 # Update trampolines
 
 ---
 
-_Pull request opened by @konstin on 2024-07-06 20:59_
+_@konstin_
 
 Follow-up to https://github.com/astral-sh/uv/pull/4722
 

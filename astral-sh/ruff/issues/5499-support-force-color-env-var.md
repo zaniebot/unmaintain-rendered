@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-04T04:07:32Z
 updated_at: 2024-04-08T21:29:30Z
 url: https://github.com/astral-sh/ruff/issues/5499
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Support `FORCE_COLOR` env var
 
 ---
 
-_Issue opened by @MicaelJarniac on 2023-07-04 04:07_
+_@MicaelJarniac_
 
 ## Feature Request
 Add support for the `FORCE_COLOR` environment variable. When set, regardless of value, all output should have colors enabled, as if the terminal supported them.

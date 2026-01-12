@@ -14,14 +14,14 @@ head: charlie/ter
 created_at: 2025-01-06T01:00:49Z
 updated_at: 2025-01-06T02:18:17Z
 url: https://github.com/astral-sh/uv/pull/10315
-synced_at: 2026-01-10T11:44:42Z
+synced_at: 2026-01-12T16:09:13Z
 ```
 
 # Respect `FORCE_COLOR` environment variable
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-06 01:00_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-10-22T22:24:50Z
 updated_at: 2021-10-24T21:35:56Z
 url: https://github.com/clap-rs/clap/issues/2921
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Custom clap::Parser Crate Path
 
 ---
 
-_Issue opened by @epage on 2021-10-22 22:24_
+_@epage_
 
 From https://github.com/TeXitoi/structopt/issues/339
 

@@ -13,14 +13,14 @@ head: charlie/syn
 created_at: 2024-10-01T00:19:44Z
 updated_at: 2024-10-01T00:52:58Z
 url: https://github.com/astral-sh/uv/pull/7824
-synced_at: 2026-01-10T12:53:56Z
+synced_at: 2026-01-12T16:08:01Z
 ```
 
 # Respect `tool.uv.environments` for legacy virtual workspace roots
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-01 00:19_
+_@charliermarsh_
 
 ## Summary
 

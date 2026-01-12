@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-02-11T07:57:13Z
 updated_at: 2022-02-11T13:41:06Z
 url: https://github.com/clap-rs/clap/issues/3445
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Builder examples don't work
 
 ---
 
-_Issue opened by @benkeil on 2022-02-11 07:57_
+_@benkeil_
 
 ### Please complete the following tasks
 

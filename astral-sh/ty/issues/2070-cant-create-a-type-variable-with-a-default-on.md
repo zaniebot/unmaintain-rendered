@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T13:20:37Z
 updated_at: 2025-12-23T05:13:06Z
 url: https://github.com/astral-sh/ty/issues/2070
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # can’t create a type variable with a default on Python < 3.13 (false positive for invalid-legacy-type-variable)
 
 ---
 
-_Issue opened by @flying-sheep on 2025-12-18 13:20_
+_@flying-sheep_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/fix-failing
 created_at: 2024-01-11T00:26:07Z
 updated_at: 2024-01-11T00:41:38Z
 url: https://github.com/astral-sh/uv/pull/880
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:15Z
 ```
 
 # Fix failing test
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-11 00:26_
+_@zanieb_
 
 Didn't use `exclude-newer` so a more recent version is getting grabbed.
 

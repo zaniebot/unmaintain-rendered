@@ -13,14 +13,14 @@ head: charlie/ord
 created_at: 2024-07-30T13:51:27Z
 updated_at: 2024-07-30T14:05:56Z
 url: https://github.com/astral-sh/uv/pull/5599
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:55Z
 ```
 
 # Improve order implementation for Python bound
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-30 13:51_
+_@charliermarsh_
 
 ## Summary
 

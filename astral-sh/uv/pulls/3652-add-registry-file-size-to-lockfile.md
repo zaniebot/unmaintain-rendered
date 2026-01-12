@@ -13,14 +13,14 @@ head: charlie/file-size
 created_at: 2024-05-18T17:19:19Z
 updated_at: 2024-05-20T12:15:19Z
 url: https://github.com/astral-sh/uv/pull/3652
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:46Z
 ```
 
 # Add registry file size to lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-18 17:19_
+_@charliermarsh_
 
 ## Summary
 

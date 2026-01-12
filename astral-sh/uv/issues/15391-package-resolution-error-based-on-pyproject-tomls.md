@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-20T13:25:28Z
 updated_at: 2025-08-21T09:16:15Z
 url: https://github.com/astral-sh/uv/issues/15391
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # Package resolution error based on pyproject.tomls requires-python setting
 
 ---
 
-_Issue opened by @uhurusurfa on 2025-08-20 13:25_
+_@uhurusurfa_
 
 ### Summary
 

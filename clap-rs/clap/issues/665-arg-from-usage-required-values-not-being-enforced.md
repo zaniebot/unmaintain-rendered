@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-09-16T10:15:34Z
 updated_at: 2018-08-02T03:29:53Z
 url: https://github.com/clap-rs/clap/issues/665
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # arg_from_usage(): required values not being enforced when followed by another option
 
 ---
 
-_Issue opened by @ajdlinux on 2016-09-16 10:15_
+_@ajdlinux_
 
 I've got a SubCommand defined with a few options that have required values:
 

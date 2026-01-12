@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-12T09:22:58Z
 updated_at: 2024-11-12T18:04:10Z
 url: https://github.com/astral-sh/uv/issues/9049
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # TOML parse error: `default-index` setting in uv.toml
 
 ---
 
-_Issue opened by @idling-mind on 2024-11-12 09:22_
+_@idling-mind_
 
 Hi,
   Below is my uv.toml file.

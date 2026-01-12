@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-22T19:04:03Z
 updated_at: 2024-11-25T16:35:14Z
 url: https://github.com/astral-sh/ruff/issues/6791
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # ruff does not honor declaration of character coding
 
 ---
 
-_Issue opened by @PeterSlickers on 2023-08-22 19:04_
+_@PeterSlickers_
 
 According to PEP263, a character encoding can be declared in a Python program file. This is done with a specially formatted comment placed in the first or second line of the program:
 ```

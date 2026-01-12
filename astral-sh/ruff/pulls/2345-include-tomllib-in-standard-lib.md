@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-01-30T10:04:32Z
 updated_at: 2023-01-30T12:01:15Z
 url: https://github.com/astral-sh/ruff/pull/2345
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # include tomllib in standard lib
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-30 10:04_
+_@sbrugman_
 
 Quick fix for https://github.com/charliermarsh/ruff/issues/2343
 

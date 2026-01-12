@@ -12,14 +12,14 @@ head: charlie/logger
 created_at: 2023-08-04T23:14:27Z
 updated_at: 2023-08-04T23:43:58Z
 url: https://github.com/astral-sh/ruff/pull/6356
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Allow capitalized names for logger candidate heuristic match
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-04 23:14_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6353.
 

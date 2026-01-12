@@ -11,14 +11,14 @@ head: variance-macro-runner-perf
 created_at: 2025-08-08T15:33:02Z
 updated_at: 2025-08-08T15:33:52Z
 url: https://github.com/astral-sh/ruff/pull/19830
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # Variance macro runner perf
 
 ---
 
-_Pull request opened by @not-matthias on 2025-08-08 15:33_
+_@not-matthias_
 
 _No description provided._
 

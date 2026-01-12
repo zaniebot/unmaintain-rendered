@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-07-17T13:08:27Z
 updated_at: 2023-07-17T13:08:27Z
 url: https://github.com/clap-rs/clap/issues/5013
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Make `wrap_help` a default feature
 
 ---
 
-_Issue opened by @epage on 2023-07-17 13:08_
+_@epage_
 
 In clap v3, terminal wrapping was always available
 - `wrap_help` wasn't about wrapping but auto-detecting the width

@@ -14,14 +14,14 @@ head: zb/toolchain-request-key
 created_at: 2024-06-14T20:38:29Z
 updated_at: 2024-06-17T18:13:30Z
 url: https://github.com/astral-sh/uv/pull/4332
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:09Z
 ```
 
 # Add support for toolchain requests by key
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-14 20:38_
+_@zanieb_
 
 Adds support for toolchain keys e.g. `cpython-3.11.2-macos` allowing you to download toolchains for specific architectures and operating systems using the format we use to uniquely identify a toolchain.
 

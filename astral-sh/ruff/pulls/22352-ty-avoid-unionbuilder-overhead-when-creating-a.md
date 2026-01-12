@@ -15,14 +15,14 @@ head: alex/less-union-builder
 created_at: 2026-01-03T09:05:23Z
 updated_at: 2026-01-03T16:37:39Z
 url: https://github.com/astral-sh/ruff/pull/22352
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Avoid `UnionBuilder` overhead when creating a new union from the filtered elements of an existing union
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-03 09:05_
+_@AlexWaygood_
 
 ## Summary
 

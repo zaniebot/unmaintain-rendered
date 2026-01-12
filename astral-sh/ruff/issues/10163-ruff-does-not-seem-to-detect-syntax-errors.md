@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-29T07:37:36Z
 updated_at: 2024-02-29T08:26:45Z
 url: https://github.com/astral-sh/ruff/issues/10163
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Ruff does not seem to detect syntax errors related to unmatched quotes within f-strings.
 
 ---
 
-_Issue opened by @septimochen on 2024-02-29 07:37_
+_@septimochen_
 
 **Ruff Version:** 0.2.2
 

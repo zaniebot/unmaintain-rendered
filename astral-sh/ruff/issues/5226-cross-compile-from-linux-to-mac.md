@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-20T22:06:36Z
 updated_at: 2023-06-23T08:49:15Z
 url: https://github.com/astral-sh/ruff/issues/5226
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Cross compile from linux to mac
 
 ---
 
-_Issue opened by @serjflint on 2023-06-20 22:06_
+_@serjflint_
 
 Hi! I am trying to cross-compile ruff manually. It succeeds for target `x86_64-unknown-linux-gnu` but fails for target `x86_64-apple-darwin`. Did anyone encounter a similar problem? My setup worked when compiling `orjson`.
 

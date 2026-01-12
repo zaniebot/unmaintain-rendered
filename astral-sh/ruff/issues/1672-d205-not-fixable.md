@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-06T01:19:47Z
 updated_at: 2023-01-06T10:30:51Z
 url: https://github.com/astral-sh/ruff/issues/1672
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # D205 not fixable
 
 ---
 
-_Issue opened by @baggiponte on 2023-01-06 01:19_
+_@baggiponte_
 
 When I run `ruff` (`0.0.211`) on my project dir, I get:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-22T21:20:03Z
 updated_at: 2025-07-04T02:18:31Z
 url: https://github.com/astral-sh/uv/issues/13604
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # Is it necessary to have project's version baked into the lockfile
 
 ---
 
-_Issue opened by @ggydush on 2025-05-22 21:20_
+_@ggydush_
 
 ### Question
 

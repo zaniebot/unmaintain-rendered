@@ -14,14 +14,14 @@ head: jack/newtype3
 created_at: 2025-08-28T07:11:33Z
 updated_at: 2025-10-31T02:27:21Z
 url: https://github.com/astral-sh/ruff/pull/20126
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] implement `typing.NewType`
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-08-28 07:11_
+_@oconnor663_
 
 https://github.com/astral-sh/ty/issues/742
 

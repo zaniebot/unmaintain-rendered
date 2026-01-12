@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-01T11:12:55Z
 updated_at: 2024-03-01T18:12:51Z
 url: https://github.com/astral-sh/uv/issues/2107
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # `uv pip install --python=.venv/bin/python` error: failed to create file `/usr/.lock`
 
 ---
 
-_Issue opened by @gschaffner on 2024-03-01 11:12_
+_@gschaffner_
 
 here's a reproducer (latest is v0.1.13 at time of writing): `cargo build --target=x86_64-unknown-linux-musl --features=vendored-libgit2,vendored-openssl` and then
 

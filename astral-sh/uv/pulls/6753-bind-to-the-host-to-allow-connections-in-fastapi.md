@@ -13,14 +13,14 @@ head: zb/fastapi-host
 created_at: 2024-08-28T14:42:34Z
 updated_at: 2024-08-28T15:33:56Z
 url: https://github.com/astral-sh/uv/pull/6753
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:30Z
 ```
 
 # Bind to the host to allow connections in FastAPI Docker example
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-28 14:42_
+_@zanieb_
 
 This wouldn't allow connections as written
 

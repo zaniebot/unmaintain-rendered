@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-21T14:26:11Z
 updated_at: 2024-02-21T16:49:50Z
 url: https://github.com/astral-sh/uv/issues/1810
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Couldn't parse /bin/sh for detecting the ld version
 
 ---
 
-_Issue opened by @Ch3ri0ur on 2024-02-21 14:26_
+_@Ch3ri0ur_
 
 When I try to use `uv venv` I get: 
 ```

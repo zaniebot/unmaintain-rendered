@@ -14,14 +14,14 @@ head: alex/string-literal-helper
 created_at: 2025-07-15T11:06:00Z
 updated_at: 2025-07-15T11:09:48Z
 url: https://github.com/astral-sh/ruff/pull/19352
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [ty] Use `Type::string_literal()` more
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-15 11:06_
+_@AlexWaygood_
 
 Minor followup to #19347
 

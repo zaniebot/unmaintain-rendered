@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-15T15:55:47Z
 updated_at: 2025-12-04T19:56:38Z
 url: https://github.com/astral-sh/uv/issues/11537
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # Better sync API for groups with workspaces
 
 ---
 
-_Issue opened by @xixixao on 2025-02-15 15:55_
+_@xixixao_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-05T13:18:11Z
 updated_at: 2024-09-08T23:09:41Z
 url: https://github.com/astral-sh/uv/issues/7081
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # [compatibility] install tgz extension
 
 ---
 
-_Issue opened by @mobidyc on 2024-09-05 13:18_
+_@mobidyc_
 
 Hi,
 

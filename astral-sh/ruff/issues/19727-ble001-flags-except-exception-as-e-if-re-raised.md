@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-04T07:03:21Z
 updated_at: 2025-08-13T17:01:48Z
 url: https://github.com/astral-sh/ruff/issues/19727
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # BLE001 flags `except Exception as e` if re-raised `from None`
 
 ---
 
-_Issue opened by @injust on 2025-08-04 07:03_
+_@injust_
 
 ### Summary
 

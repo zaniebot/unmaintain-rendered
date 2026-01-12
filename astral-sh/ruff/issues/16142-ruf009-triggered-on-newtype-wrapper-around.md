@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-13T18:25:21Z
 updated_at: 2025-02-13T22:08:07Z
 url: https://github.com/astral-sh/ruff/issues/16142
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RUF009 Triggered on NewType wrapper around immutable type
 
 ---
 
-_Issue opened by @adampauls on 2025-02-13 18:25_
+_@adampauls_
 
 ### Description
 

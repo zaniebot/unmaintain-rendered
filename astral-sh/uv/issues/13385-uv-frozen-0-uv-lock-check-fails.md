@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-11T03:14:48Z
 updated_at: 2026-01-06T20:43:06Z
 url: https://github.com/astral-sh/uv/issues/13385
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # `UV_FROZEN=0 uv lock --check` fails
 
 ---
 
-_Issue opened by @NellyWhads on 2025-05-11 03:14_
+_@NellyWhads_
 
 ### Summary
 

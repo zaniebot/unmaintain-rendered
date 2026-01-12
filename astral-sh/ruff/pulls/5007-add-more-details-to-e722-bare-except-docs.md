@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2023-06-10T16:27:50Z
 updated_at: 2023-06-10T22:46:59Z
 url: https://github.com/astral-sh/ruff/pull/5007
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add more details to E722 (bare-except) docs
 
 ---
 
-_Pull request opened by @tgross35 on 2023-06-10 16:27_
+_@tgross35_
 
 ## Summary
 

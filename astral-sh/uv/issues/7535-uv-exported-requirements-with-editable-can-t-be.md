@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-19T08:08:45Z
 updated_at: 2024-09-28T19:38:46Z
 url: https://github.com/astral-sh/uv/issues/7535
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # UV exported requirements with editable can't be installed with `pip`
 
 ---
 
-_Issue opened by @ion-elgreco on 2024-09-19 08:08_
+_@ion-elgreco_
 
 When exporting the UV lockfile into a requirements.txt with `uv export > requirements.txt`, will not allow you to install it with pip due to this error:
 

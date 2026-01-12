@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-19T18:13:36Z
 updated_at: 2024-09-19T20:35:45Z
 url: https://github.com/astral-sh/uv/issues/7557
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # `uv pip compile --universal` is not universal enough for an x86 mac
 
 ---
 
-_Issue opened by @zhou13 on 2024-09-19 18:13_
+_@zhou13_
 
 It seems that `uv pip compile --universal` does not support x86 macos directly. On my intel mac,
 ```

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-24T16:25:08Z
 updated_at: 2025-12-24T16:31:24Z
 url: https://github.com/astral-sh/ty/issues/2207
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Type narrowing doesn't work with `Never` functions
 
 ---
 
-_Issue opened by @albireox on 2025-12-24 16:25_
+_@albireox_
 
 ### Summary
 

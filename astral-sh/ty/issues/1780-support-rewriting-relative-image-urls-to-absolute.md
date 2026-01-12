@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-05T17:41:24Z
 updated_at: 2025-12-06T18:53:33Z
 url: https://github.com/astral-sh/ty/issues/1780
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support rewriting relative image URLs to absolute in docstrings?
 
 ---
 
-_Issue opened by @mflova on 2025-12-05 17:41_
+_@mflova_
 
 It would be great if VS Code could render images embedded in Python docstrings, similar to how Pylance currently does.
 

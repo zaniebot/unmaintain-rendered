@@ -14,14 +14,14 @@ head: micha/reduce-logging-verbosity
 created_at: 2025-11-08T14:05:32Z
 updated_at: 2025-11-08T14:10:26Z
 url: https://github.com/astral-sh/ruff/pull/21339
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # [ty] Make `variance_of` logging `trace` only
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-08 14:05_
+_@MichaReiser_
 
 ## Summary
 

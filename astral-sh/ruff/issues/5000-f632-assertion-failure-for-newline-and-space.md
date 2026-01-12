@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-10T03:30:06Z
 updated_at: 2023-06-10T04:23:46Z
 url: https://github.com/astral-sh/ruff/issues/5000
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F632: assertion failure for newline-and-space delimited "is" and "not"
 
 ---
 
-_Issue opened by @charliermarsh on 2023-06-10 03:30_
+_@charliermarsh_
 
 _Originally posted by @addisoncrump in https://github.com/astral-sh/ruff/issues/4973#issuecomment-1585443802_
 

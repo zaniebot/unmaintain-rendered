@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-15T10:40:13Z
 updated_at: 2024-05-07T17:33:24Z
 url: https://github.com/astral-sh/ruff/issues/8691
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # F401 false positive with global
 
 ---
 
-_Issue opened by @hauntsaninja on 2023-11-15 10:40_
+_@hauntsaninja_
 
 It's weird code, but we had some code doing a thing like this and the autofix broke it:
 ```

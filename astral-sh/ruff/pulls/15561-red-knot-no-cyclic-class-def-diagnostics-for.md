@@ -13,14 +13,14 @@ head: cyclic-classes
 created_at: 2025-01-17T22:22:24Z
 updated_at: 2025-01-20T13:37:04Z
 url: https://github.com/astral-sh/ruff/pull/15561
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`red-knot`] No `cyclic-class-def` diagnostics for subclasses of cyclic classes
 
 ---
 
-_Pull request opened by @wooly18 on 2025-01-17 22:22_
+_@wooly18_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

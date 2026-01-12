@@ -12,14 +12,14 @@ head: add-transformers-extra
 created_at: 2023-12-12T16:13:49Z
 updated_at: 2023-12-12T16:18:06Z
 url: https://github.com/astral-sh/uv/pull/618
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:04Z
 ```
 
 # Add transformers extra requirements
 
 ---
 
-_Pull request opened by @konstin on 2023-12-12 16:13_
+_@konstin_
 
 I use those a lot for testing
 

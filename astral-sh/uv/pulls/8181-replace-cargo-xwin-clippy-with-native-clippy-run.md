@@ -13,14 +13,14 @@ head: zb/xwin-tmp
 created_at: 2024-10-14T18:08:11Z
 updated_at: 2024-10-14T18:22:06Z
 url: https://github.com/astral-sh/uv/pull/8181
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:11Z
 ```
 
 # Replace `cargo xwin clippy` with native clippy run on Windows temporarily
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-14 18:08_
+_@zanieb_
 
 We can't have CI blocked by this. If this doesn't work or is exceptionally slow, I'll remove the job entirely.
 

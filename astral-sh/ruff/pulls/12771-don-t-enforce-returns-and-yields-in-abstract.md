@@ -14,14 +14,14 @@ head: charlie/abs
 created_at: 2024-08-09T02:19:34Z
 updated_at: 2024-08-09T13:43:33Z
 url: https://github.com/astral-sh/ruff/pull/12771
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Don't enforce returns and yields in abstract methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-09 02:19_
+_@charliermarsh_
 
 ## Summary
 

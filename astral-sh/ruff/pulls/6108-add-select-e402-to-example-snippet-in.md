@@ -13,14 +13,14 @@ head: update-contributing
 created_at: 2023-07-26T22:17:06Z
 updated_at: 2023-07-27T21:04:57Z
 url: https://github.com/astral-sh/ruff/pull/6108
-synced_at: 2026-01-12T03:23:56Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add "--select E402" to example snippet in `CONTRIBUTING.md`
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-07-26 22:17_
+_@LaBatata101_
 
 ## Summary
 In Ruff only a subset of rules are enabled by default. This change change aims to clarify that when adding a new rule, you must explicitly use the `--select name_of_rule` command to ensure the rule gets executed.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T16:20:06Z
 updated_at: 2025-07-23T14:26:50Z
 url: https://github.com/astral-sh/uv/issues/1703
-synced_at: 2026-01-10T03:32:43Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Add support for managing Conda environments and packages
 
 ---
 
-_Issue opened by @matterhorn103 on 2024-02-19 16:20_
+_@matterhorn103_
 
 I'm very excited by uv and the possibilities it hints at for the future of one-stop packaging and environment management.
 

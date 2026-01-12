@@ -13,14 +13,14 @@ head: dont-use-plural-when-single-rule-warning
 created_at: 2024-09-02T11:41:20Z
 updated_at: 2024-09-02T13:16:07Z
 url: https://github.com/astral-sh/ruff/pull/13212
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Handle singular case for incompatible rules warning
 
 ---
 
-_Pull request opened by @RubenVanEldik on 2024-09-02 11:41_
+_@RubenVanEldik_
 
 When running Ruff format I got a slightly confusing message. The Ruff message was confusing, because it was in plural, even though only a single rule was giving me this error.
 

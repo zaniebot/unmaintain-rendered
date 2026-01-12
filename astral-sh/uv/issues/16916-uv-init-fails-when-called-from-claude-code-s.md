@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-01T21:43:14Z
 updated_at: 2026-01-09T13:09:27Z
 url: https://github.com/astral-sh/uv/issues/16916
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # `uv init` fails when called from Claude Code's sandbox on macOS
 
 ---
 
-_Issue opened by @buth on 2025-12-01 21:43_
+_@buth_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-27T20:45:48Z
 updated_at: 2025-07-28T13:26:24Z
 url: https://github.com/astral-sh/uv/issues/14921
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:59Z
 ```
 
 # Missing uv build backend option in docs in `uv init --help` and online docs
 
 ---
 
-_Issue opened by @abidsikder on 2025-07-27 20:45_
+_@abidsikder_
 
 ### Summary
 

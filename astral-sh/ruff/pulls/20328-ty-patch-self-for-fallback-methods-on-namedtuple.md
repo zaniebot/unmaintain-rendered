@@ -14,14 +14,14 @@ head: david/patch-self-on-fallback-types
 created_at: 2025-09-10T12:44:34Z
 updated_at: 2025-09-15T14:38:30Z
 url: https://github.com/astral-sh/ruff/pull/20328
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Patch `Self` for fallback-methods on `NamedTuple`s and `TypedDict`s
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-10 12:44_
+_@sharkdp_
 
 ## Summary
 

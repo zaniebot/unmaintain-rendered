@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-11T03:54:19Z
 updated_at: 2025-08-11T11:59:21Z
 url: https://github.com/astral-sh/uv/issues/15216
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # Specify installation order for some packages
 
 ---
 
-_Issue opened by @hongquan on 2025-08-11 03:54_
+_@hongquan_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: gankra/markdown-fail
 created_at: 2026-01-04T19:07:08Z
 updated_at: 2026-01-05T12:13:27Z
 url: https://github.com/astral-sh/ruff/pull/22373
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Implement support for explicit markdown code fences in docstring rendering
 
 ---
 
-_Pull request opened by @Gankra on 2026-01-04 19:07_
+_@Gankra_
 
 * Fixes https://github.com/astral-sh/ty/issues/2291
 

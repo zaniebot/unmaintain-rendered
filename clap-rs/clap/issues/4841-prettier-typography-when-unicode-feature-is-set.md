@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-04-17T17:52:40Z
 updated_at: 2023-04-17T18:57:37Z
 url: https://github.com/clap-rs/clap/issues/4841
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Prettier typography when `unicode` feature is set?
 
 ---
 
-_Issue opened by @virtualritz on 2023-04-17 17:52_
+_@virtualritz_
 
 ### Please complete the following tasks
 

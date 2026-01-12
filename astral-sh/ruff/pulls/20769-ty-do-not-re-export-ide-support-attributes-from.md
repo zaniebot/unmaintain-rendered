@@ -14,14 +14,14 @@ head: david/ide-support-refactor
 created_at: 2025-10-08T15:27:21Z
 updated_at: 2025-10-08T15:45:30Z
 url: https://github.com/astral-sh/ruff/pull/20769
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] Do not re-export `ide_support` attributes from `types`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-08 15:27_
+_@sharkdp_
 
 ## Summary
 

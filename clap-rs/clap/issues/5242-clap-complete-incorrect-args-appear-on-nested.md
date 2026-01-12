@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-12-03T11:48:12Z
 updated_at: 2024-08-10T00:48:45Z
 url: https://github.com/clap-rs/clap/issues/5242
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # clap_complete: incorrect args appear on nested subcommands with the same name
 
 ---
 
-_Issue opened by @m4rch3n1ng on 2023-12-03 11:48_
+_@m4rch3n1ng_
 
 ### Please complete the following tasks
 

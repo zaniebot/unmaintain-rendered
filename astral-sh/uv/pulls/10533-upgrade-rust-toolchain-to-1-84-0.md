@@ -13,14 +13,14 @@ head: rust1.84
 created_at: 2025-01-12T02:45:06Z
 updated_at: 2025-01-12T04:55:39Z
 url: https://github.com/astral-sh/uv/pull/10533
-synced_at: 2026-01-10T11:44:56Z
+synced_at: 2026-01-12T16:09:21Z
 ```
 
 # Upgrade Rust toolchain to 1.84.0
 
 ---
 
-_Pull request opened by @samypr100 on 2025-01-12 02:45_
+_@samypr100_
 
 ## Summary
 Upgrade the rust toolchain to 1.84.0. This PR does not bump the MSRV.

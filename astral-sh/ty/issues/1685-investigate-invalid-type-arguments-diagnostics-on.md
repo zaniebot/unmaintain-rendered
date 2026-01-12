@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-29T22:25:30Z
 updated_at: 2025-12-03T16:35:13Z
 url: https://github.com/astral-sh/ty/issues/1685
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Investigate `invalid-type-arguments` diagnostics on scipy-stubs
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-29 22:25_
+_@AlexWaygood_
 
 > Currently, if I run `uvx ty check scipy-stubs` in the root of [scipy-stubs](https://github.com/scipy/scipy-stubs/) (just the current master branch), there are 674 diagnostics. At first glance, most of them appear to be false positives related to generic type aliases and type parameter bounds (`invalid-type-arguments`). 
 

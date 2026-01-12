@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-14T18:44:05Z
 updated_at: 2022-10-17T22:01:46Z
 url: https://github.com/astral-sh/ruff/issues/432
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Editor integration: `ruff --fix -` may destroy file contents when an update is available
 
 ---
 
-_Issue opened by @fsouza on 2022-10-14 18:44_
+_@fsouza_
 
 Use case: when formatting with the text editor, I send the file contents as stdin and replace the file contents with the stdout of `ruff`, but that output ends-up being the message about an update being available.
 

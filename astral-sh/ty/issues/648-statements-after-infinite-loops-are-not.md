@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-13T13:40:10Z
 updated_at: 2025-06-17T07:24:30Z
 url: https://github.com/astral-sh/ty/issues/648
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Statements after infinite loops are not considered unreachable
 
 ---
 
-_Issue opened by @sharkdp on 2025-06-13 13:40_
+_@sharkdp_
 
 The following example should not emit a diagnostic
 ```py

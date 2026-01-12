@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-17T12:41:00Z
 updated_at: 2025-04-28T10:12:23Z
 url: https://github.com/astral-sh/uv/issues/10708
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # How to work with OpenCV 4 different installation methods?
 
 ---
 
-_Issue opened by @kevinsimper on 2025-01-17 12:41_
+_@kevinsimper_
 
 Hi UV, really like the work ✌️
 

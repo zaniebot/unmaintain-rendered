@@ -12,14 +12,14 @@ head: isort-lines-after-import
 created_at: 2023-02-01T14:03:24Z
 updated_at: 2023-02-02T02:39:46Z
 url: https://github.com/astral-sh/ruff/pull/2440
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # feat: Add isort option lines-after-imports
 
 ---
 
-_Pull request opened by @reidswan on 2023-02-01 14:03_
+_@reidswan_
 
 Fixes https://github.com/charliermarsh/ruff/issues/2243
 

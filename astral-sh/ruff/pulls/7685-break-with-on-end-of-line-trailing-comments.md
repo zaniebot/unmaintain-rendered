@@ -13,14 +13,14 @@ head: charlie/with-comment
 created_at: 2023-09-28T00:07:47Z
 updated_at: 2023-09-28T12:45:26Z
 url: https://github.com/astral-sh/ruff/pull/7685
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Break `with` on end-of-line trailing comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-28 00:07_
+_@charliermarsh_
 
 ## Summary
 

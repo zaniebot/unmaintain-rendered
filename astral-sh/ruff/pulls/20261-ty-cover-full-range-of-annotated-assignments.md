@@ -15,14 +15,14 @@ head: david/annoated-assignment-full-range
 created_at: 2025-09-05T07:53:07Z
 updated_at: 2025-09-05T08:12:42Z
 url: https://github.com/astral-sh/ruff/pull/20261
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ty] Cover full range of annotated assignments
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-05 07:53_
+_@sharkdp_
 
 ## Summary
 

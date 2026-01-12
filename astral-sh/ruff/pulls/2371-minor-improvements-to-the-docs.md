@@ -12,14 +12,14 @@ head: charlie/docs
 created_at: 2023-01-31T00:06:00Z
 updated_at: 2023-01-31T00:06:06Z
 url: https://github.com/astral-sh/ruff/pull/2371
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Minor improvements to the docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-31 00:06_
+_@charliermarsh_
 
 _No description provided._
 

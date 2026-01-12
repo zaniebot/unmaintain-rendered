@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-17T20:51:29Z
 updated_at: 2023-03-19T18:16:52Z
 url: https://github.com/astral-sh/ruff/issues/3585
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Autofix] Failed to autofix oneline python file
 
 ---
 
-_Issue opened by @qarmin on 2023-03-17 20:51_
+_@qarmin_
 
 Ruff 1dd3cbd047beda01a7833e1b20e10e745757fe3e
 No config

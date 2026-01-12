@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-12T20:36:20Z
 updated_at: 2023-01-12T20:43:50Z
 url: https://github.com/astral-sh/ruff/issues/1830
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Option to disable ANSI color output.
 
 ---
 
-_Issue opened by @thisfred on 2023-01-12 20:36_
+_@thisfred_
 
 I would love a CLI flag that allows me to disable the colored output, rather than have to filter it out with `sed` in places that don't speak ANSI.
 

@@ -13,14 +13,14 @@ head: reorganize-AIR303-test-fixtures
 created_at: 2025-02-18T10:49:26Z
 updated_at: 2025-02-19T05:43:18Z
 url: https://github.com/astral-sh/ruff/pull/16226
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [airflow] move class attributed related cases to AIR302_class_attribute (AIR302)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-02-18 10:49_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

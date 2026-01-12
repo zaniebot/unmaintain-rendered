@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T07:43:49Z
 updated_at: 2025-12-30T00:48:00Z
 url: https://github.com/astral-sh/ty/issues/1493
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Unpacking a typed dictionary into another should transfer defined keys.
 
 ---
 
-_Issue opened by @lypwig on 2025-11-06 07:43_
+_@lypwig_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: konsti/readd-lowering-unit-tests
 created_at: 2024-05-31T12:05:58Z
 updated_at: 2024-05-31T12:17:50Z
 url: https://github.com/astral-sh/uv/pull/3935
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:56Z
 ```
 
 # Re-add lowering unit tests
 
 ---
 
-_Pull request opened by @konstin on 2024-05-31 12:05_
+_@konstin_
 
 Re-add the lowering unit tests removed in #3904. This also adds a `stop_discovery_at` feature to avoid running actual workspace discovery.
 

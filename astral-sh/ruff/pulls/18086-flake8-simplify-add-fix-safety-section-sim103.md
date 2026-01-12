@@ -13,14 +13,14 @@ head: fix-safety-section-needless-bool
 created_at: 2025-05-14T06:42:22Z
 updated_at: 2025-05-14T18:24:15Z
 url: https://github.com/astral-sh/ruff/pull/18086
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [`flake8-simplify`] add fix safety section (`SIM103`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-05-14 06:42_
+_@VascoSch92_
 
 The PR add the `fix safety` section for rule `SIM103` (#15584 )
 

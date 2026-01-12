@@ -12,14 +12,14 @@ head: charlie/quoted-annotations
 created_at: 2023-03-21T20:40:32Z
 updated_at: 2023-03-22T16:58:57Z
 url: https://github.com/astral-sh/ruff/pull/3657
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Enable autofix for annotations within 'simple' string literals
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-21 20:40_
+_@charliermarsh_
 
 ## Summary,
 

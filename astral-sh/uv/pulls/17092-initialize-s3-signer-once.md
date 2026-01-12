@@ -13,14 +13,14 @@ head: charlie/si
 created_at: 2025-12-11T20:23:27Z
 updated_at: 2025-12-11T20:36:43Z
 url: https://github.com/astral-sh/uv/pull/17092
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:36Z
 ```
 
 # Initialize S3 signer once
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-11 20:23_
+_@charliermarsh_
 
 ## Summary
 

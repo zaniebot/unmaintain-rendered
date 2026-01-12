@@ -13,14 +13,14 @@ head: move-install_mirrors-to-EnvironmentOptions
 created_at: 2025-09-18T20:37:48Z
 updated_at: 2025-09-25T15:35:42Z
 url: https://github.com/astral-sh/uv/pull/15937
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:01Z
 ```
 
 # Move Python install mirror parsing to `EnvironmentOptions`
 
 ---
 
-_Pull request opened by @andrey-berenda on 2025-09-18 20:37_
+_@andrey-berenda_
 
 ## Summary
 

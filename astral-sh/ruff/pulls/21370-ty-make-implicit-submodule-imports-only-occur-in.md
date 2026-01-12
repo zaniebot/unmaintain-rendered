@@ -14,14 +14,14 @@ head: gankra/glob-only-imp
 created_at: 2025-11-10T23:26:29Z
 updated_at: 2025-11-10T23:59:50Z
 url: https://github.com/astral-sh/ruff/pull/21370
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # [ty] Make implicit submodule imports only occur in global scope
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-10 23:26_
+_@Gankra_
 
 This loses any ability to have "per-function" implicit submodule imports, to avoid the "ok but now we need per-scope imports" and "ok but this should actually introduce a global that only exists during this function" problems. A simple and clean implementation with no weird corners.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-05T09:30:48Z
 updated_at: 2025-11-22T01:22:37Z
 url: https://github.com/astral-sh/ruff/issues/19757
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Autofix for ISC003 produces malformed code
 
 ---
 
-_Issue opened by @LKajan on 2025-08-05 09:30_
+_@LKajan_
 
 ### Summary
 

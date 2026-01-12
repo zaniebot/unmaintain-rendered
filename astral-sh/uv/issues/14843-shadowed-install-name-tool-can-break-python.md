@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-23T12:33:24Z
 updated_at: 2025-12-01T11:37:36Z
 url: https://github.com/astral-sh/uv/issues/14843
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # Shadowed `install_name_tool` can break Python installation
 
 ---
 
-_Issue opened by @zanieb on 2025-07-23 12:33_
+_@zanieb_
 
 ### Summary
 

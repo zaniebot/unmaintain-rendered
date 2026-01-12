@@ -11,14 +11,14 @@ head: hide_unless_present
 created_at: 2025-05-26T06:12:09Z
 updated_at: 2025-06-04T03:25:52Z
 url: https://github.com/clap-rs/clap/pull/6015
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat(help): Implement hide_unless_present and hide_unless_present_any
 
 ---
 
-_Pull request opened by @emersonford on 2025-05-26 06:12_
+_@emersonford_
 
 Implements #6014
 

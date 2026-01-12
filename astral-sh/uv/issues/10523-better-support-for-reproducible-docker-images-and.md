@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-11T21:07:28Z
 updated_at: 2025-01-15T09:22:21Z
 url: https://github.com/astral-sh/uv/issues/10523
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # Better support for reproducible Docker images and other artifacts?
 
 ---
 
-_Issue opened by @maxfriedrich on 2025-01-11 21:07_
+_@maxfriedrich_
 
 Hi, I did some research regarding reproducibility of Python artifacts recently to speed up deployments at my work by skipping unnecessary redeploys. I saw the [Lambda integration docs](https://docs.astral.sh/uv/guides/integration/aws-lambda/) were updated to include `UV_NO_INSTALLER_METADATA=1` so uv doesn't write metadata like timestamps, which is a good step in this direction.
 

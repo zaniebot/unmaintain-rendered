@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-08T21:59:48Z
 updated_at: 2024-08-09T09:23:00Z
 url: https://github.com/astral-sh/ruff/issues/12766
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # RUF031 fix introduces a syntax error when the tuple contains a slice
 
 ---
 
-_Issue opened by @dscorbett on 2024-08-08 21:59_
+_@dscorbett_
 
 The fix for RUF031 introduces a syntax error when `lint.ruff.parenthesize-tuple-in-subscript = true` and the subscripted tuple contains a slice.
 

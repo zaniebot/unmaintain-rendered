@@ -13,14 +13,14 @@ head: n802_ast_visit
 created_at: 2025-06-24T02:02:54Z
 updated_at: 2025-07-14T08:34:07Z
 url: https://github.com/astral-sh/ruff/pull/18907
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [`pep8_naming`] Avoid false positives on standard library functions with uppercase names (`N802`)
 
 ---
 
-_Pull request opened by @w0nder1ng on 2025-06-24 02:02_
+_@w0nder1ng_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

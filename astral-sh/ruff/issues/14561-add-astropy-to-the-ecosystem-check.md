@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-23T23:31:25Z
 updated_at: 2024-11-24T11:47:12Z
 url: https://github.com/astral-sh/ruff/issues/14561
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Add astropy to the ecosystem check
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-11-23 23:31_
+_@AlexWaygood_
 
 astropy are a big project and heavy users of Ruff. They often adopt new Ruff rules once they're stabilized. I think it would be useful for us and for them to add the project to our ecosystem check.
 

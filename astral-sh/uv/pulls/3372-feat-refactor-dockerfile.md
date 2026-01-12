@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2024-05-04T09:43:55Z
 updated_at: 2025-04-29T09:41:07Z
 url: https://github.com/astral-sh/uv/pull/3372
-synced_at: 2026-01-10T11:10:33Z
+synced_at: 2026-01-12T16:05:35Z
 ```
 
 # feat: Refactor `Dockerfile`
 
 ---
 
-_Pull request opened by @polarathene on 2024-05-04 09:43_
+_@polarathene_
 
 ## Summary
 

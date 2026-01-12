@@ -13,14 +13,14 @@ head: feat/todo-type
 created_at: 2024-09-28T20:17:44Z
 updated_at: 2024-09-30T21:32:42Z
 url: https://github.com/astral-sh/ruff/pull/13548
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] feat: introduce a new `[Type::Todo]` variant
 
 ---
 
-_Pull request opened by @Slyces on 2024-09-28 20:17_
+_@Slyces_
 
 This variant shows inference that is not yet implemented..
 

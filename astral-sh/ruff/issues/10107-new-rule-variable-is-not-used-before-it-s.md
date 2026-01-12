@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-24T02:43:47Z
 updated_at: 2025-01-23T02:26:23Z
 url: https://github.com/astral-sh/ruff/issues/10107
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # new rule - variable is not used before it's assigned again
 
 ---
 
-_Issue opened by @DetachHead on 2024-02-24 02:43_
+_@DetachHead_
 
 ```py
 a = 1 # error: asignment is useless because it's not used before being assigned again

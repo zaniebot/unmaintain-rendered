@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-08T09:32:40Z
 updated_at: 2025-07-08T12:49:22Z
 url: https://github.com/astral-sh/ruff/issues/19199
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Rule that dedupes dunder-all entries
 
 ---
 
-_Issue opened by @zzJinux on 2025-07-08 09:32_
+_@zzJinux_
 
 ### Summary
 

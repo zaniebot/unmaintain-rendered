@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-18T17:08:45Z
 updated_at: 2025-11-18T16:10:37Z
 url: https://github.com/astral-sh/ty/issues/1206
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Include dotted module names in `import` completions?
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-09-18 17:08_
+_@AlexWaygood_
 
 It might be cool if ty could include `collections.abc` (a dotted module name) in the list of suggested completions here:
 

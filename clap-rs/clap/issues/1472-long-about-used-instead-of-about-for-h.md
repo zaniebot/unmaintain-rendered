@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-05-14T23:01:01Z
 updated_at: 2020-10-22T18:00:02Z
 url: https://github.com/clap-rs/clap/issues/1472
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # `long_about` used instead of `about` for "-h"
 
 ---
 
-_Issue opened by @romanows on 2019-05-14 23:01_
+_@romanows_
 
 ### Rust Version
 1.33.0 and playground 1.34.1

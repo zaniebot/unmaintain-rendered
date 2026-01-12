@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-01T18:19:09Z
 updated_at: 2024-06-19T18:20:55Z
 url: https://github.com/astral-sh/uv/issues/3960
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Implement `uv remove`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-01 18:19_
+_@charliermarsh_
 
 As part of the Project API, we should have native `add` and `remove` commands.
 

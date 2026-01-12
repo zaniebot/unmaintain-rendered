@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-02T22:48:54Z
 updated_at: 2023-07-15T09:04:15Z
 url: https://github.com/astral-sh/ruff/issues/1569
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Pydocstyle `convention = "google"` does not work as expected
 
 ---
 
-_Issue opened by @stinodego on 2023-01-02 22:48_
+_@stinodego_
 
 Minimal reproduction:
 

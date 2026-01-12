@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-25T11:30:14Z
 updated_at: 2025-05-26T11:55:13Z
 url: https://github.com/astral-sh/ty/issues/507
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Fix version in playground
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-25 11:30_
+_@MichaReiser_
 
 ### Summary
 

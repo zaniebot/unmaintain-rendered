@@ -13,14 +13,14 @@ head: charlie/UP035
 created_at: 2023-09-13T17:06:47Z
 updated_at: 2023-09-13T17:26:02Z
 url: https://github.com/astral-sh/ruff/pull/7356
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Update deprecated-import lists based on recent typing-extension release
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-13 17:06_
+_@charliermarsh_
 
 ## Summary
 

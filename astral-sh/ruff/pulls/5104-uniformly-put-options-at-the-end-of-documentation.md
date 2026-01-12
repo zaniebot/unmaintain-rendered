@@ -13,14 +13,14 @@ head: charlie/options
 created_at: 2023-06-14T23:55:52Z
 updated_at: 2023-06-15T00:25:44Z
 url: https://github.com/astral-sh/ruff/pull/5104
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Uniformly put `## Options` at the end of documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-14 23:55_
+_@charliermarsh_
 
 _No description provided._
 

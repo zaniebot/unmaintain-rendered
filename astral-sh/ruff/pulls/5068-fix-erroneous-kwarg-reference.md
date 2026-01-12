@@ -13,14 +13,14 @@ head: charlie/kwargs
 created_at: 2023-06-13T23:52:55Z
 updated_at: 2023-06-14T00:19:06Z
 url: https://github.com/astral-sh/ruff/pull/5068
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Fix erroneous kwarg reference
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-13 23:52_
+_@charliermarsh_
 
 _No description provided._
 

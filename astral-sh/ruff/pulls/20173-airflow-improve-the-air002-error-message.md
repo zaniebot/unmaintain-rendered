@@ -14,14 +14,14 @@ head: improve-air-message
 created_at: 2025-08-31T01:33:26Z
 updated_at: 2025-09-04T09:59:16Z
 url: https://github.com/astral-sh/ruff/pull/20173
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [`airflow`] Improve the `AIR002` error message
 
 ---
 
-_Pull request opened by @Lee-W on 2025-08-31 01:33_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

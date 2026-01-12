@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-17T16:01:15Z
 updated_at: 2025-09-03T12:50:18Z
 url: https://github.com/astral-sh/uv/issues/12950
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # Support 3.14-dev and 3.14t-dev in `python-version`
 
 ---
 
-_Issue opened by @ngoldbaum on 2025-04-17 16:01_
+_@ngoldbaum_
 
 Right now I get a failure like this if I try to use either:
 

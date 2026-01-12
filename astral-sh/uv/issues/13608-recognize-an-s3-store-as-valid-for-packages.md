@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-22T23:49:32Z
 updated_at: 2025-05-22T23:56:38Z
 url: https://github.com/astral-sh/uv/issues/13608
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # Recognize an S3 store as valid for packages
 
 ---
 
-_Issue opened by @phreed on 2025-05-22 23:49_
+_@phreed_
 
 ### Summary
 

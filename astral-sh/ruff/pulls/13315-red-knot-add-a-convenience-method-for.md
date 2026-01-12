@@ -13,14 +13,14 @@ head: alex/union-from-elements
 created_at: 2024-09-10T18:39:47Z
 updated_at: 2024-09-10T21:41:58Z
 url: https://github.com/astral-sh/ruff/pull/13315
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Add a convenience method for constructing a union from a list of elements
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-10 18:39_
+_@AlexWaygood_
 
 ## Summary
 

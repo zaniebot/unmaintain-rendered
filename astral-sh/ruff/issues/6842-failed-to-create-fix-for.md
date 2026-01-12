@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-24T07:47:30Z
 updated_at: 2023-10-01T08:26:21Z
 url: https://github.com/astral-sh/ruff/issues/6842
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Failed to create fix for PytestUnittestRaisesAssertion: Unable to use existing symbol due to late binding
 
 ---
 
-_Issue opened by @qarmin on 2023-08-24 07:47_
+_@qarmin_
 
 Ruff 0.0.285 (latest changes from main branch)
 

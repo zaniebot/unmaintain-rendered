@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-26T13:41:29Z
 updated_at: 2025-08-12T16:52:51Z
 url: https://github.com/astral-sh/uv/issues/14915
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:59Z
 ```
 
 # libpython and PREFIX
 
 ---
 
-_Issue opened by @Time0o on 2025-07-26 13:41_
+_@Time0o_
 
 ### Question
 

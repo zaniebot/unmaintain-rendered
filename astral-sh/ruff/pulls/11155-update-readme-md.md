@@ -13,14 +13,14 @@ head: main
 created_at: 2024-04-26T02:07:03Z
 updated_at: 2024-04-26T02:14:21Z
 url: https://github.com/astral-sh/ruff/pull/11155
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:35Z
 ```
 
 # Update README.md
 
 ---
 
-_Pull request opened by @KPCOFGS on 2024-04-26 02:07_
+_@KPCOFGS_
 
 ## Summary
 

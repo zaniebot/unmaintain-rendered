@@ -13,14 +13,14 @@ head: progressbars
 created_at: 2025-10-30T08:46:48Z
 updated_at: 2025-11-03T17:13:10Z
 url: https://github.com/astral-sh/uv/pull/16509
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:17Z
 ```
 
 # Improve readability of progress bars
 
 ---
 
-_Pull request opened by @cbrnr on 2025-10-30 08:46_
+_@cbrnr_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

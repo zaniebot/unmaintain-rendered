@@ -13,14 +13,14 @@ head: cjm/while
 created_at: 2024-07-19T23:31:50Z
 updated_at: 2024-07-22T21:31:39Z
 url: https://github.com/astral-sh/ruff/pull/12413
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] add cycle-free while-loop control flow
 
 ---
 
-_Pull request opened by @carljm on 2024-07-19 23:31_
+_@carljm_
 
 Add support for while-loop control flow.
 

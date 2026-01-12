@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-16T18:04:39Z
 updated_at: 2023-08-16T20:34:00Z
 url: https://github.com/astral-sh/ruff/issues/6627
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Different errors being reported on the same file depending on whether parsing from `stdin` or not
 
 ---
 
-_Issue opened by @bryanforbes on 2023-08-16 18:04_
+_@bryanforbes_
 
 Given the following file named `foo.pyi`:
 

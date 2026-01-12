@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-13T02:54:41Z
 updated_at: 2025-03-22T23:20:55Z
 url: https://github.com/astral-sh/uv/issues/12147
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # Some places that could be optimized
 
 ---
 
-_Issue opened by @undefine-man on 2025-03-13 02:54_
+_@undefine-man_
 
 ### Summary
 

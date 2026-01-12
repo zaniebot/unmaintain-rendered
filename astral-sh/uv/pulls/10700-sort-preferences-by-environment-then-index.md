@@ -13,14 +13,14 @@ head: charlie/pref-sort
 created_at: 2025-01-17T00:18:00Z
 updated_at: 2025-01-17T17:27:45Z
 url: https://github.com/astral-sh/uv/pull/10700
-synced_at: 2026-01-10T11:45:05Z
+synced_at: 2026-01-12T16:09:26Z
 ```
 
 # Sort preferences by environment, then index
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-17 00:18_
+_@charliermarsh_
 
 ## Summary
 

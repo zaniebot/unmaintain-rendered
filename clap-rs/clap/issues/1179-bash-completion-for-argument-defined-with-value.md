@@ -11,14 +11,14 @@ assignees: []
 created_at: 2018-02-13T00:12:29Z
 updated_at: 2018-08-02T03:30:18Z
 url: https://github.com/clap-rs/clap/issues/1179
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # bash completion for argument defined with `value_name` should complete with file names
 
 ---
 
-_Issue opened by @jzinn on 2018-02-13 00:12_
+_@jzinn_
 
 Ripgrep has a `-g` option that could use some improved Bash completion.  Please see
 *   https://github.com/BurntSushi/ripgrep/issues/792

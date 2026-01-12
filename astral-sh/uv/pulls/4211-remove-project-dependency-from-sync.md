@@ -13,14 +13,14 @@ head: charlie/pyp
 created_at: 2024-06-10T19:06:32Z
 updated_at: 2024-06-10T19:23:38Z
 url: https://github.com/astral-sh/uv/pull/4211
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:05Z
 ```
 
 # Remove project dependency from `sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-10 19:06_
+_@charliermarsh_
 
 ## Summary
 

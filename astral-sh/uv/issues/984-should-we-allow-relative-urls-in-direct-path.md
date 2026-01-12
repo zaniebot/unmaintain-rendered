@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-19T00:14:25Z
 updated_at: 2024-01-22T14:20:32Z
 url: https://github.com/astral-sh/uv/issues/984
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Should we allow relative URLs in direct path dependencies?
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-19 00:14_
+_@charliermarsh_
 
 E.g., in your requirements file:
 

@@ -13,14 +13,14 @@ head: charlie/few
 created_at: 2023-02-24T23:00:01Z
 updated_at: 2023-02-25T02:57:50Z
 url: https://github.com/astral-sh/ruff/pull/3220
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Avoid flagging logging-too-few-args with no arguments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-24 23:00_
+_@charliermarsh_
 
 This matches Pylint's behavior.
 

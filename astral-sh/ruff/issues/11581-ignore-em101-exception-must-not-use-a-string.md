@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-28T12:58:19Z
 updated_at: 2024-05-28T13:58:44Z
 url: https://github.com/astral-sh/ruff/issues/11581
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ignore EM101 (Exception must not use a string literal) for specific exceptions (such as `aiohttp.web.HTTPRedirection`)
 
 ---
 
-_Issue opened by @MHajoha on 2024-05-28 12:58_
+_@MHajoha_
 
 In aiohttp, we usually use exceptions to return non-OK status codes. A frequent line is 
 ```python

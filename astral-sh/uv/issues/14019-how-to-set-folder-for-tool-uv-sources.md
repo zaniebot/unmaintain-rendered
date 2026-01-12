@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T11:42:03Z
 updated_at: 2025-06-14T07:42:03Z
 url: https://github.com/astral-sh/uv/issues/14019
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # How to set folder for `tool.uv.sources`?
 
 ---
 
-_Issue opened by @hongbo-miao on 2025-06-13 11:42_
+_@hongbo-miao_
 
 ### Question
 

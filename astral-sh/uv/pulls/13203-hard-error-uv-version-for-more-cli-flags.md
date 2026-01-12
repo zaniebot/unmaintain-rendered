@@ -13,14 +13,14 @@ head: gankra/err-ver
 created_at: 2025-04-29T21:36:18Z
 updated_at: 2025-05-04T12:26:03Z
 url: https://github.com/astral-sh/uv/pull/13203
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:36Z
 ```
 
 # hard error `uv version` for more cli flags
 
 ---
 
-_Pull request opened by @Gankra on 2025-04-29 21:36_
+_@Gankra_
 
 _No description provided._
 

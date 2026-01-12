@@ -13,14 +13,14 @@ head: dcreager/inherit-context
 created_at: 2025-08-01T16:49:58Z
 updated_at: 2025-08-01T19:29:20Z
 url: https://github.com/astral-sh/ruff/pull/19693
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Correctly instantiate generic class that inherits `__init__` from generic base class
 
 ---
 
-_Pull request opened by @dcreager on 2025-08-01 16:49_
+_@dcreager_
 
 This is subtle, and the root cause became more apparent with #19604, since we now have many more cases of superclasses and subclasses using different typevars. The issue is easiest to see in the following:
 

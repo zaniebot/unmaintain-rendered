@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-08T23:55:26Z
 updated_at: 2023-07-10T02:24:47Z
 url: https://github.com/astral-sh/ruff/issues/5624
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Busted documentation page
 
 ---
 
-_Issue opened by @claird on 2023-07-08 23:55_
+_@claird_
 
 [The documentation page for `PERF203`](https://beta.ruff.rs/docs/rules/try-except-in-loop/) advises readers to "... [u]se instead" source which is not only fails to be stylish, but does not even compile (roughly, it has `break` where `pass` perhaps was intended).  Also, early experiments suggest that **Ruff** fires `PERF203` even for Py3.11 and 3.12, contrary to the text.
 

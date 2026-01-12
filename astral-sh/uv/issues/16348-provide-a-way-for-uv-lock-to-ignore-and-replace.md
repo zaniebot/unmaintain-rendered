@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T19:58:10Z
 updated_at: 2025-12-18T16:27:10Z
 url: https://github.com/astral-sh/uv/issues/16348
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # Provide a way for `uv lock` to ignore and replace existing and/or broken `uv.lock` files
 
 ---
 
-_Issue opened by @namurphy on 2025-10-17 19:58_
+_@namurphy_
 
 ### Summary
 

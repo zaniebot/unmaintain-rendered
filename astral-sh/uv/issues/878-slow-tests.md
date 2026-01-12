@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-01-10T23:25:46Z
 updated_at: 2025-12-02T09:54:04Z
 url: https://github.com/astral-sh/uv/issues/878
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Slow tests
 
 ---
 
-_Issue opened by @zanieb on 2024-01-10 23:25_
+_@zanieb_
 
 Last updated for commit 14d535f384e446775a26db9d0dc94a24268933ad [[source](https://github.com/astral-sh/uv/actions/runs/9451586092)] with threshold of 10s
 

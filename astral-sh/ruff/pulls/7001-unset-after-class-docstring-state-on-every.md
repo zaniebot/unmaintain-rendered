@@ -13,14 +13,14 @@ head: charlie/doc
 created_at: 2023-08-30T03:17:00Z
 updated_at: 2023-08-30T06:20:29Z
 url: https://github.com/astral-sh/ruff/pull/7001
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Unset `after_class_docstring` state on every iteration
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-30 03:17_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-16T23:53:42Z
 updated_at: 2025-10-28T12:25:32Z
 url: https://github.com/astral-sh/uv/issues/16332
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # option to not create .gitignore in dist/ folder when using uv build
 
 ---
 
-_Issue opened by @CangyuanLi on 2025-10-16 23:53_
+_@CangyuanLi_
 
 ### Summary
 

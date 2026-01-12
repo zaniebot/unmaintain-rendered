@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-06-25T18:26:11Z
 updated_at: 2025-07-02T19:59:21Z
 url: https://github.com/astral-sh/ruff/pull/18940
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [`FastAPI`] Add fix safety section to `FAST002`
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-25 18:26_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

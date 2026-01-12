@@ -14,14 +14,14 @@ head: feat/pyi016-optional-none
 created_at: 2025-06-08T20:45:21Z
 updated_at: 2025-06-29T11:43:19Z
 url: https://github.com/astral-sh/ruff/pull/18572
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # [`flake8-pyi`] Expand `Optional[A]` to `A | None` (`PYI016`)
 
 ---
 
-_Pull request opened by @robsdedude on 2025-06-08 20:45_
+_@robsdedude_
 
 ## Summary
 Under preview :test_tube: I've expanded rule `PYI016` to also flag type union duplicates containing `None` and `Optional`.

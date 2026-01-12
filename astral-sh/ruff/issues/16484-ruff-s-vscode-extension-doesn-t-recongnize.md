@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-03T21:47:57Z
 updated_at: 2025-03-04T18:20:52Z
 url: https://github.com/astral-sh/ruff/issues/16484
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ruff's VSCode extension doesn't recongnize terminal command executions in jupyter notebooks
 
 ---
 
-_Issue opened by @juanbfactored on 2025-03-03 21:47_
+_@juanbfactored_
 
 ### Summary
 

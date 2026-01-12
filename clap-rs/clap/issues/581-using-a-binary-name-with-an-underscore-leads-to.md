@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-07-14T15:07:11Z
 updated_at: 2017-02-03T22:43:50Z
 url: https://github.com/clap-rs/clap/issues/581
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Using a binary name with an underscore leads to panic on completion generation
 
 ---
 
-_Issue opened by @ruabmbua on 2016-07-14 15:07_
+_@ruabmbua_
 
 I tried to upgrade clap-rs on my command line utility and include the new awesome bash completion generation in my build.rs file. I followed the recommendation to how do things in the docs, but my build.rs files panics at execution.
 

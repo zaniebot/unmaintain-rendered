@@ -13,14 +13,14 @@ head: konsti/dummy-serde-feature
 created_at: 2024-05-10T08:33:20Z
 updated_at: 2024-05-10T13:46:30Z
 url: https://github.com/astral-sh/uv/pull/3501
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # Re-add dummy serde feature to pep440-rs and pep508-rs
 
 ---
 
-_Pull request opened by @konstin on 2024-05-10 08:33_
+_@konstin_
 
 This keeps us in sync with the published pep440-rs and pep508-rs crates for prefix.
 

@@ -12,14 +12,14 @@ head: charlie/str-test
 created_at: 2022-10-08T21:47:06Z
 updated_at: 2022-10-08T21:47:48Z
 url: https://github.com/astral-sh/ruff/pull/367
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Use strum to facilitate simple enum serialization
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-08 21:47_
+_@charliermarsh_
 
 _No description provided._
 

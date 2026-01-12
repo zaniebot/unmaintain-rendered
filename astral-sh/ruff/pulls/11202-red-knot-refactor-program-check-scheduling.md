@@ -13,14 +13,14 @@ head: red-knot-executor
 created_at: 2024-04-29T12:28:17Z
 updated_at: 2024-04-30T07:28:22Z
 url: https://github.com/astral-sh/ruff/pull/11202
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [red-knot] Refactor `program.check` scheduling
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-29 12:28_
+_@MichaReiser_
 
 ## Summary
 

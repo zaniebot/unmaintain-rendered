@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-24T16:52:55Z
 updated_at: 2025-10-27T09:53:58Z
 url: https://github.com/astral-sh/ruff/issues/21066
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # E252: false positive with TypeVarDefault [PEP696] [preview]
 
 ---
 
-_Issue opened by @randolf-scholz on 2025-10-24 16:52_
+_@randolf-scholz_
 
 ### Summary
 

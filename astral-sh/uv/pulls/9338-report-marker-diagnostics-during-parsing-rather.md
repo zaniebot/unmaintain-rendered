@@ -13,14 +13,14 @@ head: charlie/eval
 created_at: 2024-11-21T22:27:20Z
 updated_at: 2024-11-26T14:15:34Z
 url: https://github.com/astral-sh/uv/pull/9338
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:45Z
 ```
 
 # Report marker diagnostics during parsing, rather than evaluation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-21 22:27_
+_@charliermarsh_
 
 ## Summary
 

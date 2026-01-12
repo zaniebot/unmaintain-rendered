@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-06T17:56:17Z
 updated_at: 2024-06-07T18:18:33Z
 url: https://github.com/astral-sh/uv/issues/4106
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Add extra and dev validation to lockfile conversion
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-06 17:56_
+_@charliermarsh_
 
 `impl TryFrom<LockWire> for Lock` is missing optional and dev dependencies.
 

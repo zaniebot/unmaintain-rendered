@@ -15,14 +15,14 @@ head: furb103-fix-fix
 created_at: 2025-10-09T15:47:38Z
 updated_at: 2025-10-31T15:35:47Z
 url: https://github.com/astral-sh/ruff/pull/20790
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [`refurb`] Preserve argument ordering in autofix (`FURB103`)
 
 ---
 
-_Pull request opened by @chirizxc on 2025-10-09 15:47_
+_@chirizxc_
 
 Fixes https://github.com/astral-sh/ruff/issues/20785
 

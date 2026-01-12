@@ -14,14 +14,14 @@ assignees: []
 created_at: 2022-08-13T15:45:54Z
 updated_at: 2023-06-26T14:20:45Z
 url: https://github.com/clap-rs/clap/issues/4074
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Implement convenient helper methods for `PathBufValueParser` to reduce boilerplate
 
 ---
 
-_Issue opened by @SupImDos on 2022-08-13 15:45_
+_@SupImDos_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: zb/add-cargo-install
 created_at: 2024-09-03T21:19:36Z
 updated_at: 2024-09-04T00:24:56Z
 url: https://github.com/astral-sh/uv/pull/6979
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:37Z
 ```
 
 # Add instructions for installing from Cargo
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-03 21:19_
+_@zanieb_
 
 _No description provided._
 

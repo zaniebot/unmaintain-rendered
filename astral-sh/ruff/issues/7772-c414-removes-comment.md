@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-03T03:47:55Z
 updated_at: 2023-10-03T14:17:23Z
 url: https://github.com/astral-sh/ruff/issues/7772
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # C414 removes comment
 
 ---
 
-_Issue opened by @JelleZijlstra on 2023-10-03 03:47_
+_@JelleZijlstra_
 
 ```
 $ cat xxx.py 

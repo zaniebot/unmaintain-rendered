@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T15:04:45Z
 updated_at: 2025-07-16T13:50:56Z
 url: https://github.com/astral-sh/uv/issues/11698
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # "UI compliant" output?
 
 ---
 
-_Issue opened by @vangelem on 2025-02-21 15:04_
+_@vangelem_
 
 ### Question
 

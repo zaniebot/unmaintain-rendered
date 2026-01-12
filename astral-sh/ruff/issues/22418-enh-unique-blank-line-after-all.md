@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-06T16:01:01Z
 updated_at: 2026-01-08T01:03:59Z
 url: https://github.com/astral-sh/ruff/issues/22418
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # [ENH] Unique blank line after `__all__`?
 
 ---
 
-_Issue opened by @eliegoudout on 2026-01-06 16:01_
+_@eliegoudout_
 
 ### Summary
 

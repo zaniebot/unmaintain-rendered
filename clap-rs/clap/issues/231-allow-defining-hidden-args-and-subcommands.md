@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-09-06T18:29:30Z
 updated_at: 2018-08-02T03:29:44Z
 url: https://github.com/clap-rs/clap/issues/231
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Allow defining hidden args and subcommands
 
 ---
 
-_Issue opened by @kbknapp on 2015-09-06 18:29_
+_@kbknapp_
 
 Based off an idea in #217 
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-30T08:43:01Z
 updated_at: 2024-02-15T16:02:49Z
 url: https://github.com/astral-sh/ruff/issues/2342
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # F722 and F821 errors reported using typing annotations.
 
 ---
 
-_Issue opened by @KelSolaar on 2023-01-30 08:43_
+_@KelSolaar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

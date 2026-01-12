@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-09-01T21:35:34Z
 updated_at: 2018-08-02T03:29:53Z
 url: https://github.com/clap-rs/clap/issues/645
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Create SubCommand name from parent name
 
 ---
 
-_Issue opened by @SuperFluffy on 2016-09-01 21:35_
+_@SuperFluffy_
 
 Is there a way to have the application name displayed as `app_name sub_cmd version`? Right now, if the App carries the name `foo` but has the binary `bar` (as per `Cargo.toml`), invoking `./bar -h` will show `foo <version>`, whereas `./bar help subcmd` will show `bar-subcmd <version>`, which I think ios quite confusing.
 

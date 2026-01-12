@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-18T05:36:11Z
 updated_at: 2024-01-18T01:24:55Z
 url: https://github.com/astral-sh/ruff/issues/4489
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Should `__main__.py` really be considered a public module?
 
 ---
 
-_Issue opened by @CobaltCause on 2023-05-18 05:36_
+_@CobaltCause_
 
 Reading [this](https://docs.python.org/3/library/__main__.html#main-py-in-python-packages), I wouldn't think so; it seems to imply that nothing should be defined in that file and then imported elsewhere. Yet, `ruff` will give me such errors as `D100 Missing docstring in public module` in `__main__.py`, which I found surprising. I'm not entirely certain which behavior is correct, though.
 

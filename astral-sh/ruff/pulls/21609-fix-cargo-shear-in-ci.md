@@ -13,14 +13,14 @@ head: dhruv/cargo-shear
 created_at: 2025-11-24T05:30:56Z
 updated_at: 2025-11-24T05:35:35Z
 url: https://github.com/astral-sh/ruff/pull/21609
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # Fix cargo shear in CI
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-11-24 05:30_
+_@dhruvmanila_
 
 Tested using `cargo build` and `cargo build --release`.
 

@@ -13,14 +13,14 @@ head: bugfix/tc004-module-level-dunder-getattr
 created_at: 2025-02-09T13:42:29Z
 updated_at: 2025-02-09T16:30:03Z
 url: https://github.com/astral-sh/ruff/pull/16052
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-type-checking`] Avoid `TC004` false positive where the runtime definition is provided by `__getattr__`
 
 ---
 
-_Pull request opened by @Daverball on 2025-02-09 13:42_
+_@Daverball_
 
 Fixes #16045
 

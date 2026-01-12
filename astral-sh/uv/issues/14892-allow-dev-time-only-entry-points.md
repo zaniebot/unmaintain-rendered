@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-25T12:18:25Z
 updated_at: 2025-07-25T17:39:04Z
 url: https://github.com/astral-sh/uv/issues/14892
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:58Z
 ```
 
 # Allow dev-time only entry points
 
 ---
 
-_Issue opened by @tuukkamustonen on 2025-07-25 12:18_
+_@tuukkamustonen_
 
 ### Summary
 

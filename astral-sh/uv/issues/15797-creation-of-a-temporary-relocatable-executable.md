@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-11T20:06:58Z
 updated_at: 2025-09-16T19:56:13Z
 url: https://github.com/astral-sh/uv/issues/15797
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Creation of a Temporary relocatable executable
 
 ---
 
-_Issue opened by @amasin2111 on 2025-09-11 20:06_
+_@amasin2111_
 
 ### Question
 

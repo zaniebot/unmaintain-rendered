@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-20T22:24:29Z
 updated_at: 2025-12-23T09:20:26Z
 url: https://github.com/astral-sh/ty/issues/1070
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Does not know about pydantic_settings.BaseSettings from env vars
 
 ---
 
-_Issue opened by @jankatins on 2025-08-20 22:24_
+_@jankatins_
 
 ### Summary
 

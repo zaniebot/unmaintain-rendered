@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-12-07T21:54:20Z
 updated_at: 2021-12-13T22:33:46Z
 url: https://github.com/clap-rs/clap/issues/3075
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `App::about` and `Arg::help` are inconsistent
 
 ---
 
-_Issue opened by @epage on 2021-12-07 21:54_
+_@epage_
 
 We have `App::about`, `Arg::help` and `PossibleValue::help`.
 

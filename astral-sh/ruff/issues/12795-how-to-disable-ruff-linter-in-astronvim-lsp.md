@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-10T15:16:42Z
 updated_at: 2024-08-13T16:01:50Z
 url: https://github.com/astral-sh/ruff/issues/12795
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # How to disable Ruff linter in AstroNvim LSP?
 
 ---
 
-_Issue opened by @memeLordo on 2024-08-10 15:16_
+_@memeLordo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

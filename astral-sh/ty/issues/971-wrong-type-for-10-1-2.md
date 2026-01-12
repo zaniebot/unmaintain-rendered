@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-12T09:12:40Z
 updated_at: 2025-11-12T01:56:34Z
 url: https://github.com/astral-sh/ty/issues/971
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # wrong type for 10**1.2
 
 ---
 
-_Issue opened by @chris-RNG on 2025-08-12 09:12_
+_@chris-RNG_
 
 ### Summary
 

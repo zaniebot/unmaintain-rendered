@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-24T23:15:12Z
 updated_at: 2025-12-26T17:58:02Z
 url: https://github.com/astral-sh/ty/issues/2213
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Stricter handling of instance variables
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-12-24 23:15_
+_@hauntsaninja_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-11T01:07:08Z
 updated_at: 2024-11-14T10:08:30Z
 url: https://github.com/astral-sh/ruff/issues/13710
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] red-knot panics by looking at certain Python files within ruff's repo
 
 ---
 
-_Issue opened by @rtpg on 2024-10-11 01:07_
+_@rtpg_
 
 The following is a log of the 24 files caught by a `crates/**/*.py` glob that will panic if `red_knot` looks at them. These are grouped by the panic output, which should give an idea of the scale of each error.
 

@@ -14,14 +14,14 @@ head: dhruv/overloaded-function
 created_at: 2025-04-23T16:09:36Z
 updated_at: 2025-04-23T21:27:07Z
 url: https://github.com/astral-sh/ruff/pull/17585
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Add `FunctionType::to_overloaded`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-23 16:09_
+_@dhruvmanila_
 
 ## Summary
 

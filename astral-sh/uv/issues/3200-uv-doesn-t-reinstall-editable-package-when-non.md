@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-22T21:15:48Z
 updated_at: 2024-04-23T19:03:45Z
 url: https://github.com/astral-sh/uv/issues/3200
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # uv doesn't reinstall editable package when non-editable package is requested
 
 ---
 
-_Issue opened by @danielhollas on 2024-04-22 21:15_
+_@danielhollas_
 
 Consider the following sequence 
 

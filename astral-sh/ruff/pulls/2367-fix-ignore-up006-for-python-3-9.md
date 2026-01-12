@@ -12,14 +12,14 @@ head: up006-py3.9
 created_at: 2023-01-30T21:51:41Z
 updated_at: 2023-01-30T22:49:33Z
 url: https://github.com/astral-sh/ruff/pull/2367
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # fix: ignore UP006 for Python < 3.9
 
 ---
 
-_Pull request opened by @spaceone on 2023-01-30 21:51_
+_@spaceone_
 
 UP006 transforms `typing.Dict[str, str]` into `dict[str, str]` which is a `TypeError: 'type' object is not subscriptable` in Python < 3.9: https://peps.python.org/pep-0585/
 

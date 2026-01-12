@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-03-04T12:07:58Z
 updated_at: 2025-03-04T13:58:09Z
 url: https://github.com/astral-sh/uv/pull/11947
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:04Z
 ```
 
 # Fix error message suggesting `--user` instead of `--username`
 
 ---
 
-_Pull request opened by @LewisGaul on 2025-03-04 12:07_
+_@LewisGaul_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

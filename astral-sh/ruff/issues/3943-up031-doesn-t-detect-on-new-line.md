@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-12T03:40:57Z
 updated_at: 2023-04-20T00:01:11Z
 url: https://github.com/astral-sh/ruff/issues/3943
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # UP031 doesn't detect % on new line
 
 ---
 
-_Issue opened by @aslomoi on 2023-04-12 03:40_
+_@aslomoi_
 
 👋 
 

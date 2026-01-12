@@ -13,14 +13,14 @@ head: zanie/eco-cmp-black
 created_at: 2023-11-01T18:45:52Z
 updated_at: 2023-11-02T01:29:27Z
 url: https://github.com/astral-sh/ruff/pull/8419
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add support for `ruff-ecosystem` format comparisons with `black`
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-01 18:45_
+_@zanieb_
 
 Extends https://github.com/astral-sh/ruff/pull/8416 activating the `black-and-ruff` and `black-then-ruff` formatter comparison modes for ecosystem checks allowing us to compare changes to Black across the ecosystem.
 

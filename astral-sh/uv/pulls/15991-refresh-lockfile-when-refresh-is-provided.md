@@ -14,14 +14,14 @@ head: charlie/refresh-lock
 created_at: 2025-09-22T20:47:35Z
 updated_at: 2025-09-22T20:58:22Z
 url: https://github.com/astral-sh/uv/pull/15991
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:03Z
 ```
 
 # Refresh lockfile when `--refresh` is provided
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-22 20:47_
+_@charliermarsh_
 
 ## Summary
 

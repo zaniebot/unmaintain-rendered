@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-20T09:28:45Z
 updated_at: 2022-11-20T15:53:32Z
 url: https://github.com/astral-sh/ruff/issues/825
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Create CACHEDIR.TAG in .ruff_cache
 
 ---
 
-_Issue opened by @debfx on 2022-11-20 09:28_
+_@debfx_
 
 It would be nice if ruff created a CACHEDIR.TAG file (as specified in https://bford.info/cachedir/) in .ruff_cache/ so backup tools can automatically exclude it.
 

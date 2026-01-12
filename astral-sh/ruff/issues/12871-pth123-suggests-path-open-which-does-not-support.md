@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-13T23:49:55Z
 updated_at: 2024-10-04T13:48:48Z
 url: https://github.com/astral-sh/ruff/issues/12871
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `PTH123` suggests `Path.open()` which does not support file descriptors
 
 ---
 
-_Issue opened by @sbrudenell on 2024-08-13 23:49_
+_@sbrudenell_
 
 ```python
 fp = open(2)

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-30T17:44:24Z
 updated_at: 2024-07-28T00:44:42Z
 url: https://github.com/astral-sh/uv/issues/3925
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Read metadata directly from lockfile during resolution
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-30 17:44_
+_@charliermarsh_
 
 If a version is present in the lockfile, can we read the metadata from the lockfile directly, rather than going through the cache?
 

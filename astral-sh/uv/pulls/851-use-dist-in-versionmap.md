@@ -13,14 +13,14 @@ head: konsti/use-dist-in-version-map
 created_at: 2024-01-09T17:14:26Z
 updated_at: 2024-01-09T23:14:44Z
 url: https://github.com/astral-sh/uv/pull/851
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:14Z
 ```
 
 # Use `Dist` in `VersionMap`
 
 ---
 
-_Pull request opened by @konstin on 2024-01-09 17:14_
+_@konstin_
 
 Refactoring split out from find links support: Find links files can be represented as `Dist`, but not really as `File`, they don't have url nor hashes.
 

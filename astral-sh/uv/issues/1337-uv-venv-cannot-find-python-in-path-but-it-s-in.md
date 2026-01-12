@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T20:56:30Z
 updated_at: 2024-02-15T23:08:48Z
 url: https://github.com/astral-sh/uv/issues/1337
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # `uv venv` cannot find python in PATH, but it's in PATH
 
 ---
 
-_Issue opened by @goudbor on 2024-02-15 20:56_
+_@goudbor_
 
 Downloaded `uv` using `curl` to play around
 

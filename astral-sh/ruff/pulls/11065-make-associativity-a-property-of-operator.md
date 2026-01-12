@@ -14,14 +14,14 @@ head: dhruv/precedence-parsing-refactor
 created_at: 2024-04-21T05:52:54Z
 updated_at: 2024-04-23T04:39:43Z
 url: https://github.com/astral-sh/ruff/pull/11065
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Make associativity a property of operator precedence
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-21 05:52_
+_@dhruvmanila_
 
 ## Summary
 

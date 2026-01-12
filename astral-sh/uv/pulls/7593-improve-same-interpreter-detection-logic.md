@@ -12,14 +12,14 @@ head: ups/regression-followup
 created_at: 2024-09-20T17:33:36Z
 updated_at: 2024-09-20T17:58:22Z
 url: https://github.com/astral-sh/uv/pull/7593
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:54Z
 ```
 
 # Improve same-interpreter detection logic
 
 ---
 
-_Pull request opened by @lucab on 2024-09-20 17:33_
+_@lucab_
 
 Tentative fix for https://github.com/astral-sh/uv/issues/7586.
 

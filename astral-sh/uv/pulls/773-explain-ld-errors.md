@@ -13,14 +13,14 @@ head: explain-ld-errors
 created_at: 2024-01-04T12:19:13Z
 updated_at: 2024-01-04T19:56:39Z
 url: https://github.com/astral-sh/uv/pull/773
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:11Z
 ```
 
 # Explain ld errors
 
 ---
 
-_Pull request opened by @konstin on 2024-01-04 12:19_
+_@konstin_
 
 One of the most common ways source dists fail to build (on linux) is when the linker fails because the shared library of a native dependency is not installed. These errors are hard to understand when you're not a c programmer:
 

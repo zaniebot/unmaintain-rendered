@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-07-23T19:35:13Z
 updated_at: 2016-07-24T04:14:01Z
 url: https://github.com/clap-rs/clap/issues/593
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # `SubcommandRequired` in yml
 
 ---
 
-_Issue opened by @laishulu on 2016-07-23 19:35_
+_@laishulu_
 
 I can **NOT** run if I have the following line in the yml file, what's the correct way to config this?
 

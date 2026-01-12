@@ -13,14 +13,14 @@ head: zb/executable-name-find
 created_at: 2024-06-13T16:35:41Z
 updated_at: 2024-06-13T17:36:13Z
 url: https://github.com/astral-sh/uv/pull/4308
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:08Z
 ```
 
 # Skip invalid interpreters when searching for requested interpreter executable name
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-13 16:35_
+_@zanieb_
 
 Previously, we took the first executable on the `PATH` but if it was not a usable interpreter we'd fail. Now, we'll continue searching in the path until we find an interpreter as we do with the standard executable names.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-22T17:23:36Z
 updated_at: 2025-04-30T14:43:31Z
 url: https://github.com/astral-sh/uv/issues/13056
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # Bug Report: uv ignores --offline flag with git+ssh dependencies
 
 ---
 
-_Issue opened by @Rukopet on 2025-04-22 17:23_
+_@Rukopet_
 
 ## Description
 When running `uv lock --check --offline` on a project that contains git+ssh dependencies, uv still attempts to fetch from remote Git repositories despite the `--offline` flag. This results in failed checks in environments without network access or in CI/CD pipelines that should run offline.

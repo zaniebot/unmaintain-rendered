@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-14T20:36:59Z
 updated_at: 2025-02-14T21:01:55Z
 url: https://github.com/astral-sh/uv/issues/11522
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # `uv tool install` doesn't have a separate `index-url` config
 
 ---
 
-_Issue opened by @thatch on 2025-02-14 20:36_
+_@thatch_
 
 ### Summary
 

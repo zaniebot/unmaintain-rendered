@@ -12,14 +12,14 @@ head: ImportReplacements
 created_at: 2023-01-21T03:55:58Z
 updated_at: 2023-01-31T00:58:29Z
 url: https://github.com/astral-sh/ruff/pull/2049
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # [`pyupgrade`] Implement import-replacement rule (`UP035`)
 
 ---
 
-_Pull request opened by @colin99d on 2023-01-21 03:55_
+_@colin99d_
 
 A part of #827. I started this trying to use libcst. However, if found it added a lot of complexity because I have to change the order of the imports, which really messed up the formatting. If you know of a good way to handle this I will be happy to switch.
 

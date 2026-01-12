@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-01-14T08:31:03Z
 updated_at: 2023-01-14T16:04:49Z
 url: https://github.com/astral-sh/ruff/pull/1868
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Split up the table corresponding to the pylint rules
 
 ---
 
-_Pull request opened by @tmke8 on 2023-01-14 08:31_
+_@tmke8_
 
 This makes it easier to see which rules you're enabling when selecting one of the pylint codes (like `PLC`). This also makes it clearer what those abbreviations stand for. When I first saw the pylint section, I was very confused by that, so other might be as well.
 

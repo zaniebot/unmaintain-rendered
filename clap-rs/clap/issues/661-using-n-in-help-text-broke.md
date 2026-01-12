@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-09-13T02:57:27Z
 updated_at: 2018-08-02T03:29:53Z
 url: https://github.com/clap-rs/clap/issues/661
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Using {n} in help text broke
 
 ---
 
-_Issue opened by @kbknapp on 2016-09-13 02:57_
+_@kbknapp_
 
 _No description provided._
 

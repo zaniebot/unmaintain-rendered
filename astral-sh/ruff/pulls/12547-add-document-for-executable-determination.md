@@ -13,14 +13,14 @@ head: charlie/exe
 created_at: 2024-07-28T20:01:49Z
 updated_at: 2024-08-02T16:57:09Z
 url: https://github.com/astral-sh/ruff/pull/12547
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Add document for executable determination
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-28 20:01_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/12505.
 

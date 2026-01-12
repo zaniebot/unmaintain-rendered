@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-12T20:12:20Z
 updated_at: 2024-09-13T10:22:04Z
 url: https://github.com/astral-sh/uv/issues/7340
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # `uv python install <x.y.z>` disregards the versions in `uv python list` installed by other tools
 
 ---
 
-_Issue opened by @jond01 on 2024-09-12 20:12_
+_@jond01_
 
 The case is as follows:
 1. A specific Python version is already installed by another tool, e.g. pyenv or cached Python on a GitHub runner. Let's say it's 3.10.12, and `python -V` outputs this exact version.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-03T22:16:18Z
 updated_at: 2024-10-11T09:29:09Z
 url: https://github.com/astral-sh/uv/issues/7908
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # [feat] Adding multiple modules to --with flag on uvx startup
 
 ---
 
-_Issue opened by @noamteyssier on 2024-10-03 22:16_
+_@noamteyssier_
 
 Hello!
 

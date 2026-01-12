@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-21T12:53:19Z
 updated_at: 2023-06-21T16:54:01Z
 url: https://github.com/astral-sh/ruff/issues/5250
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Shadowed variable incorrect report - F821 Undefined name
 
 ---
 
-_Issue opened by @eddyashton on 2023-06-21 12:53_
+_@eddyashton_
 
 Started getting a ruff failure from `0.0.273` (still present in `0.0.274`), which wasn't present in `0.0.272`. Believe the source is valid (though ugly) Python, and the ruff failure is incorrect.
 

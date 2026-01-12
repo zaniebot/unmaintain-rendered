@@ -13,14 +13,14 @@ head: charlie/rel-script
 created_at: 2024-09-11T18:20:50Z
 updated_at: 2024-09-11T18:36:42Z
 url: https://github.com/astral-sh/uv/pull/7301
-synced_at: 2026-01-10T12:53:44Z
+synced_at: 2026-01-12T16:07:46Z
 ```
 
 # Support relative paths in `uv add --script`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-11 18:20_
+_@charliermarsh_
 
 ## Summary
 

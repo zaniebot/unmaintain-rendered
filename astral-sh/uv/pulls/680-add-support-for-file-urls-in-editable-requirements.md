@@ -12,14 +12,14 @@ head: charlie/editable-url
 created_at: 2023-12-18T03:24:05Z
 updated_at: 2023-12-18T14:55:39Z
 url: https://github.com/astral-sh/uv/pull/680
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:07Z
 ```
 
 # Add support for `file://` URLs in editable requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-18 03:24_
+_@charliermarsh_
 
 _No description provided._
 

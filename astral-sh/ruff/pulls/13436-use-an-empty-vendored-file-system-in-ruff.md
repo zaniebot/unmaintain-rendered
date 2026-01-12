@@ -13,14 +13,14 @@ head: micha/ruff-empty-vendored-fs
 created_at: 2024-09-21T12:35:34Z
 updated_at: 2024-09-21T16:45:42Z
 url: https://github.com/astral-sh/ruff/pull/13436
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Use an empty vendored file system in Ruff
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-21 12:35_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-23T02:21:47Z
 updated_at: 2025-02-06T13:45:17Z
 url: https://github.com/astral-sh/ruff/issues/15681
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # TC003/TC002/TC001 False positive on manual `TYPE_CHECKING` with `__future__.annotations`
 
 ---
 
-_Issue opened by @cibere on 2025-01-23 02:21_
+_@cibere_
 
 ### Description
 

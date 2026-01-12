@@ -13,14 +13,14 @@ head: charlie/simple
 created_at: 2023-12-24T20:50:13Z
 updated_at: 2023-12-24T20:55:58Z
 url: https://github.com/astral-sh/uv/pull/722
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Add a `SimpleHttp` abstraction similar to `SimpleJson`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-24 20:50_
+_@charliermarsh_
 
 Just an internal refactor to turn some standalone functions into associated methods (and reduce the diff in the next PR).
 

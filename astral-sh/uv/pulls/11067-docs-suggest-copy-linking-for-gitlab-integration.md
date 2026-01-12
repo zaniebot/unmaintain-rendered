@@ -13,14 +13,14 @@ head: docs/gitlab-ci
 created_at: 2025-01-29T16:08:48Z
 updated_at: 2025-01-30T07:09:33Z
 url: https://github.com/astral-sh/uv/pull/11067
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:39Z
 ```
 
 # docs: suggest copy linking for GitLab integration guide
 
 ---
 
-_Pull request opened by @fgreinacher on 2025-01-29 16:08_
+_@fgreinacher_
 
 ## Summary
 

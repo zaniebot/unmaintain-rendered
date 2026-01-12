@@ -14,14 +14,14 @@ head: david/mdtest-external-packages
 created_at: 2025-10-15T19:46:47Z
 updated_at: 2025-12-08T10:44:23Z
 url: https://github.com/astral-sh/ruff/pull/20904
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] mdtests with external dependencies
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-15 19:46_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: feat/unknown-kinds
 created_at: 2024-09-24T13:01:39Z
 updated_at: 2024-09-28T20:18:55Z
 url: https://github.com/astral-sh/ruff/pull/13500
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Feat/unknown kinds
 
 ---
 
-_Pull request opened by @Slyces on 2024-09-24 13:01_
+_@Slyces_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

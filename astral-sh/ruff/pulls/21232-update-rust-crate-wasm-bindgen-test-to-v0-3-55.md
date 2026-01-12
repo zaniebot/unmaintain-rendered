@@ -13,14 +13,14 @@ head: renovate/wasm-bindgen-test-0.x-lockfile
 created_at: 2025-11-03T02:22:23Z
 updated_at: 2025-11-03T04:10:33Z
 url: https://github.com/astral-sh/ruff/pull/21232
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # Update Rust crate wasm-bindgen-test to v0.3.55
 
 ---
 
-_Pull request opened by @renovate on 2025-11-03 02:22_
+_@renovate_
 
 This PR contains the following updates:
 

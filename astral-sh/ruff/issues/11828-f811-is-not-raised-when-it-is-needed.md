@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-10T20:21:35Z
 updated_at: 2024-07-26T02:16:48Z
 url: https://github.com/astral-sh/ruff/issues/11828
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # F811 is not raised when it is needed
 
 ---
 
-_Issue opened by @Denis-Alexeev on 2024-06-10 20:21_
+_@Denis-Alexeev_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

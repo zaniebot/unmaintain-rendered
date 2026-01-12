@@ -12,14 +12,14 @@ head: charlie/flake8
 created_at: 2022-10-31T14:41:42Z
 updated_at: 2022-11-02T02:27:40Z
 url: https://github.com/astral-sh/ruff/pull/527
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add a Flake8-to-Ruff configuration conversion tool
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-31 14:41_
+_@charliermarsh_
 
 This PR adds a `flake8_to_ruff` command to generate a Ruff `pyproject.toml` section from an existing Flake8 configuration file (setup.cfg, tox.ini, or .flake8).
 

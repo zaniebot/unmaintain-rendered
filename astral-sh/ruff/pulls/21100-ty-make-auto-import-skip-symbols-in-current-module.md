@@ -15,14 +15,14 @@ head: ag/skip-self-completions
 created_at: 2025-10-27T18:44:26Z
 updated_at: 2025-10-29T13:13:51Z
 url: https://github.com/astral-sh/ruff/pull/21100
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [ty] Make auto-import skip symbols in current module
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-10-27 18:44_
+_@BurntSushi_
 
 This adds a small check to ensure symbols from auto-import that are
 defined in the current module aren't returned. In particular, these

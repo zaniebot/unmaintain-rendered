@@ -13,14 +13,14 @@ head: zb/dist
 created_at: 2025-01-23T04:48:23Z
 updated_at: 2025-01-23T16:49:55Z
 url: https://github.com/astral-sh/uv/pull/10884
-synced_at: 2026-01-10T11:45:16Z
+synced_at: 2026-01-12T16:09:33Z
 ```
 
 # Bump cargo-dist version to 0.28.0
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-23 04:48_
+_@zanieb_
 
 Some installer improvements; see https://github.com/axodotdev/cargo-dist/blob/main/CHANGELOG.md#version-0280-2025-01-08
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T20:18:11Z
 updated_at: 2025-02-11T22:26:41Z
 url: https://github.com/astral-sh/uv/issues/11038
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # Failure to `uv pip install vllm==0.7.0` on macOS
 
 ---
 
-_Issue opened by @jamesbraza on 2025-01-28 20:18_
+_@jamesbraza_
 
 ### Summary
 

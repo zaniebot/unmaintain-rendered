@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-02-26T09:16:09Z
 updated_at: 2025-11-26T23:55:50Z
 url: https://github.com/clap-rs/clap/issues/3513
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # derive feature: an attribute to add a prefix to all arg names in a struct, for use with flatten
 
 ---
 
-_Issue opened by @wfraser on 2022-02-26 09:16_
+_@wfraser_
 
 ### Please complete the following tasks
 

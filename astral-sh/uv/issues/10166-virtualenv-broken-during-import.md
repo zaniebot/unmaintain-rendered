@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-26T07:03:15Z
 updated_at: 2024-12-26T08:01:11Z
 url: https://github.com/astral-sh/uv/issues/10166
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # virtualenv broken during import
 
 ---
 
-_Issue opened by @nadecancode on 2024-12-26 07:03_
+_@nadecancode_
 
 Hello, I am running into issues with virtualenv.
 

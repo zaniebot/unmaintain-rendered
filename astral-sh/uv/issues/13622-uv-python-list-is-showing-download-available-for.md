@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-23T18:13:24Z
 updated_at: 2025-10-10T10:41:49Z
 url: https://github.com/astral-sh/uv/issues/13622
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # `uv python list` is showing '<download available>' for python instances installed with `--preview`
 
 ---
 
-_Issue opened by @Andrej730 on 2025-05-23 18:13_
+_@Andrej730_
 
 ### Summary
 

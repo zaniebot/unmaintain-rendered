@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-12T20:32:55Z
 updated_at: 2023-01-16T19:46:44Z
 url: https://github.com/astral-sh/ruff/issues/412
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Move check enablement validation in `add_check`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-12 20:32_
+_@charliermarsh_
 
 We have conditionals that look like `if checker.settings.enabled.contains(&CheckCode::D405) { ... }` all over the place. Sometimes, this is useful to avoid unnecessary work. However, it can be a little excessive, e.g., if we have a function that performs multiple checks, then we first have to verify that _any_ of those checks are enabled, and _then_ we have to validate each individual check when adding it to the checker.
 

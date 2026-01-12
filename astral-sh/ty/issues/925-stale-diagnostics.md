@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-01T14:28:45Z
 updated_at: 2025-08-04T10:19:19Z
 url: https://github.com/astral-sh/ty/issues/925
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Stale diagnostics
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-01 14:28_
+_@MichaReiser_
 
 ### Summary
 

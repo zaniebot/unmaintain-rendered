@@ -12,14 +12,14 @@ head: charlie/rules
 created_at: 2023-01-08T23:20:22Z
 updated_at: 2023-01-09T06:39:52Z
 url: https://github.com/astral-sh/ruff/pull/1739
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Rename `checks` and `plugins` to `rules`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-08 23:20_
+_@charliermarsh_
 
 Side note: I think it's useful to maintain the mutating vs. pure distinction in the names, especially given that we've already done the work of separating them.
 

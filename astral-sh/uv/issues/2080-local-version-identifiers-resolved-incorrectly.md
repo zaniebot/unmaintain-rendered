@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-29T13:42:55Z
 updated_at: 2024-03-16T14:25:56Z
 url: https://github.com/astral-sh/uv/issues/2080
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Local version identifiers resolved incorrectly
 
 ---
 
-_Issue opened by @rodgar-nvkz on 2024-02-29 13:42_
+_@rodgar-nvkz_
 
 Hello, 
 I'm having trouble installing specific versions of torch and torchvision with CUDA support using uv. I'm trying to install torch==1.12.1+cu113 and torchvision==0.13.1+cu113 but I'm encountering dependency resolution issues. I couldn't find an existing issue that addresses this concern, so I'm opening a new one.

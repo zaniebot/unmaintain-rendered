@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-22T14:20:57Z
 updated_at: 2022-12-04T03:35:44Z
 url: https://github.com/astral-sh/ruff/issues/871
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Rename pyupgrade rules from `U001` to `UP001`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-22 14:20_
+_@charliermarsh_
 
 I worry that `U` will conflict with other plugins, and `UP` feels more appropriate.
 

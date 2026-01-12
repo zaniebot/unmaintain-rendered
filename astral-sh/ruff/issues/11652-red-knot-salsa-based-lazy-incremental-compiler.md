@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T21:47:47Z
 updated_at: 2024-07-17T06:56:42Z
 url: https://github.com/astral-sh/ruff/issues/11652
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] salsa-based lazy incremental compiler
 
 ---
 
-_Issue opened by @carljm on 2024-05-31 21:47_
+_@carljm_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-19T06:50:09Z
 updated_at: 2026-01-09T15:52:29Z
 url: https://github.com/astral-sh/ty/issues/2102
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # local vars reported as types in lsp autocompletion
 
 ---
 
-_Issue opened by @egorbn on 2025-12-19 06:50_
+_@egorbn_
 
 ### Question
 

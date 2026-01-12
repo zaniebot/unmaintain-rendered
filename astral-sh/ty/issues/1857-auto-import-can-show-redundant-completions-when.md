@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-11T18:03:36Z
 updated_at: 2026-01-09T15:06:58Z
 url: https://github.com/astral-sh/ty/issues/1857
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Auto-import can show redundant completions when the same item is exposed from multiple modules
 
 ---
 
-_Issue opened by @BurntSushi on 2025-12-11 18:03_
+_@BurntSushi_
 
 A good example of this is `read_csv` from Pandas. The first result is the one we want:
 

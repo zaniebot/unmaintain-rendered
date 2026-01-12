@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-08T03:31:57Z
 updated_at: 2025-11-26T07:10:22Z
 url: https://github.com/astral-sh/ruff/issues/21332
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `unused-noqa` (`RUF100`) - `Unnecessary` diagnostic tags should only cover the unused rule
 
 ---
 
-_Issue opened by @DetachHead on 2025-11-08 03:31_
+_@DetachHead_
 
 similar to #21331
 

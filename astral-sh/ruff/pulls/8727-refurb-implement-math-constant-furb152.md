@@ -13,14 +13,14 @@ head: FURB152
 created_at: 2023-11-16T21:33:11Z
 updated_at: 2023-11-17T17:44:27Z
 url: https://github.com/astral-sh/ruff/pull/8727
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # [`refurb`] Implement `math-constant` (`FURB152`)
 
 ---
 
-_Pull request opened by @siiptuo on 2023-11-16 21:33_
+_@siiptuo_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

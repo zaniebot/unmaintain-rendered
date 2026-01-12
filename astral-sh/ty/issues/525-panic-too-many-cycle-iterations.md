@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-27T16:47:09Z
 updated_at: 2025-08-15T12:08:57Z
 url: https://github.com/astral-sh/ty/issues/525
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [panic] too many cycle iterations
 
 ---
 
-_Issue opened by @poneill on 2025-05-27 16:47_
+_@poneill_
 
 Sorry if this is unhelpful-- I can't paste source because corporate code, but I got the following panic message with `ty 0.0.1-alpha.7 (afb20f6fe 2025-05-26)` and was asked to post it:
 ```

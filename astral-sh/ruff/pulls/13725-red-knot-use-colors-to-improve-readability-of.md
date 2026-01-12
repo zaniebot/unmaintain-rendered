@@ -14,14 +14,14 @@ head: mdtest-colours
 created_at: 2024-10-12T22:52:43Z
 updated_at: 2024-10-13T13:20:37Z
 url: https://github.com/astral-sh/ruff/pull/13725
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Use colors to improve readability of `mdtest` output
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-12 22:52_
+_@AlexWaygood_
 
 ## Summary
 

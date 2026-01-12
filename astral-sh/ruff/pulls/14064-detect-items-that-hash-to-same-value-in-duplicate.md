@@ -13,14 +13,14 @@ head: charlie/b
 created_at: 2024-11-03T18:11:09Z
 updated_at: 2024-11-03T18:58:21Z
 url: https://github.com/astral-sh/ruff/pull/14064
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Detect items that hash to same value in duplicate sets
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-03 18:11_
+_@charliermarsh_
 
 ## Summary
 

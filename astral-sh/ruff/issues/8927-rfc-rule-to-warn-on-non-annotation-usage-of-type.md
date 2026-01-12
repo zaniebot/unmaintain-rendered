@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-30T16:48:20Z
 updated_at: 2023-12-01T10:26:25Z
 url: https://github.com/astral-sh/ruff/issues/8927
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # RFC: rule to warn on non-annotation usage of TYPE_CHECKING imports
 
 ---
 
-_Issue opened by @RonnyPfannschmidt on 2023-11-30 16:48_
+_@RonnyPfannschmidt_
 
 related to https://github.com/python/mypy/issues/16587
 

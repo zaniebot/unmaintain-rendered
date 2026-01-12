@@ -13,14 +13,14 @@ head: shear-dependencies
 created_at: 2024-03-19T16:03:08Z
 updated_at: 2024-03-19T16:33:48Z
 url: https://github.com/astral-sh/ruff/pull/10475
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Remove unused dependencies
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-19 16:03_
+_@MichaReiser_
 
 ## Summary
 I used `cargo-shear` (see [tweet](https://twitter.com/boshen_c/status/1770106165923586395)) to remove some unused dependencies that `cargo udeps` wasn't reporting.

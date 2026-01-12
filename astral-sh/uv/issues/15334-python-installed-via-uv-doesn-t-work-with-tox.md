@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-17T22:36:17Z
 updated_at: 2025-09-04T18:37:25Z
 url: https://github.com/astral-sh/uv/issues/15334
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # Python installed via uv doesn't work with tox
 
 ---
 
-_Issue opened by @canepan on 2025-08-17 22:36_
+_@canepan_
 
 ### Summary
 

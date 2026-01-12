@@ -12,14 +12,14 @@ head: alex/upload-redknot-binary
 created_at: 2025-04-29T20:00:35Z
 updated_at: 2025-04-29T21:15:28Z
 url: https://github.com/astral-sh/ruff/pull/17720
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # Upload red-knot binaries in CI on completion of linux tests
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-29 20:00_
+_@AlexWaygood_
 
 This is a preparatory PR for https://github.com/astral-sh/ruff/pull/17719. It needs to be split into a separate commit or CI wouldn't pass on that PR, since that PR needs to download a baseline binary from somewhere.
 

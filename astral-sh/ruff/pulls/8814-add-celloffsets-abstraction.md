@@ -13,14 +13,14 @@ head: dhruv/cell-offsets
 created_at: 2023-11-21T22:19:12Z
 updated_at: 2023-11-22T15:34:18Z
 url: https://github.com/astral-sh/ruff/pull/8814
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Add `CellOffsets` abstraction
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-21 22:19_
+_@dhruvmanila_
 
 Refactor `Notebook::cell_offsets` to use an abstract struct for storing the cell
 offsets. This will allow us to add useful methods on it.

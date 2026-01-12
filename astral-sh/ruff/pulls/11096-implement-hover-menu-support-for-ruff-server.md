@@ -13,14 +13,14 @@ head: main
 created_at: 2024-04-23T00:36:43Z
 updated_at: 2024-04-23T20:23:53Z
 url: https://github.com/astral-sh/ruff/pull/11096
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Implement hover menu support for ruff-server; Issue #10595
 
 ---
 
-_Pull request opened by @nolanking90 on 2024-04-23 00:36_
+_@nolanking90_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

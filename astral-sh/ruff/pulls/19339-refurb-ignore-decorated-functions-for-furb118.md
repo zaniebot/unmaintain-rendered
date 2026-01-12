@@ -14,14 +14,14 @@ head: fix-19305
 created_at: 2025-07-14T21:00:59Z
 updated_at: 2025-07-25T15:43:42Z
 url: https://github.com/astral-sh/ruff/pull/19339
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [`refurb`] Ignore decorated functions for `FURB118`
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-14 21:00_
+_@danparizher_
 
 ## Summary
 

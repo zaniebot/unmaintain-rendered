@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-10-28T09:48:43Z
 updated_at: 2025-10-28T15:11:04Z
 url: https://github.com/astral-sh/uv/pull/16477
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:16Z
 ```
 
 # Update license to pep639 standard
 
 ---
 
-_Pull request opened by @wagenrace on 2025-10-28 09:48_
+_@wagenrace_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

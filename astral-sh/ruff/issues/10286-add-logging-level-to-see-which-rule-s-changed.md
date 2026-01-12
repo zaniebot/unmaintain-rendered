@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-08T02:00:20Z
 updated_at: 2024-03-14T03:50:36Z
 url: https://github.com/astral-sh/ruff/issues/10286
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Add logging level to see which rule(s) changed particular source line(s)
 
 ---
 
-_Issue opened by @ssteinerx on 2024-03-08 02:00_
+_@ssteinerx_
 
 **The current Ruff version (`ruff --version`).**
 ```bash

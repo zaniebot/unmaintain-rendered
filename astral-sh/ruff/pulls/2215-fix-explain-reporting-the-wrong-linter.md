@@ -12,14 +12,14 @@ head: fix-explain-reporting-wrong-linter
 created_at: 2023-01-26T18:37:20Z
 updated_at: 2023-01-26T18:53:36Z
 url: https://github.com/astral-sh/ruff/pull/2215
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # fix: --explain reporting the wrong linter
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-26 18:37_
+_@not-my-profile_
 
 We want the longest prefixes to be checked first so we of course have to reverse the sorting when sorting by prefix length.
 

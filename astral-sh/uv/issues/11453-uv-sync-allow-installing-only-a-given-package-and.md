@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T16:47:17Z
 updated_at: 2025-02-13T13:55:21Z
 url: https://github.com/astral-sh/uv/issues/11453
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # uv sync: allow installing only a given package and its dependencies
 
 ---
 
-_Issue opened by @gaborbernat on 2025-02-12 16:47_
+_@gaborbernat_
 
 ### Summary
 

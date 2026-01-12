@@ -13,14 +13,14 @@ head: micha/red-knot-bench-cold
 created_at: 2024-11-01T09:01:52Z
 updated_at: 2024-11-01T09:15:37Z
 url: https://github.com/astral-sh/ruff/pull/14035
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Use named closure for cold-benchmark
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-01 09:01_
+_@MichaReiser_
 
 ## Summary
 

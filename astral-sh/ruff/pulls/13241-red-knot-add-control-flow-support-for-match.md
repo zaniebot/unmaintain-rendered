@@ -13,14 +13,14 @@ head: dhruv/match-control-flow
 created_at: 2024-09-04T12:25:31Z
 updated_at: 2024-09-09T20:44:21Z
 url: https://github.com/astral-sh/ruff/pull/13241
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Add control flow support for match statement
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-09-04 12:25_
+_@dhruvmanila_
 
 ## Summary
 

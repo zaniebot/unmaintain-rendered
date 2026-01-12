@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-28T02:37:45Z
 updated_at: 2025-12-29T17:15:36Z
 url: https://github.com/astral-sh/ty/issues/2244
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Member <anything> may be missing on module `torch.distributed`
 
 ---
 
-_Issue opened by @arogozhnikov on 2025-12-28 02:37_
+_@arogozhnikov_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/fix-dev-recursive
 created_at: 2024-10-05T15:46:14Z
 updated_at: 2024-10-06T14:42:57Z
 url: https://github.com/astral-sh/uv/pull/7943
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:05Z
 ```
 
 # Allow self-depedencies in the `dev` section
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-05 15:46_
+_@zanieb_
 
 https://github.com/astral-sh/uv/pull/7766 banned using `uv add` to create self-dependencies in the `dev` section which breaks `uv add --dev .[extra]` which is a fair use-case for adding a self-dependency.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-07T18:55:04Z
 updated_at: 2026-01-08T08:24:49Z
 url: https://github.com/astral-sh/ruff/issues/22443
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Add rule to enforce multiline formatting for `__all__` declarations
 
 ---
 
-_Issue opened by @Danipulok on 2026-01-07 18:55_
+_@Danipulok_
 
 ### Summary
 Add a new rule that enforces multiline formatting for `__all__` declarations when they contain multiple items

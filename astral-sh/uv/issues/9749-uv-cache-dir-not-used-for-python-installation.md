@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-09T20:50:40Z
 updated_at: 2024-12-10T19:20:41Z
 url: https://github.com/astral-sh/uv/issues/9749
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # UV_CACHE_DIR not used for Python installation
 
 ---
 
-_Issue opened by @jheiselman on 2024-12-09 20:50_
+_@jheiselman_
 
 On Windows, when running a `uv python install` while having UV_CACHE_DIR set, does not result in uv using that cache location. It instead uses the default location %APPDATA%\uv\python\.cache.
 

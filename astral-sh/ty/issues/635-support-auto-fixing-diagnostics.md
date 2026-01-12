@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T12:53:04Z
 updated_at: 2025-11-18T16:10:31Z
 url: https://github.com/astral-sh/ty/issues/635
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Support auto-fixing diagnostics
 
 ---
 
-_Issue opened by @asmith26 on 2025-06-11 12:53_
+_@asmith26_
 
 ### Question
 

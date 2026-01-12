@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-15T21:10:45Z
 updated_at: 2025-06-22T19:54:46Z
 url: https://github.com/astral-sh/uv/issues/14043
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # UV does not appear to respect --no-build-isolation flag or pyproject.toml build dependencies
 
 ---
 
-_Issue opened by @jsmith212 on 2025-06-15 21:10_
+_@jsmith212_
 
 ### Summary
 

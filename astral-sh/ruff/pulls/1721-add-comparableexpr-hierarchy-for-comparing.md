@@ -12,14 +12,14 @@ head: charlie/comp-expr
 created_at: 2023-01-07T22:17:13Z
 updated_at: 2023-01-07T22:29:22Z
 url: https://github.com/astral-sh/ruff/pull/1721
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add `ComparableExpr` hierarchy for comparing expressions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-07 22:17_
+_@charliermarsh_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-21T12:12:27Z
 updated_at: 2025-01-21T12:51:22Z
 url: https://github.com/astral-sh/ruff/issues/15636
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Daily property test run failed on Tue Jan 21 2025
 
 ---
 
-_Issue opened by @github-actions on 2025-01-21 12:12_
+_@github-actions_
 
 Run listed here: https://github.com/astral-sh/ruff/actions/runs/12886621507
 

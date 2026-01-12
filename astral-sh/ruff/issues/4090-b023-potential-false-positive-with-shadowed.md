@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-25T08:33:13Z
 updated_at: 2023-05-02T08:32:58Z
 url: https://github.com/astral-sh/ruff/issues/4090
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # B023 potential false positive (with shadowed variable names)
 
 ---
 
-_Issue opened by @XN137 on 2023-04-25 08:33_
+_@XN137_
 
 python code:
 

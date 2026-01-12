@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-06T10:05:59Z
 updated_at: 2026-01-06T15:40:27Z
 url: https://github.com/astral-sh/ty/issues/2361
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Ability to set output format with an environment variable
 
 ---
 
-_Issue opened by @robertodr on 2026-01-06 10:05_
+_@robertodr_
 
 It would be useful to set the output format with an environment variable, _i.e._ `TY_OUTPUT_FORMAT`. Ruff has a similar environment variable.
 

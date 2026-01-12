@@ -13,14 +13,14 @@ head: upcast-tuples
 created_at: 2025-07-30T11:48:54Z
 updated_at: 2025-07-30T16:12:23Z
 url: https://github.com/astral-sh/ruff/pull/19635
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [ty] Upcast heterogeneous and mixed tuples to homogeneous tuples where it's necessary to solve a `TypeVar`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-30 11:48_
+_@AlexWaygood_
 
 ## Summary
 

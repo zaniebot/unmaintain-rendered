@@ -13,14 +13,14 @@ head: dhruv/re-export-3
 created_at: 2025-02-13T06:58:18Z
 updated_at: 2025-02-17T10:43:22Z
 url: https://github.com/astral-sh/ruff/pull/16133
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Refactor symbol lookup APIs to hide re-export implementation details
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-13 06:58_
+_@dhruvmanila_
 
 ## Summary
 

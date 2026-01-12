@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-17T16:27:19Z
 updated_at: 2024-07-01T12:20:25Z
 url: https://github.com/astral-sh/uv/issues/3096
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Add PEP 723 support to `uv run`
 
 ---
 
-_Issue opened by @zanieb on 2024-04-17 16:27_
+_@zanieb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

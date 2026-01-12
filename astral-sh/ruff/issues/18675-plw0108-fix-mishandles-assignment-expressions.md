@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-14T17:20:06Z
 updated_at: 2025-06-26T20:56:18Z
 url: https://github.com/astral-sh/ruff/issues/18675
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PLW0108 fix mishandles assignment expressions
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-14 17:20_
+_@dscorbett_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/breaking
 created_at: 2023-04-13T23:04:07Z
 updated_at: 2023-04-13T23:28:27Z
 url: https://github.com/astral-sh/ruff/pull/3968
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add multi-edit change to BREAKING_CHANGES.md
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-13 23:04_
+_@charliermarsh_
 
 See: #3709.
 

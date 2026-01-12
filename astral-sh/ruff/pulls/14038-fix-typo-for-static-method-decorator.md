@@ -13,14 +13,14 @@ head: fix-typo-staticmethod
 created_at: 2024-11-01T12:26:11Z
 updated_at: 2024-11-01T12:40:01Z
 url: https://github.com/astral-sh/ruff/pull/14038
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Fix typo for static method decorator
 
 ---
 
-_Pull request opened by @staciax on 2024-11-01 12:26_
+_@staciax_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

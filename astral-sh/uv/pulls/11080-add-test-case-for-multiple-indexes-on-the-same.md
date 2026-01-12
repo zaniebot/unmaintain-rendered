@@ -13,14 +13,14 @@ head: zb/test-eagle
 created_at: 2025-01-29T19:35:38Z
 updated_at: 2025-01-29T20:45:06Z
 url: https://github.com/astral-sh/uv/pull/11080
-synced_at: 2026-01-10T11:45:26Z
+synced_at: 2026-01-12T16:09:40Z
 ```
 
 # Add test case for multiple indexes on the same realm
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-29 19:35_
+_@zanieb_
 
 A test case for https://github.com/astral-sh/uv/pull/11074 (and related issues) 
 

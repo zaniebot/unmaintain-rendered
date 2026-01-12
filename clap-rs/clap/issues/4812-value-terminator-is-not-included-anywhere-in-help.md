@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-03-30T16:22:16Z
 updated_at: 2024-11-14T16:22:02Z
 url: https://github.com/clap-rs/clap/issues/4812
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Value terminator is not included anywhere in help message
 
 ---
 
-_Issue opened by @epbuennig on 2023-03-30 16:22_
+_@epbuennig_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-04T10:35:11Z
 updated_at: 2024-10-04T11:10:55Z
 url: https://github.com/astral-sh/uv/issues/7919
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # "The discovered commit has an invalid length" bug
 
 ---
 
-_Issue opened by @my1e5 on 2024-10-04 10:35_
+_@my1e5_
 
 Set up a simple dynamic version library
 

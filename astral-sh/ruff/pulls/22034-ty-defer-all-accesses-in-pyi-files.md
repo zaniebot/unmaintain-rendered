@@ -13,14 +13,14 @@ head: charlie/always-defer
 created_at: 2025-12-17T18:36:18Z
 updated_at: 2026-01-06T02:07:11Z
 url: https://github.com/astral-sh/ruff/pull/22034
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Defer all accesses in `.pyi` files
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-17 18:36_
+_@charliermarsh_
 
 ## Summary
 

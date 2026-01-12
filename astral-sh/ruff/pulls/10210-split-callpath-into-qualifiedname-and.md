@@ -13,14 +13,14 @@ head: rename-call-path
 created_at: 2024-03-03T16:25:46Z
 updated_at: 2024-03-04T09:18:07Z
 url: https://github.com/astral-sh/ruff/pull/10210
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Split `CallPath` into `QualifiedName` and `UnqualifiedName`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-03 16:25_
+_@MichaReiser_
 
 ## Summary
 

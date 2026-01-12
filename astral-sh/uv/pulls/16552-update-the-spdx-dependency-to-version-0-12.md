@@ -12,14 +12,14 @@ head: spdx-0.12
 created_at: 2025-11-02T12:32:40Z
 updated_at: 2025-11-02T18:21:29Z
 url: https://github.com/astral-sh/uv/pull/16552
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:19Z
 ```
 
 # Update the spdx dependency to version 0.12
 
 ---
 
-_Pull request opened by @musicinmybrain on 2025-11-02 12:32_
+_@musicinmybrain_
 
 https://github.com/EmbarkStudios/spdx/blob/0.12.0/CHANGELOG.md
 

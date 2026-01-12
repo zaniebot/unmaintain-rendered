@@ -14,14 +14,14 @@ head: david/typing-final-type-inference
 created_at: 2025-07-04T08:53:19Z
 updated_at: 2025-07-07T11:16:41Z
 url: https://github.com/astral-sh/ruff/pull/19142
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # [ty] Use RHS inferred type for bare `Final` symbols
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-04 08:53_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-13T00:32:25Z
 updated_at: 2025-10-16T21:11:36Z
 url: https://github.com/astral-sh/uv/issues/13418
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:28Z
 ```
 
 # `uv tool install` failing to install due to 'Permission denied'
 
 ---
 
-_Issue opened by @cchristous on 2025-05-13 00:32_
+_@cchristous_
 
 ### Summary
 

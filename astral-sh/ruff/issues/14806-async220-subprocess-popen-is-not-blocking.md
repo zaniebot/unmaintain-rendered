@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-06T06:13:46Z
 updated_at: 2025-01-27T01:52:04Z
 url: https://github.com/astral-sh/ruff/issues/14806
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # ASYNC220: subprocess.Popen() is not blocking
 
 ---
 
-_Issue opened by @ybybwdwd on 2024-12-06 06:13_
+_@ybybwdwd_
 
 `subprocess.Popen()` starts a child process and immediately returns a Popen instance.
 

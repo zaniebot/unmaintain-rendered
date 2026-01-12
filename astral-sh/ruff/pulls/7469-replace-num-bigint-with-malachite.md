@@ -12,14 +12,14 @@ head: malachite
 created_at: 2023-09-17T18:54:57Z
 updated_at: 2023-10-23T09:28:07Z
 url: https://github.com/astral-sh/ruff/pull/7469
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Replace num_bigint with malachite
 
 ---
 
-_Pull request opened by @konstin on 2023-09-17 18:54_
+_@konstin_
 
 [malachite](https://www.malachite.rs/) is an arbitrary precision crate that unlike num_bigint implement as small integer optimization. This avoids allocating a `Vec` for every single number parse and instead only allocates for rare unusually large numbers.
 

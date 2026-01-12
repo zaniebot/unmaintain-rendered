@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-13T11:33:39Z
 updated_at: 2025-03-14T00:27:44Z
 url: https://github.com/astral-sh/uv/issues/12150
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # Unable to install pystruct
 
 ---
 
-_Issue opened by @sizhky on 2025-03-13 11:33_
+_@sizhky_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-29T08:42:29Z
 updated_at: 2025-08-01T13:51:16Z
 url: https://github.com/clap-rs/clap/issues/6080
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Ignore empty arguments split by `value_delimiter`
 
 ---
 
-_Issue opened by @Andrew15-5 on 2025-07-29 08:42_
+_@Andrew15-5_
 
 ### Please complete the following tasks
 

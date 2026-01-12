@@ -14,14 +14,14 @@ head: chore/update-python-install-parameter-name
 created_at: 2024-07-11T22:07:58Z
 updated_at: 2024-07-12T01:06:55Z
 url: https://github.com/astral-sh/uv/pull/4999
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:34Z
 ```
 
 # Rename `python install --force` parameter to `--reinstall`
 
 ---
 
-_Pull request opened by @caiquejjx on 2024-07-11 22:07_
+_@caiquejjx_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

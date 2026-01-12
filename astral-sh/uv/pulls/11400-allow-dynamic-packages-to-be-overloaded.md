@@ -13,14 +13,14 @@ head: charlie/ambiguous
 created_at: 2025-02-10T20:07:18Z
 updated_at: 2025-02-10T20:21:03Z
 url: https://github.com/astral-sh/uv/pull/11400
-synced_at: 2026-01-10T11:10:37Z
+synced_at: 2026-01-12T16:09:49Z
 ```
 
 # Allow dynamic packages to be overloaded
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-10 20:07_
+_@charliermarsh_
 
 ## Summary
 

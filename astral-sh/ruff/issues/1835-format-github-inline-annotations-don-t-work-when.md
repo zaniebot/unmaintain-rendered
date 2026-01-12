@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-12T22:14:03Z
 updated_at: 2023-10-09T14:35:04Z
 url: https://github.com/astral-sh/ruff/issues/1835
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # `--format=github` inline annotations don't work when running in a subdirectory
 
 ---
 
-_Issue opened by @jbbakst on 2023-01-12 22:14_
+_@jbbakst_
 
 Issue:
 I have a multi-language monorepo with a Github Action to lint on `pull_request`. Since ruff is running inside a subdirectory, Github doesn't properly resolve file names to display inline annotations.

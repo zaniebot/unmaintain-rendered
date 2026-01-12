@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T07:24:28Z
 updated_at: 2025-05-28T10:35:35Z
 url: https://github.com/astral-sh/uv/issues/13694
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # `uv run` installing project by default
 
 ---
 
-_Issue opened by @Danipulok on 2025-05-28 07:24_
+_@Danipulok_
 
 ### Question
 

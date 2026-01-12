@@ -13,14 +13,14 @@ head: ibraheem/marker-smart-constructors
 created_at: 2024-07-24T20:13:52Z
 updated_at: 2024-08-23T15:51:58Z
 url: https://github.com/astral-sh/uv/pull/5422
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:48Z
 ```
 
 # Normalize marker expression order
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-24 20:13_
+_@ibraheemdev_
 
 ## Summary
 

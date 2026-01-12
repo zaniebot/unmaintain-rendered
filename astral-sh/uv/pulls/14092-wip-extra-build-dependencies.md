@@ -13,14 +13,14 @@ head: gankra/add-build-deps
 created_at: 2025-06-16T21:31:56Z
 updated_at: 2025-07-18T17:37:19Z
 url: https://github.com/astral-sh/uv/pull/14092
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:01Z
 ```
 
 # WIP extra-build-dependencies
 
 ---
 
-_Pull request opened by @Gankra on 2025-06-16 21:31_
+_@Gankra_
 
 This introduces a global setting 
 

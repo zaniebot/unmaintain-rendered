@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2025-07-11T23:00:54Z
 updated_at: 2025-07-12T17:44:57Z
 url: https://github.com/astral-sh/ruff/pull/19296
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [`pyupgrade`] Make example error out-of-the-box (`UP040`)
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-11 23:00_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

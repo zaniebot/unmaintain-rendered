@@ -13,14 +13,14 @@ head: charlie/pypy
 created_at: 2024-01-20T22:29:47Z
 updated_at: 2024-01-22T14:22:28Z
 url: https://github.com/astral-sh/uv/pull/1028
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:22Z
 ```
 
 # Add support for PyPy wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-20 22:29_
+_@charliermarsh_
 
 ## Summary
 

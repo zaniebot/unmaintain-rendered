@@ -13,14 +13,14 @@ head: zb/minor-breaking
 created_at: 2024-03-12T05:39:25Z
 updated_at: 2024-03-12T14:17:28Z
 url: https://github.com/astral-sh/uv/pull/2376
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:00Z
 ```
 
 # Do not bump the minor version on breaking changes
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-12 05:39_
+_@zanieb_
 
 ... yet.
 

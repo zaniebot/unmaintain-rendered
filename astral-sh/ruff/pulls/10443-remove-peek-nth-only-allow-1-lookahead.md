@@ -13,14 +13,14 @@ head: dhruv/remove-peek-nth
 created_at: 2024-03-18T05:07:38Z
 updated_at: 2024-03-20T17:31:56Z
 url: https://github.com/astral-sh/ruff/pull/10443
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Remove `peek_nth`, only allow 1 lookahead
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-18 05:07_
+_@dhruvmanila_
 
 ## Summary
 

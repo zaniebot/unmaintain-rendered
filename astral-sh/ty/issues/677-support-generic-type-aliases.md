@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-18T13:20:06Z
 updated_at: 2025-09-08T20:26:22Z
 url: https://github.com/astral-sh/ty/issues/677
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Support generic type aliases
 
 ---
 
-_Issue opened by @tmke8 on 2025-06-18 13:20_
+_@tmke8_
 
 ### Summary
 

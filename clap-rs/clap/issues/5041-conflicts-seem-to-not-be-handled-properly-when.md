@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-22T16:00:31Z
 updated_at: 2023-07-24T19:34:46Z
 url: https://github.com/clap-rs/clap/issues/5041
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Conflicts seem to not be handled properly when using a group
 
 ---
 
-_Issue opened by @rgiot on 2023-07-22 16:00_
+_@rgiot_
 
 ### Please complete the following tasks
 

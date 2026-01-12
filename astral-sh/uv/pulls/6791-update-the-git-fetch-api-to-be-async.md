@@ -12,14 +12,14 @@ head: zb/git-fetch-async
 created_at: 2024-08-29T04:28:24Z
 updated_at: 2025-04-14T08:00:32Z
 url: https://github.com/astral-sh/uv/pull/6791
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:07:32Z
 ```
 
 # Update the Git fetch API to be async
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-29 04:28_
+_@zanieb_
 
 Putting this up as a follow-up to https://github.com/astral-sh/uv/pull/6790
 

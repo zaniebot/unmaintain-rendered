@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-11T12:18:25Z
 updated_at: 2024-11-11T12:55:30Z
 url: https://github.com/astral-sh/ruff/issues/14271
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # docstring code formatter:Allow customizing to-be-formatted directives
 
 ---
 
-_Issue opened by @flying-sheep on 2024-11-11 12:18_
+_@flying-sheep_
 
 Currently the supported directives are hardcoded here: https://github.com/astral-sh/ruff/blob/9180635171dcb61bf2b96ab7a489fe0f549d78d7/crates/ruff_python_formatter/src/string/docstring.rs#L1082-L1087
 

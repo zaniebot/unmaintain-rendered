@@ -13,14 +13,14 @@ head: zb/any-all
 created_at: 2024-08-19T18:36:03Z
 updated_at: 2024-08-19T18:43:08Z
 url: https://github.com/astral-sh/uv/pull/6222
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Change "any of" to "all of" in error messages
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 18:36_
+_@zanieb_
 
 _No description provided._
 

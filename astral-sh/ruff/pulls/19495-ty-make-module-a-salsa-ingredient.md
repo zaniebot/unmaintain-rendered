@@ -13,14 +13,14 @@ head: ag/module-ingredient
 created_at: 2025-07-22T19:02:10Z
 updated_at: 2025-07-23T13:46:42Z
 url: https://github.com/astral-sh/ruff/pull/19495
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Make `Module` a Salsa ingredient
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-07-22 19:02_
+_@BurntSushi_
 
 We want to write queries that depend on `Module` for caching. While it
 seems it can be done without making `Module` an ingredient, it seems it

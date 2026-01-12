@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-15T11:36:52Z
 updated_at: 2025-08-15T13:41:33Z
 url: https://github.com/astral-sh/uv/issues/15303
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # torch wheel from CPU index is not cached
 
 ---
 
-_Issue opened by @tpgillam on 2025-08-15 11:36_
+_@tpgillam_
 
 uv 0.8.11 .
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-05T14:17:29Z
 updated_at: 2025-11-05T21:47:22Z
 url: https://github.com/astral-sh/ruff/issues/21282
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # TC001-3 runtime-evaluated-decorators not working with generic framework decorators
 
 ---
 
-_Issue opened by @hartungstenio on 2025-11-05 14:17_
+_@hartungstenio_
 
 ### Summary
 

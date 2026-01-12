@@ -12,14 +12,14 @@ head: feat/grouped-format
 created_at: 2022-11-29T02:22:33Z
 updated_at: 2022-11-29T23:52:09Z
 url: https://github.com/astral-sh/ruff/pull/954
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Grouped format implementation
 
 ---
 
-_Pull request opened by @hay-kot on 2022-11-29 02:22_
+_@hay-kot_
 
 This PR adds an additional option to the `--format` flag "grouped" which changes the output. Things to note
 

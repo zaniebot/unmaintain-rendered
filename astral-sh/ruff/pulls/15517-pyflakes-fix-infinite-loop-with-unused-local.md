@@ -15,14 +15,14 @@ head: brent/f401-loop
 created_at: 2025-01-15T22:25:09Z
 updated_at: 2025-01-16T15:43:35Z
 url: https://github.com/astral-sh/ruff/pull/15517
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`pyflakes`] Fix infinite loop with unused local import in `__init__.py` (`F401`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-01-15 22:25_
+_@ntBre_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: pydoclint
 created_at: 2024-09-10T05:19:58Z
 updated_at: 2025-10-25T20:30:06Z
 url: https://github.com/astral-sh/ruff/pull/13302
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`pydoclint`] Allow ignoring one line docstrings for `DOC` rules
 
 ---
 
-_Pull request opened by @augustelalande on 2024-09-10 05:19_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

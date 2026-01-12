@@ -12,14 +12,14 @@ head: charlie/comment
 created_at: 2023-01-30T12:43:58Z
 updated_at: 2023-01-30T12:44:21Z
 url: https://github.com/astral-sh/ruff/pull/2352
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Avoid removing trailing comments when autofixing
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-30 12:43_
+_@charliermarsh_
 
 Closes #2351.
 

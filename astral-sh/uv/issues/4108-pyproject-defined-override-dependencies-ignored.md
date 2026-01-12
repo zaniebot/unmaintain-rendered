@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-06T18:29:01Z
 updated_at: 2024-06-24T16:44:55Z
 url: https://github.com/astral-sh/uv/issues/4108
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # pyproject defined override dependencies  ignored by uv lock and uv sync
 
 ---
 
-_Issue opened by @idlsoft on 2024-06-06 18:29_
+_@idlsoft_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

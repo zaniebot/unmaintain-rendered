@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-04-16T15:10:44Z
 updated_at: 2020-04-22T09:19:31Z
 url: https://github.com/clap-rs/clap/issues/1835
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Environment variable fallback is in fact not a fallback but an additional source for values
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-04-16 15:10_
+_@CreepySkeleton_
 
 ### Make sure you completed the following tasks
 

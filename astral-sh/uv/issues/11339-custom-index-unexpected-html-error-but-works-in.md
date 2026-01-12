@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-08T11:06:27Z
 updated_at: 2025-02-08T15:05:05Z
 url: https://github.com/astral-sh/uv/issues/11339
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # Custom index: unexpected HTML error (but works in pip)
 
 ---
 
-_Issue opened by @PhilipVinc on 2025-02-08 11:06_
+_@PhilipVinc_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: pwsh-backtick
 created_at: 2025-10-15T04:03:00Z
 updated_at: 2025-10-21T10:20:37Z
 url: https://github.com/astral-sh/uv/pull/16307
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:13Z
 ```
 
 # Fix backtick escaping for PowerShell
 
 ---
 
-_Pull request opened by @jborean93 on 2025-10-15 04:03_
+_@jborean93_
 
 ## Summary
 Fixes the logic for escaping a double quoted string in PowerShell by not escaping a backslash but escaping the Unicode double quote variants that PowerShell treats the same as the ASCII double quotes.

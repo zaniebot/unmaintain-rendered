@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-03T14:33:30Z
 updated_at: 2025-05-06T12:14:31Z
 url: https://github.com/astral-sh/ty/issues/5
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # `ty version` should use the hash from the `ty` repository
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-03 14:33_
+_@MichaReiser_
 
 The code lives somewhere in ty's `build.rs`
 

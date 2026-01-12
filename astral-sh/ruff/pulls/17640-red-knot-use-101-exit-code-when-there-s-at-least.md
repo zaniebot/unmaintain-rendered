@@ -13,14 +13,14 @@ head: micha/fatal-exit-with-error
 created_at: 2025-04-26T09:56:45Z
 updated_at: 2025-04-28T08:03:16Z
 url: https://github.com/astral-sh/ruff/pull/17640
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Use 101 exit code when there's at least one diagnostic with severity 'fatal'
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-26 09:56_
+_@MichaReiser_
 
 ## Summary
 

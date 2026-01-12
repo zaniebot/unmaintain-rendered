@@ -13,14 +13,14 @@ head: D300-triples
 created_at: 2023-11-03T04:59:35Z
 updated_at: 2023-11-03T16:56:00Z
 url: https://github.com/astral-sh/ruff/pull/8462
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # `D300`: prevent autofix when both triples are in body
 
 ---
 
-_Pull request opened by @T-256 on 2023-11-03 04:59_
+_@T-256_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

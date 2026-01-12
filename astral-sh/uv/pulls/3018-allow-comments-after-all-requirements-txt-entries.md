@@ -13,14 +13,14 @@ head: charlie/comment
 created_at: 2024-04-12T19:03:48Z
 updated_at: 2024-04-12T19:56:58Z
 url: https://github.com/astral-sh/uv/pull/3018
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:22Z
 ```
 
 # Allow comments after all requirements.txt entries
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-12 19:03_
+_@charliermarsh_
 
 ## Summary
 

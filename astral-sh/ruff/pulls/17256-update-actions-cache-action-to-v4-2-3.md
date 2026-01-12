@@ -13,14 +13,14 @@ head: renovate/actions-cache-4.x
 created_at: 2025-04-07T02:04:35Z
 updated_at: 2025-04-07T06:50:33Z
 url: https://github.com/astral-sh/ruff/pull/17256
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # Update actions/cache action to v4.2.3
 
 ---
 
-_Pull request opened by @renovate on 2025-04-07 02:04_
+_@renovate_
 
 This PR contains the following updates:
 

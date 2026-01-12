@@ -12,14 +12,14 @@ head: konsti/publish-username
 created_at: 2025-01-10T12:22:47Z
 updated_at: 2025-01-10T20:10:56Z
 url: https://github.com/astral-sh/uv/pull/10469
-synced_at: 2026-01-10T11:44:51Z
+synced_at: 2026-01-12T16:09:18Z
 ```
 
 # Read publish username from URL
 
 ---
 
-_Pull request opened by @konstin on 2025-01-10 12:22_
+_@konstin_
 
 Setting the username in the URL was possible before, but google cloud artifacts would return a URL redirect for it to the URL without the username in it, and publish (POST) doesn't support URL redirect since the credentials get dropped on redirect.
 

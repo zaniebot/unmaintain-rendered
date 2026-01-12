@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-05T08:41:02Z
 updated_at: 2025-10-06T13:02:29Z
 url: https://github.com/astral-sh/ruff/issues/20700
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [RUF051] fix silently drops `else` branch
 
 ---
 
-_Issue opened by @dvolodin7 on 2025-10-05 08:41_
+_@dvolodin7_
 
 ### Summary
 

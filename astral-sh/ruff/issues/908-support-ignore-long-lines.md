@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-26T09:15:20Z
 updated_at: 2022-11-28T03:36:19Z
 url: https://github.com/astral-sh/ruff/issues/908
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Support `--ignore-long-lines`
 
 ---
 
-_Issue opened by @harupy on 2022-11-26 09:15_
+_@harupy_
 
 pylint has `--ignore-long-lines` to specify a regular expression for a line that is allowed to be longer than the limit. 
 

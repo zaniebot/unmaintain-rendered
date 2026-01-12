@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-03T01:18:42Z
 updated_at: 2024-02-08T17:15:23Z
 url: https://github.com/clap-rs/clap/issues/5280
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Soundness: clap_lex makes incorrect assumption about OsStr
 
 ---
 
-_Issue opened by @Manishearth on 2024-01-03 01:18_
+_@Manishearth_
 
 https://github.com/clap-rs/clap/blob/48d28aa689bfd0fb44ec025244b30ba261e2515a/clap_lex/src/ext.rs#L248-L256
 

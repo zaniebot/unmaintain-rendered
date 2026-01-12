@@ -14,14 +14,14 @@ head: brent/github
 created_at: 2025-09-09T20:07:20Z
 updated_at: 2025-09-11T17:11:16Z
 url: https://github.com/astral-sh/ruff/pull/20320
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # Move GitHub rendering to `ruff_db`
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-09 20:07_
+_@ntBre_
 
 ## Summary
 

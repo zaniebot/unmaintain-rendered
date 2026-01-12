@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-17T00:08:25Z
 updated_at: 2024-08-01T02:12:44Z
 url: https://github.com/astral-sh/ruff/issues/12354
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # False positive ASYNC100 when pairing `asyncio.timeout` with `asyncio.TaskGroup`
 
 ---
 
-_Issue opened by @jamesbraza on 2024-07-17 00:08_
+_@jamesbraza_
 
 The below Python 3.12 code with `ruff==0.5.2`:
 

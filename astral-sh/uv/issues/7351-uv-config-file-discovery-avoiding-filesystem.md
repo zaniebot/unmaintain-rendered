@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-13T08:16:59Z
 updated_at: 2024-09-14T03:36:28Z
 url: https://github.com/astral-sh/uv/issues/7351
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # uv config file discovery avoiding filesystem traversal (because resolution blows up with unexpected directory called uv.toml)
 
 ---
 
-_Issue opened by @pelson on 2024-09-13 08:16_
+_@pelson_
 
 Firstly, the reproducer:
 

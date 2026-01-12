@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-24T10:46:51Z
 updated_at: 2025-02-25T16:34:09Z
 url: https://github.com/astral-sh/uv/issues/11741
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # Rename `src` directory
 
 ---
 
-_Issue opened by @geoffrey-g-delhomme on 2025-02-24 10:46_
+_@geoffrey-g-delhomme_
 
 ### Question
 

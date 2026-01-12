@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-07T09:22:21Z
 updated_at: 2025-10-06T18:50:10Z
 url: https://github.com/astral-sh/ty/issues/771
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # map causes "Argument to function `__new__` is incorrect"
 
 ---
 
-_Issue opened by @behrenhoff on 2025-07-07 09:22_
+_@behrenhoff_
 
 ### Summary
 

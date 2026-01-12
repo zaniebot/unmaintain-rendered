@@ -13,14 +13,14 @@ head: renovate/mdformat-mkdocs-3.x
 created_at: 2024-10-28T01:05:58Z
 updated_at: 2024-10-28T01:12:57Z
 url: https://github.com/astral-sh/ruff/pull/13951
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Update dependency mdformat-mkdocs to v3.0.1
 
 ---
 
-_Pull request opened by @renovate on 2024-10-28 01:05_
+_@renovate_
 
 This PR contains the following updates:
 

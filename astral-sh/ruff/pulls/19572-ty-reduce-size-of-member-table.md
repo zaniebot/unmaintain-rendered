@@ -13,14 +13,14 @@ head: micha/member-size
 created_at: 2025-07-26T18:29:16Z
 updated_at: 2025-08-07T09:21:22Z
 url: https://github.com/astral-sh/ruff/pull/19572
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Reduce size of member table
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-26 18:29_
+_@MichaReiser_
 
 ## Summary
 

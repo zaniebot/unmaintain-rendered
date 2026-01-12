@@ -12,14 +12,14 @@ head: charlie/license
 created_at: 2023-02-12T17:49:05Z
 updated_at: 2023-02-12T17:51:41Z
 url: https://github.com/astral-sh/ruff/pull/2820
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Add `flake8-django` to LICENSE
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-12 17:49_
+_@charliermarsh_
 
 _No description provided._
 

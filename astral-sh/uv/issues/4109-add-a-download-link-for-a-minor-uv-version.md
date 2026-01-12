@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-06T19:01:01Z
 updated_at: 2025-08-30T07:35:21Z
 url: https://github.com/astral-sh/uv/issues/4109
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Add a download link for a minor uv version
 
 ---
 
-_Issue opened by @danielhollas on 2024-06-06 19:01_
+_@danielhollas_
 
 Right now when installing uv via URL, one can either install the latest version
 

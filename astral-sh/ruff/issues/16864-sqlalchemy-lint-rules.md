@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-20T07:50:14Z
 updated_at: 2025-03-21T13:33:19Z
 url: https://github.com/astral-sh/ruff/issues/16864
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # SQLAlchemy lint rules
 
 ---
 
-_Issue opened by @Lukas0907 on 2025-03-20 07:50_
+_@Lukas0907_
 
 ### Summary
 

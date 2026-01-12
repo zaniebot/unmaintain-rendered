@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-01T12:45:28Z
 updated_at: 2025-10-14T07:24:02Z
 url: https://github.com/astral-sh/ruff/issues/12611
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Fixing file with rules E302, I001 cause infinite loop
 
 ---
 
-_Issue opened by @qarmin on 2024-08-01 12:45_
+_@qarmin_
 
 ruff 0.5.5+379 (a3e67abf4 2024-07-31)
 ```

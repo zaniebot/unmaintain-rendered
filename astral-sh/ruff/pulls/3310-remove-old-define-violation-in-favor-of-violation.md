@@ -12,14 +12,14 @@ head: proc-macro-experimenting
 created_at: 2023-03-02T19:29:29Z
 updated_at: 2023-03-06T17:26:19Z
 url: https://github.com/astral-sh/ruff/pull/3310
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Remove old `define_violation!` (in favor of `#[violation]`)
 
 ---
 
-_Pull request opened by @konstin on 2023-03-02 19:29_
+_@konstin_
 
 Though this would be good way to play around with the code a bit more, ended up changing every single rule.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-08T09:08:31Z
 updated_at: 2024-12-16T10:30:31Z
 url: https://github.com/astral-sh/uv/issues/4887
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # md5 hashes in pip compile *.txt are not supported by pip
 
 ---
 
-_Issue opened by @angerrp on 2024-07-08 09:08_
+_@angerrp_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

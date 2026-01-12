@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-29T09:45:27Z
 updated_at: 2023-02-23T13:44:12Z
 url: https://github.com/astral-sh/ruff/issues/2321
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # SyntaxError in Python 3.11 when unpacking sequences inside of []
 
 ---
 
-_Issue opened by @ned2 on 2023-01-29 09:45_
+_@ned2_
 
 Ruff version: 0.0.237
 Python version: 3.11.1

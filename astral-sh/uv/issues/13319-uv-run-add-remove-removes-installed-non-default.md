@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-06T19:13:41Z
 updated_at: 2025-05-20T16:30:02Z
 url: https://github.com/astral-sh/uv/issues/13319
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # uv run, add, remove removes installed non-default groups when there are conflicts
 
 ---
 
-_Issue opened by @lendle on 2025-05-06 19:13_
+_@lendle_
 
 ### Summary
 

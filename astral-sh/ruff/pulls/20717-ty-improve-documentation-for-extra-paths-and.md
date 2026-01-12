@@ -14,14 +14,14 @@ head: alex/extra-paths-docs
 created_at: 2025-10-06T11:06:04Z
 updated_at: 2025-10-06T12:20:02Z
 url: https://github.com/astral-sh/ruff/pull/20717
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # [ty] Improve documentation for `extra-paths` and `python` config settings
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-06 11:06_
+_@AlexWaygood_
 
 ## Summary
 

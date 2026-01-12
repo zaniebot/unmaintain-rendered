@@ -14,14 +14,14 @@ head: micha/server-gracefully-handle-invalid-request-params
 created_at: 2025-12-18T11:00:25Z
 updated_at: 2025-12-18T18:01:03Z
 url: https://github.com/astral-sh/ruff/pull/22051
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Gracefully handle client requests that can't be deserialized
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-18 11:00_
+_@MichaReiser_
 
 ## Summary
 

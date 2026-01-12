@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-21T07:46:06Z
 updated_at: 2024-10-09T04:45:36Z
 url: https://github.com/astral-sh/ruff/issues/13025
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Check whether `import`s are at top of notebook
 
 ---
 
-_Issue opened by @redeboer on 2024-08-21 07:46_
+_@redeboer_
 
 Since #8872, [`E402`](https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file/) works per cell in Jupyter notebooks. However, in some projects, you may want to have the `import`s in one cell on the top of the notebook (e.g. to avoid cluttering code cells further below).
 

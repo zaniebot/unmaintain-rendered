@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-08T19:05:58Z
 updated_at: 2023-08-16T07:11:14Z
 url: https://github.com/astral-sh/ruff/issues/6431
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter adds unnecessary parentheses around return type annotations
 
 ---
 
-_Issue opened by @charliermarsh on 2023-08-08 19:05_
+_@charliermarsh_
 
 Contrived example:
 

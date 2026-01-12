@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-21T15:59:52Z
 updated_at: 2024-11-03T19:16:29Z
 url: https://github.com/astral-sh/ruff/issues/13862
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # SIM115 false positive on functions that return file handler objects
 
 ---
 
-_Issue opened by @gboeing on 2024-10-21 15:59_
+_@gboeing_
 
 ruff 0.7 gives a false positive for SIM115 on something like:
 

@@ -13,14 +13,14 @@ head: charlie/nested-function
 created_at: 2023-07-31T19:11:21Z
 updated_at: 2023-08-01T15:47:23Z
 url: https://github.com/astral-sh/ruff/pull/6206
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add empty lines before nested functions and classes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-31 19:11_
+_@charliermarsh_
 
 ## Summary
 

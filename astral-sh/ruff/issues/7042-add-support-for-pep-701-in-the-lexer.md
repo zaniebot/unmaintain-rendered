@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-01T13:28:39Z
 updated_at: 2023-09-15T07:30:16Z
 url: https://github.com/astral-sh/ruff/issues/7042
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Add support for PEP 701 in the lexer
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-01 13:28_
+_@dhruvmanila_
 
 The task is to update the lexer to emit the new tokens for PEP 701: `FStringStart`, `FStringMiddle` and `FStringEnd`. Along with these, a new token `Exclamation` needs to be added for conversion flag (`f"{foo!s}"`) as it's now part of the expression.
 

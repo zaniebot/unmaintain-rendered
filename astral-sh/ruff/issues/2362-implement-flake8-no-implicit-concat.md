@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-30T20:33:44Z
 updated_at: 2023-01-30T21:42:31Z
 url: https://github.com/astral-sh/ruff/issues/2362
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement `flake8-no-implicit-concat`
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-30 20:33_
+_@ngnpope_
 
 [GitHub](https://github.com/10sr/flake8-no-implicit-concat), [PyPI](https://pypi.org/project/flake8-no-implicit-concat/).
 

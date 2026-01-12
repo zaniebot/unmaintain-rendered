@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-09T02:28:37Z
 updated_at: 2025-04-16T07:27:47Z
 url: https://github.com/astral-sh/uv/issues/12769
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # `uv pip insall` on Windows causes "thread '<unknown>' has overflowed its stack"
 
 ---
 
-_Issue opened by @notatallshaw on 2025-04-09 02:28_
+_@notatallshaw_
 
 ### Summary
 

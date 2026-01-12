@@ -13,14 +13,14 @@ head: micha/more-docs
 created_at: 2025-05-12T12:39:44Z
 updated_at: 2025-05-12T16:52:26Z
 url: https://github.com/astral-sh/ty/pull/327
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add "rules" and "checking a project" sections
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-12 12:39_
+_@MichaReiser_
 
 ## Summary
 

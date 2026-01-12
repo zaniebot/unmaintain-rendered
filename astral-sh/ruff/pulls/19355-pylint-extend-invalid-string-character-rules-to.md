@@ -14,14 +14,14 @@ head: invalid-string-characters
 created_at: 2025-07-15T12:13:54Z
 updated_at: 2025-07-15T12:59:51Z
 url: https://github.com/astral-sh/ruff/pull/19355
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [`pylint`] Extend invalid string character rules to include t-strings
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-07-15 12:13_
+_@dylwil3_
 
 Handle t-strings in PLE2510-15
 

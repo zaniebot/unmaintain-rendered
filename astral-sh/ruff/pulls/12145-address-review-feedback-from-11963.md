@@ -13,14 +13,14 @@ head: semantic-model-api-cleanup
 created_at: 2024-07-02T06:54:24Z
 updated_at: 2024-07-02T07:07:36Z
 url: https://github.com/astral-sh/ruff/pull/12145
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Address review feedback from 11963
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-02 06:54_
+_@MichaReiser_
 
 ## Summary
 

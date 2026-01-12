@@ -13,14 +13,14 @@ head: dhruv/f-string-model-flag
 created_at: 2024-04-04T02:53:36Z
 updated_at: 2024-04-04T03:38:49Z
 url: https://github.com/astral-sh/ruff/pull/10766
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add semantic model flag when inside f-string replacement field
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-04 02:53_
+_@dhruvmanila_
 
 ## Summary
 

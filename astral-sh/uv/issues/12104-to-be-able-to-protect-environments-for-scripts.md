@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-10T19:30:38Z
 updated_at: 2025-03-12T22:45:07Z
 url: https://github.com/astral-sh/uv/issues/12104
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # To be able to protect environments for scripts that remain on the system
 
 ---
 
-_Issue opened by @andrewcrook on 2025-03-10 19:30_
+_@andrewcrook_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-24T17:02:11Z
 updated_at: 2024-07-25T07:29:44Z
 url: https://github.com/astral-sh/ruff/issues/12495
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # SyntaxError on py2 code
 
 ---
 
-_Issue opened by @serjflint on 2024-07-24 17:02_
+_@serjflint_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

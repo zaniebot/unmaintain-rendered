@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T18:08:33Z
 updated_at: 2024-09-04T15:23:49Z
 url: https://github.com/astral-sh/uv/issues/1663
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Consider adding `build` to the "seed" packages
 
 ---
 
-_Issue opened by @charlesnicholson on 2024-02-18 18:08_
+_@charlesnicholson_
 
 `uv venv --seed` installs + upgrades `setuptools`, `pip`, and `wheel`, which implies that its purpose is to facilitate distribution package creation. The recent distribution-packaging overhaul over the past few years in the Python world makes `build` also a critical package. Would you consider adding it to the `--seed` set?
 

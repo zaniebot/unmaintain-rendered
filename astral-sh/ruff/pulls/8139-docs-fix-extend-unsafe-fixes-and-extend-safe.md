@@ -13,14 +13,14 @@ head: fix_extend_unsafe
 created_at: 2023-10-23T11:25:26Z
 updated_at: 2023-10-23T12:07:00Z
 url: https://github.com/astral-sh/ruff/pull/8139
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # [docs] fix `extend-unsafe-fixes` and `extend-safe-fixes` example error
 
 ---
 
-_Pull request opened by @gouzil on 2023-10-23 11:25_
+_@gouzil_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

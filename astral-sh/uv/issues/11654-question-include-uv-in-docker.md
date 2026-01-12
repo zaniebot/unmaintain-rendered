@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T06:13:08Z
 updated_at: 2025-02-20T09:10:55Z
 url: https://github.com/astral-sh/uv/issues/11654
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # [Question] include uv in docker
 
 ---
 
-_Issue opened by @mru4913 on 2025-02-20 06:13_
+_@mru4913_
 
 ### Question
 

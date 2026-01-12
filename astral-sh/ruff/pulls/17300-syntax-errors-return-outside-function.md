@@ -13,14 +13,14 @@ head: brent/syn-return-outside-function
 created_at: 2025-04-08T20:14:23Z
 updated_at: 2025-04-11T17:12:07Z
 url: https://github.com/astral-sh/ruff/pull/17300
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [syntax-errors] `return` outside function
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-08 20:14_
+_@ntBre_
 
 Summary
 --

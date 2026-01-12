@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-22T17:32:44Z
 updated_at: 2026-01-09T03:32:35Z
 url: https://github.com/astral-sh/ty/issues/2168
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Find fatals by fuzzing ty on scripts containing invalid syntax
 
 ---
 
-_Issue opened by @MichaReiser on 2025-12-22 17:32_
+_@MichaReiser_
 
 _No description provided._
 

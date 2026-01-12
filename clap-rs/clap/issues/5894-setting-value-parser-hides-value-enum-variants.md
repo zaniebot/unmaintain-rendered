@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T17:47:22Z
 updated_at: 2025-01-28T20:18:53Z
 url: https://github.com/clap-rs/clap/issues/5894
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Setting `value_parser` hides `value_enum` variants from help output
 
 ---
 
-_Issue opened by @dcsommer on 2025-01-27 17:47_
+_@dcsommer_
 
 ### Please complete the following tasks
 

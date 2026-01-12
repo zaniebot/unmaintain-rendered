@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-13T10:08:25Z
 updated_at: 2025-09-05T12:58:36Z
 url: https://github.com/astral-sh/uv/issues/13428
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:28Z
 ```
 
 # There are some issues when using other indexes
 
 ---
 
-_Issue opened by @zlpmetyou on 2025-05-13 10:08_
+_@zlpmetyou_
 
 ### Summary
 

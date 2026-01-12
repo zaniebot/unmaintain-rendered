@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-11-19T18:32:30Z
 updated_at: 2025-11-20T15:28:07Z
 url: https://github.com/astral-sh/uv/pull/16781
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:26Z
 ```
 
 # Document the new behavior for free-threaded python versions
 
 ---
 
-_Pull request opened by @pythonweb2 on 2025-11-19 18:32_
+_@pythonweb2_
 
 ## Summary
 

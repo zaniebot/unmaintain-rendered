@@ -11,14 +11,14 @@ head: feature/add-uv-version-to-lockfile
 created_at: 2025-02-09T13:17:59Z
 updated_at: 2025-03-03T02:43:26Z
 url: https://github.com/astral-sh/uv/pull/11353
-synced_at: 2026-01-10T11:10:36Z
+synced_at: 2026-01-12T16:09:48Z
 ```
 
 # feat: add uv version to lock file
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2025-02-09 13:17_
+_@Aditya-PS-05_
 
 Closes #11319
 

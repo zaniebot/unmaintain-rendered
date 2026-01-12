@@ -12,14 +12,14 @@ head: main
 created_at: 2024-11-02T18:00:00Z
 updated_at: 2024-11-09T11:59:41Z
 url: https://github.com/astral-sh/ruff/pull/14055
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Add setup instructions for using Ruff with Wing Pro
 
 ---
 
-_Pull request opened by @sdeibel on 2024-11-02 18:00_
+_@sdeibel_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

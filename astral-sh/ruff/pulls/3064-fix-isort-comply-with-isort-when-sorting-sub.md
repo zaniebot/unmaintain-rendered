@@ -12,14 +12,14 @@ head: 3059-isort-package-sorting
 created_at: 2023-02-20T18:26:19Z
 updated_at: 2023-03-21T15:07:25Z
 url: https://github.com/astral-sh/ruff/pull/3064
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # fix(isort): comply with isort when sorting sub-package modules
 
 ---
 
-_Pull request opened by @spaceone on 2023-02-20 18:26_
+_@spaceone_
 
 e.g. packages named "foo.bar"
 

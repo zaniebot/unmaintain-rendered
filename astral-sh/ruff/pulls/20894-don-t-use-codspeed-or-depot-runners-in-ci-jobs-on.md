@@ -13,14 +13,14 @@ head: alex/fork-ci
 created_at: 2025-10-15T14:31:42Z
 updated_at: 2025-10-16T12:16:20Z
 url: https://github.com/astral-sh/ruff/pull/20894
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # Don't use codspeed or depot runners in CI jobs on forks
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-15 14:31_
+_@AlexWaygood_
 
 ## Summary
 

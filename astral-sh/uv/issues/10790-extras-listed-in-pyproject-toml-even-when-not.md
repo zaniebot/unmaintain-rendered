@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-20T21:05:50Z
 updated_at: 2025-01-21T00:50:02Z
 url: https://github.com/astral-sh/uv/issues/10790
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:21Z
 ```
 
 # Extras listed in `pyproject.toml` even when not found by `uv add`
 
 ---
 
-_Issue opened by @krishsai7 on 2025-01-20 21:05_
+_@krishsai7_
 
 When adding a package that doesn't contain extras, `uv` will warn me saying that the extra couldn't be found.
 

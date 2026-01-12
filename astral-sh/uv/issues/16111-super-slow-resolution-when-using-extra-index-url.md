@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-03T07:39:25Z
 updated_at: 2025-12-18T16:18:34Z
 url: https://github.com/astral-sh/uv/issues/16111
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:24Z
 ```
 
 # Super slow resolution when using --extra-index-url for JAX artifacts
 
 ---
 
-_Issue opened by @sontungkieu on 2025-10-03 07:39_
+_@sontungkieu_
 
 ### Question
 

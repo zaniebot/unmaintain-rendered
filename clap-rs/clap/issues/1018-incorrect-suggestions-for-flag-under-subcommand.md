@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-08-05T16:39:14Z
 updated_at: 2018-08-02T03:30:10Z
 url: https://github.com/clap-rs/clap/issues/1018
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Incorrect suggestions for flag under subcommand
 
 ---
 
-_Issue opened by @wabain on 2017-08-05 16:39_
+_@wabain_
 
 ### Rust Version
 

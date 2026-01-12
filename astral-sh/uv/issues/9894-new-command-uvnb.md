@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-14T11:52:59Z
 updated_at: 2025-01-06T20:53:01Z
 url: https://github.com/astral-sh/uv/issues/9894
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # NEW COMMAND: ```uvnb```
 
 ---
 
-_Issue opened by @nbiish on 2024-12-14 11:52_
+_@nbiish_
 
 I really like the mojo🔥 option in the notebook lab so I made my own script to play with notebooks faster🔥
 

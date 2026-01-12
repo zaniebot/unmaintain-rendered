@@ -12,14 +12,14 @@ head: auto-generate-options-readme
 created_at: 2022-12-03T20:31:36Z
 updated_at: 2022-12-06T05:20:56Z
 url: https://github.com/astral-sh/ruff/pull/1015
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Auto-generate options in README from field attributes
 
 ---
 
-_Pull request opened by @squiddy on 2022-12-03 20:31_
+_@squiddy_
 
 This implements a proc macro to derive metadata from the structs that define all available options. I'm opening this pull request primarly to get feedback on whether this is a sensible approach.
 

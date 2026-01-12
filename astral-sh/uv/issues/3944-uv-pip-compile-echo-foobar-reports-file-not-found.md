@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T14:17:11Z
 updated_at: 2024-05-31T21:32:37Z
 url: https://github.com/astral-sh/uv/issues/3944
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # `uv pip compile <(echo foobar)` reports "file not found", but it should work
 
 ---
 
-_Issue opened by @BurntSushi on 2024-05-31 14:17_
+_@BurntSushi_
 
 Example:
 

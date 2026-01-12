@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-02-10T18:21:47Z
 updated_at: 2022-02-11T18:51:06Z
 url: https://github.com/clap-rs/clap/issues/3439
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Deprecate WaitOnError
 
 ---
 
-_Issue opened by @epage on 2022-02-10 18:21_
+_@epage_
 
 `WaitOnError` is a fairly specialized setting and only helps with argument parsing and not any other part of the application.  This is also relatively easy for the user to implement.  If we're not wanting to [customize error codes](https://github.com/clap-rs/clap/issues/3426), we have less reason to be in the business of waiting on error.
 

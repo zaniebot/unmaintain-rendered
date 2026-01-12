@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-21T10:47:14Z
 updated_at: 2022-11-21T18:30:25Z
 url: https://github.com/astral-sh/ruff/issues/849
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Isort sorting order
 
 ---
 
-_Issue opened by @JonathanPlasse on 2022-11-21 10:47_
+_@JonathanPlasse_
 
 `isort` sorting order is
 

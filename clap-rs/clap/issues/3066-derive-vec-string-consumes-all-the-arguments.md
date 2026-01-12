@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-06T18:50:25Z
 updated_at: 2021-12-09T02:38:27Z
 url: https://github.com/clap-rs/clap/issues/3066
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # [derive] Vec<String> consumes all the arguments
 
 ---
 
-_Issue opened by @rgreinho on 2021-12-06 18:50_
+_@rgreinho_
 
 ### Please complete the following tasks
 

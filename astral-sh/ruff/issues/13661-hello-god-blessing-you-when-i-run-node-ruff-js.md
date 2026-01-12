@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-07T12:11:44Z
 updated_at: 2024-10-07T14:15:08Z
 url: https://github.com/astral-sh/ruff/issues/13661
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # hello , god blessing you , when I run node ruff.js  ,    here  are  error   ,what do I do   
 
 ---
 
-_Issue opened by @Super1Windcloud on 2024-10-07 12:11_
+_@Super1Windcloud_
 
 win11  ruff 0.6.9 
 

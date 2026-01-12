@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-17T21:09:55Z
 updated_at: 2026-01-08T17:49:01Z
 url: https://github.com/astral-sh/ty/issues/2039
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Stack overflow with recursive callables
 
 ---
 
-_Issue opened by @correctmost on 2025-12-17 21:09_
+_@correctmost_
 
 ### Summary
 

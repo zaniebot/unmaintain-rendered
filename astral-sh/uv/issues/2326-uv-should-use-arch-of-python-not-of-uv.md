@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-10T05:04:04Z
 updated_at: 2024-03-13T11:51:16Z
 url: https://github.com/astral-sh/uv/issues/2326
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # uv should use arch of python, not of uv
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-03-10 05:04_
+_@hauntsaninja_
 
 ```
 ~/tmp/vnvmypy λ /Users/shantanu/.pyenv/versions/3.12.2/bin/python -m venv .venv

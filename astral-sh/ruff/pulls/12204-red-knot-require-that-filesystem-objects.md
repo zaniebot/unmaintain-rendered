@@ -13,14 +13,14 @@ head: filesystem-debug
 created_at: 2024-07-05T11:49:03Z
 updated_at: 2024-07-05T12:02:26Z
 url: https://github.com/astral-sh/ruff/pull/12204
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Require that `FileSystem` objects implement `Debug`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-05 11:49_
+_@AlexWaygood_
 
 ## Summary
 

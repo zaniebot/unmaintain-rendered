@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-09T10:40:32Z
 updated_at: 2025-02-13T16:14:40Z
 url: https://github.com/astral-sh/uv/issues/845
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Document security model
 
 ---
 
-_Issue opened by @konstin on 2024-01-09 10:40_
+_@konstin_
 
 We should document our assumptions wrt to security. Should be mostly obvious, but warrants being written down. This includes:
 

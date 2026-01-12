@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-04T07:03:19Z
 updated_at: 2024-03-04T15:49:50Z
 url: https://github.com/astral-sh/uv/issues/2146
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Verbosity level to see output from build backend
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-03-04 07:03_
+_@hauntsaninja_
 
 Related to https://github.com/astral-sh/uv/issues/1569 , but I'd love to be able to see the output from the build backend during a successful install. `pip install -v` will show this to you
 

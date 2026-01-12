@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-07T22:32:21Z
 updated_at: 2025-01-07T22:58:52Z
 url: https://github.com/astral-sh/ruff/issues/15334
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # FURB188 false positive for affix expression with side effect
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-07 22:32_
+_@dscorbett_
 
 [slice-to-remove-prefix-or-suffix (FURB188)](https://docs.astral.sh/ruff/rules/slice-to-remove-prefix-or-suffix/) produces a false positive in Ruff 0.8.6 when the affix expression has a side effect.
 ```console

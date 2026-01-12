@@ -12,14 +12,14 @@ head: charlie/add-end-location-to-check
 created_at: 2022-10-02T14:56:31Z
 updated_at: 2022-10-02T16:50:43Z
 url: https://github.com/astral-sh/ruff/pull/299
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Add an end location to Check
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-02 14:56_
+_@charliermarsh_
 
 Resolves #293.
 

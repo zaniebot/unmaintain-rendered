@@ -13,14 +13,14 @@ head: fix-typo-in-config-docs
 created_at: 2024-08-03T21:45:40Z
 updated_at: 2024-08-04T20:47:45Z
 url: https://github.com/astral-sh/ruff/pull/12655
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Fix typo in configuration docs
 
 ---
 
-_Pull request opened by @DavideRagazzon on 2024-08-03 21:45_
+_@DavideRagazzon_
 
 
 <!--

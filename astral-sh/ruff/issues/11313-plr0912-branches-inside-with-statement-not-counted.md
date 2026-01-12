@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-06T18:15:29Z
 updated_at: 2024-05-08T03:10:14Z
 url: https://github.com/astral-sh/ruff/issues/11313
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 #  PLR0912: branches inside `with` statement not counted
 
 ---
 
-_Issue opened by @Kakadus on 2024-05-06 18:15_
+_@Kakadus_
 
 PLR0912(too-many-branches) does not count branches inside `with: ` blocks. With pylint the following is detected, while ruff does not detect this rule violation 
 ```py

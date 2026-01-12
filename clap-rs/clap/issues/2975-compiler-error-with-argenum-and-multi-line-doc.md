@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-10-31T08:29:03Z
 updated_at: 2021-11-03T23:42:26Z
 url: https://github.com/clap-rs/clap/issues/2975
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Compiler error with `ArgEnum` and multi-line doc comments on variants
 
 ---
 
-_Issue opened by @graelo on 2021-10-31 08:29_
+_@graelo_
 
 ### Please complete the following tasks
 

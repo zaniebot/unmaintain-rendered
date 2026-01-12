@@ -12,14 +12,14 @@ head: jane/server/noqa-comments
 created_at: 2024-04-22T01:14:03Z
 updated_at: 2025-02-20T09:00:11Z
 url: https://github.com/astral-sh/ruff/pull/11085
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # `ruff server`: Implement quick fix code actions to ignore a diagnostic with `# noqa:`
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-22 01:14_
+_@snowsignal_
 
 ## Summary
 

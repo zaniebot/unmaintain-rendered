@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-29T16:14:44Z
 updated_at: 2023-06-30T02:10:57Z
 url: https://github.com/astral-sh/ruff/issues/5443
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Black not compatible with ruff?
 
 ---
 
-_Issue opened by @Ryang20718 on 2023-06-29 16:14_
+_@Ryang20718_
 
 Hi, appreciate all the great linter/autofixes, however, I was wondering if ruff is up to date with black?
 

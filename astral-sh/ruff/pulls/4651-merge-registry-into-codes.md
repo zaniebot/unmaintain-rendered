@@ -12,14 +12,14 @@ head: macro_simplifications
 created_at: 2023-05-25T08:57:33Z
 updated_at: 2023-06-02T10:54:58Z
 url: https://github.com/astral-sh/ruff/pull/4651
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Merge registry into codes
 
 ---
 
-_Pull request opened by @konstin on 2023-05-25 08:57_
+_@konstin_
 
 ## Summary
 

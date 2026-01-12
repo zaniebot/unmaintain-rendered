@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-17T17:47:21Z
 updated_at: 2024-12-06T04:24:45Z
 url: https://github.com/astral-sh/uv/issues/8298
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # Windows 3.13t installation missing python.exe
 
 ---
 
-_Issue opened by @colesbury on 2024-10-17 17:47_
+_@colesbury_
 
 ```shell
 > uv run -p 3.13t python

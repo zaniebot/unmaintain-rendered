@@ -15,14 +15,14 @@ head: david/ecosystem-analyzer-release-mode
 created_at: 2025-09-03T10:45:46Z
 updated_at: 2025-09-03T10:51:56Z
 url: https://github.com/astral-sh/ruff/pull/20210
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [ty] Run ecosystem-analyzer in release mode
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-03 10:45_
+_@sharkdp_
 
 ## Summary
 

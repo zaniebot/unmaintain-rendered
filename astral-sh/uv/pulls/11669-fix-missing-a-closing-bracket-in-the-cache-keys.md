@@ -13,14 +13,14 @@ head: main
 created_at: 2025-02-20T15:17:00Z
 updated_at: 2025-02-20T20:16:20Z
 url: https://github.com/astral-sh/uv/pull/11669
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:56Z
 ```
 
 # Fix missing a closing bracket in the cache-keys setting
 
 ---
 
-_Pull request opened by @chilin0525 on 2025-02-20 15:17_
+_@chilin0525_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

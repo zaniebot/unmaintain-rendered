@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-07T15:20:08Z
 updated_at: 2025-08-27T18:56:54Z
 url: https://github.com/astral-sh/uv/issues/3425
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Make it possible to avoid yanked versions of packages in compiled requirements
 
 ---
 
-_Issue opened by @barseghyanartur on 2024-05-07 15:20_
+_@barseghyanartur_
 
 ## Feature request
 

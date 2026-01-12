@@ -14,14 +14,14 @@ head: docs/pinned-uv-example-gh-actions
 created_at: 2024-08-19T21:56:21Z
 updated_at: 2024-08-19T22:12:49Z
 url: https://github.com/astral-sh/uv/pull/6234
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # docs(integration): show pinned version example on GH Actions
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-08-19 21:56_
+_@mkniewallner_
 
 ## Summary
 

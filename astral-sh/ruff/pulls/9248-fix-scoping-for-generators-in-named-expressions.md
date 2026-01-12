@@ -13,14 +13,14 @@ head: charlie/named
 created_at: 2023-12-22T17:59:48Z
 updated_at: 2023-12-23T08:37:41Z
 url: https://github.com/astral-sh/ruff/pull/9248
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Fix scoping for generators in named expressions in classes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-22 17:59_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9230.
 

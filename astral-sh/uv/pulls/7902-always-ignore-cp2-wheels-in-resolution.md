@@ -13,14 +13,14 @@ head: charlie/ignore
 created_at: 2024-10-03T17:03:46Z
 updated_at: 2024-10-03T17:35:04Z
 url: https://github.com/astral-sh/uv/pull/7902
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Always ignore `cp2` wheels in resolution
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-03 17:03_
+_@charliermarsh_
 
 ## Summary
 

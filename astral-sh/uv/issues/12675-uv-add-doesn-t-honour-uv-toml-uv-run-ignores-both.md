@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T15:48:56Z
 updated_at: 2025-04-04T16:18:12Z
 url: https://github.com/astral-sh/uv/issues/12675
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # `uv add` doesn't honour `uv.toml`; `uv run` ignores both `uv.toml` and `--extra-index-url` flags
 
 ---
 
-_Issue opened by @knguyen1 on 2025-04-04 15:48_
+_@knguyen1_
 
 ### Summary
 

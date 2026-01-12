@@ -13,14 +13,14 @@ head: hash-based-invalidation
 created_at: 2024-03-08T07:34:28Z
 updated_at: 2024-03-08T17:28:12Z
 url: https://github.com/astral-sh/uv/pull/2297
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:58Z
 ```
 
 # Added ability to select bytecode invalidation mode of generated .pyc
 
 ---
 
-_Pull request opened by @wimglenn on 2024-03-08 07:34_
+_@wimglenn_
 
 Since Python 3.7, deterministic pycs are possible (see [PEP 552](https://peps.python.org/pep-0552/))
 To select the bytecode invalidation mode explicitly by env var:

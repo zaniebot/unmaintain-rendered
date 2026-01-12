@@ -13,14 +13,14 @@ head: alex/special-form-todos
 created_at: 2024-12-12T13:56:16Z
 updated_at: 2024-12-12T17:59:32Z
 url: https://github.com/astral-sh/ruff/pull/14936
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Add explicit TODO branches for many typing special forms and qualifiers
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-12 13:56_
+_@AlexWaygood_
 
 ## Summary
 

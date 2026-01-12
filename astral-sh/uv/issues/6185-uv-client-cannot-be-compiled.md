@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-18T19:38:32Z
 updated_at: 2024-08-19T07:28:44Z
 url: https://github.com/astral-sh/uv/issues/6185
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # `uv-client` cannot be compiled
 
 ---
 
-_Issue opened by @fyusifov on 2024-08-18 19:38_
+_@fyusifov_
 
 `uv-client` cannot be compiled with below error message:
 

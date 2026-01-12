@@ -12,14 +12,14 @@ head: zb/parse-key
 created_at: 2025-07-01T18:29:09Z
 updated_at: 2025-08-13T16:03:11Z
 url: https://github.com/astral-sh/uv/pull/14399
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:12Z
 ```
 
 # Allow Python requests with missing segments
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-01 18:29_
+_@zanieb_
 
 This allows `PythonDownloadRequest` which is used for parsing general install key requests to have missing segments, which unblocks requests like `windows-aarch64` or `cpython-linux` (whereas before those would require `any-any-windows-aarch64` and `cpython-any-linux` respectively). We still require strict ordering of segments.
 

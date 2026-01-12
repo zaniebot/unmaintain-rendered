@@ -13,14 +13,14 @@ head: david/allow-function-redefiniton
 created_at: 2025-05-23T13:08:48Z
 updated_at: 2025-06-23T06:48:30Z
 url: https://github.com/astral-sh/ruff/pull/18275
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Experiment: allow functions to be redefined (same signature)
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-23 13:08_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

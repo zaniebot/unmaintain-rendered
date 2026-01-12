@@ -13,14 +13,14 @@ head: feat/add-from-flat-distributions
 created_at: 2024-11-04T08:27:02Z
 updated_at: 2024-11-04T08:41:40Z
 url: https://github.com/astral-sh/uv/pull/8800
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:30Z
 ```
 
 # Add `From` for `FlatDistributions` struct
 
 ---
 
-_Pull request opened by @tdejager on 2024-11-04 08:27_
+_@tdejager_
 
 I'm using a override `ResolverProvider` and want to make use of the eager version of the `VersionMap`. This way I can construct that variant :)
 

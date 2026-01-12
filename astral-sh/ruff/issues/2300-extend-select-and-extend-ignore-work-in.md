@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-28T15:42:03Z
 updated_at: 2023-01-30T21:27:01Z
 url: https://github.com/astral-sh/ruff/issues/2300
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `--extend-select` and `--extend-ignore` work in unexpected ways
 
 ---
 
-_Issue opened by @not-my-profile on 2023-01-28 15:42_
+_@not-my-profile_
 
 ```
 $ ruff --select E501 --ignore ALL scripts

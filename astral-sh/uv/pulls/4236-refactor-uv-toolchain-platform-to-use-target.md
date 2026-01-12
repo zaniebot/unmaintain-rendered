@@ -13,14 +13,14 @@ head: zb/toolchain-dltl
 created_at: 2024-06-11T16:16:00Z
 updated_at: 2024-06-12T14:12:26Z
 url: https://github.com/astral-sh/uv/pull/4236
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:06Z
 ```
 
 # Refactor `uv-toolchain::platform` to use `target-lexicon`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-11 16:16_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/3857
 

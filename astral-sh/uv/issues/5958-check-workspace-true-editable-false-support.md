@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-09T14:20:39Z
 updated_at: 2024-08-10T00:59:24Z
 url: https://github.com/astral-sh/uv/issues/5958
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Check `{ workspace = true, editable = false }` support
 
 ---
 
-_Issue opened by @konstin on 2024-08-09 14:20_
+_@konstin_
 
 We need to check the support of non-editable workspace dependencies in `pyproject.toml`. If it doesn't work remove it from the docs.
 

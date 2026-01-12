@@ -14,14 +14,14 @@ head: zb/docs-installing-python
 created_at: 2024-07-16T21:29:50Z
 updated_at: 2024-07-17T14:44:24Z
 url: https://github.com/astral-sh/uv/pull/5133
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:39Z
 ```
 
 # Touch-ups to the Python installation guide
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-16 21:29_
+_@zanieb_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ head: main
 created_at: 2025-08-15T13:26:12Z
 updated_at: 2025-09-23T06:37:06Z
 url: https://github.com/astral-sh/uv/pull/15308
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:41Z
 ```
 
 # Support UV_PYTHON_PLATFORM when executing `uv sync`
 
 ---
 
-_Pull request opened by @acehinnnqru on 2025-08-15 13:26_
+_@acehinnnqru_
 
 Closes #15241.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-03T08:37:50Z
 updated_at: 2025-04-05T01:03:27Z
 url: https://github.com/astral-sh/uv/issues/12646
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # `uv pip compile` generates an invalid `pyproject.toml` (uses requirements.txt format instead of TOML)
 
 ---
 
-_Issue opened by @cpprhtn on 2025-04-03 08:37_
+_@cpprhtn_
 
 ### Summary
 

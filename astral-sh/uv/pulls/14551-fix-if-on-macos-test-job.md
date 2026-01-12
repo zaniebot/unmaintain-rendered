@@ -13,14 +13,14 @@ head: zb/fix-macos
 created_at: 2025-07-10T21:28:21Z
 updated_at: 2025-07-10T23:19:48Z
 url: https://github.com/astral-sh/uv/pull/14551
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:17Z
 ```
 
 # Fix `if` on macos test job
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-10 21:28_
+_@zanieb_
 
 _No description provided._
 

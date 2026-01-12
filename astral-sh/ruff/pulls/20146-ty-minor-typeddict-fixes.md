@@ -13,14 +13,14 @@ head: cjm/typeddict-fixes
 created_at: 2025-08-29T02:03:55Z
 updated_at: 2025-08-29T16:46:51Z
 url: https://github.com/astral-sh/ruff/pull/20146
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] minor TypedDict fixes
 
 ---
 
-_Pull request opened by @carljm on 2025-08-29 02:03_
+_@carljm_
 
 ## Summary
 

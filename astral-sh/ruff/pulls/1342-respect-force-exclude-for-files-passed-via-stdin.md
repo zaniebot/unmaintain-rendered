@@ -12,14 +12,14 @@ head: charlie/stdin-force-exclude
 created_at: 2022-12-22T21:29:01Z
 updated_at: 2022-12-22T21:40:16Z
 url: https://github.com/astral-sh/ruff/pull/1342
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Respect --force-exclude for files passed via stdin
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-22 21:29_
+_@charliermarsh_
 
 Resolves #1339.
 

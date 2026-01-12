@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-15T16:11:50Z
 updated_at: 2025-01-12T13:21:31Z
 url: https://github.com/astral-sh/ruff/issues/14986
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] More useful property-tests based on trivia of set theory
 
 ---
 
-_Issue opened by @cake-monotone on 2024-12-15 16:11_
+_@cake-monotone_
 
 Maybe we can enhance safety by adding tests inspired by fundamental set theory principles.
 

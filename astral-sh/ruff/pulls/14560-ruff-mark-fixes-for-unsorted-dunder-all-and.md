@@ -13,14 +13,14 @@ head: alex/unsafe-sorting
 created_at: 2024-11-23T23:18:22Z
 updated_at: 2024-11-24T12:51:20Z
 url: https://github.com/astral-sh/ruff/pull/14560
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`ruff`] Mark fixes for `unsorted-dunder-all` and `unsorted-dunder-slots` as unsafe when there are complex comments in the sequence (`RUF022`, `RUF023`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-23 23:18_
+_@AlexWaygood_
 
 ## Summary
 

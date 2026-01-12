@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-23T13:18:27Z
 updated_at: 2025-09-26T07:06:27Z
 url: https://github.com/astral-sh/ruff/issues/20532
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Use `Annotation::tags` instead of hard coding the rules in ruff server
 
 ---
 
-_Issue opened by @MichaReiser on 2025-09-23 13:18_
+_@MichaReiser_
 
 Instead of hard coding the rules in the ruff server:
 

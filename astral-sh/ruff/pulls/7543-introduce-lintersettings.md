@@ -13,14 +13,14 @@ head: linter-settings
 created_at: 2023-09-20T12:23:09Z
 updated_at: 2023-09-20T16:04:55Z
 url: https://github.com/astral-sh/ruff/pull/7543
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Introduce `LinterSettings`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-20 12:23_
+_@MichaReiser_
 
 ## Stack Summary
 

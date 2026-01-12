@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-22T15:32:02Z
 updated_at: 2025-06-25T06:41:00Z
 url: https://github.com/astral-sh/ruff/issues/18863
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `bad-file-permissions` (S103) has false negatives and false positives
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-22 15:32_
+_@dscorbett_
 
 ### Summary
 

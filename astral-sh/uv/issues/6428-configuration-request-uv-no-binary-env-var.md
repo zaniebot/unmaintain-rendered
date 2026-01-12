@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T12:38:41Z
 updated_at: 2024-08-23T07:22:08Z
 url: https://github.com/astral-sh/uv/issues/6428
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Configuration request: UV_NO_BINARY env var
 
 ---
 
-_Issue opened by @heitorPB on 2024-08-22 12:38_
+_@heitorPB_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

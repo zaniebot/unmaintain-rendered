@@ -13,14 +13,14 @@ head: zsol/jj-zmwropzqtzxm
 created_at: 2025-12-16T19:24:42Z
 updated_at: 2026-01-12T11:46:17Z
 url: https://github.com/astral-sh/uv/pull/17152
-synced_at: 2026-01-12T11:55:28Z
+synced_at: 2026-01-12T16:12:38Z
 ```
 
 # Make pyx credential error message reflect the realm
 
 ---
 
-_Pull request opened by @zsol on 2025-12-16 19:24_
+_@zsol_
 
 This is unlikely to affect people who aren't pyx devs.
 

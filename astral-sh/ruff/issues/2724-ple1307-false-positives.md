@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-10T18:00:49Z
 updated_at: 2023-02-10T19:26:00Z
 url: https://github.com/astral-sh/ruff/issues/2724
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PLE1307: false positives
 
 ---
 
-_Issue opened by @spaceone on 2023-02-10 18:00_
+_@spaceone_
 
 ```sh
 $ echo "import random; '%d' % (random.randint(0, 100),)" | ruff --isolated --select PLE1307 -

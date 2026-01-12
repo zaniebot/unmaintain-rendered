@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-10T02:59:59Z
 updated_at: 2025-04-03T13:48:11Z
 url: https://github.com/astral-sh/ruff/issues/12263
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Remove global options from `ruff server` subcommand
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-07-10 02:59_
+_@dhruvmanila_
 
 Currently, the `ruff server` subcommand includes the global options:
 

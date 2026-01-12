@@ -13,14 +13,14 @@ head: david/type-system-features-update
 created_at: 2025-12-15T13:21:09Z
 updated_at: 2025-12-15T14:32:28Z
 url: https://github.com/astral-sh/ty/pull/1890
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Type system features: minor updates
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-15 13:21_
+_@sharkdp_
 
 _No description provided._
 

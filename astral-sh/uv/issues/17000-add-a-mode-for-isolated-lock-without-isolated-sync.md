@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-05T14:54:22Z
 updated_at: 2025-12-17T17:23:10Z
 url: https://github.com/astral-sh/uv/issues/17000
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # Add a mode for isolated lock without isolated sync
 
 ---
 
-_Issue opened by @zanieb on 2025-12-05 14:54_
+_@zanieb_
 
 ### Summary
 

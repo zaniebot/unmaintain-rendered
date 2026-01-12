@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-09T17:59:20Z
 updated_at: 2025-06-10T16:44:19Z
 url: https://github.com/astral-sh/uv/issues/13930
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # `uv` cannot resolve Jetpack (l4t) dependencies
 
 ---
 
-_Issue opened by @PawelPeczek-Roboflow on 2025-06-09 17:59_
+_@PawelPeczek-Roboflow_
 
 ### Question
 

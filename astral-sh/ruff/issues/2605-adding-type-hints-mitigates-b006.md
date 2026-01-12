@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-06T11:42:14Z
 updated_at: 2023-02-06T19:28:10Z
 url: https://github.com/astral-sh/ruff/issues/2605
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Adding type hints mitigates B006
 
 ---
 
-_Issue opened by @luator on 2023-02-06 11:42_
+_@luator_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

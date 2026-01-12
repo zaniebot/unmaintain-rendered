@@ -12,14 +12,14 @@ head: feature/dlint
 created_at: 2023-07-08T14:54:41Z
 updated_at: 2023-07-20T09:43:58Z
 url: https://github.com/astral-sh/ruff/pull/5614
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # `[DLINT]` Add Dlint plugin and first rule DUO138
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-07-08 14:54_
+_@qdegraaf_
 
 ## Summary
 

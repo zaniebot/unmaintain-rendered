@@ -12,14 +12,14 @@ head: charlie/flake8-return
 created_at: 2022-12-04T00:55:02Z
 updated_at: 2022-12-04T01:12:12Z
 url: https://github.com/astral-sh/ruff/pull/1016
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement `flake8-return` plugin
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-04 00:55_
+_@charliermarsh_
 
 Resolves #304.
 

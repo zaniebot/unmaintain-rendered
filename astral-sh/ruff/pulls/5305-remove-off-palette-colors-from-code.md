@@ -13,14 +13,14 @@ head: charlie/colors
 created_at: 2023-06-22T16:20:32Z
 updated_at: 2023-06-22T16:45:23Z
 url: https://github.com/astral-sh/ruff/pull/5305
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Remove off-palette colors from code
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-22 16:20_
+_@charliermarsh_
 
 _No description provided._
 

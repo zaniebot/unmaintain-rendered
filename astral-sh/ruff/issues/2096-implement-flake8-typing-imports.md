@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-22T22:53:40Z
 updated_at: 2023-01-28T16:41:01Z
 url: https://github.com/astral-sh/ruff/issues/2096
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement `flake8-typing-imports`
 
 ---
 
-_Issue opened by @Secrus on 2023-01-22 22:53_
+_@Secrus_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

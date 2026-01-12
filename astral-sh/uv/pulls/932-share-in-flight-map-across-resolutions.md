@@ -13,14 +13,14 @@ head: charlie/pack
 created_at: 2024-01-15T17:54:27Z
 updated_at: 2024-01-15T18:11:23Z
 url: https://github.com/astral-sh/uv/pull/932
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:18Z
 ```
 
 # Share in-flight map across resolutions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-15 17:54_
+_@charliermarsh_
 
 ## Summary
 

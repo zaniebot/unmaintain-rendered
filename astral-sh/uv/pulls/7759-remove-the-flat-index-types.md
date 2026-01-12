@@ -13,14 +13,14 @@ head: charlie/flat-index
 created_at: 2024-09-28T17:27:26Z
 updated_at: 2024-10-15T23:30:38Z
 url: https://github.com/astral-sh/uv/pull/7759
-synced_at: 2026-01-10T12:53:55Z
+synced_at: 2026-01-12T16:07:59Z
 ```
 
 # Remove the flat index types
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-28 17:27_
+_@charliermarsh_
 
 ## Summary
 

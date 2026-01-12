@@ -13,14 +13,14 @@ head: david/namedtuplelike
 created_at: 2025-09-08T10:59:25Z
 updated_at: 2025-09-08T12:53:19Z
 url: https://github.com/astral-sh/ruff/pull/20302
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [ty] Fix signature of `NamedTupleLike._make`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-08 10:59_
+_@sharkdp_
 
 _No description provided._
 

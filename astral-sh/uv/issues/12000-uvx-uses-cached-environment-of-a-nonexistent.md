@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-06T11:12:43Z
 updated_at: 2025-07-09T13:21:00Z
 url: https://github.com/astral-sh/uv/issues/12000
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # `uvx` uses cached environment of a nonexistent Python version
 
 ---
 
-_Issue opened by @srenfo on 2025-03-06 11:12_
+_@srenfo_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: multi-unpack
 created_at: 2022-09-17T01:45:52Z
 updated_at: 2022-09-17T03:45:44Z
 url: https://github.com/astral-sh/ruff/pull/217
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Detect multi-target assignment as unpacking if *any* target is unpacking
 
 ---
 
-_Pull request opened by @andersk on 2022-09-17 01:45_
+_@andersk_
 
 Improves the fix for #161.
 

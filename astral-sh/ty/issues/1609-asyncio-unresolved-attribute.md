@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-21T16:50:54Z
 updated_at: 2025-11-22T01:42:12Z
 url: https://github.com/astral-sh/ty/issues/1609
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Asyncio unresolved attribute
 
 ---
 
-_Issue opened by @klonuo on 2025-11-21 16:50_
+_@klonuo_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-24T17:30:32Z
 updated_at: 2024-10-24T17:39:17Z
 url: https://github.com/astral-sh/uv/issues/8534
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # Has uv considered providing management for switching global Python versions?
 
 ---
 
-_Issue opened by @Autumn-one on 2024-10-24 17:30_
+_@Autumn-one_
 
 At present, if uv seems to be not good at managing global python versions, and pyenv provides global python version switching functionality through shim, do uv have plans to provide similar functionality?
 

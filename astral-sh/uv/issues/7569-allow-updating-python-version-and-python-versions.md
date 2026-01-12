@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-20T02:26:12Z
 updated_at: 2024-09-23T13:41:10Z
 url: https://github.com/astral-sh/uv/issues/7569
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Allow updating `.python-version` and `.python-versions` files to latest patch version
 
 ---
 
-_Issue opened by @zanieb on 2024-09-20 02:26_
+_@zanieb_
 
 e.g. we're out of date here in uv but it seems like a pain to figure out what the latest patch version is for each minor release. A command should do this for me :)
 

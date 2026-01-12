@@ -14,14 +14,14 @@ head: ag/suppress-completions
 created_at: 2025-11-14T17:48:37Z
 updated_at: 2025-11-14T19:21:09Z
 url: https://github.com/astral-sh/ruff/pull/21460
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [ty] Suppress completions when introducing names with `as`
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-11-14 17:48_
+_@BurntSushi_
 
 There are a few places in Python where it is known that new names are
 being introduced and thus we probably shouldn't offer completions. We

@@ -13,14 +13,14 @@ head: charlie/prep
 created_at: 2024-05-10T21:01:02Z
 updated_at: 2024-05-10T21:15:08Z
 url: https://github.com/astral-sh/uv/pull/3517
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:41Z
 ```
 
 # Avoid keyword arguments for PEP 517 build hooks
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-10 21:01_
+_@charliermarsh_
 
 ## Summary
 

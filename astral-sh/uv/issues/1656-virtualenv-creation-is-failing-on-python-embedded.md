@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-18T16:49:54Z
 updated_at: 2024-12-08T02:31:51Z
 url: https://github.com/astral-sh/uv/issues/1656
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Virtualenv creation is failing on Python embedded versions
 
 ---
 
-_Issue opened by @Pixel-Minions on 2024-02-18 16:49_
+_@Pixel-Minions_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-25T22:04:48Z
 updated_at: 2024-03-26T01:45:07Z
 url: https://github.com/clap-rs/clap/issues/5426
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Visually Separate ArgGroups
 
 ---
 
-_Issue opened by @Swivelgames on 2024-03-25 22:04_
+_@Swivelgames_
 
 ### Please complete the following tasks
 

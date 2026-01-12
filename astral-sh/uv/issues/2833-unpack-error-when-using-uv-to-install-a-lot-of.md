@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-05T14:02:22Z
 updated_at: 2024-04-19T21:24:12Z
 url: https://github.com/astral-sh/uv/issues/2833
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Unpack error when using uv to install a lot of big packages in Docker in WSL2
 
 ---
 
-_Issue opened by @potiuk on 2024-04-05 14:02_
+_@potiuk_
 
 Not sure if Docker has an influence here, because I am not a WSL2 user, but it seems that `uv's` pretty aggressive networking use has some negative side effects when you install a lot of big packages  in WSL2 .
 

@@ -13,14 +13,14 @@ head: charlie/ord-bound
 created_at: 2024-09-04T15:42:08Z
 updated_at: 2024-09-04T15:57:15Z
 url: https://github.com/astral-sh/uv/pull/7031
-synced_at: 2026-01-10T12:53:38Z
+synced_at: 2026-01-12T16:07:38Z
 ```
 
 # Use correct ordering semantics for narrowing upper-bounded Python requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-04 15:42_
+_@charliermarsh_
 
 ## Summary
 

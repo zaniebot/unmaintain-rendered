@@ -14,14 +14,14 @@ head: brent/ruf055-infer-str
 created_at: 2024-11-29T14:52:50Z
 updated_at: 2024-12-03T15:17:21Z
 url: https://github.com/astral-sh/ruff/pull/14679
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`ruff`] Extend unnecessary-regular-expression to non-literal strings (`RUF055`)
 
 ---
 
-_Pull request opened by @ntBre on 2024-11-29 14:52_
+_@ntBre_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

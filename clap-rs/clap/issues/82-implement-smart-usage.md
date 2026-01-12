@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-04-29T01:52:34Z
 updated_at: 2018-08-02T03:29:38Z
 url: https://github.com/clap-rs/clap/issues/82
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Implement smart usage
 
 ---
 
-_Issue opened by @kbknapp on 2015-04-29 01:52_
+_@kbknapp_
 
 Usage strings, if possible should be re-generated upon error for the current usage case. For example if you have a non-required by default argument which requires another argument, and the user fails to supply the third argument (which is required by proxy), the usage string is generic - yet the error message says a required argument is missing...which argument?
 

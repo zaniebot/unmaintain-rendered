@@ -13,14 +13,14 @@ head: rule/type-alias-generic
 created_at: 2023-08-03T18:35:37Z
 updated_at: 2023-08-07T21:23:20Z
 url: https://github.com/astral-sh/ruff/pull/6314
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add support for simple generic type variables to UP040
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-03 18:35_
+_@zanieb_
 
 Extends #6289 to support moving type variable usage in type aliases to use PEP-695.
 

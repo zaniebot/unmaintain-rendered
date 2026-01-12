@@ -13,14 +13,14 @@ head: renovate/npm-development-dependencies
 created_at: 2026-01-05T00:36:06Z
 updated_at: 2026-01-05T07:30:17Z
 url: https://github.com/astral-sh/ruff/pull/22381
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # Update dependency @cloudflare/workers-types to v4.20251229.0
 
 ---
 
-_Pull request opened by @renovate on 2026-01-05 00:36_
+_@renovate_
 
 This PR contains the following updates:
 

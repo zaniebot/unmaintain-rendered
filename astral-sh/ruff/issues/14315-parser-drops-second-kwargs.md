@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-13T12:21:18Z
 updated_at: 2025-10-21T06:59:55Z
 url: https://github.com/astral-sh/ruff/issues/14315
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Parser drops second `**kwargs`
 
 ---
 
-_Issue opened by @MichaReiser on 2024-11-13 12:21_
+_@MichaReiser_
 
 https://play.ruff.rs/8503f0e1-7965-4515-8043-b711159a466b
 

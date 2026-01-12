@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-01T14:56:49Z
 updated_at: 2025-10-01T15:05:03Z
 url: https://github.com/astral-sh/ty/issues/1295
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Go-to-definition not working within classes
 
 ---
 
-_Issue opened by @mjscriba on 2025-10-01 14:56_
+_@mjscriba_
 
 ### Summary
 

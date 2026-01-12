@@ -13,14 +13,14 @@ head: D417
 created_at: 2024-12-31T05:50:27Z
 updated_at: 2024-12-31T14:58:25Z
 url: https://github.com/astral-sh/ruff/pull/15210
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`pydocstyle`] Add setting to ignore missing documentation for `*args` and `**kwargs` parameters (`D417`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-31 05:50_
+_@InSyncWithFoo_
 
 ## Summary
 

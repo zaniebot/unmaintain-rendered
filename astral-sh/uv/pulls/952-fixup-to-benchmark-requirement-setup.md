@@ -13,14 +13,14 @@ head: zb/benches
 created_at: 2024-01-17T18:13:59Z
 updated_at: 2024-01-17T19:05:54Z
 url: https://github.com/astral-sh/uv/pull/952
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:19Z
 ```
 
 # Fixup to benchmark requirement setup
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-17 18:13_
+_@zanieb_
 
 _No description provided._
 

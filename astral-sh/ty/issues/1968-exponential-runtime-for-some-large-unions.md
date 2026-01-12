@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T01:37:23Z
 updated_at: 2025-12-17T18:35:54Z
 url: https://github.com/astral-sh/ty/issues/1968
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # exponential runtime for some large unions
 
 ---
 
-_Issue opened by @markjm on 2025-12-17 01:37_
+_@markjm_
 
 ### Summary
 

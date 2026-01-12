@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-03T16:03:23Z
 updated_at: 2025-12-04T13:40:17Z
 url: https://github.com/astral-sh/ty/issues/1745
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # emacs egot rename/auto import
 
 ---
 
-_Issue opened by @danielpopescu on 2025-12-03 16:03_
+_@danielpopescu_
 
 ### Summary
 

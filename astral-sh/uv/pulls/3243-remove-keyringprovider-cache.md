@@ -13,14 +13,14 @@ head: zb/keyring-cache
 created_at: 2024-04-24T15:17:11Z
 updated_at: 2024-04-24T15:39:25Z
 url: https://github.com/astral-sh/uv/pull/3243
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:31Z
 ```
 
 # Remove `KeyringProvider.cache`
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-24 15:17_
+_@zanieb_
 
 This is handled by `CredentialsCache.fetches` instead since #3237 
 

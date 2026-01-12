@@ -12,14 +12,14 @@ head: move-flake8-simplify-violations
 created_at: 2023-02-02T20:01:33Z
 updated_at: 2023-02-02T20:13:17Z
 url: https://github.com/astral-sh/ruff/pull/2495
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Move flake8-simplify violations to rule modules
 
 ---
 
-_Pull request opened by @akx on 2023-02-02 20:01_
+_@akx_
 
 _No description provided._
 

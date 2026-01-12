@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-20T08:01:06Z
 updated_at: 2023-03-20T21:17:44Z
 url: https://github.com/astral-sh/ruff/issues/3618
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Autofix error] Autofix error with simple almost empty function
 
 ---
 
-_Issue opened by @qarmin on 2023-03-20 08:01_
+_@qarmin_
 
 Ruff  a45753f462c7a53afd7f942ab3c6f9af3871bf1f
 

@@ -13,14 +13,14 @@ head: fix/b006
 created_at: 2023-09-05T15:01:27Z
 updated_at: 2023-09-05T16:10:58Z
 url: https://github.com/astral-sh/ruff/pull/7160
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Fix B006 when function docstring is followed by whitespace but no newline
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-05 15:01_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/7155
 

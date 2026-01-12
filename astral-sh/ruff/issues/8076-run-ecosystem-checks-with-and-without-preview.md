@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-19T20:32:59Z
 updated_at: 2023-11-02T01:51:22Z
 url: https://github.com/astral-sh/ruff/issues/8076
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Run ecosystem checks with and without preview enabled
 
 ---
 
-_Issue opened by @zanieb on 2023-10-19 20:32_
+_@zanieb_
 
 What it says on the tin. We should have coverage for both stable and unstable modes in the ecosystem CI checks.
 

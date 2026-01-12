@@ -13,14 +13,14 @@ head: fix-exact-install
 created_at: 2024-10-15T14:08:27Z
 updated_at: 2024-10-15T19:50:23Z
 url: https://github.com/astral-sh/uv/pull/8219
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:12Z
 ```
 
 # Avoid environment check optimisation for `uv pip install --exact`
 
 ---
 
-_Pull request opened by @blueraft on 2024-10-15 14:08_
+_@blueraft_
 
 ## Summary
 

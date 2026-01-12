@@ -13,14 +13,14 @@ head: main
 created_at: 2025-05-24T18:13:10Z
 updated_at: 2025-05-25T10:44:21Z
 url: https://github.com/astral-sh/ruff/pull/18291
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [pyupgrade] make fix unsafe if it deletes comments (UP010, unnecessary-future-import)
 
 ---
 
-_Pull request opened by @chirizxc on 2025-05-24 18:13_
+_@chirizxc_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

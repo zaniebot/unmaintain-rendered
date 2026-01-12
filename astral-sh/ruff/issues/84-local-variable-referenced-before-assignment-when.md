@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-02T09:34:41Z
 updated_at: 2022-09-02T13:01:12Z
 url: https://github.com/astral-sh/ruff/issues/84
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # "Local variable `...` referenced before assignment" when shadowing
 
 ---
 
-_Issue opened by @orsinium on 2022-09-02 09:34_
+_@orsinium_
 
 Code:
 

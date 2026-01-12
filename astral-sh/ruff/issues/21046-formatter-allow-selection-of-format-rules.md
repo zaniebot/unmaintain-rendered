@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-23T13:40:49Z
 updated_at: 2025-10-23T13:51:50Z
 url: https://github.com/astral-sh/ruff/issues/21046
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Formatter: allow selection of format-"rules"
 
 ---
 
-_Issue opened by @spaceone on 2025-10-23 13:40_
+_@spaceone_
 
 ### Question
 

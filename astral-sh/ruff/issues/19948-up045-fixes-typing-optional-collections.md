@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-17T14:26:45Z
 updated_at: 2025-08-17T15:02:05Z
 url: https://github.com/astral-sh/ruff/issues/19948
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # UP045 fixes `typing.Optional[collections.namedtuple]` to `collections.namedtuple | None`
 
 ---
 
-_Issue opened by @chirizxc on 2025-08-17 14:26_
+_@chirizxc_
 
 ### Summary
 

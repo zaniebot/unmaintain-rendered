@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-04T12:10:17Z
 updated_at: 2025-11-12T14:24:10Z
 url: https://github.com/astral-sh/ruff/issues/1628
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Request: Spelling check
 
 ---
 
-_Issue opened by @strickvl on 2023-01-04 12:10_
+_@strickvl_
 
 There are seemingly two big Python code checkers: [`pyspelling`](https://facelessuser.github.io/pyspelling/) and [`codespell`](https://github.com/codespell-project/codespell). Codespell doesn't catch everything, and pyspelling is slow to run. It'd be great to have a version / implementation of the logic of these (eventually including PySpelling's exception syntax etc) in `ruff`.
 

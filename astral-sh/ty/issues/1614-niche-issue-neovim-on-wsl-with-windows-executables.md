@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-23T21:47:34Z
 updated_at: 2025-11-26T15:19:18Z
 url: https://github.com/astral-sh/ty/issues/1614
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Niche issue - Neovim on WSL with Windows executables
 
 ---
 
-_Issue opened by @the-citto on 2025-11-23 21:47_
+_@the-citto_
 
 ### Question
 

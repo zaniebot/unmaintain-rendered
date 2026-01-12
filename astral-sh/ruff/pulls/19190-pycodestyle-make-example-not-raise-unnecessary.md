@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-07-07T22:46:38Z
 updated_at: 2025-07-08T14:34:29Z
 url: https://github.com/astral-sh/ruff/pull/19190
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # [`pycodestyle`] Make example not raise unnecessary `SyntaxError` (`E114`)
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-07 22:46_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

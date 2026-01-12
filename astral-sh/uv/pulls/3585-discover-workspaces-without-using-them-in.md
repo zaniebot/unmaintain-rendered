@@ -13,14 +13,14 @@ head: konsti/discover-workspaces-without-using-them
 created_at: 2024-05-14T18:09:07Z
 updated_at: 2024-05-22T09:25:54Z
 url: https://github.com/astral-sh/uv/pull/3585
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:43Z
 ```
 
 # Discover workspaces without using them in resolution
 
 ---
 
-_Pull request opened by @konstin on 2024-05-14 18:09_
+_@konstin_
 
 Add minimal support for workspace discovery, only used for determining paths in the bluejay commands.
 

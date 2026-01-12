@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-22T18:11:26Z
 updated_at: 2025-12-22T11:55:44Z
 url: https://github.com/astral-sh/uv/issues/3750
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Transitive PROJECT_ROOT is expanded in requirements.txt
 
 ---
 
-_Issue opened by @patrick-kidger on 2024-05-22 18:11_
+_@patrick-kidger_
 
 **Reproduction:** Given the following directories:
 ```

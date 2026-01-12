@@ -13,14 +13,14 @@ head: charlie/msgspec
 created_at: 2023-10-03T16:33:50Z
 updated_at: 2023-10-03T16:57:45Z
 url: https://github.com/astral-sh/ruff/pull/7786
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Respect `msgspec.Struct` default-copy semantics
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-03 16:33_
+_@charliermarsh_
 
 ## Summary
 

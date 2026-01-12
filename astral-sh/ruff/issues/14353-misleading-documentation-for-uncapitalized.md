@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-15T07:24:16Z
 updated_at: 2024-11-15T07:49:44Z
 url: https://github.com/astral-sh/ruff/issues/14353
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Misleading documentation for uncapitalized-environment-variables (SIM112)
 
 ---
 
-_Issue opened by @Zeckie on 2024-11-15 07:24_
+_@Zeckie_
 
 https://docs.astral.sh/ruff/rules/uncapitalized-environment-variables/
 

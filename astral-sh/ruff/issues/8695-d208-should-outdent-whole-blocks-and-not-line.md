@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-15T15:25:02Z
 updated_at: 2023-11-17T04:11:09Z
 url: https://github.com/astral-sh/ruff/issues/8695
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # D208 should outdent whole blocks and not line-byline
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-11-15 15:25_
+_@ThiefMaster_
 
 ```python
 def test(categ_ids, start_dt, end_dt):

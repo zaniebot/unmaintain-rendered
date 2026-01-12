@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-04T12:11:07Z
 updated_at: 2025-02-04T21:41:39Z
 url: https://github.com/astral-sh/uv/issues/11214
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:31Z
 ```
 
 # v0.5.27 changes behavior for `uv pip sync -r requirements.txt` (breaking)
 
 ---
 
-_Issue opened by @mzoll on 2025-02-04 12:11_
+_@mzoll_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: brent/fuzz-preview
 created_at: 2025-04-04T17:36:49Z
 updated_at: 2025-04-04T19:14:00Z
 url: https://github.com/astral-sh/ruff/pull/17210
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Run fuzzer with `--preview`
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-04 17:36_
+_@ntBre_
 
 Summary
 --

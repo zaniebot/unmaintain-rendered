@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-04-15T01:00:54Z
 updated_at: 2022-04-15T17:41:46Z
 url: https://github.com/clap-rs/clap/issues/3633
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Support for adding a `validator` on a `#[derive(Args)]` struct
 
 ---
 
-_Issue opened by @nipunn1313 on 2022-04-15 01:00_
+_@nipunn1313_
 
 ### Please complete the following tasks
 

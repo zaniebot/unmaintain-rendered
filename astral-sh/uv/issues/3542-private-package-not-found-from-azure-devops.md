@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-13T11:25:34Z
 updated_at: 2024-07-26T23:41:48Z
 url: https://github.com/astral-sh/uv/issues/3542
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Private package not found from Azure DevOps
 
 ---
 
-_Issue opened by @AndreuCodina on 2024-05-13 11:25_
+_@AndreuCodina_
 
 I tested the latest fix (https://github.com/astral-sh/uv/issues/3291) and still can't install a private package using `uv` due to another error.
 

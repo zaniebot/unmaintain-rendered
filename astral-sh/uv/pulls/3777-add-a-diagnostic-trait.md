@@ -13,14 +13,14 @@ head: charlie/diag
 created_at: 2024-05-22T23:31:40Z
 updated_at: 2024-05-22T23:44:38Z
 url: https://github.com/astral-sh/uv/pull/3777
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:50Z
 ```
 
 # Add a diagnostic trait
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-22 23:31_
+_@charliermarsh_
 
 _No description provided._
 

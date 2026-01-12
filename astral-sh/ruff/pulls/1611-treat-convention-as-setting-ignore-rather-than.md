@@ -12,14 +12,14 @@ head: charlie/convention
 created_at: 2023-01-04T01:34:59Z
 updated_at: 2023-01-04T08:38:27Z
 url: https://github.com/astral-sh/ruff/pull/1611
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Treat convention as setting ignore, rather than select
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-04 01:34_
+_@charliermarsh_
 
 This PR treats the `convention` setting as an "ignore" directive, rather than a "select" directive, which leads to confusing settings and behavior.
 

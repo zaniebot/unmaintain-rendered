@@ -13,14 +13,14 @@ head: yorickvp/fix-multi-index
 created_at: 2024-07-22T14:08:43Z
 updated_at: 2024-07-22T18:03:36Z
 url: https://github.com/astral-sh/uv/pull/5288
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:44Z
 ```
 
 # If multiple indices contain the same version, use the first index
 
 ---
 
-_Pull request opened by @yorickvP on 2024-07-22 14:08_
+_@yorickvP_
 
 This fixes resolving packages that publish an invalid stub to pypi, such as tensorrt-llm.
 

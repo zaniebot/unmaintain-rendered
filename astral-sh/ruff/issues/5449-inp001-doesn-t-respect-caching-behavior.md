@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-30T02:18:34Z
 updated_at: 2024-09-05T06:31:25Z
 url: https://github.com/astral-sh/ruff/issues/5449
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `INP001` doesn't respect caching behavior
 
 ---
 
-_Issue opened by @charliermarsh on 2023-06-30 02:18_
+_@charliermarsh_
 
 See #2075. It looks like the underlying issue (that we don't invalidate the cache when an `__init__.py` is added or removed) is back with the latest cache updates.
 

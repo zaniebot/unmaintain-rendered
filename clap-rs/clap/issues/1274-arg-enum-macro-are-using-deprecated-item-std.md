@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-05-21T17:50:29Z
 updated_at: 2018-08-02T03:30:24Z
 url: https://github.com/clap-rs/clap/issues/1274
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # arg_enum! macro are using deprecated item 'std::ascii::AsciiExt'
 
 ---
 
-_Issue opened by @cathay4t on 2018-05-21 17:50_
+_@cathay4t_
 
 ### Rust Version
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-12T14:15:46Z
 updated_at: 2024-07-04T20:06:53Z
 url: https://github.com/astral-sh/uv/issues/4272
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Marker normalization doesn't collapse non-pre-release ranges
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-12 14:15_
+_@charliermarsh_
 
 We don't recognize that `python_version < "3.7" or python_version >= "3.7"` evaluates to `true` because of our use of min versions to handle pre-releases.
 

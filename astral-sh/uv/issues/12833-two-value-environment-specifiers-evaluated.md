@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-11T12:09:42Z
 updated_at: 2025-04-11T13:09:07Z
 url: https://github.com/astral-sh/uv/issues/12833
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # Two-value environment specifiers evaluated incorrectly wrt boolean logic
 
 ---
 
-_Issue opened by @mgorny on 2025-04-11 12:09_
+_@mgorny_
 
 ### Summary
 

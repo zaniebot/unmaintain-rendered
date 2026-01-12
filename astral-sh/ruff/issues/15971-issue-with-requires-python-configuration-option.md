@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-05T14:18:21Z
 updated_at: 2025-02-05T16:12:54Z
 url: https://github.com/astral-sh/ruff/issues/15971
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # issue with requires-python  configuration option pyproject.toml  when using local install (pip -e)
 
 ---
 
-_Issue opened by @justRishi on 2025-02-05 14:18_
+_@justRishi_
 
 ### Description
 

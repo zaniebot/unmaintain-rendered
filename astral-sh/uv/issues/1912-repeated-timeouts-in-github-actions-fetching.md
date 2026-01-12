@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-23T13:11:04Z
 updated_at: 2024-05-01T16:33:32Z
 url: https://github.com/astral-sh/uv/issues/1912
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Repeated timeouts in GitHub Actions fetching wheel for large packages
 
 ---
 
-_Issue opened by @adamtheturtle on 2024-02-23 13:11_
+_@adamtheturtle_
 
 In the last few days since switching to `uv`, I have seen errors that I have not seen before with `pip`.
 

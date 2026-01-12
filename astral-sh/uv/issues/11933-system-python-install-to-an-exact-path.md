@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-03T20:45:43Z
 updated_at: 2025-03-03T21:49:10Z
 url: https://github.com/astral-sh/uv/issues/11933
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # System python install to an exact path
 
 ---
 
-_Issue opened by @ThermodynamicBeta on 2025-03-03 20:45_
+_@ThermodynamicBeta_
 
 ### Summary
 

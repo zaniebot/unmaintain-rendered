@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-12-08T19:47:46Z
 updated_at: 2022-02-15T15:35:41Z
 url: https://github.com/clap-rs/clap/issues/3089
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `App` feels like an awkward name in the API
 
 ---
 
-_Issue opened by @epage on 2021-12-08 19:47_
+_@epage_
 
 Maintainer's notes
 - The plan is to rename `App` to `Command`, including in other names like `app_from_crate` and `AppSettings`

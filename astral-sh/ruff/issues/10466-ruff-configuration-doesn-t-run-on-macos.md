@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-19T01:28:11Z
 updated_at: 2024-03-19T01:42:23Z
 url: https://github.com/astral-sh/ruff/issues/10466
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Ruff configuration doesn't run on MacOS
 
 ---
 
-_Issue opened by @Khoa-NT on 2024-03-19 01:28_
+_@Khoa-NT_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

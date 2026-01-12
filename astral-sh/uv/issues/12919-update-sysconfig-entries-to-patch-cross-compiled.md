@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-16T13:35:04Z
 updated_at: 2025-06-02T15:58:32Z
 url: https://github.com/astral-sh/uv/issues/12919
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # Update sysconfig entries to patch cross-compiled `CC` paths
 
 ---
 
-_Issue opened by @zanieb on 2025-04-16 13:35_
+_@zanieb_
 
 #12239 fixed this for `aarch64`, but this is also going to be a problem for other cross-compiles like, s390x, e.g., the values will be:
 

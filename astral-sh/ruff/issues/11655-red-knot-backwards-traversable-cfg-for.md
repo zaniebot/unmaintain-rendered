@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T21:50:49Z
 updated_at: 2024-06-06T21:04:29Z
 url: https://github.com/astral-sh/ruff/issues/11655
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] backwards-traversable CFG for discovering reachable definitions of a symbol
 
 ---
 
-_Issue opened by @carljm on 2024-05-31 21:50_
+_@carljm_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: dhruv/pattern-recovery
 created_at: 2024-03-19T17:51:33Z
 updated_at: 2024-03-25T14:17:10Z
 url: https://github.com/astral-sh/ruff/pull/10477
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Better error recovery for match patterns
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-19 17:51_
+_@dhruvmanila_
 
 ## Summary
 

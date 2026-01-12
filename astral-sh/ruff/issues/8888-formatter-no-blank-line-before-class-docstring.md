@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-11-29T01:13:40Z
 updated_at: 2023-12-19T06:43:22Z
 url: https://github.com/astral-sh/ruff/issues/8888
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: `no_blank_line_before_class_docstring` preview style
 
 ---
 
-_Issue opened by @MichaReiser on 2023-11-29 01:13_
+_@MichaReiser_
 
 Implement the [`no_blank_lines_before_class_docstring`](https://github.com/psf/black/pull/3692) as a preview style. 
 

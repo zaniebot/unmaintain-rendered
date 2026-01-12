@@ -13,14 +13,14 @@ head: jane/ruf027/slice-panic-fix
 created_at: 2024-02-14T20:11:46Z
 updated_at: 2024-02-16T20:10:05Z
 url: https://github.com/astral-sh/ruff/pull/9990
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Fix panic on RUF027
 
 ---
 
-_Pull request opened by @snowsignal on 2024-02-14 20:11_
+_@snowsignal_
 
 ## Summary
 

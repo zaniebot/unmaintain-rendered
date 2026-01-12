@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-01T18:15:02Z
 updated_at: 2024-11-01T18:37:37Z
 url: https://github.com/astral-sh/ruff/issues/14050
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Add check for param in doc string that is not in the function signature.
 
 ---
 
-_Issue opened by @brass75 on 2024-11-01 18:15_
+_@brass75_
 
 If we remove a parameter from a function/method signature we need to also remove it from the doc string. `ruff` does not check to make sure that all parameters mentioned in the doc string exist in the signature but it should.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T08:13:27Z
 updated_at: 2025-03-17T02:11:06Z
 url: https://github.com/astral-sh/uv/issues/11541
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # How to export standlone with dependencies from pyproject.toml
 
 ---
 
-_Issue opened by @jvdrag on 2025-02-12 08:13_
+_@jvdrag_
 
 How can i export the python standlone with my dependenicies from uv project.toml?
 

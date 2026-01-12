@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-05T17:51:33Z
 updated_at: 2025-03-05T18:38:55Z
 url: https://github.com/astral-sh/uv/issues/11985
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:51Z
 ```
 
 # `uv run` with only project and a dependency group
 
 ---
 
-_Issue opened by @nbaju1 on 2025-03-05 17:51_
+_@nbaju1_
 
 ### Question
 

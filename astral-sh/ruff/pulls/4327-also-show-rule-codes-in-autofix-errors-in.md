@@ -12,14 +12,14 @@ head: show_rule_codes_in_release_too
 created_at: 2023-05-09T19:54:44Z
 updated_at: 2023-05-11T15:36:05Z
 url: https://github.com/astral-sh/ruff/pull/4327
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Also show rule codes in autofix errors in production codes
 
 ---
 
-_Pull request opened by @konstin on 2023-05-09 19:54_
+_@konstin_
 
 I needed those changes for #4326
 

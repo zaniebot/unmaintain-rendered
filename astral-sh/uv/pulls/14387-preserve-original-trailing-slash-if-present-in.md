@@ -12,14 +12,14 @@ head: jtfm/add-trailing-slash-for-find-links
 created_at: 2025-07-01T09:25:05Z
 updated_at: 2025-07-09T09:49:07Z
 url: https://github.com/astral-sh/uv/pull/14387
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:12Z
 ```
 
 # Preserve original trailing slash if present in `find-links` URLs
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-07-01 09:25_
+_@jtfmumm_
 
 As part of #14245 and #14346, uv was normalizing trailing slashes for find-links URLs by removing them. However, find-links URLs have different meanings depending on whether a trailing slash is present (as evidenced in 301 redirects from PyPI and #14367). This PR preserves trailing slashes if present in find-links URLs.
  

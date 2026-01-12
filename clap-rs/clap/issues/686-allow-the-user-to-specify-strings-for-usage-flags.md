@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-10-11T19:53:35Z
 updated_at: 2018-08-02T03:29:54Z
 url: https://github.com/clap-rs/clap/issues/686
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Allow the user to specify strings for "USAGE:", "FLAGS:", "OPTIONS:", "ARGS:"...
 
 ---
 
-_Issue opened by @crowdagger on 2016-10-11 19:53_
+_@crowdagger_
 
 Currently, the strings used in the help message "USAGE:", "FLAGS:", "OPTIONS:", "ARGS" are hardcoded in `src/app/help.rs`. 
 

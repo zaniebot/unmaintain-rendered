@@ -12,14 +12,14 @@ head: feat/graceful-permission-denied-in-config-discovery
 created_at: 2025-10-22T01:46:11Z
 updated_at: 2025-11-05T03:28:11Z
 url: https://github.com/astral-sh/uv/pull/16403
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:14Z
 ```
 
 # Ignore PermissionDenied during config discovery
 
 ---
 
-_Pull request opened by @ahundt on 2025-10-22 01:46_
+_@ahundt_
 
 Add PermissionDenied to error handling patterns in user(), system(), and find() methods to prevent crashes when configuration files are inaccessible.
 

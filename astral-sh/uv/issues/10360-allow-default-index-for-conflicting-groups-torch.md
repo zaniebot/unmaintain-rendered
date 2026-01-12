@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-07T13:14:09Z
 updated_at: 2025-04-09T02:26:28Z
 url: https://github.com/astral-sh/uv/issues/10360
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # Allow default index for conflicting groups (torch cpu/cuda)
 
 ---
 
-_Issue opened by @sglbl on 2025-01-07 13:14_
+_@sglbl_
 
 Suggestion, not a bug: Allow default index for conflicting groups (torch cpu/cuda)
 

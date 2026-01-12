@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-03T10:04:20Z
 updated_at: 2024-07-04T05:10:27Z
 url: https://github.com/astral-sh/ruff/issues/12165
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Checking file with rule W605 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2024-07-03 10:04_
+_@qarmin_
 
 ruff 0.5.0+130 (7c8112614 2024-07-02)
 ```

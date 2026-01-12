@@ -13,14 +13,14 @@ head: magic-comma-for-expr-list
 created_at: 2023-06-26T07:11:51Z
 updated_at: 2023-07-07T20:47:45Z
 url: https://github.com/astral-sh/ruff/pull/5365
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # magic trailing comma for ExprList
 
 ---
 
-_Pull request opened by @davidszotten on 2023-06-26 07:11_
+_@davidszotten_
 
 seems mostly better, still need to think about
 

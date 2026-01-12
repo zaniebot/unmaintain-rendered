@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-12T12:25:55Z
 updated_at: 2024-12-14T05:51:22Z
 url: https://github.com/astral-sh/ruff/issues/14934
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] mdtest should fail if you have a triple-backtick block that is unclosed
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-12-12 12:25_
+_@AlexWaygood_
 
 If you have an [mdtest](https://github.com/astral-sh/ruff/tree/main/crates/red_knot_test) like this at the end of the Markdown file, it doesn't fail:
 

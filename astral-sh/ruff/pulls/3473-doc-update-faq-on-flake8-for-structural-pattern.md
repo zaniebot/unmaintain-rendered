@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-03-13T01:53:23Z
 updated_at: 2023-03-13T04:05:11Z
 url: https://github.com/astral-sh/ruff/pull/3473
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [doc] Update FAQ on Flake8 for structural pattern matching
 
 ---
 
-_Pull request opened by @YDX-2147483647 on 2023-03-13 01:53_
+_@YDX-2147483647_
 
 Structural pattern matching ([PEP 622](https://peps.python.org/pep-0622/), `match`–`case`, tracked by #282) was implemented in #3047, [v0.0.250](https://github.com/charliermarsh/ruff/releases/tag/v0.0.250).
 

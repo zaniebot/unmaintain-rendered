@@ -13,14 +13,14 @@ head: cjm/cfg4
 created_at: 2024-06-01T04:01:16Z
 updated_at: 2024-06-05T22:03:42Z
 url: https://github.com/astral-sh/ruff/pull/11673
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [red-knot] add if-statement support to FlowGraph
 
 ---
 
-_Pull request opened by @carljm on 2024-06-01 04:01_
+_@carljm_
 
 ## Summary
 

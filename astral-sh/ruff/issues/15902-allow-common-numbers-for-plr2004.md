@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-03T05:50:24Z
 updated_at: 2025-02-03T09:55:10Z
 url: https://github.com/astral-sh/ruff/issues/15902
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Allow common numbers for PLR2004
 
 ---
 
-_Issue opened by @spacemanspiff2007 on 2025-02-03 05:50_
+_@spacemanspiff2007_
 
 ### Description
 

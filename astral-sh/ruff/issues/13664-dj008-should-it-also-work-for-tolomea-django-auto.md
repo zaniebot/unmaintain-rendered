@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-07T15:50:20Z
 updated_at: 2024-10-07T15:57:01Z
 url: https://github.com/astral-sh/ruff/issues/13664
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # DJ008: Should it also work for tolomea/django-auto-prefetch?
 
 ---
 
-_Issue opened by @TheLovinator1 on 2024-10-07 15:50_
+_@TheLovinator1_
 
 # [DJ008](https://docs.astral.sh/ruff/rules/django-model-without-dunder-str/) - Django model without \_\_str\_\_ method
 

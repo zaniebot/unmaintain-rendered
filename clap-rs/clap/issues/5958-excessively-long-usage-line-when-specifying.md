@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-25T23:11:14Z
 updated_at: 2025-03-26T19:22:20Z
 url: https://github.com/clap-rs/clap/issues/5958
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Excessively long "Usage:" line when specifying invalid option.
 
 ---
 
-_Issue opened by @vi on 2025-03-25 23:11_
+_@vi_
 
 ### Please complete the following tasks
 

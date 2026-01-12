@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-26T18:56:12Z
 updated_at: 2025-11-18T16:10:24Z
 url: https://github.com/astral-sh/ty/issues/235
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # mdtest output in CI isn't colourised
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-10-26 18:56_
+_@AlexWaygood_
 
 If you run `cargo test -p red_knot_python_semantic` locally and an mdtest fails, you get nice pretty colours that make the test output much more readable, eg.:
 

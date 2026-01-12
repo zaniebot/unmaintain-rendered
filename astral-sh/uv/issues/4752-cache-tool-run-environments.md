@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-02T23:55:26Z
 updated_at: 2024-07-03T23:25:41Z
 url: https://github.com/astral-sh/uv/issues/4752
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Cache `tool run` environments
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-02 23:55_
+_@charliermarsh_
 
 If you do `uv tool run ruff` multiple times, we could reuse the "ephemeral" environment.
 

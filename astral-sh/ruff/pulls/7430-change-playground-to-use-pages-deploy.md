@@ -13,14 +13,14 @@ head: charlie/deploy
 created_at: 2023-09-16T03:02:52Z
 updated_at: 2023-09-16T03:11:36Z
 url: https://github.com/astral-sh/ruff/pull/7430
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Change playground to use `pages deploy`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-16 03:02_
+_@charliermarsh_
 
 Fixes a deprecation warning.
 

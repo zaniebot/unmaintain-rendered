@@ -13,14 +13,14 @@ head: icn-links
 created_at: 2023-10-22T03:04:11Z
 updated_at: 2023-10-22T04:19:52Z
 url: https://github.com/astral-sh/ruff/pull/8115
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # [`flake8-import-conventions`] Add links to options
 
 ---
 
-_Pull request opened by @harupy on 2023-10-22 03:04_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

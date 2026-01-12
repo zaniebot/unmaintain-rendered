@@ -13,14 +13,14 @@ head: brent/stabilize-furb162
 created_at: 2025-06-06T18:28:52Z
 updated_at: 2025-06-10T20:11:30Z
 url: https://github.com/astral-sh/ruff/pull/18510
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [refurb] Stabilize `fromisoformat-replace-z` (FURB162)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-06 18:28_
+_@ntBre_
 
 This PR stabilizes the FURB162 rule by moving it from preview to stable status for the 0.12.0 release.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-24T09:01:39Z
 updated_at: 2025-08-22T16:31:53Z
 url: https://github.com/astral-sh/uv/issues/14866
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:58Z
 ```
 
 # Add `--no-install-local` to `uv sync`
 
 ---
 
-_Issue opened by @danielgafni on 2025-07-24 09:01_
+_@danielgafni_
 
 ### Summary
 

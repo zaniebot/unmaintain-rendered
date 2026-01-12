@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-03T22:20:38Z
 updated_at: 2025-02-07T10:13:12Z
 url: https://github.com/clap-rs/clap/issues/5900
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Markdown parsing in doc comments for help messages Tracking Issue
 
 ---
 
-_Issue opened by @ModProg on 2025-02-03 22:20_
+_@ModProg_
 
 This tracks the feature `unstable-markdown` that implements compile time markdown parsing in the derive macros.
 

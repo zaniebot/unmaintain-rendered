@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-22T13:27:35Z
 updated_at: 2024-02-22T16:44:37Z
 url: https://github.com/astral-sh/uv/issues/1865
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # "Requirements contain conflicting URLs for package" when using Git dependency, but they're the same URL
 
 ---
 
-_Issue opened by @rossmacarthur on 2024-02-22 13:27_
+_@rossmacarthur_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

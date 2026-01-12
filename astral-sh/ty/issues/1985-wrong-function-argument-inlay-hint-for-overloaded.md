@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T08:37:56Z
 updated_at: 2025-12-31T15:47:21Z
 url: https://github.com/astral-sh/ty/issues/1985
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Wrong function argument inlay hint for overloaded function
 
 ---
 
-_Issue opened by @benruijl on 2025-12-17 08:37_
+_@benruijl_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: invalid-dir-init-error
 created_at: 2025-11-02T22:08:44Z
 updated_at: 2025-11-03T00:26:52Z
 url: https://github.com/astral-sh/uv/pull/16554
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:19Z
 ```
 
 # Improve `uv init` error for invalid directory names
 
 ---
 
-_Pull request opened by @terror on 2025-11-02 22:08_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/16433
 

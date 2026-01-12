@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-06T22:06:43Z
 updated_at: 2024-12-17T19:24:14Z
 url: https://github.com/astral-sh/ruff/issues/14826
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Incorrect resolution of nested modules
 
 ---
 
-_Issue opened by @dcreager on 2024-12-06 22:06_
+_@dcreager_
 
 In #14825 I tried creating a test case that refers to a class in a nested module:
 

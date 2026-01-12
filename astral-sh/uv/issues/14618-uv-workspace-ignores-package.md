@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-14T22:45:30Z
 updated_at: 2025-07-14T22:56:02Z
 url: https://github.com/astral-sh/uv/issues/14618
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # uv workspace ignores package
 
 ---
 
-_Issue opened by @cosama on 2025-07-14 22:45_
+_@cosama_
 
 ### Summary
 

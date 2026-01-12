@@ -12,14 +12,14 @@ head: trampoline-more-rust
 created_at: 2024-08-03T14:43:58Z
 updated_at: 2024-08-08T02:00:06Z
 url: https://github.com/astral-sh/uv/pull/5751
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:06:59Z
 ```
 
 # feat: more rust in trampoline
 
 ---
 
-_Pull request opened by @samypr100 on 2024-08-03 14:43_
+_@samypr100_
 
 ## Summary
 

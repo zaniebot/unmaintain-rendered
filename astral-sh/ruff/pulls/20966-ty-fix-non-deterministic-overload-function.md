@@ -14,14 +14,14 @@ head: fix-1389
 created_at: 2025-10-19T07:20:11Z
 updated_at: 2025-10-19T10:18:44Z
 url: https://github.com/astral-sh/ruff/pull/20966
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # [ty] fix non-deterministic overload function inference
 
 ---
 
-_Pull request opened by @mtshiba on 2025-10-19 07:20_
+_@mtshiba_
 
 ## Summary
 

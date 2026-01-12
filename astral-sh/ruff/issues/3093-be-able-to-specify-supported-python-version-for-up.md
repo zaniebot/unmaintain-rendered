@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-21T19:33:49Z
 updated_at: 2023-02-21T19:40:11Z
 url: https://github.com/astral-sh/ruff/issues/3093
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Be able to specify supported Python version for `UP`
 
 ---
 
-_Issue opened by @ThatXliner on 2023-02-21 19:33_
+_@ThatXliner_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

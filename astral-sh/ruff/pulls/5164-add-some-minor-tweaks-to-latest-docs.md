@@ -13,14 +13,14 @@ head: exception-docs
 created_at: 2023-06-17T16:57:22Z
 updated_at: 2023-06-17T17:22:44Z
 url: https://github.com/astral-sh/ruff/pull/5164
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add some minor tweaks to latest docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-17 16:57_
+_@charliermarsh_
 
 _No description provided._
 

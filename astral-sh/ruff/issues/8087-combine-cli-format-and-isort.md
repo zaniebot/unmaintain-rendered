@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-20T04:05:26Z
 updated_at: 2023-10-26T02:44:37Z
 url: https://github.com/astral-sh/ruff/issues/8087
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Combine CLI format and isort
 
 ---
 
-_Issue opened by @Joe-Zer0 on 2023-10-20 04:05_
+_@Joe-Zer0_
 
 Apologies if I just missed this in the documentation.  I would like to propose combining the formatting and import formatting capabilities into a single CLI command.  The motivation for this request is so that I may use the ruff formatter with the helix editor.
 

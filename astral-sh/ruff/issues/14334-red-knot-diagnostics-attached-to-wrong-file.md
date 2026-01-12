@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-14T09:46:38Z
 updated_at: 2024-11-14T14:39:52Z
 url: https://github.com/astral-sh/ruff/issues/14334
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Diagnostics attached to wrong file
 
 ---
 
-_Issue opened by @sharkdp on 2024-11-14 09:46_
+_@sharkdp_
 
 There are cases where we add diagnostics with a source range from file `A` to the `TypeCheckDiagnosticsBuilder` of file `B`. A small example to trigger this bug is the following:
 ```py

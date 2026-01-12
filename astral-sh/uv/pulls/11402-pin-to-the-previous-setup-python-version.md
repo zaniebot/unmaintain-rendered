@@ -13,14 +13,14 @@ head: zb/test-setup-python-5.3
 created_at: 2025-02-10T20:19:49Z
 updated_at: 2025-02-10T20:30:33Z
 url: https://github.com/astral-sh/uv/pull/11402
-synced_at: 2026-01-10T11:10:37Z
+synced_at: 2026-01-12T16:09:50Z
 ```
 
 # Pin to the previous `setup-python` version
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-10 20:19_
+_@zanieb_
 
 The latest release changes the message https://github.com/actions/setup-python/pull/968 but this has been an error for years?
 

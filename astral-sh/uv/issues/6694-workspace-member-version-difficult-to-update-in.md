@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-27T15:34:34Z
 updated_at: 2025-01-13T20:58:54Z
 url: https://github.com/astral-sh/uv/issues/6694
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Workspace member version difficult to update in project when dynamically versioned
 
 ---
 
-_Issue opened by @drewfustin on 2024-08-27 15:34_
+_@drewfustin_
 
 ### issue
 If I update the version of a workspace member that is dynamically versioned via a `path`, `uv sync` or similar doesn't update the member version in any consistent manner between `uv.lock` and `.venv`.

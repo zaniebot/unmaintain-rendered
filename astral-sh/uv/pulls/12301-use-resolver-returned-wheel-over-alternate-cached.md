@@ -14,14 +14,14 @@ head: charlie/n
 created_at: 2025-03-18T22:16:00Z
 updated_at: 2025-03-19T01:41:06Z
 url: https://github.com/astral-sh/uv/pull/12301
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:12Z
 ```
 
 # Use resolver-returned wheel over alternate cached wheel
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-18 22:16_
+_@charliermarsh_
 
 ## Summary
 

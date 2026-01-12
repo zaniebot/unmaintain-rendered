@@ -12,14 +12,14 @@ head: charlie/python-interpreter
 created_at: 2023-10-05T19:07:17Z
 updated_at: 2023-10-05T19:09:23Z
 url: https://github.com/astral-sh/uv/pull/11
-synced_at: 2026-01-10T15:56:16Z
+synced_at: 2026-01-12T16:03:42Z
 ```
 
 # Add Python interpreter detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-05 19:07_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/2.
 

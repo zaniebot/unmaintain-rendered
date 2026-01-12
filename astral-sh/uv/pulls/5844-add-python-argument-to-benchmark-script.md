@@ -14,14 +14,14 @@ head: charlie/bench-py
 created_at: 2024-08-07T00:01:19Z
 updated_at: 2024-08-07T01:45:48Z
 url: https://github.com/astral-sh/uv/pull/5844
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:03Z
 ```
 
 # Add `--python` argument to benchmark script
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-07 00:01_
+_@charliermarsh_
 
 ## Summary
 

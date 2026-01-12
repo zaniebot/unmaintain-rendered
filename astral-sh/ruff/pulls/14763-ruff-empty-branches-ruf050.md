@@ -11,14 +11,14 @@ head: RUF050
 created_at: 2024-12-04T02:41:18Z
 updated_at: 2024-12-16T12:12:01Z
 url: https://github.com/astral-sh/ruff/pull/14763
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`ruff`] Empty branches (`RUF050`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-04 02:41_
+_@InSyncWithFoo_
 
 ## Summary
 

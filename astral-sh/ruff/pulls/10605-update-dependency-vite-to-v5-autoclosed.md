@@ -12,14 +12,14 @@ head: renovate/vite-5.x
 created_at: 2024-03-26T09:58:40Z
 updated_at: 2024-03-26T10:40:42Z
 url: https://github.com/astral-sh/ruff/pull/10605
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Update dependency vite to v5 - autoclosed
 
 ---
 
-_Pull request opened by @renovate on 2024-03-26 09:58_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

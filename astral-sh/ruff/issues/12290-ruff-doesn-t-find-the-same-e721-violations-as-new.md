@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-11T16:27:07Z
 updated_at: 2024-07-15T08:57:10Z
 url: https://github.com/astral-sh/ruff/issues/12290
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # ruff doesn't find the same E721 violations as new flake8 does
 
 ---
 
-_Issue opened by @timj on 2024-07-11 16:27_
+_@timj_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

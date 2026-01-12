@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-11-13T22:47:09Z
 updated_at: 2023-02-23T17:55:20Z
 url: https://github.com/clap-rs/clap/issues/3022
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # clap_generate: zsh broken with two multi length arguments
 
 ---
 
-_Issue opened by @Morganamilo on 2021-11-13 22:47_
+_@Morganamilo_
 
 ### Please complete the following tasks
 

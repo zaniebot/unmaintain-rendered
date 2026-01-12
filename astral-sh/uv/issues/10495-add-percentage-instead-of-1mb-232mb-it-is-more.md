@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-11T13:54:10Z
 updated_at: 2025-01-13T14:53:03Z
 url: https://github.com/astral-sh/uv/issues/10495
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # add percentage instead of 1MB/232MB it is  more compatible
 
 ---
 
-_Issue opened by @looijijohn on 2025-01-11 13:54_
+_@looijijohn_
 
 uv pip install langflow
 

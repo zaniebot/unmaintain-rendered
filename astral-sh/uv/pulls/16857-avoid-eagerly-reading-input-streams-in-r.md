@@ -13,14 +13,14 @@ head: charlie/empty
 created_at: 2025-11-26T03:29:34Z
 updated_at: 2025-11-26T03:55:10Z
 url: https://github.com/astral-sh/uv/pull/16857
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:29Z
 ```
 
 # Avoid eagerly reading input streams in `-r`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-26 03:29_
+_@charliermarsh_
 
 ## Summary
 

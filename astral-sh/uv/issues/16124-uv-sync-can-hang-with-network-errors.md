@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-04T15:50:50Z
 updated_at: 2025-10-04T18:39:36Z
 url: https://github.com/astral-sh/uv/issues/16124
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:24Z
 ```
 
 # uv sync can hang with network errors
 
 ---
 
-_Issue opened by @ggilley on 2025-10-04 15:50_
+_@ggilley_
 
 ### Summary
 

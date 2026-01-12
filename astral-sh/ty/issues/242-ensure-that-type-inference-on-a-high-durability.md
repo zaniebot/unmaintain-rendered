@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T19:50:15Z
 updated_at: 2025-05-07T15:27:38Z
 url: https://github.com/astral-sh/ty/issues/242
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # ensure that type inference on a high-durability file is also high durability
 
 ---
 
-_Issue opened by @carljm on 2024-08-30 19:50_
+_@carljm_
 
 If we can ensure this is the case, it should help our incremental inference perform better.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-29T10:36:08Z
 updated_at: 2024-12-03T15:40:02Z
 url: https://github.com/astral-sh/uv/issues/9519
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # Installing multiple projects in a single command issue
 
 ---
 
-_Issue opened by @wkarwacki on 2024-11-29 10:36_
+_@wkarwacki_
 
 ```
 $ uv --version

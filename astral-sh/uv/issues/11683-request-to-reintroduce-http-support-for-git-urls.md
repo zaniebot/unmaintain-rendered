@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T02:45:28Z
 updated_at: 2025-02-21T05:14:32Z
 url: https://github.com/astral-sh/uv/issues/11683
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # Request to Reintroduce HTTP Support for Git URLs
 
 ---
 
-_Issue opened by @kubotty on 2025-02-21 02:45_
+_@kubotty_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2025-07-04T21:03:50Z
 updated_at: 2025-07-07T16:37:56Z
 url: https://github.com/astral-sh/ruff/pull/19151
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # [`flake8-type-checking`] Make example error out-of-the-box (`TC001`)
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-04 21:03_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

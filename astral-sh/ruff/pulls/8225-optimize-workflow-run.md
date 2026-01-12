@@ -13,14 +13,14 @@ head: sa/optimize-workflow-run
 created_at: 2023-10-25T19:39:42Z
 updated_at: 2023-11-30T00:09:33Z
 url: https://github.com/astral-sh/ruff/pull/8225
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Optimize workflow run
 
 ---
 
-_Pull request opened by @Cjkjvfnby on 2023-10-25 19:39_
+_@Cjkjvfnby_
 
 ## Summary
 - Don't run jobs that are not affected

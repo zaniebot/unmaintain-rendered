@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-22T19:02:29Z
 updated_at: 2025-08-28T20:58:40Z
 url: https://github.com/astral-sh/ruff/issues/20050
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF037 false negative on `deque(f"{""}")`
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-22 19:02_
+_@dscorbett_
 
 ### Summary
 

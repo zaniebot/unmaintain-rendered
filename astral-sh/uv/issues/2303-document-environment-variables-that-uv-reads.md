@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-08T15:58:37Z
 updated_at: 2024-03-10T00:47:47Z
 url: https://github.com/astral-sh/uv/issues/2303
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Document environment variables that uv reads
 
 ---
 
-_Issue opened by @konstin on 2024-03-08 15:58_
+_@konstin_
 
 uv reads a lot of environment variables, some as alternative to cli arguments, some through dependencies (e.g. `NO_COLOR`), and some custom (e.g. `PYC_INVALIDATION_MODE` in https://github.com/astral-sh/uv/pull/2297 or `UV_HTTP_TIMEOUT`). We should document them, esp. the ones not in the CLI docs, [like cargo does](https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-reads).
 

@@ -13,14 +13,14 @@ head: charlie/bu
 created_at: 2025-08-21T22:40:26Z
 updated_at: 2025-08-21T22:54:41Z
 url: https://github.com/astral-sh/uv/pull/15437
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:44Z
 ```
 
 # Add file-to-CLI overrides for build isolation configuration
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-21 22:40_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: suppress-suggestions-when-naming
 created_at: 2025-11-20T21:50:57Z
 updated_at: 2025-11-21T17:06:58Z
 url: https://github.com/astral-sh/ruff/pull/21549
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:27Z
 ```
 
 # [ty] suppress autocomplete suggestions during variable binding
 
 ---
 
-_Pull request opened by @RasmusNygren on 2025-11-20 21:50_
+_@RasmusNygren_
 
 Statements such as `def foo(p<CURSOR>`,
 `def foo[T<CURSOR>` and `for foo<CURSOR>`

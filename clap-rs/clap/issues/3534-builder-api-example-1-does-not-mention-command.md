@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-03-04T21:18:23Z
 updated_at: 2022-03-04T22:12:30Z
 url: https://github.com/clap-rs/clap/issues/3534
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Builder API example 1 does not mention `command!()`
 
 ---
 
-_Issue opened by @allan2 on 2022-03-04 21:18_
+_@allan2_
 
 ### Please complete the following tasks
 

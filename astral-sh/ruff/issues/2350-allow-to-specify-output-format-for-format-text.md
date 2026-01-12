@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-30T12:09:25Z
 updated_at: 2024-04-07T10:18:26Z
 url: https://github.com/astral-sh/ruff/issues/2350
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # allow to specify output format for --format=text
 
 ---
 
-_Issue opened by @spaceone on 2023-01-30 12:09_
+_@spaceone_
 
 flake8 supports specifying the output format via an command line argument: `flake8 --format '%(path)s'`
 

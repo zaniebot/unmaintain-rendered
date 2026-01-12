@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-21T08:43:38Z
 updated_at: 2023-06-22T08:08:28Z
 url: https://github.com/astral-sh/ruff/issues/5244
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `RUF012` shouldn't complain when type hint is not present
 
 ---
 
-_Issue opened by @harshil21 on 2023-06-21 08:43_
+_@harshil21_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

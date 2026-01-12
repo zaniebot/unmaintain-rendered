@@ -15,14 +15,14 @@ head: e251-tvar-default
 created_at: 2024-10-10T14:11:59Z
 updated_at: 2024-10-10T16:24:20Z
 url: https://github.com/astral-sh/ruff/pull/13704
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [`pycodestyle`] Fix whitespace-related false positives and false negatives inside type-parameter lists
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-10 14:11_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: konsti/fix-warnings
 created_at: 2024-04-11T09:36:14Z
 updated_at: 2024-04-11T09:45:51Z
 url: https://github.com/astral-sh/uv/pull/2989
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:21Z
 ```
 
 # Silence lint false positive
 
 ---
 
-_Pull request opened by @konstin on 2024-04-11 09:36_
+_@konstin_
 
 When running the `uv-client` tests, i would previously get:
 

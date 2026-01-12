@@ -14,14 +14,14 @@ head: FURB103
 created_at: 2025-11-14T14:10:11Z
 updated_at: 2025-11-16T09:43:20Z
 url: https://github.com/astral-sh/ruff/pull/21454
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [`refurb`] Fix `FURB103` autofix
 
 ---
 
-_Pull request opened by @chirizxc on 2025-11-14 14:10_
+_@chirizxc_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

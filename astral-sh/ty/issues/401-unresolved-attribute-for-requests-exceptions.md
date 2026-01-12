@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-15T07:03:27Z
 updated_at: 2025-05-15T12:40:42Z
 url: https://github.com/astral-sh/ty/issues/401
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `unresolved attribute` for `requests.exceptions`
 
 ---
 
-_Issue opened by @stevelizcano on 2025-05-15 07:03_
+_@stevelizcano_
 
 ### Summary
 

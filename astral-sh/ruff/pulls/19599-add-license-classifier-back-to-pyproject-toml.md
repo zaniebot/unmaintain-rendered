@@ -12,14 +12,14 @@ head: revert-19499-PEP639
 created_at: 2025-07-28T13:46:49Z
 updated_at: 2025-08-04T18:59:30Z
 url: https://github.com/astral-sh/ruff/pull/19599
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # Add license classifier back to pyproject.toml
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-28 13:46_
+_@MichaReiser_
 
 Reverts astral-sh/ruff#19499
 

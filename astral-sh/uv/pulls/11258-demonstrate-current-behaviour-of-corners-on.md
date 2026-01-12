@@ -13,14 +13,14 @@ head: gankra/test-corners
 created_at: 2025-02-05T19:47:18Z
 updated_at: 2025-02-05T20:10:19Z
 url: https://github.com/astral-sh/uv/pull/11258
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:45Z
 ```
 
 # demonstrate current behaviour of corners on current main
 
 ---
 
-_Pull request opened by @Gankra on 2025-02-05 19:47_
+_@Gankra_
 
 This is the same test commit in #11224 but with an extra commit added where i regen them on main to show how they differ.
 

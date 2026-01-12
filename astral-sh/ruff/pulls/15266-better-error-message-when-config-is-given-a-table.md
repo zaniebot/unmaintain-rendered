@@ -13,14 +13,14 @@ head: cli-config
 created_at: 2025-01-05T08:57:29Z
 updated_at: 2025-01-06T13:23:49Z
 url: https://github.com/astral-sh/ruff/pull/15266
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Better error message when `--config` is given a table key and a non-inline-table value
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-05 08:57_
+_@InSyncWithFoo_
 
 ## Summary
 

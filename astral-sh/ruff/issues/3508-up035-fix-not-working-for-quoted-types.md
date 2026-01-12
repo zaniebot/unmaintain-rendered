@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-14T11:37:30Z
 updated_at: 2023-03-22T16:45:54Z
 url: https://github.com/astral-sh/ruff/issues/3508
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # UP035 --fix not working for quoted types
 
 ---
 
-_Issue opened by @torarvid on 2023-03-14 11:37_
+_@torarvid_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

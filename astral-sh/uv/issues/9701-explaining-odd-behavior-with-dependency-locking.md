@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-07T02:40:27Z
 updated_at: 2024-12-10T15:57:26Z
 url: https://github.com/astral-sh/uv/issues/9701
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # Explaining odd behavior with dependency locking and installation.
 
 ---
 
-_Issue opened by @NellyWhads on 2024-12-07 02:40_
+_@NellyWhads_
 
 When using the following pyproject.toml, I get some weird behavior:
 

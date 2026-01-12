@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-27T00:15:42Z
 updated_at: 2023-05-27T19:07:14Z
 url: https://github.com/clap-rs/clap/issues/4942
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # require_value_delimiter missing in Clap-4
 
 ---
 
-_Issue opened by @asomers on 2023-05-27 00:15_
+_@asomers_
 
 ### Please complete the following tasks
 

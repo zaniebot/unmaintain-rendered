@@ -12,14 +12,14 @@ head: charlie/clap
 created_at: 2022-09-29T01:05:19Z
 updated_at: 2022-09-29T02:15:59Z
 url: https://github.com/astral-sh/ruff/pull/278
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Misc. follow-up changes to #272
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-29 01:05_
+_@charliermarsh_
 
 _No description provided._
 

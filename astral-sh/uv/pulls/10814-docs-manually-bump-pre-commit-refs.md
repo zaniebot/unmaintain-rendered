@@ -13,14 +13,14 @@ head: docs/manually-bump-pre-commit-refs
 created_at: 2025-01-21T13:18:53Z
 updated_at: 2025-01-21T14:33:38Z
 url: https://github.com/astral-sh/uv/pull/10814
-synced_at: 2026-01-10T11:45:12Z
+synced_at: 2026-01-12T16:09:30Z
 ```
 
 # docs: manually bump pre-commit refs
 
 ---
 
-_Pull request opened by @mkniewallner on 2025-01-21 13:18_
+_@mkniewallner_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-01T20:38:04Z
 updated_at: 2025-08-06T20:46:18Z
 url: https://github.com/clap-rs/clap/issues/6056
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Changing the styling of spec values in long help from `literal` to `context_value` 
 
 ---
 
-_Issue opened by @GilShoshan94 on 2025-07-01 20:38_
+_@GilShoshan94_
 
 For "Possible values", the styling for the values is already set with the `literal` styling but just for the `long help`, so it feels inconsistent, but changing that could be considered a breaking change and therefore, we might leave it for 5.0.
 

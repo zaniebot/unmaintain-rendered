@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-10-25T01:23:04Z
 updated_at: 2025-10-29T14:52:00Z
 url: https://github.com/astral-sh/uv/pull/16445
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:15Z
 ```
 
 # tweak build dependency hint wording
 
 ---
 
-_Pull request opened by @KTibow on 2025-10-25 01:23_
+_@KTibow_
 
 ## Summary
 old hint wording is like

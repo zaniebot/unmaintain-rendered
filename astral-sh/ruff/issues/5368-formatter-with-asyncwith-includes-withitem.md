@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-26T14:10:17Z
 updated_at: 2023-07-15T15:03:10Z
 url: https://github.com/astral-sh/ruff/issues/5368
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: `With` / `AsyncWith` (includes `WithItem`)
 
 ---
 
-_Issue opened by @MichaReiser on 2023-06-26 14:10_
+_@MichaReiser_
 
 * [x] `With` https://github.com/astral-sh/ruff/pull/5350
 * [x] `AsyncWith`

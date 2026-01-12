@@ -14,14 +14,14 @@ head: dtz-clarify
 created_at: 2024-03-26T18:53:42Z
 updated_at: 2024-07-01T10:29:51Z
 url: https://github.com/astral-sh/ruff/pull/10621
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # `DTZ` rules: Clarify error messages and docs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-26 18:53_
+_@AlexWaygood_
 
 Fixes #10251. Closes #10590.
 

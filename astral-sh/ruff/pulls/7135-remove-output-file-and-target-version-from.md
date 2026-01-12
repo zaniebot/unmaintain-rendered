@@ -14,14 +14,14 @@ head: charlie/output-file
 created_at: 2023-09-04T21:29:00Z
 updated_at: 2023-09-05T09:10:26Z
 url: https://github.com/astral-sh/ruff/pull/7135
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Remove output-file and target-version from formatter CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-04 21:29_
+_@charliermarsh_
 
 These aren't yet properly supported -- see the discussion on https://github.com/astral-sh/ruff/pull/7064.
 

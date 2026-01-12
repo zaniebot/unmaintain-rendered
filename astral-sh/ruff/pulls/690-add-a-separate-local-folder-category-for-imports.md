@@ -12,14 +12,14 @@ head: charlie/localfolder
 created_at: 2022-11-12T03:12:44Z
 updated_at: 2022-11-12T03:12:49Z
 url: https://github.com/astral-sh/ruff/pull/690
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add a separate local folder category for imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-12 03:12_
+_@charliermarsh_
 
 `isort` treats these as a separate category, so we should too.
 

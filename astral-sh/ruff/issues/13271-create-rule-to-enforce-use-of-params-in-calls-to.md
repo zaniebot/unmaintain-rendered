@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-06T17:59:59Z
 updated_at: 2024-09-06T20:44:27Z
 url: https://github.com/astral-sh/ruff/issues/13271
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Create rule to enforce use of `params` in calls to `requests` and similar libraries
 
 ---
 
-_Issue opened by @allen-pattern on 2024-09-06 17:59_
+_@allen-pattern_
 
 Humble rule request. Help us detect and transform code like:
 ```python

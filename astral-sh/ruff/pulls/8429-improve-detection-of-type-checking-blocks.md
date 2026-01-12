@@ -13,14 +13,14 @@ head: zanie/type-checking
 created_at: 2023-11-02T01:32:39Z
 updated_at: 2023-11-09T18:21:04Z
 url: https://github.com/astral-sh/ruff/pull/8429
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Improve detection of `TYPE_CHECKING` blocks imported from `typing_extensions` or `_typeshed`
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-02 01:32_
+_@zanieb_
 
 ~Improves detection of types imported from `typing_extensions`. Removes the hard-coded list of supported types in `typing_extensions`; instead assuming all types could be imported from `typing`, `_typeshed`, or `typing_extensions`.~
 

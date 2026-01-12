@@ -13,14 +13,14 @@ head: dhruv/end-expr-set
 created_at: 2024-03-25T03:14:16Z
 updated_at: 2024-03-25T12:39:42Z
 url: https://github.com/astral-sh/ruff/pull/10553
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Complete end expression token set
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-25 03:14_
+_@dhruvmanila_
 
 ## Summary
 

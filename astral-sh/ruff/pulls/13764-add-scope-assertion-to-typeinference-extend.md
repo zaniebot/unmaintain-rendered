@@ -13,14 +13,14 @@ head: micha/assert-type-inference-scopes-when-extending
 created_at: 2024-10-15T15:22:10Z
 updated_at: 2024-10-16T15:44:27Z
 url: https://github.com/astral-sh/ruff/pull/13764
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Add scope assertion to `TypeInference.extend`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-15 15:22_
+_@MichaReiser_
 
 ## Summary
 

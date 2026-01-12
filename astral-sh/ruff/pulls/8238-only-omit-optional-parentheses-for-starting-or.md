@@ -13,14 +13,14 @@ head: 10-26-Fix_parenthesizing_of_expression_starting_with_unary_expressions
 created_at: 2023-10-26T03:31:16Z
 updated_at: 2023-10-26T06:28:59Z
 url: https://github.com/astral-sh/ruff/pull/8238
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Only omit optional parentheses for starting or ending with parentheses
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-26 03:31_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-15T04:06:57Z
 updated_at: 2023-08-16T03:59:06Z
 url: https://github.com/astral-sh/ruff/issues/6584
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Ruff reports F704 `await` statement outside of a function for notebooks
 
 ---
 
-_Issue opened by @david-waterworth on 2023-08-15 04:06_
+_@david-waterworth_
 
 In notebooks `await` is allowed in a cell (i.e. outside of a function), but `ruff` reports F704 - see also https://github.com/microsoft/pylance-release/issues/1754 and https://ipython.readthedocs.io/en/stable/interactive/autoawait.html 
 

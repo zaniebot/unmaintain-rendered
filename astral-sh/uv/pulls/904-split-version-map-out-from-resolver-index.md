@@ -12,14 +12,14 @@ head: charlie/index
 created_at: 2024-01-12T21:15:25Z
 updated_at: 2024-01-16T05:20:13Z
 url: https://github.com/astral-sh/uv/pull/904
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:16Z
 ```
 
 # Split version map out from resolver index
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-12 21:15_
+_@charliermarsh_
 
 ## Summary
 

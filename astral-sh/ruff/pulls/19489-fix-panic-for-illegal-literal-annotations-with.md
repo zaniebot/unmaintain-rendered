@@ -15,14 +15,14 @@ head: david/fix-literal-subscript-panic
 created_at: 2025-07-22T14:03:53Z
 updated_at: 2025-07-22T14:07:34Z
 url: https://github.com/astral-sh/ruff/pull/19489
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # Fix panic for illegal `Literal[…]` annotations with inner subscript expressions
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-22 14:03_
+_@sharkdp_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/resolvo
 created_at: 2023-11-13T01:55:23Z
 updated_at: 2024-01-05T01:22:13Z
 url: https://github.com/astral-sh/uv/pull/404
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # Add an option to use Resolvo in lieu of PubGrub
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-13 01:55_
+_@charliermarsh_
 
 ## Summary
 

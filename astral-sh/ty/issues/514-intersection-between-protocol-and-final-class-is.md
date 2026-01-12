@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-26T01:29:01Z
 updated_at: 2025-10-01T16:16:29Z
 url: https://github.com/astral-sh/ty/issues/514
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Intersection between Protocol and Final class is reduced incorrectly
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-05-26 01:29_
+_@JelleZijlstra_
 
 ### Summary
 

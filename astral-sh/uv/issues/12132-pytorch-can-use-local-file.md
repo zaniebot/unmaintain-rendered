@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-12T09:55:56Z
 updated_at: 2025-03-14T00:36:15Z
 url: https://github.com/astral-sh/uv/issues/12132
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # pytorch can use local file?
 
 ---
 
-_Issue opened by @dobet on 2025-03-12 09:55_
+_@dobet_
 
 ### Question
 

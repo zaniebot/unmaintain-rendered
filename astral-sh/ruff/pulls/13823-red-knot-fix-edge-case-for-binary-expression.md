@@ -13,14 +13,14 @@ head: binary-arithmetic-fix
 created_at: 2024-10-19T16:52:42Z
 updated_at: 2024-10-19T18:09:56Z
 url: https://github.com/astral-sh/ruff/pull/13823
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Fix edge case for binary-expression inference where the lhs and rhs are the exact same type
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-19 16:52_
+_@AlexWaygood_
 
 ## Summary
 

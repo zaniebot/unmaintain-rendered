@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-05T21:00:22Z
 updated_at: 2024-12-16T21:31:36Z
 url: https://github.com/astral-sh/uv/issues/4075
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Avoid redundant enumeration of all package versions during solve failure
 
 ---
 
-_Issue opened by @zanieb on 2024-06-05 21:00_
+_@zanieb_
 
 ```
 error: Because the current Python version (3.9.6) does not satisfy Python>=3.11,<4.0 and all versions of rooster-blue depend on Python>=3.11,<4.0, we can conclude that all versions of rooster-blue cannot be used.

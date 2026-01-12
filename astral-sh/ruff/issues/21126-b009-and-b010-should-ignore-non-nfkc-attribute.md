@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-29T17:22:24Z
 updated_at: 2025-11-03T14:45:24Z
 url: https://github.com/astral-sh/ruff/issues/21126
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # B009 and B010 should ignore non-NFKC attribute names
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-29 17:22_
+_@dscorbett_
 
 ### Summary
 

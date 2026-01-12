@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-05T16:22:14Z
 updated_at: 2025-07-08T09:57:35Z
 url: https://github.com/astral-sh/uv/issues/14467
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # How do I install CPU torch by default while allowing GPU torch?
 
 ---
 
-_Issue opened by @CookieHCl on 2025-07-05 16:22_
+_@CookieHCl_
 
 ### Question
 

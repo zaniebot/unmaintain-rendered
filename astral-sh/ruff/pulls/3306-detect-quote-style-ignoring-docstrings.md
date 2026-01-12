@@ -12,14 +12,14 @@ head: detect_quote_skip_docstrings
 created_at: 2023-03-02T14:29:47Z
 updated_at: 2023-03-03T16:02:14Z
 url: https://github.com/astral-sh/ruff/pull/3306
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Detect quote style ignoring docstrings
 
 ---
 
-_Pull request opened by @bz2 on 2023-03-02 14:29_
+_@bz2_
 
 Currently the quote style of the first string in a file is used for autodetecting what to use when rewriting code for fixes. This is an okay heuristic, but often the first line in a file is a docstring, rather than a string constant, and it's not uncommon for pre-Black code to have different quoting styles for those.
 

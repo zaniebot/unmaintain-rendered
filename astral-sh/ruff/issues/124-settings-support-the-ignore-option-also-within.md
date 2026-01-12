@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-07T21:43:38Z
 updated_at: 2022-09-08T08:08:09Z
 url: https://github.com/astral-sh/ruff/issues/124
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Settings: Support the `ignore` option also within `pyproject.toml`
 
 ---
 
-_Issue opened by @amotl on 2022-09-07 21:43_
+_@amotl_
 
 Hi again,
 

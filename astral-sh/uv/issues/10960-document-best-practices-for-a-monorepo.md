@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-23T15:34:48Z
 updated_at: 2025-11-23T10:20:12Z
 url: https://github.com/astral-sh/uv/issues/10960
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Document best practices for a monorepo
 
 ---
 
-_Issue opened by @matthewadams on 2025-01-23 15:34_
+_@matthewadams_
 
 Experienced developer here, but I'm a `python` & `uv` noob.  I suspect that it's current feature set supports monorepos, I'm just not clear how, and there is surprisingly little information on the interwebbernets on this topic.
 

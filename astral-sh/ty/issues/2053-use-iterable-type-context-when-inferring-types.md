@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-18T07:56:54Z
 updated_at: 2026-01-08T19:12:46Z
 url: https://github.com/astral-sh/ty/issues/2053
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Use Iterable type context when inferring types inside a literal tuple
 
 ---
 
-_Issue opened by @gpajot on 2025-12-18 07:56_
+_@gpajot_
 
 ### Summary
 

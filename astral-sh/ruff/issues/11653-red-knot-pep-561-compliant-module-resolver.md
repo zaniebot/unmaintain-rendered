@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T21:48:51Z
 updated_at: 2025-03-10T23:18:54Z
 url: https://github.com/astral-sh/ruff/issues/11653
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] PEP 561 compliant module resolver
 
 ---
 
-_Issue opened by @carljm on 2024-05-31 21:48_
+_@carljm_
 
 (Or intentional choices to diverge from PEP 561 compliance.)
 

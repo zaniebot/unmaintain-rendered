@@ -13,14 +13,14 @@ head: dhruv/callable-is-equivalent
 created_at: 2025-03-13T05:27:23Z
 updated_at: 2025-05-07T15:21:03Z
 url: https://github.com/astral-sh/ruff/pull/16698
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [red-knot] Check whether two callable types are equivalent
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-03-13 05:27_
+_@dhruvmanila_
 
 ## Summary
 

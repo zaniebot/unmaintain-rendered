@@ -12,14 +12,14 @@ head: sort-statistics
 created_at: 2023-03-26T20:24:12Z
 updated_at: 2023-03-26T21:01:17Z
 url: https://github.com/astral-sh/ruff/pull/3748
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Sort statistics by count
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-26 20:24_
+_@JonathanPlasse_
 
 - Close #3746
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-04T23:47:23Z
 updated_at: 2025-08-04T23:47:27Z
 url: https://github.com/astral-sh/uv/issues/15070
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # Move test package for extra build dependencies into source tree
 
 ---
 
-_Issue opened by @zanieb on 2025-08-04 23:47_
+_@zanieb_
 
 Instead of declaring this weird package structure in each test (see "Write a test package that arbitrarily requires `anyio` at build time"), we should just put a package alongside our other test packages in `scripts/packages`
 

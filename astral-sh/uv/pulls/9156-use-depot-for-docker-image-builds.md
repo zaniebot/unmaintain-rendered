@@ -13,14 +13,14 @@ head: zb/depot-docker
 created_at: 2024-11-15T22:31:38Z
 updated_at: 2025-04-14T08:00:32Z
 url: https://github.com/astral-sh/uv/pull/9156
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:40Z
 ```
 
 # Use Depot for Docker image builds
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-15 22:31_
+_@zanieb_
 
 Exploring the experience here
 

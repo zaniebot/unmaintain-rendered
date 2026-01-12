@@ -13,14 +13,14 @@ head: zanie/preview-selector
 created_at: 2023-09-14T16:56:51Z
 updated_at: 2023-09-14T17:32:05Z
 url: https://github.com/astral-sh/ruff/pull/7389
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Remove the `PREVIEW` rule selector
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-14 16:56_
+_@zanieb_
 
 The rule selector is not useful because `--select PREVIEW` only targets Ruff developers and `--ignore PREVIEW` has no effect due to its low specificity. We may restore it later if useful.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-19T14:25:34Z
 updated_at: 2025-08-28T13:07:12Z
 url: https://github.com/clap-rs/clap/issues/5587
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Intentionally control when a space is appended for native completions
 
 ---
 
-_Issue opened by @epage on 2024-07-19 14:25_
+_@epage_
 
 A trailing space signifies that there is nothing else to complete for this argument and the next argument should be started.
 

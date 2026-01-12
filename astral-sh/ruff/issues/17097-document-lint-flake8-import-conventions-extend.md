@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-31T16:59:08Z
 updated_at: 2025-03-31T21:25:05Z
 url: https://github.com/astral-sh/ruff/issues/17097
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Document `lint.flake8-import-conventions.extend-aliases` as being able to somewhat revert a default alias / enforce non-aliased
 
 ---
 
-_Issue opened by @Avasam on 2025-03-31 16:59_
+_@Avasam_
 
 ### Summary
 

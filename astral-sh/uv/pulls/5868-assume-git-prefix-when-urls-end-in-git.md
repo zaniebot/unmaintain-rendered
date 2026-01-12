@@ -13,14 +13,14 @@ head: charlie/g
 created_at: 2024-08-07T15:20:48Z
 updated_at: 2024-08-07T15:50:37Z
 url: https://github.com/astral-sh/uv/pull/5868
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:04Z
 ```
 
 # Assume `git+` prefix when URLs end in `.git`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-07 15:20_
+_@charliermarsh_
 
 ## Summary
 

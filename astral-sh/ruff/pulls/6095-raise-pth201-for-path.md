@@ -12,14 +12,14 @@ head: PTH201-empty-string
 created_at: 2023-07-26T13:02:48Z
 updated_at: 2023-07-26T13:36:30Z
 url: https://github.com/astral-sh/ruff/pull/6095
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Raise `PTH201` for `Path("")`
 
 ---
 
-_Pull request opened by @harupy on 2023-07-26 13:02_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

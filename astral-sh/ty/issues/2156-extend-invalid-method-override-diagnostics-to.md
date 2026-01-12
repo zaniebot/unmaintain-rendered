@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-22T13:00:12Z
 updated_at: 2025-12-22T17:26:11Z
 url: https://github.com/astral-sh/ty/issues/2156
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Extend `invalid-method-override` diagnostics to cover methods being overridden by non-methods
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-22 13:00_
+_@AlexWaygood_
 
 We have a basic implementation of the Liskov Substitution Principle in place for method overrides. But we do not currently emit diagnostics for methods invalidly overridden by non-methods. We need to implement this.
 

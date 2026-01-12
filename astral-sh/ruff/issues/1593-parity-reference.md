@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-03T11:21:38Z
 updated_at: 2023-01-04T22:07:45Z
 url: https://github.com/astral-sh/ruff/issues/1593
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Parity Reference
 
 ---
 
-_Issue opened by @danieleades on 2023-01-03 11:21_
+_@danieleades_
 
 The readme is pretty comprehensive in showing the supported lints, in relation to their corresponding flake8-plugins. I'm more interested in the inverse.
 

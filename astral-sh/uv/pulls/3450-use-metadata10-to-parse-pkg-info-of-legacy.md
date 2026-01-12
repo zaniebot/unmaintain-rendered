@@ -13,14 +13,14 @@ head: uv-metadata10
 created_at: 2024-05-08T05:52:11Z
 updated_at: 2024-05-08T14:34:15Z
 url: https://github.com/astral-sh/uv/pull/3450
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:39Z
 ```
 
 # Use Metadata10 to parse PKG-INFO of legacy editable
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-05-08 05:52_
+_@hauntsaninja_
 
 It turns out setuptools often uses Metadata-Version 2.1 in their PKG-INFO: https://github.com/hauntsaninja/setuptools/blob/4e766834d72623f3b938f1d4148547ea73af1bf5/setuptools/dist.py#L64
 `Metadata23` requires Metadata-Version of at least 2.2.

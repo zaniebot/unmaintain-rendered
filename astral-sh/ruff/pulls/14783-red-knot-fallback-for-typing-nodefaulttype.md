@@ -13,14 +13,14 @@ head: david/no-default-type-fallback
 created_at: 2024-12-05T08:00:10Z
 updated_at: 2024-12-05T08:17:56Z
 url: https://github.com/astral-sh/ruff/pull/14783
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Fallback for `typing._NoDefaultType`
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-05 08:00_
+_@sharkdp_
 
 ## Summary
 

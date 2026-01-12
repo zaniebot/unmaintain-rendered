@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-23T16:17:05Z
 updated_at: 2024-04-23T16:27:46Z
 url: https://github.com/astral-sh/ruff/issues/11107
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Ruff should give a nonzero exit code if file linting panics
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-04-23 16:17_
+_@AlexWaygood_
 
 Currently if Ruff panics, you get this on the command line:
 

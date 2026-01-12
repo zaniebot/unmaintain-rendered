@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-18T23:10:04Z
 updated_at: 2025-05-26T12:27:21Z
 url: https://github.com/astral-sh/ty/issues/443
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # division-by-zero error raised when conditional statements check for division by 0
 
 ---
 
-_Issue opened by @DirkNZ on 2025-05-18 23:10_
+_@DirkNZ_
 
 ### Summary
 

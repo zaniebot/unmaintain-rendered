@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-12T15:34:19Z
 updated_at: 2023-01-12T15:52:35Z
 url: https://github.com/astral-sh/ruff/issues/1818
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Support `balanced_wrapping` isort option
 
 ---
 
-_Issue opened by @alex-way on 2023-01-12 15:34_
+_@alex-way_
 
 Hey!
 

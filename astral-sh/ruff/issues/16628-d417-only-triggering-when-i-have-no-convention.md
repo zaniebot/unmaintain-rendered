@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-11T15:04:24Z
 updated_at: 2025-03-13T11:49:20Z
 url: https://github.com/astral-sh/ruff/issues/16628
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `D417` only triggering when I have no `convention`
 
 ---
 
-_Issue opened by @tylerlaprade on 2025-03-11 15:04_
+_@tylerlaprade_
 
 ### Summary
 

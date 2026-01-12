@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-19T05:17:33Z
 updated_at: 2024-07-19T06:00:16Z
 url: https://github.com/astral-sh/ruff/issues/12402
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `loop-iterator-mutation` (`B909`) - logic to determine whether the mutation is followed by a `break` statement is incorrect
 
 ---
 
-_Issue opened by @DetachHead on 2024-07-19 05:17_
+_@DetachHead_
 
 the rule seems to check whether or not the loop has a `break` after the mutation, because that makes the mutation safe:
 

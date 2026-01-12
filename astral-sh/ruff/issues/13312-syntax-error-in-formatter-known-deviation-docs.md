@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-10T17:26:33Z
 updated_at: 2024-09-10T17:47:13Z
 url: https://github.com/astral-sh/ruff/issues/13312
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Syntax error in formatter known deviation docs
 
 ---
 
-_Issue opened by @ulope on 2024-09-10 17:26_
+_@ulope_
 
 The second example in the `Tuples are parenthesized when expanded` section of the known deviations docs contain a syntax error:
 

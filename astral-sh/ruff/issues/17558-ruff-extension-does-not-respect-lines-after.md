@@ -14,14 +14,14 @@ assignees: []
 created_at: 2025-04-15T19:55:14Z
 updated_at: 2025-04-22T17:36:19Z
 url: https://github.com/astral-sh/ruff/issues/17558
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Ruff extension does not respect lines-after-imports from ruff.toml
 
 ---
 
-_Issue opened by @rjwalters on 2025-04-15 19:55_
+_@rjwalters_
 
 For a `ruff.toml` file at the root of my repo:
 

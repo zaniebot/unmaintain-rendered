@@ -13,14 +13,14 @@ head: charlie/fix
 created_at: 2023-12-18T19:29:56Z
 updated_at: 2023-12-18T19:42:25Z
 url: https://github.com/astral-sh/ruff/pull/9192
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Reverse order of arguments for `operator.contains`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-18 19:29_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9191.
 

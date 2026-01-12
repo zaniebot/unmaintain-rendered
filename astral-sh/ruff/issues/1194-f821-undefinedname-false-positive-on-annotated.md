@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-11T09:24:16Z
 updated_at: 2022-12-11T15:04:07Z
 url: https://github.com/astral-sh/ruff/issues/1194
-synced_at: 2026-01-10T12:06:18Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # F821 UndefinedName false positive on annotated global
 
 ---
 
-_Issue opened by @andersk on 2022-12-11 09:24_
+_@andersk_
 
 As of 26d3ff5a3a235cda4883f62e4cbce4096c5c9388 (#1166), Ruff gives an `F821` error here that Flake8 does not. Deleting the `n: int` annotation makes the error disappear.
 

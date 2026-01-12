@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-14T14:59:52Z
 updated_at: 2025-10-27T11:19:14Z
 url: https://github.com/astral-sh/ty/issues/986
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # ty incorrectly thinks all objects have an `__mro__` attribute
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-08-14 14:59_
+_@AlexWaygood_
 
 ### Summary
 

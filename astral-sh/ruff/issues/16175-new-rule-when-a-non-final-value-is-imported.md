@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-15T08:34:15Z
 updated_at: 2025-02-15T20:23:05Z
 url: https://github.com/astral-sh/ruff/issues/16175
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # (🎁) new rule: when a non-final value is imported
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-02-15 08:34_
+_@KotlinIsland_
 
 ### Description
 

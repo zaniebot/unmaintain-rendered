@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-27T23:53:22Z
 updated_at: 2025-12-31T16:47:20Z
 url: https://github.com/astral-sh/ty/issues/527
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Consider a strict mode for ty
 
 ---
 
-_Issue opened by @nth10sd on 2025-05-27 23:53_
+_@nth10sd_
 
 ### Question
 

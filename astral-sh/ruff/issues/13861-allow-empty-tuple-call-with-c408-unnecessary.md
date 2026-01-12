@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-21T14:38:05Z
 updated_at: 2024-11-09T19:37:46Z
 url: https://github.com/astral-sh/ruff/issues/13861
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Allow empty `tuple()` call with C408 (unnecessary-collection-call)
 
 ---
 
-_Issue opened by @LordAro on 2024-10-21 14:38_
+_@LordAro_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

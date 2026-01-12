@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-10-16T12:12:09Z
 updated_at: 2021-10-16T20:51:46Z
 url: https://github.com/clap-rs/clap/issues/2893
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # derive: env! doesn't work with custom build variables
 
 ---
 
-_Issue opened by @ajeetdsouza on 2021-10-16 12:12_
+_@ajeetdsouza_
 
 ### Please complete the following tasks
 

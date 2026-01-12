@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-09-11T16:44:05Z
 updated_at: 2023-09-12T01:08:53Z
 url: https://github.com/astral-sh/ruff/issues/7273
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # False positive redefined-loop-name (PLW2901) with in-place augmented assignment
 
 ---
 
-_Issue opened by @mihaic on 2023-09-11 16:44_
+_@mihaic_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

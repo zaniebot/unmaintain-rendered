@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-20T04:45:06Z
 updated_at: 2024-03-30T00:26:14Z
 url: https://github.com/astral-sh/ruff/issues/10485
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `FBT003` with Pydantic
 
 ---
 
-_Issue opened by @redb0 on 2024-03-20 04:45_
+_@redb0_
 
 Hello!
 

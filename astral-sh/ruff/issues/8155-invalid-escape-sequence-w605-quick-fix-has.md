@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-24T05:27:10Z
 updated_at: 2023-10-26T16:23:22Z
 url: https://github.com/astral-sh/ruff/issues/8155
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `invalid-escape-sequence` (`W605`) quick fix has incorrect description
 
 ---
 
-_Issue opened by @DetachHead on 2023-10-24 05:27_
+_@DetachHead_
 
 the quick fix says "Add backslash to escape sequence":
 ![image](https://github.com/astral-sh/ruff/assets/57028336/6864fa02-5aa1-44d1-a6ed-440cdf2cb68a)

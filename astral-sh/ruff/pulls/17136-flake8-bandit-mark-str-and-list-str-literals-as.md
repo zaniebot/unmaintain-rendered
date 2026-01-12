@@ -14,14 +14,14 @@ head: s603-safe-literal
 created_at: 2025-04-01T22:19:04Z
 updated_at: 2025-05-02T19:53:08Z
 url: https://github.com/astral-sh/ruff/pull/17136
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [`flake8-bandit`] Mark `str` and `list[str]` literals as trusted input (`S603`)
 
 ---
 
-_Pull request opened by @trag1c on 2025-04-01 22:19_
+_@trag1c_
 
 ## Summary
 

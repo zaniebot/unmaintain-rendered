@@ -13,14 +13,14 @@ head: micha/fix-pyrefly-unused-code
 created_at: 2025-08-04T07:55:00Z
 updated_at: 2025-08-04T08:15:39Z
 url: https://github.com/astral-sh/ruff/pull/19731
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # Don't flag `pyrefly` pragmas as unused code (`ERA001`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-04 07:55_
+_@MichaReiser_
 
 ## Summary
 Fixes https://github.com/astral-sh/ruff/issues/19713

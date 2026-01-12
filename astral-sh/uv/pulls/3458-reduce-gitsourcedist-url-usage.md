@@ -13,14 +13,14 @@ head: konsti/git-source-dist-url
 created_at: 2024-05-08T13:06:18Z
 updated_at: 2024-05-14T08:59:39Z
 url: https://github.com/astral-sh/uv/pull/3458
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:39Z
 ```
 
 # Reduce `GitSourceDist` URL usage
 
 ---
 
-_Pull request opened by @konstin on 2024-05-08 13:06_
+_@konstin_
 
 Refactor the easy-to-remove usage of the `VerbatimUrl` on `GitSourceDist`
 

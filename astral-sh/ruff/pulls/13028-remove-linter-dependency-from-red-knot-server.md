@@ -13,14 +13,14 @@ head: red-knot-server-remove-linter
 created_at: 2024-08-21T09:36:33Z
 updated_at: 2024-08-21T10:17:12Z
 url: https://github.com/astral-sh/ruff/pull/13028
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Remove linter dependency from red_knot_server
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-21 09:36_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-26T16:13:53Z
 updated_at: 2025-02-17T07:59:08Z
 url: https://github.com/astral-sh/ruff/issues/11545
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ruff server not closing with neovim instances - vol 2
 
 ---
 
-_Issue opened by @danielhollas on 2024-05-26 16:13_
+_@danielhollas_
 
 I am still seeing this problem originally reported (and fixed) in #11207 
 I am on ruff 0.4.5 and neovim 0.9.5 on Linux Fedora 39.

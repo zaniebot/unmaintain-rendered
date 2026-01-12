@@ -13,14 +13,14 @@ head: charlie/dupe
 created_at: 2023-08-16T00:02:06Z
 updated_at: 2023-08-16T00:31:51Z
 url: https://github.com/astral-sh/ruff/pull/6604
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Remove pylint's duplicate_value.rs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-16 00:02_
+_@charliermarsh_
 
 This was moved to bugbear, but we forgot to delete the file.
 

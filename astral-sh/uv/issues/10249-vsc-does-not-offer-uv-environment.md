@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-31T11:00:18Z
 updated_at: 2025-01-04T00:31:57Z
 url: https://github.com/astral-sh/uv/issues/10249
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # VSC does not offer uv environment
 
 ---
 
-_Issue opened by @thistlillo on 2024-12-31 11:00_
+_@thistlillo_
 
 I have an uv environment In a folder F open inside of VSC. The environment is in the .venv subfolder of F.
 When I create a new ipynb file and click on "Select kernel", the list I can choose from contains only conda environment and not the uv environment inside of F.

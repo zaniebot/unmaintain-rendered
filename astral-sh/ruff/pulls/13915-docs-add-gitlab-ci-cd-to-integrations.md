@@ -13,14 +13,14 @@ head: docs_gitlab-cicd
 created_at: 2024-10-24T17:21:38Z
 updated_at: 2024-10-27T11:58:33Z
 url: https://github.com/astral-sh/ruff/pull/13915
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Docs: Add GitLab CI/CD to integrations.
 
 ---
 
-_Pull request opened by @jvacek on 2024-10-24 17:21_
+_@jvacek_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

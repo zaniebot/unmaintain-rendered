@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-16T05:38:54Z
 updated_at: 2024-08-16T17:24:28Z
 url: https://github.com/astral-sh/uv/issues/6142
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Possible bug with Workspace.lock_path initialization
 
 ---
 
-_Issue opened by @idlsoft on 2024-08-16 05:38_
+_@idlsoft_
 
 A [recent change](https://github.com/astral-sh/uv/commit/e3f345ce09e47157af4d83aed76fb9275fbcf757#diff-1727b6c242607c58fed577d975fa5f8c762386d44a037188e605ac3e9a79cc7f) added this [line](https://github.com/astral-sh/uv/blob/15dfb660ab7f1ccca7e57c985968a18a85bb1d86/crates/uv-resolver/src/lock.rs#L2800) to `uv-resolver/src/lock.rs`:
 ```rust

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T09:51:55Z
 updated_at: 2024-10-10T10:21:06Z
 url: https://github.com/astral-sh/uv/issues/8080
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Clarify transitive URL dependency support in documentation
 
 ---
 
-_Issue opened by @charliermarsh on 2024-10-10 09:51_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/issues/1808#issuecomment-2404611095
 

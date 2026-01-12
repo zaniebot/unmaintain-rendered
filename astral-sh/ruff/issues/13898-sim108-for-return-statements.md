@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-23T19:00:17Z
 updated_at: 2024-10-28T20:46:50Z
 url: https://github.com/astral-sh/ruff/issues/13898
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # SIM108 for return statements
 
 ---
 
-_Issue opened by @joppi588 on 2024-10-23 19:00_
+_@joppi588_
 
 For the following code snippet ruff detects a violation of SIM505:
 ```

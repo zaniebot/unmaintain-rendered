@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-24T19:01:52Z
 updated_at: 2025-01-15T10:59:23Z
 url: https://github.com/astral-sh/ruff/issues/15135
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # GitHub New Issue template appears empty / current template is deprecated
 
 ---
 
-_Issue opened by @Avasam on 2024-12-24 19:01_
+_@Avasam_
 
 With the new GitHub issue view,
 ![Image](https://github.com/user-attachments/assets/cedf2512-0bda-413e-9e2f-c9b14890f5ec)

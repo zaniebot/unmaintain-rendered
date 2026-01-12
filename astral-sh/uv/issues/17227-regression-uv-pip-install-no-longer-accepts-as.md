@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-23T11:06:18Z
 updated_at: 2025-12-24T13:47:54Z
 url: https://github.com/astral-sh/uv/issues/17227
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:46Z
 ```
 
 # Regression: `uv pip install` no longer accepts `-` as file for constraints, overrides, exclusions
 
 ---
 
-_Issue opened by @Jesse-Bakker on 2025-12-23 11:06_
+_@Jesse-Bakker_
 
 ### Summary
 

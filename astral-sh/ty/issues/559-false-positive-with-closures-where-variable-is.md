@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-01T02:24:54Z
 updated_at: 2025-09-08T21:08:36Z
 url: https://github.com/astral-sh/ty/issues/559
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # False positive with closures where variable is not reassigned (or del'd)
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-06-01 02:24_
+_@hauntsaninja_
 
 ```
 def foo(x: str | None):

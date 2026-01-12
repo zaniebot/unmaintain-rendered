@@ -13,14 +13,14 @@ assignees: []
 created_at: 2019-05-20T17:47:48Z
 updated_at: 2022-05-05T17:01:02Z
 url: https://github.com/clap-rs/clap/issues/1474
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # `bin_name` overrides `name` in the help message
 
 ---
 
-_Issue opened by @sphynx on 2019-05-20 17:47_
+_@sphynx_
 
 Maintainer's notes
 - Fixing this might also fix #1431 and #1382

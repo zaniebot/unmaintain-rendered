@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-10-26T13:55:51Z
 updated_at: 2022-11-08T04:26:51Z
 url: https://github.com/clap-rs/clap/issues/4425
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Create `arg_required_else` method for `clap::builder::Command` API
 
 ---
 
-_Issue opened by @badjr13 on 2022-10-26 13:55_
+_@badjr13_
 
 ### Please complete the following tasks
 

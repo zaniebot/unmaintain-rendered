@@ -12,14 +12,14 @@ head: typo
 created_at: 2023-02-14T03:20:41Z
 updated_at: 2023-02-14T03:23:19Z
 url: https://github.com/astral-sh/ruff/pull/2884
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # docs(SIM114): fix typo in example Python code
 
 ---
 
-_Pull request opened by @Jeremiah-England on 2023-02-14 03:20_
+_@Jeremiah-England_
 
 I think the original documentation here was probably intended to be more like pseudo-code. But I think it's nice if it is valid Python.
 

@@ -13,14 +13,14 @@ head: zb/env-req
 created_at: 2025-07-25T19:50:35Z
 updated_at: 2025-07-25T20:19:09Z
 url: https://github.com/astral-sh/uv/pull/14905
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:28Z
 ```
 
 # Update validation for `enviroments` and `required-environments` in `uv.toml`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-25 19:50_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/pull/14322/files#r2231891679
 

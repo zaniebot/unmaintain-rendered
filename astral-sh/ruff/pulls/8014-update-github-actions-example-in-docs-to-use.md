@@ -13,14 +13,14 @@ head: zanie/gha-output
 created_at: 2023-10-17T13:53:23Z
 updated_at: 2023-10-17T14:13:26Z
 url: https://github.com/astral-sh/ruff/pull/8014
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Update GitHub actions example in docs to use `--output-format`
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-17 13:53_
+_@zanieb_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-21T12:43:48Z
 updated_at: 2024-11-21T12:50:25Z
 url: https://github.com/astral-sh/ruff/issues/14513
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Bug: Formatting inconsistency with f strings
 
 ---
 
-_Issue opened by @jvacek on 2024-11-21 12:43_
+_@jvacek_
 
 I would assume that the second version of `mystr` would be formatted, but it doesn't
 

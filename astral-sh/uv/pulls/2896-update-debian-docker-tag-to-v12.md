@@ -13,14 +13,14 @@ head: renovate/debian-12.x
 created_at: 2024-04-08T04:24:59Z
 updated_at: 2024-04-08T13:34:48Z
 url: https://github.com/astral-sh/uv/pull/2896
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:17Z
 ```
 
 # Update debian Docker tag to v12
 
 ---
 
-_Pull request opened by @renovate on 2024-04-08 04:24_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

@@ -14,14 +14,14 @@ head: gankra/rst-more
 created_at: 2025-11-27T16:52:09Z
 updated_at: 2025-11-28T13:27:53Z
 url: https://github.com/astral-sh/ruff/pull/21665
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] implement rendering of `.. code:: lang` in docstrings
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-27 16:52_
+_@Gankra_
 
 ## Summary
 

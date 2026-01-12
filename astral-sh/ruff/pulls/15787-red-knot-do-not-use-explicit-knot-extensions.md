@@ -13,14 +13,14 @@ head: david/use-implicit-unknown-declaration
 created_at: 2025-01-28T15:56:51Z
 updated_at: 2025-01-28T16:18:24Z
 url: https://github.com/astral-sh/ruff/pull/15787
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Do not use explicit `knot_extensions.Unknown` declaration
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-28 15:56_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: main
 created_at: 2024-06-20T07:40:09Z
 updated_at: 2024-06-21T06:08:00Z
 url: https://github.com/astral-sh/ruff/pull/11948
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Update `trapz` and `in1d` deprecation for NPY201
 
 ---
 
-_Pull request opened by @dedebenui on 2024-06-20 07:40_
+_@dedebenui_
 
 ## Summary
 

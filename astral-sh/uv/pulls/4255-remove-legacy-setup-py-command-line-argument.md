@@ -14,14 +14,14 @@ head: charlie/legacy-setup-py
 created_at: 2024-06-11T23:45:01Z
 updated_at: 2024-08-19T20:58:01Z
 url: https://github.com/astral-sh/uv/pull/4255
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:07Z
 ```
 
 # Remove `--legacy-setup-py` command-line argument
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-11 23:45_
+_@charliermarsh_
 
 ## Summary
 

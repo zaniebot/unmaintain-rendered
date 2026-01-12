@@ -13,14 +13,14 @@ head: patch-4
 created_at: 2025-06-20T23:58:12Z
 updated_at: 2025-06-23T16:58:21Z
 url: https://github.com/astral-sh/ruff/pull/18842
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [`refurb`] Add fix safety section to `FURB122`
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-20 23:58_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: zb/pin-docs
 created_at: 2024-11-07T20:07:42Z
 updated_at: 2024-11-07T20:10:39Z
 url: https://github.com/astral-sh/uv/pull/8898
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:33Z
 ```
 
 # Add docs for `.python-version` file discovery
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-07 20:07_
+_@zanieb_
 
 _No description provided._
 

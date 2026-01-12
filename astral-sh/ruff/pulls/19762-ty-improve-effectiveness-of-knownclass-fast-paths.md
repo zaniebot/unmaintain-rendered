@@ -14,14 +14,14 @@ head: alex/knownclass-fastpath
 created_at: 2025-08-05T12:13:29Z
 updated_at: 2025-08-05T12:26:15Z
 url: https://github.com/astral-sh/ruff/pull/19762
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] Improve effectiveness of `KnownClass` fast paths in `instance.rs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-05 12:13_
+_@AlexWaygood_
 
 ## Summary
 

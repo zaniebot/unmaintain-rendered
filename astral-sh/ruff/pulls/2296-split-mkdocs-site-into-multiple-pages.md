@@ -12,14 +12,14 @@ head: charlie/split-docs
 created_at: 2023-01-28T13:08:02Z
 updated_at: 2023-01-28T16:10:37Z
 url: https://github.com/astral-sh/ruff/pull/2296
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Split MkDocs site into multiple pages
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-28 13:08_
+_@charliermarsh_
 
 _No description provided._
 

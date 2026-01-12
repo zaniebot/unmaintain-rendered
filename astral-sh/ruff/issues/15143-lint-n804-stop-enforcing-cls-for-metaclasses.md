@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-26T04:50:25Z
 updated_at: 2024-12-26T09:19:43Z
 url: https://github.com/astral-sh/ruff/issues/15143
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [Lint] `N804` Stop enforcing `cls` for metaclasses' `@classmethod`s first argument
 
 ---
 
-_Issue opened by @eliegoudout on 2024-12-26 04:50_
+_@eliegoudout_
 
 Hello,
 

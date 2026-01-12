@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-07T04:21:12Z
 updated_at: 2026-01-07T18:15:14Z
 url: https://github.com/astral-sh/ty/issues/2374
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `isinstance(..., dict)` and top materialization result in false positive on `.get()` call
 
 ---
 
-_Issue opened by @yilei on 2026-01-07 04:21_
+_@yilei_
 
 ### Summary
 

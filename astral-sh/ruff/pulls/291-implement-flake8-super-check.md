@@ -12,14 +12,14 @@ head: issue-273
 created_at: 2022-09-30T09:12:29Z
 updated_at: 2022-09-30T15:28:30Z
 url: https://github.com/astral-sh/ruff/pull/291
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement `flake8-super` check
 
 ---
 
-_Pull request opened by @sobolevn on 2022-09-30 09:12_
+_@sobolevn_
 
 Here's my attempt at implementing this rule.
 

@@ -13,14 +13,14 @@ head: renovate/actions-upload-artifact-digest
 created_at: 2025-12-29T16:11:15Z
 updated_at: 2025-12-30T09:07:59Z
 url: https://github.com/astral-sh/ruff/pull/22250
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:45Z
 ```
 
 # Update actions/upload-artifact digest to b7c566a
 
 ---
 
-_Pull request opened by @renovate on 2025-12-29 16:11_
+_@renovate_
 
 This PR contains the following updates:
 

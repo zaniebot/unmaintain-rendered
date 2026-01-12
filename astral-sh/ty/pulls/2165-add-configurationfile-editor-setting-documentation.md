@@ -11,14 +11,14 @@ head: configuration-file-setting
 created_at: 2025-12-22T16:21:17Z
 updated_at: 2025-12-22T17:43:44Z
 url: https://github.com/astral-sh/ty/pull/2165
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Add configurationFile editor setting documentation
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-12-22 16:21_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to ty! To help us out with reviewing, please consider the following:

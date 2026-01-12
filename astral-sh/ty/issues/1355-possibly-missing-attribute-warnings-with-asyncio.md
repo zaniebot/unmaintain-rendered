@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-14T19:55:20Z
 updated_at: 2025-12-03T16:52:33Z
 url: https://github.com/astral-sh/ty/issues/1355
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # possibly-missing-attribute warnings with asyncio on python 3.14
 
 ---
 
-_Issue opened by @oliverlambson on 2025-10-14 19:55_
+_@oliverlambson_
 
 ### Summary
 

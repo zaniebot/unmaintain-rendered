@@ -14,14 +14,14 @@ head: jtfm/credentials-cli
 created_at: 2025-07-25T14:10:05Z
 updated_at: 2025-09-02T11:42:07Z
 url: https://github.com/astral-sh/uv/pull/14896
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:28Z
 ```
 
 # Add cli for setting and unsetting credentials to system keyring
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-07-25 14:10_
+_@jtfmumm_
 
 This is a work in progress that depends on #14559. There are still open design questions.
 

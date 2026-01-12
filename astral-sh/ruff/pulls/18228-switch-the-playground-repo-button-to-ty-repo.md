@@ -14,14 +14,14 @@ head: cjm/repo-button
 created_at: 2025-05-20T17:44:47Z
 updated_at: 2025-05-21T06:35:14Z
 url: https://github.com/astral-sh/ruff/pull/18228
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # switch the playground repo button to ty repo
 
 ---
 
-_Pull request opened by @carljm on 2025-05-20 17:44_
+_@carljm_
 
 ## Summary
 

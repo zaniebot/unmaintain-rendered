@@ -13,14 +13,14 @@ head: ty-t-strings
 created_at: 2025-08-25T17:44:47Z
 updated_at: 2025-08-25T18:51:48Z
 url: https://github.com/astral-sh/ruff/pull/20085
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [ty] Add support for PEP 750 t-strings 
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-08-25 17:44_
+_@dylwil3_
 
 This PR attempts to add support for inferring `string.templatelib.Template` for t-string literals.
 

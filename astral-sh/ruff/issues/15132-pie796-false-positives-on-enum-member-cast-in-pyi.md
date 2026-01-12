@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-24T17:01:26Z
 updated_at: 2024-12-30T14:52:37Z
 url: https://github.com/astral-sh/ruff/issues/15132
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `PIE796` false-positives on enum member cast in pyi files
 
 ---
 
-_Issue opened by @Avasam on 2024-12-24 17:01_
+_@Avasam_
 
 Found this whilst applying various Ruff groups on typeshed out of curiosity.
 

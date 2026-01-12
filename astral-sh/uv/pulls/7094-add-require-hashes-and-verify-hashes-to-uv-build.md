@@ -14,14 +14,14 @@ head: charlie/req-hash
 created_at: 2024-09-05T18:47:44Z
 updated_at: 2024-09-05T19:22:04Z
 url: https://github.com/astral-sh/uv/pull/7094
-synced_at: 2026-01-10T12:53:39Z
+synced_at: 2026-01-12T16:07:41Z
 ```
 
 # Add `--require-hashes` and `--verify-hashes` to `uv build`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-05 18:47_
+_@charliermarsh_
 
 _No description provided._
 

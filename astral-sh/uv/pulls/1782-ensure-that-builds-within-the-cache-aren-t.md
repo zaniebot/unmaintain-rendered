@@ -12,14 +12,14 @@ head: charlie/git
 created_at: 2024-02-20T20:16:54Z
 updated_at: 2024-02-20T20:55:25Z
 url: https://github.com/astral-sh/uv/pull/1782
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:44Z
 ```
 
 # Ensure that builds within the cache aren't considered Git repositories
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-20 20:16_
+_@charliermarsh_
 
 ## Summary
 

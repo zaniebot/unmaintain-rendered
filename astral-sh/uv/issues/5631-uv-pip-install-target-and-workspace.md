@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-30T19:18:24Z
 updated_at: 2025-07-30T19:23:08Z
 url: https://github.com/astral-sh/uv/issues/5631
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # uv pip install --target and workspace
 
 ---
 
-_Issue opened by @jpambrun-vida on 2024-07-30 19:18_
+_@jpambrun-vida_
 
 I am struggling to understand the expected behavior of `uv pip install --target /dest` in conjunction with workspaces. 
 

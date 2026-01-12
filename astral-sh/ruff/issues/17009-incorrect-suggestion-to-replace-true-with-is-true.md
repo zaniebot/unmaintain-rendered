@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-03-27T08:31:18Z
 updated_at: 2025-03-27T10:56:41Z
 url: https://github.com/astral-sh/ruff/issues/17009
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Incorrect suggestion to replace == True with is True for pandas dataframe
 
 ---
 
-_Issue opened by @unknown-eps on 2025-03-27 08:31_
+_@unknown-eps_
 
 ### Summary
 

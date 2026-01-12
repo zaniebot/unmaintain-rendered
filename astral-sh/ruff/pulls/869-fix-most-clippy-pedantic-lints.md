@@ -12,14 +12,14 @@ head: clippy-pedantic
 created_at: 2022-11-22T03:46:54Z
 updated_at: 2025-02-12T11:24:37Z
 url: https://github.com/astral-sh/ruff/pull/869
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix most clippy::pedantic lints
 
 ---
 
-_Pull request opened by @andersk on 2022-11-22 03:46_
+_@andersk_
 
 🐙 Consider merging this with **Create a merge commit** or **Rebase and merge** rather than Squash and merge ([documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/about-merge-methods-on-github)), as squashing would destroy the separation between individual commits whose messages provide context for each change.
 

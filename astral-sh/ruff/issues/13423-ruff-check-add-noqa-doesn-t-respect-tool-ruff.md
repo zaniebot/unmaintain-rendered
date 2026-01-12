@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-20T18:56:59Z
 updated_at: 2024-09-20T19:39:37Z
 url: https://github.com/astral-sh/ruff/issues/13423
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `ruff check --add-noqa` doesn't respect `[tool.ruff.lint]` exclusions
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-20 18:56_
+_@charliermarsh_
 
 It will run over all included files, even if the linter excludes them. As such, `--add-noqa` will modify files that wouldn't be reported on with `ruff check`.
 

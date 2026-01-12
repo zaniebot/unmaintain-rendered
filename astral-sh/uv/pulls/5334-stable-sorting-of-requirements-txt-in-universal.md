@@ -13,14 +13,14 @@ head: konsti/stable-sorting-of-requirements-txt-in-univerval-mode
 created_at: 2024-07-23T14:22:30Z
 updated_at: 2024-07-23T14:46:34Z
 url: https://github.com/astral-sh/uv/pull/5334
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:45Z
 ```
 
 # Stable sorting of requirements.txt in universal mode
 
 ---
 
-_Pull request opened by @konstin on 2024-07-23 14:22_
+_@konstin_
 
 The `RequirementsTxtComparator` was written assuming there is one distribution per package name. This changed with the universal resolution, which allows multiple versions or urls for the same package name. The sorting we emitted for these new entries was incidental.
 

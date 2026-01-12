@@ -13,14 +13,14 @@ head: zb/python-env
 created_at: 2025-05-09T17:28:24Z
 updated_at: 2025-05-10T20:20:02Z
 url: https://github.com/astral-sh/ruff/pull/17991
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # [ty] Add basic support for non-virtual Python environments
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-09 17:28_
+_@zanieb_
 
 This adds basic support for non-virtual Python environments by accepting a directory without a `pyvenv.cfg` which allows existing, subsequent site-packages discovery logic to succeed. We can do better here in the long-term, by adding more eager validation (for error messages) and parsing the Python version from the discovered site-packages directory (which isn't relevant yet, because we don't use the discovered Python version from virtual environments as the default `--python-version` yet either). 
 

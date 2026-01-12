@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-12T00:45:55Z
 updated_at: 2025-06-12T17:45:34Z
 url: https://github.com/astral-sh/uv/issues/13981
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # `marker` isn't respected for URL and path sources
 
 ---
 
-_Issue opened by @oconnor663 on 2025-06-12 00:45_
+_@oconnor663_
 
 Here's an example:
 ```

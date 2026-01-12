@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-07T14:20:25Z
 updated_at: 2026-01-06T16:02:12Z
 url: https://github.com/astral-sh/uv/issues/16151
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:25Z
 ```
 
 # how to only fetch a source when requested
 
 ---
 
-_Issue opened by @sean-abbott on 2025-10-07 14:20_
+_@sean-abbott_
 
 ### Question
 

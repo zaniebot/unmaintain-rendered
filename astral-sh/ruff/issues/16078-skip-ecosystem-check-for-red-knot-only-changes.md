@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-10T14:50:18Z
 updated_at: 2025-02-10T17:35:02Z
 url: https://github.com/astral-sh/ruff/issues/16078
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Skip ecosystem check for red-knot only changes
 
 ---
 
-_Issue opened by @MichaReiser on 2025-02-10 14:50_
+_@MichaReiser_
 
 ### Description
 

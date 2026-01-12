@@ -13,14 +13,14 @@ head: charlie/variant
 created_at: 2025-05-13T03:36:13Z
 updated_at: 2025-05-13T07:07:12Z
 url: https://github.com/astral-sh/uv/pull/13422
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:40Z
 ```
 
 # Remove unused source tree variant
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-13 03:36_
+_@charliermarsh_
 
 ## Summary
 

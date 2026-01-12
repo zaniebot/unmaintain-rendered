@@ -12,14 +12,14 @@ head: dhruv/release-jupyter
 created_at: 2023-06-26T04:15:51Z
 updated_at: 2023-06-26T15:52:44Z
 url: https://github.com/astral-sh/ruff/pull/5363
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Experimental release for Jupyter notebook integration
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-26 04:15_
+_@dhruvmanila_
 
 ## Summary
 

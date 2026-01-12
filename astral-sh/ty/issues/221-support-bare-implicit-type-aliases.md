@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-09T18:56:57Z
 updated_at: 2025-12-03T09:42:13Z
 url: https://github.com/astral-sh/ty/issues/221
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # support bare/implicit type aliases
 
 ---
 
-_Issue opened by @carljm on 2025-01-09 18:56_
+_@carljm_
 
 We already support simple cases of bare type aliases (e.g. `MyInt = int`) if they fall out correctly from evaluating the RHS as a value expression. But for more complex (and useful!) cases (e.g. `MyType = int | str`) we fail because we evaluate the RHS as a value expression and it needs to be evaluated as a type expression.
 

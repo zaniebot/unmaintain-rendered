@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-13T10:13:52Z
 updated_at: 2025-02-13T16:00:15Z
 url: https://github.com/astral-sh/uv/issues/11474
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # Dependency Group Includes From [project]
 
 ---
 
-_Issue opened by @RomainBrault on 2025-02-13 10:13_
+_@RomainBrault_
 
 ### Question
 

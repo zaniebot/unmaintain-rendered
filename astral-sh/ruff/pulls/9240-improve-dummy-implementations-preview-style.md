@@ -14,14 +14,14 @@ head: dummy-implementations
 created_at: 2023-12-22T03:12:21Z
 updated_at: 2023-12-22T03:44:16Z
 url: https://github.com/astral-sh/ruff/pull/9240
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Improve `dummy_implementations` preview style formatting
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-22 03:12_
+_@MichaReiser_
 
 ## Summary
 

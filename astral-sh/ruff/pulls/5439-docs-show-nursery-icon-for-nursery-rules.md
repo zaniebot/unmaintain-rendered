@@ -13,14 +13,14 @@ head: docs-nursery-icon
 created_at: 2023-06-29T13:40:51Z
 updated_at: 2023-07-10T02:24:58Z
 url: https://github.com/astral-sh/ruff/pull/5439
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # docs: show nursery icon for nursery rules
 
 ---
 
-_Pull request opened by @akx on 2023-06-29 13:40_
+_@akx_
 
 ## Summary
 

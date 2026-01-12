@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-20T13:39:52Z
 updated_at: 2023-03-26T18:17:36Z
 url: https://github.com/astral-sh/ruff/issues/3625
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # E501 for multi-words link name 
 
 ---
 
-_Issue opened by @FBruzzesi on 2023-03-20 13:39_
+_@FBruzzesi_
 
 When adding links to docstring, if the link name has multiple words then `E501 Line too long` is raised, even if the link is in a single line. (Related to #3051) 
 

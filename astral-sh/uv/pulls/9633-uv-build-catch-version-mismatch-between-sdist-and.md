@@ -13,14 +13,14 @@ head: konsti/uv-build-catch-invalid-filename
 created_at: 2024-12-04T09:37:38Z
 updated_at: 2024-12-04T14:21:03Z
 url: https://github.com/astral-sh/uv/pull/9633
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:54Z
 ```
 
 # uv build: Catch version mismatch between sdist and wheel 
 
 ---
 
-_Pull request opened by @konstin on 2024-12-04 09:37_
+_@konstin_
 
 When building a wheel from a source distribution or both a source distribution and a wheel, the versions in their filenames must be the same.
 

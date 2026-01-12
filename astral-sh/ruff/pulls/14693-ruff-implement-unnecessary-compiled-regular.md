@@ -13,14 +13,14 @@ head: rule-unncessary-regular-expression-compile
 created_at: 2024-11-30T18:59:33Z
 updated_at: 2025-01-03T12:39:42Z
 url: https://github.com/astral-sh/ruff/pull/14693
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`ruff`] Implement `unnecessary-compiled-regular-expression` (RUF056)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-30 18:59_
+_@sbrugman_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-13T03:31:46Z
 updated_at: 2025-12-27T19:11:27Z
 url: https://github.com/astral-sh/ty/issues/181
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Infer `lambda` expression based on the surrounding context
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-03-13 03:31_
+_@dhruvmanila_
 
 Currently, the inference of `lambda` expression is done in isolation which isn't very useful because parameters in a `lambda` expression cannot be annotated. For example,
 

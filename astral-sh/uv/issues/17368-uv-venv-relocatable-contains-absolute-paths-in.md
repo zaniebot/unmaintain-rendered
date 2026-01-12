@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-08T21:58:59Z
 updated_at: 2026-01-09T18:20:30Z
 url: https://github.com/astral-sh/uv/issues/17368
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # uv venv --relocatable contains absolute paths in csh activate script
 
 ---
 
-_Issue opened by @alastair on 2026-01-08 21:58_
+_@alastair_
 
 ### Summary
 

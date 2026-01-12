@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-02T21:20:45Z
 updated_at: 2024-09-03T04:31:50Z
 url: https://github.com/astral-sh/uv/issues/6948
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # `uv pip install` under certain circumstances generates long paths (`\\?\`) on Windows under Python 3.13t when it does not do so under other Python versions
 
 ---
 
-_Issue opened by @burgholzer on 2024-09-02 21:20_
+_@burgholzer_
 
 When run under free-threading Python 3.13 on Windows, `uv` under certain circumstances emits long paths (prefixed with `\\?\`) which seem to trip up certain compilers (such as MSCV).
 A lot more context is available in https://github.com/pypa/cibuildwheel/issues/1975

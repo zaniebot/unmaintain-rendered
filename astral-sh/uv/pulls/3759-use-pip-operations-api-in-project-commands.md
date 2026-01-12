@@ -13,14 +13,14 @@ head: charlie/ops
 created_at: 2024-05-22T19:22:40Z
 updated_at: 2024-05-22T19:43:13Z
 url: https://github.com/astral-sh/uv/pull/3759
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:50Z
 ```
 
 # Use pip "operations" API in project commands
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-22 19:22_
+_@charliermarsh_
 
 ## Summary
 

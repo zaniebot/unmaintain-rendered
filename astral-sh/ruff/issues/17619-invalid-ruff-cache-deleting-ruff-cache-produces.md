@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-25T00:21:34Z
 updated_at: 2025-11-21T23:39:26Z
 url: https://github.com/astral-sh/ruff/issues/17619
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Invalid .ruff_cache (deleting .ruff_cache produces different results)
 
 ---
 
-_Issue opened by @PCSwingle on 2025-04-25 00:21_
+_@PCSwingle_
 
 ### Summary
 

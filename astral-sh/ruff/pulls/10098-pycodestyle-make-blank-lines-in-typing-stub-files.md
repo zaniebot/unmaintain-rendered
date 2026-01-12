@@ -14,14 +14,14 @@ head: blank-lines-typing-stub
 created_at: 2024-02-23T15:12:40Z
 updated_at: 2024-03-05T11:48:50Z
 url: https://github.com/astral-sh/ruff/pull/10098
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`pycodestyle`]: Make blank lines in typing stub files optional (`E3*`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-23 15:12_
+_@MichaReiser_
 
 ## Summary
 

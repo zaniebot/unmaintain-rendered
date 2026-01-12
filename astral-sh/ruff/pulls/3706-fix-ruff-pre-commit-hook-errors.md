@@ -12,14 +12,14 @@ head: fix-ruff-pre-commit-hook-errors
 created_at: 2023-03-24T02:00:41Z
 updated_at: 2023-03-24T03:16:08Z
 url: https://github.com/astral-sh/ruff/pull/3706
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Fix Ruff pre-commit hook errors
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-24 02:00_
+_@JonathanPlasse_
 
 use `--extend-ignore=E203` as it should not be present. 
 

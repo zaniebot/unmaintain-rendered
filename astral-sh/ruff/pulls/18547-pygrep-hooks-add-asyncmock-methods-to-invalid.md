@@ -14,14 +14,14 @@ head: feat/pgh005-add-async-mock-methods
 created_at: 2025-06-08T08:49:51Z
 updated_at: 2025-06-24T21:32:42Z
 url: https://github.com/astral-sh/ruff/pull/18547
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # [`pygrep_hooks`] Add `AsyncMock` methods to `invalid-mock-access` (`PGH005`)
 
 ---
 
-_Pull request opened by @robsdedude on 2025-06-08 08:49_
+_@robsdedude_
 
 ## Summary
 This PR expands PGH005 to also check for AsyncMock methods in the same vein. E.g., currently `assert mock.not_called` is linted. This PR adds the corresponding async assertions `assert mock.not_awaited()`.

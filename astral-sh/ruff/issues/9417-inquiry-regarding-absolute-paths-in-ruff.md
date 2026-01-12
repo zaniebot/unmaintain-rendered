@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-06T22:44:53Z
 updated_at: 2024-12-14T16:22:37Z
 url: https://github.com/astral-sh/ruff/issues/9417
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Inquiry Regarding Absolute Paths in Ruff
 
 ---
 
-_Issue opened by @brupelo on 2024-01-06 22:44_
+_@brupelo_
 
 Hello everyone,
 

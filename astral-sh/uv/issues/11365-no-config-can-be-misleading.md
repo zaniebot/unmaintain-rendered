@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T00:40:07Z
 updated_at: 2025-08-08T14:12:37Z
 url: https://github.com/astral-sh/uv/issues/11365
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # --no-config  can be misleading
 
 ---
 
-_Issue opened by @KRRT7 on 2025-02-10 00:40_
+_@KRRT7_
 
 ### Summary
 

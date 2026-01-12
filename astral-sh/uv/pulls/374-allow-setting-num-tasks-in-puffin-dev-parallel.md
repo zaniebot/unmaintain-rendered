@@ -12,14 +12,14 @@ head: num-tasks-in-puffin-dev-parallel
 created_at: 2023-11-09T13:07:56Z
 updated_at: 2023-11-09T13:12:05Z
 url: https://github.com/astral-sh/uv/pull/374
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # Allow setting num tasks in puffin-dev parallel resolve
 
 ---
 
-_Pull request opened by @konstin on 2023-11-09 13:07_
+_@konstin_
 
 _No description provided._
 

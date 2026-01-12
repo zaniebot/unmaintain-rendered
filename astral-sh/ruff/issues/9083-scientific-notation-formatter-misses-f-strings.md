@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-11T03:21:56Z
 updated_at: 2023-12-11T15:25:46Z
 url: https://github.com/astral-sh/ruff/issues/9083
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Scientific notation formatter misses f-strings
 
 ---
 
-_Issue opened by @claydugo on 2023-12-11 03:21_
+_@claydugo_
 
 Sorry for not listing the actual rule.
 I tried all the flags in `ruff format --help` but never got an output that explains which rule is making the change. 

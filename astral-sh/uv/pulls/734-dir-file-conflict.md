@@ -12,14 +12,14 @@ head: dir-file-conflicting
 created_at: 2023-12-27T20:11:16Z
 updated_at: 2024-01-22T09:48:54Z
 url: https://github.com/astral-sh/uv/pull/734
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Dir-file conflict
 
 ---
 
-_Pull request opened by @konstin on 2023-12-27 20:11_
+_@konstin_
 
 ```
 virtualenv --clear -p 3.10 .venv -q

@@ -12,14 +12,14 @@ head: charlie/globals
 created_at: 2023-05-27T20:02:46Z
 updated_at: 2023-05-28T02:48:45Z
 url: https://github.com/astral-sh/ruff/pull/4686
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove globals table from `Scope`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-27 20:02_
+_@charliermarsh_
 
 ## Summary
 

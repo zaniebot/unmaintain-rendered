@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-10-19T17:16:25Z
 updated_at: 2018-08-02T03:29:54Z
 url: https://github.com/clap-rs/clap/issues/696
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Add AllowNegativeNumbers (similar to AllowLeadingHyphen, but more restricted)
 
 ---
 
-_Issue opened by @laishulu on 2016-10-19 17:16_
+_@laishulu_
 
 I have a tool which should be invoked by `mytool --foo`, but when I invoke by `mytool --foo --bar`, it will just run as normal without any warning. 
 

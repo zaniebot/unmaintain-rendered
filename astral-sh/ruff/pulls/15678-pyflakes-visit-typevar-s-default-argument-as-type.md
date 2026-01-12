@@ -11,14 +11,14 @@ head: F821
 created_at: 2025-01-22T22:42:59Z
 updated_at: 2025-01-22T23:04:05Z
 url: https://github.com/astral-sh/ruff/pull/15678
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`pyflakes`] Visit `TypeVar`'s `default` argument as type expression (`F821`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-22 22:42_
+_@InSyncWithFoo_
 
 ## Summary
 

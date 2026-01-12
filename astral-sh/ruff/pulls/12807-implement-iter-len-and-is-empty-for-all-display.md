@@ -13,14 +13,14 @@ head: alex/display-len
 created_at: 2024-08-11T21:30:35Z
 updated_at: 2024-08-12T16:51:00Z
 url: https://github.com/astral-sh/ruff/pull/12807
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Implement `iter()`, `len()` and `is_empty()` for all display-literal AST nodes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-11 21:30_
+_@AlexWaygood_
 
 ## Summary
 

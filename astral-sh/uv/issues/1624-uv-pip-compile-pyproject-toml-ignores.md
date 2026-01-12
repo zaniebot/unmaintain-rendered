@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-18T04:44:09Z
 updated_at: 2024-03-25T20:27:43Z
 url: https://github.com/astral-sh/uv/issues/1624
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # `uv pip compile pyproject.toml` ignores dependencies declared in `setup.cfg`
 
 ---
 
-_Issue opened by @SnoopJ on 2024-02-18 04:44_
+_@SnoopJ_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

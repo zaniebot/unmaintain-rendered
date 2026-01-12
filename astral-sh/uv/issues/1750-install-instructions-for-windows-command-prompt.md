@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-20T12:37:17Z
 updated_at: 2024-02-22T09:25:34Z
 url: https://github.com/astral-sh/uv/issues/1750
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Install instructions for Windows command prompt
 
 ---
 
-_Issue opened by @12932 on 2024-02-20 12:37_
+_@12932_
 
 In the README.md [document](https://github.com/astral-sh/uv/blob/main/README.md)
 

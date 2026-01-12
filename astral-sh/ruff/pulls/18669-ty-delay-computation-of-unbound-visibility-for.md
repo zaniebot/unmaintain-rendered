@@ -13,14 +13,14 @@ head: david/fix-627
 created_at: 2025-06-13T19:32:32Z
 updated_at: 2025-06-13T19:50:58Z
 url: https://github.com/astral-sh/ruff/pull/18669
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [ty] Delay computation of 'unbound' visibility for implicit instance attributes
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-13 19:32_
+_@sharkdp_
 
 ## Summary
 

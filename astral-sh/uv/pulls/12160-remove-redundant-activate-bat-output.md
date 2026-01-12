@@ -14,14 +14,14 @@ head: charlie/act
 created_at: 2025-03-14T01:25:58Z
 updated_at: 2025-03-14T01:35:50Z
 url: https://github.com/astral-sh/uv/pull/12160
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:09Z
 ```
 
 # Remove redundant `activate.bat` output
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-14 01:25_
+_@charliermarsh_
 
 ## Summary
 

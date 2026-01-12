@@ -13,14 +13,14 @@ head: charlie/pref
 created_at: 2024-05-30T19:49:39Z
 updated_at: 2024-05-30T20:13:01Z
 url: https://github.com/astral-sh/uv/pull/3928
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:55Z
 ```
 
 # Remove installed packages from preferences
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-30 19:49_
+_@charliermarsh_
 
 ## Summary
 

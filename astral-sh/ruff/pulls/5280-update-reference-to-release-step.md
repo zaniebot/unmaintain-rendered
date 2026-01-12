@@ -12,14 +12,14 @@ head: charlie/yaml
 created_at: 2023-06-22T01:54:53Z
 updated_at: 2023-06-22T02:20:05Z
 url: https://github.com/astral-sh/ruff/pull/5280
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Update reference to release step
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-22 01:54_
+_@charliermarsh_
 
 _No description provided._
 

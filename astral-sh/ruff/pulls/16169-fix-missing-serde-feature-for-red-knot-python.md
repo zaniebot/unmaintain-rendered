@@ -13,14 +13,14 @@ head: micha/fix-missing-serde-feature
 created_at: 2025-02-14T20:28:07Z
 updated_at: 2025-02-14T20:31:56Z
 url: https://github.com/astral-sh/ruff/pull/16169
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Fix missing serde feature for red_knot_python_semantic
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-14 20:28_
+_@MichaReiser_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: charlie/unc
 created_at: 2024-02-12T00:47:18Z
 updated_at: 2024-02-12T00:51:37Z
 url: https://github.com/astral-sh/uv/pull/1277
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:33Z
 ```
 
 # Strip UNC prefix when setting working directory
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-12 00:47_
+_@charliermarsh_
 
 ## Summary
 

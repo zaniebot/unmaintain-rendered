@@ -14,14 +14,14 @@ head: format-module
 created_at: 2023-06-02T12:23:09Z
 updated_at: 2023-06-05T08:56:33Z
 url: https://github.com/astral-sh/ruff/pull/4808
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Implement module formatting using JoinNodesBuilder
 
 ---
 
-_Pull request opened by @konstin on 2023-06-02 12:23_
+_@konstin_
 
 This uses JoinNodesBuilder to implement module formatting for #4800
 

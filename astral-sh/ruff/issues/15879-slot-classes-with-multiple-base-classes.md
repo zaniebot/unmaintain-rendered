@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-02T18:07:43Z
 updated_at: 2025-02-04T09:16:53Z
 url: https://github.com/astral-sh/ruff/issues/15879
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # SLOT: Classes with multiple base classes
 
 ---
 
-_Issue opened by @Skylion007 on 2025-02-02 18:07_
+_@Skylion007_
 
 ### Description
 

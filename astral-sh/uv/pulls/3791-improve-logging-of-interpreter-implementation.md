@@ -13,14 +13,14 @@ head: zb/impl-display
 created_at: 2024-05-23T13:42:51Z
 updated_at: 2024-05-23T15:00:46Z
 url: https://github.com/astral-sh/uv/pull/3791
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:51Z
 ```
 
 # Improve logging of interpreter implementation
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-23 13:42_
+_@zanieb_
 
 ```
 Found Python interpreter CPython 3.12.3 at...

@@ -12,14 +12,14 @@ head: geofft/python-download-old-versions
 created_at: 2025-07-17T18:54:32Z
 updated_at: 2025-10-14T11:59:24Z
 url: https://github.com/astral-sh/uv/pull/14687
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:21Z
 ```
 
 # Support http/https URLs in `uv python --python-downloads-json-url`
 
 ---
 
-_Pull request opened by @geofft on 2025-07-17 18:54_
+_@geofft_
 
 _No description provided._
 

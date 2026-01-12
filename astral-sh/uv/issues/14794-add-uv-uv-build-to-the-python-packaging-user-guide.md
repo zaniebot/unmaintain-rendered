@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-21T16:03:46Z
 updated_at: 2025-07-21T16:45:39Z
 url: https://github.com/astral-sh/uv/issues/14794
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # Add `uv` / `uv_build` to the Python Packaging User Guide
 
 ---
 
-_Issue opened by @johnthagen on 2025-07-21 16:03_
+_@johnthagen_
 
 `uv` and `uv_build` are not mentioned in the Python Packaging User Guide. For example at:
 

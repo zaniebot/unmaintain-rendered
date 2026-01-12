@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-05T23:47:11Z
 updated_at: 2025-06-06T17:36:46Z
 url: https://github.com/astral-sh/uv/issues/13875
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # Why are so many regular logs using printer.stderr?
 
 ---
 
-_Issue opened by @NonsenseSynapse on 2025-06-05 23:47_
+_@NonsenseSynapse_
 
 ### Question
 

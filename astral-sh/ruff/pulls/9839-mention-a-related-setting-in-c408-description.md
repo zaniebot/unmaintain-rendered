@@ -13,14 +13,14 @@ head: C408-settings
 created_at: 2024-02-05T17:45:17Z
 updated_at: 2024-02-06T14:28:06Z
 url: https://github.com/astral-sh/ruff/pull/9839
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Mention a related setting in C408 description
 
 ---
 
-_Pull request opened by @eerovaher on 2024-02-05 17:45_
+_@eerovaher_
 
 #2977 added the `allow-dict-calls-with-keyword-arguments` configuration option for the `unnecessary-collection-call (C408)` rule, but it did not update the rule description.
 

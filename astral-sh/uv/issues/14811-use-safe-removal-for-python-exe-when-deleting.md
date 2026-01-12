@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-22T13:15:05Z
 updated_at: 2025-11-09T14:31:00Z
 url: https://github.com/astral-sh/uv/issues/14811
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # Use safe removal for `python.exe` when deleting virtual environments
 
 ---
 
-_Issue opened by @zanieb on 2025-07-22 13:15_
+_@zanieb_
 
 As discussed in https://github.com/astral-sh/uv/issues/13986 and https://github.com/astral-sh/uv/issues/14808, we should use something like `self_replace` for `python.exe` in virtual environments, as it's common for the LSP to lock it.
 

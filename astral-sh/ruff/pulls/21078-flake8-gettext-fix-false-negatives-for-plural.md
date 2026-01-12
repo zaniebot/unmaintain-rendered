@@ -13,14 +13,14 @@ head: fix-21062
 created_at: 2025-10-26T01:31:37Z
 updated_at: 2025-12-29T22:03:22Z
 url: https://github.com/astral-sh/ruff/pull/21078
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [`flake8-gettext`] Fix false negatives for plural argument of ngettext (`INT001`, `INT002`, `INT003`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-26 01:31_
+_@danparizher_
 
 ## Summary
 Fixes #21062. Extends the `INT001`, `INT002`, and `INT003` lint rules to check both the singular and plural arguments of `ngettext` function calls, fixing false negatives where formatting issues in the plural argument were not being detected.

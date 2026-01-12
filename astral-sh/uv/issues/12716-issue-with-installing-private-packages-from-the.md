@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T14:31:34Z
 updated_at: 2025-04-14T07:34:03Z
 url: https://github.com/astral-sh/uv/issues/12716
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # Issue with installing private packages from the Google Artifact Registry
 
 ---
 
-_Issue opened by @kmkolasinski on 2025-04-07 14:31_
+_@kmkolasinski_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: micha/server-watch
 created_at: 2025-05-07T12:44:14Z
 updated_at: 2025-05-07T17:03:32Z
 url: https://github.com/astral-sh/ruff/pull/17912
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [ty] Add basic file watching to server
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-07 12:44_
+_@MichaReiser_
 
 ## Summary
 

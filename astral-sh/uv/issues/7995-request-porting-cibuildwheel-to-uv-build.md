@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-08T05:33:56Z
 updated_at: 2024-10-22T23:59:02Z
 url: https://github.com/astral-sh/uv/issues/7995
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Request: porting `cibuildwheel` to `uv build`
 
 ---
 
-_Issue opened by @jamesbraza on 2024-10-08 05:33_
+_@jamesbraza_
 
 As of `uv==0.4.19`, it seems `uv build` supports `--wheel`, but it does not support platform-specific wheels like https://github.com/pypa/cibuildwheel.
 

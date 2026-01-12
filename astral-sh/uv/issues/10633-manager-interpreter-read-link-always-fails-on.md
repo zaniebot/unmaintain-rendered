@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-15T13:26:23Z
 updated_at: 2025-01-15T20:17:09Z
 url: https://github.com/astral-sh/uv/issues/10633
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # Manager interpreter read link always fails on Windows
 
 ---
 
-_Issue opened by @konstin on 2025-01-15 13:26_
+_@konstin_
 
 The following check always fails on Windows, since Windows Pythons are trampolines not links. On Windows, we should directly try to read the launcher.
 

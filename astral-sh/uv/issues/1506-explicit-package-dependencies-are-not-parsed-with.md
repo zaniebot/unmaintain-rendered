@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T15:53:47Z
 updated_at: 2024-02-18T03:10:56Z
 url: https://github.com/astral-sh/uv/issues/1506
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # explicit `package @ .` dependencies are not parsed with `--editable` but should be
 
 ---
 
-_Issue opened by @altendky on 2024-02-16 15:53_
+_@altendky_
 
 ```console
 $ git clone https://github.com/twisted/twisted .

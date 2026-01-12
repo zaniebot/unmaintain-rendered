@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-27T16:08:43Z
 updated_at: 2024-12-02T17:22:20Z
 url: https://github.com/astral-sh/ruff/issues/3758
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Implement more flake8-bugbear opinionated rules
 
 ---
 
-_Issue opened by @sjdemartini on 2023-03-27 16:08_
+_@sjdemartini_
 
 Picking up where https://github.com/charliermarsh/ruff/issues/2954 left off, there were a few opinionated (B9xx flake8-bugbear rules) checks left to be implemented in Ruff:
 

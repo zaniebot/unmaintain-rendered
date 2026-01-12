@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-31T07:39:11Z
 updated_at: 2025-06-17T17:56:52Z
 url: https://github.com/astral-sh/ty/issues/556
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Support pointing to a system-installation Python executable with `--python` on Windows
 
 ---
 
-_Issue opened by @Andrej730 on 2025-05-31 07:39_
+_@Andrej730_
 
 ### Summary
 

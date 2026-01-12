@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-03T03:29:43Z
 updated_at: 2025-09-05T09:20:13Z
 url: https://github.com/astral-sh/uv/issues/15650
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # Infinite recursion when parsing circular -r references in multiple requirements.txt
 
 ---
 
-_Issue opened by @dean-tate on 2025-09-03 03:29_
+_@dean-tate_
 
 ### Summary
 

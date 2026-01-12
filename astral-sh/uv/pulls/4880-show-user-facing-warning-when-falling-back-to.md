@@ -13,14 +13,14 @@ head: charlie/warn
 created_at: 2024-07-08T00:35:41Z
 updated_at: 2024-07-08T13:35:59Z
 url: https://github.com/astral-sh/uv/pull/4880
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:30Z
 ```
 
 # Show user-facing warning when falling back to copy installs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-08 00:35_
+_@charliermarsh_
 
 ## Summary
 

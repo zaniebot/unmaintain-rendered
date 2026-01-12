@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-04-10T07:25:02Z
 updated_at: 2020-04-14T21:38:05Z
 url: https://github.com/clap-rs/clap/issues/1803
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Improve debug implementation of Id
 
 ---
 
-_Issue opened by @pksunkara on 2020-04-10 07:25_
+_@pksunkara_
 
 I have an idea: Id can be represented as
 ```rust

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-12-26T21:18:35Z
 updated_at: 2025-12-29T15:16:14Z
 url: https://github.com/clap-rs/clap/issues/6201
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Path completions don't work across symlinks
 
 ---
 
-_Issue opened by @devjgm on 2025-12-26 21:18_
+_@devjgm_
 
 ### Please complete the following tasks
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-27T05:46:54Z
 updated_at: 2023-02-02T02:39:47Z
 url: https://github.com/astral-sh/ruff/issues/2243
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement isort option lines_after_imports
 
 ---
 
-_Issue opened by @qbedard on 2023-01-27 05:46_
+_@qbedard_
 
 The isort configuration is missing the [lines_after_imports](https://pycqa.github.io/isort/docs/configuration/options.html#lines-after-imports) option. 😭
 

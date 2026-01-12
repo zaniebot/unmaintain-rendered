@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-12T09:37:55Z
 updated_at: 2026-01-08T23:55:41Z
 url: https://github.com/astral-sh/ty/issues/1337
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # hang checking calls to function with hundreds of overloads (started in 0.0.1-alpha.22)
 
 ---
 
-_Issue opened by @galah92 on 2025-10-12 09:37_
+_@galah92_
 
 ### Summary
 

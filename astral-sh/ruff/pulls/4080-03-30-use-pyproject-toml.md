@@ -11,14 +11,14 @@ head: 03-30-use_pyproject-toml
 created_at: 2023-04-24T15:15:58Z
 updated_at: 2023-04-24T16:07:35Z
 url: https://github.com/astral-sh/ruff/pull/4080
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # 03 30 use pyproject toml
 
 ---
 
-_Pull request opened by @holzkohlengrill on 2023-04-24 15:15_
+_@holzkohlengrill_
 
 _No description provided._
 

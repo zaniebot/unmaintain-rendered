@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-26T13:42:12Z
 updated_at: 2025-10-28T12:18:14Z
 url: https://github.com/astral-sh/uv/issues/16453
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # Incorrect debug message order when using `--system` flag to uv pip interface commands
 
 ---
 
-_Issue opened by @DhavalGojiya on 2025-10-26 13:42_
+_@DhavalGojiya_
 
 ### Summary
 

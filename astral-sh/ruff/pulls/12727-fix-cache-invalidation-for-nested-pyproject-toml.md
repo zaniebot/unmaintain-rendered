@@ -13,14 +13,14 @@ head: fix-12721
 created_at: 2024-08-07T06:33:37Z
 updated_at: 2024-08-07T19:53:48Z
 url: https://github.com/astral-sh/ruff/pull/12727
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Fix cache invalidation for nested pyproject.toml files
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-07 06:33_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T20:22:30Z
 updated_at: 2025-04-01T17:55:47Z
 url: https://github.com/astral-sh/uv/issues/1331
-synced_at: 2026-01-10T03:41:45Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Provide `pip` -> `uv pip` alias in virtual environments
 
 ---
 
-_Issue opened by @vitalik on 2024-02-15 20:22_
+_@vitalik_
 
 mabye when uv creates virtualenv it should also create "symlink" for pip to `uv pip` ?
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-20T21:53:05Z
 updated_at: 2025-09-23T14:56:40Z
 url: https://github.com/astral-sh/ruff/issues/20491
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # UP008 should not apply when `__class__` is a local variable
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-20 21:53_
+_@dscorbett_
 
 ### Summary
 

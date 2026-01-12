@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-02-19T15:13:14Z
 updated_at: 2020-04-23T02:18:11Z
 url: https://github.com/clap-rs/clap/issues/1418
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # [feature request] derive for enums from outside of clap lib
 
 ---
 
-_Issue opened by @xoac on 2019-02-19 15:13_
+_@xoac_
 
 It would be great to allow people to not include `clap` in library but still easy allow use that enums in CLI (binary) without execs of code. I think the current solution is quite good. But in my opinion it would be better instead of using `args_enum!` show that u can use for example [strum](https://crates.io/crates/strum) to derive `FromStr`, `Display` and `Iterator` over that enum, and easy use it with clap. Rust love code reusing. This could be done for 0.3 as it could require some breaking changes. 
 

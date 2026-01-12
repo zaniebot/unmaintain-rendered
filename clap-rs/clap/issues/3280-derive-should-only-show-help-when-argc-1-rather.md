@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-11T17:58:26Z
 updated_at: 2022-07-22T17:52:06Z
 url: https://github.com/clap-rs/clap/issues/3280
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Derive should only show help when argc==1 rather than missing subcommand
 
 ---
 
-_Issue opened by @epage on 2022-01-11 17:58_
+_@epage_
 
 ### Please complete the following tasks
 

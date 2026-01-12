@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-08T12:23:11Z
 updated_at: 2025-01-08T12:55:28Z
 url: https://github.com/astral-sh/ruff/issues/15347
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `PYI066`: Decide if the rule should apply for `sys.version_info` checks in boolean expressions
 
 ---
 
-_Issue opened by @MichaReiser on 2025-01-08 12:23_
+_@MichaReiser_
 
 We considered stabilizing the behavior change that enables `PYI066` for nono stub files (see https://github.com/astral-sh/ruff/pull/14059) as part of the 0.9 release (https://github.com/astral-sh/ruff/pull/15340) but ultimately decided against it because we found the following two reports in the ecosystem results:
 

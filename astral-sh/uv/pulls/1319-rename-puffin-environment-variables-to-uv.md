@@ -13,14 +13,14 @@ head: zb/caps
 created_at: 2024-02-15T18:10:38Z
 updated_at: 2024-02-15T18:49:27Z
 url: https://github.com/astral-sh/uv/pull/1319
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:35Z
 ```
 
 # Rename `PUFFIN` environment variables to `UV`
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-15 18:10_
+_@zanieb_
 
 A couple of these are actually user-facing although undocumented
 

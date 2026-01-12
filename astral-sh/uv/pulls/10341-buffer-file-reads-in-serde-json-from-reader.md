@@ -12,14 +12,14 @@ head: tulloch/240106-fix-buffering
 created_at: 2025-01-07T06:42:15Z
 updated_at: 2025-01-07T13:02:33Z
 url: https://github.com/astral-sh/uv/pull/10341
-synced_at: 2026-01-10T11:44:43Z
+synced_at: 2026-01-12T16:09:14Z
 ```
 
 # Buffer file reads in `serde_json::from_reader`
 
 ---
 
-_Pull request opened by @ajtulloch on 2025-01-07 06:42_
+_@ajtulloch_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

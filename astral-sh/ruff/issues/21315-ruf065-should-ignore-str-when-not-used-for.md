@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-07T14:02:06Z
 updated_at: 2025-11-10T23:04:42Z
 url: https://github.com/astral-sh/ruff/issues/21315
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF065 should ignore `str` when not used for conversion
 
 ---
 
-_Issue opened by @dscorbett on 2025-11-07 14:02_
+_@dscorbett_
 
 ### Summary
 

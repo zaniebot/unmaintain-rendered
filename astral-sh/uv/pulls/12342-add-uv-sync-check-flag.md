@@ -13,14 +13,14 @@ head: sync-check
 created_at: 2025-03-20T16:27:32Z
 updated_at: 2025-03-22T00:04:40Z
 url: https://github.com/astral-sh/uv/pull/12342
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:14Z
 ```
 
 # Add `uv sync --check` flag
 
 ---
 
-_Pull request opened by @blueraft on 2025-03-20 16:27_
+_@blueraft_
 
 ## Summary
 

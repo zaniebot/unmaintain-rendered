@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-02-25T19:25:43Z
 updated_at: 2023-02-27T16:17:49Z
 url: https://github.com/clap-rs/clap/issues/3508
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # generated zsh completion fails when `source <()`'d
 
 ---
 
-_Issue opened by @drahnr on 2022-02-25 19:25_
+_@drahnr_
 
 ### Please complete the following tasks
 

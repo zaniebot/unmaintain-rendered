@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-05-28T19:25:32Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/514
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Disable Magical Version Handling
 
 ---
 
-_Issue opened by @mitsuhiko on 2016-05-28 19:25_
+_@mitsuhiko_
 
 Currently you cannot implement `--version` yourself and what's worse is that you cannot disable the short alias for it (`-V`), you can only bind it to a different letter.
 

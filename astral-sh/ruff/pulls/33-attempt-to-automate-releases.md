@@ -11,14 +11,14 @@ head: charlie/release
 created_at: 2022-08-28T01:15:29Z
 updated_at: 2022-08-28T02:57:12Z
 url: https://github.com/astral-sh/ruff/pull/33
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Attempt to automate releases
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-08-28 01:15_
+_@charliermarsh_
 
 _No description provided._
 

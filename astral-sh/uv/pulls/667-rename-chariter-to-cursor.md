@@ -12,14 +12,14 @@ head: charlie/cursor
 created_at: 2023-12-15T21:54:32Z
 updated_at: 2023-12-15T21:58:00Z
 url: https://github.com/astral-sh/uv/pull/667
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:06Z
 ```
 
 # Rename `CharIter` to `Cursor`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-15 21:54_
+_@charliermarsh_
 
 This better aligns with the analogous struct that we have in Ruff.
 

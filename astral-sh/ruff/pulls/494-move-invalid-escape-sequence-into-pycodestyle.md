@@ -12,14 +12,14 @@ head: charlie/move
 created_at: 2022-10-28T16:20:07Z
 updated_at: 2022-10-28T16:20:12Z
 url: https://github.com/astral-sh/ruff/pull/494
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Move invalid_escape_sequence into pycodestyle
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-28 16:20_
+_@charliermarsh_
 
 _No description provided._
 

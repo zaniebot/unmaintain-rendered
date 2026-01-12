@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-30T18:30:32Z
 updated_at: 2023-01-31T12:26:23Z
 url: https://github.com/astral-sh/ruff/issues/2359
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # F401 triggered if there's a class property with the same name
 
 ---
 
-_Issue opened by @hofrob on 2023-01-30 18:30_
+_@hofrob_
 
 Running `ruff --select F401 foo.py` on this file will trigger rule F401.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-26T21:05:39Z
 updated_at: 2025-12-07T15:58:12Z
 url: https://github.com/astral-sh/ty/issues/899
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `type: type = …` fails with deferred annotations
 
 ---
 
-_Issue opened by @WyattBlue on 2025-07-26 21:05_
+_@WyattBlue_
 
 
 ```python

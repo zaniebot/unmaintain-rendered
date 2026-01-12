@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-03-26T13:11:24Z
 updated_at: 2025-03-26T13:44:37Z
 url: https://github.com/astral-sh/ruff/issues/16982
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # F821 (undefined name) incorrectly flags Python 3.11 forward references
 
 ---
 
-_Issue opened by @anilbey on 2025-03-26 13:11_
+_@anilbey_
 
 ### Summary
 

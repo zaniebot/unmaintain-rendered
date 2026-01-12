@@ -13,14 +13,14 @@ head: files-snapshot
 created_at: 2024-04-30T14:14:09Z
 updated_at: 2024-05-01T15:00:35Z
 url: https://github.com/astral-sh/ruff/pull/11213
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [red-knot] Remove `Clone` from `Files`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-30 14:14_
+_@MichaReiser_
 
 ## Summary
 

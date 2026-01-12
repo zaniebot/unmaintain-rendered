@@ -14,14 +14,14 @@ head: dylan/stabilize-return-none
 created_at: 2025-06-06T22:25:37Z
 updated_at: 2025-06-12T16:18:25Z
 url: https://github.com/astral-sh/ruff/pull/18516
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [`flake8-return`] Stabilize only add `return None` at the end when fixing `implicit-return` (`RET503`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-06 22:25_
+_@dylwil3_
 
 This involved slightly more code changes than usual for a stabilization - so maybe worth double-checking the logic!
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-29T09:17:50Z
 updated_at: 2024-12-03T01:14:42Z
 url: https://github.com/astral-sh/uv/issues/9517
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # Enable package overrides for 'tool install'
 
 ---
 
-_Issue opened by @restlessronin on 2024-11-29 09:17_
+_@restlessronin_
 
 I have a CLI app that is currently being built by poetry (https://pypi.org/project/llm-context/). 'pipx' is used to install it. There are no dependency issues at either build or resolution times. And the package runs fine.
 

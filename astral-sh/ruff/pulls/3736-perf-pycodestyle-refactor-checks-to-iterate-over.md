@@ -12,14 +12,14 @@ head: logical-lines_Replace_Regex_with_tokens_iterator
 created_at: 2023-03-26T00:29:19Z
 updated_at: 2023-03-28T08:37:16Z
 url: https://github.com/astral-sh/ruff/pull/3736
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # perf(pycodestyle): Refactor checks to iterate over tokens insteadof text
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-26 00:29_
+_@MichaReiser_
 
 This PR refactors the pycodestyle checks to iterate over the tokens instead of the text. The main motivation is that using `Regex` to match keywords and operators seems overkill because this has already been done when tokenizing the input. Besides avoiding Regex, the main benefit of this is that it allows removing the creation of the logical-line String and the mapping table from offset to Location (and calling into the mapping logic). This also reduces the overall memory consumption.
 

@@ -13,14 +13,14 @@ head: charlie/edge
 created_at: 2024-06-25T21:03:48Z
 updated_at: 2024-06-25T21:10:10Z
 url: https://github.com/astral-sh/uv/pull/4530
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # Deduplicate source edges in annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-25 21:03_
+_@charliermarsh_
 
 ## Summary
 

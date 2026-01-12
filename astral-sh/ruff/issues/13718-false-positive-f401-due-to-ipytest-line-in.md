@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-11T18:28:12Z
 updated_at: 2024-10-14T15:42:22Z
 url: https://github.com/astral-sh/ruff/issues/13718
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # False positive F401 due to `%%ipytest` line in notebook
 
 ---
 
-_Issue opened by @tovrstra on 2024-10-11 18:28_
+_@tovrstra_
 
 Keywords to find existing issue: F401 and ipytest. The following is very similar, but still different, it seems: https://github.com/astral-sh/ruff/issues/10454
 

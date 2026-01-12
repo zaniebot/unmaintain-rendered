@@ -11,14 +11,14 @@ head: update-qemu-user-static
 created_at: 2025-05-22T18:10:58Z
 updated_at: 2025-05-22T19:11:40Z
 url: https://github.com/astral-sh/uv/pull/13600
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:45Z
 ```
 
 # Update uraimo/run-on-arch-action to v3.0.1 (latest)
 
 ---
 
-_Pull request opened by @geofft on 2025-05-22 18:10_
+_@geofft_
 
 This one claims in its README to resolve segfaults.
 

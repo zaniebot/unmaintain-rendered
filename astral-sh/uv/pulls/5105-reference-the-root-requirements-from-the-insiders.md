@@ -14,14 +14,14 @@ head: zb/docs-requirements
 created_at: 2024-07-16T14:31:03Z
 updated_at: 2024-07-16T14:51:19Z
 url: https://github.com/astral-sh/uv/pull/5105
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:38Z
 ```
 
 # Reference the root requirements from the insiders requirements file
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-16 14:31_
+_@zanieb_
 
 Seems best not to duplicate these
 

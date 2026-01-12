@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-06T20:49:39Z
 updated_at: 2025-11-07T22:08:37Z
 url: https://github.com/astral-sh/uv/issues/16621
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # `uv python install` should respect `pyproject.toml`'s `requires-python` value
 
 ---
 
-_Issue opened by @adonh on 2025-11-06 20:49_
+_@adonh_
 
 ### Summary
 

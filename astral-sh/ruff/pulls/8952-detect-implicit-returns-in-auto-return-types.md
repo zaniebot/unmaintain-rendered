@@ -13,14 +13,14 @@ head: charlie/autotyping
 created_at: 2023-12-01T17:16:39Z
 updated_at: 2023-12-01T17:35:03Z
 url: https://github.com/astral-sh/ruff/pull/8952
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Detect implicit returns in auto-return-types
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-01 17:16_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: cjm/release0a8
 created_at: 2025-05-09T17:49:15Z
 updated_at: 2025-05-13T20:03:58Z
 url: https://github.com/astral-sh/ty/pull/298
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Bump version to 0.0.0a8
 
 ---
 
-_Pull request opened by @carljm on 2025-05-09 17:49_
+_@carljm_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-18T15:45:49Z
 updated_at: 2024-11-19T08:31:26Z
 url: https://github.com/astral-sh/uv/issues/9203
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # Using uv in CircleCI
 
 ---
 
-_Issue opened by @bolinocroustibat on 2024-11-18 15:45_
+_@bolinocroustibat_
 
 There is great documentation about [using uv in GitHub Actions](https://docs.astral.sh/uv/guides/integration/github/) and in [GitLab CI](https://docs.astral.sh/uv/guides/integration/gitlab/), along with a [uv GitHub Actions setup](https://github.com/astral-sh/setup-uv).
 

@@ -13,14 +13,14 @@ head: tim/fix-graalpy-tag-parsing-and-discovery
 created_at: 2025-03-13T19:37:13Z
 updated_at: 2025-03-14T07:33:36Z
 url: https://github.com/astral-sh/uv/pull/12154
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:08Z
 ```
 
 # Fix GraalPy abi tag parsing and discovery
 
 ---
 
-_Pull request opened by @timfel on 2025-03-13 19:37_
+_@timfel_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

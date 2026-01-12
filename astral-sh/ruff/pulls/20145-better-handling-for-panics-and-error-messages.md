@@ -11,14 +11,14 @@ head: unwind-exitcode
 created_at: 2025-08-29T00:25:33Z
 updated_at: 2025-09-05T00:05:10Z
 url: https://github.com/astral-sh/ruff/pull/20145
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # Better handling for panics and error messages
 
 ---
 
-_Pull request opened by @amyreese on 2025-08-29 00:25_
+_@amyreese_
 
 
 ## Summary

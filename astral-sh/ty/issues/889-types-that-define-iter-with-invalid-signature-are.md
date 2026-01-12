@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-25T12:06:05Z
 updated_at: 2025-09-12T10:10:33Z
 url: https://github.com/astral-sh/ty/issues/889
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Types that define `__iter__` with invalid signature are wrongly considered assignable to Iterable
 
 ---
 
-_Issue opened by @github-actions on 2025-07-25 12:06_
+_@github-actions_
 
 Run listed here: https://github.com/astral-sh/ty/actions/runs/16521468852
 

@@ -13,14 +13,14 @@ head: full_stop
 created_at: 2024-01-01T13:54:13Z
 updated_at: 2024-01-02T08:22:22Z
 url: https://github.com/astral-sh/ruff/pull/9345
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Short rule messages should not end with a period
 
 ---
 
-_Pull request opened by @DimitriPapadopoulos on 2024-01-01 13:54_
+_@DimitriPapadopoulos_
 
 ## Summary
 

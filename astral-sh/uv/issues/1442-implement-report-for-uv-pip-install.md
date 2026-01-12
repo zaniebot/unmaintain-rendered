@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T06:16:55Z
 updated_at: 2024-08-14T08:33:19Z
 url: https://github.com/astral-sh/uv/issues/1442
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Implement `--report` for `uv pip install`
 
 ---
 
-_Issue opened by @edgarrmondragon on 2024-02-16 06:16_
+_@edgarrmondragon_
 
 From the `pip` docs:
 

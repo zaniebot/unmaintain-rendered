@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-25T16:16:02Z
 updated_at: 2023-12-26T22:04:19Z
 url: https://github.com/astral-sh/ruff/issues/9278
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Add new rule or extend `RUF017` for sets and dictionaries ops as well.
 
 ---
 
-_Issue opened by @Skylion007 on 2023-12-25 16:16_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

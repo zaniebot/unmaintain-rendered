@@ -13,14 +13,14 @@ head: konsti/uv-python-build.rs-invalidation
 created_at: 2025-05-02T09:41:30Z
 updated_at: 2025-05-02T12:49:35Z
 url: https://github.com/astral-sh/uv/pull/13261
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:37Z
 ```
 
 # Only rebuild download JSON on change
 
 ---
 
-_Pull request opened by @konstin on 2025-05-02 09:41_
+_@konstin_
 
 By default, Cargo runs the build script if any file in the package changes (https://doc.rust-lang.org/cargo/reference/build-scripts.html#change-detection). In our case, we only need to rerun it if `download-metadata.json` changed.
 

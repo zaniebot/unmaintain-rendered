@@ -13,14 +13,14 @@ head: test-magic-trailing-comma
 created_at: 2023-06-23T22:11:05Z
 updated_at: 2023-06-26T12:27:28Z
 url: https://github.com/astral-sh/ruff/pull/5347
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add tests for skip magic trailing comma
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-23 22:11_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

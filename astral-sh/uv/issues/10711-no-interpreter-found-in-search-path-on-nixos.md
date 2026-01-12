@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-17T14:28:01Z
 updated_at: 2025-06-17T14:10:22Z
 url: https://github.com/astral-sh/uv/issues/10711
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # `No interpreter found in search path` on nixOS
 
 ---
 
-_Issue opened by @turbotimon on 2025-01-17 14:28_
+_@turbotimon_
 
 ### Problem
 

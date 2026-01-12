@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-15T23:54:53Z
 updated_at: 2025-04-17T13:01:04Z
 url: https://github.com/astral-sh/uv/issues/12911
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # 'Fat wheel' with all workspace packages?
 
 ---
 
-_Issue opened by @Ben-grmbl on 2025-04-15 23:54_
+_@Ben-grmbl_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-25T18:25:54Z
 updated_at: 2024-07-30T18:11:53Z
 url: https://github.com/astral-sh/uv/issues/5458
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Significantly reduce user-facing output in `uv run`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-25 18:25_
+_@charliermarsh_
 
 Right now, we show a bunch of information for both the base and the layered environment. We should slim this down substantially (at least, by default).
 

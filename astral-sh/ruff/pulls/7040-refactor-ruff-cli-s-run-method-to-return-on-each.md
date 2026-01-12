@@ -13,14 +13,14 @@ head: charlie/main
 created_at: 2023-09-01T12:50:55Z
 updated_at: 2023-09-01T13:16:21Z
 url: https://github.com/astral-sh/ruff/pull/7040
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Refactor ruff_cli's run method to return on each branch
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-01 12:50_
+_@charliermarsh_
 
 ## Summary
 

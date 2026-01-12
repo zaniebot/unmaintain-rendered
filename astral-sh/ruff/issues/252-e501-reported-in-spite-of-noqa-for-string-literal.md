@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-21T22:29:04Z
 updated_at: 2023-02-03T18:28:29Z
 url: https://github.com/astral-sh/ruff/issues/252
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # E501 reported in spite of noqa for string literal containing spaces
 
 ---
 
-_Issue opened by @cjfuller on 2022-09-21 22:29_
+_@cjfuller_
 
 The following code incorrectly reports an E501:
 

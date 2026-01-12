@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-07T15:25:24Z
 updated_at: 2023-02-09T16:57:32Z
 url: https://github.com/astral-sh/ruff/issues/2625
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Ruff code actions in VS Code producing unexpected output
 
 ---
 
-_Issue opened by @JRyanHall94 on 2023-02-07 15:25_
+_@JRyanHall94_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-13T11:59:28Z
 updated_at: 2024-04-03T14:04:31Z
 url: https://github.com/astral-sh/ruff/issues/9113
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add rule for improper use of `NoReturn` 
 
 ---
 
-_Issue opened by @SRv6d on 2023-12-13 11:59_
+_@SRv6d_
 
 The `NoReturn` return type is commonly misunderstood and not very intuitive. 
 

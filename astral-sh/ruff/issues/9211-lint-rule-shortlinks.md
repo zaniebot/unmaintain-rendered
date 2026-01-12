@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-20T12:12:10Z
 updated_at: 2024-01-02T18:10:30Z
 url: https://github.com/astral-sh/ruff/issues/9211
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Lint rule shortlinks
 
 ---
 
-_Issue opened by @notpushkin on 2023-12-20 12:12_
+_@notpushkin_
 
 I've set up a short URL for Flake8 rules at [pyflak.es](https://pyflak.es/). It redirects from `pyflak.es/CODE` to the rule page on 
 Flake8 Rules (e.g. [pyflak.es/E302](https://pyflak.es/E302)) or the respective plugin documentation (e.g. [pyflak.es/RST202](https://pyflak.es/RST202)). It should work with all rules supported by Ruff.

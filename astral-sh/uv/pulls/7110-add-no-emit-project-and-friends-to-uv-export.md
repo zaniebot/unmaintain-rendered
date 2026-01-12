@@ -14,14 +14,14 @@ head: charlie/no-emit
 created_at: 2024-09-06T00:44:08Z
 updated_at: 2024-09-06T01:01:47Z
 url: https://github.com/astral-sh/uv/pull/7110
-synced_at: 2026-01-10T12:53:40Z
+synced_at: 2026-01-12T16:07:42Z
 ```
 
 # Add `--no-emit-project` and friends to `uv export`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-06 00:44_
+_@charliermarsh_
 
 ## Summary
 

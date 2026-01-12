@@ -12,14 +12,14 @@ head: add-R6101
 created_at: 2024-02-27T16:55:27Z
 updated_at: 2024-03-28T14:19:40Z
 url: https://github.com/astral-sh/ruff/pull/10146
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Add rule PLR6101
 
 ---
 
-_Pull request opened by @tibor-reiss on 2024-02-27 16:55_
+_@tibor-reiss_
 
 Add rule [consider-using-namedtuple-or-dataclass (PLR6101)](https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/consider-using-namedtuple-or-dataclass.html)
 

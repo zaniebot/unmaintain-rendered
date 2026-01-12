@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-09T13:33:24Z
 updated_at: 2025-02-20T21:28:39Z
 url: https://github.com/astral-sh/uv/issues/10426
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # Display path separators consistently in `uv tool list` on Windows
 
 ---
 
-_Issue opened by @richieadler on 2025-01-09 13:33_
+_@richieadler_
 
 In Windows, currently paths are shown with backslashes for the tool directory but with forward slashes for the executable path itself:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-16T22:24:19Z
 updated_at: 2024-12-17T14:20:01Z
 url: https://github.com/astral-sh/uv/issues/9947
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # build backend - issue with license metadata element
 
 ---
 
-_Issue opened by @cthoyt on 2024-12-16 22:24_
+_@cthoyt_
 
 I'm on uv 0.5.8 (80d41671b 2024-12-11). Update: I also tried this on uv 0.5.9 (0652800cb 2024-12-13) and got the same results.
 

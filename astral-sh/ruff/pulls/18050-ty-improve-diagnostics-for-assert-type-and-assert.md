@@ -14,14 +14,14 @@ head: alex/assert-type-range
 created_at: 2025-05-12T17:05:06Z
 updated_at: 2025-05-13T13:00:21Z
 url: https://github.com/astral-sh/ruff/pull/18050
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] Improve diagnostics for `assert_type` and `assert_never`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-12 17:05_
+_@AlexWaygood_
 
 ## Summary
 

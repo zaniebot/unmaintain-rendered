@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-18T10:47:59Z
 updated_at: 2026-01-09T09:50:06Z
 url: https://github.com/astral-sh/ty/issues/1041
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # CLI clears `-v` logs when running in watch mode
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-18 10:47_
+_@MichaReiser_
 
 ### Summary
 

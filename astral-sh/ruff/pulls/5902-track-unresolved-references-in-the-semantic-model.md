@@ -12,14 +12,14 @@ head: charlie/unresolved-references
 created_at: 2023-07-19T22:09:10Z
 updated_at: 2023-07-19T22:43:57Z
 url: https://github.com/astral-sh/ruff/pull/5902
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Track unresolved references in the semantic model
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-19 22:09_
+_@charliermarsh_
 
 ## Summary
 

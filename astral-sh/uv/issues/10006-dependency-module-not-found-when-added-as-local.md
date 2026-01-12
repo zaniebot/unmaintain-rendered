@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-18T16:18:01Z
 updated_at: 2024-12-20T03:16:42Z
 url: https://github.com/astral-sh/uv/issues/10006
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # dependency module not found when added as local file path
 
 ---
 
-_Issue opened by @straz on 2024-12-18 16:18_
+_@straz_
 
 In `pyproject.toml`:
 

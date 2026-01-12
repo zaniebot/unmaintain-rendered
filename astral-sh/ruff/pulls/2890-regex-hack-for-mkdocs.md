@@ -13,14 +13,14 @@ head: regex-hack-for-mkdocs
 created_at: 2023-02-14T07:32:29Z
 updated_at: 2023-02-14T22:56:33Z
 url: https://github.com/astral-sh/ruff/pull/2890
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Regex hack for mkdocs
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-02-14 07:32_
+_@not-my-profile_
 
 Given that we apparently do not want to switch to mdBook with proper CommonMark support (see #2847), this PR instead fixes the broken links via a regex hack.
 

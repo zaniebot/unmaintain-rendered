@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-12T11:19:21Z
 updated_at: 2024-11-19T20:20:08Z
 url: https://github.com/astral-sh/uv/issues/8144
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:20Z
 ```
 
 # insufficient retrying around transient errors during `uv sync` (os error 104 in this case)
 
 ---
 
-_Issue opened by @jgehrcke on 2024-10-12 11:19_
+_@jgehrcke_
 
 With uv 0.4.20 while running `uv sync --locked` I saw this:
 

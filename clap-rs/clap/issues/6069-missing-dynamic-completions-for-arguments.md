@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-12T18:15:41Z
 updated_at: 2025-08-11T20:53:20Z
 url: https://github.com/clap-rs/clap/issues/6069
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Missing dynamic completions for arguments containing shell expansions
 
 ---
 
-_Issue opened by @krobelus on 2025-07-12 18:15_
+_@krobelus_
 
 Repro (using Jujutsu CLI, I can provide a minimal repro later):
 

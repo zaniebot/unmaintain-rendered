@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-01T17:25:36Z
 updated_at: 2024-11-02T14:11:14Z
 url: https://github.com/astral-sh/uv/issues/8757
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # `uvx` complains about non-existent `--with`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-11-01 17:25_
+_@charliermarsh_
 
 Reported on Discord:
 ```

@@ -12,14 +12,14 @@ head: charlie/dev
 created_at: 2022-11-05T19:59:06Z
 updated_at: 2022-11-05T19:59:26Z
 url: https://github.com/astral-sh/ruff/pull/607
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Create a separate dev crate for development scripts
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-05 19:59_
+_@charliermarsh_
 
 Now, the usage looks like (from `./ruff_dev`):
 

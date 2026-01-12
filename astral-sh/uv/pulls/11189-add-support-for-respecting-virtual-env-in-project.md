@@ -13,14 +13,14 @@ head: zb/active
 created_at: 2025-02-03T18:52:37Z
 updated_at: 2025-02-06T11:20:56Z
 url: https://github.com/astral-sh/uv/pull/11189
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:43Z
 ```
 
 # Add support for respecting `VIRTUAL_ENV` in project commands via `--active`
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-03 18:52_
+_@zanieb_
 
 I think `UV_PROJECT_ENVIRONMENT` is too complicated for use-cases where the user wants to sync to the active environment. I don't see a compelling reason not to make opt-in easier. I see a lot of questions about how to deal with this warning in the issue tracker, but it seems painful to collect them here for posterity.
 

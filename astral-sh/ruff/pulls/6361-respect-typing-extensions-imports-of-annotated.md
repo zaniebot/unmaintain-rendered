@@ -13,14 +13,14 @@ head: immutable
 created_at: 2023-08-05T06:33:05Z
 updated_at: 2023-08-05T18:01:17Z
 url: https://github.com/astral-sh/ruff/pull/6361
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Respect typing_extensions imports of Annotated for B006.
 
 ---
 
-_Pull request opened by @PIG208 on 2023-08-05 06:33_
+_@PIG208_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

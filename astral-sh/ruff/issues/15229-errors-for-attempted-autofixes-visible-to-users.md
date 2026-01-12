@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-02T22:04:11Z
 updated_at: 2025-01-03T14:50:14Z
 url: https://github.com/astral-sh/ruff/issues/15229
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Errors for attempted autofixes visible to users even without passing `--fix` and for noqa lines
 
 ---
 
-_Issue opened by @AA-Turner on 2025-01-02 22:04_
+_@AA-Turner_
 
 I think related to #5454. cc @MichaReiser @wookie184
 

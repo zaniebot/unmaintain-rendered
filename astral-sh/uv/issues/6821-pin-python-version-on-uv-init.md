@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-29T16:44:28Z
 updated_at: 2024-09-03T23:43:51Z
 url: https://github.com/astral-sh/uv/issues/6821
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Pin Python version on `uv init`
 
 ---
 
-_Issue opened by @zanieb on 2024-08-29 16:44_
+_@zanieb_
 
 See #6780 
 

@@ -13,14 +13,14 @@ head: joey/assign_intersection_any
 created_at: 2025-03-10T22:03:48Z
 updated_at: 2025-03-11T14:58:56Z
 url: https://github.com/astral-sh/ruff/pull/16611
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Handle gradual intersection types in assignability
 
 ---
 
-_Pull request opened by @jgeralnik on 2025-03-10 22:03_
+_@jgeralnik_
 
 ## Summary
 

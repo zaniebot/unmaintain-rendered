@@ -12,14 +12,14 @@ head: charlie/cpy
 created_at: 2023-06-19T23:44:38Z
 updated_at: 2023-06-20T01:41:49Z
 url: https://github.com/astral-sh/ruff/pull/5197
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Move copyright rule to nursery
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-19 23:44_
+_@charliermarsh_
 
 ## Summary
 

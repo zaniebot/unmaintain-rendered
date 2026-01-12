@@ -12,14 +12,14 @@ head: charlie/temp
 created_at: 2023-11-16T20:59:48Z
 updated_at: 2023-11-16T21:04:11Z
 url: https://github.com/astral-sh/uv/pull/440
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:57Z
 ```
 
 # Use `temp_dir` casing everywhere
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-16 20:59_
+_@charliermarsh_
 
 _No description provided._
 

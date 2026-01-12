@@ -13,14 +13,14 @@ head: micha/test-release-profiling
 created_at: 2025-11-13T13:51:39Z
 updated_at: 2025-11-13T15:27:38Z
 url: https://github.com/astral-sh/ruff/pull/21429
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # Use `profiling` profile for `cargo test(linux, release)`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-13 13:51_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-30T17:03:16Z
 updated_at: 2024-04-03T11:56:20Z
 url: https://github.com/astral-sh/uv/issues/2737
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # uv venv references already existing environment instead of creating new
 
 ---
 
-_Issue opened by @ssslakter on 2024-03-30 17:03_
+_@ssslakter_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

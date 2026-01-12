@@ -14,14 +14,14 @@ head: konsti/implement-skip-existing
 created_at: 2024-10-24T15:59:23Z
 updated_at: 2024-10-31T15:23:14Z
 url: https://github.com/astral-sh/uv/pull/8531
-synced_at: 2026-01-10T12:54:11Z
+synced_at: 2026-01-12T16:08:21Z
 ```
 
 # Skip existing, second iteration: Check the index before uploading
 
 ---
 
-_Pull request opened by @konstin on 2024-10-24 15:59_
+_@konstin_
 
 Implementation of https://github.com/astral-sh/uv/issues/7917#issuecomment-2408636016:
 

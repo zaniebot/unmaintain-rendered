@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-06T00:14:39Z
 updated_at: 2025-03-08T03:24:07Z
 url: https://github.com/astral-sh/uv/issues/11993
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # `uv run python` in a project does not respect `.inputrc`
 
 ---
 
-_Issue opened by @jasonkena on 2025-03-06 00:14_
+_@jasonkena_
 
 ### Summary
 

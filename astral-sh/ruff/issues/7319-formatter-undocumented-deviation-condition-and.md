@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-12T21:04:31Z
 updated_at: 2023-09-14T08:43:55Z
 url: https://github.com/astral-sh/ruff/issues/7319
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter undocumented deviation: condition and slice wrapping
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-09-12 21:04_
+_@JonathanPlasse_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

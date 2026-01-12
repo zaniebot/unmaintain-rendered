@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-28T03:43:14Z
 updated_at: 2025-11-18T16:10:28Z
 url: https://github.com/astral-sh/ty/issues/528
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # advanced support for template strings
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-05-28 03:43_
+_@InSyncWithFoo_
 
 [PEP 750](https://peps.python.org/pep-0750/) introduces <i>template strings</i>, also known as t-strings:
 

@@ -11,16 +11,16 @@ assignees: []
 base: main
 head: wld/improve-conformance-suite
 created_at: 2025-12-28T01:15:26Z
-updated_at: 2026-01-11T21:46:38Z
+updated_at: 2026-01-12T15:21:32Z
 url: https://github.com/astral-sh/ruff/pull/22231
-synced_at: 2026-01-12T02:12:03Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] Add a conformance script to compare ty diagnostics with expected errors
 
 ---
 
-_Pull request opened by @WillDuke on 2025-12-28 01:15_
+_@WillDuke_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:
@@ -607,5 +607,57 @@ _@WillDuke reviewed on 2026-01-11 21:46_
 _Review comment by @WillDuke on `scripts/conformance.py`:374 on 2026-01-11 21:46_
 
 That's a great tip, thanks! 
+
+---
+
+_Review comment by @AlexWaygood on `scripts/conformance.py`:396 on 2026-01-12 14:58_
+
+What do the terms "precision" and "recall" mean in this context? Also, I'd again prefer it if we spelled out "False positives", "Ture positives" and "False negatives" here
+
+---
+
+_Review comment by @AlexWaygood on `scripts/conformance.py`:410 on 2026-01-12 15:00_
+
+We should state clearly in the module docstring that the script assumes you have uv installed (nearly all contributors to Ruff/ty will have it installed, of course, but it's still worth stating explicitly)
+
+---
+
+_Review comment by @AlexWaygood on `scripts/conformance.py`:422 on 2026-01-12 15:01_
+
+Maybe `--conformance-tests-path`? We could also make it so that you can specify the argument with `-c` if that's getting on the wordy side
+
+---
+
+_Review comment by @AlexWaygood on `scripts/conformance.py`:381 on 2026-01-12 15:02_
+
+```suggestion
+        | Metric     | Old | New | Delta |
+```
+
+---
+
+_Review comment by @AlexWaygood on `scripts/conformance.py`:355 on 2026-01-12 15:19_
+
+I ran this script locally to compare the results on https://github.com/astral-sh/ruff/pull/22317 with the results on `main`, and found the "True negatives" heading a bit confusing here:
+
+<details>
+<summary>Screenshot</summary>
+
+<img width="2014" height="1446" alt="image" src="https://github.com/user-attachments/assets/08cec938-6dd8-4a48-931a-8abf0aa7f7a9" />
+
+</details>
+
+I think a "new true negative" is the same as a "removed false positive"? What if we had three sections with these titles (I'm not a huge fan of emojis in general but here I think they'd help make it clear whether each section indicates good news or bad news):
+- "True positives added 🎉" 
+- "False positives removed 🎉"
+- "False positives added 🫤"
+
+---
+
+_@AlexWaygood reviewed on 2026-01-12 15:21_
+
+This is great!!
+
+I think for use in CI, another great feature would be if the in-depth sections below the summary table could link directly to each line where a diagnostic was added or removed. That would make it very easy for us to debug exactly why a diagnostic was being added or removed as the result of a PR. But that could always be done as a followup (either by you or me!)
 
 ---

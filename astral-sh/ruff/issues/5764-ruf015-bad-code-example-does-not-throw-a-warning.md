@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-14T18:26:55Z
 updated_at: 2023-07-21T00:08:10Z
 url: https://github.com/astral-sh/ruff/issues/5764
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # RUF015 bad code example does not throw a warning
 
 ---
 
-_Issue opened by @jschippergoauto on 2023-07-14 18:26_
+_@jschippergoauto_
 
 Ruff version: 0.0.278
 Command: `ruff --config=ruff.toml file.py`

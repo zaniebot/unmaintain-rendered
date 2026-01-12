@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-09-03T00:01:58Z
 updated_at: 2024-09-03T00:11:40Z
 url: https://github.com/astral-sh/ruff/pull/13219
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Point docs to Astral favicon
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-03 00:01_
+_@charliermarsh_
 
 ## Summary
 

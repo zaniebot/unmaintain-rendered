@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-09-28T15:00:16Z
 updated_at: 2024-09-28T16:02:24Z
 url: https://github.com/astral-sh/ruff/pull/13546
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [`flake8-use-pathlib`] Fix typo in link to Path.stat (PTH116)
 
 ---
 
-_Pull request opened by @echoix on 2024-09-28 15:00_
+_@echoix_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

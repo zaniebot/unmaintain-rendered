@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-07T23:19:34Z
 updated_at: 2024-07-09T03:43:01Z
 url: https://github.com/clap-rs/clap/issues/5571
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Allow for derivation of multiple long and short flags for the same argument
 
 ---
 
-_Issue opened by @Dyredhead on 2024-07-07 23:19_
+_@Dyredhead_
 
 ### Please complete the following tasks
 

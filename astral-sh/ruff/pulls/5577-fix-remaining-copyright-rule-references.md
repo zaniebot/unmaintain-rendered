@@ -12,14 +12,14 @@ head: charlie/copyright
 created_at: 2023-07-07T02:41:50Z
 updated_at: 2023-07-07T03:08:25Z
 url: https://github.com/astral-sh/ruff/pull/5577
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix remaining Copyright rule references
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-07 02:41_
+_@charliermarsh_
 
 _No description provided._
 

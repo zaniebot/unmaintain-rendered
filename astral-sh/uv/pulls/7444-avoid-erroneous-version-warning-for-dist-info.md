@@ -14,14 +14,14 @@ head: charlie/w
 created_at: 2024-09-16T22:22:55Z
 updated_at: 2024-09-16T22:32:57Z
 url: https://github.com/astral-sh/uv/pull/7444
-synced_at: 2026-01-10T12:53:47Z
+synced_at: 2026-01-12T16:07:50Z
 ```
 
 # Avoid erroneous version warning for .dist-info
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-16 22:22_
+_@charliermarsh_
 
 ## Summary
 

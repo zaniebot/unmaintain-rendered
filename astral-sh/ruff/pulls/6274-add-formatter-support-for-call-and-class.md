@@ -13,14 +13,14 @@ head: charlie/class-base-format
 created_at: 2023-08-02T13:58:40Z
 updated_at: 2023-08-03T20:09:45Z
 url: https://github.com/astral-sh/ruff/pull/6274
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add formatter support for call and class definition `Arguments`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-02 13:58_
+_@charliermarsh_
 
 ## Summary
 

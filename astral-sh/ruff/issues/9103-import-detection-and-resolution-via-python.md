@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-12T06:19:42Z
 updated_at: 2025-06-25T13:58:35Z
 url: https://github.com/astral-sh/ruff/issues/9103
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Import detection and resolution via Python resolver for pylint
 
 ---
 
-_Issue opened by @pwithams on 2023-12-12 06:19_
+_@pwithams_
 
 I'm interested in implementing `no-name-in-module` (E0611) and `import-error` (E0401) for pylint (https://github.com/astral-sh/ruff/issues/970).
 

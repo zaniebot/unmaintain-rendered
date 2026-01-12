@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-07-25T06:05:36Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/601
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Docs incorrect about ArgGroups in YAML
 
 ---
 
-_Issue opened by @laishulu on 2016-07-25 06:05_
+_@laishulu_
 
 with the following yaml file, when I invoke `myapp` without any arguments, it just passes.
 But according to the spec, at least one of `base` and `delta` should be presented.

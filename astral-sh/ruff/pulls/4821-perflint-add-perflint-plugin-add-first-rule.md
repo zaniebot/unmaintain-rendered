@@ -13,14 +13,14 @@ head: feature/perflint
 created_at: 2023-06-02T23:56:30Z
 updated_at: 2023-06-15T11:16:06Z
 url: https://github.com/astral-sh/ruff/pull/4821
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # [`perflint`] Add `perflint` plugin, add first rule `PERF102`
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-06-02 23:56_
+_@qdegraaf_
 
 ## Summary
 

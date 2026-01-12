@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-07T21:07:26Z
 updated_at: 2025-10-06T15:31:24Z
 url: https://github.com/astral-sh/ty/issues/774
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # accept file contents from stdin
 
 ---
 
-_Issue opened by @jleechpe on 2025-07-07 21:07_
+_@jleechpe_
 
 ### Question
 

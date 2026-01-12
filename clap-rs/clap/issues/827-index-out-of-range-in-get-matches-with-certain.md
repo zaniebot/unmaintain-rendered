@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-01-29T18:50:13Z
 updated_at: 2018-08-02T03:30:00Z
 url: https://github.com/clap-rs/clap/issues/827
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Index out of range in get_matches with certain arguments
 
 ---
 
-_Issue opened by @ShadowNinja on 2017-01-29 18:50_
+_@ShadowNinja_
 
 Rust Version: Tested with both 1.14.0 stable and 1.16.0-nightly (2017-01-03)
 Clap version: 2.20.0

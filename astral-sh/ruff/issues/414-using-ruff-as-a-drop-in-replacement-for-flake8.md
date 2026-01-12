@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-13T02:30:48Z
 updated_at: 2024-11-25T03:25:48Z
 url: https://github.com/astral-sh/ruff/issues/414
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Using ruff as a drop-in replacement for flake8
 
 ---
 
-_Issue opened by @fsouza on 2022-10-13 02:30_
+_@fsouza_
 
 I'd love to be able to replace flake8 with ruff, and while most things are compatible, one current limitation is the configuration: flake8 can be configured via setup.cfg and .flake8, and at work it's a pretty common setup. Migrating everyone to pyproject.toml will likely not happen anytime soon. So I was wondering what could be done here. I thought of two options:
 

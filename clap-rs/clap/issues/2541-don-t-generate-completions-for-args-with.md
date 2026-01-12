@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-06-16T16:23:02Z
 updated_at: 2022-01-11T18:46:29Z
 url: https://github.com/clap-rs/clap/issues/2541
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Don't generate completions for args with AppSettings::Hidden
 
 ---
 
-_Issue opened by @jonner on 2021-06-16 16:23_
+_@jonner_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-21T21:06:29Z
 updated_at: 2024-02-22T15:28:09Z
 url: https://github.com/astral-sh/uv/issues/1831
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Support using uv pip install in a non-activated venv
 
 ---
 
-_Issue opened by @cwiede on 2024-02-21 21:06_
+_@cwiede_
 
 Sometimes it is handy to intentionally not activate a venv. With normal pip this is not an issue, but with uv pip this doesn't work (yet?):
 ```

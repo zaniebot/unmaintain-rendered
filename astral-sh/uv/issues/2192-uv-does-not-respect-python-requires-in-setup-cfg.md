@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-05T02:02:26Z
 updated_at: 2024-03-14T02:06:07Z
 url: https://github.com/astral-sh/uv/issues/2192
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # uv does not respect `python_requires` in setup.cfg
 
 ---
 
-_Issue opened by @danielhollas on 2024-03-05 02:02_
+_@danielhollas_
 
 In the [aiidalab-widgets-base](https://github.com/aiidalab/aiidalab-widgets-base/) package, we have a mostly empty `pyproject.toml` that only contains the build-backed section (and some tools-related sections). The dependencies are specified in `setup.cfg`, including the minimum python version, which is currently 3.9 as of version `aiidalab-widgets-base==2.2.0a0`.
 

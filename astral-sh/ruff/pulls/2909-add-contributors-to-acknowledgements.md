@@ -12,14 +12,14 @@ head: charlie/acknowledgements
 created_at: 2023-02-15T03:06:38Z
 updated_at: 2023-02-15T03:15:39Z
 url: https://github.com/astral-sh/ruff/pull/2909
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add contributors to acknowledgements
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-15 03:06_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T12:14:36Z
 updated_at: 2024-02-21T20:46:20Z
 url: https://github.com/astral-sh/uv/issues/1585
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Flaky expect failures in resolver
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-02-17 12:14_
+_@hauntsaninja_
 
 Getting the following segfault:
 ```

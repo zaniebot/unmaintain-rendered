@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-09T20:26:54Z
 updated_at: 2025-04-09T20:56:13Z
 url: https://github.com/astral-sh/uv/issues/12787
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # uv bootstraps itself with `required-version`
 
 ---
 
-_Issue opened by @juftin on 2025-04-09 20:26_
+_@juftin_
 
 ### Summary
 

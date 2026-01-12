@@ -12,14 +12,14 @@ head: use-new-formatter-infrastructure
 created_at: 2023-05-31T21:41:32Z
 updated_at: 2023-06-01T09:55:05Z
 url: https://github.com/astral-sh/ruff/pull/4767
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Use new formatter infrastructure in CLI and test
 
 ---
 
-_Pull request opened by @konstin on 2023-05-31 21:41_
+_@konstin_
 
 ## Summary
 

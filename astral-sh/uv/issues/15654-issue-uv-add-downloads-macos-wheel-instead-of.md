@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-03T10:38:17Z
 updated_at: 2025-09-04T23:09:00Z
 url: https://github.com/astral-sh/uv/issues/15654
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # Issue: uv add downloads macOS wheel instead of Windows amd64 wheel on Win64 platform, while uv pip install works correctly
 
 ---
 
-_Issue opened by @kermitbu on 2025-09-03 10:38_
+_@kermitbu_
 
 ### Summary
 

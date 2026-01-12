@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T13:27:10Z
 updated_at: 2024-11-22T14:15:55Z
 url: https://github.com/astral-sh/uv/issues/9353
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # Cannot add torch dependent lib with Pytorch env following official guide.
 
 ---
 
-_Issue opened by @sebastian-sz on 2024-11-22 13:27_
+_@sebastian-sz_
 
 Hi everyone. Thank you for the amazing work that has been done with uv and Pytorch integration.
 

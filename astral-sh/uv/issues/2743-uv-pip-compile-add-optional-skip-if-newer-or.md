@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-31T19:22:06Z
 updated_at: 2024-04-01T14:44:56Z
 url: https://github.com/astral-sh/uv/issues/2743
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # uv pip compile: add optional --skip-if-newer (or similar) optimisation
 
 ---
 
-_Issue opened by @bloodearnest on 2024-03-31 19:22_
+_@bloodearnest_
 
 This a suggestion for a possible `uv pip compile` feature.
 

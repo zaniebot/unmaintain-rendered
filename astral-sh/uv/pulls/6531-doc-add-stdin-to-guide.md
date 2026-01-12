@@ -13,14 +13,14 @@ head: billy/additional-stdin-docs
 created_at: 2024-08-23T16:03:03Z
 updated_at: 2024-08-23T16:18:54Z
 url: https://github.com/astral-sh/uv/pull/6531
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:24Z
 ```
 
 # doc: add stdin to guide
 
 ---
 
-_Pull request opened by @billy-doyle on 2024-08-23 16:03_
+_@billy-doyle_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

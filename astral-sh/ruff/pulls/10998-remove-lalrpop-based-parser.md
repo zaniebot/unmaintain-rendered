@@ -13,14 +13,14 @@ head: dhruv/farewell-lalrpop
 created_at: 2024-04-17T11:42:43Z
 updated_at: 2024-04-17T13:20:41Z
 url: https://github.com/astral-sh/ruff/pull/10998
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Remove LALRPOP based parser
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-17 11:42_
+_@dhruvmanila_
 
 _No description provided._
 

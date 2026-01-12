@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-18T13:26:11Z
 updated_at: 2024-03-18T13:26:12Z
 url: https://github.com/astral-sh/ruff/issues/10456
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Re-write `Q001-003` to use string flags
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-03-18 13:26_
+_@dhruvmanila_
 
 Currently, the rules `Q001`, `Q002`, and `Q003` extracts the trivia information from the source code. With https://github.com/astral-sh/ruff/pull/10298, we have all of the information available on the AST node. This can help simplify the implementation.
 

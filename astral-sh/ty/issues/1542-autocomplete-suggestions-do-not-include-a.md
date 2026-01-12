@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-11-13T20:30:41Z
 updated_at: 2025-11-14T10:31:21Z
 url: https://github.com/astral-sh/ty/issues/1542
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Autocomplete suggestions do not include a dataclass's generated `__replace__` method
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-13 20:30_
+_@AlexWaygood_
 
 ### Summary
 

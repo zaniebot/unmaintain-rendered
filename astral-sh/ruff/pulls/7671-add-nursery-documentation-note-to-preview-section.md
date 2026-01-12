@@ -13,14 +13,14 @@ head: zanie/docs-nursery
 created_at: 2023-09-26T20:48:03Z
 updated_at: 2023-09-27T14:46:58Z
 url: https://github.com/astral-sh/ruff/pull/7671
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Add nursery documentation note to preview section
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-26 20:48_
+_@zanieb_
 
 Ref https://github.com/astral-sh/ruff/issues/7491#issuecomment-1730016523
 

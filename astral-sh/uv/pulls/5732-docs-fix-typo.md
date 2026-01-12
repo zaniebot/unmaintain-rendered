@@ -12,14 +12,14 @@ head: doctypo
 created_at: 2024-08-02T17:50:51Z
 updated_at: 2024-08-02T18:33:31Z
 url: https://github.com/astral-sh/uv/pull/5732
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:59Z
 ```
 
 # docs: fix typo
 
 ---
 
-_Pull request opened by @JelleZijlstra on 2024-08-02 17:50_
+_@JelleZijlstra_
 
 _No description provided._
 

@@ -14,14 +14,14 @@ head: red-knot-fuzz
 created_at: 2024-11-24T21:45:57Z
 updated_at: 2024-11-25T13:17:43Z
 url: https://github.com/astral-sh/ruff/pull/14566
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # red-knot: adapt fuzz-parser to work with red-knot
 
 ---
 
-_Pull request opened by @connorskees on 2024-11-24 21:45_
+_@connorskees_
 
 Adds a `--bin` argument to the `fuzz-parser` script, which makes it possible to fuzz either `ruff` or `red_knot`.
 

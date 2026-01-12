@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-29T09:54:58Z
 updated_at: 2024-12-02T22:24:31Z
 url: https://github.com/astral-sh/uv/issues/9518
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # `uv sync` removes editable install if `[build-system]` is not specified
 
 ---
 
-_Issue opened by @randolf-scholz on 2024-11-29 09:54_
+_@randolf-scholz_
 
 ```bash
 uv pip install -e .  # ✅

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-22T21:08:14Z
 updated_at: 2026-01-11T16:36:57Z
 url: https://github.com/astral-sh/ty/issues/163
-synced_at: 2026-01-12T02:26:11Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Provide context on why an assignment failed
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-03-22 21:08_
+_@dhruvmanila_
 
 It will be useful to provide why an assignment between two types failed. Pyright does this but for ty it will require updating the APIs because currently the returned type is boolean for `is_assignable_to`.
 

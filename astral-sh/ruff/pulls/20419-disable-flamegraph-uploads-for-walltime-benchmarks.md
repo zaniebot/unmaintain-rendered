@@ -13,14 +13,14 @@ head: revert-20409-renovate/codspeedhq-action-4.x
 created_at: 2025-09-15T16:50:54Z
 updated_at: 2025-09-16T09:15:37Z
 url: https://github.com/astral-sh/ruff/pull/20419
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # Disable flamegraph uploads for walltime benchmarks
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-15 16:50_
+_@AlexWaygood_
 
 ~~Reverts astral-sh/ruff#20409~~
 

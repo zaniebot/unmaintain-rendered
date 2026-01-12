@@ -13,14 +13,14 @@ head: thejchap/dataclass-slots
 created_at: 2025-09-06T01:42:18Z
 updated_at: 2025-09-07T17:25:35Z
 url: https://github.com/astral-sh/ruff/pull/20278
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [ty] initial support for `slots=True` in dataclasses
 
 ---
 
-_Pull request opened by @thejchap on 2025-09-06 01:42_
+_@thejchap_
 
 ## Summary
 

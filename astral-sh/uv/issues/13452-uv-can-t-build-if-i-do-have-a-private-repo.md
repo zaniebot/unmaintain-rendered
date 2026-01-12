@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-14T14:30:40Z
 updated_at: 2025-06-05T17:52:15Z
 url: https://github.com/astral-sh/uv/issues/13452
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # Uv can't build if I do have a private repo declared
 
 ---
 
-_Issue opened by @gervaila on 2025-05-14 14:30_
+_@gervaila_
 
 ### Summary
 

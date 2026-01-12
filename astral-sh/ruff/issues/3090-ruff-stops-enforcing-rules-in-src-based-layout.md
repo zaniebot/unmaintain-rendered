@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-21T18:14:38Z
 updated_at: 2023-02-21T19:32:18Z
 url: https://github.com/astral-sh/ruff/issues/3090
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Ruff stops enforcing rules in src/ based layout
 
 ---
 
-_Issue opened by @ashb on 2023-02-21 18:14_
+_@ashb_
 
 This is a slightly odd one to track down, but ruff has stopped enforcing any rules in my `src/` folder!
 

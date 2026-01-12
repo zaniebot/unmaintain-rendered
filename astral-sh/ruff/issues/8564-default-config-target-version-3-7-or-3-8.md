@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-08T15:07:01Z
 updated_at: 2023-11-08T15:09:35Z
 url: https://github.com/astral-sh/ruff/issues/8564
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Default config target-version 3.7 or 3.8
 
 ---
 
-_Issue opened by @doolio on 2023-11-08 15:07_
+_@doolio_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

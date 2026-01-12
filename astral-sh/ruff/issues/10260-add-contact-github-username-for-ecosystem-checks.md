@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-06T23:49:57Z
 updated_at: 2024-05-22T02:52:58Z
 url: https://github.com/astral-sh/ruff/issues/10260
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Add contact github username for ecosystem checks
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-03-06 23:49_
+_@ThiefMaster_
 
 My repo is one of the repos listed in the ecosystem checks. I would like to get automatically pinged on any PR that introduces changes resulting in new violations when linting my repo.
 

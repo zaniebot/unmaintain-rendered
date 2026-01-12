@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T09:48:34Z
 updated_at: 2025-06-03T10:05:24Z
 url: https://github.com/astral-sh/ty/issues/574
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Type `<module 'requests'>` has no attribute `exceptions`
 
 ---
 
-_Issue opened by @RubenVanEldik on 2025-06-03 09:48_
+_@RubenVanEldik_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-15T13:50:01Z
 updated_at: 2025-08-19T01:42:55Z
 url: https://github.com/astral-sh/ty/issues/1004
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # goto-definition on a stub definition doesn't work
 
 ---
 
-_Issue opened by @Gankra on 2025-08-15 13:50_
+_@Gankra_
 
 example (in project that depends on colorama and types-colorama): 
 

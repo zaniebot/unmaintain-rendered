@@ -13,14 +13,14 @@ head: alex/generics-todos
 created_at: 2025-05-13T02:34:47Z
 updated_at: 2025-05-14T16:26:54Z
 url: https://github.com/astral-sh/ruff/pull/18062
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] Fix more generics-related TODOs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-13 02:34_
+_@AlexWaygood_
 
 ## Summary
 

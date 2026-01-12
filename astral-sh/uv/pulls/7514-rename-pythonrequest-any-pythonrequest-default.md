@@ -13,14 +13,14 @@ head: zb/python-request-all
 created_at: 2024-09-18T18:52:40Z
 updated_at: 2024-09-19T10:56:07Z
 url: https://github.com/astral-sh/uv/pull/7514
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:52Z
 ```
 
 # Rename `PythonRequest::Any` -> `PythonRequest::Default`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-18 18:52_
+_@zanieb_
 
 As we support more complex Python discovery behaviors such as:
 

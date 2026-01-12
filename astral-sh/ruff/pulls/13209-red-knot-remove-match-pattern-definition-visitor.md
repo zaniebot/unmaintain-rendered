@@ -13,14 +13,14 @@ head: dhruv/match-def-visitor
 created_at: 2024-09-02T09:37:20Z
 updated_at: 2024-09-03T18:19:54Z
 url: https://github.com/astral-sh/ruff/pull/13209
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Remove match pattern definition visitor
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-09-02 09:37_
+_@dhruvmanila_
 
 ## Summary
 

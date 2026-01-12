@@ -14,14 +14,14 @@ head: micha/lsp-concise-output
 created_at: 2025-12-08T16:21:30Z
 updated_at: 2025-12-09T12:18:32Z
 url: https://github.com/astral-sh/ruff/pull/21850
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] Use concise message for LSP clients not supporting related diagnostic information
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-08 16:21_
+_@MichaReiser_
 
 ## Summary
 

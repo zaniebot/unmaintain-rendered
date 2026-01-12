@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-06T15:25:51Z
 updated_at: 2023-07-06T15:42:40Z
 url: https://github.com/astral-sh/ruff/issues/5564
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # pep8 rules and autopep8
 
 ---
 
-_Issue opened by @IamRezaMousavi on 2023-07-06 15:25_
+_@IamRezaMousavi_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

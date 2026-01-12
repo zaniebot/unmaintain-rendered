@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-27T08:01:19Z
 updated_at: 2025-11-12T23:44:46Z
 url: https://github.com/astral-sh/ty/issues/1268
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # support `__slots__`
 
 ---
 
-_Issue opened by @mtshiba on 2025-09-27 08:01_
+_@mtshiba_
 
 `__slots__` is already handled specially in ty, but should be more fully supported in line with the Python specification.
 `__slots__` may not be a very commonly used feature, but several major libraries use it (e.g. [attrs](https://github.com/python-attrs/attrs/blob/50334f3fe759013f52cc533161e9b474e98bc460/src/attr/_make.py#L2436)), and supporting it could improve inference results and error reporting.

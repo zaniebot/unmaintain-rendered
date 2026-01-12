@@ -14,14 +14,14 @@ head: dhruv/assign-stmt
 created_at: 2024-04-05T04:24:30Z
 updated_at: 2024-04-09T13:57:13Z
 url: https://github.com/astral-sh/ruff/pull/10786
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for all kinds of assignment statement
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-05 04:24_
+_@dhruvmanila_
 
 ## Summary
 

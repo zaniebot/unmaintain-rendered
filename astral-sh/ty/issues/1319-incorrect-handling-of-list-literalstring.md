@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-07T17:09:12Z
 updated_at: 2025-10-07T17:21:03Z
 url: https://github.com/astral-sh/ty/issues/1319
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Incorrect handling of `list[LiteralString]`
 
 ---
 
-_Issue opened by @eteran on 2025-10-07 17:09_
+_@eteran_
 
 ### Summary
 

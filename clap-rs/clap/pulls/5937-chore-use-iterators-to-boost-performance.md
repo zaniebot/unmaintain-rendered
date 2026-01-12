@@ -12,14 +12,14 @@ head: master
 created_at: 2025-03-02T23:19:53Z
 updated_at: 2025-03-04T14:24:21Z
 url: https://github.com/clap-rs/clap/pull/5937
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # chore: Use iterators to boost performance
 
 ---
 
-_Pull request opened by @Unparalleled-Calvin on 2025-03-02 23:19_
+_@Unparalleled-Calvin_
 
 <!--
 Thanks for helping out!

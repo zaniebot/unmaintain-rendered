@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-26T08:20:01Z
 updated_at: 2025-11-26T12:28:50Z
 url: https://github.com/astral-sh/ty/issues/1642
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Auto-completions broken in neovim
 
 ---
 
-_Issue opened by @sharkdp on 2025-11-26 08:20_
+_@sharkdp_
 
 Since ~yesterday, auto-completions in neovim are broken for me. It looks like only the first character is being used for matching. As I type the second, third, … character, completions are re-requested (at least there is a short flicker), but they do not update to reflect the narrower search term:
 

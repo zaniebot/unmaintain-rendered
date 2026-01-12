@@ -13,14 +13,14 @@ head: dhruv/unpack
 created_at: 2024-10-29T11:12:42Z
 updated_at: 2024-11-05T04:55:11Z
 url: https://github.com/astral-sh/ruff/pull/13979
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Cached inference of all definitions in an unpacking
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-10-29 11:12_
+_@dhruvmanila_
 
 ## Summary
 

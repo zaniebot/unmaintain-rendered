@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-10T14:17:34Z
 updated_at: 2024-04-10T14:56:35Z
 url: https://github.com/astral-sh/uv/issues/2962
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # --generate-hashes should generate missing hashes for pinned packages
 
 ---
 
-_Issue opened by @CharString on 2024-04-10 14:17_
+_@CharString_
 
 Since #2532 uv "preserves" hashes for pinned packages. This is correct, but if no hash is present for a pinned package, a hash should still be generated.
 

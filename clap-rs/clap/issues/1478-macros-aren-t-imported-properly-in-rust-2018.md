@@ -11,14 +11,14 @@ assignees: []
 created_at: 2019-05-26T06:21:17Z
 updated_at: 2020-02-02T10:49:15Z
 url: https://github.com/clap-rs/clap/issues/1478
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Macros aren't imported properly in Rust 2018
 
 ---
 
-_Issue opened by @jacob-greenfield on 2019-05-26 06:21_
+_@jacob-greenfield_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

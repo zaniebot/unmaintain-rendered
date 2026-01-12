@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-10T14:07:46Z
 updated_at: 2023-09-11T23:02:25Z
 url: https://github.com/astral-sh/ruff/issues/7258
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # UP036 (outdated-version-block) is off-by-one for the target version
 
 ---
 
-_Issue opened by @oprypin on 2023-09-10 14:07_
+_@oprypin_
 
 If my `target-version` is `py37`, I expect the code block guarded by `sys.version_info < (3, 7)` to be dropped but it isn't.
 It gets dropped for `py38`, though.

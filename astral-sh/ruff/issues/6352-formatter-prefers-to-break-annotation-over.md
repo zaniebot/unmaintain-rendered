@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-04T20:18:43Z
 updated_at: 2023-08-16T07:11:04Z
 url: https://github.com/astral-sh/ruff/issues/6352
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # formatter prefers to break annotation over arguments list
 
 ---
 
-_Issue opened by @davidszotten on 2023-08-04 20:18_
+_@davidszotten_
 
 input:
 

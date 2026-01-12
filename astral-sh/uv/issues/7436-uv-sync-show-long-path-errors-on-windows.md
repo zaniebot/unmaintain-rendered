@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-16T18:26:53Z
 updated_at: 2024-09-16T20:04:35Z
 url: https://github.com/astral-sh/uv/issues/7436
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # uv sync: show long path errors on Windows
 
 ---
 
-_Issue opened by @bes-alielzein on 2024-09-16 18:26_
+_@bes-alielzein_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

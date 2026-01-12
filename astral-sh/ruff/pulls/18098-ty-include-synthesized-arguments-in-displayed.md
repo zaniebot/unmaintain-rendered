@@ -14,14 +14,14 @@ head: ty-too-many-positional-arguments
 created_at: 2025-05-14T16:50:38Z
 updated_at: 2025-05-15T07:40:53Z
 url: https://github.com/astral-sh/ruff/pull/18098
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] Include synthesized arguments in displayed counts for `too-many-positional-arguments`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-05-14 16:50_
+_@InSyncWithFoo_
 
 ## Summary
 

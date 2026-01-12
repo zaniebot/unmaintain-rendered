@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-08T17:05:35Z
 updated_at: 2024-08-09T01:55:54Z
 url: https://github.com/astral-sh/ruff/issues/12761
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [`flake8-bandit`]: S413 false positive for PyCryptodome 
 
 ---
 
-_Issue opened by @trim21 on 2024-08-08 17:05_
+_@trim21_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

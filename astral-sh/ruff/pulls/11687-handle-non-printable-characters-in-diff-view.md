@@ -13,14 +13,14 @@ head: pilleye/nonprinting
 created_at: 2024-06-02T02:58:29Z
 updated_at: 2024-06-09T19:51:53Z
 url: https://github.com/astral-sh/ruff/pull/11687
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Handle non-printable characters in diff view
 
 ---
 
-_Pull request opened by @pilleye on 2024-06-02 02:58_
+_@pilleye_
 
 ## Summary
 

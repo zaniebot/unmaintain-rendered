@@ -13,14 +13,14 @@ head: konsti/reserved-script-names
 created_at: 2025-04-22T11:02:59Z
 updated_at: 2025-04-25T07:10:11Z
 url: https://github.com/astral-sh/uv/pull/13051
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Block scripts from overwriting `python`
 
 ---
 
-_Pull request opened by @konstin on 2025-04-22 11:02_
+_@konstin_
 
 uv adds some binaries and scripts to a venv, and installed packages should not be allowed to overwrite them.
 

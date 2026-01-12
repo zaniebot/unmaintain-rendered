@@ -13,14 +13,14 @@ head: zb/aarch64
 created_at: 2025-01-23T04:49:36Z
 updated_at: 2025-01-24T15:31:08Z
 url: https://github.com/astral-sh/uv/pull/10885
-synced_at: 2026-01-10T11:45:16Z
+synced_at: 2026-01-12T16:09:33Z
 ```
 
 # Add Windows aarch64 to the release binaries
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-23 04:49_
+_@zanieb_
 
 Following test coverage from #10540 
 Closes https://github.com/astral-sh/uv/issues/1141

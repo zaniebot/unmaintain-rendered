@@ -14,14 +14,14 @@ head: ibraheem/memory-usage-dump
 created_at: 2025-06-24T23:53:06Z
 updated_at: 2025-06-26T21:34:49Z
 url: https://github.com/astral-sh/ruff/pull/18928
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [ty] Add environment variable to dump Salsa memory usage stats
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-06-24 23:53_
+_@ibraheemdev_
 
 ## Summary
 

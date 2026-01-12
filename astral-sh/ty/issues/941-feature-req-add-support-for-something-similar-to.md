@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-05T15:32:31Z
 updated_at: 2025-08-06T03:44:33Z
 url: https://github.com/astral-sh/ty/issues/941
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [Feature Req] Add support for something similar to `python.analysis.extraPaths`
 
 ---
 
-_Issue opened by @ragvri on 2025-08-05 15:32_
+_@ragvri_
 
 Sorry, not sure if this is already being tracked (I searched and was not able to find anything similar) but just thought there is no harm in creating a feature request here. 
 

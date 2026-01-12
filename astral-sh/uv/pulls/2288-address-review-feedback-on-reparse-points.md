@@ -13,14 +13,14 @@ head: charlie/reparse
 created_at: 2024-03-07T21:32:24Z
 updated_at: 2024-03-07T21:49:28Z
 url: https://github.com/astral-sh/uv/pull/2288
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:57Z
 ```
 
 # Address review feedback on reparse points
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-07 21:32_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/2284
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-07T10:53:07Z
 updated_at: 2024-05-10T05:49:04Z
 url: https://github.com/astral-sh/ruff/issues/11323
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [Rule Request] [TD] No whitespace after TODO - "TODO     (Author)" -> "TODO(Author)"
 
 ---
 
-_Issue opened by @david-fischer on 2024-05-07 10:53_
+_@david-fischer_
 
 Hi ruff-team,
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-16T14:32:54Z
 updated_at: 2025-01-16T14:42:47Z
 url: https://github.com/astral-sh/uv/issues/10681
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # `uv`/`pyenv` conflict?
 
 ---
 
-_Issue opened by @ego-thales on 2025-01-16 14:32_
+_@ego-thales_
 
 Hello,
 

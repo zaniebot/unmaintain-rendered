@@ -13,14 +13,14 @@ head: konsti/log-source-file-in-timeout
 created_at: 2025-01-16T10:43:32Z
 updated_at: 2025-01-16T15:01:25Z
 url: https://github.com/astral-sh/uv/pull/10672
-synced_at: 2026-01-10T11:45:03Z
+synced_at: 2026-01-12T16:09:25Z
 ```
 
 # Log source file on compile timeout
 
 ---
 
-_Pull request opened by @konstin on 2025-01-16 10:43_
+_@konstin_
 
 Log the file that failed to bytecode compile when encountering a timeout for debugging #6105 better.
 

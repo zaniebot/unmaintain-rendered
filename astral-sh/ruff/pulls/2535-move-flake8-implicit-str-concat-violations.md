@@ -12,14 +12,14 @@ head: move-fisc-violations
 created_at: 2023-02-03T13:19:53Z
 updated_at: 2023-02-03T13:24:07Z
 url: https://github.com/astral-sh/ruff/pull/2535
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Move flake8-implicit-str-concat violations
 
 ---
 
-_Pull request opened by @akx on 2023-02-03 13:19_
+_@akx_
 
 _No description provided._
 

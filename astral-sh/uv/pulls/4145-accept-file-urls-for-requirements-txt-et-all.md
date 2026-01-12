@@ -13,14 +13,14 @@ head: charlie/rel
 created_at: 2024-06-07T20:29:53Z
 updated_at: 2024-06-07T22:03:09Z
 url: https://github.com/astral-sh/uv/pull/4145
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:03Z
 ```
 
 # Accept `file://` URLs for `requirements.txt` et all references
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-07 20:29_
+_@charliermarsh_
 
 ## Summary
 

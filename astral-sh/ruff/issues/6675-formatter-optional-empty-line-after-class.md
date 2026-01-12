@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-18T13:25:40Z
 updated_at: 2023-09-08T07:15:56Z
 url: https://github.com/astral-sh/ruff/issues/6675
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Optional empty line after class docstring
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-18 13:25_
+_@MichaReiser_
 
 This comes up frequently in the django project. 
 

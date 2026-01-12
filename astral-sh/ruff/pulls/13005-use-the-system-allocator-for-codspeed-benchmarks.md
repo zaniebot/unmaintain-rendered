@@ -13,14 +13,14 @@ head: use-system-allocator-for-codspeed
 created_at: 2024-08-20T08:20:40Z
 updated_at: 2024-08-21T06:46:53Z
 url: https://github.com/astral-sh/ruff/pull/13005
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Use the system allocator for codspeed benchmarks
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-20 08:20_
+_@MichaReiser_
 
 ## Summary
 

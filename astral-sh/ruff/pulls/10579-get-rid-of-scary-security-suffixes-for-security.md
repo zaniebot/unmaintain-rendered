@@ -12,14 +12,14 @@ head: scary-security-prs
 created_at: 2024-03-25T17:45:48Z
 updated_at: 2024-03-25T21:34:42Z
 url: https://github.com/astral-sh/ruff/pull/10579
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Get rid of SCARY SECURITY suffixes for security-related renovate PRs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-25 17:45_
+_@AlexWaygood_
 
 Just use a `security` label instead
 

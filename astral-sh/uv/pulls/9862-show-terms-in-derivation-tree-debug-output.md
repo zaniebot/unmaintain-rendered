@@ -13,14 +13,14 @@ head: zb/terms
 created_at: 2024-12-13T06:02:24Z
 updated_at: 2024-12-14T04:53:35Z
 url: https://github.com/astral-sh/uv/pull/9862
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:00Z
 ```
 
 # Show terms in derivation tree debug output
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-13 06:02_
+_@zanieb_
 
 _No description provided._
 

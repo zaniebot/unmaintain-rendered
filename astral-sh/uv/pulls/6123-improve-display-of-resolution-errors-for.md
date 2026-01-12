@@ -14,14 +14,14 @@ head: zb/optional-dep-err
 created_at: 2024-08-15T17:29:36Z
 updated_at: 2024-08-16T01:50:45Z
 url: https://github.com/astral-sh/uv/pull/6123
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:13Z
 ```
 
 # Improve display of resolution errors for workspace member conflicts with optional dependencies
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-15 17:29_
+_@zanieb_
 
 We have bad error messages for optional (extra) dependencies and development dependencies in workspaces:
 

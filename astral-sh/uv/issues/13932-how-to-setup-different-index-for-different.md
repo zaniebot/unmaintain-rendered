@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-09T19:18:17Z
 updated_at: 2025-06-09T21:54:54Z
 url: https://github.com/astral-sh/uv/issues/13932
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # How to setup different index for different packages
 
 ---
 
-_Issue opened by @mikel-brostrom on 2025-06-09 19:18_
+_@mikel-brostrom_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: charlie/add
 created_at: 2025-07-22T18:45:14Z
 updated_at: 2025-07-22T19:10:00Z
 url: https://github.com/astral-sh/uv/pull/14831
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:26Z
 ```
 
 # Preserve index URL priority order when writing to pyproject.toml
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-22 18:45_
+_@charliermarsh_
 
 ## Summary
 

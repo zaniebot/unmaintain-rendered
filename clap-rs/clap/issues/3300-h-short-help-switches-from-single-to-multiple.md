@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-01-16T22:19:57Z
 updated_at: 2023-07-17T13:14:08Z
 url: https://github.com/clap-rs/clap/issues/3300
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # -h short help switches from single to multiple lines when adding a value_name entry
 
 ---
 
-_Issue opened by @dandavison on 2022-01-16 22:19_
+_@dandavison_
 
 ### Please complete the following tasks
 

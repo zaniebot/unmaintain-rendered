@@ -11,14 +11,14 @@ head: main
 created_at: 2025-08-04T02:14:13Z
 updated_at: 2025-08-11T20:22:13Z
 url: https://github.com/astral-sh/uv/pull/15051
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:33Z
 ```
 
 # Refactor code blogs in README for copy/pasting & uniformity
 
 ---
 
-_Pull request opened by @ryanjhermes on 2025-08-04 02:14_
+_@ryanjhermes_
 
 Allows readers to copy/paste commands from the README.md file by:
 1. Changing code blocks to from "console" to "bash".

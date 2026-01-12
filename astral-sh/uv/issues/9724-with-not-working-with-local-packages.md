@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-08T20:18:08Z
 updated_at: 2024-12-11T09:44:42Z
 url: https://github.com/astral-sh/uv/issues/9724
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # `--with` not working with local packages
 
 ---
 
-_Issue opened by @fepegar on 2024-12-08 20:18_
+_@fepegar_
 
 (Originally posted in https://github.com/astral-sh/uv/issues/9719#issuecomment-2526350374)
 

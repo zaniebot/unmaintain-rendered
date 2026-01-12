@@ -15,14 +15,14 @@ head: thejchap/enum-auto
 created_at: 2025-09-22T22:16:56Z
 updated_at: 2025-09-23T10:22:59Z
 url: https://github.com/astral-sh/ruff/pull/20524
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [ty] implement `auto()` for `StrEnum`
 
 ---
 
-_Pull request opened by @thejchap on 2025-09-22 22:16_
+_@thejchap_
 
 ## Summary
 see discussion here: https://github.com/astral-sh/ty/issues/876#issuecomment-3310130167

@@ -13,14 +13,14 @@ head: dhruv/unreachable-f-string-parsing
 created_at: 2024-03-19T14:17:17Z
 updated_at: 2024-03-19T18:14:09Z
 url: https://github.com/astral-sh/ruff/pull/10474
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Remove unreachable error case while f-string parsing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-19 14:17_
+_@dhruvmanila_
 
 ## Summary
 

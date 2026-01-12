@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-22T16:35:18Z
 updated_at: 2024-05-22T19:00:51Z
 url: https://github.com/astral-sh/uv/issues/3742
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # cannot install package if module is used in top level of setup.py
 
 ---
 
-_Issue opened by @brian316 on 2024-05-22 16:35_
+_@brian316_
 
 # Issue
 I cannot install a library if a module not in standard library is used during build process... in this case `torch`

@@ -13,14 +13,14 @@ head: charlie/warn-sym
 created_at: 2024-07-28T18:13:28Z
 updated_at: 2024-08-23T15:21:02Z
 url: https://github.com/astral-sh/uv/pull/5519
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:52Z
 ```
 
 # Ban `--no-cache` with `--link-mode=symlink`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-28 18:13_
+_@charliermarsh_
 
 ## Summary
 

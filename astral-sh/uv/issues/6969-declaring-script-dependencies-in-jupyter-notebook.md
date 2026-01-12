@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-03T13:52:45Z
 updated_at: 2024-09-05T11:29:19Z
 url: https://github.com/astral-sh/uv/issues/6969
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Declaring script dependencies in jupyter notebook first cell
 
 ---
 
-_Issue opened by @EtienneT on 2024-09-03 13:52_
+_@EtienneT_
 
 This is a feature request to be able to [declare script dependencies](https://docs.astral.sh/uv/guides/scripts/#declaring-script-dependencies) directly in the first cell of a jupyter notebook.  This way we could have completely isolated environment per notebook.  We would have to be able to use `uv run` with jupyter notebooks and the vscode scenario would also need to be looked at with extensions, but this would be awesome.
 

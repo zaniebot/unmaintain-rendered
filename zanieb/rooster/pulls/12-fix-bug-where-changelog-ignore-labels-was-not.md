@@ -13,14 +13,14 @@ head: zb/fix-ignore
 created_at: 2023-12-21T18:06:23Z
 updated_at: 2024-03-24T16:51:03Z
 url: https://github.com/zanieb/rooster/pull/12
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Fix bug where `changelog_ignore_labels` was not respected
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-21 18:06_
+_@zanieb_
 
 _No description provided._
 

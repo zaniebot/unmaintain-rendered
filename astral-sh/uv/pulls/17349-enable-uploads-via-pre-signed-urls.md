@@ -13,14 +13,14 @@ head: charlie/direct-s3
 created_at: 2026-01-07T18:24:13Z
 updated_at: 2026-01-09T14:39:24Z
 url: https://github.com/astral-sh/uv/pull/17349
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:44Z
 ```
 
 # Enable uploads via pre-signed URLs
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-07 18:24_
+_@charliermarsh_
 
 ## Summary
 

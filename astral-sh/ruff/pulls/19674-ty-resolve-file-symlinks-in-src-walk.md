@@ -13,14 +13,14 @@ head: symlink
 created_at: 2025-07-31T22:18:42Z
 updated_at: 2025-08-01T20:52:05Z
 url: https://github.com/astral-sh/ruff/pull/19674
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [ty] resolve file symlinks in src walk
 
 ---
 
-_Pull request opened by @ngroman on 2025-07-31 22:18_
+_@ngroman_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-22T16:32:10Z
 updated_at: 2023-01-23T18:29:10Z
 url: https://github.com/clap-rs/clap/issues/4656
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Can not use Vec-Flags with Environment Variables
 
 ---
 
-_Issue opened by @MarcelCoding on 2023-01-22 16:32_
+_@MarcelCoding_
 
 ### Please complete the following tasks
 

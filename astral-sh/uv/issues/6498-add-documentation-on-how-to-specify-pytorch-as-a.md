@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-23T08:05:57Z
 updated_at: 2024-08-23T13:34:17Z
 url: https://github.com/astral-sh/uv/issues/6498
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Add documentation on how to specify pytorch as a dependency
 
 ---
 
-_Issue opened by @valentincalomme on 2024-08-23 08:05_
+_@valentincalomme_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

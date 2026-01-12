@@ -13,14 +13,14 @@ head: fix-21473
 created_at: 2025-11-16T17:26:49Z
 updated_at: 2025-12-01T22:37:05Z
 url: https://github.com/astral-sh/ruff/pull/21479
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [`flake8-simplify`] Fix truthiness assumption for non-iterable arguments in tuple/list/set calls (`SIM222`, `SIM223`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-16 17:26_
+_@danparizher_
 
 ## Summary
 

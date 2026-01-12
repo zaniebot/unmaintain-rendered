@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-14T20:20:36Z
 updated_at: 2025-10-14T20:44:35Z
 url: https://github.com/astral-sh/ruff/issues/20872
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Incorrect `RUF015` on `dict.keys()`
 
 ---
 
-_Issue opened by @Paillat-dev on 2025-10-14 20:20_
+_@Paillat-dev_
 
 ### Summary
 

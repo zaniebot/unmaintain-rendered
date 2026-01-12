@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-10T10:51:09Z
 updated_at: 2024-11-10T18:05:41Z
 url: https://github.com/astral-sh/uv/issues/8985
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # Prevent setting an index as both explicit and default
 
 ---
 
-_Issue opened by @mkniewallner on 2024-11-10 10:51_
+_@mkniewallner_
 
 Unless I'm missing a use case, it seems to me that `default = true` won't actually do anything when set on an index that also sets `explicit = true`.
 

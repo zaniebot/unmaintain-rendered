@@ -14,14 +14,14 @@ head: playground
 created_at: 2023-08-27T01:04:40Z
 updated_at: 2023-08-27T11:10:36Z
 url: https://github.com/astral-sh/ruff/pull/6909
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Update playground README.md
 
 ---
 
-_Pull request opened by @cnpryer on 2023-08-27 01:04_
+_@cnpryer_
 
 This PR makes a few small changes to the playground's README.md.
 

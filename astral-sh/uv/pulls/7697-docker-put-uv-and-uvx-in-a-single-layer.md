@@ -13,14 +13,14 @@ head: docker-uv-uvx-layers
 created_at: 2024-09-26T07:16:44Z
 updated_at: 2024-09-26T15:04:12Z
 url: https://github.com/astral-sh/uv/pull/7697
-synced_at: 2026-01-10T12:53:53Z
+synced_at: 2026-01-12T16:07:57Z
 ```
 
 # Docker: put uv and uvx in a single layer
 
 ---
 
-_Pull request opened by @akx on 2024-09-26 07:16_
+_@akx_
 
 ## Summary
 

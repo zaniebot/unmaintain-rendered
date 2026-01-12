@@ -13,14 +13,14 @@ head: max-lines-simple-tokenizer
 created_at: 2023-08-09T14:57:23Z
 updated_at: 2023-08-10T06:13:16Z
 url: https://github.com/astral-sh/ruff/pull/6451
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Use SimpleTokenizer in `max_lines`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-09 14:57_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

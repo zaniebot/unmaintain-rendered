@@ -12,14 +12,14 @@ head: charlie/add-git-path-deps
 created_at: 2024-12-21T04:10:46Z
 updated_at: 2025-10-14T06:13:08Z
 url: https://github.com/astral-sh/uv/pull/10072
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:09:06Z
 ```
 
 # Add support for direct archive dependencies in Git
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-21 04:10_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-24T15:26:18Z
 updated_at: 2025-05-21T12:05:19Z
 url: https://github.com/astral-sh/uv/issues/13093
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # Show currently active dependency group on terminal
 
 ---
 
-_Issue opened by @alelom on 2025-04-24 15:26_
+_@alelom_
 
 ### Summary
 

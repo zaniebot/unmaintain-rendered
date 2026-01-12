@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-04-30T21:27:18Z
 updated_at: 2021-09-04T20:10:24Z
 url: https://github.com/clap-rs/clap/issues/1463
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Usage suggests help subcommand when using DisableHelpSubcommand
 
 ---
 
-_Issue opened by @EliSnow on 2019-04-30 21:27_
+_@EliSnow_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

@@ -13,14 +13,14 @@ head: konsti/link-mode-warning
 created_at: 2025-08-07T08:24:29Z
 updated_at: 2025-08-07T13:57:01Z
 url: https://github.com/astral-sh/uv/pull/15126
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:35Z
 ```
 
 # Ensure symlink warning is shown
 
 ---
 
-_Pull request opened by @konstin on 2025-08-07 08:24_
+_@konstin_
 
 Fixes #15115, see also https://github.com/clap-rs/clap/discussions/6092
 

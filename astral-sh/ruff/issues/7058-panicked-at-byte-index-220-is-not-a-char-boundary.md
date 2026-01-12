@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-02T06:12:55Z
 updated_at: 2023-09-14T18:58:40Z
 url: https://github.com/astral-sh/ruff/issues/7058
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Panicked at 'byte index 220 is not a char boundary; it is inside '�' (bytes 218..221) 
 
 ---
 
-_Issue opened by @qarmin on 2023-09-02 06:12_
+_@qarmin_
 
 Ruff 0.0.287 (latest changes from main branch)
 

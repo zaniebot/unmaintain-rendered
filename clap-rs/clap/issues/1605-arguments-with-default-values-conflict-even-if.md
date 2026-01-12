@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-12-09T13:56:03Z
 updated_at: 2020-11-10T16:04:44Z
 url: https://github.com/clap-rs/clap/issues/1605
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Arguments with default values conflict even if not used
 
 ---
 
-_Issue opened by @0ndorio on 2019-12-09 13:56_
+_@0ndorio_
 
 **Attention:** This is directly related to https://github.com/clap-rs/clap/issues/1071
 

@@ -13,14 +13,14 @@ head: add-class-init-argument-checks
 created_at: 2025-03-05T03:19:07Z
 updated_at: 2025-05-07T15:21:49Z
 url: https://github.com/astral-sh/ruff/pull/16512
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Add `__init__` arguments check when doing `try_call` on a class literal
 
 ---
 
-_Pull request opened by @mishamsk on 2025-03-05 03:19_
+_@mishamsk_
 
 ## Summary
 

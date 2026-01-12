@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-19T14:56:57Z
 updated_at: 2024-12-05T22:30:26Z
 url: https://github.com/astral-sh/uv/issues/9228
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # `uv add onnxruntime` currently fails on MacOS
 
 ---
 
-_Issue opened by @reyammer on 2024-11-19 14:56_
+_@reyammer_
 
 Hello,
 

@@ -12,14 +12,14 @@ head: docs/flake8-errmsg
 created_at: 2023-02-14T04:53:10Z
 updated_at: 2023-02-15T00:01:02Z
 url: https://github.com/astral-sh/ruff/pull/2888
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # [docs] Add docs for `flake8-errmsg`
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2023-02-14 04:53_
+_@edgarrmondragon_
 
 Related:
 

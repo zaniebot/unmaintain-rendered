@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-12T00:31:10Z
 updated_at: 2024-08-12T12:54:11Z
 url: https://github.com/astral-sh/uv/issues/6015
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # `uv lock` mixes registry results with `--find-links` over HTTP
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-12 00:31_
+_@charliermarsh_
 
 Given:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-23T12:03:22Z
 updated_at: 2024-03-07T05:15:55Z
 url: https://github.com/astral-sh/ruff/issues/8824
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # new rules for pandas 2.0 deprecations
 
 ---
 
-_Issue opened by @morotti on 2023-11-23 12:03_
+_@morotti_
 
 Hello,
 

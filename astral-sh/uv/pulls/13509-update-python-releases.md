@@ -12,14 +12,14 @@ head: zb/python-update
 created_at: 2025-05-17T17:56:56Z
 updated_at: 2025-05-17T18:48:32Z
 url: https://github.com/astral-sh/uv/pull/13509
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:42Z
 ```
 
 # Update Python releases
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-17 17:56_
+_@zanieb_
 
 _No description provided._
 

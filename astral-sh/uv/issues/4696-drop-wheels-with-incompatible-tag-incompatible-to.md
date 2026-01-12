@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-01T13:50:39Z
 updated_at: 2024-07-09T10:02:29Z
 url: https://github.com/astral-sh/uv/issues/4696
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Drop wheels with incompatible tag incompatible to requires-python from lockfile
 
 ---
 
-_Issue opened by @konstin on 2024-07-01 13:50_
+_@konstin_
 
 We currently store all wheels (and the source distribution) in `uv.lock`. We should remove those that can never be installed. One clear target is removing those with an incompatible python version, such as a `cp311` tag for `requires-python = ">=3.12"`. Example:
 

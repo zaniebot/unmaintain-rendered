@@ -13,14 +13,14 @@ assignees: []
 created_at: 2018-04-19T10:32:14Z
 updated_at: 2018-08-02T03:30:22Z
 url: https://github.com/clap-rs/clap/issues/1254
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Appsetting::InferSubcommands can't match a command whose name is a substring of another
 
 ---
 
-_Issue opened by @vincentdephily on 2018-04-19 10:32_
+_@vincentdephily_
 
 ### Rust Version
 1.25.0

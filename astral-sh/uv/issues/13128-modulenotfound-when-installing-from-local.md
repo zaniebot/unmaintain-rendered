@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-27T11:53:59Z
 updated_at: 2025-04-27T13:44:14Z
 url: https://github.com/astral-sh/uv/issues/13128
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # ModuleNotFound when installing from local dependency
 
 ---
 
-_Issue opened by @JuR-0 on 2025-04-27 11:53_
+_@JuR-0_
 
 ### Question
 

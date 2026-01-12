@@ -13,14 +13,14 @@ head: charlie/tabs
 created_at: 2023-08-11T01:49:25Z
 updated_at: 2023-08-11T02:28:26Z
 url: https://github.com/astral-sh/ruff/pull/6491
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Respect tab width in line-length heuristic
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-11 01:49_
+_@charliermarsh_
 
 ## Summary
 

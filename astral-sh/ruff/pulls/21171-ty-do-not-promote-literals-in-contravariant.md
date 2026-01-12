@@ -14,14 +14,14 @@ head: david/fix-1284
 created_at: 2025-10-31T16:23:39Z
 updated_at: 2025-10-31T16:48:35Z
 url: https://github.com/astral-sh/ruff/pull/21171
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] Do not promote literals in contravariant positions of generic specializations
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-31 16:23_
+_@sharkdp_
 
 ## Summary
 

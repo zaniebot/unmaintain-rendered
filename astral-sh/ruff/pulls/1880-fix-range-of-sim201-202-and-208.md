@@ -12,14 +12,14 @@ head: include-not
 created_at: 2023-01-15T01:44:52Z
 updated_at: 2023-01-15T02:19:56Z
 url: https://github.com/astral-sh/ruff/pull/1880
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Fix range of SIM201, 202, and 208
 
 ---
 
-_Pull request opened by @harupy on 2023-01-15 01:44_
+_@harupy_
 
 Before
 

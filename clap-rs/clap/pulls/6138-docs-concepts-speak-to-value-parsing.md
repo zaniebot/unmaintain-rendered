@@ -12,14 +12,14 @@ head: concepts
 created_at: 2025-09-20T17:49:57Z
 updated_at: 2025-09-20T17:57:15Z
 url: https://github.com/clap-rs/clap/pull/6138
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # docs(concepts): Speak to Value Parsing
 
 ---
 
-_Pull request opened by @epage on 2025-09-20 17:49_
+_@epage_
 
 <!--
 Thanks for helping out!

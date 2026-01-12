@@ -13,14 +13,14 @@ head: charlie/def
 created_at: 2025-12-06T02:04:51Z
 updated_at: 2025-12-09T21:20:11Z
 url: https://github.com/astral-sh/uv/pull/17011
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:33Z
 ```
 
 # Error if multiple indexes include `default = true`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-06 02:04_
+_@charliermarsh_
 
 ## Summary
 

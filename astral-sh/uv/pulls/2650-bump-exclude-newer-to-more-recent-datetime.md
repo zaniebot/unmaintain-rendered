@@ -12,14 +12,14 @@ head: ag/bump-exclude-newer
 created_at: 2024-03-25T15:14:41Z
 updated_at: 2024-03-25T15:29:06Z
 url: https://github.com/astral-sh/uv/pull/2650
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:09Z
 ```
 
 # bump EXCLUDE_NEWER to more recent datetime
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-03-25 15:14_
+_@BurntSushi_
 
 While writing tests for a new flag (`--emit-marker-expression`) for `uv
 pip compile`, I noticed that one of my test cases (`pendulum 3.0.0`)

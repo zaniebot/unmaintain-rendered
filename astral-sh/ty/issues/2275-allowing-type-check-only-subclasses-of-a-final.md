@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-30T12:37:45Z
 updated_at: 2025-12-30T13:33:16Z
 url: https://github.com/astral-sh/ty/issues/2275
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # allowing `@type_check_only` subclasses of a `@final` class
 
 ---
 
-_Issue opened by @jorenham on 2025-12-30 12:37_
+_@jorenham_
 
 NumPy's `ufunc` class is `@final`, but in order to meaningfully annotate its specializations, we use `@type_check_only` "phantom" subclasses that override e.g. `__call__` with tailor-made callable signatures. For example, `numpy.add` and `numpy.strings.isupper` are both instances of `numpy.ufunc`, but their callable signatures are very different.
 This is also an issue in scipy-stubs, as there are even more ufuncs in `scipy.special` than in all of numpy. See for example https://github.com/scipy/scipy-stubs/blob/4b2ee9a7a917ebd8918caf1ab51146ba4898a34b/scipy-stubs/special/_ufuncs.pyi .

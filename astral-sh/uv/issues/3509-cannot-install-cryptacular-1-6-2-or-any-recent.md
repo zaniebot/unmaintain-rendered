@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-10T15:00:51Z
 updated_at: 2024-05-11T16:11:40Z
 url: https://github.com/astral-sh/uv/issues/3509
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Cannot install cryptacular==1.6.2 (or any recent version) with uv
 
 ---
 
-_Issue opened by @bgedik on 2024-05-10 15:00_
+_@bgedik_
 
 ```
 uv --version

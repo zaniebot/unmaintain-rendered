@@ -14,14 +14,14 @@ head: zb/docs-ref-cli
 created_at: 2024-08-07T16:01:38Z
 updated_at: 2024-08-07T17:21:10Z
 url: https://github.com/astral-sh/uv/pull/5871
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:04Z
 ```
 
 # Replace `uv help python` references in CLI documentation with links
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-07 16:01_
+_@zanieb_
 
 Following #5869, the documentation has some less-than-helpful suggestions to use `uv help python` for details — we should link to the `uv python` section instead.
 

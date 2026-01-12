@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-18T13:57:44Z
 updated_at: 2025-12-19T22:12:59Z
 url: https://github.com/astral-sh/ty/issues/1583
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `unsupported-operator`: Improve diagnostic if both sides have the same type
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-18 13:57_
+_@MichaReiser_
 
 ```py
 list[1] - list[2]

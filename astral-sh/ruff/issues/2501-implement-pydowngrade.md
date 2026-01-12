@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-02T21:58:49Z
 updated_at: 2025-05-30T05:57:57Z
 url: https://github.com/astral-sh/ruff/issues/2501
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement pydowngrade
 
 ---
 
-_Issue opened by @Bobronium on 2023-02-02 21:58_
+_@Bobronium_
 
 First mentioned in https://github.com/charliermarsh/ruff/issues/827#issuecomment-1414314262.
 

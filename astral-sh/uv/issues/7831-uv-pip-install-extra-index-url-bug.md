@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-01T09:44:32Z
 updated_at: 2024-10-08T07:02:16Z
 url: https://github.com/astral-sh/uv/issues/7831
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # uv pip install ... --extra-index-url bug
 
 ---
 
-_Issue opened by @Ruhrozz on 2024-10-01 09:44_
+_@Ruhrozz_
 
 I have specific torch version in my extra-index-url and some other packages. When I trying to install my python library with `uv pip install -e .` it searches `torch` in extra-index-url and throws an error that you have a single torch version which does not meet the requirements.
 

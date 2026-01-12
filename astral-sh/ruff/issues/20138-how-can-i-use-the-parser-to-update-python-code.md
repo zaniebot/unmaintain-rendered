@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-28T15:26:19Z
 updated_at: 2025-09-15T14:38:25Z
 url: https://github.com/astral-sh/ruff/issues/20138
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # How can I use the parser to update python code ? (insert type annotations, reformat)
 
 ---
 
-_Issue opened by @LeGEC on 2025-08-28 15:26_
+_@LeGEC_
 
 ### Question
 

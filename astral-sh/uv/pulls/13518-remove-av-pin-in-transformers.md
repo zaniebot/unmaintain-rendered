@@ -13,14 +13,14 @@ head: charlie/av
 created_at: 2025-05-18T23:51:00Z
 updated_at: 2025-05-18T23:59:36Z
 url: https://github.com/astral-sh/uv/pull/13518
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:43Z
 ```
 
 # Remove `av` pin in `transformers`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-18 23:51_
+_@charliermarsh_
 
 ## Summary
 

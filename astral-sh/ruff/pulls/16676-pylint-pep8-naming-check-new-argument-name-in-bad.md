@@ -13,14 +13,14 @@ head: micha/invalid-argument-new-method
 created_at: 2025-03-12T13:45:33Z
 updated_at: 2025-03-13T07:59:51Z
 url: https://github.com/astral-sh/ruff/pull/16676
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`pylint`/`pep8-naming`] Check `__new__` argument name in `bad-staticmethod-argument` and not `invalid-first-argument-name-for-class-method` (`PLW0211`/`N804`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-12 13:45_
+_@MichaReiser_
 
 ## Summary
 

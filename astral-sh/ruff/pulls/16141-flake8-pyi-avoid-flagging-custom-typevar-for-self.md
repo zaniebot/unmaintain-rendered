@@ -14,14 +14,14 @@ head: bugfix/rule-pyi019-should-not-flag-metaclass-method
 created_at: 2025-02-13T17:31:57Z
 updated_at: 2025-02-14T05:52:12Z
 url: https://github.com/astral-sh/ruff/pull/16141
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [flake8-pyi] Avoid flagging `custom-typevar-for-self` on metaclass methods (PYI019)
 
 ---
 
-_Pull request opened by @vladNed on 2025-02-13 17:31_
+_@vladNed_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

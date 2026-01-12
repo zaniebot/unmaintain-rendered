@@ -13,14 +13,14 @@ head: david/comparison-union-types
 created_at: 2024-10-16T18:39:31Z
 updated_at: 2024-10-17T14:43:03Z
 url: https://github.com/astral-sh/ruff/pull/13781
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Inference for comparison of union types
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-16 18:39_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

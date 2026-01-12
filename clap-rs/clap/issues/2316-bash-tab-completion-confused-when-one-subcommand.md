@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-01-28T19:03:51Z
 updated_at: 2024-08-10T00:36:19Z
 url: https://github.com/clap-rs/clap/issues/2316
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # bash tab completion confused when one subcommand is a prefix of another
 
 ---
 
-_Issue opened by @dkg on 2021-01-28 19:03_
+_@dkg_
 
 ### Make sure you completed the following tasks
 

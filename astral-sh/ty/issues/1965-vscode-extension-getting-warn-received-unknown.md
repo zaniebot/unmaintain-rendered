@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-16T23:33:32Z
 updated_at: 2025-12-17T19:52:25Z
 url: https://github.com/astral-sh/ty/issues/1965
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # vscode extension -- Getting `WARN Received unknown options for workspace` warning message
 
 ---
 
-_Issue opened by @ColemanDunn on 2025-12-16 23:33_
+_@ColemanDunn_
 
 ### Summary
 

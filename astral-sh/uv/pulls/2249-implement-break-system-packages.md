@@ -13,14 +13,14 @@ head: charlie/break-system-packages
 created_at: 2024-03-06T20:17:20Z
 updated_at: 2024-03-06T20:37:29Z
 url: https://github.com/astral-sh/uv/pull/2249
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:56Z
 ```
 
 # Implement `--break-system-packages`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-06 20:17_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/configuration-iii
 created_at: 2024-06-13T13:21:33Z
 updated_at: 2024-06-14T03:14:24Z
 url: https://github.com/astral-sh/uv/pull/4304
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:08Z
 ```
 
 # Add a `--show-settings` option for configuration testing
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-13 13:21_
+_@charliermarsh_
 
 ## Summary
 

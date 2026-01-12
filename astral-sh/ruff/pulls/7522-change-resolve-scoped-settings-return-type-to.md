@@ -12,14 +12,14 @@ head: _resolver-cleanups
 created_at: 2023-09-19T15:44:36Z
 updated_at: 2024-01-16T10:04:08Z
 url: https://github.com/astral-sh/ruff/pull/7522
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Change `resolve_scoped_settings` return type to `Settings`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-19 15:44_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: tk/improve-python-panic-message
 created_at: 2025-12-03T09:46:15Z
 updated_at: 2025-12-03T12:48:39Z
 url: https://github.com/astral-sh/uv/pull/16960
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:32Z
 ```
 
 # Improve testsuite missing python version panic message
 
 ---
 
-_Pull request opened by @EliteTK on 2025-12-03 09:46_
+_@EliteTK_
 
 ## Summary
 

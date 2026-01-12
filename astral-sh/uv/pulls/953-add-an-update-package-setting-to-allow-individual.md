@@ -13,14 +13,14 @@ head: charlie/update-package
 created_at: 2024-01-17T18:55:06Z
 updated_at: 2024-01-17T19:31:53Z
 url: https://github.com/astral-sh/uv/pull/953
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:19Z
 ```
 
 # Add an `--update-package` setting to allow individual package upgrades
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-17 18:55_
+_@charliermarsh_
 
 Closes #950.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-24T16:14:35Z
 updated_at: 2024-07-29T13:39:33Z
 url: https://github.com/clap-rs/clap/issues/5421
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # [derive] Argument `test`'s selected action SetTrue contradicts `takes_value`
 
 ---
 
-_Issue opened by @hasezoey on 2024-03-24 16:14_
+_@hasezoey_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: charlie/furb
 created_at: 2024-05-19T03:13:24Z
 updated_at: 2024-05-27T09:09:01Z
 url: https://github.com/astral-sh/ruff/pull/11464
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Respect operator precedence in `FURB110`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-19 03:13_
+_@charliermarsh_
 
 ## Summary
 

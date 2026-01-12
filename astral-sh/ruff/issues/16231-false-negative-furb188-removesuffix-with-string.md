@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-18T15:11:42Z
 updated_at: 2025-02-18T18:52:27Z
 url: https://github.com/astral-sh/ruff/issues/16231
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # False negative - FURB188 removesuffix with string literal
 
 ---
 
-_Issue opened by @Skylion007 on 2025-02-18 15:11_
+_@Skylion007_
 
 ### Description
 

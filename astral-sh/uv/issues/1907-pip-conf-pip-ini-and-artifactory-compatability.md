@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-23T10:51:07Z
 updated_at: 2024-02-23T18:52:00Z
 url: https://github.com/astral-sh/uv/issues/1907
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # pip.conf/pip.ini and Artifactory compatability
 
 ---
 
-_Issue opened by @Muhtasham on 2024-02-23 10:51_
+_@Muhtasham_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

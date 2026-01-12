@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-16T20:20:14Z
 updated_at: 2023-11-29T00:34:03Z
 url: https://github.com/astral-sh/ruff/issues/7995
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Add newline after module docstrings (`module_docstring_newlines`)
 
 ---
 
-_Issue opened by @DanielNoord on 2023-10-16 20:20_
+_@DanielNoord_
 
 ```python
 """Test docstring"""

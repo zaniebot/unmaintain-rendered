@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-03-13T14:35:36Z
 updated_at: 2021-01-02T02:11:34Z
 url: https://github.com/clap-rs/clap/issues/1744
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Improve error message when subcommand is supplied after --
 
 ---
 
-_Issue opened by @seppo0010 on 2020-03-13 14:35_
+_@seppo0010_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

@@ -14,14 +14,14 @@ head: hover-variance
 created_at: 2025-10-15T17:11:10Z
 updated_at: 2025-10-20T17:28:59Z
 url: https://github.com/astral-sh/ruff/pull/20900
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] display variance on hover over type variables
 
 ---
 
-_Pull request opened by @mtshiba on 2025-10-15 17:11_
+_@mtshiba_
 
 ## Summary
 

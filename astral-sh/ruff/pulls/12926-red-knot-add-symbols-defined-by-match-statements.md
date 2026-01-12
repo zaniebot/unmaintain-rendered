@@ -13,14 +13,14 @@ head: dhruv/match-stmt-symbols
 created_at: 2024-08-16T10:56:24Z
 updated_at: 2024-08-20T05:25:46Z
 url: https://github.com/astral-sh/ruff/pull/12926
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] Add symbols defined by `match` statements
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-16 10:56_
+_@dhruvmanila_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-09T15:40:30Z
 updated_at: 2024-11-09T20:21:37Z
 url: https://github.com/astral-sh/uv/issues/8974
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # docker build hangs, can't build image for uv locally
 
 ---
 
-_Issue opened by @shaneikennedy on 2024-11-09 15:40_
+_@shaneikennedy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: fix-any-subclass-callable
 created_at: 2025-04-29T17:03:20Z
 updated_at: 2025-05-01T08:27:04Z
 url: https://github.com/astral-sh/ruff/pull/17717
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [`red-knot`] Allow subclasses of Any to be assignable to Callable types
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-29 17:03_
+_@Kalmaegi_
 
 ## Summary
 

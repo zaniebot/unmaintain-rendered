@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-22T06:51:24Z
 updated_at: 2025-11-29T02:30:52Z
 url: https://github.com/astral-sh/uv/issues/16817
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # support configuring `--no-install-project` in `pyproject.toml`
 
 ---
 
-_Issue opened by @DetachHead on 2025-11-22 06:51_
+_@DetachHead_
 
 ### Summary
 

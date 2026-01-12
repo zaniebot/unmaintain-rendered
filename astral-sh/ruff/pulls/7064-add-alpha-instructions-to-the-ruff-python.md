@@ -13,14 +13,14 @@ head: charlie/formatter
 created_at: 2023-09-02T16:12:59Z
 updated_at: 2023-09-06T12:01:33Z
 url: https://github.com/astral-sh/ruff/pull/7064
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add alpha instructions to the `ruff_python_formatter` README
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-02 16:12_
+_@charliermarsh_
 
 ## Summary
 

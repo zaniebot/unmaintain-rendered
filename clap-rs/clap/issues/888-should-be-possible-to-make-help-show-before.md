@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-03-06T15:54:15Z
 updated_at: 2018-08-02T03:30:03Z
 url: https://github.com/clap-rs/clap/issues/888
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Should be possible to make help show `--` before TrailingVarArg enabled arg
 
 ---
 
-_Issue opened by @nagisa on 2017-03-06 15:54_
+_@nagisa_
 
 When `TrailingVarArg` option is enabled, I feel like it should be possible to make `help` show the `--` before this trailing argument:
 

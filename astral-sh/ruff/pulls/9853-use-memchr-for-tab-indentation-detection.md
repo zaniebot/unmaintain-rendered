@@ -13,14 +13,14 @@ head: charlie/tabs
 created_at: 2024-02-06T03:25:44Z
 updated_at: 2024-02-06T14:44:57Z
 url: https://github.com/astral-sh/ruff/pull/9853
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Use `memchr` for tab-indentation detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-06 03:25_
+_@charliermarsh_
 
 ## Summary
 

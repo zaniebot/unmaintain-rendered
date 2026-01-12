@@ -12,14 +12,14 @@ head: uv-python-downloads-json-file
 created_at: 2025-01-24T15:40:43Z
 updated_at: 2025-07-17T19:22:17Z
 url: https://github.com/astral-sh/uv/pull/10939
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:09:35Z
 ```
 
 # Add `UV_PYTHON_DOWNLOADS_JSON_URL` to set custom managed python sources
 
 ---
 
-_Pull request opened by @MeitarR on 2025-01-24 15:40_
+_@MeitarR_
 
 ## Summary
 

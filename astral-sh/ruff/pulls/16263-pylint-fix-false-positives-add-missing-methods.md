@@ -13,14 +13,14 @@ head: issue-16217
 created_at: 2025-02-19T19:35:50Z
 updated_at: 2025-02-25T17:30:21Z
 url: https://github.com/astral-sh/ruff/pull/16263
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [`pylint`] Fix false positives, add missing methods, and support positional-only parameters (`PLE0302`)
 
 ---
 
-_Pull request opened by @dcarrier on 2025-02-19 19:35_
+_@dcarrier_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

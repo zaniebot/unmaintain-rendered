@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T20:55:51Z
 updated_at: 2025-08-09T00:15:11Z
 url: https://github.com/astral-sh/uv/issues/15149
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # Failed to hardlink files with cache and target on same filesystem
 
 ---
 
-_Issue opened by @mpetruc on 2025-08-07 20:55_
+_@mpetruc_
 
 ### Question
 

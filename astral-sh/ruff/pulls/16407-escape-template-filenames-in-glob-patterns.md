@@ -13,14 +13,14 @@ head: brent/globbing
 created_at: 2025-02-26T22:17:19Z
 updated_at: 2025-03-03T14:30:01Z
 url: https://github.com/astral-sh/ruff/pull/16407
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Escape template filenames in glob patterns
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-26 22:17_
+_@ntBre_
 
 ## Summary
 

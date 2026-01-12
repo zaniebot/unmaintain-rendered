@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-14T21:55:52Z
 updated_at: 2024-09-16T07:11:01Z
 url: https://github.com/astral-sh/uv/issues/7400
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Support for external python management tools
 
 ---
 
-_Issue opened by @delfick on 2024-09-14 21:55_
+_@delfick_
 
 Hello,
 

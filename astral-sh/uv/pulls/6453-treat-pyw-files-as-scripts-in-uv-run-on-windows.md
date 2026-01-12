@@ -13,14 +13,14 @@ head: zb/run-pyw
 created_at: 2024-08-22T18:25:10Z
 updated_at: 2024-08-22T23:07:32Z
 url: https://github.com/astral-sh/uv/pull/6453
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:22Z
 ```
 
 # Treat `.pyw` files as scripts in `uv run` on Windows
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-22 18:25_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/6435
 

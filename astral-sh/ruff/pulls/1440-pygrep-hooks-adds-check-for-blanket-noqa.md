@@ -12,14 +12,14 @@ head: check-blanket-noqa
 created_at: 2022-12-29T17:22:47Z
 updated_at: 2022-12-29T17:48:21Z
 url: https://github.com/astral-sh/ruff/pull/1440
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # [pygrep-hooks] Adds Check for Blanket `# noqa`
 
 ---
 
-_Pull request opened by @saadmk11 on 2022-12-29 17:22_
+_@saadmk11_
 
 Ref: https://github.com/charliermarsh/ruff/issues/980
 

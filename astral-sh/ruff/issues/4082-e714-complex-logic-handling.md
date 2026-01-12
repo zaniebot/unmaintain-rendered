@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-24T16:20:04Z
 updated_at: 2023-04-25T17:37:57Z
 url: https://github.com/astral-sh/ruff/issues/4082
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # E714 Complex logic handling
 
 ---
 
-_Issue opened by @justinchuby on 2023-04-24 16:20_
+_@justinchuby_
 
 Example
 

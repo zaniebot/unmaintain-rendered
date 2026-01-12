@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-11-29T07:20:38Z
 updated_at: 2023-12-04T00:15:42Z
 url: https://github.com/astral-sh/ruff/issues/8905
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Unstable formatting in `ignore_pyi.pyi` 
 
 ---
 
-_Issue opened by @MichaReiser on 2023-11-29 07:20_
+_@MichaReiser_
 
 ```python
 def h():

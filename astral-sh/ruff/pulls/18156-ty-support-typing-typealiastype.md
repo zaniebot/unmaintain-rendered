@@ -13,14 +13,14 @@ head: david/bare-type-alias-type
 created_at: 2025-05-17T20:12:05Z
 updated_at: 2025-05-19T14:36:50Z
 url: https://github.com/astral-sh/ruff/pull/18156
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # [ty] Support `typing.TypeAliasType`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-17 20:12_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-18T11:49:36Z
 updated_at: 2022-10-18T12:43:13Z
 url: https://github.com/clap-rs/clap/issues/4400
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Allow using `ValueHint::CommandWithArguments` with `last` (without `trailing_var_args`)
 
 ---
 
-_Issue opened by @KSXGitHub on 2022-10-18 11:49_
+_@KSXGitHub_
 
 ### Please complete the following tasks
 

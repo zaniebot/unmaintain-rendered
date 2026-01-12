@@ -12,14 +12,14 @@ head: cjm/redundant-cast
 created_at: 2025-05-12T23:09:57Z
 updated_at: 2025-05-15T02:38:54Z
 url: https://github.com/astral-sh/ruff/pull/18058
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] only issue redundant-cast on fully static types
 
 ---
 
-_Pull request opened by @carljm on 2025-05-12 23:09_
+_@carljm_
 
 ## Summary
 

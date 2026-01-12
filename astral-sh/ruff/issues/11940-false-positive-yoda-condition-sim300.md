@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-19T13:06:16Z
 updated_at: 2024-06-23T16:27:39Z
 url: https://github.com/astral-sh/ruff/issues/11940
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # False Positive YODA Condition SIM300
 
 ---
 
-_Issue opened by @lukasz-flyrlabs on 2024-06-19 13:06_
+_@lukasz-flyrlabs_
 
 Keywords searched:
 "YODA", "SIM300"

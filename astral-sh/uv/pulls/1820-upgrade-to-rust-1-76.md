@@ -13,14 +13,14 @@ head: rust-1.76
 created_at: 2024-02-21T17:33:57Z
 updated_at: 2024-02-21T17:53:42Z
 url: https://github.com/astral-sh/uv/pull/1820
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:45Z
 ```
 
 # Upgrade to Rust 1.76
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-21 17:33_
+_@MichaReiser_
 
 ## Summary
 

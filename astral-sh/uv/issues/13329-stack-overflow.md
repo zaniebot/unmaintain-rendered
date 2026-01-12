@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-07T12:48:32Z
 updated_at: 2025-07-11T02:15:38Z
 url: https://github.com/astral-sh/uv/issues/13329
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:25Z
 ```
 
 # Stack overflow
 
 ---
 
-_Issue opened by @JWES1971 on 2025-05-07 12:48_
+_@JWES1971_
 
 ### Summary
 

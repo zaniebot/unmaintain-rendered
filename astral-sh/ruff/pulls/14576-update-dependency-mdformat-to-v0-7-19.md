@@ -13,14 +13,14 @@ head: renovate/mdformat-0.x
 created_at: 2024-11-25T01:35:55Z
 updated_at: 2024-11-25T07:40:55Z
 url: https://github.com/astral-sh/ruff/pull/14576
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Update dependency mdformat to v0.7.19
 
 ---
 
-_Pull request opened by @renovate on 2024-11-25 01:35_
+_@renovate_
 
 This PR contains the following updates:
 

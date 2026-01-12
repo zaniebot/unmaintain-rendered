@@ -14,14 +14,14 @@ head: charlie/index-ii
 created_at: 2025-03-24T01:56:15Z
 updated_at: 2025-03-26T01:14:45Z
 url: https://github.com/astral-sh/uv/pull/12407
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:16Z
 ```
 
 # Support `--find-links`-style "flat" indexes in `[[tool.uv.index]]`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-24 01:56_
+_@charliermarsh_
 
 ## Summary
 

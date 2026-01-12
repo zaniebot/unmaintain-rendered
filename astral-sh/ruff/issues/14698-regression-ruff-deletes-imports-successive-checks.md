@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-01T11:41:16Z
 updated_at: 2024-12-02T13:28:28Z
 url: https://github.com/astral-sh/ruff/issues/14698
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # regression: ruff deletes imports; successive checks fail due to missing import
 
 ---
 
-_Issue opened by @WhyNotHugo on 2024-12-01 11:41_
+_@WhyNotHugo_
 
 Running `ruff check --force-exclude --fix --exit-non-zero-on-fix` on my repository deletes some imports that are actually used.
 

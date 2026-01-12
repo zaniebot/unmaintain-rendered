@@ -13,14 +13,14 @@ head: charlie/no-dev
 created_at: 2024-09-15T16:46:15Z
 updated_at: 2024-09-16T02:29:06Z
 url: https://github.com/astral-sh/uv/pull/7408
-synced_at: 2026-01-10T12:53:46Z
+synced_at: 2026-01-12T16:07:48Z
 ```
 
 # Include `dev-dependencies` with `--no-sources`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-15 16:46_
+_@charliermarsh_
 
 ## Summary
 

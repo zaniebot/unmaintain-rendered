@@ -14,14 +14,14 @@ head: david/instance-attributes
 created_at: 2025-01-14T11:13:52Z
 updated_at: 2025-01-15T17:39:44Z
 url: https://github.com/astral-sh/ruff/pull/15474
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Initial tests for instance attributes
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-14 11:13_
+_@sharkdp_
 
 ## Summary
 

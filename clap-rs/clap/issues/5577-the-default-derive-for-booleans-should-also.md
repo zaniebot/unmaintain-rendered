@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-07-09T18:37:12Z
 updated_at: 2024-07-09T20:36:03Z
 url: https://github.com/clap-rs/clap/issues/5577
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # the default derive for booleans should also handle explicit `--flag=true`, `--flag=false`
 
 ---
 
-_Issue opened by @AaronKutch on 2024-07-09 18:37_
+_@AaronKutch_
 
 ### Please complete the following tasks
 

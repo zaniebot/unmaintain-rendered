@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-18T13:56:33Z
 updated_at: 2025-01-07T15:35:59Z
 url: https://github.com/astral-sh/ruff/issues/10457
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PEP 723 configuration support (inline script metadata)
 
 ---
 
-_Issue opened by @MichaReiser on 2024-03-18 13:56_
+_@MichaReiser_
 
 [PEP 723](https://peps.python.org/pep-0723/) introduced configuration support for single-file projects without requiring an external pyproject.toml. We should explore how to support PEP 723 in ruff.
 

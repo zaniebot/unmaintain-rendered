@@ -12,14 +12,14 @@ head: charlie/use-arguments
 created_at: 2023-08-02T15:57:15Z
 updated_at: 2023-08-02T16:49:57Z
 url: https://github.com/astral-sh/ruff/pull/6278
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Use `Arguments` node to power `remove_argument` method
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-02 15:57_
+_@charliermarsh_
 
 ## Summary
 

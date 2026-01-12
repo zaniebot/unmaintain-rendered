@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-08-05T15:50:15Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/614
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Yaml Parsing of "conflicts_with" should be able to process a single value
 
 ---
 
-_Issue opened by @Gilnaa on 2016-08-05 15:50_
+_@Gilnaa_
 
 #513 Currently, when using the following yaml notation:
 

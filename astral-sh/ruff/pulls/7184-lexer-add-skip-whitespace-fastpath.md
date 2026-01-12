@@ -14,14 +14,14 @@ head: lexer-perf-skip-whitespace
 created_at: 2023-09-06T09:24:48Z
 updated_at: 2023-09-06T14:14:03Z
 url: https://github.com/astral-sh/ruff/pull/7184
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Lexer: Add skip whitespace fastpath
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-06 09:24_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

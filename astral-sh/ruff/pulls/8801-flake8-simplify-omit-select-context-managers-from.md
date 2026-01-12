@@ -13,14 +13,14 @@ head: maltev/explicitWithBlockExceptions
 created_at: 2023-11-21T06:05:27Z
 updated_at: 2023-11-21T12:01:00Z
 url: https://github.com/astral-sh/ruff/pull/8801
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [`flake8-simplify`] Omit select context managers from `SIM117`
 
 ---
 
-_Pull request opened by @maltevesper on 2023-11-21 06:05_
+_@maltevesper_
 
 Semantically it makes sense to put certain contextmanagers into separate with statements. Currently asyncio.timeout and its relatives in anyio and trio are exempt from SIM117.
 

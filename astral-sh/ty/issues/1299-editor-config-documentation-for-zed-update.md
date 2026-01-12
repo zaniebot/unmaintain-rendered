@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-02T17:01:48Z
 updated_at: 2025-10-07T11:55:05Z
 url: https://github.com/astral-sh/ty/issues/1299
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Editor config documentation for Zed update
 
 ---
 
-_Issue opened by @gazpachoking on 2025-10-02 17:01_
+_@gazpachoking_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-27T05:29:48Z
 updated_at: 2024-02-28T15:00:01Z
 url: https://github.com/astral-sh/uv/issues/2005
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # UV pip list does not give system package list.
 
 ---
 
-_Issue opened by @GadgetSteve on 2024-02-27 05:29_
+_@GadgetSteve_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

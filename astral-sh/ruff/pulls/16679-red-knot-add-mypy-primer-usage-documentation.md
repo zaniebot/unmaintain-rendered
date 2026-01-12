@@ -13,14 +13,14 @@ head: david/add-mypy_primer-documentation
 created_at: 2025-03-12T14:20:44Z
 updated_at: 2025-03-12T15:47:13Z
 url: https://github.com/astral-sh/ruff/pull/16679
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Add mypy_primer usage documentation
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-12 14:20_
+_@sharkdp_
 
 ## Summary
 

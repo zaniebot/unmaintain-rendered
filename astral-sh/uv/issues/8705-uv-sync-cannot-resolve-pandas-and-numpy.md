@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-30T18:18:09Z
 updated_at: 2024-10-31T11:57:04Z
 url: https://github.com/astral-sh/uv/issues/8705
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # uv sync cannot resolve pandas and numpy dependencies even though they should be compatible
 
 ---
 
-_Issue opened by @mmarinriera on 2024-10-30 18:18_
+_@mmarinriera_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

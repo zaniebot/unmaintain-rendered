@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-08T16:38:31Z
 updated_at: 2026-01-04T16:14:06Z
 url: https://github.com/astral-sh/uv/issues/14508
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # Title: uv venv hangs when using managed Python (works with manual python -m venv)
 
 ---
 
-_Issue opened by @svk1998 on 2025-07-08 16:38_
+_@svk1998_
 
 **Describe the bug**
 

@@ -13,14 +13,14 @@ head: guides_no_integration
 created_at: 2025-01-12T13:15:27Z
 updated_at: 2025-01-16T02:25:51Z
 url: https://github.com/astral-sh/uv/pull/10539
-synced_at: 2026-01-10T11:44:57Z
+synced_at: 2026-01-12T16:09:21Z
 ```
 
 # Add meta titles to documents in guides, excluding integration documents.
 
 ---
 
-_Pull request opened by @FishAlchemist on 2025-01-12 13:15_
+_@FishAlchemist_
 
 ## Summary
 Add meta titles to documents in guides, excluding integration documents.

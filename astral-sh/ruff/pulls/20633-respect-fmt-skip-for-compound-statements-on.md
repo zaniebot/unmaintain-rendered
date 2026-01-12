@@ -14,14 +14,14 @@ head: fmt-skip-one-liner
 created_at: 2025-09-29T17:20:12Z
 updated_at: 2025-11-18T18:02:16Z
 url: https://github.com/astral-sh/ruff/pull/20633
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # Respect `fmt: skip` for compound statements on single line
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-29 17:20_
+_@dylwil3_
 
 Closes #11216
 

@@ -11,14 +11,14 @@ head: jack/uv_active
 created_at: 2025-05-29T00:31:08Z
 updated_at: 2025-09-12T12:19:42Z
 url: https://github.com/astral-sh/uv/pull/13714
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:10:49Z
 ```
 
 # define `UV_USE_ACTIVE_ENVIRONMENT` as an alternative to `--active`
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-05-29 00:31_
+_@oconnor663_
 
 We considered `UV_PROJECT_ENVIRONMENT=active`, but that env var doesn't affect script environments, and we probably want this to work the same way for both.
 

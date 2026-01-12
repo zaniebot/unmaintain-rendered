@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-18T20:22:48Z
 updated_at: 2023-09-27T00:22:23Z
 url: https://github.com/astral-sh/ruff/issues/7502
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Inconsistent logging detection
 
 ---
 
-_Issue opened by @konstin on 2023-09-18 20:22_
+_@konstin_
 
 There are three ways you can call the logging module:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-20T10:06:06Z
 updated_at: 2022-12-21T09:20:08Z
 url: https://github.com/astral-sh/ruff/issues/1297
-synced_at: 2026-01-10T12:05:25Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # `# noqa` not respected in docstrings.
 
 ---
 
-_Issue opened by @pawelrubin on 2022-12-20 10:06_
+_@pawelrubin_
 
 The `# noqa` directive is not respected in docstrings.
 

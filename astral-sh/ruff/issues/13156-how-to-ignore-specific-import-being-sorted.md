@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-30T07:48:33Z
 updated_at: 2024-09-02T07:52:55Z
 url: https://github.com/astral-sh/ruff/issues/13156
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # How to ignore specific import being sorted
 
 ---
 
-_Issue opened by @myslak71 on 2024-08-30 07:48_
+_@myslak71_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

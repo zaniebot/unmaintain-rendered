@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-07T00:30:05Z
 updated_at: 2024-09-07T15:43:04Z
 url: https://github.com/astral-sh/uv/issues/7149
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Config and command to install dependencies with alternative package indexes
 
 ---
 
-_Issue opened by @AdrianB-sovo on 2024-09-07 00:30_
+_@AdrianB-sovo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

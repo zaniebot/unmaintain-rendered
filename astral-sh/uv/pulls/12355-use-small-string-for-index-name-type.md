@@ -13,14 +13,14 @@ head: charlie/sm
 created_at: 2025-03-21T00:45:52Z
 updated_at: 2025-03-21T01:14:50Z
 url: https://github.com/astral-sh/uv/pull/12355
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:14Z
 ```
 
 # Use small string for index name type
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-21 00:45_
+_@charliermarsh_
 
 ## Summary
 

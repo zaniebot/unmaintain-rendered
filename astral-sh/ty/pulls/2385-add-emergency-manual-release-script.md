@@ -12,14 +12,14 @@ head: gankra/man-rel
 created_at: 2026-01-07T22:58:22Z
 updated_at: 2026-01-08T08:56:41Z
 url: https://github.com/astral-sh/ty/pull/2385
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # add emergency manual release script
 
 ---
 
-_Pull request opened by @Gankra on 2026-01-07 22:58_
+_@Gankra_
 
 Same one in uv but with the prerelease line delete because @zanieb noted it was broken
 

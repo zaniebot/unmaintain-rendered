@@ -12,14 +12,14 @@ head: charlie/rename-globals
 created_at: 2023-06-16T02:30:03Z
 updated_at: 2023-06-16T14:51:46Z
 url: https://github.com/astral-sh/ruff/pull/5134
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add support for global and nonlocal symbol renames
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-16 02:30_
+_@charliermarsh_
 
 ## Summary
 

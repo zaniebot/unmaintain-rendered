@@ -13,14 +13,14 @@ head: joey/negative_is_disjoint
 created_at: 2025-03-11T16:43:03Z
 updated_at: 2025-03-14T17:56:32Z
 url: https://github.com/astral-sh/ruff/pull/16636
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Improve is_disjoint for two intersections
 
 ---
 
-_Pull request opened by @jgeralnik on 2025-03-11 16:43_
+_@jgeralnik_
 
 ## Summary
 

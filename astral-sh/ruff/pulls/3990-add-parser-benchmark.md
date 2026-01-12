@@ -13,14 +13,14 @@ head: add-parser-benchmark
 created_at: 2023-04-17T06:07:32Z
 updated_at: 2023-04-26T17:23:25Z
 url: https://github.com/astral-sh/ruff/pull/3990
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add parser benchmark
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-17 06:07_
+_@MichaReiser_
 
 This PR adds a new benchmark that measures the time for parsing, lexing, and a simple AST traversal. 
 

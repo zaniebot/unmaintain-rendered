@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-05T14:35:46Z
 updated_at: 2025-10-27T19:02:16Z
 url: https://github.com/astral-sh/uv/issues/15083
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # UV commands don't create VirtualEnvs automatically
 
 ---
 
-_Issue opened by @Lyranile on 2025-08-05 14:35_
+_@Lyranile_
 
 As an example when I make a new project
 ```

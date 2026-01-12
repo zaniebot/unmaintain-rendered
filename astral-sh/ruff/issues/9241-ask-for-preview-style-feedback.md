@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-22T06:00:50Z
 updated_at: 2024-02-13T11:37:38Z
 url: https://github.com/astral-sh/ruff/issues/9241
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Ask for preview style feedback
 
 ---
 
-_Issue opened by @MichaReiser on 2023-12-22 06:00_
+_@MichaReiser_
 
 We're getting close to finishing the formatter changes for Ruff's 2024 preview style (see #8678). 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-06T15:43:52Z
 updated_at: 2025-02-06T16:29:36Z
 url: https://github.com/astral-sh/uv/issues/11283
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # uv run fails to open pyqt6.QMainWindow without error under certain condition
 
 ---
 
-_Issue opened by @EDohmen on 2025-02-06 15:43_
+_@EDohmen_
 
 ### Summary
 

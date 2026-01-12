@@ -12,14 +12,14 @@ head: size
 created_at: 2025-08-26T13:42:45Z
 updated_at: 2025-12-03T12:05:23Z
 url: https://github.com/astral-sh/uv/pull/15531
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:11:48Z
 ```
 
 # Add `uv tree --show-sizes` to show package sizes
 
 ---
 
-_Pull request opened by @harsh-ps-2003 on 2025-08-26 13:42_
+_@harsh-ps-2003_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

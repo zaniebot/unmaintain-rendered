@@ -12,14 +12,14 @@ head: charlie/binding
 created_at: 2023-04-01T03:23:40Z
 updated_at: 2023-04-01T04:11:52Z
 url: https://github.com/astral-sh/ruff/pull/3842
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Move `Binding` structs out of `scope.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-01 03:23_
+_@charliermarsh_
 
 _No description provided._
 

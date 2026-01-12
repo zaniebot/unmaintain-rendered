@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-22T14:43:37Z
 updated_at: 2024-10-22T23:55:22Z
 url: https://github.com/astral-sh/uv/issues/8461
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # uv uninstall seems broken
 
 ---
 
-_Issue opened by @ArkashJ on 2024-10-22 14:43_
+_@ArkashJ_
 
 I uninstalled uv from my machine, deleted it from my bashrc and cleared my cache however I still get some issues. 
 

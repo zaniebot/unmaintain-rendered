@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-10T13:03:05Z
 updated_at: 2023-07-10T13:08:42Z
 url: https://github.com/astral-sh/ruff/issues/5647
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Ruff is not able to fix errors on autofix when done through precommit hook
 
 ---
 
-_Issue opened by @ghost on 2023-07-10 13:03_
+_@ghost_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

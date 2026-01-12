@@ -12,14 +12,14 @@ head: charlie/box
 created_at: 2023-08-02T14:26:29Z
 updated_at: 2023-08-02T17:16:26Z
 url: https://github.com/astral-sh/ruff/pull/6275
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Box type params and arguments fields on the class definition node
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-02 14:26_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-09T17:55:14Z
 updated_at: 2025-01-15T13:04:54Z
 url: https://github.com/astral-sh/ruff/issues/15379
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] add support for typing.cast
 
 ---
 
-_Issue opened by @carljm on 2025-01-09 17:55_
+_@carljm_
 
 This should be pretty simple to add, once support for `assert_type` (and functions that take some value expressions and some type expressions) lands.
 

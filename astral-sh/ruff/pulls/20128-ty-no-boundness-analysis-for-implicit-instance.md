@@ -13,14 +13,14 @@ head: david/no-reachability-for-implicit-attributes
 created_at: 2025-08-28T09:08:41Z
 updated_at: 2025-08-28T14:49:18Z
 url: https://github.com/astral-sh/ruff/pull/20128
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] No boundness analysis for implicit instance attributes
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-28 09:08_
+_@sharkdp_
 
 ## Summary
 

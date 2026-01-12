@@ -14,14 +14,14 @@ head: micha/case-header-if-guard
 created_at: 2024-09-25T16:17:30Z
 updated_at: 2025-01-03T15:48:09Z
 url: https://github.com/astral-sh/ruff/pull/13513
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Parenthesize `match..case` `if` guards
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-25 16:17_
+_@MichaReiser_
 
 ## Summary
 

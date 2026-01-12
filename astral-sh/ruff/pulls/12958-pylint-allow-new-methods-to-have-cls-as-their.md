@@ -13,14 +13,14 @@ head: fix-plw0211-for-dunder-new
 created_at: 2024-08-17T20:43:54Z
 updated_at: 2024-08-22T13:15:28Z
 url: https://github.com/astral-sh/ruff/pull/12958
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [`pylint`] - Allow `__new__` methods to have `cls` as their first argument even if decorated with `@staticmethod` for `bad-staticmethod-argument` (`PLW0211`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-08-17 20:43_
+_@diceroll123_
 
 ## Summary
 

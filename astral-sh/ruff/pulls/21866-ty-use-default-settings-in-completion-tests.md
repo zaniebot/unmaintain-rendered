@@ -14,14 +14,14 @@ head: ag/switch-default-in-completion-tests
 created_at: 2025-12-09T15:01:08Z
 updated_at: 2025-12-09T15:42:47Z
 url: https://github.com/astral-sh/ruff/pull/21866
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] Use default settings in completion tests
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-12-09 15:01_
+_@BurntSushi_
 
 This makes it so the test and production environments match.
 

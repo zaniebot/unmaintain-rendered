@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-26T02:51:19Z
 updated_at: 2025-12-26T18:36:46Z
 url: https://github.com/astral-sh/ty/issues/2224
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Inference failure: PEP 695 recursive type aliases resolve to 'Unknown'
 
 ---
 
-_Issue opened by @Blinkion on 2025-12-26 02:51_
+_@Blinkion_
 
 Summary
 ty (v0.0.7) currently fails to resolve recursive type aliases defined using the PEP 695 type statement (introduced in Python 3.12). While the syntax is parsed without errors, the inference engine cannot resolve the recursive structure, leading to Unknown types in Inlay Hints and breaking downstream type safety.

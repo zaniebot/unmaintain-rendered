@@ -13,14 +13,14 @@ head: charlie/legacy
 created_at: 2025-09-28T00:08:30Z
 updated_at: 2025-09-29T23:54:28Z
 url: https://github.com/astral-sh/uv/pull/16046
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:05Z
 ```
 
 # Add `UV_SKIP_WHEEL_FILENAME_CHECK` to allow installing invalid wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-28 00:08_
+_@charliermarsh_
 
 ## Summary
 

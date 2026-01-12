@@ -13,14 +13,14 @@ head: micha/non-typing-type-checking
 created_at: 2025-03-12T11:50:07Z
 updated_at: 2025-03-13T07:44:06Z
 url: https://github.com/astral-sh/ruff/pull/16669
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Consider all `TYPE_CHECKING` symbols for type-checking blocks
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-12 11:50_
+_@MichaReiser_
 
 ## Summary
 

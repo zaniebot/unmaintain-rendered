@@ -13,14 +13,14 @@ head: charlie/pref
 created_at: 2024-11-21T01:49:13Z
 updated_at: 2024-12-08T18:13:35Z
 url: https://github.com/astral-sh/uv/pull/9302
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:45Z
 ```
 
 # Only respect preferences across the same indexes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-21 01:49_
+_@charliermarsh_
 
 ## Summary
 

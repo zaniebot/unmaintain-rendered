@@ -13,14 +13,14 @@ head: spdx-0.13
 created_at: 2025-12-14T11:07:43Z
 updated_at: 2025-12-16T11:52:37Z
 url: https://github.com/astral-sh/uv/pull/17129
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # Update spdx dependency to 0.13
 
 ---
 
-_Pull request opened by @musicinmybrain on 2025-12-14 11:07_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

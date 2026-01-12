@@ -13,14 +13,14 @@ head: charlie/pipe
 created_at: 2024-09-23T13:29:43Z
 updated_at: 2024-09-23T13:43:28Z
 url: https://github.com/astral-sh/ruff/pull/13484
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Avoid panic when analyze graph hits broken pipe
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-23 13:29_
+_@charliermarsh_
 
 ## Summary
 

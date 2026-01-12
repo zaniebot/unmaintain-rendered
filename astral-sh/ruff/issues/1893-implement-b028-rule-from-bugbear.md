@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-15T11:53:50Z
 updated_at: 2023-01-16T17:24:08Z
 url: https://github.com/astral-sh/ruff/issues/1893
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Implement B028 rule from bugbear
 
 ---
 
-_Issue opened by @LefterisJP on 2023-01-15 11:53_
+_@LefterisJP_
 
 flake8-bugbear just released an update to add an interesting rule: https://pypi.org/project/flake8-bugbear/
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-21T22:10:50Z
 updated_at: 2025-08-21T22:10:57Z
 url: https://github.com/astral-sh/uv/issues/15435
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # Update `show_settings` test to use shared isolation env vars from `TestContext`
 
 ---
 
-_Issue opened by @zanieb on 2025-08-21 22:10_
+_@zanieb_
 
 I think we'll want to do a larger refactor such that this uses the shared environment variables from the test context and removes what it needs to, but we can track that separately.
 

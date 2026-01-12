@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-01T06:29:40Z
 updated_at: 2025-03-14T00:38:29Z
 url: https://github.com/astral-sh/uv/issues/11878
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # uv pip install on a venv creates a .lock file
 
 ---
 
-_Issue opened by @code-simp on 2025-03-01 06:29_
+_@code-simp_
 
 ### Question
 

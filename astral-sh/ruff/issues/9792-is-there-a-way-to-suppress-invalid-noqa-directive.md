@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-02T17:42:54Z
 updated_at: 2024-02-02T19:19:55Z
 url: https://github.com/astral-sh/ruff/issues/9792
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Is there a way to suppress `Invalid # noqa directive on`  warnings?
 
 ---
 
-_Issue opened by @Vulwsztyn on 2024-02-02 17:42_
+_@Vulwsztyn_
 
 They clog up the output of the check command.
 

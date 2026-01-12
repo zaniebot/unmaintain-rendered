@@ -13,14 +13,14 @@ head: charlie/plugins
 created_at: 2023-03-18T03:19:23Z
 updated_at: 2023-03-18T03:44:31Z
 url: https://github.com/astral-sh/ruff/pull/3592
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Re-add the list of supported plugins to the README
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-18 03:19_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-03-25T19:59:27Z
 updated_at: 2025-03-28T17:36:30Z
 url: https://github.com/clap-rs/clap/issues/5957
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Exclusive options should work even when a required one is not present
 
 ---
 
-_Issue opened by @jaskij on 2025-03-25 19:59_
+_@jaskij_
 
 ### Please complete the following tasks
 

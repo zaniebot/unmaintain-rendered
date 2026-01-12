@@ -12,14 +12,14 @@ head: charlie/export
 created_at: 2023-02-09T16:12:06Z
 updated_at: 2023-02-09T16:31:10Z
 url: https://github.com/astral-sh/ruff/pull/2689
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # Treat re-exported annotations as used-at-runtime
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-09 16:12_
+_@charliermarsh_
 
 Closes #2684.
 

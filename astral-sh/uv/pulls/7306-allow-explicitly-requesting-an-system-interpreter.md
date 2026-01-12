@@ -13,14 +13,14 @@ head: zb/check-system-force
 created_at: 2024-09-11T19:22:14Z
 updated_at: 2024-09-11T19:41:43Z
 url: https://github.com/astral-sh/uv/pull/7306
-synced_at: 2026-01-10T12:53:44Z
+synced_at: 2026-01-12T16:07:46Z
 ```
 
 # Allow explicitly requesting an system interpreter version in `check_system_python`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-11 19:22_
+_@zanieb_
 
 Needed for #7300 
 

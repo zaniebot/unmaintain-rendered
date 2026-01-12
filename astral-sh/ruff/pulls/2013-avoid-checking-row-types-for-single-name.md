@@ -12,14 +12,14 @@ head: charlie/pt007
 created_at: 2023-01-20T03:07:29Z
 updated_at: 2023-01-20T03:13:18Z
 url: https://github.com/astral-sh/ruff/pull/2013
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Avoid checking row types for single-name @parametrize decorators
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-20 03:07_
+_@charliermarsh_
 
 Closes #2008.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-07T12:02:38Z
 updated_at: 2024-12-09T11:10:04Z
 url: https://github.com/astral-sh/ruff/issues/9872
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # v0.1.6: Overriding sub-setting category nulls other inherited settings (#4348)
 
 ---
 
-_Issue opened by @LTourinho on 2024-02-07 12:02_
+_@LTourinho_
 
 Very similar to the issue described in https://github.com/astral-sh/ruff/issues/4348. I have a root dir with a file that looks a bit like:
 

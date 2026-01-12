@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-02T23:50:37Z
 updated_at: 2023-12-03T00:31:29Z
 url: https://github.com/astral-sh/ruff/issues/8975
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # formatting difference from black for dangling commas (tuples)
 
 ---
 
-_Issue opened by @r-downing on 2023-12-02 23:50_
+_@r-downing_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

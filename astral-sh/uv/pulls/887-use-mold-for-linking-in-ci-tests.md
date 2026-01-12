@@ -12,14 +12,14 @@ head: zb/mold
 created_at: 2024-01-11T14:59:12Z
 updated_at: 2024-01-11T18:28:54Z
 url: https://github.com/astral-sh/uv/pull/887
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:15Z
 ```
 
 # Use `mold` for linking in CI tests
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-11 14:59_
+_@zanieb_
 
 Derived from https://github.com/astral-sh/puffin/pull/875
 

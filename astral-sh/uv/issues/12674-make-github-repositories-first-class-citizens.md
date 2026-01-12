@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T14:28:41Z
 updated_at: 2025-04-04T14:29:54Z
 url: https://github.com/astral-sh/uv/issues/12674
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Make GitHub repositories "first-class citizens"
 
 ---
 
-_Issue opened by @JoshPaulie on 2025-04-04 14:28_
+_@JoshPaulie_
 
 ### Summary
 

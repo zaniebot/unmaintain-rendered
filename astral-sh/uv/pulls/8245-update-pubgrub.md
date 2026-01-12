@@ -13,14 +13,14 @@ head: konsti/pubgrub-19c77268c0ad5f69d7e12126e0cfacfbba466481
 created_at: 2024-10-16T08:20:55Z
 updated_at: 2024-10-16T15:39:24Z
 url: https://github.com/astral-sh/uv/pull/8245
-synced_at: 2026-01-10T12:54:05Z
+synced_at: 2026-01-12T16:08:13Z
 ```
 
 # Update PubGrub
 
 ---
 
-_Pull request opened by @konstin on 2024-10-16 08:20_
+_@konstin_
 
 There are some changes in snapshots due to https://github.com/pubgrub-rs/pubgrub/pull/252
 

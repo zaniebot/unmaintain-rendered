@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T23:28:09Z
 updated_at: 2024-02-17T01:33:41Z
 url: https://github.com/astral-sh/uv/issues/1552
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # allow duplicates of the same version of the same package
 
 ---
 
-_Issue opened by @raylu on 2024-02-16 23:28_
+_@raylu_
 
 we have multiple requirements.txt files with the same package at the same version (thanks to `pip-sync -c requirements1.txt requirements2.in`)
 

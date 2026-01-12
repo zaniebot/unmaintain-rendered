@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-21T04:52:40Z
 updated_at: 2025-05-22T14:10:08Z
 url: https://github.com/astral-sh/ty/issues/469
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Server panic: "ref count should be 1 because `zalsa_mut` drops all other DB references"
 
 ---
 
-_Issue opened by @nistath on 2025-05-21 04:52_
+_@nistath_
 
 ### Summary
 

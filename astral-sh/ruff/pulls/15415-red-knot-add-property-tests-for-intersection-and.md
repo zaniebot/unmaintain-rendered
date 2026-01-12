@@ -14,14 +14,14 @@ head: red-knot-add-more-tests-to-property-tests
 created_at: 2025-01-11T07:48:34Z
 updated_at: 2025-01-12T13:22:44Z
 url: https://github.com/astral-sh/ruff/pull/15415
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Add Property Tests for Intersection and Union
 
 ---
 
-_Pull request opened by @cake-monotone on 2025-01-11 07:48_
+_@cake-monotone_
 
 ## Summary
 

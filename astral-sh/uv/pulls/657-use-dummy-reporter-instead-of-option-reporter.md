@@ -11,14 +11,14 @@ head: konstin/dummy-reporter
 created_at: 2023-12-15T09:33:05Z
 updated_at: 2024-02-01T04:50:10Z
 url: https://github.com/astral-sh/uv/pull/657
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:06Z
 ```
 
 # Use dummy reporter instead of option reporter
 
 ---
 
-_Pull request opened by @konstin on 2023-12-15 09:33_
+_@konstin_
 
 I'm experimenting with getting with of the `if let Some(reporter) = self.reporter {...}` and `with_reporter()` methods. Added bonus is that we see where we're currently loosing information, as we currently do in `BuildDispatch::install`.
 

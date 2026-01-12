@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-02T06:03:05Z
 updated_at: 2025-08-06T06:35:37Z
 url: https://github.com/astral-sh/uv/issues/12620
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # An error occurs when adding torch from https://download.pytorch.org/whl/cu118
 
 ---
 
-_Issue opened by @Ruoc26 on 2025-04-02 06:03_
+_@Ruoc26_
 
 ### Question
 

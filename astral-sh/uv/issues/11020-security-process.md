@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T14:49:33Z
 updated_at: 2025-01-28T21:09:58Z
 url: https://github.com/astral-sh/uv/issues/11020
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # Security Process
 
 ---
 
-_Issue opened by @schirrmacher on 2025-01-28 14:49_
+_@schirrmacher_
 
 ### Summary
 

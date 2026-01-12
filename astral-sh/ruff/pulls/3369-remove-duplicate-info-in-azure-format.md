@@ -12,14 +12,14 @@ head: main
 created_at: 2023-03-06T21:16:44Z
 updated_at: 2023-03-06T21:40:18Z
 url: https://github.com/astral-sh/ruff/pull/3369
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Remove duplicate info in azure format
 
 ---
 
-_Pull request opened by @StefanBRas on 2023-03-06 21:16_
+_@StefanBRas_
 
 Continuing #3335, which was merged before I removed the duplicate info.
 

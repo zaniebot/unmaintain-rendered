@@ -13,14 +13,14 @@ head: quotes-remove-backslash
 created_at: 2023-11-12T16:48:05Z
 updated_at: 2023-11-13T22:16:57Z
 url: https://github.com/astral-sh/ruff/pull/8630
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add new rule to check for useless quote escapes
 
 ---
 
-_Pull request opened by @ThiefMaster on 2023-11-12 16:48_
+_@ThiefMaster_
 
 When using the autofixer for `Q000` it does not remove the backslashes from quotes that no longer need escaping.
 This new rule checks for such backslashes (regardless whether they come from the autofixer or not) and can remove them.

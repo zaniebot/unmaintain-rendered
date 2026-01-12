@@ -15,14 +15,14 @@ head: david/fix-1987
 created_at: 2025-12-17T10:25:25Z
 updated_at: 2025-12-18T11:25:33Z
 url: https://github.com/astral-sh/ruff/pull/22018
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Handle field specifier functions that accept `**kwargs` and recognize metaclass-based transformers as instances of `DataclassInstance`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-17 10:25_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: type-alias-variance
 created_at: 2025-10-16T16:57:35Z
 updated_at: 2025-10-19T04:07:58Z
 url: https://github.com/astral-sh/ruff/pull/20924
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] impl `VarianceInferable` for `KnownInstanceType`
 
 ---
 
-_Pull request opened by @mtshiba on 2025-10-16 16:57_
+_@mtshiba_
 
 ## Summary
 

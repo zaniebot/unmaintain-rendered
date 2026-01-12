@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-30T16:14:01Z
 updated_at: 2025-02-03T10:45:25Z
 url: https://github.com/astral-sh/uv/issues/11100
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # "uv add" fails on a private Artifactory index when a package is not available for another platform
 
 ---
 
-_Issue opened by @vgalin on 2025-01-30 16:14_
+_@vgalin_
 
 ### Summary
 

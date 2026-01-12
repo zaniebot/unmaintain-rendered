@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-19T09:44:21Z
 updated_at: 2025-05-19T09:45:27Z
 url: https://github.com/astral-sh/uv/issues/13532
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # Allow `--build-constraints` in `uv sync`
 
 ---
 
-_Issue opened by @vmarkovtsev on 2025-05-19 09:44_
+_@vmarkovtsev_
 
 ### Summary
 

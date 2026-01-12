@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-13T06:53:29Z
 updated_at: 2023-02-03T18:28:28Z
 url: https://github.com/astral-sh/ruff/issues/177
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # __path__ is not detected as a builtin for F821
 
 ---
 
-_Issue opened by @sanga on 2022-09-13 06:53_
+_@sanga_
 
 Eg
 

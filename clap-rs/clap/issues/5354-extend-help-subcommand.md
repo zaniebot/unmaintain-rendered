@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-16T09:45:00Z
 updated_at: 2024-02-17T09:20:08Z
 url: https://github.com/clap-rs/clap/issues/5354
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Extend help subcommand
 
 ---
 
-_Issue opened by @nwalfield on 2024-02-16 09:45_
+_@nwalfield_
 
 ### Please complete the following tasks
 

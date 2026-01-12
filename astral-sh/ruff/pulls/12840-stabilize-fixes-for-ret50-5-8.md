@@ -13,14 +13,14 @@ head: stabilize-ret501-fixes
 created_at: 2024-08-12T10:39:21Z
 updated_at: 2024-08-14T04:06:35Z
 url: https://github.com/astral-sh/ruff/pull/12840
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Stabilize fixes for `RET50{5-8}`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-12 10:39_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-10T15:02:27Z
 updated_at: 2023-06-10T15:39:24Z
 url: https://github.com/clap-rs/clap/issues/4963
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Add repository / homepage URL to `help_template` keys
 
 ---
 
-_Issue opened by @ajeetdsouza on 2023-06-10 15:02_
+_@ajeetdsouza_
 
 ### Please complete the following tasks
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-05T07:42:12Z
 updated_at: 2026-01-09T09:37:41Z
 url: https://github.com/astral-sh/ty/issues/936
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # CLI provided directory path and include
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-05 07:42_
+_@MichaReiser_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-19T18:08:56Z
 updated_at: 2023-10-19T23:15:55Z
 url: https://github.com/astral-sh/ruff/issues/8071
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # SIM108 suggests to convert TYPE_CHECKING block
 
 ---
 
-_Issue opened by @mrcljx on 2023-10-19 18:08_
+_@mrcljx_
 
 When using type checkers like Mypy, it's sometimes necessary to give them different code to inspect. This is done via `if TYPE_CHECKING` blocks, e.g.
 

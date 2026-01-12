@@ -13,14 +13,14 @@ head: consider-using-ternary
 created_at: 2023-10-04T12:57:49Z
 updated_at: 2023-10-13T05:44:42Z
 url: https://github.com/astral-sh/ruff/pull/7811
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # [pylint] Implement consider-using-ternary (R1706)
 
 ---
 
-_Pull request opened by @danbi2990 on 2023-10-04 12:57_
+_@danbi2990_
 
 This is my first PR. Please feel free to give me any feedback for even small drawbacks.
 

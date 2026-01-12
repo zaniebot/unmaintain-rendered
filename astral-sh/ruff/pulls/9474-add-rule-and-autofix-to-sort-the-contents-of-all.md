@@ -12,14 +12,14 @@ head: sort-dunder-all-2
 created_at: 2024-01-11T17:31:08Z
 updated_at: 2024-10-08T16:39:37Z
 url: https://github.com/astral-sh/ruff/pull/9474
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Add rule and autofix to sort the contents of `__all__`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-01-11 17:31_
+_@AlexWaygood_
 
 ## Summary
 

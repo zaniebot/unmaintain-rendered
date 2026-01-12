@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-02T17:25:17Z
 updated_at: 2025-04-03T01:15:37Z
 url: https://github.com/astral-sh/uv/issues/12633
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # UV editable local dependencies are not importable via python
 
 ---
 
-_Issue opened by @risky-rickman on 2025-04-02 17:25_
+_@risky-rickman_
 
 ### Summary
 

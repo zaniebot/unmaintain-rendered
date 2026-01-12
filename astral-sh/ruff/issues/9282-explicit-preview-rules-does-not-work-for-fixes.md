@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-26T08:08:04Z
 updated_at: 2024-01-16T02:48:42Z
 url: https://github.com/astral-sh/ruff/issues/9282
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # explicit-preview-rules does not work for fixes
 
 ---
 
-_Issue opened by @hauntsaninja on 2023-12-26 08:08_
+_@hauntsaninja_
 
 I'd expect both runs of ruff below to fix the error
 ```

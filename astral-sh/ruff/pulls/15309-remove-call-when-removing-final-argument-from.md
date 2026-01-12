@@ -14,14 +14,14 @@ head: charlie/f
 created_at: 2025-01-07T02:42:17Z
 updated_at: 2025-01-07T02:54:57Z
 url: https://github.com/astral-sh/ruff/pull/15309
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Remove call when removing final argument from `format`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-07 02:42_
+_@charliermarsh_
 
 ## Summary
 

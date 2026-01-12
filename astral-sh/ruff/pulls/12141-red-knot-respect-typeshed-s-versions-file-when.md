@@ -13,14 +13,14 @@ head: custom-typeshed-versions
 created_at: 2024-07-01T13:47:40Z
 updated_at: 2024-07-05T22:57:14Z
 url: https://github.com/astral-sh/ruff/pull/12141
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Respect typeshed's `VERSIONS` file when resolving stdlib modules
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-01 13:47_
+_@AlexWaygood_
 
 ## Summary
 

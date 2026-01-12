@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-07T14:02:20Z
 updated_at: 2025-06-07T14:04:49Z
 url: https://github.com/astral-sh/ty/issues/606
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # rule to ban blanket `#ty: ignore` comments
 
 ---
 
-_Issue opened by @DetachHead on 2025-06-07 14:02_
+_@DetachHead_
 
 > PGH003
 > 

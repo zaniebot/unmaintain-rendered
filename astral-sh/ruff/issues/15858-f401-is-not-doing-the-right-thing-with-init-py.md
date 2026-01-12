@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-31T20:50:53Z
 updated_at: 2025-05-29T17:43:43Z
 url: https://github.com/astral-sh/ruff/issues/15858
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # F401 is not doing the "right" thing with __init__.py
 
 ---
 
-_Issue opened by @mlasevich on 2025-01-31 20:50_
+_@mlasevich_
 
 ### Description
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-25T07:49:03Z
 updated_at: 2024-09-25T12:35:42Z
 url: https://github.com/astral-sh/uv/issues/7680
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Regression in prefetching unbounded-lower-bound packages
 
 ---
 
-_Issue opened by @topherinternational on 2024-09-25 07:49_
+_@topherinternational_
 
 #4136 (implemented by #4149) addressed an issue where the prefetcher was fetching the lowest-ever version of a dependency, which wasn't compatible with the Python version, and the wheel build for that version failed and killed the resolver process.
 

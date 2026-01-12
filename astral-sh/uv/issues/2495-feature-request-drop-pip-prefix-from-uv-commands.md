@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-17T15:03:17Z
 updated_at: 2024-03-17T15:57:38Z
 url: https://github.com/astral-sh/uv/issues/2495
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # feature request: drop `pip` prefix from `uv` commands
 
 ---
 
-_Issue opened by @charles-cooper on 2024-03-17 15:03_
+_@charles-cooper_
 
 ```
 $ uv --version

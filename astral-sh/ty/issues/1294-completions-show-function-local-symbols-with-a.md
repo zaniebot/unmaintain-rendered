@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-01T14:13:00Z
 updated_at: 2025-12-11T13:26:17Z
 url: https://github.com/astral-sh/ty/issues/1294
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Completions show function-local symbols with a type of `Never`
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-01 14:13_
+_@sharkdp_
 
 Completions show function-local symbols with a type of `Never` if the end of the function scope is not reachable (usually because there is a `return` statement). This happens because we use `all_end_of_scope_symbol_declarations` and `all_end_of_scope_symbol_bindings` when listing members in `ide_support::all_declarations_and_bindings`, instead of getting the type for a (synthetic) use of the symbol at the cursor position. We might also be able to fix this by skipping reachability analysis for purposes of determining these end-of-scope-use-types?
 

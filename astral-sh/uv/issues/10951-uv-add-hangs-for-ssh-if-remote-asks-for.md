@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-25T00:25:34Z
 updated_at: 2025-01-25T00:29:49Z
 url: https://github.com/astral-sh/uv/issues/10951
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # uv add hangs for ssh if remote asks for authentication and --verbose is not provided
 
 ---
 
-_Issue opened by @tbrugere on 2025-01-25 00:25_
+_@tbrugere_
 
 ### Summary
 

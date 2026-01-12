@@ -13,14 +13,14 @@ head: konsti/remove-prioritized-dist-redudancy
 created_at: 2025-07-25T10:27:01Z
 updated_at: 2025-07-25T15:18:26Z
 url: https://github.com/astral-sh/uv/pull/14887
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:28Z
 ```
 
 # Remove prioritized dist duplication
 
 ---
 
-_Pull request opened by @konstin on 2025-07-25 10:27_
+_@konstin_
 
 `Candidate` has an optional field `prioritized`, which was mostly redundant with `CandidateDist`. Specifically, it was only `None`, if `CandidateDist` was `Installed`. This commit removes this duplication.
 

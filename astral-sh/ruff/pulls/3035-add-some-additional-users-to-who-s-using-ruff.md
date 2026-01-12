@@ -12,14 +12,14 @@ head: charlie/users
 created_at: 2023-02-19T16:21:05Z
 updated_at: 2023-02-19T16:30:02Z
 url: https://github.com/astral-sh/ruff/pull/3035
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add some additional users to "Who's Using Ruff?"
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-19 16:21_
+_@charliermarsh_
 
 _No description provided._
 

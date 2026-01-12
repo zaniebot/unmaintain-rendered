@@ -13,14 +13,14 @@ head: david/remove-genericalias-todo
 created_at: 2025-12-01T12:18:32Z
 updated_at: 2025-12-01T13:02:40Z
 url: https://github.com/astral-sh/ruff/pull/21728
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] Remove `GenericAlias`-related todo type
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-01 12:18_
+_@sharkdp_
 
 ## Summary
 

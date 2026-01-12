@@ -13,14 +13,14 @@ head: konsti/fix-upload-retry-policy
 created_at: 2025-03-07T12:56:03Z
 updated_at: 2025-03-10T11:38:10Z
 url: https://github.com/astral-sh/uv/pull/12041
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:06Z
 ```
 
 # Re-add 3 retries in `uv publish`
 
 ---
 
-_Pull request opened by @konstin on 2025-03-07 12:56_
+_@konstin_
 
 In the publish client, we have to set the client retries to 0 as the retry middleware is incompatible with upload bodies. This however also sets `client.retry_policy()` to a zero-retry policy, so we need to construct our own policy.
 

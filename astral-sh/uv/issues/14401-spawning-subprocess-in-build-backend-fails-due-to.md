@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-01T18:56:22Z
 updated_at: 2025-11-18T15:47:24Z
 url: https://github.com/astral-sh/uv/issues/14401
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # Spawning subprocess in build backend fails due to group policy 
 
 ---
 
-_Issue opened by @kylewardlow on 2025-07-01 18:56_
+_@kylewardlow_
 
 ### Summary
 

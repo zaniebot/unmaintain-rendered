@@ -13,14 +13,14 @@ head: charlie/grace
 created_at: 2024-09-23T13:31:38Z
 updated_at: 2024-09-23T13:58:00Z
 url: https://github.com/astral-sh/ruff/pull/13485
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Exit gracefully on broken pipe errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-23 13:31_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

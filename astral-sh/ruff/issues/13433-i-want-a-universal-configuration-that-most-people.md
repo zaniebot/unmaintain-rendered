@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-21T08:21:30Z
 updated_at: 2024-11-20T12:02:15Z
 url: https://github.com/astral-sh/ruff/issues/13433
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # I want a universal configuration that most people are used to.
 
 ---
 
-_Issue opened by @lqllife on 2024-09-21 08:21_
+_@lqllife_
 
 I just started using ruff and never used black before, so I want to ask if there are any standard, commonly used and easy-to-use rules.
 I searched for a long time in the issue but couldn't find it, so I'm asking.

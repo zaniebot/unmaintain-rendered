@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-14T10:31:06Z
 updated_at: 2025-10-15T07:45:12Z
 url: https://github.com/astral-sh/uv/issues/16293
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # Failed to detect platform
 
 ---
 
-_Issue opened by @NiuBlibing on 2025-10-14 10:31_
+_@NiuBlibing_
 
 ### Summary
 

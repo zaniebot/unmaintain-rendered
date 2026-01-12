@@ -14,14 +14,14 @@ head: async109
 created_at: 2024-07-08T05:27:06Z
 updated_at: 2024-07-09T04:53:02Z
 url: https://github.com/astral-sh/ruff/pull/12236
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`flake8-async`] Update `ASYNC109` to match upstream
 
 ---
 
-_Pull request opened by @augustelalande on 2024-07-08 05:27_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

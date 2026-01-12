@@ -13,14 +13,14 @@ head: dhruv/leftover
 created_at: 2024-06-21T10:20:53Z
 updated_at: 2024-06-21T10:40:35Z
 url: https://github.com/astral-sh/ruff/pull/11962
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Remove `Token::is_trivia` method
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-21 10:20_
+_@dhruvmanila_
 
 Sorry, a leftover from my rebase
 

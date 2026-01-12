@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-29T02:17:14Z
 updated_at: 2023-07-29T05:01:16Z
 url: https://github.com/astral-sh/ruff/issues/6164
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `UP031` ignores `line-length`
 
 ---
 
-_Issue opened by @harupy on 2023-07-29 02:17_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

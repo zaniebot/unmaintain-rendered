@@ -13,14 +13,14 @@ head: konsti/hint-for-common-toml-error
 created_at: 2024-08-29T10:54:26Z
 updated_at: 2024-09-14T20:20:39Z
 url: https://github.com/astral-sh/uv/pull/6803
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:32Z
 ```
 
 # Hint at missing `project.name`
 
 ---
 
-_Pull request opened by @konstin on 2024-08-29 10:54_
+_@konstin_
 
 We got user reports where users were confused about why they can't use `[project.urls]` in `pyproject.toml` (i think that's from poetry?). This PR adds a hint that (according to PEP 621), you need to set `project.name` when using any `project` fields. (PEP 621 also requires `project.version` xor `dynamic = ["version"]`, but we check that later.)
 

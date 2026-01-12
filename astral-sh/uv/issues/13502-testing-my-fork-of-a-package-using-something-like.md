@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-17T03:16:25Z
 updated_at: 2025-05-19T16:57:36Z
 url: https://github.com/astral-sh/uv/issues/13502
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # Testing my fork of a package using something like dependency overrides?
 
 ---
 
-_Issue opened by @mattgiles on 2025-05-17 03:16_
+_@mattgiles_
 
 ### Question
 

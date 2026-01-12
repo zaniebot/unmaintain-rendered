@@ -13,14 +13,14 @@ head: renovate/actions-setup-node-6.x
 created_at: 2025-11-03T03:25:05Z
 updated_at: 2025-11-03T04:55:38Z
 url: https://github.com/astral-sh/ruff/pull/21249
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # Update actions/setup-node action to v6
 
 ---
 
-_Pull request opened by @renovate on 2025-11-03 03:25_
+_@renovate_
 
 This PR contains the following updates:
 

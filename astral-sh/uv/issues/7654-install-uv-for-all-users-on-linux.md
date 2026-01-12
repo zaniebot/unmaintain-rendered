@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-24T08:14:25Z
 updated_at: 2024-10-29T00:51:46Z
 url: https://github.com/astral-sh/uv/issues/7654
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Install uv for all users on Linux
 
 ---
 
-_Issue opened by @bolinocroustibat on 2024-09-24 08:14_
+_@bolinocroustibat_
 
 - Platform: Linux and/or MacOS
 - uv version: 0.4.15

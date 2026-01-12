@@ -12,14 +12,14 @@ head: manzt/remote-script
 created_at: 2024-09-26T13:53:47Z
 updated_at: 2024-09-26T15:05:39Z
 url: https://github.com/astral-sh/uv/pull/7708
-synced_at: 2026-01-10T12:53:53Z
+synced_at: 2026-01-12T16:07:57Z
 ```
 
 # Check in test script for uv run <url>
 
 ---
 
-_Pull request opened by @manzt on 2024-09-26 13:53_
+_@manzt_
 
 Merge before #6375 (see https://github.com/astral-sh/uv/pull/6375#discussion_r1776975298)
 

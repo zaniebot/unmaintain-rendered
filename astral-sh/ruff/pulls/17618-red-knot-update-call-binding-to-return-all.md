@@ -13,14 +13,14 @@ head: dhruv/overload-call-evaluation-1
 created_at: 2025-04-24T22:38:52Z
 updated_at: 2025-04-30T20:03:23Z
 url: https://github.com/astral-sh/ruff/pull/17618
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Update call binding to return all matching overloads
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-24 22:38_
+_@dhruvmanila_
 
 ## Summary
 

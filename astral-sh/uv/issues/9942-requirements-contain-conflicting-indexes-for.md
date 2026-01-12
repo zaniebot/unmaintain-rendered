@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-16T17:32:34Z
 updated_at: 2025-11-03T12:05:32Z
 url: https://github.com/astral-sh/uv/issues/9942
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # Requirements contain conflicting indexes for package `torch` error when using extra markers in both the project and a dependency
 
 ---
 
-_Issue opened by @reuben on 2024-12-16 17:32_
+_@reuben_
 
 I have the following setup in a monorepo:
 

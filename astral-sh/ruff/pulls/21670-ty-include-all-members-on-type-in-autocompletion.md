@@ -14,14 +14,14 @@ head: alex/type-type-members
 created_at: 2025-11-27T18:56:02Z
 updated_at: 2025-11-27T19:29:26Z
 url: https://github.com/astral-sh/ruff/pull/21670
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] Include all members on `type` in autocompletion suggestions for `type[]` types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-27 18:56_
+_@AlexWaygood_
 
 ## Summary
 

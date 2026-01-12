@@ -14,14 +14,14 @@ head: alex/tvar-binding-ranges
 created_at: 2025-02-04T14:02:35Z
 updated_at: 2025-02-04T14:14:23Z
 url: https://github.com/astral-sh/ruff/pull/15935
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Make `Binding::range()` point to the range of a type parameter's name, not the full type parameter
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-04 14:02_
+_@AlexWaygood_
 
 ## Summary
 

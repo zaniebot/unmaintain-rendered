@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-29T10:14:51Z
 updated_at: 2025-01-08T16:59:07Z
 url: https://github.com/astral-sh/uv/issues/2078
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Add support for pip download command or fix "Failed to download distributions" error message in offline mode
 
 ---
 
-_Issue opened by @mborus on 2024-02-29 10:14_
+_@mborus_
 
 I've tried downloading and installing downloaded files with uv (0.1.12 (f68b2d1d5 2024-02-28)) and it seems 
 that pip's download functionality is not fully supported.

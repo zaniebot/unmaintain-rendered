@@ -12,14 +12,14 @@ head: zb/range-req
 created_at: 2023-12-19T17:20:18Z
 updated_at: 2023-12-20T10:55:24Z
 url: https://github.com/astral-sh/uv/pull/702
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # Fix fallback download when index does not support HTTP range requests
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-19 17:20_
+_@zanieb_
 
 Otherwise, when a server does not support HTTP range requests we throw an error instead of downloading without range requests.
 

@@ -13,14 +13,14 @@ head: charlie/maturin
 created_at: 2024-05-21T19:19:37Z
 updated_at: 2024-05-22T09:10:05Z
 url: https://github.com/astral-sh/uv/pull/3718
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Remove `maturin_editable` test
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-21 19:19_
+_@charliermarsh_
 
 ## Summary
 

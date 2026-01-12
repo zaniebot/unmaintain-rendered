@@ -12,14 +12,14 @@ head: charlie/sort-edits
 created_at: 2023-05-31T17:18:51Z
 updated_at: 2023-05-31T17:46:54Z
 url: https://github.com/astral-sh/ruff/pull/4762
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Apply edits in sorted order
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-31 17:18_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

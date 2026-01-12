@@ -13,14 +13,14 @@ head: charlie/requires-python-cap
 created_at: 2024-06-06T03:50:02Z
 updated_at: 2024-06-06T17:52:58Z
 url: https://github.com/astral-sh/uv/pull/4086
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:02Z
 ```
 
 # Ignore upper-bounds on `Requires-Python`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-06 03:50_
+_@charliermarsh_
 
 ## Summary
 

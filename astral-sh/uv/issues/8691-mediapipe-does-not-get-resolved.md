@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-30T04:55:42Z
 updated_at: 2024-10-30T05:15:09Z
 url: https://github.com/astral-sh/uv/issues/8691
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # Mediapipe does not get resolved
 
 ---
 
-_Issue opened by @criticic on 2024-10-30 04:55_
+_@criticic_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

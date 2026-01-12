@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-20T00:37:31Z
 updated_at: 2021-08-25T15:48:28Z
 url: https://github.com/clap-rs/clap/issues/2727
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # clap_generate fish: ArgEnum completions shows the description of the argument
 
 ---
 
-_Issue opened by @ModProg on 2021-08-20 00:37_
+_@ModProg_
 
 ### Rust Version
 

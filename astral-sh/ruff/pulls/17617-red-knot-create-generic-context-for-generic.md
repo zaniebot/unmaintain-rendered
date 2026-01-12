@@ -13,14 +13,14 @@ head: dcreager/lazy-generic-class
 created_at: 2025-04-24T22:10:08Z
 updated_at: 2025-04-25T18:10:05Z
 url: https://github.com/astral-sh/ruff/pull/17617
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Create generic context for generic classes lazily
 
 ---
 
-_Pull request opened by @dcreager on 2025-04-24 22:10_
+_@dcreager_
 
 As discussed today, this is needed to handle legacy generic classes without having to infer the types of the class's explicit bases eagerly at class construction time. Pulling this out into a separate PR so there's a smaller diff to review.
 

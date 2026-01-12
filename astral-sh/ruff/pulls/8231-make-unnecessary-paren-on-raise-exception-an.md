@@ -14,14 +14,14 @@ head: charlie/rse
 created_at: 2023-10-25T22:04:03Z
 updated_at: 2023-10-26T16:30:12Z
 url: https://github.com/astral-sh/ruff/pull/8231
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Make `unnecessary-paren-on-raise-exception` an unsafe edit
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-25 22:04_
+_@charliermarsh_
 
 ## Summary
 

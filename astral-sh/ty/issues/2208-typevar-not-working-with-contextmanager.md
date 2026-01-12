@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-24T17:53:48Z
 updated_at: 2025-12-24T18:58:32Z
 url: https://github.com/astral-sh/ty/issues/2208
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # TypeVar not working with contextmanager
 
 ---
 
-_Issue opened by @igortg on 2025-12-24 17:53_
+_@igortg_
 
 ### Summary
 

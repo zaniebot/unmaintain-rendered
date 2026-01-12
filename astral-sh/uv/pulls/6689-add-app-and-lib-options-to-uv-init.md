@@ -13,14 +13,14 @@ head: zb/init-app-lib
 created_at: 2024-08-27T14:05:13Z
 updated_at: 2024-08-27T18:08:11Z
 url: https://github.com/astral-sh/uv/pull/6689
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:29Z
 ```
 
 # Add `--app` and `--lib` options to `uv init`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-27 14:05_
+_@zanieb_
 
 Changes the `uv init` experience with a focus on working for more use-cases out of the box.
 

@@ -13,14 +13,14 @@ head: renovate/get-size2-0.x-lockfile
 created_at: 2025-07-14T03:02:10Z
 updated_at: 2025-07-14T06:40:04Z
 url: https://github.com/astral-sh/ruff/pull/19316
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # Update Rust crate get-size2 to v0.5.2
 
 ---
 
-_Pull request opened by @renovate on 2025-07-14 03:02_
+_@renovate_
 
 This PR contains the following updates:
 

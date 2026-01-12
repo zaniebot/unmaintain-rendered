@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-01-17T23:38:09Z
 updated_at: 2018-08-02T03:29:59Z
 url: https://github.com/clap-rs/clap/issues/817
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Suggestion: Allow arguments to be differently typed
 
 ---
 
-_Issue opened by @darnir on 2017-01-17 23:38_
+_@darnir_
 
 Currently all arguments are always `stringly typed`. However, in some cases, it makes sense for the argument parser to return data of a different type. For example, my use case is this:
 

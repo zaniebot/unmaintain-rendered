@@ -14,14 +14,14 @@ head: gankra/pub-imp
 created_at: 2025-11-21T21:32:43Z
 updated_at: 2025-11-22T01:42:12Z
 url: https://github.com/astral-sh/ruff/pull/21573
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] make implicit submodule imports re-exported
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-21 21:32_
+_@Gankra_
 
 Thus they work in `.pyi` files
 

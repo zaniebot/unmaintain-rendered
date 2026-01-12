@@ -13,14 +13,14 @@ head: charlie/C419
 created_at: 2024-07-17T14:10:38Z
 updated_at: 2024-07-18T12:37:30Z
 url: https://github.com/astral-sh/ruff/pull/12364
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Allow additional arguments for sum and max comprehensions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-17 14:10_
+_@charliermarsh_
 
 ## Summary
 

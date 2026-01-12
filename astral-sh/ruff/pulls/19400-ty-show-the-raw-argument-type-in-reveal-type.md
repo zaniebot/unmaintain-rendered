@@ -14,14 +14,14 @@ head: dcreager/reveal-argument
 created_at: 2025-07-17T14:48:50Z
 updated_at: 2025-07-17T20:50:31Z
 url: https://github.com/astral-sh/ruff/pull/19400
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:38Z
 ```
 
 # [ty] Show the raw argument type in `reveal_type` 
 
 ---
 
-_Pull request opened by @dcreager on 2025-07-17 14:48_
+_@dcreager_
 
 This PR is changes how `reveal_type` determines what type to reveal, in a way that should be a no-op to most callers.
 

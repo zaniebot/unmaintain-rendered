@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-02T12:35:00Z
 updated_at: 2024-08-02T19:44:44Z
 url: https://github.com/astral-sh/uv/issues/5724
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Workspace discovery fails on matching files
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-02 12:35_
+_@charliermarsh_
 
 In Ruff:
 

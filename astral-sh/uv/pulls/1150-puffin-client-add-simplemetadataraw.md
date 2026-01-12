@@ -14,14 +14,14 @@ head: ag/rkyv-simple-metadata-raw
 created_at: 2024-01-27T13:28:40Z
 updated_at: 2024-01-29T14:37:07Z
 url: https://github.com/astral-sh/uv/pull/1150
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:28Z
 ```
 
 # puffin-client: add SimpleMetadataRaw
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-01-27 13:28_
+_@BurntSushi_
 
 This adds what is effectively an owned wrapper around
 `Archived<SimpleMetadata>`. Normally, an `Archived<SimpleMetadata>`

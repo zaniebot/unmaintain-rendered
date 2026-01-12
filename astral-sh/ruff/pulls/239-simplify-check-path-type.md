@@ -12,14 +12,14 @@ head: check_path-type
 created_at: 2022-09-21T01:01:52Z
 updated_at: 2022-09-21T01:23:47Z
 url: https://github.com/astral-sh/ruff/pull/239
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Simplify check_path type
 
 ---
 
-_Pull request opened by @andersk on 2022-09-21 01:01_
+_@andersk_
 
 _No description provided._
 

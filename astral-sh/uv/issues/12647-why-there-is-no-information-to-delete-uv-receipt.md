@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-03T10:18:55Z
 updated_at: 2026-01-04T13:44:45Z
 url: https://github.com/astral-sh/uv/issues/12647
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # why there is no information to delete `uv-receipt.json` when uninstalling `uv`
 
 ---
 
-_Issue opened by @candrapersada on 2025-04-03 10:18_
+_@candrapersada_
 
 ### Question
 

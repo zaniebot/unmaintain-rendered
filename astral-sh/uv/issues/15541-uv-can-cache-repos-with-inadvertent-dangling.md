@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-27T01:11:28Z
 updated_at: 2025-08-27T22:34:56Z
 url: https://github.com/astral-sh/uv/issues/15541
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # uv can cache repos with inadvertent dangling symlinks that break uv cache clean
 
 ---
 
-_Issue opened by @Owen-OptiGrid on 2025-08-27 01:11_
+_@Owen-OptiGrid_
 
 ### Summary
 

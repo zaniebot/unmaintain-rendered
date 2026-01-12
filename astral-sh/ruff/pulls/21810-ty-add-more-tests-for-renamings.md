@@ -15,14 +15,14 @@ head: alex/more-renamings
 created_at: 2025-12-05T12:00:38Z
 updated_at: 2025-12-05T12:41:32Z
 url: https://github.com/astral-sh/ruff/pull/21810
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Add more tests for renamings
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-05 12:00_
+_@AlexWaygood_
 
 ## Summary
 

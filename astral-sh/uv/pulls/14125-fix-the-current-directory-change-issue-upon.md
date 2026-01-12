@@ -11,14 +11,14 @@ head: main
 created_at: 2025-06-18T12:05:59Z
 updated_at: 2025-06-18T12:05:59Z
 url: https://github.com/astral-sh/uv/pull/14125
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:02Z
 ```
 
 # Fix the current directory change issue upon activation of a relocatable venv within fish
 
 ---
 
-_Pull request opened by @ri-char on 2025-06-18 12:05_
+_@ri-char_
 
 ## Summary
 

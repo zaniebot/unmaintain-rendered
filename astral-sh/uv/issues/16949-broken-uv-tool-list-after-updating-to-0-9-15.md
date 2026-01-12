@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-03T02:28:06Z
 updated_at: 2025-12-10T15:23:30Z
 url: https://github.com/astral-sh/uv/issues/16949
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # Broken `uv tool list` after updating to 0.9.15
 
 ---
 
-_Issue opened by @powercoconola on 2025-12-03 02:28_
+_@powercoconola_
 
 ### Summary
 

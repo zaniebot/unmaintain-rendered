@@ -12,14 +12,14 @@ head: charlie/expr-size
 created_at: 2024-02-10T02:59:22Z
 updated_at: 2024-03-12T19:48:33Z
 url: https://github.com/astral-sh/ruff/pull/9920
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Reduce size of `Expr` enum
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-10 02:59_
+_@charliermarsh_
 
 Okay, this is the last one. Mostly just curious if it helps at all.
 

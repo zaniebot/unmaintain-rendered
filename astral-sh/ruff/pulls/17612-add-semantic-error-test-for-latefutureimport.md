@@ -13,14 +13,14 @@ head: extend-semantic-test-coverage
 created_at: 2025-04-24T16:49:01Z
 updated_at: 2025-04-25T12:32:58Z
 url: https://github.com/astral-sh/ruff/pull/17612
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Add Semantic Error Test for LateFutureImport
 
 ---
 
-_Pull request opened by @maxmynter on 2025-04-24 16:49_
+_@maxmynter_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

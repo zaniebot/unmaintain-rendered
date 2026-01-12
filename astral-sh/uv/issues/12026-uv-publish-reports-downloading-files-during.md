@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-06T22:49:15Z
 updated_at: 2025-03-07T15:48:36Z
 url: https://github.com/astral-sh/uv/issues/12026
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # `uv publish` reports downloading files during publish
 
 ---
 
-_Issue opened by @zanieb on 2025-03-06 22:49_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/actions/runs/13707864294/job/38338658887
 

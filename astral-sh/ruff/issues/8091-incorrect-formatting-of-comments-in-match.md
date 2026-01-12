@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-20T09:38:48Z
 updated_at: 2023-10-22T23:58:35Z
 url: https://github.com/astral-sh/ruff/issues/8091
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Incorrect formatting of comments in `match` statement for tuple without parentheses
 
 ---
 
-_Issue opened by @doraut on 2023-10-20 09:38_
+_@doraut_
 
 **Version**: 0.1.1
 **Command**: `ruff format --isolated example.py`

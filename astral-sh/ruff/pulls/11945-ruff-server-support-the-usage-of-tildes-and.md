@@ -13,14 +13,14 @@ head: jane/server/config/logfile-shellexpand
 created_at: 2024-06-20T02:53:07Z
 updated_at: 2024-06-20T19:01:48Z
 url: https://github.com/astral-sh/ruff/pull/11945
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # `ruff server`: Support the usage of tildes and environment variables in `logFile`
 
 ---
 
-_Pull request opened by @snowsignal on 2024-06-20 02:53_
+_@snowsignal_
 
 ## Summary
 

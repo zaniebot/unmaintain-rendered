@@ -14,14 +14,14 @@ head: dhruv/fix-with-item-parsing
 created_at: 2024-04-07T10:08:05Z
 updated_at: 2024-04-09T09:08:57Z
 url: https://github.com/astral-sh/ruff/pull/10811
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Fix with items parsing for yield, starred, named expr
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-07 10:08_
+_@dhruvmanila_
 
 ## Summary
 

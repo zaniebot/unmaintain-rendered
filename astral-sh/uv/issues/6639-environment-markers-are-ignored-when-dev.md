@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-26T08:53:16Z
 updated_at: 2024-08-26T12:22:55Z
 url: https://github.com/astral-sh/uv/issues/6639
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Environment markers are ignored when dev dependencies are specified in the root workspace package
 
 ---
 
-_Issue opened by @Gr1N on 2024-08-26 08:53_
+_@Gr1N_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -11,14 +11,14 @@ head: patch-3
 created_at: 2022-12-01T17:02:11Z
 updated_at: 2022-12-01T17:14:20Z
 url: https://github.com/astral-sh/ruff/pull/981
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add instructions to contribute on Implement issues
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2022-12-01 17:02_
+_@JonathanPlasse_
 
 _No description provided._
 

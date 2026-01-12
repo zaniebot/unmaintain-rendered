@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-07T18:24:19Z
 updated_at: 2024-03-08T00:51:55Z
 url: https://github.com/astral-sh/ruff/issues/10279
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Add support for string type hint in typing.Annotated
 
 ---
 
-_Issue opened by @minmax on 2024-03-07 18:24_
+_@minmax_
 
 String type hints used in Annotated should be imported in TYPE_CHECKING section, but ruff remove imports for now.
 I think ruff should treat the first argument of Annotated similar to the current behavior for ClassVar.

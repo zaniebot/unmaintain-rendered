@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-09-20T00:22:54Z
 updated_at: 2023-05-24T20:52:49Z
 url: https://github.com/clap-rs/clap/issues/2778
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Auto-generated completion scripts add `NuShell` support
 
 ---
 
-_Issue opened by @hustcer on 2021-09-20 00:22_
+_@hustcer_
 
 ### Please complete the following tasks
 

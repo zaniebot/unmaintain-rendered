@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-09-13T18:39:55Z
 updated_at: 2018-08-02T03:30:11Z
 url: https://github.com/clap-rs/clap/issues/1043
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # App::long_about can't be used
 
 ---
 
-_Issue opened by @kbknapp on 2017-09-13 18:39_
+_@kbknapp_
 
 `App::long_about` is never applied to help output
 

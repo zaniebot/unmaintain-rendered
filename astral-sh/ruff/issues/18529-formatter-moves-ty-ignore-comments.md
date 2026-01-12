@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-07T06:58:57Z
 updated_at: 2025-06-07T14:02:44Z
 url: https://github.com/astral-sh/ruff/issues/18529
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # formatter moves `ty:ignore` comments
 
 ---
 
-_Issue opened by @DetachHead on 2025-06-07 06:58_
+_@DetachHead_
 
 ### Summary
 

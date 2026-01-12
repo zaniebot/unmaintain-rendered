@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-04T09:50:37Z
 updated_at: 2024-03-04T19:39:02Z
 url: https://github.com/astral-sh/uv/issues/2149
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Invalid wheel: pip OK but uv KO
 
 ---
 
-_Issue opened by @AntoineD on 2024-03-04 09:50_
+_@AntoineD_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

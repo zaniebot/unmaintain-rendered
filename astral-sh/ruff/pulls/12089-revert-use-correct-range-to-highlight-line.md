@@ -13,14 +13,14 @@ head: dhruv/revert
 created_at: 2024-06-28T11:26:21Z
 updated_at: 2024-06-28T12:40:02Z
 url: https://github.com/astral-sh/ruff/pull/12089
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Revert "Use correct range to highlight line continuation error"
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-28 11:26_
+_@dhruvmanila_
 
 This PR reverts https://github.com/astral-sh/ruff/pull/12016 with a small change where the error location points to the continuation character only. Earlier, it would also highlight the whitespace that came before it.
 

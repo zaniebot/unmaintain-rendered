@@ -12,14 +12,14 @@ head: fix/e731/preserve-types
 created_at: 2023-04-16T06:34:59Z
 updated_at: 2023-04-17T01:12:13Z
 url: https://github.com/astral-sh/ruff/pull/3983
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Preserve type annotations when fixing `E731`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-04-16 06:34_
+_@dhruvmanila_
 
 ## Summary
 

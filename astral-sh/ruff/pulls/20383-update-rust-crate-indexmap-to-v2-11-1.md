@@ -13,14 +13,14 @@ head: renovate/indexmap-2.x-lockfile
 created_at: 2025-09-15T00:43:53Z
 updated_at: 2025-09-15T01:29:12Z
 url: https://github.com/astral-sh/ruff/pull/20383
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:00Z
 ```
 
 # Update Rust crate indexmap to v2.11.1
 
 ---
 
-_Pull request opened by @renovate on 2025-09-15 00:43_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-21T05:03:00Z
 updated_at: 2024-12-11T22:12:14Z
 url: https://github.com/astral-sh/uv/issues/1795
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Should preserve symlink to specified python interpreter
 
 ---
 
-_Issue opened by @bulletmark on 2024-02-21 05:03_
+_@bulletmark_
 
 This describes an issue where `uv venv` operates in an incompatible and less-optimal way compared to `python -m venv`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-29T23:32:13Z
 updated_at: 2022-10-30T13:43:52Z
 url: https://github.com/astral-sh/ruff/issues/514
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # D207 autofix shouldn't add indentation to blank lines
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-29 23:32_
+_@charliermarsh_
 
 _No description provided._
 

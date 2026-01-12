@@ -13,14 +13,14 @@ head: charlie/par
 created_at: 2024-11-20T16:24:06Z
 updated_at: 2024-11-20T16:45:15Z
 url: https://github.com/astral-sh/uv/pull/9280
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:44Z
 ```
 
 # Parallelize network requests in `uv tree --outdated`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-20 16:24_
+_@charliermarsh_
 
 ## Summary
 

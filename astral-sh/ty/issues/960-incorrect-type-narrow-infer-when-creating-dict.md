@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-09T20:06:34Z
 updated_at: 2025-11-12T19:19:14Z
 url: https://github.com/astral-sh/ty/issues/960
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Incorrect type narrow/infer when creating dict with `dict(key=value)` (not for `{"key":value}`)
 
 ---
 
-_Issue opened by @DanielYang59 on 2025-08-09 20:06_
+_@DanielYang59_
 
 ### Summary
 

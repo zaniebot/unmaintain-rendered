@@ -13,14 +13,14 @@ head: binary-operator-identity
 created_at: 2025-07-24T00:59:47Z
 updated_at: 2025-08-20T21:02:54Z
 url: https://github.com/astral-sh/ruff/pull/19518
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # feat: Add `RUF065` rule for binary operator identity simplification
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-24 00:59_
+_@danparizher_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: hvh/only-group-extra-conflict
 created_at: 2025-09-11T13:31:47Z
 updated_at: 2025-09-11T15:34:50Z
 url: https://github.com/astral-sh/uv/pull/15788
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:56Z
 ```
 
 # Add conflict detection between --only-group and --extra flags
 
 ---
 
-_Pull request opened by @harshithvh on 2025-09-11 13:31_
+_@harshithvh_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

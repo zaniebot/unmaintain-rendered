@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-11T20:27:48Z
 updated_at: 2025-08-11T20:35:13Z
 url: https://github.com/astral-sh/uv/issues/15226
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # corrupted cache? causes uv update to fail
 
 ---
 
-_Issue opened by @KRRT7 on 2025-08-11 20:27_
+_@KRRT7_
 
 ### Summary
 

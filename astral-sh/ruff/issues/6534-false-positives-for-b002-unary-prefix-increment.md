@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-13T12:08:16Z
 updated_at: 2023-08-14T13:20:48Z
 url: https://github.com/astral-sh/ruff/issues/6534
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # False positives for B002 (unary-prefix-increment-decrement)
 
 ---
 
-_Issue opened by @deepyaman on 2023-08-13 12:08_
+_@deepyaman_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

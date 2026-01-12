@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-10-31T10:09:06Z
 updated_at: 2019-10-04T13:06:35Z
 url: https://github.com/clap-rs/clap/issues/1367
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # cargo-audit reports dependency on insecure yaml-rust 
 
 ---
 
-_Issue opened by @matthiaskrgr on 2018-10-31 10:09_
+_@matthiaskrgr_
 
 `clap` depends on `yaml-rust` 0.3.5 which is flagged as insecure:
 

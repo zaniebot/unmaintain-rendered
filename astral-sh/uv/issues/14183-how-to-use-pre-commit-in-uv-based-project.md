@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-21T12:07:12Z
 updated_at: 2025-06-21T21:54:26Z
 url: https://github.com/astral-sh/uv/issues/14183
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # How to use pre-commit in uv-based project?
 
 ---
 
-_Issue opened by @dantetemplar on 2025-06-21 12:07_
+_@dantetemplar_
 
 ### Question
 

@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-12-09T18:54:09Z
 updated_at: 2025-12-09T19:08:16Z
 url: https://github.com/astral-sh/uv/pull/17052
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-12T16:12:35Z
 ```
 
 # Add initial devcontainer configuration
 
 ---
 
-_Pull request opened by @eliumirandarodriguez0-lab on 2025-12-09 18:54_
+_@eliumirandarodriguez0-lab_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

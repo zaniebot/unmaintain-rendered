@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-15T07:38:59Z
 updated_at: 2025-06-15T07:45:44Z
 url: https://github.com/astral-sh/ruff/issues/18681
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `fmt: on` is broken/ignored with decorators
 
 ---
 
-_Issue opened by @user27182 on 2025-06-15 07:38_
+_@user27182_
 
 ### Summary
 

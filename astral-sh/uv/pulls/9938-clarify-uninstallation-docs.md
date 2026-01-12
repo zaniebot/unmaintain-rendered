@@ -12,14 +12,14 @@ head: uninstallation-docs
 created_at: 2024-12-16T15:17:08Z
 updated_at: 2025-01-02T10:59:04Z
 url: https://github.com/astral-sh/uv/pull/9938
-synced_at: 2026-01-10T11:44:31Z
+synced_at: 2026-01-12T16:09:03Z
 ```
 
 # Clarify uninstallation docs
 
 ---
 
-_Pull request opened by @my1e5 on 2024-12-16 15:17_
+_@my1e5_
 
 See https://github.com/astral-sh/uv/issues/9871
 

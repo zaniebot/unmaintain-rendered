@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T23:45:37Z
 updated_at: 2025-05-09T21:04:06Z
 url: https://github.com/astral-sh/uv/issues/13356
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # Failed to fetch ssh+git dependencies when host is not known
 
 ---
 
-_Issue opened by @mia-trilo on 2025-05-08 23:45_
+_@mia-trilo_
 
 ### Summary
 

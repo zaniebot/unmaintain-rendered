@@ -13,14 +13,14 @@ head: charlie/data-typ
 created_at: 2023-06-05T18:16:17Z
 updated_at: 2023-06-05T18:48:53Z
 url: https://github.com/astral-sh/ruff/pull/4871
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Extract shared simple AST node inference utility
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-05 18:16_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-25T02:08:54Z
 updated_at: 2025-12-26T18:02:55Z
 url: https://github.com/astral-sh/ty/issues/2215
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Improve diagnostics in cases where we infer `object` due to possibility of subclassing
 
 ---
 
-_Issue opened by @ooopus on 2025-12-25 02:08_
+_@ooopus_
 
 ### Summary
 

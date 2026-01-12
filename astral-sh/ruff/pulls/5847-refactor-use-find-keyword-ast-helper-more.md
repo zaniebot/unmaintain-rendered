@@ -12,14 +12,14 @@ head: refactor-use-helper-find-keyword
 created_at: 2023-07-17T23:22:54Z
 updated_at: 2023-07-18T00:37:40Z
 url: https://github.com/astral-sh/ruff/pull/5847
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # refactor: use find_keyword ast helper more
 
 ---
 
-_Pull request opened by @sbrugman on 2023-07-17 23:22_
+_@sbrugman_
 
 Use the ast helper function `find_keyword` where applicable
 

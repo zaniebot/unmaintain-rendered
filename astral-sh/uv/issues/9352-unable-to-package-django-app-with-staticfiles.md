@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T10:16:01Z
 updated_at: 2024-11-26T08:44:39Z
 url: https://github.com/astral-sh/uv/issues/9352
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # Unable to package django app with staticfiles
 
 ---
 
-_Issue opened by @Mapiarz on 2024-11-22 10:16_
+_@Mapiarz_
 
 Hi. I have a django app and I cannot build a docker image with django's staticfiles artifact.
 

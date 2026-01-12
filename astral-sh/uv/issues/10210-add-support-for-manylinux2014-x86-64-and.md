@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-28T01:58:30Z
 updated_at: 2024-12-29T02:17:15Z
 url: https://github.com/astral-sh/uv/issues/10210
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # Add support for manylinux2014_x86_64 and manylinux2014_aarch64
 
 ---
 
-_Issue opened by @Pixel-Minions on 2024-12-28 01:58_
+_@Pixel-Minions_
 
 Hi,
 

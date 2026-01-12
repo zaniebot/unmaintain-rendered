@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-04T09:01:36Z
 updated_at: 2025-08-11T08:19:28Z
 url: https://github.com/astral-sh/uv/issues/11942
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # xcb issues when running tkinter/customtkinter app
 
 ---
 
-_Issue opened by @ascaron37 on 2025-03-04 09:01_
+_@ascaron37_
 
 ### Summary
 

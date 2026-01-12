@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-03-29T12:05:01Z
 updated_at: 2018-09-06T23:24:47Z
 url: https://github.com/clap-rs/clap/issues/1237
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Clap failing to use YAML 
 
 ---
 
-_Issue opened by @r8d8 on 2018-03-29 12:05_
+_@r8d8_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

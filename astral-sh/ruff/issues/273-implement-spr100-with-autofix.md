@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-09-28T21:30:41Z
 updated_at: 2022-09-30T13:12:26Z
 url: https://github.com/astral-sh/ruff/issues/273
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement SPR100 (with autofix)
 
 ---
 
-_Issue opened by @charliermarsh on 2022-09-28 21:30_
+_@charliermarsh_
 
 https://pypi.org/project/flake8-super/
 

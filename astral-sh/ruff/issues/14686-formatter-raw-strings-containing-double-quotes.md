@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-29T23:37:00Z
 updated_at: 2024-12-02T08:51:55Z
 url: https://github.com/astral-sh/ruff/issues/14686
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Formatter: Raw strings containing double quotes
 
 ---
 
-_Issue opened by @ferdnyc on 2024-11-29 23:37_
+_@ferdnyc_
 
 I'm not sure how Black handles this case, but Ruff wants to force this:
 

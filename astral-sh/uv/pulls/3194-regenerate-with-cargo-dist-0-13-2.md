@@ -13,14 +13,14 @@ head: zb/cargo-dist-bump
 created_at: 2024-04-22T19:05:14Z
 updated_at: 2024-04-22T19:15:16Z
 url: https://github.com/astral-sh/uv/pull/3194
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:29Z
 ```
 
 # Regenerate with cargo-dist 0.13.2
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-22 19:05_
+_@zanieb_
 
 _No description provided._
 

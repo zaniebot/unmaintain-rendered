@@ -13,14 +13,14 @@ head: get-size-feat
 created_at: 2025-06-30T19:38:30Z
 updated_at: 2025-07-01T02:50:59Z
 url: https://github.com/astral-sh/ruff/pull/19052
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # Make dependency `get-size2` truly optional in `ruff_python_ast`
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-30 19:38_
+_@dylwil3_
 
 Gates all uses of `get-size2` behind the feature `get-size` in the crate `ruff_python_ast`. Also requires that `ruff_text_size` is pulled in with the feature `get-size` enabled if we enable the same-named feature for `ruff_python_ast`.
 

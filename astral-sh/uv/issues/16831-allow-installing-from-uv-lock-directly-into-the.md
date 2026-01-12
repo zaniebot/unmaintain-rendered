@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-24T13:07:41Z
 updated_at: 2025-11-24T15:27:20Z
 url: https://github.com/astral-sh/uv/issues/16831
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # Allow installing from uv.lock directly into the system interpreter (without venv & without editable installs)
 
 ---
 
-_Issue opened by @wassupxP on 2025-11-24 13:07_
+_@wassupxP_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-31T08:31:27Z
 updated_at: 2025-03-31T08:09:35Z
 url: https://github.com/astral-sh/ruff/issues/6184
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Auto-fix for SIM103 could be improved or add a new SIM rule?
 
 ---
 
-_Issue opened by @klistwan on 2023-07-31 08:31_
+_@klistwan_
 
 I came across this code on a project:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-26T22:19:49Z
 updated_at: 2024-06-26T23:22:09Z
 url: https://github.com/astral-sh/uv/issues/4569
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Regression in uv 0.2.16 compile with unsatisfiable constraint in extra
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-06-26 22:19_
+_@hauntsaninja_
 
 ```
 λ cat r.in

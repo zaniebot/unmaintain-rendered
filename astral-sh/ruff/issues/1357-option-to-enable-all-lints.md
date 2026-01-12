@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-24T09:22:34Z
 updated_at: 2023-01-06T10:04:26Z
 url: https://github.com/astral-sh/ruff/issues/1357
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Option to enable all lints
 
 ---
 
-_Issue opened by @bluetech on 2022-12-24 09:22_
+_@bluetech_
 
 My preferred usage is to enable all lints, then `extend-ignore` the ones I don't want with a comment. (This strategy only makes sense if using a pinned version of ruff).
 

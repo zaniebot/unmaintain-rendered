@@ -13,14 +13,14 @@ head: zb/toml-updates-ecosystem
 created_at: 2023-12-26T19:29:15Z
 updated_at: 2023-12-28T16:44:52Z
 url: https://github.com/astral-sh/ruff/pull/9286
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Allow config-file overrides in ecosystem checks
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-26 19:29_
+_@zanieb_
 
 Adds the ability to override `ruff.toml` or `pyproject.toml` settings per-project during ecosystem checks.
 

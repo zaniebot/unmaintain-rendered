@@ -12,14 +12,14 @@ head: charlie/doc-fix
 created_at: 2022-10-16T23:13:10Z
 updated_at: 2022-10-16T23:40:39Z
 url: https://github.com/astral-sh/ruff/pull/441
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement autofix for newline-related docstring rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-16 23:13_
+_@charliermarsh_
 
 _No description provided._
 

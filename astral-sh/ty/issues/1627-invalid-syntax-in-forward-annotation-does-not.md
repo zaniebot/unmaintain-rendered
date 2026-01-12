@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-24T23:59:53Z
 updated_at: 2025-11-25T12:17:49Z
 url: https://github.com/astral-sh/ty/issues/1627
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `invalid-syntax-in-forward-annotation` does not preserve error spans
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-11-24 23:59_
+_@MeGaGiGaGon_
 
 ### Summary
 

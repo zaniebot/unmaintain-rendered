@@ -13,14 +13,14 @@ head: zb/version-ii
 created_at: 2025-05-05T19:06:19Z
 updated_at: 2025-05-06T12:18:19Z
 url: https://github.com/astral-sh/ruff/pull/17868
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # Parse `dist-workspace.toml` for version
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-05 19:06_
+_@zanieb_
 
 Extends https://github.com/astral-sh/ruff/pull/17866, using `dist-workspace.toml` as a source of truth for versions to enable version retrieval in distributions that are not Git repositories (i.e., Python source distributions and source tarballs consumed by Linux distros).
 

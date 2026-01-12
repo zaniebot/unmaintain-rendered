@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-23T15:33:04Z
 updated_at: 2024-12-23T19:19:40Z
 url: https://github.com/astral-sh/uv/issues/10122
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # Allow "uvx python" to execute Python like "uv run python"
 
 ---
 
-_Issue opened by @ksamuel on 2024-12-23 15:33_
+_@ksamuel_
 
 Right now, if you run `uvx python`, it can fail. Even `uvx -p 3.11 python` will fail to start a Python shell on Windows or Ubuntu because the command doesn't map to a python executable.
 

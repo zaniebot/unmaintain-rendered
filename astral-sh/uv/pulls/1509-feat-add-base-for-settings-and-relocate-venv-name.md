@@ -12,14 +12,14 @@ head: dc/venv-name-setting
 created_at: 2024-02-16T16:20:28Z
 updated_at: 2024-02-16T16:30:00Z
 url: https://github.com/astral-sh/uv/pull/1509
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:38Z
 ```
 
 # feat: Add base for settings, and relocate venv-name default to it.
 
 ---
 
-_Pull request opened by @DanCardin on 2024-02-16 16:20_
+_@DanCardin_
 
 Relocates the `.venv` default venv name into a settings file that can be customized.
 

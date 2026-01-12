@@ -12,14 +12,14 @@ head: ag/trace-resolution
 created_at: 2024-07-16T14:43:00Z
 updated_at: 2024-07-16T16:51:57Z
 url: https://github.com/astral-sh/uv/pull/5109
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:38Z
 ```
 
 # uv-resolver: add TRACE dump of resolver output
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-07-16 14:43_
+_@BurntSushi_
 
 Specifically, this shows the resolution produced by the
 resolver *before* constructing a resolution graph.

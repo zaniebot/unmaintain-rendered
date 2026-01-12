@@ -12,14 +12,14 @@ head: charlie/color
 created_at: 2023-10-26T04:09:49Z
 updated_at: 2023-10-26T04:12:26Z
 url: https://github.com/astral-sh/uv/pull/186
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:47Z
 ```
 
 # Omit colors when writing to output file
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-26 04:09_
+_@charliermarsh_
 
 We were writing color escape codes to the file specified by `-o`.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-03T00:30:07Z
 updated_at: 2022-10-03T00:50:59Z
 url: https://github.com/astral-sh/ruff/issues/301
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Targeted Ignoring Failure: `A003` falls back to `A001`
 
 ---
 
-_Issue opened by @ES-Alexander on 2022-10-03 00:30_
+_@ES-Alexander_
 
 My team recently incorporated `ruff` into our CI pipeline, and I'm in the process of fixing some newly raised linting errors in our codebase from the latest `ruff` updates :-)
 

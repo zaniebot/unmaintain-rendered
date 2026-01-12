@@ -13,14 +13,14 @@ head: charlie/force-single-line
 created_at: 2023-03-15T02:20:08Z
 updated_at: 2023-03-15T02:31:13Z
 url: https://github.com/astral-sh/ruff/pull/3530
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Avoid tracking as-imports separately with force-single-line
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-15 02:20_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-06-15T04:07:52Z
 updated_at: 2023-06-16T00:51:18Z
 url: https://github.com/astral-sh/ruff/issues/5111
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `UP035` does not detect `typing.NoReturn`
 
 ---
 
-_Issue opened by @DetachHead on 2023-06-15 04:07_
+_@DetachHead_
 
 in python 3.11, `typing.NoReturn` is deprecated in favor of `typing.Never` and `typing.Union` is deprecated in favor of the `|` operator.
 ```py

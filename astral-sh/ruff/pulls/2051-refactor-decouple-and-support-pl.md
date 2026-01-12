@@ -12,14 +12,14 @@ head: refactor-and-decouple
 created_at: 2023-01-21T07:18:06Z
 updated_at: 2023-01-22T16:51:39Z
 url: https://github.com/astral-sh/ruff/pull/2051
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Refactor, decouple and support "PL"
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-21 07:18_
+_@not-my-profile_
 
 Except for the `Support prefix "PL" to select all of Pylint` commit and the minor README change this is purely a refactor.
 

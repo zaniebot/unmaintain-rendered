@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-01T13:31:02Z
 updated_at: 2025-12-27T04:16:00Z
 url: https://github.com/astral-sh/ty/issues/740
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Support `type()`'s functional syntax
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-07-01 13:31_
+_@InSyncWithFoo_
 
 (First raised [on Discord](https://discord.com/channels/1039017663004942429/1279201882337705994/1389547211150331974).)
 

@@ -13,14 +13,14 @@ head: charlie/poetry-errors
 created_at: 2024-06-09T23:59:18Z
 updated_at: 2024-06-10T00:09:40Z
 url: https://github.com/astral-sh/uv/pull/4176
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:04Z
 ```
 
 # Move PEP 440 and PEP 508 parsing out of TOML deserialization
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-09 23:59_
+_@charliermarsh_
 
 ## Summary
 

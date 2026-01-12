@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-07T01:50:01Z
 updated_at: 2024-06-12T04:17:12Z
 url: https://github.com/astral-sh/uv/issues/4122
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Re-enable release artifacts for aarch64-unknown-linux-gnu
 
 ---
 
-_Issue opened by @ofek on 2024-06-07 01:50_
+_@ofek_
 
 The binary release artifact `aarch64-unknown-linux-gnu` was unintentionally removed in [this PR](https://github.com/astral-sh/uv/pull/3685) or one of the associated revert/revert-revert commits.
 

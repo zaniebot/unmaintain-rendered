@@ -13,14 +13,14 @@ head: konsti/find-explicit-indexes-too
 created_at: 2024-12-16T10:28:05Z
 updated_at: 2024-12-16T10:40:33Z
 url: https://github.com/astral-sh/uv/pull/9932
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:02Z
 ```
 
 # Include explicit indexes in publish index choice
 
 ---
 
-_Pull request opened by @konstin on 2024-12-16 10:28_
+_@konstin_
 
 For publishing, we want to allow all simple `[[tool.uv.index]]` entries, whether they  are explicit or not. We don't allow flat indexes here, assuming that an index you can upload to has a simple index URL (and generally doesn't have a flat index URL, at least I don't know any case that has).
 

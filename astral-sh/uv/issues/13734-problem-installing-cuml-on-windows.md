@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-30T16:35:42Z
 updated_at: 2025-05-30T17:30:27Z
 url: https://github.com/astral-sh/uv/issues/13734
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # Problem installing cuml on Windows
 
 ---
 
-_Issue opened by @zoof on 2025-05-30 16:35_
+_@zoof_
 
 ### Summary
 

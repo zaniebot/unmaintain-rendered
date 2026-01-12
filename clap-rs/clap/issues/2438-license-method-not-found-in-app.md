@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-04-09T13:14:15Z
 updated_at: 2021-04-09T18:19:37Z
 url: https://github.com/clap-rs/clap/issues/2438
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # `.license()`: method not found in `App<'_, '_>`
 
 ---
 
-_Issue opened by @Dentrax on 2021-04-09 13:14_
+_@Dentrax_
 
 ### Please complete the following tasks
 

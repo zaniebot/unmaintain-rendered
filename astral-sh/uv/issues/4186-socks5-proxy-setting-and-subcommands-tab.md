@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-10T03:27:10Z
 updated_at: 2024-06-11T01:53:13Z
 url: https://github.com/astral-sh/uv/issues/4186
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Socks5 proxy setting and subcommands tab completion.
 
 ---
 
-_Issue opened by @hongyi-zhao on 2024-06-10 03:27_
+_@hongyi-zhao_
 
 I'm not sure this tool supports the following features:
 

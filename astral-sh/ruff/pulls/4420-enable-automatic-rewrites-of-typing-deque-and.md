@@ -13,14 +13,14 @@ head: charlie/deque
 created_at: 2023-05-13T19:42:37Z
 updated_at: 2023-05-15T22:58:17Z
 url: https://github.com/astral-sh/ruff/pull/4420
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Enable automatic rewrites of `typing.Deque` and `typing.DefaultDict`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-13 19:42_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: dhruv/fix-snapshots
 created_at: 2024-04-10T02:48:14Z
 updated_at: 2024-04-10T03:08:17Z
 url: https://github.com/astral-sh/ruff/pull/10853
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # fixup! Add tests for `match` statement (#10831)
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-10 02:48_
+_@dhruvmanila_
 
 _No description provided._
 

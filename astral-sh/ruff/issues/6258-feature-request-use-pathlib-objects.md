@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-01T21:38:07Z
 updated_at: 2023-09-26T02:02:04Z
 url: https://github.com/astral-sh/ruff/issues/6258
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Feature request: Use `pathlib` objects
 
 ---
 
-_Issue opened by @petermattia on 2023-08-01 21:38_
+_@petermattia_
 
 Low priority feature request: Use `pathlib` objects over the class.
 

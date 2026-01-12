@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-02T23:57:11Z
 updated_at: 2025-08-29T05:44:08Z
 url: https://github.com/astral-sh/uv/issues/15035
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # `uv sync --python-platform` does not update environment when switching to a lower GLIBC-bound platform
 
 ---
 
-_Issue opened by @ido123net on 2025-08-02 23:57_
+_@ido123net_
 
 ### Summary
 

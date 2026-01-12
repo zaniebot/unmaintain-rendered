@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-12T15:23:42Z
 updated_at: 2023-09-14T15:53:17Z
 url: https://github.com/astral-sh/ruff/issues/7307
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `C416` doesn't catch dictionary comprehensions with tuple targets
 
 ---
 
-_Issue opened by @adamtheturtle on 2023-09-12 15:23_
+_@adamtheturtle_
 
 `pylint 2.17.5` shows a R1721 error with the following file:
 

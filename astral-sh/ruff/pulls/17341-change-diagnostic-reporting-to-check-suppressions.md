@@ -14,14 +14,14 @@ head: ag/reporter-refactor
 created_at: 2025-04-10T19:26:56Z
 updated_at: 2025-04-11T16:36:38Z
 url: https://github.com/astral-sh/ruff/pull/17341
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # change diagnostic reporting to check suppressions more eagerly
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-04-10 19:26_
+_@BurntSushi_
 
 This PR is meant to address some of @MichaReiser's feedback in #17318.
 

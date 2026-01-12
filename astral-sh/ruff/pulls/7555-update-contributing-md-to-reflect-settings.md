@@ -13,14 +13,14 @@ head: charlie/contributing-settings
 created_at: 2023-09-20T21:56:31Z
 updated_at: 2023-09-21T05:46:12Z
 url: https://github.com/astral-sh/ruff/pull/7555
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Update `CONTRIBUTING.md` to reflect `Settings` refactor
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-20 21:56_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T08:35:33Z
 updated_at: 2025-10-24T16:31:36Z
 url: https://github.com/astral-sh/ty/issues/1377
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Salsa panic for `steam.py`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-10-17 08:35_
+_@MichaReiser_
 
 With the new salsa version merged in https://github.com/astral-sh/ruff/pull/20645 and after adding cycle handing to `lazy_default`, ty panics in 1/3 of the runs with `Provisional memo retry limit exceeded for ... this usually indicates a bug in salsa's cycle caching/locking.`
 

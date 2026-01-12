@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-01T12:48:58Z
 updated_at: 2022-09-01T13:15:19Z
 url: https://github.com/astral-sh/ruff/issues/70
-synced_at: 2026-01-10T15:56:04Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Crash if no pyproject.toml file is found
 
 ---
 
-_Issue opened by @HallerPatrick on 2022-09-01 12:48_
+_@HallerPatrick_
 
 Hey! 
 

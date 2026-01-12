@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-02T17:47:38Z
 updated_at: 2023-05-04T15:35:41Z
 url: https://github.com/astral-sh/ruff/issues/4195
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [feature] remove unused imports
 
 ---
 
-_Issue opened by @upstartjohnvandivier on 2023-05-02 17:47_
+_@upstartjohnvandivier_
 
 currently when i run autofix on a large codebase in py 3.7, `from __future__ import annotations` gets added and Dict, List, Tuple, Union...many others are no longer used but their imports remain in many files
 

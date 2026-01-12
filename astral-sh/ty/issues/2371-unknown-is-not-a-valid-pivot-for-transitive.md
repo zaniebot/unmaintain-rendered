@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-06T21:11:13Z
 updated_at: 2026-01-08T14:31:57Z
 url: https://github.com/astral-sh/ty/issues/2371
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `Unknown` is not a valid pivot for transitive constraints in a constraint set
 
 ---
 
-_Issue opened by @dcreager on 2026-01-06 21:11_
+_@dcreager_
 
 As part of building up constraint sets, we produce a "sequent map" (aka a Horn clause database) describing how all of the individual constraints in the constraint set, and any derived constraints, relate to each other. Part of this is building up transitive relationships. For instance, if we know that `S ≤ int` and `int ≤ T`, we can infer that `S ≤ T`.
 

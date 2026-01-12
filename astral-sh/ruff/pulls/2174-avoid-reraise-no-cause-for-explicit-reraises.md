@@ -12,14 +12,14 @@ head: charlie/try200
 created_at: 2023-01-25T20:51:12Z
 updated_at: 2023-01-25T20:51:26Z
 url: https://github.com/astral-sh/ruff/pull/2174
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Avoid reraise-no-cause for explicit reraises
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-25 20:51_
+_@charliermarsh_
 
 Closes #2171.
 

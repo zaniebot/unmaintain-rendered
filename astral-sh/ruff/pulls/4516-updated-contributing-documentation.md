@@ -13,14 +13,14 @@ head: update_docs
 created_at: 2023-05-19T03:45:38Z
 updated_at: 2023-05-19T06:39:16Z
 url: https://github.com/astral-sh/ruff/pull/4516
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Updated contributing documentation
 
 ---
 
-_Pull request opened by @hoel-bagard on 2023-05-19 03:45_
+_@hoel-bagard_
 
 Fixed outdated path in the "adding a new lint rule" part of the contributing document.
 

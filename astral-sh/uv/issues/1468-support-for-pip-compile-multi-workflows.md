@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T10:04:47Z
 updated_at: 2024-07-16T23:23:09Z
 url: https://github.com/astral-sh/uv/issues/1468
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Support for pip-compile-multi workflows?
 
 ---
 
-_Issue opened by @PeterJCLaw on 2024-02-16 10:04_
+_@PeterJCLaw_
 
 I see from https://github.com/astral-sh/uv/issues/815 that you're aware of `pip-compile-multi`, just wondering if you have plans to add support for that too?
 

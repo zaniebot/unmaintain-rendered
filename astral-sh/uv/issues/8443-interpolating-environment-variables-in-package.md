@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-22T10:31:16Z
 updated_at: 2024-10-22T11:21:36Z
 url: https://github.com/astral-sh/uv/issues/8443
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # Interpolating environment variables in Package Indexes
 
 ---
 
-_Issue opened by @arnaldojvg on 2024-10-22 10:31_
+_@arnaldojvg_
 
 Hello! 
 

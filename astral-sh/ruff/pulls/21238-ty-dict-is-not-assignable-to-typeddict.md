@@ -14,14 +14,14 @@ head: ibraheem/typed-dict-assignability
 created_at: 2025-11-03T02:52:07Z
 updated_at: 2025-11-03T21:57:51Z
 url: https://github.com/astral-sh/ruff/pull/21238
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # [ty] `dict` is not assignable to `TypedDict`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-11-03 02:52_
+_@ibraheemdev_
 
 ## Summary
 

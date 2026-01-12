@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-14T07:25:50Z
 updated_at: 2025-01-01T06:18:53Z
 url: https://github.com/astral-sh/ruff/issues/9512
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # False negative with SIM108
 
 ---
 
-_Issue opened by @NeilGirdhar on 2024-01-14 07:25_
+_@NeilGirdhar_
 
 ```python
 def main() -> None:

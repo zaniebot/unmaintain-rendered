@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-17T06:41:00Z
 updated_at: 2025-04-22T10:10:17Z
 url: https://github.com/astral-sh/uv/issues/12933
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # Website scrolling behaviour
 
 ---
 
-_Issue opened by @valetobias on 2025-04-17 06:41_
+_@valetobias_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-16T10:04:40Z
 updated_at: 2023-02-16T18:54:10Z
 url: https://github.com/astral-sh/ruff/issues/2952
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Build fail for version 0.0.247 on OpenBSD with custom allocator (jemalloc)
 
 ---
 
-_Issue opened by @lcheylus on 2023-02-16 10:04_
+_@lcheylus_
 
 I'm trying to build **ruff version 0.0.247 on OpenBSD-current (future version 7.3) / amd64**.
 

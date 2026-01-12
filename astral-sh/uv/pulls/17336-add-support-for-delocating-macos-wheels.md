@@ -10,16 +10,16 @@ assignees: []
 base: main
 head: charlie/delocate
 created_at: 2026-01-06T15:14:48Z
-updated_at: 2026-01-08T15:22:24Z
+updated_at: 2026-01-12T02:10:01Z
 url: https://github.com/astral-sh/uv/pull/17336
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:44Z
 ```
 
 # Add support for delocating macOS wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-06 15:14_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-02-22T02:14:46Z
 updated_at: 2022-02-28T17:48:00Z
 url: https://github.com/clap-rs/clap/issues/3495
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Changelog doesn't mention a number of deprecations
 
 ---
 
-_Issue opened by @glandium on 2022-02-22 02:14_
+_@glandium_
 
 ### Please complete the following tasks
 

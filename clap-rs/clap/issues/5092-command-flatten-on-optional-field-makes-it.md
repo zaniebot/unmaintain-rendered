@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-08-27T19:10:01Z
 updated_at: 2025-01-27T23:03:33Z
 url: https://github.com/clap-rs/clap/issues/5092
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # #[command(flatten)] on optional field makes it required
 
 ---
 
-_Issue opened by @smessmer on 2023-08-27 19:10_
+_@smessmer_
 
 ### Please complete the following tasks
 

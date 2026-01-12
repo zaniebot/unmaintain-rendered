@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-11T11:20:15Z
 updated_at: 2024-12-12T17:05:10Z
 url: https://github.com/astral-sh/uv/issues/9806
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # feat: add a support for inheritance in dependency groups
 
 ---
 
-_Issue opened by @ZeyadMoustafaKamal on 2024-12-11 11:20_
+_@ZeyadMoustafaKamal_
 
 Normally I would make a base requirements file called "requirements-base.in" and then compile it and use it as a base file for all or most environments. For example in `django` projects, `django` will should be included in almost all dependency groups. dev, testing, prod but of course the user will choose in which dependency group django should be included. and I have looked at the docs [here](https://docs.astral.sh/uv/concepts/projects/dependencies/) and it doesn't seem to be supported out of the box.
 

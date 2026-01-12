@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-23T02:28:53Z
 updated_at: 2026-01-10T09:04:56Z
 url: https://github.com/astral-sh/ty/issues/1240
-synced_at: 2026-01-10T11:36:18Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # (mostly) stop unioning in `Unknown` type where there is no type annotation
 
 ---
 
-_Issue opened by @DetachHead on 2025-09-23 02:28_
+_@DetachHead_
 
 the current default behavior is unsafe, see https://play.ty.dev/b92b01eb-09da-48ea-8e4b-02812d27a803
 ```py

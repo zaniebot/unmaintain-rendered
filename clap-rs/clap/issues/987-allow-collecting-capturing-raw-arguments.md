@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-06-11T18:47:46Z
 updated_at: 2018-08-02T03:30:08Z
 url: https://github.com/clap-rs/clap/issues/987
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Allow collecting/capturing 'raw' arguments
 
 ---
 
-_Issue opened by @Aaron1011 on 2017-06-11 18:47_
+_@Aaron1011_
 
 Issue https://github.com/kbknapp/clap-rs/issues/484 describes how to use clap to capture all arguments after a `--` delimiter. However, these arguments are still parsed by clap, which can lead to issues when creating a program which wraps a command-line tool.
 

@@ -11,14 +11,14 @@ head: better-venv-info
 created_at: 2023-11-15T20:17:52Z
 updated_at: 2023-11-28T16:27:19Z
 url: https://github.com/astral-sh/uv/pull/430
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:56Z
 ```
 
 # Print python version when creating venv
 
 ---
 
-_Pull request opened by @konstin on 2023-11-15 20:17_
+_@konstin_
 
 _No description provided._
 

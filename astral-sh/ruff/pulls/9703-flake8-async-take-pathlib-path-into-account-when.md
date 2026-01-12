@@ -13,14 +13,14 @@ head: fix(ASYNC101)/include-pathlib-Path-when-analyzing-open-calls
 created_at: 2024-01-30T14:19:40Z
 updated_at: 2024-01-30T17:50:28Z
 url: https://github.com/astral-sh/ruff/pull/9703
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # [`flake8-async`] Take `pathlib.Path` into account when analyzing async functions
 
 ---
 
-_Pull request opened by @mikeleppane on 2024-01-30 14:19_
+_@mikeleppane_
 
 ## Summary
 

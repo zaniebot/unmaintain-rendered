@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-18T20:31:04Z
 updated_at: 2025-08-18T20:31:04Z
 url: https://github.com/astral-sh/uv/issues/15359
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # Use the same version in both library and its workspaces
 
 ---
 
-_Issue opened by @saroad2 on 2025-08-18 20:31_
+_@saroad2_
 
 ### Summary
 

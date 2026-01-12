@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-14T19:25:37Z
 updated_at: 2025-05-15T20:17:09Z
 url: https://github.com/astral-sh/ruff/issues/18107
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PLW1514 doesn’t recognize `encoding` positional argument of `codecs.open`
 
 ---
 
-_Issue opened by @dscorbett on 2025-05-14 19:25_
+_@dscorbett_
 
 ### Summary
 

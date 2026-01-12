@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T18:15:12Z
 updated_at: 2023-05-18T16:49:00Z
 url: https://github.com/astral-sh/ruff/issues/2405
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `ruff init`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-31 18:15_
+_@charliermarsh_
 
 I often see projects that do something like this in their `pyproject.toml`:
 

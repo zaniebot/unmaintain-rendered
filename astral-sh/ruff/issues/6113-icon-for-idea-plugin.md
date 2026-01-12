@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-27T01:41:47Z
 updated_at: 2023-07-27T23:47:41Z
 url: https://github.com/astral-sh/ruff/issues/6113
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # (🎁) Icon for Idea plugin
 
 ---
 
-_Issue opened by @KotlinIsland on 2023-07-27 01:41_
+_@KotlinIsland_
 
 Hi 👋,
 

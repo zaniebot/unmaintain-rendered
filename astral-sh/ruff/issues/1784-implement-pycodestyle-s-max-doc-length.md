@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-11T13:48:52Z
 updated_at: 2023-02-11T04:17:35Z
 url: https://github.com/astral-sh/ruff/issues/1784
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Implement pycodestyle's `max-doc-length`
 
 ---
 
-_Issue opened by @stinodego on 2023-01-11 13:48_
+_@stinodego_
 
 As described in the pycodestyle config:
 https://pycodestyle.pycqa.org/en/latest/intro.html

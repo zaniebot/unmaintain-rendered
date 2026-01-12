@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-21T09:47:19Z
 updated_at: 2024-11-21T13:58:11Z
 url: https://github.com/astral-sh/uv/issues/9306
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # Packages depending on torch do not respect torch version
 
 ---
 
-_Issue opened by @mbignotti on 2024-11-21 09:47_
+_@mbignotti_
 
 Hi!
 First of all, I wanted to thank you for the new pytorch packaging guide and for the project as whole. It's great!

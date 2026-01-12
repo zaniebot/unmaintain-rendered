@@ -13,14 +13,14 @@ head: konsti/refactor-candidate-selector
 created_at: 2024-07-25T10:17:46Z
 updated_at: 2024-07-25T10:26:16Z
 url: https://github.com/astral-sh/uv/pull/5438
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:49Z
 ```
 
 # Restructure `CandidateSelector` methods
 
 ---
 
-_Pull request opened by @konstin on 2024-07-25 10:17_
+_@konstin_
 
 In preparation for the preferences changes with forking, change the method structure in `CandidateSelector`. Split out into its own PR to avoid merge conflicts with main. No functional changes.
 

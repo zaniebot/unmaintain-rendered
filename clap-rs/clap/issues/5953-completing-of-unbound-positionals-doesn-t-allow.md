@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-18T18:11:01Z
 updated_at: 2025-03-19T21:00:46Z
 url: https://github.com/clap-rs/clap/issues/5953
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Completing of unbound positionals doesn't allow completing of flags
 
 ---
 
-_Issue opened by @krobelus on 2025-03-18 18:11_
+_@krobelus_
 
 ### Please complete the following tasks
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-12T17:40:53Z
 updated_at: 2024-06-26T01:02:11Z
 url: https://github.com/astral-sh/uv/issues/2387
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Install uses wrong package location when a secondary Python installation is declared as venv
 
 ---
 
-_Issue opened by @adebrecht661 on 2024-03-12 17:40_
+_@adebrecht661_
 
 On Ubuntu 22.04, with Python installed to `~/.local/bin/python` through a symlink (-> `/usr/bin/python` -> `/usr/bin/python3.11`) and `VIRTUAL_ENV=~/.local/`:
 

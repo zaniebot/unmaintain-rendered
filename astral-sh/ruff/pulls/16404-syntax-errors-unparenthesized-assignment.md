@@ -14,14 +14,14 @@ head: brent/syntax-assign-sequence-310
 created_at: 2025-02-26T19:20:27Z
 updated_at: 2025-03-14T19:06:44Z
 url: https://github.com/astral-sh/ruff/pull/16404
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [syntax-errors] Unparenthesized assignment expressions in sets and indexes
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-26 19:20_
+_@ntBre_
 
 ## Summary
 This PR detects unparenthesized assignment expressions used in set literals and comprehensions and in sequence indexes. The link to the release notes in https://github.com/astral-sh/ruff/issues/6591 just has this entry:

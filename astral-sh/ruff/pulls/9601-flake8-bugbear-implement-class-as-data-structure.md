@@ -15,14 +15,14 @@ head: add-R0903
 created_at: 2024-01-21T22:34:35Z
 updated_at: 2025-01-07T03:20:59Z
 url: https://github.com/astral-sh/ruff/pull/9601
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`flake8-bugbear`] Implement `class-as-data-structure` (`B903`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-21 22:34_
+_@diceroll123_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-15T21:25:46Z
 updated_at: 2025-11-18T16:10:23Z
 url: https://github.com/astral-sh/ty/issues/125
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # validate incremental correctness by checking successive commits of real projects
 
 ---
 
-_Issue opened by @carljm on 2025-04-15 21:25_
+_@carljm_
 
 We should increase confidence in the correctness of our incremental checking by taking real projects (e.g. mypy-primer projects) and running red-knot incrementally on successive commits of those projects, then validating that the resulting diagnostics are identical to running a cold check on each of those commits.
 

@@ -12,14 +12,14 @@ head: fix-errors
 created_at: 2023-01-25T14:58:57Z
 updated_at: 2023-01-26T23:07:07Z
 url: https://github.com/astral-sh/ruff/pull/2157
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Fix singular and plural for "error(s)"
 
 ---
 
-_Pull request opened by @hugovk on 2023-01-25 14:58_
+_@hugovk_
 
 Computers are really bad at some things, but one thing they're really good at is counting :)
 

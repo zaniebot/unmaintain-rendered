@@ -13,14 +13,14 @@ head: charlie/no
 created_at: 2024-02-03T17:42:11Z
 updated_at: 2024-02-04T23:46:02Z
 url: https://github.com/astral-sh/uv/pull/1243
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:31Z
 ```
 
 # Clarify documentation for `--no-index`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-03 17:42_
+_@charliermarsh_
 
 Closes #1242.
 

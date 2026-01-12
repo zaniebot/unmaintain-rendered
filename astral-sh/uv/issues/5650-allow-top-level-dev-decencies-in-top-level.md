@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-31T13:39:06Z
 updated_at: 2024-08-01T21:04:31Z
 url: https://github.com/astral-sh/uv/issues/5650
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Allow top level dev decencies in top level workspace
 
 ---
 
-_Issue opened by @jpambrun-vida on 2024-07-31 13:39_
+_@jpambrun-vida_
 
 I feel like the workspace top level virtual workspace would be the ideal place to have dev dependencies such as mypy, pytest, etc.
 

@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-11-19T21:24:15Z
 updated_at: 2024-11-19T21:41:32Z
 url: https://github.com/astral-sh/uv/pull/9249
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:43Z
 ```
 
 # Fix typo in PyTorch docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-19 21:24_
+_@charliermarsh_
 
 ## Summary
 

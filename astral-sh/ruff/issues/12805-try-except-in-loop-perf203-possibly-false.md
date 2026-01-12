@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-11T21:03:05Z
 updated_at: 2024-08-17T15:00:16Z
 url: https://github.com/astral-sh/ruff/issues/12805
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `try-except-in-loop (PERF203)` possibly false-positives with `continue`/`pass` in `except` block
 
 ---
 
-_Issue opened by @Avasam on 2024-08-11 21:03_
+_@Avasam_
 
 * List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
 try-except, continue, pass, PERF203, try-except-in-loop

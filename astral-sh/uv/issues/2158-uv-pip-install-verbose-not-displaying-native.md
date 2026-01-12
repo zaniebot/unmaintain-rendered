@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-04T15:46:18Z
 updated_at: 2024-03-04T21:14:06Z
 url: https://github.com/astral-sh/uv/issues/2158
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # `uv pip install --verbose` not displaying native extension build logs
 
 ---
 
-_Issue opened by @abetlen on 2024-03-04 15:46_
+_@abetlen_
 
 Hi there!
 

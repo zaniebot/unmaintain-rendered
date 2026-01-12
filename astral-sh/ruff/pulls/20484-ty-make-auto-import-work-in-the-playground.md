@@ -15,14 +15,14 @@ head: ag/playground-new-completion-data
 created_at: 2025-09-19T15:01:47Z
 updated_at: 2025-09-19T18:35:52Z
 url: https://github.com/astral-sh/ruff/pull/20484
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [ty] Make auto-import work in the playground
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-09-19 15:01_
+_@BurntSushi_
 
 It turned out that we weren't quite funneling the new completion data
 all the way through.

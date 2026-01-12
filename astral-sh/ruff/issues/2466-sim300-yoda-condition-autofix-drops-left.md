@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-02T04:28:55Z
 updated_at: 2023-02-02T05:07:45Z
 url: https://github.com/astral-sh/ruff/issues/2466
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # SIM300: Yoda condition... autofix drops left parenthesis
 
 ---
 
-_Issue opened by @Jeremiah-England on 2023-02-02 04:28_
+_@Jeremiah-England_
 
 ```sh
 ruff --select SIM300 --fix --diff test.py

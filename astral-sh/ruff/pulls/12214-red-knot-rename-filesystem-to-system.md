@@ -13,14 +13,14 @@ head: file-system-to-system
 created_at: 2024-07-06T14:32:27Z
 updated_at: 2024-07-09T07:31:48Z
 url: https://github.com/astral-sh/ruff/pull/12214
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Rename `FileSystem` to `System`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-06 14:32_
+_@MichaReiser_
 
 ## Summary
 

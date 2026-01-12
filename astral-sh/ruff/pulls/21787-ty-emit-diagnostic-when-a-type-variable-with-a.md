@@ -14,14 +14,14 @@ head: ty_typevar_invalid_order
 created_at: 2025-12-04T10:16:57Z
 updated_at: 2025-12-14T19:49:30Z
 url: https://github.com/astral-sh/ruff/pull/21787
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Emit diagnostic when a type variable with a default is followed by one without a default
 
 ---
 
-_Pull request opened by @11happy on 2025-12-04 10:16_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

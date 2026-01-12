@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-15T15:58:14Z
 updated_at: 2025-06-26T13:38:45Z
 url: https://github.com/astral-sh/ruff/issues/8696
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # D301 breaks Click docstrings that use the \b escape sequence
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-11-15 15:58_
+_@ThiefMaster_
 
 Click uses `\b` to prevent re-wrapping: https://click.palletsprojects.com/en/8.1.x/documentation/#preventing-rewrapping
 

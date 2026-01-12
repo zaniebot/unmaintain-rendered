@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-07T13:05:30Z
 updated_at: 2023-06-08T02:04:37Z
 url: https://github.com/astral-sh/ruff/issues/4927
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [bug] RUF010 autofix bug
 
 ---
 
-_Issue opened by @smackesey on 2023-06-07 13:05_
+_@smackesey_
 
 On upgrading to 0.0.271, running `ruff --fix` is giving a lot of errors on trying to fix f strings. Here's an example string that triggers the error:
 

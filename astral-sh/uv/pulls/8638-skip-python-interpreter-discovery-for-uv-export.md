@@ -13,14 +13,14 @@ head: charlie/o
 created_at: 2024-10-28T16:34:43Z
 updated_at: 2024-10-28T19:00:10Z
 url: https://github.com/astral-sh/uv/pull/8638
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:24Z
 ```
 
 # Skip Python interpreter discovery for `uv export`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-28 16:34_
+_@charliermarsh_
 
 ## Summary
 

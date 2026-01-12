@@ -14,14 +14,14 @@ head: leading-function-def-comment-with-type-params
 created_at: 2024-07-22T07:42:14Z
 updated_at: 2024-07-22T12:17:03Z
 url: https://github.com/astral-sh/ruff/pull/12447
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Fix incorrect placement of leading function comment with type params
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-22 07:42_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T16:12:46Z
 updated_at: 2024-02-17T02:11:27Z
 url: https://github.com/astral-sh/uv/issues/1508
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # pip install error: failed to rename file from ../.tmp to real package
 
 ---
 
-_Issue opened by @kafonek on 2024-02-16 16:12_
+_@kafonek_
 
 Maybe related to https://github.com/astral-sh/uv/issues/1454? I see the following issue when running inside a relatively beefy Ubuntu 22.04 docker container. The same lines run fine on my local Ubuntu 22.04 WSL box.
 

@@ -13,14 +13,14 @@ head: zb/reno-rust
 created_at: 2025-08-11T16:59:21Z
 updated_at: 2025-08-12T02:27:09Z
 url: https://github.com/astral-sh/uv/pull/15223
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:38Z
 ```
 
 # Add the Rust toolchain to Renovate
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-11 16:59_
+_@zanieb_
 
 Inspired by
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-06T18:26:40Z
 updated_at: 2025-03-07T11:13:01Z
 url: https://github.com/astral-sh/ruff/issues/16541
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # B905 not being raised when "B" rules enabled
 
 ---
 
-_Issue opened by @jackdent on 2025-03-06 18:26_
+_@jackdent_
 
 ### Summary
 

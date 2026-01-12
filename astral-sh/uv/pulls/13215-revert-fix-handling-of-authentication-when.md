@@ -13,14 +13,14 @@ head: jtfm/revert-redirect-handling
 created_at: 2025-04-30T08:14:15Z
 updated_at: 2025-04-30T09:12:09Z
 url: https://github.com/astral-sh/uv/pull/13215
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:36Z
 ```
 
 # Revert fix handling of authentication when encountering redirects
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-04-30 08:14_
+_@jtfmumm_
 
 These changes to redirect handling appear to have caused #13208. This PR reverts the redirect changes to give us time to investigate.
 

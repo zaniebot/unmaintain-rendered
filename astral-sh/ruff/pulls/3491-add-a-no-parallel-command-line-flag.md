@@ -11,14 +11,14 @@ head: charlie/no-parallel
 created_at: 2023-03-13T20:32:07Z
 updated_at: 2023-03-13T20:49:42Z
 url: https://github.com/astral-sh/ruff/pull/3491
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add a `--no-parallel` command-line flag
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-13 20:32_
+_@charliermarsh_
 
 ## Summary
 

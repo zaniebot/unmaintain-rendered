@@ -13,14 +13,14 @@ head: upgrade-strum
 created_at: 2023-09-13T13:46:46Z
 updated_at: 2023-09-13T16:54:08Z
 url: https://github.com/astral-sh/ruff/pull/7337
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # chore: Upgrade strum
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-13 13:46_
+_@MichaReiser_
 
 ## Summary
 

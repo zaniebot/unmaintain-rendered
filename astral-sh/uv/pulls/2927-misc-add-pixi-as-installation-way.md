@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2024-04-09T05:02:08Z
 updated_at: 2024-04-10T03:44:57Z
 url: https://github.com/astral-sh/uv/pull/2927
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:19Z
 ```
 
 # misc: add pixi as installation way
 
 ---
 
-_Pull request opened by @nichmor on 2024-04-09 05:02_
+_@nichmor_
 
 ## Summary
 

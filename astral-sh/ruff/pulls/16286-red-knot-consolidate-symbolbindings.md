@@ -14,14 +14,14 @@ head: dcreager/fold-arrays
 created_at: 2025-02-20T19:32:19Z
 updated_at: 2025-02-20T21:20:26Z
 url: https://github.com/astral-sh/ruff/pull/16286
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Consolidate `SymbolBindings`/`SymbolDeclarations` state
 
 ---
 
-_Pull request opened by @dcreager on 2025-02-20 19:32_
+_@dcreager_
 
 This updates the `SymbolBindings` and `SymbolDeclarations` types to use a single smallvec of live bindings/declarations, instead of splitting that out into separate containers for each field.
 

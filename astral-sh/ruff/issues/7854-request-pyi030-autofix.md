@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-09T02:32:23Z
 updated_at: 2023-10-10T03:15:15Z
 url: https://github.com/astral-sh/ruff/issues/7854
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Request: PYI030 autofix
 
 ---
 
-_Issue opened by @jamesbraza on 2023-10-09 02:32_
+_@jamesbraza_
 
 I am using `ruff==0.0.292`, and am turning on `PYI`.  I am wondering, why doesn't `PYI030` have an autofix?
 

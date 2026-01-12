@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-07T22:38:28Z
 updated_at: 2025-02-10T15:21:51Z
 url: https://github.com/clap-rs/clap/issues/5905
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # ArgMatches::try_get_flag
 
 ---
 
-_Issue opened by @Lucretiel on 2025-02-07 22:38_
+_@Lucretiel_
 
 ### Please complete the following tasks
 

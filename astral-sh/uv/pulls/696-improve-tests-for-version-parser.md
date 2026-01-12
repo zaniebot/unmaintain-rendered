@@ -13,14 +13,14 @@ head: ag/version/test
 created_at: 2023-12-18T22:36:53Z
 updated_at: 2023-12-19T17:25:33Z
 url: https://github.com/astral-sh/uv/pull/696
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # improve tests for version parser
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-12-18 22:36_
+_@BurntSushi_
 
 The high level goal here is to improve the tests for the version parser. Namely, we now check not just that version strings parse successfully, but that they parse to the expected result.
 

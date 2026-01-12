@@ -13,14 +13,14 @@ head: brent/syntax-errors-ecosystem
 created_at: 2025-03-20T19:56:19Z
 updated_at: 2025-03-20T21:25:43Z
 url: https://github.com/astral-sh/ruff/pull/16879
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # Recognize `SyntaxError:` as an error code for ecosystem checks
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-20 19:56_
+_@ntBre_
 
 Summary
 --

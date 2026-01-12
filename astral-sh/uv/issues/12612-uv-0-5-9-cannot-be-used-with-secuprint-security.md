@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-01T23:09:55Z
 updated_at: 2025-06-30T15:32:32Z
 url: https://github.com/astral-sh/uv/issues/12612
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # uv 0.5.9+ cannot be used with SecuPrint security software on Windows
 
 ---
 
-_Issue opened by @zanieb on 2025-04-01 23:09_
+_@zanieb_
 
 Rust 1.83+, which we started using in uv 0.5.9, cannot be used on Windows systems with [SecuPrint](https://www.li-tech.co.kr/s_products_spp.php). The aforementioned security software injects a module into (all?) processes and causes a silent runtime crash (presumably due to a bug in their injected code).
 

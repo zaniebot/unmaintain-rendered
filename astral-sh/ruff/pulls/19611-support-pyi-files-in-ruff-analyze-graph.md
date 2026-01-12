@@ -13,14 +13,14 @@ head: charlie/pyi
 created_at: 2025-07-29T01:46:16Z
 updated_at: 2025-07-29T02:03:24Z
 url: https://github.com/astral-sh/ruff/pull/19611
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # Support `.pyi` files in ruff analyze graph
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-29 01:46_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/caps
 created_at: 2024-10-10T23:32:02Z
 updated_at: 2024-10-10T23:50:02Z
 url: https://github.com/astral-sh/uv/pull/8115
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:10Z
 ```
 
 # Capitalize error messages from lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-10 23:32_
+_@charliermarsh_
 
 ## Summary
 

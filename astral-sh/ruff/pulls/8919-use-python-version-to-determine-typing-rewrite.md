@@ -13,14 +13,14 @@ head: charlie/up-safe
 created_at: 2023-11-30T01:51:07Z
 updated_at: 2023-11-30T03:22:05Z
 url: https://github.com/astral-sh/ruff/pull/8919
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Use Python version to determine typing rewrite safety
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-30 01:51_
+_@charliermarsh_
 
 ## Summary
 

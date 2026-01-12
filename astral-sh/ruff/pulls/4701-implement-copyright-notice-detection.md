@@ -13,14 +13,14 @@ head: implement-flake8-copyright
 created_at: 2023-05-29T07:39:31Z
 updated_at: 2023-06-20T23:09:14Z
 url: https://github.com/astral-sh/ruff/pull/4701
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Implement copyright notice detection
 
 ---
 
-_Pull request opened by @Ryang20718 on 2023-05-29 07:39_
+_@Ryang20718_
 
 ## Summary
 

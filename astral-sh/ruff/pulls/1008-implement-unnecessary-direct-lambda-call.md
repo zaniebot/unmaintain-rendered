@@ -12,14 +12,14 @@ head: unnecessary-direct-lambda-call
 created_at: 2022-12-03T06:18:20Z
 updated_at: 2022-12-03T14:59:05Z
 url: https://github.com/astral-sh/ruff/pull/1008
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement `unnecessary-direct-lambda-call`
 
 ---
 
-_Pull request opened by @harupy on 2022-12-03 06:18_
+_@harupy_
 
 #970 
 

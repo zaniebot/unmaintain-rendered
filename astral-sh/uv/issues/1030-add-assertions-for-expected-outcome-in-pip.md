@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-21T23:48:21Z
 updated_at: 2024-02-02T09:41:37Z
 url: https://github.com/astral-sh/uv/issues/1030
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Add assertions for expected outcome in `pip-compile` scenarios
 
 ---
 
-_Issue opened by @zanieb on 2024-01-21 23:48_
+_@zanieb_
 
 See #1011 
 

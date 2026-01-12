@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-13T15:41:49Z
 updated_at: 2025-08-05T11:44:21Z
 url: https://github.com/astral-sh/ruff/issues/9115
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [FEATURE REQUEST] Add flake8-django-migrations plugin into (DJ) rule
 
 ---
 
-_Issue opened by @DmytroLitvinov on 2023-12-13 15:41_
+_@DmytroLitvinov_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

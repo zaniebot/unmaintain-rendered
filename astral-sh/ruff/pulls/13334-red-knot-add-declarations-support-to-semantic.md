@@ -13,14 +13,14 @@ head: cjm/declared-types-index
 created_at: 2024-09-12T03:05:29Z
 updated_at: 2024-09-13T17:55:24Z
 url: https://github.com/astral-sh/ruff/pull/13334
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] add Declarations support to semantic indexing
 
 ---
 
-_Pull request opened by @carljm on 2024-09-12 03:05_
+_@carljm_
 
 Add support for declared types to the semantic index. This involves a lot of renaming to clarify the distinction between bindings and declarations. The Definition (or more specifically, the DefinitionKind) becomes responsible for determining which definitions are bindings, which are declarations, and which are both, and the symbol table building is refactored a bit so that the `IS_BOUND` (renamed from `IS_DEFINED` for consistent terminology) flag is always set when a binding is added, rather than being set separately (and requiring us to ensure it is set properly).
 

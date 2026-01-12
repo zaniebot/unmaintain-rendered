@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-03-11T17:44:29Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/447
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # add crate_authors! macro
 
 ---
 
-_Issue opened by @rtaycher on 2016-03-11 17:44_
+_@rtaycher_
 
 Once https://github.com/rust-lang/cargo/pull/2465 lands it would be useful to have a crate_authors! macro to complement the crate_version! macro (fetch authors from cargo).
 

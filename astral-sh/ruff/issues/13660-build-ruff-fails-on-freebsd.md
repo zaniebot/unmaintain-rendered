@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-07T11:55:29Z
 updated_at: 2024-10-07T13:14:59Z
 url: https://github.com/astral-sh/ruff/issues/13660
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Build ruff fails on FreeBSD
 
 ---
 
-_Issue opened by @donnex on 2024-10-07 11:55_
+_@donnex_
 
 Right now it's not possible to compile `ruff` on FreeBSD.
 

@@ -14,14 +14,14 @@ head: zb/patch-filter
 created_at: 2024-04-09T13:32:06Z
 updated_at: 2024-04-09T15:04:28Z
 url: https://github.com/astral-sh/uv/pull/2930
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:19Z
 ```
 
 # Add filtering of patch Python versions unless explicitly requested
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-09 13:32_
+_@zanieb_
 
 Elides Python patch versions from the test suite unless the test specifically requests a patch version.
 

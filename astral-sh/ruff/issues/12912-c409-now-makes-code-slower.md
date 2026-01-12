@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-15T23:04:11Z
 updated_at: 2025-03-31T18:23:30Z
 url: https://github.com/astral-sh/ruff/issues/12912
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # C409 now makes code slower
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-08-15 23:04_
+_@hauntsaninja_
 
 Introduced in https://github.com/astral-sh/ruff/pull/12657
 

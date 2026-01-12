@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-03-26T17:34:48Z
 updated_at: 2022-03-26T18:22:35Z
 url: https://github.com/clap-rs/clap/issues/3581
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Reuse USAGE from clap in generated man pages
 
 ---
 
-_Issue opened by @ducaale on 2022-03-26 17:34_
+_@ducaale_
 
 ### Please complete the following tasks
 

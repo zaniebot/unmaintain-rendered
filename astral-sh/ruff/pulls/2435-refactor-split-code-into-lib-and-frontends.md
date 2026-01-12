@@ -12,14 +12,14 @@ head: crates-dir
 created_at: 2023-02-01T09:06:14Z
 updated_at: 2023-02-05T13:49:08Z
 url: https://github.com/astral-sh/ruff/pull/2435
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # refactor: Split code into `lib/` and `frontends/`
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-02-01 09:06_
+_@not-my-profile_
 
 The PR #2088 implements the following structure:
 

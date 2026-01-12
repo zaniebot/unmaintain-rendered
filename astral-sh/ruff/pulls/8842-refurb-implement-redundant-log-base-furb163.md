@@ -14,14 +14,14 @@ head: redundant-log-base
 created_at: 2023-11-26T19:19:09Z
 updated_at: 2023-11-28T00:23:43Z
 url: https://github.com/astral-sh/ruff/pull/8842
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [`refurb`] Implement `redundant-log-base` (`FURB163`)
 
 ---
 
-_Pull request opened by @tjkuson on 2023-11-26 19:19_
+_@tjkuson_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-24T12:32:52Z
 updated_at: 2025-12-27T11:44:36Z
 url: https://github.com/astral-sh/ty/issues/2201
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Rename `non-subscriptable` error code to `not-subscriptable`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-24 12:32_
+_@AlexWaygood_
 
 `non-subscriptable` is inconsistent with other error codes such as `not-iterable`, and I prefer `not-` to `non-` (it reads more like English).
 

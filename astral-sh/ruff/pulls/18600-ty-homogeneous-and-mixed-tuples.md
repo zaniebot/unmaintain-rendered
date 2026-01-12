@@ -14,14 +14,14 @@ head: dcreager/tuple-spec
 created_at: 2025-06-09T21:08:40Z
 updated_at: 2025-06-23T13:27:28Z
 url: https://github.com/astral-sh/ruff/pull/18600
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # [ty] Homogeneous and mixed tuples
 
 ---
 
-_Pull request opened by @dcreager on 2025-06-09 21:08_
+_@dcreager_
 
 We already had support for homogeneous tuples (`tuple[int, ...]`). This PR extends this to also support mixed tuples (`tuple[str, str, *tuple[int, ...], str str]`).
 

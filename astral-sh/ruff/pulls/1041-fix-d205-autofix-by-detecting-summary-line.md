@@ -12,14 +12,14 @@ head: charlie/d
 created_at: 2022-12-04T18:55:59Z
 updated_at: 2022-12-04T18:56:52Z
 url: https://github.com/astral-sh/ruff/pull/1041
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix D205 autofix by detecting summary line
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-04 18:55_
+_@charliermarsh_
 
 Fixes #1039.
 

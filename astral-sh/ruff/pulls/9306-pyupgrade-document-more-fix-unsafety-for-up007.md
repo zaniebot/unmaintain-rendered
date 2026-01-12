@@ -13,14 +13,14 @@ head: up007-unsafe
 created_at: 2023-12-29T09:38:51Z
 updated_at: 2024-01-02T00:38:40Z
 url: https://github.com/astral-sh/ruff/pull/9306
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [`pyupgrade`] Document more fix unsafety for UP007
 
 ---
 
-_Pull request opened by @hauntsaninja on 2023-12-29 09:38_
+_@hauntsaninja_
 
 ```
 from typing import Optional

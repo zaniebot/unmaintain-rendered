@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-15T07:43:01Z
 updated_at: 2025-04-22T09:17:34Z
 url: https://github.com/astral-sh/ruff/issues/17405
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # ruff check with file read from stdin does not use options from pyproject.toml when --stdin-filename argument is used
 
 ---
 
-_Issue opened by @ipvych on 2025-04-15 07:43_
+_@ipvych_
 
 ### Summary
 

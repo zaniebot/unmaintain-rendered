@@ -11,14 +11,14 @@ head: feat/pex-lock-export
 created_at: 2025-07-05T23:06:25Z
 updated_at: 2025-07-14T17:00:25Z
 url: https://github.com/astral-sh/uv/pull/14469
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:14Z
 ```
 
 # Add PEX lock file export support
 
 ---
 
-_Pull request opened by @ademariag on 2025-07-05 23:06_
+_@ademariag_
 
 ## Summary
 

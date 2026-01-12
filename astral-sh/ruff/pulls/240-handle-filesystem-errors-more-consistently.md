@@ -12,14 +12,14 @@ head: fs-errors
 created_at: 2022-09-21T02:15:55Z
 updated_at: 2022-09-21T04:15:45Z
 url: https://github.com/astral-sh/ruff/pull/240
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Handle filesystem errors more consistently
 
 ---
 
-_Pull request opened by @andersk on 2022-09-21 02:15_
+_@andersk_
 
 Emit E902 for all filesystem errors that occur during directory walking or linting. Use the system-provided error message instead of assuming that all filesystem errors are “No such file or directory”. Remove the redundant `exists()` checks since we are no longer suppressing that error during directory walking.
 

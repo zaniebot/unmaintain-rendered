@@ -13,14 +13,14 @@ head: alex/redknot-except-defs
 created_at: 2024-09-06T11:52:34Z
 updated_at: 2024-09-09T11:41:21Z
 url: https://github.com/astral-sh/ruff/pull/13267
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Add definitions and limited type inference for exception handlers
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-06 11:52_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: dhruv/eat-char2
 created_at: 2023-08-29T04:49:51Z
 updated_at: 2023-08-29T11:48:04Z
 url: https://github.com/astral-sh/ruff/pull/6968
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add `eat_char2` for the lexer
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-08-29 04:49_
+_@dhruvmanila_
 
 ## Summary
 

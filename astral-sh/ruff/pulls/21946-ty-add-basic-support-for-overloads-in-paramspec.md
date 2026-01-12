@@ -14,14 +14,14 @@ head: dhruv/paramspec-overload-1
 created_at: 2025-12-12T13:21:14Z
 updated_at: 2025-12-26T09:05:58Z
 url: https://github.com/astral-sh/ruff/pull/21946
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Add basic support for overloads in `ParamSpec`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-12-12 13:21_
+_@dhruvmanila_
 
 ## Summary
 

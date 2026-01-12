@@ -12,14 +12,14 @@ head: codegen_state
 created_at: 2023-05-31T09:02:47Z
 updated_at: 2023-06-05T07:45:01Z
 url: https://github.com/astral-sh/ruff/pull/4749
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Abstract stylist to libcst style conversion
 
 ---
 
-_Pull request opened by @konstin on 2023-05-31 09:02_
+_@konstin_
 
 Replace all duplicate invocations of
 

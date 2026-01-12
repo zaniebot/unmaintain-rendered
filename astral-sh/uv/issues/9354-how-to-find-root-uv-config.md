@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T13:59:49Z
 updated_at: 2025-07-30T20:03:31Z
 url: https://github.com/astral-sh/uv/issues/9354
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # How to find root uv config?
 
 ---
 
-_Issue opened by @kevinsimper on 2024-11-22 13:59_
+_@kevinsimper_
 
 How does UV find root? What is the defining rule where UV stops looking?
 

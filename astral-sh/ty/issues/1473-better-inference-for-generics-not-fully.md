@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-03T21:58:50Z
 updated_at: 2026-01-10T08:59:17Z
 url: https://github.com/astral-sh/ty/issues/1473
-synced_at: 2026-01-10T11:36:23Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # better inference for generics not fully constrained at their construction
 
 ---
 
-_Issue opened by @carljm on 2025-11-03 21:58_
+_@carljm_
 
 The canonical case of this is an empty list literal, but in everything that follows, we should assume it is generalized to all generic classes, not special-cased for builtin collection types.
 

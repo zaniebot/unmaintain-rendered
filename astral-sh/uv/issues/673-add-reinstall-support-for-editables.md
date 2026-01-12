@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-17T03:59:41Z
 updated_at: 2023-12-17T15:41:59Z
 url: https://github.com/astral-sh/uv/issues/673
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Add `--reinstall` support for editables
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-17 03:59_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/fp
 created_at: 2025-01-20T23:20:55Z
 updated_at: 2025-01-20T23:30:25Z
 url: https://github.com/astral-sh/uv/pull/10796
-synced_at: 2026-01-10T11:45:11Z
+synced_at: 2026-01-12T16:09:29Z
 ```
 
 # Validate metadata under GitHub fast path
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-20 23:20_
+_@charliermarsh_
 
 ## Summary
 

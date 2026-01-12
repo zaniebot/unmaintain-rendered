@@ -14,14 +14,14 @@ assignees: []
 created_at: 2021-12-13T17:55:55Z
 updated_at: 2025-03-27T15:17:17Z
 url: https://github.com/clap-rs/clap/issues/3166
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Stablize Rust-Native Completion Engine  Tracking Issue
 
 ---
 
-_Issue opened by @epage on 2021-12-13 17:55_
+_@epage_
 
 Maintainer's notes:
 

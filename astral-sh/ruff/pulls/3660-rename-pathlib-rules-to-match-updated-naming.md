@@ -12,14 +12,14 @@ head: charlie/names
 created_at: 2023-03-22T02:23:37Z
 updated_at: 2023-03-22T15:35:47Z
 url: https://github.com/astral-sh/ruff/pull/3660
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Rename `pathlib` rules to match updated naming convention
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-22 02:23_
+_@charliermarsh_
 
 Instead of `PathlibAbspath`, we want `OsPathAbspath`, as in "allow `os.path.abspath`".
 

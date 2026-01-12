@@ -12,14 +12,14 @@ head: fix/typo
 created_at: 2022-11-29T09:24:01Z
 updated_at: 2022-11-29T14:33:32Z
 url: https://github.com/astral-sh/ruff/pull/959
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # README: fixed conf section typo
 
 ---
 
-_Pull request opened by @g-as on 2022-11-29 09:24_
+_@g-as_
 
 _No description provided._
 

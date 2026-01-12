@@ -13,14 +13,14 @@ head: cjm/follow-assign
 created_at: 2024-04-27T17:55:04Z
 updated_at: 2024-04-29T22:05:38Z
 url: https://github.com/astral-sh/ruff/pull/11181
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # [red-knot] follow simple assignments
 
 ---
 
-_Pull request opened by @carljm on 2024-04-27 17:55_
+_@carljm_
 
 ## Summary
 

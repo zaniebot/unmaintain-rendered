@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-09T11:54:39Z
 updated_at: 2024-10-21T21:45:48Z
 url: https://github.com/astral-sh/uv/issues/7215
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Should error on `uv run pip`?
 
 ---
 
-_Issue opened by @Kludex on 2024-09-09 11:54_
+_@Kludex_
 
 Hi there,
 

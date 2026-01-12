@@ -14,14 +14,14 @@ head: fix-19329
 created_at: 2025-07-16T18:20:35Z
 updated_at: 2025-07-16T20:50:50Z
 url: https://github.com/astral-sh/ruff/pull/19388
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:38Z
 ```
 
 # [`flake8-use-pathlib`] Fix false negative on direct `Path()` instantiation (`PTH210`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-16 18:20_
+_@danparizher_
 
 ## Summary
 

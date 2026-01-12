@@ -12,14 +12,14 @@ head: fix-ple01310-type
 created_at: 2023-05-20T19:27:45Z
 updated_at: 2023-05-20T21:46:07Z
 url: https://github.com/astral-sh/ruff/pull/4550
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Fix PLE01310 typo
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-20 19:27_
+_@JonathanPlasse_
 
 _No description provided._
 

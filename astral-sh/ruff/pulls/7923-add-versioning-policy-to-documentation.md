@@ -13,14 +13,14 @@ head: docs/versioning
 created_at: 2023-10-11T20:30:34Z
 updated_at: 2023-10-12T15:42:37Z
 url: https://github.com/astral-sh/ruff/pull/7923
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add versioning policy to documentation
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-11 20:30_
+_@zanieb_
 
 Most of the content adapted from https://github.com/astral-sh/ruff/discussions/6998
 

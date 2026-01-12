@@ -13,14 +13,14 @@ head: binary-like-fstring-support
 created_at: 2023-09-07T09:45:46Z
 updated_at: 2023-09-21T10:38:45Z
 url: https://github.com/astral-sh/ruff/pull/7215
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add FString support to binary like formatting
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-07 09:45_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/attr
 created_at: 2024-01-06T22:14:50Z
 updated_at: 2024-01-06T22:28:58Z
 url: https://github.com/astral-sh/ruff/pull/9416
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Include subscripts and attributes in static key rule
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-06 22:14_
+_@charliermarsh_
 
 _No description provided._
 

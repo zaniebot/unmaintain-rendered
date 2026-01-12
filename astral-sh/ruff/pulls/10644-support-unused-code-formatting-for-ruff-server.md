@@ -13,14 +13,14 @@ head: jane/server/unused-code
 created_at: 2024-03-28T06:35:37Z
 updated_at: 2024-03-28T11:31:57Z
 url: https://github.com/astral-sh/ruff/pull/10644
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Support unused code formatting for `ruff server`
 
 ---
 
-_Pull request opened by @snowsignal on 2024-03-28 06:35_
+_@snowsignal_
 
 ## Summary
 

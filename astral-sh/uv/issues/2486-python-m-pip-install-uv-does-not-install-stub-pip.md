@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-16T12:23:27Z
 updated_at: 2024-08-11T15:38:32Z
 url: https://github.com/astral-sh/uv/issues/2486
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # `python -m pip install uv` does not install stub - `pip install uv` does
 
 ---
 
-_Issue opened by @bersbersbers on 2024-03-16 12:23_
+_@bersbersbers_
 
 I am not even sure this is a bug in `uv` (rather than in `pip` or `pyenv`), but since I have never noticed such behavior (e.g., with `pylint`), I thought it made sense to report it.
 

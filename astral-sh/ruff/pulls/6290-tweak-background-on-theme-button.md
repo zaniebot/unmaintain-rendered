@@ -13,14 +13,14 @@ head: charlie/button
 created_at: 2023-08-03T00:52:31Z
 updated_at: 2023-08-03T01:00:38Z
 url: https://github.com/astral-sh/ruff/pull/6290
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Tweak background on theme button
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-03 00:52_
+_@charliermarsh_
 
 ## Summary
 

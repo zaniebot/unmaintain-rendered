@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-13T20:33:20Z
 updated_at: 2025-02-13T22:15:20Z
 url: https://github.com/astral-sh/uv/issues/11492
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:38Z
 ```
 
 # uv to convert requirements.txt to pyproject.toml?
 
 ---
 
-_Issue opened by @laoshaw on 2025-02-13 20:33_
+_@laoshaw_
 
 ### Question
 

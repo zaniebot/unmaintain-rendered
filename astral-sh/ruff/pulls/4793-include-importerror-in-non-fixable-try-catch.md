@@ -12,14 +12,14 @@ head: charlie/import-error
 created_at: 2023-06-01T19:45:29Z
 updated_at: 2023-06-01T20:25:50Z
 url: https://github.com/astral-sh/ruff/pull/4793
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Include ImportError in non-fixable try-catch imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-01 19:45_
+_@charliermarsh_
 
 I think this was just an oversight. The flag exists, but we never set it. Closes #4790.
 

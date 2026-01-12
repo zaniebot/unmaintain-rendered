@@ -12,14 +12,14 @@ head: patch-4
 created_at: 2023-07-18T16:28:37Z
 updated_at: 2023-07-18T17:06:28Z
 url: https://github.com/astral-sh/ruff/pull/5867
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Use `relativize_path` for `noqa` warnings
 
 ---
 
-_Pull request opened by @sobolevn on 2023-07-18 16:28_
+_@sobolevn_
 
 Refs https://github.com/astral-sh/ruff/pull/5856
 

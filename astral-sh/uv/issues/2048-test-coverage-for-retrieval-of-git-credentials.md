@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-28T18:22:07Z
 updated_at: 2024-02-29T02:34:53Z
 url: https://github.com/astral-sh/uv/issues/2048
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Test coverage for retrieval of git credentials from the helper
 
 ---
 
-_Issue opened by @zanieb on 2024-02-28 18:22_
+_@zanieb_
 
 Related to https://github.com/astral-sh/uv/issues/1980#issuecomment-1969576444
 

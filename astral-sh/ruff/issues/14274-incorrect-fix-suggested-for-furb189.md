@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-11T12:37:41Z
 updated_at: 2024-11-11T12:58:02Z
 url: https://github.com/astral-sh/ruff/issues/14274
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Incorrect fix suggested for FURB189
 
 ---
 
-_Issue opened by @penguinolog on 2024-11-11 12:37_
+_@penguinolog_
 
 Preview check FURB189 suggest using `collections.UserStr`, but correct base class if `collections.UserString` (https://docs.python.org/3/library/collections.html#userstring-objects)
 

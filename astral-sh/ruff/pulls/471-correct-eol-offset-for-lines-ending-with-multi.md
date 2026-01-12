@@ -12,14 +12,14 @@ head: fix/line-end-multibyte-char
 created_at: 2022-10-26T03:04:23Z
 updated_at: 2022-10-28T03:56:02Z
 url: https://github.com/astral-sh/ruff/pull/471
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Correct EOL offset for lines ending with multi-byte char
 
 ---
 
-_Pull request opened by @sgryjp on 2022-10-26 03:04_
+_@sgryjp_
 
 For each line, ruff iterates over UTF-32 characters and calculates the candidate of newline offset by adding 1 to byte-offset of the characters. This does not work correctly if there is a line which ends with a multi-byte character.
 

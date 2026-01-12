@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-13T07:55:28Z
 updated_at: 2024-05-19T03:17:12Z
 url: https://github.com/astral-sh/ruff/issues/11398
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # FURB110 may break code 
 
 ---
 
-_Issue opened by @martinlehoux on 2024-05-13 07:55_
+_@martinlehoux_
 
 
 * Keywords: FURB110

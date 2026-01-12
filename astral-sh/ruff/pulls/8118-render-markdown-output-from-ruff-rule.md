@@ -11,14 +11,14 @@ head: pretty-rule
 created_at: 2023-10-22T14:31:06Z
 updated_at: 2024-03-13T06:35:15Z
 url: https://github.com/astral-sh/ruff/pull/8118
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Render Markdown output from `ruff rule`
 
 ---
 
-_Pull request opened by @cjolowicz on 2023-10-22 14:31_
+_@cjolowicz_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-21T12:33:50Z
 updated_at: 2025-10-28T19:13:28Z
 url: https://github.com/astral-sh/ruff/issues/11965
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # TCH010 False positive when one argument is a TypeVar.
 
 ---
 
-_Issue opened by @randolf-scholz on 2024-06-21 12:33_
+_@randolf-scholz_
 
 [Rule TCH010](https://docs.astral.sh/ruff/rules/runtime-string-union/) should not apply when either argument is a TypeVar:
 

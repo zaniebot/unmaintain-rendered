@@ -14,14 +14,14 @@ head: gankra/import-act2
 created_at: 2025-11-25T16:18:30Z
 updated_at: 2025-12-01T16:15:50Z
 url: https://github.com/astral-sh/ruff/pull/21629
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # [ty] Add "import ..." code-action for unresolved references
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-25 16:18_
+_@Gankra_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-19T05:59:19Z
 updated_at: 2025-06-23T09:49:00Z
 url: https://github.com/astral-sh/uv/issues/7533
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Lock files don't mesh with dynamic package version info
 
 ---
 
-_Issue opened by @hynek on 2024-09-19 05:59_
+_@hynek_
 
 Since tox-uv just shipped lock files, I took a stab at moving attrs to a fully-locked dev environment.
 

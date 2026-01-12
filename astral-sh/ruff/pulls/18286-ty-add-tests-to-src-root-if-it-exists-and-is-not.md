@@ -13,14 +13,14 @@ head: src-root-tests
 created_at: 2025-05-24T13:55:50Z
 updated_at: 2025-05-26T08:08:57Z
 url: https://github.com/astral-sh/ruff/pull/18286
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] Add `tests` to `src.root` if it exists and is not a package
 
 ---
 
-_Pull request opened by @j178 on 2025-05-24 13:55_
+_@j178_
 
 ## Summary
 

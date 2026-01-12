@@ -13,14 +13,14 @@ head: tri/8553/successfulcheck
 created_at: 2023-11-12T18:00:18Z
 updated_at: 2024-03-27T13:57:49Z
 url: https://github.com/astral-sh/ruff/pull/8631
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Indicated Successful Check
 
 ---
 
-_Pull request opened by @vinhocent on 2023-11-12 18:00_
+_@vinhocent_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

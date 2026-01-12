@@ -13,14 +13,14 @@ head: bump-setup-uv-docs
 created_at: 2025-11-26T11:38:47Z
 updated_at: 2025-11-26T15:15:11Z
 url: https://github.com/astral-sh/uv/pull/16858
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:29Z
 ```
 
 # Bump setup-uv action to v7 in docs
 
 ---
 
-_Pull request opened by @my1e5 on 2025-11-26 11:38_
+_@my1e5_
 
 ## Summary
 

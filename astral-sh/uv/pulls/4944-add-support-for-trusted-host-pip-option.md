@@ -12,14 +12,14 @@ head: trusted-host-support
 created_at: 2024-07-09T20:41:48Z
 updated_at: 2024-08-27T17:19:36Z
 url: https://github.com/astral-sh/uv/pull/4944
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:32Z
 ```
 
 # Add support for `trusted-host` pip option
 
 ---
 
-_Pull request opened by @fkapsahili on 2024-07-09 20:41_
+_@fkapsahili_
 
 ## Summary
 

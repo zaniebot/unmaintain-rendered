@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-26T12:47:59Z
 updated_at: 2025-05-26T12:52:08Z
 url: https://github.com/astral-sh/ty/issues/515
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Callables called with **dict report error
 
 ---
 
-_Issue opened by @heinerlehr on 2025-05-26 12:47_
+_@heinerlehr_
 
 ### Summary
 

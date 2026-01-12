@@ -14,14 +14,14 @@ head: brent/syn-annotation-scopes
 created_at: 2025-03-31T20:35:42Z
 updated_at: 2025-04-04T12:30:21Z
 url: https://github.com/astral-sh/ruff/pull/17101
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [syntax-errors] Invalid syntax in annotations
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-31 20:35_
+_@ntBre_
 
 Summary
 --

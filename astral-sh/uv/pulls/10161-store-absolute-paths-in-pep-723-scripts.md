@@ -13,14 +13,14 @@ head: charlie/abs
 created_at: 2024-12-25T20:13:43Z
 updated_at: 2024-12-25T20:23:40Z
 url: https://github.com/astral-sh/uv/pull/10161
-synced_at: 2026-01-10T11:44:37Z
+synced_at: 2026-01-12T16:09:09Z
 ```
 
 # Store absolute paths in PEP 723 scripts
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-25 20:13_
+_@charliermarsh_
 
 _No description provided._
 

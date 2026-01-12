@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-17T23:23:16Z
 updated_at: 2025-06-20T20:07:32Z
 url: https://github.com/astral-sh/uv/issues/14121
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # Caching does not work when using an extra index
 
 ---
 
-_Issue opened by @pschmutz on 2025-06-17 23:23_
+_@pschmutz_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-21T23:47:35Z
 updated_at: 2025-11-10T21:49:50Z
 url: https://github.com/astral-sh/ty/issues/1228
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # invalid "object is not assignable" with class-scoped generic
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-21 23:47_
+_@KotlinIsland_
 
 ### Summary
 

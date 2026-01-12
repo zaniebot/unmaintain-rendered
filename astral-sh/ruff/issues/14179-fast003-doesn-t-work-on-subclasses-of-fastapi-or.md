@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-07T23:11:58Z
 updated_at: 2024-11-13T21:51:08Z
 url: https://github.com/astral-sh/ruff/issues/14179
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # FAST003 doesn't work on subclasses of FastAPI or APIRouter
 
 ---
 
-_Issue opened by @fraser-langton on 2024-11-07 23:11_
+_@fraser-langton_
 
 We use custom classes for our app and router objects, wondering if it was possible for that to be picked up?
 

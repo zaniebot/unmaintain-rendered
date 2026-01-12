@@ -13,14 +13,14 @@ head: patch-3
 created_at: 2025-12-30T11:42:10Z
 updated_at: 2025-12-30T13:57:18Z
 url: https://github.com/astral-sh/uv/pull/17262
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:41Z
 ```
 
 # Fix typo in 0.9.20 changelog entry
 
 ---
 
-_Pull request opened by @edmorley on 2025-12-30 11:42_
+_@edmorley_
 
 Since it was a re-release of 0.9.19, not 0.9.20.
 

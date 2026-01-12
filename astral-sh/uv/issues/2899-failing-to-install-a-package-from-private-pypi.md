@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-08T10:24:18Z
 updated_at: 2024-04-08T21:04:28Z
 url: https://github.com/astral-sh/uv/issues/2899
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # failing to install a package from private pypi repo - Caused by: relative URL without a base
 
 ---
 
-_Issue opened by @etele on 2024-04-08 10:24_
+_@etele_
 
 Failing to install a packge, from private pypi repo, the repo is set through `UV_INDEX_URL` environment variable.
 Seems it finds the candidate to isntall, but in the end failing with 

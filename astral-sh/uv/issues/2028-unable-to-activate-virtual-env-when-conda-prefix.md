@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-28T00:25:55Z
 updated_at: 2024-03-20T20:14:45Z
 url: https://github.com/astral-sh/uv/issues/2028
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Unable to activate VIRTUAL_ENV when CONDA_PREFIX exists
 
 ---
 
-_Issue opened by @teepoy on 2024-02-28 00:25_
+_@teepoy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

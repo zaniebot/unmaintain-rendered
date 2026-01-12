@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-27T09:26:01Z
 updated_at: 2022-12-28T02:17:24Z
 url: https://github.com/astral-sh/ruff/issues/1400
-synced_at: 2026-01-10T12:05:28Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Rule proposal: keyword argument before star arguments
 
 ---
 
-_Issue opened by @andersk on 2022-12-27 09:26_
+_@andersk_
 
 Python disallows `f(kw=a, b)`, `f(**a, b)`, and `f(**a, *b)`, but for some reason it does not disallow `f(kw=a, *b)`, which has an unexpected evaluation order as of 3.5 (python/cpython#100549). We could add a warning for this.
 

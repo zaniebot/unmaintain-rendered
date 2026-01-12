@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-12T19:06:02Z
 updated_at: 2025-12-19T16:51:27Z
 url: https://github.com/astral-sh/uv/issues/17109
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # uv fails to find wheel for split index/dependency
 
 ---
 
-_Issue opened by @michael-o on 2025-12-12 19:06_
+_@michael-o_
 
 ### Question
 

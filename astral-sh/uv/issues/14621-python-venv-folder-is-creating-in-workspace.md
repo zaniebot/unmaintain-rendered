@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-15T05:32:00Z
 updated_at: 2025-07-16T13:42:46Z
 url: https://github.com/astral-sh/uv/issues/14621
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # Python .venv folder is creating in workspace despite an active interpreter is selected in vscode
 
 ---
 
-_Issue opened by @Developermayank on 2025-07-15 05:32_
+_@Developermayank_
 
 ### Summary
 

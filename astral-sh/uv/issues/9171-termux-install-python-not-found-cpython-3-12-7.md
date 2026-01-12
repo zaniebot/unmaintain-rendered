@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-17T10:35:13Z
 updated_at: 2024-11-18T01:21:08Z
 url: https://github.com/astral-sh/uv/issues/9171
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # termux install python not found cpython-3.12.7-linux-aarch64-none
 
 ---
 
-_Issue opened by @WangZhongDian on 2024-11-17 10:35_
+_@WangZhongDian_
 
 I use `uv python list -- all-platforms` and do not have `cpython-3.12.7-linux-arch64-none`. I am using Android's termux for UV usage。Hope to add `cpython-3.12.7-linux-arch64-none` build
 

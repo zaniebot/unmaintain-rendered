@@ -11,14 +11,14 @@ head: patch-3
 created_at: 2025-05-27T15:16:57Z
 updated_at: 2025-06-16T14:56:00Z
 url: https://github.com/astral-sh/uv/pull/13684
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:48Z
 ```
 
 # Add note on uv venv replacing the existing virtual environment
 
 ---
 
-_Pull request opened by @stevenae on 2025-05-27 15:16_
+_@stevenae_
 
 ## Summary
 

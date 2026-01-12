@@ -14,14 +14,14 @@ head: charlie/clear
 created_at: 2024-10-24T23:37:31Z
 updated_at: 2024-10-25T16:22:41Z
 url: https://github.com/astral-sh/uv/pull/8550
-synced_at: 2026-01-10T12:54:12Z
+synced_at: 2026-01-12T16:08:22Z
 ```
 
 # Error when disallowed settings are defined in `uv.toml`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-24 23:37_
+_@charliermarsh_
 
 ## Summary
 

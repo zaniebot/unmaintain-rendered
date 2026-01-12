@@ -13,14 +13,14 @@ head: charlie/syntax
 created_at: 2023-03-17T22:29:38Z
 updated_at: 2023-03-18T19:06:23Z
 url: https://github.com/astral-sh/ruff/pull/3589
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Avoid removing comment hash for noqa's with trailing content
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-17 22:29_
+_@charliermarsh_
 
 ## Summary
 

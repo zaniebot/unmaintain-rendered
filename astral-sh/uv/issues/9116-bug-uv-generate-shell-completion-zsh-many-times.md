@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-14T11:55:29Z
 updated_at: 2024-11-15T12:11:56Z
 url: https://github.com/astral-sh/uv/issues/9116
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # bug: uv generate-shell-completion zsh many times
 
 ---
 
-_Issue opened by @nikitajz on 2024-11-14 11:55_
+_@nikitajz_
 
 Upd: removed, turned out to be a local setup issue
 

@@ -13,14 +13,14 @@ head: charlie/pl
 created_at: 2024-05-27T03:09:58Z
 updated_at: 2024-05-27T03:21:57Z
 url: https://github.com/astral-sh/uv/pull/3856
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:53Z
 ```
 
 # Remove unused `Platform` enum
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-27 03:09_
+_@charliermarsh_
 
 _No description provided._
 

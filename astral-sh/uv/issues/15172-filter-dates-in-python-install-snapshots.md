@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-08T18:53:32Z
 updated_at: 2025-08-11T21:15:53Z
 url: https://github.com/astral-sh/uv/issues/15172
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # Filter dates in `python_install` snapshots
 
 ---
 
-_Issue opened by @zanieb on 2025-08-08 18:53_
+_@zanieb_
 
 https://github.com/astral-sh/uv/pull/15171/files#diff-f499c776e1d8cc5e55d7620786e32e8732b675abd98e246c0971130f5de9ed50
 

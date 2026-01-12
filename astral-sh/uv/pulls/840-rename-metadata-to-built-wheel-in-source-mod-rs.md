@@ -13,14 +13,14 @@ head: charlie/rename
 created_at: 2024-01-08T19:15:51Z
 updated_at: 2024-01-08T19:20:21Z
 url: https://github.com/astral-sh/uv/pull/840
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:13Z
 ```
 
 # Rename `metadata` to `built_wheel` in `source/mod.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-08 19:15_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-12-05T22:57:11Z
 updated_at: 2024-12-06T17:05:51Z
 url: https://github.com/astral-sh/ruff/issues/14798
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # RUF052 fix is unsafe when renaming TypeVars
 
 ---
 
-_Issue opened by @oguzhanmeteozturk on 2024-12-05 22:57_
+_@oguzhanmeteozturk_
 
 The automatic fix for RUF052 is unsafe when applied to TypeVar definitions. It renames ``` _T = TypeVar("_T")``` to``` T = TypeVar("_T")``` resulting in invalid code. The TypeVar name string must match the assigned variable name to maintain correctness, and the resulting T = TypeVar("_T") violates this requirement.
 

@@ -13,14 +13,14 @@ head: charlie/format-cli
 created_at: 2023-08-28T15:03:35Z
 updated_at: 2023-08-28T15:28:33Z
 url: https://github.com/astral-sh/ruff/pull/6944
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Narrow the supported options on the format CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-28 15:03_
+_@charliermarsh_
 
 ## Summary
 

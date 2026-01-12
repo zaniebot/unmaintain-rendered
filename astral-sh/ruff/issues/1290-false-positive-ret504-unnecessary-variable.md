@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-19T12:57:51Z
 updated_at: 2022-12-20T18:27:00Z
 url: https://github.com/astral-sh/ruff/issues/1290
-synced_at: 2026-01-10T12:05:25Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # False-positive RET504 "Unnecessary variable assignment before `return` statement"
 
 ---
 
-_Issue opened by @actionless on 2022-12-19 12:57_
+_@actionless_
 
 ruff 0.0.187
 

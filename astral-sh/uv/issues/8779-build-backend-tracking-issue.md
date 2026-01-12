@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-11-03T18:30:04Z
 updated_at: 2025-07-03T17:36:34Z
 url: https://github.com/astral-sh/uv/issues/8779
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # Build backend tracking issue
 
 ---
 
-_Issue opened by @konstin on 2024-11-03 18:30_
+_@konstin_
 
 uv should provide its own build backend. This issue tracks this work, it will become more granular as more things are implemented.
 

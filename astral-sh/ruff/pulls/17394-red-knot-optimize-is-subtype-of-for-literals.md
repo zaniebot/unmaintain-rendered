@@ -14,14 +14,14 @@ head: cjm/bigunions2
 created_at: 2025-04-14T14:58:39Z
 updated_at: 2025-04-14T17:25:12Z
 url: https://github.com/astral-sh/ruff/pull/17394
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] optimize is_subtype_of for literals
 
 ---
 
-_Pull request opened by @carljm on 2025-04-14 14:58_
+_@carljm_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/reporters
 created_at: 2023-12-14T01:19:39Z
 updated_at: 2023-12-14T12:51:41Z
 url: https://github.com/astral-sh/uv/pull/645
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:05Z
 ```
 
 # Allow reporters to take `dyn Metadata`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-14 01:19_
+_@charliermarsh_
 
 _No description provided._
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-20T14:32:08Z
 updated_at: 2022-09-20T15:28:29Z
 url: https://github.com/astral-sh/ruff/issues/232
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Regression: Ignore dot-prefixed hidden files and folders by default
 
 ---
 
-_Issue opened by @amotl on 2022-09-20 14:32_
+_@amotl_
 
 Dear Charlie,
 

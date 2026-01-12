@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-10T17:00:59Z
 updated_at: 2025-04-29T21:37:04Z
 url: https://github.com/astral-sh/uv/issues/11391
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # Index URL cannot be queried for lack of authentication ending with package name
 
 ---
 
-_Issue opened by @jzazo on 2025-02-10 17:00_
+_@jzazo_
 
 ### Summary
 

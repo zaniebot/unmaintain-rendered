@@ -12,14 +12,14 @@ head: revert
 created_at: 2024-08-14T09:01:32Z
 updated_at: 2024-08-14T10:32:39Z
 url: https://github.com/astral-sh/ruff/pull/12884
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Revert "[Ruff 0.6] Stabilise `PLR6104` (#12858)"
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-14 09:01_
+_@AlexWaygood_
 
 Reverts #12858, until we have community consensus on how to proceed with this rule
 

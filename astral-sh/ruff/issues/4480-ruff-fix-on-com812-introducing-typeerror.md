@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-17T21:14:42Z
 updated_at: 2023-05-18T14:35:43Z
 url: https://github.com/astral-sh/ruff/issues/4480
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Ruff --fix on COM812 introducing TypeError
 
 ---
 
-_Issue opened by @fennerm on 2023-05-17 21:14_
+_@fennerm_
 
 I think I'm seeing some buggy behavior with the COM812 rule (running ruff v0.0.267).
 

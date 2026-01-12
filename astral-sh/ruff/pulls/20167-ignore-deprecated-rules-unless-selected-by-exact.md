@@ -14,14 +14,14 @@ head: feat/ignore-deprecated-rules-by-unless-selected-by-exact-code
 created_at: 2025-08-30T14:45:35Z
 updated_at: 2025-09-08T16:10:11Z
 url: https://github.com/astral-sh/ruff/pull/20167
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # Ignore deprecated rules unless selected by exact code
 
 ---
 
-_Pull request opened by @LoicRiegel on 2025-08-30 14:45_
+_@LoicRiegel_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

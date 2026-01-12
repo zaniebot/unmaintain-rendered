@@ -14,14 +14,14 @@ head: micha/tidy-cli-tests
 created_at: 2025-01-23T09:47:28Z
 updated_at: 2025-01-23T14:10:50Z
 url: https://github.com/astral-sh/ruff/pull/15685
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Tidy knot CLI tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-23 09:47_
+_@MichaReiser_
 
 ## Summary
 Introduce some helpers to remvoe the noise around writing files.

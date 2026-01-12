@@ -13,14 +13,14 @@ head: typing-self
 created_at: 2025-04-28T21:13:45Z
 updated_at: 2025-09-18T16:11:46Z
 url: https://github.com/astral-sh/ruff/pull/17689
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # Support `typing.Self` in methods
 
 ---
 
-_Pull request opened by @Glyphack on 2025-04-28 21:13_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: fix-D201-D202-fix-error
 created_at: 2025-07-09T21:13:29Z
 updated_at: 2025-07-14T19:01:41Z
 url: https://github.com/astral-sh/ruff/pull/19246
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [`pydoclint`] Fix `SyntaxError` from fixes with line continuations (`D201`, `D202`)
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-09 21:13_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

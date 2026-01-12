@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-22T09:17:24Z
 updated_at: 2023-08-22T16:27:42Z
 url: https://github.com/astral-sh/ruff/issues/6760
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Allow two empty lines after `import`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-22 09:17_
+_@MichaReiser_
 
 Black requires at least one empty line after an `import` statement but allows up to two empty lines. Ruff enforces one empty line
 

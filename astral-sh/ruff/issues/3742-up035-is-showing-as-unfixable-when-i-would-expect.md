@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-26T15:35:14Z
 updated_at: 2023-03-26T23:30:12Z
 url: https://github.com/astral-sh/ruff/issues/3742
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `UP035` is showing as unfixable, when I would expect it to be fixable
 
 ---
 
-_Issue opened by @samuelcolvin on 2023-03-26 15:35_
+_@samuelcolvin_
 
 I'm trying to use ruff as a replacement for pyupgrade when generating docs with different examples for different python versions, however I immediately ran into a problem where "errors" which I would expect to be fixable, are coming back as unfixable, specifically `UP035`.
 

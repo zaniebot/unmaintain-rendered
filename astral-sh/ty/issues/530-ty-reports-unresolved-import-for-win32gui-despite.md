@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-28T08:55:24Z
 updated_at: 2025-05-28T10:54:59Z
 url: https://github.com/astral-sh/ty/issues/530
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `ty` reports unresolved import for `win32gui` despite successful import in Python
 
 ---
 
-_Issue opened by @ooopus on 2025-05-28 08:55_
+_@ooopus_
 
 ### Summary
 

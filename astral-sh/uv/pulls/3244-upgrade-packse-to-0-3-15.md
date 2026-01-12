@@ -13,14 +13,14 @@ head: zb/packse-upgrade
 created_at: 2024-04-24T15:29:57Z
 updated_at: 2024-04-24T15:54:04Z
 url: https://github.com/astral-sh/uv/pull/3244
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:31Z
 ```
 
 # Upgrade packse to 0.3.15
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-24 15:29_
+_@zanieb_
 
 Includes https://github.com/astral-sh/packse/pull/179 for #3225
 

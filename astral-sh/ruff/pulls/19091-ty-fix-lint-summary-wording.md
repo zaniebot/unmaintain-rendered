@@ -14,14 +14,14 @@ head: david/fix-lint-summary-wording
 created_at: 2025-07-02T14:21:50Z
 updated_at: 2025-07-02T14:32:13Z
 url: https://github.com/astral-sh/ruff/pull/19091
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [ty] Fix lint summary wording
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-02 14:21_
+_@sharkdp_
 
 _No description provided._
 

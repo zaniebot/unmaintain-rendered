@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-14T19:38:30Z
 updated_at: 2024-10-15T20:42:12Z
 url: https://github.com/astral-sh/uv/issues/8185
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # C++ extension with different build backend then rest of workspace
 
 ---
 
-_Issue opened by @fabiomanz on 2024-10-14 19:38_
+_@fabiomanz_
 
 Hi,
 

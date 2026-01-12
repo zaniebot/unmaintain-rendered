@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T08:51:06Z
 updated_at: 2024-08-21T13:22:53Z
 url: https://github.com/astral-sh/uv/issues/6312
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # uv cache prune --ci prunes everything in the cache
 
 ---
 
-_Issue opened by @valentincalomme on 2024-08-21 08:51_
+_@valentincalomme_
 
 I've just upgrade to `uv==0.3.0` and was happy to see a tip about caching in Github actions in the documentation.
 

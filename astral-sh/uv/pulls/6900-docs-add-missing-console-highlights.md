@@ -13,14 +13,14 @@ head: docs/add-missing-console-highlights
 created_at: 2024-08-31T20:39:41Z
 updated_at: 2024-08-31T23:07:30Z
 url: https://github.com/astral-sh/uv/pull/6900
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:35Z
 ```
 
 # docs: add missing `console` highlights
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-08-31 20:39_
+_@mkniewallner_
 
 ## Summary
 

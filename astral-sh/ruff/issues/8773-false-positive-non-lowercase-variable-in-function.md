@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-20T00:08:05Z
 updated_at: 2023-11-20T12:35:38Z
 url: https://github.com/astral-sh/ruff/issues/8773
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # False positive: non-lowercase-variable-in-function (N806) for a type alias
 
 ---
 
-_Issue opened by @Tinche on 2023-11-20 00:08_
+_@Tinche_
 
 Howdy, this might be an easy one.
 

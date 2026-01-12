@@ -12,14 +12,14 @@ head: jetbrains-webinar
 created_at: 2023-02-03T05:39:25Z
 updated_at: 2023-02-03T15:32:39Z
 url: https://github.com/astral-sh/ruff/pull/2516
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Add Jetbrains Webinar Event (Temporary)
 
 ---
 
-_Pull request opened by @JacobCoffee on 2023-02-03 05:39_
+_@JacobCoffee_
 
 Adds a temporary badge to the README.md that showcases the upcoming Jetbrains Webinar on Ruff.
 

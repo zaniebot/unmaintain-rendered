@@ -14,14 +14,14 @@ head: konsti/remove-winsafe
 created_at: 2025-06-02T07:18:19Z
 updated_at: 2025-06-02T16:22:52Z
 url: https://github.com/astral-sh/uv/pull/13779
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:51Z
 ```
 
 # Remove winsafe
 
 ---
 
-_Pull request opened by @konstin on 2025-06-02 07:18_
+_@konstin_
 
 We've been using a number of different winapi crates. This PR removes winsafe in favor of the official windows-* crates, so all of uv's own winapi calls go through the official windows-* crates.
 

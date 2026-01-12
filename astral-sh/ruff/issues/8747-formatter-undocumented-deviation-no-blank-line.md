@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-17T22:06:02Z
 updated_at: 2024-02-23T21:23:07Z
 url: https://github.com/astral-sh/ruff/issues/8747
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter undocumented deviation: No blank line added between decorated inner classes in pyi files
 
 ---
 
-_Issue opened by @henribru on 2023-11-17 22:06_
+_@henribru_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

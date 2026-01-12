@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-04T22:59:34Z
 updated_at: 2024-06-21T11:42:43Z
 url: https://github.com/astral-sh/ruff/issues/10782
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Rework linter API to remove a `Clone` implementation on `LinterSettings`
 
 ---
 
-_Issue opened by @snowsignal on 2024-04-04 22:59_
+_@snowsignal_
 
 In https://github.com/astral-sh/ruff/pull/10652, we had to implement `Clone` for `LinterSettings` and all sub-settings so that the `source.organizeImports` resolver could clone the settings from a reference and then modify `rules` to `[I001, I002]`. Since this cloning operation is wasteful (we only need to update one field), we should find a way to temporarily override values in `LinterSettings` without needing to clone the entire struct.
 

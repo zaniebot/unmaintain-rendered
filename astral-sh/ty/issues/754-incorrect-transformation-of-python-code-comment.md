@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-02T14:51:11Z
 updated_at: 2025-07-02T15:16:45Z
 url: https://github.com/astral-sh/ty/issues/754
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Incorrect transformation of Python-code-comment in documentation
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-07-02 14:51_
+_@AlexWaygood_
 
 ### Summary
 

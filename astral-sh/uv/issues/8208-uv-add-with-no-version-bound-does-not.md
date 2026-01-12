@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T10:23:11Z
 updated_at: 2024-10-15T23:09:57Z
 url: https://github.com/astral-sh/uv/issues/8208
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # `uv add` with no version bound does not sufficiently update uv.lock
 
 ---
 
-_Issue opened by @keysmashes on 2024-10-15 10:23_
+_@keysmashes_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

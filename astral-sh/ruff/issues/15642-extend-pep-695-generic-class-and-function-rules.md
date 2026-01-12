@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-21T13:58:28Z
 updated_at: 2025-02-05T13:15:30Z
 url: https://github.com/astral-sh/ruff/issues/15642
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Extend PEP 695 generic class and function rules
 
 ---
 
-_Issue opened by @ntBre on 2025-01-21 13:58_
+_@ntBre_
 
 Follow up tasks from #15565
 

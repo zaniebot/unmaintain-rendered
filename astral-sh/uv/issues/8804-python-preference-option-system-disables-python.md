@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-04T09:47:02Z
 updated_at: 2024-11-04T13:45:25Z
 url: https://github.com/astral-sh/uv/issues/8804
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # Python preference option system disables python downloads
 
 ---
 
-_Issue opened by @Olindholm on 2024-11-04 09:47_
+_@Olindholm_
 
 I would like uv to prioritize using system python when possible, but download a managed python version if necessary.
 

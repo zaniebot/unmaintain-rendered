@@ -13,14 +13,14 @@ head: zb/fix-venv
 created_at: 2024-06-05T20:44:32Z
 updated_at: 2024-06-05T20:50:30Z
 url: https://github.com/astral-sh/uv/pull/4073
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:01Z
 ```
 
 # Fix `uv venv` handling when `VIRTUAL_ENV` refers to an non-existant environment
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-05 20:44_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/4072
 

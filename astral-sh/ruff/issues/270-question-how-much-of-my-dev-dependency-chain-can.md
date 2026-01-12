@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-27T17:25:38Z
 updated_at: 2022-09-29T20:38:21Z
 url: https://github.com/astral-sh/ruff/issues/270
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # [Question] How much of my dev dependency chain can ruff remove?
 
 ---
 
-_Issue opened by @anthonycorletti on 2022-09-27 17:25_
+_@anthonycorletti_
 
 Hi @charliermarsh! Thanks for the work you're doing with ruff. 
 

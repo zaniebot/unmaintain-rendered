@@ -13,14 +13,14 @@ head: charlie/clear
 created_at: 2024-12-15T14:40:24Z
 updated_at: 2024-12-15T18:40:23Z
 url: https://github.com/astral-sh/uv/pull/9914
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:02Z
 ```
 
 # Clear environment in settings tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-15 14:40_
+_@charliermarsh_
 
 ## Summary
 

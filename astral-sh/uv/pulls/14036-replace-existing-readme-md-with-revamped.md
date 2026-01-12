@@ -11,14 +11,14 @@ head: main
 created_at: 2025-06-14T05:30:09Z
 updated_at: 2025-06-16T01:45:58Z
 url: https://github.com/astral-sh/uv/pull/14036
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:59Z
 ```
 
 # Replace existing `README.md` with revamped, feature‑rich version
 
 ---
 
-_Pull request opened by @tripathiji1312 on 2025-06-14 05:30_
+_@tripathiji1312_
 
 
 **Summary**

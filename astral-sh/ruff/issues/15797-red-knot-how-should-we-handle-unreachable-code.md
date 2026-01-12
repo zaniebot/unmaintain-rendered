@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T22:15:53Z
 updated_at: 2025-05-07T15:22:22Z
 url: https://github.com/astral-sh/ruff/issues/15797
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] How should we handle unreachable code?
 
 ---
 
-_Issue opened by @dcreager on 2025-01-28 22:15_
+_@dcreager_
 
 We can statically determine that code is unreachable, due to terminal statements or statically known branches:
 

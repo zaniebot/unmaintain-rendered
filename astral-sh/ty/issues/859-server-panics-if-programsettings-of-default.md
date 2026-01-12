@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-21T07:09:46Z
 updated_at: 2025-12-18T14:47:05Z
 url: https://github.com/astral-sh/ty/issues/859
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Server panics if `ProgramSettings` of default database are invalid
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-07-21 07:09_
+_@InSyncWithFoo_
 
 It appears that ty panics when given an URI that does not point to an actual file (and whose parent isn't a directory):
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-24T05:06:59Z
 updated_at: 2025-06-30T14:49:15Z
 url: https://github.com/astral-sh/ruff/issues/18908
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [Infinite loop] D413 fix for parenthesized docstring
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-24 05:06_
+_@dscorbett_
 
 ### Summary
 

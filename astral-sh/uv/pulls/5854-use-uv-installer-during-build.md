@@ -14,14 +14,14 @@ head: zb/docs-pip-uv-build
 created_at: 2024-08-07T12:48:07Z
 updated_at: 2024-08-07T13:25:28Z
 url: https://github.com/astral-sh/uv/pull/5854
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:03Z
 ```
 
 # Use uv installer during build
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-07 12:48_
+_@zanieb_
 
 _No description provided._
 

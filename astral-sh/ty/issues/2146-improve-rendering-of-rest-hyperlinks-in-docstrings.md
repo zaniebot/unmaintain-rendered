@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-21T16:36:00Z
 updated_at: 2025-12-21T20:18:56Z
 url: https://github.com/astral-sh/ty/issues/2146
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Improve rendering of ReST hyperlinks in docstrings
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-21 16:36_
+_@AlexWaygood_
 
 E.g. our [very own docstrings](https://github.com/astral-sh/ruff/blob/b4c2825afdd8c1010c3a5859521629d2d1e0a6df/crates/ty_vendored/ty_extensions/ty_extensions.pyi#L115-L120) in `ty_extensions.pyi` currently use [standard ReST syntax for hyperlinks](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#hyperlinks), but these aren't rendered in their intended way at all currently when you hover over one of these APIs:
 

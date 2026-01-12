@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-02-08T15:14:26Z
 updated_at: 2022-09-30T18:32:15Z
 url: https://github.com/clap-rs/clap/issues/3418
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Man page content differs unnecessarily from help ouput
 
 ---
 
-_Issue opened by @alerque on 2022-02-08 15:14_
+_@alerque_
 
 As of Clap 3.0.14, the output of clap_mangen is different on quite a few points from the `--help` output that are just confusing and don't appear to be configurable.
 

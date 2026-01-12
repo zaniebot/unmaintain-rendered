@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-23T17:07:09Z
 updated_at: 2024-04-19T20:49:55Z
 url: https://github.com/astral-sh/uv/issues/1921
-synced_at: 2026-01-10T11:10:06Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Increase or adjust scope of default HTTP timeout
 
 ---
 
-_Issue opened by @zanieb on 2024-02-23 17:07_
+_@zanieb_
 
 Our current HTTP timeout is not sufficient for some large packages e.g. `torch`
 

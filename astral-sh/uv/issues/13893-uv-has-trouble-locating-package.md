@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-06T23:00:44Z
 updated_at: 2025-06-07T10:33:41Z
 url: https://github.com/astral-sh/uv/issues/13893
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # uv has trouble locating package
 
 ---
 
-_Issue opened by @usman-faisal on 2025-06-06 23:00_
+_@usman-faisal_
 
 ### Summary
 

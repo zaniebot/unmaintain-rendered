@@ -13,14 +13,14 @@ head: gankra/pbs-up
 created_at: 2025-06-30T18:57:24Z
 updated_at: 2025-06-30T22:02:20Z
 url: https://github.com/astral-sh/uv/pull/14374
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:11Z
 ```
 
 # Update python, add support for installing arm windows pythons
 
 ---
 
-_Pull request opened by @Gankra on 2025-06-30 18:57_
+_@Gankra_
 
 _No description provided._
 

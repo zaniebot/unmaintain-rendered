@@ -13,14 +13,14 @@ head: dhruv/libcst
 created_at: 2023-10-10T14:47:08Z
 updated_at: 2023-10-10T15:06:35Z
 url: https://github.com/astral-sh/ruff/pull/7896
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Upgrade LibCST to 1.1.0
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-10 14:47_
+_@dhruvmanila_
 
 This PR updates the `libcst` crate version to `1.1.0`. The published version contains support for 3.12: https://github.com/Instagram/LibCST/releases/tag/v1.1.0
 

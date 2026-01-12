@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-09T12:58:32Z
 updated_at: 2024-04-02T14:33:32Z
 url: https://github.com/astral-sh/ruff/issues/4307
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Generate `Fix` for suppressing violations
 
 ---
 
-_Issue opened by @MichaReiser on 2023-05-09 12:58_
+_@MichaReiser_
 
 This is not fully-fledged, it's more a description of an idea that I would like to explore. 
 

@@ -11,14 +11,14 @@ head: continue-in-finally
 created_at: 2023-02-07T02:29:26Z
 updated_at: 2023-02-09T00:20:39Z
 url: https://github.com/astral-sh/ruff/pull/2618
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # [`pylint`]: continue-in-finally
 
 ---
 
-_Pull request opened by @colin99d on 2023-02-07 02:29_
+_@colin99d_
 
 Ref: #970
 

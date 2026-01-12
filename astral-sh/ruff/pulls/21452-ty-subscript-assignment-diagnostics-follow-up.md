@@ -14,14 +14,14 @@ head: david/follow-up-setitem
 created_at: 2025-11-14T13:31:08Z
 updated_at: 2025-11-17T11:14:59Z
 url: https://github.com/astral-sh/ruff/pull/21452
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [ty] Subscript assignment diagnostics follow-up
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-14 13:31_
+_@sharkdp_
 
 ## Summary
 

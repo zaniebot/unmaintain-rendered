@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-28T21:31:50Z
 updated_at: 2023-09-12T11:54:42Z
 url: https://github.com/astral-sh/ruff/issues/6958
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Feature request: ignore `PLW3201` for methods marked with `@override`
 
 ---
 
-_Issue opened by @Avasam on 2023-08-28 21:31_
+_@Avasam_
 
 Same request and reasoning as #3910
 

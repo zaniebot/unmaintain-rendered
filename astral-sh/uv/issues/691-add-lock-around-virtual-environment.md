@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-18T18:15:56Z
 updated_at: 2023-12-18T21:44:47Z
 url: https://github.com/astral-sh/uv/issues/691
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Add lock around virtual environment
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-18 18:15_
+_@charliermarsh_
 
 Like Cargo, we should probably disallow concurrent modification of the same virtualenv.
 

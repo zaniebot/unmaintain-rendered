@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T16:46:00Z
 updated_at: 2024-02-18T15:03:18Z
 url: https://github.com/astral-sh/ruff/issues/10011
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Bug(?): FBT001 for a dataclass
 
 ---
 
-_Issue opened by @Spectre5 on 2024-02-16 16:46_
+_@Spectre5_
 
 In the `__post_init__` method of a dataclass, the InitVar's cannot be passed by keyword argument, they must be positional.  But in this case, FBT001 is trigged.  For example:
 

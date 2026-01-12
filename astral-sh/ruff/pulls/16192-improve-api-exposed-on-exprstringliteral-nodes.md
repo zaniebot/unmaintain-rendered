@@ -13,14 +13,14 @@ head: alex/contents-range
 created_at: 2025-02-16T18:19:32Z
 updated_at: 2025-02-17T08:00:34Z
 url: https://github.com/astral-sh/ruff/pull/16192
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Improve API exposed on `ExprStringLiteral` nodes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-16 18:19_
+_@AlexWaygood_
 
 ## Summary
 

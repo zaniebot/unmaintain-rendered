@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-20T14:44:37Z
 updated_at: 2025-04-20T15:53:37Z
 url: https://github.com/astral-sh/uv/issues/12989
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # Deprecate the uv-proprietary `.python-versions` (plural)
 
 ---
 
-_Issue opened by @edmorley on 2025-04-20 14:44_
+_@edmorley_
 
 uv currently supports specifying the Python version via either a `.python-version` or `.python-versions` file.
 

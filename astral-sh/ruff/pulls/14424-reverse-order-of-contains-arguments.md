@@ -13,14 +13,14 @@ head: charlie/contains
 created_at: 2024-11-18T03:53:13Z
 updated_at: 2024-11-18T04:07:24Z
 url: https://github.com/astral-sh/ruff/pull/14424
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Reverse order of `__contains__` arguments
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-18 03:53_
+_@charliermarsh_
 
 ## Summary
 

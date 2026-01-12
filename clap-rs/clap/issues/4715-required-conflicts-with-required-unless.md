@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-18T17:21:12Z
 updated_at: 2023-02-19T01:49:44Z
 url: https://github.com/clap-rs/clap/issues/4715
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `required` conflicts with `required_unless*`
 
 ---
 
-_Issue opened by @Ciubix8513 on 2023-02-18 17:21_
+_@Ciubix8513_
 
 ### Please complete the following tasks
 

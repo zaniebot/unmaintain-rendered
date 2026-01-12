@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T07:19:42Z
 updated_at: 2025-03-17T23:56:09Z
 url: https://github.com/astral-sh/uv/issues/12164
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:57Z
 ```
 
 # `uv sync --locked` does not detect incorrect `uv.lock`
 
 ---
 
-_Issue opened by @Nugine on 2025-03-14 07:19_
+_@Nugine_
 
 ### Summary
 

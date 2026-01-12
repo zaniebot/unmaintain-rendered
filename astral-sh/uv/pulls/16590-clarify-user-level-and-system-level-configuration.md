@@ -12,14 +12,14 @@ head: clarify-config-file-docs
 created_at: 2025-11-04T14:57:31Z
 updated_at: 2025-11-18T02:50:09Z
 url: https://github.com/astral-sh/uv/pull/16590
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:20Z
 ```
 
 # Clarify user-level and system-level configuration file locations
 
 ---
 
-_Pull request opened by @my1e5 on 2025-11-04 14:57_
+_@my1e5_
 
 ## Summary
 

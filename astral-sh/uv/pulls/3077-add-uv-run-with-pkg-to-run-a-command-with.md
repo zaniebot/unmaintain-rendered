@@ -14,14 +14,14 @@ head: zb/uv-run-with
 created_at: 2024-04-16T22:56:06Z
 updated_at: 2024-04-19T14:23:28Z
 url: https://github.com/astral-sh/uv/pull/3077
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:24Z
 ```
 
 # Add `uv run --with <pkg>` to run a command with ephemeral requirements
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-16 22:56_
+_@zanieb_
 
 Holy cow does installation / resolution take a ton of options. We side-step most of them here.
 

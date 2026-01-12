@@ -14,14 +14,14 @@ head: trailing-comment-before-func-or-class
 created_at: 2023-06-07T07:05:43Z
 updated_at: 2023-06-09T06:18:42Z
 url: https://github.com/astral-sh/ruff/pull/4921
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Trailing own line comments before func or class
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-07 07:05_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

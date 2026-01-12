@@ -14,14 +14,14 @@ head: charlie/extras
 created_at: 2024-05-15T19:48:17Z
 updated_at: 2024-05-16T20:53:53Z
 url: https://github.com/astral-sh/uv/pull/3622
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:45Z
 ```
 
 # Discard markers on editable requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-15 19:48_
+_@charliermarsh_
 
 ## Summary
 

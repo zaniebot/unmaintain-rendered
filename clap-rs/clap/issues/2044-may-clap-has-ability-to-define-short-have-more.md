@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-08-04T04:17:59Z
 updated_at: 2020-08-04T08:31:41Z
 url: https://github.com/clap-rs/clap/issues/2044
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # May Clap has ability to define `short` have more than one letter in #[clap] macro?
 
 ---
 
-_Issue opened by @ccqpein on 2020-08-04 04:17_
+_@ccqpein_
 
 ### Make sure you completed the following tasks
 

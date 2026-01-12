@@ -13,14 +13,14 @@ head: charlie/ext
 created_at: 2025-03-18T02:27:28Z
 updated_at: 2025-07-22T13:31:33Z
 url: https://github.com/astral-sh/uv/pull/12259
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:12Z
 ```
 
 # Disallow writing symlinks outside the source distribution target directory
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-18 02:27_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-06-29T20:21:10Z
 updated_at: 2018-08-02T03:29:50Z
 url: https://github.com/clap-rs/clap/issues/548
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Required argument for subcommand?
 
 ---
 
-_Issue opened by @kherge on 2016-06-29 20:21_
+_@kherge_
 
 When using `.value_of()` to get the value of a required subcommand argument, `None` is returned which causes a panic when I `unwrap` the value I was expecting to be available. I get `None` even if a value is provided.
 

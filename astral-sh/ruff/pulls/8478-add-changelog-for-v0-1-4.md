@@ -13,14 +13,14 @@ head: charlie/changelog
 created_at: 2023-11-03T19:09:46Z
 updated_at: 2023-11-03T20:11:22Z
 url: https://github.com/astral-sh/ruff/pull/8478
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add changelog for v0.1.4
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-03 19:09_
+_@charliermarsh_
 
 _No description provided._
 

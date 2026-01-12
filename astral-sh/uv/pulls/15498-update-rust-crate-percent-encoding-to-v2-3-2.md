@@ -13,14 +13,14 @@ head: renovate/percent-encoding-2.x-lockfile
 created_at: 2025-08-25T02:10:35Z
 updated_at: 2025-08-25T02:52:47Z
 url: https://github.com/astral-sh/uv/pull/15498
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:46Z
 ```
 
 # Update Rust crate percent-encoding to v2.3.2
 
 ---
 
-_Pull request opened by @renovate on 2025-08-25 02:10_
+_@renovate_
 
 This PR contains the following updates:
 

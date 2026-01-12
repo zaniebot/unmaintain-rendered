@@ -12,14 +12,14 @@ head: ag/fix-member
 created_at: 2025-08-07T18:22:19Z
 updated_at: 2025-08-07T18:38:18Z
 url: https://github.com/astral-sh/ruff/pull/19814
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # [ty] Fix static assertion size check
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-08-07 18:22_
+_@BurntSushi_
 
 A `Segment` has a `Box` in it, which has a platform dependent size.
 Restrict the check to only 64-bit targets.

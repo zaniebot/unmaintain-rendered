@@ -13,14 +13,14 @@ head: whitespace-before-parentheses
 created_at: 2023-07-26T19:28:40Z
 updated_at: 2023-07-27T17:12:49Z
 url: https://github.com/astral-sh/ruff/pull/6103
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # whitespace-before-parameters comment
 
 ---
 
-_Pull request opened by @arembridge on 2023-07-26 19:28_
+_@arembridge_
 
 **Summary**
 

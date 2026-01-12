@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-01T19:25:18Z
 updated_at: 2024-11-18T02:30:07Z
 url: https://github.com/astral-sh/ruff/issues/12616
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # PIE790 fix can make non-docstrings into docstrings
 
 ---
 
-_Issue opened by @dscorbett on 2024-08-01 19:25_
+_@dscorbett_
 
 There is one case where the fix for [PIE790](https://docs.astral.sh/ruff/rules/unnecessary-placeholder/) is not completely safe: it changes behavior when the placeholder statement is blocking a string from being a docstring.
 

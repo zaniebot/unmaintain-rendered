@@ -15,14 +15,14 @@ head: david/fix-853
 created_at: 2025-07-21T18:32:06Z
 updated_at: 2025-07-21T18:52:00Z
 url: https://github.com/astral-sh/ruff/pull/19472
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Pass down specialization to generic dataclass bases
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-21 18:32_
+_@sharkdp_
 
 ## Summary
 

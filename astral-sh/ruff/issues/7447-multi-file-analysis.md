@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-17T00:05:36Z
 updated_at: 2025-08-15T06:11:01Z
 url: https://github.com/astral-sh/ruff/issues/7447
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Multi-file analysis
 
 ---
 
-_Issue opened by @DetachHead on 2023-09-17 00:05_
+_@DetachHead_
 
 currently many rules are limited by the fact that ruff can't do multifile analysis (eg. #6932)
 

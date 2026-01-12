@@ -13,14 +13,14 @@ head: konsti/invalid_build_backend_settings_are_ignored
 created_at: 2025-06-30T14:01:25Z
 updated_at: 2025-06-30T14:32:30Z
 url: https://github.com/astral-sh/uv/pull/14372
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:11Z
 ```
 
 # Ignore invalid build backend settings when not building
 
 ---
 
-_Pull request opened by @konstin on 2025-06-30 14:01_
+_@konstin_
 
 Fixes #14323
 

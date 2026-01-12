@@ -14,14 +14,14 @@ head: dcreager/constraint-set-api
 created_at: 2025-10-28T14:11:45Z
 updated_at: 2025-10-29T12:06:30Z
 url: https://github.com/astral-sh/ruff/pull/21108
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [ty] Move constraint set mdtest functions into `ConstraintSet` class
 
 ---
 
-_Pull request opened by @dcreager on 2025-10-28 14:11_
+_@dcreager_
 
 We have several functions in `ty_extensions` for testing our constraint set implementation. This PR refactors those functions so that they are all methods of the `ConstraintSet` class, rather than being standalone top-level functions. :tophat: to @sharkdp for pointing out that `KnownBoundMethod` gives us what we need to implement that!
 

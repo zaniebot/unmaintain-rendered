@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-03-28T12:44:22Z
 updated_at: 2018-08-02T03:30:04Z
 url: https://github.com/clap-rs/clap/issues/919
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Better documentation for --("hyphenated-name") longs with clap_app! macro
 
 ---
 
-_Issue opened by @robotmay on 2017-03-28 12:44_
+_@robotmay_
 
 ### Rust Version
 

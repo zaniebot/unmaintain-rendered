@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-10T20:34:16Z
 updated_at: 2023-02-10T22:29:29Z
 url: https://github.com/astral-sh/ruff/issues/2740
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # VS Code Extension Error - The language client is not ready yet
 
 ---
 
-_Issue opened by @mason3k on 2023-02-10 20:34_
+_@mason3k_
 
 Using version 2022.0.26 of the extension on Visual Studio Code 1.75.1:
 

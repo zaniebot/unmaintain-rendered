@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-20T22:36:18Z
 updated_at: 2025-04-02T13:33:29Z
 url: https://github.com/astral-sh/uv/issues/12352
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # `uv build` tries to build even though `tool.uv.package` is False
 
 ---
 
-_Issue opened by @gregglind on 2025-03-20 22:36_
+_@gregglind_
 
 ### Summary
 

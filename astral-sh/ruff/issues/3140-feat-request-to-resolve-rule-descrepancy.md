@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-22T19:21:44Z
 updated_at: 2023-02-22T22:37:23Z
 url: https://github.com/astral-sh/ruff/issues/3140
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # feat request to resolve rule descrepancy
 
 ---
 
-_Issue opened by @upstartjohnvandivier on 2023-02-22 19:21_
+_@upstartjohnvandivier_
 
 there is a rule descrepancy in E7111 vs F632 we can't comply with both
 one says i must `0.1 is not None`

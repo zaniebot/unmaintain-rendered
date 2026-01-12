@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-23T15:23:49Z
 updated_at: 2025-09-23T16:03:08Z
 url: https://github.com/astral-sh/uv/issues/16003
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # uv-installed Python 3.13 killed on launch until manually codesigned
 
 ---
 
-_Issue opened by @ouatu-ro on 2025-09-23 15:23_
+_@ouatu-ro_
 
 ### Summary
 

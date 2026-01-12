@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-12T22:51:59Z
 updated_at: 2025-01-03T10:06:01Z
 url: https://github.com/astral-sh/uv/issues/9854
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # Alternative index config is not correctly used with build requires
 
 ---
 
-_Issue opened by @AKuederle on 2024-12-12 22:51_
+_@AKuederle_
 
 I have a package that uses torch as dependency as builds custom Cuda extensions. Therefore, I need torch as a build requirement. However, for the build to work, the Cuda version of torch needs to be installed. At the moment my index configurations are not correctly considered when the build requirements are resolved.
 

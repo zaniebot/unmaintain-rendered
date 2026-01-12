@@ -11,14 +11,14 @@ head: feature/1384/support-dotens-in-run-command
 created_at: 2024-09-13T11:17:57Z
 updated_at: 2025-03-26T13:08:05Z
 url: https://github.com/astral-sh/uv/pull/7357
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:07:47Z
 ```
 
 # add ability to load from .env files before invoking the command
 
 ---
 
-_Pull request opened by @haydn-j-evans on 2024-09-13 11:17_
+_@haydn-j-evans_
 
 ## Summary
 

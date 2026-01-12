@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-02-09T21:36:11Z
 updated_at: 2020-03-24T03:15:23Z
 url: https://github.com/clap-rs/clap/issues/1684
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # 2 vs 3 and clap_derive/structopt
 
 ---
 
-_Issue opened by @sollyucko on 2020-02-09 21:36_
+_@sollyucko_
 
 ### Affected Version of clap
 

@@ -13,14 +13,14 @@ head: push-pqxtsnrxkuly
 created_at: 2025-09-20T21:23:23Z
 updated_at: 2025-09-23T13:20:15Z
 url: https://github.com/astral-sh/ruff/pull/20490
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [ty] Add PYTHONPATH to EnvVars and fix on Windows
 
 ---
 
-_Pull request opened by @mmlb on 2025-09-20 21:23_
+_@mmlb_
 
 ## Summary
 

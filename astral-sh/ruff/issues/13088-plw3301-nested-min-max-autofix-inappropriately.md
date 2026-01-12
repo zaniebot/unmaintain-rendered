@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-25T01:39:43Z
 updated_at: 2024-08-26T12:56:18Z
 url: https://github.com/astral-sh/ruff/issues/13088
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # PLW3301 (nested-min-max) Autofix inappropriately strips nested function call when the nested function call wasn't `max`
 
 ---
 
-_Issue opened by @AustinStarnes on 2024-08-25 01:39_
+_@AustinStarnes_
 
 > Keywords used searching for existing issues: `"nested-min-max", "PLW3301"`
 

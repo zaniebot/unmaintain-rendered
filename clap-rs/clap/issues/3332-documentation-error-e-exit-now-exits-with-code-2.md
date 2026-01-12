@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-01-23T22:25:12Z
 updated_at: 2022-01-24T14:11:34Z
 url: https://github.com/clap-rs/clap/issues/3332
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Documentation Error: `e.exit` now exits with code 2 as per #1327
 
 ---
 
-_Issue opened by @rlee287 on 2022-01-23 22:25_
+_@rlee287_
 
 https://github.com/clap-rs/clap/blob/d52b326c7b9c6a033372148d39bce5d688ef8ba8/src/parse/errors.rs#L478-L500
 

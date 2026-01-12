@@ -13,14 +13,14 @@ head: bug/4194
 created_at: 2023-05-04T05:41:22Z
 updated_at: 2023-05-04T18:42:40Z
 url: https://github.com/astral-sh/ruff/pull/4216
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Fix panic in pydocstyle D214 when docstring indentation is empty
 
 ---
 
-_Pull request opened by @zanieb on 2023-05-04 05:41_
+_@zanieb_
 
 Closes https://github.com/charliermarsh/ruff/issues/4194
 

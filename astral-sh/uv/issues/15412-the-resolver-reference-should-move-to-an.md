@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-21T13:30:27Z
 updated_at: 2025-08-23T00:26:17Z
 url: https://github.com/astral-sh/uv/issues/15412
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # The "Resolver" reference should move to an "Internals" section in the reference
 
 ---
 
-_Issue opened by @zanieb on 2025-08-21 13:30_
+_@zanieb_
 
 This will give us room to add more internals-focused documents.
 

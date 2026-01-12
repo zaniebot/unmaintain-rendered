@@ -13,14 +13,14 @@ head: renovate/smol-toml-1.x-lockfile
 created_at: 2025-04-28T03:26:34Z
 updated_at: 2025-04-28T06:09:35Z
 url: https://github.com/astral-sh/ruff/pull/17669
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # Update dependency smol-toml to v1.3.4
 
 ---
 
-_Pull request opened by @renovate on 2025-04-28 03:26_
+_@renovate_
 
 This PR contains the following updates:
 

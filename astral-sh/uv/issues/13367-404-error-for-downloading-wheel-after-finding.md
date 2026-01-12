@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-09T17:55:51Z
 updated_at: 2025-05-14T07:20:52Z
 url: https://github.com/astral-sh/uv/issues/13367
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # 404 error for downloading wheel after finding package through private registry
 
 ---
 
-_Issue opened by @Capsar on 2025-05-09 17:55_
+_@Capsar_
 
 ### Question
 

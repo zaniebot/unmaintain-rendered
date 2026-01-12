@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-15T13:09:21Z
 updated_at: 2025-01-15T16:45:38Z
 url: https://github.com/astral-sh/uv/issues/10632
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # Add a command like `pnpm fetch` for CI/CD build.
 
 ---
 
-_Issue opened by @fanck0605 on 2025-01-15 13:09_
+_@fanck0605_
 
 On CI or CD environments, the BuildKit cache mounts might not be available, because the VM or container is ephemeral and only normal docker cache will work.
 

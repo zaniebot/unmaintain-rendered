@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-22T13:00:31Z
 updated_at: 2024-11-22T21:52:59Z
 url: https://github.com/astral-sh/ruff/issues/14527
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Add autofix for RUF039
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-11-22 13:00_
+_@AlexWaygood_
 
 The newly added preview rule RUF039 doesn't have an autofix. It would be very convenient if it had one, since it's otherwise quite a noisy rule.
 

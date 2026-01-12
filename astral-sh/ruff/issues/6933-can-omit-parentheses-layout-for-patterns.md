@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-28T07:37:13Z
 updated_at: 2024-09-26T06:35:23Z
 url: https://github.com/astral-sh/ruff/issues/6933
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Can omit parentheses layout for patterns
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-28 07:37_
+_@MichaReiser_
 
 Ruff avoids adding parentheses to expressions that start or end with a parenthesized node (see `can_omit_parentheses`). 
 

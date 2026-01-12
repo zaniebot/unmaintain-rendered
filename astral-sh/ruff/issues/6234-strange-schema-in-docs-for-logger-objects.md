@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-01T10:22:21Z
 updated_at: 2023-08-01T12:57:58Z
 url: https://github.com/astral-sh/ruff/issues/6234
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Strange schema in docs for `logger-objects`
 
 ---
 
-_Issue opened by @chbndrhnns on 2023-08-01 10:22_
+_@chbndrhnns_
 
 Looking at the [docs](https://beta.ruff.rs/docs/settings/#logger-objects), I see strange values for "default value", "type" and "example":
 

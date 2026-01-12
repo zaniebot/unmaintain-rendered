@@ -12,14 +12,14 @@ head: remove-ast-node-ref
 created_at: 2024-06-29T13:48:25Z
 updated_at: 2024-08-12T07:52:46Z
 url: https://github.com/astral-sh/ruff/pull/12104
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Remove AstNodeRef
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-29 13:48_
+_@MichaReiser_
 
 ## Summary
 

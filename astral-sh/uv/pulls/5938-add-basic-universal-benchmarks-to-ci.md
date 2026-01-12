@@ -14,14 +14,14 @@ head: ibraheem/universal-benchmarks
 created_at: 2024-08-08T21:32:26Z
 updated_at: 2024-08-09T16:52:30Z
 url: https://github.com/astral-sh/uv/pull/5938
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:07Z
 ```
 
 # Add basic universal benchmarks to CI
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-08-08 21:32_
+_@ibraheemdev_
 
 ## Summary
 

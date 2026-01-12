@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-18T16:00:11Z
 updated_at: 2024-06-23T21:17:24Z
 url: https://github.com/astral-sh/ruff/issues/11928
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Respect `PYTHONSAFEPATH` if set
 
 ---
 
-_Issue opened by @thejcannon on 2024-06-18 16:00_
+_@thejcannon_
 
 Docs links:
 - https://docs.python.org/3/using/cmdline.html#envvar-PYTHONSAFEPATH

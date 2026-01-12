@@ -13,14 +13,14 @@ head: renovate/uuid-9.x-lockfile
 created_at: 2024-03-26T11:56:02Z
 updated_at: 2024-03-26T12:05:18Z
 url: https://github.com/astral-sh/ruff/pull/10615
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Update dependency uuid to v9.0.1
 
 ---
 
-_Pull request opened by @renovate on 2024-03-26 11:56_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

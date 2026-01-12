@@ -12,14 +12,14 @@ head: charlie/patch
 created_at: 2025-12-18T02:16:31Z
 updated_at: 2025-12-18T04:13:54Z
 url: https://github.com/astral-sh/ty/pull/2049
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Create patch releases by default
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-18 02:16_
+_@charliermarsh_
 
 ## Summary
 

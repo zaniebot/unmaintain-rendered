@@ -13,14 +13,14 @@ head: zb/request-platform-tag
 created_at: 2024-06-18T23:54:27Z
 updated_at: 2024-06-19T17:04:25Z
 url: https://github.com/astral-sh/uv/pull/4407
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:12Z
 ```
 
 # Support toolchain requests with platform-tag style Python implementations and version
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-18 23:54_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/4399
 

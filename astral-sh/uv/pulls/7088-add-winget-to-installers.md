@@ -13,14 +13,14 @@ head: zb/docs-winget
 created_at: 2024-09-05T15:53:16Z
 updated_at: 2024-09-05T16:32:59Z
 url: https://github.com/astral-sh/uv/pull/7088
-synced_at: 2026-01-10T12:53:39Z
+synced_at: 2026-01-12T16:07:41Z
 ```
 
 # Add winget to installers
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-05 15:53_
+_@zanieb_
 
 _No description provided._
 

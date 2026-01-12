@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-03-12T22:46:30Z
 updated_at: 2024-08-10T00:41:43Z
 url: https://github.com/clap-rs/clap/issues/3553
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # clap_generate: completion on subcommand is always default, even if it takes no values
 
 ---
 
-_Issue opened by @Icelk on 2022-03-12 22:46_
+_@Icelk_
 
 ### Please complete the following tasks
 

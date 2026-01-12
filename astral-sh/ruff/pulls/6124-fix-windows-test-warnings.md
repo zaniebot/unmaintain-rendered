@@ -12,14 +12,14 @@ head: windows_test_warnings
 created_at: 2023-07-27T11:37:54Z
 updated_at: 2023-07-27T12:04:57Z
 url: https://github.com/astral-sh/ruff/pull/6124
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Fix windows test warnings
 
 ---
 
-_Pull request opened by @konstin on 2023-07-27 11:37_
+_@konstin_
 
 See https://github.com/astral-sh/ruff/actions/runs/5679922286/job/15392998698. These didn't fail CI because we run clippy on linux only.
 

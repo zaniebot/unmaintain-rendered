@@ -13,14 +13,14 @@ head: any-function-definition
 created_at: 2023-06-06T08:54:39Z
 updated_at: 2023-06-06T18:37:47Z
 url: https://github.com/astral-sh/ruff/pull/4898
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Introduce `AnyFunctionDefinition` Node
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-06 08:54_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

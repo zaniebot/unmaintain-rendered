@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-11T21:18:39Z
 updated_at: 2025-04-11T21:54:06Z
 url: https://github.com/astral-sh/uv/issues/12846
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # Installing library from a directory recursively cloned
 
 ---
 
-_Issue opened by @AnirudhG07 on 2025-04-11 21:18_
+_@AnirudhG07_
 
 ### Question
 

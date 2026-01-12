@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-25T17:04:52Z
 updated_at: 2023-01-25T17:07:45Z
 url: https://github.com/astral-sh/ruff/issues/2160
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement flake8-logging-format
 
 ---
 
-_Issue opened by @frague59 on 2023-01-25 17:04_
+_@frague59_
 
 The logging statements should not use f-string or string concats.
 

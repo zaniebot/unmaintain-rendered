@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-24T19:07:55Z
 updated_at: 2023-03-25T16:16:24Z
 url: https://github.com/astral-sh/ruff/issues/3720
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `I001` conflict with autopep8 / pycodestyle's `E302`
 
 ---
 
-_Issue opened by @Avasam on 2023-03-24 19:07_
+_@Avasam_
 
 See this minimal reproduction:
 ```py

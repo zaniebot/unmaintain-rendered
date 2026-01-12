@@ -12,14 +12,14 @@ head: charlie/readme
 created_at: 2023-10-07T14:29:37Z
 updated_at: 2023-10-07T14:32:26Z
 url: https://github.com/astral-sh/uv/pull/40
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:43Z
 ```
 
 # Update benchmark command in README
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-07 14:29_
+_@charliermarsh_
 
 _No description provided._
 

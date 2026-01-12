@@ -13,14 +13,14 @@ head: renovate/migrate-config
 created_at: 2025-08-26T08:32:28Z
 updated_at: 2025-08-26T11:02:25Z
 url: https://github.com/astral-sh/uv/pull/15524
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:47Z
 ```
 
 # Migrate renovate config
 
 ---
 
-_Pull request opened by @renovate on 2025-08-26 08:32_
+_@renovate_
 
 The Renovate config in this repository needs migrating. Typically this is because one or more configuration options you are using have been renamed.
 

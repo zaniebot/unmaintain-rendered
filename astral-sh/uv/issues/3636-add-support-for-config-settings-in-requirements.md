@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-05-17T11:41:15Z
 updated_at: 2025-06-17T04:47:11Z
 url: https://github.com/astral-sh/uv/issues/3636
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Add support for config_settings in requirements.txt / requirements.in
 
 ---
 
-_Issue opened by @tiptenbrink on 2024-05-17 11:41_
+_@tiptenbrink_
 
 In #1460, the CLI gained support for passing config_settings to the build backend. However, sometimes you want to pass these settings only for specific requirements (or simply you don't want to have to write it in the CLI each time). 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-22T22:44:33Z
 updated_at: 2024-05-22T22:58:12Z
 url: https://github.com/clap-rs/clap/issues/5498
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Clap complete dynamic doesn't work with `ValueEnum` in args
 
 ---
 
-_Issue opened by @HKalbasi on 2024-05-22 22:44_
+_@HKalbasi_
 
 ### Please complete the following tasks
 

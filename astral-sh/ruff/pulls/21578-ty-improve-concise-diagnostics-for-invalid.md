@@ -14,14 +14,14 @@ head: alex/exception-concise-diagnostic
 created_at: 2025-11-22T13:34:25Z
 updated_at: 2025-11-24T07:54:41Z
 url: https://github.com/astral-sh/ruff/pull/21578
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Improve concise diagnostics for invalid exceptions when a user catches a tuple of objects
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-22 13:34_
+_@AlexWaygood_
 
 ## Summary
 

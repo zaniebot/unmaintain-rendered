@@ -13,14 +13,14 @@ head: cjm/typing-extensions-reveal-type
 created_at: 2024-09-18T21:19:02Z
 updated_at: 2024-09-19T17:42:38Z
 url: https://github.com/astral-sh/ruff/pull/13397
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] add support for typing_extensions.reveal_type
 
 ---
 
-_Pull request opened by @carljm on 2024-09-18 21:19_
+_@carljm_
 
 Before `typing.reveal_type` existed, there was `typing_extensions.reveal_type`. We should support both.
 

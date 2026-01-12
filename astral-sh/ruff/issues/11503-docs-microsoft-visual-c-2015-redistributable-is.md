@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-23T00:54:49Z
 updated_at: 2024-05-29T12:00:13Z
 url: https://github.com/astral-sh/ruff/issues/11503
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Docs: Microsoft Visual C++ 2015 Redistributable is required on Windows
 
 ---
 
-_Issue opened by @jborbely on 2024-05-23 00:54_
+_@jborbely_
 
 **OS**: Windows 10
 **ruff**: version 0.4.4 (installed via `pipx`)

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-06T13:33:05Z
 updated_at: 2024-09-06T19:03:53Z
 url: https://github.com/astral-sh/uv/issues/7126
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # uv sync in a Docker container doesn't copy the project
 
 ---
 
-_Issue opened by @hynek on 2024-09-06 13:33_
+_@hynek_
 
 Sorry for the opaque title, but since you mentioned on Discord you couldn't reproduce, so I'm just describing what I'm seeing.
 

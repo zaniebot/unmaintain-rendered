@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-03T18:44:20Z
 updated_at: 2025-11-08T19:21:31Z
 url: https://github.com/astral-sh/uv/issues/751
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Resolver errors with pre-releases in available versions do not simplify correctly
 
 ---
 
-_Issue opened by @konstin on 2024-01-03 18:44_
+_@konstin_
 
 Requirement: `tf-models-nightly>2.11.0`
 

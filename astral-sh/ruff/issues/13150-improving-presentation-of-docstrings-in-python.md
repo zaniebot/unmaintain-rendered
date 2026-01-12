@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-29T10:23:24Z
 updated_at: 2024-08-29T11:15:16Z
 url: https://github.com/astral-sh/ruff/issues/13150
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Improving presentation of docstrings in python intellisense
 
 ---
 
-_Issue opened by @nikhil-swamix on 2024-08-29 10:23_
+_@nikhil-swamix_
 
 # Info
 Issue Type: inconvenience/ enhancement

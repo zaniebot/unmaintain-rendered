@@ -13,14 +13,14 @@ head: unexpected-special-method-signature
 created_at: 2023-04-24T04:51:57Z
 updated_at: 2023-04-25T05:23:40Z
 url: https://github.com/astral-sh/ruff/pull/4075
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # [`pylint`] Implement PLE0302 `unexpected-special-method-signature`
 
 ---
 
-_Pull request opened by @mccullocht on 2023-04-24 04:51_
+_@mccullocht_
 
 Implement pylint [`unexpected-special-method-signature`](https://pylint.readthedocs.io/en/latest/user_guide/messages/error/unexpected-special-method-signature.html)
 

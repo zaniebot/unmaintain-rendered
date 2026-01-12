@@ -13,14 +13,14 @@ head: konsti/add-exit-status
 created_at: 2024-03-01T11:21:37Z
 updated_at: 2024-03-06T01:05:51Z
 url: https://github.com/astral-sh/uv/pull/2108
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:52Z
 ```
 
 # Include exit code for build failures
 
 ---
 
-_Pull request opened by @konstin on 2024-03-01 11:21_
+_@konstin_
 
 `uv pip install mysqlclient==2.1.1` on python 3.12 on windows, where the are no binary wheels:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-25T16:29:39Z
 updated_at: 2024-01-23T02:55:05Z
 url: https://github.com/astral-sh/uv/issues/183
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Support `pip-compile` resolutions for alternate platforms and Python versions
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-25 16:29_
+_@charliermarsh_
 
 E.g., could we support `puffin pip-compile --target-version py37` to do a Python 3.7-compatible resolution, even if your local Python is using some other version?
 

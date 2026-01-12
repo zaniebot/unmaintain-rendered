@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-18T08:06:33Z
 updated_at: 2025-02-25T08:06:38Z
 url: https://github.com/astral-sh/uv/issues/1632
-synced_at: 2026-01-10T03:50:29Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Create stub for `uv` in virtual environments
 
 ---
 
-_Issue opened by @zanieb on 2024-02-18 08:06_
+_@zanieb_
 
 It seems like we should probably stub `uv` into the environment by default so that you can use `python -m uv`. I'm not exactly sure what that would look like.
 

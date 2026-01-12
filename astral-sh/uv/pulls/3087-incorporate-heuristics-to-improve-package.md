@@ -13,14 +13,14 @@ head: charlie/priority
 created_at: 2024-04-17T04:02:08Z
 updated_at: 2024-04-17T16:47:24Z
 url: https://github.com/astral-sh/uv/pull/3087
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:25Z
 ```
 
 # Incorporate heuristics to improve package prioritization
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-17 04:02_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/issues/3078
 

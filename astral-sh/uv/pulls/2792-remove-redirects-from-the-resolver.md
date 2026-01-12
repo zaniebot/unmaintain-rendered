@@ -13,14 +13,14 @@ head: charlie/redirects
 created_at: 2024-04-03T02:21:40Z
 updated_at: 2024-04-03T02:43:58Z
 url: https://github.com/astral-sh/uv/pull/2792
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:13Z
 ```
 
 # Remove redirects from the resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-03 02:21_
+_@charliermarsh_
 
 ## Summary
 

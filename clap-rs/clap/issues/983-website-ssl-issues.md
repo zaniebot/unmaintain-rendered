@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-06-09T11:41:12Z
 updated_at: 2018-08-02T03:30:08Z
 url: https://github.com/clap-rs/clap/issues/983
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Website SSL Issues
 
 ---
 
-_Issue opened by @drusellers on 2017-06-09 11:41_
+_@drusellers_
 
 ![image](https://user-images.githubusercontent.com/63355/26973950-9f1a715c-4cde-11e7-9709-6a3b9ad412fd.png)
 

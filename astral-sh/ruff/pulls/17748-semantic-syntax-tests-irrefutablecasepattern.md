@@ -13,14 +13,14 @@ head: semantic-test-coverage
 created_at: 2025-04-30T21:04:54Z
 updated_at: 2025-05-09T18:54:05Z
 url: https://github.com/astral-sh/ruff/pull/17748
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [semantic-syntax-tests] `IrrefutableCasePattern`, `SingleStarredAssignment`, `WriteToDebug`, `InvalidExpression`
 
 ---
 
-_Pull request opened by @maxmynter on 2025-04-30 21:04_
+_@maxmynter_
 
 Re: #17526 
 

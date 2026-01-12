@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-18T18:54:01Z
 updated_at: 2023-05-18T18:54:02Z
 url: https://github.com/clap-rs/clap/issues/4918
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `default_value_if` with `IsPresent` doesn't ignore defaults
 
 ---
 
-_Issue opened by @epage on 2023-05-18 18:54_
+_@epage_
 
 ### Please complete the following tasks
 

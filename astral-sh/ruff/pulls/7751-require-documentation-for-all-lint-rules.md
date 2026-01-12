@@ -13,14 +13,14 @@ head: charlie/require-docs
 created_at: 2023-10-02T01:38:38Z
 updated_at: 2023-10-02T08:18:24Z
 url: https://github.com/astral-sh/ruff/pull/7751
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Require documentation for all lint rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-02 01:38_
+_@charliermarsh_
 
 ## Summary
 

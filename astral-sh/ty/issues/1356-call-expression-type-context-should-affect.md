@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-14T20:36:46Z
 updated_at: 2025-11-12T19:20:00Z
 url: https://github.com/astral-sh/ty/issues/1356
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Call expression type context should affect function argument inference
 
 ---
 
-_Issue opened by @ibraheemdev on 2025-10-14 20:36_
+_@ibraheemdev_
 
 Currently, the only type context we have access to when inferring function arguments is the annotated parameter type. However, the call expression annotation is also relevant, e.g.,
 ```py

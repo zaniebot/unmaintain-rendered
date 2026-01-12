@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T12:51:29Z
 updated_at: 2025-01-29T20:54:53Z
 url: https://github.com/astral-sh/uv/issues/10594
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # Missing authentication in requests when downloading package in JFrog Artifactory Python package index
 
 ---
 
-_Issue opened by @jnth on 2025-01-14 12:51_
+_@jnth_
 
 Hello,
 

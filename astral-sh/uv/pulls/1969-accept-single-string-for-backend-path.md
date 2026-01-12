@@ -13,14 +13,14 @@ head: charlie/path
 created_at: 2024-02-25T20:18:54Z
 updated_at: 2024-02-25T21:02:59Z
 url: https://github.com/astral-sh/uv/pull/1969
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:49Z
 ```
 
 # Accept single string for `backend-path`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-25 20:18_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/1861.
 

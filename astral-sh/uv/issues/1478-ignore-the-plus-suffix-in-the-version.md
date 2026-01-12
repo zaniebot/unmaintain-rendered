@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T11:28:31Z
 updated_at: 2024-02-16T14:55:42Z
 url: https://github.com/astral-sh/uv/issues/1478
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Ignore the plus suffix in the version
 
 ---
 
-_Issue opened by @ismail on 2024-02-16 11:28_
+_@ismail_
 
 If you have too much time on your hands and compile CPython from git, you get a version like this
 

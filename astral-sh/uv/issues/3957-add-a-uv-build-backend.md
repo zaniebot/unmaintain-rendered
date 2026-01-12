@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-01T15:58:19Z
 updated_at: 2025-07-03T17:36:18Z
 url: https://github.com/astral-sh/uv/issues/3957
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Add a uv build backend
 
 ---
 
-_Issue opened by @chrisrodrigue on 2024-06-01 15:58_
+_@chrisrodrigue_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

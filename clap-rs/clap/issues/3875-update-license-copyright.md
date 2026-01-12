@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-06-27T17:17:19Z
 updated_at: 2022-06-27T20:35:37Z
 url: https://github.com/clap-rs/clap/issues/3875
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Update license copyright
 
 ---
 
-_Issue opened by @Sytten on 2022-06-27 17:17_
+_@Sytten_
 
 ### Please complete the following tasks
 

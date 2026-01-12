@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-19T10:46:34Z
 updated_at: 2024-12-25T22:02:00Z
 url: https://github.com/astral-sh/ruff/issues/15056
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # New rule: Unnecessary unicode escape character
 
 ---
 
-_Issue opened by @un-pogaz on 2024-12-19 10:46_
+_@un-pogaz_
 
 Since Python3 is all UTF-8 by default, use explicit unicode escape is unnecessary. So a suggest to add 3 rules to control and check their presence (UP category).
 

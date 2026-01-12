@@ -14,14 +14,14 @@ head: feat/tc006
 created_at: 2024-11-21T11:13:58Z
 updated_at: 2024-11-22T14:29:43Z
 url: https://github.com/astral-sh/ruff/pull/14511
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`flake8-type-checking`] Adds implementation for TC006
 
 ---
 
-_Pull request opened by @Daverball on 2024-11-21 11:13_
+_@Daverball_
 
 Now that `TCH` has been renamed to `TC` and the redirect from `TCH006` to `TCH010` can no longer bite us, I've added an implementation for this very simple rule.
 

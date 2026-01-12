@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-14T13:27:18Z
 updated_at: 2025-11-10T04:16:19Z
 url: https://github.com/astral-sh/uv/issues/16295
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # pixi environment not properly detected from 0.8.18
 
 ---
 
-_Issue opened by @atonderski on 2025-10-14 13:27_
+_@atonderski_
 
 ### Summary
 

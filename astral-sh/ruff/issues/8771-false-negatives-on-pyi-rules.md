@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-19T21:54:55Z
 updated_at: 2024-01-18T10:06:37Z
 url: https://github.com/astral-sh/ruff/issues/8771
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # False negatives on PYI rules
 
 ---
 
-_Issue opened by @AlexWaygood on 2023-11-19 21:54_
+_@AlexWaygood_
 
 Ruff reports no errors on the following code snippet (saved as a `.pyi` stub file) with the command `ruff --select=PYI`, whereas flake8-pyi reports quite a few ;)
 

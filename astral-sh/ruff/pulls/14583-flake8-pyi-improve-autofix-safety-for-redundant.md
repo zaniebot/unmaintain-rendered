@@ -13,14 +13,14 @@ head: pyi061-fix-syntax-error
 created_at: 2024-11-25T14:00:54Z
 updated_at: 2024-11-25T17:51:09Z
 url: https://github.com/astral-sh/ruff/pull/14583
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`flake8-pyi`] Improve autofix safety for `redundant-none-literal` (PYI061)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-25 14:00_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

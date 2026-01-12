@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-02T21:02:21Z
 updated_at: 2024-09-03T01:14:16Z
 url: https://github.com/astral-sh/uv/issues/6946
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Authentication Issue Installing Private Git Repositories
 
 ---
 
-_Issue opened by @akmalsoliev on 2024-09-02 21:02_
+_@akmalsoliev_
 
 When trying to install a private Git repository requiring authentication not stored on the machine, running `uv pip install git+https://github.com/akmalsoliev/super_secret_project.git` results in `⠹ Resolving dependencies...`. Ideally, it should prompt the user for a username and token/password or display an error.
 

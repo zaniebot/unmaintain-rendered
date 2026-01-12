@@ -12,14 +12,14 @@ head: excluded-dependencies-support
 created_at: 2025-06-18T18:43:59Z
 updated_at: 2025-08-21T18:14:34Z
 url: https://github.com/astral-sh/uv/pull/14135
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:02Z
 ```
 
 # add support for `excluded-dependencies` 
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-06-18 18:43_
+_@CodeMan62_
 
 ## Summary
 This PR adds support for  `excluded-dependencies` in `pyproject.toml`

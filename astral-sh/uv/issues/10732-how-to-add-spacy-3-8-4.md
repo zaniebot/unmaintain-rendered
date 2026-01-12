@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-18T13:29:40Z
 updated_at: 2025-01-20T19:02:51Z
 url: https://github.com/astral-sh/uv/issues/10732
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # how to add spacy==3.8.4
 
 ---
 
-_Issue opened by @jacobweiss2305 on 2025-01-18 13:29_
+_@jacobweiss2305_
 
 How do I add spacy with uv? Steps to reproduce:
 

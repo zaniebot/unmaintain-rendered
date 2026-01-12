@@ -11,14 +11,14 @@ head: fix-demo.md
 created_at: 2025-08-09T22:25:36Z
 updated_at: 2025-08-11T14:25:27Z
 url: https://github.com/clap-rs/clap/pull/6099
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # docs: Fix demo.rs
 
 ---
 
-_Pull request opened by @winksaville on 2025-08-09 22:25_
+_@winksaville_
 
 This changes so  demo.rs and demo.md match see #6098 
 

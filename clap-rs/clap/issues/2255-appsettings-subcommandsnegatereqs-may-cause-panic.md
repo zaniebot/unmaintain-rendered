@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-12-14T02:16:28Z
 updated_at: 2021-10-26T20:56:17Z
 url: https://github.com/clap-rs/clap/issues/2255
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # AppSettings::SubcommandsNegateReqs may cause panic in Clap::parse(), Clap::try_parse()
 
 ---
 
-_Issue opened by @BeldrothTheGold on 2020-12-14 02:16_
+_@BeldrothTheGold_
 
 ### Clap version
 

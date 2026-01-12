@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-30T01:16:46Z
 updated_at: 2025-07-30T12:46:30Z
 url: https://github.com/astral-sh/ruff/issues/19628
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF033 fix introduces an error for a type variable scoped to `__post_init__`
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-30 01:16_
+_@dscorbett_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-23T23:25:24Z
 updated_at: 2024-11-03T21:39:24Z
 url: https://github.com/astral-sh/ruff/issues/6019
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [Proposal] Ability to ignore certain types of commented-out code in `ERA001`
 
 ---
 
-_Issue opened by @tylerlaprade on 2023-07-23 23:25_
+_@tylerlaprade_
 
 We have quite a few of these scattered around our codebase. `T201` reminds us if we forget to comment them back out after we're done debugging, but I wish I could avoid the warning while they're commented.
 <img width="431" alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/008f1a20-ca32-42b3-91fa-0b42124533fc">

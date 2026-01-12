@@ -13,14 +13,14 @@ head: ag/fix-cache-healing
 created_at: 2024-02-19T16:56:34Z
 updated_at: 2024-02-23T12:30:16Z
 url: https://github.com/astral-sh/uv/pull/1707
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # re-introduce cache healing when we see an invalid cache entry
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-19 16:56_
+_@BurntSushi_
 
 This PR introduces more robust cache healing when `uv` fails to
 deserialize an existing cache entry.

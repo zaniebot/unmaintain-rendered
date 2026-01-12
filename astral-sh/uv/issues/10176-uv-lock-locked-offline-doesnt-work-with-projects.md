@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-26T17:56:25Z
 updated_at: 2025-01-22T21:07:30Z
 url: https://github.com/astral-sh/uv/issues/10176
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # `uv lock --locked --offline` doesn’t work with projects that use dynamic versions
 
 ---
 
-_Issue opened by @vivodi on 2024-12-26 17:56_
+_@vivodi_
 
 ### Summary
 > The requested feature, ideally, wouldn't involve actually resolving any dependencies and could be performed in a CICD pipeline that may not have the correct connections set up to update the uv.lock file

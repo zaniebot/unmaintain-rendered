@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-06-04T09:19:49Z
 updated_at: 2021-06-05T00:42:03Z
 url: https://github.com/clap-rs/clap/issues/2522
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Incorrect doc: Features enabled by default
 
 ---
 
-_Issue opened by @QuarticCat on 2021-06-04 09:19_
+_@QuarticCat_
 
 ### Please complete the following tasks
 

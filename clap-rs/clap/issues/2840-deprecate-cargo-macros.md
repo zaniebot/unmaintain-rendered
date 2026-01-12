@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-10-09T17:32:37Z
 updated_at: 2022-06-08T16:03:53Z
 url: https://github.com/clap-rs/clap/issues/2840
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Deprecate cargo macros
 
 ---
 
-_Issue opened by @kbknapp on 2021-10-09 17:32_
+_@kbknapp_
 
 Maintainer's notes
 

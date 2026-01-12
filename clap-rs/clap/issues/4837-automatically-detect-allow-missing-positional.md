@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-04-17T04:35:10Z
 updated_at: 2023-10-25T02:26:44Z
 url: https://github.com/clap-rs/clap/issues/4837
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Automatically detect allow_missing_positional
 
 ---
 
-_Issue opened by @joshtriplett on 2023-04-17 04:35_
+_@joshtriplett_
 
 ### Please complete the following tasks
 

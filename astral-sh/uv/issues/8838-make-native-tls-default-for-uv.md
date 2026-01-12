@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-05T19:12:36Z
 updated_at: 2025-10-30T18:01:09Z
 url: https://github.com/astral-sh/uv/issues/8838
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # Make `native-tls` default for uv?
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-11-05 19:12_
+_@notatallshaw-gts_
 
 Pip 24.2+, on Python 3.10+, you get truststore by default: https://pip.pypa.io/en/stable/topics/https-certificates/#using-system-certificate-stores / https://github.com/sethmlarson/truststore
 

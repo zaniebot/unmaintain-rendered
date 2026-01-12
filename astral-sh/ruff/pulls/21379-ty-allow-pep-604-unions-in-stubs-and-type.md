@@ -14,14 +14,14 @@ head: alex/604-stubs
 created_at: 2025-11-11T13:15:47Z
 updated_at: 2025-11-11T14:33:44Z
 url: https://github.com/astral-sh/ruff/pull/21379
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # [ty] Allow PEP-604 unions in stubs and `TYPE_CHECKING` blocks prior to 3.10
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-11 13:15_
+_@AlexWaygood_
 
 ## Summary
 

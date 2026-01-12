@@ -14,14 +14,14 @@ head: com812-formatter-compat
 created_at: 2024-02-24T13:41:31Z
 updated_at: 2024-08-16T08:09:27Z
 url: https://github.com/astral-sh/ruff/pull/10111
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # COM812: Allow "single line" arguments without trailing comma
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-24 13:41_
+_@MichaReiser_
 
 ## Summary
 

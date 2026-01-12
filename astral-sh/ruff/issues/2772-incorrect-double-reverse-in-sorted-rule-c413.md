@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-11T17:23:14Z
 updated_at: 2023-02-12T15:56:08Z
 url: https://github.com/astral-sh/ruff/issues/2772
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Incorrect double reverse in sorted rule C413
 
 ---
 
-_Issue opened by @Skylion007 on 2023-02-11 17:23_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

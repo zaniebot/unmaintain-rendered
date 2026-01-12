@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-05T21:35:44Z
 updated_at: 2023-10-07T13:09:10Z
 url: https://github.com/astral-sh/uv/issues/13
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # In `pep508_rs`, allow `Requirement` API to take borrowed data
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-05 21:35_
+_@charliermarsh_
 
 _No description provided._
 

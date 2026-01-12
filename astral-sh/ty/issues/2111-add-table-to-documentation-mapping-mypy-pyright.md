@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-19T11:48:03Z
 updated_at: 2026-01-05T10:21:47Z
 url: https://github.com/astral-sh/ty/issues/2111
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Add table to documentation mapping mypy/pyright rules to ty rules
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-19 11:48_
+_@AlexWaygood_
 
 For some of our rules there isn't a 1:1 mapping, but for a lot of rules there is. This could be really helpful for users migrating from other type checkers.
 

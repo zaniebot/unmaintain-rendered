@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-09T20:59:36Z
 updated_at: 2023-02-16T18:47:07Z
 url: https://github.com/astral-sh/ruff/issues/2695
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Feature request: isort.force-to-top
 
 ---
 
-_Issue opened by @henryiii on 2023-02-09 20:59_
+_@henryiii_
 
 I couldn't see it listed elsewhere, so I'd like to point out `[tool.isort] force_to_top = ["setuptools"]`. It's useful for putting an import that must be imported before other imports (setuptools should be imported before distutils), or maybe for sticking pytest at the top.
 

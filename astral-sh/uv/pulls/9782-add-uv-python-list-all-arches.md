@@ -13,14 +13,14 @@ head: zb/all-arches
 created_at: 2024-12-10T18:54:50Z
 updated_at: 2024-12-10T20:02:43Z
 url: https://github.com/astral-sh/uv/pull/9782
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:58Z
 ```
 
 # Add `uv python list --all-arches`
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-10 18:54_
+_@zanieb_
 
 With #9781 this becomes even more compelling. This is generally useful as well.
 

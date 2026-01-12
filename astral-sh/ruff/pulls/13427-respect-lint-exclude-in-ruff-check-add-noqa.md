@@ -13,14 +13,14 @@ head: charlie/add
 created_at: 2024-09-20T19:28:06Z
 updated_at: 2024-09-20T19:48:45Z
 url: https://github.com/astral-sh/ruff/pull/13427
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Respect `lint.exclude` in ruff check `--add-noqa`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-20 19:28_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-02-20T20:37:12Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/431
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Feature request: ArgGroup with SubCommand
 
 ---
 
-_Issue opened by @matthiasbeyer on 2016-02-20 20:37_
+_@matthiasbeyer_
 
 Would it be possible to implement something like ArgGroup but only with the possibility to contain SubCommand support? So we can have either "Arg or Arg or SubCommand or Arg"?
 

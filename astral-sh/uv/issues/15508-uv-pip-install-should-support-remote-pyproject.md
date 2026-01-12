@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-25T04:02:27Z
 updated_at: 2025-08-27T21:29:47Z
 url: https://github.com/astral-sh/uv/issues/15508
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # `uv pip install` should support remote `pyproject.toml` files
 
 ---
 
-_Issue opened by @gboeing on 2025-08-25 04:02_
+_@gboeing_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-04T14:47:38Z
 updated_at: 2024-04-04T17:19:45Z
 url: https://github.com/astral-sh/uv/issues/2819
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Dedupe editable installs before building
 
 ---
 
-_Issue opened by @jaap3 on 2024-04-04 14:47_
+_@jaap3_
 
 I'm trying `uv` in a monorepo setup that has a few apps and many shared (interdependent) packages. When installing an application all it's dependencies (and their sub-dependencies etc.) that live in this monorepo are installed in editable mode. This is done by chaining `requirements-dev.txt` files. i.e. given the following directory structure:
 

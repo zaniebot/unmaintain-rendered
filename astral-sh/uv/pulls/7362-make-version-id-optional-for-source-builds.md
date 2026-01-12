@@ -13,14 +13,14 @@ head: charlie/m
 created_at: 2024-09-13T14:35:45Z
 updated_at: 2024-09-13T14:52:27Z
 url: https://github.com/astral-sh/uv/pull/7362
-synced_at: 2026-01-10T12:53:45Z
+synced_at: 2026-01-12T16:07:47Z
 ```
 
 # Make version ID optional for source builds
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-13 14:35_
+_@charliermarsh_
 
 ## Summary
 

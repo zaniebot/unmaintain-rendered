@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-10T10:45:03Z
 updated_at: 2025-01-10T15:13:01Z
 url: https://github.com/astral-sh/uv/issues/10465
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # Idea: uv as a self-contained tool wrapper
 
 ---
 
-_Issue opened by @ceejatec on 2025-01-10 10:45_
+_@ceejatec_
 
 ## tl;dr
 

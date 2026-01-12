@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-06T20:21:10Z
 updated_at: 2025-08-11T20:04:41Z
 url: https://github.com/astral-sh/ruff/issues/19792
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `UP032` fix fails when braces are created via escapes
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-08-06 20:21_
+_@MeGaGiGaGon_
 
 ### Summary
 

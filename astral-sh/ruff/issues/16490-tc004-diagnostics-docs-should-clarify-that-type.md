@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-04T08:30:54Z
 updated_at: 2025-12-31T07:55:51Z
 url: https://github.com/astral-sh/ruff/issues/16490
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # TC004 diagnostics/docs should clarify that type hints can be executed at run-time
 
 ---
 
-_Issue opened by @nathanjmcdougall on 2025-03-04 08:30_
+_@nathanjmcdougall_
 
 ### Summary
 

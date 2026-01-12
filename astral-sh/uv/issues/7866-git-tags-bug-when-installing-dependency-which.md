@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-02T10:06:37Z
 updated_at: 2024-10-17T23:56:08Z
 url: https://github.com/astral-sh/uv/issues/7866
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Git tags bug when installing dependency which uses dynamic versioning
 
 ---
 
-_Issue opened by @my1e5 on 2024-10-02 10:06_
+_@my1e5_
 
 I'm sorry I don't have a full MRE of this at the moment, but I wanted to report it anyway for the record.
 

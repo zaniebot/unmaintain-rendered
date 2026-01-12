@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-03T10:06:55Z
 updated_at: 2025-09-03T13:16:42Z
 url: https://github.com/astral-sh/ty/issues/1119
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Missing attribute access checking for Pydantic BaseModel
 
 ---
 
-_Issue opened by @jackhodkinson on 2025-09-03 10:06_
+_@jackhodkinson_
 
 # Missing attribute access checking for Pydantic BaseModel
 

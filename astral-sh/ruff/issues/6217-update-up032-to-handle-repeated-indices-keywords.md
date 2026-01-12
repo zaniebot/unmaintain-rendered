@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-01T01:42:51Z
 updated_at: 2023-08-02T21:00:09Z
 url: https://github.com/astral-sh/ruff/issues/6217
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Update `UP032` to handle repeated indices/keywords 
 
 ---
 
-_Issue opened by @harupy on 2023-08-01 01:42_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

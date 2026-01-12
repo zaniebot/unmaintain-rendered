@@ -14,14 +14,14 @@ head: charlie/soft-keyword
 created_at: 2023-11-30T00:55:43Z
 updated_at: 2023-11-30T19:25:40Z
 url: https://github.com/astral-sh/ruff/pull/8916
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Support type alias statements in simple statement positions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-30 00:55_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

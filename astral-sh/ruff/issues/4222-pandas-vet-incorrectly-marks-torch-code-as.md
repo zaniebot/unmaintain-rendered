@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-04T12:11:49Z
 updated_at: 2023-05-10T14:04:29Z
 url: https://github.com/astral-sh/ruff/issues/4222
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Pandas vet incorrectly marks `torch` code as breaking the pandas linting rules
 
 ---
 
-_Issue opened by @pawel-biernacki-roche on 2023-05-04 12:11_
+_@pawel-biernacki-roche_
 
 **Issue**:
 Pandas vet incorrectly marks `torch` code as breaking the pandas linting rules

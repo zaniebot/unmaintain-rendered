@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-16T15:41:28Z
 updated_at: 2025-10-06T11:55:09Z
 url: https://github.com/astral-sh/uv/issues/15894
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # `override-dependencies` ignores optional-dependency extra
 
 ---
 
-_Issue opened by @habichta on 2025-09-16 15:41_
+_@habichta_
 
 ### Question
 

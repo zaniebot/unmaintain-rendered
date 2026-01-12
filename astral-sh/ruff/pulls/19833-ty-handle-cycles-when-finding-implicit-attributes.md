@@ -13,14 +13,14 @@ head: dcreager/flax-hang
 created_at: 2025-08-08T18:06:01Z
 updated_at: 2025-08-10T13:08:14Z
 url: https://github.com/astral-sh/ruff/pull/19833
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # [ty] Handle cycles when finding implicit attributes
 
 ---
 
-_Pull request opened by @dcreager on 2025-08-08 18:06_
+_@dcreager_
 
 The [minimal reproduction](https://gist.github.com/dcreager/fc53c59b30d7ce71d478dcb2c1c56444) of https://github.com/astral-sh/ty/issues/948 is an example of a class with implicit attributes whose types end up depending on themselves. Our existing cycle detection for `infer_expression_types` is usually enough to handle this situation correctly, but when there are very many of these implicit attributes, we get a combinatorial explosion of running time and memory usage.
 

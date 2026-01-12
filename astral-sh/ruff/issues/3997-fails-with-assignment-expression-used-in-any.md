@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-17T14:46:42Z
 updated_at: 2023-04-29T22:45:32Z
 url: https://github.com/astral-sh/ruff/issues/3997
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Fails with assignment expression used in "any()" function
 
 ---
 
-_Issue opened by @lorien on 2023-04-17 14:46_
+_@lorien_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

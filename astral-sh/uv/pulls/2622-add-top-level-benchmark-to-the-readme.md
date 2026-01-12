@@ -13,14 +13,14 @@ head: charlie/bench
 created_at: 2024-03-22T19:25:25Z
 updated_at: 2024-03-22T20:07:32Z
 url: https://github.com/astral-sh/uv/pull/2622
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:08Z
 ```
 
 # Add top-level benchmark to the README
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-22 19:25_
+_@charliermarsh_
 
 ## Summary
 

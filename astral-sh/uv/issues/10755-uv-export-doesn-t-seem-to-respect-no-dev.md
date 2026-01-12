@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-19T17:19:41Z
 updated_at: 2025-01-20T13:32:29Z
 url: https://github.com/astral-sh/uv/issues/10755
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # uv export doesn't seem to respect --no-dev
 
 ---
 
-_Issue opened by @dodumosu on 2025-01-19 17:19_
+_@dodumosu_
 
 thanks for all the hard work on this. i have a project using this, and i added ipython to my dev dependencies to make shell work with async a bit more easy. i have a pre-commit hook with uv export set up, and i noticed that ipython was included in the exported requirements.txt. here's the set up for uv in my pre-commit configuration:
 

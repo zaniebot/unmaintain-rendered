@@ -11,14 +11,14 @@ head: multiline-comprehensions
 created_at: 2025-10-07T02:28:41Z
 updated_at: 2025-10-07T15:40:11Z
 url: https://github.com/astral-sh/ruff/pull/20731
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # Add support for optional multi-line comprehensions (#11753)
 
 ---
 
-_Pull request opened by @kevind-kizen on 2025-10-07 02:28_
+_@kevind-kizen_
 
 Issue reference: https://github.com/astral-sh/ruff/issues/11753
 

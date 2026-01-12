@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-08T19:08:10Z
 updated_at: 2023-05-19T02:20:20Z
 url: https://github.com/astral-sh/ruff/issues/4289
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Implement `--extend-fixable` and `--extend-unfixable` variants in CLI
 
 ---
 
-_Issue opened by @ljnsn on 2023-05-08 19:08_
+_@ljnsn_
 
 Consider the following ruff config:
 

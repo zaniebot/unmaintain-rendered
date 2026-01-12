@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-03T04:18:56Z
 updated_at: 2024-06-07T03:10:54Z
 url: https://github.com/astral-sh/ruff/issues/11714
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # FURB118, `lambda x: x[I, ii]` should be `itemgetter((I, ii))`, instead of `itemgetter(I, ii)`
 
 ---
 
-_Issue opened by @nasyxx on 2024-06-03 04:18_
+_@nasyxx_
 
 In refurb, `lambda x: x[I, ii]` should be `itemgetter((I, ii))`, instead of `itemgetter(I, ii)`
 

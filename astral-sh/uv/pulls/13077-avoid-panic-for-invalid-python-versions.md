@@ -14,14 +14,14 @@ head: charlie/pyv
 created_at: 2025-04-23T22:09:35Z
 updated_at: 2025-04-24T12:00:12Z
 url: https://github.com/astral-sh/uv/pull/13077
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Avoid panic for invalid Python versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-23 22:09_
+_@charliermarsh_
 
 ## Summary
 

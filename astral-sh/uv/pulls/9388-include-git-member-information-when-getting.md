@@ -13,14 +13,14 @@ head: git-cached-metadata
 created_at: 2024-11-23T16:51:11Z
 updated_at: 2024-12-03T05:07:21Z
 url: https://github.com/astral-sh/uv/pull/9388
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:47Z
 ```
 
 # Include Git member information when getting metadata from cache
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2024-11-23 16:51_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

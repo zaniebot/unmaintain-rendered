@@ -12,14 +12,14 @@ head: typo
 created_at: 2024-03-12T08:48:45Z
 updated_at: 2024-03-12T09:37:49Z
 url: https://github.com/astral-sh/uv/pull/2379
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:00Z
 ```
 
 # Fix left over after renaming UV_SYSTEM to UV_SYSTEM_PYTHON
 
 ---
 
-_Pull request opened by @edenhaus on 2024-03-12 08:48_
+_@edenhaus_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

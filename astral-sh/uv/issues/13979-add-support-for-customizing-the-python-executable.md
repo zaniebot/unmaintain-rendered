@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T22:31:50Z
 updated_at: 2025-06-11T22:31:50Z
 url: https://github.com/astral-sh/uv/issues/13979
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # Add support for customizing the Python executable directory with `uv python install --bin-dir`
 
 ---
 
-_Issue opened by @zanieb on 2025-06-11 22:31_
+_@zanieb_
 
 ### Summary
 

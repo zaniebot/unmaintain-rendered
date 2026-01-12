@@ -12,14 +12,14 @@ head: ruff.__all__
 created_at: 2024-05-15T18:55:43Z
 updated_at: 2024-05-21T16:23:46Z
 url: https://github.com/astral-sh/ruff/pull/11436
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # F401 - update documentation and deprecate `ignore_init_module_imports`
 
 ---
 
-_Pull request opened by @plredmond on 2024-05-15 18:55_
+_@plredmond_
 
 ## Summary
 

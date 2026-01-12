@@ -12,14 +12,14 @@ head: dylan/stabilize-undefined-export
 created_at: 2025-06-06T14:33:21Z
 updated_at: 2025-06-06T17:06:58Z
 url: https://github.com/astral-sh/ruff/pull/18499
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [`pyflakes`] Stabilize checking `__init__.py` in `undefined-export` (`F822`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-06 14:33_
+_@dylwil3_
 
 _No description provided._
 

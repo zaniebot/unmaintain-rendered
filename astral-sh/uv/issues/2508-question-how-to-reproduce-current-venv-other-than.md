@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-18T12:42:08Z
 updated_at: 2024-03-18T15:14:31Z
 url: https://github.com/astral-sh/uv/issues/2508
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Question: how to reproduce current venv other than `uv pip freeze`?
 
 ---
 
-_Issue opened by @shenxiangzhuang on 2024-03-18 12:42_
+_@shenxiangzhuang_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

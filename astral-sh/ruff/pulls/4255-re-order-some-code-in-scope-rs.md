@@ -12,14 +12,14 @@ head: charlie/move
 created_at: 2023-05-06T16:31:47Z
 updated_at: 2023-05-06T17:04:34Z
 url: https://github.com/astral-sh/ruff/pull/4255
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Re-order some code in scope.rs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-06 16:31_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-20T06:22:08Z
 updated_at: 2025-04-20T15:16:22Z
 url: https://github.com/astral-sh/uv/issues/12985
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # No binary to deactivate venv in fish shell
 
 ---
 
-_Issue opened by @Qazalbash on 2025-04-20 06:22_
+_@Qazalbash_
 
 ### Question
 

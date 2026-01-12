@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-13T19:56:06Z
 updated_at: 2023-12-26T20:37:50Z
 url: https://github.com/astral-sh/ruff/issues/6540
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # PHG004: Potential regression
 
 ---
 
-_Issue opened by @AA-Turner on 2023-08-13 19:56_
+_@AA-Turner_
 
 Recently on updating Ruff, I started getting ``PGH004`` errors for a paragraph comment describing ``#noqa`` handling [^1]. I've attached a minimal reproducer below; the errors started appearing in Ruff 0.0.281 and a warning which previously appeared is now absent in Ruff 0.0.284.
 

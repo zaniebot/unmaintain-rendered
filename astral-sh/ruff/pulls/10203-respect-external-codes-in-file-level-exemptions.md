@@ -14,14 +14,14 @@ head: charlie/ext
 created_at: 2024-03-03T00:06:00Z
 updated_at: 2024-03-03T00:26:28Z
 url: https://github.com/astral-sh/ruff/pull/10203
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Respect external codes in file-level exemptions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-03 00:06_
+_@charliermarsh_
 
 We shouldn't warn when an "external" code is used in a file-level exemption.
 

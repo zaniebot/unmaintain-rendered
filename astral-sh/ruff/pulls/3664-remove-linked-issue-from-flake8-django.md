@@ -13,14 +13,14 @@ head: charlie/docs
 created_at: 2023-03-22T03:10:17Z
 updated_at: 2023-03-22T03:49:41Z
 url: https://github.com/astral-sh/ruff/pull/3664
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Remove linked issue from `flake8-django`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-22 03:10_
+_@charliermarsh_
 
 We support all of these now!
 

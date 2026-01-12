@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-03-31T09:47:15Z
 updated_at: 2022-05-04T18:26:32Z
 url: https://github.com/clap-rs/clap/issues/3595
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Exclusive can not be used with required
 
 ---
 
-_Issue opened by @FineFindus on 2022-03-31 09:47_
+_@FineFindus_
 
 ### Please complete the following tasks
 

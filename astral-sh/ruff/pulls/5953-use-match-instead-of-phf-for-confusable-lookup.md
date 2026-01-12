@@ -14,14 +14,14 @@ head: charlie/match-phf
 created_at: 2023-07-21T17:12:28Z
 updated_at: 2023-07-24T02:50:03Z
 url: https://github.com/astral-sh/ruff/pull/5953
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Use `match` instead of `phf` for confusable lookup
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-21 17:12_
+_@charliermarsh_
 
 I don't know whether we want to make this change but here's some data...
 

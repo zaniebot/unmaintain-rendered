@@ -13,14 +13,14 @@ head: zb/dup-log
 created_at: 2024-11-13T17:15:19Z
 updated_at: 2024-11-13T17:25:45Z
 url: https://github.com/astral-sh/uv/pull/9092
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:38Z
 ```
 
 # Remove duplicate log when searching for interpreters
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-13 17:15_
+_@zanieb_
 
 e.g., as seen in https://github.com/astral-sh/uv/issues/9088
 

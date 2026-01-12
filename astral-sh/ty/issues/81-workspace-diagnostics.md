@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T10:28:54Z
 updated_at: 2025-07-15T05:55:57Z
 url: https://github.com/astral-sh/ty/issues/81
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Workspace diagnostics
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 10:28_
+_@MichaReiser_
 
 Add support for workspace-wide diagnostics in addition to showing diagnostics for open files only. Default to workspace-wide diagnostics, but with an option to switch to open file diagnostics.
 

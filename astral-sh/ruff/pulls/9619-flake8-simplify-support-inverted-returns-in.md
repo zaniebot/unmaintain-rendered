@@ -13,14 +13,14 @@ head: charlie/not
 created_at: 2024-01-23T03:21:15Z
 updated_at: 2024-01-23T03:34:32Z
 url: https://github.com/astral-sh/ruff/pull/9619
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`flake8-simplify`] Support inverted returns in `needless-bool` (`SIM103`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-23 03:21_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9618.
 

@@ -13,14 +13,14 @@ head: zb/nursery-schema
 created_at: 2024-01-30T04:16:08Z
 updated_at: 2024-01-30T16:53:17Z
 url: https://github.com/astral-sh/ruff/pull/9695
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Remove the NURSERY selector from the json schema
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-30 04:16_
+_@zanieb_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: brent/sim905-0.10
 created_at: 2025-03-11T16:01:45Z
 updated_at: 2025-03-11T17:53:35Z
 url: https://github.com/astral-sh/ruff/pull/16631
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`flake8-simplify`] Stabilize `split-static-string` (`SIM905`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-11 16:01_
+_@ntBre_
 
 Summary
 --

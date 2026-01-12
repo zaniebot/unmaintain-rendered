@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-18T12:30:25Z
 updated_at: 2025-06-18T14:23:32Z
 url: https://github.com/astral-sh/uv/issues/14127
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # Workspaces and interdependent packages?
 
 ---
 
-_Issue opened by @tamis-laan on 2025-06-18 12:30_
+_@tamis-laan_
 
 ### Question
 

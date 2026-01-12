@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-04-01T11:13:09Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/472
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Help message prints argument name twice if no value name was given
 
 ---
 
-_Issue opened by @klingtnet on 2016-04-01 11:13_
+_@klingtnet_
 
 Argument names are printed as values in the help message if no `value_name` of `value_names` was given for the CLI argument. The problem is located in [`src/args/help_writer.rs` line 117](https://github.com/kbknapp/clap-rs/blob/master/src/args/help_writer.rs#L117). I tried to replace the line with: `try!(write!(w, "<{}>", self.a.name()));` but this breaks some other tests.
 If no `value_name` was set the `long` or `short` argument name is printed twice before the arguments value.

@@ -13,14 +13,14 @@ head: main
 created_at: 2025-04-15T21:04:15Z
 updated_at: 2025-04-15T21:13:53Z
 url: https://github.com/astral-sh/uv/pull/12908
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:26Z
 ```
 
 # teeny gramatical error in docs
 
 ---
 
-_Pull request opened by @dasAtRagedy on 2025-04-15 21:04_
+_@dasAtRagedy_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

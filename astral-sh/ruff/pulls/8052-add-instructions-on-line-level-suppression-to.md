@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-10-18T19:34:15Z
 updated_at: 2023-10-18T22:47:09Z
 url: https://github.com/astral-sh/ruff/pull/8052
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # add instructions on line-level suppression to file-level suppression warning
 
 ---
 
-_Pull request opened by @roganartu on 2023-10-18 19:34_
+_@roganartu_
 
 ## Summary
 

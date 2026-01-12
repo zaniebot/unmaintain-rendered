@@ -13,14 +13,14 @@ head: micha/diagnostic-selection
 created_at: 2025-03-28T20:52:54Z
 updated_at: 2025-03-28T20:58:07Z
 url: https://github.com/astral-sh/ruff/pull/17051
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [playground] Allow selecting the diagnostic message
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-28 20:52_
+_@MichaReiser_
 
 ## Summary
 

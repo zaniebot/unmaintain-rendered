@@ -12,14 +12,14 @@ head: release/283
 created_at: 2023-08-07T21:36:35Z
 updated_at: 2023-08-08T17:31:31Z
 url: https://github.com/astral-sh/ruff/pull/6407
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Bump version number to 0.0.283
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-07 21:36_
+_@zanieb_
 
 _No description provided._
 

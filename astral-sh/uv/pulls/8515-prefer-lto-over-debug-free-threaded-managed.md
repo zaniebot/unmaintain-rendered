@@ -13,14 +13,14 @@ head: lto
 created_at: 2024-10-24T06:42:15Z
 updated_at: 2024-10-24T12:51:21Z
 url: https://github.com/astral-sh/uv/pull/8515
-synced_at: 2026-01-10T12:54:11Z
+synced_at: 2026-01-12T16:08:21Z
 ```
 
 # Prefer `lto` over `debug` free-threaded managed Python builds
 
 ---
 
-_Pull request opened by @j178 on 2024-10-24 06:42_
+_@j178_
 
 Fix this typo:
 https://github.com/astral-sh/uv/blob/98523e2014e9a5c69706623344026d76296e178f/crates/uv-python/fetch-download-metadata.py#L399

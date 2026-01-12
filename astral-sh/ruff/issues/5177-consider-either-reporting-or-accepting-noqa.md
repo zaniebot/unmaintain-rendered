@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-19T09:27:59Z
 updated_at: 2023-07-06T16:03:12Z
 url: https://github.com/astral-sh/ruff/issues/5177
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Consider either reporting or accepting #noqa (without space)
 
 ---
 
-_Issue opened by @mairas on 2023-06-19 09:27_
+_@mairas_
 
 I just tried to add a `noqa` comment on my Pydantic validator that doesn't get correctly introspected:
 

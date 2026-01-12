@@ -12,14 +12,14 @@ head: pep539-support
 created_at: 2022-10-06T01:58:32Z
 updated_at: 2022-10-06T16:05:13Z
 url: https://github.com/astral-sh/ruff/pull/333
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # support pep593 annotations
 
 ---
 
-_Pull request opened by @adriangb on 2022-10-06 01:58_
+_@adriangb_
 
 Currently PEP593 annotations throw an error because they are being processed as regular type annotations where instead the first argument should be processed as a regular annotations and the rest should be processed as arbitrary code (and can have string constants, which is what causes the current error).
 

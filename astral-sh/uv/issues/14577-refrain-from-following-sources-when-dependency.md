@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-12T15:28:56Z
 updated_at: 2025-07-12T15:35:23Z
 url: https://github.com/astral-sh/uv/issues/14577
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:52Z
 ```
 
 # Refrain from following sources when dependency group is excluded.
 
 ---
 
-_Issue opened by @Panacea729 on 2025-07-12 15:28_
+_@Panacea729_
 
 ### Summary
 

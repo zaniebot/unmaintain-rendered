@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-26T21:25:40Z
 updated_at: 2024-08-26T22:08:52Z
 url: https://github.com/astral-sh/uv/issues/6659
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Installing a new tool with --exclude-newer downgrades another previously installed tool
 
 ---
 
-_Issue opened by @olutra on 2024-08-26 21:25_
+_@olutra_
 
 Installing a new tool (docker-compose) with `--exclude-newer` option downgrades another previously installed tool (yt-dlp) if `upgrade --all` command is called.
 python 3.12 is used implicitly for the yt-dlp tool.

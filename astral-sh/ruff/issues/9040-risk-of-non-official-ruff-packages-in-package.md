@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-07T03:35:32Z
 updated_at: 2023-12-11T04:15:02Z
 url: https://github.com/astral-sh/ruff/issues/9040
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Risk of non-official Ruff packages in package managers.
 
 ---
 
-_Issue opened by @FishAlchemist on 2023-12-07 03:35_
+_@FishAlchemist_
 
 About installing Ruff from the package management tool.
 https://github.com/astral-sh/ruff/blob/main/docs/installation.md

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-16T14:37:28Z
 updated_at: 2023-03-27T16:15:00Z
 url: https://github.com/astral-sh/ruff/issues/2954
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Update bugbear
 
 ---
 
-_Issue opened by @henryiii on 2023-02-16 14:37_
+_@henryiii_
 
 Looks like bugbear has new rules:
 

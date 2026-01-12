@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-23T17:46:35Z
 updated_at: 2025-08-26T17:26:21Z
 url: https://github.com/astral-sh/uv/issues/15474
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # `uv venv -c .` wipes working directory and fails to create a venv
 
 ---
 
-_Issue opened by @notatallshaw on 2025-08-23 17:46_
+_@notatallshaw_
 
 ### Summary
 

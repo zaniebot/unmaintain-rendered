@@ -14,14 +14,14 @@ head: jtfm/index-url-auth
 created_at: 2025-04-03T14:05:57Z
 updated_at: 2025-04-19T07:41:04Z
 url: https://github.com/astral-sh/uv/pull/12651
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # Use index URL instead of package URL for keyring credential lookups
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-04-03 14:05_
+_@jtfmumm_
 
 Some registries (like Azure Artifact) can require you to authenticate separately for every package URL if you do not authenticate for the /simple endpoint. These changes make the auth middleware aware of index URL endpoints and attempts to fetch keyring credentials for such an index URL when making a request to any URL it's a prefix of.
 

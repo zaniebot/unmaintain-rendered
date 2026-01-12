@@ -13,14 +13,14 @@ head: micha/ruff-0.9.9
 created_at: 2025-02-28T09:06:39Z
 updated_at: 2025-02-28T09:17:40Z
 url: https://github.com/astral-sh/ruff/pull/16434
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Bump version to Ruff 0.9.9
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-28 09:06_
+_@MichaReiser_
 
 ## Summary
 

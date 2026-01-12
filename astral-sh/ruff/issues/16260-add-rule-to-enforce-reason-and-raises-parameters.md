@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-19T16:57:12Z
 updated_at: 2025-02-19T18:21:06Z
 url: https://github.com/astral-sh/ruff/issues/16260
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Add  rule to enforce `reason` and `raises` parameters in pytest.mark.xfail
 
 ---
 
-_Issue opened by @kosdmit on 2025-02-19 16:57_
+_@kosdmit_
 
 The `pytest.mark.xfail` marker is used to mark tests as temporarily failing. It has  `reason` and `raises` optional parameters, which can be used to provide more context for the failure.
 

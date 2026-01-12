@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-10T21:27:47Z
 updated_at: 2023-07-06T13:01:41Z
 url: https://github.com/astral-sh/ruff/issues/2743
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # CLI: --color=auto|no|yes
 
 ---
 
-_Issue opened by @spaceone on 2023-02-10 21:27_
+_@spaceone_
 
 The CLI should support `--color=auto|no|yes` where `auto` detects if the output is redirected into a pipe/file and prevent colorizing output in that case.
 

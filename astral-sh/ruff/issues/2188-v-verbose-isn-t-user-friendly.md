@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T06:22:58Z
 updated_at: 2023-02-03T18:31:38Z
 url: https://github.com/astral-sh/ruff/issues/2188
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `-v` / `--verbose` isn't user-friendly
 
 ---
 
-_Issue opened by @not-my-profile on 2023-01-26 06:22_
+_@not-my-profile_
 
 ```
 $ echo 'import foo' > bar.py

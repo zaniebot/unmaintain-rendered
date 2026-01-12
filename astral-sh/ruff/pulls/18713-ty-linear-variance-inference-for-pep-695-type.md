@@ -13,14 +13,14 @@ head: variance-inference
 created_at: 2025-06-17T06:16:27Z
 updated_at: 2025-09-01T02:46:38Z
 url: https://github.com/astral-sh/ruff/pull/18713
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # [ty] linear variance inference for PEP-695 type parameters
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2025-06-17 06:16_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-29T12:56:43Z
 updated_at: 2023-03-02T14:43:25Z
 url: https://github.com/astral-sh/ruff/issues/961
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Support for multi-line tables in `pyproject.toml`
 
 ---
 
-_Issue opened by @patrick91 on 2022-11-29 12:56_
+_@patrick91_
 
 I do have a few per-file ignores in my project[1]. Do you think it is possible to add support for multi-line tables?
 

@@ -12,14 +12,14 @@ head: ibraheem/uv-add-update
 created_at: 2024-06-26T21:00:27Z
 updated_at: 2024-06-26T22:36:08Z
 url: https://github.com/astral-sh/uv/pull/4566
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:19Z
 ```
 
 # Add `--extra` to `uv add` and enable fine grained updates
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-06-26 21:00_
+_@ibraheemdev_
 
 ## Summary
 

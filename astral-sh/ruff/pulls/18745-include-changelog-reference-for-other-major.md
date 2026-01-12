@@ -13,14 +13,14 @@ head: dhruv/other-changelog
 created_at: 2025-06-18T06:59:48Z
 updated_at: 2025-06-18T12:52:27Z
 url: https://github.com/astral-sh/ruff/pull/18745
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # Include changelog reference for other major versions
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-06-18 06:59_
+_@dhruvmanila_
 
 Add references to changelog files for other major versions in the main CHANGELOG.md file.
 

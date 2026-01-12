@@ -15,14 +15,14 @@ head: dhruv/mock-server
 created_at: 2025-07-17T04:26:42Z
 updated_at: 2025-07-24T05:25:18Z
 url: https://github.com/astral-sh/ruff/pull/19391
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:38Z
 ```
 
 # [ty] Implement mock language server for testing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-17 04:26_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: renovate/react-resizable-panels-3.x
 created_at: 2025-05-19T06:16:55Z
 updated_at: 2025-05-19T06:29:33Z
 url: https://github.com/astral-sh/ruff/pull/18185
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # Update dependency react-resizable-panels to v3
 
 ---
 
-_Pull request opened by @renovate on 2025-05-19 06:16_
+_@renovate_
 
 This PR contains the following updates:
 

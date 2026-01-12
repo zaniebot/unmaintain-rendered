@@ -13,14 +13,14 @@ head: alpha-21
 created_at: 2025-09-18T16:19:12Z
 updated_at: 2025-09-19T06:42:24Z
 url: https://github.com/astral-sh/ty/pull/1205
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Bump version to 0.0.1-alpha.21
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-09-18 16:19_
+_@MichaReiser_
 
 _No description provided._
 

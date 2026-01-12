@@ -13,14 +13,14 @@ head: dhruv/call-argument-names
 created_at: 2025-08-14T08:57:31Z
 updated_at: 2025-08-14T09:34:15Z
 url: https://github.com/astral-sh/ty/pull/981
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add `ty.inlayHints.callArgumentNames` reference
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-08-14 08:57_
+_@dhruvmanila_
 
 _No description provided._
 

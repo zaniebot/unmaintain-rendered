@@ -12,14 +12,14 @@ head: formatter_f-strings_with_triple_quotes
 created_at: 2023-10-05T13:16:14Z
 updated_at: 2023-10-11T11:38:58Z
 url: https://github.com/astral-sh/ruff/pull/7826
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Formatter quoting for f-strings with triple quotes
 
 ---
 
-_Pull request opened by @konstin on 2023-10-05 13:16_
+_@konstin_
 
 **Summary** Quoting of f-strings can change if they are triple quoted and only contain single quotes inside.
 

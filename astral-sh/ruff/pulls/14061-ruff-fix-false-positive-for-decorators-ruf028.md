@@ -14,14 +14,14 @@ head: fix-ruf028-false-positive
 created_at: 2024-11-03T05:02:28Z
 updated_at: 2024-11-03T11:49:04Z
 url: https://github.com/astral-sh/ruff/pull/14061
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [`ruff`] - fix false positive for decorators (`RUF028`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-11-03 05:02_
+_@diceroll123_
 
 ## Summary
 

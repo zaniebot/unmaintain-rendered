@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T13:11:31Z
 updated_at: 2025-06-03T13:13:23Z
 url: https://github.com/astral-sh/uv/issues/13805
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # Use pre-installed docker images for better CI stability
 
 ---
 
-_Issue opened by @konstin on 2025-06-03 13:11_
+_@konstin_
 
 We regularly see timeouts in CI builds where the installation of Python on a host fails, previously apt, now zypper (e.g., https://github.com/astral-sh/uv/actions/runs/15417763065/job/43384741242?pr=13804). We can make CI both more reliable and faster by using docker images we prebuild by running the install command on top of the base image, storing this in the GitHub container registry and using that image in our CI runs. For the opensuse example, this would be:
 

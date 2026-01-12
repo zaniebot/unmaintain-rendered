@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-13T13:55:31Z
 updated_at: 2023-12-24T16:04:02Z
 url: https://github.com/astral-sh/uv/issues/412
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Support the html PEP 503 simple repository api
 
 ---
 
-_Issue opened by @konstin on 2023-11-13 13:55_
+_@konstin_
 
 This involves:
  - [ ] Finding or writing a parser for the simple repository [PEP 503](https://peps.python.org/pep-0503/) html format

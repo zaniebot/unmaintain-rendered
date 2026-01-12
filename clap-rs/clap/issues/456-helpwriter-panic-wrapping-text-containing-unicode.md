@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-03-22T02:01:53Z
 updated_at: 2016-03-27T20:37:28Z
 url: https://github.com/clap-rs/clap/issues/456
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # HelpWriter: panic wrapping text containing unicode symbol chars in subcommand help
 
 ---
 
-_Issue opened by @mroth on 2016-03-22 02:01_
+_@mroth_
 
 Subcommand help text which contains more complex Unicode characters can cause the `help` command to panic.
 

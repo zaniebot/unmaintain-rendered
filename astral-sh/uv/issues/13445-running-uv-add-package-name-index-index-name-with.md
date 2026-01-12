@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-14T07:56:14Z
 updated_at: 2025-05-14T15:57:50Z
 url: https://github.com/astral-sh/uv/issues/13445
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # Running `uv add package-name --index index_name` with the index already inside the `pyproject.toml`
 
 ---
 
-_Issue opened by @Capsar on 2025-05-14 07:56_
+_@Capsar_
 
 ### Summary
 

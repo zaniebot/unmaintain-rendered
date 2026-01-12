@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-01T00:08:54Z
 updated_at: 2025-10-03T13:36:09Z
 url: https://github.com/astral-sh/ruff/issues/20655
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Trying to use a non-existent fromfile with a leading special character panics instead of giving nice error 
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-10-01 00:08_
+_@MeGaGiGaGon_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-19T05:31:04Z
 updated_at: 2024-10-21T01:48:55Z
 url: https://github.com/astral-sh/uv/issues/8356
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # Using uv, how do I implement functionality similar to cmdclass in setup.py?
 
 ---
 
-_Issue opened by @shell-nlp on 2024-10-19 05:31_
+_@shell-nlp_
 
 ```python
 from setuptools.command.install import install

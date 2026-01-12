@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-08T00:49:00Z
 updated_at: 2024-11-08T01:09:03Z
 url: https://github.com/astral-sh/uv/issues/8911
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # Broken 0.5.0 installation script
 
 ---
 
-_Issue opened by @apellex on 2024-11-08 00:49_
+_@apellex_
 
 This is a step from BentoML base image. Prior to 0.5.0 release (which was about 1.5h ago), it completes with no issue with uv version 0.4.30. Was there any change in the install script that might have cause it to fail here? Curious if anyone else encounter this in their pipeline
 

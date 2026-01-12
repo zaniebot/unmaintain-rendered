@@ -13,14 +13,14 @@ head: b029
 created_at: 2023-02-20T20:16:03Z
 updated_at: 2023-02-21T09:52:48Z
 url: https://github.com/astral-sh/ruff/pull/3068
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # feat(B029): Add B029 from flake8-bugbear
 
 ---
 
-_Pull request opened by @carlosmiei on 2023-02-20 20:16_
+_@carlosmiei_
 
 - Added B029 from flake8-bugbear
 ![image](https://user-images.githubusercontent.com/43336371/220191336-82cb464e-382a-4d88-9195-c581c79d38e6.png)

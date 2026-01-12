@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-02T13:29:54Z
 updated_at: 2025-07-02T13:31:07Z
 url: https://github.com/astral-sh/uv/issues/14421
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # `lock::lock_pytorch_cpu` times out on Windows
 
 ---
 
-_Issue opened by @zanieb on 2025-07-02 13:29_
+_@zanieb_
 
 ```
      TIMEOUT [  90.070s] uv::it lock::lock_pytorch_cpu

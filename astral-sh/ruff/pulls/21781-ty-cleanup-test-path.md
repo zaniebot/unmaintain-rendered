@@ -14,14 +14,14 @@ head: gankra/doremi
 created_at: 2025-12-03T21:49:43Z
 updated_at: 2025-12-03T21:54:51Z
 url: https://github.com/astral-sh/ruff/pull/21781
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] cleanup test path
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-03 21:49_
+_@Gankra_
 
 Fixes https://github.com/astral-sh/ruff/pull/21745#discussion_r2586552295
 

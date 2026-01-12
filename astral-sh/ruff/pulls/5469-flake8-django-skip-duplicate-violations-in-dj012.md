@@ -13,14 +13,14 @@ head: charlie/DJ012
 created_at: 2023-07-03T00:56:36Z
 updated_at: 2023-07-03T01:26:42Z
 url: https://github.com/astral-sh/ruff/pull/5469
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # [`flake8-django`] Skip duplicate violations in `DJ012`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-03 00:56_
+_@charliermarsh_
 
 ## Summary
 

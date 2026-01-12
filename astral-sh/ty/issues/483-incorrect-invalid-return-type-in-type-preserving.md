@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-22T08:03:34Z
 updated_at: 2025-11-18T16:10:28Z
 url: https://github.com/astral-sh/ty/issues/483
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Incorrect `invalid-return-type` in type-preserving generic mapping function branching on runtime type
 
 ---
 
-_Issue opened by @shilch on 2025-05-22 08:03_
+_@shilch_
 
 ### Summary
 

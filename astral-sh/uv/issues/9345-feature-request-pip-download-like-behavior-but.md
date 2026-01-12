@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T02:39:59Z
 updated_at: 2024-12-26T15:56:41Z
 url: https://github.com/astral-sh/uv/issues/9345
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # Feature request - "pip download"-like behavior, but platform independent.
 
 ---
 
-_Issue opened by @f3flight on 2024-11-22 02:39_
+_@f3flight_
 
 Hi UV devs! I was looking for a way to use UV to download a full set of dependency files for a given package, similarly to how "pip download" works. Looks like there's no clean way to do this currently, only extracting from cache - is that correct? More importantly, I am looking for a way to download all possible artifacts for each dependency in the tree, i.e. both sdist and all wheels. This would be equivalent to creating a lock file and downloading all urls listed there. The end goal of this is to be able to do sparse updates of internal mirror of various external indexes, grabbing only necessary files.
 

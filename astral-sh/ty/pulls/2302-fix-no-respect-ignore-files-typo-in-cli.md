@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2026-01-02T13:15:20Z
 updated_at: 2026-01-02T13:48:40Z
 url: https://github.com/astral-sh/ty/pull/2302
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Fix `--no-respect-ignore-files` typo in CLI documentation
 
 ---
 
-_Pull request opened by @evroon on 2026-01-02 13:15_
+_@evroon_
 
 <!--
 Thank you for contributing to ty! To help us out with reviewing, please consider the following:

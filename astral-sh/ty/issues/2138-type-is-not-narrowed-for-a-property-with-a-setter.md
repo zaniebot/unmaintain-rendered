@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-21T00:09:19Z
 updated_at: 2025-12-22T20:08:21Z
 url: https://github.com/astral-sh/ty/issues/2138
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Type is not narrowed for a property with a setter
 
 ---
 
-_Issue opened by @goodspark on 2025-12-21 00:09_
+_@goodspark_
 
 ### Summary
 

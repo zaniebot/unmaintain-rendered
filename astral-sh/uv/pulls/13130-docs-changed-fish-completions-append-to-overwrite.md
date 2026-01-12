@@ -13,14 +13,14 @@ head: main
 created_at: 2025-04-27T13:26:48Z
 updated_at: 2025-04-28T00:52:15Z
 url: https://github.com/astral-sh/uv/pull/13130
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:33Z
 ```
 
 # [docs] Changed fish completions append `>>` to overwrite `>`
 
 ---
 
-_Pull request opened by @ndrew222 on 2025-04-27 13:26_
+_@ndrew222_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

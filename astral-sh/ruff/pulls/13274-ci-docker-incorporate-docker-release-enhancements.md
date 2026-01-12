@@ -14,14 +14,14 @@ head: docker-release-improvements
 created_at: 2024-09-06T23:33:24Z
 updated_at: 2024-10-27T13:49:18Z
 url: https://github.com/astral-sh/ruff/pull/13274
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # ci(docker): incorporate docker release enhancements from uv
 
 ---
 
-_Pull request opened by @samypr100 on 2024-09-06 23:33_
+_@samypr100_
 
 ## Summary
 

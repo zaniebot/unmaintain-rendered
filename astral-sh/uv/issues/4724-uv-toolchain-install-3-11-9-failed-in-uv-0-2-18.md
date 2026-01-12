@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-02T09:15:11Z
 updated_at: 2024-07-02T13:21:16Z
 url: https://github.com/astral-sh/uv/issues/4724
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # ``uv toolchain install 3.11.9``  failed in uv 0.2.18 on Windows 11 23H2.
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-07-02 09:15_
+_@FishAlchemist_
 
 ### Version
 ```powershell

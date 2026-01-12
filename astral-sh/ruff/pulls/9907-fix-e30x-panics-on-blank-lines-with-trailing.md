@@ -13,14 +13,14 @@ head: hoel/fix_E30X_panics
 created_at: 2024-02-09T09:25:44Z
 updated_at: 2024-02-09T14:07:02Z
 url: https://github.com/astral-sh/ruff/pull/9907
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Fix `E30X` panics on blank lines with trailing white spaces
 
 ---
 
-_Pull request opened by @hoel-bagard on 2024-02-09 09:25_
+_@hoel-bagard_
 
 ## Summary
 

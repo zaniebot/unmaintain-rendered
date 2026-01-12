@@ -13,14 +13,14 @@ head: RUF059
 created_at: 2025-02-03T06:01:39Z
 updated_at: 2025-04-25T17:30:51Z
 url: https://github.com/astral-sh/ruff/pull/15903
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`pylint`] Redefined outer names (`PLW0621`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-03 06:01_
+_@InSyncWithFoo_
 
 ## Summary
 

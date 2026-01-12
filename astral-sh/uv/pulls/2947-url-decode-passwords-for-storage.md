@@ -13,14 +13,14 @@ head: zb/decode-password
 created_at: 2024-04-09T22:44:07Z
 updated_at: 2024-04-15T20:43:01Z
 url: https://github.com/astral-sh/uv/pull/2947
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:19Z
 ```
 
 # URL decode passwords for storage
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-09 22:44_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/2822
 Same idea as https://github.com/astral-sh/uv/pull/2592

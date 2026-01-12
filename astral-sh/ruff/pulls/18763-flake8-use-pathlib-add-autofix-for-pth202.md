@@ -14,14 +14,14 @@ head: feat/pth202-autofix
 created_at: 2025-06-18T17:47:00Z
 updated_at: 2025-06-24T18:18:56Z
 url: https://github.com/astral-sh/ruff/pull/18763
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [`flake8-use-pathlib`] Add autofix for `PTH202`
 
 ---
 
-_Pull request opened by @chirizxc on 2025-06-18 17:47_
+_@chirizxc_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

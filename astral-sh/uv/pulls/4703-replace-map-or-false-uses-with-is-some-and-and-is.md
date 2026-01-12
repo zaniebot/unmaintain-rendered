@@ -13,14 +13,14 @@ head: ibraheem/is-some-and
 created_at: 2024-07-01T19:00:06Z
 updated_at: 2024-07-01T19:28:43Z
 url: https://github.com/astral-sh/uv/pull/4703
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:24Z
 ```
 
 # Replace `map_or(false, ..)` uses with `is_some_and` and `is_ok_and`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-01 19:00_
+_@ibraheemdev_
 
 ## Summary
 

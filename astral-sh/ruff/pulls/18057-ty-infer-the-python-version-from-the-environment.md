@@ -13,14 +13,14 @@ head: zb/python-env-version
 created_at: 2025-05-12T21:51:50Z
 updated_at: 2025-05-30T21:28:20Z
 url: https://github.com/astral-sh/ruff/pull/18057
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] Infer the Python version from the environment if feasible
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-12 21:51_
+_@zanieb_
 
 Posting the draft to preview the change here and decide if it's fine or if we need to do a more invasive refactor.
 

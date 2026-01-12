@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-26T12:21:56Z
 updated_at: 2025-02-02T20:01:04Z
 url: https://github.com/astral-sh/uv/issues/10966
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Choose which scripts entrypoints are installed in the virtual environment when installing packages
 
 ---
 
-_Issue opened by @Coruscant11 on 2025-01-26 12:21_
+_@Coruscant11_
 
 ### Summary
 

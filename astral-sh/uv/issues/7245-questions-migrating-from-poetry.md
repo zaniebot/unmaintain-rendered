@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-10T08:12:17Z
 updated_at: 2024-09-11T09:11:34Z
 url: https://github.com/astral-sh/uv/issues/7245
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Questions: Migrating from poetry
 
 ---
 
-_Issue opened by @EdgyEdgemond on 2024-09-10 08:12_
+_@EdgyEdgemond_
 
 I came here looking for information on `poetry env info` but found another comment on a closed issue that covered a few other points. So I hijacked that comment.
 

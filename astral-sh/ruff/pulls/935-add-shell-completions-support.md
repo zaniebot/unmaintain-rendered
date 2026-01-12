@@ -12,14 +12,14 @@ head: shell-complete
 created_at: 2022-11-28T04:21:54Z
 updated_at: 2022-11-28T05:34:13Z
 url: https://github.com/astral-sh/ruff/pull/935
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add shell completions support
 
 ---
 
-_Pull request opened by @messense on 2022-11-28 04:21_
+_@messense_
 
 Can be used in Homebrew formula to generate shell completions, for example https://github.com/Homebrew/homebrew-core/blob/4c4619c1a5046fe134f761043f52f07f71dd2cab/Formula/maturin.rb#L26
 

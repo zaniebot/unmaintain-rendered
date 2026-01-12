@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-21T01:35:47Z
 updated_at: 2024-03-21T12:54:07Z
 url: https://github.com/clap-rs/clap/issues/5408
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # clap_complete documentation should clearly point to CommandFactory
 
 ---
 
-_Issue opened by @lolbinarycat on 2024-03-21 01:35_
+_@lolbinarycat_
 
 ### Please complete the following tasks
 

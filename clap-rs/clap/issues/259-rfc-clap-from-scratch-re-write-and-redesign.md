@@ -13,14 +13,14 @@ assignees: []
 created_at: 2015-09-19T10:37:19Z
 updated_at: 2016-03-28T18:11:22Z
 url: https://github.com/clap-rs/clap/issues/259
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # RFC: Clap, from scratch re-write and redesign discussion
 
 ---
 
-_Issue opened by @WildCryptoFox on 2015-09-19 10:37_
+_@WildCryptoFox_
 
 **[Drafting; @kbknapp @sru please feel free to update this OP as you see fit. Please "create a lock" by posting a comment saying that you're editing - and then delete when done]**
 

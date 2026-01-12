@@ -13,14 +13,14 @@ head: git
 created_at: 2024-10-15T16:18:13Z
 updated_at: 2024-10-15T18:28:54Z
 url: https://github.com/astral-sh/uv/pull/8224
-synced_at: 2026-01-10T12:54:05Z
+synced_at: 2026-01-12T16:08:13Z
 ```
 
 # Reuse the result of `which git`
 
 ---
 
-_Pull request opened by @j178 on 2024-10-15 16:18_
+_@j178_
 
 ## Summary
 

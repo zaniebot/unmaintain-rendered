@@ -13,14 +13,14 @@ head: charlie/yield
 created_at: 2023-02-07T20:17:18Z
 updated_at: 2023-02-07T20:18:54Z
 url: https://github.com/astral-sh/ruff/pull/2637
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Skip ternary fixes for yields and awaits
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-07 20:17_
+_@charliermarsh_
 
 Closes #2631.
 

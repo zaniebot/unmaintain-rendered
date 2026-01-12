@@ -12,14 +12,14 @@ head: zb/torch-again
 created_at: 2025-01-28T18:37:48Z
 updated_at: 2025-01-28T18:45:49Z
 url: https://github.com/astral-sh/uv/pull/11031
-synced_at: 2026-01-10T11:45:24Z
+synced_at: 2026-01-12T16:09:38Z
 ```
 
 # Update torch snaps again
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-28 18:37_
+_@zanieb_
 
 _No description provided._
 

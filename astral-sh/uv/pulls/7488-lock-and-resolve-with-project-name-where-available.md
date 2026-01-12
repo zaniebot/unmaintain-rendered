@@ -12,14 +12,14 @@ head: ups/lock-with-project-name
 created_at: 2024-09-18T09:40:13Z
 updated_at: 2024-09-20T10:34:06Z
 url: https://github.com/astral-sh/uv/pull/7488
-synced_at: 2026-01-10T12:53:48Z
+synced_at: 2026-01-12T16:07:51Z
 ```
 
 # Lock and resolve with project name where available
 
 ---
 
-_Pull request opened by @lucab on 2024-09-18 09:40_
+_@lucab_
 
 This populates the project package name (if available) for lock-and-resolve operations.
 

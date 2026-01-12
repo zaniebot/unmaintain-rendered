@@ -13,14 +13,14 @@ head: alex/tuple-sub-constructors
 created_at: 2025-07-21T17:35:29Z
 updated_at: 2025-07-21T21:25:12Z
 url: https://github.com/astral-sh/ruff/pull/19469
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Make tuple subclass constructors sound
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-21 17:35_
+_@AlexWaygood_
 
 ## Summary
 

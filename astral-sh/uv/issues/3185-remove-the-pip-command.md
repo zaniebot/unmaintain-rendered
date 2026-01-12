@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-22T13:36:02Z
 updated_at: 2024-04-22T14:54:08Z
 url: https://github.com/astral-sh/uv/issues/3185
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Remove the pip command
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-04-22 13:36_
+_@inoa-jboliveira_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

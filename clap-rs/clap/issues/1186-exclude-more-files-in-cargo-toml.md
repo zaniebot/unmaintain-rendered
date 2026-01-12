@@ -13,14 +13,14 @@ assignees: []
 created_at: 2018-02-18T17:50:30Z
 updated_at: 2018-08-02T03:30:19Z
 url: https://github.com/clap-rs/clap/issues/1186
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Exclude more files in Cargo.toml
 
 ---
 
-_Issue opened by @RazrFalcon on 2018-02-18 17:50_
+_@RazrFalcon_
 
 Exclusion of `CHANGELOG.md`, `CONTRIBUTORS.md` and `README.md` will decrease `.crate` file size from 186KiB to 133KiB.
 

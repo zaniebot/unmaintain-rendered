@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-14T08:51:44Z
 updated_at: 2025-12-09T00:49:22Z
 url: https://github.com/astral-sh/ty/issues/1545
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # inlay hints for return types
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-14 08:51_
+_@MichaReiser_
 
 Requires https://github.com/astral-sh/ty/issues/128
 

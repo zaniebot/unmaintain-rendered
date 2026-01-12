@@ -13,14 +13,14 @@ head: dhruv/resolve-config-once
 created_at: 2025-01-15T12:42:00Z
 updated_at: 2025-02-20T11:07:53Z
 url: https://github.com/astral-sh/ruff/pull/15494
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Resolve editor-specified config file once
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-15 12:42_
+_@dhruvmanila_
 
 ## Summary
 

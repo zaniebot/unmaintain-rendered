@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-07-12T07:59:15Z
 updated_at: 2024-05-06T06:07:35Z
 url: https://github.com/clap-rs/clap/issues/3910
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # clap_complete: zsh completion doesn't add conflicts for group
 
 ---
 
-_Issue opened by @tmccombs on 2022-07-12 07:59_
+_@tmccombs_
 
 ### Please complete the following tasks
 

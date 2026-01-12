@@ -12,14 +12,14 @@ head: alex/redknot-benchmarks
 created_at: 2024-07-18T20:20:05Z
 updated_at: 2024-07-18T20:33:29Z
 url: https://github.com/astral-sh/ruff/pull/12392
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Remove use of `str` from benchmarks
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-18 20:20_
+_@AlexWaygood_
 
 #12390 adds support for resolving types to classes in typeshed's `builtins.pyi` stub file. This causes redknot to crash when attempting to execute this benchmark, as the `str` definition in typeshed is too complex for us to handle right now. `object` is a simpler type definition which we can resolve symbols to without crashing.
 

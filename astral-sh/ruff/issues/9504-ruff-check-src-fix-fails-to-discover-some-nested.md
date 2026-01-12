@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-13T09:00:58Z
 updated_at: 2024-01-26T19:33:32Z
 url: https://github.com/astral-sh/ruff/issues/9504
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # ruff check src/ --fix fails to discover some nested files but works when ran directly on that file
 
 ---
 
-_Issue opened by @ringohoffman on 2024-01-13 09:00_
+_@ringohoffman_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -12,14 +12,14 @@ head: charlie/importer
 created_at: 2023-05-06T20:15:35Z
 updated_at: 2023-05-07T02:58:32Z
 url: https://github.com/astral-sh/ruff/pull/4258
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Respect insertion location when importing symbols
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-06 20:15_
+_@charliermarsh_
 
 ## Summary
 

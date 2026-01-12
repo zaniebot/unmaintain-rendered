@@ -13,14 +13,14 @@ head: RFC9457-problem-messages
 created_at: 2025-10-09T08:04:09Z
 updated_at: 2025-10-16T19:54:36Z
 url: https://github.com/astral-sh/uv/pull/16199
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:10Z
 ```
 
 # Implement RFC9457 compliant messaging
 
 ---
 
-_Pull request opened by @doddi on 2025-10-09 08:04_
+_@doddi_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

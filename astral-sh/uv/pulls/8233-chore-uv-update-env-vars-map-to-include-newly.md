@@ -13,14 +13,14 @@ head: update-env-vars
 created_at: 2024-10-16T00:15:04Z
 updated_at: 2024-10-26T16:14:41Z
 url: https://github.com/astral-sh/uv/pull/8233
-synced_at: 2026-01-10T12:54:05Z
+synced_at: 2026-01-12T16:08:13Z
 ```
 
 # chore(uv): update env vars map to include newly added ones
 
 ---
 
-_Pull request opened by @samypr100 on 2024-10-16 00:15_
+_@samypr100_
 
 ## Summary
 

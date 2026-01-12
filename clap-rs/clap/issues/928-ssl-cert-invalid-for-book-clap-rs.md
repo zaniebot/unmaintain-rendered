@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-04-11T00:34:40Z
 updated_at: 2018-08-02T03:30:05Z
 url: https://github.com/clap-rs/clap/issues/928
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # SSL cert invalid for book.clap.rs
 
 ---
 
-_Issue opened by @cardoe on 2017-04-11 00:34_
+_@cardoe_
 
 I see that the certificate was recently renewed per #887 and #890 but it appears that https://book.clap.rs was left off. To compound the issue the site uses HSTS so there's no way to override it temporarily and get to the content.
 

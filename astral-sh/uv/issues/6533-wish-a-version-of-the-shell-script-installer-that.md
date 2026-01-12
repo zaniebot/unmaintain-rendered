@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-23T16:59:59Z
 updated_at: 2025-10-03T20:52:44Z
 url: https://github.com/astral-sh/uv/issues/6533
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # [wish] A version of the shell script installer that also installs a tool in a single line
 
 ---
 
-_Issue opened by @tiangolo on 2024-08-23 16:59_
+_@tiangolo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

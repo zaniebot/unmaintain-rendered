@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-22T07:19:21Z
 updated_at: 2023-08-22T12:52:53Z
 url: https://github.com/astral-sh/ruff/issues/6754
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Fixing 101 unused variables shows error "Failed to converge after 100 iterations."
 
 ---
 
-_Issue opened by @qarmin on 2023-08-22 07:19_
+_@qarmin_
 
 Ruff 0.0.285
 

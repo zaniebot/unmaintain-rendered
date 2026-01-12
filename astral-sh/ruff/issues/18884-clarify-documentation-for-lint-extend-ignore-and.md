@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-23T06:34:48Z
 updated_at: 2025-07-14T07:55:28Z
 url: https://github.com/astral-sh/ruff/issues/18884
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Clarify documentation for `lint.extend-ignore` and `lint.extend-select` settings
 
 ---
 
-_Issue opened by @Tedpac on 2025-06-23 06:34_
+_@Tedpac_
 
 These settings and their usefulness can be (and have been, from what I've seen in multiple issues) easily misunderstood.
 

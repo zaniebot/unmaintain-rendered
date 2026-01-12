@@ -1,0 +1,372 @@
+```yaml
+number: 525
+title: Cannot build ripgrep
+type: issue
+state: closed
+author: thekashifmalik
+labels: []
+assignees: []
+created_at: 2017-06-21T10:17:17Z
+updated_at: 2017-06-21T16:08:46Z
+url: https://github.com/BurntSushi/ripgrep/issues/525
+synced_at: 2026-01-12T16:13:22Z
+```
+
+# Cannot build ripgrep
+
+---
+
+_@thekashifmalik_
+
+Error while building **ripgrep** on **Ubuntu 16.04.1x64** using **cargo 0.19.0** and **rustc 1.18.0**.
+
+```
+$ cargo install ripgrep
+    Updating registry `https://github.com/rust-lang/crates.io-index`
+  Installing ripgrep v0.5.2
+   Compiling bitflags v0.9.1
+   Compiling bytecount v0.1.6
+   Compiling same-file v0.1.3
+   Compiling walkdir v1.0.7
+   Compiling regex-syntax v0.4.1
+   Compiling unicode-segmentation v1.1.0
+   Compiling strsim v0.6.0
+   Compiling utf8-ranges v1.0.0
+   Compiling void v1.0.2
+   Compiling unreachable v0.1.1
+   Compiling log v0.3.8
+   Compiling env_logger v0.4.3
+   Compiling libc v0.2.24
+   Compiling memchr v1.0.1
+   Compiling aho-corasick v0.6.3
+   Compiling memmap v0.5.2
+   Compiling atty v0.2.2
+   Compiling thread-id v3.1.0
+   Compiling term_size v0.3.0
+   Compiling num_cpus v1.6.0
+   Compiling fnv v1.0.5
+   Compiling unicode-width v0.1.4
+   Compiling textwrap v0.6.0
+   Compiling thread_local v0.3.3
+   Compiling regex v0.2.2
+   Compiling grep v0.1.6
+   Compiling globset v0.2.0
+   Compiling termcolor v0.3.2
+   Compiling vec_map v0.8.0
+   Compiling ansi_term v0.9.0
+   Compiling clap v2.25.0
+error: failed to compile `ripgrep v0.5.2`, intermediate artifacts can be found at `/tmp/cargo-install.9URS4nS2Ttmo
+```
+
+What other information can I provide?
+
+---
+
+_Comment by @BurntSushi on 2017-06-21 11:14_
+
+I can't reproduce. Could you please run with the `--verbose` flag and paste the output? For example, this just worked for me:
+
+```
+$ cargo install ripgrep --verbose
+    Updating registry `https://github.com/rust-lang/crates.io-index`
+  Installing ripgrep v0.5.2
+ Downloading log v0.3.8
+ Downloading grep v0.1.6
+ Downloading clap v2.25.0
+ Downloading ignore v0.2.0
+ Downloading env_logger v0.4.3
+ Downloading encoding_rs v0.5.1
+ Downloading regex v0.2.2
+ Downloading num_cpus v1.6.0
+ Downloading libc v0.2.24
+ Downloading termcolor v0.3.2
+ Downloading regex-syntax v0.4.1
+ Downloading textwrap v0.6.0
+ Downloading bitflags v0.9.1
+ Downloading vec_map v0.8.0
+ Downloading term_size v0.3.0
+ Downloading globset v0.2.0
+ Downloading cfg-if v0.1.1
+   Compiling termcolor v0.3.2                                                                                                                                                                                        
+   Compiling lazy_static v0.2.8                                                                                                                                                                                      
+   Compiling unicode-width v0.1.4                                                                                                                                                                                    
+   Compiling libc v0.2.24                                                                                                                                                                                            
+     Running `rustc --crate-name termcolor .cargo/registry/src/github.com-1ecc6299db9ec823/termcolor-0.3.2/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=f7516e240c30716d -C extra-filename=-f7516e240c30716d --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`                                                                                                                                                                                              
+     Running `rustc --crate-name lazy_static .cargo/registry/src/github.com-1ecc6299db9ec823/lazy_static-0.2.8/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=f447c8fc34ba2d14 -C extra-filename=-f447c8fc34ba2d14 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`                                                                                                                                                                                          
+     Running `rustc --crate-name unicode_width .cargo/registry/src/github.com-1ecc6299db9ec823/unicode-width-0.1.4/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 --cfg 'feature="default"' -C metadata=ba86a6adf8564c56 -C extra-filename=-ba86a6adf8564c56 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`                                                                                                                                                            
+     Running `rustc --crate-name libc .cargo/registry/src/github.com-1ecc6299db9ec823/libc-0.2.24/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 --cfg 'feature="use_std"' --cfg 'feature="default"' -C metadata=038d67e212d031a9 -C extra-filename=-038d67e212d031a9 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`                                                                                                                                                   
+   Compiling same-file v0.1.3                                                                                                                                                                                        
+     Running `rustc --crate-name same_file .cargo/registry/src/github.com-1ecc6299db9ec823/same-file-0.1.3/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=29ae7de30776de57 -C extra-filename=-29ae7de30776de57 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`                                                                                                                                                                                              
+   Compiling bytecount v0.1.6                                                                                                                                                                                        
+     Running `rustc --crate-name bytecount .cargo/registry/src/github.com-1ecc6299db9ec823/bytecount-0.1.6/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=bba62d60d9a8c832 -C extra-filename=-bba62d60d9a8c832 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`                                                                                                                                                                                              
+   Compiling regex-syntax v0.4.1                                                                                                                                                                                     
+     Running `rustc --crate-name regex_syntax .cargo/registry/src/github.com-1ecc6299db9ec823/regex-syntax-0.4.1/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=4d593cf8e145f90f -C extra-filename=-4d593cf8e145f90f --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling void v1.0.2
+     Running `rustc --crate-name void .cargo/registry/src/github.com-1ecc6299db9ec823/void-1.0.2/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=dbdefcebe73399ec -C extra-filename=-dbdefcebe73399ec --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling atty v0.2.2
+     Running `rustc --crate-name atty .cargo/registry/src/github.com-1ecc6299db9ec823/atty-0.2.2/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=30eb18227221ed6e -C extra-filename=-30eb18227221ed6e --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern libc=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/liblibc-038d67e212d031a9.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling ansi_term v0.9.0
+     Running `rustc --crate-name ansi_term .cargo/registry/src/github.com-1ecc6299db9ec823/ansi_term-0.9.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=ebe20c4f2cefca34 -C extra-filename=-ebe20c4f2cefca34 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling crossbeam v0.2.10
+     Running `rustc --crate-name crossbeam .cargo/registry/src/github.com-1ecc6299db9ec823/crossbeam-0.2.10/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=f26a599d3e6750cb -C extra-filename=-f26a599d3e6750cb --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling memchr v1.0.1
+     Running `rustc --crate-name memchr .cargo/registry/src/github.com-1ecc6299db9ec823/memchr-1.0.1/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 --cfg 'feature="default"' --cfg 'feature="libc"' --cfg 'feature="use_std"' -C metadata=23315931e75e5378 -C extra-filename=-23315931e75e5378 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern libc=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/liblibc-038d67e212d031a9.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling aho-corasick v0.6.3
+     Running `rustc --crate-name aho_corasick .cargo/registry/src/github.com-1ecc6299db9ec823/aho-corasick-0.6.3/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=cd822fe2a67bca7c -C extra-filename=-cd822fe2a67bca7c --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern memchr=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libmemchr-23315931e75e5378.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling bitflags v0.9.1
+     Running `rustc --crate-name bitflags .cargo/registry/src/github.com-1ecc6299db9ec823/bitflags-0.9.1/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 --cfg 'feature="default"' --cfg 'feature="example_generated"' -C metadata=de3e89e3b5abdf5c -C extra-filename=-de3e89e3b5abdf5c --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling vec_map v0.8.0
+     Running `rustc --crate-name vec_map .cargo/registry/src/github.com-1ecc6299db9ec823/vec_map-0.8.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=0931976e637babbe -C extra-filename=-0931976e637babbe --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling cfg-if v0.1.1
+     Running `rustc --crate-name cfg_if .cargo/registry/src/github.com-1ecc6299db9ec823/cfg-if-0.1.1/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=8ac6dfe93253c06f -C extra-filename=-8ac6dfe93253c06f --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling encoding_rs v0.5.1
+     Running `rustc --crate-name encoding_rs .cargo/registry/src/github.com-1ecc6299db9ec823/encoding_rs-0.5.1/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=bd5e58190c8ee6f5 -C extra-filename=-bd5e58190c8ee6f5 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern cfg_if=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libcfg_if-8ac6dfe93253c06f.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling utf8-ranges v1.0.0
+     Running `rustc --crate-name utf8_ranges .cargo/registry/src/github.com-1ecc6299db9ec823/utf8-ranges-1.0.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=30a3803314e1ff40 -C extra-filename=-30a3803314e1ff40 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling memmap v0.5.2
+     Running `rustc --crate-name memmap .cargo/registry/src/github.com-1ecc6299db9ec823/memmap-0.5.2/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=a480191e7ef0eb2d -C extra-filename=-a480191e7ef0eb2d --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern libc=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/liblibc-038d67e212d031a9.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling unicode-segmentation v1.1.0
+     Running `rustc --crate-name unicode_segmentation .cargo/registry/src/github.com-1ecc6299db9ec823/unicode-segmentation-1.1.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=8469a7f734d61582 -C extra-filename=-8469a7f734d61582 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling strsim v0.6.0
+     Running `rustc --crate-name strsim .cargo/registry/src/github.com-1ecc6299db9ec823/strsim-0.6.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=029640d8c38c132e -C extra-filename=-029640d8c38c132e --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling fnv v1.0.5
+     Running `rustc --crate-name fnv .cargo/registry/src/github.com-1ecc6299db9ec823/fnv-1.0.5/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=d8e7a637fa274748 -C extra-filename=-d8e7a637fa274748 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling walkdir v1.0.7
+     Running `rustc --crate-name walkdir .cargo/registry/src/github.com-1ecc6299db9ec823/walkdir-1.0.7/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=70ece20d06ed1945 -C extra-filename=-70ece20d06ed1945 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern same_file=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libsame_file-29ae7de30776de57.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling num_cpus v1.6.0
+     Running `rustc --crate-name num_cpus .cargo/registry/src/github.com-1ecc6299db9ec823/num_cpus-1.6.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=072a60e0b337f0b2 -C extra-filename=-072a60e0b337f0b2 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern libc=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/liblibc-038d67e212d031a9.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling unreachable v0.1.1
+     Running `rustc --crate-name unreachable .cargo/registry/src/github.com-1ecc6299db9ec823/unreachable-0.1.1/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=9fbb6a5249235e11 -C extra-filename=-9fbb6a5249235e11 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern void=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libvoid-dbdefcebe73399ec.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling thread-id v3.1.0
+     Running `rustc --crate-name thread_id .cargo/registry/src/github.com-1ecc6299db9ec823/thread-id-3.1.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=c0951f4c3d395300 -C extra-filename=-c0951f4c3d395300 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern libc=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/liblibc-038d67e212d031a9.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling log v0.3.8
+     Running `rustc --crate-name log .cargo/registry/src/github.com-1ecc6299db9ec823/log-0.3.8/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 --cfg 'feature="default"' --cfg 'feature="use_std"' -C metadata=f39492c5e20e4027 -C extra-filename=-f39492c5e20e4027 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling thread_local v0.3.3
+     Running `rustc --crate-name thread_local .cargo/registry/src/github.com-1ecc6299db9ec823/thread_local-0.3.3/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=779e9fb7c7a721ac -C extra-filename=-779e9fb7c7a721ac --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern thread_id=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libthread_id-c0951f4c3d395300.rlib --extern unreachable=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libunreachable-9fbb6a5249235e11.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling term_size v0.3.0
+     Running `rustc --crate-name term_size .cargo/registry/src/github.com-1ecc6299db9ec823/term_size-0.3.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 --cfg 'feature="default"' -C metadata=6068f9792fbe6014 -C extra-filename=-6068f9792fbe6014 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern libc=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/liblibc-038d67e212d031a9.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling textwrap v0.6.0
+     Running `rustc --crate-name textwrap .cargo/registry/src/github.com-1ecc6299db9ec823/textwrap-0.6.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=1f241ce9fb07ed38 -C extra-filename=-1f241ce9fb07ed38 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern unicode_width=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libunicode_width-ba86a6adf8564c56.rlib --extern term_size=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libterm_size-6068f9792fbe6014.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling regex v0.2.2
+     Running `rustc --crate-name regex .cargo/registry/src/github.com-1ecc6299db9ec823/regex-0.2.2/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=8066fd0d774b7e22 -C extra-filename=-8066fd0d774b7e22 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern aho_corasick=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libaho_corasick-cd822fe2a67bca7c.rlib --extern utf8_ranges=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libutf8_ranges-30a3803314e1ff40.rlib --extern thread_local=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libthread_local-779e9fb7c7a721ac.rlib --extern regex_syntax=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libregex_syntax-4d593cf8e145f90f.rlib --extern memchr=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libmemchr-23315931e75e5378.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling env_logger v0.4.3
+     Running `rustc --crate-name env_logger .cargo/registry/src/github.com-1ecc6299db9ec823/env_logger-0.4.3/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=060ff9d1ce19309a -C extra-filename=-060ff9d1ce19309a --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern log=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/liblog-f39492c5e20e4027.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling clap v2.25.0
+     Running `rustc --crate-name clap .cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.25.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 --cfg 'feature="ansi_term"' --cfg 'feature="default"' --cfg 'feature="wrap_help"' --cfg 'feature="term_size"' --cfg 'feature="atty"' --cfg 'feature="suggestions"' --cfg 'feature="strsim"' --cfg 'feature="color"' -C metadata=4c66da4ae3346297 -C extra-filename=-4c66da4ae3346297 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern textwrap=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libtextwrap-1f241ce9fb07ed38.rlib --extern ansi_term=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libansi_term-ebe20c4f2cefca34.rlib --extern atty=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libatty-30eb18227221ed6e.rlib --extern bitflags=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libbitflags-de3e89e3b5abdf5c.rlib --extern vec_map=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libvec_map-0931976e637babbe.rlib --extern unicode_width=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libunicode_width-ba86a6adf8564c56.rlib --extern strsim=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libstrsim-029640d8c38c132e.rlib --extern unicode_segmentation=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libunicode_segmentation-8469a7f734d61582.rlib --extern term_size=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libterm_size-6068f9792fbe6014.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling grep v0.1.6
+   Compiling globset v0.2.0
+     Running `rustc --crate-name grep .cargo/registry/src/github.com-1ecc6299db9ec823/grep-0.1.6/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=2be063fa2bc354a1 -C extra-filename=-2be063fa2bc354a1 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern log=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/liblog-f39492c5e20e4027.rlib --extern regex_syntax=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libregex_syntax-4d593cf8e145f90f.rlib --extern memchr=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libmemchr-23315931e75e5378.rlib --extern regex=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libregex-8066fd0d774b7e22.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+     Running `rustc --crate-name globset .cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.2.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=3b0862f3cb41e599 -C extra-filename=-3b0862f3cb41e599 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern regex=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libregex-8066fd0d774b7e22.rlib --extern log=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/liblog-f39492c5e20e4027.rlib --extern aho_corasick=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libaho_corasick-cd822fe2a67bca7c.rlib --extern memchr=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libmemchr-23315931e75e5378.rlib --extern fnv=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libfnv-d8e7a637fa274748.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling ignore v0.2.0
+     Running `rustc --crate-name ignore .cargo/registry/src/github.com-1ecc6299db9ec823/ignore-0.2.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=cf0d89fbf134a3d2 -C extra-filename=-cf0d89fbf134a3d2 --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern crossbeam=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libcrossbeam-f26a599d3e6750cb.rlib --extern regex=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libregex-8066fd0d774b7e22.rlib --extern memchr=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libmemchr-23315931e75e5378.rlib --extern lazy_static=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/liblazy_static-f447c8fc34ba2d14.rlib --extern walkdir=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libwalkdir-70ece20d06ed1945.rlib --extern thread_local=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libthread_local-779e9fb7c7a721ac.rlib --extern globset=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libglobset-3b0862f3cb41e599.rlib --extern log=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/liblog-f39492c5e20e4027.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+   Compiling ripgrep v0.5.2
+     Running `rustc --crate-name build_script_build .cargo/registry/src/github.com-1ecc6299db9ec823/ripgrep-0.5.2/build.rs --crate-type bin --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=9d00380d4279991e -C extra-filename=-9d00380d4279991e --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/build/ripgrep-9d00380d4279991e -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern clap=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libclap-4c66da4ae3346297.rlib --extern lazy_static=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/liblazy_static-f447c8fc34ba2d14.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+     Running `/tmp/cargo-install.nCPfpt0QrgJ6/release/build/ripgrep-9d00380d4279991e/build-script-build`
+     Running `rustc --crate-name rg .cargo/registry/src/github.com-1ecc6299db9ec823/ripgrep-0.5.2/src/main.rs --crate-type bin --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=91e82ce6aba6b8cf -C extra-filename=-91e82ce6aba6b8cf --out-dir /tmp/cargo-install.nCPfpt0QrgJ6/release/deps -L dependency=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps --extern log=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/liblog-f39492c5e20e4027.rlib --extern grep=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libgrep-2be063fa2bc354a1.rlib --extern same_file=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libsame_file-29ae7de30776de57.rlib --extern clap=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libclap-4c66da4ae3346297.rlib --extern memmap=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libmemmap-a480191e7ef0eb2d.rlib --extern bytecount=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libbytecount-bba62d60d9a8c832.rlib --extern ignore=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libignore-cf0d89fbf134a3d2.rlib --extern env_logger=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libenv_logger-060ff9d1ce19309a.rlib --extern lazy_static=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/liblazy_static-f447c8fc34ba2d14.rlib --extern encoding_rs=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libencoding_rs-bd5e58190c8ee6f5.rlib --extern memchr=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libmemchr-23315931e75e5378.rlib --extern regex=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libregex-8066fd0d774b7e22.rlib --extern num_cpus=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libnum_cpus-072a60e0b337f0b2.rlib --extern libc=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/liblibc-038d67e212d031a9.rlib --extern termcolor=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libtermcolor-f7516e240c30716d.rlib --extern atty=/tmp/cargo-install.nCPfpt0QrgJ6/release/deps/libatty-30eb18227221ed6e.rlib --cap-lints allow -Zincremental=/tmp/cargo-install.nCPfpt0QrgJ6/release/incremental`
+    Finished release [optimized + debuginfo] target(s) in 58.44 secs
+   Replacing /home/andrew/bin/cargo/bin/rg
+```
+
+---
+
+_Comment by @thekashifmalik on 2017-06-21 12:43_
+
+Here's what I got:
+
+```
+$ cargo install --verbose ripgrep                                                                                                                                                                                                                                                                                                                                  [51/1029]
+    Updating registry `https://github.com/rust-lang/crates.io-index`
+  Installing ripgrep v0.5.2
+   Compiling regex-syntax v0.4.1
+     Running `rustc --crate-name regex_syntax /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/regex-syntax-0.4.1/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=4d593cf8e145f90f -C extra-filename=-4d593cf8e145f90f --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2$
+WWE4vh/release/deps --cap-lints allow`
+   Compiling lazy_static v0.2.8
+     Running `rustc --crate-name lazy_static /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/lazy_static-0.2.8/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=f447c8fc34ba2d14 -C extra-filename=-f447c8fc34ba2d14 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wW$
+E4vh/release/deps --cap-lints allow`
+   Compiling unicode-width v0.1.4
+     Running `rustc --crate-name unicode_width /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/unicode-width-0.1.4/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 --cfg 'feature="default"' -C metadata=ba86a6adf8564c56 -C extra-filename=-ba86a6adf8564c56 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L depende$
+cy=/tmp/cargo-install.F65G2wWWE4vh/release/deps --cap-lints allow`
+   Compiling libc v0.2.24
+     Running `rustc --crate-name libc /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/libc-0.2.24/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 --cfg 'feature="default"' --cfg 'feature="use_std"' -C metadata=038d67e212d031a9 -C extra-filename=-038d67e212d031a9 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -$
+ dependency=/tmp/cargo-install.F65G2wWWE4vh/release/deps --cap-lints allow`
+   Compiling unicode-segmentation v1.1.0
+     Running `rustc --crate-name unicode_segmentation /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/unicode-segmentation-1.1.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=8469a7f734d61582 -C extra-filename=-8469a7f734d61582 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/car$
+o-install.F65G2wWWE4vh/release/deps --cap-lints allow`
+   Compiling num_cpus v1.6.0
+     Running `rustc --crate-name num_cpus /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/num_cpus-1.6.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=072a60e0b337f0b2 -C extra-filename=-072a60e0b337f0b2 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/$
+elease/deps --extern libc=/tmp/cargo-install.F65G2wWWE4vh/release/deps/liblibc-038d67e212d031a9.rlib --cap-lints allow`
+   Compiling thread-id v3.1.0
+     Running `rustc --crate-name thread_id /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/thread-id-3.1.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=c0951f4c3d395300 -C extra-filename=-c0951f4c3d395300 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4v$
+/release/deps --extern libc=/tmp/cargo-install.F65G2wWWE4vh/release/deps/liblibc-038d67e212d031a9.rlib --cap-lints allow`
+   Compiling memchr v1.0.1
+     Running `rustc --crate-name memchr /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/memchr-1.0.1/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 --cfg 'feature="libc"' --cfg 'feature="default"' --cfg 'feature="use_std"' -C metadata=23315931e75e5378 -C extra-filename=-23315931e75e5378 --out-dir /tmp/cargo-install.F$
+5G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/release/deps --extern libc=/tmp/cargo-install.F65G2wWWE4vh/release/deps/liblibc-038d67e212d031a9.rlib --cap-lints allow`
+   Compiling aho-corasick v0.6.3
+     Running `rustc --crate-name aho_corasick /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/aho-corasick-0.6.3/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=cd822fe2a67bca7c -C extra-filename=-cd822fe2a67bca7c --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2$
+WWE4vh/release/deps --extern memchr=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libmemchr-23315931e75e5378.rlib --cap-lints allow`
+   Compiling void v1.0.2
+     Running `rustc --crate-name void /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/void-1.0.2/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=dbdefcebe73399ec -C extra-filename=-dbdefcebe73399ec --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/release/$
+eps --cap-lints allow`
+   Compiling utf8-ranges v1.0.0
+     Running `rustc --crate-name utf8_ranges /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/utf8-ranges-1.0.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=30a3803314e1ff40 -C extra-filename=-30a3803314e1ff40 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wW$
+E4vh/release/deps --cap-lints allow`
+   Compiling strsim v0.6.0
+     Running `rustc --crate-name strsim /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/strsim-0.6.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=029640d8c38c132e -C extra-filename=-029640d8c38c132e --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/rele$
+se/deps --cap-lints allow`
+   Compiling cfg-if v0.1.1
+     Running `rustc --crate-name cfg_if /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/cfg-if-0.1.1/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=8ac6dfe93253c06f -C extra-filename=-8ac6dfe93253c06f --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/rele$
+se/deps --cap-lints allow`
+   Compiling same-file v0.1.3
+     Running `rustc --crate-name same_file /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/same-file-0.1.3/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=29ae7de30776de57 -C extra-filename=-29ae7de30776de57 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4v$
+/release/deps --cap-lints allow`
+   Compiling walkdir v1.0.7
+     Running `rustc --crate-name walkdir /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/walkdir-1.0.7/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=70ece20d06ed1945 -C extra-filename=-70ece20d06ed1945 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/re$
+ease/deps --extern same_file=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libsame_file-29ae7de30776de57.rlib --cap-lints allow`
+   Compiling crossbeam v0.2.10
+     Running `rustc --crate-name crossbeam /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/crossbeam-0.2.10/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=f26a599d3e6750cb -C extra-filename=-f26a599d3e6750cb --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4$
+h/release/deps --cap-lints allow`
+   Compiling unreachable v0.1.1
+     Running `rustc --crate-name unreachable /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/unreachable-0.1.1/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=9fbb6a5249235e11 -C extra-filename=-9fbb6a5249235e11 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wW$E4vh/release/deps --extern void=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libvoid-dbdefcebe73399ec.rlib --cap-lints allow`
+   Compiling thread_local v0.3.3
+     Running `rustc --crate-name thread_local /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/thread_local-0.3.3/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=779e9fb7c7a721ac -C extra-filename=-779e9fb7c7a721ac --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2$WWE4vh/release/deps --extern unreachable=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libunreachable-9fbb6a5249235e11.rlib --extern thread_id=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libthread_id-c0951f4c3d395300.rlib --cap-lints allow`
+   Compiling regex v0.2.2
+     Running `rustc --crate-name regex /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/regex-0.2.2/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=8066fd0d774b7e22 -C extra-filename=-8066fd0d774b7e22 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/releas$/deps --extern memchr=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libmemchr-23315931e75e5378.rlib --extern regex_syntax=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libregex_syntax-4d593cf8e145f90f.rlib --extern utf8_ranges=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libutf8_ranges-30a3803314e1ff40.rlib --extern thread_local=/tmp/cargo-install.F65G2wWWE4vh/rel
+ease/deps/libthread_local-779e9fb7c7a721ac.rlib --extern aho_corasick=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libaho_corasick-cd822fe2a67bca7c.rlib --cap-lints allow`
+   Compiling bytecount v0.1.6
+     Running `rustc --crate-name bytecount /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/bytecount-0.1.6/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=bba62d60d9a8c832 -C extra-filename=-bba62d60d9a8c832 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh
+/release/deps --cap-lints allow`
+   Compiling term_size v0.3.0
+     Running `rustc --crate-name term_size /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/term_size-0.3.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 --cfg 'feature="default"' -C metadata=6068f9792fbe6014 -C extra-filename=-6068f9792fbe6014 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/
+cargo-install.F65G2wWWE4vh/release/deps --extern libc=/tmp/cargo-install.F65G2wWWE4vh/release/deps/liblibc-038d67e212d031a9.rlib --cap-lints allow`
+   Compiling textwrap v0.6.0
+     Running `rustc --crate-name textwrap /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/textwrap-0.6.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=1f241ce9fb07ed38 -C extra-filename=-1f241ce9fb07ed38 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/r
+elease/deps --extern term_size=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libterm_size-6068f9792fbe6014.rlib --extern unicode_width=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libunicode_width-ba86a6adf8564c56.rlib --cap-lints allow`
+   Compiling memmap v0.5.2
+     Running `rustc --crate-name memmap /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/memmap-0.5.2/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=a480191e7ef0eb2d -C extra-filename=-a480191e7ef0eb2d --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/relea
+se/deps --extern libc=/tmp/cargo-install.F65G2wWWE4vh/release/deps/liblibc-038d67e212d031a9.rlib --cap-lints allow`
+   Compiling fnv v1.0.5
+     Running `rustc --crate-name fnv /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/fnv-1.0.5/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=d8e7a637fa274748 -C extra-filename=-d8e7a637fa274748 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/release/deps --
+cap-lints allow`
+   Compiling atty v0.2.2
+     Running `rustc --crate-name atty /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/atty-0.2.2/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=30eb18227221ed6e -C extra-filename=-30eb18227221ed6e --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/release/d
+eps --extern libc=/tmp/cargo-install.F65G2wWWE4vh/release/deps/liblibc-038d67e212d031a9.rlib --cap-lints allow`
+   Compiling log v0.3.8
+     Running `rustc --crate-name log /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/log-0.3.8/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 --cfg 'feature="use_std"' --cfg 'feature="default"' -C metadata=f39492c5e20e4027 -C extra-filename=-f39492c5e20e4027 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L de
+pendency=/tmp/cargo-install.F65G2wWWE4vh/release/deps --cap-lints allow`
+   Compiling env_logger v0.4.3
+     Running `rustc --crate-name env_logger /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/env_logger-0.4.3/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=060ff9d1ce19309a -C extra-filename=-060ff9d1ce19309a --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4
+vh/release/deps --extern log=/tmp/cargo-install.F65G2wWWE4vh/release/deps/liblog-f39492c5e20e4027.rlib --cap-lints allow`
+   Compiling globset v0.2.0
+     Running `rustc --crate-name globset /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.2.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=3b0862f3cb41e599 -C extra-filename=-3b0862f3cb41e599 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/rel
+ease/deps --extern log=/tmp/cargo-install.F65G2wWWE4vh/release/deps/liblog-f39492c5e20e4027.rlib --extern regex=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libregex-8066fd0d774b7e22.rlib --extern memchr=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libmemchr-23315931e75e5378.rlib --extern aho_corasick=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libaho_corasick-
+cd822fe2a67bca7c.rlib --extern fnv=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libfnv-d8e7a637fa274748.rlib --cap-lints allow`
+   Compiling ignore v0.2.0
+     Running `rustc --crate-name ignore /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/ignore-0.2.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=cf0d89fbf134a3d2 -C extra-filename=-cf0d89fbf134a3d2 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/relea
+se/deps --extern globset=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libglobset-3b0862f3cb41e599.rlib --extern crossbeam=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libcrossbeam-f26a599d3e6750cb.rlib --extern thread_local=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libthread_local-779e9fb7c7a721ac.rlib --extern regex=/tmp/cargo-install.F65G2wWWE4vh/release/de
+ps/libregex-8066fd0d774b7e22.rlib --extern log=/tmp/cargo-install.F65G2wWWE4vh/release/deps/liblog-f39492c5e20e4027.rlib --extern memchr=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libmemchr-23315931e75e5378.rlib --extern lazy_static=/tmp/cargo-install.F65G2wWWE4vh/release/deps/liblazy_static-f447c8fc34ba2d14.rlib --extern walkdir=/tmp/cargo-install.F65G2wWWE4v
+h/release/deps/libwalkdir-70ece20d06ed1945.rlib --cap-lints allow`
+   Compiling grep v0.1.6
+     Running `rustc --crate-name grep /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/grep-0.1.6/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=2be063fa2bc354a1 -C extra-filename=-2be063fa2bc354a1 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/release/d
+eps --extern regex=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libregex-8066fd0d774b7e22.rlib --extern memchr=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libmemchr-23315931e75e5378.rlib --extern regex_syntax=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libregex_syntax-4d593cf8e145f90f.rlib --extern log=/tmp/cargo-install.F65G2wWWE4vh/release/deps/liblog-f39492
+c5e20e4027.rlib --cap-lints allow`
+   Compiling encoding_rs v0.5.1
+     Running `rustc --crate-name encoding_rs /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/encoding_rs-0.5.1/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=bd5e58190c8ee6f5 -C extra-filename=-bd5e58190c8ee6f5 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWW
+E4vh/release/deps --extern cfg_if=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libcfg_if-8ac6dfe93253c06f.rlib --cap-lints allow`
+   Compiling bitflags v0.9.1
+     Running `rustc --crate-name bitflags /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/bitflags-0.9.1/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 --cfg 'feature="example_generated"' --cfg 'feature="default"' -C metadata=de3e89e3b5abdf5c -C extra-filename=-de3e89e3b5abdf5c --out-dir /tmp/cargo-install.F65G2wWWE4v
+h/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/release/deps --cap-lints allow`
+   Compiling vec_map v0.8.0
+     Running `rustc --crate-name vec_map /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/vec_map-0.8.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=0931976e637babbe -C extra-filename=-0931976e637babbe --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/rel
+ease/deps --cap-lints allow`
+   Compiling ansi_term v0.9.0
+     Running `rustc --crate-name ansi_term /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/ansi_term-0.9.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 -C metadata=ebe20c4f2cefca34 -C extra-filename=-ebe20c4f2cefca34 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh
+/release/deps --cap-lints allow`
+   Compiling clap v2.25.0
+     Running `rustc --crate-name clap /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.25.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 --cfg 'feature="color"' --cfg 'feature="atty"' --cfg 'feature="suggestions"' --cfg 'feature="ansi_term"' --cfg 'feature="default"' --cfg 'feature="wrap_help"' --cfg 'feature=
+"strsim"' --cfg 'feature="term_size"' -C metadata=4c66da4ae3346297 -C extra-filename=-4c66da4ae3346297 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/release/deps --extern ansi_term=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libansi_term-ebe20c4f2cefca34.rlib --extern atty=/tmp/cargo-install.F65G2wWWE4vh/re
+lease/deps/libatty-30eb18227221ed6e.rlib --extern strsim=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libstrsim-029640d8c38c132e.rlib --extern term_size=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libterm_size-6068f9792fbe6014.rlib --extern unicode_segmentation=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libunicode_segmentation-8469a7f734d61582.rlib --extern v
+ec_map=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libvec_map-0931976e637babbe.rlib --extern textwrap=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libtextwrap-1f241ce9fb07ed38.rlib --extern unicode_width=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libunicode_width-ba86a6adf8564c56.rlib --extern bitflags=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libbitflags-
+de3e89e3b5abdf5c.rlib --cap-lints allow`
+error: failed to compile `ripgrep v0.5.2`, intermediate artifacts can be found at `/tmp/cargo-install.F65G2wWWE4vh`
+
+Caused by:
+  Could not compile `clap`.
+
+Caused by:
+  process didn't exit successfully: `rustc --crate-name clap /home/kashif/.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.25.0/src/lib.rs --crate-type lib --emit=dep-info,link -C opt-level=3 -C debuginfo=2 --cfg feature="color" --cfg feature="atty" --cfg feature="suggestions" --cfg feature="ansi_term" --cfg feature="default" --cfg feature="wrap_help" --cf
+g feature="strsim" --cfg feature="term_size" -C metadata=4c66da4ae3346297 -C extra-filename=-4c66da4ae3346297 --out-dir /tmp/cargo-install.F65G2wWWE4vh/release/deps -L dependency=/tmp/cargo-install.F65G2wWWE4vh/release/deps --extern ansi_term=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libansi_term-ebe20c4f2cefca34.rlib --extern atty=/tmp/cargo-install.F65G2wWW
+E4vh/release/deps/libatty-30eb18227221ed6e.rlib --extern strsim=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libstrsim-029640d8c38c132e.rlib --extern term_size=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libterm_size-6068f9792fbe6014.rlib --extern unicode_segmentation=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libunicode_segmentation-8469a7f734d61582.rlib --e
+xtern vec_map=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libvec_map-0931976e637babbe.rlib --extern textwrap=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libtextwrap-1f241ce9fb07ed38.rlib --extern unicode_width=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libunicode_width-ba86a6adf8564c56.rlib --extern bitflags=/tmp/cargo-install.F65G2wWWE4vh/release/deps/libbi
+tflags-de3e89e3b5abdf5c.rlib --cap-lints allow` (exit code: 1)
+```
+
+---
+
+_Comment by @thekashifmalik on 2017-06-21 12:44_
+
+On a separate and fresh ubuntu install I just got `error: could not exec the linker `cc`: No such file or directory (os error 2)`.
+
+I wonder if that's related.
+
+---
+
+_Comment by @BurntSushi on 2017-06-21 13:01_
+
+I have no idea, sorry. cc @alexcrichton 
+
+---
+
+_Comment by @alexcrichton on 2017-06-21 15:23_
+
+An error like "could not exec the linker" is expected and typically just means you need to `apt-get install gcc`. The original posting looks pretty fishy though because Cargo or the compiler didn't actually print out any errors.
+
+I've tried to reproduce this in a bare docker container:
+
+```dockerfile
+FROM ubuntu:16.04
+
+RUN apt-get update -y
+RUN apt-get install -y curl
+RUN curl https://sh.rustup.rs | sh -s -- -y
+ENV PATH=$PATH:/root/.cargo/bin
+RUN cargo install ripgrep
+```
+
+but that prints the error that I'd expect.
+
+@thekashifmalik can you reproduce the error where Cargo and/or the compiler don't print an error message?
+
+---
+
+_Comment by @thekashifmalik on 2017-06-21 15:51_
+
+You are correct about the linker error on the fresh box. That got fixed when I installed GCC.
+
+The original error remains. I'm going to run it again on digitalocean box. I wonder if it's memory related.
+
+---
+
+_Comment by @thekashifmalik on 2017-06-21 16:03_
+
+Yeah looks like my process is getting killed due to OOM.
+
+```
+Jun 21 15:59:58 whitelion kernel: [24395.860106] Out of memory: Kill process 18413 (rustc) score 661 or sacrifice child
+Jun 21 15:59:58 whitelion kernel: [24395.861484] Killed process 18413 (rustc) total-vm:552536kB, anon-rss:329580kB, file-rss:0kB
+```
+
+Does it really take over 300MB to compile ripgrep?
+
+---
+
+_Closed by @thekashifmalik on 2017-06-21 16:04_
+
+---
+
+_Comment by @BurntSushi on 2017-06-21 16:08_
+
+> Does it really take over 300MB to compile ripgrep?
+
+It wouldn't be particularly surprising to me.
+
+---

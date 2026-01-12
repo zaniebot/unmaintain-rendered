@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-11T05:09:55Z
 updated_at: 2024-05-25T10:12:08Z
 url: https://github.com/astral-sh/ruff/issues/677
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Suppress ANN401 for dynamically typed *args and **kwargs.
 
 ---
 
-_Issue opened by @tekumara on 2022-11-11 05:09_
+_@tekumara_
 
 Now that ANN401 has [landed](https://github.com/charliermarsh/ruff/pull/657), would be nice to support [allow-star-arg-any](https://github.com/sco1/flake8-annotations#--allow-star-arg-any) which is common idiom, eg:
 ```python

@@ -13,14 +13,14 @@ head: charlie/cf
 created_at: 2024-01-15T14:56:54Z
 updated_at: 2024-01-15T15:55:53Z
 url: https://github.com/astral-sh/ruff/pull/9531
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Bump `cloudflare/wrangler-action` to v3.4.1
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-15 14:56_
+_@charliermarsh_
 
 This is a subset of https://github.com/astral-sh/ruff/pull/9526 that should be safe to apply.
 

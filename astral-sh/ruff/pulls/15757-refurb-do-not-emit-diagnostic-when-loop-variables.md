@@ -12,14 +12,14 @@ head: FURB122
 created_at: 2025-01-27T01:42:03Z
 updated_at: 2025-01-30T18:17:53Z
 url: https://github.com/astral-sh/ruff/pull/15757
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`refurb`] Do not emit diagnostic when loop variables are used outside loop body (`FURB122`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-27 01:42_
+_@InSyncWithFoo_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-15T00:51:12Z
 updated_at: 2025-11-24T14:45:43Z
 url: https://github.com/astral-sh/ruff/issues/20393
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ban-variable-abbreviations
 
 ---
 
-_Issue opened by @Richienb on 2025-09-15 00:51_
+_@Richienb_
 
 ### Summary
 

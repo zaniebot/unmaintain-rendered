@@ -13,14 +13,14 @@ head: konsti/generic-path-or-url
 created_at: 2025-07-18T11:04:55Z
 updated_at: 2025-07-18T12:08:50Z
 url: https://github.com/astral-sh/uv/pull/14712
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:21Z
 ```
 
 # Add a reusable path-or-URL parser
 
 ---
 
-_Pull request opened by @konstin on 2025-07-18 11:04_
+_@konstin_
 
 Reviewing #14687, I noticed that we had implemented a `Url::from_url_or_path`-like function, but it wasn't reusable. This change `Verbatim::from_url_or_path` so we can use it in other places too.
 

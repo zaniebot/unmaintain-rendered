@@ -13,14 +13,14 @@ head: konsti/reduce-stack-usage
 created_at: 2024-01-19T09:36:41Z
 updated_at: 2024-01-19T09:38:37Z
 url: https://github.com/astral-sh/uv/pull/1004
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:21Z
 ```
 
 # Reduce stack usage by boxing `File` in `Dist`, `CachePolicy` and large futures
 
 ---
 
-_Pull request opened by @konstin on 2024-01-19 09:36_
+_@konstin_
 
 This is https://github.com/astral-sh/puffin/pull/947 again but this time merging into main instead of downstack, sorry for the noise.
 

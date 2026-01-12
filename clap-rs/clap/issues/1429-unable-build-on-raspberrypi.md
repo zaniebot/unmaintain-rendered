@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-03-15T10:39:30Z
 updated_at: 2019-03-17T20:31:08Z
 url: https://github.com/clap-rs/clap/issues/1429
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # unable build on RaspberryPi
 
 ---
 
-_Issue opened by @andrewdavidmackenzie on 2019-03-15 10:39_
+_@andrewdavidmackenzie_
 
 I can't claim this to be an important issue, and cross-compiling will be the workaround....but it surprised me that this problem exists with (only among my dependencies) clap, and not with the other dependencies of my project (which are many, including serde and others).
 

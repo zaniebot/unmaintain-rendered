@@ -13,14 +13,14 @@ head: zb/find-download
 created_at: 2025-01-23T18:10:30Z
 updated_at: 2025-01-24T10:04:10Z
 url: https://github.com/astral-sh/uv/pull/10908
-synced_at: 2026-01-10T11:45:17Z
+synced_at: 2026-01-12T16:09:34Z
 ```
 
 # Allow fallback to Python download on non-critical discovery errors
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-23 18:10_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/10898
 

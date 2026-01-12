@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-17T13:02:04Z
 updated_at: 2023-03-18T09:07:48Z
 url: https://github.com/astral-sh/ruff/issues/3576
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Mismatch with flake8 
 
 ---
 
-_Issue opened by @Mofef on 2023-03-17 13:02_
+_@Mofef_
 
 I never really spend any thoughts on linting, I rather accepted that it was there, only since Charlies webinar with jetbrains I became interested and since I suggested to give ruff a try in our projects. Just as a disclaimer, most likely i'm just making a stupid mistake....
 

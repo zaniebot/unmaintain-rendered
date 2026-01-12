@@ -13,14 +13,14 @@ head: single-line-ellipsis
 created_at: 2023-08-15T10:04:28Z
 updated_at: 2023-08-29T10:44:07Z
 url: https://github.com/astral-sh/ruff/pull/6592
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Format function and class definitions into a single line if its body is an ellipsis
 
 ---
 
-_Pull request opened by @tjkuson on 2023-08-15 10:04_
+_@tjkuson_
 
 ## Summary
 

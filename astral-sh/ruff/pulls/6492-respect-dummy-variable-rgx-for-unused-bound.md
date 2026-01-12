@@ -13,14 +13,14 @@ head: charlie/unused-exception
 created_at: 2023-08-11T03:52:50Z
 updated_at: 2023-08-11T04:20:14Z
 url: https://github.com/astral-sh/ruff/pull/6492
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Respect dummy-variable-rgx for unused bound exceptions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-11 03:52_
+_@charliermarsh_
 
 ## Summary
 

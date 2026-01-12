@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-28T21:24:58Z
 updated_at: 2025-05-30T04:29:42Z
 url: https://github.com/astral-sh/uv/issues/11868
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # When using a managed python pip-system-certs doesn't work
 
 ---
 
-_Issue opened by @jschewebbn on 2025-02-28 21:24_
+_@jschewebbn_
 
 ### Summary
 

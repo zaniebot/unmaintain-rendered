@@ -14,14 +14,14 @@ head: david/fix-937
 created_at: 2025-08-05T08:42:54Z
 updated_at: 2025-08-05T10:07:07Z
 url: https://github.com/astral-sh/ruff/pull/19756
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] Keep track of type qualifiers in stub declarations without right-hand side
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-05 08:42_
+_@sharkdp_
 
 ## Summary
 

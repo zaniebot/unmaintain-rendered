@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-28T15:27:29Z
 updated_at: 2024-11-13T02:46:45Z
 url: https://github.com/astral-sh/uv/issues/6758
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Document support for platform-specific dependencies in pyproject.toml
 
 ---
 
-_Issue opened by @BeeGass on 2024-08-28 15:27_
+_@BeeGass_
 
 ## Feature Description
 

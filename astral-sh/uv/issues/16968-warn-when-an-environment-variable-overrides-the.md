@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-03T14:49:13Z
 updated_at: 2025-12-03T14:49:13Z
 url: https://github.com/astral-sh/uv/issues/16968
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # Warn when an environment variable overrides the effect of `uv auth login`
 
 ---
 
-_Issue opened by @zsol on 2025-12-03 14:49_
+_@zsol_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: jm/doc-assertions
 created_at: 2025-06-19T19:37:59Z
 updated_at: 2025-06-19T19:49:32Z
 url: https://github.com/clap-rs/clap/pull/6038
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Chore: document several internal assertion helper methods
 
 ---
 
-_Pull request opened by @joshka on 2025-06-19 19:37_
+_@joshka_
 
 Added some doc comments to clarify the intent and make it easier to understand the tests
 

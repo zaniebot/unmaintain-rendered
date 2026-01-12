@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-14T09:23:37Z
 updated_at: 2025-12-31T16:38:42Z
 url: https://github.com/astral-sh/ty/issues/1546
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Solid variable renaming
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-14 09:23_
+_@MichaReiser_
 
 We've gotten reports (without MRE's, unfortunately) that the rename feature often misses references. 
 

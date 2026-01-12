@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-18T22:15:59Z
 updated_at: 2024-04-19T14:23:57Z
 url: https://github.com/astral-sh/uv/issues/3128
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # [Crash] transitive URL installs from localhost are erroneously interpreted as local paths
 
 ---
 
-_Issue opened by @patrick-kidger on 2024-04-18 22:15_
+_@patrick-kidger_
 
 Using `uv` version `0.1.33`.
 

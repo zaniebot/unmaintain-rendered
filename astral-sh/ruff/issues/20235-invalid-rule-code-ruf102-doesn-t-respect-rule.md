@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-04T14:03:48Z
 updated_at: 2025-09-10T21:27:08Z
 url: https://github.com/astral-sh/ruff/issues/20235
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `invalid-rule-code` (`RUF102`) doesn't respect rule redirects
 
 ---
 
-_Issue opened by @ntBre on 2025-09-04 14:03_
+_@ntBre_
 
 ### Summary
 

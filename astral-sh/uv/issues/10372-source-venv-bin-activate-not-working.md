@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-07T17:19:27Z
 updated_at: 2025-10-11T12:53:19Z
 url: https://github.com/astral-sh/uv/issues/10372
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # source .venv/bin/activate not working
 
 ---
 
-_Issue opened by @Trid-collab on 2025-01-07 17:19_
+_@Trid-collab_
 
 Need help. I am on macOS 15.2 and moving from pyenv trying to use uv. I have installed uv through home-brew and initialize my python directory  on my zsh shell using uv init and then created a virtual environment using uv venv which creates the necessary folder .venv. But the python environment in the directory doesn't seem to get activated when I try `source  .venv/bin/activate` I am not sure what am I missing here. Is there any additional config which is needed to the zsh shell or other place. I have installed python using `uv python install --preview`
 

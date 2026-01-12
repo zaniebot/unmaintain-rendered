@@ -13,14 +13,14 @@ head: jane/server/diagnostics/publish
 created_at: 2024-04-22T20:17:15Z
 updated_at: 2024-04-23T19:43:31Z
 url: https://github.com/astral-sh/ruff/pull/11092
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # `ruff server`: Support publish diagnostics as a fallback when pull diagnostics aren't supported
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-22 20:17_
+_@snowsignal_
 
 ## Summary
 

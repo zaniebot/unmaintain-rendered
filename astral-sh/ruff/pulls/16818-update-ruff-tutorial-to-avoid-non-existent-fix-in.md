@@ -13,14 +13,14 @@ head: charlie/tutorial
 created_at: 2025-03-17T17:57:56Z
 updated_at: 2025-03-18T03:45:13Z
 url: https://github.com/astral-sh/ruff/pull/16818
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # Update Ruff tutorial to avoid non-existent fix in `__init__.py`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-17 17:57_
+_@charliermarsh_
 
 ## Summary
 

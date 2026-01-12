@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-19T16:26:23Z
 updated_at: 2025-10-29T15:31:04Z
 url: https://github.com/astral-sh/uv/issues/16361
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # Inconsistent behaviour of `uv add` when passing the `--group` and `-r` flag.
 
 ---
 
-_Issue opened by @ale18V on 2025-10-19 16:26_
+_@ale18V_
 
 ### Summary
 

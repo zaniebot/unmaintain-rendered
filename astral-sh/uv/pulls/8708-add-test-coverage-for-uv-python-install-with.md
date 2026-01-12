@@ -13,14 +13,14 @@ head: zb/test-coverage-invalid
 created_at: 2024-10-30T21:30:37Z
 updated_at: 2024-10-30T21:38:49Z
 url: https://github.com/astral-sh/uv/pull/8708
-synced_at: 2026-01-10T12:54:15Z
+synced_at: 2026-01-12T16:08:27Z
 ```
 
 # Add test coverage for `uv python install` with invalid requests
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-30 21:30_
+_@zanieb_
 
 _No description provided._
 

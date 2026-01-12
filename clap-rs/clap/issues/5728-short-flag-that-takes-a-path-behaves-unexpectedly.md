@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-13T23:14:23Z
 updated_at: 2024-09-14T00:12:29Z
 url: https://github.com/clap-rs/clap/issues/5728
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Short flag that takes a path behaves unexpectedly in PowerShell
 
 ---
 
-_Issue opened by @nathanwhit on 2024-09-13 23:14_
+_@nathanwhit_
 
 ### Please complete the following tasks
 

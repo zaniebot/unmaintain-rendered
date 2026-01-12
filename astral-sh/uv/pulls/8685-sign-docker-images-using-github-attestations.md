@@ -14,14 +14,14 @@ head: cosign-docker-images
 created_at: 2024-10-29T20:41:46Z
 updated_at: 2025-01-31T19:16:03Z
 url: https://github.com/astral-sh/uv/pull/8685
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:27Z
 ```
 
 # Sign docker images using github attestations
 
 ---
 
-_Pull request opened by @mjpieters on 2024-10-29 20:41_
+_@mjpieters_
 
 GitHub attestation signing uses the GitHub action ID token to retrieve an ephemeral code signing certificate from Fulcio, and store the signature in the Rekor transparency log.
 

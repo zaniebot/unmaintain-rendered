@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-12T20:38:50Z
 updated_at: 2024-03-13T00:11:51Z
 url: https://github.com/astral-sh/uv/issues/2392
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # `uv pip compile` uses overly specific `python_version` with `-p` markers
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-12 20:38_
+_@charliermarsh_
 
 `echo "pandas" | cargo run pip compile - -p 3.11.8` fails to include NumPy, I think we must be treating `python_version` as `3.11.8` instead of `3.11` in the markers or something. Pandas requirements are:
 

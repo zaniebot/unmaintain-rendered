@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-30T16:28:09Z
 updated_at: 2025-07-31T12:52:20Z
 url: https://github.com/astral-sh/ruff/issues/19640
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Test failures in 32bit architectures
 
 ---
 
-_Issue opened by @WhyNotHugo on 2025-07-30 16:28_
+_@WhyNotHugo_
 
 ### Summary
 

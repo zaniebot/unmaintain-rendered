@@ -13,14 +13,14 @@ head: zb/retry
 created_at: 2025-01-30T18:42:03Z
 updated_at: 2025-01-30T18:53:35Z
 url: https://github.com/astral-sh/uv/pull/11108
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:41Z
 ```
 
 # Improve retry trace message
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-30 18:42_
+_@zanieb_
 
 _No description provided._
 

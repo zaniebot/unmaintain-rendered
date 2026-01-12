@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-21T08:59:33Z
 updated_at: 2023-08-21T23:31:31Z
 url: https://github.com/astral-sh/ruff/issues/6718
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Failed to create fix for SysExitAlias: Unable to modify existing import statement
 
 ---
 
-_Issue opened by @qarmin on 2023-08-21 08:59_
+_@qarmin_
 
 Ruff 0.0.285
 

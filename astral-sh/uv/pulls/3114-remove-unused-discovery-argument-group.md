@@ -12,14 +12,14 @@ head: charlie/group
 created_at: 2024-04-18T03:50:19Z
 updated_at: 2024-04-18T03:56:08Z
 url: https://github.com/astral-sh/uv/pull/3114
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:26Z
 ```
 
 # Remove unused `discovery` argument group
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-18 03:50_
+_@charliermarsh_
 
 ## Summary
 

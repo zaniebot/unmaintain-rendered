@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-27T00:19:37Z
 updated_at: 2024-07-13T07:12:05Z
 url: https://github.com/astral-sh/ruff/issues/12058
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Relative paths in `per-file-ignores` not respected when running `ruff` outside working directory using `--config` with `pyproject.toml`
 
 ---
 
-_Issue opened by @mihirsamdarshi on 2024-06-27 00:19_
+_@mihirsamdarshi_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

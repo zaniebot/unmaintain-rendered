@@ -12,14 +12,14 @@ head: jack/github_auth_docs
 created_at: 2025-06-04T21:56:23Z
 updated_at: 2025-06-06T17:54:39Z
 url: https://github.com/astral-sh/uv/pull/13850
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:53Z
 ```
 
 # update Git and GitHub Actions docs to mention `gh auth login`
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-06-04 21:56_
+_@oconnor663_
 
 This came up in https://github.com/astral-sh/uv/issues/11342#issuecomment-2938352842 and https://github.com/astral-sh/uv/issues/12368#issuecomment-2747900465. I'm leaving out the maximally complicated `GIT_CONFIG_COUNT`-based approach that I mentioned in https://github.com/astral-sh/uv/issues/11342#issuecomment-2938352842, but let me know if anyone things it would be more helpful than confusing to mention it. (In any case, all of this might change in the future if we add more support for Git credentials?)
 

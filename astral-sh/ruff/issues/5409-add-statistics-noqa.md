@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-27T23:54:52Z
 updated_at: 2023-06-30T02:22:25Z
 url: https://github.com/astral-sh/ruff/issues/5409
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add --statistics-noqa
 
 ---
 
-_Issue opened by @gaborbernat on 2023-06-27 23:54_
+_@gaborbernat_
 
 This is similar to ``--statistics`` but instead of tracking failures would track ignored failures. Would be exclusive flag with ``--statistics``.
 

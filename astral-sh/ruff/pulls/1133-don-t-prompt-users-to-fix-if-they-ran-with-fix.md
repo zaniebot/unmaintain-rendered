@@ -12,14 +12,14 @@ head: charlie/fix
 created_at: 2022-12-08T00:07:13Z
 updated_at: 2022-12-08T00:07:52Z
 url: https://github.com/astral-sh/ruff/pull/1133
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Don't prompt users to --fix if they ran with --fix
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-08 00:07_
+_@charliermarsh_
 
 Resolves #1132.
 

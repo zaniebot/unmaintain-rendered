@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-11T11:39:46Z
 updated_at: 2025-02-16T19:11:29Z
 url: https://github.com/astral-sh/uv/issues/9807
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # Keeping an encrypted dotenv file with uv
 
 ---
 
-_Issue opened by @matejaputic on 2024-12-11 11:39_
+_@matejaputic_
 
 Since there's no discussion section in this repo, I thought I'd post this here. Just wanted to share this solution for keeping an encrypted dotenv file with uv that I've found useful.
 

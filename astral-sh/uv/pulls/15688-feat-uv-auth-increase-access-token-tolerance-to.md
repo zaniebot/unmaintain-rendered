@@ -12,14 +12,14 @@ head: ww/increase-access-token-tolerance
 created_at: 2025-09-04T18:18:18Z
 updated_at: 2025-09-04T19:00:47Z
 url: https://github.com/astral-sh/uv/pull/15688
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # feat(uv-auth): increase access token tolerance to 30 minutes
 
 ---
 
-_Pull request opened by @woodruffw on 2025-09-04 18:18_
+_@woodruffw_
 
 ## Summary
 

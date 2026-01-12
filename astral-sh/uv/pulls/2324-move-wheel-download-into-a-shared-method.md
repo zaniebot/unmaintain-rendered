@@ -13,14 +13,14 @@ head: charlie/internal
 created_at: 2024-03-10T03:29:21Z
 updated_at: 2024-03-10T03:40:01Z
 url: https://github.com/astral-sh/uv/pull/2324
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:58Z
 ```
 
 # Move wheel download into a shared method
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-10 03:29_
+_@charliermarsh_
 
 ## Summary
 

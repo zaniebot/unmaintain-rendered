@@ -12,14 +12,14 @@ head: typos
 created_at: 2023-01-28T02:32:10Z
 updated_at: 2023-01-28T02:35:46Z
 url: https://github.com/astral-sh/ruff/pull/2286
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # fix: typo in BREAKING_CHANGES.md & improve wrapping
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-28 02:32_
+_@not-my-profile_
 
 _No description provided._
 

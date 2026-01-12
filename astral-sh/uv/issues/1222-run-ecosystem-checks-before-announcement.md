@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-01T11:23:00Z
 updated_at: 2024-02-22T03:06:25Z
 url: https://github.com/astral-sh/uv/issues/1222
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Run ecosystem checks before announcement
 
 ---
 
-_Issue opened by @konstin on 2024-02-01 11:23_
+_@konstin_
 
 We should run the ecosystem checks, both resolve and install with and without build, and look through the errors for regressions before announcing puffin.
 

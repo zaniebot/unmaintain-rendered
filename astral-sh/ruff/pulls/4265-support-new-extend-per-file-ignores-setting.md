@@ -12,14 +12,14 @@ head: update-per-file-ignores-to-merge
 created_at: 2023-05-07T05:26:54Z
 updated_at: 2023-05-19T16:24:05Z
 url: https://github.com/astral-sh/ruff/pull/4265
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Support new `extend-per-file-ignores` setting
 
 ---
 
-_Pull request opened by @aacunningham on 2023-05-07 05:26_
+_@aacunningham_
 
 Putting this up as a POC in response to #4230. End result should look something like this:
 

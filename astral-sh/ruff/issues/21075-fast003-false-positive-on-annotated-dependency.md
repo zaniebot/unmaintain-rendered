@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-25T18:52:38Z
 updated_at: 2025-11-10T08:29:52Z
 url: https://github.com/astral-sh/ruff/issues/21075
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [FAST003] False positive on `Annotated` dependency
 
 ---
 
-_Issue opened by @vinnybod on 2025-10-25 18:52_
+_@vinnybod_
 
 ### Summary
 

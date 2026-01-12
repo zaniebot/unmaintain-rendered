@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-29T16:12:08Z
 updated_at: 2025-12-29T16:20:18Z
 url: https://github.com/astral-sh/ty/issues/2261
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Rules ignored with Unknown types
 
 ---
 
-_Issue opened by @mxrch on 2025-12-29 16:12_
+_@mxrch_
 
 ### Summary
 

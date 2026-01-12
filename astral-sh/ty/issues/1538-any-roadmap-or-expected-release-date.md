@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-13T12:52:09Z
 updated_at: 2025-11-19T07:58:53Z
 url: https://github.com/astral-sh/ty/issues/1538
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Any Roadmap or Expected Release Date?
 
 ---
 
-_Issue opened by @KeepNoob on 2025-11-13 12:52_
+_@KeepNoob_
 
 ### Question
 

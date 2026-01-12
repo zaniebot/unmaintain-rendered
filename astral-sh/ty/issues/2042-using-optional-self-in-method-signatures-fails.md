@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T21:33:56Z
 updated_at: 2025-12-17T21:38:43Z
 url: https://github.com/astral-sh/ty/issues/2042
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Using optional Self in method signatures fails
 
 ---
 
-_Issue opened by @alexmacnorthstar on 2025-12-17 21:33_
+_@alexmacnorthstar_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: dhruv/avoid-panic
 created_at: 2025-05-17T13:54:27Z
 updated_at: 2025-05-20T15:23:25Z
 url: https://github.com/astral-sh/ruff/pull/18151
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # [ty] Avoid panicking when there are multiple workspaces
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-05-17 13:54_
+_@dhruvmanila_
 
 ## Summary
 

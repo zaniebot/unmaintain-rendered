@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-02-15T11:37:09Z
 updated_at: 2023-02-15T13:13:50Z
 url: https://github.com/astral-sh/ruff/pull/2916
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Remove testing resource introduced in #2891
 
 ---
 
-_Pull request opened by @sbrugman on 2023-02-15 11:37_
+_@sbrugman_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: match_name_or_attr
 created_at: 2022-12-04T08:55:37Z
 updated_at: 2022-12-07T10:59:09Z
 url: https://github.com/astral-sh/ruff/pull/1027
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Remove sloppy match_name_or_attr helper
 
 ---
 
-_Pull request opened by @andersk on 2022-12-04 08:55_
+_@andersk_
 
 The more accurate `match_module_member` should be preferred.
 

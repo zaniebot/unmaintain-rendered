@@ -14,14 +14,14 @@ head: micha/fix-single-with-trailing-comment
 created_at: 2024-10-30T18:24:34Z
 updated_at: 2024-11-01T08:08:07Z
 url: https://github.com/astral-sh/ruff/pull/14005
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Fix formatting of single with-item with trailing comment
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-30 18:24_
+_@MichaReiser_
 
 ## Summary
 

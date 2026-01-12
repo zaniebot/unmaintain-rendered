@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-12T06:41:08Z
 updated_at: 2024-05-03T20:03:13Z
 url: https://github.com/astral-sh/ruff/issues/10898
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # (🐞) `FURB118` (reimplemented-operator) false positive when reference in the item position
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-04-12 06:41_
+_@KotlinIsland_
 
 ```py
 b = 1

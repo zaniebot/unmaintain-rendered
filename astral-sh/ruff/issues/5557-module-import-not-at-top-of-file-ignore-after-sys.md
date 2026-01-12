@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-06T09:20:01Z
 updated_at: 2023-12-07T18:35:56Z
 url: https://github.com/astral-sh/ruff/issues/5557
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `module-import-not-at-top-of-file` ignore after `sys.path.insert`
 
 ---
 
-_Issue opened by @tgross35 on 2023-07-06 09:20_
+_@tgross35_
 
 Sometimes you need to insert a path to be able to import something that's out of scope from your current file - in which case, the imports must come after the `insert` statement. For example, from Rust's repo:
 

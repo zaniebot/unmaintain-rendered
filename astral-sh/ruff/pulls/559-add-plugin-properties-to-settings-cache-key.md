@@ -12,14 +12,14 @@ head: charlie/settings-cache
 created_at: 2022-11-03T02:09:12Z
 updated_at: 2022-11-03T02:10:02Z
 url: https://github.com/astral-sh/ruff/pull/559
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add plugin properties to settings cache key
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-03 02:09_
+_@charliermarsh_
 
 Resolves #557.
 

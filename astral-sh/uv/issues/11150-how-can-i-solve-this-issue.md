@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-01T05:50:03Z
 updated_at: 2025-02-08T06:11:38Z
 url: https://github.com/astral-sh/uv/issues/11150
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:29Z
 ```
 
 # How Can i solve this issue?
 
 ---
 
-_Issue opened by @Sagor0078 on 2025-02-01 05:50_
+_@Sagor0078_
 
 ### Summary
 

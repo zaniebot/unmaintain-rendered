@@ -13,14 +13,14 @@ head: dhruv/f-string-iters
 created_at: 2024-03-09T11:12:49Z
 updated_at: 2024-03-18T11:14:26Z
 url: https://github.com/astral-sh/ruff/pull/10309
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Add methods to iter over f-string elements
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-09 11:12_
+_@dhruvmanila_
 
 ## Summary
 

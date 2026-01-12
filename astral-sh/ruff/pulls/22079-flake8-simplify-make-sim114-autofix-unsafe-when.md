@@ -14,14 +14,14 @@ head: phongddo/sim114-fix-diff-comments
 created_at: 2025-12-19T12:10:06Z
 updated_at: 2026-01-02T11:40:26Z
 url: https://github.com/astral-sh/ruff/pull/22079
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [`flake8-simplify`] Make `SIM114` autofix unsafe when branches have different comments
 
 ---
 
-_Pull request opened by @phongddo on 2025-12-19 12:10_
+_@phongddo_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

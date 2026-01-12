@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-09T16:51:36Z
 updated_at: 2025-11-21T17:28:28Z
 url: https://github.com/astral-sh/uv/issues/5962
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Airflow Benchmark Regression
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-08-09 16:51_
+_@ibraheemdev_
 
 ```
 hyperfine "uv pip compile scripts/requirements/airflow.in --exclude-newer 2024-06-20" "uv pip compile scripts/requirements/airflow.in --exclude-newer 2024-08-08" 

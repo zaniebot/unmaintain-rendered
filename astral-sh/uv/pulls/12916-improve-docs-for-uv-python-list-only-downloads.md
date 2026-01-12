@@ -13,14 +13,14 @@ head: only-downloads
 created_at: 2025-04-16T13:00:23Z
 updated_at: 2025-04-17T02:40:34Z
 url: https://github.com/astral-sh/uv/pull/12916
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:27Z
 ```
 
 # Improve docs for `uv python list --only-downloads` and `--only-installed`
 
 ---
 
-_Pull request opened by @j178 on 2025-04-16 13:00_
+_@j178_
 
 "Only show Python downloads, exclude installed distributions." might be misunderstood as excluding installed distributions from `uv python list --only-downloads`, implying that versions already installed won’t be shown.
 

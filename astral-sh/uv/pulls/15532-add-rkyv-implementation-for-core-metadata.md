@@ -13,14 +13,14 @@ head: charlie/derives
 created_at: 2025-08-26T13:59:17Z
 updated_at: 2025-08-26T14:22:52Z
 url: https://github.com/astral-sh/uv/pull/15532
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:48Z
 ```
 
 # Add `rkyv` implementation for Core Metadata
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-26 13:59_
+_@charliermarsh_
 
 ## Summary
 

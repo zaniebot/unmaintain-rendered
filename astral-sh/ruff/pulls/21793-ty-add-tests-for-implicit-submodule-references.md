@@ -14,14 +14,14 @@ head: gankra/from-ide
 created_at: 2025-12-04T14:55:08Z
 updated_at: 2025-12-04T15:46:24Z
 url: https://github.com/astral-sh/ruff/pull/21793
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Add tests for implicit submodule references
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-04 14:55_
+_@Gankra_
 
 ## Summary
 

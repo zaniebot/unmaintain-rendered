@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-03T08:35:23Z
 updated_at: 2023-09-03T13:34:11Z
 url: https://github.com/astral-sh/ruff/issues/7071
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rule C417 cause "Failed to create fix for UnnecessaryMap: Expected tuple for dict comprehension"
 
 ---
 
-_Issue opened by @qarmin on 2023-09-03 08:35_
+_@qarmin_
 
 Ruff 0.0.287 (latest changes from main branch)
 

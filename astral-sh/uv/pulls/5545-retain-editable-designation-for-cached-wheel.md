@@ -13,14 +13,14 @@ head: charlie/ed
 created_at: 2024-07-29T02:32:37Z
 updated_at: 2024-07-29T02:39:49Z
 url: https://github.com/astral-sh/uv/pull/5545
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:53Z
 ```
 
 # Retain editable designation for cached wheel installs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-29 02:32_
+_@charliermarsh_
 
 ## Summary
 

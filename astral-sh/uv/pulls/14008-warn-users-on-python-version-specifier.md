@@ -13,14 +13,14 @@ head: compat-version
 created_at: 2025-06-12T22:07:58Z
 updated_at: 2025-07-02T21:42:14Z
 url: https://github.com/astral-sh/uv/pull/14008
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:58Z
 ```
 
 # Warn users on `~=` python version specifier
 
 ---
 
-_Pull request opened by @aaron-ang on 2025-06-12 22:07_
+_@aaron-ang_
 
 Close #7426
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-30T17:43:12Z
 updated_at: 2024-01-11T19:42:44Z
 url: https://github.com/astral-sh/ruff/issues/9319
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Implement new SIM rule SIM911: `zip(dict.keys(), dict.values()) → dict.items()`
 
 ---
 
-_Issue opened by @Skylion007 on 2023-12-30 17:43_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

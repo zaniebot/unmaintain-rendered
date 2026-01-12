@@ -13,14 +13,14 @@ head: zb/add-remove-test
 created_at: 2024-10-19T13:19:21Z
 updated_at: 2024-10-19T14:33:55Z
 url: https://github.com/astral-sh/uv/pull/8360
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:17Z
 ```
 
 # Add a `uv remove` test where a dependency is repeated
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-19 13:19_
+_@zanieb_
 
 _No description provided._
 

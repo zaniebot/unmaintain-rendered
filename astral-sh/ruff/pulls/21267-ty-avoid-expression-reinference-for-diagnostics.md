@@ -14,14 +14,14 @@ head: ibraheem/bidi-diagnostics
 created_at: 2025-11-03T21:40:44Z
 updated_at: 2025-11-25T17:24:02Z
 url: https://github.com/astral-sh/ruff/pull/21267
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [ty] Avoid expression reinference for diagnostics
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-11-03 21:40_
+_@ibraheemdev_
 
 ## Summary
 

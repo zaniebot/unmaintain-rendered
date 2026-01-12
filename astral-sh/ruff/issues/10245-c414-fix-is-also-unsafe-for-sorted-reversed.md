@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-06T10:34:49Z
 updated_at: 2024-03-13T15:12:34Z
 url: https://github.com/astral-sh/ruff/issues/10245
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # C414 --fix is also unsafe for sorted(reversed(iterable)), and other issues encountered when comparing with shed
 
 ---
 
-_Issue opened by @jakkdl on 2024-03-06 10:34_
+_@jakkdl_
 
 C414 is marked as unsafe fix, but only because of dropping comments: https://docs.astral.sh/ruff/rules/unnecessary-double-cast-or-process/#fix-safety
 

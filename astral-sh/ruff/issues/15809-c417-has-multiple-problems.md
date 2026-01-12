@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-29T14:16:15Z
 updated_at: 2025-11-06T14:16:38Z
 url: https://github.com/astral-sh/ruff/issues/15809
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `C417` has multiple problems
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-01-29 14:16_
+_@InSyncWithFoo_
 
 
 While working on #15802, I noticed a few problems with [`C417`](https://docs.astral.sh/ruff/rules/unnecessary-map/) ([playground](https://play.ruff.rs/f6b44cea-27b5-44c5-bdab-f8c9678fe99f)).

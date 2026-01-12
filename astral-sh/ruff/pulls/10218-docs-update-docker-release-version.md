@@ -13,14 +13,14 @@ head: hoel/update_docker_release_version
 created_at: 2024-03-03T23:59:19Z
 updated_at: 2024-03-04T02:21:13Z
 url: https://github.com/astral-sh/ruff/pull/10218
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # `docs`: update docker release version
 
 ---
 
-_Pull request opened by @hoel-bagard on 2024-03-03 23:59_
+_@hoel-bagard_
 
 ## Summary
 

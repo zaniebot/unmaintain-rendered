@@ -13,14 +13,14 @@ head: fix-doc-numpy
 created_at: 2023-06-20T19:38:36Z
 updated_at: 2023-06-21T11:31:05Z
 url: https://github.com/astral-sh/ruff/pull/5224
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fixed typo in numpy deprecated type alias rule documentation
 
 ---
 
-_Pull request opened by @Flowake on 2023-06-20 19:38_
+_@Flowake_
 
 ## Summary
 

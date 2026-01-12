@@ -12,14 +12,14 @@ head: add-meltano
 created_at: 2023-04-05T02:58:39Z
 updated_at: 2023-04-05T03:46:26Z
 url: https://github.com/astral-sh/ruff/pull/3883
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add Meltano to users
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2023-04-05 02:58_
+_@edgarrmondragon_
 
 Thanks for creating and maintaining Ruff!
 

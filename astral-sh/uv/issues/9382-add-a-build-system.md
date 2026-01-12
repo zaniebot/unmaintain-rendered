@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-23T10:24:38Z
 updated_at: 2024-11-24T03:18:57Z
 url: https://github.com/astral-sh/uv/issues/9382
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # add a build system?
 
 ---
 
-_Issue opened by @DinhHuy2010 on 2024-11-23 10:24_
+_@DinhHuy2010_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

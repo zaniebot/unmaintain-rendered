@@ -13,14 +13,14 @@ head: dhruv/fix-ci-on-main
 created_at: 2023-08-08T13:31:46Z
 updated_at: 2023-08-08T14:45:09Z
 url: https://github.com/astral-sh/ruff/pull/6427
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Update `StmtMatch` formatting snapshots
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-08-08 13:31_
+_@dhruvmanila_
 
 This PR fixes the CI failure on `main` by updating the snapshots for `StmtMatch`
 formatting.

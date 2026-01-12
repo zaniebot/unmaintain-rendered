@@ -13,14 +13,14 @@ head: charlie/so
 created_at: 2024-12-21T13:55:23Z
 updated_at: 2024-12-21T14:43:45Z
 url: https://github.com/astral-sh/uv/pull/10078
-synced_at: 2026-01-10T11:44:33Z
+synced_at: 2026-01-12T16:09:06Z
 ```
 
 # Preserve sort when deciding on requirement placement
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-21 13:55_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-09-07T16:06:48Z
 updated_at: 2020-02-02T06:17:30Z
 url: https://github.com/clap-rs/clap/issues/1339
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # clap allows required arguments to be omitted if there's a default set
 
 ---
 
-_Issue opened by @richardjharris on 2018-09-07 16:06_
+_@richardjharris_
 
 ### Rust Version
 

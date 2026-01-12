@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-20T17:52:09Z
 updated_at: 2024-10-28T02:01:48Z
 url: https://github.com/astral-sh/ruff/issues/7551
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Feature Request: Ability to set relative python file paths in the reports
 
 ---
 
-_Issue opened by @matroscoe on 2023-09-20 17:52_
+_@matroscoe_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

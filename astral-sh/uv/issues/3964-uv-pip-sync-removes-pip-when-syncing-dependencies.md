@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-02T10:42:00Z
 updated_at: 2024-06-02T18:02:28Z
 url: https://github.com/astral-sh/uv/issues/3964
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # ``uv pip sync`` removes pip when syncing dependencies from a ``requirements.txt`` without pip
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-06-02 10:42_
+_@FishAlchemist_
 
 uv 0.2.5 (47db418ba 2024-05-28)
 

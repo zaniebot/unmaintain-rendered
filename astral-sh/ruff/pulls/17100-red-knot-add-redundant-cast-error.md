@@ -13,14 +13,14 @@ head: manzt/redunant-cast
 created_at: 2025-03-31T18:38:08Z
 updated_at: 2025-04-01T00:39:57Z
 url: https://github.com/astral-sh/ruff/pull/17100
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Add redundant-cast error
 
 ---
 
-_Pull request opened by @manzt on 2025-03-31 18:38_
+_@manzt_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: pylint-w9011-missing-return-doc
 created_at: 2023-11-26T19:40:19Z
 updated_at: 2024-03-28T15:24:41Z
 url: https://github.com/astral-sh/ruff/pull/8843
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [`pylint`] Add missing return doc rule (`W9011`)
 
 ---
 
-_Pull request opened by @johannes-graner on 2023-11-26 19:40_
+_@johannes-graner_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

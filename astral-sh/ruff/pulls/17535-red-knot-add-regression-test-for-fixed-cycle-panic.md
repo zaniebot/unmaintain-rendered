@@ -13,14 +13,14 @@ head: cjm/cycletest
 created_at: 2025-04-22T01:50:08Z
 updated_at: 2025-04-22T16:20:55Z
 url: https://github.com/astral-sh/ruff/pull/17535
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] add regression test for fixed cycle panic
 
 ---
 
-_Pull request opened by @carljm on 2025-04-22 01:50_
+_@carljm_
 
 Add a regression test for the cycle documented in https://github.com/astral-sh/ruff/issues/14767, which no longer panics (or even causes a cycle at all.)
 

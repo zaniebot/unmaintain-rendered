@@ -13,14 +13,14 @@ head: zb/tool-err-chain
 created_at: 2024-11-01T13:36:16Z
 updated_at: 2024-11-02T16:55:44Z
 url: https://github.com/astral-sh/uv/pull/8753
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:29Z
 ```
 
 # Show full error chain on tool upgrade failures
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-01 13:36_
+_@zanieb_
 
 As reported in https://github.com/astral-sh/uv/issues/8555
 

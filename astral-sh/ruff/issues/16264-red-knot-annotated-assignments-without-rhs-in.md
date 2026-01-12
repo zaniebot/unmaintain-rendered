@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-19T20:30:47Z
 updated_at: 2025-02-28T16:45:23Z
 url: https://github.com/astral-sh/ruff/issues/16264
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] annotated assignments without RHS in stubs should still be bindings
 
 ---
 
-_Issue opened by @carljm on 2025-02-19 20:30_
+_@carljm_
 
 ### Description
 

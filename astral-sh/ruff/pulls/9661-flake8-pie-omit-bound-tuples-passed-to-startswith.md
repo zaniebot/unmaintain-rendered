@@ -14,14 +14,14 @@ head: fix(PIE810)/wrong_suggestion_with_tuple_of_strs
 created_at: 2024-01-28T12:11:55Z
 updated_at: 2024-01-28T21:27:42Z
 url: https://github.com/astral-sh/ruff/pull/9661
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`flake8-pie`] Omit bound tuples passed to `.startswith` or `.endswith`
 
 ---
 
-_Pull request opened by @mikeleppane on 2024-01-28 12:11_
+_@mikeleppane_
 
 ## Summary
 

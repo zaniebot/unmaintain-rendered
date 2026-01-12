@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-05T07:59:38Z
 updated_at: 2025-09-08T06:01:15Z
 url: https://github.com/astral-sh/uv/issues/15695
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # UV Sync is using the wrong platform wheels
 
 ---
 
-_Issue opened by @mechstei03 on 2025-09-05 07:59_
+_@mechstei03_
 
 ### Summary
 

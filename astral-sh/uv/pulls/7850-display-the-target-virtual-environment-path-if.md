@@ -13,14 +13,14 @@ head: zb/print-env-path
 created_at: 2024-10-01T16:47:31Z
 updated_at: 2024-10-18T15:12:59Z
 url: https://github.com/astral-sh/uv/pull/7850
-synced_at: 2026-01-10T12:53:57Z
+synced_at: 2026-01-12T16:08:02Z
 ```
 
 # Display the target virtual environment path if non-default
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-01 16:47_
+_@zanieb_
 
 Supersedes https://github.com/astral-sh/uv/pull/4835
 

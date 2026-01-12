@@ -14,14 +14,14 @@ head: zb/docs-i
 created_at: 2024-06-20T16:45:54Z
 updated_at: 2024-06-26T16:28:44Z
 url: https://github.com/astral-sh/uv/pull/4426
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:13Z
 ```
 
 # Add structured documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-20 16:45_
+_@zanieb_
 
 A ton of work remaining here, pushing so I can preview things rendered.
 

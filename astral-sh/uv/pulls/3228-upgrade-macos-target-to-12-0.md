@@ -13,14 +13,14 @@ head: charlie/manylinux
 created_at: 2024-04-23T23:18:09Z
 updated_at: 2024-04-23T23:28:15Z
 url: https://github.com/astral-sh/uv/pull/3228
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:30Z
 ```
 
 # Upgrade macOS target to 12.0
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-23 23:18_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-08T09:08:30Z
 updated_at: 2026-01-02T07:33:46Z
 url: https://github.com/astral-sh/ty/issues/1803
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Incompatibility with beartype
 
 ---
 
-_Issue opened by @adamtheturtle on 2025-12-08 09:08_
+_@adamtheturtle_
 
 ### Summary
 

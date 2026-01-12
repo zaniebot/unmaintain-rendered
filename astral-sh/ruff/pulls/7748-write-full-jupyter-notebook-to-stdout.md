@@ -14,14 +14,14 @@ head: charlie/write
 created_at: 2023-10-01T20:43:59Z
 updated_at: 2023-10-02T14:26:35Z
 url: https://github.com/astral-sh/ruff/pull/7748
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Write full Jupyter notebook to `stdout`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-01 20:43_
+_@charliermarsh_
 
 ## Summary
 

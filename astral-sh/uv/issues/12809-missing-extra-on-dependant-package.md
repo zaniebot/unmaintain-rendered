@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-10T14:09:58Z
 updated_at: 2025-04-10T14:35:12Z
 url: https://github.com/astral-sh/uv/issues/12809
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # Missing extra on dependant package
 
 ---
 
-_Issue opened by @presidento on 2025-04-10 14:09_
+_@presidento_
 
 ### Summary
 

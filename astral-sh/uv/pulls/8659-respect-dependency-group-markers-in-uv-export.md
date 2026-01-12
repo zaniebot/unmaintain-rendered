@@ -13,14 +13,14 @@ head: charlie/m
 created_at: 2024-10-29T13:34:25Z
 updated_at: 2024-10-29T13:41:28Z
 url: https://github.com/astral-sh/uv/pull/8659
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:25Z
 ```
 
 # Respect dependency group markers in `uv export`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-29 13:34_
+_@charliermarsh_
 
 ## Summary
 

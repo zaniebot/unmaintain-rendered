@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-03T17:23:28Z
 updated_at: 2024-10-04T04:28:19Z
 url: https://github.com/astral-sh/ruff/issues/13612
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Failed to install: certifi-2024.8.30-py3-none-any.whl
 
 ---
 
-_Issue opened by @Pdsantos73 on 2024-10-03 17:23_
+_@Pdsantos73_
 
 Trying to install fastapi "uv add fastapi[standard]" is showing the following error:
 

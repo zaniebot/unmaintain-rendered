@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T16:48:46Z
 updated_at: 2025-11-12T13:45:32Z
 url: https://github.com/astral-sh/uv/issues/16616
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # Add a hint when a stable version of Python is available
 
 ---
 
-_Issue opened by @zanieb on 2025-11-06 16:48_
+_@zanieb_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: jtfm/conflicting-groups
 created_at: 2025-03-06T14:00:44Z
 updated_at: 2025-03-08T18:21:27Z
 url: https://github.com/astral-sh/uv/pull/12005
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:05Z
 ```
 
 # Conflicting groups should handle conflicting inclusions automatically
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-03-06 14:00_
+_@jtfmumm_
 
 This adds support for inferring dependency group conflict sets from the directly defined conflicts in configuration. For example, if you declare a conflict between groups `alpha` and `beta` and `dev` includes `beta`, then we will infer a conflict between `dev` and `alpha`. We will also handle a conflict between two groups if they transitively include groups that conflict with each other. See #11232 for more details.  
 

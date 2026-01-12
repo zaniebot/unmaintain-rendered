@@ -14,14 +14,14 @@ head: frank/19310
 created_at: 2025-07-14T23:38:07Z
 updated_at: 2025-07-16T20:39:05Z
 url: https://github.com/astral-sh/ruff/pull/19343
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # Treat form feed as valid whitespace before a semicolon
 
 ---
 
-_Pull request opened by @soundsonacid on 2025-07-14 23:38_
+_@soundsonacid_
 
 fixes #19310 
 

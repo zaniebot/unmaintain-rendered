@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-08T13:55:48Z
 updated_at: 2023-10-08T19:46:08Z
 url: https://github.com/astral-sh/uv/issues/57
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Add way more user-facing output to install command
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-08 13:55_
+_@charliermarsh_
 
 We could either do something npm- and yarn-like (show a progress bar), or something pip-like (show output for every package, for everything we do).
 

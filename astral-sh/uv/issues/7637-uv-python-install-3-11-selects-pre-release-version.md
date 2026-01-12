@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-23T13:26:33Z
 updated_at: 2024-09-23T19:09:01Z
 url: https://github.com/astral-sh/uv/issues/7637
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # `uv python install '>=3.11'` selects pre-release version
 
 ---
 
-_Issue opened by @zanieb on 2024-09-23 13:26_
+_@zanieb_
 
 I have a similar issue with the usage of the following type of command:
 

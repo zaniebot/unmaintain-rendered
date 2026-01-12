@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-23T15:58:43Z
 updated_at: 2025-12-05T00:40:00Z
 url: https://github.com/astral-sh/ty/issues/1090
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # ty allows passing different types for constrained TypeVar arguments.
 
 ---
 
-_Issue opened by @IDrokin117 on 2025-08-23 15:58_
+_@IDrokin117_
 
 # Summary
 Ty doesn't flag issues when two distinct types are passed to a function that uses the same generic type parameter T for its arguments. This might be allowed for `bound` types (if satisfy), but not for `constraints`. See examples for mypy and pyrefly.

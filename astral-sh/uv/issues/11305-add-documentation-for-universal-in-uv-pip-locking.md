@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-07T01:40:11Z
 updated_at: 2025-02-07T01:40:54Z
 url: https://github.com/astral-sh/uv/issues/11305
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # Add documentation for `--universal` in `uv pip` locking environments docs
 
 ---
 
-_Issue opened by @zanieb on 2025-02-07 01:40_
+_@zanieb_
 
 e.g. in https://docs.astral.sh/uv/pip/compile/#locking-requirements
 

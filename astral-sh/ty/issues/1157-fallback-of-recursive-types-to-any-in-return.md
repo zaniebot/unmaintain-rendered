@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-09T14:38:24Z
 updated_at: 2025-11-13T07:40:30Z
 url: https://github.com/astral-sh/ty/issues/1157
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Fallback of recursive types to `Any` in return types of generic methods
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-09 14:38_
+_@sharkdp_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-25T07:11:57Z
 updated_at: 2025-12-18T08:43:24Z
 url: https://github.com/astral-sh/ty/issues/887
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Advanced pattern matching support
 
 ---
 
-_Issue opened by @sharkdp on 2025-07-25 07:11_
+_@sharkdp_
 
 We already have basic support for control flow analysis and type narrowing in `match` statements, but our support is not complete. The list below shows some examples of things that are not working yet, but is probably not exhaustive:
 

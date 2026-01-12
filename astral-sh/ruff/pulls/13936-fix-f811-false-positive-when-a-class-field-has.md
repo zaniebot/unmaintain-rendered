@@ -12,14 +12,14 @@ head: micha/fix-class-field-redefinition
 created_at: 2024-10-26T09:03:03Z
 updated_at: 2024-10-28T07:02:34Z
 url: https://github.com/astral-sh/ruff/pull/13936
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Fix F811 false positive when a class field has the same name as an unused import
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-26 09:03_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/ecosystem
 created_at: 2023-08-27T13:49:44Z
 updated_at: 2023-08-28T18:12:03Z
 url: https://github.com/astral-sh/ruff/pull/6916
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Increase ecosystem CI coverage to 40 projects
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-27 13:49_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/typo
 created_at: 2024-07-13T15:28:25Z
 updated_at: 2024-07-13T15:35:52Z
 url: https://github.com/astral-sh/uv/pull/5037
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:35Z
 ```
 
 # There are no rage requests here
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-13 15:28_
+_@zanieb_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: renovate-patch/mdformat-mkdocs-v4
 created_at: 2024-12-16T13:12:43Z
 updated_at: 2024-12-16T17:02:27Z
 url: https://github.com/astral-sh/ruff/pull/15020
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # fix: remove mdformat-admon and custom no-escape plugin
 
 ---
 
-_Pull request opened by @KyleKing on 2024-12-16 13:12_
+_@KyleKing_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ head: UP035
 created_at: 2025-01-29T00:51:55Z
 updated_at: 2025-01-29T18:27:47Z
 url: https://github.com/astral-sh/ruff/pull/15800
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`pyupgrade`] Ignore `is_typeddict` and `TypedDict` for `deprecated-import` (`UP035`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-29 00:51_
+_@InSyncWithFoo_
 
 ## Summary
 

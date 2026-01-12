@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-10T12:32:03Z
 updated_at: 2023-03-12T17:45:54Z
 url: https://github.com/astral-sh/ruff/issues/3437
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Implement rule for unnecessary import alias
 
 ---
 
-_Issue opened by @stinodego on 2023-03-10 12:32_
+_@stinodego_
 
 This is a feature request to implement the following lint from the `flake8-tidy-imports` package:
 https://github.com/adamchainz/flake8-tidy-imports#i250-unnecessary-import-alias

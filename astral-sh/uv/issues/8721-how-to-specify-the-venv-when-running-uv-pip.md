@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T12:29:20Z
 updated_at: 2024-10-31T13:50:27Z
 url: https://github.com/astral-sh/uv/issues/8721
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # how to specify the venv when running `uv pip install`
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-10-31 12:29_
+_@KotlinIsland_
 
 i'm trying to write a [pyprojectx](https://pyprojectx.github.io/) install script for basedmypy where the user can pass `--python 3.8` etc, but i am struggling to figure out how to do this
 

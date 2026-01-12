@@ -14,14 +14,14 @@ head: avoid-marker-collisions
 created_at: 2024-08-11T17:25:31Z
 updated_at: 2024-08-16T20:46:47Z
 url: https://github.com/astral-sh/uv/pull/6010
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:09Z
 ```
 
 # Avoid overwriting dependencies with different markers in `uv add`
 
 ---
 
-_Pull request opened by @blueraft on 2024-08-11 17:25_
+_@blueraft_
 
 ## Summary
 

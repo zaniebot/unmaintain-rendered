@@ -13,14 +13,14 @@ head: zb/import-add
 created_at: 2025-01-24T01:53:33Z
 updated_at: 2025-01-24T03:34:52Z
 url: https://github.com/astral-sh/uv/pull/10926
-synced_at: 2026-01-10T11:45:19Z
+synced_at: 2026-01-12T16:09:35Z
 ```
 
 # Add documentation for `uv add -r`
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-24 01:53_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/10924
 

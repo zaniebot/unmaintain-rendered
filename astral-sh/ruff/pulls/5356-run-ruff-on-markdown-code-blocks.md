@@ -12,14 +12,14 @@ head: 3792_markdown
 created_at: 2023-06-25T21:36:40Z
 updated_at: 2023-06-29T18:14:48Z
 url: https://github.com/astral-sh/ruff/pull/5356
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Run Ruff on Markdown code blocks
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-25 21:36_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

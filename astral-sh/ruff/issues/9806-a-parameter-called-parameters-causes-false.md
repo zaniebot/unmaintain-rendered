@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-03T11:54:58Z
 updated_at: 2024-02-11T01:02:42Z
 url: https://github.com/astral-sh/ruff/issues/9806
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # A parameter called parameters causes false positives for pydocstyle rules (D405, D406, D407, and D414)
 
 ---
 
-_Issue opened by @owenlamont on 2024-02-03 11:54_
+_@owenlamont_
 
 Ran into this bug where I'm working with a function with a parameter named _parameters_ and they caused false positive triggers (and incorrect automatic fixes) for the pydocstyle ruleset.
 

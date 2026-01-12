@@ -12,14 +12,14 @@ head: zb/hookd
 created_at: 2024-01-12T04:31:00Z
 updated_at: 2024-01-29T21:22:31Z
 url: https://github.com/astral-sh/uv/pull/895
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:16Z
 ```
 
 # Use daemon to run Python build hooks
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-12 04:31_
+_@zanieb_
 
 Closes https://github.com/astral-sh/puffin/issues/846
 

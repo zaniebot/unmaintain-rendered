@@ -13,14 +13,14 @@ head: zb/cpp
 created_at: 2025-03-17T14:00:39Z
 updated_at: 2025-05-04T12:26:53Z
 url: https://github.com/astral-sh/uv/pull/12239
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:11Z
 ```
 
 # Patch `CC` and `CCX` entries in sysconfig for cross-compiled `aarch64` Python distributions
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-17 14:00_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/12207
 

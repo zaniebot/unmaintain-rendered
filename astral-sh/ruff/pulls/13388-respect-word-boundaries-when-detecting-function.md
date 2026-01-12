@@ -14,14 +14,14 @@ head: charlie/b
 created_at: 2024-09-18T03:50:27Z
 updated_at: 2024-09-18T04:06:18Z
 url: https://github.com/astral-sh/ruff/pull/13388
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Respect word boundaries when detecting function signature in docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-18 03:50_
+_@charliermarsh_
 
 ## Summary
 

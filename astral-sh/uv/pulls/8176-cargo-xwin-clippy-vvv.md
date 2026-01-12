@@ -12,14 +12,14 @@ head: konsti/cargo-xwin-vvv
 created_at: 2024-10-14T14:24:46Z
 updated_at: 2024-11-05T14:13:44Z
 url: https://github.com/astral-sh/uv/pull/8176
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:11Z
 ```
 
 # `cargo xwin clippy -vvv`
 
 ---
 
-_Pull request opened by @konstin on 2024-10-14 14:24_
+_@konstin_
 
 Debugging broken CI
 

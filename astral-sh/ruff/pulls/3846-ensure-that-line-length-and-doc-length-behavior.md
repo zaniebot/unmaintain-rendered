@@ -12,14 +12,14 @@ head: maxdoclen
 created_at: 2023-04-01T12:37:52Z
 updated_at: 2023-04-02T11:05:50Z
 url: https://github.com/astral-sh/ruff/pull/3846
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Ensure that line-length and doc-length behavior is consistent with Flake8 
 
 ---
 
-_Pull request opened by @JBLDKY on 2023-04-01 12:37_
+_@JBLDKY_
 
 Here is my proposed fix for:
 https://github.com/charliermarsh/ruff/issues/2756

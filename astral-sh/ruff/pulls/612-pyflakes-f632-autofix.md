@@ -12,14 +12,14 @@ head: pyflakes-f632-autofix
 created_at: 2022-11-05T21:42:30Z
 updated_at: 2022-12-27T05:42:49Z
 url: https://github.com/astral-sh/ruff/pull/612
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # pyflakes F632 Autofix
 
 ---
 
-_Pull request opened by @squiddy on 2022-11-05 21:42_
+_@squiddy_
 
 I haven't done much with Rust yet, so any feedback is appreciated.
 

@@ -13,14 +13,14 @@ head: charlie/max-version
 created_at: 2024-03-14T23:15:20Z
 updated_at: 2024-03-14T23:26:32Z
 url: https://github.com/astral-sh/uv/pull/2468
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:03Z
 ```
 
 # Pull in `packse` tests for post releases
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-14 23:15_
+_@charliermarsh_
 
 ## Summary
 

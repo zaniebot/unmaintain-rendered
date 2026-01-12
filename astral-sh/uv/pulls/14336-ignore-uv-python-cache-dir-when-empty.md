@@ -13,14 +13,14 @@ head: zb/cache-dir-empty
 created_at: 2025-06-27T21:51:16Z
 updated_at: 2025-06-28T14:42:28Z
 url: https://github.com/astral-sh/uv/pull/14336
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:09Z
 ```
 
 # Ignore `UV_PYTHON_CACHE_DIR` when empty
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-27 21:51_
+_@zanieb_
 
 To match our semantics elsewhere
 

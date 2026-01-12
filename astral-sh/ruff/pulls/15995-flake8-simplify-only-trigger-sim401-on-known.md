@@ -13,14 +13,14 @@ head: jjb-sim401-rule
 created_at: 2025-02-06T14:38:47Z
 updated_at: 2025-02-07T08:28:52Z
 url: https://github.com/astral-sh/ruff/pull/15995
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [flake8-simplify] Only trigger SIM401 on known dictionaries (SIM401)
 
 ---
 
-_Pull request opened by @junhsonjb on 2025-02-06 14:38_
+_@junhsonjb_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

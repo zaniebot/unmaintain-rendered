@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-11T16:42:52Z
 updated_at: 2023-02-12T16:03:39Z
 url: https://github.com/astral-sh/ruff/issues/2770
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Incorrect flake8-comprehension fixits (C401,C402) in fstring
 
 ---
 
-_Issue opened by @Skylion007 on 2023-02-11 16:42_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

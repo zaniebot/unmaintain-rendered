@@ -13,14 +13,14 @@ head: charlie/resol
 created_at: 2024-03-28T20:34:31Z
 updated_at: 2024-03-28T21:08:17Z
 url: https://github.com/astral-sh/uv/pull/2720
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:11Z
 ```
 
 # Add `UV_RESOLUTION` environment variable for `--resolution`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-28 20:34_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/2710.
 

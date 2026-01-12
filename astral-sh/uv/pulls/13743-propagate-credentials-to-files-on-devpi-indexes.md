@@ -13,14 +13,14 @@ head: zb/devpi-s
 created_at: 2025-05-30T20:51:18Z
 updated_at: 2025-06-02T00:20:58Z
 url: https://github.com/astral-sh/uv/pull/13743
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:50Z
 ```
 
 # Propagate credentials to files on devpi indexes ending in `/+simple`
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-30 20:51_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/13737
 

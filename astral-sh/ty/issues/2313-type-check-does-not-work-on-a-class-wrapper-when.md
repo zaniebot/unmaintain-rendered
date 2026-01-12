@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-03T06:48:45Z
 updated_at: 2026-01-04T22:11:02Z
 url: https://github.com/astral-sh/ty/issues/2313
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Type check does not work on a class wrapper when used as a decorator
 
 ---
 
-_Issue opened by @owais on 2026-01-03 06:48_
+_@owais_
 
 ### Summary
 

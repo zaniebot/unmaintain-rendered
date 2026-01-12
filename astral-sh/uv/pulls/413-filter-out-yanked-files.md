@@ -12,14 +12,14 @@ head: yanked
 created_at: 2023-11-13T14:19:43Z
 updated_at: 2023-11-13T21:08:50Z
 url: https://github.com/astral-sh/uv/pull/413
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # Filter out yanked files
 
 ---
 
-_Pull request opened by @konstin on 2023-11-13 14:19_
+_@konstin_
 
 Implement two behaviors for yanked versions:
 

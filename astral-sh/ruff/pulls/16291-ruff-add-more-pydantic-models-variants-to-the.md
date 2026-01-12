@@ -13,14 +13,14 @@ head: ruf012-more-models
 created_at: 2025-02-20T21:16:38Z
 updated_at: 2025-02-21T08:28:52Z
 url: https://github.com/astral-sh/ruff/pull/16291
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [`ruff`] Add more Pydantic models variants to the list of default copy semantics (`RUF012`)
 
 ---
 
-_Pull request opened by @Viicos on 2025-02-20 21:16_
+_@Viicos_
 
 Let me know if more test cases are needed.
 <!--

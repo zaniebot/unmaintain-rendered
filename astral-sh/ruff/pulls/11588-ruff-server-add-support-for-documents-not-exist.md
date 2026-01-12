@@ -13,14 +13,14 @@ head: textDocument/didOpen
 created_at: 2024-05-28T21:43:56Z
 updated_at: 2024-05-31T06:34:10Z
 url: https://github.com/astral-sh/ruff/pull/11588
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # `ruff server`: Add support for documents not exist on disk
 
 ---
 
-_Pull request opened by @T-256 on 2024-05-28 21:43_
+_@T-256_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

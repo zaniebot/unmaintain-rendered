@@ -13,14 +13,14 @@ head: david/intersection-types-compare-expressions
 created_at: 2024-11-06T19:50:47Z
 updated_at: 2024-11-07T19:51:16Z
 url: https://github.com/astral-sh/ruff/pull/14138
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Type inference for comparisons involving intersection types
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-06 19:50_
+_@sharkdp_
 
 ## Summary
 

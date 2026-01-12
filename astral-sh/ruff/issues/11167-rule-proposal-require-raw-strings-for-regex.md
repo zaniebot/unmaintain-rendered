@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-26T18:49:45Z
 updated_at: 2024-11-19T12:44:56Z
 url: https://github.com/astral-sh/ruff/issues/11167
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Rule proposal: require raw strings for regex patterns
 
 ---
 
-_Issue opened by @andersk on 2024-04-26 18:49_
+_@andersk_
 
 We could have a rule that enforces the [`re` documentation’s recommendation](https://docs.python.org/3/library/re.html) of rewriting `re.compile("pattern")` to `re.compile(r"pattern")`, and similar for the first argument of `re.search`, `re.match`, `re.fullmatch`, `re.split`, `re.findall`, `re.finditer`, `re.sub`, `re.subn`.
 

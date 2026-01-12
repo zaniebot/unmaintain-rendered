@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-15T19:24:32Z
 updated_at: 2024-04-18T01:42:52Z
 url: https://github.com/astral-sh/ruff/issues/10960
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # extend-immutable-calls doesn't work on Python scripts (as opposed to modules)
 
 ---
 
-_Issue opened by @fofoni on 2024-04-15 19:24_
+_@fofoni_
 
 Keywords: extend-immutable-calls, B008, script, module, `__main__`
 Ruff version: 0.3.7

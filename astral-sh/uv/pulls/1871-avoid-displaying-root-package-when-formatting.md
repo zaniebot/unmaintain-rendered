@@ -13,14 +13,14 @@ head: zb/root-incompat
 created_at: 2024-02-22T14:57:10Z
 updated_at: 2024-02-22T18:04:20Z
 url: https://github.com/astral-sh/uv/pull/1871
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:45Z
 ```
 
 # Avoid displaying "root" package when formatting terms
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-22 14:57_
+_@zanieb_
 
 We don't have test coverage for this, but a term can reference an incompatibility with root and then we'll display the internal 'root' package to the user.
 

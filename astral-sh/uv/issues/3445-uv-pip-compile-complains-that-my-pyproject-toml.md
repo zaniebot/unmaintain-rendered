@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-08T00:29:08Z
 updated_at: 2024-05-08T01:50:56Z
 url: https://github.com/astral-sh/uv/issues/3445
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # uv pip compile complains that my pyproject.toml dependencies aren't pinned after update to 0.1.40
 
 ---
 
-_Issue opened by @VerdantFox on 2024-05-08 00:29_
+_@VerdantFox_
 
 In `uv==0.1.39` the command `uv pip compile --output-file=requirements-prod.txt  pyproject.toml` works without error. On `uv==0.1.40`, when I run the same command, I get the following error:
 

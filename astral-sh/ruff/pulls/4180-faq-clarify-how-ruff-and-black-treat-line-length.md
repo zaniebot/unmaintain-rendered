@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-05-02T08:09:22Z
 updated_at: 2023-05-02T23:44:14Z
 url: https://github.com/astral-sh/ruff/pull/4180
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # faq: Clarify how Ruff and Black treat line-length.
 
 ---
 
-_Pull request opened by @cclauss on 2023-05-02 08:09_
+_@cclauss_
 
 As discussed at https://github.com/micropython/micropython/pull/10977#discussion_r1182175664
 

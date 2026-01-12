@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-08T19:07:21Z
 updated_at: 2025-07-11T16:43:10Z
 url: https://github.com/astral-sh/ruff/issues/19215
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `B017` has false negatives
 
 ---
 
-_Issue opened by @ntBre on 2025-07-08 19:07_
+_@ntBre_
 
 [assert-raises-exception (B017)](https://docs.astral.sh/ruff/rules/assert-raises-exception/#assert-raises-exception-b017) has false negatives when the exceptions are provided as keyword arguments:
 

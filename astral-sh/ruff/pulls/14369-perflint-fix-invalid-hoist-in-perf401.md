@@ -14,14 +14,14 @@ head: perf401_invalid_hoist
 created_at: 2024-11-15T21:03:52Z
 updated_at: 2024-12-15T18:08:49Z
 url: https://github.com/astral-sh/ruff/pull/14369
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`perflint`] fix invalid hoist in `perf401`
 
 ---
 
-_Pull request opened by @w0nder1ng on 2024-11-15 21:03_
+_@w0nder1ng_
 
 This should fix #14362. This new fix currently deletes lines like this:
 ```python

@@ -13,14 +13,14 @@ head: dhruv/pt022-autofix
 created_at: 2023-09-23T05:21:36Z
 updated_at: 2023-09-24T06:46:08Z
 url: https://github.com/astral-sh/ruff/pull/7613
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Update return type for `PT022` autofix
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-23 05:21_
+_@dhruvmanila_
 
 ## Summary
 

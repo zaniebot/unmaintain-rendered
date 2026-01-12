@@ -13,14 +13,14 @@ head: zb/toolchain-find-requested
 created_at: 2024-06-10T20:00:58Z
 updated_at: 2024-06-10T20:07:47Z
 url: https://github.com/astral-sh/uv/pull/4215
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:05Z
 ```
 
 # Update the `Toolchain::find_requested` API to take a parsed request
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-10 20:00_
+_@zanieb_
 
 Pulled out of https://github.com/astral-sh/uv/pull/4206, need this for #4214 
 

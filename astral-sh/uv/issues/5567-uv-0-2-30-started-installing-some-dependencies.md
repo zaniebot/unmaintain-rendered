@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-29T17:44:05Z
 updated_at: 2024-07-29T17:54:48Z
 url: https://github.com/astral-sh/uv/issues/5567
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # uv 0.2.30 started installing some dependencies non-editably even though they are installed with -e
 
 ---
 
-_Issue opened by @gibsondan on 2024-07-29 17:44_
+_@gibsondan_
 
 Still working on an MRE for you, but we are seeing that after the 0.2.30 upgrade, our 'dev install' command that tries to install a bunch of dagster packages editably is no longer installing them editably.
 

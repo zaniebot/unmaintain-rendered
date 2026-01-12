@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-10T17:34:42Z
 updated_at: 2025-07-10T20:16:14Z
 url: https://github.com/astral-sh/uv/issues/14547
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # `uv` installer (https://astral.sh/uv/install.sh) creating `.zshrc` even in bash
 
 ---
 
-_Issue opened by @alichaudry on 2025-07-10 17:34_
+_@alichaudry_
 
 ### Summary
 

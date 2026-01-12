@@ -12,14 +12,14 @@ head: cjm/display-modname
 created_at: 2024-07-26T05:14:43Z
 updated_at: 2024-07-26T17:20:24Z
 url: https://github.com/astral-sh/ruff/pull/12522
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] qualify function/class name with module/file
 
 ---
 
-_Pull request opened by @carljm on 2024-07-26 05:14_
+_@carljm_
 
 When we display a class or function type, include the module name, not just the class/function name.
 

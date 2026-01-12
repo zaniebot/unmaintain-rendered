@@ -12,14 +12,14 @@ head: use-absolute-filepath
 created_at: 2023-11-08T13:56:30Z
 updated_at: 2023-11-08T13:59:01Z
 url: https://github.com/astral-sh/ruff/pull/8560
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # WIP: print absolute rather than relative path in messages
 
 ---
 
-_Pull request opened by @riccardoNovaglia on 2023-11-08 13:56_
+_@riccardoNovaglia_
 
 A quick attempt at printing absolute rather than relative paths of files changed or where errors have been found.
 

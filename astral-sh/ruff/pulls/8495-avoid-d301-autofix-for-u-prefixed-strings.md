@@ -13,14 +13,14 @@ head: dhruv/d301
 created_at: 2023-11-05T11:07:55Z
 updated_at: 2023-11-05T14:45:50Z
 url: https://github.com/astral-sh/ruff/pull/8495
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Avoid `D301` autofix for `u` prefixed strings
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-05 11:07_
+_@dhruvmanila_
 
 This PR avoids creating the fix for `D301` if the string is prefixed with `u` i.e., it's a unicode string. The reason being that `u` and `r` cannot be used together as it's a syntax error.
 

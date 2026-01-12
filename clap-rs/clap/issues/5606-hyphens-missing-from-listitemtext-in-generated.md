@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-29T19:02:53Z
 updated_at: 2024-08-10T00:22:31Z
 url: https://github.com/clap-rs/clap/issues/5606
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Hyphens missing from listItemText in generated PowerShell autocomplete scripts
 
 ---
 
-_Issue opened by @Mixu78 on 2024-07-29 19:02_
+_@Mixu78_
 
 ### Please complete the following tasks
 

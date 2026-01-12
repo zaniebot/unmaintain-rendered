@@ -14,14 +14,14 @@ head: ibraheem/generic-promotion
 created_at: 2025-11-13T21:36:00Z
 updated_at: 2025-11-14T21:13:58Z
 url: https://github.com/astral-sh/ruff/pull/21439
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [ty] Improve literal promotion heuristics
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-11-13 21:36_
+_@ibraheemdev_
 
 ## Summary
 

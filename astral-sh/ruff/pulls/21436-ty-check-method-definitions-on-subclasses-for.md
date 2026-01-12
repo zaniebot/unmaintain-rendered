@@ -14,14 +14,14 @@ head: alex/basic-liskov
 created_at: 2025-11-13T20:03:16Z
 updated_at: 2025-11-23T18:08:17Z
 url: https://github.com/astral-sh/ruff/pull/21436
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [ty] Check method definitions on subclasses for Liskov violations
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-13 20:03_
+_@AlexWaygood_
 
 ## Summary
 

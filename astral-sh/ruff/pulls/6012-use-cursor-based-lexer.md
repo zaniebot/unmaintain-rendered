@@ -13,14 +13,14 @@ head: use-cursor-based-lexer
 created_at: 2023-07-23T09:02:55Z
 updated_at: 2023-07-26T09:32:28Z
 url: https://github.com/astral-sh/ruff/pull/6012
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Use cursor based lexer
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-23 09:02_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

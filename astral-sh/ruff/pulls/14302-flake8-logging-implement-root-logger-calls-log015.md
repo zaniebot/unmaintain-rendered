@@ -14,14 +14,14 @@ head: LOG015
 created_at: 2024-11-13T00:31:35Z
 updated_at: 2024-11-15T10:33:10Z
 url: https://github.com/astral-sh/ruff/pull/14302
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`flake8-logging`] Implement `root-logger-calls` (`LOG015`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-13 00:31_
+_@InSyncWithFoo_
 
 ## Summary
 

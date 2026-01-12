@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T16:11:06Z
 updated_at: 2025-05-15T03:16:34Z
 url: https://github.com/astral-sh/ruff/issues/14985
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Add CLI flag to configure relative vs full path printing for emitters
 
 ---
 
-_Issue opened by @brupelo on 2024-12-15 16:11_
+_@brupelo_
 
 **Follow-up from [#9417](https://github.com/astral-sh/ruff/issues/9417)**
 

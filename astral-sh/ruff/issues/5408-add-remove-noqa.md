@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-27T23:53:49Z
 updated_at: 2023-06-28T00:36:59Z
 url: https://github.com/astral-sh/ruff/issues/5408
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add remove noqa
 
 ---
 
-_Issue opened by @gaborbernat on 2023-06-27 23:53_
+_@gaborbernat_
 
 This would be the reverse of add-noqa, so as such would be exclusive flag with ``--add-noqa``. This is something one would want to use when they decide to no longer ignore those failures and instead fix them. 
 

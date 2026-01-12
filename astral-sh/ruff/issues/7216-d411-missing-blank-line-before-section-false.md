@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-07T10:25:46Z
 updated_at: 2023-09-13T16:41:14Z
 url: https://github.com/astral-sh/ruff/issues/7216
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # D411: Missing blank line before section -- false positive
 
 ---
 
-_Issue opened by @pepoluan on 2023-09-07 10:25_
+_@pepoluan_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-05-03T12:48:25Z
 updated_at: 2024-05-03T16:01:04Z
 url: https://github.com/clap-rs/clap/issues/5483
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `ArgAction::Count` starts from `0` rather than `default_value`
 
 ---
 
-_Issue opened by @eirnym on 2024-05-03 12:48_
+_@eirnym_
 
 ### Please complete the following tasks
 

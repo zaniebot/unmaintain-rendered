@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-03T17:37:49Z
 updated_at: 2023-07-14T05:27:45Z
 url: https://github.com/astral-sh/ruff/issues/5489
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Enable `resolve_call_path` to resolve symbols across files
 
 ---
 
-_Issue opened by @charliermarsh on 2023-07-03 17:37_
+_@charliermarsh_
 
 Now that we have a "real" import resolver (unused, but implemented), we should be able to remove (e.g.) `typing_modules` and some other settings by resolving symbols across files.
 

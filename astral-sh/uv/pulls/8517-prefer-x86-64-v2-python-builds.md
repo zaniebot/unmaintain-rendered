@@ -12,14 +12,14 @@ head: x86_64_v2
 created_at: 2024-10-24T06:50:37Z
 updated_at: 2024-12-10T18:26:45Z
 url: https://github.com/astral-sh/uv/pull/8517
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:21Z
 ```
 
 # Prefer `x86_64_v2` Python builds
 
 ---
 
-_Pull request opened by @j178 on 2024-10-24 06:50_
+_@j178_
 
 ## Summary
 

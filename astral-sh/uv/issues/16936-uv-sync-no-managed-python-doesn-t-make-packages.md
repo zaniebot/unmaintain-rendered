@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T18:28:39Z
 updated_at: 2025-12-02T20:23:36Z
 url: https://github.com/astral-sh/uv/issues/16936
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # uv sync --no-managed-python doesn't make packages available to system Python interpreter
 
 ---
 
-_Issue opened by @SnoozeFreddo on 2025-12-02 18:28_
+_@SnoozeFreddo_
 
 When using uv sync --no-managed-python in a Docker container, installed packages are not accessible to the system Python interpreter (/usr/local/bin/python3), resulting in ModuleNotFoundError when trying to run scripts directly with Python.
 

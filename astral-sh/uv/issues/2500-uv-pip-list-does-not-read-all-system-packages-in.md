@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-17T21:18:44Z
 updated_at: 2025-10-15T13:00:22Z
 url: https://github.com/astral-sh/uv/issues/2500
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # `uv pip list` does not read all system packages in `sys.path` and ignores `system-site-packages`
 
 ---
 
-_Issue opened by @danielhollas on 2024-03-17 21:18_
+_@danielhollas_
 
 Executing `uv pip list --system` does not list any packages. Similarly for `freeze` and `show` subcommands (I did not test any others).
 

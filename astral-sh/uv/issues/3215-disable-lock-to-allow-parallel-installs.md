@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-23T16:22:17Z
 updated_at: 2024-04-24T08:58:18Z
 url: https://github.com/astral-sh/uv/issues/3215
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Disable lock to allow parallel installs?
 
 ---
 
-_Issue opened by @fersarr on 2024-04-23 16:22_
+_@fersarr_
 
 This is more of a question: 
 

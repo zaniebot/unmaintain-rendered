@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-09-08T05:31:07Z
 updated_at: 2020-11-09T02:06:54Z
 url: https://github.com/clap-rs/clap/issues/2126
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Examples don't work
 
 ---
 
-_Issue opened by @azzamsa on 2020-09-08 05:31_
+_@azzamsa_
 
 ### Clap version
 

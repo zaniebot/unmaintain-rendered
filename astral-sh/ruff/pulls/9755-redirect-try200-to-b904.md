@@ -13,14 +13,14 @@ head: zb/try200
 created_at: 2024-02-01T15:47:02Z
 updated_at: 2024-02-01T17:01:09Z
 url: https://github.com/astral-sh/ruff/pull/9755
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Redirect `TRY200` to `B904`
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-01 15:47_
+_@zanieb_
 
 Follow-up to #9754 and #9689. Alternative to #9714.
 

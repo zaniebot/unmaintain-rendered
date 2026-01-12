@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-25T17:04:40Z
 updated_at: 2024-11-25T18:36:39Z
 url: https://github.com/astral-sh/ruff/issues/14588
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Incorrect Narrowing Constraint Applied After ExprIf
 
 ---
 
-_Issue opened by @cake-monotone on 2024-11-25 17:04_
+_@cake-monotone_
 
 ```py
 def bool_instance() -> bool:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-12T05:13:01Z
 updated_at: 2025-11-18T16:10:31Z
 url: https://github.com/astral-sh/ty/issues/639
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `tuple[Any]` should be assignable to `Never`
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-06-12 05:13_
+_@dhruvmanila_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: ag/universal-forked-markers
 created_at: 2024-06-15T14:08:44Z
 updated_at: 2024-06-17T13:30:38Z
 url: https://github.com/astral-sh/uv/pull/4339
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:10Z
 ```
 
 # filter dependencies by tracking markers on resolver forks
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-06-15 14:08_
+_@BurntSushi_
 
 This PR adds the tracking of marker expressions across forked resolver
 states. These marker expressions are then used to exlcude dependencies

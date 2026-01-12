@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-31T09:01:54Z
 updated_at: 2025-03-31T13:02:01Z
 url: https://github.com/astral-sh/uv/issues/12579
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # Support cache packages installed by `python -m pip`
 
 ---
 
-_Issue opened by @eli-yip on 2025-03-31 09:01_
+_@eli-yip_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-25T03:52:31Z
 updated_at: 2023-11-29T23:58:22Z
 url: https://github.com/astral-sh/ruff/issues/8836
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # please add an option to enable black-like formatting of trailing comments
 
 ---
 
-_Issue opened by @rpodgorny on 2023-11-25 03:52_
+_@rpodgorny_
 
 in the section of intentional deviations from black, this is mentioned:
 

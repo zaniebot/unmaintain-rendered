@@ -13,14 +13,14 @@ head: uv-pyc-compile
 created_at: 2024-03-24T23:41:29Z
 updated_at: 2024-03-25T00:24:38Z
 url: https://github.com/astral-sh/uv/pull/2642
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:08Z
 ```
 
 # Do not force recompile pyc files
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-03-24 23:41_
+_@hauntsaninja_
 
 Helps with #2637
 

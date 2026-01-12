@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T09:31:05Z
 updated_at: 2025-11-13T06:27:30Z
 url: https://github.com/astral-sh/ty/issues/194
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Change `Type::member` to return a `Result` and rename it to `try_member`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-02-21 09:31_
+_@MichaReiser_
 
 ### Description
 

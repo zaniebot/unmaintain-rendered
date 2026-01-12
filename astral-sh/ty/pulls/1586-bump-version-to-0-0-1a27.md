@@ -12,14 +12,14 @@ head: gankra/rel2
 created_at: 2025-11-18T19:21:41Z
 updated_at: 2025-11-18T19:56:48Z
 url: https://github.com/astral-sh/ty/pull/1586
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Bump version to 0.0.1a27
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-18 19:21_
+_@Gankra_
 
 _No description provided._
 

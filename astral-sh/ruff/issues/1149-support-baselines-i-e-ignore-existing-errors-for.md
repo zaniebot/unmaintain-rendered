@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-08T23:59:35Z
 updated_at: 2025-12-16T12:39:52Z
 url: https://github.com/astral-sh/ruff/issues/1149
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Support baselines, i.e., ignore existing errors for incremental adoption
 
 ---
 
-_Issue opened by @edgarrmondragon on 2022-12-08 23:59_
+_@edgarrmondragon_
 
 Baselines would allow developers to introduce Ruff to their codebase incrementally by ignoring existing errors and address them as they reappear when making changes to the code.
 

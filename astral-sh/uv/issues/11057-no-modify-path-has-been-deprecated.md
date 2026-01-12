@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-29T11:14:05Z
 updated_at: 2025-01-29T14:08:10Z
 url: https://github.com/astral-sh/uv/issues/11057
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:27Z
 ```
 
 # --no-modify-path has been deprecated
 
 ---
 
-_Issue opened by @ohmydds on 2025-01-29 11:14_
+_@ohmydds_
 
 ### Summary
 

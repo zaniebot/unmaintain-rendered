@@ -13,14 +13,14 @@ head: charlie/resolver
 created_at: 2024-01-10T03:21:34Z
 updated_at: 2024-01-10T22:58:54Z
 url: https://github.com/astral-sh/ruff/pull/9453
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Move `pyproject_config` into `Resolver`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-10 03:21_
+_@charliermarsh_
 
 ## Summary
 

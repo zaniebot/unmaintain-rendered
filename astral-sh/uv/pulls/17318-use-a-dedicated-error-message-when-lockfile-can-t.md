@@ -13,14 +13,14 @@ head: charlie/err-msg
 created_at: 2026-01-04T19:26:59Z
 updated_at: 2026-01-05T12:41:00Z
 url: https://github.com/astral-sh/uv/pull/17318
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:43Z
 ```
 
 # Use a dedicated error message when lockfile can't be found
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-04 19:26_
+_@charliermarsh_
 
 ## Summary
 

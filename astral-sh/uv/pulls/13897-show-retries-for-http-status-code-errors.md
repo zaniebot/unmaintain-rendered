@@ -14,14 +14,14 @@ head: konsti/fix-retry-reporting
 created_at: 2025-06-07T10:53:02Z
 updated_at: 2025-06-16T10:14:01Z
 url: https://github.com/astral-sh/uv/pull/13897
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:55Z
 ```
 
 # Show retries for HTTP status code errors
 
 ---
 
-_Pull request opened by @konstin on 2025-06-07 10:53_
+_@konstin_
 
 Using a companion change in the middleware (https://github.com/TrueLayer/reqwest-middleware/pull/235, forked&tagged pending review), we can check and show retries for HTTP status core errors, to consistently report retries again.
 

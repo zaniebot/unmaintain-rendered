@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-19T16:37:04Z
 updated_at: 2024-10-22T02:36:15Z
 url: https://github.com/astral-sh/uv/issues/8368
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # Choosing the ``license`` content for winget-pkgs manifest.
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-10-19 16:37_
+_@FishAlchemist_
 
 In the past, many UV version in winget-pkgs listed Apache-2.0 as the license but provided a link to the MIT license. A small portion listed MIT and provided a link to the MIT license as well.
 https://github.com/microsoft/winget-pkgs/pulls?q=is%3Apr+New+version%3A+astral-sh.uv+is%3Aclosed

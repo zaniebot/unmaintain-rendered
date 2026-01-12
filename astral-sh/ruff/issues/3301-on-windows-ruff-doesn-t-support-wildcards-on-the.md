@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-03-02T12:14:12Z
 updated_at: 2023-03-26T14:32:47Z
 url: https://github.com/astral-sh/ruff/issues/3301
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # On Windows, ruff doesn't support wildcards on the command line
 
 ---
 
-_Issue opened by @pfmoore on 2023-03-02 12:14_
+_@pfmoore_
 
 The command `ruff *.py` gives the error "error: Failed to lint *.py: The filename, directory name, or volume label syntax is incorrect. (os error 123)". I would have expected it to check all `.py` files in the current directory.
 

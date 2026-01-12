@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-30T21:59:52Z
 updated_at: 2024-04-30T22:06:52Z
 url: https://github.com/astral-sh/ruff/issues/11221
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Nested quotation marks in f-string, ignores parse error
 
 ---
 
-_Issue opened by @andy-lz on 2024-04-30 21:59_
+_@andy-lz_
 
 In Python 3.9.18, the below code will succeed silently with ruff format and ruff check, even though it has a SyntaxError:
 

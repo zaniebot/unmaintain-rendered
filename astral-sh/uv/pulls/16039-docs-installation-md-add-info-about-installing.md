@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-09-26T12:56:15Z
 updated_at: 2025-10-27T02:07:23Z
 url: https://github.com/astral-sh/uv/pull/16039
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:04Z
 ```
 
 # docs: installation.md add info about installing via MacPorts
 
 ---
 
-_Pull request opened by @bashu on 2025-09-26 12:56_
+_@bashu_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-11T23:23:28Z
 updated_at: 2025-10-24T00:39:59Z
 url: https://github.com/clap-rs/clap/issues/5840
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Dynamic completion for Nushell
 
 ---
 
-_Issue opened by @chklauser on 2024-12-11 23:23_
+_@chklauser_
 
 ### Please complete the following tasks
 

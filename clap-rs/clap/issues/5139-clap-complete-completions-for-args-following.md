@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-25T21:01:37Z
 updated_at: 2023-09-25T21:32:36Z
 url: https://github.com/clap-rs/clap/issues/5139
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # clap_complete: completions for args following subcommand are missing
 
 ---
 
-_Issue opened by @scootermon on 2023-09-25 21:01_
+_@scootermon_
 
 ### Please complete the following tasks
 

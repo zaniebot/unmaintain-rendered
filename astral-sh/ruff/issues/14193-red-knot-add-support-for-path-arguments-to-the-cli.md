@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-08T08:02:56Z
 updated_at: 2025-03-03T12:59:58Z
 url: https://github.com/astral-sh/ruff/issues/14193
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Add support for path arguments to the CLI
 
 ---
 
-_Issue opened by @MichaReiser on 2024-11-08 08:02_
+_@MichaReiser_
 
 Add support for running `knot check <path>`
 

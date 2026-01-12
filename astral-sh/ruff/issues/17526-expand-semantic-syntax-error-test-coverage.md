@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-21T17:07:05Z
 updated_at: 2025-05-09T18:56:48Z
 url: https://github.com/astral-sh/ruff/issues/17526
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Expand semantic syntax error test coverage
 
 ---
 
-_Issue opened by @ntBre on 2025-04-21 17:07_
+_@ntBre_
 
 ## Summary
 

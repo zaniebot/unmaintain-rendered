@@ -11,14 +11,14 @@ head: fix/up032-raw-n-escape
 created_at: 2025-12-22T22:59:00Z
 updated_at: 2026-01-03T23:49:45Z
 url: https://github.com/astral-sh/ruff/pull/22149
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # fix: avoid autofix for raw strings with \N escapes
 
 ---
 
-_Pull request opened by @denyszhak on 2025-12-22 22:59_
+_@denyszhak_
 
 **Summary:**
 

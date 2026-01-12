@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-07T00:24:54Z
 updated_at: 2024-11-18T00:13:32Z
 url: https://github.com/astral-sh/ruff/issues/11789
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # (🎁) format `type: ignore` and other pragmas
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-06-07 00:24_
+_@KotlinIsland_
 
 ```diff
 - 1 + ""  # type:ignore[ unsafe-variance,operator]

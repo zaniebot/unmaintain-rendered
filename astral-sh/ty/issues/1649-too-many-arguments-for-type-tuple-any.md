@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-27T00:28:31Z
 updated_at: 2025-12-01T10:49:28Z
 url: https://github.com/astral-sh/ty/issues/1649
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Too many arguments for `type[tuple[Any, ...]]`
 
 ---
 
-_Issue opened by @metaist on 2025-11-27 00:28_
+_@metaist_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: charlie/black
 created_at: 2022-12-06T01:43:46Z
 updated_at: 2022-12-06T01:45:13Z
 url: https://github.com/astral-sh/ruff/pull/1095
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Treat nested classes and functions as "standard" siblings
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-06 01:43_
+_@charliermarsh_
 
 In these cases, we only want to insert one newline, to match Black's behavior.
 

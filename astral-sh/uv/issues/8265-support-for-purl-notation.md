@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-16T17:39:24Z
 updated_at: 2024-10-16T17:48:24Z
 url: https://github.com/astral-sh/uv/issues/8265
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # Support for `purl` notation
 
 ---
 
-_Issue opened by @chrisrodrigue on 2024-10-16 17:39_
+_@chrisrodrigue_
 
 Greetings,
 

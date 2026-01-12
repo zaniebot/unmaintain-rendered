@@ -14,14 +14,14 @@ head: format-diff
 created_at: 2023-10-13T09:31:30Z
 updated_at: 2023-10-18T12:01:55Z
 url: https://github.com/astral-sh/ruff/pull/7937
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add `--diff` option `ruff format`
 
 ---
 
-_Pull request opened by @konstin on 2023-10-13 09:31_
+_@konstin_
 
 **Summary** `ruff format --diff` is similar to `ruff format --check`, but we don't only error with the list of file that would be formatted, but also show a diff between the unformatted input and the formatted output.
 

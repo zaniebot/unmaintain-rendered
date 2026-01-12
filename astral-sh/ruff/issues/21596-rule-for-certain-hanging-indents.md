@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-23T19:45:37Z
 updated_at: 2025-11-24T09:00:32Z
 url: https://github.com/astral-sh/ruff/issues/21596
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Rule for certain hanging indents
 
 ---
 
-_Issue opened by @AckslD on 2025-11-23 19:45_
+_@AckslD_
 
 ### Summary
 

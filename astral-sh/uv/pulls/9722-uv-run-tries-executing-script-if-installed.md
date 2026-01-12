@@ -11,14 +11,14 @@ head: tarushii/run_script
 created_at: 2024-12-08T15:58:20Z
 updated_at: 2025-02-12T18:10:26Z
 url: https://github.com/astral-sh/uv/pull/9722
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:57Z
 ```
 
 # `uv run` tries executing script if installed
 
 ---
 
-_Pull request opened by @2022tgoel on 2024-12-08 15:58_
+_@2022tgoel_
 
 ## Summary
 

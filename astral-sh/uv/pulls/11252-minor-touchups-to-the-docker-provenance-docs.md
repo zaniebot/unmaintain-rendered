@@ -13,14 +13,14 @@ head: zb/touchup-docker
 created_at: 2025-02-05T16:55:01Z
 updated_at: 2025-02-05T17:09:17Z
 url: https://github.com/astral-sh/uv/pull/11252
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:44Z
 ```
 
 # Minor touchups to the Docker provenance docs
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-05 16:55_
+_@zanieb_
 
 _No description provided._
 

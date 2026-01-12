@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-17T17:02:32Z
 updated_at: 2025-04-17T17:02:40Z
 url: https://github.com/astral-sh/uv/issues/12948
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # Consider not showing PyPy downloads in `uv python list` by default
 
 ---
 
-_Issue opened by @zanieb on 2025-04-17 17:02_
+_@zanieb_
 
 I sort of wonder if we want to be showing all those PyPy interpreters by default? Most users don't need them.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-21T13:21:03Z
 updated_at: 2025-12-23T19:48:47Z
 url: https://github.com/astral-sh/ruff/issues/10070
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Ability to add a reason along with `--add-noqa`
 
 ---
 
-_Issue opened by @ashrub-holvi on 2024-02-21 13:21_
+_@ashrub-holvi_
 
 Hi!
 

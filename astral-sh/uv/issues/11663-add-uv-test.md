@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T11:15:52Z
 updated_at: 2025-03-14T00:39:55Z
 url: https://github.com/astral-sh/uv/issues/11663
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # Add `uv test`
 
 ---
 
-_Issue opened by @chrisrodrigue on 2025-02-20 11:15_
+_@chrisrodrigue_
 
 # Inspiration
 

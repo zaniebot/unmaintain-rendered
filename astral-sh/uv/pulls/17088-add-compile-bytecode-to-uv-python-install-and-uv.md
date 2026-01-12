@@ -13,14 +13,14 @@ head: tk/py-install-bytecomp
 created_at: 2025-12-11T16:37:16Z
 updated_at: 2026-01-12T09:31:36Z
 url: https://github.com/astral-sh/uv/pull/17088
-synced_at: 2026-01-12T09:57:06Z
+synced_at: 2026-01-12T16:12:36Z
 ```
 
 # Add `--compile-bytecode` to `uv python install` and `uv python upgrade` to compile the standard library
 
 ---
 
-_Pull request opened by @EliteTK on 2025-12-11 16:37_
+_@EliteTK_
 
 ## Summary
 

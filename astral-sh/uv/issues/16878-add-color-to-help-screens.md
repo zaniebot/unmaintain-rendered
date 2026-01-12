@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-28T00:04:55Z
 updated_at: 2025-12-01T13:42:54Z
 url: https://github.com/astral-sh/uv/issues/16878
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # Add color to help screens
 
 ---
 
-_Issue opened by @joatmor on 2025-11-28 00:04_
+_@joatmor_
 
 ### Summary
 

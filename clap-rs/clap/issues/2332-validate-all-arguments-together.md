@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-02-06T22:12:19Z
 updated_at: 2022-01-11T18:21:50Z
 url: https://github.com/clap-rs/clap/issues/2332
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Validate all arguments together
 
 ---
 
-_Issue opened by @giggio on 2021-02-06 22:12_
+_@giggio_
 
 ### Make sure you completed the following tasks
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-13T00:55:28Z
 updated_at: 2022-11-13T01:59:57Z
 url: https://github.com/astral-sh/ruff/issues/714
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Should `S101` be ignored in a test file?
 
 ---
 
-_Issue opened by @harupy on 2022-11-13 00:55_
+_@harupy_
 
 Should `S101` (assert detection) be ignored in a test file? We do use `assert` in a test file:
 

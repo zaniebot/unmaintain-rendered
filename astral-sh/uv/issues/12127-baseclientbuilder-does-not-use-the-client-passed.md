@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-12T01:56:30Z
 updated_at: 2025-03-12T10:43:23Z
 url: https://github.com/astral-sh/uv/issues/12127
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # BaseClientBuilder does not use the client passed in via self.client() function
 
 ---
 
-_Issue opened by @gzm55 on 2025-03-12 01:56_
+_@gzm55_
 
 ### Summary
 

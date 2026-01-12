@@ -13,14 +13,14 @@ head: main
 created_at: 2024-03-14T01:06:01Z
 updated_at: 2024-03-14T04:50:07Z
 url: https://github.com/astral-sh/ruff/pull/10400
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`pylint`] Extend docs and test in `invalid-str-return-type` (`E307`)
 
 ---
 
-_Pull request opened by @hikaru-kajita on 2024-03-14 01:06_
+_@hikaru-kajita_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

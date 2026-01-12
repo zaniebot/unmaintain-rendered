@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-15T02:35:00Z
 updated_at: 2025-02-15T15:40:00Z
 url: https://github.com/astral-sh/uv/issues/11530
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # uv sync should warn (or fail) when lock file is out of sync with pyproject.toml dependency tables
 
 ---
 
-_Issue opened by @gaborbernat on 2025-02-15 02:35_
+_@gaborbernat_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: main
 created_at: 2023-05-16T21:38:12Z
 updated_at: 2023-05-20T19:46:39Z
 url: https://github.com/astral-sh/ruff/pull/4459
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Implement Pylint `bad-super-call` as `PLE1003`
 
 ---
 
-_Pull request opened by @nunokaeru on 2023-05-16 21:38_
+_@nunokaeru_
 
 Made an attempt at implementing `E1003`.
 

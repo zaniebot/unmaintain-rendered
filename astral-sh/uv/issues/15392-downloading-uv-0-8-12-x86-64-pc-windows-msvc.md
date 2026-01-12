@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-20T13:44:05Z
 updated_at: 2025-08-20T14:02:36Z
 url: https://github.com/astral-sh/uv/issues/15392
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # downloading uv 0.8.12 x86_64-pc-windows-msvc failed
 
 ---
 
-_Issue opened by @fusioncid on 2025-08-20 13:44_
+_@fusioncid_
 
 ### Summary
 

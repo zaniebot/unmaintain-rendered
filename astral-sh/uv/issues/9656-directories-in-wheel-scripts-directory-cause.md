@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-05T07:35:42Z
 updated_at: 2024-12-08T05:06:15Z
 url: https://github.com/astral-sh/uv/issues/9656
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:55Z
 ```
 
 # Directories in wheel scripts directory cause install error
 
 ---
 
-_Issue opened by @liaoya on 2024-12-05 07:35_
+_@liaoya_
 
 I want to run protobuf-protoc-bin with `uvx --from protobuf-protoc-bin protoc` and get the following error
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-25T20:34:22Z
 updated_at: 2025-10-12T21:16:49Z
 url: https://github.com/astral-sh/uv/issues/3271
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # `PROJECT_ROOT` in `requirements` uses the working directory
 
 ---
 
-_Issue opened by @jamesbraza on 2024-04-25 20:34_
+_@jamesbraza_
 
 I have a `setuptools.build_meta` backend monorepo with a `pyproject.toml` package named `packagename` in a subfolder. I specify its dependency in a `requirements.txt` at the repo root: `package-name @ file://${PROJECT_ROOT}/packagename`
 

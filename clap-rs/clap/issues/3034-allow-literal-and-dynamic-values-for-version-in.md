@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-11-16T22:26:30Z
 updated_at: 2021-11-19T00:27:12Z
 url: https://github.com/clap-rs/clap/issues/3034
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Allow literal and dynamic values for version in clap_derive
 
 ---
 
-_Issue opened by @gibfahn on 2021-11-16 22:26_
+_@gibfahn_
 
 ### Please complete the following tasks
 

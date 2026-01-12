@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-06T14:29:01Z
 updated_at: 2025-09-26T19:15:54Z
 url: https://github.com/astral-sh/uv/issues/9683
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # Add dedicated error message for dependencies with relative paths
 
 ---
 
-_Issue opened by @charliermarsh on 2024-12-06 14:29_
+_@charliermarsh_
 
 Given:
 

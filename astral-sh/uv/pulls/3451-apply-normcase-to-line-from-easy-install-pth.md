@@ -12,14 +12,14 @@ head: norm-case
 created_at: 2024-05-08T06:21:23Z
 updated_at: 2024-05-08T09:40:40Z
 url: https://github.com/astral-sh/uv/pull/3451
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:39Z
 ```
 
 # Apply normcase to line from easy-install.pth
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-05-08 06:21_
+_@hauntsaninja_
 
 Thanks for the suggestion from https://github.com/astral-sh/uv/pull/3415#discussion_r1591772942
 

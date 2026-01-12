@@ -13,14 +13,14 @@ head: charlie/with
 created_at: 2025-07-24T01:43:01Z
 updated_at: 2025-07-24T02:00:04Z
 url: https://github.com/astral-sh/uv/pull/14863
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:27Z
 ```
 
 # Respect `--with` versions over base environment versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-24 01:43_
+_@charliermarsh_
 
 ## Summary
 

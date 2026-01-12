@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-06T06:12:09Z
 updated_at: 2023-05-06T15:31:11Z
 url: https://github.com/astral-sh/ruff/issues/4251
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # G001 doesn't detect current_app.logger for Flask
 
 ---
 
-_Issue opened by @samuelhwilliams on 2023-05-06 06:12_
+_@samuelhwilliams_
 
 Ruff version: 0.0.264
 

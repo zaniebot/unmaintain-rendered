@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-24T03:39:26Z
 updated_at: 2025-10-24T17:21:40Z
 url: https://github.com/astral-sh/ty/issues/1428
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Duplicated diagnostics with standalone expressions in overloads
 
 ---
 
-_Issue opened by @ibraheemdev on 2025-10-24 03:39_
+_@ibraheemdev_
 
 We currently silence diagnostics during multi-inference for overload arguments, but this doesn't work for standalone expressions.
 

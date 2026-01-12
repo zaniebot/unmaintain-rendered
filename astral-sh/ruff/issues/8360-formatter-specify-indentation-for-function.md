@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-30T15:58:08Z
 updated_at: 2026-01-10T22:23:42Z
 url: https://github.com/astral-sh/ruff/issues/8360
-synced_at: 2026-01-11T00:46:05Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: Specify indentation for function parameters
 
 ---
 
-_Issue opened by @LeonarddeR on 2023-10-30 15:58_
+_@LeonarddeR_
 
 The current indentation behavior for function parameters is: 4-space indentation at function definitions, like this:
 

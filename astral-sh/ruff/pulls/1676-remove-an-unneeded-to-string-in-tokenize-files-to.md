@@ -12,14 +12,14 @@ head: unneeded-to_string
 created_at: 2023-01-06T01:41:53Z
 updated_at: 2023-01-06T01:56:37Z
 url: https://github.com/astral-sh/ruff/pull/1676
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Remove an unneeded .to_string() in tokenize_files_to_codes_mapping
 
 ---
 
-_Pull request opened by @andersk on 2023-01-06 01:41_
+_@andersk_
 
 _No description provided._
 

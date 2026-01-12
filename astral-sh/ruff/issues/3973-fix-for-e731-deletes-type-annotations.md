@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-14T07:07:45Z
 updated_at: 2023-04-16T23:15:40Z
 url: https://github.com/astral-sh/ruff/issues/3973
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # (🐞) fix for E731 deletes type annotations
 
 ---
 
-_Issue opened by @KotlinIsland on 2023-04-14 07:07_
+_@KotlinIsland_
 
 input
 ```py

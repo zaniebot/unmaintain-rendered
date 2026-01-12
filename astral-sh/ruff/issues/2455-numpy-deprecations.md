@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-01T19:52:31Z
 updated_at: 2023-02-14T23:45:14Z
 url: https://github.com/astral-sh/ruff/issues/2455
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Numpy deprecations
 
 ---
 
-_Issue opened by @sbrugman on 2023-02-01 19:52_
+_@sbrugman_
 
 Numpy deprecated `np.bool` and other types in [1.20](https://numpy.org/doc/stable/release/1.20.0-notes.html#using-the-aliases-of-builtin-types-like-np-int-is-deprecated), which expired in the latest release [1.24](https://numpy.org/doc/stable/release/1.24.0-notes.html#expired-deprecations).
 

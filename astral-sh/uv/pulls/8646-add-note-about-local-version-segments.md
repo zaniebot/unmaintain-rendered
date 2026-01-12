@@ -13,14 +13,14 @@ head: zb/note-local-version
 created_at: 2024-10-28T19:43:40Z
 updated_at: 2024-10-28T19:52:41Z
 url: https://github.com/astral-sh/uv/pull/8646
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:25Z
 ```
 
 # Add note about local version segments
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-28 19:43_
+_@zanieb_
 
 _No description provided._
 

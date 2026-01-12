@@ -12,14 +12,14 @@ head: ssort
 created_at: 2023-06-21T22:06:38Z
 updated_at: 2023-10-19T15:12:00Z
 url: https://github.com/astral-sh/ruff/pull/5271
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Ssort
 
 ---
 
-_Pull request opened by @jgberry on 2023-06-21 22:06_
+_@jgberry_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

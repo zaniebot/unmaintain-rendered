@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-16T12:45:19Z
 updated_at: 2024-09-02T13:40:07Z
 url: https://github.com/astral-sh/ruff/issues/12928
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # PYI034 false positive if Self is a quoted annotation
 
 ---
 
-_Issue opened by @BenGale93 on 2024-08-16 12:45_
+_@BenGale93_
 
 List of keywords searched:
 * PYI034

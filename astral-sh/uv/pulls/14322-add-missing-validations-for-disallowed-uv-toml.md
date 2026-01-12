@@ -14,14 +14,14 @@ head: gankra/check-fields
 created_at: 2025-06-27T18:26:38Z
 updated_at: 2025-07-25T19:45:43Z
 url: https://github.com/astral-sh/uv/pull/14322
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:09Z
 ```
 
 # Add missing validations for disallowed `uv.toml` fields
 
 ---
 
-_Pull request opened by @Gankra on 2025-06-27 18:26_
+_@Gankra_
 
 We weren't following our usual "destructure all the options" pattern in this function, and several "this isn't actually read from uv.toml" fields slipped through the cracks over time since folks forgot it existed.
 

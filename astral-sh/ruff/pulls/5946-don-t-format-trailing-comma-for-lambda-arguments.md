@@ -13,14 +13,14 @@ head: no_magic_trailing_commas_for_lambdas
 created_at: 2023-07-21T11:12:39Z
 updated_at: 2023-07-27T10:32:11Z
 url: https://github.com/astral-sh/ruff/pull/5946
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Don't format trailing comma for lambda arguments
 
 ---
 
-_Pull request opened by @konstin on 2023-07-21 11:12_
+_@konstin_
 
 **Summary** lambda arguments don't have parentheses, so they shouldn't get a magic trailing comma either. This fixes some unstable formatting
 

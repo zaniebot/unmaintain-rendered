@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-23T21:38:15Z
 updated_at: 2025-07-24T12:00:01Z
 url: https://github.com/astral-sh/ruff/issues/18904
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Blank lines after import block
 
 ---
 
-_Issue opened by @JetVolcano on 2025-06-23 21:38_
+_@JetVolcano_
 
 ### Summary
 

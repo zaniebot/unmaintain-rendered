@@ -14,14 +14,14 @@ head: up032-assignment-expr
 created_at: 2025-10-20T18:16:06Z
 updated_at: 2025-10-20T23:34:03Z
 url: https://github.com/astral-sh/ruff/pull/21003
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [`pyupgrade`] Always parenthesize assignment expressions in fix for `f-string` (`UP032`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-10-20 18:16_
+_@dylwil3_
 
 Closes #21000 
 

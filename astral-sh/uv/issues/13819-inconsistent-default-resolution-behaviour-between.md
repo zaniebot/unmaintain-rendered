@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T14:37:43Z
 updated_at: 2025-06-11T19:54:56Z
 url: https://github.com/astral-sh/uv/issues/13819
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # Inconsistent default resolution behaviour between pip and uv: if-necessary-or-explicit vs if-necessary
 
 ---
 
-_Issue opened by @pelson on 2025-06-03 14:37_
+_@pelson_
 
 ### Summary
 

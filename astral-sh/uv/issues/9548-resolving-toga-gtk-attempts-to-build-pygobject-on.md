@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-01T08:16:58Z
 updated_at: 2024-12-04T11:40:32Z
 url: https://github.com/astral-sh/uv/issues/9548
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # Resolving `toga-gtk` attempts to build `pygobject` on MacOS
 
 ---
 
-_Issue opened by @ncoghlan on 2024-12-01 08:16_
+_@ncoghlan_
 
 `toga-gtk` fails to generate a valid cross-platform lock file when added as a dependency on platforms other than Linux, as `pygobject` can only be published as an sdist: https://github.com/beeware/toga/issues/2995
 

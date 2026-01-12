@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-29T17:20:58Z
 updated_at: 2025-04-29T19:13:14Z
 url: https://github.com/astral-sh/uv/issues/13197
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # UV is unable to install rocm torch if I use a sys_platform marker
 
 ---
 
-_Issue opened by @TheAyes on 2025-04-29 17:20_
+_@TheAyes_
 
 ### Summary
 

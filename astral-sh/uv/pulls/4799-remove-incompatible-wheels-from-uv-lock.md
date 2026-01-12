@@ -14,14 +14,14 @@ head: konsti/remove-incompatible-wheels
 created_at: 2024-07-04T10:53:07Z
 updated_at: 2024-07-08T17:40:56Z
 url: https://github.com/astral-sh/uv/pull/4799
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:28Z
 ```
 
 # Remove incompatible wheels from `uv.lock`
 
 ---
 
-_Pull request opened by @konstin on 2024-07-04 10:53_
+_@konstin_
 
 Remove wheels from the lockfile that don't match the required python version. For example, we remove `charset_normalizer-3.3.2-cp311-cp311-win_amd64.whl` when we have `requires-python = ">=3.12"`.
 

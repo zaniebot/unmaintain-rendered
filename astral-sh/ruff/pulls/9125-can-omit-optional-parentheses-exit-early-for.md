@@ -14,14 +14,14 @@ head: can-omit-exit-early-for-expressions-without-parens
 created_at: 2023-12-14T05:39:29Z
 updated_at: 2023-12-14T06:02:54Z
 url: https://github.com/astral-sh/ruff/pull/9125
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # `can_omit_optional_parentheses`: Exit early for unparenthesized expressions
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-14 05:39_
+_@MichaReiser_
 
 ## Summary
 

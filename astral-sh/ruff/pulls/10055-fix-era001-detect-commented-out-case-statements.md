@@ -12,14 +12,14 @@ head: thartman/era-add-case-statemnt
 created_at: 2024-02-20T00:28:40Z
 updated_at: 2024-02-20T03:57:09Z
 url: https://github.com/astral-sh/ruff/pull/10055
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # fix(ERA001): detect commented out `case` statements, add more one-line support
 
 ---
 
-_Pull request opened by @ottaviohartman on 2024-02-20 00:28_
+_@ottaviohartman_
 
 ## Summary
 

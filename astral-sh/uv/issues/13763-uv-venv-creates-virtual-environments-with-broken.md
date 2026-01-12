@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-01T23:22:13Z
 updated_at: 2025-06-02T09:04:55Z
 url: https://github.com/astral-sh/uv/issues/13763
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # uv venv creates virtual environments with broken/misconfigured pip
 
 ---
 
-_Issue opened by @JZhou3083 on 2025-06-01 23:22_
+_@JZhou3083_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: root
 created_at: 2023-07-27T13:27:28Z
 updated_at: 2023-07-27T13:54:27Z
 url: https://github.com/astral-sh/ruff/pull/6126
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Avoid walking past root when resolving imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-27 13:27_
+_@charliermarsh_
 
 ## Summary
 

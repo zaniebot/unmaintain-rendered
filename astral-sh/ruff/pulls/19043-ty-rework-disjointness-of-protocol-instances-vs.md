@@ -13,14 +13,14 @@ head: alex/proto-disjointness
 created_at: 2025-06-30T10:39:36Z
 updated_at: 2025-07-01T11:47:29Z
 url: https://github.com/astral-sh/ruff/pull/19043
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # [ty] Rework disjointness of protocol instances vs types with possibly unbound attributes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-30 10:39_
+_@AlexWaygood_
 
 ## Summary
 

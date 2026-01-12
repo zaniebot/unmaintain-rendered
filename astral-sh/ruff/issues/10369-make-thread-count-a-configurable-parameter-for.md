@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-12T18:17:20Z
 updated_at: 2024-03-18T21:07:01Z
 url: https://github.com/astral-sh/ruff/issues/10369
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Make thread count a configurable parameter for `ruff server`
 
 ---
 
-_Issue opened by @snowsignal on 2024-03-12 18:17_
+_@snowsignal_
 
 Right now, `ruff server` has a hard-coded background thread pool size of `4`. Ideally, this should be configurable via command line arguments (or eventually, in the extension settings).
 

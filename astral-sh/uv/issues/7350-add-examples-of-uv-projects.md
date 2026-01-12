@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-13T07:08:29Z
 updated_at: 2024-09-13T13:13:07Z
 url: https://github.com/astral-sh/uv/issues/7350
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Add examples of uv projects
 
 ---
 
-_Issue opened by @IsakEd on 2024-09-13 07:08_
+_@IsakEd_
 
 While the current documentation provides some examples of, for example, workspace layouts, there are some subtleties and questions that arise regarding intra-package dependencies and possible build configurations. To better understand best practices and to make more informed architectural decisions, it would be very helpful to have access to some more concrete examples and references.
 

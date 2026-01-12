@@ -13,14 +13,14 @@ head: tomer/bool-op-flow-control
 created_at: 2024-10-26T19:28:20Z
 updated_at: 2024-11-01T13:31:59Z
 url: https://github.com/astral-sh/ruff/pull/13940
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] - Flow-control for boolean operations
 
 ---
 
-_Pull request opened by @TomerBin on 2024-10-26 19:28_
+_@TomerBin_
 
 ## Summary
 

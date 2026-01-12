@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-22T18:19:49Z
 updated_at: 2023-11-24T01:53:42Z
 url: https://github.com/clap-rs/clap/issues/5220
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # The clap macro always requires the `num_args` param for clap_complete to work
 
 ---
 
-_Issue opened by @hugoclrd on 2023-11-22 18:19_
+_@hugoclrd_
 
 ### Please complete the following tasks
 

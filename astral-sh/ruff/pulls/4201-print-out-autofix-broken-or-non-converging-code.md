@@ -12,14 +12,14 @@ head: autofix-debug-errors
 created_at: 2023-05-03T06:35:20Z
 updated_at: 2023-05-03T11:50:04Z
 url: https://github.com/astral-sh/ruff/pull/4201
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Print out autofix-broken or non-converging code when debugging
 
 ---
 
-_Pull request opened by @akx on 2023-05-03 06:35_
+_@akx_
 
 Refs https://github.com/charliermarsh/ruff/pull/4196#issuecomment-1532115768
 

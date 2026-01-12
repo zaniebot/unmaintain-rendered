@@ -14,14 +14,14 @@ head: charlie/freeze
 created_at: 2024-07-18T18:47:29Z
 updated_at: 2024-07-18T18:55:18Z
 url: https://github.com/astral-sh/uv/pull/5196
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:41Z
 ```
 
 # Add `--locked` and `--frozen` to `uv run` CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-18 18:47_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-13T00:41:18Z
 updated_at: 2025-09-13T05:46:48Z
 url: https://github.com/astral-sh/ty/issues/1176
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Equality tests could narrow some types to Literals
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-09-13 00:41_
+_@MeGaGiGaGon_
 
 ### Summary
 

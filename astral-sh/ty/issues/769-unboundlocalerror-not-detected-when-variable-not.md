@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-05T17:14:34Z
 updated_at: 2025-07-18T21:58:34Z
 url: https://github.com/astral-sh/ty/issues/769
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `UnboundLocalError` not detected when variable not declared as `global` or `nonlocal` is `del`'d
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-07-05 17:14_
+_@AlexWaygood_
 
 ### Summary
 

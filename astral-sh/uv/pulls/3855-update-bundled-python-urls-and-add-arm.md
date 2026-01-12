@@ -13,14 +13,14 @@ head: charlie/py
 created_at: 2024-05-27T03:08:05Z
 updated_at: 2024-05-27T03:33:09Z
 url: https://github.com/astral-sh/uv/pull/3855
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:53Z
 ```
 
 # Update bundled Python URLs and add `"arm"` architecture variant
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-27 03:08_
+_@charliermarsh_
 
 ## Summary
 

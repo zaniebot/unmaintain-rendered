@@ -13,14 +13,14 @@ head: charlie/base
 created_at: 2023-09-28T20:23:21Z
 updated_at: 2023-09-28T20:44:22Z
 url: https://github.com/astral-sh/ruff/pull/7700
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Include radix base prefix in large number representation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-28 20:23_
+_@charliermarsh_
 
 ## Summary
 

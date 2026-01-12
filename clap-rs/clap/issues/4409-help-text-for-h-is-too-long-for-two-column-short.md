@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-10-20T16:21:35Z
 updated_at: 2023-01-03T18:43:40Z
 url: https://github.com/clap-rs/clap/issues/4409
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Help text for `-h` is too long for two-column short help
 
 ---
 
-_Issue opened by @bgilbert on 2022-10-20 16:21_
+_@bgilbert_
 
 ### Please complete the following tasks
 

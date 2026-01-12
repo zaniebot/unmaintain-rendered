@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-09T16:22:55Z
 updated_at: 2025-06-09T16:28:42Z
 url: https://github.com/astral-sh/uv/issues/13923
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # Pulling wrong files from bitbucket
 
 ---
 
-_Issue opened by @odellus on 2025-06-09 16:22_
+_@odellus_
 
 ### Summary
 

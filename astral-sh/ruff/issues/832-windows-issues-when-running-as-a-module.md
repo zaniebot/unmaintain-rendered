@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-20T16:08:27Z
 updated_at: 2023-06-15T18:58:02Z
 url: https://github.com/astral-sh/ruff/issues/832
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # [Windows] Issues when running as a module
 
 ---
 
-_Issue opened by @andriilahuta on 2022-11-20 16:08_
+_@andriilahuta_
 
 If the interpreter path contains spaces (e.g. `C:\Program Files\Python311\python.exe`), then ruff produces the following output: `Files\Python311\Scripts\ruff:0:0: E902 The system cannot find the path specified` and exits with code 1.
 

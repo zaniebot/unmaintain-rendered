@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-09T09:20:00Z
 updated_at: 2025-07-09T11:20:03Z
 url: https://github.com/astral-sh/ruff/issues/19227
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Allow `fmt: skip` for dict and list contents
 
 ---
 
-_Issue opened by @spaceone on 2025-07-09 09:20_
+_@spaceone_
 
 ```python
 from foo import Tab, Group, _

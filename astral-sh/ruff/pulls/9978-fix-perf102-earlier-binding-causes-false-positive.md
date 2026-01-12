@@ -12,14 +12,14 @@ head: fix(PERF102)/false_positive_for_earlier_binding
 created_at: 2024-02-13T20:53:50Z
 updated_at: 2024-02-16T11:24:34Z
 url: https://github.com/astral-sh/ruff/pull/9978
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Fix(PERF102): earlier binding causes false positive when analyzing possible incorrect dict iterator
 
 ---
 
-_Pull request opened by @mikeleppane on 2024-02-13 20:53_
+_@mikeleppane_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: sync-python-releases
 created_at: 2025-08-28T20:12:18Z
 updated_at: 2025-08-28T20:45:13Z
 url: https://github.com/astral-sh/uv/pull/15574
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:49Z
 ```
 
 # Add managed CPython distributions for aarch64 musl
 
 ---
 
-_Pull request opened by @github-actions on 2025-08-28 20:12_
+_@github-actions_
 
 Automated update for Python releases.
 

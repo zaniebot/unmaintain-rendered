@@ -13,14 +13,14 @@ head: use-insta-glob
 created_at: 2023-06-26T06:22:11Z
 updated_at: 2023-06-26T10:33:42Z
 url: https://github.com/astral-sh/ruff/pull/5364
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Use `insta::glob` instead of `fixture` macro
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-26 06:22_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

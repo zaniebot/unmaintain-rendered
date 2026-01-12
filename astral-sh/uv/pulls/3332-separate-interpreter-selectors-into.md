@@ -13,14 +13,14 @@ head: zb/impl-platform
 created_at: 2024-05-01T17:53:11Z
 updated_at: 2024-05-02T11:55:02Z
 url: https://github.com/astral-sh/uv/pull/3332
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:35Z
 ```
 
 # Separate interpreter selectors into `implementation` and `platform` modules
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-01 17:53_
+_@zanieb_
 
 Split out of #3266
 

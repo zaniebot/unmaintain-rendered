@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-25T00:08:42Z
 updated_at: 2025-01-07T19:53:24Z
 url: https://github.com/astral-sh/ruff/issues/15137
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [Help] How can I configure Ruff to ignore a rule for a specific set of lines by regex?
 
 ---
 
-_Issue opened by @unwize on 2024-12-25 00:08_
+_@unwize_
 
 I have an expansive project that makes heavy use of non-return decorators. For example:
 

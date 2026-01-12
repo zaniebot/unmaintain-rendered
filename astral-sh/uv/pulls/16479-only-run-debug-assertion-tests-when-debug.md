@@ -13,14 +13,14 @@ head: konsti/cfg-debug-assertion-tests
 created_at: 2025-10-28T11:39:16Z
 updated_at: 2025-10-28T12:21:59Z
 url: https://github.com/astral-sh/uv/pull/16479
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:16Z
 ```
 
 # Only run debug assertion tests when debug assertions are active
 
 ---
 
-_Pull request opened by @konstin on 2025-10-28 11:39_
+_@konstin_
 
 These tests currently fail when running tests in release mode.
 

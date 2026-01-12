@@ -12,14 +12,14 @@ head: charlie/follow-up
 created_at: 2023-03-29T23:08:15Z
 updated_at: 2023-03-29T23:32:12Z
 url: https://github.com/astral-sh/ruff/pull/3803
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Misc. follow-up changes to #3802
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-29 23:08_
+_@charliermarsh_
 
 Forgot to push these prior to auto-merging.
 

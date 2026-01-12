@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-25T09:03:26Z
 updated_at: 2025-06-26T10:24:42Z
 url: https://github.com/astral-sh/ty/issues/699
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # conflicting-declarations error can contain duplicate types
 
 ---
 
-_Issue opened by @lipefree on 2025-06-25 09:03_
+_@lipefree_
 
 ### Summary
 

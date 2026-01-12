@@ -13,14 +13,14 @@ head: charlie/tch-seq
 created_at: 2023-10-13T19:35:09Z
 updated_at: 2023-10-13T19:50:38Z
 url: https://github.com/astral-sh/ruff/pull/7954
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Respect subscripted base classes in type-checking rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-13 19:35_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7945.
 

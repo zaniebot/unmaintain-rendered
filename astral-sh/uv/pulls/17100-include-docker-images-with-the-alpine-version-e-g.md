@@ -13,14 +13,14 @@ head: zb/docker-alpine
 created_at: 2025-12-12T13:26:21Z
 updated_at: 2025-12-16T11:52:42Z
 url: https://github.com/astral-sh/uv/pull/17100
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:36Z
 ```
 
 # Include Docker images with the alpine version, e.g., `python3.x-alpine3.23`
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-12 13:26_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/17095
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-26T17:44:54Z
 updated_at: 2024-10-21T21:22:29Z
 url: https://github.com/astral-sh/uv/issues/5487
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Support for the `pip-compile-multi` use case?
 
 ---
 
-_Issue opened by @mistercrunch on 2024-07-26 17:44_
+_@mistercrunch_
 
 For [Apache Superset](https://github.com/apache/superset/), we have fairly complex dependency management and have to use [pip-compile-multi](https://pip-compile-multi.readthedocs.io/en/latest/why.html) as a result. 
 

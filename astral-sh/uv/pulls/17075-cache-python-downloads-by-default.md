@@ -13,14 +13,14 @@ head: zb/python-cache-default
 created_at: 2025-12-10T16:40:29Z
 updated_at: 2025-12-10T19:38:38Z
 url: https://github.com/astral-sh/uv/pull/17075
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-12T16:12:35Z
 ```
 
 # Cache Python downloads by default
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-10 16:40_
+_@zanieb_
 
 i.e., without requiring opt-in via `UV_PYTHON_CACHE_DIR`
 

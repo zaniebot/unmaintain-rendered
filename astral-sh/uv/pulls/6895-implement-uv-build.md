@@ -14,14 +14,14 @@ head: charlie/build
 created_at: 2024-08-31T17:53:54Z
 updated_at: 2024-09-04T15:23:49Z
 url: https://github.com/astral-sh/uv/pull/6895
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:34Z
 ```
 
 # Implement `uv build`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-31 17:53_
+_@charliermarsh_
 
 ## Summary
 

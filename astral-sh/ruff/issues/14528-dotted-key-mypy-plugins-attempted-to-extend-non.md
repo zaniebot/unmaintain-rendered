@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T13:00:34Z
 updated_at: 2024-11-22T15:22:46Z
 url: https://github.com/astral-sh/ruff/issues/14528
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # dotted key `mypy.plugins` attempted to extend non-table type (array)
 
 ---
 
-_Issue opened by @skhaz on 2024-11-22 13:00_
+_@skhaz_
 
 I have this `pyproject.toml`
 

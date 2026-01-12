@@ -13,14 +13,14 @@ head: zb/packse-update
 created_at: 2024-01-14T16:16:03Z
 updated_at: 2024-01-14T18:49:25Z
 url: https://github.com/astral-sh/uv/pull/916
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:17Z
 ```
 
 # Bump to the latest packse version
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-14 16:16_
+_@zanieb_
 
 _No description provided._
 

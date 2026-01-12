@@ -14,14 +14,14 @@ head: rule/S402
 created_at: 2024-01-04T11:52:39Z
 updated_at: 2024-01-05T01:35:06Z
 url: https://github.com/astral-sh/ruff/pull/9390
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 #  [`flake8-bandit`] Implement `S502` `SslInsecureVersion` rule
 
 ---
 
-_Pull request opened by @qdegraaf on 2024-01-04 11:52_
+_@qdegraaf_
 
 ## Summary
 

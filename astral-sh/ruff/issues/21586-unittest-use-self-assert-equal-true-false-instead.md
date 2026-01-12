@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-23T10:08:33Z
 updated_at: 2025-11-24T19:46:40Z
 url: https://github.com/astral-sh/ruff/issues/21586
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # unittest: Use `self.assert{Equal,True,False}` instead of `assert` statements
 
 ---
 
-_Issue opened by @injust on 2025-11-23 10:08_
+_@injust_
 
 ### Summary
 

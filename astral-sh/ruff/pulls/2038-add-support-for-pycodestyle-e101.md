@@ -12,14 +12,14 @@ head: e101-mixed-spaces-and-tabs
 created_at: 2023-01-20T20:40:45Z
 updated_at: 2023-01-21T01:14:12Z
 url: https://github.com/astral-sh/ruff/pull/2038
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add support for pycodestyle E101
 
 ---
 
-_Pull request opened by @ericroberts on 2023-01-20 20:40_
+_@ericroberts_
 
 Rule described here: https://www.flake8rules.com/rules/E101.html
 

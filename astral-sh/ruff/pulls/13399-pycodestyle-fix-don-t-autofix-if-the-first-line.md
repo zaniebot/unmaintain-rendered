@@ -14,14 +14,14 @@ head: d400-not-autofix-some-chars
 created_at: 2024-09-18T22:28:06Z
 updated_at: 2024-09-20T11:14:43Z
 url: https://github.com/astral-sh/ruff/pull/13399
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [pycodestyle] Fix: Don't autofix if the first line ends in a question mark? (D400)
 
 ---
 
-_Pull request opened by @yahayaohinoyi on 2024-09-18 22:28_
+_@yahayaohinoyi_
 
 ## Summary
 

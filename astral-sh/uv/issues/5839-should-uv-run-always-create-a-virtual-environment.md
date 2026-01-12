@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-06T22:25:29Z
 updated_at: 2024-08-23T12:57:09Z
 url: https://github.com/astral-sh/uv/issues/5839
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Should `uv run` always create a virtual environment?
 
 ---
 
-_Issue opened by @zanieb on 2024-08-06 22:25_
+_@zanieb_
 
 I think yes, if one cannot be found. Otherwise, a command can mutate the system environment (e.g. `uv run pip install anyio`).
 

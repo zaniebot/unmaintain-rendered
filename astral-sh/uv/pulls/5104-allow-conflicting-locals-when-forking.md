@@ -13,14 +13,14 @@ head: ibraheem/fork-locals
 created_at: 2024-07-16T14:18:49Z
 updated_at: 2024-07-16T16:57:32Z
 url: https://github.com/astral-sh/uv/pull/5104
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:38Z
 ```
 
 # Allow conflicting locals when forking
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-16 14:18_
+_@ibraheemdev_
 
 ## Summary
 

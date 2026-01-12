@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-01T23:20:24Z
 updated_at: 2024-05-02T14:31:01Z
 url: https://github.com/astral-sh/ruff/issues/11235
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PD003 triggers on any occurrence of `.isnull()`, not necessarily on a pandas dataframe
 
 ---
 
-_Issue opened by @deepyaman on 2024-05-01 23:20_
+_@deepyaman_
 
 * List of keywords you searched for before creating this issue: "isnull", "pandas-vet" (read through some of the issues, including one that says `pandas-vet` is like training wheels; that said, I think it's reasonable to expect it not to flag issues on non-pandas code)
 * A minimal code snippet that reproduces the bug: https://github.com/ibis-project/ibis-ml/blob/87889d9857237425544a3a5dc41fce9e1ca7fe5d/ibisml/steps/impute.py#L13 (sorry, I'll try to update this to something more minimal later, but I think you can trigger it by calling `.isnull()` on literally anything)

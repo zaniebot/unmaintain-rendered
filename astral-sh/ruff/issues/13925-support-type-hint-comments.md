@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-25T11:57:31Z
 updated_at: 2024-10-25T14:23:32Z
 url: https://github.com/astral-sh/ruff/issues/13925
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Support type-hint comments
 
 ---
 
-_Issue opened by @FFY00 on 2024-10-25 11:57_
+_@FFY00_
 
 It would be nice if Ruff supported type-hint comments. These were in use before the type hint syntax was added to Python, which happened in 3.6.
 

@@ -14,14 +14,14 @@ head: david/fix-1804
 created_at: 2025-12-09T20:25:46Z
 updated_at: 2025-12-09T21:49:03Z
 url: https://github.com/astral-sh/ruff/pull/21876
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] Type inference for `@asynccontextmanager`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-09 20:25_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/RUF001
 created_at: 2023-09-05T16:49:26Z
 updated_at: 2023-09-05T17:30:58Z
 url: https://github.com/astral-sh/ruff/pull/7168
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Remove autofix for ambiguous unicode rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-05 16:49_
+_@charliermarsh_
 
 ## Summary
 

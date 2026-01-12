@@ -13,14 +13,14 @@ head: charlie/with
 created_at: 2023-02-12T00:17:29Z
 updated_at: 2023-02-12T00:38:15Z
 url: https://github.com/astral-sh/ruff/pull/2785
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Improve unused-variable autofixes for with statements
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-12 00:17_
+_@charliermarsh_
 
 We weren't properly handling a variety of cases like `with Foo(m) as (bar):`.
 

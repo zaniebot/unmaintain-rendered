@@ -12,14 +12,14 @@ head: charlie/end-of-docstrings
 created_at: 2023-03-28T17:40:32Z
 updated_at: 2023-03-29T21:45:48Z
 url: https://github.com/astral-sh/ruff/pull/3779
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Improve top-of-file insertions for required imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-28 17:40_
+_@charliermarsh_
 
 ## Summary
 

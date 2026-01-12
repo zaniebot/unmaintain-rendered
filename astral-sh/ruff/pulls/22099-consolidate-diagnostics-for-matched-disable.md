@@ -15,14 +15,14 @@ head: amy/group-diagnostics
 created_at: 2025-12-19T21:58:36Z
 updated_at: 2026-01-07T02:42:54Z
 url: https://github.com/astral-sh/ruff/pull/22099
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # Consolidate diagnostics for matched disable/enable suppression comments
 
 ---
 
-_Pull request opened by @amyreese on 2025-12-19 21:58_
+_@amyreese_
 
 ## Summary
 

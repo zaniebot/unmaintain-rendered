@@ -13,14 +13,14 @@ head: konsti/better-retry-handling-4
 created_at: 2025-12-12T17:01:20Z
 updated_at: 2025-12-18T10:51:02Z
 url: https://github.com/astral-sh/uv/pull/17104
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:36Z
 ```
 
 # Fix retry counts in cached client
 
 ---
 
-_Pull request opened by @konstin on 2025-12-12 17:01_
+_@konstin_
 
 Previously, we dropped the counts from the middleware layer, potentially doing to many retries and/or reporting too few.
 

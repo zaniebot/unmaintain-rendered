@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-07-07T21:02:51Z
 updated_at: 2018-08-02T03:29:40Z
 url: https://github.com/clap-rs/clap/issues/149
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Support reading arguments from somwhere other than env::args()
 
 ---
 
-_Issue opened by @cristicbz on 2015-07-07 21:02_
+_@cristicbz_
 
 Sorry if this exists already and I couldn't find it; basically I'd like a `get_matches_from(some_str_iter)`. This would making testing easier.
 

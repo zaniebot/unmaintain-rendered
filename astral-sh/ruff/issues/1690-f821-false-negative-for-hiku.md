@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-06T14:28:33Z
 updated_at: 2023-01-14T01:39:55Z
 url: https://github.com/astral-sh/ruff/issues/1690
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # F821 – false negative for hiku
 
 ---
 
-_Issue opened by @hyzyla on 2023-01-06 14:28_
+_@hyzyla_
 
 I'm using [hiku](https://github.com/evo-company/hiku) package for building GraphQL server, and that package use class bracket syntax for defining input parameters. 
 

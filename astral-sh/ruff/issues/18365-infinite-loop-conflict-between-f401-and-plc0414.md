@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-29T10:14:55Z
 updated_at: 2025-06-20T18:20:28Z
 url: https://github.com/astral-sh/ruff/issues/18365
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [Infinite loop] Conflict between F401 and PLC0414; redundant alias is removed, redundant alias is added as re-export
 
 ---
 
-_Issue opened by @GideonBear on 2025-05-29 10:14_
+_@GideonBear_
 
 Ref #14283
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-04-14T17:07:48Z
 updated_at: 2021-10-23T19:22:53Z
 url: https://github.com/clap-rs/clap/issues/1823
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Rename Arg::help to Arg::about
 
 ---
 
-_Issue opened by @pksunkara on 2020-04-14 17:07_
+_@pksunkara_
 
 Rename `Arg::help` to `Arg::about` to make it consistent with `App`. Similarly `Arg::long_help`. Also rename the respective field names.
 

@@ -13,14 +13,14 @@ head: jtfm/always-and-explicit
 created_at: 2025-04-02T16:59:56Z
 updated_at: 2025-04-02T17:54:33Z
 url: https://github.com/astral-sh/uv/pull/12631
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # Include explicit indexes in URL auth policies list
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-04-02 16:59_
+_@jtfmumm_
 
 This will in principle fix the problem reported in #12611 that `authenticate = "always"` is ignored for an index when `explicit = true`. This change ensures all indexes are added to the URL auth policies list passed to our auth middleware.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-25T12:54:57Z
 updated_at: 2024-11-25T21:24:55Z
 url: https://github.com/astral-sh/uv/issues/9415
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:49Z
 ```
 
 # Workspace documentation doesn't include an example of a nested package `pyproject.toml`
 
 ---
 
-_Issue opened by @samuelcolvin on 2024-11-25 12:54_
+_@samuelcolvin_
 
 See https://docs.astral.sh/uv/concepts/projects/workspaces/
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-12T19:00:56Z
 updated_at: 2025-06-30T17:52:44Z
 url: https://github.com/astral-sh/ruff/issues/16690
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Consider adding a fix for `pytest-raises-ambiguous-pattern` (`RUF043`)
 
 ---
 
-_Issue opened by @ntBre on 2025-03-12 19:00_
+_@ntBre_
 
 It's certainly a more noisy rule and it's unfortunate we can't provide an auto fix (because Ruff can't know what the desired behavior is). But I think it's fine to stabilize
 

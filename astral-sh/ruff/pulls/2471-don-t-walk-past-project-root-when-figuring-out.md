@@ -12,14 +12,14 @@ head: project-root
 created_at: 2023-02-02T12:25:22Z
 updated_at: 2023-02-03T13:23:51Z
 url: https://github.com/astral-sh/ruff/pull/2471
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Don't walk past project root when figuring out exclusion
 
 ---
 
-_Pull request opened by @akx on 2023-02-02 12:25_
+_@akx_
 
 Refs https://github.com/charliermarsh/ruff/issues/2034
 

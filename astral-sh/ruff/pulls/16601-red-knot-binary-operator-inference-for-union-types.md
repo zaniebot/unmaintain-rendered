@@ -13,14 +13,14 @@ head: david/binary-operator-unions
 created_at: 2025-03-10T14:27:28Z
 updated_at: 2025-03-12T07:21:56Z
 url: https://github.com/astral-sh/ruff/pull/16601
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Binary operator inference for union types
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-10 14:27_
+_@sharkdp_
 
 ## Summary
 

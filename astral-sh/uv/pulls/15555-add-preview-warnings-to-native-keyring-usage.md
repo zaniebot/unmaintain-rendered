@@ -12,14 +12,14 @@ head: zb/uv-auth-iii
 created_at: 2025-08-27T17:30:49Z
 updated_at: 2025-08-28T15:31:11Z
 url: https://github.com/astral-sh/uv/pull/15555
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:49Z
 ```
 
 # Add preview warnings to `native-keyring` usage
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-27 17:30_
+_@zanieb_
 
 The refactor here was all done by Claude Code.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-03T21:56:44Z
 updated_at: 2026-01-09T03:18:56Z
 url: https://github.com/astral-sh/ty/issues/1472
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Duplicated `TypedDict` assignability diagnostics
 
 ---
 
-_Issue opened by @ibraheemdev on 2025-11-03 21:56_
+_@ibraheemdev_
 
 See https://github.com/astral-sh/ruff/pull/21238#issuecomment-3481227585. In cases where we may perform multi-inference, or don't have access to the RHS expression, we emit a diagnostic for `TypedDict` assignability as well as the existing `invalid-key` diagnostic.
 ```py

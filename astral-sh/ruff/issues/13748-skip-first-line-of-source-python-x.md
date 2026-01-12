@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-14T11:57:15Z
 updated_at: 2024-10-14T14:24:08Z
 url: https://github.com/astral-sh/ruff/issues/13748
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Skip first line of source ("`python -x`")
 
 ---
 
-_Issue opened by @mheden on 2024-10-14 11:57_
+_@mheden_
 
 Is it possible to make `ruff` ignore the first line of a source file.
 

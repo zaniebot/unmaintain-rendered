@@ -13,14 +13,14 @@ head: fix-codeblocks
 created_at: 2025-05-17T21:56:42Z
 updated_at: 2025-05-18T10:09:19Z
 url: https://github.com/astral-sh/uv/pull/13511
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:42Z
 ```
 
 # Fix PowerShell code blocks
 
 ---
 
-_Pull request opened by @h4iku on 2025-05-17 21:56_
+_@h4iku_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

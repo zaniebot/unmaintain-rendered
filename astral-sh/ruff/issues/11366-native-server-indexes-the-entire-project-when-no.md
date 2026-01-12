@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-11T02:48:16Z
 updated_at: 2024-10-18T05:21:44Z
 url: https://github.com/astral-sh/ruff/issues/11366
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Native server indexes the entire project when no local config found
 
 ---
 
-_Issue opened by @akthe-at on 2024-05-11 02:48_
+_@akthe-at_
 
 I initially posted this in #11258 as an issue I noticed but I figured it was going to be fixed with the associated PR(#11266).  However with ruff 0.4.4 I noticed that the problem described below still persists. I am going to attach the LSP error from neovim, it appears to have a lot of repeating messages so I apologize.
 

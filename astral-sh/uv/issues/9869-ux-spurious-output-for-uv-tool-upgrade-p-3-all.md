@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-13T14:15:00Z
 updated_at: 2024-12-13T15:50:02Z
 url: https://github.com/astral-sh/uv/issues/9869
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # UX: spurious output for `uv tool upgrade -p 3... --all`
 
 ---
 
-_Issue opened by @neutrinoceros on 2024-12-13 14:15_
+_@neutrinoceros_
 
 I just tried upgrading all my tools with the following command (which worked great !), and was curious to see what happened if I ran it twice in a row. I was pleasantly surprised that it correctly figured out nothing needed to be done instead of re-doing it, but also (very) mildly disappointed by the second message in the output:
 ```

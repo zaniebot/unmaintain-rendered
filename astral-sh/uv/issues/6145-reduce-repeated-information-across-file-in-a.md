@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-16T13:26:33Z
 updated_at: 2024-08-16T14:55:19Z
 url: https://github.com/astral-sh/uv/issues/6145
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Reduce repeated information across `File` in a single distribution
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-16 13:26_
+_@charliermarsh_
 
 `File` looks like this:
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-28T21:48:12Z
 updated_at: 2025-04-30T14:38:58Z
 url: https://github.com/astral-sh/ruff/issues/17695
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `PTH208` suggests `Path.iterdir()`, which does not support file descriptors
 
 ---
 
-_Issue opened by @sbrudenell on 2025-04-28 21:48_
+_@sbrudenell_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-16T21:45:38Z
 updated_at: 2024-04-26T23:46:10Z
 url: https://github.com/astral-sh/ruff/issues/10985
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server` should support an optional TOML configuration file
 
 ---
 
-_Issue opened by @snowsignal on 2024-04-16 21:45_
+_@snowsignal_
 
 In addition to common Ruff configuration fields that were introduced in https://github.com/astral-sh/ruff/pull/10984, `ruff server` should support a configuration file that can be used to configure the linter and formatter. These will take priority over file-based settings by default, though an option to have file-based settings take priority should also be available to the user.
 

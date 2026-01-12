@@ -12,14 +12,14 @@ head: doc_fix_safety_for_relative_imports
 created_at: 2025-04-20T08:37:15Z
 updated_at: 2025-04-22T19:34:28Z
 url: https://github.com/astral-sh/ruff/pull/17491
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`flake8-tidy-imports`] Add fix safety section to docs (`TID252`) 
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-20 08:37_
+_@Kalmaegi_
 
 ## Summary
 

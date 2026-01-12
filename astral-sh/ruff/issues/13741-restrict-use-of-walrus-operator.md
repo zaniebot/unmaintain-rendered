@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-14T01:23:01Z
 updated_at: 2024-10-14T12:34:07Z
 url: https://github.com/astral-sh/ruff/issues/13741
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Restrict use of walrus operator
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-10-14 01:23_
+_@KotlinIsland_
 
 i see code written like this:
 ```py

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-10T09:38:24Z
 updated_at: 2025-10-29T01:02:40Z
 url: https://github.com/astral-sh/uv/issues/16226
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # `sys_platform` ignored for a built distribution `pymeshlab`
 
 ---
 
-_Issue opened by @MalcolmMielle on 2025-10-10 09:38_
+_@MalcolmMielle_
 
 ### Summary
 

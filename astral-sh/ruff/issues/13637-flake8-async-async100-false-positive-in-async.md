@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-05T06:27:30Z
 updated_at: 2024-10-07T12:25:55Z
 url: https://github.com/astral-sh/ruff/issues/13637
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [flake8-async] `ASYNC100` false positive in async generator expressions
 
 ---
 
-_Issue opened by @autinerd on 2024-10-05 06:27_
+_@autinerd_
 
 Hi!
 

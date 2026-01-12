@@ -13,14 +13,14 @@ head: charlie/runtime-required
 created_at: 2024-02-23T03:24:32Z
 updated_at: 2024-02-23T03:38:35Z
 url: https://github.com/astral-sh/ruff/pull/10091
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Respect runtime-required decorators for function signatures
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-23 03:24_
+_@charliermarsh_
 
 ## Summary
 

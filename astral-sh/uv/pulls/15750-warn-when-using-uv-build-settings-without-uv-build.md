@@ -13,14 +13,14 @@ head: konsti/warn-on-unused-build-backend-settings
 created_at: 2025-09-09T12:23:49Z
 updated_at: 2025-12-11T14:50:41Z
 url: https://github.com/astral-sh/uv/pull/15750
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:11:55Z
 ```
 
 # Warn when using `uv_build` settings without `uv_build`
 
 ---
 
-_Pull request opened by @konstin on 2025-09-09 12:23_
+_@konstin_
 
 To help with cases such as https://github.com/astral-sh/uv/issues/15655.
 

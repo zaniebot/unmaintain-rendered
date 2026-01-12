@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-19T01:38:19Z
 updated_at: 2025-01-19T15:07:29Z
 url: https://github.com/astral-sh/uv/issues/10747
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # `README` install script incorrect curl command due to 301 redirects
 
 ---
 
-_Issue opened by @GangGreenTemperTatum on 2025-01-19 01:38_
+_@GangGreenTemperTatum_
 
 thanks for the awesome project! :) 
 

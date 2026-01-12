@@ -13,14 +13,14 @@ head: dhruv/trailing-comma
 created_at: 2024-03-14T04:10:25Z
 updated_at: 2024-03-14T04:10:36Z
 url: https://github.com/astral-sh/ruff/pull/10405
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Use recovery context to decide on trailing comma
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-14 04:10_
+_@dhruvmanila_
 
 ## Summary
 

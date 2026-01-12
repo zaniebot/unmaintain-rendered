@@ -13,14 +13,14 @@ head: charlie/opt
 created_at: 2025-08-02T19:08:51Z
 updated_at: 2025-08-02T19:38:40Z
 url: https://github.com/astral-sh/uv/pull/15033
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:32Z
 ```
 
 # Remove some arguments from `install`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-02 19:08_
+_@charliermarsh_
 
 ## Summary
 

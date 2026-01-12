@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-12T13:08:49Z
 updated_at: 2024-11-13T05:16:14Z
 url: https://github.com/astral-sh/uv/issues/9056
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # [Feature Request] Support for PyPI Mirrors
 
 ---
 
-_Issue opened by @liblaf on 2024-11-12 13:08_
+_@liblaf_
 
 #### Description
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-17T04:34:11Z
 updated_at: 2024-02-19T10:09:14Z
 url: https://github.com/astral-sh/uv/issues/1573
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # entry points/scripts  with additional "attributes" are not generated correctly (e.g. for Pyinvoke)
 
 ---
 
-_Issue opened by @markmmm on 2024-02-17 04:34_
+_@markmmm_
 
 `uv` generates console scripts incorrectly for entry_points that have dotted function paths.
 For example [Invoke's setup.py](https://github.com/pyinvoke/invoke/blob/main/setup.py#L46C1-L51C7):

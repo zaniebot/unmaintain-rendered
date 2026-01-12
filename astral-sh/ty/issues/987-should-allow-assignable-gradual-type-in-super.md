@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-14T15:18:48Z
 updated_at: 2025-10-13T10:57:48Z
 url: https://github.com/astral-sh/ty/issues/987
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # should allow assignable gradual type in super()
 
 ---
 
-_Issue opened by @CharlesPerrotMinot on 2025-08-14 15:18_
+_@CharlesPerrotMinot_
 
 ### Summary
 

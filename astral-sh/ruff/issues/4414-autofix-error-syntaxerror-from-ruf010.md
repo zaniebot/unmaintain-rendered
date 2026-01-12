@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-13T15:32:55Z
 updated_at: 2023-05-15T02:08:31Z
 url: https://github.com/astral-sh/ruff/issues/4414
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Autofix error] SyntaxError from RUF010
 
 ---
 
-_Issue opened by @janosh on 2023-05-13 15:32_
+_@janosh_
 
 Applying `ruff --fix` (v0.0.267) to [this line](https://github.com/materialsproject/pymatgen/blob/8fded9b450fb1952d3d915adebff2e551d69c360/pymatgen/io/packmol.py#L217)
 

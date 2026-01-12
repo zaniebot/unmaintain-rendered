@@ -13,14 +13,14 @@ head: dhruv/infer-bool-literal
 created_at: 2024-08-05T12:12:46Z
 updated_at: 2025-05-07T15:23:57Z
 url: https://github.com/astral-sh/ruff/pull/12688
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Infer boolean literal expression
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-05 12:12_
+_@dhruvmanila_
 
 ## Summary
 

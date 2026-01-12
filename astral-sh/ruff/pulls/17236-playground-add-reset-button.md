@@ -13,14 +13,14 @@ head: micha/playground-reset
 created_at: 2025-04-06T16:54:23Z
 updated_at: 2025-04-06T17:13:22Z
 url: https://github.com/astral-sh/ruff/pull/17236
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [playground] Add Reset button
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-06 16:54_
+_@MichaReiser_
 
 ## Summary
 

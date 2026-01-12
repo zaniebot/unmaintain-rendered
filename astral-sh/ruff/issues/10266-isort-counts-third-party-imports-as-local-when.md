@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-07T06:16:50Z
 updated_at: 2024-03-11T17:01:25Z
 url: https://github.com/astral-sh/ruff/issues/10266
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # isort counts third party imports as local when inside submodules with the same name
 
 ---
 
-_Issue opened by @mmerickel on 2024-03-07 06:16_
+_@mmerickel_
 
 ## repro example
 ```

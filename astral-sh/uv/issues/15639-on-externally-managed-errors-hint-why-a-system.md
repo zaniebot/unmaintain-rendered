@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-02T19:56:03Z
 updated_at: 2025-10-21T07:46:41Z
 url: https://github.com/astral-sh/uv/issues/15639
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # On externally managed errors, hint why a system interpreter was selected
 
 ---
 
-_Issue opened by @zanieb on 2025-09-02 19:56_
+_@zanieb_
 
 e.g., in https://github.com/astral-sh/uv/issues/15635 we could hint that the system interpreter was selected because of the `--system` flag.
 

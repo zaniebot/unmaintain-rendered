@@ -12,14 +12,14 @@ head: feat-try201
 created_at: 2023-01-21T22:11:41Z
 updated_at: 2023-01-22T22:08:58Z
 url: https://github.com/astral-sh/ruff/pull/2073
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # feat: Implement TRY201
 
 ---
 
-_Pull request opened by @alonme on 2023-01-21 22:11_
+_@alonme_
 
 I'm new to rust - so i hope this looks good enough.
 

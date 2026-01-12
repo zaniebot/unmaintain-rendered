@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-30T22:47:22Z
 updated_at: 2024-03-30T23:39:11Z
 url: https://github.com/astral-sh/ruff/issues/10676
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # F401 false positive when import is used in stringified generic subscript
 
 ---
 
-_Issue opened by @sterliakov on 2024-03-30 22:47_
+_@sterliakov_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

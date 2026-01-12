@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-13T07:09:38Z
 updated_at: 2025-05-13T07:09:38Z
 url: https://github.com/astral-sh/uv/issues/13425
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:28Z
 ```
 
 # allow `--managed-python` to be used as arg when subprocesses
 
 ---
 
-_Issue opened by @KRRT7 on 2025-05-13 07:09_
+_@KRRT7_
 
 ### Summary
 

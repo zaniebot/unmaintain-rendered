@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-26T14:35:41Z
 updated_at: 2023-09-26T16:51:46Z
 url: https://github.com/astral-sh/ruff/issues/7669
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # B905 not working since 0.0.284
 
 ---
 
-_Issue opened by @ergoithz on 2023-09-26 14:35_
+_@ergoithz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

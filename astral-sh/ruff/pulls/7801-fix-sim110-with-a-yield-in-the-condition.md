@@ -13,14 +13,14 @@ head: sim110
 created_at: 2023-10-04T05:13:56Z
 updated_at: 2024-09-10T23:38:39Z
 url: https://github.com/astral-sh/ruff/pull/7801
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Fix SIM110 with a yield in the condition
 
 ---
 
-_Pull request opened by @JelleZijlstra on 2023-10-04 05:13_
+_@JelleZijlstra_
 
 And allow "await" in the loop iterable.
 

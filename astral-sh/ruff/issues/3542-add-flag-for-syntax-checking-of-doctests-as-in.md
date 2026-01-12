@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-15T16:38:25Z
 updated_at: 2024-03-20T07:44:05Z
 url: https://github.com/astral-sh/ruff/issues/3542
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Add flag for syntax checking of doctests as in flake8 --doctests
 
 ---
 
-_Issue opened by @marcinbarczynski on 2023-03-15 16:38_
+_@marcinbarczynski_
 
 Currently, there is no way to force ruff to check the syntax of doctests.
 

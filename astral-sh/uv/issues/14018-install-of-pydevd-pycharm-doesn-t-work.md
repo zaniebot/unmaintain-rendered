@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-13T10:58:07Z
 updated_at: 2025-06-18T20:33:29Z
 url: https://github.com/astral-sh/uv/issues/14018
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # Install of pydevd_pycharm doesn't work
 
 ---
 
-_Issue opened by @david-banon-tecnativa on 2025-06-13 10:58_
+_@david-banon-tecnativa_
 
 ### Summary
 

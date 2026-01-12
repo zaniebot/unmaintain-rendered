@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-10T04:19:47Z
 updated_at: 2024-07-10T04:28:04Z
 url: https://github.com/astral-sh/ruff/issues/12265
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # How to disable multiple new lines between classes and functions?
 
 ---
 
-_Issue opened by @Filyus on 2024-07-10 04:19_
+_@Filyus_
 
 I want this because of fewer overall lines:
 ````python

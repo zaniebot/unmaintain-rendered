@@ -13,14 +13,14 @@ head: zb/seed-cach
 created_at: 2024-04-18T17:52:46Z
 updated_at: 2024-04-19T00:48:22Z
 url: https://github.com/astral-sh/uv/pull/3124
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:26Z
 ```
 
 # Restore seeding of authentication cache from index URLs
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-18 17:52_
+_@zanieb_
 
 Roughly reverts https://github.com/astral-sh/uv/pull/2976/commits/f7820ceaa7a24613ce89da77c48a0454c1e94616 to reduce possible race conditions for pre-authenticated index URLs
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-12T23:51:53Z
 updated_at: 2025-12-15T19:35:14Z
 url: https://github.com/astral-sh/ty/issues/1535
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support Concatenate special form
 
 ---
 
-_Issue opened by @carljm on 2025-11-12 23:51_
+_@carljm_
 
 https://typing.python.org/en/latest/spec/generics.html#paramspec
 

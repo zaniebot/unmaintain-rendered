@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-29T19:10:48Z
 updated_at: 2025-02-17T08:22:52Z
 url: https://github.com/astral-sh/ruff/issues/14685
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Labeling issues and pull requests automatically
 
 ---
 
-_Issue opened by @Glyphack on 2024-11-29 19:10_
+_@Glyphack_
 
 This issue was brought up [here](https://github.com/astral-sh/ruff/pull/14499#issuecomment-2489577707) originally.
 Since labeling every PR and issue could be time consuming I thought it could be helpful to automate it.

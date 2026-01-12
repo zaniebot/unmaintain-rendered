@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-25T23:49:53Z
 updated_at: 2024-08-26T18:00:23Z
 url: https://github.com/astral-sh/uv/issues/6621
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # `uv run` installs transitive package that should be excluded according to markers
 
 ---
 
-_Issue opened by @edgarrmondragon on 2024-08-25 23:49_
+_@edgarrmondragon_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

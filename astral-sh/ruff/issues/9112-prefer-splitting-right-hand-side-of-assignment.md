@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-13T09:07:19Z
 updated_at: 2023-12-20T23:42:26Z
 url: https://github.com/astral-sh/ruff/issues/9112
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Prefer splitting right hand side of assignment first: Unnecessary parentheses
 
 ---
 
-_Issue opened by @MichaReiser on 2023-12-13 09:07_
+_@MichaReiser_
 
 Ruff introduces unnecessary parentheses around values when the target doesn't end with a parenthesized expression, but only contains one:
 

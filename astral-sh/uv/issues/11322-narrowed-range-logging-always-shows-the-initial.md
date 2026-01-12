@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-07T17:10:35Z
 updated_at: 2025-02-07T22:43:34Z
 url: https://github.com/astral-sh/uv/issues/11322
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # "Narrowed range" logging always shows the initial specifiers
 
 ---
 
-_Issue opened by @charliermarsh on 2025-02-07 17:10_
+_@charliermarsh_
 
 I think we don't update the specifiers (somewhat intentionally), and the display implementation uses the specifiers, so even if the range gets narrowed, we show the "wrong" value.
 

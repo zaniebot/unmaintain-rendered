@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-05T09:08:31Z
 updated_at: 2026-01-06T17:13:09Z
 url: https://github.com/astral-sh/uv/issues/17323
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # Grouped, structured output for `uv lock --upgrade`
 
 ---
 
-_Issue opened by @winwinashwin on 2026-01-05 09:08_
+_@winwinashwin_
 
 ### Summary
 

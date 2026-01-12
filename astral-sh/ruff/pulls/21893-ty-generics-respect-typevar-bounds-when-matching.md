@@ -15,14 +15,14 @@ head: david/fix-1837
 created_at: 2025-12-10T12:16:48Z
 updated_at: 2025-12-10T13:59:00Z
 url: https://github.com/astral-sh/ruff/pull/21893
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] Generics: Respect typevar bounds when matching against a union
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-10 12:16_
+_@sharkdp_
 
 ## Summary
 

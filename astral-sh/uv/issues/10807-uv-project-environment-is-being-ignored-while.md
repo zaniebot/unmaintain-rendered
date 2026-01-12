@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-21T06:38:59Z
 updated_at: 2025-05-14T06:56:08Z
 url: https://github.com/astral-sh/uv/issues/10807
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:21Z
 ```
 
 # `UV_PROJECT_ENVIRONMENT` is being ignored while creating venv
 
 ---
 
-_Issue opened by @guesswh0 on 2025-01-21 06:38_
+_@guesswh0_
 
 <img width="372" alt="Image" src="https://github.com/user-attachments/assets/db1e96f0-dfc1-431d-8a55-79e15ddf5673" />
 

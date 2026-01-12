@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-16T20:06:07Z
 updated_at: 2025-02-21T21:50:48Z
 url: https://github.com/astral-sh/uv/issues/10693
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # PyTorch nightly inconsistency between `uv pip install` vs `uv sync` (missing nvidia packages)
 
 ---
 
-_Issue opened by @tmm1 on 2025-01-16 20:06_
+_@tmm1_
 
 in https://github.com/astral-sh/uv/issues/2541#issuecomment-2487052583, `uv pip install` was fixed for torch-nightly:
 

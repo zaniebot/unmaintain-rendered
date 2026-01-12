@@ -12,14 +12,14 @@ head: tree-member
 created_at: 2024-10-03T07:48:28Z
 updated_at: 2024-11-06T05:48:13Z
 url: https://github.com/astral-sh/uv/pull/7887
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # uv tree: include workspace members in roots
 
 ---
 
-_Pull request opened by @j178 on 2024-10-03 07:48_
+_@j178_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/lex
 created_at: 2023-06-19T22:29:15Z
 updated_at: 2023-06-20T16:41:26Z
 url: https://github.com/astral-sh/ruff/pull/5195
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Remove identifier lexing in favor of parser ranges
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-19 22:29_
+_@charliermarsh_
 
 ## Summary
 

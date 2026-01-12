@@ -13,14 +13,14 @@ head: alex/upgrade-zizmor
 created_at: 2025-01-21T15:59:53Z
 updated_at: 2025-01-22T17:04:25Z
 url: https://github.com/astral-sh/ruff/pull/15649
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Upgrade zizmor to the latest version in CI
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-21 15:59_
+_@AlexWaygood_
 
 ## Summary
 

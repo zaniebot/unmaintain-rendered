@@ -13,14 +13,14 @@ head: generate-builtin-modules
 created_at: 2024-08-05T20:20:42Z
 updated_at: 2024-08-05T20:38:54Z
 url: https://github.com/astral-sh/ruff/pull/12696
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Add a new script to generate builtin module names
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-05 20:20_
+_@AlexWaygood_
 
 ## Summary
 

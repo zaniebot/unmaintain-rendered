@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-03T11:05:57Z
 updated_at: 2025-11-04T13:52:14Z
 url: https://github.com/astral-sh/uv/issues/16578
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # `--no-project` has no effect if a project virtual environment already exists (.venv)
 
 ---
 
-_Issue opened by @DhavalGojiya on 2025-11-03 11:05_
+_@DhavalGojiya_
 
 ### Summary
 

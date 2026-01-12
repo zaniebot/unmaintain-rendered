@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-07-26T02:05:05Z
 updated_at: 2018-08-02T03:30:09Z
 url: https://github.com/clap-rs/clap/issues/1014
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # --help misaligned if one option only has long flag and one only has short flag
 
 ---
 
-_Issue opened by @kahing on 2017-07-26 02:05_
+_@kahing_
 
 ### Affected Version of clap
 

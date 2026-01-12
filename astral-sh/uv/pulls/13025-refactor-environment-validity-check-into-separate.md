@@ -13,14 +13,14 @@ head: zb/project-env-valid
 created_at: 2025-04-21T21:27:58Z
 updated_at: 2025-04-21T22:17:52Z
 url: https://github.com/astral-sh/uv/pull/13025
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:31Z
 ```
 
 # Refactor environment validity check into separate function
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-21 21:27_
+_@zanieb_
 
 Now, we can use early returns! Pulled out of https://github.com/astral-sh/uv/pull/7934, where we're adding more logic here.
 

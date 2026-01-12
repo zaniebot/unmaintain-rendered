@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-27T18:43:51Z
 updated_at: 2025-10-23T06:40:32Z
 url: https://github.com/astral-sh/uv/issues/15560
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # Lock files are inconsistent on Windows when using private repos explicitly
 
 ---
 
-_Issue opened by @sakost on 2025-08-27 18:43_
+_@sakost_
 
 ### Summary
 

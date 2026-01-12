@@ -13,14 +13,14 @@ head: zb/missing-ignore-compile
 created_at: 2025-02-19T19:03:27Z
 updated_at: 2025-02-20T20:17:41Z
 url: https://github.com/astral-sh/uv/pull/11633
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:56Z
 ```
 
 # Skip removed directories during bytecode compilation
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-19 19:03_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/issues/11611
 

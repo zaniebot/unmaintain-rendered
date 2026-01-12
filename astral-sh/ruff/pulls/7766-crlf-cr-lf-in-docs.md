@@ -13,14 +13,14 @@ head: line-ending-docs
 created_at: 2023-10-02T21:01:31Z
 updated_at: 2023-10-02T21:15:36Z
 url: https://github.com/astral-sh/ruff/pull/7766
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # crlf -> cr-lf in docs
 
 ---
 
-_Pull request opened by @cberry31 on 2023-10-02 21:01_
+_@cberry31_
 
 ## Summary
 This change fixes an error in the documentation where cr-lf was displayed as crlf which if you tried to enter into the configuration file running ruff would break. 

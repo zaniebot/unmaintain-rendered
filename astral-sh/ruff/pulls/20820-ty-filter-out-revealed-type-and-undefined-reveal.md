@@ -14,14 +14,14 @@ head: alex/suppress-reveal-type-snapshots
 created_at: 2025-10-12T15:31:35Z
 updated_at: 2025-10-12T18:39:34Z
 url: https://github.com/astral-sh/ruff/pull/20820
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] Filter out `revealed-type` and `undefined-reveal` diagnostics from mdtest snapshots
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-12 15:31_
+_@AlexWaygood_
 
 ## Summary
 

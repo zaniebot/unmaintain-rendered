@@ -13,14 +13,14 @@ head: deprecate-pt004-pt005
 created_at: 2024-08-12T09:49:35Z
 updated_at: 2024-08-12T14:18:21Z
 url: https://github.com/astral-sh/ruff/pull/12837
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Deprecate PT004 and PT005
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-12 09:49_
+_@MichaReiser_
 
 ## Summary
 

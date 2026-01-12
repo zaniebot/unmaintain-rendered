@@ -13,14 +13,14 @@ head: renovate/peter-evans-create-pull-request-7.x
 created_at: 2025-03-17T03:34:33Z
 updated_at: 2025-03-17T18:16:48Z
 url: https://github.com/astral-sh/uv/pull/12226
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:11Z
 ```
 
 # Update peter-evans/create-pull-request action to v7.0.8
 
 ---
 
-_Pull request opened by @renovate on 2025-03-17 03:34_
+_@renovate_
 
 This PR contains the following updates:
 

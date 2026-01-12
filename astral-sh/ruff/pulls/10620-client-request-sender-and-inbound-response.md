@@ -13,14 +13,14 @@ head: jane/server/response-handling
 created_at: 2024-03-26T18:23:22Z
 updated_at: 2024-03-27T19:09:44Z
 url: https://github.com/astral-sh/ruff/pull/10620
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Client request sender and inbound response handling for `ruff server`
 
 ---
 
-_Pull request opened by @snowsignal on 2024-03-26 18:23_
+_@snowsignal_
 
 ## Summary
 

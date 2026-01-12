@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-25T18:30:00Z
 updated_at: 2024-12-30T16:49:59Z
 url: https://github.com/astral-sh/uv/issues/10157
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # Add platform support for ARMv5TE
 
 ---
 
-_Issue opened by @lscorcia on 2024-12-25 18:30_
+_@lscorcia_
 
 Hi, since Home Assistant switched to `uv` the installation on my NAS box can't be upgraded anymore. It is an `armel` platform with an `armv5tel` cpu (32bit, tier 2.5 in rust speak). I use Debian bookworm (stable) on it which supports it just fine, providing python 3.11 via system packages but I am using python 3.12 via manual build. For rust wheels, I cross compile them on a x64 VM and install them using pip into my venv since bookworm only provides rust v1.63 and there is no rustup support being a tier 2.5 platform.
 

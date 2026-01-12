@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T21:22:00Z
 updated_at: 2024-03-04T01:50:24Z
 url: https://github.com/astral-sh/uv/issues/1353
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # `uv pip compile` adds setuptools (and pip) to requirements.txt
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-02-15 21:22_
+_@ThiefMaster_
 
 `pip-compile` considers dependencies on `setuptools` (and `pip`) unsafe and mentions this at the end of the generated file:
 

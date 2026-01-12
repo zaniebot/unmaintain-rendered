@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-26T02:18:33Z
 updated_at: 2025-02-12T16:02:18Z
 url: https://github.com/astral-sh/uv/issues/6637
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Create a virtual environment from a PEP 723 script
 
 ---
 
-_Issue opened by @gnosys-nmercer on 2024-08-26 02:18_
+_@gnosys-nmercer_
 
 It would be useful to be able to create a virtual environment from a PEP723 script.
 

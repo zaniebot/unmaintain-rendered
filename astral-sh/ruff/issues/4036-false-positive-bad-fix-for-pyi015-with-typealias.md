@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-20T01:16:29Z
 updated_at: 2023-04-20T19:45:49Z
 url: https://github.com/astral-sh/ruff/issues/4036
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # (🐞) False positive / bad fix for PYI015 with typealias in stub file
 
 ---
 
-_Issue opened by @KotlinIsland on 2023-04-20 01:16_
+_@KotlinIsland_
 
 ruff 0.0.262 
 

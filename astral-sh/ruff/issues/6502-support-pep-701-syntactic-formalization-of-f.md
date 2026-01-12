@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-11T13:40:54Z
 updated_at: 2023-09-29T02:55:40Z
 url: https://github.com/astral-sh/ruff/issues/6502
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Support PEP 701: Syntactic formalization of f-strings
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-08-11 13:40_
+_@dhruvmanila_
 
 [PEP 701] formalizes the grammar for f-strings. This will require updates to both the lexer and parser while keeping the AST representation the same.
 

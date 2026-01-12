@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T11:21:40Z
 updated_at: 2025-06-28T07:16:08Z
 url: https://github.com/astral-sh/uv/issues/14312
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Is it possible to cache isolated venvs like in script-mode?
 
 ---
 
-_Issue opened by @Kh4l3tH on 2025-06-27 11:21_
+_@Kh4l3tH_
 
 ### Question
 

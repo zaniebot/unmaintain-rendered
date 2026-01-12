@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-28T05:28:28Z
 updated_at: 2022-11-28T11:18:13Z
 url: https://github.com/astral-sh/ruff/issues/938
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # brew install ruff not find  
 
 ---
 
-_Issue opened by @me-v2 on 2022-11-28 05:28_
+_@me-v2_
 
 Warning: No available formula with the name "ruff". Did you mean riff?
 ==> Searching for similarly named formulae...

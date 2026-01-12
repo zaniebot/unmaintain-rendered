@@ -13,14 +13,14 @@ head: konsti/update-package-0-3-52
 created_at: 2025-09-11T12:07:17Z
 updated_at: 2025-09-11T13:19:35Z
 url: https://github.com/astral-sh/uv/pull/15786
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:56Z
 ```
 
 # Update packse to 0.3.52: Fix requires python 3.12
 
 ---
 
-_Pull request opened by @konstin on 2025-09-11 12:07_
+_@konstin_
 
 Pull in the latest packse changes to make all test work with the new default Python requirement, 3.12.
 

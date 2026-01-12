@@ -13,14 +13,14 @@ head: deferred-annotations
 created_at: 2025-04-27T21:01:05Z
 updated_at: 2025-05-05T11:40:37Z
 url: https://github.com/astral-sh/ruff/pull/17658
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # Implement deferred annotations for Python 3.14
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-04-27 21:01_
+_@dylwil3_
 
 This PR updates the semantic model for Python 3.14 by essentially equating "run using Python 3.14" with "uses `from __future__ import annotations`". 
 

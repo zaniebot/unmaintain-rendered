@@ -13,14 +13,14 @@ head: feat/builtins-enum
 created_at: 2024-10-03T17:37:02Z
 updated_at: 2024-10-07T08:40:58Z
 url: https://github.com/astral-sh/ruff/pull/13615
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] more ergonomic and efficient handling of known builtin classes
 
 ---
 
-_Pull request opened by @Slyces on 2024-10-03 17:37_
+_@Slyces_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

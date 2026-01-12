@@ -13,14 +13,14 @@ head: charlie/docs-reqs
 created_at: 2024-02-23T02:52:06Z
 updated_at: 2024-02-26T15:52:59Z
 url: https://github.com/astral-sh/ruff/pull/10090
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Add package name to requirements-insiders.txt
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-23 02:52_
+_@charliermarsh_
 
 _No description provided._
 

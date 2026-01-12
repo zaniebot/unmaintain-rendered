@@ -12,14 +12,14 @@ head: charlie/t
 created_at: 2024-02-05T16:08:10Z
 updated_at: 2024-02-05T16:23:03Z
 url: https://github.com/astral-sh/ruff/pull/9835
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Test x64 installs on various macOS versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-05 16:08_
+_@charliermarsh_
 
 _No description provided._
 

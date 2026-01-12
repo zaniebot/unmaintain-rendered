@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-07T21:09:22Z
 updated_at: 2023-06-07T22:22:23Z
 url: https://github.com/astral-sh/ruff/issues/4941
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [bug] TCH004 false positive with function-scoped imports
 
 ---
 
-_Issue opened by @smackesey on 2023-06-07 21:09_
+_@smackesey_
 
 I was unable to create a simple reproduction of this, but TCH004 on ruff 0.0.271 gives several false positives in Dagster when there are function-local imports. Running ruff on https://github.com/dagster-io/dagster/blame/master/python_modules/dagster/dagster/_core/definitions/op_definition.py will give this error:
 

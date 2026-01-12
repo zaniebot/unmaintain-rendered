@@ -11,14 +11,14 @@ head: cli
 created_at: 2025-08-23T09:38:01Z
 updated_at: 2025-08-29T17:58:58Z
 url: https://github.com/astral-sh/uv/pull/15467
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:45Z
 ```
 
 # Warn when uv venv is used and VIRTUAL_ENV is set
 
 ---
 
-_Pull request opened by @harsh-ps-2003 on 2025-08-23 09:38_
+_@harsh-ps-2003_
 
 <!--
 Thank you for contributing to UV! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-12T19:38:29Z
 updated_at: 2024-03-12T20:03:55Z
 url: https://github.com/astral-sh/uv/issues/2390
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # `uv venv` creates a venv without pip or pip3
 
 ---
 
-_Issue opened by @lukecivantos on 2024-03-12 19:38_
+_@lukecivantos_
 
 Hey all – our team is running into issues with running `uv venv` locally where it's created without pip/pip3. 
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-18T12:16:46Z
 updated_at: 2025-06-23T08:13:04Z
 url: https://github.com/astral-sh/ruff/issues/18747
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # FURB163 fix should parenthesize `yield`
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-18 12:16_
+_@dscorbett_
 
 ### Summary
 

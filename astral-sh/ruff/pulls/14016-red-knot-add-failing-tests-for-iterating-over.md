@@ -13,14 +13,14 @@ head: alex/failing-iter-tests
 created_at: 2024-10-31T12:45:28Z
 updated_at: 2024-10-31T18:20:25Z
 url: https://github.com/astral-sh/ruff/pull/14016
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Add failing tests for iterating over maybe-iterable unions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-31 12:45_
+_@AlexWaygood_
 
 ## Summary
 

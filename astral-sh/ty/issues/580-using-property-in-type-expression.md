@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-04T02:33:44Z
 updated_at: 2025-06-04T11:48:12Z
 url: https://github.com/astral-sh/ty/issues/580
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Using property in type expression
 
 ---
 
-_Issue opened by @loicdiridollou on 2025-06-04 02:33_
+_@loicdiridollou_
 
 ### Question
 

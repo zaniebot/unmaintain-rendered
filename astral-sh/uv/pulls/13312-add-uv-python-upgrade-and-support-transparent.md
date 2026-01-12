@@ -13,14 +13,14 @@ head: jtfm/python-upgrade
 created_at: 2025-05-06T10:58:56Z
 updated_at: 2025-06-10T17:04:39Z
 url: https://github.com/astral-sh/uv/pull/13312
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:38Z
 ```
 
 # Add `uv python upgrade` and support transparent patch upgrades in virtual environments
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-05-06 10:58_
+_@jtfmumm_
 
 In uv, if you install the latest managed patch version, virtual environments that were created with a minor version like `3.13` will not automatically upgrade to that patch. Currently, you’d have to manually update each virtual environment. Upgrading to a new patch version should be a smooth experience for users, ideally with virtual environments transparently upgrading.
 

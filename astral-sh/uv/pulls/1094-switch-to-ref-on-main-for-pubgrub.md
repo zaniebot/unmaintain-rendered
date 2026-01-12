@@ -13,14 +13,14 @@ head: zb/pg
 created_at: 2024-01-25T14:47:56Z
 updated_at: 2024-01-25T14:50:13Z
 url: https://github.com/astral-sh/uv/pull/1094
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:25Z
 ```
 
 # Switch to ref on `main` for PubGrub
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-25 14:47_
+_@zanieb_
 
 Just fixing the wrong merge order from https://github.com/astral-sh/puffin/pull/1088
 

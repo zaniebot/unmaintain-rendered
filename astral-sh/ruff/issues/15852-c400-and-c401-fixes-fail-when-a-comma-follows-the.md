@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-31T13:43:42Z
 updated_at: 2025-02-05T13:38:04Z
 url: https://github.com/astral-sh/ruff/issues/15852
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # C400 and C401 fixes fail when a comma follows the generator
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-31 13:43_
+_@dscorbett_
 
 ### Description
 

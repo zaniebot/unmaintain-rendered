@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-25T13:33:19Z
 updated_at: 2025-01-30T16:22:23Z
 url: https://github.com/astral-sh/uv/issues/8565
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # Authentication reused in two named indexes from the same GitLab
 
 ---
 
-_Issue opened by @hbeukers on 2024-10-25 13:33_
+_@hbeukers_
 
 First, thank you for making uv, we are very happy with it.
 

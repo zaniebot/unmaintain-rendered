@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-06T19:46:59Z
 updated_at: 2025-03-13T00:51:30Z
 url: https://github.com/astral-sh/ruff/issues/16542
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # SIM108 not raised for instance variables
 
 ---
 
-_Issue opened by @cspoelstra on 2025-03-06 19:46_
+_@cspoelstra_
 
 ### Summary
 

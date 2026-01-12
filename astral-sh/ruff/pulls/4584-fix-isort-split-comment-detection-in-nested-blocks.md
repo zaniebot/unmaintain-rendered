@@ -14,14 +14,14 @@ head: charlie/split
 created_at: 2023-05-22T15:51:00Z
 updated_at: 2023-05-22T16:32:01Z
 url: https://github.com/astral-sh/ruff/pull/4584
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Fix `# isort: split` comment detection in nested blocks
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-22 15:51_
+_@charliermarsh_
 
 ## Summary
 

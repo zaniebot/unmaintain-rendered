@@ -14,14 +14,14 @@ head: konsti/fix-executable-bit
 created_at: 2024-12-19T12:05:49Z
 updated_at: 2024-12-19T16:54:48Z
 url: https://github.com/astral-sh/uv/pull/10027
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:05Z
 ```
 
 # Build backend: Preserve executable bit
 
 ---
 
-_Pull request opened by @konstin on 2024-12-19 12:05_
+_@konstin_
 
 Fixes #9968
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-25T18:08:59Z
 updated_at: 2025-10-16T14:41:09Z
 url: https://github.com/astral-sh/uv/issues/16029
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:22Z
 ```
 
 # Confused about publishing workspace members
 
 ---
 
-_Issue opened by @anentropic on 2025-09-25 18:08_
+_@anentropic_
 
 ### Question
 

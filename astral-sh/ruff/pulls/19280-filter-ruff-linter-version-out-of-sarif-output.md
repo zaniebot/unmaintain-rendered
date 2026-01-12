@@ -14,14 +14,14 @@ head: brent/fix-sarif-version
 created_at: 2025-07-11T12:43:20Z
 updated_at: 2025-07-11T12:55:53Z
 url: https://github.com/astral-sh/ruff/pull/19280
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # Filter `ruff_linter::VERSION` out of SARIF output tests
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-11 12:43_
+_@ntBre_
 
 Summary
 --

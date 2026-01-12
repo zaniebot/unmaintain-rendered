@@ -13,14 +13,14 @@ head: renovate/csv-1.x-lockfile
 created_at: 2025-11-03T03:06:17Z
 updated_at: 2025-11-03T04:36:17Z
 url: https://github.com/astral-sh/ruff/pull/21243
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # Update Rust crate csv to v1.4.0
 
 ---
 
-_Pull request opened by @renovate on 2025-11-03 03:06_
+_@renovate_
 
 This PR contains the following updates:
 

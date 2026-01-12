@@ -12,14 +12,14 @@ head: s/retry-fix
 created_at: 2025-12-30T14:50:30Z
 updated_at: 2025-12-30T18:45:19Z
 url: https://github.com/astral-sh/uv/pull/17267
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:41Z
 ```
 
 # Fix nested retry loops for transient network errors
 
 ---
 
-_Pull request opened by @shayonj on 2025-12-30 14:50_
+_@shayonj_
 
 ## Summary
 

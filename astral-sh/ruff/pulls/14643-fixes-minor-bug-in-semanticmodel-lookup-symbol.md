@@ -12,14 +12,14 @@ head: bugfix/lookup_symbol
 created_at: 2024-11-27T21:36:54Z
 updated_at: 2024-11-28T15:13:04Z
 url: https://github.com/astral-sh/ruff/pull/14643
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Fixes minor bug in `SemanticModel::lookup_symbol`
 
 ---
 
-_Pull request opened by @Daverball on 2024-11-27 21:36_
+_@Daverball_
 
 ## Summary
 

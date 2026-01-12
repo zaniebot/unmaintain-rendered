@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-07-05T19:10:13Z
 updated_at: 2019-12-10T15:12:50Z
 url: https://github.com/clap-rs/clap/issues/1517
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Building with rustc 1.36.0 emits deprecation warnings.
 
 ---
 
-_Issue opened by @nicodemus26 on 2019-07-05 19:10_
+_@nicodemus26_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

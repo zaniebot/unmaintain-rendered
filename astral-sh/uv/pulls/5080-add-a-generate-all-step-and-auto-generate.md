@@ -13,14 +13,14 @@ head: charlie/doc-generate-md
 created_at: 2024-07-15T19:38:54Z
 updated_at: 2024-07-15T19:58:54Z
 url: https://github.com/astral-sh/uv/pull/5080
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:37Z
 ```
 
 # Add a `generate-all` step and auto-generate `settings.md`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-15 19:38_
+_@charliermarsh_
 
 ## Summary
 

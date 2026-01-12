@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-10T11:45:37Z
 updated_at: 2025-12-10T13:58:59Z
 url: https://github.com/astral-sh/ty/issues/1837
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Typevar bounds are ignored when matching against generic union
 
 ---
 
-_Issue opened by @sharkdp on 2025-12-10 11:45_
+_@sharkdp_
 
 This is a heavily modified MRE for a bug that I observed in `pandas`, while calling `np.zeros(…)`. The `accepts_dtype` call in the following example should not succeed:
 

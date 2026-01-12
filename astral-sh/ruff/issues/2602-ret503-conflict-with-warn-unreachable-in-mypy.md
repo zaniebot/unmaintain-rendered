@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-06T10:03:08Z
 updated_at: 2023-02-10T19:32:44Z
 url: https://github.com/astral-sh/ruff/issues/2602
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `RET503`: Conflict with `--warn-unreachable` in `mypy`
 
 ---
 
-_Issue opened by @ngnpope on 2023-02-06 10:03_
+_@ngnpope_
 
 I strongly suspect this one is in the realms of "cannot do without typing support", but it's at least worth having in the issue tracker for documentation purposes. Maybe it's possible to special case, but we'll never capture all possibilities.
 

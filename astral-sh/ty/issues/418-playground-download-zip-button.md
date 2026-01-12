@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-16T07:01:49Z
 updated_at: 2025-05-16T07:01:49Z
 url: https://github.com/astral-sh/ty/issues/418
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [playground] Download ZIP button
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-16 07:01_
+_@MichaReiser_
 
 For easier local reproduction, add a download as zip button that downloads all files as a zip archive. 
 

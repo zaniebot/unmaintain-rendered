@@ -13,14 +13,14 @@ head: cjm/projectsel
 created_at: 2025-04-18T20:29:51Z
 updated_at: 2025-04-18T21:20:19Z
 url: https://github.com/astral-sh/ruff/pull/17473
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] pull primer projects to run from file
 
 ---
 
-_Pull request opened by @carljm on 2025-04-18 20:29_
+_@carljm_
 
 ## Summary
 

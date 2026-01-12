@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-04T20:31:08Z
 updated_at: 2025-06-30T18:12:07Z
 url: https://github.com/astral-sh/uv/issues/7045
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # How to handle platform variants like cuda in workspaces
 
 ---
 
-_Issue opened by @PhilipVinc on 2024-09-04 20:31_
+_@PhilipVinc_
 
 Hi. I'm evaluating the use of uv, which looks amazing, for some of our data science needs.
 

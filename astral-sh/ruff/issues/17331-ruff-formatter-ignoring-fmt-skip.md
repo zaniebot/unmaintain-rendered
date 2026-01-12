@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-10T10:05:01Z
 updated_at: 2026-01-10T14:56:59Z
 url: https://github.com/astral-sh/ruff/issues/17331
-synced_at: 2026-01-10T15:56:06Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ruff formatter ignoring `fmt: skip`
 
 ---
 
-_Issue opened by @madduck on 2025-04-10 10:05_
+_@madduck_
 
 ### Summary
 

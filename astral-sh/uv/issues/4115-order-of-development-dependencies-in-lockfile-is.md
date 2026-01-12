@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-06T20:59:30Z
 updated_at: 2024-06-07T18:18:33Z
 url: https://github.com/astral-sh/uv/issues/4115
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Order of development dependencies in lockfile is non-deterministic
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-06 20:59_
+_@charliermarsh_
 
 _No description provided._
 

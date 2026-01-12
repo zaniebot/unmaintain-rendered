@@ -12,14 +12,14 @@ head: update-pubgrub-78b8add6942766e5fb070bbda1de570e93d6399f
 created_at: 2024-01-04T15:50:39Z
 updated_at: 2024-01-04T15:55:36Z
 url: https://github.com/astral-sh/uv/pull/783
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:11Z
 ```
 
 # Update pubgrub to 78b8add6942766e5fb070bbda1de570e93d6399f
 
 ---
 
-_Pull request opened by @konstin on 2024-01-04 15:50_
+_@konstin_
 
 Pull in the latest perf improvements
 

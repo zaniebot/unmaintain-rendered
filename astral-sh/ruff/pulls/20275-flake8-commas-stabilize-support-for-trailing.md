@@ -13,14 +13,14 @@ head: dylan/stabilize-trailing-comma
 created_at: 2025-09-05T19:51:40Z
 updated_at: 2025-09-08T13:58:13Z
 url: https://github.com/astral-sh/ruff/pull/20275
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [`flake8-commas`] Stabilize support for trailing comma checks in type parameter lists (`COM812`, `COM819`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-05 19:51_
+_@dylwil3_
 
 Introduced in #19390. Removed gating, updated tests. No documentation to update.
 

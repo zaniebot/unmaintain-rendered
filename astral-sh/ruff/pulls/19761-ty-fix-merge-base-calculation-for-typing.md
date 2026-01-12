@@ -14,14 +14,14 @@ head: david/fix-typing_conformance-merge-base
 created_at: 2025-08-05T12:07:59Z
 updated_at: 2025-08-05T12:32:48Z
 url: https://github.com/astral-sh/ruff/pull/19761
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] Fix merge base calculation for typing-conformance workflow
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-05 12:07_
+_@sharkdp_
 
 ## Summary
 

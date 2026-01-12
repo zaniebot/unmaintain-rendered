@@ -12,14 +12,14 @@ head: ci-native-shellcheck
 created_at: 2025-04-01T06:04:41Z
 updated_at: 2025-04-01T13:25:44Z
 url: https://github.com/astral-sh/ruff/pull/17108
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # CI: Use a native version of Shellcheck instead of WASI
 
 ---
 
-_Pull request opened by @akx on 2025-04-01 06:04_
+_@akx_
 
 ## Summary
 

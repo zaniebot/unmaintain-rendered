@@ -12,14 +12,14 @@ head: konsti/boostrap-python-on-musl
 created_at: 2024-02-20T15:07:08Z
 updated_at: 2024-02-22T09:46:49Z
 url: https://github.com/astral-sh/uv/pull/1758
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:43Z
 ```
 
 # Add musl to python bootstrapping script
 
 ---
 
-_Pull request opened by @konstin on 2024-02-20 15:07_
+_@konstin_
 
 Previously, only glibc builds were tracked in the bootstrap script. A new field `libc` tracks if `gnu` or `musl` are used on linux, while it is `"none"` everywhere else. I've confirmed that the updated script works on ubuntu and alpine.
 

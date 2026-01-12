@@ -14,14 +14,14 @@ head: add-more-airflow-imports
 created_at: 2025-03-11T19:55:23Z
 updated_at: 2025-03-18T05:38:46Z
 url: https://github.com/astral-sh/ruff/pull/16647
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`airflow`] Add `chain`, `chain_linear` and `cross_downstream` for `AIR302`
 
 ---
 
-_Pull request opened by @kaxil on 2025-03-11 19:55_
+_@kaxil_
 
 Similar to https://github.com/astral-sh/ruff/pull/16014. PR on Airflow side: https://github.com/apache/airflow/pull/47639
 

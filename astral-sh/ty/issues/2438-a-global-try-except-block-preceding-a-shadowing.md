@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-11T02:15:03Z
 updated_at: 2026-01-11T02:30:43Z
 url: https://github.com/astral-sh/ty/issues/2438
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # A global try-except block preceding a shadowing import causes incorrect type inference (Module | Object) in local scope
 
 ---
 
-_Issue opened by @nemowang2003 on 2026-01-11 02:15_
+_@nemowang2003_
 
 ### Summary
 

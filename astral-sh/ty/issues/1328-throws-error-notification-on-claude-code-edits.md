@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-09T14:33:07Z
 updated_at: 2025-12-18T18:01:04Z
 url: https://github.com/astral-sh/ty/issues/1328
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Throws error notification on Claude Code edits
 
 ---
 
-_Issue opened by @AndrewNolte on 2025-10-09 14:33_
+_@AndrewNolte_
 
 ### Summary
 

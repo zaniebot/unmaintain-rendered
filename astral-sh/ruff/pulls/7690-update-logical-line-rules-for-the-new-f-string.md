@@ -14,14 +14,14 @@ head: dhruv/fstring-logical-line-rules
 created_at: 2023-09-28T03:58:43Z
 updated_at: 2023-09-29T02:46:11Z
 url: https://github.com/astral-sh/ruff/pull/7690
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Update logical line rules for the new f-string tokens
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-28 03:58_
+_@dhruvmanila_
 
 ## Summary
 

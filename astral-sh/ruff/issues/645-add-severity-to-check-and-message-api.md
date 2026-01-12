@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-07T19:18:47Z
 updated_at: 2022-12-31T18:27:58Z
 url: https://github.com/astral-sh/ruff/issues/645
-synced_at: 2026-01-10T12:05:21Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Add "severity" to check and message API
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-07 19:18_
+_@charliermarsh_
 
 This is part of the LSP diagnostic API so we should implement it.
 

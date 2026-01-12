@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-12T12:39:38Z
 updated_at: 2024-06-12T14:25:45Z
 url: https://github.com/astral-sh/uv/issues/4267
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # `uv add` struggles with an auto-generated entry in `uv.lock`
 
 ---
 
-_Issue opened by @hoechenberger on 2024-06-12 12:39_
+_@hoechenberger_
 
 `uv add` creates a lockfile `uv.lock` it cannot parse again on re-run.
 

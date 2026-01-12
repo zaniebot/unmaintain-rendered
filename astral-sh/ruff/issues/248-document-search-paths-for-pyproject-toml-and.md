@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-21T19:07:44Z
 updated_at: 2022-12-12T16:49:23Z
 url: https://github.com/astral-sh/ruff/issues/248
-synced_at: 2026-01-10T12:06:12Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Document search paths for `pyproject.toml` and project root
 
 ---
 
-_Issue opened by @charliermarsh on 2022-09-21 19:07_
+_@charliermarsh_
 
 _No description provided._
 

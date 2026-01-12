@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-03T16:01:02Z
 updated_at: 2023-10-03T16:51:27Z
 url: https://github.com/astral-sh/ruff/issues/7785
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # False `RUF012` on empty mutable collections as default values in `msgspec.Struct`s
 
 ---
 
-_Issue opened by @floxay on 2023-10-03 16:01_
+_@floxay_
 
 `msgspec.Structs` allow empty mutable collections as default values, however Ruff currently warns about these.\
 [Docs](https://jcristharif.com/msgspec/structs.html#default-values):

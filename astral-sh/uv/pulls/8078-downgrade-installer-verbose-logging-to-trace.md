@@ -13,14 +13,14 @@ head: charlie/t
 created_at: 2024-10-10T09:31:41Z
 updated_at: 2024-10-10T12:28:19Z
 url: https://github.com/astral-sh/uv/pull/8078
-synced_at: 2026-01-10T12:54:02Z
+synced_at: 2026-01-12T16:08:09Z
 ```
 
 # Downgrade installer verbose logging to trace
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-10 09:31_
+_@charliermarsh_
 
 ## Summary
 

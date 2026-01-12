@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-04-27T21:23:36Z
 updated_at: 2021-04-27T22:03:19Z
 url: https://github.com/clap-rs/clap/issues/2457
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Expired SSL certificate on https://clap.rs
 
 ---
 
-_Issue opened by @frankwiles on 2021-04-27 21:23_
+_@frankwiles_
 
 ### Rust Version
 

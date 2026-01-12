@@ -13,14 +13,14 @@ head: add-b030-rule
 created_at: 2023-03-08T09:19:00Z
 updated_at: 2023-03-14T17:01:45Z
 url: https://github.com/astral-sh/ruff/pull/3400
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [`flake8-bugbear`] Add `flake8-bugbear`'s B030 rule
 
 ---
 
-_Pull request opened by @aacunningham on 2023-03-08 09:19_
+_@aacunningham_
 
 Addresses B030 in #2954 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-02T17:32:09Z
 updated_at: 2023-02-02T20:45:16Z
 url: https://github.com/astral-sh/ruff/issues/2486
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # PLE0605 (invalid-all-format) doesn't recognize list constructor
 
 ---
 
-_Issue opened by @eriknw on 2023-02-02 17:32_
+_@eriknw_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

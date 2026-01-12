@@ -13,14 +13,14 @@ head: dcreager/typing-any
 created_at: 2024-12-02T19:50:23Z
 updated_at: 2024-12-04T14:56:38Z
 url: https://github.com/astral-sh/ruff/pull/14742
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] Add `typing.Any` as a spelling for the Any type
 
 ---
 
-_Pull request opened by @dcreager on 2024-12-02 19:50_
+_@dcreager_
 
 We already had a representation for the Any type, which we would use e.g. for expressions without type annotations.  We now recognize `typing.Any` as a way to refer to this type explicitly.  Like other special forms, this is tracked correctly through aliasing, and isn't confused with local definitions that happen to have the same name.
 

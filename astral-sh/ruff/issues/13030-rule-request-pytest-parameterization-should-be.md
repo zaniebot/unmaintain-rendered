@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T10:18:39Z
 updated_at: 2024-08-29T06:52:10Z
 url: https://github.com/astral-sh/ruff/issues/13030
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Rule request: pytest parameterization should be consistent
 
 ---
 
-_Issue opened by @bentheiii on 2024-08-21 10:18_
+_@bentheiii_
 
 Hi, I'd like to propose a new rule for pytest, wherein the order of parameterized tests must be consistent within runs. By that I mean that the following should trigger the rule
 ```py

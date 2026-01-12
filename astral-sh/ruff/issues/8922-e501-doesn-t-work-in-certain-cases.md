@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-30T11:15:45Z
 updated_at: 2023-11-30T14:27:50Z
 url: https://github.com/astral-sh/ruff/issues/8922
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # E501 doesn't work in certain cases
 
 ---
 
-_Issue opened by @yaroslavsadin on 2023-11-30 11:15_
+_@yaroslavsadin_
 
 ```
 $ ruff --version

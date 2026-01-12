@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-19T13:51:02Z
 updated_at: 2025-05-30T16:12:40Z
 url: https://github.com/astral-sh/uv/issues/13536
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # Add support for `uvx pypy`
 
 ---
 
-_Issue opened by @zanieb on 2025-05-19 13:51_
+_@zanieb_
 
 ### Summary
 

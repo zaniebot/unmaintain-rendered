@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-25T13:04:59Z
 updated_at: 2025-09-26T07:49:33Z
 url: https://github.com/clap-rs/clap/issues/6140
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Custom sorting of arguments in help message
 
 ---
 
-_Issue opened by @thomas-zahner on 2025-09-25 13:04_
+_@thomas-zahner_
 
 ### Please complete the following tasks
 

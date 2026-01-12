@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-08-08T14:40:48Z
 updated_at: 2025-08-11T14:41:57Z
 url: https://github.com/clap-rs/clap/issues/6096
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Detailed help for ValueEnum variants
 
 ---
 
-_Issue opened by @epage on 2025-08-08 14:40_
+_@epage_
 
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/6070

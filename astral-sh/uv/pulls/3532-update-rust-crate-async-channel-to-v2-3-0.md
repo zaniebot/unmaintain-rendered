@@ -13,14 +13,14 @@ head: renovate/async-channel-2.x-lockfile
 created_at: 2024-05-13T01:22:56Z
 updated_at: 2024-05-13T01:30:56Z
 url: https://github.com/astral-sh/uv/pull/3532
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:42Z
 ```
 
 # Update Rust crate async-channel to v2.3.0
 
 ---
 
-_Pull request opened by @renovate on 2024-05-13 01:22_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

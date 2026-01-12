@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T10:45:19Z
 updated_at: 2025-12-19T12:49:48Z
 url: https://github.com/astral-sh/uv/issues/17161
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # Make settings from [uv.tool] section defined in pyproject.toml always effective when pyproject.toml is used in uv CLI commands.
 
 ---
 
-_Issue opened by @pstrzelczak on 2025-12-17 10:45_
+_@pstrzelczak_
 
 ### Summary
 

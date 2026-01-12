@@ -13,14 +13,14 @@ head: ecosystem-licenses
 created_at: 2024-08-18T13:23:14Z
 updated_at: 2024-09-22T04:41:33Z
 url: https://github.com/astral-sh/uv/pull/6181
-synced_at: 2026-01-10T12:53:32Z
+synced_at: 2026-01-12T16:07:15Z
 ```
 
 # Add license texts for contents of ecosystem/
 
 ---
 
-_Pull request opened by @musicinmybrain on 2024-08-18 13:23_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: konsti/contributing-instructions
 created_at: 2024-02-26T13:40:17Z
 updated_at: 2024-02-27T12:49:51Z
 url: https://github.com/astral-sh/uv/pull/1983
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:49Z
 ```
 
 # Extend contributing instructions
 
 ---
 
-_Pull request opened by @konstin on 2024-02-26 13:40_
+_@konstin_
 
 * Document good first issues
 * Document `scripts` directory, as far as useful for contributors

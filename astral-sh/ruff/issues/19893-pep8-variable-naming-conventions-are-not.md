@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-13T11:47:49Z
 updated_at: 2025-08-13T13:22:29Z
 url: https://github.com/astral-sh/ruff/issues/19893
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PEP8 variable naming conventions are not correctly enforced
 
 ---
 
-_Issue opened by @t-m-sharpe on 2025-08-13 11:47_
+_@t-m-sharpe_
 
 ### Summary
 

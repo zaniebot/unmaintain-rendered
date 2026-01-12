@@ -11,14 +11,14 @@ head: fix-uv-doc-typo
 created_at: 2025-08-12T12:30:50Z
 updated_at: 2025-08-12T18:18:00Z
 url: https://github.com/astral-sh/uv/pull/15236
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:38Z
 ```
 
 # change in build-backend.md file and settings.md
 
 ---
 
-_Pull request opened by @lavisha25 on 2025-08-12 12:30_
+_@lavisha25_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

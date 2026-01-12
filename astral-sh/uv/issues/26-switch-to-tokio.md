@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-06T19:52:20Z
 updated_at: 2023-10-06T20:31:05Z
 url: https://github.com/astral-sh/uv/issues/26
-synced_at: 2026-01-10T05:49:12Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Switch to `tokio`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-06 19:52_
+_@charliermarsh_
 
 _No description provided._
 

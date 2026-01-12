@@ -14,14 +14,14 @@ head: charlie/cache-docs
 created_at: 2024-09-25T22:09:25Z
 updated_at: 2024-09-25T22:13:03Z
 url: https://github.com/astral-sh/uv/pull/7693
-synced_at: 2026-01-10T12:53:53Z
+synced_at: 2026-01-12T16:07:57Z
 ```
 
 # Add documentation on cache versioning
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-25 22:09_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/7547.
 

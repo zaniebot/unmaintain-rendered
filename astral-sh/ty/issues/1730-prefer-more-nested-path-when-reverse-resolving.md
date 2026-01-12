@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T19:42:48Z
 updated_at: 2026-01-09T09:45:58Z
 url: https://github.com/astral-sh/ty/issues/1730
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Prefer more-nested path when reverse-resolving file to module name and search paths overlap
 
 ---
 
-_Issue opened by @carljm on 2025-12-02 19:42_
+_@carljm_
 
 Sometimes we might have overlapping search paths, where the outer path (say `.`) is a higher-priority search path than the inner path (say `./src`). If a file inside `./src` (say `./src/foo/bar.py`) does `from . import baz`, we currently reverse-resolve the module name of `./src/foo/bar.py` as `src.foo.bar` (rather than `foo.bar`) and then import `./src/foo/baz.py` as the module name `src.foo.baz`.
 

@@ -14,14 +14,14 @@ head: ag/diag-overload
 created_at: 2025-05-13T17:18:03Z
 updated_at: 2025-05-14T22:16:47Z
 url: https://github.com/astral-sh/ruff/pull/18073
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] improve diagnostics for failure to call overloaded function
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-05-13 17:18_
+_@BurntSushi_
 
 This PR takes a crack at improving diagnostics for invalid overloaded
 function calls as a result of there being no matching overloads.

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-07T00:09:25Z
 updated_at: 2025-06-07T01:30:54Z
 url: https://github.com/astral-sh/ty/issues/597
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Fails to identify & unpack args for generator
 
 ---
 
-_Issue opened by @Ryang20718 on 2025-06-07 00:09_
+_@Ryang20718_
 
 ### Summary
 

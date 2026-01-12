@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-08T07:42:39Z
 updated_at: 2023-09-19T10:04:42Z
 url: https://github.com/astral-sh/ruff/issues/7232
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter / Linter integration
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-08 07:42_
+_@MichaReiser_
 
 This depends on the CLI design, e.g. should `ruff check` or `ruff fix` run the linter, and if so, how do you opt-in/opt-out?
  

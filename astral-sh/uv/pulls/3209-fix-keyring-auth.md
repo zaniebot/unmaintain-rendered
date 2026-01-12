@@ -12,14 +12,14 @@ head: emarsden-fix-keyring-auth
 created_at: 2024-04-23T14:28:26Z
 updated_at: 2024-04-23T15:40:36Z
 url: https://github.com/astral-sh/uv/pull/3209
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:29Z
 ```
 
 # Fix keyring auth
 
 ---
 
-_Pull request opened by @emarsden-iso on 2024-04-23 14:28_
+_@emarsden-iso_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

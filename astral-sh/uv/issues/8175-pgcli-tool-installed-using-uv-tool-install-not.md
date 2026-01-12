@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-14T13:30:25Z
 updated_at: 2024-10-16T14:04:15Z
 url: https://github.com/astral-sh/uv/issues/8175
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # pgcli tool installed using `uv tool install` not working. Do I have to install dependencies separately?
 
 ---
 
-_Issue opened by @curioustolearn on 2024-10-14 13:30_
+_@curioustolearn_
 
 *uv version*
 uv 0.4.20 (Homebrew 2024-10-08)

@@ -13,14 +13,14 @@ head: micha/docs-skelleton
 created_at: 2025-05-09T13:19:56Z
 updated_at: 2025-05-10T10:32:51Z
 url: https://github.com/astral-sh/ty/pull/293
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Basic README sections
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-09 13:19_
+_@MichaReiser_
 
 Basic skeleton for the README with some commented out sections. I think this is a good starting point to fill in specific sections.
 

@@ -13,14 +13,14 @@ head: konsti/fast-build
 created_at: 2024-03-22T23:12:56Z
 updated_at: 2024-03-26T11:15:45Z
 url: https://github.com/astral-sh/uv/pull/2628
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:08Z
 ```
 
 # Add fast build profile without debuginfo
 
 ---
 
-_Pull request opened by @konstin on 2024-03-22 23:12_
+_@konstin_
 
 Add a compile option `-p fast-build` for a 16% incremental compile speedup (linux) at the cost of having no debuginfo.
 

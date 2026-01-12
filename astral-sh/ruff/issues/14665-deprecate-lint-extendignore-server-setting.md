@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-29T04:23:33Z
 updated_at: 2025-01-31T06:00:19Z
 url: https://github.com/astral-sh/ruff/issues/14665
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Deprecate `lint.extendIgnore` server setting
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-11-29 04:23_
+_@dhruvmanila_
 
 ~Found in https://github.com/astral-sh/ruff/discussions/14642#discussioncomment-11409867 (scenario 4)~
 

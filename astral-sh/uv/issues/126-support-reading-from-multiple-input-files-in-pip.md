@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-19T02:26:39Z
 updated_at: 2023-10-19T18:17:28Z
 url: https://github.com/astral-sh/uv/issues/126
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Support reading from multiple input files in `pip-compile` and `pip-sync`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-19 02:26_
+_@charliermarsh_
 
 _No description provided._
 

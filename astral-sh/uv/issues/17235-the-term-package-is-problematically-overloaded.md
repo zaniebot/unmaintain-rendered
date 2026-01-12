@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-24T14:39:12Z
 updated_at: 2026-01-06T17:19:39Z
 url: https://github.com/astral-sh/uv/issues/17235
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:46Z
 ```
 
 # The term 'package' is problematically overloaded
 
 ---
 
-_Issue opened by @amluto on 2025-12-24 14:39_
+_@amluto_
 
 I've been using Python for many years, but I only started doing anything involving modern Python packages recently.  And I wasted a whole bunch of time being rather confused, and I think almost all of the confusion stems from the following issue that I would argue is a substantial defect in the entire Python packaging system:
 

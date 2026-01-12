@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-01-05T16:26:35Z
 updated_at: 2017-10-04T02:41:36Z
 url: https://github.com/clap-rs/clap/issues/808
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Potentially Upcoming Minor Breaking Change
 
 ---
 
-_Issue opened by @kbknapp on 2017-01-05 16:26_
+_@kbknapp_
 
 (*Note:* Those who already responded in the PR, need not repeat there answer. I'm simply moving the discussion to allow progress without breaking code :wink:)
 

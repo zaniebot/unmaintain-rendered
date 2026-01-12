@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-01T01:12:55Z
 updated_at: 2024-11-14T16:32:35Z
 url: https://github.com/astral-sh/uv/issues/2745
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Extended support for semver filtering during version resolution
 
 ---
 
-_Issue opened by @samypr100 on 2024-04-01 01:12_
+_@samypr100_
 
 This is a follow up to https://github.com/astral-sh/uv/pull/2582#issuecomment-2016248743 per @zanieb's suggestion.
 

@@ -12,14 +12,14 @@ head: test-for-syntax-errors
 created_at: 2023-05-03T07:47:56Z
 updated_at: 2023-05-05T05:59:35Z
 url: https://github.com/astral-sh/ruff/pull/4202
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Fail lint tests if the fix creates a syntax error
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-03 07:47_
+_@MichaReiser_
 
 This PR adds a check to `test_path` that ensures that the source after the fixes are applied does not contain any syntax errors and aborts by printing the last applied fixes, the syntax error, and the fixed document's source if there are any syntax errors. 
 

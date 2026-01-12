@@ -12,14 +12,14 @@ head: charlie/options
 created_at: 2023-01-29T01:18:42Z
 updated_at: 2023-01-29T02:03:02Z
 url: https://github.com/astral-sh/ruff/pull/2316
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Update fixable list
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-29 01:18_
+_@charliermarsh_
 
 This should really be `ALL`, or code-generated, but I just want to fix this real-quick.
 

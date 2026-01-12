@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-19T17:34:52Z
 updated_at: 2025-12-19T17:40:07Z
 url: https://github.com/astral-sh/ty/issues/2118
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # TypedDict discriminated union support
 
 ---
 
-_Issue opened by @scosman on 2025-12-19 17:34_
+_@scosman_
 
 ### Summary
 

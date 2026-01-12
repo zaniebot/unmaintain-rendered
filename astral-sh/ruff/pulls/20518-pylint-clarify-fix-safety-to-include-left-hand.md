@@ -13,14 +13,14 @@ head: fix-20510
 created_at: 2025-09-22T19:57:08Z
 updated_at: 2025-10-01T18:29:16Z
 url: https://github.com/astral-sh/ruff/pull/20518
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [`pylint`] Clarify fix safety to include left-hand hashability (`PLR6201`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-22 19:57_
+_@danparizher_
 
 ## Summary
 

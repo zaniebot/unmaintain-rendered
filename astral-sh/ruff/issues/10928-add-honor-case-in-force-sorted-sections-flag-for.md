@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-14T16:06:14Z
 updated_at: 2024-04-24T12:06:30Z
 url: https://github.com/astral-sh/ruff/issues/10928
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Add `honor-case-in-force-sorted-sections` flag for `isort`
 
 ---
 
-_Issue opened by @serjflint on 2024-04-14 16:06_
+_@serjflint_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

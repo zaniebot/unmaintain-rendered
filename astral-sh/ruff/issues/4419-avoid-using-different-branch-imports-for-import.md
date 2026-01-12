@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-13T18:05:44Z
 updated_at: 2023-05-13T18:05:44Z
 url: https://github.com/astral-sh/ruff/issues/4419
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Avoid using different-branch imports for import-dependent autofixes
 
 ---
 
-_Issue opened by @charliermarsh on 2023-05-13 18:05_
+_@charliermarsh_
 
 If a binding is created within a conditional, we need to avoid using it later on for autofixes -- e.g., here, we can't use `sys.exit()` based on this import:
 

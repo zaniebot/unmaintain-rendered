@@ -13,14 +13,14 @@ head: dhruv/ignore-ecosystem-notebook
 created_at: 2024-09-02T09:52:07Z
 updated_at: 2024-09-02T10:52:53Z
 url: https://github.com/astral-sh/ruff/pull/13211
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Ignore invalid notebook in ecosystem checks
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-09-02 09:52_
+_@dhruvmanila_
 
 ## Summary
 

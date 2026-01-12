@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-14T07:16:11Z
 updated_at: 2024-09-04T06:23:09Z
 url: https://github.com/astral-sh/ruff/issues/12883
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # PLW3201: Customize error message for dunder methods removed with Python 3
 
 ---
 
-_Issue opened by @MichaReiser on 2024-08-14 07:16_
+_@MichaReiser_
 
 https://github.com/astral-sh/ruff/pull/12607 proposed a new `dango-model-with-dunder-unicode` rule that flags any `__unicode__` dunder method. We realized that this is already covered by `PLW3201` (preview), but the error message could be improved to state that a dunder method is Python2 only explicitly. 
 

@@ -13,14 +13,14 @@ head: refactor/unnecessary-tc004-overhead
 created_at: 2024-11-28T15:02:13Z
 updated_at: 2024-11-28T15:28:38Z
 url: https://github.com/astral-sh/ruff/pull/14657
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Avoids unnecessary overhead for `TC004`, when `TC001-003` are disabled
 
 ---
 
-_Pull request opened by @Daverball on 2024-11-28 15:02_
+_@Daverball_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: charlie/zstd
 created_at: 2024-09-20T20:12:43Z
 updated_at: 2024-09-21T08:07:25Z
 url: https://github.com/astral-sh/ruff/pull/13429
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Use `deflate` on PowerPC
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-20 20:12_
+_@charliermarsh_
 
 ## Summary
 

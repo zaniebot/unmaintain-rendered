@@ -13,14 +13,14 @@ head: feature/uv-format-project-root
 created_at: 2025-08-21T23:04:00Z
 updated_at: 2025-08-22T20:09:47Z
 url: https://github.com/astral-sh/uv/pull/15440
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:44Z
 ```
 
 # feat: uv format from project root
 
 ---
 
-_Pull request opened by @jorgehermo9 on 2025-08-21 23:04_
+_@jorgehermo9_
 
 Closes https://github.com/astral-sh/uv/issues/15430
 

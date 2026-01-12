@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-04T04:19:26Z
 updated_at: 2024-10-23T05:57:55Z
 url: https://github.com/astral-sh/ruff/issues/13237
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # formatter should change f strings using single quotes with nested double quotes to use double quotes when `target-version` is `py312`
 
 ---
 
-_Issue opened by @DetachHead on 2024-09-04 04:19_
+_@DetachHead_
 
 on older python versions, the following code is a syntax error:
 ```py

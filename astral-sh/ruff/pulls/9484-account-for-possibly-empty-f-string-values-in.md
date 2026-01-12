@@ -13,14 +13,14 @@ head: charlie/f-string
 created_at: 2024-01-12T01:49:04Z
 updated_at: 2024-01-12T02:16:21Z
 url: https://github.com/astral-sh/ruff/pull/9484
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Account for possibly-empty f-string values in truthiness logic
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-12 01:49_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9479.
 

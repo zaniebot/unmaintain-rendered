@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-23T21:27:10Z
 updated_at: 2023-10-27T00:41:04Z
 url: https://github.com/astral-sh/uv/issues/172
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Support constraints in `requirements.txt` files
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-23 21:27_
+_@charliermarsh_
 
 We now support constraints, but we bail when they're provided as part of a `requirements.txt` file.
 

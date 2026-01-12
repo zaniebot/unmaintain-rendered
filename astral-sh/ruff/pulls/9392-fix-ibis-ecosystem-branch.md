@@ -13,14 +13,14 @@ head: zb/ibis
 created_at: 2024-01-04T18:58:42Z
 updated_at: 2024-01-04T19:18:14Z
 url: https://github.com/astral-sh/ruff/pull/9392
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Fix `ibis` ecosystem branch
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-04 18:58_
+_@zanieb_
 
 _No description provided._
 

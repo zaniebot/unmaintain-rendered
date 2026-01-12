@@ -13,14 +13,14 @@ head: alex/isinstance-gradual
 created_at: 2025-06-23T17:22:04Z
 updated_at: 2025-06-24T10:55:27Z
 url: https://github.com/astral-sh/ruff/pull/18900
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [ty] Respect the gradual guarantee when narrowing using `isinstance()` and `issubclass()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-23 17:22_
+_@AlexWaygood_
 
 Intersect with a dynamic type if a dynamic type is used as the second argument to one of these functions
 

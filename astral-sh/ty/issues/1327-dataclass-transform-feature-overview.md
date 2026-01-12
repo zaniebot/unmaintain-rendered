@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-09T13:37:25Z
 updated_at: 2025-12-19T11:20:38Z
 url: https://github.com/astral-sh/ty/issues/1327
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `dataclass_transform`: feature overview
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-09 13:37_
+_@sharkdp_
 
 Link to the specification: https://typing.python.org/en/latest/spec/dataclasses.html
 

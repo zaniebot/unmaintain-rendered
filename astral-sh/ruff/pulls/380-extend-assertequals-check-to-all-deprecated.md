@@ -12,14 +12,14 @@ head: charlie/aliases
 created_at: 2022-10-10T02:13:42Z
 updated_at: 2022-10-10T02:13:52Z
 url: https://github.com/astral-sh/ruff/pull/380
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Extend assertEquals check to all deprecated unittest aliases
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-10 02:13_
+_@charliermarsh_
 
 Resolves #348.
 

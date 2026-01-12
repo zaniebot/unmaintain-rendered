@@ -13,14 +13,14 @@ head: N8
 created_at: 2025-03-07T18:52:51Z
 updated_at: 2025-03-07T20:02:34Z
 url: https://github.com/astral-sh/ruff/pull/16557
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`pep8-naming`] Add links to `ignore-names` options in various rules' documentation
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-03-07 18:52_
+_@InSyncWithFoo_
 
 ## Summary
 

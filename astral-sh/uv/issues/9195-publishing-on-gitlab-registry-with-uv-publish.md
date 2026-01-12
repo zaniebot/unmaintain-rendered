@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-18T13:45:26Z
 updated_at: 2025-11-13T14:28:28Z
 url: https://github.com/astral-sh/uv/issues/9195
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # Publishing on Gitlab registry with `uv publish` needs extended access rights
 
 ---
 
-_Issue opened by @ThomasHezard on 2024-11-18 13:45_
+_@ThomasHezard_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

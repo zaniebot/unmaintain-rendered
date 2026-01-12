@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-21T19:18:24Z
 updated_at: 2024-12-13T09:10:03Z
 url: https://github.com/astral-sh/ruff/issues/13865
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Setup tracing for mdtests
 
 ---
 
-_Issue opened by @MichaReiser on 2024-10-21 19:18_
+_@MichaReiser_
 
 We should allow enabling tracing for mdtests. 
 

@@ -14,14 +14,14 @@ head: charlie/source-tree
 created_at: 2024-04-09T00:44:21Z
 updated_at: 2024-04-09T01:12:34Z
 url: https://github.com/astral-sh/uv/pull/2922
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:18Z
 ```
 
 # Separate local archive vs. local source tree paths in source database
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-09 00:44_
+_@charliermarsh_
 
 ## Summary
 

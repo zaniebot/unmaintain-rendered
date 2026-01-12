@@ -13,14 +13,14 @@ head: micha/ty-metadata
 created_at: 2025-05-08T11:11:04Z
 updated_at: 2025-05-08T11:24:33Z
 url: https://github.com/astral-sh/ruff/pull/17943
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # Update ty metadata
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-08 11:11_
+_@MichaReiser_
 
 I noticed that the Homepage link on pypi is incorrect. It seems that maturin always picks the link from the crate metadata. This PR updatesu pdates the `Documentation` and `Homepage` metadata fields for the `ty` crate and points them at the ty repository. 
 

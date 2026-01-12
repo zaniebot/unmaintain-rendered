@@ -14,14 +14,14 @@ head: gankra/status-2
 created_at: 2025-06-20T18:44:59Z
 updated_at: 2025-07-14T17:47:54Z
 url: https://github.com/astral-sh/uv/pull/14167
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:03Z
 ```
 
 # make `--check` outdated a non-error status 1
 
 ---
 
-_Pull request opened by @Gankra on 2025-06-20 18:44_
+_@Gankra_
 
 In the case of `uv sync` all we really need to do is handle the `OutdatedEnvironment` error (precisely the error we yield only on dry-runs when everything Works but we determine things are outdated) in `OperationDiagnostic::report` (the post-processor on all `operations::install` calls) because any diagnostic handled by that gets downgraded to from status 2 to status 1 (although I don't know if that's really intentional or a random other bug in our status handling... but I figured it's best to highlight that other potential status code incongruence than not rely on it 😄).
 

@@ -13,14 +13,14 @@ head: zb/init-typed
 created_at: 2024-09-09T20:45:51Z
 updated_at: 2024-09-12T19:01:40Z
 url: https://github.com/astral-sh/uv/pull/7232
-synced_at: 2026-01-10T12:53:42Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Create `py.typed` files during `uv init --lib`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-09 20:45_
+_@zanieb_
 
 _No description provided._
 

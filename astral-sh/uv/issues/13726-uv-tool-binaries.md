@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-29T23:49:51Z
 updated_at: 2025-07-11T02:04:02Z
 url: https://github.com/astral-sh/uv/issues/13726
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # uv tool binaries
 
 ---
 
-_Issue opened by @powercoconola on 2025-05-29 23:49_
+_@powercoconola_
 
 ### Question
 

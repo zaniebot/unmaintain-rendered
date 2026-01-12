@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-08T21:42:22Z
 updated_at: 2024-08-09T01:37:28Z
 url: https://github.com/astral-sh/ruff/issues/12765
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # E721 suggestion to use "is" rather than "==" results in broken code if using pandas/numpy
 
 ---
 
-_Issue opened by @Hnasar on 2024-08-08 21:42_
+_@Hnasar_
 
 In general it's unsafe to recommend users replace `==` with `is` — notably, user code can override `__eq__` for `==` but there's no equivalent for `is`. 
 

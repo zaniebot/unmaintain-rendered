@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-19T09:30:57Z
 updated_at: 2024-07-19T14:15:33Z
 url: https://github.com/astral-sh/uv/issues/5211
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # The result of `uv python list --python-preference only-system` shows unwanted python
 
 ---
 
-_Issue opened by @Di-Is on 2024-07-19 09:30_
+_@Di-Is_
 
 Running `uv python list --python-preference only-system` will show each minor version of Python with the description `<download available>`.
 

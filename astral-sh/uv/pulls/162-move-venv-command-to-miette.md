@@ -12,14 +12,14 @@ head: charlie/miette
 created_at: 2023-10-22T03:49:17Z
 updated_at: 2023-10-22T04:17:17Z
 url: https://github.com/astral-sh/uv/pull/162
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:47Z
 ```
 
 # Move venv command to miette
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-22 03:49_
+_@charliermarsh_
 
 _No description provided._
 

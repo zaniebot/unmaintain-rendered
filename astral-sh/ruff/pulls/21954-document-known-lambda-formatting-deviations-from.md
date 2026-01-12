@@ -13,14 +13,14 @@ head: brent/lambda-deviation
 created_at: 2025-12-12T17:26:10Z
 updated_at: 2025-12-12T17:57:11Z
 url: https://github.com/astral-sh/ruff/pull/21954
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # Document known lambda formatting deviations from Black
 
 ---
 
-_Pull request opened by @ntBre on 2025-12-12 17:26_
+_@ntBre_
 
 Summary
 --

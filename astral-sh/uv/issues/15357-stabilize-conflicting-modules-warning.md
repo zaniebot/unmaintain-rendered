@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-18T16:36:55Z
 updated_at: 2025-09-17T10:21:27Z
 url: https://github.com/astral-sh/uv/issues/15357
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # Stabilize conflicting modules warning
 
 ---
 
-_Issue opened by @konstin on 2025-08-18 16:36_
+_@konstin_
 
 We added a check to warn when packages write to the same modules (https://github.com/astral-sh/uv/pull/13437), causing broken installations and uninstallations. Specifically, this can cause non-deterministically broken installation that are inscrutable to users. This was reverted to preview (https://github.com/astral-sh/uv/pull/15253).
  

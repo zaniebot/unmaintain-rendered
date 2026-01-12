@@ -14,14 +14,14 @@ head: tfsingh/dry
 created_at: 2024-09-29T18:59:44Z
 updated_at: 2024-10-24T03:22:25Z
 url: https://github.com/astral-sh/uv/pull/7783
-synced_at: 2026-01-10T12:53:55Z
+synced_at: 2026-01-12T16:07:59Z
 ```
 
 # Add support for `--dry-run` mode in `uv lock`
 
 ---
 
-_Pull request opened by @tfsingh on 2024-09-29 18:59_
+_@tfsingh_
 
 This PR adds support for `uv lock --dry-run`, as described in issue #6408.
 

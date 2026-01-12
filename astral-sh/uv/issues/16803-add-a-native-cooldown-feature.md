@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-21T04:38:01Z
 updated_at: 2025-11-21T16:00:38Z
 url: https://github.com/astral-sh/uv/issues/16803
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # Add a native 'cooldown' feature
 
 ---
 
-_Issue opened by @woodruffw on 2025-11-21 04:38_
+_@woodruffw_
 
 ### Summary
 

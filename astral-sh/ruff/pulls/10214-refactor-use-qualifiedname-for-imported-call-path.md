@@ -13,14 +13,14 @@ head: qualified-name-lifetimes
 created_at: 2024-03-03T18:56:38Z
 updated_at: 2024-03-06T08:56:00Z
 url: https://github.com/astral-sh/ruff/pull/10214
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # refactor: Use `QualifiedName` for `Imported::call_path` 
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-03 18:56_
+_@MichaReiser_
 
 ## Summary
 

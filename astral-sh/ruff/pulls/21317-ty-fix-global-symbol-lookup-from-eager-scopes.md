@@ -14,14 +14,14 @@ head: fix-comprehension-symbol-lookup
 created_at: 2025-11-07T15:37:52Z
 updated_at: 2025-11-13T15:51:39Z
 url: https://github.com/astral-sh/ruff/pull/21317
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # [ty] fix global symbol lookup from eager scopes
 
 ---
 
-_Pull request opened by @mtshiba on 2025-11-07 15:37_
+_@mtshiba_
 
 ## Summary
 

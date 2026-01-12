@@ -12,14 +12,14 @@ head: charlie/ssl
 created_at: 2023-11-07T18:50:00Z
 updated_at: 2023-11-07T18:53:41Z
 url: https://github.com/astral-sh/uv/pull/361
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:54Z
 ```
 
 # Add SSL to possible spurious errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-07 18:50_
+_@charliermarsh_
 
 \cc @konstin 
 

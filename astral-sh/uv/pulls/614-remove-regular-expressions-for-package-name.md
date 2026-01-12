@@ -13,14 +13,14 @@ head: charlie/pkg-name
 created_at: 2023-12-12T05:41:58Z
 updated_at: 2023-12-12T17:18:28Z
 url: https://github.com/astral-sh/uv/pull/614
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:04Z
 ```
 
 # Remove regular expressions for package name normalization
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-12 05:41_
+_@charliermarsh_
 
 Very random but the hand-written version is about 3-4x faster (benchmarked in a standalone repo).
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-31T13:41:24Z
 updated_at: 2025-07-31T13:42:54Z
 url: https://github.com/astral-sh/uv/issues/14994
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # i need pip download but uv don't have
 
 ---
 
-_Issue opened by @wmx-github on 2025-07-31 13:41_
+_@wmx-github_
 
 ### Question
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-10T12:09:35Z
 updated_at: 2024-12-10T15:37:50Z
 url: https://github.com/astral-sh/uv/issues/9771
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # `uv pip compile` header does not include `--upgrade`
 
 ---
 
-_Issue opened by @karthiknadig on 2024-12-10 12:09_
+_@karthiknadig_
 
 ![Image](https://github.com/user-attachments/assets/e9779236-22be-4676-8adf-c049209f0b21)
 

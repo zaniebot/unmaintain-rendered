@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-18T17:28:07Z
 updated_at: 2025-04-18T22:08:59Z
 url: https://github.com/astral-sh/ruff/issues/17465
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] avoid divergent iteration due to unbounded union growth
 
 ---
 
-_Issue opened by @carljm on 2025-04-18 17:28_
+_@carljm_
 
 In this code sample (provided by @skshetry in https://github.com/astral-sh/ruff/issues/17457#issuecomment-2815848955), we enter divergent fixpoint iteration and end up panicking with "too many iterations":
 

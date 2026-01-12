@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-10-04T22:43:38Z
 updated_at: 2023-10-04T22:57:03Z
 url: https://github.com/astral-sh/ruff/pull/7822
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Correct error in tuple example in ruff formatter docs
 
 ---
 
-_Pull request opened by @cosmojg on 2023-10-04 22:43_
+_@cosmojg_
 
 ## Summary
 

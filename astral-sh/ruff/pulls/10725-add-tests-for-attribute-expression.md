@@ -14,14 +14,14 @@ head: dhruv/attribute-expr
 created_at: 2024-04-02T02:10:39Z
 updated_at: 2024-04-03T09:02:55Z
 url: https://github.com/astral-sh/ruff/pull/10725
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for attribute expression
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-02 02:10_
+_@dhruvmanila_
 
 ## Summary
 

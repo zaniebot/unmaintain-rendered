@@ -12,14 +12,14 @@ head: charlie/per-file-ignores
 created_at: 2022-11-07T02:15:29Z
 updated_at: 2022-11-07T02:15:49Z
 url: https://github.com/astral-sh/ruff/pull/631
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Respect project root in per-file ignores
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-07 02:15_
+_@charliermarsh_
 
 This was an oversight from a previous refactor (the `&None` was intended to be replaced, but got overlooked).
 

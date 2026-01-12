@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-09T10:41:21Z
 updated_at: 2024-04-10T19:58:34Z
 url: https://github.com/astral-sh/uv/issues/372
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Hash non-index files while downloading
 
 ---
 
-_Issue opened by @konstin on 2023-11-09 10:41_
+_@konstin_
 
 We need to record the hashes of non-index files, which we can do while downloading them:
 

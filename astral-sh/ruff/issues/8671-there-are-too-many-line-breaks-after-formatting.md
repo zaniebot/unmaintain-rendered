@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-14T07:15:12Z
 updated_at: 2023-11-14T14:12:52Z
 url: https://github.com/astral-sh/ruff/issues/8671
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # There are too many line breaks after formatting. What can I do to reduce this?
 
 ---
 
-_Issue opened by @Zander-1024 on 2023-11-14 07:15_
+_@Zander-1024_
 
 line-length looks not work.
 If the code is not very long, I don't think it's necessary to wrap a line.

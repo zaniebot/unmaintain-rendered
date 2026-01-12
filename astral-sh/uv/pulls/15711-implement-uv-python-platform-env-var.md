@@ -12,14 +12,14 @@ head: 2025.09.07.jd.UV_PYTHON_PLATFORM
 created_at: 2025-09-07T14:57:58Z
 updated_at: 2025-09-07T16:59:04Z
 url: https://github.com/astral-sh/uv/pull/15711
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # Implement UV_PYTHON_PLATFORM env var
 
 ---
 
-_Pull request opened by @janie314 on 2025-09-07 14:57_
+_@janie314_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

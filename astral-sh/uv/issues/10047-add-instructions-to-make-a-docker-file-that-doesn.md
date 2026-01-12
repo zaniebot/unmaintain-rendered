@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-20T03:26:03Z
 updated_at: 2025-01-02T21:36:34Z
 url: https://github.com/astral-sh/uv/issues/10047
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # Add instructions to make a docker file that doesn't use root at runtime
 
 ---
 
-_Issue opened by @danieltalsky on 2024-12-20 03:26_
+_@danieltalsky_
 
 I really appreciate this example:
 https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile

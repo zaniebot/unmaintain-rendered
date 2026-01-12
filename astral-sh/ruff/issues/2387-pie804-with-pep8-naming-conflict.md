@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T11:24:43Z
 updated_at: 2023-01-31T21:47:19Z
 url: https://github.com/astral-sh/ruff/issues/2387
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # PIE804 with PEP8 naming conflict
 
 ---
 
-_Issue opened by @spaceone on 2023-01-31 11:24_
+_@spaceone_
 
 ```python
 def foo(NotPep8NamingCompliant=True, **kwargs):

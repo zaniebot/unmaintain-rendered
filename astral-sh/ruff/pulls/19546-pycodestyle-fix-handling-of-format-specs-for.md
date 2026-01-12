@@ -12,14 +12,14 @@ head: fix-format-spec-W605-raw-fix
 created_at: 2025-07-25T01:34:03Z
 updated_at: 2025-08-04T13:23:33Z
 url: https://github.com/astral-sh/ruff/pull/19546
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [`pycodestyle`] Fix handling of format specs for `invalid-escape-sequence (W605)`
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-25 01:34_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

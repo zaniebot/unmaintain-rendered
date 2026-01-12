@@ -14,14 +14,14 @@ head: david/new-tests-for-dataclass_transform
 created_at: 2025-10-09T14:55:26Z
 updated_at: 2025-10-10T11:22:07Z
 url: https://github.com/astral-sh/ruff/pull/20788
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] Additional tests for `dataclass_transform` (class-level overwrites, `field_specifiers`)
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-09 14:55_
+_@sharkdp_
 
 ## Summary
 

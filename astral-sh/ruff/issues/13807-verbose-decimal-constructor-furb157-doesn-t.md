@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-18T09:24:40Z
 updated_at: 2025-09-25T08:26:46Z
 url: https://github.com/astral-sh/ruff/issues/13807
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [verbose-decimal-constructor (FURB157)] doesn't trigger on `Decimal("1_000")`
 
 ---
 
-_Issue opened by @monosans on 2024-10-18 09:24_
+_@monosans_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

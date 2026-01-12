@@ -14,14 +14,14 @@ head: brent/fix-15043
 created_at: 2025-01-13T22:26:17Z
 updated_at: 2025-01-15T18:05:55Z
 url: https://github.com/astral-sh/ruff/pull/15462
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`FastAPI`] Update `Annotated` fixes (`FAST002`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-01-13 22:26_
+_@ntBre_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

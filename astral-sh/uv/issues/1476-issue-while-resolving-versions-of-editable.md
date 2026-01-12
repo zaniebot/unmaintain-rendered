@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T10:29:57Z
 updated_at: 2024-04-01T21:31:40Z
 url: https://github.com/astral-sh/uv/issues/1476
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Issue while resolving versions of editable packages.  `uv pip install  -e {package}`
 
 ---
 
-_Issue opened by @moaddib666 on 2024-02-16 10:29_
+_@moaddib666_
 
 Steps to reproduce 
 1. Install package A in editable mode

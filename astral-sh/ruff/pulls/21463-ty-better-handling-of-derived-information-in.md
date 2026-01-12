@@ -14,14 +14,14 @@ head: dcreager/ordering-bug
 created_at: 2025-11-14T22:43:41Z
 updated_at: 2025-11-18T17:02:27Z
 url: https://github.com/astral-sh/ruff/pull/21463
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [ty] Better handling of "derived information" in constraint sets
 
 ---
 
-_Pull request opened by @dcreager on 2025-11-14 22:43_
+_@dcreager_
 
 This saga began with a regression in how we handle constraint sets where a typevar is constrained by another typevar, which #21068 first added support for:
 

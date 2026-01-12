@@ -15,14 +15,14 @@ head: semantic_token_param
 created_at: 2025-07-18T03:01:45Z
 updated_at: 2025-07-18T07:02:27Z
 url: https://github.com/astral-sh/ruff/pull/19418
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [ty] Fixed bug in semantic token provider for parameters.
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-18 03:01_
+_@UnboundVariable_
 
 This fixes https://github.com/astral-sh/ty/issues/832.
 

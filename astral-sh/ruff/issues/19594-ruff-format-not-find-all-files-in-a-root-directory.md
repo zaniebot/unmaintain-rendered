@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-28T11:34:43Z
 updated_at: 2025-07-28T11:52:18Z
 url: https://github.com/astral-sh/ruff/issues/19594
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ruff format not find all files in a root directory
 
 ---
 
-_Issue opened by @ZhangYi-Ethan on 2025-07-28 11:34_
+_@ZhangYi-Ethan_
 
 ### Summary
 

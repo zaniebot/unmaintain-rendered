@@ -12,14 +12,14 @@ head: cjm/colors
 created_at: 2024-04-05T00:10:57Z
 updated_at: 2024-06-04T16:01:07Z
 url: https://github.com/astral-sh/ruff/pull/10784
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Switch from colored to owo_colors/anstream
 
 ---
 
-_Pull request opened by @carljm on 2024-04-05 00:10_
+_@carljm_
 
 Refs #5499
 

@@ -12,14 +12,14 @@ head: zb/no-white
 created_at: 2024-02-17T05:44:28Z
 updated_at: 2024-02-17T07:59:20Z
 url: https://github.com/astral-sh/uv/pull/1576
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # Avoid using `white` coloring in terminal output
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-17 05:44_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/1489
 

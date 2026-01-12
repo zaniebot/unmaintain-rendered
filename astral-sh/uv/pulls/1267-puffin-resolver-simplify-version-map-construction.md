@@ -12,14 +12,14 @@ head: ag/version-map-simplify
 created_at: 2024-02-08T20:27:36Z
 updated_at: 2024-02-08T20:33:34Z
 url: https://github.com/astral-sh/uv/pull/1267
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:32Z
 ```
 
 # puffin-resolver: simplify version map construction
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-08 20:27_
+_@BurntSushi_
 
 In the process of making VersionMap construction lazy, I realized this
 refactoring would be useful to me. It also simplifies a fair bit of case

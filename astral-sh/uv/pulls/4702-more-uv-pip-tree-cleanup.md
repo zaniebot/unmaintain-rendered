@@ -13,14 +13,14 @@ head: ibraheem/uv-tree
 created_at: 2024-07-01T18:51:12Z
 updated_at: 2024-07-01T19:21:40Z
 url: https://github.com/astral-sh/uv/pull/4702
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:24Z
 ```
 
 # More `uv pip tree` cleanup
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-01 18:51_
+_@ibraheemdev_
 
 ## Summary
 

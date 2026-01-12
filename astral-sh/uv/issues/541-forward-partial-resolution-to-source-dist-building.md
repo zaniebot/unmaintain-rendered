@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-04T11:04:14Z
 updated_at: 2024-01-16T05:37:16Z
 url: https://github.com/astral-sh/uv/issues/541
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Forward partial resolution to source dist building
 
 ---
 
-_Issue opened by @konstin on 2023-12-04 11:04_
+_@konstin_
 
 Currently, when we encounter a source dist in the main resolution, we do an entirely new resolution for build requirements of the source dist. This means that sometimes we have slightly different versions in the main resolution (https://github.com/astral-sh/puffin/issues/537). Instead, we should pass the versions of the current partial resolution as preferred versions in the source dist build.
 

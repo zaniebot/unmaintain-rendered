@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-02-09T16:55:44Z
 updated_at: 2020-04-11T17:15:55Z
 url: https://github.com/clap-rs/clap/issues/847
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Respect TERM=dumb and emit no colour escape codes
 
 ---
 
-_Issue opened by @andreastt on 2017-02-09 16:55_
+_@andreastt_
 
 Certain shells are not particularly happy with colour escape codes. To make them happy, clap should respect `TERM=dumb` and refrain from emitting colour escape codes.
 

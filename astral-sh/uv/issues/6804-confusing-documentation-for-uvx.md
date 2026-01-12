@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-29T10:57:51Z
 updated_at: 2024-09-03T13:52:41Z
 url: https://github.com/astral-sh/uv/issues/6804
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Confusing documentation for `uvx`
 
 ---
 
-_Issue opened by @weihenglim on 2024-08-29 10:57_
+_@weihenglim_
 
 Sorry if this is something obvious, but I am very confused on the difference between a `uvx <package>` invocation and `uvx <package>@latest`. Through my own testing, `uvx <package>` seems to always install the latest version even if a cached version is available.
 ```cmd

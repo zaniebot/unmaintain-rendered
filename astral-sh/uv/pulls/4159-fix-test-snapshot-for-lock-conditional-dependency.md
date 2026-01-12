@@ -13,14 +13,14 @@ head: zb/fix-main
 created_at: 2024-06-08T13:52:27Z
 updated_at: 2024-06-08T17:42:00Z
 url: https://github.com/astral-sh/uv/pull/4159
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:04Z
 ```
 
 # Fix test snapshot for `lock_conditional_dependency_extra`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-08 13:52_
+_@zanieb_
 
 Introduced in #4156 and is failing on main
 

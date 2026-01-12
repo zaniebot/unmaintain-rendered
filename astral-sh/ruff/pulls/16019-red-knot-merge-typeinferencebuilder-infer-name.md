@@ -13,14 +13,14 @@ head: alex/simplify-lookup-name
 created_at: 2025-02-07T11:34:38Z
 updated_at: 2025-02-08T19:42:16Z
 url: https://github.com/astral-sh/ruff/pull/16019
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Merge `TypeInferenceBuilder::infer_name_load` and `TypeInferenceBuilder::lookup_name`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-07 11:34_
+_@AlexWaygood_
 
 ## Summary
 

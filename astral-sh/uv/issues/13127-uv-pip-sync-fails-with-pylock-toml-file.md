@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-27T11:05:31Z
 updated_at: 2025-04-27T16:07:27Z
 url: https://github.com/astral-sh/uv/issues/13127
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # uv pip sync fails with pylock.toml file containing multiple entries for one package
 
 ---
 
-_Issue opened by @smphhh on 2025-04-27 11:05_
+_@smphhh_
 
 ### Summary
 

@@ -11,14 +11,14 @@ head: new-pkg-name-mistake-suggestions
 created_at: 2024-11-11T23:58:33Z
 updated_at: 2025-04-14T08:00:32Z
 url: https://github.com/astral-sh/uv/pull/9034
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:37Z
 ```
 
 # Include new package name mistake suggestions
 
 ---
 
-_Pull request opened by @nathanjmcdougall on 2024-11-11 23:58_
+_@nathanjmcdougall_
 
 ## Summary
 

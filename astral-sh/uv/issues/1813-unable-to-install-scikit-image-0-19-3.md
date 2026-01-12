@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-21T14:45:09Z
 updated_at: 2024-03-09T11:49:58Z
 url: https://github.com/astral-sh/uv/issues/1813
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Unable to install `scikit-image==0.19.3`
 
 ---
 
-_Issue opened by @pngwn on 2024-02-21 14:45_
+_@pngwn_
 
 When i try to install `scikit-image==0.19.3` (`uv pip install scikit-image==0.19.3`) i get the following error (truncated version) after a very very long time (probably around a minute or two).
 

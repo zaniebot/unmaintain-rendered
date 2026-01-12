@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-02T01:25:26Z
 updated_at: 2023-02-07T02:22:34Z
 url: https://github.com/astral-sh/ruff/issues/1543
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Implement flake8-pie
 
 ---
 
-_Issue opened by @sbdchd on 2023-01-02 01:25_
+_@sbdchd_
 
 There might be some overlap with these rules and pylint / flake8-simplify, but I think I eliminated most of the dupes / unnecessary rules:
 

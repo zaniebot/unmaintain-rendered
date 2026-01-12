@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-02T19:44:53Z
 updated_at: 2026-01-02T19:44:53Z
 url: https://github.com/astral-sh/uv/issues/17310
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # Show package constraints (similar to `poetry show`)
 
 ---
 
-_Issue opened by @jack-mcivor on 2026-01-02 19:44_
+_@jack-mcivor_
 
 ### Summary
 

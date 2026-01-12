@@ -12,14 +12,14 @@ head: issue-references
 created_at: 2025-04-20T19:11:42Z
 updated_at: 2025-04-28T19:01:01Z
 url: https://github.com/astral-sh/ruff/pull/17501
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # ERA001: Allow Jira and gitlab references
 
 ---
 
-_Pull request opened by @maldoinc on 2025-04-20 19:11_
+_@maldoinc_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: formatter-remove-cst
 created_at: 2023-05-30T16:21:35Z
 updated_at: 2023-05-31T06:27:25Z
 url: https://github.com/astral-sh/ruff/pull/4730
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # formatter: Remove CST and old formatting
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-30 16:21_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

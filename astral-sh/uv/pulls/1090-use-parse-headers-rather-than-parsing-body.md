@@ -13,14 +13,14 @@ head: charlie/header
 created_at: 2024-01-25T02:16:55Z
 updated_at: 2024-01-25T08:41:22Z
 url: https://github.com/astral-sh/uv/pull/1090
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:25Z
 ```
 
 # Use `parse_headers` rather than parsing body
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-25 02:16_
+_@charliermarsh_
 
 Looking at the internals, this should make almost no difference in performance, but anyway...
 

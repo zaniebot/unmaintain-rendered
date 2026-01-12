@@ -14,14 +14,14 @@ head: alex/html-comment-allowlist
 created_at: 2025-02-28T15:29:47Z
 updated_at: 2025-02-28T16:27:30Z
 url: https://github.com/astral-sh/ruff/pull/16441
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Reject HTML comments in mdtest unless they are `snapshot-diagnostics` or are explicitly allowlisted
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-28 15:29_
+_@AlexWaygood_
 
 ## Summary
 

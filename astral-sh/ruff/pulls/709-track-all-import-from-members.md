@@ -12,14 +12,14 @@ head: charlie/track-all
 created_at: 2022-11-12T21:10:40Z
 updated_at: 2022-11-12T21:10:44Z
 url: https://github.com/astral-sh/ruff/pull/709
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Track all import-from members
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-12 21:10_
+_@charliermarsh_
 
 Rather than allowlisting a select few.
 

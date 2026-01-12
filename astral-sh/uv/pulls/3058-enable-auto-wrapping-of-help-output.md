@@ -13,14 +13,14 @@ head: wrap-help
 created_at: 2024-04-16T09:19:04Z
 updated_at: 2024-04-16T12:54:46Z
 url: https://github.com/astral-sh/uv/pull/3058
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:24Z
 ```
 
 # Enable auto-wrapping of `--help` output
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-16 09:19_
+_@AlexWaygood_
 
 ## Summary
 

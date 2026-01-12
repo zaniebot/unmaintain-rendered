@@ -13,14 +13,14 @@ head: micha/traversal-use-same
 created_at: 2024-10-23T14:55:52Z
 updated_at: 2024-10-24T09:30:25Z
 url: https://github.com/astral-sh/ruff/pull/13895
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Use referencial equality in `traversal` helper methods
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-23 14:55_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/shell
 created_at: 2023-10-30T15:35:26Z
 updated_at: 2023-10-30T15:50:56Z
 url: https://github.com/astral-sh/ruff/pull/8359
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Avoid including literal `shell=True` for truthy, non-`True` diagnostics
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-30 15:35_
+_@charliermarsh_
 
 ## Summary
 

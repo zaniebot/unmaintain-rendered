@@ -13,14 +13,14 @@ head: brent/furb171
 created_at: 2025-09-04T20:38:23Z
 updated_at: 2025-09-04T23:30:13Z
 url: https://github.com/astral-sh/ruff/pull/20254
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # Stabilize `single-item-membership-test` (`FURB171`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-04 20:38_
+_@ntBre_
 
 This rule has been a stabilization candidate at least as far back as 0.6, but it
 had a few issues that blocked stabilization each time. The last issue was before

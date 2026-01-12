@@ -13,14 +13,14 @@ head: charlie/rules
 created_at: 2023-08-17T00:53:47Z
 updated_at: 2023-08-17T01:23:22Z
 url: https://github.com/astral-sh/ruff/pull/6636
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Refactor literal-comparison and not-test rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-17 00:53_
+_@charliermarsh_
 
 ## Summary
 

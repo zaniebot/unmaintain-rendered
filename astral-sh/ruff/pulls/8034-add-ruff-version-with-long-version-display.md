@@ -12,14 +12,14 @@ head: zanie/long-version
 created_at: 2023-10-18T01:51:07Z
 updated_at: 2023-10-20T19:07:42Z
 url: https://github.com/astral-sh/ruff/pull/8034
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add `ruff version` with long version display
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-18 01:51_
+_@zanieb_
 
 Adds a new `ruff version` sub-command which displays long version information in the style of `cargo` and `rustc`. We include the number of commits since the last release tag if its a development build, in the style of Python's versioneer.
 

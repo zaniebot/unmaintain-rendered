@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-21T14:55:37Z
 updated_at: 2024-03-22T21:26:07Z
 url: https://github.com/astral-sh/uv/issues/1815
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Can't install package with dependency group without editable mode
 
 ---
 
-_Issue opened by @noaonoszko on 2024-02-21 14:55_
+_@noaonoszko_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

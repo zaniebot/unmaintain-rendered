@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-16T11:44:43Z
 updated_at: 2024-05-16T13:52:36Z
 url: https://github.com/astral-sh/ruff/issues/11447
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Feature Request: Move type-only imports to `TYPE_CHECKING` block
 
 ---
 
-_Issue opened by @thejcannon on 2024-05-16 11:44_
+_@thejcannon_
 
 Howdy! 👋 
 

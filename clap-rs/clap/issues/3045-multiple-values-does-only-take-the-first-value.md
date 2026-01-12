@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-11-22T19:36:45Z
 updated_at: 2021-11-22T19:43:17Z
 url: https://github.com/clap-rs/clap/issues/3045
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `multiple_values` does only take the first value
 
 ---
 
-_Issue opened by @b1rger on 2021-11-22 19:36_
+_@b1rger_
 
 ### Please complete the following tasks
 

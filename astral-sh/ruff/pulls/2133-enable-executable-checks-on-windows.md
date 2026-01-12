@@ -12,14 +12,14 @@ head: charlie/ex
 created_at: 2023-01-24T15:42:28Z
 updated_at: 2023-01-24T15:46:29Z
 url: https://github.com/astral-sh/ruff/pull/2133
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Enable executable checks on Windows
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-24 15:42_
+_@charliermarsh_
 
 Closes #2132.
 

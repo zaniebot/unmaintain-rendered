@@ -12,14 +12,14 @@ head: zb/crates
 created_at: 2025-11-18T18:02:10Z
 updated_at: 2025-11-21T00:22:41Z
 url: https://github.com/astral-sh/uv/pull/16770
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 # Publish to `crates.io`
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-18 18:02_
+_@zanieb_
 
 _No description provided._
 

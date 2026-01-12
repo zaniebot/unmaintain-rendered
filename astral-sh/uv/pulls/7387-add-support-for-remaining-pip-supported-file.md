@@ -13,14 +13,14 @@ head: feature/add-file-extension-aliases-7365
 created_at: 2024-09-14T08:13:50Z
 updated_at: 2024-09-14T20:12:50Z
 url: https://github.com/astral-sh/uv/pull/7387
-synced_at: 2026-01-10T12:53:46Z
+synced_at: 2026-01-12T16:07:48Z
 ```
 
 # Add support for remaining pip-supported file extensions
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2024-09-14 08:13_
+_@Aditya-PS-05_
 
 closes #7365 
 

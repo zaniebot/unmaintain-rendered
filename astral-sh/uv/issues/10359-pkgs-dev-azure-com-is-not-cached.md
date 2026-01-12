@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-07T12:56:57Z
 updated_at: 2025-08-22T10:15:26Z
 url: https://github.com/astral-sh/uv/issues/10359
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # pkgs.dev.azure.com is not cached?
 
 ---
 
-_Issue opened by @KalleDK on 2025-01-07 12:56_
+_@KalleDK_
 
 For some reason the cache is missed when using azure index.
 I realized it when add / remove of packages that should be cache was redownloaded / refreshed everytime.

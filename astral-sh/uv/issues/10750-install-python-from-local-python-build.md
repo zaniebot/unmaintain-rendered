@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-19T07:34:45Z
 updated_at: 2025-01-19T15:53:40Z
 url: https://github.com/astral-sh/uv/issues/10750
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # Install Python from local python build
 
 ---
 
-_Issue opened by @BruceChen2017 on 2025-01-19 07:34_
+_@BruceChen2017_
 
 > Python does not publish official distributable binaries. As such, uv uses distributions from Astral [python-build-standalone](https://github.com/astral-sh/python-build-standalone) project   
 

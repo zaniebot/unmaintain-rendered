@@ -14,14 +14,14 @@ head: zb/flake
 created_at: 2024-01-19T02:31:35Z
 updated_at: 2024-01-19T05:53:22Z
 url: https://github.com/astral-sh/uv/pull/996
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:21Z
 ```
 
 # Add nextest config for retry of flaky test
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-19 02:31_
+_@zanieb_
 
 We should definitely sort this out per #863 but until then I want to stop getting false reports of failed CI please and this seems better than turning off the test entirely.
 

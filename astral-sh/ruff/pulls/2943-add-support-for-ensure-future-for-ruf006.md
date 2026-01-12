@@ -12,14 +12,14 @@ head: ensure-future-ruf006
 created_at: 2023-02-15T21:56:09Z
 updated_at: 2023-02-15T23:18:22Z
 url: https://github.com/astral-sh/ruff/pull/2943
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add support for `ensure_future` for RUF006
 
 ---
 
-_Pull request opened by @zunda-arrow on 2023-02-15 21:56_
+_@zunda-arrow_
 
 apologies if I did the snapshots wrong lol. This is my first time using the tool.
 

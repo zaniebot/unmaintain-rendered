@@ -13,14 +13,14 @@ head: optional-for-target-parentheses
 created_at: 2023-08-22T09:49:35Z
 updated_at: 2023-08-22T10:23:17Z
 url: https://github.com/astral-sh/ruff/pull/6765
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Omit tuple parentheses in for statements except when absolutely necessary
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-22 09:49_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

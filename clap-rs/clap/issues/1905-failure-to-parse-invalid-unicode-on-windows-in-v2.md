@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-05-05T06:12:02Z
 updated_at: 2020-05-11T16:42:30Z
 url: https://github.com/clap-rs/clap/issues/1905
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # failure to parse invalid Unicode on Windows in v2.33.0 (but not master)
 
 ---
 
-_Issue opened by @oconnor663 on 2020-05-05 06:12_
+_@oconnor663_
 
 The following is for the current release version of Clap, v2.33.0. (The bug does not appear to repro in Clap `master`. More on that below.) I've set up a repository containing a minimal repro of this problem: https://github.com/oconnor663/clap_unicode_test. You can see a CI run demonstrating the failure here: https://github.com/oconnor663/clap_unicode_test/runs/645077320. To repro the failure yourself, run `cargo test` in that repository.
 

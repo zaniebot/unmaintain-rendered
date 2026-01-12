@@ -14,14 +14,14 @@ head: konsti/another-registry-resilience-fix
 created_at: 2025-07-18T13:09:57Z
 updated_at: 2025-07-18T13:26:48Z
 url: https://github.com/astral-sh/uv/pull/14722
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:21Z
 ```
 
 # Better error reporting for removing Python versions from the Windows registry
 
 ---
 
-_Pull request opened by @konstin on 2025-07-18 13:09_
+_@konstin_
 
 See https://github.com/astral-sh/uv/actions/runs/16370666070/job/46258004849
 

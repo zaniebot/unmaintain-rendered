@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-21T15:28:37Z
 updated_at: 2025-10-07T16:23:13Z
 url: https://github.com/astral-sh/ruff/issues/19467
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Change `latest` Python version to Python 3.14
 
 ---
 
-_Issue opened by @dylwil3 on 2025-07-21 15:28_
+_@dylwil3_
 
 To finalize our stabilization of support for Python 3.14, we should address this `TODO`:
 

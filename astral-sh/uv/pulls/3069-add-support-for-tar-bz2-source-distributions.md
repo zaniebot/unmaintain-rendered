@@ -12,14 +12,14 @@ head: archive-type-bz2
 created_at: 2024-04-16T17:57:48Z
 updated_at: 2024-04-27T19:02:24Z
 url: https://github.com/astral-sh/uv/pull/3069
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:24Z
 ```
 
 # Add support for .tar.bz2 source distributions
 
 ---
 
-_Pull request opened by @sergeykolosov on 2024-04-16 17:57_
+_@sergeykolosov_
 
 ## Summary
 

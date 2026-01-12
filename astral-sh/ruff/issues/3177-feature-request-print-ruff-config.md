@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-23T16:38:32Z
 updated_at: 2023-02-24T05:07:32Z
 url: https://github.com/astral-sh/ruff/issues/3177
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # feature request: print ruff config
 
 ---
 
-_Issue opened by @upstartjohnvandivier on 2023-02-23 16:38_
+_@upstartjohnvandivier_
 
 as a developer, I'd like the ability to print the ruff config so that I can better troubleshoot whether an issue is a local config issue or a geniune bug in ruff
 

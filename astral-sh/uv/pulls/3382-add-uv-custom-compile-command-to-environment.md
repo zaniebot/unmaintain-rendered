@@ -13,14 +13,14 @@ head: charlie/custom
 created_at: 2024-05-05T23:23:39Z
 updated_at: 2024-05-05T23:33:28Z
 url: https://github.com/astral-sh/uv/pull/3382
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:36Z
 ```
 
 # Add `UV_CUSTOM_COMPILE_COMMAND` to environment variable docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-05 23:23_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/3381.
 

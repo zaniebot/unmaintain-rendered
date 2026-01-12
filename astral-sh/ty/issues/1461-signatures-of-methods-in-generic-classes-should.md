@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-31T12:38:16Z
 updated_at: 2025-10-31T18:00:17Z
 url: https://github.com/astral-sh/ty/issues/1461
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Signatures of methods in generic classes should not use `Unknown` specialization
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-31 12:38_
+_@sharkdp_
 
 The signature of `C.f` should include the `T` type parameter, not `Unknown`:
 ```py

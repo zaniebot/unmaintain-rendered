@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-10T16:45:00Z
 updated_at: 2023-12-13T22:02:53Z
 url: https://github.com/astral-sh/uv/issues/392
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # `transformers[tensorboard]` fails to resolve on python 3.10
 
 ---
 
-_Issue opened by @konstin on 2023-11-10 16:45_
+_@konstin_
 
 ```
 [1;31mpuffin-dev failed[0m

@@ -13,14 +13,14 @@ head: charlie/dupe
 created_at: 2024-04-04T16:46:18Z
 updated_at: 2024-04-04T18:47:05Z
 url: https://github.com/astral-sh/uv/pull/2820
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:14Z
 ```
 
 # Deduplicate editables during install commands
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-04 16:46_
+_@charliermarsh_
 
 ## Summary
 

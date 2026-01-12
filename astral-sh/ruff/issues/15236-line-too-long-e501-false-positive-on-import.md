@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-03T06:08:05Z
 updated_at: 2025-01-03T18:36:47Z
 url: https://github.com/astral-sh/ruff/issues/15236
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `line-too-long` (`E501`) - false positive on import statements from long module names where it's impossible to fix
 
 ---
 
-_Issue opened by @DetachHead on 2025-01-03 06:08_
+_@DetachHead_
 
 if a line contains an import statement from a very long module path, it triggers `E501`, even though there's no way to fix it as far as i know:
 

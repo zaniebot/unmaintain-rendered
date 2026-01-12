@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-16T17:44:13Z
 updated_at: 2025-05-16T17:57:02Z
 url: https://github.com/astral-sh/ty/issues/427
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Guard clause fails to narrow types of nested attributes
 
 ---
 
-_Issue opened by @MVanderloo on 2025-05-16 17:44_
+_@MVanderloo_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-08T13:55:39Z
 updated_at: 2026-01-09T03:30:33Z
 url: https://github.com/astral-sh/ty/issues/1807
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `random.choice` returns `Unknown`
 
 ---
 
-_Issue opened by @danielpopescu on 2025-12-08 13:55_
+_@danielpopescu_
 
 ## Summary
 

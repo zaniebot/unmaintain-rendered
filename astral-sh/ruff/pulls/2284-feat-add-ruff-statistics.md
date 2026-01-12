@@ -12,14 +12,14 @@ head: statistics
 created_at: 2023-01-28T01:08:58Z
 updated_at: 2023-01-29T19:36:34Z
 url: https://github.com/astral-sh/ruff/pull/2284
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # feat: add ruff --statistics
 
 ---
 
-_Pull request opened by @spaceone on 2023-01-28 01:08_
+_@spaceone_
 
 Closes #1814.
 

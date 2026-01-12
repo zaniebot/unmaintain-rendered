@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-29T18:17:03Z
 updated_at: 2025-11-30T15:49:07Z
 url: https://github.com/astral-sh/ty/issues/1683
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Detect attempts to use `super()` in `NamedTuple` methods
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-29 18:17_
+_@AlexWaygood_
 
 ### Summary
 

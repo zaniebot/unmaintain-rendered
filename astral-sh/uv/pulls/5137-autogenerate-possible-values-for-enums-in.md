@@ -13,14 +13,14 @@ head: charlie/api-reference-iv
 created_at: 2024-07-16T23:28:16Z
 updated_at: 2024-07-17T17:40:32Z
 url: https://github.com/astral-sh/uv/pull/5137
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:39Z
 ```
 
 # Autogenerate possible values for enums in reference documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-16 23:28_
+_@charliermarsh_
 
 ## Summary
 

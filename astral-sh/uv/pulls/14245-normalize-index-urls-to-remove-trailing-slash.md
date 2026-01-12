@@ -13,14 +13,14 @@ head: jtfm/normalize-index-url-trailing-slash
 created_at: 2025-06-24T16:17:32Z
 updated_at: 2025-06-27T15:11:23Z
 url: https://github.com/astral-sh/uv/pull/14245
-synced_at: 2026-01-10T07:01:23Z
+synced_at: 2026-01-12T16:11:06Z
 ```
 
 # Normalize index URLs to remove trailing slash
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-24 16:17_
+_@jtfmumm_
 
 This PR updates `IndexUrl` parsing to normalize non-file URLs by removing trailing slashes. It also normalizes registry source URLs when using them to validate the lockfile.
 

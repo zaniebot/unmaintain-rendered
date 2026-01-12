@@ -15,14 +15,14 @@ head: david/human-readable-enumeration
 created_at: 2025-06-26T12:07:08Z
 updated_at: 2025-06-26T12:29:35Z
 url: https://github.com/astral-sh/ruff/pull/18956
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [ty] Format conflicting types as an enumeration
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-26 12:07_
+_@sharkdp_
 
 ## Summary
 

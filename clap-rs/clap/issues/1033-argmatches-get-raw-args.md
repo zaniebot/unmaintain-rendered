@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-08-19T17:03:45Z
 updated_at: 2018-08-02T03:30:10Z
 url: https://github.com/clap-rs/clap/issues/1033
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # ArgMatches get raw args
 
 ---
 
-_Issue opened by @ghost on 2017-08-19 17:03_
+_@ghost_
 
 I can't send all arguments after subcommand to another program. Need implement functionality to get raw args form ArgMatches
 

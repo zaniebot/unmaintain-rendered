@@ -13,14 +13,14 @@ head: charlie/anyhow
 created_at: 2023-11-19T19:22:32Z
 updated_at: 2023-11-19T19:26:22Z
 url: https://github.com/astral-sh/uv/pull/457
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:57Z
 ```
 
 # Use shortened `anyhow::Result` everywhere
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-19 19:22_
+_@charliermarsh_
 
 _No description provided._
 

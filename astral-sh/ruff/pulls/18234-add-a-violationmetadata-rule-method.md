@@ -14,14 +14,14 @@ head: brent/violation-rules
 created_at: 2025-05-20T22:36:38Z
 updated_at: 2025-05-28T13:27:10Z
 url: https://github.com/astral-sh/ruff/pull/18234
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # Add a `ViolationMetadata::rule` method
 
 ---
 
-_Pull request opened by @ntBre on 2025-05-20 22:36_
+_@ntBre_
 
 Summary
 --

@@ -13,14 +13,14 @@ head: ag/pendulum-tzdata-regression
 created_at: 2024-03-27T15:59:29Z
 updated_at: 2024-03-27T17:04:51Z
 url: https://github.com/astral-sh/uv/pull/2693
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:10Z
 ```
 
 # uv/tests: add regression test for `echo pendulum | uv pip compile -`
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-03-27 15:59_
+_@BurntSushi_
 
 I stumbled across this when writing tests for
 `--emit-marker-expressions`. Namely, I observed that in CI, the `tzdata`

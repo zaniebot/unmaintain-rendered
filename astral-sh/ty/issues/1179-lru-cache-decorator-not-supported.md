@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-13T09:29:43Z
 updated_at: 2025-09-15T07:42:43Z
 url: https://github.com/astral-sh/ty/issues/1179
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `lru_cache` decorator not supported
 
 ---
 
-_Issue opened by @mattangus on 2025-09-13 09:29_
+_@mattangus_
 
 ### Summary
 

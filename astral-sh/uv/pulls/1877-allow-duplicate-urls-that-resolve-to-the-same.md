@@ -13,14 +13,14 @@ head: charlie/dupe
 created_at: 2024-02-22T16:34:29Z
 updated_at: 2024-02-22T16:44:37Z
 url: https://github.com/astral-sh/uv/pull/1877
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:46Z
 ```
 
 # Allow duplicate URLs that resolve to the same canonical URL
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-22 16:34_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/1865.
 

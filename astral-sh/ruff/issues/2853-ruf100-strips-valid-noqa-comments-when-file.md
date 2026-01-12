@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-13T11:51:55Z
 updated_at: 2023-02-13T15:37:57Z
 url: https://github.com/astral-sh/ruff/issues/2853
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `RUF100` strips valid `noqa` comments when file contains syntax error
 
 ---
 
-_Issue opened by @stinodego on 2023-02-13 11:51_
+_@stinodego_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

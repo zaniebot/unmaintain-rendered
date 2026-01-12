@@ -10,16 +10,16 @@ assignees: []
 base: charlie/dyn
 head: charlie/dyn-diag
 created_at: 2026-01-10T19:08:39Z
-updated_at: 2026-01-12T04:05:04Z
+updated_at: 2026-01-12T15:34:46Z
 url: https://github.com/astral-sh/ruff/pull/22499
-synced_at: 2026-01-12T06:55:04Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # [ty] Emit diagnostics for invalid base classes in `type(...)`
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-10 19:08_
+_@charliermarsh_
 
 ## Summary
 

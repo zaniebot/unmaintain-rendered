@@ -14,14 +14,14 @@ head: charlie/up-cli
 created_at: 2024-08-09T00:36:08Z
 updated_at: 2024-08-09T13:37:04Z
 url: https://github.com/astral-sh/uv/pull/5948
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:07Z
 ```
 
 # Add `update` alias for `uv tool upgrade`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-09 00:36_
+_@charliermarsh_
 
 ## Summary
 

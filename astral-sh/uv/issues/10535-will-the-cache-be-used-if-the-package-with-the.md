@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-12T05:59:20Z
 updated_at: 2025-01-13T05:23:13Z
 url: https://github.com/astral-sh/uv/issues/10535
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # Will the cache be used if the package with the same version number is installed in different Python version virtual environments?
 
 ---
 
-_Issue opened by @jarlor on 2025-01-12 05:59_
+_@jarlor_
 
 I initialized two uv projects. Project A uses python3.11 via `uv init -p 3.11`. Project B uses python 3.10 via `uv init -p 3.10`.
 

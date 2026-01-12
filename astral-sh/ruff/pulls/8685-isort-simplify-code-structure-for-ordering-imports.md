@@ -14,14 +14,14 @@ head: simplify-isort-sorting-logic
 created_at: 2023-11-14T21:22:51Z
 updated_at: 2023-11-26T16:26:28Z
 url: https://github.com/astral-sh/ruff/pull/8685
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # [isort] Simplify code structure for ordering imports
 
 ---
 
-_Pull request opened by @bluthej on 2023-11-14 21:22_
+_@bluthej_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

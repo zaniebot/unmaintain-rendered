@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-13T23:39:30Z
 updated_at: 2024-11-14T02:14:00Z
 url: https://github.com/astral-sh/uv/issues/9105
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # (🐞) `uv add` duplicates comments in pyproject.toml
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-11-13 23:39_
+_@KotlinIsland_
 
 ```toml
 [project]

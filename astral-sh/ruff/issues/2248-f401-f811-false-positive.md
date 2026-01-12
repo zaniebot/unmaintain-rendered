@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-27T10:36:32Z
 updated_at: 2023-05-20T02:54:20Z
 url: https://github.com/astral-sh/ruff/issues/2248
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # F401+F811 false positive
 
 ---
 
-_Issue opened by @dalcinl on 2023-01-27 10:36_
+_@dalcinl_
 
 
 #### Minimal reproducer

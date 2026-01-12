@@ -14,14 +14,14 @@ head: RUF057
 created_at: 2025-01-03T05:06:54Z
 updated_at: 2025-01-03T22:35:24Z
 url: https://github.com/astral-sh/ruff/pull/15234
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`ruff`] Avoid reporting when `ndigits` is possibly negative (`RUF057`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-03 05:06_
+_@InSyncWithFoo_
 
 ## Summary
 
@@ -31,6 +31,12 @@ Resolves #15221.
 
 `cargo nextest run` and `cargo insta test`.
 
+
+---
+
+_Review comment by @dhruvmanila on `crates/ruff_linter/src/rules/ruff/rules/unnecessary_round.rs`:118 on 2025-01-03 05:09_
+
+What do you think about `LiteralPositiveInt` instead to avoid the double negative?
 
 ---
 
@@ -54,6 +60,17 @@ _@InSyncWithFoo reviewed on 2025-01-03 05:15_
 
 ---
 
+_Review comment by @InSyncWithFoo on `crates/ruff_linter/src/rules/ruff/rules/unnecessary_round.rs`:118 on 2025-01-03 05:15_
+
+I don't think there's any double negative here. Besides, 0 is not positive:
+
+```pycon
+>>> round(42, 0)
+42
+```
+
+---
+
 _Comment by @github-actions[bot] on 2025-01-03 05:20_
 
 <!-- generated-comment ecosystem -->
@@ -73,7 +90,23 @@ _@MichaReiser reviewed on 2025-01-03 07:44_
 
 ---
 
+_Review comment by @MichaReiser on `crates/ruff_linter/src/rules/ruff/rules/unnecessary_round.rs`:118 on 2025-01-03 07:44_
+
+I'd go with. It simplifies the matches where the negative flag isn't relevant and it avoids the `NotNegative` (which feels like a double negative)
+
+```suggestion
+    LiteralInt { negative: bool }
+```
+
+---
+
 _@MichaReiser reviewed on 2025-01-03 07:46_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/src/rules/ruff/rules/unnecessary_round.rs`:119 on 2025-01-03 07:46_
+
+I'd prefer keeping `Int` here to keep it aligned with `RoundedValue` and the current name is also clearer because does the new name mean *it's not a Literal but an int* or *everything else other than an integer literal*. I think it's the former, but the name doesn't make it clear. 
 
 ---
 

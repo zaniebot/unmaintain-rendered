@@ -12,14 +12,14 @@ head: isolated-scripts
 created_at: 2025-09-18T02:14:58Z
 updated_at: 2025-12-13T15:46:07Z
 url: https://github.com/astral-sh/uv/pull/15924
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:01Z
 ```
 
 # support isolated PEP 723 scripts
 
 ---
 
-_Pull request opened by @mohammedgqudah on 2025-09-18 02:14_
+_@mohammedgqudah_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

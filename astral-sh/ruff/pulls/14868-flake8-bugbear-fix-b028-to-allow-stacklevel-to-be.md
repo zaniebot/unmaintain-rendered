@@ -13,14 +13,14 @@ head: B028-positional
 created_at: 2024-12-09T12:58:04Z
 updated_at: 2024-12-09T13:17:29Z
 url: https://github.com/astral-sh/ruff/pull/14868
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`flake8-bugbear`] Fix `B028` to allow `stacklevel` to be explicitly assigned as a positional argument
 
 ---
 
-_Pull request opened by @harupy on 2024-12-09 12:58_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

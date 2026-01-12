@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T02:25:46Z
 updated_at: 2024-12-16T04:44:55Z
 url: https://github.com/astral-sh/uv/issues/6400
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # FR: Support installing and managing `uv` with `uv tool`
 
 ---
 
-_Issue opened by @weihenglim on 2024-08-22 02:25_
+_@weihenglim_
 
 Currently the documentation's [recommended way](https://docs.astral.sh/uv/getting-started/installation/#pypi) of installing `uv` is via `pipx`. With the release of `uv tool`, it would be great to let `uv` manage itself, similar to how you can do `pipx install pipx`.
 

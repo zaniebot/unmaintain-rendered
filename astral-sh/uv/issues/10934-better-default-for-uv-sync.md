@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T10:27:11Z
 updated_at: 2025-03-19T05:38:09Z
 url: https://github.com/astral-sh/uv/issues/10934
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Better default for uv sync
 
 ---
 
-_Issue opened by @xixixao on 2025-01-24 10:27_
+_@xixixao_
 
 ### Summary
 

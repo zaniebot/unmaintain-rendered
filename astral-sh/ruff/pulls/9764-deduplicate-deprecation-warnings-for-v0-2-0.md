@@ -12,14 +12,14 @@ head: charlie/warn
 created_at: 2024-02-01T21:40:01Z
 updated_at: 2024-02-02T05:26:01Z
 url: https://github.com/astral-sh/ruff/pull/9764
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Deduplicate deprecation warnings for v0.2.0 release
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-01 21:40_
+_@charliermarsh_
 
 ## Summary
 

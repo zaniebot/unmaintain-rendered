@@ -13,14 +13,14 @@ head: micha/fix-duplicate-key-error
 created_at: 2025-04-23T13:22:47Z
 updated_at: 2025-04-23T13:47:56Z
 url: https://github.com/astral-sh/ruff/pull/17583
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Fix stale diagnostics in Ruff playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-23 13:22_
+_@MichaReiser_
 
 ## Summary
 

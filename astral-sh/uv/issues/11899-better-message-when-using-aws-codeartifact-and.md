@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-03T02:25:58Z
 updated_at: 2025-03-03T15:16:50Z
 url: https://github.com/astral-sh/uv/issues/11899
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # Better message when using aws codeartifact and token has expired
 
 ---
 
-_Issue opened by @waterworthd-cim on 2025-03-03 02:25_
+_@waterworthd-cim_
 
 ### Summary
 

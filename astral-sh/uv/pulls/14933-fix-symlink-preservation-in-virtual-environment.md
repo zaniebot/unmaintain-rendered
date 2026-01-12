@@ -13,14 +13,14 @@ head: fix-symlink-virtualenv-removal
 created_at: 2025-07-28T06:55:50Z
 updated_at: 2025-07-31T11:59:23Z
 url: https://github.com/astral-sh/uv/pull/14933
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:30Z
 ```
 
 # Fix symlink preservation in virtual environment creation
 
 ---
 
-_Pull request opened by @yumeminami on 2025-07-28 06:55_
+_@yumeminami_
 
  ## Summary
 

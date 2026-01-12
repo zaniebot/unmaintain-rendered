@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T15:37:09Z
 updated_at: 2024-08-03T13:49:10Z
 url: https://github.com/astral-sh/uv/issues/5604
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Improve documentation for workspaces
 
 ---
 
-_Issue opened by @konstin on 2024-07-30 15:37_
+_@konstin_
 
 Currently, it's a bit sparse.
 

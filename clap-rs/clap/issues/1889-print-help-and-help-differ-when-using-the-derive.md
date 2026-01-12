@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-05-01T03:04:05Z
 updated_at: 2020-05-01T16:22:04Z
 url: https://github.com/clap-rs/clap/issues/1889
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # `print_help()` and `--help` differ when using the derive macro
 
 ---
 
-_Issue opened by @cole-h on 2020-05-01 03:04_
+_@cole-h_
 
 NOTE: This could very well be present without the `Clap` derive; I didn't test that.
 

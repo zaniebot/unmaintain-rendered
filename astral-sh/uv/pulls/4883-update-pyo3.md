@@ -12,14 +12,14 @@ head: renovate/pyo3
 created_at: 2024-07-08T01:25:41Z
 updated_at: 2024-07-08T17:28:25Z
 url: https://github.com/astral-sh/uv/pull/4883
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:31Z
 ```
 
 # Update pyo3
 
 ---
 
-_Pull request opened by @renovate on 2024-07-08 01:25_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

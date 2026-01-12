@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-08T14:30:14Z
 updated_at: 2023-05-08T19:44:59Z
 url: https://github.com/astral-sh/ruff/issues/4284
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Linter panic] None value - My File: doc\data\messages\u\using-f-string-in-unsupported-version\good.py
 
 ---
 
-_Issue opened by @FishAlchemist on 2023-05-08 14:30_
+_@FishAlchemist_
 
 This Python code is from Pylint (https://github.com/pylint-dev/pylint/commit/3cca40082d0ed9d46c3648b4698865355046e48d)
 ## Ruff Version

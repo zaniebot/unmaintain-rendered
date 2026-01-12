@@ -13,14 +13,14 @@ head: brent/fix-per-file-target-version-glob
 created_at: 2025-06-16T14:09:11Z
 updated_at: 2025-06-16T14:41:44Z
 url: https://github.com/astral-sh/ruff/pull/18709
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # Drop confusing second `*` from glob pattern example
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-16 14:09_
+_@ntBre_
 
 Summary
 --

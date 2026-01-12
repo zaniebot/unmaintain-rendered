@@ -13,14 +13,14 @@ head: konsti/fix-specifier-instability
 created_at: 2024-08-21T14:41:36Z
 updated_at: 2024-08-21T15:18:44Z
 url: https://github.com/astral-sh/uv/pull/6332
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:19Z
 ```
 
 # Fix metadata cache instability
 
 ---
 
-_Pull request opened by @konstin on 2024-08-21 14:41_
+_@konstin_
 
 For a path dep such as the root project, uv can read metadata statically from `pyproject.toml` or dynamically from the build backend.
 

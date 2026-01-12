@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-10T16:04:55Z
 updated_at: 2025-12-08T15:54:32Z
 url: https://github.com/astral-sh/ty/issues/1516
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Omit type inlay hints for initializer calls
 
 ---
 
-_Issue opened by @Gankra on 2025-11-10 16:04_
+_@Gankra_
 
 Maybe there's some corner cases where it is important, but it's really not helpful to tell me a Rect(..) call produced something of type Rect:
 

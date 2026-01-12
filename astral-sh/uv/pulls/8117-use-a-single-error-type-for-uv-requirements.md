@@ -13,14 +13,14 @@ head: charlie/err-type
 created_at: 2024-10-10T23:38:04Z
 updated_at: 2024-10-10T23:44:26Z
 url: https://github.com/astral-sh/uv/pull/8117
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:10Z
 ```
 
 # Use a single error type for `uv-requirements`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-10 23:38_
+_@charliermarsh_
 
 _No description provided._
 

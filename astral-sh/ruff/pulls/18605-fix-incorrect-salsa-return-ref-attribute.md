@@ -14,14 +14,14 @@ head: micha/fix-incorrect-salsa-attr
 created_at: 2025-06-10T07:06:56Z
 updated_at: 2025-06-11T07:19:59Z
 url: https://github.com/astral-sh/ruff/pull/18605
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # Fix incorrect salsa `return_ref` attribute
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-10 07:06_
+_@MichaReiser_
 
 ## Summary
 

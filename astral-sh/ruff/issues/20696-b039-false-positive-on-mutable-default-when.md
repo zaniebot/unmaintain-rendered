@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-04T06:56:20Z
 updated_at: 2025-10-06T14:57:36Z
 url: https://github.com/astral-sh/ruff/issues/20696
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [B039] False-positive on mutable default when ContextVar has immutable type
 
 ---
 
-_Issue opened by @brandonchinn178 on 2025-10-04 06:56_
+_@brandonchinn178_
 
 ### Summary
 

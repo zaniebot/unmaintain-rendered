@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-28T16:53:43Z
 updated_at: 2025-03-20T05:24:48Z
 url: https://github.com/astral-sh/uv/issues/9505
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # Use uv inside container without venv?
 
 ---
 
-_Issue opened by @Time0o on 2024-11-28 16:53_
+_@Time0o_
 
 My apologies if this has been asked before but I could not find a solution.
 

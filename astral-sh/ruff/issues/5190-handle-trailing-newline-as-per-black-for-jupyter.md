@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-19T18:30:54Z
 updated_at: 2023-06-20T10:19:13Z
 url: https://github.com/astral-sh/ruff/issues/5190
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Handle trailing newline as per `black` for Jupyter notebooks
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-06-19 18:30_
+_@dhruvmanila_
 
 Trailing newline at the end of JSON string is handled separated in `black` implementation:
 

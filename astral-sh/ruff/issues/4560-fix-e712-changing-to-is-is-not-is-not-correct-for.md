@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-21T15:51:41Z
 updated_at: 2025-12-24T13:54:26Z
 url: https://github.com/astral-sh/ruff/issues/4560
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Fix (E712) changing `==`/`!=` to `is`/`is not` is not correct for some types
 
 ---
 
-_Issue opened by @zanieb on 2023-05-21 15:51_
+_@zanieb_
 
 ## Summary
 

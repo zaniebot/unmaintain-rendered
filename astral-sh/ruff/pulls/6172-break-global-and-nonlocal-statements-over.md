@@ -13,14 +13,14 @@ head: charlie/global-nonlocal-break
 created_at: 2023-07-29T13:03:44Z
 updated_at: 2023-08-02T20:12:47Z
 url: https://github.com/astral-sh/ruff/pull/6172
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Break global and nonlocal statements over continuation lines
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-29 13:03_
+_@charliermarsh_
 
 ## Summary
 

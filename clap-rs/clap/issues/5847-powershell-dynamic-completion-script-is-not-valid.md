@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-12-17T00:05:46Z
 updated_at: 2024-12-17T18:05:14Z
 url: https://github.com/clap-rs/clap/issues/5847
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # PowerShell dynamic completion script is not valid PowerShell
 
 ---
 
-_Issue opened by @jennings on 2024-12-17 00:05_
+_@jennings_
 
 ### Please complete the following tasks
 

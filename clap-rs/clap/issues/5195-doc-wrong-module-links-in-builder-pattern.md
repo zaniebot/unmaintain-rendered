@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-06T14:17:27Z
 updated_at: 2023-11-28T14:14:46Z
 url: https://github.com/clap-rs/clap/issues/5195
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # doc: wrong module links in builder pattern documentation
 
 ---
 
-_Issue opened by @pustekuchen91 on 2023-11-06 14:17_
+_@pustekuchen91_
 
 ### Please complete the following tasks
 

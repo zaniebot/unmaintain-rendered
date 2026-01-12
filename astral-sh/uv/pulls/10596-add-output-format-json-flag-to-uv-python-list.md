@@ -12,14 +12,14 @@ head: jzlotek/python-list-json
 created_at: 2025-01-14T14:11:51Z
 updated_at: 2025-01-14T16:47:51Z
 url: https://github.com/astral-sh/uv/pull/10596
-synced_at: 2026-01-10T11:44:58Z
+synced_at: 2026-01-12T16:09:23Z
 ```
 
 # add `--output-format=json` flag to `uv python list`
 
 ---
 
-_Pull request opened by @Gankra on 2025-01-14 14:11_
+_@Gankra_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ head: charlie/read-references
 created_at: 2023-05-23T19:31:42Z
 updated_at: 2023-05-24T15:14:56Z
 url: https://github.com/astral-sh/ruff/pull/4610
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Track all read references in semantic model
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-23 19:31_
+_@charliermarsh_
 
 ## Summary
 

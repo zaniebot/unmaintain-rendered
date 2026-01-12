@@ -11,14 +11,14 @@ head: patch-3
 created_at: 2024-05-09T10:59:50Z
 updated_at: 2024-05-09T17:39:26Z
 url: https://github.com/astral-sh/ruff/pull/11350
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # docs: Add purpose of workspace/options.rs
 
 ---
 
-_Pull request opened by @Abdur-rahmaanJ on 2024-05-09 10:59_
+_@Abdur-rahmaanJ_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

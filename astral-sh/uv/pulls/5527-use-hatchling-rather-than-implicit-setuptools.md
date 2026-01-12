@@ -14,14 +14,14 @@ head: charlie/hatchling
 created_at: 2024-07-28T21:30:41Z
 updated_at: 2024-07-29T14:00:13Z
 url: https://github.com/astral-sh/uv/pull/5527
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:52Z
 ```
 
 # Use `hatchling` rather than implicit `setuptools` default
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-28 21:30_
+_@charliermarsh_
 
 ## Summary
 

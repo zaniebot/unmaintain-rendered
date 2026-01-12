@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-08-19T15:27:18Z
 updated_at: 2022-11-29T03:56:29Z
 url: https://github.com/astral-sh/ruff/issues/13
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Use Salsa 2022 to enable incremental computation for watch mode
 
 ---
 
-_Issue opened by @charliermarsh on 2022-08-19 15:27_
+_@charliermarsh_
 
 See: https://salsa-rs.github.io/salsa/overview.html
 

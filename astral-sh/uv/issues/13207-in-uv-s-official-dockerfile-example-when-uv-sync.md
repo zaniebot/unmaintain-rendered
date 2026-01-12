@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-30T01:33:22Z
 updated_at: 2025-04-30T22:41:09Z
 url: https://github.com/astral-sh/uv/issues/13207
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # In uv's official Dockerfile example when uv sync is called 2nd time it removes the .venv it has just created and reinstalls everything from scratch
 
 ---
 
-_Issue opened by @Ark-kun on 2025-04-30 01:33_
+_@Ark-kun_
 
 ### Summary
 

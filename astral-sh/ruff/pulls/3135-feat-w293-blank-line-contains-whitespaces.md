@@ -11,14 +11,14 @@ head: w293
 created_at: 2023-02-22T19:03:33Z
 updated_at: 2023-02-23T12:22:51Z
 url: https://github.com/astral-sh/ruff/pull/3135
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # feat(W293): blank line contains whitespaces
 
 ---
 
-_Pull request opened by @carlosmiei on 2023-02-22 19:03_
+_@carlosmiei_
 
 - Added W293 from pycodestyle
 - https://www.flake8rules.com/rules/W293.html

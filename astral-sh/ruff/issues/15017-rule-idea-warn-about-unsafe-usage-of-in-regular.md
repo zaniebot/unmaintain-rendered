@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-16T10:09:09Z
 updated_at: 2024-12-17T10:13:10Z
 url: https://github.com/astral-sh/ruff/issues/15017
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Rule idea: warn about unsafe usage of `$` in regular expressions
 
 ---
 
-_Issue opened by @bustbr on 2024-12-16 10:09_
+_@bustbr_
 
 In Python's implementation of `re` the `$` does not only match the end of the line, but also before any line break, even without multiline mode.
 There's [an article by the OpenSSF about this issue](https://best.openssf.org/Correctly-Using-Regular-Expressions) suggesting to use `\Z` instead, or prefer the `fullmatch` function.

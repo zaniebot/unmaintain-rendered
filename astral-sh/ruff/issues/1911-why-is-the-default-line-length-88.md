@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-16T09:58:09Z
 updated_at: 2023-01-16T16:28:44Z
 url: https://github.com/astral-sh/ruff/issues/1911
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Why is the default line-length 88?
 
 ---
 
-_Issue opened by @UtkarshVerma on 2023-01-16 09:58_
+_@UtkarshVerma_
 
 PEP8 suggests a maximum line-length of 79 as stated on https://peps.python.org/pep-0008/#maximum-line-length. Therefore, I'm just curious as to why 88 is the default of line-length.
 

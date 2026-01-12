@@ -12,14 +12,14 @@ head: PIE808
 created_at: 2023-08-19T05:47:57Z
 updated_at: 2023-08-19T23:36:17Z
 url: https://github.com/astral-sh/ruff/pull/6690
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # [`flake8-pie`] Implement `unnecessary-range-start` (`PIE808`) 
 
 ---
 
-_Pull request opened by @harupy on 2023-08-19 05:47_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

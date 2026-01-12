@@ -14,14 +14,14 @@ head: micha/rename-reference-request-handler
 created_at: 2025-11-28T15:04:25Z
 updated_at: 2025-11-28T15:23:31Z
 url: https://github.com/astral-sh/ruff/pull/21680
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] Rename `ReferenceRequestHandler` file
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-28 15:04_
+_@MichaReiser_
 
 ## Summary
 

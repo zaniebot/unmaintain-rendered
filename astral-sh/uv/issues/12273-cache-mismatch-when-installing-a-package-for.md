@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T10:50:14Z
 updated_at: 2025-03-19T11:06:31Z
 url: https://github.com/astral-sh/uv/issues/12273
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # Cache mismatch when installing a package for differents Python versions
 
 ---
 
-_Issue opened by @framillien on 2025-03-18 10:50_
+_@framillien_
 
 ### Summary
 

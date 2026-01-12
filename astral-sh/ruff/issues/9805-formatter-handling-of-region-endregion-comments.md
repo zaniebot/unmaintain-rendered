@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-03T00:21:48Z
 updated_at: 2025-11-13T20:25:51Z
 url: https://github.com/astral-sh/ruff/issues/9805
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Formatter: Handling of `# region` & `# endregion` comments
 
 ---
 
-_Issue opened by @Avasam on 2024-02-03 00:21_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

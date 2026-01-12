@@ -12,14 +12,14 @@ head: charlie/cache
 created_at: 2023-10-18T03:15:25Z
 updated_at: 2023-10-18T03:15:37Z
 url: https://github.com/astral-sh/uv/pull/116
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:45Z
 ```
 
 # Mark `--no-cache` as global
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-18 03:15_
+_@charliermarsh_
 
 _No description provided._
 

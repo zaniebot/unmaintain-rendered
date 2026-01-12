@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-19T00:31:01Z
 updated_at: 2025-02-28T13:29:24Z
 url: https://github.com/astral-sh/uv/issues/10015
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # Add an option to run scripts without needing to use 'uv run'
 
 ---
 
-_Issue opened by @sandenbergmelo on 2024-12-19 00:31_
+_@sandenbergmelo_
 
 It would be more practical if uv had an option to run Python files without needing to use the `run` command explicitly.
 

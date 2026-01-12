@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-22T17:29:01Z
 updated_at: 2025-04-01T23:56:17Z
 url: https://github.com/astral-sh/uv/issues/6451
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Docker: feedback on docs and workflow with frozen/locked dependencies and `--require-hashes`
 
 ---
 
-_Issue opened by @bofm on 2024-08-22 17:29_
+_@bofm_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

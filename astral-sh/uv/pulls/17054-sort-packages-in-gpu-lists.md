@@ -13,14 +13,14 @@ head: charlie/so
 created_at: 2025-12-09T19:46:26Z
 updated_at: 2025-12-09T20:10:08Z
 url: https://github.com/astral-sh/uv/pull/17054
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:35Z
 ```
 
 # Sort packages in GPU lists
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-09 19:46_
+_@charliermarsh_
 
 ## Summary
 

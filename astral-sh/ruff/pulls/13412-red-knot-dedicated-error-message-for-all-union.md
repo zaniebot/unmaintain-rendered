@@ -13,14 +13,14 @@ head: cjm/union-all-not-callable
 created_at: 2024-09-19T22:15:05Z
 updated_at: 2024-09-20T15:09:26Z
 url: https://github.com/astral-sh/ruff/pull/13412
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] dedicated error message for all-union-elements not callable
 
 ---
 
-_Pull request opened by @carljm on 2024-09-19 22:15_
+_@carljm_
 
 This was mentioned in an earlier review, and seemed easy enough to just do it. No need to repeat all the types twice when it gives no additional information.
 

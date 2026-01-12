@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-29T14:40:40Z
 updated_at: 2024-05-30T13:18:27Z
 url: https://github.com/astral-sh/ruff/issues/11600
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # N805 - method with no args shows no lint warnings
 
 ---
 
-_Issue opened by @s-cork on 2024-05-29 14:40_
+_@s-cork_
 
 ```python
 class Foo:

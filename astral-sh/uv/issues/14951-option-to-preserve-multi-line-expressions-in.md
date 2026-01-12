@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-29T09:49:21Z
 updated_at: 2025-07-29T15:41:51Z
 url: https://github.com/astral-sh/uv/issues/14951
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:02:00Z
 ```
 
 # Option to Preserve Multi-Line Expressions in Parentheses
 
 ---
 
-_Issue opened by @Alesh on 2025-07-29 09:49_
+_@Alesh_
 
 ### Summary
 

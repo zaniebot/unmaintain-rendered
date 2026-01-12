@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-03-28T18:19:19Z
 updated_at: 2020-06-30T11:57:47Z
 url: https://github.com/clap-rs/clap/issues/920
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Revisit CI systems
 
 ---
 
-_Issue opened by @kbknapp on 2017-03-28 18:19_
+_@kbknapp_
 
 https://github.com/japaric/trust
 

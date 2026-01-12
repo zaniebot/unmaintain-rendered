@@ -12,14 +12,14 @@ head: charlie/pip-install
 created_at: 2023-12-11T19:23:07Z
 updated_at: 2023-12-12T17:16:02Z
 url: https://github.com/astral-sh/uv/pull/607
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:04Z
 ```
 
 # Add a `pip-install` subcommand
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-11 19:23_
+_@charliermarsh_
 
 ## Summary
 

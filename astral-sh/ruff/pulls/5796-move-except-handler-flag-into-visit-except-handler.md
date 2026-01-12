@@ -13,14 +13,14 @@ head: charlie/except-handler
 created_at: 2023-07-16T04:20:36Z
 updated_at: 2023-07-16T04:52:00Z
 url: https://github.com/astral-sh/ruff/pull/5796
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Move except-handler flag into `visit_except_handler`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-16 04:20_
+_@charliermarsh_
 
 ## Summary
 

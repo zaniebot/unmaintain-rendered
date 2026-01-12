@@ -12,14 +12,14 @@ head: rustfmt-let-else
 created_at: 2023-07-02T06:32:13Z
 updated_at: 2023-07-03T02:37:13Z
 url: https://github.com/astral-sh/ruff/pull/5461
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Format let-else with rustfmt nightly
 
 ---
 
-_Pull request opened by @andersk on 2023-07-02 06:32_
+_@andersk_
 
 Support for `let…else` formatting was just merged to nightly (rust-lang/rust#113225). Rerun `cargo fmt` with Rust nightly 2023-07-02 to pick this up. Followup to #939.
 

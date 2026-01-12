@@ -13,14 +13,14 @@ head: charlie/any-wheel
 created_at: 2023-11-17T02:03:56Z
 updated_at: 2023-11-17T02:10:55Z
 url: https://github.com/astral-sh/uv/pull/441
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:57Z
 ```
 
 # Avoid using incompatible wheels for source distribution-less packages
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-17 02:03_
+_@charliermarsh_
 
 We're willing to use platform-incompatible wheels during resolution, to quicken access to metadata... But we should avoid choosing an incompatible wheel if the package lacks a source distribution since, in that case, we definitely won't be able to install it.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T19:11:23Z
 updated_at: 2025-12-02T19:11:23Z
 url: https://github.com/astral-sh/ty/issues/1728
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # remove inferred bivariance
 
 ---
 
-_Issue opened by @carljm on 2025-12-02 19:11_
+_@carljm_
 
 We infer bivariance when it is sound to do so; that is, when a type variable is unused in the body of a class:
 

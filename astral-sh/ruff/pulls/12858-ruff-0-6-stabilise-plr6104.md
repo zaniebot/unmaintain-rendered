@@ -13,14 +13,14 @@ head: stabilise-PLR6104
 created_at: 2024-08-13T12:35:57Z
 updated_at: 2024-08-14T10:33:00Z
 url: https://github.com/astral-sh/ruff/pull/12858
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [Ruff 0.6] Stabilise `PLR6104`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-13 12:35_
+_@AlexWaygood_
 
 Split out from #12857 so that it can be considered in isolation.
 

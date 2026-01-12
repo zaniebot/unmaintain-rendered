@@ -14,14 +14,14 @@ head: bidi-return-type
 created_at: 2025-09-23T05:57:09Z
 updated_at: 2025-10-11T02:52:05Z
 url: https://github.com/astral-sh/ruff/pull/20528
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [ty] bidirectional type inference using function return type annotations
 
 ---
 
-_Pull request opened by @mtshiba on 2025-09-23 05:57_
+_@mtshiba_
 
 ## Summary
 

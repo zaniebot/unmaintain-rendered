@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-03T00:15:01Z
 updated_at: 2025-01-13T09:29:45Z
 url: https://github.com/astral-sh/uv/issues/10282
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # `uv tool install` fails to download newer Python when `pip` is installed in system python
 
 ---
 
-_Issue opened by @ceejatec on 2025-01-03 00:15_
+_@ceejatec_
 
 I have a PyPI project named `cbdep` where all versions depend on at least Python 3.10. If I run `uv tool install cbdep` in a Linux environment where the system Python is < 3.10 _and_ `pip` is installed, `uv` decides not to download a newer Python and instead fails with the error
 

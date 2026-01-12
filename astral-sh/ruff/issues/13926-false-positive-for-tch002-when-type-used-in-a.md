@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-25T12:31:59Z
 updated_at: 2025-07-15T12:14:27Z
 url: https://github.com/astral-sh/ruff/issues/13926
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # False positive for TCH002 when type used in a method
 
 ---
 
-_Issue opened by @last-partizan on 2024-10-25 12:31_
+_@last-partizan_
 
 I'm using DRF and drf-spectacular, and it uses runtime type introspection for some cases (like `serializers.SerializerMethodField()`. And i have no way to tell `ruff` to not move those types into TYPE_CHECKING block.
 

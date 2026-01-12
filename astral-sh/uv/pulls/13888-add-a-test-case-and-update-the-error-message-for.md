@@ -12,14 +12,14 @@ head: zb/hint
 created_at: 2025-06-06T18:23:58Z
 updated_at: 2025-06-06T19:13:05Z
 url: https://github.com/astral-sh/uv/pull/13888
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:54Z
 ```
 
 # Add a test case and update the error message for `required-environments` hint
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-06 18:23_
+_@zanieb_
 
 Review of #13575 
 

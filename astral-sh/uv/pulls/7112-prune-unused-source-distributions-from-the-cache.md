@@ -14,14 +14,14 @@ head: charlie/prune
 created_at: 2024-09-06T01:27:47Z
 updated_at: 2024-09-06T01:40:53Z
 url: https://github.com/astral-sh/uv/pull/7112
-synced_at: 2026-01-10T12:53:40Z
+synced_at: 2026-01-12T16:07:42Z
 ```
 
 # Prune unused source distributions from the cache
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-06 01:27_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: fix/add-plugin-script-diagnostics-variable
 created_at: 2023-06-22T19:54:45Z
 updated_at: 2023-06-22T20:28:27Z
 url: https://github.com/astral-sh/ruff/pull/5317
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix `diagnostics` variable name in `add_plugin.py` script
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2023-06-22 19:54_
+_@edgarrmondragon_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

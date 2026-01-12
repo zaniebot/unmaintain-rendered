@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-28T13:24:19Z
 updated_at: 2023-11-01T12:45:14Z
 url: https://github.com/astral-sh/ruff/issues/8304
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [BUG] Ruff raises "undefined name" error in notebooks with objects imported atop
 
 ---
 
-_Issue opened by @baggiponte on 2023-10-28 13:24_
+_@baggiponte_
 
 A project I maintain, `functime`, uses ruff to lint the notebooks. I just ran ruff on [this](https://github.com/neocortexdb/functime/blob/main/docs/notebooks/evaluation.ipynb) notebook and I get a slew of errors of imported objects (e.g. `pl`) that are flagged as undefined variables:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-11T18:01:41Z
 updated_at: 2025-04-11T08:21:49Z
 url: https://github.com/astral-sh/ruff/issues/16640
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Unexpected space in docstring near escaped quote
 
 ---
 
-_Issue opened by @vincent0426 on 2025-03-11 18:01_
+_@vincent0426_
 
 ### Summary
 

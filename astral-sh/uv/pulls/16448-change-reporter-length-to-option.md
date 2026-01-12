@@ -13,14 +13,14 @@ head: issue/single-item-reporter
 created_at: 2025-10-25T11:32:51Z
 updated_at: 2025-10-27T16:17:14Z
 url: https://github.com/astral-sh/uv/pull/16448
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:15Z
 ```
 
 # Change reporter length to `Option`
 
 ---
 
-_Pull request opened by @0xllx0 on 2025-10-25 11:32_
+_@0xllx0_
 
 ## Summary
 

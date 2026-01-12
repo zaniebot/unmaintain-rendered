@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-01T04:54:19Z
 updated_at: 2024-10-07T11:56:18Z
 url: https://github.com/astral-sh/ruff/issues/13581
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # B905's autofix sets strict=False, but the suggested fix is strict=True
 
 ---
 
-_Issue opened by @mdbernard on 2024-10-01 04:54_
+_@mdbernard_
 
 The [docs for B905](https://docs.astral.sh/ruff/rules/zip-without-explicit-strict/#zip-without-explicit-strict-b905) state the suggested fix is to use `strict=True`, but the autofix introduced [here](https://github.com/astral-sh/ruff/pull/9176) autofixes with `strict=False`.
 

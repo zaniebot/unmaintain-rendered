@@ -14,14 +14,14 @@ head: charlie/port
 created_at: 2024-09-18T15:21:21Z
 updated_at: 2024-09-18T18:51:17Z
 url: https://github.com/astral-sh/uv/pull/7504
-synced_at: 2026-01-10T12:53:48Z
+synced_at: 2026-01-12T16:07:51Z
 ```
 
 # Use portable paths when serializing sources
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-18 15:21_
+_@charliermarsh_
 
 ## Summary
 

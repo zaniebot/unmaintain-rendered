@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-13T20:12:53Z
 updated_at: 2024-06-14T06:38:22Z
 url: https://github.com/astral-sh/uv/issues/4317
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # uv lock branch dependency doesn't update commit hash on new commits
 
 ---
 
-_Issue opened by @blueraft on 2024-06-13 20:12_
+_@blueraft_
 
 When pointing a package dependency to the main branch, I noticed a discrepancy in behavior between the `uv pip compile` lock file and the `uv lock` file. Specifically, if the main branch has new commits, `uv pip compile` updates the commit hash in the lock file. However, the uv lock file does not update the commit hash when there are new commits in the branch. 
 

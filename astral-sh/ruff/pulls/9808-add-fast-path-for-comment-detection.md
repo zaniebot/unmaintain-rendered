@@ -13,14 +13,14 @@ head: charlie/eradicate
 created_at: 2024-02-03T16:22:26Z
 updated_at: 2024-02-05T16:09:21Z
 url: https://github.com/astral-sh/ruff/pull/9808
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Add fast-path for comment detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-03 16:22_
+_@charliermarsh_
 
 ## Summary
 

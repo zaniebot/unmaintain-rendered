@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-12T09:43:37Z
 updated_at: 2023-09-27T08:34:52Z
 url: https://github.com/astral-sh/ruff/issues/7299
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # PEP 701 linter changes
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-12 09:43_
+_@dhruvmanila_
 
 PEP 701 in the lexer and parser is complete, and it's time to move on to make the necessary changes in the linter. This will mainly involve token-based rules or anything which uses the lexer in some way. The work items section contains a list of issues which needs to be fixed.
 

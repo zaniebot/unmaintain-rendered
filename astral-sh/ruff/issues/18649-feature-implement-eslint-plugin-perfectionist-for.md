@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-12T17:01:50Z
 updated_at: 2025-06-12T17:11:48Z
 url: https://github.com/astral-sh/ruff/issues/18649
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Feature: implement eslint-plugin-perfectionist, for Python
 
 ---
 
-_Issue opened by @Goldziher on 2025-06-12 17:01_
+_@Goldziher_
 
 ### Summary
 

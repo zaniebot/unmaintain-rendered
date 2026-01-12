@@ -13,14 +13,14 @@ head: charlie/no
 created_at: 2024-08-24T13:36:33Z
 updated_at: 2024-08-24T13:45:32Z
 url: https://github.com/astral-sh/uv/pull/6581
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:26Z
 ```
 
 # Clarify need to include `pyproject.toml` with `--no-install-project`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-24 13:36_
+_@charliermarsh_
 
 ## Summary
 

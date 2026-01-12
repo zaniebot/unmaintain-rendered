@@ -14,14 +14,14 @@ head: konsti/discard-forks
 created_at: 2024-08-08T12:01:51Z
 updated_at: 2024-08-09T09:13:40Z
 url: https://github.com/astral-sh/uv/pull/5905
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:05Z
 ```
 
 # Discard forks when using `--upgrade`
 
 ---
 
-_Pull request opened by @konstin on 2024-08-08 12:01_
+_@konstin_
 
 Fixes #5817
 

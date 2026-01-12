@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-06T01:12:20Z
 updated_at: 2025-12-06T01:28:05Z
 url: https://github.com/astral-sh/ty/issues/1791
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Add inlay hints for infered types on marker special types
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-12-06 01:12_
+_@MeGaGiGaGon_
 
 There are some special types like `Final` and `ClassVar` that are only markers and don't actually affect the type, which means even with a partial type annotation `ty` still does inference (unlike normal generic types like `list` where `x: list` means `list[Any`). It would be nice if there was an inlay hint showing the inferred type on these special statements like how `BasedPyright` does it in VSC:
 

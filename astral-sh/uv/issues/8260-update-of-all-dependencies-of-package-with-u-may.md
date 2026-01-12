@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-16T14:59:31Z
 updated_at: 2024-10-16T17:23:16Z
 url: https://github.com/astral-sh/uv/issues/8260
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # Update of all dependencies of package  with `-U` may lead to not working environment (`numba` and `numpy` problem)
 
 ---
 
-_Issue opened by @Czaki on 2024-10-16 14:59_
+_@Czaki_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

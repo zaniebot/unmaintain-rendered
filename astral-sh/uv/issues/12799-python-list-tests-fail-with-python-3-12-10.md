@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-10T03:00:45Z
 updated_at: 2025-04-14T12:23:11Z
 url: https://github.com/astral-sh/uv/issues/12799
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # python_list tests fail with Python 3.12.10
 
 ---
 
-_Issue opened by @mgorny on 2025-04-10 03:00_
+_@mgorny_
 
 ### Summary
 

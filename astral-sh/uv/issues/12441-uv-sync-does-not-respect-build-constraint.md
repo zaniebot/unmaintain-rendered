@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T17:03:31Z
 updated_at: 2025-08-27T19:48:06Z
 url: https://github.com/astral-sh/uv/issues/12441
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # `uv sync` does not respect `build-constraint-dependencies`
 
 ---
 
-_Issue opened by @zanieb on 2025-03-24 17:03_
+_@zanieb_
 
 While debugging #12440, we noticed this setting was not properly propagated. These constraints _are_ respected when using `uv pip`.
 

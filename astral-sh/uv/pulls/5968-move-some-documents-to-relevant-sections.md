@@ -14,14 +14,14 @@ head: zb/move-docs
 created_at: 2024-08-09T17:21:59Z
 updated_at: 2024-08-09T17:31:11Z
 url: https://github.com/astral-sh/uv/pull/5968
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:08Z
 ```
 
 # Move some documents to relevant sections
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-09 17:21_
+_@zanieb_
 
 _No description provided._
 

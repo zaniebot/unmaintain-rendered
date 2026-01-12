@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-02-16T22:24:17Z
 updated_at: 2022-02-16T23:43:52Z
 url: https://github.com/clap-rs/clap/issues/3478
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # clap::Command docs recommends deprecated function.
 
 ---
 
-_Issue opened by @tbethe on 2022-02-16 22:24_
+_@tbethe_
 
 Clap version: 3.1.0
 

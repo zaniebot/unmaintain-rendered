@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-13T20:26:32Z
 updated_at: 2024-03-15T20:12:29Z
 url: https://github.com/astral-sh/uv/issues/2424
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Can't find .dist-info for package with local version string
 
 ---
 
-_Issue opened by @jasonprado on 2024-03-13 20:26_
+_@jasonprado_
 
 My requirements.txt has this:
 ```

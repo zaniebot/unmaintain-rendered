@@ -14,14 +14,14 @@ head: zip-0.6
 created_at: 2024-05-17T19:13:34Z
 updated_at: 2024-05-18T17:31:53Z
 url: https://github.com/astral-sh/uv/pull/3645
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:46Z
 ```
 
 # Pin the zip crate to 0.6
 
 ---
 
-_Pull request opened by @musicinmybrain on 2024-05-17 19:13_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

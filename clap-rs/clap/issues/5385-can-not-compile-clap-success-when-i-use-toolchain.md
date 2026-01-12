@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-06T02:32:08Z
 updated_at: 2024-03-07T01:33:53Z
 url: https://github.com/clap-rs/clap/issues/5385
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Can not compile clap success  when I use toolchain nightly-x86_64-unknown-linux-gnu
 
 ---
 
-_Issue opened by @jokemanfire on 2024-03-06 02:32_
+_@jokemanfire_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-28T11:52:17Z
 updated_at: 2023-05-18T16:00:32Z
 url: https://github.com/astral-sh/ruff/issues/3273
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Errors set as unfixable are reported as fixable
 
 ---
 
-_Issue opened by @MarkTuddenham on 2023-02-28 11:52_
+_@MarkTuddenham_
 
 
 Expect `ruff` to tell me which errors it will fix when called with `--fix`.

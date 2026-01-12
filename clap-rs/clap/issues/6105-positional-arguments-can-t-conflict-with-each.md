@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-14T11:54:51Z
 updated_at: 2025-08-15T13:50:29Z
 url: https://github.com/clap-rs/clap/issues/6105
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Positional arguments can't conflict with each other
 
 ---
 
-_Issue opened by @feraxhp on 2025-08-14 11:54_
+_@feraxhp_
 
 ### Please complete the following tasks
 

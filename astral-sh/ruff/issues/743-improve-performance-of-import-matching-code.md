@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-14T19:17:03Z
 updated_at: 2022-11-14T23:18:13Z
 url: https://github.com/astral-sh/ruff/issues/743
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Improve performance of import matching code
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-14 19:17_
+_@charliermarsh_
 
 `f5b1f95` (#715) introduced a performance regression (performance on the benchmark degraded by about 30%).
 

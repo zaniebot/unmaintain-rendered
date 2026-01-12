@@ -12,14 +12,14 @@ head: main
 created_at: 2023-03-04T03:09:52Z
 updated_at: 2023-03-04T04:33:13Z
 url: https://github.com/astral-sh/ruff/pull/3333
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Explicitly put `Path(...)` in Pathlib violations
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-03-04 03:09_
+_@evanrittenhouse_
 
 Resolves #3246 
 

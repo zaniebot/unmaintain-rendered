@@ -13,14 +13,14 @@ head: faq-link-fix
 created_at: 2023-09-03T17:52:31Z
 updated_at: 2023-09-03T18:06:06Z
 url: https://github.com/astral-sh/ruff/pull/7093
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Fix incorrect flake8-copyright link in faq
 
 ---
 
-_Pull request opened by @oliviacrain on 2023-09-03 17:52_
+_@oliviacrain_
 
 ## Summary
 

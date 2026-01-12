@@ -13,14 +13,14 @@ head: refactor/ruff-bin
 created_at: 2023-03-08T07:51:16Z
 updated_at: 2023-03-08T11:12:01Z
 url: https://github.com/astral-sh/ruff/pull/3398
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Make `ruff_cli` binary a small wrapper around `lib`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-08 07:51_
+_@MichaReiser_
 
 This PR refactors `ruff_cli` so that the binary is only a small wrapper around the `run` function exposed by the `ruff_cli` lib. 
 

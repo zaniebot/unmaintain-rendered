@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-07-05T16:07:17Z
 updated_at: 2020-07-05T16:57:56Z
 url: https://github.com/clap-rs/clap/issues/2001
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # When taking in an input file as "tes.txt" or "test.txt", clap tries to treat it as a subcommand and it fails
 
 ---
 
-_Issue opened by @embeddedpenguin on 2020-07-05 16:07_
+_@embeddedpenguin_
 
 ### Code
 

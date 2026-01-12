@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-13T12:44:52Z
 updated_at: 2023-02-13T14:10:24Z
 url: https://github.com/astral-sh/ruff/issues/2854
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `S608` Triggered on Exception
 
 ---
 
-_Issue opened by @colin99d on 2023-02-13 12:44_
+_@colin99d_
 
 I am getting an `S608` error on the following line of code:
 `raise Exception(f"Select a valid asset from {', '.join(ASSETS)}")`

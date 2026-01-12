@@ -13,14 +13,14 @@ head: zb/fix-run-pre
 created_at: 2024-09-11T18:17:55Z
 updated_at: 2024-09-17T14:36:43Z
 url: https://github.com/astral-sh/uv/pull/7300
-synced_at: 2026-01-10T12:53:44Z
+synced_at: 2026-01-12T16:07:46Z
 ```
 
 # Avoid selecting prerelease Python installations without opt-in
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-11 18:17_
+_@zanieb_
 
 Similar to our semantics for packages with pre-release versions.
 

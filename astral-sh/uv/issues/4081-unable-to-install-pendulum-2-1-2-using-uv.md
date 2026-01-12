@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-05T23:59:19Z
 updated_at: 2024-06-06T01:23:52Z
 url: https://github.com/astral-sh/uv/issues/4081
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Unable to install `pendulum==2.1.2` using `uv`
 
 ---
 
-_Issue opened by @mihirsamdarshi on 2024-06-05 23:59_
+_@mihirsamdarshi_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

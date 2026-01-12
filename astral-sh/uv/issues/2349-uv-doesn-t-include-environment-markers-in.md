@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-10T23:59:41Z
 updated_at: 2024-03-11T02:33:40Z
 url: https://github.com/astral-sh/uv/issues/2349
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # uv doesn't include environment markers in compiled output
 
 ---
 
-_Issue opened by @euan-reid on 2024-03-10 23:59_
+_@euan-reid_
 
 In a current project I have an optional dependency that's not available on Windows - specifically, uvloop (used for better performance by uvicorn) is currently unavailable for Windows. As such, I set environment markers to only install that extra on non-Windows platforms. However, when I run `uv pip compile` it doesn't include the markers in the output requirements.txt.
 

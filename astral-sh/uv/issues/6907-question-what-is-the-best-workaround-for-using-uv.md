@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-01T04:46:14Z
 updated_at: 2024-09-03T16:14:53Z
 url: https://github.com/astral-sh/uv/issues/6907
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # [Question] What is the best workaround for using uv when dependency is not resolvable? (e.g. PyTorch v2.4.0 + segment-anything-2 (sam-2) v1.0)
 
 ---
 
-_Issue opened by @hideakitai on 2024-09-01 04:46_
+_@hideakitai_
 
 Thanks for the great tool.
 

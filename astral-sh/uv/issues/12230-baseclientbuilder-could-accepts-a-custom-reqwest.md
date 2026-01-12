@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-17T08:11:32Z
 updated_at: 2025-03-17T19:18:57Z
 url: https://github.com/astral-sh/uv/issues/12230
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # BaseClientBuilder could accepts a custom reqwest::Proxy
 
 ---
 
-_Issue opened by @gzm55 on 2025-03-17 08:11_
+_@gzm55_
 
 ### Summary
 

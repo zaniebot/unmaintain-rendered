@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-16T14:22:08Z
 updated_at: 2024-09-16T14:23:35Z
 url: https://github.com/astral-sh/uv/issues/7428
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # uv: parse scripts entries and warn on non-package projects
 
 ---
 
-_Issue opened by @lucab on 2024-09-16 14:22_
+_@lucab_
 
 This is a followup to https://github.com/astral-sh/uv/issues/7034 and https://github.com/astral-sh/uv/pull/7420.
 

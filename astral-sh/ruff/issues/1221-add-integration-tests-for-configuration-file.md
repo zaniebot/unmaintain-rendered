@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-12T21:29:48Z
 updated_at: 2022-12-16T05:23:07Z
 url: https://github.com/astral-sh/ruff/issues/1221
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add integration tests for configuration file resolution
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-12 21:29_
+_@charliermarsh_
 
 _No description provided._
 

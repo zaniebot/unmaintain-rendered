@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-14T17:18:09Z
 updated_at: 2024-08-20T14:23:54Z
 url: https://github.com/astral-sh/uv/issues/4330
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # `RegistryClientBuilder` should support creation from `BaseClientBuilder`
 
 ---
 
-_Issue opened by @zanieb on 2024-06-14 17:18_
+_@zanieb_
 
 _No description provided._
 

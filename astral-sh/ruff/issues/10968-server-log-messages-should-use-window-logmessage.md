@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-16T06:38:22Z
 updated_at: 2024-06-11T18:29:49Z
 url: https://github.com/astral-sh/ruff/issues/10968
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Server log messages should use `window/logMessage`
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-04-16 06:38_
+_@dhruvmanila_
 
 Currently, the server uses the `tracing` module for log messages which sends everything to stderr. This gets picked up by the client and is added to the log messages at different level regardless of the level used in the server. This level is set by the client.
 

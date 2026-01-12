@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-31T21:46:32Z
 updated_at: 2025-08-01T23:24:55Z
 url: https://github.com/astral-sh/ty/issues/922
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Symlink resolution support (`bazel`)
 
 ---
 
-_Issue opened by @nroman-openai on 2025-07-31 21:46_
+_@nroman-openai_
 
 I was trying to get `ty check` running under `bazel test` but I ran into an issue where it could not locate the source files because the bazel execution sandbox uses a symlink forest. The walk in `crates/ty_project/src/walk.rs` ignores symlinks completely.
 

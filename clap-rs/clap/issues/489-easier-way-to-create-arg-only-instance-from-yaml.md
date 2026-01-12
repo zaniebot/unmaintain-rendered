@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-04-20T23:42:05Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/489
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Easier way to create Arg only instance from YAML
 
 ---
 
-_Issue opened by @cstyan on 2016-04-20 23:42_
+_@cstyan_
 
 Re: our discussion in gitter, it would be nice if there was an easier way to create an arg only instance from a YAML file. 
 

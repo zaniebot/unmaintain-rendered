@@ -13,14 +13,14 @@ head: dylan/stabilize-optional-union-up
 created_at: 2025-06-06T17:17:41Z
 updated_at: 2025-06-09T22:25:15Z
 url: https://github.com/astral-sh/ruff/pull/18505
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [`pyupgrade`] Stabilize `non-pep604-annotation-optional` (`UP045`) and preview behavior for `non-pep604-annotation-union` (`UP007`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-06 17:17_
+_@dylwil3_
 
 _No description provided._
 

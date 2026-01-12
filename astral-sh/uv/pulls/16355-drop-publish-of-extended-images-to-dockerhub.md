@@ -12,14 +12,14 @@ head: zb/dh-fix
 created_at: 2025-10-18T19:46:36Z
 updated_at: 2025-10-18T19:47:50Z
 url: https://github.com/astral-sh/uv/pull/16355
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:13Z
 ```
 
 # Drop publish of extended images to DockerHub temporarily
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-18 19:46_
+_@zanieb_
 
 To workaround https://github.com/astral-sh/uv/issues/16350
 

@@ -13,14 +13,14 @@ head: charlie/async
 created_at: 2023-08-05T22:56:30Z
 updated_at: 2023-08-07T16:54:10Z
 url: https://github.com/astral-sh/ruff/pull/6369
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Remove async AST node variants for `with`, `for`, and `def`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-05 22:56_
+_@charliermarsh_
 
 ## Summary
 

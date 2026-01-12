@@ -13,14 +13,14 @@ head: rc-semi
 created_at: 2024-03-27T22:15:22Z
 updated_at: 2024-09-08T18:36:15Z
 url: https://github.com/astral-sh/ruff/pull/10639
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [Python Formatter] Preserve empty lines
 
 ---
 
-_Pull request opened by @robincaloudis on 2024-03-27 22:15_
+_@robincaloudis_
 
 ## Summary
 https://github.com/astral-sh/ruff/issues/9958 reported that code like

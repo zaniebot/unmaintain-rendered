@@ -13,14 +13,14 @@ head: charlie/bracketed
 created_at: 2023-08-23T03:11:22Z
 updated_at: 2023-08-25T04:30:07Z
 url: https://github.com/astral-sh/ruff/pull/6801
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Handle bracketed comments on sequence patterns
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-23 03:11_
+_@charliermarsh_
 
 ## Summary
 

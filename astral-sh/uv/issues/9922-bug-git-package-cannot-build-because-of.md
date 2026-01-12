@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T22:02:50Z
 updated_at: 2024-12-17T07:04:57Z
 url: https://github.com/astral-sh/uv/issues/9922
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # bug: git package cannot build, because of ModuleNotFoundError: No module named 'requests'
 
 ---
 
-_Issue opened by @qiansen1386 on 2024-12-15 22:02_
+_@qiansen1386_
 
 I was trying to install a forked pip package, e.g. `uv pip install git+https://github.com/qiansen1386/lixinger-openapi.git` which is forked from `lixinger-openapi`
 but I got `ModuleNotFoundError: No module named 'requests'` What buzz me is I do have requests in my venv(double checked via python import)

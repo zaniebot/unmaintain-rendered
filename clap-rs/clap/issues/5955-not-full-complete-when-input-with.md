@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-21T07:03:45Z
 updated_at: 2025-03-21T11:14:51Z
 url: https://github.com/clap-rs/clap/issues/5955
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # not full complete when input with ::
 
 ---
 
-_Issue opened by @Eternity1987 on 2025-03-21 07:03_
+_@Eternity1987_
 
 ### Please complete the following tasks
 

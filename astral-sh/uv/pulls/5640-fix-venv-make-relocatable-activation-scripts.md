@@ -14,14 +14,14 @@ head: relocatable
 created_at: 2024-07-30T22:15:33Z
 updated_at: 2024-12-13T20:13:02Z
 url: https://github.com/astral-sh/uv/pull/5640
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:06:55Z
 ```
 
 # fix(venv): make relocatable activation scripts support ksh
 
 ---
 
-_Pull request opened by @paveldikov on 2024-07-30 22:15_
+_@paveldikov_
 
 It transpires that detecting the directory a script was sourced from is non-trivial across `bash`, `ksh` and `zsh`.
 

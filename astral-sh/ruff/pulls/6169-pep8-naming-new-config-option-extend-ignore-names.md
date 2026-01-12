@@ -12,14 +12,14 @@ head: dhruv/pep8-naming-config
 created_at: 2023-07-29T11:07:43Z
 updated_at: 2023-07-29T11:51:46Z
 url: https://github.com/astral-sh/ruff/pull/6169
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # [`pep8-naming`]: New config option `extend-ignore-names`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-29 11:07_
+_@dhruvmanila_
 
 ## Summary
 

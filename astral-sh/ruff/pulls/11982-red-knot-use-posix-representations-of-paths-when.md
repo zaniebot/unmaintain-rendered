@@ -13,14 +13,14 @@ head: normalize-zip-paths
 created_at: 2024-06-22T13:35:17Z
 updated_at: 2024-06-22T16:54:19Z
 url: https://github.com/astral-sh/ruff/pull/11982
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Use POSIX representations of paths when creating the typeshed zip file
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-22 13:35_
+_@AlexWaygood_
 
 ## Summary
 

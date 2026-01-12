@@ -14,14 +14,14 @@ head: plugin/flake8-slots
 created_at: 2023-06-06T21:35:24Z
 updated_at: 2023-06-09T04:33:18Z
 url: https://github.com/astral-sh/ruff/pull/4909
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # [`flake8-slots`] Add plugin, add `SLOT000`, `SLOT001` and `SLOT002`
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-06-06 21:35_
+_@qdegraaf_
 
 ## Summary
 

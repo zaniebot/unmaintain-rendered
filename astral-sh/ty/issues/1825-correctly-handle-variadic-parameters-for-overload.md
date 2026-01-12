@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-09T14:56:40Z
 updated_at: 2025-12-10T16:53:58Z
 url: https://github.com/astral-sh/ty/issues/1825
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Correctly handle variadic parameters for overload step 5 filtering
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-12-09 14:56_
+_@dhruvmanila_
 
 ### Summary
 

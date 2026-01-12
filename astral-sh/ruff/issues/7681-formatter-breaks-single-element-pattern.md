@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-27T21:34:36Z
 updated_at: 2023-09-27T23:57:19Z
 url: https://github.com/astral-sh/ruff/issues/7681
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter: breaks single-element pattern
 
 ---
 
-_Issue opened by @mrcljx on 2023-09-27 21:34_
+_@mrcljx_
 
 A `case` with single-element tuple pattern (e.g. `(x,)`) is broken into multiple lines:
 

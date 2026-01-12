@@ -13,14 +13,14 @@ head: fix-last-tag-distance
 created_at: 2025-03-12T17:20:32Z
 updated_at: 2025-03-13T12:05:19Z
 url: https://github.com/astral-sh/ruff/pull/16686
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [ruff] Fix `last_tag`/`commits_since_last_tag` for `version` command
 
 ---
 
-_Pull request opened by @ZedThree on 2025-03-12 17:20_
+_@ZedThree_
 
 ## Summary
 

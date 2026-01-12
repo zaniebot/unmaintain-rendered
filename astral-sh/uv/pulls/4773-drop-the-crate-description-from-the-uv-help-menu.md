@@ -13,14 +13,14 @@ head: zb/cli-about
 created_at: 2024-07-03T14:35:51Z
 updated_at: 2024-07-03T16:12:51Z
 url: https://github.com/astral-sh/uv/pull/4773
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:27Z
 ```
 
 # Drop the crate description from the `uv` help menu
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-03 14:35_
+_@zanieb_
 
 Previously this displayed:
 

@@ -13,14 +13,14 @@ head: david/instance-assignable_to-callable
 created_at: 2025-04-23T18:19:03Z
 updated_at: 2025-04-23T18:34:16Z
 url: https://github.com/astral-sh/ruff/pull/17590
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Assignability of class instances to Callable
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-23 18:19_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-10T18:36:20Z
 updated_at: 2023-05-10T20:13:05Z
 url: https://github.com/astral-sh/ruff/issues/4355
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Support glob patterns for `extend-immutable-calls` configuration 
 
 ---
 
-_Issue opened by @MicaelJarniac on 2023-05-10 18:36_
+_@MicaelJarniac_
 
 ## Description
 

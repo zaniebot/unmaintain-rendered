@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-12-18T12:02:06Z
 updated_at: 2018-08-02T03:29:58Z
 url: https://github.com/clap-rs/clap/issues/779
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Replace colons with newlines in crate_authors!()
 
 ---
 
-_Issue opened by @nabijaczleweli on 2016-12-18 12:02_
+_@nabijaczleweli_
 
 Since `cargo`'s `$CARGO_PKG_AUTHORS` is `:`-separated ([source](http://doc.crates.io/environment-variables.html)), it'd be nice to replace all colons with newlines in the macro making it much more end-user-friendly, e.g. this:
 

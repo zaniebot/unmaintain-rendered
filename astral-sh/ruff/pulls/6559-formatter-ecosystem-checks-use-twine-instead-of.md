@@ -14,14 +14,14 @@ head: twine-instead-of-build
 created_at: 2023-08-14T13:19:28Z
 updated_at: 2023-08-14T20:40:58Z
 url: https://github.com/astral-sh/ruff/pull/6559
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Formatter ecosystem checks: Use twine instead of build
 
 ---
 
-_Pull request opened by @konstin on 2023-08-14 13:19_
+_@konstin_
 
 `build` uses `skip-string-normalization: true` which we don't support. Instead, we replace it with twine, which is also a small util library.
 

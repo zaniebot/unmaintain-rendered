@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-07T09:27:14Z
 updated_at: 2023-12-12T05:37:30Z
 url: https://github.com/astral-sh/ruff/issues/118
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Support and Integration for VSCode
 
 ---
 
-_Issue opened by @harshalchaudhari35 on 2022-09-07 09:27_
+_@harshalchaudhari35_
 
 Is there a way to add ruff as a python linter in VScode? 
 

@@ -13,14 +13,14 @@ head: zb/find-fix
 created_at: 2025-03-21T18:09:12Z
 updated_at: 2025-03-21T18:44:31Z
 url: https://github.com/astral-sh/uv/pull/12377
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:15Z
 ```
 
 # Update some Python find tests to use filters
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-21 18:09_
+_@zanieb_
 
 _No description provided._
 

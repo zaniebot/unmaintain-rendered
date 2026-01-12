@@ -13,14 +13,14 @@ head: charlie/tr
 created_at: 2024-10-10T10:13:52Z
 updated_at: 2024-10-11T18:27:08Z
 url: https://github.com/astral-sh/uv/pull/8081
-synced_at: 2026-01-10T12:54:02Z
+synced_at: 2026-01-12T16:08:09Z
 ```
 
 # Update pip compatibility guide to note transitive URL dependency support
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-10 10:13_
+_@charliermarsh_
 
 ## Summary
 

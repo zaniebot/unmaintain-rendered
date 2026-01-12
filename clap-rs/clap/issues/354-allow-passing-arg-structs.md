@@ -12,14 +12,14 @@ assignees: []
 created_at: 2015-11-30T12:06:57Z
 updated_at: 2018-08-02T03:29:47Z
 url: https://github.com/clap-rs/clap/issues/354
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Allow passing &Arg structs
 
 ---
 
-_Issue opened by @kbknapp on 2015-11-30 12:06_
+_@kbknapp_
 
 Currently only owned `Arg`s are passed to `App`, but I don't believe this required, just the way it was done.
 

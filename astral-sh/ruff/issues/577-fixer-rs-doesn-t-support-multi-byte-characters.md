@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-04T03:23:54Z
 updated_at: 2022-11-04T16:04:15Z
 url: https://github.com/astral-sh/ruff/issues/577
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `fixer.rs` doesn't support multi-byte characters
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-04 03:23_
+_@charliermarsh_
 
 This is a blocker to adding autofix for #565.
 

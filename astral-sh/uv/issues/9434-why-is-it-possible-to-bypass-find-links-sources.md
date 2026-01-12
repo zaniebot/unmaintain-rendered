@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-26T07:29:49Z
 updated_at: 2025-03-24T01:58:50Z
 url: https://github.com/astral-sh/uv/issues/9434
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:50Z
 ```
 
 # Why is it possible to bypass "find-links" sources only in the "first-match" search mode?
 
 ---
 
-_Issue opened by @VladislavSoren on 2024-11-26 07:29_
+_@VladislavSoren_
 
 Info:
 - OS: MacOS

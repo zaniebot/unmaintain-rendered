@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-11T13:24:48Z
 updated_at: 2025-10-13T20:27:43Z
 url: https://github.com/astral-sh/ruff/issues/20811
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # I002 fixes’ insertions appear in reverse alphabetical order
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-11 13:24_
+_@dscorbett_
 
 ### Summary
 

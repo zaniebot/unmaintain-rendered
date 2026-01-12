@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-14T20:34:01Z
 updated_at: 2024-07-30T09:04:00Z
 url: https://github.com/astral-sh/ruff/issues/12323
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] Set right durability for inputs
 
 ---
 
-_Issue opened by @MichaReiser on 2024-07-14 20:34_
+_@MichaReiser_
 
 Salsa doesn't support setting the durability when creating input ingredients yet. We should PR support for this (there has been talk for adding a builder for creating ingredients).
 

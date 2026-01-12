@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-26T01:12:52Z
 updated_at: 2025-10-06T16:56:27Z
 url: https://github.com/astral-sh/ty/issues/512
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Intersection with `@final` generic class is incorrectly simplified to Never
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-05-26 01:12_
+_@JelleZijlstra_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-02T18:42:18Z
 updated_at: 2025-09-02T20:10:58Z
 url: https://github.com/astral-sh/uv/issues/15635
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # uv cannot install packages on its own managed Python with virtual environment activated
 
 ---
 
-_Issue opened by @rgandhasri87 on 2025-09-02 18:42_
+_@rgandhasri87_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-09T17:03:44Z
 updated_at: 2025-12-09T17:10:13Z
 url: https://github.com/astral-sh/ty/issues/1827
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `typing.Self` appears to not work properly
 
 ---
 
-_Issue opened by @keysmashes on 2025-12-09 17:03_
+_@keysmashes_
 
 ### Summary
 

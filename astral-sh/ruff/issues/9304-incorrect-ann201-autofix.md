@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-29T08:20:00Z
 updated_at: 2024-01-03T03:59:13Z
 url: https://github.com/astral-sh/ruff/issues/9304
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Incorrect ANN201 autofix
 
 ---
 
-_Issue opened by @hauntsaninja on 2023-12-29 08:20_
+_@hauntsaninja_
 
 Given:
 ```

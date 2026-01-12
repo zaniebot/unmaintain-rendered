@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-04T13:15:57Z
 updated_at: 2024-09-04T13:47:00Z
 url: https://github.com/astral-sh/uv/issues/7015
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # [compatibility issue] uv fails to install flash-attn==2.6.1
 
 ---
 
-_Issue opened by @mobidyc on 2024-09-04 13:15_
+_@mobidyc_
 
 ```shell
 # uv --version

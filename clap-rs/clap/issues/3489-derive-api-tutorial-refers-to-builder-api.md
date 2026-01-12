@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-02-18T16:41:51Z
 updated_at: 2022-02-18T16:53:30Z
 url: https://github.com/clap-rs/clap/issues/3489
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Derive API tutorial refers to Builder API concepts rather than the derive API attributes
 
 ---
 
-_Issue opened by @edmorley on 2022-02-18 16:41_
+_@edmorley_
 
 ### Please complete the following tasks
 

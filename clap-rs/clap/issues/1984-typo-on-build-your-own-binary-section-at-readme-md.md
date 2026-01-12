@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-06-25T12:46:34Z
 updated_at: 2020-06-25T22:55:26Z
 url: https://github.com/clap-rs/clap/issues/1984
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Typo on 'Build Your Own Binary' section at 'README.md'
 
 ---
 
-_Issue opened by @ewilazarus on 2020-06-25 12:46_
+_@ewilazarus_
 
 ### Clap version
 

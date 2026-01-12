@@ -13,14 +13,14 @@ head: dhruv/docs
 created_at: 2024-08-16T15:23:02Z
 updated_at: 2024-08-16T15:28:33Z
 url: https://github.com/astral-sh/ruff/pull/12934
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Ignore blank line rules for docs formatting
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-16 15:23_
+_@dhruvmanila_
 
 ## Summary
 

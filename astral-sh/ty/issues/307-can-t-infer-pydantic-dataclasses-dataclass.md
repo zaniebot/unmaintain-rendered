@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-10T12:52:46Z
 updated_at: 2025-05-13T14:59:13Z
 url: https://github.com/astral-sh/ty/issues/307
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # can't infer `pydantic.dataclasses.dataclass`
 
 ---
 
-_Issue opened by @trim21 on 2025-05-10 12:52_
+_@trim21_
 
 ### Summary
 

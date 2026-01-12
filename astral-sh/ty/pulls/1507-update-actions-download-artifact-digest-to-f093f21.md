@@ -12,14 +12,14 @@ head: renovate/actions-download-artifact-digest
 created_at: 2025-11-10T00:46:37Z
 updated_at: 2025-11-10T08:16:50Z
 url: https://github.com/astral-sh/ty/pull/1507
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Update actions/download-artifact digest to f093f21
 
 ---
 
-_Pull request opened by @renovate on 2025-11-10 00:46_
+_@renovate_
 
 This PR contains the following updates:
 

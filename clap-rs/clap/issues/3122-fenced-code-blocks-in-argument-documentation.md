@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-09T16:16:03Z
 updated_at: 2022-01-11T18:43:10Z
 url: https://github.com/clap-rs/clap/issues/3122
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Fenced code blocks in argument documentation
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:16_
+_@epage_
 
 <a href="https://github.com/jonhoo"><img src="https://avatars.githubusercontent.com/u/176295?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [jonhoo](https://github.com/jonhoo)**
 _Saturday Mar 02, 2019 at 20:54 GMT_

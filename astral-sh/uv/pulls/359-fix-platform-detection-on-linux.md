@@ -12,14 +12,14 @@ head: ag/fix-linux-detection
 created_at: 2023-11-07T16:03:12Z
 updated_at: 2023-11-07T16:39:37Z
 url: https://github.com/astral-sh/uv/pull/359
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:54Z
 ```
 
 # fix platform detection on Linux
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-11-07 16:03_
+_@BurntSushi_
 
 Rejigger Linux platform detection
 

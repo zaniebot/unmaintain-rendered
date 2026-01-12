@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-13T02:03:24Z
 updated_at: 2024-05-13T18:15:49Z
 url: https://github.com/astral-sh/ruff/issues/11394
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `cargo install ruff` links to a non-existent link now
 
 ---
 
-_Issue opened by @DeflateAwning on 2024-05-13 02:03_
+_@DeflateAwning_
 
 When you run `cargo install ruff`, it links to [https://github.com/charliermarsh/ruff#installation-and-usage](https://github.com/charliermarsh/ruff#installation-and-usage), with an error message saying that it can't be installed from Cargo.
 

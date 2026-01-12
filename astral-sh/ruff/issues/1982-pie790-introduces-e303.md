@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-18T23:47:16Z
 updated_at: 2023-01-19T17:12:22Z
 url: https://github.com/astral-sh/ruff/issues/1982
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # PIE790 introduces E303
 
 ---
 
-_Issue opened by @spaceone on 2023-01-18 23:47_
+_@spaceone_
 
 ```
 $ ruff --select PIE790 --fix --diff foo.py 

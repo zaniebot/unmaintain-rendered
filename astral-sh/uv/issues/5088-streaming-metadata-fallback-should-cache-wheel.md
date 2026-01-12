@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-16T01:32:57Z
 updated_at: 2024-07-16T13:21:48Z
 url: https://github.com/astral-sh/uv/issues/5088
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Streaming metadata fallback should cache wheel
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-16 01:32_
+_@charliermarsh_
 
 See: `wheel_metadata_no_pep658`. If we can't do a range request, we stream the wheel searching for the `METADATA` file. Because we stream, we stop as soon as we read the `METADATA` file... but that also means we don't cache the wheel, which seems like the wrong tradeoff (for large wheels).
 

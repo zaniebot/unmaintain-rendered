@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-02T07:49:10Z
 updated_at: 2024-02-28T16:36:53Z
 url: https://github.com/astral-sh/ruff/issues/9353
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Ruff format insist on "single line after imports" for pyi files
 
 ---
 
-_Issue opened by @kkpattern on 2024-01-02 07:49_
+_@kkpattern_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

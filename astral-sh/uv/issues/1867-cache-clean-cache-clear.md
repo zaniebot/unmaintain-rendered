@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-22T14:10:46Z
 updated_at: 2024-02-22T16:47:59Z
 url: https://github.com/astral-sh/uv/issues/1867
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # `cache clean` -> `cache clear`
 
 ---
 
-_Issue opened by @nschloe on 2024-02-22 14:10_
+_@nschloe_
 
 I believe the syntax
 

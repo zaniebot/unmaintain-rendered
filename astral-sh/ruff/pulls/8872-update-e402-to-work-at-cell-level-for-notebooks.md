@@ -13,14 +13,14 @@ head: dhruv/e402-notebook
 created_at: 2023-11-28T18:02:15Z
 updated_at: 2023-11-29T00:42:00Z
 url: https://github.com/astral-sh/ruff/pull/8872
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Update `E402` to work at cell level for notebooks
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-28 18:02_
+_@dhruvmanila_
 
 ## Summary
 

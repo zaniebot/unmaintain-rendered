@@ -13,14 +13,14 @@ head: alex/remove-variant
 created_at: 2025-08-25T09:55:53Z
 updated_at: 2025-08-25T14:27:56Z
 url: https://github.com/astral-sh/ruff/pull/20079
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [ty] Completely ignore typeshed's stub for `Any`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-25 09:55_
+_@AlexWaygood_
 
 ## Summary
 

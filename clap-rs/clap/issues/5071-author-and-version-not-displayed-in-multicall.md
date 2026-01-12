@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-15T10:25:43Z
 updated_at: 2023-08-15T19:11:25Z
 url: https://github.com/clap-rs/clap/issues/5071
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Author and version not displayed in multicall binary
 
 ---
 
-_Issue opened by @trou on 2023-08-15 10:25_
+_@trou_
 
 ### Please complete the following tasks
 

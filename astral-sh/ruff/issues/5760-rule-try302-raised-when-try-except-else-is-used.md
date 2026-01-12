@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-14T10:35:11Z
 updated_at: 2023-07-14T11:42:56Z
 url: https://github.com/astral-sh/ruff/issues/5760
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Rule TRY302 raised when try-except-else is used
 
 ---
 
-_Issue opened by @cbenz on 2023-07-14 10:35_
+_@cbenz_
 
 The following code raises `TRY302` :
 

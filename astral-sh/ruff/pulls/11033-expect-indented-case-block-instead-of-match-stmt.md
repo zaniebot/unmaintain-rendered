@@ -13,14 +13,14 @@ head: dhruv/case-block
 created_at: 2024-04-19T11:06:57Z
 updated_at: 2024-04-19T11:24:13Z
 url: https://github.com/astral-sh/ruff/pull/11033
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Expect indented case block instead of match stmt
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-19 11:06_
+_@dhruvmanila_
 
 ## Summary
 

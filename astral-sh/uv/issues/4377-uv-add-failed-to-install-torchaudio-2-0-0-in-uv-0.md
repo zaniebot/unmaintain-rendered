@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-18T06:47:35Z
 updated_at: 2024-06-19T17:27:59Z
 url: https://github.com/astral-sh/uv/issues/4377
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # ``uv add`` failed to install  torchaudio==2.0.0 in ``uv 0.2.12 (b8c039166 2024-06-17)``
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-06-18 06:47_
+_@FishAlchemist_
 
 **Version:** uv 0.2.12 (b8c039166 2024-06-17)
 **OS:** Windows 11

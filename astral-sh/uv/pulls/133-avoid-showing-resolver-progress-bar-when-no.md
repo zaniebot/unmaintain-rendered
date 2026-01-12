@@ -12,14 +12,14 @@ head: charlie/resolve
 created_at: 2023-10-19T03:21:15Z
 updated_at: 2023-10-19T03:23:23Z
 url: https://github.com/astral-sh/uv/pull/133
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:46Z
 ```
 
 # Avoid showing resolver progress bar when no resolution is required
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-19 03:21_
+_@charliermarsh_
 
 _No description provided._
 

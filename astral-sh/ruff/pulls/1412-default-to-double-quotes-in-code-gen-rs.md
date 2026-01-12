@@ -12,14 +12,14 @@ head: charlie/dquote
 created_at: 2022-12-27T21:13:10Z
 updated_at: 2022-12-27T21:17:50Z
 url: https://github.com/astral-sh/ruff/pull/1412
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Default to double quotes in `code_gen.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-27 21:13_
+_@charliermarsh_
 
 Resolves: #1411.
 

@@ -13,14 +13,14 @@ head: micha/stub-packages
 created_at: 2025-04-04T13:26:55Z
 updated_at: 2025-04-07T13:11:54Z
 url: https://github.com/astral-sh/ruff/pull/17204
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Support stub packages
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-04 13:26_
+_@MichaReiser_
 
 ## Summary
 

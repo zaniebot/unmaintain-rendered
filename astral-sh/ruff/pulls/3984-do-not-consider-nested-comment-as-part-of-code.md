@@ -12,14 +12,14 @@ head: fix/ERA001/nested-comments
 created_at: 2023-04-16T09:59:11Z
 updated_at: 2023-04-17T01:11:30Z
 url: https://github.com/astral-sh/ruff/pull/3984
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Do not consider nested comment as part of code
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-04-16 09:59_
+_@dhruvmanila_
 
 ## Summary
 

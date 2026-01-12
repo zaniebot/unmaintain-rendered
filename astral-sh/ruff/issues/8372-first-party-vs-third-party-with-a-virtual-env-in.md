@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-31T10:18:54Z
 updated_at: 2023-10-31T18:47:30Z
 url: https://github.com/astral-sh/ruff/issues/8372
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # First-party vs. third party with a virtual env in the project root
 
 ---
 
-_Issue opened by @thernstig on 2023-10-31 10:18_
+_@thernstig_
 
 Would it be possible for a virtual env placed inside the project directory to automatically not be considered a first party?
 

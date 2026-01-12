@@ -12,14 +12,14 @@ head: charlie/li
 created_at: 2025-09-04T00:40:40Z
 updated_at: 2025-09-04T01:35:35Z
 url: https://github.com/astral-sh/ruff/pull/20222
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # Split LICENSE addendum by derivation type
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-04 00:40_
+_@charliermarsh_
 
 ## Summary
 

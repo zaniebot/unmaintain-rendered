@@ -14,14 +14,14 @@ head: dcreager/thread-safe-panics
 created_at: 2025-01-07T15:12:18Z
 updated_at: 2025-01-08T16:34:52Z
 url: https://github.com/astral-sh/ruff/pull/15319
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Fall back on previous panic hook when not in `catch_unwind` wrapper
 
 ---
 
-_Pull request opened by @dcreager on 2025-01-07 15:12_
+_@dcreager_
 
 This fixes #15317.  Our `catch_unwind` wrapper installs a panic hook that captures (the rendered contents of) the panic info when a panic occurs.  Since the intent is that the caller will render the panic info in some custom way, the hook silences the default stderr panic output.
 

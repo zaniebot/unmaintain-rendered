@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-17T16:38:24Z
 updated_at: 2021-12-23T20:30:10Z
 url: https://github.com/clap-rs/clap/issues/3197
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Internal error when using `conflicts_with` with `ArgGroup`
 
 ---
 
-_Issue opened by @elomatreb on 2021-12-17 16:38_
+_@elomatreb_
 
 ### Please complete the following tasks
 

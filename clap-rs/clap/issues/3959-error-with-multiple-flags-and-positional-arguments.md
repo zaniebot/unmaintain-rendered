@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-07-20T20:54:38Z
 updated_at: 2022-07-21T04:44:23Z
 url: https://github.com/clap-rs/clap/issues/3959
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Error with multiple flags and positional arguments
 
 ---
 
-_Issue opened by @pleshevskiy on 2022-07-20 20:54_
+_@pleshevskiy_
 
 ### Please complete the following tasks
 

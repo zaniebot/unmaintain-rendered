@@ -14,14 +14,14 @@ head: doc102
 created_at: 2025-09-13T21:26:46Z
 updated_at: 2025-10-25T20:30:03Z
 url: https://github.com/astral-sh/ruff/pull/20376
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:00Z
 ```
 
 # [`pydoclint`] Implement `docstring-extraneous-parameter` (`DOC102`)
 
 ---
 
-_Pull request opened by @augustelalande on 2025-09-13 21:26_
+_@augustelalande_
 
 ## Summary
 

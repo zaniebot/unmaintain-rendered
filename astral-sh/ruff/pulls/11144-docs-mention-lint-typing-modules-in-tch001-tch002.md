@@ -13,14 +13,14 @@ head: main
 created_at: 2024-04-25T08:54:38Z
 updated_at: 2024-04-25T15:23:08Z
 url: https://github.com/astral-sh/ruff/pull/11144
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:35Z
 ```
 
 # Docs: mention `lint.typing-modules` in `TCH001`, `TCH002`, `TCH003`
 
 ---
 
-_Pull request opened by @bersbersbers on 2024-04-25 08:54_
+_@bersbersbers_
 
 ## Summary
 

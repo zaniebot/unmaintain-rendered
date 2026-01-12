@@ -13,14 +13,14 @@ head: zb/upgrade-cache
 created_at: 2025-10-23T14:59:19Z
 updated_at: 2025-10-23T15:48:48Z
 url: https://github.com/astral-sh/uv/pull/16421
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:15Z
 ```
 
 # Use the Python download cache during `python_upgrade` tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-23 14:59_
+_@zanieb_
 
 _No description provided._
 

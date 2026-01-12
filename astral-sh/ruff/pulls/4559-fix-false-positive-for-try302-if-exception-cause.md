@@ -13,14 +13,14 @@ head: fix-try302
 created_at: 2023-05-21T13:06:04Z
 updated_at: 2023-05-21T16:07:57Z
 url: https://github.com/astral-sh/ruff/pull/4559
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Fix false-positive for TRY302 if exception cause is given
 
 ---
 
-_Pull request opened by @153957 on 2023-05-21 13:06_
+_@153957_
 
 Fix #4548.
 

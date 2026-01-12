@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-12-16T21:03:24Z
 updated_at: 2023-03-29T20:40:49Z
 url: https://github.com/clap-rs/clap/issues/4558
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Support non-Display types with `default_value_t`
 
 ---
 
-_Issue opened by @rdelfin on 2022-12-16 21:03_
+_@rdelfin_
 
 ### Please complete the following tasks
 

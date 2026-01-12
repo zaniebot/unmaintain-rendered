@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-01T14:39:41Z
 updated_at: 2025-02-03T22:12:40Z
 url: https://github.com/astral-sh/uv/issues/7845
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Editable installation with extras
 
 ---
 
-_Issue opened by @detlefla on 2024-10-01 14:39_
+_@detlefla_
 
 When I try to install extras for an editable installation, e.g. `uv pip install -e . --all-extras`, uv refuses this with an error message:
 ```

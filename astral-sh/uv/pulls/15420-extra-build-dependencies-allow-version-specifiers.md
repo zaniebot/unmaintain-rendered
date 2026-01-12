@@ -14,14 +14,14 @@ head: zsol/jj-tplvulzxmuus
 created_at: 2025-08-21T15:27:19Z
 updated_at: 2025-08-21T16:50:17Z
 url: https://github.com/astral-sh/uv/pull/15420
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:44Z
 ```
 
 # extra-build-dependencies: Allow version specifiers if match-runtime is explicitly false
 
 ---
 
-_Pull request opened by @zsol on 2025-08-21 15:27_
+_@zsol_
 
 ## Summary
 

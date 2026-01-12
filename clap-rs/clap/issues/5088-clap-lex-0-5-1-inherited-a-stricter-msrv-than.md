@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-25T04:02:56Z
 updated_at: 2023-08-25T14:17:47Z
 url: https://github.com/clap-rs/clap/issues/5088
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # clap_lex 0.5.1 inherited a stricter msrv than probably intended
 
 ---
 
-_Issue opened by @udoprog on 2023-08-25 04:02_
+_@udoprog_
 
 ### Please complete the following tasks
 

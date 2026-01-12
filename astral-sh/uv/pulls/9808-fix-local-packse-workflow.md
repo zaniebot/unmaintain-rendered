@@ -13,14 +13,14 @@ head: konsti/fix-packse-workflow
 created_at: 2024-12-11T12:06:34Z
 updated_at: 2024-12-11T15:32:48Z
 url: https://github.com/astral-sh/uv/pull/9808
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:59Z
 ```
 
 #  Fix local packse workflow 
 
 ---
 
-_Pull request opened by @konstin on 2024-12-11 12:06_
+_@konstin_
 
 Make the local packse workflow work again:
 

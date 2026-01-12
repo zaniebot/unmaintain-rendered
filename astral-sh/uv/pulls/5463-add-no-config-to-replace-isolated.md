@@ -13,14 +13,14 @@ head: charlie/no-config
 created_at: 2024-07-25T23:36:04Z
 updated_at: 2024-07-25T23:58:37Z
 url: https://github.com/astral-sh/uv/pull/5463
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:49Z
 ```
 
 # Add `--no-config` to replace `--isolated`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-25 23:36_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/eph-fix
 created_at: 2025-07-21T14:40:18Z
 updated_at: 2025-07-22T12:11:06Z
 url: https://github.com/astral-sh/uv/pull/14790
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:25Z
 ```
 
 # Copy entry points and Jupyter data directories into ephemeral environments
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-21 14:40_
+_@zanieb_
 
 This is an alternative to https://github.com/astral-sh/uv/pull/14788 which has the benefit that it addresses https://github.com/astral-sh/uv/issues/13327 which would be an issue even if we reverted #14447.
 

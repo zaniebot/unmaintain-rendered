@@ -14,14 +14,14 @@ head: dcreager/callable-return
 created_at: 2025-11-20T23:14:12Z
 updated_at: 2025-12-16T17:16:51Z
 url: https://github.com/astral-sh/ruff/pull/21551
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:27Z
 ```
 
 # [ty] Infer typevar specializations for `Callable` types
 
 ---
 
-_Pull request opened by @dcreager on 2025-11-20 23:14_
+_@dcreager_
 
 This is a first stab at solving https://github.com/astral-sh/ty/issues/500, at least in part, with the old solver. We add a new `TypeRelation` that lets us opt into using constraint sets to describe when a typevar is assignability to some type, and then use that to calculate a constraint set that describes when two callable types are assignable. If the callable types contain typevars, that constraint set will describe their valid specializations. We can then walk through all of the ways the constraint set can be satisfied, and record a type mapping in the old solver for each one.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-31T09:22:39Z
 updated_at: 2023-06-23T10:56:03Z
 url: https://github.com/astral-sh/ruff/issues/1507
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Use `banned-api` for deprecation checks in general
 
 ---
 
-_Issue opened by @not-my-profile on 2022-12-31 09:22_
+_@not-my-profile_
 
 The checks for uses of deprecated standard library features are currently split up across different rules, for example:
 

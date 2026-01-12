@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-24T13:11:00Z
 updated_at: 2025-11-14T15:20:20Z
 url: https://github.com/astral-sh/ty/issues/696
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Type of class object is narrowed to `Never`
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-06-24 13:11_
+_@JelleZijlstra_
 
 ### Summary
 

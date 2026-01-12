@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-12-07T21:53:06Z
 updated_at: 2021-12-13T15:22:01Z
 url: https://github.com/clap-rs/clap/issues/3074
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # multi-call hostname example is broken on Windows
 
 ---
 
-_Issue opened by @epage on 2021-12-07 21:53_
+_@epage_
 
 ### 
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-27T12:06:50Z
 updated_at: 2025-09-08T19:22:41Z
 url: https://github.com/astral-sh/ty/issues/902
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Incomplete equivalence of `*args, **kwargs` signature to `...` signature
 
 ---
 
-_Issue opened by @github-actions on 2025-07-27 12:06_
+_@github-actions_
 
 All four reveal-types at the end of [this example](https://play.ty.dev/b545bd7a-0c30-45ae-8006-f94c6c23dd4d) should reveal `Literal[True]`:
 

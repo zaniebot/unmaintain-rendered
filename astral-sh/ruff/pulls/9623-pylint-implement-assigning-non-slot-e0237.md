@@ -14,14 +14,14 @@ head: impl-assigning-non-slot-E0237
 created_at: 2024-01-23T11:09:40Z
 updated_at: 2024-01-24T02:58:01Z
 url: https://github.com/astral-sh/ruff/pull/9623
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`pylint`] Implement `assigning-non-slot` (`E0237`)
 
 ---
 
-_Pull request opened by @tsugumi-sys on 2024-01-23 11:09_
+_@tsugumi-sys_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

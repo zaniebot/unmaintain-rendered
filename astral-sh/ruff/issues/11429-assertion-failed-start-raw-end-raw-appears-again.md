@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-15T02:10:56Z
 updated_at: 2024-05-16T12:14:04Z
 url: https://github.com/astral-sh/ruff/issues/11429
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # assertion failed: start.raw <= end.raw appears again
 
 ---
 
-_Issue opened by @zhangzhen on 2024-05-15 02:10_
+_@zhangzhen_
 
 I'm using ruff in neovim 0.9.5.
 ```

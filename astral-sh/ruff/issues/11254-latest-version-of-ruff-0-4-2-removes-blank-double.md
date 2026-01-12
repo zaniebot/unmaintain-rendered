@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-02T23:21:12Z
 updated_at: 2024-08-08T06:01:43Z
 url: https://github.com/astral-sh/ruff/issues/11254
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Latest version of ruff (0.4.2) removes blank double blank line that was allowed previously
 
 ---
 
-_Issue opened by @taranlu-houzz on 2024-05-02 23:21_
+_@taranlu-houzz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

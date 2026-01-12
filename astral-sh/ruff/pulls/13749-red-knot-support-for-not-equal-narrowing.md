@@ -13,14 +13,14 @@ head: narrowing-noteq
 created_at: 2024-10-14T12:01:53Z
 updated_at: 2024-10-21T21:08:34Z
 url: https://github.com/astral-sh/ruff/pull/13749
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Support for not equal narrowing
 
 ---
 
-_Pull request opened by @Lexxxzy on 2024-10-14 12:01_
+_@Lexxxzy_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/target-message
 created_at: 2024-11-23T00:32:08Z
 updated_at: 2024-11-27T14:21:47Z
 url: https://github.com/astral-sh/uv/pull/9373
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:47Z
 ```
 
 # Show an interpreter-focused message for `--target` and `--prefix`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-23 00:32_
+_@charliermarsh_
 
 ## Summary
 

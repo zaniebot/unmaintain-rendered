@@ -13,14 +13,14 @@ head: line-suffix
 created_at: 2023-08-23T23:00:54Z
 updated_at: 2023-08-28T11:48:27Z
 url: https://github.com/astral-sh/ruff/pull/6830
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add `LineSuffix` reserved width
 
 ---
 
-_Pull request opened by @cnpryer on 2023-08-23 23:00_
+_@cnpryer_
 
 Closes #5630
 

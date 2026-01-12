@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-06T19:24:45Z
 updated_at: 2025-10-07T00:16:59Z
 url: https://github.com/astral-sh/ruff/issues/20727
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # defaultdict() with no factory method provided
 
 ---
 
-_Issue opened by @Jeremiah-England on 2025-10-06 19:24_
+_@Jeremiah-England_
 
 ### Summary
 

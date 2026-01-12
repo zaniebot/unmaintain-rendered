@@ -13,14 +13,14 @@ head: brent/syn-ple0118
 created_at: 2025-04-01T21:31:26Z
 updated_at: 2025-04-02T13:09:50Z
 url: https://github.com/astral-sh/ruff/pull/17135
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [syntax-errors] Reimplement PLE0118
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-01 21:31_
+_@ntBre_
 
 Summary
 --

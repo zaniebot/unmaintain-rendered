@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-06-16T13:29:27Z
 updated_at: 2021-08-10T22:44:19Z
 url: https://github.com/clap-rs/clap/issues/2539
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Change behavior of flag arguments specified as env vars
 
 ---
 
-_Issue opened by @jacobsvante on 2021-06-16 13:29_
+_@jacobsvante_
 
 ### Please complete the following tasks
 

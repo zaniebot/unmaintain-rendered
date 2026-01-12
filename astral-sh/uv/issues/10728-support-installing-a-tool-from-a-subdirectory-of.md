@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-18T02:46:13Z
 updated_at: 2025-09-25T10:37:10Z
 url: https://github.com/astral-sh/uv/issues/10728
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # Support installing a tool from a subdirectory of a git repo
 
 ---
 
-_Issue opened by @corneliusroemer on 2025-01-18 02:46_
+_@corneliusroemer_
 
 I would like to install `vdsql` using `uvx`. Per [`vdsql` docs](https://github.com/saulpw/visidata/tree/70699c1c4edfdcb5d8a23a6554ea84c5bbc25ed4/visidata/apps/vdsql#or-install-manually-as-a-visidata-plugin-cutting-edge-development), one can install it by first cloning the repo and then changing to a subfolder of the repo as follows:
 

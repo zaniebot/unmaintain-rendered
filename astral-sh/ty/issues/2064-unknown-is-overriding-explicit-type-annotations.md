@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-18T12:14:39Z
 updated_at: 2025-12-18T12:15:47Z
 url: https://github.com/astral-sh/ty/issues/2064
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `Unknown` is overriding explicit type annotations
 
 ---
 
-_Issue opened by @MarkusPielmeier on 2025-12-18 12:14_
+_@MarkusPielmeier_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: fix-PLW3301-issue
 created_at: 2024-08-25T05:12:24Z
 updated_at: 2024-08-26T04:31:38Z
 url: https://github.com/astral-sh/ruff/pull/13089
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`pylint`] - fix incorrect starred expression replacement for `nested-min-max` (`PLW3301`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-08-25 05:12_
+_@diceroll123_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-17T06:17:16Z
 updated_at: 2025-04-03T13:48:10Z
 url: https://github.com/astral-sh/ruff/issues/11897
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Support `workspace/didChangeConfiguration` for `ruff server`
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-06-17 06:17_
+_@dhruvmanila_
 
 Tracking issue to add support for `workspace/didChangeConfiguration` for `ruff server`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-21T15:04:54Z
 updated_at: 2025-11-21T16:56:31Z
 url: https://github.com/astral-sh/uv/issues/16806
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # Recursive --no-install-package
 
 ---
 
-_Issue opened by @tlippold-meta on 2025-11-21 15:04_
+_@tlippold-meta_
 
 ### Summary
 

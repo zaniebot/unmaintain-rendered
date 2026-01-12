@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-11T11:37:44Z
 updated_at: 2025-08-15T15:15:56Z
 url: https://github.com/astral-sh/uv/issues/15218
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # `match-runtime = true` build dependencies should invalidate installed distributions
 
 ---
 
-_Issue opened by @charliermarsh on 2025-08-11 11:37_
+_@charliermarsh_
 
 The issue here is that if you install `flash-attn` with a certain `torch` version and `match-runtime = true`, then change the `torch` version, on `uv sync`, we won't invalidate the already-installed version. (If you use `--reinstall`, we _will_ correctly rebuild it, because the `torch` version is part of the cache key; but if it's already-installed, the logic there isn't the same.)
 

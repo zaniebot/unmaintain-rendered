@@ -11,14 +11,14 @@ head: krumkrum3/ruff-ptqacore
 created_at: 2025-05-13T21:18:43Z
 updated_at: 2025-05-13T21:18:57Z
 url: https://github.com/astral-sh/ruff/pull/18080
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] add lint rules for ptqacore
 
 ---
 
-_Pull request opened by @krumkrum on 2025-05-13 21:18_
+_@krumkrum_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

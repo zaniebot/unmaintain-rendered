@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-11T10:14:24Z
 updated_at: 2025-07-11T12:40:20Z
 url: https://github.com/astral-sh/uv/issues/14562
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # Allow using just the index name when the index is already defined in the pyproject.toml
 
 ---
 
-_Issue opened by @ollz272 on 2025-07-11 10:14_
+_@ollz272_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: konstin/fix-9145
 created_at: 2023-12-15T09:19:24Z
 updated_at: 2023-12-15T14:15:48Z
 url: https://github.com/astral-sh/ruff/pull/9146
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Prevent invalid utf8 indexing in cell magic detection
 
 ---
 
-_Pull request opened by @konstin on 2023-12-15 09:19_
+_@konstin_
 
 The example below used to panic because we tried to split at 2 bytes in the 4-bytes character `转`.
 ```python

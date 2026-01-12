@@ -13,14 +13,14 @@ head: zb/test-find-uv-bin
 created_at: 2025-08-06T15:19:57Z
 updated_at: 2025-08-07T21:46:16Z
 url: https://github.com/astral-sh/uv/pull/15110
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:35Z
 ```
 
 # Add test cases for `find_uv_bin`
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-06 15:19_
+_@zanieb_
 
 Adds test cases to unblock
 

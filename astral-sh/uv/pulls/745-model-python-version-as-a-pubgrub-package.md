@@ -12,14 +12,14 @@ head: charlie/py-version
 created_at: 2024-01-02T22:13:35Z
 updated_at: 2024-01-03T15:20:46Z
 url: https://github.com/astral-sh/uv/pull/745
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Model Python version as a PubGrub package
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-02 22:13_
+_@charliermarsh_
 
 ## Summary
 

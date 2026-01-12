@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-23T16:29:29Z
 updated_at: 2023-03-29T15:03:55Z
 url: https://github.com/astral-sh/ruff/issues/3174
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # bug: UP007 should be reversed when targeting py37
 
 ---
 
-_Issue opened by @upstartjohnvandivier on 2023-02-23 16:29_
+_@upstartjohnvandivier_
 
 thanks for the library! we love it. found another issue tho, consider the class:
 ```

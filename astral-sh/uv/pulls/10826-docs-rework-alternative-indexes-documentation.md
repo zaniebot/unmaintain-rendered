@@ -13,14 +13,14 @@ head: docs/rework-alternative-indexes
 created_at: 2025-01-21T21:16:23Z
 updated_at: 2025-02-26T16:07:12Z
 url: https://github.com/astral-sh/uv/pull/10826
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:31Z
 ```
 
 # docs: rework alternative indexes documentation
 
 ---
 
-_Pull request opened by @mkniewallner on 2025-01-21 21:16_
+_@mkniewallner_
 
 ## Summary
 

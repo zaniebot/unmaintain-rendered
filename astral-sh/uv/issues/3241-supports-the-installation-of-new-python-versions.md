@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-24T14:46:31Z
 updated_at: 2024-04-24T14:54:28Z
 url: https://github.com/astral-sh/uv/issues/3241
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Supports the installation of new Python versions that do not exist locally
 
 ---
 
-_Issue opened by @boringplay on 2024-04-24 14:46_
+_@boringplay_
 
 To install new Python versions similar to pyenv, use:
 ```

@@ -14,14 +14,14 @@ head: brent/pylint
 created_at: 2025-07-14T21:24:51Z
 updated_at: 2025-07-15T14:14:51Z
 url: https://github.com/astral-sh/ruff/pull/19340
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # Move Pylint rendering to `ruff_db`
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-14 21:24_
+_@ntBre_
 
 Summary
 --

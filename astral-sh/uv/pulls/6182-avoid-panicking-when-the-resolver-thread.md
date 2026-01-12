@@ -13,14 +13,14 @@ head: zb/solver-unwrap
 created_at: 2024-08-18T14:21:09Z
 updated_at: 2024-08-19T13:34:38Z
 url: https://github.com/astral-sh/uv/pull/6182
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:15Z
 ```
 
 # Avoid panicking when the resolver thread encounters a closed channel
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-18 14:21_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/6167
 

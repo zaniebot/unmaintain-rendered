@@ -13,14 +13,14 @@ head: remove-enumerated-plugins-in-rules-pages
 created_at: 2023-05-29T22:11:52Z
 updated_at: 2023-05-29T22:45:49Z
 url: https://github.com/astral-sh/ruff/pull/4715
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove enumerated plugins in rules page
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-29 22:11_
+_@JonathanPlasse_
 
 - Close #4709
 <!--

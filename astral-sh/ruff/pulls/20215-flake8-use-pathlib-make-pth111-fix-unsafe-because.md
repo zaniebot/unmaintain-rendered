@@ -14,14 +14,14 @@ head: pth111
 created_at: 2025-09-03T15:14:19Z
 updated_at: 2025-09-17T15:24:52Z
 url: https://github.com/astral-sh/ruff/pull/20215
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [`flake8-use-pathlib`] Make `PTH111` fix unsafe because it can change behavior
 
 ---
 
-_Pull request opened by @chirizxc on 2025-09-03 15:14_
+_@chirizxc_
 
 ## Summary
 

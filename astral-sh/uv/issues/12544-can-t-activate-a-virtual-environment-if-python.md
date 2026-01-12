@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-29T13:36:10Z
 updated_at: 2025-03-29T18:40:34Z
 url: https://github.com/astral-sh/uv/issues/12544
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # Can't activate a virtual environment if Python version is pinned
 
 ---
 
-_Issue opened by @dmfigol on 2025-03-29 13:36_
+_@dmfigol_
 
 ### Summary
 

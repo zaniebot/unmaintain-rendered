@@ -12,14 +12,14 @@ head: sub
 created_at: 2025-05-23T18:02:37Z
 updated_at: 2025-05-23T18:07:55Z
 url: https://github.com/clap-rs/clap/pull/6012
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # docs(derive): Specify arg_required_else_help is set for users
 
 ---
 
-_Pull request opened by @epage on 2025-05-23 18:02_
+_@epage_
 
 Fixes #6001
 

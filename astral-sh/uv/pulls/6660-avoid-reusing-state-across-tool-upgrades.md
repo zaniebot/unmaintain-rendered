@@ -13,14 +13,14 @@ head: charlie/st
 created_at: 2024-08-26T21:45:20Z
 updated_at: 2024-08-26T22:09:07Z
 url: https://github.com/astral-sh/uv/pull/6660
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:28Z
 ```
 
 # Avoid reusing state across tool upgrades
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-26 21:45_
+_@charliermarsh_
 
 ## Summary
 

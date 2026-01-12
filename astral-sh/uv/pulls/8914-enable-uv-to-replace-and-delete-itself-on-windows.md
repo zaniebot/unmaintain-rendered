@@ -14,14 +14,14 @@ head: charlie/self
 created_at: 2024-11-08T02:41:35Z
 updated_at: 2024-11-08T15:53:20Z
 url: https://github.com/astral-sh/uv/pull/8914
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:33Z
 ```
 
 # Enable uv to replace and delete itself on Windows
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-08 02:41_
+_@charliermarsh_
 
 ## Summary
 

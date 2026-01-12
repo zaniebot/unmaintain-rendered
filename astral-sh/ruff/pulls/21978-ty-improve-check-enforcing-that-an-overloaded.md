@@ -13,14 +13,14 @@ head: alex/abcmeta-subclass
 created_at: 2025-12-14T17:57:48Z
 updated_at: 2025-12-15T08:56:36Z
 url: https://github.com/astral-sh/ruff/pull/21978
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Improve check enforcing that an overloaded function must have an implementation
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-14 17:57_
+_@AlexWaygood_
 
 ## Summary
 

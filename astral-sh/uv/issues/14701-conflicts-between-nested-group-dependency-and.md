@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T05:04:34Z
 updated_at: 2025-07-21T05:43:59Z
 url: https://github.com/astral-sh/uv/issues/14701
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # conflicts between nested group dependency and extra dependency
 
 ---
 
-_Issue opened by @branyang02 on 2025-07-18 05:04_
+_@branyang02_
 
 ### Question
 

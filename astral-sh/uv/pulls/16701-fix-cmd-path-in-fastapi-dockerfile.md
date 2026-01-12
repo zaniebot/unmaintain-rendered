@@ -13,14 +13,14 @@ head: main
 created_at: 2025-11-12T10:17:47Z
 updated_at: 2025-11-16T22:57:27Z
 url: https://github.com/astral-sh/uv/pull/16701
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:24Z
 ```
 
 # Fix CMD path in FastAPI Dockerfile
 
 ---
 
-_Pull request opened by @jspablo on 2025-11-12 10:17_
+_@jspablo_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

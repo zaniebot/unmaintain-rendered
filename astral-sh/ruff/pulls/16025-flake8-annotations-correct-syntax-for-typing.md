@@ -14,14 +14,14 @@ head: typing-union-helper
 created_at: 2025-02-07T16:05:20Z
 updated_at: 2025-02-07T23:17:20Z
 url: https://github.com/astral-sh/ruff/pull/16025
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-annotations`] Correct syntax for `typing.Union` in suggested return type fixes for `ANN20x` rules
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-02-07 16:05_
+_@dylwil3_
 
 When suggesting a return type as a union in Python <=3.9, we now avoid a `TypeError` by correctly suggesting syntax like `Union[int,str,None]` instead of `Union[int | str | None]`.
 

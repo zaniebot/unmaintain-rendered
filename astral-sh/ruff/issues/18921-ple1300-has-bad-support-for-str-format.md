@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-24T18:44:50Z
 updated_at: 2025-06-24T18:50:10Z
 url: https://github.com/astral-sh/ruff/issues/18921
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PLE1300 has bad support for `str.format`
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-24 18:44_
+_@dscorbett_
 
 ### Summary
 

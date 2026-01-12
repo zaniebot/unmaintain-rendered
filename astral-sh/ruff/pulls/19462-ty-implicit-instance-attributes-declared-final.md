@@ -14,14 +14,14 @@ head: david/final-implicit-instance-attributes
 created_at: 2025-07-21T13:31:03Z
 updated_at: 2025-07-21T18:01:09Z
 url: https://github.com/astral-sh/ruff/pull/19462
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Implicit instance attributes declared `Final`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-21 13:31_
+_@sharkdp_
 
 ## Summary
 

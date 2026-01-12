@@ -13,14 +13,14 @@ head: alex/redknot-for-symbols
 created_at: 2024-08-23T11:45:36Z
 updated_at: 2024-08-23T22:40:29Z
 url: https://github.com/astral-sh/ruff/pull/13075
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Add symbols for `for` loop variables
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-23 11:45_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-26T03:05:18Z
 updated_at: 2024-10-27T17:57:54Z
 url: https://github.com/astral-sh/uv/issues/8583
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # No toml changes when installing local package in editable mode
 
 ---
 
-_Issue opened by @shanearcaro on 2024-10-26 03:05_
+_@shanearcaro_
 
  **I am on a M2 Mac on Sequoio 15.0,  uv version: uv 0.4.25 (97eb6ab4a 2024-10-21)
  The command is `uv pip install -e ../packages/jwt`**

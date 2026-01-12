@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-08-07T19:41:41Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/616
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Formatting error on conflicting options
 
 ---
 
-_Issue opened by @guiniol on 2016-08-07 19:41_
+_@guiniol_
 
 Hello,
 

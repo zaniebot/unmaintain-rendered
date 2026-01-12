@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-30T13:27:52Z
 updated_at: 2025-03-27T17:14:12Z
 url: https://github.com/astral-sh/uv/issues/2732
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Segmentation fault in tokio worker runtime on iSH 
 
 ---
 
-_Issue opened by @gpchn on 2024-03-30 13:27_
+_@gpchn_
 
 # Environment
 

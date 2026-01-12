@@ -13,14 +13,14 @@ head: zb/find-all-cache
 created_at: 2024-12-04T22:18:29Z
 updated_at: 2025-04-14T08:00:32Z
 url: https://github.com/astral-sh/uv/pull/9650
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:55Z
 ```
 
 # Add an in-memory cache for `ManagedInstallations::find_all`
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-04 22:18_
+_@zanieb_
 
 Addresses https://github.com/astral-sh/uv/pull/7934/files#r1792126742
 

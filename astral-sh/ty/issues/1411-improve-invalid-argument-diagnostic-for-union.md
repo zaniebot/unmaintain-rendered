@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-22T15:59:57Z
 updated_at: 2025-10-23T13:16:23Z
 url: https://github.com/astral-sh/ty/issues/1411
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Improve `invalid-argument` diagnostic for union types
 
 ---
 
-_Issue opened by @MichaReiser on 2025-10-22 15:59_
+_@MichaReiser_
 
 The `invalid-argument` diagnostic doesn't contain enough information for me to fix the diagnostic if the union gets truncated:
 

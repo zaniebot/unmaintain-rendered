@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-22T09:34:15Z
 updated_at: 2024-10-03T02:33:43Z
 url: https://github.com/astral-sh/ruff/issues/9244
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 #  Feature Request: Extend Ruff as a fast and simple SQL formatting and linting tool
 
 ---
 
-_Issue opened by @OneCyrus on 2023-12-22 09:34_
+_@OneCyrus_
 
 i think there's a huge overlapping userbase of python users who work in the data engineering space. the current lanscape of good tooling to format and lint sql files is not great and something like ruff for those scenarios could be huge.
 

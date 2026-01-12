@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-09T00:10:44Z
 updated_at: 2025-06-09T14:14:33Z
 url: https://github.com/astral-sh/ruff/issues/18575
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # FURB142 false positive when the target variable is used beyond the `add` or `discard` call
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-09 00:10_
+_@dscorbett_
 
 ### Summary
 

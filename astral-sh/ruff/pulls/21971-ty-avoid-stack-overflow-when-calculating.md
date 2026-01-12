@@ -15,14 +15,14 @@ head: dcreager/ty1874
 created_at: 2025-12-14T03:17:34Z
 updated_at: 2025-12-15T15:25:35Z
 url: https://github.com/astral-sh/ruff/pull/21971
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Avoid stack overflow when calculating inferable typevars
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-14 03:17_
+_@dcreager_
 
 When we calculate which typevars are inferable in a generic context, the result might include more than the typevars bound by the generic context. The canonical example is a generic method of a generic class:
 

@@ -13,14 +13,14 @@ head: alex/sound-tuples
 created_at: 2025-06-27T14:27:42Z
 updated_at: 2025-06-27T21:06:05Z
 url: https://github.com/astral-sh/ruff/pull/18987
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] Make tuple instantiations sound
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-27 14:27_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-28T23:25:13Z
 updated_at: 2026-01-06T02:15:14Z
 url: https://github.com/astral-sh/ty/issues/2251
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Emit error when unpacking a not-iterable argument in a call
 
 ---
 
-_Issue opened by @phistep on 2025-12-28 23:25_
+_@phistep_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-07T16:30:27Z
 updated_at: 2025-11-01T20:59:50Z
 url: https://github.com/astral-sh/uv/issues/16156
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:25Z
 ```
 
 # Platform markers in `tool.uv.sources` array are not respected during path resolution
 
 ---
 
-_Issue opened by @oryon-dominik on 2025-10-07 16:30_
+_@oryon-dominik_
 
 ### Summary
 

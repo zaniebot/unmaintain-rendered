@@ -13,14 +13,14 @@ head: alex/reapply-levenshtein-2
 created_at: 2025-06-18T13:42:40Z
 updated_at: 2025-10-29T15:05:28Z
 url: https://github.com/astral-sh/ruff/pull/18751
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # Reapply "[ty] Offer "Did you mean...?" suggestions for unresolved `from` imports and unresolved attributes (#18705)"
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-18 13:42_
+_@AlexWaygood_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-09T00:22:17Z
 updated_at: 2025-12-20T01:57:02Z
 url: https://github.com/astral-sh/ty/issues/1815
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Instantiating a `list` or `set` loses literal generic type information
 
 ---
 
-_Issue opened by @Avasam on 2025-12-09 00:22_
+_@Avasam_
 
 ### Summary
 

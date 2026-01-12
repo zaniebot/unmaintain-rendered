@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-09T09:19:29Z
 updated_at: 2025-10-09T16:00:46Z
 url: https://github.com/astral-sh/uv/issues/16202
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # How to find the virtual environment path for a project in uv and other ENV in general?
 
 ---
 
-_Issue opened by @edoardozucchelli on 2025-10-09 09:19_
+_@edoardozucchelli_
 
 ### Question
 

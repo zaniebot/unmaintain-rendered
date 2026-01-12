@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-09T22:29:15Z
 updated_at: 2025-01-28T17:48:40Z
 url: https://github.com/astral-sh/ruff/issues/15391
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # ruff format --check Fails on Ubuntu
 
 ---
 
-_Issue opened by @MelbourneDeveloper on 2025-01-09 22:29_
+_@MelbourneDeveloper_
 
 I am working on macOS, and I use GitHub Actions. I run this in the pipeline:
 

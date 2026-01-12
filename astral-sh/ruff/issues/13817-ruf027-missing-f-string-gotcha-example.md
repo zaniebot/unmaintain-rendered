@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-19T10:31:02Z
 updated_at: 2024-10-19T23:15:52Z
 url: https://github.com/astral-sh/ruff/issues/13817
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `RUF027` - missing f-string - gotcha example
 
 ---
 
-_Issue opened by @tony on 2024-10-19 10:31_
+_@tony_
 
 > [!NOTE]
 > This may be a duplicate. `RUF027` as a rule is nuanced, I am not sure if this may be duplicating a known caveat of `RUF027`. Fine to close if this works as intended or is a duplicate. Thank you!

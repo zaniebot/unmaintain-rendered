@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-22T19:04:27Z
 updated_at: 2025-01-28T21:26:26Z
 url: https://github.com/astral-sh/ruff/issues/14537
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Request: More autofixes for `redundant-none-literal`/`PYI061`
 
 ---
 
-_Issue opened by @Avasam on 2024-11-22 19:04_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

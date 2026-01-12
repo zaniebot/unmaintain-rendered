@@ -11,14 +11,14 @@ head: main
 created_at: 2025-07-01T15:22:17Z
 updated_at: 2025-09-09T22:04:58Z
 url: https://github.com/astral-sh/uv/pull/14398
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:12Z
 ```
 
 # [DOCS] build and publish package to PyPI from GitHub Actions
 
 ---
 
-_Pull request opened by @kiankyars on 2025-07-01 15:22_
+_@kiankyars_
 
 ## Summary
 

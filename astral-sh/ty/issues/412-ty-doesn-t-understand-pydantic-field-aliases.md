@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-15T16:45:55Z
 updated_at: 2025-05-15T17:55:47Z
 url: https://github.com/astral-sh/ty/issues/412
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # ty doesn't understand pydantic field aliases
 
 ---
 
-_Issue opened by @jlorenzini-itpie on 2025-05-15 16:45_
+_@jlorenzini-itpie_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T16:05:11Z
 updated_at: 2025-06-13T20:47:04Z
 url: https://github.com/astral-sh/ty/issues/627
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Freeze when checking project
 
 ---
 
-_Issue opened by @qarmin on 2025-06-10 16:05_
+_@qarmin_
 
 ### Summary
 

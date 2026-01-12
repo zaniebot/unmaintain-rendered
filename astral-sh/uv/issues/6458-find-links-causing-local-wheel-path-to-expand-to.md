@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T19:08:54Z
 updated_at: 2024-08-26T17:56:47Z
 url: https://github.com/astral-sh/uv/issues/6458
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # `find-links` causing local wheel path to expand to absolute path when creating lockfile
 
 ---
 
-_Issue opened by @rseeley on 2024-08-22 19:08_
+_@rseeley_
 
 I'm working in a repo that uses several wheels for the same package, each one targeting a different architecture, stored in a directory local to the repo (`packages/package-a`). I'm using `uv` 0.3.1 and am on a Mac (M1). To accomplish installing the package across environments, I'm using the following setup in `pyproject.toml`:
 

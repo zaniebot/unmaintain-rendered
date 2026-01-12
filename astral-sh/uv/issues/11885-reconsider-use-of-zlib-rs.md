@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-01T14:33:03Z
 updated_at: 2025-03-03T17:29:32Z
 url: https://github.com/astral-sh/uv/issues/11885
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # Reconsider use of zlib-rs
 
 ---
 
-_Issue opened by @charliermarsh on 2025-03-01 14:33_
+_@charliermarsh_
 
 We reverted back to zlib-ng because it does runtime feature detection. It looks like newer versions of zlib-rs do runtime feature detection and the benchmarks are very promising. We should try it again.
 

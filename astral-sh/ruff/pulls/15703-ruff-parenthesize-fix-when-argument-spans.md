@@ -15,14 +15,14 @@ head: round-fix
 created_at: 2025-01-24T00:11:07Z
 updated_at: 2025-01-24T10:34:57Z
 url: https://github.com/astral-sh/ruff/pull/15703
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`ruff`] Parenthesize fix when argument spans multiple lines for `unnecessary-round` (`RUF057`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-01-24 00:11_
+_@dylwil3_
 
 As in the title. We also make the fix unsafe when the range of the call to `round()` intersects comments.
 

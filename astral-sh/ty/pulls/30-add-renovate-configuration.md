@@ -12,14 +12,14 @@ head: renovate
 created_at: 2025-05-05T14:55:44Z
 updated_at: 2025-07-08T10:39:21Z
 url: https://github.com/astral-sh/ty/pull/30
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add renovate configuration
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-05 14:55_
+_@MichaReiser_
 
 ## Summary
 

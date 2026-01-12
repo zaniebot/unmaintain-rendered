@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-07T13:51:24Z
 updated_at: 2025-11-10T12:25:15Z
 url: https://github.com/astral-sh/ruff/issues/21314
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Could UP035 also catch uses of `typing.Iterable`?
 
 ---
 
-_Issue opened by @mdickinson on 2025-11-07 13:51_
+_@mdickinson_
 
 ### Summary
 

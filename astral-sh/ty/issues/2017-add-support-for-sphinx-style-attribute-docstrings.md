@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T15:34:19Z
 updated_at: 2025-12-18T12:18:22Z
 url: https://github.com/astral-sh/ty/issues/2017
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Add support for Sphinx-style "attribute docstrings" for on-hover functionality etc.
 
 ---
 
-_Issue opened by @Julian-J-S on 2025-12-17 15:34_
+_@Julian-J-S_
 
 Hover documentation is very minimal and missing the actual docstrings on class attributes which are very useful!
 

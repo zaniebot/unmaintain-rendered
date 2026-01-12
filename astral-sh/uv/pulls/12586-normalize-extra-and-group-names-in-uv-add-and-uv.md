@@ -13,14 +13,14 @@ head: charlie/norm
 created_at: 2025-03-31T14:36:01Z
 updated_at: 2025-04-02T10:45:32Z
 url: https://github.com/astral-sh/uv/pull/12586
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:19Z
 ```
 
 # Normalize extra and group names in `uv add` and `uv remove`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-31 14:36_
+_@charliermarsh_
 
 ## Summary
 

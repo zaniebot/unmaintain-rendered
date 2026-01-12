@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-25T10:31:08Z
 updated_at: 2023-09-12T06:39:59Z
 url: https://github.com/astral-sh/ruff/issues/6062
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: Allow comments between `and`/`or` and the right hand side
 
 ---
 
-_Issue opened by @konstin on 2023-07-25 10:31_
+_@konstin_
 
 The following input is stable with black ...
 ```python

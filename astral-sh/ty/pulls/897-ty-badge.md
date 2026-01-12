@@ -13,14 +13,14 @@ head: github-badge
 created_at: 2025-07-26T12:42:54Z
 updated_at: 2025-07-28T19:41:34Z
 url: https://github.com/astral-sh/ty/pull/897
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # `ty` badge
 
 ---
 
-_Pull request opened by @jorenham on 2025-07-26 12:42_
+_@jorenham_
 
 It's a bit of a chicken/egg story, but it won't work until after its merged. But if you replace the json url with one to a little gist of mine, you can get a sneak peak:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-04-13T18:10:07Z
 updated_at: 2023-10-19T21:28:33Z
 url: https://github.com/astral-sh/ruff/issues/3961
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # feat: alternative to SIM118
 
 ---
 
-_Issue opened by @upstartjohnvandivier on 2023-04-13 18:10_
+_@upstartjohnvandivier_
 
 as a developer, I would like an alternative to `SIM118` so that I can enforce `.keys()` is used consistently, instead of having to choose between enabling or disabling SIM118. When `SIM118` is disabled, developers can use `.keys()` or not use it as they please, leading to inconsistent code which is not ideal.
 

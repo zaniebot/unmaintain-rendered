@@ -13,14 +13,14 @@ head: micha/salsa-db-key
 created_at: 2025-12-26T10:09:44Z
 updated_at: 2026-01-10T17:59:20Z
 url: https://github.com/astral-sh/ruff/pull/22203
-synced_at: 2026-01-12T02:32:44Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] Test performance and memory impact of shrinking Salsa's DB key
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-26 10:09_
+_@MichaReiser_
 
 _No description provided._
 

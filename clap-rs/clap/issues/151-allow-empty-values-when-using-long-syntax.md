@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-07-08T18:28:16Z
 updated_at: 2015-07-08T19:02:34Z
 url: https://github.com/clap-rs/clap/issues/151
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Allow empty values when using --long="" syntax
 
 ---
 
-_Issue opened by @kbknapp on 2015-07-08 18:28_
+_@kbknapp_
 
 Empty values work just fine when doing:
 

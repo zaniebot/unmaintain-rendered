@@ -13,14 +13,14 @@ head: charlie/m
 created_at: 2025-07-20T22:10:27Z
 updated_at: 2025-07-21T14:48:54Z
 url: https://github.com/astral-sh/uv/pull/14766
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:23Z
 ```
 
 # Use a match for Windows executables in `venv`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-20 22:10_
+_@charliermarsh_
 
 ## Summary
 

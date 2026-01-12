@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-01T11:59:38Z
 updated_at: 2024-09-04T15:57:15Z
 url: https://github.com/astral-sh/uv/issues/6911
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Weird dependency resolving (for magika → numpy → distutils)
 
 ---
 
-_Issue opened by @kytta on 2024-09-01 11:59_
+_@kytta_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

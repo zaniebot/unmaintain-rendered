@@ -13,14 +13,14 @@ head: konsti/logging
 created_at: 2024-03-08T15:33:20Z
 updated_at: 2024-03-11T07:58:32Z
 url: https://github.com/astral-sh/uv/pull/2301
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:58Z
 ```
 
 # Add a `-vv` log level and make `-v` more readable
 
 ---
 
-_Pull request opened by @konstin on 2024-03-08 15:33_
+_@konstin_
 
 Behind error messages, the debug log is the second most important resource to finding out what and why went wrong when there was a problem with uv. It is important to see which paths it has found and how the decisions in the resolver were made. I'm trying to improve the experience interacting with the debug log.
 

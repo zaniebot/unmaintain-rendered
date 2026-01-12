@@ -13,14 +13,14 @@ head: dhruv/fix-editor-docs
 created_at: 2025-01-31T05:56:48Z
 updated_at: 2025-01-31T06:00:18Z
 url: https://github.com/astral-sh/ruff/pull/15844
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Remove non-existing `lint.extendIgnore` editor setting
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-31 05:56_
+_@dhruvmanila_
 
 This setting doesn't exist in the first place. I must've added it by mistake thinking that it exists similar to `extendSelect`. One reason to have auto-generated docs.
 

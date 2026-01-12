@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-19T10:14:17Z
 updated_at: 2025-12-22T09:08:08Z
 url: https://github.com/astral-sh/ruff/issues/22074
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Errors in `--output-format=github` (redundant `col`, `endColumn` is less than `col`)
 
 ---
 
-_Issue opened by @Andrej730 on 2025-12-19 10:14_
+_@Andrej730_
 
 ### Summary
 

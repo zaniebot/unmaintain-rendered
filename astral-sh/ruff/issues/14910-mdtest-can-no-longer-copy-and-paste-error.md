@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-11T12:59:50Z
 updated_at: 2024-12-11T13:44:28Z
 url: https://github.com/astral-sh/ruff/issues/14910
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # mdtest: can no longer copy and paste error messages directly into mdtests
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-12-11 12:59_
+_@AlexWaygood_
 
 I ran an mdtest locally, and it failed with this output:
 

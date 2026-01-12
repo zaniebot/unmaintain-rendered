@@ -13,14 +13,14 @@ head: unconventional-alias
 created_at: 2024-11-20T05:01:51Z
 updated_at: 2024-11-21T15:59:02Z
 url: https://github.com/astral-sh/ruff/pull/14477
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`flake8-import-conventions`] Syntax check aliases supplied in configuration for `unconventional-import-alias (ICN001)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-11-20 05:01_
+_@dylwil3_
 
 This PR introduces a validation step to the deserialization of the configuration for [unconventional-import-alias (ICN001)](https://docs.astral.sh/ruff/rules/unconventional-import-alias/#unconventional-import-alias-icn001). We verify that the import module and alias supplied have valid syntax in order to avoid a panic if these aliases are added in during a fix.
 

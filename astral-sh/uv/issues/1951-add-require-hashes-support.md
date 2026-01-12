@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-24T14:45:52Z
 updated_at: 2024-02-24T17:45:25Z
 url: https://github.com/astral-sh/uv/issues/1951
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Add `--require-hashes` support
 
 ---
 
-_Issue opened by @epicserve on 2024-02-24 14:45_
+_@epicserve_
 
 So far, UV is excellent and so much faster! Thank you guys for making it. I'm trying to include it in my [Django Base Site](https://github.com/epicserve/django-base-site/) project.
 

@@ -13,14 +13,14 @@ head: add-schemars-feature
 created_at: 2023-05-09T12:31:46Z
 updated_at: 2023-05-09T14:21:36Z
 url: https://github.com/astral-sh/ruff/pull/4305
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add `schemars` feature
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-09 12:31_
+_@MichaReiser_
 
 This PR adds a new `schemars` feature because we only need the code for building the schema in `cargo_dev` and don't need to ship it to production. 
 

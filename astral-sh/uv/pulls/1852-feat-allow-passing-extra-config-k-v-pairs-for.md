@@ -14,14 +14,14 @@ head: uv-pyvenv-cfg-custom-fields
 created_at: 2024-02-22T03:44:34Z
 updated_at: 2024-02-23T03:22:52Z
 url: https://github.com/astral-sh/uv/pull/1852
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:45Z
 ```
 
 # feat: allow passing extra config k,v pairs for pyvenv.cfg when creating a venv
 
 ---
 
-_Pull request opened by @samypr100 on 2024-02-22 03:44_
+_@samypr100_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

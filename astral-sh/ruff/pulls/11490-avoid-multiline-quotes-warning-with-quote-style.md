@@ -13,14 +13,14 @@ head: charlie/preserve
 created_at: 2024-05-22T04:27:05Z
 updated_at: 2024-05-22T04:40:34Z
 url: https://github.com/astral-sh/ruff/pull/11490
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Avoid multiline quotes warning with `quote-style = preserve`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-22 04:27_
+_@charliermarsh_
 
 ## Summary
 

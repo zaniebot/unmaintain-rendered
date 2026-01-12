@@ -13,14 +13,14 @@ head: charlie/extra
 created_at: 2024-04-06T01:11:12Z
 updated_at: 2024-04-10T03:12:11Z
 url: https://github.com/astral-sh/uv/pull/2850
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:15Z
 ```
 
 # Surface invalid metadata as hints in error reports
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-06 01:11_
+_@charliermarsh_
 
 ## Summary
 

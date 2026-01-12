@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-11T13:40:46Z
 updated_at: 2025-09-14T13:49:36Z
 url: https://github.com/astral-sh/uv/issues/15789
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Bad error message when pyproject.toml for group doesn't exist
 
 ---
 
-_Issue opened by @konstin on 2025-09-11 13:40_
+_@konstin_
 
 uv shows an incorrect error message when the `pyproject.toml` for a group doesn't exist, but somewhere above it there's a `pyproject.toml` that isn't usable (but should not have been checked in the first place):
 

@@ -12,14 +12,14 @@ head: dhruv/token-source
 created_at: 2024-03-11T06:18:11Z
 updated_at: 2024-03-11T09:31:41Z
 url: https://github.com/astral-sh/ruff/pull/10326
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Do not emit `Unknown` token
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-11 06:18_
+_@dhruvmanila_
 
 ## Summary
 

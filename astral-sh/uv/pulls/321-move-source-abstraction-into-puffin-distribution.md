@@ -12,14 +12,14 @@ head: charlie/source
 created_at: 2023-11-06T02:27:21Z
 updated_at: 2023-11-06T02:31:16Z
 url: https://github.com/astral-sh/uv/pull/321
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:52Z
 ```
 
 # Move `Source` abstraction into `puffin-distribution`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-06 02:27_
+_@charliermarsh_
 
 No code changes, but this will allow it to be shared between the installer and the resolver.
 

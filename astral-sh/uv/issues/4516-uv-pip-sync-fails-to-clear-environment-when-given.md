@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-25T14:04:51Z
 updated_at: 2024-07-02T13:14:28Z
 url: https://github.com/astral-sh/uv/issues/4516
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # `uv pip sync` fails to clear environment when given an empty requirements list
 
 ---
 
-_Issue opened by @ncoghlan on 2024-06-25 14:04_
+_@ncoghlan_
 
 I have a use case where several different environments are being updated with `uv pip sync`, and some of those environments may legitimately have a desired end state of "just a Python runtime with no extra packages" (the packages that are installed into those environments are platform dependent, and on some platforms there are no additional packages needed).
 

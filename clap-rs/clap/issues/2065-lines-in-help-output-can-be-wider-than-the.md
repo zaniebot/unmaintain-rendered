@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-08-14T00:15:43Z
 updated_at: 2021-12-10T22:19:19Z
 url: https://github.com/clap-rs/clap/issues/2065
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Lines in help output can be wider than the terminal width
 
 ---
 
-_Issue opened by @mkantor on 2020-08-14 00:15_
+_@mkantor_
 
 ### Code
 

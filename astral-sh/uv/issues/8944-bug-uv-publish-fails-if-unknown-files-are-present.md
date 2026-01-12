@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-08T15:03:31Z
 updated_at: 2024-11-13T12:02:05Z
 url: https://github.com/astral-sh/uv/issues/8944
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # Bug(?): uv publish fails if unknown files are present in ./dist
 
 ---
 
-_Issue opened by @3j14 on 2024-11-08 15:03_
+_@3j14_
 
 ## Description
 

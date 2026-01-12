@@ -15,14 +15,14 @@ head: david/update-ecosystem-analyzer
 created_at: 2025-07-10T07:59:44Z
 updated_at: 2025-07-10T08:25:25Z
 url: https://github.com/astral-sh/ruff/pull/19252
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [ty] Ecosystem analyzer: parallelize, fix race condition
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-10 07:59_
+_@sharkdp_
 
 ## Summary
 

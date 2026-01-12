@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-25T16:07:00Z
 updated_at: 2025-12-04T23:00:29Z
 url: https://github.com/astral-sh/uv/issues/14263
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Ability to pin to a specific build of python-build-standalone
 
 ---
 
-_Issue opened by @notatallshaw on 2025-06-25 16:07_
+_@notatallshaw_
 
 One reproducibility issue I have with using uv to install Python, when compared to conda, is I can't pin the exact build of Python between uv versions.
 

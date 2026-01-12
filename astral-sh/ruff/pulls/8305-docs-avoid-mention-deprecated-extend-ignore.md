@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2023-10-28T13:53:27Z
 updated_at: 2023-10-28T22:50:34Z
 url: https://github.com/astral-sh/ruff/pull/8305
-synced_at: 2026-01-12T02:11:58Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Docs: Avoid mention deprecated `extend-ignore` settings
 
 ---
 
-_Pull request opened by @T-256 on 2023-10-28 13:53_
+_@T-256_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

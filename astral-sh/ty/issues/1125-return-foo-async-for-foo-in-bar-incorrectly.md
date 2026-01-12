@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-03T23:36:14Z
 updated_at: 2025-09-03T23:40:30Z
 url: https://github.com/astral-sh/ty/issues/1125
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # return (foo async for foo in bar) incorrectly marked as GeneratorType instead of AsyncGenerator type
 
 ---
 
-_Issue opened by @hinthornw on 2025-09-03 23:36_
+_@hinthornw_
 
 ### Summary
 

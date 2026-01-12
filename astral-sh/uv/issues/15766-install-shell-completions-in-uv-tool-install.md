@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-10T09:10:08Z
 updated_at: 2025-09-11T14:55:58Z
 url: https://github.com/astral-sh/uv/issues/15766
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Install shell completions in `uv tool install`
 
 ---
 
-_Issue opened by @sondhg on 2025-09-10 09:10_
+_@sondhg_
 
 ### Question
 

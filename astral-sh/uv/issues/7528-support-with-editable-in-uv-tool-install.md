@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-19T01:07:36Z
 updated_at: 2024-10-23T00:06:34Z
 url: https://github.com/astral-sh/uv/issues/7528
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Support `--with-editable` in `uv tool install` 
 
 ---
 
-_Issue opened by @gaborbernat on 2024-09-19 01:07_
+_@gaborbernat_
 
 Would it be possible to specify the editable flag for the with options too? Something like:
 

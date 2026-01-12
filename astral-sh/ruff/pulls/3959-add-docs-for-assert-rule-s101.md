@@ -13,14 +13,14 @@ head: charlie/assert
 created_at: 2023-04-13T17:20:40Z
 updated_at: 2023-04-13T17:48:07Z
 url: https://github.com/astral-sh/ruff/pull/3959
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add docs for assert rule (S101)
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-13 17:20_
+_@charliermarsh_
 
 _No description provided._
 

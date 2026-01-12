@@ -13,14 +13,14 @@ head: zb/admon
 created_at: 2025-05-12T18:51:57Z
 updated_at: 2025-05-12T19:27:56Z
 url: https://github.com/astral-sh/ty/pull/333
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Include admonitions in the README transform
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-12 18:51_
+_@zanieb_
 
 These currently render weirdly: https://pypi.org/project/ty/
 

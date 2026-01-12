@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-18T19:35:17Z
 updated_at: 2023-02-19T16:17:06Z
 url: https://github.com/astral-sh/ruff/issues/3019
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PLW0120 false positive for/with/break/else
 
 ---
 
-_Issue opened by @pawamoy on 2023-02-18 19:35_
+_@pawamoy_
 
 * A minimal code snippet that reproduces the bug.
 

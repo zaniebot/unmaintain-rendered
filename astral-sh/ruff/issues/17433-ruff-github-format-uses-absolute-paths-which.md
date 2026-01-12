@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-16T19:07:26Z
 updated_at: 2025-04-17T06:05:07Z
 url: https://github.com/astral-sh/ruff/issues/17433
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ruff github format uses absolute paths which break annotation placement
 
 ---
 
-_Issue opened by @sochotnicky on 2025-04-16 19:07_
+_@sochotnicky_
 
 ### Summary
 

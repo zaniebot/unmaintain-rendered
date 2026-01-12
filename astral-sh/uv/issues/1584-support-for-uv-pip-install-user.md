@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-17T12:03:06Z
 updated_at: 2024-05-17T13:44:40Z
 url: https://github.com/astral-sh/uv/issues/1584
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Support for `uv pip install --user`
 
 ---
 
-_Issue opened by @Chaz6 on 2024-02-17 12:03_
+_@Chaz6_
 
 `uv pip install` does not support the flag `--user`. The help for `pip install --user` is as follows:-
 

@@ -12,14 +12,14 @@ head: disable-file-locking
 created_at: 2025-06-01T12:30:53Z
 updated_at: 2025-07-11T14:17:56Z
 url: https://github.com/astral-sh/uv/pull/13760
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:50Z
 ```
 
 # optionally disable file locking
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-06-01 12:30_
+_@CodeMan62_
 
 ## Summary
 Closes #13626 

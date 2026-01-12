@@ -13,14 +13,14 @@ head: charlie/skip
 created_at: 2024-07-29T18:14:32Z
 updated_at: 2024-07-29T18:45:34Z
 url: https://github.com/astral-sh/uv/pull/5570
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:54Z
 ```
 
 # Use a consistent buffer size when writing out zip files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-29 18:14_
+_@charliermarsh_
 
 _No description provided._
 

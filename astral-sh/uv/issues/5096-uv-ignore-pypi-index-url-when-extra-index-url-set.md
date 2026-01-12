@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-16T06:01:17Z
 updated_at: 2024-11-25T18:42:12Z
 url: https://github.com/astral-sh/uv/issues/5096
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # UV ignore pypi index-url when extra-index-url set.
 
 ---
 
-_Issue opened by @kimdwkimdw on 2024-07-16 06:01_
+_@kimdwkimdw_
 
 uv's index-url didn't work in ENVVAR or command args. https://github.com/astral-sh/uv?tab=readme-ov-file#environment-variables
 

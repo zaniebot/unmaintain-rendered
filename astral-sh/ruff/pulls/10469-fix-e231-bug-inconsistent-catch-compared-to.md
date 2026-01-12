@@ -13,14 +13,14 @@ head: e231-nested-bug
 created_at: 2024-03-19T04:49:34Z
 updated_at: 2024-03-21T12:12:46Z
 url: https://github.com/astral-sh/ruff/pull/10469
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Fix `E231` bug: Inconsistent catch compared to pycodestyle, such as when dict nested in list
 
 ---
 
-_Pull request opened by @augustelalande on 2024-03-19 04:49_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

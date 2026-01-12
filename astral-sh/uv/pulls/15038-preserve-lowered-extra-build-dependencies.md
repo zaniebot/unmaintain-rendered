@@ -13,14 +13,14 @@ head: charlie/lower
 created_at: 2025-08-03T02:07:54Z
 updated_at: 2025-08-04T21:42:13Z
 url: https://github.com/astral-sh/uv/pull/15038
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:33Z
 ```
 
 # Preserve lowered extra build dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-03 02:07_
+_@charliermarsh_
 
 ## Summary
 

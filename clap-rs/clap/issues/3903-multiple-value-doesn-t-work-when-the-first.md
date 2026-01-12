@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-07-09T12:39:40Z
 updated_at: 2023-03-28T16:59:03Z
 url: https://github.com/clap-rs/clap/issues/3903
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Multiple value doesn't work when the first argument attached to short flag
 
 ---
 
-_Issue opened by @key262yek on 2022-07-09 12:39_
+_@key262yek_
 
 ### Please complete the following tasks
 

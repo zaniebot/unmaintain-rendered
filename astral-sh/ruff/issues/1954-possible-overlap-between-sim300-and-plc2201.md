@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-18T13:40:41Z
 updated_at: 2023-01-18T23:42:51Z
 url: https://github.com/astral-sh/ruff/issues/1954
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Possible overlap between SIM300 and PLC2201
 
 ---
 
-_Issue opened by @rabelux on 2023-01-18 13:40_
+_@rabelux_
 
 From my understanding the rules [C2201](https://pylint.pycqa.org/en/latest/user_guide/messages/convention/misplaced-comparison-constant.html) (PLC2201 in ruff) and [SIM300](https://github.com/MartinThoma/flake8-simplify#sim300) are pretty much the same.
 If that's the case I'd suggest to drop one in favour of the other.

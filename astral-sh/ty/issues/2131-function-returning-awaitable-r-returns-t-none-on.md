@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-20T18:02:59Z
 updated_at: 2026-01-09T21:30:46Z
 url: https://github.com/astral-sh/ty/issues/2131
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Function returning `Awaitable[R]` returns `T | None` on Python 3.13 but `T` on Python 3.12
 
 ---
 
-_Issue opened by @yamaaaaaa31 on 2025-12-20 18:02_
+_@yamaaaaaa31_
 
 ## Description
 

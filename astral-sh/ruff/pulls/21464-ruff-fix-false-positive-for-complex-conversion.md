@@ -14,14 +14,14 @@ head: fix-21458
 created_at: 2025-11-14T22:47:20Z
 updated_at: 2025-11-19T08:38:33Z
 url: https://github.com/astral-sh/ruff/pull/21464
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [`ruff`] Fix false positive for complex conversion specifiers in `logging-eager-conversion` (`RUF065`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-14 22:47_
+_@danparizher_
 
 ## Summary
 

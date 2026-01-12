@@ -12,14 +12,14 @@ head: 6697_ordered_decorators
 created_at: 2023-08-29T03:25:56Z
 updated_at: 2023-12-12T21:49:20Z
 url: https://github.com/astral-sh/ruff/pull/6965
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Implement `InvalidDecoratorPermutation`
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-08-29 03:25_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

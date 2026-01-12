@@ -11,14 +11,14 @@ head: charlie/license-file
 created_at: 2025-05-23T23:59:30Z
 updated_at: 2025-09-22T12:55:17Z
 url: https://github.com/astral-sh/uv/pull/13631
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:10:47Z
 ```
 
 # Omit `license-file` key for Metadata 2.1
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-23 23:59_
+_@charliermarsh_
 
 ## Summary
 

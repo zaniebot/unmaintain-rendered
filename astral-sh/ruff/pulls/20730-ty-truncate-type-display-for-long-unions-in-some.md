@@ -15,14 +15,14 @@ head: invalid/truncate-long-unions
 created_at: 2025-10-07T00:57:11Z
 updated_at: 2025-12-18T11:12:52Z
 url: https://github.com/astral-sh/ruff/pull/20730
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # [ty] Truncate type display for long unions in some situations
 
 ---
 
-_Pull request opened by @InvalidPathException on 2025-10-07 00:57_
+_@InvalidPathException_
 
 ## Summary
 

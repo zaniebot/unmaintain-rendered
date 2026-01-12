@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-05-24T07:07:36Z
 updated_at: 2025-01-22T16:40:06Z
 url: https://github.com/astral-sh/ruff/issues/4617
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # (🎁) Convert code to utilize pep 695
 
 ---
 
-_Issue opened by @KotlinIsland on 2023-05-24 07:07_
+_@KotlinIsland_
 
 # input:
 ```py

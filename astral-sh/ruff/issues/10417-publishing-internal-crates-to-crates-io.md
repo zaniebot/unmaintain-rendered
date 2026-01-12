@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-15T02:19:22Z
 updated_at: 2025-04-15T04:37:19Z
 url: https://github.com/astral-sh/ruff/issues/10417
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Publishing Internal Crates to crates.io
 
 ---
 
-_Issue opened by @mfish332 on 2024-03-15 02:19_
+_@mfish332_
 
 Hi thanks for this awesome project. I am working on a project that does dependency analysis on a very large codebase and would love to use Rust. When looking for the best Rust python parser I was led to [RustPython/Parser](https://github.com/RustPython/Parser). I see that Ruff originally used RustPython/Parser but it seems like the current parser has deviated quite a bit. I am wondering if you can publicly publish some of the internal crates such as the parser and ast packages. 
 

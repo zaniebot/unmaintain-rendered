@@ -13,14 +13,14 @@ head: charlie/rels
 created_at: 2025-03-04T15:12:13Z
 updated_at: 2025-03-04T23:29:40Z
 url: https://github.com/astral-sh/uv/pull/11952
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:04Z
 ```
 
 # Compare major-minor specifiers when filtering interpreters
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-04 15:12_
+_@charliermarsh_
 
 ## Summary
 

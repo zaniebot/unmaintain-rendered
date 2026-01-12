@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-26T13:56:09Z
 updated_at: 2023-09-01T16:27:34Z
 url: https://github.com/astral-sh/ruff/issues/6898
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # formatter panic with comment between joined f-strings
 
 ---
 
-_Issue opened by @davidszotten on 2023-08-26 13:56_
+_@davidszotten_
 
 a3d4f08f moved the f-string comment handling added in f091b46 (which unfortunately didn't add enough test cases)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T12:39:50Z
 updated_at: 2025-08-11T06:46:28Z
 url: https://github.com/astral-sh/ruff/issues/18983
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # docs: `extend` docs should mention support for `ruff.toml` format
 
 ---
 
-_Issue opened by @silverwind on 2025-06-27 12:39_
+_@silverwind_
 
 The [`extend` option documentation](https://docs.astral.sh/ruff/settings/#extend) says:
 

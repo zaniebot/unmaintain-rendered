@@ -12,14 +12,14 @@ head: zb/msrv
 created_at: 2025-07-10T13:07:09Z
 updated_at: 2025-07-10T13:57:39Z
 url: https://github.com/astral-sh/ruff/pull/19260
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # Rename the msrv job to indicate it tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-10 13:07_
+_@zanieb_
 
 Otherwise, this is pretty confusing on failure as I am expecting a compile error
 

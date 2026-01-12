@@ -14,14 +14,14 @@ head: pep696
 created_at: 2024-04-24T01:16:28Z
 updated_at: 2024-09-10T23:38:39Z
 url: https://github.com/astral-sh/ruff/pull/11120
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Add support for PEP 696 syntax
 
 ---
 
-_Pull request opened by @JelleZijlstra on 2024-04-24 01:16_
+_@JelleZijlstra_
 
 Fixes #11099.
 

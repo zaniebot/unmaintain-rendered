@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-01T17:39:28Z
 updated_at: 2025-04-09T15:29:28Z
 url: https://github.com/astral-sh/ruff/issues/8415
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Disable formatter for specific lines
 
 ---
 
-_Issue opened by @sparisi on 2023-11-01 17:39_
+_@sparisi_
 
 Say I have a function like `f(a, b, c, d, e, f)` (with longer var names) that gets split into 
 ```

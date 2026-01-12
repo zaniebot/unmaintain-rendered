@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-12T18:35:41Z
 updated_at: 2023-05-12T21:08:23Z
 url: https://github.com/astral-sh/ruff/issues/4395
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Autofix on `FLY002` produces a syntax error
 
 ---
 
-_Issue opened by @danparizher on 2023-05-12 18:35_
+_@danparizher_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

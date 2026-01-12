@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-10T15:47:04Z
 updated_at: 2024-08-18T17:01:33Z
 url: https://github.com/clap-rs/clap/issues/5579
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Duplicated "error:" prefix
 
 ---
 
-_Issue opened by @d-e-s-o on 2024-07-10 15:47_
+_@d-e-s-o_
 
 ### Please complete the following tasks
 

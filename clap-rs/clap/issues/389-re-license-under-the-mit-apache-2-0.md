@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-01-26T14:13:25Z
 updated_at: 2018-08-02T03:29:47Z
 url: https://github.com/clap-rs/clap/issues/389
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Re-license under the MIT/Apache 2.0
 
 ---
 
-_Issue opened by @kbknapp on 2016-01-26 14:13_
+_@kbknapp_
 
 # Note from @kbknapp
 

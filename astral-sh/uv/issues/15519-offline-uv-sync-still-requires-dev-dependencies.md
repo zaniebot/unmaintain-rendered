@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-25T16:25:52Z
 updated_at: 2025-09-10T13:29:02Z
 url: https://github.com/astral-sh/uv/issues/15519
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # Offline uv sync still requires dev dependencies and attempts PyPI fetches with --frozen --no-index
 
 ---
 
-_Issue opened by @JunYanOOO on 2025-08-25 16:25_
+_@JunYanOOO_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: micha/namespace-package-import
 created_at: 2025-05-16T15:12:27Z
 updated_at: 2025-05-26T21:24:09Z
 url: https://github.com/astral-sh/ruff/pull/18137
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # [ty] Support `import <namespace>` and `from <namespace> import module`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-16 15:12_
+_@MichaReiser_
 
 ## Summary
 

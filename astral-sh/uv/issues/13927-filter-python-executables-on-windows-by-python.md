@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-09T16:58:55Z
 updated_at: 2025-06-12T19:42:11Z
 url: https://github.com/astral-sh/uv/issues/13927
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # Filter Python executables on Windows by Python version metadata
 
 ---
 
-_Issue opened by @zanieb on 2025-06-09 16:58_
+_@zanieb_
 
 See https://github.com/astral-sh/ruff/pull/18550#issuecomment-2956350021
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-09T20:47:43Z
 updated_at: 2022-10-09T22:13:42Z
 url: https://github.com/astral-sh/ruff/issues/375
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Flake8 supports `# noqa: E50`1 inside multiline strings
 
 ---
 
-_Issue opened by @ghuls on 2022-10-09 20:47_
+_@ghuls_
 
 Flake8 supports `# noqa: E50`1 inside multiline strings.
 

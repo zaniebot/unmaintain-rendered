@@ -14,14 +14,14 @@ head: ibraheem/go-to-typeshed
 created_at: 2025-06-30T23:38:47Z
 updated_at: 2025-07-02T11:59:00Z
 url: https://github.com/astral-sh/ruff/pull/19057
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # [ty] Support LSP go-to with vendored typeshed stubs
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-06-30 23:38_
+_@ibraheemdev_
 
 ## Summary
 

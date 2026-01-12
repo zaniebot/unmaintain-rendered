@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-02T14:40:59Z
 updated_at: 2025-07-29T16:06:57Z
 url: https://github.com/astral-sh/uv/issues/9577
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # Not possible to authenticate into private registries via UV_INDEX env variables
 
 ---
 
-_Issue opened by @mkravchenko-nable on 2024-12-02 14:40_
+_@mkravchenko-nable_
 
 Hello, as it described here [authorize into private registry](https://docs.astral.sh/uv/configuration/indexes/#searching-across-multiple-indexes) it should be possible to authorize into private registry, but each time I have same error:
 

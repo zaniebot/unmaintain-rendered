@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-30T07:41:29Z
 updated_at: 2025-01-06T21:52:30Z
 url: https://github.com/astral-sh/uv/issues/10233
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # Cannot install gevent==21.8.0 as a dependency
 
 ---
 
-_Issue opened by @yajo on 2024-12-30 07:41_
+_@yajo_
 
 It seems that dependency [was requiring an alpha version of Cython](https://github.com/gevent/gevent/blob/7b2823e2c17b31ddc6234a26c4c324be6083c1bc/pyproject.toml#L25). Now there's a newer release and some alpha feature must have broken. See https://github.com/gevent/gevent/issues/1899.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-17T10:41:24Z
 updated_at: 2024-03-17T10:48:50Z
 url: https://github.com/astral-sh/ruff/issues/10433
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Ruff result differs from flake 8 results
 
 ---
 
-_Issue opened by @oliverandrich on 2024-03-17 10:41_
+_@oliverandrich_
 
 I am using ruff 0.3.3 and Flake8 7.0.0 on a project and get different results from both tools. Nothing spectacular, but it raises uncertainty if ruff is really a drop-in replacement as it states or not.
 

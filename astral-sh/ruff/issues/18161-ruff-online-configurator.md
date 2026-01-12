@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-18T14:37:12Z
 updated_at: 2025-05-28T07:52:18Z
 url: https://github.com/astral-sh/ruff/issues/18161
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Ruff online configurator
 
 ---
 
-_Issue opened by @itay-sho on 2025-05-18 14:37_
+_@itay-sho_
 
 ### Question
 

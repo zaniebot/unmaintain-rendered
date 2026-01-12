@@ -14,14 +14,14 @@ head: micha/fix-exported-names-too-many-iterations
 created_at: 2025-11-13T13:46:36Z
 updated_at: 2025-11-13T14:38:11Z
 url: https://github.com/astral-sh/ruff/pull/21428
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] Fix panic for cyclic star imports
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-13 13:46_
+_@MichaReiser_
 
 ## Summary
 

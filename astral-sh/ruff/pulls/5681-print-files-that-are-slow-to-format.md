@@ -13,14 +13,14 @@ head: print-slow-files
 created_at: 2023-07-11T10:37:42Z
 updated_at: 2023-07-11T13:19:58Z
 url: https://github.com/astral-sh/ruff/pull/5681
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Print files that are slow to format
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-11 10:37_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

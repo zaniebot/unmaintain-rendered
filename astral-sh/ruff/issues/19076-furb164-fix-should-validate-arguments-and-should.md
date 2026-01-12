@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-01T17:23:56Z
 updated_at: 2025-07-16T15:38:34Z
 url: https://github.com/astral-sh/ruff/issues/19076
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # FURB164 fix should validate arguments and should usually be marked unsafe
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-01 17:23_
+_@dscorbett_
 
 ### Summary
 

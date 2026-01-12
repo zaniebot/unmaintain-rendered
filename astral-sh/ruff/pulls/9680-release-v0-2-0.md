@@ -12,14 +12,14 @@ head: release/0.2.0
 created_at: 2024-01-29T17:44:58Z
 updated_at: 2024-02-01T19:35:03Z
 url: https://github.com/astral-sh/ruff/pull/9680
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Release v0.2.0
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-29 17:44_
+_@zanieb_
 
 This is a tracking pull request for v0.2.0.
 

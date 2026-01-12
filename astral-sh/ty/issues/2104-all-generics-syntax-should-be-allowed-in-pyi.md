@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-19T08:54:37Z
 updated_at: 2025-12-19T09:01:05Z
 url: https://github.com/astral-sh/ty/issues/2104
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # All generics syntax should be allowed in pyi files no matter the Python version
 
 ---
 
-_Issue opened by @flying-sheep on 2025-12-19 08:54_
+_@flying-sheep_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-13T23:19:58Z
 updated_at: 2025-02-20T01:36:30Z
 url: https://github.com/astral-sh/uv/issues/11497
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:38Z
 ```
 
 # What does --python-preference do for uv pip install
 
 ---
 
-_Issue opened by @robinjhuang on 2025-02-13 23:19_
+_@robinjhuang_
 
 ### Question
 

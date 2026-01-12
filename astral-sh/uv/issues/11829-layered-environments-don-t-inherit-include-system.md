@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-27T11:19:21Z
 updated_at: 2025-03-01T03:22:38Z
 url: https://github.com/astral-sh/uv/issues/11829
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # Layered environments don't inherit `include-system-site-packages`
 
 ---
 
-_Issue opened by @zeevro on 2025-02-27 11:19_
+_@zeevro_
 
 ### Summary
 

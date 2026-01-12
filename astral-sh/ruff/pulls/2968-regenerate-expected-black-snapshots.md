@@ -13,14 +13,14 @@ head: charlie/snapshots
 created_at: 2023-02-16T19:36:01Z
 updated_at: 2023-02-16T19:39:19Z
 url: https://github.com/astral-sh/ruff/pull/2968
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Regenerate expected Black snapshots
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-16 19:36_
+_@charliermarsh_
 
 The script I used to generate these wasn't idempotent, and I must've run it twice over the "unused" tests -- so most of them contained the wrong expected result, which quickly became clear as I tried to enable them.
 

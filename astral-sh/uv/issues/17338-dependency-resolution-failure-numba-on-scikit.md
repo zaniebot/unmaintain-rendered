@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-06T17:14:27Z
 updated_at: 2026-01-06T18:29:01Z
 url: https://github.com/astral-sh/uv/issues/17338
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # Dependency resolution failure: `numba` on `scikit-gstat` + `numpy>=2`
 
 ---
 
-_Issue opened by @phistep on 2026-01-06 17:14_
+_@phistep_
 
 ### Summary
 

@@ -15,14 +15,14 @@ head: micha/fix-future-import
 created_at: 2025-10-20T09:41:01Z
 updated_at: 2025-10-21T06:14:41Z
 url: https://github.com/astral-sh/ruff/pull/20987
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # [ty] Fix auto import for files with `from __future__` import
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-20 09:41_
+_@MichaReiser_
 
 ## Summary
 

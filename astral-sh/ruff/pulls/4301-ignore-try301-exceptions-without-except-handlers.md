@@ -12,14 +12,14 @@ head: charlie/try301
 created_at: 2023-05-09T03:33:19Z
 updated_at: 2023-05-09T04:06:53Z
 url: https://github.com/astral-sh/ruff/pull/4301
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Ignore `TRY301` exceptions without except handlers
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-09 03:33_
+_@charliermarsh_
 
 Closes #4287.
 

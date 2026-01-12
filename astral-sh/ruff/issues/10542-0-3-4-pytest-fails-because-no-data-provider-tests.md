@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-24T09:03:17Z
 updated_at: 2024-03-25T13:06:26Z
 url: https://github.com/astral-sh/ruff/issues/10542
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # 0.3.4: pytest fails because `No data_provider tests were created for test_type_availability` ans some warnings
 
 ---
 
-_Issue opened by @kloczek on 2024-03-24 09:03_
+_@kloczek_
 
 I'm packaging your module as an rpm package so I'm using the typical PEP517 based build, install and test cycle used on building packages from non-root account.
 - `python3 -sBm build -w --no-isolation`

@@ -13,14 +13,14 @@ head: ww/draft-bot-pr
 created_at: 2025-11-17T20:43:00Z
 updated_at: 2025-11-17T21:04:12Z
 url: https://github.com/astral-sh/uv/pull/16763
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 # Open PRs as drafts for sync-python-releases
 
 ---
 
-_Pull request opened by @woodruffw on 2025-11-17 20:43_
+_@woodruffw_
 
 ## Summary
 

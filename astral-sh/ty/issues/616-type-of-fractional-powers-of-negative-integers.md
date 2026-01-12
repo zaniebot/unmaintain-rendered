@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-09T13:47:56Z
 updated_at: 2025-11-12T02:00:43Z
 url: https://github.com/astral-sh/ty/issues/616
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # type of fractional powers of negative integers inferred as intergers
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-06-09 13:47_
+_@MatthewMckee4_
 
 ### Summary
 

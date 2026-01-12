@@ -13,14 +13,14 @@ head: robert/fix-docs-noqa
 created_at: 2024-01-21T15:27:59Z
 updated_at: 2024-01-21T15:30:36Z
 url: https://github.com/astral-sh/ruff/pull/9598
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Docs: fix isort rule code
 
 ---
 
-_Pull request opened by @RobertCraigie on 2024-01-21 15:27_
+_@RobertCraigie_
 
 ## Summary
 

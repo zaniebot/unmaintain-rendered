@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-18T06:13:42Z
 updated_at: 2024-09-18T14:55:09Z
 url: https://github.com/astral-sh/uv/issues/7485
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # uv 0.4.11 failing to read distribution cache in github actions
 
 ---
 
-_Issue opened by @winwinashwin on 2024-09-18 06:13_
+_@winwinashwin_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-08T17:31:36Z
 updated_at: 2025-12-12T14:10:50Z
 url: https://github.com/astral-sh/uv/issues/17035
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # Legally compliant distribution ?
 
 ---
 
-_Issue opened by @zvr on 2025-12-08 17:31_
+_@zvr_
 
 ### Question
 

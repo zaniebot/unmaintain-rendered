@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-18T16:17:45Z
 updated_at: 2025-08-18T18:48:35Z
 url: https://github.com/astral-sh/uv/issues/15355
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # Feature Request: Have `uv tool update-shell` check parent process when environment variables aren't enough
 
 ---
 
-_Issue opened by @edrogers on 2025-08-18 16:17_
+_@edrogers_
 
 ### Summary
 

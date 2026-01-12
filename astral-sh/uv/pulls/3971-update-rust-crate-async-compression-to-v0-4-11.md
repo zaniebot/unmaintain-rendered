@@ -13,14 +13,14 @@ head: renovate/async-compression-0.x-lockfile
 created_at: 2024-06-03T01:34:53Z
 updated_at: 2024-06-03T01:45:42Z
 url: https://github.com/astral-sh/uv/pull/3971
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:57Z
 ```
 
 # Update Rust crate async-compression to v0.4.11
 
 ---
 
-_Pull request opened by @renovate on 2024-06-03 01:34_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

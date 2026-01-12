@@ -13,14 +13,14 @@ head: zb/build-options
 created_at: 2024-06-12T18:05:39Z
 updated_at: 2024-06-12T21:33:34Z
 url: https://github.com/astral-sh/uv/pull/4284
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:07Z
 ```
 
 # Add `BuildOptions` for centralized combination of `NoBuild` and `NoBinary`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-12 18:05_
+_@zanieb_
 
 As requested in review of https://github.com/astral-sh/uv/pull/4067
 

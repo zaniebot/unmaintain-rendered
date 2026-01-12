@@ -13,14 +13,14 @@ head: charlie/E203
 created_at: 2023-11-25T18:10:32Z
 updated_at: 2023-11-25T18:22:25Z
 url: https://github.com/astral-sh/ruff/pull/8838
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Allow space-before-colon after end-of-slice
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-25 18:10_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8752.
 

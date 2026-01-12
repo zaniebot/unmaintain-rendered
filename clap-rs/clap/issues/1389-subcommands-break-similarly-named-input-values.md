@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-11-29T02:58:26Z
 updated_at: 2018-12-13T16:54:24Z
 url: https://github.com/clap-rs/clap/issues/1389
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Subcommands break similarly named input values
 
 ---
 
-_Issue opened by @conways-glider on 2018-11-29 02:58_
+_@conways-glider_
 
 ### Rust Version
 

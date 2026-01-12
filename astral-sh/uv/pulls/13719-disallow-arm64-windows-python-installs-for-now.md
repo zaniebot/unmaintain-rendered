@@ -12,14 +12,14 @@ head: skip-arm64-windows
 created_at: 2025-05-29T17:11:53Z
 updated_at: 2025-06-13T17:21:27Z
 url: https://github.com/astral-sh/uv/pull/13719
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:49Z
 ```
 
 # Disallow arm64 Windows Python installs for now
 
 ---
 
-_Pull request opened by @geofft on 2025-05-29 17:11_
+_@geofft_
 
 See #12906 and astral-sh/python-build-standalone#387 - as soon as we start shipping arm64 Windows Python builds in python-build-standalone, uv is going to start discovering them, and there aren't enough arm64 Windows wheels for that to make sense as a default yet. As a very minimal stopgap, consider those builds incompatible.
 

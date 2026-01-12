@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-17T15:57:07Z
 updated_at: 2024-09-18T15:19:11Z
 url: https://github.com/astral-sh/uv/issues/7469
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Consider presence on the `PATH` an opt-in to Python pre-releases
 
 ---
 
-_Issue opened by @zanieb on 2024-09-17 15:57_
+_@zanieb_
 
 From @henryiii in https://github.com/astral-sh/uv/issues/7300#issuecomment-2356049477
 

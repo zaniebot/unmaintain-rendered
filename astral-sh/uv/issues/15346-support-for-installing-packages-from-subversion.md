@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-18T11:55:05Z
 updated_at: 2025-11-18T13:41:52Z
 url: https://github.com/astral-sh/uv/issues/15346
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # Support for installing packages from Subversion
 
 ---
 
-_Issue opened by @waszil on 2025-08-18 11:55_
+_@waszil_
 
 ### Summary
 

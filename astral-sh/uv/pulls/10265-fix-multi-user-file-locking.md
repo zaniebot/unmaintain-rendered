@@ -11,14 +11,14 @@ head: change_umask
 created_at: 2025-01-01T20:41:34Z
 updated_at: 2025-01-06T18:50:26Z
 url: https://github.com/astral-sh/uv/pull/10265
-synced_at: 2026-01-10T11:44:39Z
+synced_at: 2026-01-12T16:09:12Z
 ```
 
 # Fix multi-user file locking
 
 ---
 
-_Pull request opened by @guoci on 2025-01-01 20:41_
+_@guoci_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

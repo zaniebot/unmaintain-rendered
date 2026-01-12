@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-09-14T15:01:24Z
 updated_at: 2018-08-02T03:30:11Z
 url: https://github.com/clap-rs/clap/issues/1047
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Incorrect default value behavior with require_equals and min_values(0)
 
 ---
 
-_Issue opened by @jonhoo on 2017-09-14 15:01_
+_@jonhoo_
 
 ### Rust Version
 

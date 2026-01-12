@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-10T13:08:52Z
 updated_at: 2024-09-10T21:39:31Z
 url: https://github.com/astral-sh/uv/issues/7253
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Allow .uv.toml
 
 ---
 
-_Issue opened by @AntoineD on 2024-09-10 13:08_
+_@AntoineD_
 
 Like for most of the tools out there, ruff included, would it be possible to allow the configuration file to be prefixed with `.`: `.uv.toml`?
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-30T21:46:54Z
 updated_at: 2023-08-31T16:07:24Z
 url: https://github.com/astral-sh/ruff/issues/7012
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Panicked at 'byte index 1024 is not a char boundary; it is inside 'এ' (bytes 1022..1025) of `       "অগ্রণী ব্যাংক",
 
 ---
 
-_Issue opened by @qarmin on 2023-08-30 21:46_
+_@qarmin_
 
 Ruff 0.0.286 (latest changes from main branch)
 

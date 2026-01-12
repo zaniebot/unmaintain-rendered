@@ -13,14 +13,14 @@ head: charlie/p
 created_at: 2025-06-26T19:56:24Z
 updated_at: 2025-06-26T20:17:43Z
 url: https://github.com/astral-sh/uv/pull/14294
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:08Z
 ```
 
 # Allow local indexes to reference remote files
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-26 19:56_
+_@charliermarsh_
 
 ## Summary
 

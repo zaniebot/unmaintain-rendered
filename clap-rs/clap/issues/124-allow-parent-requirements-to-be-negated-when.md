@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-17T17:10:00Z
 updated_at: 2015-05-20T15:48:57Z
 url: https://github.com/clap-rs/clap/issues/124
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Allow parent requirements to be negated when displaying help
 
 ---
 
-_Issue opened by @kbknapp on 2015-05-17 17:10_
+_@kbknapp_
 
 _No description provided._
 

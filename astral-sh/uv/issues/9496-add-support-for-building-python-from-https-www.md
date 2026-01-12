@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-28T10:58:59Z
 updated_at: 2024-11-30T02:46:39Z
 url: https://github.com/astral-sh/uv/issues/9496
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # Add support for building Python from https://www.python.org/ftp/python source
 
 ---
 
-_Issue opened by @kimminw00 on 2024-11-28 10:58_
+_@kimminw00_
 
 I would like to requestsupport for building Python from https://www.python.org/ftp/python source.
 

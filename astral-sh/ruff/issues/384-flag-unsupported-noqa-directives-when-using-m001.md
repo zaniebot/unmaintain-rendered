@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-10T08:46:23Z
 updated_at: 2022-10-10T14:09:05Z
 url: https://github.com/astral-sh/ruff/issues/384
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Flag unsupported `noqa` directives when using `M001`.
 
 ---
 
-_Issue opened by @ghuls on 2022-10-10 08:46_
+_@ghuls_
 
 Flag unsupported `noqa` directives when using `M001`.
 

@@ -13,14 +13,14 @@ head: konsti/backticks-for-lookahead-error
 created_at: 2024-04-23T17:19:05Z
 updated_at: 2024-04-23T17:28:11Z
 url: https://github.com/astral-sh/uv/pull/3216
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:30Z
 ```
 
 # An enum and backticks for lookahead error
 
 ---
 
-_Pull request opened by @konstin on 2024-04-23 17:19_
+_@konstin_
 
 Mostly a small refactor, adds backticks to be coherent with #3004.
 

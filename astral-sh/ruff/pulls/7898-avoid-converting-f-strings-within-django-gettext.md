@@ -12,14 +12,14 @@ head: charlie/f-string-django
 created_at: 2023-10-10T16:21:51Z
 updated_at: 2023-10-10T16:37:38Z
 url: https://github.com/astral-sh/ruff/pull/7898
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Avoid converting f-strings within Django `gettext` calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-10 16:21_
+_@charliermarsh_
 
 ## Summary
 

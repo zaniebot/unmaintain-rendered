@@ -13,14 +13,14 @@ head: charlie/alloc
 created_at: 2025-01-22T02:03:32Z
 updated_at: 2025-01-22T15:14:09Z
 url: https://github.com/astral-sh/uv/pull/10837
-synced_at: 2026-01-10T11:45:14Z
+synced_at: 2026-01-12T16:09:31Z
 ```
 
 # Remove extra collects when flattening requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-22 02:03_
+_@charliermarsh_
 
 _No description provided._
 

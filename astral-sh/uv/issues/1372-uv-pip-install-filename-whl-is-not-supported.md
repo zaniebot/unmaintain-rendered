@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T22:28:47Z
 updated_at: 2025-04-04T23:27:36Z
 url: https://github.com/astral-sh/uv/issues/1372
-synced_at: 2026-01-10T03:41:45Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # `uv pip install filename.whl` is not supported
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-02-15 22:28_
+_@hauntsaninja_
 
 If you have a wheel file floating around, pip gives you a way to install it. Is there a way to do this in uv?
 

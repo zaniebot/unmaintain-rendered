@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-31T19:07:05Z
 updated_at: 2025-12-18T15:20:30Z
 url: https://github.com/astral-sh/uv/issues/16541
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # Why uv does not seems to see python packages installed in a different site-packages
 
 ---
 
-_Issue opened by @ccoulombe on 2025-10-31 19:07_
+_@ccoulombe_
 
 ### Question
 

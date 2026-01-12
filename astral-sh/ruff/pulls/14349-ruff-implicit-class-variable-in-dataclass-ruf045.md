@@ -14,14 +14,14 @@ head: RUF045
 created_at: 2024-11-15T00:14:15Z
 updated_at: 2025-02-16T07:06:03Z
 url: https://github.com/astral-sh/ruff/pull/14349
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`ruff`] Implicit class variable in dataclass (`RUF045`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-15 00:14_
+_@InSyncWithFoo_
 
 ## Summary
 

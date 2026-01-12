@@ -13,14 +13,14 @@ head: improve_place_comment_debuggability
 created_at: 2023-06-20T15:14:34Z
 updated_at: 2023-06-21T10:34:56Z
 url: https://github.com/astral-sh/ruff/pull/5209
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Improve debuggability of `place_comment`
 
 ---
 
-_Pull request opened by @konstin on 2023-06-20 15:14_
+_@konstin_
 
 ## Summary
 

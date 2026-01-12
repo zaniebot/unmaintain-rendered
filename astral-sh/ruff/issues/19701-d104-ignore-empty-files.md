@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-01T23:22:23Z
 updated_at: 2025-08-02T09:06:55Z
 url: https://github.com/astral-sh/ruff/issues/19701
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # D104: ignore empty files
 
 ---
 
-_Issue opened by @spaceone on 2025-08-01 23:22_
+_@spaceone_
 
 `D104 Missing docstring in public package` should ignore empty files like `__init__.py`.
 

@@ -14,14 +14,14 @@ head: charlie/reject
 created_at: 2025-05-13T03:33:51Z
 updated_at: 2025-05-13T03:50:02Z
 url: https://github.com/astral-sh/uv/pull/13421
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:40Z
 ```
 
 # Reject `pylock.toml` in `uv add -r`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-13 03:33_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-10-24T11:00:31Z
 updated_at: 2018-08-02T03:30:13Z
 url: https://github.com/clap-rs/clap/issues/1076
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Parser panics using global args and calling `get_matches_from_safe_borrow()` repeatedly
 
 ---
 
-_Issue opened by @tomprogrammer on 2017-10-24 11:00_
+_@tomprogrammer_
 
 
 ### Rust Version

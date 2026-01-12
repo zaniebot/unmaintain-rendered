@@ -12,14 +12,14 @@ head: jtfm/subcommand-version
 created_at: 2025-03-24T16:38:04Z
 updated_at: 2025-06-01T11:19:19Z
 url: https://github.com/astral-sh/uv/pull/12439
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:17Z
 ```
 
 # Remove --version from uv subcommands
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-03-24 16:38_
+_@jtfmumm_
 
 Currently, uv will return the uv version when `--version` is passed into subcommands, though it is displayed as follows:
 

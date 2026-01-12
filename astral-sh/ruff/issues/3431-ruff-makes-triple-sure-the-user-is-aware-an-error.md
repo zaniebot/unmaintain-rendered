@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-10T05:13:55Z
 updated_at: 2023-03-14T15:22:16Z
 url: https://github.com/astral-sh/ruff/issues/3431
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Ruff makes triple sure the user is aware an error code has been remapped when it has explictly been ignored
 
 ---
 
-_Issue opened by @onerandomusername on 2023-03-10 05:13_
+_@onerandomusername_
 
 ### Summary
 

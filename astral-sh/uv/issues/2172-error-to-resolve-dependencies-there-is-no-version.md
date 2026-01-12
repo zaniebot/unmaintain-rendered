@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-04T20:28:32Z
 updated_at: 2024-03-05T08:18:23Z
 url: https://github.com/astral-sh/uv/issues/2172
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Error to resolve dependencies: There is no version
 
 ---
 
-_Issue opened by @yabirgb on 2024-03-04 20:28_
+_@yabirgb_
 
 I'm trying to add support for uv in the rotki's CI. PR here https://github.com/rotki/rotki/pull/7499 and I get the following error
 

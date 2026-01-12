@@ -14,14 +14,14 @@ head: david/fix-callabletypeof
 created_at: 2025-09-10T19:00:55Z
 updated_at: 2025-09-10T19:40:23Z
 url: https://github.com/astral-sh/ruff/pull/20338
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] Fix `CallableTypeOf[…]` for bound methods
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-10 19:00_
+_@sharkdp_
 
 ## Summary
 

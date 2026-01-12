@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-22T14:13:05Z
 updated_at: 2024-07-01T14:46:30Z
 url: https://github.com/astral-sh/uv/issues/1868
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # `uv venv` fails because `python3.wrapper` is not available
 
 ---
 
-_Issue opened by @csalerno-asml on 2024-02-22 14:13_
+_@csalerno-asml_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

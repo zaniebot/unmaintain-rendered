@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T15:14:37Z
 updated_at: 2024-08-20T19:04:48Z
 url: https://github.com/astral-sh/uv/issues/6254
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Allow flags in `uv run`'s  `--with` values
 
 ---
 
-_Issue opened by @mgaitan on 2024-08-20 15:14_
+_@mgaitan_
 
 
 In a Makefile, I run something like this (where `app_dir` is an argument):

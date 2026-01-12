@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-19T02:28:33Z
 updated_at: 2023-10-20T00:24:07Z
 url: https://github.com/astral-sh/uv/issues/130
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Support constraints files (in `pip-install` and `pip-compile`)
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-19 02:28_
+_@charliermarsh_
 
 _No description provided._
 

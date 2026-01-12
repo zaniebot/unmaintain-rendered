@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-15T11:39:16Z
 updated_at: 2025-10-15T12:27:30Z
 url: https://github.com/astral-sh/ty/issues/1359
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Disable type hints for single lines
 
 ---
 
-_Issue opened by @silvasta on 2025-10-15 11:39_
+_@silvasta_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-21T10:15:51Z
 updated_at: 2024-11-21T13:58:02Z
 url: https://github.com/astral-sh/uv/issues/9307
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # uv with pytorch & huggingface toolchain
 
 ---
 
-_Issue opened by @maxstrobel on 2024-11-21 10:15_
+_@maxstrobel_
 
 Hello,
 thanks a lot for this tool - a great user experience, real appreciate it!

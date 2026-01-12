@@ -12,14 +12,14 @@ head: charlie/override
 created_at: 2022-11-28T14:51:21Z
 updated_at: 2022-11-28T14:52:14Z
 url: https://github.com/astral-sh/ruff/pull/941
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Allow `@override` methods to be undocumented
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-28 14:51_
+_@charliermarsh_
 
 Resolves #940.
 

@@ -13,14 +13,14 @@ head: charlie/try
 created_at: 2023-02-20T22:52:22Z
 updated_at: 2023-02-20T22:55:33Z
 url: https://github.com/astral-sh/ruff/pull/3074
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add `StmtKind::Try`; fix trailing newlines
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-20 22:52_
+_@charliermarsh_
 
 _No description provided._
 

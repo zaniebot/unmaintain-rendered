@@ -14,14 +14,14 @@ head: micha/test-server-logging
 created_at: 2025-11-13T17:09:44Z
 updated_at: 2025-11-14T11:30:21Z
 url: https://github.com/astral-sh/ruff/pull/21432
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] Improve LSP test server logging
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-13 17:09_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: renovate/jiff-0.x-lockfile
 created_at: 2025-02-03T00:56:09Z
 updated_at: 2025-02-03T01:33:45Z
 url: https://github.com/astral-sh/uv/pull/11171
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:42Z
 ```
 
 # Update Rust crate jiff to v0.1.29
 
 ---
 
-_Pull request opened by @renovate on 2025-02-03 00:56_
+_@renovate_
 
 This PR contains the following updates:
 

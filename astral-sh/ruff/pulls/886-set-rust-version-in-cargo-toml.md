@@ -12,14 +12,14 @@ head: charlie/rust-version
 created_at: 2022-11-23T04:19:22Z
 updated_at: 2022-11-23T04:33:40Z
 url: https://github.com/astral-sh/ruff/pull/886
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Set rust-version in Cargo.toml
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-23 04:19_
+_@charliermarsh_
 
 See: https://github.com/charliermarsh/ruff/issues/885#issuecomment-1324528519
 

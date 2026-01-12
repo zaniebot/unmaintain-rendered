@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-05T12:53:55Z
 updated_at: 2025-02-25T17:28:36Z
 url: https://github.com/astral-sh/uv/issues/5792
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Add `--non-editable` to allow syncing with non-editable workspace members
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-05 12:53_
+_@charliermarsh_
 
 Do we want to support this?
 

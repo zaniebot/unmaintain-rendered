@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-26T15:32:40Z
 updated_at: 2023-11-10T16:23:37Z
 url: https://github.com/astral-sh/ruff/issues/8254
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # formatter(Jupyter): ending semicolons valid in Jupyter
 
 ---
 
-_Issue opened by @henryiii on 2023-10-26 15:32_
+_@henryiii_
 
 The Jupyter formatter has a couple of issues when running on notebooks.
 

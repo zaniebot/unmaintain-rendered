@@ -13,14 +13,14 @@ head: fix-piy025-isort-loop
 created_at: 2025-10-28T22:11:37Z
 updated_at: 2025-10-31T07:16:10Z
 url: https://github.com/astral-sh/ruff/pull/21115
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [`ruff`] Prevent PYI025 from clashing with isort-required check
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-10-28 22:11_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

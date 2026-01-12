@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-19T17:11:48Z
 updated_at: 2024-08-19T21:29:34Z
 url: https://github.com/astral-sh/uv/issues/6214
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # `uv add --script` does not display anything
 
 ---
 
-_Issue opened by @zanieb on 2024-08-19 17:11_
+_@zanieb_
 
 e.g.
 

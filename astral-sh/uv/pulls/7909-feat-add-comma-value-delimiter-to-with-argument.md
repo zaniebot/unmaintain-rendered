@@ -13,14 +13,14 @@ head: main
 created_at: 2024-10-03T22:21:22Z
 updated_at: 2024-10-11T09:19:57Z
 url: https://github.com/astral-sh/uv/pull/7909
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # feat: add comma value-delimiter to with argument in tool run args to allow for multiple arguments in with flag
 
 ---
 
-_Pull request opened by @noamteyssier on 2024-10-03 22:21_
+_@noamteyssier_
 
 This is to address my own issue #7908 
 

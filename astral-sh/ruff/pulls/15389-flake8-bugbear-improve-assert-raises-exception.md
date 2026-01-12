@@ -13,14 +13,14 @@ head: evil-begone
 created_at: 2025-01-10T01:37:47Z
 updated_at: 2025-01-10T10:25:04Z
 url: https://github.com/astral-sh/ruff/pull/15389
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`flake8-bugbear`] Improve assert-raises-exception (B017) message
 
 ---
 
-_Pull request opened by @tjkuson on 2025-01-10 01:37_
+_@tjkuson_
 
 ## Summary
 

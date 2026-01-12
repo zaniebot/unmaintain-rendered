@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-30T13:45:29Z
 updated_at: 2024-10-30T14:47:17Z
 url: https://github.com/astral-sh/uv/issues/8699
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # Publish Docker images to Docker Hub
 
 ---
 
-_Issue opened by @gaby on 2024-10-30 13:45_
+_@gaby_
 
 When using a Docker Registry to reduce network i/o and bandwidth costs you can't mirror images from `ghcr.io` as stated here: https://docs.docker.com/docker-hub/mirror/#gotcha
 

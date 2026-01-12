@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-19T08:20:45Z
 updated_at: 2023-05-28T03:37:24Z
 url: https://github.com/astral-sh/ruff/issues/4522
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Autofix error] UP036 autofix fails on complex nested block
 
 ---
 
-_Issue opened by @konstin on 2023-05-19 08:20_
+_@konstin_
 
 UP036 transforms the following 
 

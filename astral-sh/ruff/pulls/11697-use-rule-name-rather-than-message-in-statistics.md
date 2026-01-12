@@ -14,14 +14,14 @@ head: charlie/name
 created_at: 2024-06-02T18:19:11Z
 updated_at: 2024-06-24T12:23:26Z
 url: https://github.com/astral-sh/ruff/pull/11697
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Use rule name rather than message in `--statistics`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-02 18:19_
+_@charliermarsh_
 
 ## Summary
 

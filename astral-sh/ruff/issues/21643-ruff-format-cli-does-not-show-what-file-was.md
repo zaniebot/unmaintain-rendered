@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-26T15:19:00Z
 updated_at: 2025-11-27T07:28:06Z
 url: https://github.com/astral-sh/ruff/issues/21643
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ruff format cli does not show what file was changed.
 
 ---
 
-_Issue opened by @toppk on 2025-11-26 15:19_
+_@toppk_
 
 ### Summary
 

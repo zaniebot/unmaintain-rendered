@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-21T10:22:57Z
 updated_at: 2024-08-21T10:43:55Z
 url: https://github.com/astral-sh/uv/issues/6315
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # uv sync --no-self
 
 ---
 
-_Issue opened by @hynek on 2024-08-21 10:22_
+_@hynek_
 
 Since Docker is what it is and given how well caching in it works, I like to install my applications in two steps.
 

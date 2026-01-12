@@ -12,14 +12,14 @@ head: readme-add-paddlepaddle
 created_at: 2023-03-16T17:35:20Z
 updated_at: 2023-03-17T03:41:42Z
 url: https://github.com/astral-sh/ruff/pull/3562
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # add PaddlePaddle to `Who's Using Ruff?`
 
 ---
 
-_Pull request opened by @SigureMo on 2023-03-16 17:35_
+_@SigureMo_
 
 https://github.com/PaddlePaddle/Paddle/blob/d1e2c61b22b9675adc3c4a52227d2220babaa001/pyproject.toml#L21-L60
 

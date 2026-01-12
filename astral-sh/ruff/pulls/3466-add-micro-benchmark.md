@@ -12,14 +12,14 @@ head: feat/benchmark
 created_at: 2023-03-12T17:47:35Z
 updated_at: 2023-03-14T07:35:09Z
 url: https://github.com/astral-sh/ruff/pull/3466
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Add Micro Benchmark
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-12 17:47_
+_@MichaReiser_
 
 This PR adds a microbenchmark for the Ruff linter. Adding microbenchmark for other tools
 should be straightforward.

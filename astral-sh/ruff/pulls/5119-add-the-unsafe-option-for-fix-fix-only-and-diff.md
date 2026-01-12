@@ -13,14 +13,14 @@ head: 4185_cli_respect_applicability
 created_at: 2023-06-15T13:01:52Z
 updated_at: 2023-10-19T13:59:07Z
 url: https://github.com/astral-sh/ruff/pull/5119
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add the `--unsafe` option for `--fix`, `--fix-only`, and `--diff`
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-15 13:01_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

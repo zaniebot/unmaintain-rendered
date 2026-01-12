@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T14:21:39Z
 updated_at: 2024-03-19T20:02:50Z
 url: https://github.com/astral-sh/uv/issues/1591
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # uv self update
 
 ---
 
-_Issue opened by @woutervh on 2024-02-17 14:21_
+_@woutervh_
 
 Poetry can udate itself via
 

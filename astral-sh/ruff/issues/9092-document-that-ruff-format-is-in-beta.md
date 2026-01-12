@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-11T13:19:08Z
 updated_at: 2023-12-11T20:50:03Z
 url: https://github.com/astral-sh/ruff/issues/9092
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Document that `ruff format` is in Beta
 
 ---
 
-_Issue opened by @johnthagen on 2023-12-11 13:19_
+_@johnthagen_
 
 The [recent blog post](https://astral.sh/blog/the-ruff-formatter) mentions 
 

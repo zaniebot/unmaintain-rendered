@@ -13,14 +13,14 @@ head: noqa
 created_at: 2025-03-30T09:20:57Z
 updated_at: 2025-04-07T14:21:52Z
 url: https://github.com/astral-sh/ruff/pull/17061
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Fix RUF100 to detect unused file-level noqa directives with specific codes (#17042)
 
 ---
 
-_Pull request opened by @maxmynter on 2025-03-30 09:20_
+_@maxmynter_
 
 Closes #17042
 

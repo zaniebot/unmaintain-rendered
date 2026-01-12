@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-19T23:02:17Z
 updated_at: 2024-08-17T14:37:38Z
 url: https://github.com/astral-sh/ruff/issues/10483
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Failed to read pyproject.toml after adding additional pyproject.toml file
 
 ---
 
-_Issue opened by @mataton on 2024-03-19 23:02_
+_@mataton_
 
 I am wanting to ignore docstring rules in my project's unit-test directories. I have a `pyproject.toml` file located at the root of the project, which looks like this:
 

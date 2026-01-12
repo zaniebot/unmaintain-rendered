@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-05T12:42:54Z
 updated_at: 2024-06-08T19:58:33Z
 url: https://github.com/astral-sh/ruff/issues/11752
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Rule E501 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2024-06-05 12:42_
+_@qarmin_
 
 ruff 0.4.7 (latest changes from main branch)
 ```

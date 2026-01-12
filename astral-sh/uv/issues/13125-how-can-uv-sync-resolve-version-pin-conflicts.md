@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-27T05:52:44Z
 updated_at: 2025-04-30T14:08:47Z
 url: https://github.com/astral-sh/uv/issues/13125
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # How can `uv sync` resolve version pin conflicts between editable-path dependencies and consumer pins in a monorepo?
 
 ---
 
-_Issue opened by @K-dash on 2025-04-27 05:52_
+_@K-dash_
 
 ### Question
 

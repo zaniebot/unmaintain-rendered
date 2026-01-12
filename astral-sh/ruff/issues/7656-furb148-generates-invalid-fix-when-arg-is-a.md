@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-25T13:43:19Z
 updated_at: 2023-10-03T14:39:16Z
 url: https://github.com/astral-sh/ruff/issues/7656
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # FURB148 generates invalid fix when arg is a generator
 
 ---
 
-_Issue opened by @Skylion007 on 2023-09-25 13:43_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

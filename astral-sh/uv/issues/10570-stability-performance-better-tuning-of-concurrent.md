@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-13T16:07:58Z
 updated_at: 2025-01-14T20:13:51Z
 url: https://github.com/astral-sh/uv/issues/10570
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # stability/performance: better tuning of concurrent downloads/installs
 
 ---
 
-_Issue opened by @morotti on 2025-01-13 16:07_
+_@morotti_
 
 Hello,
 

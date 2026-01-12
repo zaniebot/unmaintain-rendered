@@ -13,14 +13,14 @@ head: add-httpx-into-readme
 created_at: 2023-07-06T12:47:17Z
 updated_at: 2023-07-06T14:07:54Z
 url: https://github.com/astral-sh/ruff/pull/5560
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add httpx into the `Who's Using Ruff?` section
 
 ---
 
-_Pull request opened by @karpetrosyan on 2023-07-06 12:47_
+_@karpetrosyan_
 
 _No description provided._
 

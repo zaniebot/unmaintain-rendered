@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-08-18T23:07:14Z
 updated_at: 2024-08-28T19:18:41Z
 url: https://github.com/clap-rs/clap/issues/5683
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Move `ContextKind` and `ContextValue` into one enum
 
 ---
 
-_Issue opened by @TheTollingBell on 2024-08-18 23:07_
+_@TheTollingBell_
 
 ### Please complete the following tasks
 

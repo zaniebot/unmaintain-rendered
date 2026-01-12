@@ -12,14 +12,14 @@ head: single-argument-parameters-trailing-comma
 created_at: 2023-08-09T07:35:00Z
 updated_at: 2024-01-16T10:04:17Z
 url: https://github.com/astral-sh/ruff/pull/6439
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add trailing comma when single parameter doesn't fit
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-09 07:35_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

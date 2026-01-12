@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-27T16:29:37Z
 updated_at: 2022-11-28T11:26:52Z
 url: https://github.com/astral-sh/ruff/issues/923
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # D417: false positive with *args/**kwargs in numpy docstrings
 
 ---
 
-_Issue opened by @tlambert03 on 2022-11-27 16:29_
+_@tlambert03_
 
 In the [specification for numpy docstrings](https://numpydoc.readthedocs.io/en/latest/format.html#parameters), they state:
 

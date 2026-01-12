@@ -15,14 +15,14 @@ head: dhruv/avoid-pattern-recovery-panic
 created_at: 2024-04-16T04:46:15Z
 updated_at: 2024-04-16T10:40:28Z
 url: https://github.com/astral-sh/ruff/pull/10966
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Avoid panic in invalid pattern recovery
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-16 04:46_
+_@dhruvmanila_
 
 ## Summary
 

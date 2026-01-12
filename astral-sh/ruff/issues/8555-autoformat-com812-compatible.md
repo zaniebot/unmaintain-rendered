@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-08T11:04:57Z
 updated_at: 2024-12-04T14:52:20Z
 url: https://github.com/astral-sh/ruff/issues/8555
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Autoformat COM812 compatible
 
 ---
 
-_Issue opened by @maltevesper on 2023-11-08 11:04_
+_@maltevesper_
 
 It is not immediately clear why some of the rules [documented as incompatible](https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules) with the autoformatter are incompatible with the autoformatter.
 I did not understand why the autoformatter conflicts with COM812 until I ran into this example:

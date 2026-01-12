@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-11T13:12:56Z
 updated_at: 2025-02-03T17:23:02Z
 url: https://github.com/clap-rs/clap/issues/5392
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `#[arg(value_delimiter = ':')]` Delimiter isnt displayed in the help message.
 
 ---
 
-_Issue opened by @max-ishere on 2024-03-11 13:12_
+_@max-ishere_
 
 ### Please complete the following tasks
 

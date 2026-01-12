@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-19T19:58:58Z
 updated_at: 2025-05-19T17:56:38Z
 url: https://github.com/astral-sh/uv/issues/1715
-synced_at: 2026-01-10T03:41:45Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Support "--no-build-isolation" when installing packages
 
 ---
 
-_Issue opened by @Taytay on 2024-02-19 19:58_
+_@Taytay_
 
 `uv --version`: `0.1.5`
 

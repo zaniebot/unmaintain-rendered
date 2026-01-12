@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-03-02T11:04:52Z
 updated_at: 2024-06-07T06:53:41Z
 url: https://github.com/clap-rs/clap/issues/2375
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Argument conflicts with subcommand name
 
 ---
 
-_Issue opened by @x3rAx on 2021-03-02 11:04_
+_@x3rAx_
 
 ### Please complete the following tasks
 

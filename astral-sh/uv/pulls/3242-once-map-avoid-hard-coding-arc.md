@@ -13,14 +13,14 @@ head: ag/once-map-arcless
 created_at: 2024-04-24T14:54:46Z
 updated_at: 2024-04-24T20:24:25Z
 url: https://github.com/astral-sh/uv/pull/3242
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:31Z
 ```
 
 # once-map: avoid hard-coding `Arc`
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-04-24 14:54_
+_@BurntSushi_
 
 The only thing a `OnceMap` really needs to be able to do with the value
 is to clone it. All extant uses benefited from having this done for them

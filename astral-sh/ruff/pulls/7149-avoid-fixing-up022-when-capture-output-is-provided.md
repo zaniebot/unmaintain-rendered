@@ -14,14 +14,14 @@ head: charlie/UP022
 created_at: 2023-09-05T11:34:01Z
 updated_at: 2023-09-05T11:52:33Z
 url: https://github.com/astral-sh/ruff/pull/7149
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Avoid fixing UP022 when `capture_output` is provided
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-05 11:34_
+_@charliermarsh_
 
 It would be nice to fix this, although it'd be confusing if `capture_output=False`, and it's such a rare case anyway. (To properly fix this, we need to extend `remove_argument` to support multiple arguments.)
 

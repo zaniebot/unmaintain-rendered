@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-26T18:30:14Z
 updated_at: 2025-12-01T19:33:33Z
 url: https://github.com/astral-sh/ty/issues/1265
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # What's the timeline for ty?
 
 ---
 
-_Issue opened by @andres-ito-traversal on 2025-09-26 18:30_
+_@andres-ito-traversal_
 
 ### Question
 

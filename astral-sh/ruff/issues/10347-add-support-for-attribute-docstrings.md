@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-11T22:07:22Z
 updated_at: 2025-12-05T07:55:45Z
 url: https://github.com/astral-sh/ruff/issues/10347
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Add support for attribute docstrings
 
 ---
 
-_Issue opened by @tibdex on 2024-03-11 22:07_
+_@tibdex_
 
 The goal of this issue is to get Ruff to lint and format attribute docstrings as already done for class/method/function docstrings.
 

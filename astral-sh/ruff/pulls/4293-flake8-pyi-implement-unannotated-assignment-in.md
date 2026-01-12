@@ -13,14 +13,14 @@ head: implemenent-Y052
 created_at: 2023-05-08T22:31:46Z
 updated_at: 2023-05-16T02:28:24Z
 url: https://github.com/astral-sh/ruff/pull/4293
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # [`flake8-pyi`] Implement `unannotated-assignment-in-stub` (`PY052`)
 
 ---
 
-_Pull request opened by @sladyn98 on 2023-05-08 22:31_
+_@sladyn98_
 
 This pull request introduces a new function, assignment_default_in_async_stub, to handle async stub cases in flake8_pyi rules. It covers overlapping cases from both `assignment_default_in_stub` and `annotated_assignment_default_in_stub` and calls them only when necessary.
 

@@ -11,14 +11,14 @@ head: too-many-lines
 created_at: 2024-03-07T01:45:46Z
 updated_at: 2024-03-31T15:59:19Z
 url: https://github.com/astral-sh/ruff/pull/10262
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`pylint`] Implement `too-many-lines` (`PLC0302`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-03-07 01:45_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

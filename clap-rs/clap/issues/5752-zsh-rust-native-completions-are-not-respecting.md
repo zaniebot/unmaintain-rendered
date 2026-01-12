@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-27T15:37:30Z
 updated_at: 2024-09-27T15:37:30Z
 url: https://github.com/clap-rs/clap/issues/5752
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Zsh rust native completions are not respecting the order candidates are returned in
 
 ---
 
-_Issue opened by @epage on 2024-09-27 15:37_
+_@epage_
 
 Compare zsh
 ![image](https://github.com/user-attachments/assets/d80aa585-5f8b-4978-9e74-96b46a5966fe)

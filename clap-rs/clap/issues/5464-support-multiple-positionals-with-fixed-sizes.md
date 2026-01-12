@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-18T14:56:10Z
 updated_at: 2024-04-18T16:23:10Z
 url: https://github.com/clap-rs/clap/issues/5464
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Support multiple positionals with fixed sizes
 
 ---
 
-_Issue opened by @superstator on 2024-04-18 14:56_
+_@superstator_
 
 ### Please complete the following tasks
 

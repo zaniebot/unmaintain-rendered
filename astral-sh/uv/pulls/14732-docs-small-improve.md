@@ -11,14 +11,14 @@ head: small-docs-improve
 created_at: 2025-07-18T16:29:08Z
 updated_at: 2025-07-18T17:42:24Z
 url: https://github.com/astral-sh/uv/pull/14732
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:22Z
 ```
 
 # docs: small improve
 
 ---
 
-_Pull request opened by @chirizxc on 2025-07-18 16:29_
+_@chirizxc_
 
 ## Summary
 

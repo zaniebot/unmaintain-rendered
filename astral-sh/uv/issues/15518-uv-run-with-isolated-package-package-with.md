@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-25T16:13:46Z
 updated_at: 2025-08-26T00:24:25Z
 url: https://github.com/astral-sh/uv/issues/15518
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # `uv run` with `--isolated --package [package] --with [otherpackage]` leaks workspace virtualenv
 
 ---
 
-_Issue opened by @bryab on 2025-08-25 16:13_
+_@bryab_
 
 ### Summary
 

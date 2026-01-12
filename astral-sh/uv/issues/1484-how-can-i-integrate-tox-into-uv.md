@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T12:33:32Z
 updated_at: 2024-03-04T01:54:09Z
 url: https://github.com/astral-sh/uv/issues/1484
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # How can I integrate `tox` into `uv`?
 
 ---
 
-_Issue opened by @paddyroddy on 2024-02-16 12:33_
+_@paddyroddy_
 
 I find that `tox` can take a long time to install dependencies (longer than doing it locally), it would be nice to benefit from `uv` for this. Think that the [relevant bit in tox is here](https://github.com/tox-dev/tox/blob/47bcea693845a285c859312904c61d50e8928f0c/src/tox/tox_env/python/pip/pip_install.py#L66).
 

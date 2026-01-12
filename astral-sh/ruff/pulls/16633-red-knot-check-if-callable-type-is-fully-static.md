@@ -13,14 +13,14 @@ head: dhruv/callable-is-fully-static
 created_at: 2025-03-11T16:17:21Z
 updated_at: 2025-03-12T06:43:24Z
 url: https://github.com/astral-sh/ruff/pull/16633
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Check if callable type is fully static
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-03-11 16:17_
+_@dhruvmanila_
 
 ## Summary
 

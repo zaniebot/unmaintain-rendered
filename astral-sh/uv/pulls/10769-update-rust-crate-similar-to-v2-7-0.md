@@ -13,14 +13,14 @@ head: renovate/similar-2.x-lockfile
 created_at: 2025-01-20T01:43:11Z
 updated_at: 2025-01-20T02:06:09Z
 url: https://github.com/astral-sh/uv/pull/10769
-synced_at: 2026-01-10T11:45:09Z
+synced_at: 2026-01-12T16:09:28Z
 ```
 
 # Update Rust crate similar to v2.7.0
 
 ---
 
-_Pull request opened by @renovate on 2025-01-20 01:43_
+_@renovate_
 
 This PR contains the following updates:
 

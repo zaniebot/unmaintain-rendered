@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-16T01:44:06Z
 updated_at: 2025-01-15T18:05:55Z
 url: https://github.com/astral-sh/ruff/issues/12913
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [feature request] FastAPI rule: prefer `Annotated` for `Query`, `Path`, `Body`, `Cookie`
 
 ---
 
-_Issue opened by @tiangolo on 2024-08-16 01:44_
+_@tiangolo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

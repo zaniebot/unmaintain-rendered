@@ -12,14 +12,14 @@ head: rk-typing-tuple
 created_at: 2024-12-12T00:05:05Z
 updated_at: 2024-12-12T01:26:30Z
 url: https://github.com/astral-sh/ruff/pull/14927
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Understand `typing.Tuple`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-12 00:05_
+_@InSyncWithFoo_
 
 ## Summary
 

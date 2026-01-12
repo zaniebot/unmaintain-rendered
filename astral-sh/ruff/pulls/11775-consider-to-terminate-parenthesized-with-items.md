@@ -14,14 +14,14 @@ head: dhruv/with-items
 created_at: 2024-06-06T11:44:39Z
 updated_at: 2024-06-06T13:10:45Z
 url: https://github.com/astral-sh/ruff/pull/11775
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Consider `:` to terminate parenthesized with items
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-06 11:44_
+_@dhruvmanila_
 
 ## Summary
 

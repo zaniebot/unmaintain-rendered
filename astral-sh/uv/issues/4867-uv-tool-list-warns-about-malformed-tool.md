@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-07T21:04:18Z
 updated_at: 2024-07-07T21:25:05Z
 url: https://github.com/astral-sh/uv/issues/4867
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # `uv tool list` warns about malformed tool `interpreter-v2`
 
 ---
 
-_Issue opened by @oriori1703 on 2024-07-07 21:04_
+_@oriori1703_
 
 It seems that when running `uv tool list`  it creates a directory called `interpreter-v2` in uv's tool directory, i.e.  `/home/orip/.local/share/uv/tools/interpreter-v2`.
 

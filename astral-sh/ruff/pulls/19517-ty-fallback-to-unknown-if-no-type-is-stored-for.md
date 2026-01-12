@@ -13,14 +13,14 @@ head: cjm/unknown-fallback
 created_at: 2025-07-24T00:03:04Z
 updated_at: 2025-07-25T02:06:19Z
 url: https://github.com/astral-sh/ruff/pull/19517
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [ty] Fallback to Unknown if no type is stored for an expression
 
 ---
 
-_Pull request opened by @carljm on 2025-07-24 00:03_
+_@carljm_
 
 ## Summary
 

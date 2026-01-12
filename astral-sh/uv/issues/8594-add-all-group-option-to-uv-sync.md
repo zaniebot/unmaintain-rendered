@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-26T14:22:01Z
 updated_at: 2024-11-20T16:07:37Z
 url: https://github.com/astral-sh/uv/issues/8594
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # Add `--all-group` option to `uv sync`
 
 ---
 
-_Issue opened by @shoucandanghehe on 2024-10-26 14:22_
+_@shoucandanghehe_
 
 When installing multiple dependency groups you need to specify `--group` multiple times, which can be annoying if you want to install many dependency groups at the same time
 

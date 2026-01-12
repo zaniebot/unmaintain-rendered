@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-10T16:39:17Z
 updated_at: 2024-03-10T17:35:56Z
 url: https://github.com/astral-sh/uv/issues/2342
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Special case error message when `wheel` is missing with no build isolation
 
 ---
 
-_Issue opened by @konstin on 2024-03-10 16:39_
+_@konstin_
 
               I have problems with [`xformers` by Meta](https://github.com/facebookresearch/xformers) (see [issue](https://github.com/facebookresearch/xformers/issues/940)). I even tried with latest `uv` _without build isolation_:
 

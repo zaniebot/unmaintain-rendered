@@ -13,14 +13,14 @@ head: brent/tc006-0.10
 created_at: 2025-03-11T16:43:43Z
 updated_at: 2025-03-12T18:54:04Z
 url: https://github.com/astral-sh/ruff/pull/16637
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`flake8-type-checking`] Stabilize `runtime-cast-value` (`TC006`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-11 16:43_
+_@ntBre_
 
 Summary
 --

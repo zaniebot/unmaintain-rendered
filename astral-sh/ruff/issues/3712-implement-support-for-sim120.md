@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-24T11:40:12Z
 updated_at: 2023-03-24T20:56:48Z
 url: https://github.com/astral-sh/ruff/issues/3712
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Implement support for SIM120
 
 ---
 
-_Issue opened by @MaxG87 on 2023-03-24 11:40_
+_@MaxG87_
 
 I am using Ruff 0.0.259.
 

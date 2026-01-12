@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-07T08:32:57Z
 updated_at: 2023-05-07T13:51:21Z
 url: https://github.com/astral-sh/ruff/issues/4267
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # There is a string in the first line of the code.  However, ruff raises an error of RUF002 which says "Docstring contains ambiguous unicode character". 
 
 ---
 
-_Issue opened by @yuji38kwmt on 2023-05-07 08:32_
+_@yuji38kwmt_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

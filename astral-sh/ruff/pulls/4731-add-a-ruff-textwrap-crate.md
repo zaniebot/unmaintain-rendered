@@ -12,14 +12,14 @@ head: charlie/indent
 created_at: 2023-05-30T17:10:41Z
 updated_at: 2023-05-31T16:53:07Z
 url: https://github.com/astral-sh/ruff/pull/4731
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Add a `ruff_textwrap` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-30 17:10_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

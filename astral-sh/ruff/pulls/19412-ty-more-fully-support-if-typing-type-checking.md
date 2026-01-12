@@ -13,14 +13,14 @@ head: cjm/iftc
 created_at: 2025-07-17T20:32:22Z
 updated_at: 2025-11-14T17:23:53Z
 url: https://github.com/astral-sh/ruff/pull/19412
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [ty] More fully support 'if typing.TYPE_CHECKING'
 
 ---
 
-_Pull request opened by @carljm on 2025-07-17 20:32_
+_@carljm_
 
 ## Summary
 

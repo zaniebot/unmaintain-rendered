@@ -13,14 +13,14 @@ head: charlie/reg
 created_at: 2025-02-06T01:28:02Z
 updated_at: 2025-02-06T01:35:12Z
 url: https://github.com/astral-sh/uv/pull/11270
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:45Z
 ```
 
 # Use consistent 'Registry' prefix for wheel and source distribution logs
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-06 01:28_
+_@charliermarsh_
 
 ## Summary
 

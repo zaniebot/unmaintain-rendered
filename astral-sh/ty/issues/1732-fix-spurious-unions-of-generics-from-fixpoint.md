@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-02T20:25:25Z
 updated_at: 2025-12-12T08:20:17Z
 url: https://github.com/astral-sh/ty/issues/1732
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Fix spurious unions of generics from fixpoint iteration
 
 ---
 
-_Issue opened by @carljm on 2025-12-02 20:25_
+_@carljm_
 
 When we fixpoint-iterate a cycle, we union the resulting types at each iteration with the previous iteration, to ensure monotonicity.
 

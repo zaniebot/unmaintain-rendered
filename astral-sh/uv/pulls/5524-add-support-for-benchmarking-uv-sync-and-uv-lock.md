@@ -13,14 +13,14 @@ head: charlie/benchmarks
 created_at: 2024-07-28T20:54:27Z
 updated_at: 2024-07-28T21:09:09Z
 url: https://github.com/astral-sh/uv/pull/5524
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:52Z
 ```
 
 # Add support for benchmarking `uv sync` and `uv lock`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-28 20:54_
+_@charliermarsh_
 
 ## Summary
 

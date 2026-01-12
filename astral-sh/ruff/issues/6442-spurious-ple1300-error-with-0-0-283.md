@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-09T09:03:25Z
 updated_at: 2023-08-22T10:26:21Z
 url: https://github.com/astral-sh/ruff/issues/6442
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Spurious PLE1300 error with 0.0.283
 
 ---
 
-_Issue opened by @DimitriPapadopoulos on 2023-08-09 09:03_
+_@DimitriPapadopoulos_
 
 ~~After upgrading v0.0.281 → v0.0.282 (https://github.com/codespell-project/codespell/pull/3011)~~ we see what we think is a spurious PLE1300 error:
 

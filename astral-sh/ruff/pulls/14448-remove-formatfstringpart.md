@@ -14,14 +14,14 @@ head: dhruv/f-string-assignment-1
 created_at: 2024-11-19T09:02:38Z
 updated_at: 2024-11-25T04:59:24Z
 url: https://github.com/astral-sh/ruff/pull/14448
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Remove `FormatFStringPart`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-19 09:02_
+_@dhruvmanila_
 
 ## Summary
 

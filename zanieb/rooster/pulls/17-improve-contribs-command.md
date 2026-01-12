@@ -13,14 +13,14 @@ head: zb/quiet
 created_at: 2024-02-22T21:12:57Z
 updated_at: 2024-03-24T16:50:17Z
 url: https://github.com/zanieb/rooster/pull/17
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Improve contribs command
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-22 21:12_
+_@zanieb_
 
 - Add `quiet` mode for `rooster contributors`
 - Adjust contribs level

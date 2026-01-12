@@ -13,14 +13,14 @@ head: all-builtin-types
 created_at: 2023-11-05T05:15:14Z
 updated_at: 2023-11-06T03:54:33Z
 url: https://github.com/astral-sh/ruff/pull/8491
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Flag all comparisons against builtin types in E721
 
 ---
 
-_Pull request opened by @hauntsaninja on 2023-11-05 05:15_
+_@hauntsaninja_
 
 See #8483. Generalised fix on top of #8485
 

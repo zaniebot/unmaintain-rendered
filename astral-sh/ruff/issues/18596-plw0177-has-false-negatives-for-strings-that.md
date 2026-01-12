@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-09T17:43:17Z
 updated_at: 2025-06-19T11:05:07Z
 url: https://github.com/astral-sh/ruff/issues/18596
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PLW0177 has false negatives for strings that represent NaN
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-09 17:43_
+_@dscorbett_
 
 ### Summary
 

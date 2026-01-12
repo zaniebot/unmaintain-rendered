@@ -12,14 +12,14 @@ head: doc_fix_safety_for_one_line
 created_at: 2025-04-27T09:46:22Z
 updated_at: 2025-04-28T04:34:54Z
 url: https://github.com/astral-sh/ruff/pull/17653
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # [`pydocstyle`] Add fix safety section (`D200`) 
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-27 09:46_
+_@Kalmaegi_
 
 
 ## Summary

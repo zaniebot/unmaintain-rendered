@@ -12,14 +12,14 @@ head: expose-more-fields-in-rule-explanation
 created_at: 2023-05-11T06:38:01Z
 updated_at: 2023-05-12T04:21:43Z
 url: https://github.com/astral-sh/ruff/pull/4367
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Expose more fields in rule explanation
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-11 06:38_
+_@JonathanPlasse_
 
 - Close #4343
 

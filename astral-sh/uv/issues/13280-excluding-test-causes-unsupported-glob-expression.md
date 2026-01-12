@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-03T22:29:06Z
 updated_at: 2025-05-07T16:31:42Z
 url: https://github.com/astral-sh/uv/issues/13280
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # excluding `**/@test` causes "Unsupported glob expression in: `tool.uv.build-backend.*-exclude`"
 
 ---
 
-_Issue opened by @jorenham on 2025-05-03 22:29_
+_@jorenham_
 
 ### Summary
 

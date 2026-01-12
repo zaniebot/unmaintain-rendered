@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-12T03:55:30Z
 updated_at: 2023-01-12T04:12:57Z
 url: https://github.com/astral-sh/ruff/issues/1805
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Move `ruff` directory out of top-level
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-12 03:55_
+_@charliermarsh_
 
 See: #1547.
 

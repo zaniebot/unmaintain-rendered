@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T10:18:44Z
 updated_at: 2025-03-19T17:02:30Z
 url: https://github.com/astral-sh/ruff/issues/16735
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # SWAP flake8-gettext (INT)
 
 ---
 
-_Issue opened by @p1-dta on 2025-03-14 10:18_
+_@p1-dta_
 
 ### Summary
 

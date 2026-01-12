@@ -14,14 +14,14 @@ head: fix-19460
 created_at: 2025-07-21T15:57:38Z
 updated_at: 2025-07-28T14:33:11Z
 url: https://github.com/astral-sh/ruff/pull/19468
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [`refurb`] Mark `int` and `bool` cases for `Decimal.from_float` as safe fixes in `FURB164` tests
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-21 15:57_
+_@danparizher_
 
 ## Summary
 

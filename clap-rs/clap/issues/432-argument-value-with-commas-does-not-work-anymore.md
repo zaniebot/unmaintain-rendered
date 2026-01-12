@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-02-20T21:44:15Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/432
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Argument value with commas does not work anymore with clap 2.x
 
 ---
 
-_Issue opened by @andresv on 2016-02-20 21:44_
+_@andresv_
 
 The following argument `--location lat=58.26566,lon=26.46615,alt=76.` worked with clap < 2.x.
 It did not parse `lat`, `lon`, `alt` automatically, however I was able to read out whole set from `--location`. With clap 2.1.0 I just get `lat=58.26566`, so everything after comma is missing.

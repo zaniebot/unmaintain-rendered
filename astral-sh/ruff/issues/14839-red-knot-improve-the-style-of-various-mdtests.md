@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-08T17:21:26Z
 updated_at: 2024-12-10T13:05:53Z
 url: https://github.com/astral-sh/ruff/issues/14839
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Improve the style of various mdtests
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-12-08 17:21_
+_@AlexWaygood_
 
 We have a lot of [mdtests](https://github.com/astral-sh/ruff/tree/main/crates/red_knot_test) in red-knot that have this pattern in them to create instance types:
 

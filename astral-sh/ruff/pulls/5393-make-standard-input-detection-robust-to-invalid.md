@@ -12,14 +12,14 @@ head: charlie/stdin
 created_at: 2023-06-27T15:58:46Z
 updated_at: 2023-06-28T15:10:06Z
 url: https://github.com/astral-sh/ruff/pull/5393
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Make standard input detection robust to invalid arguments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-27 15:58_
+_@charliermarsh_
 
 ## Summary
 

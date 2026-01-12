@@ -15,14 +15,14 @@ head: david/fix-full_range
 created_at: 2025-07-08T15:31:25Z
 updated_at: 2025-07-08T17:51:11Z
 url: https://github.com/astral-sh/ruff/pull/19211
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [ty] Use full range for assignment definitions
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-08 15:31_
+_@sharkdp_
 
 ## Summary
 

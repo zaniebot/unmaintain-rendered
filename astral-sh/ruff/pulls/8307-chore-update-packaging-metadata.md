@@ -12,14 +12,14 @@ head: chore/update-packaging-metadata
 created_at: 2023-10-28T14:32:42Z
 updated_at: 2023-10-28T21:28:37Z
 url: https://github.com/astral-sh/ruff/pull/8307
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # chore: update packaging metadata
 
 ---
 
-_Pull request opened by @mkniewallner on 2023-10-28 14:32_
+_@mkniewallner_
 
 ## Summary
 

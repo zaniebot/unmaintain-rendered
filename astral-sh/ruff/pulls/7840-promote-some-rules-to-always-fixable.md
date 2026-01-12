@@ -12,14 +12,14 @@ head: charlie/suggest
 created_at: 2023-10-06T17:57:28Z
 updated_at: 2023-10-10T03:38:11Z
 url: https://github.com/astral-sh/ruff/pull/7840
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Promote some rules to "always" fixable
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-06 17:57_
+_@charliermarsh_
 
 ## Summary
 

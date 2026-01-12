@@ -12,14 +12,14 @@ head: 4222_pandas_falsepos
 created_at: 2023-05-10T02:28:21Z
 updated_at: 2023-05-10T14:09:14Z
 url: https://github.com/astral-sh/ruff/pull/4337
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Fix false positives in PD002
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-05-10 02:28_
+_@evanrittenhouse_
 
 Should fix #4222.
 

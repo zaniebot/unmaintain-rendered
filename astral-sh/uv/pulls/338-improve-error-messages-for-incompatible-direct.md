@@ -11,14 +11,14 @@ head: zanie/direct-incompat
 created_at: 2023-11-06T16:51:23Z
 updated_at: 2023-11-20T15:13:27Z
 url: https://github.com/astral-sh/uv/pull/338
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:53Z
 ```
 
 # Improve error messages for incompatible direct requirements
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-06 16:51_
+_@zanieb_
 
 Addresses https://github.com/astral-sh/puffin/issues/309#issuecomment-1792648969
 

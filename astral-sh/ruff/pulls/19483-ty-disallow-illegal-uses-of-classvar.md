@@ -13,14 +13,14 @@ head: david/illegal-classvar-use
 created_at: 2025-07-22T11:42:54Z
 updated_at: 2025-07-22T12:21:31Z
 url: https://github.com/astral-sh/ruff/pull/19483
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Disallow illegal uses of `ClassVar`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-22 11:42_
+_@sharkdp_
 
 ## Summary
 

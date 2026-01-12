@@ -13,14 +13,14 @@ head: charlie/literal
 created_at: 2023-07-15T01:57:18Z
 updated_at: 2023-07-15T02:32:34Z
 url: https://github.com/astral-sh/ruff/pull/5768
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Move `Literal` flag detection into recurse phase
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-15 01:57_
+_@charliermarsh_
 
 ## Summary
 

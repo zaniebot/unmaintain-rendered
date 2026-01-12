@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-31T14:08:15Z
 updated_at: 2023-08-31T20:45:27Z
 url: https://github.com/astral-sh/ruff/issues/7021
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # PYI010: replace func stub's docstrings with '...' even if there already is one.
 
 ---
 
-_Issue opened by @Prometheos2 on 2023-08-31 14:08_
+_@Prometheos2_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

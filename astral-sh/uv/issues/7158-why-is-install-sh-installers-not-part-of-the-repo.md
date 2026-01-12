@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-07T08:09:31Z
 updated_at: 2024-09-07T16:06:29Z
 url: https://github.com/astral-sh/uv/issues/7158
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Why is install.sh (installers) not part of the repo? Where is that hosted?
 
 ---
 
-_Issue opened by @hoegge on 2024-09-07 08:09_
+_@hoegge_
 
 The installers are also an important part of the user experience, e.g., currently lacking setting path op so installation is a bit tedious. 
 

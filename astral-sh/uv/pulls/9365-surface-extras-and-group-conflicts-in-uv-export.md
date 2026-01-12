@@ -13,14 +13,14 @@ head: charlie/default-conflict
 created_at: 2024-11-22T19:37:20Z
 updated_at: 2024-11-22T20:58:30Z
 url: https://github.com/astral-sh/uv/pull/9365
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:46Z
 ```
 
 # Surface extras and group conflicts in `uv export`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-22 19:37_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: extend-select
 created_at: 2022-10-04T20:29:23Z
 updated_at: 2022-10-04T22:33:23Z
 url: https://github.com/astral-sh/ruff/pull/327
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Support extend-select in pyproject.toml
 
 ---
 
-_Pull request opened by @andersk on 2022-10-04 20:29_
+_@andersk_
 
 (I didn’t add `extend-ignore` since it’s the same as `ignore`—should we remove the `--extend-ignore` command line option?)
 

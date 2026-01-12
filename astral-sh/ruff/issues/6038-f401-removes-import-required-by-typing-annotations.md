@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-24T17:35:32Z
 updated_at: 2023-07-24T18:08:38Z
 url: https://github.com/astral-sh/ruff/issues/6038
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F401 removes import required by typing annotations
 
 ---
 
-_Issue opened by @thomas-moulard on 2023-07-24 17:35_
+_@thomas-moulard_
 
 [F401](https://beta.ruff.rs/docs/rules/unused-import/) is a rule that removes unused imports.
 

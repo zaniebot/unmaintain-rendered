@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-30T19:31:43Z
 updated_at: 2025-04-30T19:32:10Z
 url: https://github.com/astral-sh/uv/issues/13242
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # Add `uv version` to the project documentation
 
 ---
 
-_Issue opened by @zanieb on 2025-04-30 19:31_
+_@zanieb_
 
 Added in https://github.com/astral-sh/uv/pull/12349 — needs non-reference documentation still.
 

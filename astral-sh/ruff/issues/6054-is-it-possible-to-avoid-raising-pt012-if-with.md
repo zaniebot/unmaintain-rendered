@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-25T06:24:13Z
 updated_at: 2023-07-26T01:43:33Z
 url: https://github.com/astral-sh/ruff/issues/6054
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Is it possible to avoid raising `PT012` if `with pytest.raises` contains a `with` statement with a single raise statement? 
 
 ---
 
-_Issue opened by @harupy on 2023-07-25 06:24_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

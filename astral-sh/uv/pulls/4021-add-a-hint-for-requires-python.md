@@ -13,14 +13,14 @@ head: charlie/req-python
 created_at: 2024-06-04T20:20:33Z
 updated_at: 2024-06-04T20:52:15Z
 url: https://github.com/astral-sh/uv/pull/4021
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:59Z
 ```
 
 # Add a hint for `Requires-Python`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-04 20:20_
+_@charliermarsh_
 
 ## Summary
 

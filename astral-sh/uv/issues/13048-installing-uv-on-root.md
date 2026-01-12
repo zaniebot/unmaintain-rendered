@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-22T09:05:35Z
 updated_at: 2025-08-13T08:37:33Z
 url: https://github.com/astral-sh/uv/issues/13048
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # Installing UV on root
 
 ---
 
-_Issue opened by @ErichMarx on 2025-04-22 09:05_
+_@ErichMarx_
 
 ### Question
 

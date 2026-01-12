@@ -12,14 +12,14 @@ head: Improve-error-messages-and-make-cache-failures-non-fatal-
 created_at: 2023-11-06T13:57:10Z
 updated_at: 2023-11-06T14:06:29Z
 url: https://github.com/astral-sh/uv/pull/333
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:53Z
 ```
 
 # Improve error messages and make cache failures non fatal 
 
 ---
 
-_Pull request opened by @konstin on 2023-11-06 13:57_
+_@konstin_
 
 _No description provided._
 

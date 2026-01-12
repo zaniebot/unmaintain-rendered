@@ -13,14 +13,14 @@ head: B004-autofix
 created_at: 2023-07-15T20:38:13Z
 updated_at: 2023-07-16T16:06:35Z
 url: https://github.com/astral-sh/ruff/pull/5788
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add autofix for B004
 
 ---
 
-_Pull request opened by @density on 2023-07-15 20:38_
+_@density_
 
 ## Summary
 

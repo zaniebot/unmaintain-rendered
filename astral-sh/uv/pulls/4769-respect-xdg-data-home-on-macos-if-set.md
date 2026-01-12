@@ -14,14 +14,14 @@ head: zb/state-xdg
 created_at: 2024-07-03T13:50:35Z
 updated_at: 2024-08-06T01:50:30Z
 url: https://github.com/astral-sh/uv/pull/4769
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:06:26Z
 ```
 
 # Respect `XDG_DATA_HOME` on macOS if set
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-03 13:50_
+_@zanieb_
 
 Rather than using `Application Support` for state storage, we use `XDG_DATA_HOME` _if_ it is set. This feels like a reasonable compromise respecting the OS defaults while allowing users to opt-in to XDG.
 

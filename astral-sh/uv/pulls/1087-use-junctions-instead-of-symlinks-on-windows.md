@@ -14,14 +14,14 @@ head: charlie/junction
 created_at: 2024-01-25T01:26:50Z
 updated_at: 2024-01-25T13:43:33Z
 url: https://github.com/astral-sh/uv/pull/1087
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:25Z
 ```
 
 # Use junctions instead of symlinks on Windows
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-25 01:26_
+_@charliermarsh_
 
 ## Summary
 

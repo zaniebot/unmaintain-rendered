@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-10T08:26:18Z
 updated_at: 2024-07-13T00:53:07Z
 url: https://github.com/astral-sh/ruff/issues/12270
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Cannot catch double import in TYPE_CHECKING block
 
 ---
 
-_Issue opened by @beskep on 2024-07-10 08:26_
+_@beskep_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

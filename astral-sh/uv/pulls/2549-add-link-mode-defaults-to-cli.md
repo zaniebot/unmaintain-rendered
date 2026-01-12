@@ -13,14 +13,14 @@ head: charlie/link
 created_at: 2024-03-19T19:03:37Z
 updated_at: 2024-03-19T19:13:18Z
 url: https://github.com/astral-sh/uv/pull/2549
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:05Z
 ```
 
 # Add `--link-mode` defaults to CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-19 19:03_
+_@charliermarsh_
 
 _No description provided._
 

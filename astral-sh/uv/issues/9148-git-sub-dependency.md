@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-15T13:26:32Z
 updated_at: 2024-11-15T13:41:28Z
 url: https://github.com/astral-sh/uv/issues/9148
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # Git sub dependency
 
 ---
 
-_Issue opened by @johanolsen on 2024-11-15 13:26_
+_@johanolsen_
 
 I have a project with a couple of dependencies (let's call them `foo` and `bar`) that are both in a private gitlab instance - it is ssh only, so I added the dependencies with `uv add git+ssh...` and it worked initially, but has started causing problems. Specifically, `foo` is also a dependency of `bar`, and while adding `foo` works like a charm, adding `bar` gives me the below error
 ```

@@ -14,14 +14,14 @@ head: micha/lsp-fallible-range-conversion
 created_at: 2025-11-06T15:45:18Z
 updated_at: 2025-11-07T14:44:25Z
 url: https://github.com/astral-sh/ruff/pull/21297
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [ty] Make range/position conversions fallible
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-06 15:45_
+_@MichaReiser_
 
 ## Summary
 

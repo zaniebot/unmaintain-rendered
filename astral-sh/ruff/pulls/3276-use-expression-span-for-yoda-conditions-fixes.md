@@ -13,14 +13,14 @@ head: charlie/yoda
 created_at: 2023-02-28T16:56:17Z
 updated_at: 2023-02-28T16:59:04Z
 url: https://github.com/astral-sh/ruff/pull/3276
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Use expression span for yoda-conditions fixes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-28 16:56_
+_@charliermarsh_
 
 Closes #3271.
 

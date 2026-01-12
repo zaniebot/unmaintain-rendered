@@ -12,14 +12,14 @@ head: charlie/duplicate-keys
 created_at: 2023-01-07T05:14:35Z
 updated_at: 2023-01-07T21:16:43Z
 url: https://github.com/astral-sh/ruff/pull/1710
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Automatically remove duplicate dictionary keys
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-07 05:14_
+_@charliermarsh_
 
 For now, to be safe, we're only removing keys with duplicate _values_.
 

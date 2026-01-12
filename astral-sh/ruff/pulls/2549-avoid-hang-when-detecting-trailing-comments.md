@@ -12,14 +12,14 @@ head: charlie/endless
 created_at: 2023-02-03T17:51:49Z
 updated_at: 2023-02-03T18:05:57Z
 url: https://github.com/astral-sh/ruff/pull/2549
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Avoid hang when detecting trailing comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-03 17:51_
+_@charliermarsh_
 
 Closes #2523.
 

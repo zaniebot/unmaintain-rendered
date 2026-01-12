@@ -13,14 +13,14 @@ head: unnecessary-generator-list
 created_at: 2024-03-15T08:11:09Z
 updated_at: 2024-03-15T14:39:26Z
 url: https://github.com/astral-sh/ruff/pull/10419
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`flake8_comprehensions`] Handled special case for `C400` which also matches `C416`
 
 ---
 
-_Pull request opened by @hikaru-kajita on 2024-03-15 08:11_
+_@hikaru-kajita_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

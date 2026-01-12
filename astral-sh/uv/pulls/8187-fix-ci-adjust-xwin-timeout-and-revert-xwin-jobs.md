@@ -13,14 +13,14 @@ head: xwin-revival
 created_at: 2024-10-14T19:43:17Z
 updated_at: 2024-10-14T20:17:49Z
 url: https://github.com/astral-sh/uv/pull/8187
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:12Z
 ```
 
 # fix(ci): adjust xwin timeout and revert xwin jobs being disabled
 
 ---
 
-_Pull request opened by @samypr100 on 2024-10-14 19:43_
+_@samypr100_
 
 ## Summary
 

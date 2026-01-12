@@ -13,14 +13,14 @@ head: charlie/python-global
 created_at: 2024-05-28T20:44:17Z
 updated_at: 2025-07-24T21:01:41Z
 url: https://github.com/astral-sh/uv/pull/3889
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:05:54Z
 ```
 
 # Make `--python` a global argument
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-28 20:44_
+_@charliermarsh_
 
 ## Summary
 

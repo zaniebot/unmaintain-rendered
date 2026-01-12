@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-03T12:59:38Z
 updated_at: 2025-09-03T15:43:30Z
 url: https://github.com/astral-sh/ruff/issues/20211
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Edge case for `FBT001` is not handled.
 
 ---
 
-_Issue opened by @NiKuma0 on 2025-09-03 12:59_
+_@NiKuma0_
 
 ### Summary
 

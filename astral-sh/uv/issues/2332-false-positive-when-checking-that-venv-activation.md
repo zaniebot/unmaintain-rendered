@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-10T12:02:17Z
 updated_at: 2024-03-10T18:48:20Z
 url: https://github.com/astral-sh/uv/issues/2332
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # False positive when checking that venv activation script is being sourced
 
 ---
 
-_Issue opened by @astoff on 2024-03-10 12:02_
+_@astoff_
 
 Suppose the user is not physically typing `source .venv/bin/activate` in an interactive shell, but instead has some automation in place which runs `bash -c 'source "$0" && env' .venv/bin/activate` and parses the output of that process.  Then the following check will trigger an error:
 

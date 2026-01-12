@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T02:36:37Z
 updated_at: 2024-11-26T03:36:36Z
 url: https://github.com/astral-sh/ruff/issues/13754
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # SIM300 (yoda-conditions) false positive: `assert X < datetime.timedelta(...)`
 
 ---
 
-_Issue opened by @rdaysky on 2024-10-15 02:36_
+_@rdaysky_
 
 I implemented an algorithm that can only handle certain values of a parameter. To make sure future updates to the code don’t bring it outside the allowed range, I added an assertion. This triggered SIM300:
 ```

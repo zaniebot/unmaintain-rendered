@@ -13,14 +13,14 @@ head: quodlibetor/improve-venv-vscode-compat
 created_at: 2024-10-08T15:47:10Z
 updated_at: 2024-10-09T15:47:43Z
 url: https://github.com/astral-sh/uv/pull/8006
-synced_at: 2026-01-10T12:54:01Z
+synced_at: 2026-01-12T16:08:07Z
 ```
 
 # fix: Improve compatibility with VSCode PS1 prompt
 
 ---
 
-_Pull request opened by @quodlibetor on 2024-10-08 15:47_
+_@quodlibetor_
 
 ## Summary
 

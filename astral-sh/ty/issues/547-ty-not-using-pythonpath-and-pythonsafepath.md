@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-30T08:21:04Z
 updated_at: 2025-09-20T11:40:11Z
 url: https://github.com/astral-sh/ty/issues/547
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # ty not using `PYTHONPATH` and `PYTHONSAFEPATH`
 
 ---
 
-_Issue opened by @yoursvivek on 2025-05-30 08:21_
+_@yoursvivek_
 
 ### Summary
 

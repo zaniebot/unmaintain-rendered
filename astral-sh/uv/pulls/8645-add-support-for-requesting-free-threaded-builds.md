@@ -13,14 +13,14 @@ head: zb/local-parse
 created_at: 2024-10-28T19:39:28Z
 updated_at: 2024-10-28T20:22:52Z
 url: https://github.com/astral-sh/uv/pull/8645
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:25Z
 ```
 
 # Add support for requesting free-threaded builds via `+freethreaded`
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-28 19:39_
+_@zanieb_
 
 e.g., `uv python install 3.13+freethreaded` which matches the distribution keys.
 

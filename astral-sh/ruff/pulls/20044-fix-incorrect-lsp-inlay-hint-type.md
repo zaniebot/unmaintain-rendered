@@ -14,14 +14,14 @@ head: inlay-hint-type
 created_at: 2025-08-22T14:20:25Z
 updated_at: 2025-11-06T11:48:21Z
 url: https://github.com/astral-sh/ruff/pull/20044
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # Fix incorrect lsp inlay hint type
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-08-22 14:20_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

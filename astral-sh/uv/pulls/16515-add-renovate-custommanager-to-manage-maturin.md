@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-10-30T15:58:32Z
 updated_at: 2025-12-16T13:40:15Z
 url: https://github.com/astral-sh/uv/pull/16515
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:17Z
 ```
 
 # add Renovate CustomManager to manage maturin version
 
 ---
 
-_Pull request opened by @aznszn on 2025-10-30 15:58_
+_@aznszn_
 
 added a custom regex manager in renovate.json5 to update the maturin version in build-binaries.yml
 

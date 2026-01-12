@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T20:02:10Z
 updated_at: 2024-10-13T13:22:10Z
 url: https://github.com/astral-sh/uv/issues/8107
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # uv to detect uv.toml in active venv
 
 ---
 
-_Issue opened by @Reclocco on 2024-10-10 20:02_
+_@Reclocco_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

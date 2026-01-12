@@ -13,14 +13,14 @@ head: micha/semantic-token-tests
 created_at: 2025-07-08T11:12:15Z
 updated_at: 2025-07-09T06:08:50Z
 url: https://github.com/astral-sh/ruff/pull/19201
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [ty] Use diagnostic rendering for semantic token tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-08 11:12_
+_@MichaReiser_
 
 ## Summary
 

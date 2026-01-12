@@ -12,14 +12,14 @@ head: charlie/pointers
 created_at: 2023-05-06T18:36:42Z
 updated_at: 2023-05-06T19:03:48Z
 url: https://github.com/astral-sh/ruff/pull/4256
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Remove some deferred `&Stmt` references
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-06 18:36_
+_@charliermarsh_
 
 _No description provided._
 

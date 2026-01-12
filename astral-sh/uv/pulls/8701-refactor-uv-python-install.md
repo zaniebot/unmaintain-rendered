@@ -13,14 +13,14 @@ head: zb/refactor-inst
 created_at: 2024-10-30T15:34:18Z
 updated_at: 2024-10-30T21:28:09Z
 url: https://github.com/astral-sh/uv/pull/8701
-synced_at: 2026-01-10T12:54:15Z
+synced_at: 2026-01-12T16:08:27Z
 ```
 
 # Refactor `uv python install`
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-30 15:34_
+_@zanieb_
 
 Pulling out of https://github.com/astral-sh/uv/pull/8650 for readability.
 

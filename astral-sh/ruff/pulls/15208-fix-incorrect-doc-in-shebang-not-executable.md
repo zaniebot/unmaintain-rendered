@@ -13,14 +13,14 @@ head: EXE001-EXE002-update-docs
 created_at: 2024-12-31T00:42:47Z
 updated_at: 2025-01-03T07:24:52Z
 url: https://github.com/astral-sh/ruff/pull/15208
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Fix incorrect doc in `shebang-not-executable (EXE001)` and add git+windows solution to executable bit
 
 ---
 
-_Pull request opened by @Avasam on 2024-12-31 00:42_
+_@Avasam_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

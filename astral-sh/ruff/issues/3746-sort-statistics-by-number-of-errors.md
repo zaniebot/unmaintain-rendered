@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-26T18:34:43Z
 updated_at: 2023-03-26T20:45:37Z
 url: https://github.com/astral-sh/ruff/issues/3746
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Sort statistics by number of errors
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-03-26 18:34_
+_@JonathanPlasse_
 
 IMO, `ruff check --statistics --select=ALL .` should be sorted from the highest to lowest number of errors.
 On a new codebase, it would help to know which rules to prioritize.

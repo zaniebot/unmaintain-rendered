@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T16:18:22Z
 updated_at: 2025-12-23T00:21:58Z
 url: https://github.com/astral-sh/ty/issues/1495
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # provide a good option for users who want callable types with all `FunctionType` attributes
 
 ---
 
-_Issue opened by @carljm on 2025-11-06 16:18_
+_@carljm_
 
 See https://github.com/astral-sh/ty/issues/491#issuecomment-3462267064 for more detailed discussion.
 

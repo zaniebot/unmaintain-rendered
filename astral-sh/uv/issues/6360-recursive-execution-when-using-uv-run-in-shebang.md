@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T17:37:43Z
 updated_at: 2024-10-31T14:52:19Z
 url: https://github.com/astral-sh/uv/issues/6360
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Recursive execution when using `uv run` in shebang line of script without `.py` extension
 
 ---
 
-_Issue opened by @ngnpope on 2024-08-21 17:37_
+_@ngnpope_
 
 Related to https://github.com/astral-sh/uv/pull/6313 and https://github.com/astral-sh/ruff/issues/13021#issuecomment-2302585295.
 

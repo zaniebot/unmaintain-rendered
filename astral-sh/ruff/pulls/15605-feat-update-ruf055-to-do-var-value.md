@@ -13,14 +13,14 @@ head: ruf055-fix
 created_at: 2025-01-20T06:02:30Z
 updated_at: 2025-01-21T13:47:07Z
 url: https://github.com/astral-sh/ruff/pull/15605
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # feat: Update RUF055 to do var == value
 
 ---
 
-_Pull request opened by @kiran-4444 on 2025-01-20 06:02_
+_@kiran-4444_
 
 This commit fixes RUF055 rule to format `re.fullmatch(pattern, var)` to `var == pattern` instead of the current `pattern == var` behaviour. This is more idiomatic and easy to understand.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-27T14:52:56Z
 updated_at: 2025-07-24T04:45:05Z
 url: https://github.com/astral-sh/uv/issues/13682
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # Is there any way in future release UV is planning to have the explicit command to activate / remove the venv ?
 
 ---
 
-_Issue opened by @Ramesh-kumar-S on 2025-05-27 14:52_
+_@Ramesh-kumar-S_
 
 ### Question
 

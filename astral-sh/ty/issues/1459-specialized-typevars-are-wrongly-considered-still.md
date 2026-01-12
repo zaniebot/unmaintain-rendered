@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-30T23:53:42Z
 updated_at: 2025-10-31T18:28:44Z
 url: https://github.com/astral-sh/ty/issues/1459
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Specialized typevars are wrongly considered still generic for variance inference
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-10-30 23:53_
+_@MeGaGiGaGon_
 
 ### Summary
 

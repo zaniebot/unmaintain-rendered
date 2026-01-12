@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-31T18:13:14Z
 updated_at: 2023-09-28T23:13:13Z
 url: https://github.com/astral-sh/ruff/issues/7031
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Eradicate (ERA001) is triggered on well formated TODO
 
 ---
 
-_Issue opened by @Cjkjvfnby on 2023-08-31 18:13_
+_@Cjkjvfnby_
 
 `ruff 0.0.286`
 

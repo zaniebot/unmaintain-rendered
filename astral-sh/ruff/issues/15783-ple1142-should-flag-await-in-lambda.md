@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T12:10:55Z
 updated_at: 2025-02-02T19:44:13Z
 url: https://github.com/astral-sh/ruff/issues/15783
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # PLE1142 should flag await in lambda
 
 ---
 
-_Issue opened by @jakkdl on 2025-01-28 12:10_
+_@jakkdl_
 
 ### Description
 

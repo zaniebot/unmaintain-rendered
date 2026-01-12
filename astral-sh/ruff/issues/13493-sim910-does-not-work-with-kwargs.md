@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-24T08:04:43Z
 updated_at: 2024-09-25T15:03:00Z
 url: https://github.com/astral-sh/ruff/issues/13493
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # SIM910 does not work with **kwargs
 
 ---
 
-_Issue opened by @spaceby on 2024-09-24 08:04_
+_@spaceby_
 
 SIM910 does not work with **kwargs
 

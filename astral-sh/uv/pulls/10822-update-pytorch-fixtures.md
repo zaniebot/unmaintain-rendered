@@ -13,14 +13,14 @@ head: charlie/t
 created_at: 2025-01-21T20:24:48Z
 updated_at: 2025-01-21T20:32:28Z
 url: https://github.com/astral-sh/uv/pull/10822
-synced_at: 2026-01-10T11:45:12Z
+synced_at: 2026-01-12T16:09:30Z
 ```
 
 # Update PyTorch fixtures
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-21 20:24_
+_@charliermarsh_
 
 _No description provided._
 

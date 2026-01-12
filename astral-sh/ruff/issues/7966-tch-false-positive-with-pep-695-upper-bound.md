@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-15T21:30:48Z
 updated_at: 2023-10-16T00:09:38Z
 url: https://github.com/astral-sh/ruff/issues/7966
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # TCH false positive with PEP-695 upper bound specification
 
 ---
 
-_Issue opened by @bryanforbes on 2023-10-15 21:30_
+_@bryanforbes_
 
 Running the following command with Ruff `0.0.292`:
 

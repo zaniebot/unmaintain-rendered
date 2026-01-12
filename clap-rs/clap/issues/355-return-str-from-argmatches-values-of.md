@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-11-30T12:08:47Z
 updated_at: 2018-08-02T03:29:47Z
 url: https://github.com/clap-rs/clap/issues/355
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Return &[&str] from ArgMatches::values_of
 
 ---
 
-_Issue opened by @kbknapp on 2015-11-30 12:08_
+_@kbknapp_
 
 Currently a `Vec<&str>` is returned, but it would be far more idiomatic and generic to return a slice.
 

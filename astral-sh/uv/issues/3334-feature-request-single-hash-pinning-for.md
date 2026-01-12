@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-01T23:33:17Z
 updated_at: 2025-08-01T03:17:20Z
 url: https://github.com/astral-sh/uv/issues/3334
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Feature request: single hash pinning for containerized python environments
 
 ---
 
-_Issue opened by @gary-wall-hpe on 2024-05-01 23:33_
+_@gary-wall-hpe_
 
 For containerized python builds only a single hash is in fact correct and accurate, not to mention is more secure with a much cleaner diff. Presently in uv all hashes are put into the resultant output of `uv pip compile --generate-hashes` -- is there a way to get a single hash for this environment? With pip this can be achieved with `pip compile --dry-run ...` or a combination of `pip download` and `pip hash` -- an option to be able to do so in `uv pip compile` would be extremely valuable.
 

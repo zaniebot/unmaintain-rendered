@@ -13,14 +13,14 @@ head: konsti/remove-dead-packages
 created_at: 2024-09-03T08:31:26Z
 updated_at: 2024-09-04T12:51:56Z
 url: https://github.com/astral-sh/uv/pull/6959
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:36Z
 ```
 
 # Prune unreachable packages from lockfile
 
 ---
 
-_Pull request opened by @konstin on 2024-09-03 08:31_
+_@konstin_
 
 In transformers, we have:
 

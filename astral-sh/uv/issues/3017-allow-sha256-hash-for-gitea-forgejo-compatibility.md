@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-12T16:26:31Z
 updated_at: 2024-04-13T01:09:22Z
 url: https://github.com/astral-sh/uv/issues/3017
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Allow sha256-<hash> (for Gitea/Forgejo compatibility)
 
 ---
 
-_Issue opened by @Zottelchen on 2024-04-12 16:26_
+_@Zottelchen_
 
 When trying to install a package from a private Forgejo/Gitea instance with rye 0.32.0 (`rye add private_package`)  it fails, because of the following uv error:
 

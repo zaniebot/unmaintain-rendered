@@ -13,14 +13,14 @@ head: env
 created_at: 2024-11-06T10:02:14Z
 updated_at: 2024-11-07T03:07:35Z
 url: https://github.com/astral-sh/uv/pull/8859
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:32Z
 ```
 
 # Add `docs/configuration/environment.md` to code change list
 
 ---
 
-_Pull request opened by @j178 on 2024-11-06 10:02_
+_@j178_
 
 See #8858, the `cargo dev generate-all` step should not be skipped.
 

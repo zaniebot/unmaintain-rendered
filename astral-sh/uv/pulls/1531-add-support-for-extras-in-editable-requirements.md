@@ -13,14 +13,14 @@ head: charlie/editable
 created_at: 2024-02-16T19:26:27Z
 updated_at: 2024-02-18T07:09:43Z
 url: https://github.com/astral-sh/uv/pull/1531
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:38Z
 ```
 
 # Add support for extras in editable requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-16 19:26_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-01T20:24:07Z
 updated_at: 2023-10-02T14:20:14Z
 url: https://github.com/astral-sh/ruff/issues/7747
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Jupyter Notebook outputs raw source code upon fixing via stdin
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-01 20:24_
+_@charliermarsh_
 
 If you run, e.g., `cat Untitled.ipynb | cargo run -p ruff_cli -- check --stdin-filename Untitled.ipynb -n --fix`, then the content we write to `stdout` is the fixed source code. Writing this _back_ to the notebook will leave you with an invalid notebook! Instead, we need to write back the entire JSON structure, including the fixed content.
 

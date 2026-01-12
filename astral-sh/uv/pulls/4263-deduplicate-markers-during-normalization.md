@@ -13,14 +13,14 @@ head: charlie/dedup
 created_at: 2024-06-12T02:28:55Z
 updated_at: 2024-06-12T02:38:16Z
 url: https://github.com/astral-sh/uv/pull/4263
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:07Z
 ```
 
 # Deduplicate markers during normalization
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-12 02:28_
+_@charliermarsh_
 
 ## Summary
 

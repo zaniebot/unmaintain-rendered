@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-15T21:09:04Z
 updated_at: 2025-01-21T17:26:28Z
 url: https://github.com/astral-sh/uv/issues/10646
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # Remove use of expensive package `babel` in `uv tool` tests
 
 ---
 
-_Issue opened by @zanieb on 2025-01-15 21:09_
+_@zanieb_
 
 `babel` is used frequently in the tool upgrade and install tests, but it's ~10MB (opposed to e.g., `anyio` which is 200kB). These tests are showing up on the slow list (https://github.com/astral-sh/uv/issues/878#issuecomment-2593922536).
 

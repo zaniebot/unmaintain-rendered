@@ -13,14 +13,14 @@ head: charlie/build
 created_at: 2025-06-27T02:42:06Z
 updated_at: 2025-07-01T16:50:20Z
 url: https://github.com/astral-sh/uv/pull/14304
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:08Z
 ```
 
 # Only drop build directories on program exit
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-27 02:42_
+_@charliermarsh_
 
 ## Summary
 

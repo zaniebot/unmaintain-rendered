@@ -12,14 +12,14 @@ head: docs/lightgbm
 created_at: 2023-05-16T03:55:01Z
 updated_at: 2023-05-16T04:33:18Z
 url: https://github.com/astral-sh/ruff/pull/4446
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add LightGBM to user list
 
 ---
 
-_Pull request opened by @jameslamb on 2023-05-16 03:55_
+_@jameslamb_
 
 We adopted `ruff` into our CI over in LightGBM tonight: https://github.com/microsoft/LightGBM/pull/5871
 

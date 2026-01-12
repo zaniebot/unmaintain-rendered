@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-14T14:54:38Z
 updated_at: 2024-06-15T20:24:01Z
 url: https://github.com/astral-sh/uv/issues/4328
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Error when trying to install packages from multiple directories from monorepo
 
 ---
 
-_Issue opened by @fervand1 on 2024-06-14 14:54_
+_@fervand1_
 
 When trying to install multiple local packages with
 

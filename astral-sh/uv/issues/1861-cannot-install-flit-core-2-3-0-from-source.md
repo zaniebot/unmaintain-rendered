@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-22T12:02:40Z
 updated_at: 2024-02-25T21:02:59Z
 url: https://github.com/astral-sh/uv/issues/1861
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Cannot install `flit-core==2.3.0` from source
 
 ---
 
-_Issue opened by @adrianeboyd on 2024-02-22 12:02_
+_@adrianeboyd_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

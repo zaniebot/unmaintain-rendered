@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-07T08:48:54Z
 updated_at: 2025-10-20T06:59:53Z
 url: https://github.com/astral-sh/ruff/issues/19173
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Update schemars to v1
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-07 08:48_
+_@MichaReiser_
 
 Upgrade the schemars crate to v1, see https://github.com/astral-sh/ruff/pull/19171
 

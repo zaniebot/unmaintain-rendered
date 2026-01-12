@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-21T23:32:25Z
 updated_at: 2023-12-04T18:15:33Z
 url: https://github.com/clap-rs/clap/issues/5038
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Add `mut_group` to `Command`
 
 ---
 
-_Issue opened by @rgiot on 2023-07-21 23:32_
+_@rgiot_
 
 ### Please complete the following tasks
 

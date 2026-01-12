@@ -14,14 +14,14 @@ head: ibraheem/bidirectional-inference
 created_at: 2025-09-18T20:57:10Z
 updated_at: 2025-09-19T21:00:39Z
 url: https://github.com/astral-sh/ruff/pull/20476
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [ty] Use type context for inference of generic function calls
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-09-18 20:57_
+_@ibraheemdev_
 
 ## Summary
 

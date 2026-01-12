@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-18T10:38:03Z
 updated_at: 2025-01-22T06:56:20Z
 url: https://github.com/astral-sh/uv/issues/10730
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # `uv init --lib` should add `uv.lock` to the `.gitignore`
 
 ---
 
-_Issue opened by @cjw296 on 2025-01-18 10:38_
+_@cjw296_
 
 My understanding is that while application projects should include a lock file, library projects should not.
 

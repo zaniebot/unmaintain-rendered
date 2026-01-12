@@ -14,14 +14,14 @@ head: gankra/doctok
 created_at: 2025-12-17T17:32:27Z
 updated_at: 2025-12-19T18:36:03Z
 url: https://github.com/astral-sh/ruff/pull/22031
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Classify docstrings in semantic tokens (syntax highlighting)
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-17 17:32_
+_@Gankra_
 
 ## Summary
 

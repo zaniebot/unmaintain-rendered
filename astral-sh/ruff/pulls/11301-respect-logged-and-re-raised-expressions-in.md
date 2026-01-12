@@ -13,14 +13,14 @@ head: charlie/ble
 created_at: 2024-05-06T01:37:47Z
 updated_at: 2024-05-06T01:52:10Z
 url: https://github.com/astral-sh/ruff/pull/11301
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Respect logged and re-raised expressions in nested statements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-06 01:37_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-29T23:31:24Z
 updated_at: 2025-01-30T14:59:02Z
 url: https://github.com/astral-sh/ruff/issues/15820
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # ruff check --fix makes changes that immediately fail line length checks
 
 ---
 
-_Issue opened by @juledwar on 2025-01-29 23:31_
+_@juledwar_
 
 ### Description
 

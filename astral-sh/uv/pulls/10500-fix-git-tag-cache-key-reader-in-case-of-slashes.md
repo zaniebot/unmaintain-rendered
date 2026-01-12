@@ -13,14 +13,14 @@ head: snizovtsev/fix-slashed-git-tags
 created_at: 2025-01-11T15:47:21Z
 updated_at: 2025-01-12T02:30:46Z
 url: https://github.com/astral-sh/uv/pull/10500
-synced_at: 2026-01-10T11:44:53Z
+synced_at: 2026-01-12T16:09:19Z
 ```
 
 # Fix git-tag cache-key reader in case of slashes (#10467)
 
 ---
 
-_Pull request opened by @snizovtsev on 2025-01-11 15:47_
+_@snizovtsev_
 
 ## Summary
 

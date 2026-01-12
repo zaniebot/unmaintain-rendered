@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-19T14:04:16Z
 updated_at: 2023-10-31T19:44:41Z
 url: https://github.com/astral-sh/uv/issues/137
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Support `--extra` flag in `pip-compile`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-19 14:04_
+_@charliermarsh_
 
 _No description provided._
 

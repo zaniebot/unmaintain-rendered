@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T21:39:59Z
 updated_at: 2025-06-12T10:02:52Z
 url: https://github.com/astral-sh/uv/issues/13977
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # Changing the symlink location of `uv python install --default`
 
 ---
 
-_Issue opened by @glin on 2025-06-11 21:39_
+_@glin_
 
 ### Question
 

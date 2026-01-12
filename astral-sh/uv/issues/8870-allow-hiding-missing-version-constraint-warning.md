@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T17:55:38Z
 updated_at: 2025-02-23T23:59:03Z
 url: https://github.com/astral-sh/uv/issues/8870
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # Allow hiding "Missing version constraint" warning via configuration, or only warn for entire workspace
 
 ---
 
-_Issue opened by @vvuk on 2024-11-06 17:55_
+_@vvuk_
 
 The configuration:
 - virtual workspace with A & B

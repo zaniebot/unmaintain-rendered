@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2022-11-02T11:25:45Z
 updated_at: 2022-11-02T13:02:37Z
 url: https://github.com/astral-sh/ruff/pull/549
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Update README.md to use table for per-file-ignore
 
 ---
 
-_Pull request opened by @StefanBRas on 2022-11-02 11:25_
+_@StefanBRas_
 
 It is however a bit unhandy like this, because you're not allowed to have newlines in inline tables in TOML.
 

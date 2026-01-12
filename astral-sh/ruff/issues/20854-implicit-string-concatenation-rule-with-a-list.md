@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-14T04:18:00Z
 updated_at: 2025-10-16T07:29:33Z
 url: https://github.com/astral-sh/ruff/issues/20854
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Implicit string concatenation rule with a list with a comment in between 
 
 ---
 
-_Issue opened by @notatallshaw on 2025-10-14 04:18_
+_@notatallshaw_
 
 ### Summary
 

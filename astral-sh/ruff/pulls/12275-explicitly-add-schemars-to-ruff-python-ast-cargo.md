@@ -13,14 +13,14 @@ head: cargo
 created_at: 2024-07-10T12:38:48Z
 updated_at: 2024-07-11T06:46:44Z
 url: https://github.com/astral-sh/ruff/pull/12275
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Explicitly add schemars to ruff_python_ast Cargo.toml
 
 ---
 
-_Pull request opened by @GaetanLepage on 2024-07-10 12:38_
+_@GaetanLepage_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

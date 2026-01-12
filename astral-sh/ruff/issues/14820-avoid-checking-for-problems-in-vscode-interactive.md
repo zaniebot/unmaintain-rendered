@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-06T15:31:27Z
 updated_at: 2025-06-30T14:14:10Z
 url: https://github.com/astral-sh/ruff/issues/14820
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Avoid checking for problems in VSCODE interactive
 
 ---
 
-_Issue opened by @arccarlinbr on 2024-12-06 15:31_
+_@arccarlinbr_
 
 It looks like this
 

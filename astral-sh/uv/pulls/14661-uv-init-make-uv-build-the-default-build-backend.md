@@ -14,14 +14,14 @@ head: konsti/make-uv-build-backend-the-default-in-uv-init
 created_at: 2025-07-16T15:08:00Z
 updated_at: 2025-07-16T18:07:10Z
 url: https://github.com/astral-sh/uv/pull/14661
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:20Z
 ```
 
 # `uv init`: Make `uv_build` the default build backend (from `hatchling`)
 
 ---
 
-_Pull request opened by @konstin on 2025-07-16 15:08_
+_@konstin_
 
 Closes https://github.com/astral-sh/uv/issues/14298
 

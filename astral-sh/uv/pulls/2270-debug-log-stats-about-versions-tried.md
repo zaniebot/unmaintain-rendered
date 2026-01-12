@@ -13,14 +13,14 @@ head: konsti/log-resolver-stats
 created_at: 2024-03-07T11:34:50Z
 updated_at: 2024-04-29T12:52:42Z
 url: https://github.com/astral-sh/uv/pull/2270
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:04:57Z
 ```
 
 # Debug log stats about versions tried
 
 ---
 
-_Pull request opened by @konstin on 2024-03-07 11:34_
+_@konstin_
 
 `debug!` how many versions we tried in the resolver, for how many versions we made (cached) network requests and how many (cached) source dist builds we performed.
 

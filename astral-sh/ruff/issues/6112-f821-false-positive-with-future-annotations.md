@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-27T00:45:44Z
 updated_at: 2023-07-27T01:33:06Z
 url: https://github.com/astral-sh/ruff/issues/6112
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # (🐞) F821 false positive with `__future__.annotations`
 
 ---
 
-_Issue opened by @KotlinIsland on 2023-07-27 00:45_
+_@KotlinIsland_
 
 ```py
 from __future__ import annotations

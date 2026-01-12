@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-13T15:55:31Z
 updated_at: 2024-11-14T10:34:42Z
 url: https://github.com/astral-sh/uv/issues/9087
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # Using system-level installed package on specific platforms?
 
 ---
 
-_Issue opened by @NGTOne on 2024-11-13 15:55_
+_@NGTOne_
 
 So I've got kind of an unfortunate case: I have a Docker image for `aarch64`, which contains an installed wheel for a compiled version of `tensorflow` in the system Python's `dist-packages`. `tensorflow` does not distribute a compiled wheel for `aarch64` through PyPI (or anywhere else that I can find), and I'm fairly certain that the installed version in this Docker image also isn't "standard" `tensorflow` but contains some additional customizations by Nvidia for the specific hardware platform I'm on. This means I have a very strong incentive not to pull the public wheel, since it will have an extremely lengthy build step and may not even work at all.
 

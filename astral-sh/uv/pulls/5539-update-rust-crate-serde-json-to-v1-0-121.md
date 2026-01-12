@@ -13,14 +13,14 @@ head: renovate/serde_json-1.x-lockfile
 created_at: 2024-07-29T00:09:36Z
 updated_at: 2024-08-23T15:10:42Z
 url: https://github.com/astral-sh/uv/pull/5539
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:52Z
 ```
 
 # Update Rust crate serde_json to v1.0.121
 
 ---
 
-_Pull request opened by @renovate on 2024-07-29 00:09_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

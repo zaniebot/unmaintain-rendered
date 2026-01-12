@@ -13,14 +13,14 @@ head: charlie/500
 created_at: 2023-02-26T22:46:00Z
 updated_at: 2023-02-26T23:10:10Z
 url: https://github.com/astral-sh/ruff/pull/3240
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Bump lint rule count to 500+
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-26 22:46_
+_@charliermarsh_
 
 We're now at 506 by my count.
 

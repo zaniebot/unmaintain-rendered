@@ -12,14 +12,14 @@ head: present
 created_at: 2025-02-11T19:31:48Z
 updated_at: 2025-02-11T19:39:35Z
 url: https://github.com/clap-rs/clap/pull/5908
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # fix(parser): Dont report missing flags as present 
 
 ---
 
-_Pull request opened by @epage on 2025-02-11 19:31_
+_@epage_
 
 When we switched flags to `ArgAction::SetTrue`,
 we overlooked updating `args_present`.

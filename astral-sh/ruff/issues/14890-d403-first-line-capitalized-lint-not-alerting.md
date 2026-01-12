@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-10T12:36:13Z
 updated_at: 2024-12-16T15:09:29Z
 url: https://github.com/astral-sh/ruff/issues/14890
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `D403` first-line-capitalized lint not alerting when the first line is after a newline
 
 ---
 
-_Issue opened by @yoav-alexander on 2024-12-10 12:36_
+_@yoav-alexander_
 
 My Ruff version is **0.8.2**.
 

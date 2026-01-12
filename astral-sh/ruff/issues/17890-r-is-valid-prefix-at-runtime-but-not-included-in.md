@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-06T14:43:31Z
 updated_at: 2025-05-06T19:15:34Z
 url: https://github.com/astral-sh/ruff/issues/17890
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # R is valid prefix at runtime but not included in JSON schema
 
 ---
 
-_Issue opened by @xixixao on 2025-05-06 14:43_
+_@xixixao_
 
 ### Summary
 

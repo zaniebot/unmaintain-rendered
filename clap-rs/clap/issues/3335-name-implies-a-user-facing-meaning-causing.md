@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-01-24T16:41:58Z
 updated_at: 2022-02-11T20:28:41Z
 url: https://github.com/clap-rs/clap/issues/3335
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `name` implies a user-facing meaning, causing confusion
 
 ---
 
-_Issue opened by @pwinckles on 2022-01-24 16:41_
+_@pwinckles_
 
 Maintainer's notes:
 - The root cause was [confusion over `name` vs `value_name` and impact on the rest of the API](https://github.com/clap-rs/clap/issues/3335#issuecomment-1020308017)

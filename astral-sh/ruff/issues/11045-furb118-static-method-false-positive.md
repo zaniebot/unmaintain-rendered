@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-19T15:13:52Z
 updated_at: 2024-05-03T20:03:14Z
 url: https://github.com/astral-sh/ruff/issues/11045
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # FURB118 static method "false positive"
 
 ---
 
-_Issue opened by @Rhinopitheque on 2024-04-19 15:13_
+_@Rhinopitheque_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

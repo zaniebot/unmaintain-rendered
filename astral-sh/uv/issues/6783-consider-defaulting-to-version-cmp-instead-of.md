@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-29T00:15:25Z
 updated_at: 2025-05-28T13:11:32Z
 url: https://github.com/astral-sh/uv/issues/6783
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Consider defaulting to `~=` version_cmp instead of `>=`
 
 ---
 
-_Issue opened by @lucaspar on 2024-08-29 00:15_
+_@lucaspar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

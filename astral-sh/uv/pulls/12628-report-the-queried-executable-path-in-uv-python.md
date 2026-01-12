@@ -14,14 +14,14 @@ head: zb/shim-fix
 created_at: 2025-04-02T16:05:33Z
 updated_at: 2025-04-02T20:45:39Z
 url: https://github.com/astral-sh/uv/pull/12628
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # Report the queried executable path in `uv python list`
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-02 16:05_
+_@zanieb_
 
 In an attempt to avoid reporting shims as their resolved `sys.executable` path, we report the queried executable path instead. This seems more correct for this command, broadly? Interestingly, it changes the reported paths for Homebrew Python
 

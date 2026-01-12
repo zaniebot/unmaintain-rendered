@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T03:40:11Z
 updated_at: 2025-03-29T13:07:39Z
 url: https://github.com/astral-sh/uv/issues/8876
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # How Do I activate an installed Python Environment?
 
 ---
 
-_Issue opened by @baagod on 2024-11-07 03:40_
+_@baagod_
 
 How can I activate a specific Python environment without creating a virtual environment? For example, I use: `uv python list`.
 

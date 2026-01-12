@@ -13,14 +13,14 @@ head: konsti/simplify-PubGrubReportFormatter-hints
 created_at: 2024-06-24T16:57:27Z
 updated_at: 2024-06-24T17:14:10Z
 url: https://github.com/astral-sh/uv/pull/4478
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:15Z
 ```
 
 # Break `PubGrubReportFormatter::hints` into methods
 
 ---
 
-_Pull request opened by @konstin on 2024-06-24 16:57_
+_@konstin_
 
 I have to add yet another indentation level to the prerelease-available check in `PubGrubReportFormatter::hints` for #4435, so i've broken the code into methods and decreased indentation in this split out refactoring-only change.
 

@@ -13,14 +13,14 @@ head: zb/req-docs
 created_at: 2025-09-06T12:20:30Z
 updated_at: 2025-09-08T13:23:53Z
 url: https://github.com/astral-sh/uv/pull/15706
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # Improve the CLI help for options that accept requirements files
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-06 12:20_
+_@zanieb_
 
 _No description provided._
 

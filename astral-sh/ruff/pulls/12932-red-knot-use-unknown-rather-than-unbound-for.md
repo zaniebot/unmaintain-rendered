@@ -13,14 +13,14 @@ head: alex/unresolved-imports
 created_at: 2024-08-16T14:12:31Z
 updated_at: 2024-08-16T19:10:35Z
 url: https://github.com/astral-sh/ruff/pull/12932
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] Use `Unknown` rather than `Unbound` for unresolved imports
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-16 14:12_
+_@AlexWaygood_
 
 ## Summary
 

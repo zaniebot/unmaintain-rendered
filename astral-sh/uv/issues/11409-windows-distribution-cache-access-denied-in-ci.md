@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T21:58:18Z
 updated_at: 2025-02-20T03:55:45Z
 url: https://github.com/astral-sh/uv/issues/11409
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # Windows distribution cache access denied in CI
 
 ---
 
-_Issue opened by @MattTheCuber on 2025-02-10 21:58_
+_@MattTheCuber_
 
 ### Summary
 

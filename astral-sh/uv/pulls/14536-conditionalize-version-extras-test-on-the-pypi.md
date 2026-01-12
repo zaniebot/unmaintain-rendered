@@ -13,14 +13,14 @@ head: version_extras-pypi
 created_at: 2025-07-10T11:10:37Z
 updated_at: 2025-07-10T18:19:38Z
 url: https://github.com/astral-sh/uv/pull/14536
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:16Z
 ```
 
 # Conditionalize version_extras test on the pypi feature
 
 ---
 
-_Pull request opened by @musicinmybrain on 2025-07-10 11:10_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

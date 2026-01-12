@@ -13,14 +13,14 @@ head: charlie/sim
 created_at: 2023-07-24T14:44:41Z
 updated_at: 2024-03-07T11:32:26Z
 url: https://github.com/astral-sh/ruff/pull/6031
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Ignore end-of-line comments when dirtying if-with-same-arms branches
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-24 14:44_
+_@charliermarsh_
 
 ## Summary
 

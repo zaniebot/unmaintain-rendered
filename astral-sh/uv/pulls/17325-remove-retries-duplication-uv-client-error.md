@@ -13,14 +13,14 @@ head: konsti/remove-retries-indirection
 created_at: 2026-01-05T18:13:24Z
 updated_at: 2026-01-06T09:20:04Z
 url: https://github.com/astral-sh/uv/pull/17325
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:43Z
 ```
 
 # Remove retries duplication uv_client error
 
 ---
 
-_Pull request opened by @konstin on 2026-01-05 18:13_
+_@konstin_
 
 Previously, we had a retry count both on the top level error type, and on an error variant, and had a conversion step in between. When reviewing #17274, I noticed we can simplify that.
 

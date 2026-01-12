@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T10:41:44Z
 updated_at: 2025-03-18T14:33:49Z
 url: https://github.com/astral-sh/uv/issues/12272
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # Dependency resolution failure in workspaces with identical dependency lists that work in standalone packages
 
 ---
 
-_Issue opened by @rayanramoul on 2025-03-18 10:41_
+_@rayanramoul_
 
 ### Summary
 

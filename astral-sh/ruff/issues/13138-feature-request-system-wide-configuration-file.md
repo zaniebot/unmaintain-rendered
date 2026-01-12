@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-28T11:09:59Z
 updated_at: 2024-09-07T10:54:14Z
 url: https://github.com/astral-sh/ruff/issues/13138
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [Feature Request] System-wide configuration file
 
 ---
 
-_Issue opened by @blackteahamburger on 2024-08-28 11:09_
+_@blackteahamburger_
 
 It would be convenient if ruff supports system-wide configuration file by default like `/etc/ruff.toml`.
 

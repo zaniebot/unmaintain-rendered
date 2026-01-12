@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-20T08:51:12Z
 updated_at: 2024-02-20T15:41:06Z
 url: https://github.com/astral-sh/uv/issues/1740
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Failed to copy databricks-0.2.dist-info/RECORD
 
 ---
 
-_Issue opened by @ion-elgreco on 2024-02-20 08:51_
+_@ion-elgreco_
 
 It fails installing databricks since it's getting permission denied to copy the RECORD file? Install with pip works fine though
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T12:04:57Z
 updated_at: 2025-02-05T22:49:28Z
 url: https://github.com/astral-sh/ruff/issues/14014
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Add understanding of terminal statements to control-flow analysis
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-10-31 12:04_
+_@AlexWaygood_
 
 red-knot currently issues false positives on the following snippets:
 

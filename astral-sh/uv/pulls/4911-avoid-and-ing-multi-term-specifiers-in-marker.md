@@ -13,14 +13,14 @@ head: charlie/term
 created_at: 2024-07-09T04:42:23Z
 updated_at: 2024-07-09T16:10:19Z
 url: https://github.com/astral-sh/uv/pull/4911
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:31Z
 ```
 
 # Avoid AND-ing multi-term specifiers in marker normalization
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-09 04:42_
+_@charliermarsh_
 
 ## Summary
 

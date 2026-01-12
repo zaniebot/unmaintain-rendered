@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-23T04:12:59Z
 updated_at: 2024-11-24T12:49:30Z
 url: https://github.com/astral-sh/ruff/issues/14552
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # RUF022 autofix should be marked unsafe if there are own-line comments between `__all__` items
 
 ---
 
-_Issue opened by @phil65 on 2024-11-23 04:12_
+_@phil65_
 
 - I searched issues for `__all__`, couldnt see anything from today.
 

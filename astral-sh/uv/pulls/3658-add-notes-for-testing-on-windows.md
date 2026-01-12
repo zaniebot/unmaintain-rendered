@@ -14,14 +14,14 @@ head: zb/contrib-win
 created_at: 2024-05-19T18:49:51Z
 updated_at: 2024-07-12T10:54:16Z
 url: https://github.com/astral-sh/uv/pull/3658
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:05:47Z
 ```
 
 # Add notes for testing on windows
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-19 18:49_
+_@zanieb_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-02T00:39:26Z
 updated_at: 2023-01-02T19:05:59Z
 url: https://github.com/astral-sh/ruff/issues/1542
-synced_at: 2026-01-10T12:05:30Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # ERA001 skipping some lines
 
 ---
 
-_Issue opened by @sbdchd on 2023-01-02 00:39_
+_@sbdchd_
 
 I have the following code:
 

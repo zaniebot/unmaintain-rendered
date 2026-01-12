@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-16T02:23:20Z
 updated_at: 2024-10-27T11:05:25Z
 url: https://github.com/astral-sh/ruff/issues/6606
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Add sphinx documentation style to pydocstyle config
 
 ---
 
-_Issue opened by @Eutropios on 2023-08-16 02:23_
+_@Eutropios_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

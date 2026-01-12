@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-27T16:03:38Z
 updated_at: 2025-02-27T19:53:24Z
 url: https://github.com/astral-sh/uv/issues/11835
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # Shortcut to activate uv-created venv  using uv's discovery mechanism
 
 ---
 
-_Issue opened by @ZacCranko on 2025-02-27 16:03_
+_@ZacCranko_
 
 ### Summary
 

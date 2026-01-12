@@ -13,14 +13,14 @@ head: konsti/use-std-home
 created_at: 2025-10-28T12:49:40Z
 updated_at: 2025-10-29T17:49:10Z
 url: https://github.com/astral-sh/uv/pull/16483
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:17Z
 ```
 
 # Use std `home_dir` instead of `home` crate
 
 ---
 
-_Pull request opened by @konstin on 2025-10-28 12:49_
+_@konstin_
 
 The `home_dir` function in std was deprecated for some years for reading `HOME` on Windows. It has recently been fixed and undeprecated: https://github.com/rust-lang/rust/pull/132515
 

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-07-09T23:26:23Z
 updated_at: 2025-07-09T23:50:27Z
 url: https://github.com/astral-sh/ruff/pull/19248
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [docs] add capital one to who's using ruff
 
 ---
 
-_Pull request opened by @fdosani on 2025-07-09 23:26_
+_@fdosani_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

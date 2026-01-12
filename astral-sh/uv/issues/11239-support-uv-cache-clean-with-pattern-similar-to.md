@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-05T08:33:44Z
 updated_at: 2025-02-05T15:15:00Z
 url: https://github.com/astral-sh/uv/issues/11239
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # Support `uv cache clean` with pattern similar to `pip cache remove <pattern>`
 
 ---
 
-_Issue opened by @MarkusSintonen on 2025-02-05 08:33_
+_@MarkusSintonen_
 
 ### Summary
 

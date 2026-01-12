@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-20T22:51:34Z
 updated_at: 2025-04-10T19:47:01Z
 url: https://github.com/astral-sh/uv/issues/10793
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:21Z
 ```
 
 # Add --frozen flag to "sync-and-running" documentation
 
 ---
 
-_Issue opened by @f0lie on 2025-01-20 22:51_
+_@f0lie_
 
 https://docs.astral.sh/uv/guides/integration/github/#syncing-and-running
 

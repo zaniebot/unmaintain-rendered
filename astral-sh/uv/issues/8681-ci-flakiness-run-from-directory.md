@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-29T19:20:58Z
 updated_at: 2024-10-29T20:03:21Z
 url: https://github.com/astral-sh/uv/issues/8681
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # CI flakiness: run_from_directory
 
 ---
 
-_Issue opened by @konstin on 2024-10-29 19:20_
+_@konstin_
 
 `run_from_directory` sometimes recreates the venv: https://github.com/astral-sh/uv/actions/runs/11578473249/job/32232394993
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-05T16:38:25Z
 updated_at: 2025-01-10T06:43:48Z
 url: https://github.com/astral-sh/uv/issues/10302
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # [UV ADD] How does it perform in cyclic dependencies??
 
 ---
 
-_Issue opened by @dsantiago on 2025-01-05 16:38_
+_@dsantiago_
 
 I will try to put here each step done to make sense when trying to install a package...
 

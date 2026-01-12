@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-03-30T03:07:19Z
 updated_at: 2015-03-30T03:18:52Z
 url: https://github.com/clap-rs/clap/issues/47
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Add ... to indicate positional arguments accept multiple values
 
 ---
 
-_Issue opened by @kbknapp on 2015-03-30 03:07_
+_@kbknapp_
 
 See #44 
 

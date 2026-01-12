@@ -14,14 +14,14 @@ head: charlie/ex
 created_at: 2024-06-24T17:31:11Z
 updated_at: 2024-06-24T18:56:57Z
 url: https://github.com/astral-sh/uv/pull/4479
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:15Z
 ```
 
 # Remove non-existent extras from lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-24 17:31_
+_@charliermarsh_
 
 ## Summary
 

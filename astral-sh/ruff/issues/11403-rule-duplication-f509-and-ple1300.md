@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-13T11:29:31Z
 updated_at: 2024-06-25T16:04:45Z
 url: https://github.com/astral-sh/ruff/issues/11403
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Rule duplication `F509` and `PLE1300`
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-05-13 11:29_
+_@dhruvmanila_
 
 Both rules check for invalid format character in `%` format style string.
 

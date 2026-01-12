@@ -12,14 +12,14 @@ head: fix/c414-sorted-args
 created_at: 2023-04-08T07:27:25Z
 updated_at: 2023-04-10T04:57:34Z
 url: https://github.com/astral-sh/ruff/pull/3916
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Check for arguments in inner/outer call for `C414`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-04-08 07:27_
+_@dhruvmanila_
 
 fixes: #3913 
 

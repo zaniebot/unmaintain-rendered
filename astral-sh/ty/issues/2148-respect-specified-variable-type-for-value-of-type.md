@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-21T18:20:01Z
 updated_at: 2025-12-21T18:20:58Z
 url: https://github.com/astral-sh/ty/issues/2148
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Respect specified variable type for value of type Any or Unknown
 
 ---
 
-_Issue opened by @kuyugama on 2025-12-21 18:20_
+_@kuyugama_
 
 If the value has an `Any` or `Unknown` type and variable with that value has specified type - respect the variable type
 

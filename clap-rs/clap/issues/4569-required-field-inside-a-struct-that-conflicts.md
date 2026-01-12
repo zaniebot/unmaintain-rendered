@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-12-22T04:01:26Z
 updated_at: 2022-12-22T19:19:47Z
 url: https://github.com/clap-rs/clap/issues/4569
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Required field inside a struct that conflicts with another arg is still demanded 
 
 ---
 
-_Issue opened by @nyurik on 2022-12-22 04:01_
+_@nyurik_
 
 ### Please complete the following tasks
 

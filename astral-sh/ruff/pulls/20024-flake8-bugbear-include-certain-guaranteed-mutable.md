@@ -15,14 +15,14 @@ head: feat/ruff-20004
 created_at: 2025-08-21T16:57:13Z
 updated_at: 2025-10-03T14:29:36Z
 url: https://github.com/astral-sh/ruff/pull/20024
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [`flake8-bugbear`] Include certain guaranteed-mutable expressions: tuples, generators, and assignment expressions (`B006`)
 
 ---
 
-_Pull request opened by @IDrokin117 on 2025-08-21 16:57_
+_@IDrokin117_
 
 ## Summary
 Resolves #20004

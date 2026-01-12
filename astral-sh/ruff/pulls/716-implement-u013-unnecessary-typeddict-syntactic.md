@@ -12,14 +12,14 @@ head: main
 created_at: 2022-11-13T09:14:45Z
 updated_at: 2022-11-18T17:10:48Z
 url: https://github.com/astral-sh/ruff/pull/716
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement U013: Unnecessary TypedDict syntactic form
 
 ---
 
-_Pull request opened by @martinlehoux on 2022-11-13 09:14_
+_@martinlehoux_
 
 - https://github.com/charliermarsh/ruff/issues/351
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-25T14:44:29Z
 updated_at: 2024-07-25T20:57:39Z
 url: https://github.com/astral-sh/uv/issues/5445
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Installing into a virtualenv on Windows fails when the location changes
 
 ---
 
-_Issue opened by @ak-gupta on 2024-07-25 14:44_
+_@ak-gupta_
 
 Hi there!
 

@@ -13,14 +13,14 @@ head: zb/fix-ci
 created_at: 2023-12-07T03:22:09Z
 updated_at: 2023-12-07T04:15:47Z
 url: https://github.com/astral-sh/ruff/pull/9038
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Fix determine changes detection of "code" changes
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-07 03:22_
+_@zanieb_
 
 Replaces https://github.com/astral-sh/ruff/pull/9035
 Fixes https://github.com/astral-sh/ruff/pull/8225

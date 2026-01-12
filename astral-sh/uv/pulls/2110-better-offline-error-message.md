@@ -13,14 +13,14 @@ head: konsti/better-offline-error-message
 created_at: 2024-03-01T12:24:58Z
 updated_at: 2024-03-04T14:47:41Z
 url: https://github.com/astral-sh/uv/pull/2110
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:52Z
 ```
 
 # Better offline error message
 
 ---
 
-_Pull request opened by @konstin on 2024-03-01 12:24_
+_@konstin_
 
 Error for `uv pip compile scripts/requirements/jupyter.in` without internet:
 

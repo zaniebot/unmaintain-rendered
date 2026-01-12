@@ -13,14 +13,14 @@ head: ww/build-docker-lint
 created_at: 2025-08-07T19:06:37Z
 updated_at: 2025-08-07T19:58:15Z
 url: https://github.com/astral-sh/uv/pull/15145
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:36Z
 ```
 
 # chore(ci): fix lint findings in build-docker
 
 ---
 
-_Pull request opened by @woodruffw on 2025-08-07 19:06_
+_@woodruffw_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/enum
 created_at: 2023-07-13T20:04:47Z
 updated_at: 2023-07-13T20:35:30Z
 url: https://github.com/astral-sh/ruff/pull/5749
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Ignore `Enum`-and-`str` subclasses for slots enforcement
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-13 20:04_
+_@charliermarsh_
 
 ## Summary
 

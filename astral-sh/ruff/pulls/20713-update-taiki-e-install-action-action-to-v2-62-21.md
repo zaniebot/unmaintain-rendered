@@ -13,14 +13,14 @@ head: renovate/taiki-e-install-action-2.x
 created_at: 2025-10-06T02:09:13Z
 updated_at: 2025-10-06T06:23:25Z
 url: https://github.com/astral-sh/ruff/pull/20713
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # Update taiki-e/install-action action to v2.62.21
 
 ---
 
-_Pull request opened by @renovate on 2025-10-06 02:09_
+_@renovate_
 
 > [!NOTE]
 > Mend has cancelled [the proposed renaming](https://redirect.github.com/renovatebot/renovate/discussions/37842) of the Renovate GitHub app being renamed to `mend[bot]`.

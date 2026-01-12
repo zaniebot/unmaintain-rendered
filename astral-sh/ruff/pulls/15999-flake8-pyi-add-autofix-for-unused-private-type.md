@@ -14,14 +14,14 @@ head: fix-pyi018-unused-private-type-var
 created_at: 2025-02-06T17:16:38Z
 updated_at: 2025-02-06T18:10:36Z
 url: https://github.com/astral-sh/ruff/pull/15999
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [flake8-pyi] Add autofix for unused-private-type-var (PYI018)
 
 ---
 
-_Pull request opened by @ayushbaweja on 2025-02-06 17:16_
+_@ayushbaweja_
 
 Resolves [#15940](https://github.com/astral-sh/ruff/issues/15940)
 

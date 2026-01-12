@@ -13,14 +13,14 @@ head: david/fix-1331
 created_at: 2025-10-10T08:34:17Z
 updated_at: 2025-10-10T10:04:39Z
 url: https://github.com/astral-sh/ruff/pull/20797
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] Simplify and fix `CallableTypeOf[..]` implementation
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-10 08:34_
+_@sharkdp_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/F622
 created_at: 2022-09-10T18:50:36Z
 updated_at: 2022-09-10T19:04:33Z
 url: https://github.com/astral-sh/ruff/pull/143
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement F621 and F622
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-10 18:50_
+_@charliermarsh_
 
 _No description provided._
 

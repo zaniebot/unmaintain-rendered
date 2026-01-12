@@ -14,14 +14,14 @@ head: charlie/type
 created_at: 2023-12-15T01:37:21Z
 updated_at: 2023-12-16T21:28:51Z
 url: https://github.com/astral-sh/ruff/pull/9143
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Add a rule to detect string members in runtime-evaluated unions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-15 01:37_
+_@charliermarsh_
 
 ## Summary
 

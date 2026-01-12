@@ -13,14 +13,14 @@ head: zb/no-cache
 created_at: 2024-02-15T23:27:00Z
 updated_at: 2024-02-15T23:34:43Z
 url: https://github.com/astral-sh/uv/pull/1383
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:36Z
 ```
 
 # Add `UV_NO_CACHE` environment variable
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-15 23:27_
+_@zanieb_
 
 It's a little picky about the value, but that seems okay.
 

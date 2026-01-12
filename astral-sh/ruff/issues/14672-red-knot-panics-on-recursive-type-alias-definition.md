@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-29T08:13:53Z
 updated_at: 2025-03-12T12:41:43Z
 url: https://github.com/astral-sh/ruff/issues/14672
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Panics on recursive type alias definition
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-11-29 08:13_
+_@dhruvmanila_
 
 ```python
 type Expr = tuple[int, Expr]

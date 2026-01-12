@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-05-29T22:35:05Z
 updated_at: 2025-01-29T17:50:18Z
 url: https://github.com/clap-rs/clap/issues/975
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Default subcommand
 
 ---
 
-_Issue opened by @hcpl on 2017-05-29 22:35_
+_@hcpl_
 
 ## Feature request
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-22T13:53:17Z
 updated_at: 2025-05-23T06:15:08Z
 url: https://github.com/astral-sh/uv/issues/13594
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # `uv` should remember if user previously ran `uv venv project-name`
 
 ---
 
-_Issue opened by @kdheepak on 2025-05-22 13:53_
+_@kdheepak_
 
 ### Summary
 

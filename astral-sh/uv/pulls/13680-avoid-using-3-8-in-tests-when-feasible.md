@@ -13,14 +13,14 @@ head: zb/38-eol
 created_at: 2025-05-27T14:22:46Z
 updated_at: 2025-05-27T18:34:50Z
 url: https://github.com/astral-sh/uv/pull/13680
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:48Z
 ```
 
 # Avoid using 3.8 in tests when feasible
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-27 14:22_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/issues/13676
 

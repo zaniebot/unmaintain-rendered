@@ -13,14 +13,14 @@ head: alex/slice-trait
 created_at: 2024-10-29T20:32:48Z
 updated_at: 2024-10-29T21:09:55Z
 url: https://github.com/astral-sh/ruff/pull/13983
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Improve ergonomics for the `PySlice` trait
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-29 20:32_
+_@AlexWaygood_
 
 ## Summary
 

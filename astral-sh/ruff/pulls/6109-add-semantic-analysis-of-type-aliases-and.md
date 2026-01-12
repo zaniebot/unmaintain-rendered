@@ -12,14 +12,14 @@ head: zanie/695-semantic
 created_at: 2023-07-26T22:22:11Z
 updated_at: 2023-07-28T22:06:38Z
 url: https://github.com/astral-sh/ruff/pull/6109
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add semantic analysis of type aliases and parameters
 
 ---
 
-_Pull request opened by @zanieb on 2023-07-26 22:22_
+_@zanieb_
 
 Requires https://github.com/astral-sh/RustPython-Parser/pull/42
 Related https://github.com/PyCQA/pyflakes/pull/778

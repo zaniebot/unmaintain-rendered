@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-29T13:52:16Z
 updated_at: 2024-05-30T04:00:22Z
 url: https://github.com/astral-sh/ruff/issues/11599
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Darker style --diff formatting
 
 ---
 
-_Issue opened by @JoshuaSchlucke on 2024-05-29 13:52_
+_@JoshuaSchlucke_
 
 I couldn't find any infos on that so it is propably not possible, but it would be nice for older projects etc. to be able to introduce 
 linting and formatting slowly like with darker for black, would be cool if ruff had it built in

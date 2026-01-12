@@ -14,14 +14,14 @@ head: fix(D405)/allow_using_section_name_as_sub_section_header
 created_at: 2024-02-08T12:55:48Z
 updated_at: 2024-02-09T02:54:39Z
 url: https://github.com/astral-sh/ruff/pull/9894
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # [`pydocstyle-D405`] Allow using `parameters` as a sub-section header
 
 ---
 
-_Pull request opened by @mikeleppane on 2024-02-08 12:55_
+_@mikeleppane_
 
 ## Summary
 

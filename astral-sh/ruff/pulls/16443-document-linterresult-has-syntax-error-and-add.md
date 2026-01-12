@@ -14,14 +14,14 @@ head: brent/caching-followup
 created_at: 2025-02-28T17:18:38Z
 updated_at: 2025-03-04T13:35:40Z
 url: https://github.com/astral-sh/ruff/pull/16443
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Document `LinterResult::has_syntax_error` and add `Parsed::has_no_errors`
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-28 17:18_
+_@ntBre_
 
 Summary
 --

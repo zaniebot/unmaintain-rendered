@@ -12,14 +12,14 @@ head: charlie/remove-sync
 created_at: 2023-10-19T04:12:03Z
 updated_at: 2023-10-19T04:14:22Z
 url: https://github.com/astral-sh/uv/pull/135
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:46Z
 ```
 
 # Remove packages when syncing
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-19 04:12_
+_@charliermarsh_
 
 `pip-sync` will now uninstall any packages that aren't necessary.
 

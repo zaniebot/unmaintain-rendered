@@ -13,14 +13,14 @@ head: codespell
 created_at: 2024-12-11T08:22:15Z
 updated_at: 2024-12-11T08:30:04Z
 url: https://github.com/astral-sh/ruff/pull/14906
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Revert disjointness->disjointedness
 
 ---
 
-_Pull request opened by @DimitriPapadopoulos on 2024-12-11 08:22_
+_@DimitriPapadopoulos_
 
 ## Summary
 

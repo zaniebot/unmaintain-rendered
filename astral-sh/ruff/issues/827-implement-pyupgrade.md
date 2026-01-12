@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-20T11:15:37Z
 updated_at: 2023-05-14T07:42:01Z
 url: https://github.com/astral-sh/ruff/issues/827
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement pyupgrade
 
 ---
 
-_Issue opened by @JonathanPlasse on 2022-11-20 11:15_
+_@JonathanPlasse_
 
 - [x] Set literals
 - [x] Dictionary comprehensions

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-07T20:55:00Z
 updated_at: 2025-10-07T22:38:46Z
 url: https://github.com/astral-sh/ty/issues/1321
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Function signature shows multiple times for each overload cluttering the view
 
 ---
 
-_Issue opened by @klonuo on 2025-10-07 20:55_
+_@klonuo_
 
 ### Question
 

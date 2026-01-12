@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-31T09:06:39Z
 updated_at: 2025-05-31T15:38:59Z
 url: https://github.com/astral-sh/uv/issues/13752
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # Presence of UV_CONFIG_FILE disables keyring provider in pyproject.toml
 
 ---
 
-_Issue opened by @eegli on 2025-05-31 09:06_
+_@eegli_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-11-22T07:13:49Z
 updated_at: 2023-06-19T16:40:48Z
 url: https://github.com/clap-rs/clap/issues/4501
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # May `Parser::update_from` not deny the presence of flags (option of type `bool`) ?
 
 ---
 
-_Issue opened by @TD-Sky on 2022-11-22 07:13_
+_@TD-Sky_
 
 ### Please complete the following tasks
 

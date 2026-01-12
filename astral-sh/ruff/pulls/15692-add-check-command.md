@@ -13,14 +13,14 @@ head: micha/check-command
 created_at: 2025-01-23T14:13:51Z
 updated_at: 2025-01-24T16:00:34Z
 url: https://github.com/astral-sh/ruff/pull/15692
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Add `check` command
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-23 14:13_
+_@MichaReiser_
 
 ## Summary
 

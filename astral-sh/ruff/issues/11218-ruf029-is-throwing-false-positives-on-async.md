@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-30T18:00:58Z
 updated_at: 2024-05-01T18:31:59Z
 url: https://github.com/astral-sh/ruff/issues/11218
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # RUF029 is throwing false positives on async iterators since v0.4.2
 
 ---
 
-_Issue opened by @frgfm on 2024-04-30 18:00_
+_@frgfm_
 
 Hello there :wave: 
 

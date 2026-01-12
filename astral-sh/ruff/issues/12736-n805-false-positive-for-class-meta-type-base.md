@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-07T17:28:29Z
 updated_at: 2024-08-09T20:10:14Z
 url: https://github.com/astral-sh/ruff/issues/12736
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # N805 False positive for `class Meta(type(base))`
 
 ---
 
-_Issue opened by @randolf-scholz on 2024-08-07 17:28_
+_@randolf-scholz_
 
 ```python
 from typing import Protocol

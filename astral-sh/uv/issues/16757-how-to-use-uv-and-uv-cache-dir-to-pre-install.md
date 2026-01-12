@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-17T09:20:48Z
 updated_at: 2025-11-20T15:11:03Z
 url: https://github.com/astral-sh/uv/issues/16757
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # how to use uv and UV_CACHE_DIR  to pre-install common dependencies in a docker image?
 
 ---
 
-_Issue opened by @kforner on 2025-11-17 09:20_
+_@kforner_
 
 ### Question
 

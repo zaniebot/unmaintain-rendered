@@ -12,14 +12,14 @@ head: perf-statistics
 created_at: 2023-03-26T21:08:32Z
 updated_at: 2023-03-26T22:56:45Z
 url: https://github.com/astral-sh/ruff/pull/3751
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Improve performance of statistics
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-26 21:08_
+_@JonathanPlasse_
 
 - Close #3750
 

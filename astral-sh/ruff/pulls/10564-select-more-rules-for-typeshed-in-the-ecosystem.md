@@ -13,14 +13,14 @@ head: ecosystem-typeshed
 created_at: 2024-03-25T10:18:02Z
 updated_at: 2024-03-25T14:22:43Z
 url: https://github.com/astral-sh/ruff/pull/10564
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Select more rules for typeshed in the ecosystem checks
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-25 10:18_
+_@AlexWaygood_
 
 ## Summary
 

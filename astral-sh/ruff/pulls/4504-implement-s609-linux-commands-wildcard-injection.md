@@ -13,14 +13,14 @@ head: feat/bandit-wildcard-injection
 created_at: 2023-05-18T19:24:29Z
 updated_at: 2023-06-02T18:33:34Z
 url: https://github.com/astral-sh/ruff/pull/4504
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Implement S609, linux_commands_wildcard_injection
 
 ---
 
-_Pull request opened by @scop on 2023-05-18 19:24_
+_@scop_
 
 _No description provided._
 

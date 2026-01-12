@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-21T21:10:56Z
 updated_at: 2023-06-06T00:52:13Z
 url: https://github.com/astral-sh/ruff/issues/4567
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # RUF010 auto-fix only once per line
 
 ---
 
-_Issue opened by @LotemAm on 2023-05-21 21:10_
+_@LotemAm_
 
 With 6db05d8cc6c1b065cb3a0c3bab00b546d5c8982a, output of `--show-fixes`:
 

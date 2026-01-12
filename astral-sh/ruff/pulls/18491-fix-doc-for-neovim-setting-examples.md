@@ -13,14 +13,14 @@ head: fix-docs-for-nvim-settings
 created_at: 2025-06-06T09:35:16Z
 updated_at: 2025-06-06T09:50:57Z
 url: https://github.com/astral-sh/ruff/pull/18491
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # Fix doc for Neovim setting examples
 
 ---
 
-_Pull request opened by @shimies on 2025-06-06 09:35_
+_@shimies_
 
 ## Summary
 This PR fixes an error in the example Neovim configuration on [this documentation page](https://docs.astral.sh/ruff/editors/settings/#configuration).

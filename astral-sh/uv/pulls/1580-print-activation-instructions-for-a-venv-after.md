@@ -12,14 +12,14 @@ head: activation-prompt
 created_at: 2024-02-17T10:03:57Z
 updated_at: 2024-02-20T12:39:42Z
 url: https://github.com/astral-sh/uv/pull/1580
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # Print activation instructions for a venv after one has been created
 
 ---
 
-_Pull request opened by @0v00 on 2024-02-17 10:03_
+_@0v00_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: claude/ruff-issue-10070-011CUrj8kV8ZWw6okJFrW76t
 created_at: 2025-11-06T14:35:24Z
 updated_at: 2025-11-11T13:03:48Z
 url: https://github.com/astral-sh/ruff/pull/21294
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # Add option to provide a reason to `--add-noqa`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-06 14:35_
+_@MichaReiser_
 
 ## Summary
 

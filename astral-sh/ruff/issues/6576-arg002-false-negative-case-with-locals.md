@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-14T23:23:58Z
 updated_at: 2024-07-31T17:08:26Z
 url: https://github.com/astral-sh/ruff/issues/6576
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # ARG002: false negative case with `locals()`
 
 ---
 
-_Issue opened by @Olegt0rr on 2023-08-14 23:23_
+_@Olegt0rr_
 
 > ARG002 Unused method argument: `bar`
 

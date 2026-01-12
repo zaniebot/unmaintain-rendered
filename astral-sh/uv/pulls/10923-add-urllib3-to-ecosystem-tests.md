@@ -12,14 +12,14 @@ head: zb/ecosystem-urllib
 created_at: 2025-01-23T23:06:23Z
 updated_at: 2025-04-21T19:39:28Z
 url: https://github.com/astral-sh/uv/pull/10923
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:35Z
 ```
 
 # Add `urllib3` to ecosystem tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-23 23:06_
+_@zanieb_
 
 _No description provided._
 

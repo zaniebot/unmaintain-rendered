@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-16T02:23:41Z
 updated_at: 2024-04-08T02:18:09Z
 url: https://github.com/astral-sh/uv/issues/99
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Investigate the impact on a custom metadata index
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-16 02:23_
+_@charliermarsh_
 
 Could we provide our own endpoint that's closer to the Crates sparse index? That is: a single endpoint for each package, which includes all the dependencies for all versions, thereby limiting the number of fetches to the depth of the tree. (Right now, the resolver needs to perform a fetch for every package-version pair.)
 

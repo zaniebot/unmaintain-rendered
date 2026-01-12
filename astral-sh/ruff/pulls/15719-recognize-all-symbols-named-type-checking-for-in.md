@@ -14,14 +14,14 @@ head: feat/TYPE_CHECKING_without_typing_import
 created_at: 2025-01-24T14:56:31Z
 updated_at: 2025-02-06T14:03:49Z
 url: https://github.com/astral-sh/ruff/pull/15719
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Recognize all symbols named `TYPE_CHECKING` for `in_type_checking_block`
 
 ---
 
-_Pull request opened by @Daverball on 2025-01-24 14:56_
+_@Daverball_
 
 Closes #15681
 

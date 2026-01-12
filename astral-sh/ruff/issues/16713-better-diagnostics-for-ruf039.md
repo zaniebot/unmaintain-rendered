@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-13T17:27:17Z
 updated_at: 2025-07-24T15:47:47Z
 url: https://github.com/astral-sh/ruff/issues/16713
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Better diagnostics for `RUF039`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-03-13 17:27_
+_@InSyncWithFoo_
 
 This snippet has 10 [`RUF039`](https://docs.astral.sh/ruff/rules/unraw-re-pattern/) diagnostics ([playground](https://play.ruff.rs/81703fb0-ac6f-4b0e-8086-82ed8feabf14)), of which only two can be automatically fixed:
 

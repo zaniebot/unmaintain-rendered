@@ -13,14 +13,14 @@ head: dhruv/cell-idx-json-output
 created_at: 2023-09-26T06:25:48Z
 updated_at: 2023-10-13T01:12:27Z
 url: https://github.com/astral-sh/ruff/pull/7664
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Add `cell` field to JSON output format
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-26 06:25_
+_@dhruvmanila_
 
 ## Summary
 

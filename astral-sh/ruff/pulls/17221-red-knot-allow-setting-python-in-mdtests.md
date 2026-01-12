@@ -13,14 +13,14 @@ head: micha/mdtest-python
 created_at: 2025-04-05T14:32:06Z
 updated_at: 2025-04-05T15:36:15Z
 url: https://github.com/astral-sh/ruff/pull/17221
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Allow setting `python` in mdtests
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-05 14:32_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: alex/tc010-docs
 created_at: 2025-07-15T12:28:42Z
 updated_at: 2025-07-15T12:58:23Z
 url: https://github.com/astral-sh/ruff/pull/19356
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # Make TC010 docs example more realistic
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-15 12:28_
+_@AlexWaygood_
 
 ## Summary
 

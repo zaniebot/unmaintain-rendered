@@ -15,14 +15,14 @@ head: alex/annotation-tuples
 created_at: 2024-08-08T18:40:37Z
 updated_at: 2024-08-09T19:40:03Z
 url: https://github.com/astral-sh/ruff/pull/12762
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # `RUF031`: Ignore unparenthesized tuples in subscripts when the subscript is obviously a type annotation or type alias
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-08 18:40_
+_@AlexWaygood_
 
 ## Summary
 

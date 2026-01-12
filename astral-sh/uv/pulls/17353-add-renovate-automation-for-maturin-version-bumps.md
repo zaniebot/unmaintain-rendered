@@ -12,14 +12,14 @@ head: claude/automate-maturin-version-bump-7V42I
 created_at: 2026-01-07T23:15:19Z
 updated_at: 2026-01-08T13:15:18Z
 url: https://github.com/astral-sh/uv/pull/17353
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:44Z
 ```
 
 # Add Renovate automation for maturin version bumps
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-07 23:15_
+_@zanieb_
 
 _No description provided._
 

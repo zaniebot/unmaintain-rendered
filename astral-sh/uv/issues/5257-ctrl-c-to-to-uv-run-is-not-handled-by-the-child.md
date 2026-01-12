@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-21T14:01:26Z
 updated_at: 2024-07-24T12:33:11Z
 url: https://github.com/astral-sh/uv/issues/5257
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Ctrl-C to to uv run is not handled by the child process
 
 ---
 
-_Issue opened by @bluss on 2024-07-21 14:01_
+_@bluss_
 
 uv 0.2.27
 platform: linux (x86_64)

@@ -12,14 +12,14 @@ head: charlie/async
 created_at: 2023-03-30T18:33:02Z
 updated_at: 2023-03-30T18:59:11Z
 url: https://github.com/astral-sh/ruff/pull/3823
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Avoid `unnecessary-comprehension-any-all` for async generators
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-30 18:33_
+_@charliermarsh_
 
 Closes #3818.
 

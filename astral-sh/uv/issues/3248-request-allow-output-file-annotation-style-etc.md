@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-24T16:02:50Z
 updated_at: 2025-11-13T05:04:25Z
 url: https://github.com/astral-sh/uv/issues/3248
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Request: Allow --output-file, --annotation-style, etc. multiple times, only use right-most
 
 ---
 
-_Issue opened by @AndydeCleyre on 2024-04-24 16:02_
+_@AndydeCleyre_
 
 `requirements.in`:
 

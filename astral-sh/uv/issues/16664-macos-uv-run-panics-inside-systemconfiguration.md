@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-10T10:50:16Z
 updated_at: 2025-11-10T12:55:22Z
 url: https://github.com/astral-sh/uv/issues/16664
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # macOS: `uv run` panics inside SystemConfiguration when sandboxed (Codex/seatbelt) — "Attempted to create a NULL object"
 
 ---
 
-_Issue opened by @onutc on 2025-11-10 10:50_
+_@onutc_
 
 ### Summary
 

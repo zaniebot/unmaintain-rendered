@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-15T00:13:09Z
 updated_at: 2023-12-15T00:38:49Z
 url: https://github.com/astral-sh/ruff/issues/9141
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Broken link in documentation
 
 ---
 
-_Issue opened by @vectro on 2023-12-15 00:13_
+_@vectro_
 
 A number of the documentation Markdown files contain a link to `settings.md`; but that file does not exist.
 

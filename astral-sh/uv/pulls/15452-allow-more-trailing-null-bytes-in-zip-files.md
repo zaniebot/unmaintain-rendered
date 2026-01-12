@@ -14,14 +14,14 @@ head: charlie/t
 created_at: 2025-08-22T13:34:29Z
 updated_at: 2025-08-22T13:50:09Z
 url: https://github.com/astral-sh/uv/pull/15452
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:44Z
 ```
 
 # Allow more trailing null bytes in zip files
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-22 13:34_
+_@charliermarsh_
 
 ## Summary
 

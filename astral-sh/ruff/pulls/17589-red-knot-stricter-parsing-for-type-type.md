@@ -13,14 +13,14 @@ head: alex/protocol-type-expression
 created_at: 2025-04-23T17:43:48Z
 updated_at: 2026-01-07T13:55:47Z
 url: https://github.com/astral-sh/ruff/pull/17589
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Stricter parsing for `type[]` type expressions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-23 17:43_
+_@AlexWaygood_
 
 ## Summary
 

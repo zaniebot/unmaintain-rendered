@@ -11,14 +11,14 @@ head: ww/pin
 created_at: 2025-09-12T20:22:26Z
 updated_at: 2025-09-12T20:51:36Z
 url: https://github.com/astral-sh/uv/pull/15819
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:57Z
 ```
 
 # chore(ci): pin loong64 base image to a digest
 
 ---
 
-_Pull request opened by @woodruffw on 2025-09-12 20:22_
+_@woodruffw_
 
 ## Summary
 

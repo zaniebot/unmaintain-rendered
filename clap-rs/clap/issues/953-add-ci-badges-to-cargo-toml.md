@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-05-09T22:08:35Z
 updated_at: 2018-08-02T03:30:06Z
 url: https://github.com/clap-rs/clap/issues/953
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Add CI badges to Cargo.toml
 
 ---
 
-_Issue opened by @kbknapp on 2017-05-09 22:08_
+_@kbknapp_
 
 Cargo.toml publishes CI badges for tier 1 platforms (C-CI)
 

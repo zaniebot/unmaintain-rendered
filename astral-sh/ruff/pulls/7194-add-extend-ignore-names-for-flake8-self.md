@@ -13,14 +13,14 @@ head: add-flake8-self-extend-ignore-names
 created_at: 2023-09-06T14:37:10Z
 updated_at: 2023-09-09T18:16:01Z
 url: https://github.com/astral-sh/ruff/pull/7194
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add `extend-ignore-names` for `flake8-self`
 
 ---
 
-_Pull request opened by @jaap3 on 2023-09-06 14:37_
+_@jaap3_
 
 ## Summary
 

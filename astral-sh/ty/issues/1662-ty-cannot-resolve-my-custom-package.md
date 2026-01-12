@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-28T08:40:59Z
 updated_at: 2025-12-02T01:19:14Z
 url: https://github.com/astral-sh/ty/issues/1662
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Ty cannot resolve my custom package
 
 ---
 
-_Issue opened by @hermeschen1116 on 2025-11-28 08:40_
+_@hermeschen1116_
 
 ### Question
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-12-18T16:15:42Z
 updated_at: 2018-08-02T03:30:16Z
 url: https://github.com/clap-rs/clap/issues/1131
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # -h flag is missing
 
 ---
 
-_Issue opened by @RazrFalcon on 2017-12-18 16:15_
+_@RazrFalcon_
 
 ### Rust Version
 

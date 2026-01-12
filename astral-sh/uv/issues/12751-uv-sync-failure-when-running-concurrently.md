@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T16:54:44Z
 updated_at: 2025-06-06T12:16:42Z
 url: https://github.com/astral-sh/uv/issues/12751
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # uv sync failure when running concurrently
 
 ---
 
-_Issue opened by @noahrossi on 2025-04-08 16:54_
+_@noahrossi_
 
 ### Summary
 

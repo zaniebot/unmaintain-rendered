@@ -13,14 +13,14 @@ head: charlie/django
 created_at: 2023-11-30T01:29:49Z
 updated_at: 2023-11-30T01:43:42Z
 url: https://github.com/astral-sh/ruff/pull/8917
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [`pep8-naming`] Allow Django model loads in `non-lowercase-variable-in-function` (`N806`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-30 01:29_
+_@charliermarsh_
 
 ## Summary
 

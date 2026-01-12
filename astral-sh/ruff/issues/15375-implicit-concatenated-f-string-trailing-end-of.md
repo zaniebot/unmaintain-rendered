@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-09T14:38:17Z
 updated_at: 2025-01-10T18:21:35Z
 url: https://github.com/astral-sh/ruff/issues/15375
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Implicit concatenated f-string: Trailing end-of-line comment is moved
 
 ---
 
-_Issue opened by @joostlek on 2025-01-09 14:38_
+_@joostlek_
 
 Hey!
 

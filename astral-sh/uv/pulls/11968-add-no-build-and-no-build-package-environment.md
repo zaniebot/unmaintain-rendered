@@ -13,14 +13,14 @@ head: 11963/no-build-env
 created_at: 2025-03-05T01:59:59Z
 updated_at: 2025-03-07T17:47:36Z
 url: https://github.com/astral-sh/uv/pull/11968
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:05Z
 ```
 
 # Add `NO_BUILD` and `NO_BUILD_PACKAGE` environment variables
 
 ---
 
-_Pull request opened by @lengau on 2025-03-05 01:59_
+_@lengau_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

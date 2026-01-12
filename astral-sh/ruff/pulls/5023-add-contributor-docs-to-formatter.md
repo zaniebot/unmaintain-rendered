@@ -13,14 +13,14 @@ head: formatter_contributor_docs
 created_at: 2023-06-12T11:48:18Z
 updated_at: 2023-06-13T07:45:58Z
 url: https://github.com/astral-sh/ruff/pull/5023
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add contributor docs to formatter
 
 ---
 
-_Pull request opened by @konstin on 2023-06-12 11:48_
+_@konstin_
 
 I've written done my condensed learnings from working on the formatter so that others can have an easier start working on it.
 

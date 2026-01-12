@@ -13,14 +13,14 @@ head: jack/uvx_pypy
 created_at: 2025-05-21T20:15:56Z
 updated_at: 2025-05-30T16:12:41Z
 url: https://github.com/astral-sh/uv/pull/13583
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:45Z
 ```
 
 # allow running non-default Python interpreters directly via uvx
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-05-21 20:15_
+_@oconnor663_
 
 Previously if you wanted to run e.g. PyPy via `uvx`, you had to spell it like `uvx -p pypy python`. Now we reuse the `PythonRequest::parse` machinery to handle the executable, so all of the following examples work:
 

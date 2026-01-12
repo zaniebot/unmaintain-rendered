@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-14T21:44:28Z
 updated_at: 2024-03-20T01:02:13Z
 url: https://github.com/astral-sh/uv/issues/2467
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # error: Cannot uninstall package; RECORD file not found 
 
 ---
 
-_Issue opened by @ksamuel on 2024-03-14 21:44_
+_@ksamuel_
 
 Trying to install a package with uv stops because the RECORD file for a dependency package it needs to uninstall does not exist. This means if a command goes wrong, the venv is corrupted for good an can't be fixed without manual intervention.
 

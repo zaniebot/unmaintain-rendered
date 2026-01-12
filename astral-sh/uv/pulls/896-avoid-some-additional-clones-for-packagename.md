@@ -13,14 +13,14 @@ head: charlie/small
 created_at: 2024-01-12T04:54:13Z
 updated_at: 2024-01-12T17:54:42Z
 url: https://github.com/astral-sh/uv/pull/896
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:16Z
 ```
 
 # Avoid some additional clones for `PackageName`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-12 04:54_
+_@charliermarsh_
 
 _No description provided._
 

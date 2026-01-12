@@ -13,14 +13,14 @@ head: doc/misc-options-improvements
 created_at: 2024-07-04T21:25:45Z
 updated_at: 2024-07-04T23:23:29Z
 url: https://github.com/astral-sh/ruff/pull/12191
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # docs(options): fix some typos and improve consistency
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-07-04 21:25_
+_@mkniewallner_
 
 ## Summary
 

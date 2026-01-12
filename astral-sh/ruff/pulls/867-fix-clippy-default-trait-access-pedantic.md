@@ -12,14 +12,14 @@ head: clippy-default-trait-access
 created_at: 2022-11-22T01:36:31Z
 updated_at: 2022-11-22T02:00:38Z
 url: https://github.com/astral-sh/ruff/pull/867
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix clippy::default-trait-access (pedantic)
 
 ---
 
-_Pull request opened by @andersk on 2022-11-22 01:36_
+_@andersk_
 
 Specific `T::default()` calls are more readable than `Default::default()`.
 

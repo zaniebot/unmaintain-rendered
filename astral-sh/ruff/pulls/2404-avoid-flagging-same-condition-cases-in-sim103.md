@@ -12,14 +12,14 @@ head: charlie/sim103
 created_at: 2023-01-31T17:45:46Z
 updated_at: 2023-01-31T17:45:52Z
 url: https://github.com/astral-sh/ruff/pull/2404
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Avoid flagging same-condition cases in SIM103
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-31 17:45_
+_@charliermarsh_
 
 Closes #2399.
 

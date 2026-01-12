@@ -13,14 +13,14 @@ head: charlie/tag
 created_at: 2024-07-22T17:56:27Z
 updated_at: 2024-07-22T18:31:10Z
 url: https://github.com/astral-sh/uv/pull/5296
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:44Z
 ```
 
 # Use tag error rather than requires-python error for ABI filtering
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-22 17:56_
+_@charliermarsh_
 
 ## Summary
 

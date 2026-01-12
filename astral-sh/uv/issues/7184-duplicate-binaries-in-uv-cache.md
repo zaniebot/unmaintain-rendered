@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-08T03:01:28Z
 updated_at: 2024-09-16T17:55:53Z
 url: https://github.com/astral-sh/uv/issues/7184
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Duplicate binaries in uv cache
 
 ---
 
-_Issue opened by @yankeexe on 2024-09-08 03:01_
+_@yankeexe_
 
 ## Issue
 `uv` is creating duplicate binaries for the same version in the cache, increasing the cache size.

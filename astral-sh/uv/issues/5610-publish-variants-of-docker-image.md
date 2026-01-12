@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-30T16:44:07Z
 updated_at: 2024-09-03T13:44:02Z
 url: https://github.com/astral-sh/uv/issues/5610
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Publish variants of Docker image
 
 ---
 
-_Issue opened by @zanieb on 2024-07-30 16:44_
+_@zanieb_
 
 Instead of only supplying a bare image, we should publish an alpine variant and a variant with Python so people can use our image without creating a custom derivative.
 

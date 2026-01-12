@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-19T07:14:07Z
 updated_at: 2025-08-19T07:35:35Z
 url: https://github.com/astral-sh/uv/issues/15370
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # Weather uv can install a package by git with ssh.
 
 ---
 
-_Issue opened by @dwpeng on 2025-08-19 07:14_
+_@dwpeng_
 
 ### Question
 

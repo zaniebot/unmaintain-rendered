@@ -8,16 +8,16 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-11-18T16:56:03Z
-updated_at: 2026-01-12T14:42:00Z
+updated_at: 2026-01-12T15:22:47Z
 url: https://github.com/astral-sh/uv/issues/16769
-synced_at: 2026-01-12T15:03:42Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # Add Setting To No Longer Force Lock Files to have 777 Permissions in Linux
 
 ---
 
-_Issue opened by @delvecccims on 2025-11-18 16:56_
+_@delvecccims_
 
 ### Summary
 
@@ -126,5 +126,30 @@ We did change the permission: https://github.com/astral-sh/uv/pull/16845. Are yo
 _Comment by @ruttenb on 2026-01-12 14:41_
 
 I believe the most recent change updated the permissions to 666, but giving the world write permissions to these lock files is still a concern.  Above there were conversations about updating this to 644 which would resolve the security concern.
+
+---
+
+_Comment by @zanieb on 2026-01-12 15:05_
+
+What's your concrete security concern from this file being writable? What is the attack vector?
+
+Regardless, we can continue investigating changing to 644. The change needs to be validated to ensure it does not cause regressions.
+
+---
+
+_Comment by @ruttenb on 2026-01-12 15:17_
+
+CIS 6.1.10 - "Ensure no world writable files exist".  I attached a PDF of the CIS benchmarks if you scroll down to 6.1.10 you'll see it there.  Here are a couple other links that talk about world write permissions:
+
+- https://www.tenable.com/audits/items/CIS_Red_Hat_EL7_STIG_v2.0.0_STIG.audit:9d80f2f418addc905a8d399be44485c0
+- https://docs.datadoghq.com/security/default_rules/def-000-dv8/
+
+[CIS_Oracle_Linux_6_Benchmark_v100.pdf](https://github.com/user-attachments/files/24567632/CIS_Oracle_Linux_6_Benchmark_v100.pdf)
+
+---
+
+_Comment by @zanieb on 2026-01-12 15:22_
+
+Sorry but those are just best practice security rules, there's nothing there that talks about concrete attack vectors.
 
 ---

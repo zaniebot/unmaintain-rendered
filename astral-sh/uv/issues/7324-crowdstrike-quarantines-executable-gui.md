@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-12T08:07:43Z
 updated_at: 2024-12-12T18:11:28Z
 url: https://github.com/astral-sh/uv/issues/7324
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Crowdstrike quarantines executable GUI entrypoints upon installation on Windows
 
 ---
 
-_Issue opened by @johannesloibl on 2024-09-12 08:07_
+_@johannesloibl_
 
 Hey,
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-21T14:20:58Z
 updated_at: 2025-03-31T08:58:03Z
 url: https://github.com/astral-sh/uv/issues/12368
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # github token auth
 
 ---
 
-_Issue opened by @kristjanvalur on 2025-03-21 14:20_
+_@kristjanvalur_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-19T10:51:27Z
 updated_at: 2024-04-19T14:13:04Z
 url: https://github.com/astral-sh/uv/issues/3139
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Functionality to manage different python versions
 
 ---
 
-_Issue opened by @naosense on 2024-04-19 10:51_
+_@naosense_
 
 Sometimes, i want to switch between different python versions, can `uv` provide such a functionality?  just like `nvm` manages different node versions.
 

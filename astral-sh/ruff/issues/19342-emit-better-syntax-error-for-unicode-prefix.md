@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-14T22:00:45Z
 updated_at: 2025-07-20T22:06:03Z
 url: https://github.com/astral-sh/ruff/issues/19342
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Emit better syntax error for unicode prefix
 
 ---
 
-_Issue opened by @dylwil3 on 2025-07-14 22:00_
+_@dylwil3_
 
 Currently we get:
 

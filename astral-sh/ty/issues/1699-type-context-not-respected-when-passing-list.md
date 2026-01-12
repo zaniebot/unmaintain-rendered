@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-01T10:10:02Z
 updated_at: 2025-12-01T10:12:47Z
 url: https://github.com/astral-sh/ty/issues/1699
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Type context not respected when passing list literal to `Sequence` parameter
 
 ---
 
-_Issue opened by @sharkdp on 2025-12-01 10:10_
+_@sharkdp_
 
 > @sharkdp I have a similar problem trying to use ty with DRF typings that started from 27 alpha, should I create a separate issue for that? 
 > 

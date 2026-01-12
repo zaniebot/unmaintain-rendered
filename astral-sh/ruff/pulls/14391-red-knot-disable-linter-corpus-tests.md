@@ -14,14 +14,14 @@ head: david/disable-corpus-linter-tests
 created_at: 2024-11-16T22:22:04Z
 updated_at: 2024-11-16T22:35:52Z
 url: https://github.com/astral-sh/ruff/pull/14391
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Disable linter-corpus tests
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-16 22:22_
+_@sharkdp_
 
 ## Summary
 

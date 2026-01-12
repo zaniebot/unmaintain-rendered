@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-08-10T00:11:29Z
 updated_at: 2024-08-11T00:03:34Z
 url: https://github.com/clap-rs/clap/issues/5651
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Help headers for rust native completions
 
 ---
 
-_Issue opened by @epage on 2024-08-10 00:11_
+_@epage_
 
 See
 - https://carapace.sh/

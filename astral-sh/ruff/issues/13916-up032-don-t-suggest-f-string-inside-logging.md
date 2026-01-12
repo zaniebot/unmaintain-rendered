@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-24T17:37:38Z
 updated_at: 2025-02-17T18:44:26Z
 url: https://github.com/astral-sh/ruff/issues/13916
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # UP032: Don't suggest f-string inside logging statements
 
 ---
 
-_Issue opened by @rpdelaney on 2024-10-24 17:37_
+_@rpdelaney_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

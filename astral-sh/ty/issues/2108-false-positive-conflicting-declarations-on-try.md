@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-19T11:13:50Z
 updated_at: 2025-12-23T05:15:29Z
 url: https://github.com/astral-sh/ty/issues/2108
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # False positive: `conflicting-declarations` on try/except import fallback pattern
 
 ---
 
-_Issue opened by @The-Red-Dragons on 2025-12-19 11:13_
+_@The-Red-Dragons_
 
 ### Summary
 

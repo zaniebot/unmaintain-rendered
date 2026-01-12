@@ -13,14 +13,14 @@ head: micha/ruff-0.8-stabilize-rules
 created_at: 2024-11-19T14:39:32Z
 updated_at: 2024-11-20T15:42:18Z
 url: https://github.com/astral-sh/ruff/pull/14462
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Stabilize multiple rules
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-19 14:39_
+_@MichaReiser_
 
 - **Stabilize `PLC0206`**
 - **Stabilize `B039`**

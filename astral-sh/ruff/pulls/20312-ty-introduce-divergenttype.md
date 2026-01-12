@@ -13,14 +13,14 @@ head: div-type
 created_at: 2025-09-09T04:30:15Z
 updated_at: 2025-09-12T11:57:59Z
 url: https://github.com/astral-sh/ruff/pull/20312
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:59Z
 ```
 
 # [ty] introduce `DivergentType`
 
 ---
 
-_Pull request opened by @mtshiba on 2025-09-09 04:30_
+_@mtshiba_
 
 ## Summary
 

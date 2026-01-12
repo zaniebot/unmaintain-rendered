@@ -13,14 +13,14 @@ head: generator-quote-style
 created_at: 2025-09-16T10:13:02Z
 updated_at: 2025-10-03T21:16:21Z
 url: https://github.com/astral-sh/ruff/pull/20434
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # Generator preferred quote style
 
 ---
 
-_Pull request opened by @ShaharNaveh on 2025-09-16 10:13_
+_@ShaharNaveh_
 
 Closes #20432 
 

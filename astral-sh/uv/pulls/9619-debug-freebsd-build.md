@@ -13,14 +13,14 @@ head: zb/freebsd-debug
 created_at: 2024-12-03T20:13:42Z
 updated_at: 2024-12-04T05:13:34Z
 url: https://github.com/astral-sh/uv/pull/9619
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:54Z
 ```
 
 # Debug freebsd build
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-03 20:13_
+_@zanieb_
 
 _No description provided._
 

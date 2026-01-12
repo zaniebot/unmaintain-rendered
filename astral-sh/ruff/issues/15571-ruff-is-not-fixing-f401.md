@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-18T15:49:48Z
 updated_at: 2025-01-19T09:23:07Z
 url: https://github.com/astral-sh/ruff/issues/15571
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Ruff is not fixing F401
 
 ---
 
-_Issue opened by @s0undt3ch on 2025-01-18 15:49_
+_@s0undt3ch_
 
 I remember that ruff used to fix `F401`, however, it's not in the latest version:
 

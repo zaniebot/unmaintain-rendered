@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-22T11:30:56Z
 updated_at: 2025-03-24T11:12:44Z
 url: https://github.com/astral-sh/ruff/issues/16911
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Confusing Intersection revealed type
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-03-22 11:30_
+_@MatthewMckee4_
 
 ### Summary
 

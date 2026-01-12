@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-04T18:33:35Z
 updated_at: 2025-03-05T07:48:49Z
 url: https://github.com/astral-sh/ruff/issues/16507
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Prevent non-new-variable `for` loop targets
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-03-04 18:33_
+_@InSyncWithFoo_
 
 The `target` of a `for` loop can be names (`global`, `nonlocal`, local), subcripts, attributes and/or any derivation of those:
 

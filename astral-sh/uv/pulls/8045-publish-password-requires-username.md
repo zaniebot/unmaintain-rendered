@@ -13,14 +13,14 @@ head: konsti/password-requires-username
 created_at: 2024-10-09T12:20:41Z
 updated_at: 2024-10-15T12:18:10Z
 url: https://github.com/astral-sh/uv/pull/8045
-synced_at: 2026-01-10T12:54:01Z
+synced_at: 2026-01-12T16:08:08Z
 ```
 
 # Publish: Password requires username
 
 ---
 
-_Pull request opened by @konstin on 2024-10-09 12:20_
+_@konstin_
 
 You can't use a password without a username in `uv publish`, which we can catch in clap directly.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-07T18:47:45Z
 updated_at: 2025-01-28T17:17:36Z
 url: https://github.com/astral-sh/uv/issues/10376
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # Document that we ignore upper bounds on Python
 
 ---
 
-_Issue opened by @zanieb on 2025-01-07 18:47_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/issues/4022 and linked issues for details.
 

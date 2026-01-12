@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-31T15:46:22Z
 updated_at: 2023-09-06T16:09:18Z
 url: https://github.com/astral-sh/ruff/issues/7026
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Standardize number of lines between module-level docstring and first import
 
 ---
 
-_Issue opened by @petermattia on 2023-08-31 15:46_
+_@petermattia_
 
 Currently, the below three snippets are all valid.
 

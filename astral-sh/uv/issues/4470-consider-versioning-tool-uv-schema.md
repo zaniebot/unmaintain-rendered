@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-24T13:11:56Z
 updated_at: 2024-07-30T17:21:35Z
 url: https://github.com/astral-sh/uv/issues/4470
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Consider versioning `tool.uv` schema
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-24 13:11_
+_@charliermarsh_
 
 Do we want to version the schema separately from `uv` itself, so that we can support different formats over time?
 

@@ -13,14 +13,14 @@ head: micha/renable-fuzz-on-pr
 created_at: 2024-12-13T08:59:51Z
 updated_at: 2024-12-13T09:12:08Z
 url: https://github.com/astral-sh/ruff/pull/14953
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Re-enable the fuzzer job on PRs
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-13 08:59_
+_@MichaReiser_
 
 ## Summary
 This reverts https://github.com/astral-sh/ruff/pull/14478

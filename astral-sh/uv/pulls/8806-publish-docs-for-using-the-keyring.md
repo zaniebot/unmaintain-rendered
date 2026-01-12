@@ -13,14 +13,14 @@ head: konsti/document-the-keyring
 created_at: 2024-11-04T10:16:49Z
 updated_at: 2025-04-28T12:50:30Z
 url: https://github.com/astral-sh/uv/pull/8806
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:30Z
 ```
 
 # Publish: Docs for using the keyring
 
 ---
 
-_Pull request opened by @konstin on 2024-11-04 10:16_
+_@konstin_
 
 While publishing from CI is clearly the better choice, for smaller projects it may just not be worth the effort, so we also support publishing from a local machine.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-17T16:37:42Z
 updated_at: 2025-10-22T19:11:43Z
 url: https://github.com/clap-rs/clap/issues/6156
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Arg::next_line_help adds newlines to ALL options
 
 ---
 
-_Issue opened by @playbahn on 2025-10-17 16:37_
+_@playbahn_
 
 ### Please complete the following tasks
 

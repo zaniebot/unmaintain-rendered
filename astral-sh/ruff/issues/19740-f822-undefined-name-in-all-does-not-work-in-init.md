@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-04T10:59:35Z
 updated_at: 2025-11-06T13:31:16Z
 url: https://github.com/astral-sh/ruff/issues/19740
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # F822 Undefined name in __all__ does not work in __init__.py - again
 
 ---
 
-_Issue opened by @netrix on 2025-08-04 10:59_
+_@netrix_
 
 ### Summary
 

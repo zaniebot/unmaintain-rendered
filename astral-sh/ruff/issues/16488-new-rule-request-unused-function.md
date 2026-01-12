@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-03-04T00:43:53Z
 updated_at: 2025-03-04T03:37:59Z
 url: https://github.com/astral-sh/ruff/issues/16488
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # New rule request: unused function
 
 ---
 
-_Issue opened by @Garrett-R on 2025-03-04 00:43_
+_@Garrett-R_
 
 ### Summary
 

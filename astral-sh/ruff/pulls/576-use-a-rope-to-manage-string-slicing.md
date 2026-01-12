@@ -12,14 +12,14 @@ head: charlie/rope
 created_at: 2022-11-04T02:51:26Z
 updated_at: 2022-11-04T03:23:39Z
 url: https://github.com/astral-sh/ruff/pull/576
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Use a rope to manage string slicing
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-04 02:51_
+_@charliermarsh_
 
 In my testing, this is like 3x faster when generating docstring fixes in the CPython codebase.
 

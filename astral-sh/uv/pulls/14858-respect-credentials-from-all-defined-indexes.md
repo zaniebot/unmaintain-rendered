@@ -13,14 +13,14 @@ head: charlie/tool-index
 created_at: 2025-07-23T21:13:52Z
 updated_at: 2025-07-23T21:23:52Z
 url: https://github.com/astral-sh/uv/pull/14858
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:27Z
 ```
 
 # Respect credentials from all defined indexes
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-23 21:13_
+_@charliermarsh_
 
 ## Summary
 

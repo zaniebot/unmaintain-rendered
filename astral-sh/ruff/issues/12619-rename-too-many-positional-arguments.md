@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-02T07:15:21Z
 updated_at: 2024-08-15T16:13:26Z
 url: https://github.com/astral-sh/ruff/issues/12619
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Rename `too-many-positional{→-arguments}`
 
 ---
 
-_Issue opened by @flying-sheep on 2024-08-02 07:15_
+_@flying-sheep_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

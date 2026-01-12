@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-26T13:43:59Z
 updated_at: 2025-09-29T07:38:33Z
 url: https://github.com/astral-sh/ruff/issues/20594
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Quick fixes are unavailable in the playground for empty ranges
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-26 13:43_
+_@dscorbett_
 
 ### Summary
 

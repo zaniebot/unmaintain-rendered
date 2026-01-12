@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-06T19:27:13Z
 updated_at: 2023-05-11T20:09:41Z
 url: https://github.com/astral-sh/ruff/issues/3365
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Write a script to aggregate OSS data on Ruff configuration
 
 ---
 
-_Issue opened by @charliermarsh on 2023-03-06 19:27_
+_@charliermarsh_
 
 Right now, it's hard for us to make data-informed decisions. It'd be nice to leverage our open-source usage to help understand questions like:
 

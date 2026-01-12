@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-17T15:47:43Z
 updated_at: 2024-05-18T13:54:35Z
 url: https://github.com/astral-sh/uv/issues/3640
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Where is `install.sh` in the repo?
 
 ---
 
-_Issue opened by @s-banach on 2024-05-17 15:47_
+_@s-banach_
 
 The documentation says to download `astral.sh/uv/install.sh`.
 Where is `install.sh` in the repo?

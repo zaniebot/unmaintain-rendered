@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-04-30T07:00:59Z
 updated_at: 2018-08-02T03:29:39Z
 url: https://github.com/clap-rs/clap/issues/89
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Possibly incorrect generated usage grammar
 
 ---
 
-_Issue opened by @Byron on 2015-04-30 07:00_
+_@Byron_
 
 When specifying an argument like this:
 

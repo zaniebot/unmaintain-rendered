@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-30T16:29:26Z
 updated_at: 2025-01-30T21:49:15Z
 url: https://github.com/astral-sh/ruff/issues/15830
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # C420 false negative at the start of input for builtin static values
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-30 16:29_
+_@dscorbett_
 
 ### Description
 

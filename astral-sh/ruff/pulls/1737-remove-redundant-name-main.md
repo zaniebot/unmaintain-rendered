@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2023-01-08T11:08:29Z
 updated_at: 2023-01-08T21:07:35Z
 url: https://github.com/astral-sh/ruff/pull/1737
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Remove redundant __name__ == "__main__"
 
 ---
 
-_Pull request opened by @mgeier on 2023-01-08 11:08_
+_@mgeier_
 
 The name of the module is `__main__` anyway.
 

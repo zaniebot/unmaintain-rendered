@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-07-14T16:22:10Z
 updated_at: 2020-08-14T09:25:51Z
 url: https://github.com/clap-rs/clap/issues/2014
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Generating auto completion for zsh-prezto does not work with Deno project
 
 ---
 
-_Issue opened by @muuvmuuv on 2020-07-14 16:22_
+_@muuvmuuv_
 
 ### Make sure you completed the following tasks
 

@@ -13,14 +13,14 @@ head: david/union-of-type-and-its-complement
 created_at: 2025-01-10T13:43:17Z
 updated_at: 2025-05-07T15:22:47Z
 url: https://github.com/astral-sh/ruff/pull/15400
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Simplify unions of T and ~T
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-10 13:43_
+_@sharkdp_
 
 ## Summary
 

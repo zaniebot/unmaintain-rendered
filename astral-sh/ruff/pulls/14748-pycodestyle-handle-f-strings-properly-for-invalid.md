@@ -14,14 +14,14 @@ head: escape-f
 created_at: 2024-12-03T05:54:22Z
 updated_at: 2024-12-04T12:59:20Z
 url: https://github.com/astral-sh/ruff/pull/14748
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`pycodestyle`] Handle f-strings properly for `invalid-escape-sequence (W605)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-12-03 05:54_
+_@dylwil3_
 
 When fixing an invalid escape sequence in an f-string, each f-string element is analyzed for valid escape characters prior to creating the diagnostic and fix. This allows us to safely prefix with `r` to create a raw string if no valid escape characters were found anywhere in the f-string, and otherwise insert backslashes.
 

@@ -13,14 +13,14 @@ head: micha/fix-can-omit-preview-style
 created_at: 2024-10-24T11:27:30Z
 updated_at: 2024-10-24T11:38:45Z
 url: https://github.com/astral-sh/ruff/pull/13907
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Fix preview style name in `can_omit_parentheses` to `is_f_string_formatting_enabled`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-24 11:27_
+_@MichaReiser_
 
 
 ## Summary

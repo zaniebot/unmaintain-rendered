@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-01T03:00:19Z
 updated_at: 2024-08-01T16:43:30Z
 url: https://github.com/astral-sh/uv/issues/5680
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Avoid breaking change for tool receipt format
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-01 03:00_
+_@charliermarsh_
 
 In https://github.com/astral-sh/uv/pull/5494, I made a breaking change to the serialization format. We should make it backwards-compatible before releasing.
 

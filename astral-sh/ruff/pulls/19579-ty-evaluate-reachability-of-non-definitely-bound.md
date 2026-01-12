@@ -14,14 +14,14 @@ head: reachability-ambiguous-not-definitely-bound
 created_at: 2025-07-27T21:06:19Z
 updated_at: 2025-10-22T15:47:23Z
 url: https://github.com/astral-sh/ruff/pull/19579
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Evaluate reachability of non-definitely-bound to Ambiguous
 
 ---
 
-_Pull request opened by @Glyphack on 2025-07-27 21:06_
+_@Glyphack_
 
 ## Summary
 

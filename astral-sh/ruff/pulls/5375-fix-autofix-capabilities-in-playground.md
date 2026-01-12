@@ -12,14 +12,14 @@ head: charlie/playground
 created_at: 2023-06-26T16:04:05Z
 updated_at: 2023-06-26T16:53:50Z
 url: https://github.com/astral-sh/ruff/pull/5375
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix autofix capabilities in playground
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-26 16:04_
+_@charliermarsh_
 
 ## Summary
 

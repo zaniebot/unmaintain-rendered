@@ -13,14 +13,14 @@ head: allow-ellipsis-if-type-checking
 created_at: 2024-03-14T21:55:00Z
 updated_at: 2024-03-15T08:47:51Z
 url: https://github.com/astral-sh/ruff/pull/10413
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Allow trailing ellipsis in `typing.TYPE_CHECKING`
 
 ---
 
-_Pull request opened by @tjkuson on 2024-03-14 21:55_
+_@tjkuson_
 
 ## Summary
 

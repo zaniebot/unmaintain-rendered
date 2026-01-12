@@ -13,14 +13,14 @@ head: micha/release-disable-ppc64le-testing
 created_at: 2025-03-17T08:43:29Z
 updated_at: 2025-03-17T12:35:46Z
 url: https://github.com/astral-sh/ruff/pull/16793
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:57Z
 ```
 
 # [ci]: Disable wheel testing on `ppc64le`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-17 08:43_
+_@MichaReiser_
 
 ## Summary
 

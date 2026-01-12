@@ -13,14 +13,14 @@ head: charlie/print
 created_at: 2023-02-10T02:43:53Z
 updated_at: 2023-02-10T02:44:17Z
 url: https://github.com/astral-sh/ruff/pull/2704
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # Remove lifetimes from Printer
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-10 02:43_
+_@charliermarsh_
 
 _No description provided._
 

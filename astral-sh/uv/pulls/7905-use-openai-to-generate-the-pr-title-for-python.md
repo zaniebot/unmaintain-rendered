@@ -12,14 +12,14 @@ head: openai
 created_at: 2024-10-03T18:06:09Z
 updated_at: 2024-10-04T06:02:14Z
 url: https://github.com/astral-sh/uv/pull/7905
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Use OpenAI to generate the PR title for Python releases
 
 ---
 
-_Pull request opened by @j178 on 2024-10-03 18:06_
+_@j178_
 
 ## Summary
 

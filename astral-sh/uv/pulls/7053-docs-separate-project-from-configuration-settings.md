@@ -13,14 +13,14 @@ head: docs/separate-project-from-configuration-settings
 created_at: 2024-09-04T22:08:27Z
 updated_at: 2024-09-14T08:05:02Z
 url: https://github.com/astral-sh/uv/pull/7053
-synced_at: 2026-01-10T12:53:38Z
+synced_at: 2026-01-12T16:07:39Z
 ```
 
 # docs: separate project from configuration settings
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-09-04 22:08_
+_@mkniewallner_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

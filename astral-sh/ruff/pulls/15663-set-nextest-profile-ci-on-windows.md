@@ -13,14 +13,14 @@ head: zb/nextest-ci
 created_at: 2025-01-21T23:33:15Z
 updated_at: 2025-01-22T07:09:39Z
 url: https://github.com/astral-sh/ruff/pull/15663
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Set `NEXTEST_PROFILE=ci` on Windows
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-21 23:33_
+_@zanieb_
 
 This is set in the other jobs, perhaps an oversight here
 

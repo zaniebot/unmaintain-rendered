@@ -13,14 +13,14 @@ head: zb/list-impl
 created_at: 2024-06-10T16:29:03Z
 updated_at: 2024-06-10T17:49:18Z
 url: https://github.com/astral-sh/uv/pull/4203
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:05Z
 ```
 
 # Improve `uv toolchain list` implementation
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-10 16:29_
+_@zanieb_
 
 Amends #4163 with review from Jane, thank you!
 

@@ -12,14 +12,14 @@ head: fix_ruff_format_slient_always_print_reformat
 created_at: 2025-04-30T11:13:26Z
 updated_at: 2025-05-02T15:09:54Z
 url: https://github.com/astral-sh/ruff/pull/17736
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [`ruff`] Fix For format --check --slient not respect --silent flag
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-30 11:13_
+_@Kalmaegi_
 
 
 

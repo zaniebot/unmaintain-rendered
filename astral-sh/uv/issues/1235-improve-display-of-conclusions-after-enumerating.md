@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-02T18:02:57Z
 updated_at: 2024-06-27T11:41:56Z
 url: https://github.com/astral-sh/uv/issues/1235
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Improve display of conclusions after enumerating available versions
 
 ---
 
-_Issue opened by @zanieb on 2024-02-02 18:02_
+_@zanieb_
 
 e.g. in
 

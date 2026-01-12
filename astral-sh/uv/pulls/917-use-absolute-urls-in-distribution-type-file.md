@@ -13,14 +13,14 @@ head: konsti/absolute-url-in-file
 created_at: 2024-01-14T17:00:35Z
 updated_at: 2024-01-14T17:15:25Z
 url: https://github.com/astral-sh/uv/pull/917
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:17Z
 ```
 
 # Use absolute urls in `distribution_type::File`
 
 ---
 
-_Pull request opened by @konstin on 2024-01-14 17:00_
+_@konstin_
 
 Previously, the url on file could either be a relative or an absolute url, depending on the index, and we would finalize it lazily. Now we finalize the url when converting `pypi_types::File` to `distribution_types::File`. This change is required to make the hashes on `File` optional (https://github.com/astral-sh/puffin/pull/910), which are currently the only unique field usable for caching.
 

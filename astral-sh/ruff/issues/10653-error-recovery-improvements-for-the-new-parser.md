@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-29T07:58:47Z
 updated_at: 2025-12-01T09:17:54Z
 url: https://github.com/astral-sh/ruff/issues/10653
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # ☂️ Error recovery improvements for the new parser
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-03-29 07:58_
+_@dhruvmanila_
 
 This issue tracks any improvements that could or should be made when working on error recovery for the new parser. This will be _after_ #10036 is merged and when error recovery work is started.
 

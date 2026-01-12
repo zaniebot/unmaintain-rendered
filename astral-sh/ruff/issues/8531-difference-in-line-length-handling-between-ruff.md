@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-06T22:23:26Z
 updated_at: 2023-11-28T06:23:25Z
 url: https://github.com/astral-sh/ruff/issues/8531
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Difference in line-length handling between ruff and black when line ends in #
 
 ---
 
-_Issue opened by @dwyatte on 2023-11-06 22:23_
+_@dwyatte_
 
 Settings: Default ruff 0.1.3
 

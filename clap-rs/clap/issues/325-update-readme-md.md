@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-10-28T13:03:09Z
 updated_at: 2015-10-29T09:28:38Z
 url: https://github.com/clap-rs/clap/issues/325
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Update README.md
 
 ---
 
-_Issue opened by @kbknapp on 2015-10-28 13:03_
+_@kbknapp_
 
 - [x] Add link to Wiki FAQ
 - [x] Add small blurb about how `clap` compares to other arg parsers (but for full details point to FAQ). [As per this comment](https://www.reddit.com/r/rust/comments/3q9eho/whats_everyone_working_on_this_week_442015/cwdvhvm).

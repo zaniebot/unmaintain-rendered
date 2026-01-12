@@ -12,14 +12,14 @@ head: ww/no-npm-devdeps-bump
 created_at: 2025-12-29T16:50:14Z
 updated_at: 2025-12-30T13:50:25Z
 url: https://github.com/astral-sh/ruff/pull/22283
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:45Z
 ```
 
 # renovate: don't bump npm devDependencies every week
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-29 16:50_
+_@woodruffw_
 
 ## Summary
 

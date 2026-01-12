@@ -14,14 +14,14 @@ head: alex/alphabetise-docs
 created_at: 2025-12-19T18:55:46Z
 updated_at: 2025-12-19T19:11:07Z
 url: https://github.com/astral-sh/ruff/pull/22097
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] List rules in alphabetical order in the reference docs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-19 18:55_
+_@AlexWaygood_
 
 ## Summary
 

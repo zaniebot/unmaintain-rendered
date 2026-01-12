@@ -13,14 +13,14 @@ head: konsti/no-unpinned-warnings-for-proxy-packages
 created_at: 2024-11-28T12:28:04Z
 updated_at: 2024-11-28T12:39:40Z
 url: https://github.com/astral-sh/uv/pull/9497
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:50Z
 ```
 
 # Don't emit unpinned warning for proxy packages
 
 ---
 
-_Pull request opened by @konstin on 2024-11-28 12:28_
+_@konstin_
 
 Whenever we see an unpinned proxy package, we know that its base package is also unpinned and emitted a warning.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-18T23:41:24Z
 updated_at: 2025-06-21T17:09:41Z
 url: https://github.com/astral-sh/ruff/issues/18773
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [flake8-raise] RSE102 can delete comments
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-18 23:41_
+_@MeGaGiGaGon_
 
 ### Summary
 

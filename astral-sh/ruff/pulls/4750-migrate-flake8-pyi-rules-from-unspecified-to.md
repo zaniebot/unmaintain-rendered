@@ -12,14 +12,14 @@ head: migrate-flake8py-rules
 created_at: 2023-05-31T09:05:16Z
 updated_at: 2023-06-01T23:01:16Z
 url: https://github.com/astral-sh/ruff/pull/4750
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Migrate flake8_pyi_rules from `unspecified` to `suggested` and `automatic`
 
 ---
 
-_Pull request opened by @sladyn98 on 2023-05-31 09:05_
+_@sladyn98_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

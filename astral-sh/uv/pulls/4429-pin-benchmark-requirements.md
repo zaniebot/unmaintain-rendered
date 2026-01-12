@@ -12,14 +12,14 @@ head: ibraheem/pin-bench
 created_at: 2024-06-20T17:54:33Z
 updated_at: 2024-06-20T18:13:40Z
 url: https://github.com/astral-sh/uv/pull/4429
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:13Z
 ```
 
 # Pin benchmark requirements
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-06-20 17:54_
+_@ibraheemdev_
 
 ## Summary
 

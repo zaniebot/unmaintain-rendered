@@ -12,14 +12,14 @@ head: charlie/future-annotations
 created_at: 2023-07-10T14:43:07Z
 updated_at: 2023-07-10T15:09:12Z
 url: https://github.com/astral-sh/ruff/pull/5653
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Always allow PEP 585 and PEP 604 rewrites in stub files
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-10 14:43_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/5640.
 

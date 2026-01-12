@@ -13,14 +13,14 @@ head: micha/parser-datatest
 created_at: 2025-12-12T08:07:38Z
 updated_at: 2025-12-12T17:21:48Z
 url: https://github.com/astral-sh/ruff/pull/21936
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # Use datatest for parser tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-12 08:07_
+_@MichaReiser_
 
 ## Summary
 

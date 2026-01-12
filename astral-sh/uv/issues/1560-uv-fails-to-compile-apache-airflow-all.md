@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T01:54:22Z
 updated_at: 2025-04-08T09:58:40Z
 url: https://github.com/astral-sh/uv/issues/1560
-synced_at: 2026-01-10T03:41:45Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # uv fails to compile `apache-airflow[all]`  (performance resolution issue)
 
 ---
 
-_Issue opened by @notatallshaw on 2024-02-17 01:54_
+_@notatallshaw_
 
 This is for Linux Python 3.11.6 with uv 0.1.3:
 

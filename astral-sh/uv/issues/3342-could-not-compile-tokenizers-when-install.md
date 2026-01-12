@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-03T09:28:00Z
 updated_at: 2024-05-03T09:30:19Z
 url: https://github.com/astral-sh/uv/issues/3342
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # could not compile `tokenizers` when install transformers==4.30.2 in Python 3.12.1, casting `&T` to `&mut T` is undefined behavior
 
 ---
 
-_Issue opened by @Bewinxed on 2024-05-03 09:28_
+_@Bewinxed_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

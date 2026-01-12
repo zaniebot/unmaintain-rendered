@@ -12,14 +12,14 @@ head: list-order
 created_at: 2025-04-17T06:41:56Z
 updated_at: 2025-11-01T15:52:16Z
 url: https://github.com/astral-sh/uv/pull/12934
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:10:27Z
 ```
 
 # Consistent sorting in PythonInstallationKey by adjusting variant position
 
 ---
 
-_Pull request opened by @j178 on 2025-04-17 06:41_
+_@j178_
 
 ## Summary
 

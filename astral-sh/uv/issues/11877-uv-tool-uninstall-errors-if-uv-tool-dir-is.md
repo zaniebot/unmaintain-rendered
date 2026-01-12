@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-01T03:51:45Z
 updated_at: 2025-03-02T01:12:52Z
 url: https://github.com/astral-sh/uv/issues/11877
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # `uv tool uninstall` errors if `UV_TOOL_DIR` is subdirectory of current directory
 
 ---
 
-_Issue opened by @charliermarsh on 2025-03-01 03:51_
+_@charliermarsh_
 
 ```
 ❯ export UV_TOOL_DIR=foo

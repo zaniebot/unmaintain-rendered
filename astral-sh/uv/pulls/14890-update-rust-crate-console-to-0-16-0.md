@@ -13,14 +13,14 @@ head: console-0.16
 created_at: 2025-07-25T11:16:31Z
 updated_at: 2025-07-25T16:09:42Z
 url: https://github.com/astral-sh/uv/pull/14890
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:28Z
 ```
 
 # Update Rust crate console to 0.16.0
 
 ---
 
-_Pull request opened by @musicinmybrain on 2025-07-25 11:16_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

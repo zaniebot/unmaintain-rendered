@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-15T16:34:40Z
 updated_at: 2024-03-17T21:37:31Z
 url: https://github.com/astral-sh/uv/issues/2476
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # GUI Desktop App for uv
 
 ---
 
-_Issue opened by @ttmc on 2024-03-15 16:34_
+_@ttmc_
 
 At some point, Astral will want revenues to help fund everything.
 

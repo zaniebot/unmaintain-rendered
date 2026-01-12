@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-01T10:01:19Z
 updated_at: 2024-09-02T06:11:14Z
 url: https://github.com/astral-sh/ruff/issues/13190
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # F842 false positive when using local variable in list comprehension
 
 ---
 
-_Issue opened by @billwallis on 2024-09-01 10:01_
+_@billwallis_
 
 > [!NOTE]
 >

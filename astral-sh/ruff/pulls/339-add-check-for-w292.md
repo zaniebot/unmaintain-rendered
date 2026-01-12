@@ -12,14 +12,14 @@ head: W292
 created_at: 2022-10-07T05:26:49Z
 updated_at: 2022-10-08T01:21:34Z
 url: https://github.com/astral-sh/ruff/pull/339
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Add check for W292
 
 ---
 
-_Pull request opened by @cnpryer on 2022-10-07 05:26_
+_@cnpryer_
 
 This adds `W292 No newline at end of file`.
 

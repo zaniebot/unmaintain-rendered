@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-10T20:37:54Z
 updated_at: 2025-06-11T07:18:31Z
 url: https://github.com/astral-sh/ruff/issues/18009
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Missing FAST003 sometimes
 
 ---
 
-_Issue opened by @cdeil on 2025-05-10 20:37_
+_@cdeil_
 
 ### Summary
 

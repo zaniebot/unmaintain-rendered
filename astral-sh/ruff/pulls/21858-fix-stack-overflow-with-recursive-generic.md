@@ -14,14 +14,14 @@ head: cjm/protoso2
 created_at: 2025-12-09T02:45:00Z
 updated_at: 2025-12-09T17:05:20Z
 url: https://github.com/astral-sh/ruff/pull/21858
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # Fix stack overflow with recursive generic protocols (depth limit)
 
 ---
 
-_Pull request opened by @carljm on 2025-12-09 02:45_
+_@carljm_
 
 ## Summary
 

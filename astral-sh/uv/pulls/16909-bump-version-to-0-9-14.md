@@ -12,14 +12,14 @@ head: zsol/jj-nnympxsvroox
 created_at: 2025-12-01T15:58:29Z
 updated_at: 2025-12-01T16:52:17Z
 url: https://github.com/astral-sh/uv/pull/16909
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:31Z
 ```
 
 # Bump version to 0.9.14
 
 ---
 
-_Pull request opened by @zsol on 2025-12-01 15:58_
+_@zsol_
 
 _No description provided._
 

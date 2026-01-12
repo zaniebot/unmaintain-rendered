@@ -12,14 +12,14 @@ head: fix/bandit-password-regex
 created_at: 2023-02-25T03:31:05Z
 updated_at: 2023-02-25T21:36:54Z
 url: https://github.com/astral-sh/ruff/pull/3222
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [bandit]: Do not treat "passed" as "password" for `S105`/`S106`/`S107`
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2023-02-25 03:31_
+_@edgarrmondragon_
 
 Closes #2384
 

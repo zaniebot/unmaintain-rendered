@@ -13,14 +13,14 @@ head: gankra/fixdoc
 created_at: 2025-10-03T13:37:41Z
 updated_at: 2025-10-03T15:38:12Z
 url: https://github.com/astral-sh/uv/pull/16114
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:06Z
 ```
 
 # Fix rendering of `_CONDA_ROOT` in reference
 
 ---
 
-_Pull request opened by @Gankra on 2025-10-03 13:37_
+_@Gankra_
 
 All other references are correct, just slipped through in the actual docs.
 

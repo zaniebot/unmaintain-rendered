@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-25T10:06:10Z
 updated_at: 2024-08-26T13:20:06Z
 url: https://github.com/astral-sh/ruff/issues/13090
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Unclear how to configure the quouting style in Zed extension
 
 ---
 
-_Issue opened by @Yura52 on 2024-08-25 10:06_
+_@Yura52_
 
 (key words: zed, quote-style)
 

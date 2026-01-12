@@ -12,14 +12,14 @@ head: charlie/imports
 created_at: 2023-07-31T15:19:27Z
 updated_at: 2023-07-31T16:01:47Z
 url: https://github.com/astral-sh/ruff/pull/6200
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add empty line after `import` block
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-31 15:19_
+_@charliermarsh_
 
 ## Summary
 

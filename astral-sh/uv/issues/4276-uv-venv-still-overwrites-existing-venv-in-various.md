@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-12T15:35:08Z
 updated_at: 2024-06-26T00:54:52Z
 url: https://github.com/astral-sh/uv/issues/4276
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # `uv venv` still overwrites existing venv in various cases
 
 ---
 
-_Issue opened by @matterhorn103 on 2024-06-12 15:35_
+_@matterhorn103_
 
 I found many related threads (#2548, #1777, #1472) so it's not even really a new issue, but from what I can gather it was meant to no longer be the case that existing venvs get overwritten, while for me they still do.
 

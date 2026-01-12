@@ -14,14 +14,14 @@ head: gankra/sysroot
 created_at: 2025-07-24T13:18:14Z
 updated_at: 2025-08-08T19:52:17Z
 url: https://github.com/astral-sh/ruff/pull/19529
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [ty] Implement stdlib stub mapping
 
 ---
 
-_Pull request opened by @Gankra on 2025-07-24 13:18_
+_@Gankra_
 
 by using essentially the same logic for system site-packages, on the assumption that system site-packages are always a subdir of the stdlib we were looking for.
 

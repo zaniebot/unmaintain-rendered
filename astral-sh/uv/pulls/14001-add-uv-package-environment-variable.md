@@ -11,14 +11,14 @@ head: add-uv-package-envvar
 created_at: 2025-06-12T16:46:38Z
 updated_at: 2025-06-12T17:10:32Z
 url: https://github.com/astral-sh/uv/pull/14001
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:57Z
 ```
 
 # Add `UV_PACKAGE` environment variable
 
 ---
 
-_Pull request opened by @pedro-avalos on 2025-06-12 16:46_
+_@pedro-avalos_
 
 ## Summary
 

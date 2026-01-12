@@ -14,14 +14,14 @@ head: dhruv/raise-stmt
 created_at: 2024-04-04T06:48:42Z
 updated_at: 2024-04-04T10:19:32Z
 url: https://github.com/astral-sh/ruff/pull/10768
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for `raise` statement
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-04 06:48_
+_@dhruvmanila_
 
 ## Summary
 

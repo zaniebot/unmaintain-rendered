@@ -13,14 +13,14 @@ head: charlie/bare-iii
 created_at: 2024-03-20T19:39:08Z
 updated_at: 2024-03-21T03:46:12Z
 url: https://github.com/astral-sh/uv/pull/2571
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:06Z
 ```
 
 # Add support for unnamed local directory requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-20 19:39_
+_@charliermarsh_
 
 ## Summary
 

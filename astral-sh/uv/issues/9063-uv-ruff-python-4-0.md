@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-12T16:55:15Z
 updated_at: 2024-11-13T16:00:35Z
 url: https://github.com/astral-sh/uv/issues/9063
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # uv + ruff = Python 4.0
 
 ---
 
-_Issue opened by @sergree on 2024-11-12 16:55_
+_@sergree_
 
 (Not an issue)
 

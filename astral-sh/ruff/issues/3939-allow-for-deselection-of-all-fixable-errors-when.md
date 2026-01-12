@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-11T20:53:27Z
 updated_at: 2023-04-12T04:04:32Z
 url: https://github.com/astral-sh/ruff/issues/3939
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Allow for deselection of all fixable errors when `check`ing
 
 ---
 
-_Issue opened by @thejcannon on 2023-04-11 20:53_
+_@thejcannon_
 
 :wave: 
 

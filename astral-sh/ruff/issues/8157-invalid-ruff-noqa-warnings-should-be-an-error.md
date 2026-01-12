@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-24T06:09:33Z
 updated_at: 2025-05-09T06:06:33Z
 url: https://github.com/astral-sh/ruff/issues/8157
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # "Invalid `# ruff: noqa`" warnings should be an error
 
 ---
 
-_Issue opened by @DetachHead on 2023-10-24 06:09_
+_@DetachHead_
 
 ```py
 # ruff: noqa: asdfas

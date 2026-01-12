@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-24T07:13:33Z
 updated_at: 2023-05-24T20:31:51Z
 url: https://github.com/astral-sh/ruff/issues/4618
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False-positive ERA001 with `# nuitka-project:` configuration
 
 ---
 
-_Issue opened by @bersbersbers on 2023-05-24 07:13_
+_@bersbersbers_
 
 https://github.com/Nuitka/Nuitka allows in-file configurations:
 

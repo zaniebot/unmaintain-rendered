@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-01T09:23:46Z
 updated_at: 2025-06-01T14:24:14Z
 url: https://github.com/astral-sh/uv/issues/13759
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # Version show bug
 
 ---
 
-_Issue opened by @nhjjgjjg on 2025-06-01 09:23_
+_@nhjjgjjg_
 
 ### Summary
 

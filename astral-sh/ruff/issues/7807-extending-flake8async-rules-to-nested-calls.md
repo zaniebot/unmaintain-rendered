@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-04T10:20:42Z
 updated_at: 2024-10-24T14:34:10Z
 url: https://github.com/astral-sh/ruff/issues/7807
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Extending Flake8Async rules to nested calls?
 
 ---
 
-_Issue opened by @tasercake on 2023-10-04 10:20_
+_@tasercake_
 
 Hi there!
 

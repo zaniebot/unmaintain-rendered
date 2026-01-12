@@ -13,14 +13,14 @@ head: alex/protocol-mros
 created_at: 2025-04-17T18:34:22Z
 updated_at: 2025-04-30T13:11:01Z
 url: https://github.com/astral-sh/ruff/pull/17452
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Fix MRO inference for protocol classes; allow inheritance from subscripted `Generic[]`; forbid subclassing unsubscripted `Generic`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-17 18:34_
+_@AlexWaygood_
 
 ## Summary
 

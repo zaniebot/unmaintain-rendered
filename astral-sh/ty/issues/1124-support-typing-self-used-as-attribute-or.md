@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-03T20:12:58Z
 updated_at: 2026-01-09T23:21:32Z
 url: https://github.com/astral-sh/ty/issues/1124
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # support `typing.Self` used as attribute (or dataclass field) type
 
 ---
 
-_Issue opened by @JoanPuig on 2025-09-03 20:12_
+_@JoanPuig_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: document_Checking_formatter_stability_and_panics
 created_at: 2023-06-28T10:47:43Z
 updated_at: 2023-07-03T09:22:21Z
 url: https://github.com/astral-sh/ruff/pull/5415
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Document Checking formatter stability and panics
 
 ---
 
-_Pull request opened by @konstin on 2023-06-28 10:47_
+_@konstin_
 
 This adds the documentation, but ideally we should add the CI first
 

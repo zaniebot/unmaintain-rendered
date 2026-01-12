@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-03T02:54:47Z
 updated_at: 2024-11-18T18:08:19Z
 url: https://github.com/astral-sh/ruff/issues/8456
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Ruff not working with fixing imports force-single-line=true
 
 ---
 
-_Issue opened by @SanketDG on 2023-11-03 02:54_
+_@SanketDG_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

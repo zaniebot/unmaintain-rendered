@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-12T09:41:31Z
 updated_at: 2024-12-28T16:57:41Z
 url: https://github.com/astral-sh/uv/issues/9052
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # How to handle yanked packages
 
 ---
 
-_Issue opened by @LuchiLucs on 2024-11-12 09:41_
+_@LuchiLucs_
 
 I recently add a new package in my project by means of `uv add packagename` which resulted in the yanked dependecy warning. How should I handle this scenario? Is there a command that "re-resolve the project depedencies" trying to avoid these and other "conflicts"?
 

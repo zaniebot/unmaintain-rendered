@@ -14,14 +14,14 @@ head: fix-FURB129
 created_at: 2025-06-21T21:49:00Z
 updated_at: 2025-06-22T07:51:37Z
 url: https://github.com/astral-sh/ruff/pull/18858
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [`refurb`] Mark `FURB129` autofix as unsafe if there's comments in the `readlines` call
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-21 21:49_
+_@LaBatata101_
 
 
 

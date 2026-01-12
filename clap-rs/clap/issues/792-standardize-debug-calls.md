@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-12-29T00:08:45Z
 updated_at: 2018-08-02T03:29:58Z
 url: https://github.com/clap-rs/clap/issues/792
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Standardize Debug Calls
 
 ---
 
-_Issue opened by @kbknapp on 2016-12-29 00:08_
+_@kbknapp_
 
 I'd like to standardize the debug format calls. Probably inline with the format used by `ripgrep` since I've seen this same format used in several places.
 

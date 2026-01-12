@@ -12,14 +12,14 @@ head: filter-out-sdists
 created_at: 2023-11-10T19:21:26Z
 updated_at: 2023-11-13T16:14:08Z
 url: https://github.com/astral-sh/uv/pull/398
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # Filter out incompatible dists
 
 ---
 
-_Pull request opened by @konstin on 2023-11-10 19:21_
+_@konstin_
 
 Filter out source dists and wheels whose `requires-python` from the simple api is incompatible with the current python version.
 

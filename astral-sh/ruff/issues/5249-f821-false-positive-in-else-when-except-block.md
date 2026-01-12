@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-21T12:46:58Z
 updated_at: 2023-06-21T16:54:00Z
 url: https://github.com/astral-sh/ruff/issues/5249
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F821 false positive in else when except block locals matches try block locals.
 
 ---
 
-_Issue opened by @jaraco on 2023-06-21 12:46_
+_@jaraco_
 
 Sometime between 0.0.265 and 0.0.274, ruff started failing on this case:
 

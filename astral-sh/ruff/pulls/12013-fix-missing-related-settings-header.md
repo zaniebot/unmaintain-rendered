@@ -13,14 +13,14 @@ head: fix-related-settings
 created_at: 2024-06-24T10:21:10Z
 updated_at: 2024-06-24T10:32:45Z
 url: https://github.com/astral-sh/ruff/pull/12013
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Fix missing related settings header
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-24 10:21_
+_@MichaReiser_
 
 ## Summary
 

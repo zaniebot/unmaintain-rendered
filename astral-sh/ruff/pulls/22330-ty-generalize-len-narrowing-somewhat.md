@@ -13,14 +13,14 @@ head: alex/simplify-len-narrow
 created_at: 2026-01-01T16:06:30Z
 updated_at: 2026-01-07T13:57:51Z
 url: https://github.com/astral-sh/ruff/pull/22330
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Generalize `len()` narrowing somewhat
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-01 16:06_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-07T14:47:35Z
 updated_at: 2024-09-10T21:28:55Z
 url: https://github.com/astral-sh/uv/issues/3423
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # The `tokio-tar` dependency seems unmaintained, and it is broken on PowerPC
 
 ---
 
-_Issue opened by @mgorny on 2024-05-07 14:47_
+_@mgorny_
 
 The current version of `uv` depends on the tokio-tar crate:
 

@@ -14,14 +14,14 @@ head: charlie/list
 created_at: 2024-07-08T01:39:33Z
 updated_at: 2024-07-08T01:52:32Z
 url: https://github.com/astral-sh/uv/pull/4884
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:31Z
 ```
 
 # Ensure Pythons are aligned in `uv python list`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-08 01:39_
+_@charliermarsh_
 
 ## Summary
 

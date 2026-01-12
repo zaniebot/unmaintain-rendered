@@ -13,14 +13,14 @@ head: dylan/stabilize-pt031
 created_at: 2025-06-08T19:23:20Z
 updated_at: 2025-06-09T19:09:38Z
 url: https://github.com/astral-sh/ruff/pull/18569
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # Stabilize `pytest-warns-with-multiple-statements` (`PT031`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-08 19:23_
+_@dylwil3_
 
 _No description provided._
 

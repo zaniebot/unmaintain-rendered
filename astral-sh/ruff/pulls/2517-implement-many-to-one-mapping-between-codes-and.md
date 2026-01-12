@@ -12,14 +12,14 @@ head: many-to-one
 created_at: 2023-02-03T05:56:39Z
 updated_at: 2023-02-14T21:16:13Z
 url: https://github.com/astral-sh/ruff/pull/2517
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Implement many-to-one mapping between codes and rules
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-02-03 05:56_
+_@not-my-profile_
 
 Implements #2186.
 

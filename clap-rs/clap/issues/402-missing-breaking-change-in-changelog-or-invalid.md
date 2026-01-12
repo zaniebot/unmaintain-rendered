@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-01-29T23:02:13Z
 updated_at: 2016-01-30T11:12:43Z
 url: https://github.com/clap-rs/clap/issues/402
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Missing breaking change in changelog or invalid feature for clap_app! ?
 
 ---
 
-_Issue opened by @Keats on 2016-01-29 23:02_
+_@Keats_
 
 Posted it on reddit but figured it might be a better place:
 

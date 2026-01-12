@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-05T08:24:38Z
 updated_at: 2025-04-28T08:32:13Z
 url: https://github.com/astral-sh/ruff/issues/17218
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Add support for flake8-datetime-import
 
 ---
 
-_Issue opened by @DmytroLitvinov on 2025-04-05 08:24_
+_@DmytroLitvinov_
 
 ### Summary
 

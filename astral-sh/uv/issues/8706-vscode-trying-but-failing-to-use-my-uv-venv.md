@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-30T18:55:36Z
 updated_at: 2025-12-04T23:06:18Z
 url: https://github.com/astral-sh/uv/issues/8706
-synced_at: 2026-01-10T03:11:32Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # vscode trying but failing to use my uv venv
 
 ---
 
-_Issue opened by @MaxPowerWasTaken on 2024-10-30 18:55_
+_@MaxPowerWasTaken_
 
 I'm pretty sure this is a bug with vscode's integrated terminal, not uv, but after getting no answers from questions posted [at stack overflow](https://stackoverflow.com/questions/79037945/vscode-trying-but-failing-to-use-my-uv-venv) and on [vscode's github](https://github.com/microsoft/vscode-python/issues/24780) a month ago, figured I'd take a flier on seeing if anyone on uv's side has any advice? I'd love to use uv but this is currently my blocker:
 

@@ -11,14 +11,14 @@ head: bojan/perf-metrics
 created_at: 2024-01-11T01:31:02Z
 updated_at: 2024-01-20T02:18:37Z
 url: https://github.com/astral-sh/uv/pull/881
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:15Z
 ```
 
 # Add perf metrics
 
 ---
 
-_Pull request opened by @bojanserafimov on 2024-01-11 01:31_
+_@bojanserafimov_
 
 Add debug log lines:
 ```

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-06T12:25:13Z
 updated_at: 2026-01-06T12:38:17Z
 url: https://github.com/astral-sh/ty/issues/2364
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Typing for return value of type(name, bases, dict) could be improved
 
 ---
 
-_Issue opened by @HenriBlacksmith on 2026-01-06 12:25_
+_@HenriBlacksmith_
 
 ### Summary
 

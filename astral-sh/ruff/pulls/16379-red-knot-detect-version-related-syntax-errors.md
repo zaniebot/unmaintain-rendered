@@ -13,14 +13,14 @@ head: brent/syntax-errors-red-knot
 created_at: 2025-02-25T18:19:19Z
 updated_at: 2025-04-17T19:34:57Z
 url: https://github.com/astral-sh/ruff/pull/16379
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Detect version-related syntax errors
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-25 18:19_
+_@ntBre_
 
 ## Summary
 This PR extends version-related syntax error detection to red-knot. The main changes here are:

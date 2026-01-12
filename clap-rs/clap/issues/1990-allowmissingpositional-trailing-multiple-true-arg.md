@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-06-28T03:34:51Z
 updated_at: 2020-06-30T23:26:48Z
 url: https://github.com/clap-rs/clap/issues/1990
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # AllowMissingPositional + trailing multiple(true) arg imposes weird requirement
 
 ---
 
-_Issue opened by @theastrallyforged on 2020-06-28 03:34_
+_@theastrallyforged_
 
 ### Make sure you completed the following tasks
 

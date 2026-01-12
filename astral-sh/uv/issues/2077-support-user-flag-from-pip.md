@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-29T09:14:28Z
 updated_at: 2025-02-18T23:48:38Z
 url: https://github.com/astral-sh/uv/issues/2077
-synced_at: 2026-01-10T03:50:29Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Support `--user` flag from pip
 
 ---
 
-_Issue opened by @potiuk on 2024-02-29 09:14_
+_@potiuk_
 
 Currently (even in latest uv 0.1.12 that supports --python flag) it's not possible to use `uv` in case `--user` flag of `pip` (or PIP_USER="true" env variable is set). 
 

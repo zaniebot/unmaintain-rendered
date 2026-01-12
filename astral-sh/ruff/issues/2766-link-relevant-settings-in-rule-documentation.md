@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-11T15:33:03Z
 updated_at: 2023-02-12T18:19:13Z
 url: https://github.com/astral-sh/ruff/issues/2766
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Link relevant settings in rule documentation
 
 ---
 
-_Issue opened by @sbrugman on 2023-02-11 15:33_
+_@sbrugman_
 
 The individual rule documentation pages should reflect which settings are available that impact that rule. We could rely on the developers updating the documentation description with new rules and settings, but this is error prone. 
 

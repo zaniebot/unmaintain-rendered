@@ -12,14 +12,14 @@ head: charlie/else
 created_at: 2023-01-22T22:38:32Z
 updated_at: 2023-01-22T22:55:40Z
 url: https://github.com/astral-sh/ruff/pull/2095
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Avoid nested-if violations when outer-if has else clause
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-22 22:38_
+_@charliermarsh_
 
 It looks like we need `do`-`while`-like semantics here with an additional outer check.
 

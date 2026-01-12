@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-21T05:03:33Z
 updated_at: 2024-10-16T12:20:00Z
 url: https://github.com/astral-sh/uv/issues/6299
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # FR: uv init --build-backend
 
 ---
 
-_Issue opened by @henryiii on 2024-08-21 05:03_
+_@henryiii_
 
 I think it would be nice to support several common backends with `uv init`. Current hatchling is the default (which is a great default), but it would be nice to be able to support compiled backends (`maturin`, `scikit-build-core`, and `meson-python`), and maybe a few other popular PEP 621 pure-python backends like `setuptools`, `flit-core`, and `pdm-backend`. This could also have a "none"-like option for packages that don't have a library component at all, and are just an application like a website.
 

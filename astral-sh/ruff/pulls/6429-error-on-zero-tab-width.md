@@ -13,14 +13,14 @@ head: zero-tab-width
 created_at: 2023-08-08T16:07:35Z
 updated_at: 2023-08-15T09:10:42Z
 url: https://github.com/astral-sh/ruff/pull/6429
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Error on zero tab width
 
 ---
 
-_Pull request opened by @tjkuson on 2023-08-08 16:07_
+_@tjkuson_
 
 ## Summary
 

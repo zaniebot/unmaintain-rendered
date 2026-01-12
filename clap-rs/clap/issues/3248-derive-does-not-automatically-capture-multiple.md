@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-03T19:05:35Z
 updated_at: 2022-01-12T00:20:52Z
 url: https://github.com/clap-rs/clap/issues/3248
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Derive does not automatically capture multiple parameters
 
 ---
 
-_Issue opened by @chrisduerr on 2022-01-03 19:05_
+_@chrisduerr_
 
 ### Please complete the following tasks
 

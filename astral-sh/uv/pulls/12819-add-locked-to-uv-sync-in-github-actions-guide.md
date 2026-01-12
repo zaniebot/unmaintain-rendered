@@ -12,14 +12,14 @@ head: patch-2
 created_at: 2025-04-10T18:15:49Z
 updated_at: 2025-04-10T19:57:59Z
 url: https://github.com/astral-sh/uv/pull/12819
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:24Z
 ```
 
 # Add `--locked` to `uv sync` in GitHub Actions guide
 
 ---
 
-_Pull request opened by @johnthagen on 2025-04-10 18:15_
+_@johnthagen_
 
 ## Summary
 

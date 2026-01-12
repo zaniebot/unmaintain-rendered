@@ -14,14 +14,14 @@ head: add-RUF025
 created_at: 2024-01-22T12:27:04Z
 updated_at: 2024-01-24T02:23:42Z
 url: https://github.com/astral-sh/ruff/pull/9613
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`ruff`] Detect unnecessary `dict` comprehensions for iterables (`RUF025`)
 
 ---
 
-_Pull request opened by @mikeleppane on 2024-01-22 12:27_
+_@mikeleppane_
 
 ## Summary
 

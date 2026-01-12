@@ -13,14 +13,14 @@ head: zb/fix-first-steps
 created_at: 2024-09-03T21:23:50Z
 updated_at: 2024-09-03T22:14:40Z
 url: https://github.com/astral-sh/uv/pull/6980
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:37Z
 ```
 
 # Fix outdated references to the help menu documentation in the first steps page
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-03 21:23_
+_@zanieb_
 
 _No description provided._
 

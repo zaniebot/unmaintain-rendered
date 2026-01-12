@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-25T06:18:22Z
 updated_at: 2024-11-01T13:28:09Z
 url: https://github.com/astral-sh/uv/issues/8555
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # `uv tool update --all` fails if a provided `extra-index-url` is not joinable 
 
 ---
 
-_Issue opened by @frague59 on 2024-10-25 06:18_
+_@frague59_
 
 Hi,
 

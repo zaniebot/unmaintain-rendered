@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-08T17:14:35Z
 updated_at: 2025-05-13T03:04:52Z
 url: https://github.com/astral-sh/uv/issues/13350
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # Shebang lines in scripts use absolute paths that break with docker volume mounts
 
 ---
 
-_Issue opened by @luukvhoudt on 2025-05-08 17:14_
+_@luukvhoudt_
 
 When using uv to manage Python dependencies, console scripts installed in `.venv/bin` have shebang lines set to absolute paths, such as `#!/path/to/project/.venv/bin/python`. This works correctly on the host machine. However, when mounting the project directory (including `.venv`) into a Docker container or when moving the project directory, these shebang paths become invalid because they reference to a python binary that doesn't exists in the new context. 
 

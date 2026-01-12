@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-06-18T15:41:05Z
 updated_at: 2021-06-18T17:20:51Z
 url: https://github.com/clap-rs/clap/issues/2551
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # `cargo test` flags should not result in an error for integration tests
 
 ---
 
-_Issue opened by @ErwanDL on 2021-06-18 15:41_
+_@ErwanDL_
 
 ### Please complete the following tasks
 

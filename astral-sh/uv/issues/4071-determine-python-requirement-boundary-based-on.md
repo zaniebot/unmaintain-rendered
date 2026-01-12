@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-05T20:28:58Z
 updated_at: 2024-08-20T18:23:36Z
 url: https://github.com/astral-sh/uv/issues/4071
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Determine Python requirement boundary based on supported `Requires-Python` range
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-05 20:28_
+_@charliermarsh_
 
 Rather than writing the user's `Requires-Python` to the lockfile, we _could_ instead write the minimum bounding `Requires-Python` of all the requirements. Or we could even omit it and use the `Requires-Python` of each package.
 

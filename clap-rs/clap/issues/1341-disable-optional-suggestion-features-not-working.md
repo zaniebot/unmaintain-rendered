@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-09-14T11:35:56Z
 updated_at: 2018-09-16T15:11:52Z
 url: https://github.com/clap-rs/clap/issues/1341
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Disable optional suggestion features not working
 
 ---
 
-_Issue opened by @Folyd on 2018-09-14 11:35_
+_@Folyd_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

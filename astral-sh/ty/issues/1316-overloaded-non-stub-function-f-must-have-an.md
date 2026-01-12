@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-07T09:11:57Z
 updated_at: 2025-10-07T14:41:12Z
 url: https://github.com/astral-sh/ty/issues/1316
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Overloaded non-stub function `f` must have an implementation - issue just on the last overload
 
 ---
 
-_Issue opened by @darioinova on 2025-10-07 09:11_
+_@darioinova_
 
 ### Summary
 

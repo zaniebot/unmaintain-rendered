@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-24T18:09:59Z
 updated_at: 2025-01-25T20:30:32Z
 url: https://github.com/astral-sh/uv/issues/10941
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Understand `--editable=.` also in `requirements.txt`
 
 ---
 
-_Issue opened by @amotl on 2025-01-24 18:09_
+_@amotl_
 
 Hi. Thanks a stack for conceiving `uv`. It is a true game changer in so [many](https://github.com/kennethreitz/responder/issues/578) [scenarios](https://github.com/crate/crate/pull/17277). 💯 
 

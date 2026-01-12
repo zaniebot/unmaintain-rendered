@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-28T16:35:12Z
 updated_at: 2023-07-29T12:02:50Z
 url: https://github.com/astral-sh/ruff/issues/6157
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # In-line ruff: noqa ignores entire file
 
 ---
 
-_Issue opened by @roganartu on 2023-07-28 16:35_
+_@roganartu_
 
 I'm not sure if this is expected behaviour or not. After reading the docs at https://beta.ruff.rs/docs/configuration/#error-suppression I could see it being interpreted both ways so I thought it was worth raising an issue to confirm.
 

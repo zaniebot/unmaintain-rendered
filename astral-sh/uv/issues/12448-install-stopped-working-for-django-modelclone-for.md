@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-24T19:49:05Z
 updated_at: 2025-03-24T20:11:22Z
 url: https://github.com/astral-sh/uv/issues/12448
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # Install stopped working for django-modelclone for all uv versions - Setuptools update?
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2025-03-24 19:49_
+_@inoa-jboliveira_
 
 ### Summary
 

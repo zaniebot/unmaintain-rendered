@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T10:02:17Z
 updated_at: 2024-09-20T18:32:30Z
 url: https://github.com/astral-sh/uv/issues/7577
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # `uv export --only-dev` does not work if used with `--frozen`
 
 ---
 
-_Issue opened by @mikeleppane on 2024-09-20 10:02_
+_@mikeleppane_
 
 If I want to export only development dependencies using `--only-dev`, it does not seem to work with the `frozen` option.
 

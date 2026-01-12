@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-25T19:45:54Z
 updated_at: 2023-05-26T03:04:51Z
 url: https://github.com/astral-sh/ruff/issues/4662
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # F541 not detecting issue when string is split into multiple lines
 
 ---
 
-_Issue opened by @Kirska on 2023-05-25 19:45_
+_@Kirska_
 
 Example code:
 ```

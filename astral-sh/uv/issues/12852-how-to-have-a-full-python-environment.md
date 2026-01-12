@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-13T04:58:02Z
 updated_at: 2025-08-12T21:16:27Z
 url: https://github.com/astral-sh/uv/issues/12852
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # How to have a full python environment?
 
 ---
 
-_Issue opened by @youkaichao on 2025-04-13 04:58_
+_@youkaichao_
 
 ### Question
 

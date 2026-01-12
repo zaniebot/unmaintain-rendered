@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-16T07:46:57Z
 updated_at: 2024-12-17T07:30:39Z
 url: https://github.com/astral-sh/ruff/issues/15012
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Checking file with rule PERF401 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2024-12-16 07:46_
+_@qarmin_
 
 ruff 0.8.3+1619 (d84818234 2024-12-15)
 ```

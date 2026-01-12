@@ -13,14 +13,14 @@ head: fix-intersection-callable-display
 created_at: 2025-03-22T12:23:38Z
 updated_at: 2025-03-24T23:04:08Z
 url: https://github.com/astral-sh/ruff/pull/16914
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Disambiguate display for intersection types
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-03-22 12:23_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

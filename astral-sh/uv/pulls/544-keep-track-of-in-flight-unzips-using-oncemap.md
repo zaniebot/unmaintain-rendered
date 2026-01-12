@@ -12,14 +12,14 @@ head: track-in-flight-unzips
 created_at: 2023-12-04T14:28:43Z
 updated_at: 2023-12-08T20:18:13Z
 url: https://github.com/astral-sh/uv/pull/544
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:01Z
 ```
 
 # Keep track of in flight unzips using `OnceMap`
 
 ---
 
-_Pull request opened by @konstin on 2023-12-04 14:28_
+_@konstin_
 
 I saw warnings when we were e.g. unzipping wheel and setuptools in two tasks at the same time. We now keep track of in flight unzips.
 

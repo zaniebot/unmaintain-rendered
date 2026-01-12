@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-05T18:45:30Z
 updated_at: 2025-11-18T16:10:22Z
 url: https://github.com/astral-sh/ty/issues/204
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # consider fixing spans related to relative imports
 
 ---
 
-_Issue opened by @BurntSushi on 2025-02-05 18:45_
+_@BurntSushi_
 
 ### Description
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-24T00:22:29Z
 updated_at: 2025-03-15T01:02:21Z
 url: https://github.com/astral-sh/uv/issues/11729
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # This environment is externally managed (again)
 
 ---
 
-_Issue opened by @cornpo on 2025-02-24 00:22_
+_@cornpo_
 
 ### Summary
 

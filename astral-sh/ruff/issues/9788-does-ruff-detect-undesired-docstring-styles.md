@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-02T15:21:03Z
 updated_at: 2024-02-02T17:46:05Z
 url: https://github.com/astral-sh/ruff/issues/9788
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Does ruff detect undesired docstring styles?
 
 ---
 
-_Issue opened by @nbro10 on 2024-02-02 15:21_
+_@nbro10_
 
 `flake8-docstring`does not actually detect this and this tool might eventually die. See https://github.com/PyCQA/flake8-docstrings/issues/60
 

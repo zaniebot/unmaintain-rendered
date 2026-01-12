@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-09T17:23:29Z
 updated_at: 2025-05-21T16:16:26Z
 url: https://github.com/astral-sh/ty/issues/299
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Don't say that a `yield` statement in an annotation scope in a function is "not in a function"
 
 ---
 
-_Issue opened by @ntBre on 2025-05-09 17:23_
+_@ntBre_
 
 I think there is still something here. With 
 ```py

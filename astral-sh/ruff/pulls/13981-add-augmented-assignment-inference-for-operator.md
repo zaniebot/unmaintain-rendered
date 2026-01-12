@@ -13,14 +13,14 @@ head: charlie/aug
 created_at: 2024-10-29T17:16:03Z
 updated_at: 2024-10-30T08:13:36Z
 url: https://github.com/astral-sh/ruff/pull/13981
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Add augmented assignment inference for `-=` operator
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-29 17:16_
+_@charliermarsh_
 
 ## Summary
 

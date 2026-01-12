@@ -12,14 +12,14 @@ head: identifier-error-ranges
 created_at: 2022-12-31T15:21:57Z
 updated_at: 2023-01-01T07:56:56Z
 url: https://github.com/astral-sh/ruff/pull/1513
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Use more precise error ranges for names
 
 ---
 
-_Pull request opened by @harupy on 2022-12-31 15:21_
+_@harupy_
 
 Improves error ranges for the following rules:
 

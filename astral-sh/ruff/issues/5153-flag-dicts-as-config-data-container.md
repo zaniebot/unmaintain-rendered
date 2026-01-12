@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-16T22:50:16Z
 updated_at: 2023-09-21T01:17:13Z
 url: https://github.com/astral-sh/ruff/issues/5153
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Flag dicts as config/data container
 
 ---
 
-_Issue opened by @jankatins on 2023-06-16 22:50_
+_@jankatins_
 
 In a lot of cases, using dicts as "config" or "data" is an anti-pattern, as it doesn't allow for type inference and it pushes fallback handling to the user and not the declarer of the data structure. With config/data dicts I mean pattern like this:
 

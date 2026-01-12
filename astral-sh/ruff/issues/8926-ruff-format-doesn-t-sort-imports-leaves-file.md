@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-30T15:36:05Z
 updated_at: 2025-07-13T19:36:47Z
 url: https://github.com/astral-sh/ruff/issues/8926
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `ruff format` doesn't sort imports, leaves file unchanged
 
 ---
 
-_Issue opened by @alexei on 2023-11-30 15:36_
+_@alexei_
 
 I'm looking into using ruff (0.1.6 on Python 3.12) for formatting and... it doesn't appear to be doing anything, at least in terms of replicating `isort` behaviour.
 

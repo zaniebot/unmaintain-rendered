@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-29T14:36:58Z
 updated_at: 2024-05-18T03:14:21Z
 url: https://github.com/astral-sh/uv/issues/3311
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Feature request: Control parallelism of downloads, sdist builds, and installs
 
 ---
 
-_Issue opened by @notatallshaw on 2024-04-29 14:36_
+_@notatallshaw_
 
 Not significantly high priority but I would like to be able to control how many parallel downloads, sdist builds, and installs uv runs, three main reasons:
 

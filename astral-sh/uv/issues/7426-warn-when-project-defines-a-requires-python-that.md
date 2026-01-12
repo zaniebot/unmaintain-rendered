@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-16T13:38:58Z
 updated_at: 2025-06-27T20:48:43Z
 url: https://github.com/astral-sh/uv/issues/7426
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Warn when project defines a `requires-python` that pins to a `.0` patch version
 
 ---
 
-_Issue opened by @zanieb on 2024-09-16 13:38_
+_@zanieb_
 
 As described in https://github.com/astral-sh/uv/issues/7352#issuecomment-2352928006
 

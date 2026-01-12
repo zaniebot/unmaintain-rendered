@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-22T17:59:36Z
 updated_at: 2024-07-23T16:02:41Z
 url: https://github.com/astral-sh/uv/issues/5299
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `uv init` creates project with warning about `Requires-Python`
 
 ---
 
-_Issue opened by @zanieb on 2024-07-22 17:59_
+_@zanieb_
 
 ```
 ❯ mkdir example

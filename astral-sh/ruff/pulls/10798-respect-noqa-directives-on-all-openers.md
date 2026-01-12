@@ -13,14 +13,14 @@ head: charlie/nqa
 created_at: 2024-04-05T23:40:59Z
 updated_at: 2024-04-06T15:00:45Z
 url: https://github.com/astral-sh/ruff/pull/10798
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Respect `# noqa` directives on `__all__` openers
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-05 23:40_
+_@charliermarsh_
 
 ## Summary
 

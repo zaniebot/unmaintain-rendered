@@ -12,14 +12,14 @@ head: zb/trailing-slash-pop
 created_at: 2025-06-29T15:53:25Z
 updated_at: 2025-06-29T17:25:12Z
 url: https://github.com/astral-sh/uv/pull/14349
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:10Z
 ```
 
 # Consistently normalize trailing slashes on URLs with no path segments
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-29 15:53_
+_@zanieb_
 
 Alternative to https://github.com/astral-sh/uv/pull/14348
 

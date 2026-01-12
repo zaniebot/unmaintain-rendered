@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-21T08:32:45Z
 updated_at: 2023-05-10T20:45:31Z
 url: https://github.com/astral-sh/ruff/issues/3642
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Add a step by step diff of the auto-fix
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-03-21 08:32_
+_@JonathanPlasse_
 
 To help debug auto-fix problems and add auto-fixes, it could be useful to be able to have a step-by-step diff for each application of a fix.
 

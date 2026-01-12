@@ -13,14 +13,14 @@ head: dependabot/cargo/cachedir-0.3.1
 created_at: 2023-12-23T05:41:37Z
 updated_at: 2023-12-23T12:35:12Z
 url: https://github.com/astral-sh/ruff/pull/9254
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Bump cachedir from 0.3.0 to 0.3.1
 
 ---
 
-_Pull request opened by @dependabot on 2023-12-23 05:41_
+_@dependabot_
 
 Bumps [cachedir](https://github.com/jstasiak/cachedir) from 0.3.0 to 0.3.1.
 <details>

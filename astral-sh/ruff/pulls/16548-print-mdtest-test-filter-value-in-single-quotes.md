@@ -13,14 +13,14 @@ head: mdtest-escape-backticks
 created_at: 2025-03-07T07:35:41Z
 updated_at: 2025-03-08T15:37:24Z
 url: https://github.com/astral-sh/ruff/pull/16548
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # print MDTEST_TEST_FILTER value in single-quotes (and escaped)
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2025-03-07 07:35_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

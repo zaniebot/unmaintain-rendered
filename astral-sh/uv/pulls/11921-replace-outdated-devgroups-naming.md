@@ -12,14 +12,14 @@ head: jtfm/rename-dep-groups
 created_at: 2025-03-03T10:12:29Z
 updated_at: 2025-03-03T15:39:46Z
 url: https://github.com/astral-sh/uv/pull/11921
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:04Z
 ```
 
 # Replace outdated DevGroups* naming
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-03-03 10:12_
+_@jtfmumm_
 
 At certain points in the code, dependency groups are represented by `DevGroups*` naming, probably as a historical artifact. This PR updates the naming.
 

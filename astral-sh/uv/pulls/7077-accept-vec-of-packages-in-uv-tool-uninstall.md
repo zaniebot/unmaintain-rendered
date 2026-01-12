@@ -13,14 +13,14 @@ head: uv-tool-uninstall-update
 created_at: 2024-09-05T11:02:26Z
 updated_at: 2024-09-06T08:03:54Z
 url: https://github.com/astral-sh/uv/pull/7077
-synced_at: 2026-01-10T12:53:39Z
+synced_at: 2026-01-12T16:07:40Z
 ```
 
 # Accept vec of packages in uv tool uninstall
 
 ---
 
-_Pull request opened by @blueraft on 2024-09-05 11:02_
+_@blueraft_
 
 ## Summary
 

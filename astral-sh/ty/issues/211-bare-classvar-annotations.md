@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T10:30:01Z
 updated_at: 2025-07-07T13:04:29Z
 url: https://github.com/astral-sh/ty/issues/211
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Bare `ClassVar` annotations
 
 ---
 
-_Issue opened by @sharkdp on 2025-01-27 10:30_
+_@sharkdp_
 
 ### Description
 

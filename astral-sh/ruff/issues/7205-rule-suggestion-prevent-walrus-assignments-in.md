@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-06T17:08:19Z
 updated_at: 2023-10-09T19:35:13Z
 url: https://github.com/astral-sh/ruff/issues/7205
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rule suggestion: Prevent walrus assignments in assert statements
 
 ---
 
-_Issue opened by @awaelchli on 2023-09-06 17:08_
+_@awaelchli_
 
 If you want to make your software package run with the `python -O` optimization, you might want to ensure that the code does not contain a walrus assignment in `assert` statements:
 

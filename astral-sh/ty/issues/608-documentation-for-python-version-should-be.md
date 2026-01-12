@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-08T01:43:22Z
 updated_at: 2025-06-09T13:32:45Z
 url: https://github.com/astral-sh/ty/issues/608
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # documentation for `python-version` should be updated to mention that it defaults to the minimum `project.requires-python` value from `pyproject.toml`
 
 ---
 
-_Issue opened by @DetachHead on 2025-06-08 01:43_
+_@DetachHead_
 
 [the docs for `python-version`](https://github.com/astral-sh/ty/blob/main/docs/reference/configuration.md#python-version) say that it defaults to 3.13, but i noticed that it actually defaults to python 3.9 in my project. i realized this is because i have the following in my `pyproject.toml`:
 

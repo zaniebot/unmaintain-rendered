@@ -13,14 +13,14 @@ head: dangdennis/offline-prevents-update
 created_at: 2025-05-26T17:49:33Z
 updated_at: 2025-05-28T02:51:46Z
 url: https://github.com/astral-sh/uv/pull/13663
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:47Z
 ```
 
 # Exit early on `self update` if global `--offline` is set
 
 ---
 
-_Pull request opened by @dangdennis on 2025-05-26 17:49_
+_@dangdennis_
 
 ## Summary
 Resolves https://github.com/astral-sh/uv/issues/13580.

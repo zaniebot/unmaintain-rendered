@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-13T12:16:13Z
 updated_at: 2025-11-13T23:23:43Z
 url: https://github.com/astral-sh/ruff/issues/21425
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `per-file-ignores` single-level glob patterns match files in subdirectories
 
 ---
 
-_Issue opened by @ponko2 on 2025-11-13 12:16_
+_@ponko2_
 
 ### Summary
 

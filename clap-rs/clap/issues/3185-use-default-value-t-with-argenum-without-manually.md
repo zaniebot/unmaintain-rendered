@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-16T10:12:56Z
 updated_at: 2022-02-13T02:46:57Z
 url: https://github.com/clap-rs/clap/issues/3185
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # use `default_value_t` with `ArgEnum` without manually implementing `Display`
 
 ---
 
-_Issue opened by @danieleades on 2021-12-16 10:12_
+_@danieleades_
 
 ### Please complete the following tasks
 

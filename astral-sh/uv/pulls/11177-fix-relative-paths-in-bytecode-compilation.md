@@ -13,14 +13,14 @@ head: konsti/compilation-panic
 created_at: 2025-02-03T09:30:34Z
 updated_at: 2025-02-03T10:20:32Z
 url: https://github.com/astral-sh/uv/pull/11177
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:43Z
 ```
 
 # Fix relative paths in bytecode compilation
 
 ---
 
-_Pull request opened by @konstin on 2025-02-03 09:30_
+_@konstin_
 
 Bytecode compilation would panic with a relative path such as `--target target`.
 

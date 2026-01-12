@@ -13,14 +13,14 @@ head: move-concurrency-to-EnvironmentOptions
 created_at: 2025-10-10T08:35:18Z
 updated_at: 2025-10-13T01:22:35Z
 url: https://github.com/astral-sh/uv/pull/16223
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:10Z
 ```
 
 # Move parsing concurrency env variable to EnvironmentOptions
 
 ---
 
-_Pull request opened by @andrey-berenda on 2025-10-10 08:35_
+_@andrey-berenda_
 
 ## Summary
 - Move  parsing `UV_CONCURRENT_INSTALLS`, `UV_CONCURRENT_BUILDS` and `UV_CONCURRENT_DOWNLOADS` to `EnvironmentOptions`

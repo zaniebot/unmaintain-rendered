@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-10T10:34:31Z
 updated_at: 2026-01-04T20:10:58Z
 url: https://github.com/astral-sh/ty/issues/1836
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Reconsider imports as type declarations
 
 ---
 
-_Issue opened by @zsol on 2025-12-10 10:34_
+_@zsol_
 
 ### Summary
 

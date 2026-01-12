@@ -12,14 +12,14 @@ head: ag/experimental-auto-import
 created_at: 2025-09-03T13:25:52Z
 updated_at: 2025-09-03T13:58:07Z
 url: https://github.com/astral-sh/ty/pull/1122
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add documentation for the experimental `autoImport` setting
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-09-03 13:25_
+_@BurntSushi_
 
 Ref https://github.com/astral-sh/ruff/pull/20207#pullrequestreview-3179515493
 

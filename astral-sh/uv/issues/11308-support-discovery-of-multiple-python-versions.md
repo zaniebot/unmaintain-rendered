@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-07T07:05:18Z
 updated_at: 2025-03-06T19:26:08Z
 url: https://github.com/astral-sh/uv/issues/11308
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # Support discovery of multiple python versions that are not on path
 
 ---
 
-_Issue opened by @mneumei on 2025-02-07 07:05_
+_@mneumei_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-27T00:02:48Z
 updated_at: 2025-10-27T13:54:26Z
 url: https://github.com/astral-sh/ruff/issues/21082
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Raw strings break the FLY002 fix
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-27 00:02_
+_@dscorbett_
 
 ### Summary
 

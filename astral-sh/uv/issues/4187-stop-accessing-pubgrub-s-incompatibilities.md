@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-10T06:34:18Z
 updated_at: 2024-06-10T12:54:00Z
 url: https://github.com/astral-sh/uv/issues/4187
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Stop accessing pubgrub's incompatibilities directly
 
 ---
 
-_Issue opened by @konstin on 2024-06-10 06:34_
+_@konstin_
 
 When computing the dependency edges, we currently use pubgrub's incompatibilities database:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T14:29:16Z
 updated_at: 2025-12-18T14:29:16Z
 url: https://github.com/astral-sh/ty/issues/2073
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Split more pedantic Liskov checks into separate error codes (and have them disabled by default)
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-18 14:29_
+_@AlexWaygood_
 
 Our rule enforcing the Liskov Substitution Principle on method overrides (currently called `invalid-method-override`) is currently much stricter than any other type checker's equivalent rule. We should split the more pedantic parts of this rule out into separate error codes, so that it is easier for users switching from other type checkers to incrementally adopt ty: they will then be able to suppress the specific error codes that cover the parts pyright/mypy did not complain about on a per-module basis.
 

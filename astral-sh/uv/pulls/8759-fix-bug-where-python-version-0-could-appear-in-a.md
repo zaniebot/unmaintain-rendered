@@ -14,14 +14,14 @@ head: ag/python-version-zero
 created_at: 2024-11-01T18:28:57Z
 updated_at: 2024-11-03T15:37:29Z
 url: https://github.com/astral-sh/uv/pull/8759
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:29Z
 ```
 
 # fix bug where `python_version < '0'` could appear in a final resolution
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-11-01 18:28_
+_@BurntSushi_
 
 This PR fixes a bug where it was possible for dependencies to be
 included in a final resolution with markers that always evaluate to

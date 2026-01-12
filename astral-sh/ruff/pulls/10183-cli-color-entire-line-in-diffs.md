@@ -13,14 +13,14 @@ head: full-line-color
 created_at: 2024-03-01T12:18:47Z
 updated_at: 2024-03-01T12:53:45Z
 url: https://github.com/astral-sh/ruff/pull/10183
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # CLI: Color entire line in Diffs
 
 ---
 
-_Pull request opened by @senadev42 on 2024-03-01 12:18_
+_@senadev42_
 
 ## Summary
 

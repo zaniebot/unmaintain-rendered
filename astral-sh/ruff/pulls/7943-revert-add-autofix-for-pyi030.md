@@ -12,14 +12,14 @@ head: revert/7880
 created_at: 2023-10-13T13:54:23Z
 updated_at: 2023-10-13T14:24:49Z
 url: https://github.com/astral-sh/ruff/pull/7943
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Revert "add autofix for `PYI030`"
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-13 13:54_
+_@zanieb_
 
 This reverts commit #7880 (d8c0360fc7cda384821c0aab125f9757a230181e) which does not perform the correct fix per https://github.com/astral-sh/ruff/pull/7934
 

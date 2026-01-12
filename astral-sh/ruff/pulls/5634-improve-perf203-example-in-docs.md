@@ -13,14 +13,14 @@ head: charlie/perf-docs
 created_at: 2023-07-10T02:15:07Z
 updated_at: 2023-07-10T02:49:14Z
 url: https://github.com/astral-sh/ruff/pull/5634
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Improve PERF203 example in docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-10 02:15_
+_@charliermarsh_
 
 Closes #5624.
 

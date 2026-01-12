@@ -13,14 +13,14 @@ head: dhruv/air001
 created_at: 2024-11-27T10:20:20Z
 updated_at: 2024-12-04T17:23:47Z
 url: https://github.com/astral-sh/ruff/pull/14631
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Check `AIR001` from builtin or providers `operators` module
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-27 10:20_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: stonier/relatve_path_walking
 created_at: 2025-04-15T00:04:46Z
 updated_at: 2025-05-23T16:28:14Z
 url: https://github.com/astral-sh/uv/pull/12888
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:26Z
 ```
 
 # Bugfix relative path glob walking for cache-keys
 
 ---
 
-_Pull request opened by @stonier on 2025-04-15 00:04_
+_@stonier_
 
 ## Description
 

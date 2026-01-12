@@ -13,14 +13,14 @@ head: charlie/lex
 created_at: 2023-08-23T04:23:43Z
 updated_at: 2023-08-23T05:03:46Z
 url: https://github.com/astral-sh/ruff/pull/6803
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Remove lexing for colon-matching use cases
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-23 04:23_
+_@charliermarsh_
 
 It's much simpler to just search ahead for the first colon.
 

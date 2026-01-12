@@ -13,14 +13,14 @@ head: b027-autofix
 created_at: 2023-05-02T06:20:19Z
 updated_at: 2023-05-07T04:59:30Z
 url: https://github.com/astral-sh/ruff/pull/4178
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Update B027 to support autofixing
 
 ---
 
-_Pull request opened by @aacunningham on 2023-05-02 06:20_
+_@aacunningham_
 
 Adding the ability to autofix B027 errors from bugbear by adding an `@abstractmethod` decorator above the offending function.
 

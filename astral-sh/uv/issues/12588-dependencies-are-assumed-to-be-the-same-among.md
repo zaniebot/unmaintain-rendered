@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-31T15:38:43Z
 updated_at: 2025-04-01T12:56:04Z
 url: https://github.com/astral-sh/uv/issues/12588
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # dependencies are assumed to be the same among wheels
 
 ---
 
-_Issue opened by @njzjz on 2025-03-31 15:38_
+_@njzjz_
 
 ### Summary
 

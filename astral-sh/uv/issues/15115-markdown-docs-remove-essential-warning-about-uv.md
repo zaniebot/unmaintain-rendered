@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-06T18:50:26Z
 updated_at: 2025-08-07T13:57:00Z
 url: https://github.com/astral-sh/uv/issues/15115
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # Markdown docs remove essential warning about `UV_LINK_MODE=symlink` from extended description
 
 ---
 
-_Issue opened by @konstin on 2025-08-06 18:50_
+_@konstin_
 
 `UV_LINK_MODE=symlink` has a warning attach that it's discouraged due to the risk of breaking venvs when clearing the cache. The warning is missing in the docs, where we show the description without the warning. The warning is present in `uv.schema.json`. This has hit a user: https://github.com/astral-sh/uv/issues/15104#issuecomment-3160179933. We should ensure that we don't drop extended docstrings from the docs, and that this warning is present.
 

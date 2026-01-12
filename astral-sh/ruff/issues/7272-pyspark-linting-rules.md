@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-11T16:32:18Z
 updated_at: 2025-07-15T07:26:19Z
 url: https://github.com/astral-sh/ruff/issues/7272
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Pyspark Linting Rules
 
 ---
 
-_Issue opened by @sbrugman on 2023-09-11 16:32_
+_@sbrugman_
 
 Apache Spark is widely used in the python ecosystem for distributed computing. As user of spark I would like for ruff to lint problematic behaviours. The automation that ruff offers is especially useful in projects with various levels of software engineering skills, e.g. where people has more of a statistics background.
 

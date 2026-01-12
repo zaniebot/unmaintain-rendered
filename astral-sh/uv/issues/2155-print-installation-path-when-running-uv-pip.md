@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-04T14:05:44Z
 updated_at: 2024-10-02T14:38:32Z
 url: https://github.com/astral-sh/uv/issues/2155
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Print installation path when running `uv pip install`
 
 ---
 
-_Issue opened by @danielhollas on 2024-03-04 14:05_
+_@danielhollas_
 
 Hey :wave: 
 

@@ -12,14 +12,14 @@ head: patch-2
 created_at: 2025-01-18T08:00:37Z
 updated_at: 2025-01-18T15:01:36Z
 url: https://github.com/astral-sh/ruff/pull/15568
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Run linux-cross GitHub Action on an ARM processor
 
 ---
 
-_Pull request opened by @cclauss on 2025-01-18 08:00_
+_@cclauss_
 
 Speed up a GitHub Action by running it on an ARM processor. https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
 > WARNING: The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested

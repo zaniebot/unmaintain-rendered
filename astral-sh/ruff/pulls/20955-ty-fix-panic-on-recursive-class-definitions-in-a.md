@@ -14,14 +14,14 @@ head: alex/pandas-panic-2
 created_at: 2025-10-18T12:53:39Z
 updated_at: 2025-10-18T13:02:56Z
 url: https://github.com/astral-sh/ruff/pull/20955
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # [ty] Fix panic on recursive class definitions in a stub that use constrained type variables
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-18 12:53_
+_@AlexWaygood_
 
 ## Summary
 

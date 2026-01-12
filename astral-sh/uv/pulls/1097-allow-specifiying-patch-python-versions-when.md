@@ -13,14 +13,14 @@ head: zb/venv-patch
 created_at: 2024-01-25T16:09:14Z
 updated_at: 2024-01-25T20:39:19Z
 url: https://github.com/astral-sh/uv/pull/1097
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:25Z
 ```
 
 # Allow specifiying patch Python versions when creating venv on unix
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-25 16:09_
+_@zanieb_
 
 Cherry-picked from #1070 where we need virtual environments with a specific patch version.
 

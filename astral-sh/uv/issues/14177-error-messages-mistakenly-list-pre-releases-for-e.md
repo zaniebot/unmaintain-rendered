@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-21T02:40:20Z
 updated_at: 2025-06-27T18:06:20Z
 url: https://github.com/astral-sh/uv/issues/14177
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # Error messages mistakenly list pre-releases for (e.g.) `==2.4.*` specifiers
 
 ---
 
-_Issue opened by @charliermarsh on 2025-06-21 02:40_
+_@charliermarsh_
 
 Apologies for the screenshot, but notice that `==2.4.*` gets expanded to `>=2.4.dev0,<2.5.dev0`, which we then interpreter as a pre-release in the hint. We should "contract" these in error messages, I think.
 

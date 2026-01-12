@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-20T06:43:01Z
 updated_at: 2025-09-23T02:03:18Z
 url: https://github.com/astral-sh/ty/issues/1213
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # infer type of parameter from decorator
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-20 06:43_
+_@KotlinIsland_
 
 ### Summary
 

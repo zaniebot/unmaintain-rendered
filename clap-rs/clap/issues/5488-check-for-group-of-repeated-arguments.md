@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-08T07:46:44Z
 updated_at: 2024-06-10T21:36:24Z
 url: https://github.com/clap-rs/clap/issues/5488
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Check for group of repeated arguments
 
 ---
 
-_Issue opened by @Velnbur on 2024-05-08 07:46_
+_@Velnbur_
 
 ### Please complete the following tasks
 

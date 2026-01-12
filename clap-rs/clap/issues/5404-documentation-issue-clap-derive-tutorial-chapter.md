@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-20T20:19:37Z
 updated_at: 2024-03-20T21:15:32Z
 url: https://github.com/clap-rs/clap/issues/5404
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Documentation issue: clap::_derive::_tutorial::chapter_* links to clap::_tutorial instead of clap::_derive::_tutorial
 
 ---
 
-_Issue opened by @lolbinarycat on 2024-03-20 20:19_
+_@lolbinarycat_
 
 ### Please complete the following tasks
 

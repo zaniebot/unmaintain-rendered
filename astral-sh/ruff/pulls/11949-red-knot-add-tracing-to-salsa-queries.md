@@ -13,14 +13,14 @@ head: salsa-tracing
 created_at: 2024-06-20T11:22:45Z
 updated_at: 2024-06-20T11:39:22Z
 url: https://github.com/astral-sh/ruff/pull/11949
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # [red-knot] Add tracing to Salsa queries
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-20 11:22_
+_@MichaReiser_
 
 ## Summary
 

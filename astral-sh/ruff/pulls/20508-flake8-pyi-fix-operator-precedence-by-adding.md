@@ -14,14 +14,14 @@ head: fix-20265
 created_at: 2025-09-22T05:22:12Z
 updated_at: 2025-10-15T15:14:21Z
 url: https://github.com/astral-sh/ruff/pull/20508
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [`flake8-pyi`] Fix operator precedence by adding parentheses when needed (`PYI061`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-22 05:22_
+_@danparizher_
 
 ## Summary
 

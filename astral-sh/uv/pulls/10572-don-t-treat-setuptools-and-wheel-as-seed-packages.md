@@ -13,14 +13,14 @@ head: charlie/seed
 created_at: 2025-01-13T17:17:01Z
 updated_at: 2025-01-13T17:43:12Z
 url: https://github.com/astral-sh/uv/pull/10572
-synced_at: 2026-01-10T11:44:58Z
+synced_at: 2026-01-12T16:09:22Z
 ```
 
 # Don't treat `setuptools` and `wheel` as seed packages in uv sync on Python 3.12
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-13 17:17_
+_@charliermarsh_
 
 ## Summary
 

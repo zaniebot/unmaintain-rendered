@@ -13,14 +13,14 @@ head: konsti/remove-into-into
 created_at: 2024-05-02T09:54:35Z
 updated_at: 2024-05-02T10:26:43Z
 url: https://github.com/astral-sh/uv/pull/3337
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:35Z
 ```
 
 # Remove `Into::into`
 
 ---
 
-_Pull request opened by @konstin on 2024-05-02 09:54_
+_@konstin_
 
 Motivated by https://github.com/astral-sh/uv/pull/3263#discussion_r1585896159
 

@@ -12,14 +12,14 @@ head: charlie/upgrade-pubgrub
 created_at: 2023-11-07T01:55:41Z
 updated_at: 2023-11-07T02:00:58Z
 url: https://github.com/astral-sh/uv/pull/349
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:53Z
 ```
 
 # Upgrade PubGrub
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-07 01:55_
+_@charliermarsh_
 
 Upgrades to `fe309ffb63b2f3ce9b35eb7746b2350cd704515e`, with our changes layered on top.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-09T13:02:13Z
 updated_at: 2024-01-05T16:57:34Z
 url: https://github.com/astral-sh/uv/issues/373
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Manual PEP 440 version parser
 
 ---
 
-_Issue opened by @konstin on 2023-11-09 13:02_
+_@konstin_
 
 Benchmarking the top 1k pypi packages serially, we spend 8% our in parsing version numbers with regex captures, solving the top 8k in parallel it's 14%. We should instead move to a hand-written PEP 440 parser, which would also much improve the error messages.
 

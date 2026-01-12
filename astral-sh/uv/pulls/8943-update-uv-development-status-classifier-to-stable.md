@@ -13,14 +13,14 @@ head: zb/uv-stable
 created_at: 2024-11-08T14:38:04Z
 updated_at: 2024-11-09T02:21:03Z
 url: https://github.com/astral-sh/uv/pull/8943
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:34Z
 ```
 
 # Update uv development status classifier to "Stable" on PyPI
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-08 14:38_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/8941
 

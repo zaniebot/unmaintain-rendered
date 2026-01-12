@@ -13,14 +13,14 @@ head: fix-py-find
 created_at: 2024-10-10T12:17:20Z
 updated_at: 2024-12-11T02:50:06Z
 url: https://github.com/astral-sh/uv/pull/8086
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:09Z
 ```
 
 # Improve handling of invalid virtual environments during interpreter discovery
 
 ---
 
-_Pull request opened by @potoo0 on 2024-10-10 12:17_
+_@potoo0_
 
 ## Summary
 

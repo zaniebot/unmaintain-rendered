@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-01-26T15:37:14Z
 updated_at: 2016-01-27T20:31:10Z
 url: https://github.com/clap-rs/clap/issues/393
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Update Readme for v2 release
 
 ---
 
-_Issue opened by @kbknapp on 2016-01-26 15:37_
+_@kbknapp_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-14T15:49:11Z
 updated_at: 2023-05-21T13:27:48Z
 url: https://github.com/astral-sh/ruff/issues/3974
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Autofix error] E712 Comparison to `True` should be `cond is True` inside an f-string
 
 ---
 
-_Issue opened by @sdenier on 2023-04-14 15:49_
+_@sdenier_
 
 Actually this code deals with Pandas series, so the real solution for us is to ignore the error as per https://github.com/charliermarsh/ruff/issues/1852 - so maybe this is too much of an edge case ?
 

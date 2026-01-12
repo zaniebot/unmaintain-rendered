@@ -12,14 +12,14 @@ head: charlie/args
 created_at: 2024-04-25T03:16:47Z
 updated_at: 2025-03-03T02:46:50Z
 url: https://github.com/astral-sh/uv/pull/3259
-synced_at: 2026-01-10T11:10:33Z
+synced_at: 2026-01-12T16:05:32Z
 ```
 
 # Allow all arguments to be repeated in the CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-25 03:16_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: dhruv/ipython-magics-rename
 created_at: 2023-08-07T16:10:53Z
 updated_at: 2023-08-09T13:45:06Z
 url: https://github.com/astral-sh/ruff/pull/6395
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Rename `Magic*` to `IpyEscape*`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-08-07 16:10_
+_@dhruvmanila_
 
 ## Summary
 

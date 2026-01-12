@@ -13,14 +13,14 @@ head: renovate/snapbox-0.x-lockfile
 created_at: 2025-10-20T01:16:19Z
 updated_at: 2025-10-20T06:32:49Z
 url: https://github.com/astral-sh/ruff/pull/20983
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # Update Rust crate snapbox to v0.6.22
 
 ---
 
-_Pull request opened by @renovate on 2025-10-20 01:16_
+_@renovate_
 
 This PR contains the following updates:
 

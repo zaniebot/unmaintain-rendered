@@ -13,14 +13,14 @@ head: micha/extra-logging-directory-renamed
 created_at: 2024-11-22T16:36:59Z
 updated_at: 2024-11-22T16:44:07Z
 url: https://github.com/astral-sh/ruff/pull/14533
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Enable logging for directory-renamed test
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-22 16:36_
+_@MichaReiser_
 
 ## Summary
 The test started to flake but I'm unable to reproduce the flake locally. Enable logging to understand if:

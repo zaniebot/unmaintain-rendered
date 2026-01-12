@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-16T22:42:43Z
 updated_at: 2023-12-17T00:35:23Z
 url: https://github.com/astral-sh/ruff/issues/9165
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Ruff: Format failed ()
 
 ---
 
-_Issue opened by @james-berkheimer on 2023-12-16 22:42_
+_@james-berkheimer_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

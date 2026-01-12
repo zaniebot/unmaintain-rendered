@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-03T17:09:46Z
 updated_at: 2026-01-07T19:40:20Z
 url: https://github.com/astral-sh/uv/issues/14446
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Name of entity from `importlib.metadata.files` inconsistent between win and linux platforms
 
 ---
 
-_Issue opened by @anmyachev on 2025-07-03 17:09_
+_@anmyachev_
 
 This issue was originally posted in https://github.com/intel/intel-xpu-backend-for-triton/issues/4465
 

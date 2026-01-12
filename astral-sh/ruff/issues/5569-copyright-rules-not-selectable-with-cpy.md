@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-06T18:28:10Z
 updated_at: 2023-07-10T01:06:05Z
 url: https://github.com/astral-sh/ruff/issues/5569
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Copyright rules not selectable with "CPY"
 
 ---
 
-_Issue opened by @Hnasar on 2023-07-06 18:28_
+_@Hnasar_
 
 Unlike with other rules which I can enable with the linter prefix, the CPY rules seems to require the specific error code. 
 

@@ -12,14 +12,14 @@ head: pyupgrade-remove-coding-comments
 created_at: 2022-11-06T10:05:59Z
 updated_at: 2022-12-27T05:42:50Z
 url: https://github.com/astral-sh/ruff/pull/618
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Remove utf-8 encoding declaration
 
 ---
 
-_Pull request opened by @squiddy on 2022-11-06 10:05_
+_@squiddy_
 
 PEP3120 made the default source encoding UTF-8.
 

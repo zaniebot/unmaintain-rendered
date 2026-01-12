@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-03T08:19:03Z
 updated_at: 2025-09-15T14:02:09Z
 url: https://github.com/astral-sh/ruff/issues/17166
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Multiple paths for ignoring same rules in lint.per-file-ignores
 
 ---
 
-_Issue opened by @VladimirPodolian on 2025-04-03 08:19_
+_@VladimirPodolian_
 
 ### Summary
 

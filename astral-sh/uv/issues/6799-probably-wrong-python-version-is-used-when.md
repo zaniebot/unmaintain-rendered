@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-29T09:29:56Z
 updated_at: 2024-09-09T10:27:10Z
 url: https://github.com/astral-sh/uv/issues/6799
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Probably wrong python version is used when creating venv
 
 ---
 
-_Issue opened by @jfcherng on 2024-08-29 09:29_
+_@jfcherng_
 
 On a Windows machine, I have a user-installed Python 3.12 under `C:\Users\jfcherng\AppData\Local\Programs\Python` and uv-installed Python 3.8 under `C:\Users\jfcherng\AppData\Roaming\uv\data\python`. They can be found as the following
 

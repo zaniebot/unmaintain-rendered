@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-17T06:37:12Z
 updated_at: 2025-02-17T17:06:47Z
 url: https://github.com/astral-sh/ruff/issues/16205
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # ruff analyze graph - empty results
 
 ---
 
-_Issue opened by @vinnybod on 2025-02-17 06:37_
+_@vinnybod_
 
 ### Description
 

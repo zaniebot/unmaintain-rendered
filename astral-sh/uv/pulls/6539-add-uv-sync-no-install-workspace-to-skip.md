@@ -13,14 +13,14 @@ head: zb/no-install-workspace
 created_at: 2024-08-23T19:08:51Z
 updated_at: 2024-08-23T20:39:34Z
 url: https://github.com/astral-sh/uv/pull/6539
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:24Z
 ```
 
 # Add `uv sync --no-install-workspace` to skip installation of all workspace members
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-23 19:08_
+_@zanieb_
 
 Extends #6538
 See #4028

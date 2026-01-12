@@ -12,14 +12,14 @@ head: charlie/summary
 created_at: 2022-12-05T16:57:58Z
 updated_at: 2022-12-05T21:12:13Z
 url: https://github.com/astral-sh/ruff/pull/1067
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Tweak summary message to include total error counts
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-05 16:57_
+_@charliermarsh_
 
 We now print, e.g., `Found 3 error(s) (3 fixed, 0 remaining).`.
 

@@ -14,14 +14,14 @@ head: dcreager/breakest-the-cycle
 created_at: 2025-12-10T21:26:02Z
 updated_at: 2025-12-11T20:01:51Z
 url: https://github.com/astral-sh/ruff/pull/21906
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] Defer all parameter and return type annotations
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-10 21:26_
+_@dcreager_
 
 As described in astral-sh/ty#1729, we previously had a salsa cycle when inferring the signature of many function definitions.
 

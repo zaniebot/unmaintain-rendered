@@ -13,14 +13,14 @@ head: format-pyi-in-docs
 created_at: 2024-08-26T21:57:07Z
 updated_at: 2024-08-28T12:29:09Z
 url: https://github.com/astral-sh/ruff/pull/13116
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Format `PYI` examples in docs as `.pyi`-file snippets
 
 ---
 
-_Pull request opened by @calumy on 2024-08-26 21:57_
+_@calumy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-26T15:04:49Z
 updated_at: 2024-09-26T15:09:28Z
 url: https://github.com/astral-sh/uv/issues/7711
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Feature request: Generate `.gitignore` with uv init
 
 ---
 
-_Issue opened by @DataEnggNerd on 2024-09-26 15:04_
+_@DataEnggNerd_
 
 It would be great if a standard .gitignore file also gets generated with `uv init`
 

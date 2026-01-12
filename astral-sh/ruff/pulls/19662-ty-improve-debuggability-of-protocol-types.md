@@ -14,14 +14,14 @@ head: alex/proto-interface
 created_at: 2025-07-31T13:03:12Z
 updated_at: 2025-08-01T14:16:14Z
 url: https://github.com/astral-sh/ruff/pull/19662
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [ty] Improve debuggability of protocol types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-31 13:03_
+_@AlexWaygood_
 
 ## Summary
 

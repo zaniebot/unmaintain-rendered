@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-05T17:58:42Z
 updated_at: 2024-06-27T11:21:59Z
 url: https://github.com/astral-sh/uv/issues/798
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Split scenario test cases by source file
 
 ---
 
-_Issue opened by @zanieb on 2024-01-05 17:58_
+_@zanieb_
 
 This would complicate generation a bit, but as the number of scenarios grows it might make sense to split them into separate files as they are done in packse.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-19T10:56:10Z
 updated_at: 2024-11-20T00:38:03Z
 url: https://github.com/astral-sh/uv/issues/7541
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Transitive dev dependencies of workspace packages are not installed
 
 ---
 
-_Issue opened by @lukasbindreiter on 2024-09-19 10:56_
+_@lukasbindreiter_
 
 I just ran into an issue in our CI pipeline (after upgrading to `uv 0.4.10`), which I believe was caused by this change:
 https://github.com/astral-sh/uv/pull/7318

@@ -13,14 +13,14 @@ head: renovate/tokio-util-0.x-lockfile
 created_at: 2025-04-28T00:18:03Z
 updated_at: 2025-04-28T00:37:39Z
 url: https://github.com/astral-sh/uv/pull/13147
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:33Z
 ```
 
 # Update Rust crate tokio-util to v0.7.15
 
 ---
 
-_Pull request opened by @renovate on 2025-04-28 00:18_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-24T00:15:43Z
 updated_at: 2024-01-25T18:29:34Z
 url: https://github.com/astral-sh/uv/issues/1073
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Avoid unzipping local wheels if they're already unzipped
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-24 00:15_
+_@charliermarsh_
 
 This is mostly a `--refresh` behavior.
 

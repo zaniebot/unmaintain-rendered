@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T21:18:23Z
 updated_at: 2024-06-26T01:04:15Z
 url: https://github.com/astral-sh/uv/issues/1350
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # `uv pip compile` requires explicit `-o requirements.txt` unlike `pip-compile`
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-02-15 21:18_
+_@ThiefMaster_
 
 Not only does this require some repetition on the commandline (specifying both filenames), but it also makes it easy to get the wrong behavior when using e.g. shell redirection instead of `-o` because it won't take the existing requirements file into account.
 

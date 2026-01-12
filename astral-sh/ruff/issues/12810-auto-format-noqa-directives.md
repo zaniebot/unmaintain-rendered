@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-11T23:17:27Z
 updated_at: 2024-08-17T14:35:21Z
 url: https://github.com/astral-sh/ruff/issues/12810
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Auto-format `# noqa` directives
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-11 23:17_
+_@charliermarsh_
 
 It'd be nice to have a lint rule to enforce consistent formatting of `# noqa` directives (e.g., `# noqa: F401, F841`), along with a fix to auto-format them.
 

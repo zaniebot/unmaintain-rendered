@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-06T01:06:30Z
 updated_at: 2025-05-06T13:06:43Z
 url: https://github.com/astral-sh/ty/issues/54
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Fix `--version` output
 
 ---
 
-_Issue opened by @zanieb on 2025-05-06 01:06_
+_@zanieb_
 
 It appears to at least omit pre-release components, but may be otherwise wrong.
 

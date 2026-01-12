@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-06T10:35:42Z
 updated_at: 2024-09-25T15:03:10Z
 url: https://github.com/astral-sh/ruff/issues/13266
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # UP028 for multiple loops does not work
 
 ---
 
-_Issue opened by @spaceby on 2024-09-06 10:35_
+_@spaceby_
 
 UP028 does not work when there are multiple yield loops in a function
 

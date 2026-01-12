@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-09T21:51:43Z
 updated_at: 2022-09-21T13:49:19Z
 url: https://github.com/astral-sh/ruff/issues/136
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # pre-commit hook does not consider configuration in pyproject.toml.
 
 ---
 
-_Issue opened by @amirnaeimi on 2022-09-09 21:51_
+_@amirnaeimi_
 
 I have tested pre-commit hook and it works fine but when I tried to implement a new configuration in ```pyproject.toml```, I realized it does not consider the configuration. 
 ```

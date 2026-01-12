@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-01T09:47:58Z
 updated_at: 2025-12-04T09:58:35Z
 url: https://github.com/astral-sh/uv/issues/16906
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # `invalid Zip archive: Duplicate filename` on duplicated `module-name`
 
 ---
 
-_Issue opened by @Yamakaky on 2025-12-01 09:47_
+_@Yamakaky_
 
 ### Summary
 

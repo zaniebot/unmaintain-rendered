@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-06T08:05:00Z
 updated_at: 2026-01-06T16:12:21Z
 url: https://github.com/astral-sh/ty/issues/2355
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Wrong invalid-argument-type for list comprehension
 
 ---
 
-_Issue opened by @wardVD on 2026-01-06 08:05_
+_@wardVD_
 
 ### Summary
 

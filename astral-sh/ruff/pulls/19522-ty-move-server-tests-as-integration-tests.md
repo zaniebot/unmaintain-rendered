@@ -15,14 +15,14 @@ head: dhruv/move-server-tests-as-integration
 created_at: 2025-07-24T06:44:11Z
 updated_at: 2025-07-24T16:27:47Z
 url: https://github.com/astral-sh/ruff/pull/19522
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [ty] Move server tests as integration tests
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-24 06:44_
+_@dhruvmanila_
 
 ## Summary
 

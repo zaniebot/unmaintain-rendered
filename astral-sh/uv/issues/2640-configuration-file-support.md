@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-24T20:31:33Z
 updated_at: 2024-03-24T20:41:14Z
 url: https://github.com/astral-sh/uv/issues/2640
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Configuration file Support
 
 ---
 
-_Issue opened by @RianKoja on 2024-03-24 20:31_
+_@RianKoja_
 
 https://github.com/astral-sh/uv/blob/a7b251f65e6d24855185c49bcbf64fc8bdfd7861/crates/uv/src/compat/mod.rs#L161
 

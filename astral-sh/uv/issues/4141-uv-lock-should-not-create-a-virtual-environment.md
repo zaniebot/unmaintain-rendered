@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-07T19:12:31Z
 updated_at: 2024-06-07T21:56:46Z
 url: https://github.com/astral-sh/uv/issues/4141
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # `uv lock` should not create a virtual environment
 
 ---
 
-_Issue opened by @zanieb on 2024-06-07 19:12_
+_@zanieb_
 
 `uv lock` creates a `.venv` directory in my working directory. I do not expect it to need to create a user-facing virtual environment to generate a lock file.
 

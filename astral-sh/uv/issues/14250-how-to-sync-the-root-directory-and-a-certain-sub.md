@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-25T03:01:06Z
 updated_at: 2025-06-26T01:34:15Z
 url: https://github.com/astral-sh/uv/issues/14250
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # How to sync the root directory and a certain sub-project dependencies
 
 ---
 
-_Issue opened by @vvanglro on 2025-06-25 03:01_
+_@vvanglro_
 
 ### Question
 

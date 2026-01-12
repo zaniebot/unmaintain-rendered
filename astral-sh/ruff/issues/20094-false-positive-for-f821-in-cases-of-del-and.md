@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-26T08:24:24Z
 updated_at: 2025-08-26T12:42:55Z
 url: https://github.com/astral-sh/ruff/issues/20094
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # False positive for F821 in cases of `del` and function scopes
 
 ---
 
-_Issue opened by @KennethEnevoldsen on 2025-08-26 08:24_
+_@KennethEnevoldsen_
 
 ### Summary
 

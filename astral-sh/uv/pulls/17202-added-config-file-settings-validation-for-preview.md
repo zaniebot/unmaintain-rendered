@@ -11,14 +11,14 @@ head: jwh/config-file-validation
 created_at: 2025-12-21T02:02:38Z
 updated_at: 2025-12-23T21:32:20Z
 url: https://github.com/astral-sh/uv/pull/17202
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # Added config file settings validation for preview features
 
 ---
 
-_Pull request opened by @j-helland on 2025-12-21 02:02_
+_@j-helland_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

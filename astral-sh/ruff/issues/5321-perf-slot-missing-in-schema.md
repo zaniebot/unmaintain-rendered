@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-23T03:07:49Z
 updated_at: 2023-06-23T18:44:06Z
 url: https://github.com/astral-sh/ruff/issues/5321
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # PERF + SLOT missing in schema
 
 ---
 
-_Issue opened by @janosh on 2023-06-23 03:07_
+_@janosh_
 
 `PERF` and `SLOT` are not recognized by `ruff`'s VS Code extension.
 

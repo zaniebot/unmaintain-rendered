@@ -12,14 +12,14 @@ head: zb/site-packages
 created_at: 2025-08-08T15:11:09Z
 updated_at: 2025-08-08T18:49:35Z
 url: https://github.com/astral-sh/uv/pull/15168
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:36Z
 ```
 
 # Retrieve all `sitepackages` from interpreters
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-08 15:11_
+_@zanieb_
 
 Needed for https://github.com/astral-sh/uv/pull/15121#issuecomment-3165515935
 

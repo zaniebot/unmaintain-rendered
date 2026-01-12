@@ -13,14 +13,14 @@ head: color-help
 created_at: 2024-08-20T22:08:03Z
 updated_at: 2024-09-09T15:58:40Z
 url: https://github.com/astral-sh/uv/pull/6280
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:18Z
 ```
 
 # Add colors to the CLI help menu
 
 ---
 
-_Pull request opened by @blueraft on 2024-08-20 22:08_
+_@blueraft_
 
 ## Summary
 

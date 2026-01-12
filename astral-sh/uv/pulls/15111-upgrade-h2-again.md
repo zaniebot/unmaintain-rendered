@@ -12,14 +12,14 @@ head: zb/h2-up
 created_at: 2025-08-06T16:57:08Z
 updated_at: 2025-08-07T13:53:13Z
 url: https://github.com/astral-sh/uv/pull/15111
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:35Z
 ```
 
 # Upgrade h2 again
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-06 16:57_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/15056
 

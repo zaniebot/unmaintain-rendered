@@ -13,14 +13,14 @@ head: konsti/fix-data-move
 created_at: 2025-02-02T16:08:48Z
 updated_at: 2025-02-12T18:00:44Z
 url: https://github.com/astral-sh/uv/pull/11167
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:42Z
 ```
 
 #  Fix cross-drive script installation
 
 ---
 
-_Pull request opened by @konstin on 2025-02-02 16:08_
+_@konstin_
 
 Fallback to copy if renaming a script doesn't work, similar to the site packages installation.
 

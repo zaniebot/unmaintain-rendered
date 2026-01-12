@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-12T10:16:11Z
 updated_at: 2025-07-18T13:03:38Z
 url: https://github.com/astral-sh/ruff/issues/18641
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Clarify the precedence/inheritance of config settings in documentation
 
 ---
 
-_Issue opened by @pakal on 2025-06-12 10:16_
+_@pakal_
 
 ### Summary
 

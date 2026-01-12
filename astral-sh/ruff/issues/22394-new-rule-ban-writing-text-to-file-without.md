@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-05T08:09:23Z
 updated_at: 2026-01-08T17:44:04Z
 url: https://github.com/astral-sh/ruff/issues/22394
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # new rule - ban writing text to file without explicit `newline` argument
 
 ---
 
-_Issue opened by @DetachHead on 2026-01-05 08:09_
+_@DetachHead_
 
 ### Summary
 

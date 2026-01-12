@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-30T09:11:21Z
 updated_at: 2023-04-12T15:31:07Z
 url: https://github.com/astral-sh/ruff/issues/1469
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Use class/function name as range for checks about names/classes/functions
 
 ---
 
-_Issue opened by @not-my-profile on 2022-12-30 09:11_
+_@not-my-profile_
 
 To my surprise many ruff checks highlight the whole class / function, for example D101 (Missing docstring in public class) and D103 (Missing docstring in public function) are currently displayed by the Ruff VS Code extension as follows:
 

@@ -13,14 +13,14 @@ head: dhruv/red-knot-fuzzer
 created_at: 2024-11-29T13:32:20Z
 updated_at: 2024-12-04T09:08:13Z
 url: https://github.com/astral-sh/ruff/pull/14678
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] Add fuzzer to catch panics for invalid syntax
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-29 13:32_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: david/port-deferred-annotations-tests
 created_at: 2025-01-23T10:10:34Z
 updated_at: 2025-01-23T11:45:06Z
 url: https://github.com/astral-sh/ruff/pull/15686
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Port 'deferred annotations' unit tests to Markdown
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-23 10:10_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-17T11:51:37Z
 updated_at: 2023-11-24T15:32:48Z
 url: https://github.com/astral-sh/ruff/issues/8739
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Q003 autofix for triple nested quotes is not valid python code
 
 ---
 
-_Issue opened by @dragon-dxw on 2023-11-17 11:51_
+_@dragon-dxw_
 
 Version: 0.1.5
 input:

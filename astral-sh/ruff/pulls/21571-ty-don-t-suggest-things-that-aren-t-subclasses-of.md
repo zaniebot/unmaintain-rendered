@@ -14,14 +14,14 @@ head: ag/filter-non-exceptions-after-raise
 created_at: 2025-11-21T19:36:27Z
 updated_at: 2025-11-24T17:55:32Z
 url: https://github.com/astral-sh/ruff/pull/21571
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Don't suggest things that aren't subclasses of `BaseException` after `raise`
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-11-21 19:36_
+_@BurntSushi_
 
 This only applies to items that have a type associated with them. That
 is, things that are already in scope. For items that don't have a type

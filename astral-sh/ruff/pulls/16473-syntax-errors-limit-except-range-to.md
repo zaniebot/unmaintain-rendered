@@ -14,14 +14,14 @@ head: brent/except-star-range
 created_at: 2025-03-03T14:39:46Z
 updated_at: 2025-03-04T16:55:31Z
 url: https://github.com/astral-sh/ruff/pull/16473
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [syntax-errors] Limit `except*` range to `*`
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-03 14:39_
+_@ntBre_
 
 Summary
 --

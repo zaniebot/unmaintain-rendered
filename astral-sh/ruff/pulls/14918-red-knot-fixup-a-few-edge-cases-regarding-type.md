@@ -13,14 +13,14 @@ head: alex/type-t-edge-cases
 created_at: 2024-12-11T14:21:26Z
 updated_at: 2024-12-12T16:53:05Z
 url: https://github.com/astral-sh/ruff/pull/14918
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Fixup a few edge cases regarding `type[]`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-11 14:21_
+_@AlexWaygood_
 
 ## Summary
 

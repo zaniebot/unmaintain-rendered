@@ -12,14 +12,14 @@ head: charlie/pd
 created_at: 2023-01-01T22:05:48Z
 updated_at: 2023-01-01T22:05:58Z
 url: https://github.com/astral-sh/ruff/pull/1538
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Avoid PD false positives on some non-DataFrame expressions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-01 22:05_
+_@charliermarsh_
 
 Closes #1468.
 

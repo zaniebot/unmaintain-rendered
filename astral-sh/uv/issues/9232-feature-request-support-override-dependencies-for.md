@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-19T16:04:00Z
 updated_at: 2024-11-19T16:08:20Z
 url: https://github.com/astral-sh/uv/issues/9232
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # feature request: support `override-dependencies` for inline scripts
 
 ---
 
-_Issue opened by @Fogapod on 2024-11-19 16:04_
+_@Fogapod_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

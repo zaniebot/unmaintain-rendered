@@ -12,14 +12,14 @@ head: release-attestations
 created_at: 2025-02-09T18:10:57Z
 updated_at: 2025-10-30T00:43:11Z
 url: https://github.com/astral-sh/uv/pull/11357
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:09:48Z
 ```
 
 # Add uv release artifact attestations
 
 ---
 
-_Pull request opened by @samypr100 on 2025-02-09 18:10_
+_@samypr100_
 
 ## Summary
 

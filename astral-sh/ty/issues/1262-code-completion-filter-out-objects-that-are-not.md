@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-26T11:53:00Z
 updated_at: 2025-11-24T17:55:31Z
 url: https://github.com/astral-sh/ty/issues/1262
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Code completion: filter out objects that are not `BaseException` subclasses after `raise` keyword
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-09-26 11:53_
+_@AlexWaygood_
 
 Quite a common mistake in Python is to accidentally write `raise NotImplemented` rather than `raise NotImplementedError`. The former is not a `BaseException` subclass, so it'll do the wrong thing -- but we currently include it in autocomplete suggestions before `NotImplementedError`
 

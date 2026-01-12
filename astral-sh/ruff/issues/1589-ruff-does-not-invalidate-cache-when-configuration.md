@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-03T08:27:59Z
 updated_at: 2023-01-03T12:13:24Z
 url: https://github.com/astral-sh/ruff/issues/1589
-synced_at: 2026-01-10T12:05:31Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Ruff does not invalidate cache when configuration changes (PL001)
 
 ---
 
-_Issue opened by @notypecheck on 2023-01-03 08:27_
+_@notypecheck_
 
 I ran into weird behavior with ruff cache and PT001 check, but other checks potentially could be affected too.
 

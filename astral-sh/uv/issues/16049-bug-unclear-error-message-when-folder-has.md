@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-28T10:56:01Z
 updated_at: 2025-11-08T19:06:43Z
 url: https://github.com/astral-sh/uv/issues/16049
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:22Z
 ```
 
 # Bug: unclear error message when folder has different capitalisation vs project name
 
 ---
 
-_Issue opened by @MosheSteinberg on 2025-09-28 10:56_
+_@MosheSteinberg_
 
 ### Summary
 

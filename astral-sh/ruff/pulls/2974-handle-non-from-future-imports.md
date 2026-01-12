@@ -12,14 +12,14 @@ head: charlie/future
 created_at: 2023-02-16T22:48:23Z
 updated_at: 2023-02-16T22:56:05Z
 url: https://github.com/astral-sh/ruff/pull/2974
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Handle non-from __future__ imports
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-16 22:48_
+_@charliermarsh_
 
 These are uncommon, but currently panic.
 

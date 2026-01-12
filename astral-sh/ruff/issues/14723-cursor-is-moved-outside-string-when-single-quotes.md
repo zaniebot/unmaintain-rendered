@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-02T01:21:55Z
 updated_at: 2024-12-02T05:31:10Z
 url: https://github.com/astral-sh/ruff/issues/14723
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # cursor is moved outside string when single quotes are formatted to double quotes on save
 
 ---
 
-_Issue opened by @DetachHead on 2024-12-02 01:21_
+_@DetachHead_
 
 when the cursor is on the last character of a single-quoted string, it gets moved outside of the string when formatting.
 # before formatting

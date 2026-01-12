@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T15:08:49Z
 updated_at: 2025-03-18T15:15:37Z
 url: https://github.com/astral-sh/uv/issues/12286
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # Confused about status of linux-aarch64-musl
 
 ---
 
-_Issue opened by @nbelakovski on 2025-03-18 15:08_
+_@nbelakovski_
 
 ### Question
 

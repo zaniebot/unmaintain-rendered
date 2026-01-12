@@ -13,14 +13,14 @@ head: charlie/dists
 created_at: 2024-05-15T00:36:33Z
 updated_at: 2024-05-15T00:42:28Z
 url: https://github.com/astral-sh/uv/pull/3598
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:44Z
 ```
 
 # Rename `pinned_package` to `dist`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-15 00:36_
+_@charliermarsh_
 
 _No description provided._
 

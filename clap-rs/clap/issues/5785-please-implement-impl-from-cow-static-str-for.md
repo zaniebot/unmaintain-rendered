@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-22T10:46:36Z
 updated_at: 2025-10-21T11:02:46Z
 url: https://github.com/clap-rs/clap/issues/5785
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Please implement impl From<Cow<'static, str>> for StyledStr
 
 ---
 
-_Issue opened by @teythoon on 2024-10-22 10:46_
+_@teythoon_
 
 ### Please complete the following tasks
 

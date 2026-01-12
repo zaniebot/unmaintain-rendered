@@ -13,14 +13,14 @@ head: ibraheem/marker-python-versions
 created_at: 2024-08-15T19:06:03Z
 updated_at: 2024-08-16T02:07:33Z
 url: https://github.com/astral-sh/uv/pull/6126
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:14Z
 ```
 
 # Normalize `python_version` markers to `python_full_version`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-08-15 19:06_
+_@ibraheemdev_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/map
 created_at: 2023-07-05T23:35:14Z
 updated_at: 2023-07-06T00:08:37Z
 url: https://github.com/astral-sh/ruff/pull/5548
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Replace stat mapping with match statement
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-05 23:35_
+_@charliermarsh_
 
 _No description provided._
 

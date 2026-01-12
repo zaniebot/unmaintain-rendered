@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T02:42:22Z
 updated_at: 2024-12-25T08:15:28Z
 url: https://github.com/astral-sh/ruff/issues/14979
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Option to enable Pylint-compatible rules?
 
 ---
 
-_Issue opened by @pwschaedler on 2024-12-15 02:42_
+_@pwschaedler_
 
 I currently use Pylint for my projects and would love to switch to Ruff. I understand [not all Pylint rules are implemented yet](https://github.com/astral-sh/ruff/issues/970), but my question is if it's possible to select all rules that are already implemented? Running `ruff check --select PL` will select the rules that are specific to Pylint, but it doesn't include all the other rules that are already covered by another tool (e.g. [N805](https://docs.astral.sh/ruff/rules/invalid-first-argument-name-for-method/) which matches Pylint's [E0213](https://pylint.readthedocs.io/en/latest/user_guide/messages/error/no-self-argument.html)).
 

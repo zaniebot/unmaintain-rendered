@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-01T16:57:10Z
 updated_at: 2025-06-05T04:16:41Z
 url: https://github.com/astral-sh/uv/issues/6913
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Add `build-constraints` support to `uv lock` etc. via `pyproject.toml`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-01 16:57_
+_@charliermarsh_
 
 Can follow the way we manage `constraint-dependencies.`
 

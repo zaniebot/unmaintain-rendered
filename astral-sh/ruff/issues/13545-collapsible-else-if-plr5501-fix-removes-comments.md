@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-28T09:59:23Z
 updated_at: 2024-10-03T15:30:58Z
 url: https://github.com/astral-sh/ruff/issues/13545
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # collapsible-else-if (PLR5501) --fix removes comments
 
 ---
 
-_Issue opened by @sylvestre on 2024-09-28 09:59_
+_@sylvestre_
 
 Trying to reformat firefox code with ruff https://phabricator.services.mozilla.com/D223851#inline-1243679
 we noticed a bug with collapsible-else-if - https://docs.astral.sh/ruff/rules/collapsible-else-if/#collapsible-else-if-plr5501

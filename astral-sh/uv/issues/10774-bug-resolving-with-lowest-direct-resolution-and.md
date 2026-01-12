@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-20T09:34:27Z
 updated_at: 2025-01-20T14:26:23Z
 url: https://github.com/astral-sh/uv/issues/10774
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:21Z
 ```
 
 # BUG (?): resolving with lowest-direct resolution and different pins for project vs. dev dependencies
 
 ---
 
-_Issue opened by @znicholls on 2025-01-20 09:34_
+_@znicholls_
 
 I thought this was related to #10755, but now I don't think it is.
 

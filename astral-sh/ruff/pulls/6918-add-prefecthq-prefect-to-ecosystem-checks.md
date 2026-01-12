@@ -12,14 +12,14 @@ head: ecosystem/prefect
 created_at: 2023-08-27T15:27:50Z
 updated_at: 2023-08-27T16:07:51Z
 url: https://github.com/astral-sh/ruff/pull/6918
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add `PrefectHQ/prefect` to ecosystem checks
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-27 15:27_
+_@zanieb_
 
 At least I will generally be familiar with the patterns over there
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-09T18:55:57Z
 updated_at: 2025-11-20T17:45:05Z
 url: https://github.com/astral-sh/ruff/issues/15383
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Support `@typing.overload` and overloaded callable types
 
 ---
 
-_Issue opened by @carljm on 2025-01-09 18:55_
+_@carljm_
 
 This is a tracking issue to add support for `@typing.overload` callables.
 

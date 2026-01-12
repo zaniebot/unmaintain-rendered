@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-07T18:55:30Z
 updated_at: 2025-02-21T03:42:49Z
 url: https://github.com/astral-sh/uv/issues/4861
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Support `--exclude-newer` for resolved VCS revisions
 
 ---
 
-_Issue opened by @edgarrmondragon on 2024-07-07 18:55_
+_@edgarrmondragon_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-10T11:52:14Z
 updated_at: 2025-01-12T02:30:47Z
 url: https://github.com/astral-sh/uv/issues/10467
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # git-tag cache-keys not working if there are tags containing slash
 
 ---
 
-_Issue opened by @snizovtsev on 2025-01-10 11:52_
+_@snizovtsev_
 
 I use slashes in git tags to separate workspace member from version, like:
 

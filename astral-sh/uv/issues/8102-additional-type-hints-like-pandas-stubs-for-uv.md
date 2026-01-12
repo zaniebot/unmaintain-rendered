@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-10T17:24:38Z
 updated_at: 2024-10-11T00:41:24Z
 url: https://github.com/astral-sh/uv/issues/8102
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Additional Type Hints like `pandas-stubs` for `uv run mypy`
 
 ---
 
-_Issue opened by @anzhi0708 on 2024-10-10 17:24_
+_@anzhi0708_
 
 Let's take `pandas-stubs` as an example. If I don't install it, `mypy` will indicate that some pandas types are unrecognized. 
 

@@ -14,14 +14,14 @@ head: zb/docs-help
 created_at: 2024-08-13T15:53:08Z
 updated_at: 2024-08-13T16:09:34Z
 url: https://github.com/astral-sh/uv/pull/6057
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:10Z
 ```
 
 # Move help documentation into dedicated page
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-13 15:53_
+_@zanieb_
 
 _No description provided._
 

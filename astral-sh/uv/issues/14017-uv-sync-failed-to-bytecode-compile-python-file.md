@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T09:38:21Z
 updated_at: 2025-08-03T08:43:54Z
 url: https://github.com/astral-sh/uv/issues/14017
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # uv sync failed to bytecode-compile Python file because it failed to create temporary script file
 
 ---
 
-_Issue opened by @m-ad on 2025-06-13 09:38_
+_@m-ad_
 
 ### Summary
 

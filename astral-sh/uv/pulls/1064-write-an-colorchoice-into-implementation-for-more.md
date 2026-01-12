@@ -13,14 +13,14 @@ head: zb/use-into
 created_at: 2024-01-23T15:34:58Z
 updated_at: 2024-01-23T15:43:17Z
 url: https://github.com/astral-sh/uv/pull/1064
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # Write an `ColorChoice.into()` implementation for more idiomatic code
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-23 15:34_
+_@zanieb_
 
 Follow-up to #1049
 

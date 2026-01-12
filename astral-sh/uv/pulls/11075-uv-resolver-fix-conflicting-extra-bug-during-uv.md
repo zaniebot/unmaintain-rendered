@@ -13,14 +13,14 @@ head: ag/fix-double-torch
 created_at: 2025-01-29T18:36:36Z
 updated_at: 2025-01-29T22:21:13Z
 url: https://github.com/astral-sh/uv/pull/11075
-synced_at: 2026-01-10T11:45:26Z
+synced_at: 2026-01-12T16:09:39Z
 ```
 
 # uv-resolver: fix conflicting extra bug during `uv sync`
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-01-29 18:36_
+_@BurntSushi_
 
 In #10875, I relaxed the error checking during resolution to permit
 dependencies like `foo[x1]`, where `x1` was defined to be conflicting.

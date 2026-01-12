@@ -13,14 +13,14 @@ head: konsti/downgrade-firecracker-action
 created_at: 2025-06-02T17:06:48Z
 updated_at: 2025-06-02T18:25:14Z
 url: https://github.com/astral-sh/uv/pull/13786
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:52Z
 ```
 
 # Downgrade firecracker action to v0.3
 
 ---
 
-_Pull request opened by @konstin on 2025-06-02 17:06_
+_@konstin_
 
 See https://github.com/acj/freebsd-firecracker-action/issues/3
 

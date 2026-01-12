@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T04:29:50Z
 updated_at: 2025-03-15T11:55:40Z
 url: https://github.com/astral-sh/uv/issues/1572
-synced_at: 2026-01-10T03:50:29Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # What about pixi and rip?
 
 ---
 
-_Issue opened by @olivier-lacroix on 2024-02-17 04:29_
+_@olivier-lacroix_
 
 Hello there,
 

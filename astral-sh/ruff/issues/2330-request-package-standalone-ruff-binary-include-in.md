@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-29T23:44:04Z
 updated_at: 2025-10-23T19:22:55Z
 url: https://github.com/astral-sh/ruff/issues/2330
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # [REQUEST] Package standalone `ruff` binary & include in GitHub releases
 
 ---
 
-_Issue opened by @rahul-theorem on 2023-01-29 23:44_
+_@rahul-theorem_
 
 **Context for the request**
 I just came across `ruff` and it looks like a very promising pyflakes/isort replacement. We use Bazel to manage a large Python monorepo, and this seems like it could help shorten some critical dev loops and lead to a perf improvement in CI. 

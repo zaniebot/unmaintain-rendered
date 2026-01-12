@@ -12,14 +12,14 @@ head: charlie/path-source
 created_at: 2024-09-11T18:58:55Z
 updated_at: 2024-09-11T19:10:40Z
 url: https://github.com/astral-sh/uv/pull/7303
-synced_at: 2026-01-10T12:53:44Z
+synced_at: 2026-01-12T16:07:46Z
 ```
 
 # Avoid treating `.whl` sources as source distributions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-11 18:58_
+_@charliermarsh_
 
 ## Summary
 

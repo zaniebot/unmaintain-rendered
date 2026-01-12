@@ -13,14 +13,14 @@ head: charlie/path
 created_at: 2025-03-20T20:25:40Z
 updated_at: 2025-03-25T21:56:07Z
 url: https://github.com/astral-sh/uv/pull/12346
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:14Z
 ```
 
 # Use `Box<Path>` in lieu of `PathBuf` for immutable structs
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-20 20:25_
+_@charliermarsh_
 
 ## Summary
 

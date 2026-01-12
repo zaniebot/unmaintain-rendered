@@ -13,14 +13,14 @@ head: soof-ignore-macos-ds-store
 created_at: 2024-09-08T21:23:03Z
 updated_at: 2024-09-08T22:28:01Z
 url: https://github.com/astral-sh/uv/pull/7200
-synced_at: 2026-01-10T12:53:42Z
+synced_at: 2026-01-12T16:07:44Z
 ```
 
 # ignore macOS .DS_Store files
 
 ---
 
-_Pull request opened by @soof-golan on 2024-09-08 21:23_
+_@soof-golan_
 
 Just ignoring macOS generated files. 
 

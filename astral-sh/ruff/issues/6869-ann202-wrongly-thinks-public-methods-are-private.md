@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-25T10:16:23Z
 updated_at: 2024-08-14T07:54:13Z
 url: https://github.com/astral-sh/ruff/issues/6869
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # ANN202 wrongly thinks public methods are private
 
 ---
 
-_Issue opened by @sueskind on 2023-08-25 10:16_
+_@sueskind_
 
 - Ruff version: 0.0.285
 - Selected rule: `ANN`

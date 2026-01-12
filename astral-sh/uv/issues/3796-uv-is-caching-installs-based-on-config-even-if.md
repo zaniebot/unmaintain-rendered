@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-23T14:48:50Z
 updated_at: 2024-05-24T21:01:55Z
 url: https://github.com/astral-sh/uv/issues/3796
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # `uv` is caching installs based on config, even if build-backend is in-tree
 
 ---
 
-_Issue opened by @thejcannon on 2024-05-23 14:48_
+_@thejcannon_
 
 👋 Ok this one took me a while to figure out, lol
 

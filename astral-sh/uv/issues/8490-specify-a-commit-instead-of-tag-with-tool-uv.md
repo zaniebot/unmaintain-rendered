@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-23T08:14:14Z
 updated_at: 2024-10-23T16:12:02Z
 url: https://github.com/astral-sh/uv/issues/8490
-synced_at: 2026-01-10T11:10:20Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # Specify a commit instead of tag with `tool.uv.sources`
 
 ---
 
-_Issue opened by @cthoyt on 2024-10-23 08:14_
+_@cthoyt_
 
 On https://docs.astral.sh/uv/concepts/dependencies/, it gives an option to specify a git repository with a tag, but not a specific commit. Is this possible?
 

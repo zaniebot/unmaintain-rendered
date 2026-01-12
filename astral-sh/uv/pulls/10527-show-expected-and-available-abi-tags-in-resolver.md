@@ -14,14 +14,14 @@ head: charlie/abi
 created_at: 2025-01-11T23:22:58Z
 updated_at: 2025-01-14T01:03:12Z
 url: https://github.com/astral-sh/uv/pull/10527
-synced_at: 2026-01-10T11:44:56Z
+synced_at: 2026-01-12T16:09:21Z
 ```
 
 # Show expected and available ABI tags in resolver errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-11 23:22_
+_@charliermarsh_
 
 ## Summary
 

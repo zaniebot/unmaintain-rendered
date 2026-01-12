@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-20T06:44:46Z
 updated_at: 2025-06-22T08:11:13Z
 url: https://github.com/astral-sh/ruff/issues/18816
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`Pylint`] `PLE2510` fix causes syntax error inside pre-3.12 f-strings
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-20 06:44_
+_@MeGaGiGaGon_
 
 ### Summary
 

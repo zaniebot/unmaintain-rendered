@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-08T09:51:52Z
 updated_at: 2024-01-08T12:45:53Z
 url: https://github.com/astral-sh/ruff/issues/9436
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # formatter still in beta?
 
 ---
 
-_Issue opened by @DimitriPapadopoulos on 2024-01-08 09:51_
+_@DimitriPapadopoulos_
 
 [The Ruff Formatter](https://docs.astral.sh/ruff/formatter/) documentation starts with:
 > The Ruff formatter is available as a [production-ready Beta](https://astral.sh/blog/the-ruff-formatter) as of Ruff v0.1.2.

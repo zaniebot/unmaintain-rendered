@@ -13,14 +13,14 @@ head: konsti/box-dist
 created_at: 2024-05-08T10:13:40Z
 updated_at: 2024-05-08T11:27:07Z
 url: https://github.com/astral-sh/uv/pull/3455
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:39Z
 ```
 
 # Box Dist to reduce its size
 
 ---
 
-_Pull request opened by @konstin on 2024-05-08 10:13_
+_@konstin_
 
 TBD, windows CI check
 

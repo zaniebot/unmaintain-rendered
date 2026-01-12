@@ -11,14 +11,14 @@ head: pyi041-redundant-numeric-union-false-negatives
 created_at: 2024-11-14T08:07:15Z
 updated_at: 2024-11-25T19:05:05Z
 url: https://github.com/astral-sh/ruff/pull/14332
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`flake8-pyi`] Apply `redundant-numeric-union` to more type expressions (`PYI041`)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-14 08:07_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-06T16:25:32Z
 updated_at: 2023-03-06T16:45:02Z
 url: https://github.com/astral-sh/ruff/issues/3361
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Rule E261 is missing even though version 0.0.244 is supposed to have introduced it
 
 ---
 
-_Issue opened by @rleconte on 2023-03-06 16:25_
+_@rleconte_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

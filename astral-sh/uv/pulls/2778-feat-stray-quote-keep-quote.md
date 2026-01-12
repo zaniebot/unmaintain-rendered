@@ -11,14 +11,14 @@ head: issue-2551
 created_at: 2024-04-02T15:48:46Z
 updated_at: 2024-04-23T18:37:19Z
 url: https://github.com/astral-sh/uv/pull/2778
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:13Z
 ```
 
 # feat: stray quote keep quote
 
 ---
 
-_Pull request opened by @fatelei on 2024-04-02 15:48_
+_@fatelei_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

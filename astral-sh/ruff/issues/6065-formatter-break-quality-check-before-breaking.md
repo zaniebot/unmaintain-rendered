@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-25T11:01:01Z
 updated_at: 2023-08-07T17:19:00Z
 url: https://github.com/astral-sh/ruff/issues/6065
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: Break quality check before breaking parentheses
 
 ---
 
-_Issue opened by @konstin on 2023-07-25 11:01_
+_@konstin_
 
 We need to change the breaking priorities with equality checks and parentheses:
 

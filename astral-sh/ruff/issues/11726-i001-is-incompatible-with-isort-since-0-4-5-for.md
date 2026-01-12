@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-03T19:57:31Z
 updated_at: 2024-06-08T20:10:52Z
 url: https://github.com/astral-sh/ruff/issues/11726
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # I001 is incompatible with ``isort`` since 0.4.5 for builtins starting with an underscore
 
 ---
 
-_Issue opened by @DanielNoord on 2024-06-03 19:57_
+_@DanielNoord_
 
 Hi, when bumping from `0.4.4` to `0.4.5` in `pylint` we saw that I001 is no longer compatible with `isort`. See: https://github.com/pylint-dev/pylint/pull/9679
 

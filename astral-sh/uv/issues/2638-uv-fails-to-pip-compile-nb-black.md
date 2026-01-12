@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-24T11:40:58Z
 updated_at: 2024-03-24T18:59:08Z
 url: https://github.com/astral-sh/uv/issues/2638
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # uv fails to pip compile nb-black
 
 ---
 
-_Issue opened by @owenlamont on 2024-03-24 11:40_
+_@owenlamont_
 
 uv pip compile fails with [nb-black](https://github.com/dnanhkhoa/nb_black/blob/master/setup.py) package (while pip compile works with it). I think uv is just being stricter about the version data type in the nb-black's setup.py while pip compile is apparently more lenient. I'm happy to accept this is just something broken in nb-black and I don't plan to keep that dependency... I just noticed the behaviour was different between pip compile and uv pip compile.
 

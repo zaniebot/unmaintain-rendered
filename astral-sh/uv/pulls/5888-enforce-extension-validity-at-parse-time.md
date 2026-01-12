@@ -13,14 +13,14 @@ head: charlie/ext
 created_at: 2024-08-07T19:37:31Z
 updated_at: 2024-08-09T01:39:49Z
 url: https://github.com/astral-sh/uv/pull/5888
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:05Z
 ```
 
 # Enforce extension validity at parse time
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-07 19:37_
+_@charliermarsh_
 
 ## Summary
 

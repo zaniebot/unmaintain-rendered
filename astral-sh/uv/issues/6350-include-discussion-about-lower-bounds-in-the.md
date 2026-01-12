@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T16:21:35Z
 updated_at: 2024-09-02T18:22:17Z
 url: https://github.com/astral-sh/uv/issues/6350
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Include discussion about lower bounds in the project concept documentation
 
 ---
 
-_Issue opened by @zanieb on 2024-08-21 16:21_
+_@zanieb_
 
 We should discuss why we add lower bounds by default and why we warn when they're missing.
 

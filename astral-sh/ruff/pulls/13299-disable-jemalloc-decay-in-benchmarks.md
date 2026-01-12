@@ -13,14 +13,14 @@ head: micha/bench-disable-decay
 created_at: 2024-09-10T01:19:36Z
 updated_at: 2024-09-16T07:16:32Z
 url: https://github.com/astral-sh/ruff/pull/13299
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Disable jemalloc decay in benchmarks
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-10 01:19_
+_@MichaReiser_
 
 ## Summary
 

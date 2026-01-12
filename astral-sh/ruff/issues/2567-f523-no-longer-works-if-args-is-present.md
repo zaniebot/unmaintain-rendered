@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-04T14:49:41Z
 updated_at: 2023-04-09T22:34:54Z
 url: https://github.com/astral-sh/ruff/issues/2567
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # F523 No longer works if *args is present
 
 ---
 
-_Issue opened by @colin99d on 2023-02-04 14:49_
+_@colin99d_
 
 The following code triggers F523:
 `"{0}".format(1, 2)`

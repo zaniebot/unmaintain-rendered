@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-03T22:49:37Z
 updated_at: 2024-10-07T14:13:30Z
 url: https://github.com/astral-sh/ruff/issues/13620
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # FURB188 calculates lengths wrong for non-ASCII affixes
 
 ---
 
-_Issue opened by @dscorbett on 2024-10-03 22:49_
+_@dscorbett_
 
 [`slice-to-remove-prefix-or-suffix` (FURB188)](https://docs.astral.sh/ruff/rules/slice-to-remove-prefix-or-suffix/) determines string length by UTF-8 code units, as in Rust, whereas Python counts code points. This discrepancy causes problems for non-ASCII affixes. In the following, furb188.py has two parts: the first has a false positive and the second has a false negative.
 

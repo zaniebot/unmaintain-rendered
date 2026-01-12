@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T05:41:36Z
 updated_at: 2025-02-27T01:54:53Z
 url: https://github.com/astral-sh/uv/issues/11791
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # git-lfs doesn't work when LFS files are required to link against
 
 ---
 
-_Issue opened by @weshoke on 2025-02-26 05:41_
+_@weshoke_
 
 ### Summary
 

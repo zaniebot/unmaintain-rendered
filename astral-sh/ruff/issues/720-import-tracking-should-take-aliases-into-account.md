@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-13T15:53:33Z
 updated_at: 2022-11-15T02:29:31Z
 url: https://github.com/astral-sh/ruff/issues/720
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Import tracking should take aliases into account
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-13 15:53_
+_@charliermarsh_
 
 E.g., if we do `from typing import List as CustomList`, we should detect that `CustomList[...]` is a subscript annotation.
 

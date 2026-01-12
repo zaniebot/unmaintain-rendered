@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-15T02:53:37Z
 updated_at: 2024-09-15T13:12:40Z
 url: https://github.com/astral-sh/uv/issues/7403
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Support for mirrors when installing Python versions
 
 ---
 
-_Issue opened by @dillydill123 on 2024-09-15 02:53_
+_@dillydill123_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

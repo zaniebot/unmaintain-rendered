@@ -12,14 +12,14 @@ head: charlie/ticks
 created_at: 2024-10-02T02:15:08Z
 updated_at: 2024-10-02T03:28:26Z
 url: https://github.com/astral-sh/ruff/pull/13599
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Use backticks for code in red-knot messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-02 02:15_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-01T23:19:32Z
 updated_at: 2025-11-13T19:45:52Z
 url: https://github.com/astral-sh/uv/issues/15022
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # `uv-trampoline`'d entrypoint .exes are not robust to being signed
 
 ---
 
-_Issue opened by @paveldikov on 2025-08-01 23:19_
+_@paveldikov_
 
 ### Summary
 

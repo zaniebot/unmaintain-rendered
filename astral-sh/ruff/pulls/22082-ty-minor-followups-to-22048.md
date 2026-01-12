@@ -14,14 +14,14 @@ head: alex/more-comments
 created_at: 2025-12-19T13:45:46Z
 updated_at: 2025-12-19T13:59:00Z
 url: https://github.com/astral-sh/ruff/pull/22082
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Minor followups to #22048
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-19 13:45_
+_@AlexWaygood_
 
 ## Summary
 

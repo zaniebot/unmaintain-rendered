@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-01T03:32:32Z
 updated_at: 2025-07-04T07:49:42Z
 url: https://github.com/astral-sh/uv/issues/14384
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # is run uv sync after uv venv [specify_location] should sync packages on .venv (default environemntt)
 
 ---
 
-_Issue opened by @hamzeh-pm on 2025-07-01 03:32_
+_@hamzeh-pm_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T18:39:48Z
 updated_at: 2025-12-06T01:51:45Z
 url: https://github.com/astral-sh/uv/issues/16937
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # `uv sync` hangs on 0.9.14 with PyPI proxy
 
 ---
 
-_Issue opened by @georgeflug on 2025-12-02 18:39_
+_@georgeflug_
 
 ### Summary
 

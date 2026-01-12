@@ -11,14 +11,14 @@ head: feature/man-line-breaks
 created_at: 2025-12-01T21:58:20Z
 updated_at: 2025-12-10T20:02:24Z
 url: https://github.com/clap-rs/clap/pull/6190
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # feat(mangen): Add option to keep line breaks
 
 ---
 
-_Pull request opened by @pamburus on 2025-12-01 21:58_
+_@pamburus_
 
 ### Feature: Add `keep_line_breaks` option to `clap_mangen::Man`
 

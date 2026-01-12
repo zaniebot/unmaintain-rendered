@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T13:31:28Z
 updated_at: 2025-11-18T16:10:28Z
 url: https://github.com/astral-sh/ty/issues/160
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Multi-platform checking
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-26 13:31_
+_@MichaReiser_
 
 Calling a platform-specific method with no `python-platform` set currently always emits a `possibly-unbound` warning ([playground](https://playknot.ruff.rs/baf5d9d3-f4e7-4c87-ab8a-8302d2add03d)), even if the branch is guarded by an explicit `sys.platform` check. 
 

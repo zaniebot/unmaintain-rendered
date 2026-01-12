@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-20T21:00:09Z
 updated_at: 2025-03-24T01:29:42Z
 url: https://github.com/astral-sh/ruff/issues/8796
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Seeking improved pytest rules, as `flake8-pytest-style` doesn't align with best practices
 
 ---
 
-_Issue opened by @RonnyPfannschmidt on 2023-11-20 21:00_
+_@RonnyPfannschmidt_
 
 hi everyone,
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-09T08:04:48Z
 updated_at: 2023-06-09T16:03:51Z
 url: https://github.com/astral-sh/ruff/issues/4981
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # PTH false positive with Django FieldFile
 
 ---
 
-_Issue opened by @gustavi on 2023-06-09 08:04_
+_@gustavi_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

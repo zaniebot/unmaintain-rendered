@@ -12,14 +12,14 @@ head: charlie/borrow
 created_at: 2024-01-03T04:09:02Z
 updated_at: 2024-01-03T04:21:47Z
 url: https://github.com/astral-sh/uv/pull/749
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:10Z
 ```
 
 # Remove some package clones
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-03 04:09_
+_@charliermarsh_
 
 _No description provided._
 

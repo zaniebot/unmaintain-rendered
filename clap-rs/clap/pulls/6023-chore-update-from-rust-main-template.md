@@ -12,14 +12,14 @@ head: template
 created_at: 2025-06-02T19:46:48Z
 updated_at: 2025-06-02T19:53:51Z
 url: https://github.com/clap-rs/clap/pull/6023
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # chore: Update from _rust/main template
 
 ---
 
-_Pull request opened by @epage on 2025-06-02 19:46_
+_@epage_
 
 <!--
 Thanks for helping out!

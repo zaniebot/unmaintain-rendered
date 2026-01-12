@@ -13,14 +13,14 @@ head: charlie/git-client
 created_at: 2024-06-24T19:34:45Z
 updated_at: 2024-06-24T21:09:30Z
 url: https://github.com/astral-sh/uv/pull/4487
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:15Z
 ```
 
 # Use shared client in Git fetch implementation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-24 19:34_
+_@charliermarsh_
 
 ## Summary
 

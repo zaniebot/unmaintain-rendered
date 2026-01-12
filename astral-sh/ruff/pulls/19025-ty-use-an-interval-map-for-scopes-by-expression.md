@@ -14,14 +14,14 @@ head: micha/scopes-by-expression-interval-map
 created_at: 2025-06-29T14:45:09Z
 updated_at: 2025-07-14T11:51:00Z
 url: https://github.com/astral-sh/ruff/pull/19025
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # [ty] Use an interval map for scopes by expression
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-29 14:45_
+_@MichaReiser_
 
 ## Summary
 

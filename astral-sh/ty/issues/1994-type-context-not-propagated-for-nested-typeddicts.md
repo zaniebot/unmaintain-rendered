@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T09:58:18Z
 updated_at: 2025-12-29T22:09:59Z
 url: https://github.com/astral-sh/ty/issues/1994
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Type context not propagated for nested TypedDicts and lists
 
 ---
 
-_Issue opened by @sharkdp on 2025-12-17 09:58_
+_@sharkdp_
 
 Originally reported here: https://news.ycombinator.com/item?id=46299570
 

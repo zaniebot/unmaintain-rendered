@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-14T22:43:58Z
 updated_at: 2025-07-14T18:46:24Z
 url: https://github.com/astral-sh/ruff/issues/14346
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # PLE2502 documentation does not match the implementation
 
 ---
 
-_Issue opened by @dscorbett on 2024-11-14 22:43_
+_@dscorbett_
 
 The documentation for [`bidirectional-unicode` (PLE2502)](https://docs.astral.sh/ruff/rules/bidirectional-unicode/) says it checks for “bidirectional unicode characters”. That phrasing is imprecise (a string can be bidirectional but any given character isn’t) but the example code implies it means “right-to-left characters”. However, PLE2502 only checks for a selection of bidi control characters. Not all bidi control characters are right-to-left, and most right-to-left characters are ignored by the rule.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-12T03:02:34Z
 updated_at: 2025-05-12T19:07:56Z
 url: https://github.com/astral-sh/ty/issues/324
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Progress bar shows `0/0` at initialization
 
 ---
 
-_Issue opened by @charliermarsh on 2025-05-12 03:02_
+_@charliermarsh_
 
 If you have a large project, then it shows 0/0 for a while (presumedly, while we count the files). We should either avoid showing a count at all until we know the number of files, or avoid showing the progress bar at all until we know the number of files.
 

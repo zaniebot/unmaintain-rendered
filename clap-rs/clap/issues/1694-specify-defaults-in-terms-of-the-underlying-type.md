@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-02-14T16:50:54Z
 updated_at: 2021-08-13T18:36:33Z
 url: https://github.com/clap-rs/clap/issues/1694
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Specify defaults in terms of the underlying type rather than strings
 
 ---
 
-_Issue opened by @emilazy on 2020-02-14 16:50_
+_@emilazy_
 
 I really like how the new clap v3 is shaping up! Now that structopt is integrated, it'd be great if defaults could be specified in terms of the default resulting value they produce rather than as a string. Other argument parsing libraries like Python's argparse work this way.
 

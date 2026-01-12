@@ -13,14 +13,14 @@ head: konsti/search-for-any-minor
 created_at: 2024-07-17T15:51:15Z
 updated_at: 2024-07-23T14:06:30Z
 url: https://github.com/astral-sh/uv/pull/5148
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:40Z
 ```
 
 # Search for all `python3.x` in PATH
 
 ---
 
-_Pull request opened by @konstin on 2024-07-17 15:51_
+_@konstin_
 
 Search for all `python3.x` minor versions in PATH, skipping those we already know we can use.
 

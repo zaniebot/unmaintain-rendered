@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-27T09:19:22Z
 updated_at: 2024-08-27T16:24:41Z
 url: https://github.com/astral-sh/uv/issues/6679
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Install uv with uv
 
 ---
 
-_Issue opened by @ewjoachim on 2024-08-27 09:19_
+_@ewjoachim_
 
 Now that uv supports tools, is it a good id that uv manages its own installation ?
 If I do:

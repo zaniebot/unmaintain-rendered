@@ -13,14 +13,14 @@ head: zanie/eco-format-cmp
 created_at: 2023-11-01T18:07:53Z
 updated_at: 2023-11-02T01:20:54Z
 url: https://github.com/astral-sh/ruff/pull/8416
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add new ecosystem comparison modes for the formatter
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-01 18:07_
+_@zanieb_
 
 Previously, the ecosystem checks formatted with the baseline then formatted again with `--diff` to get the changed files.
 

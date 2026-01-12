@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-12T21:33:39Z
 updated_at: 2023-02-12T22:22:21Z
 url: https://github.com/astral-sh/ruff/issues/2825
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # SIM114: duplicate reports and same source code is shown
 
 ---
 
-_Issue opened by @spaceone on 2023-02-12 21:33_
+_@spaceone_
 
 ```python
 failures = errors = skipped = disabled = 0

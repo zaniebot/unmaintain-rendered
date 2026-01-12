@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-14T16:38:33Z
 updated_at: 2025-08-14T18:29:30Z
 url: https://github.com/astral-sh/ty/issues/990
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # How does this differ from pyright?
 
 ---
 
-_Issue opened by @benatshippabo on 2025-08-14 16:38_
+_@benatshippabo_
 
 ### Question
 

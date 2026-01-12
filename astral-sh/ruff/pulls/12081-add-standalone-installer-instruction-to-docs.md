@@ -13,14 +13,14 @@ head: dhruv/standalone-installers
 created_at: 2024-06-28T03:58:37Z
 updated_at: 2024-06-28T11:34:47Z
 url: https://github.com/astral-sh/ruff/pull/12081
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Add standalone installer instruction to docs
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-28 03:58_
+_@dhruvmanila_
 
 Adopted from `uv` README (https://github.com/astral-sh/uv#getting-started), this PR adds a section of using standalone installers in the installation section of Ruff docs.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-28T20:19:36Z
 updated_at: 2025-12-28T20:19:36Z
 url: https://github.com/astral-sh/uv/issues/17248
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:47Z
 ```
 
 # Build a dependency tree and get all wheels
 
 ---
 
-_Issue opened by @danijar on 2025-12-28 20:19_
+_@danijar_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: jane/server/neovim-shutdown
 created_at: 2024-05-05T17:08:50Z
 updated_at: 2024-05-06T02:07:28Z
 url: https://github.com/astral-sh/ruff/pull/11291
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Fix `ruff server` hanging after Neovim closes
 
 ---
 
-_Pull request opened by @snowsignal on 2024-05-05 17:08_
+_@snowsignal_
 
 ## Summary
 

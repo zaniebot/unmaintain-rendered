@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-07T13:15:46Z
 updated_at: 2024-10-11T09:47:03Z
 url: https://github.com/astral-sh/uv/issues/7970
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Installation for Pytouch
 
 ---
 
-_Issue opened by @SamOyeAH on 2024-10-07 13:15_
+_@SamOyeAH_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

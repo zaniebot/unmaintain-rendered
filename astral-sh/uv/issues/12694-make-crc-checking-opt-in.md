@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T01:26:46Z
 updated_at: 2025-04-07T17:49:07Z
 url: https://github.com/astral-sh/uv/issues/12694
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # Make CRC checking opt-in
 
 ---
 
-_Issue opened by @charliermarsh on 2025-04-07 01:26_
+_@charliermarsh_
 
 We need to iron out a few bugs here (#12677). See: https://github.com/astral-sh/uv/issues/12618.
 

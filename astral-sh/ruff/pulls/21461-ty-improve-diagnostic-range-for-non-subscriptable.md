@@ -14,14 +14,14 @@ head: alex-brent/subscript-diagnostic-range
 created_at: 2025-11-14T18:14:58Z
 updated_at: 2025-11-14T21:15:16Z
 url: https://github.com/astral-sh/ruff/pull/21461
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [ty] Improve diagnostic range for `non-subscriptable` diagnostics
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-14 18:14_
+_@AlexWaygood_
 
 ## Summary
 

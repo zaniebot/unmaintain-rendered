@@ -13,14 +13,14 @@ head: security-policy
 created_at: 2025-02-18T10:27:11Z
 updated_at: 2025-02-18T14:45:02Z
 url: https://github.com/astral-sh/ruff/pull/16224
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Add `SECURITY.md`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-18 10:27_
+_@InSyncWithFoo_
 
 ## Summary
 

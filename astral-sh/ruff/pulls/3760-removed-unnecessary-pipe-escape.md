@@ -12,14 +12,14 @@ head: md-table-pipe-fix
 created_at: 2023-03-27T17:33:46Z
 updated_at: 2023-03-27T18:14:39Z
 url: https://github.com/astral-sh/ruff/pull/3760
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Removed unnecessary pipe escape
 
 ---
 
-_Pull request opened by @trag1c on 2023-03-27 17:33_
+_@trag1c_
 
 It seems like https://github.com/squidfunk/mkdocs-material handles `|`s in code blocks automatically so there's no need to escape them for table columns.
 

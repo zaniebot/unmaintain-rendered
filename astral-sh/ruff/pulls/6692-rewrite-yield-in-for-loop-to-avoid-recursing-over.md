@@ -13,14 +13,14 @@ head: charlie/yield
 created_at: 2023-08-19T15:12:06Z
 updated_at: 2023-08-19T15:38:03Z
 url: https://github.com/astral-sh/ruff/pull/6692
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Rewrite `yield-in-for-loop` to avoid recursing over body
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-19 15:12_
+_@charliermarsh_
 
 ## Summary
 

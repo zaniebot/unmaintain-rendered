@@ -13,14 +13,14 @@ head: charlie/in-flight
 created_at: 2024-07-03T14:23:51Z
 updated_at: 2024-07-03T14:31:53Z
 url: https://github.com/astral-sh/uv/pull/4771
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:27Z
 ```
 
 # Avoid resetting dispatch and in-flight state with reinstalls
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-03 14:23_
+_@charliermarsh_
 
 ## Summary
 

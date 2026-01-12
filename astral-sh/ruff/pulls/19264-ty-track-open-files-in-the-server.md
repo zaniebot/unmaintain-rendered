@@ -15,14 +15,14 @@ head: dhruv/workspace-diagnostics-in-virtual-files
 created_at: 2025-07-10T16:38:53Z
 updated_at: 2025-07-18T14:03:37Z
 url: https://github.com/astral-sh/ruff/pull/19264
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [ty] Track open files in the server
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-10 16:38_
+_@dhruvmanila_
 
 ## Summary
 

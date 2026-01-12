@@ -14,14 +14,14 @@ head: invalid-index-type-for-bool-generator-lambda
 created_at: 2025-09-03T14:09:39Z
 updated_at: 2025-09-12T18:37:02Z
 url: https://github.com/astral-sh/ruff/pull/20213
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [`ruff`] Recognize t-strings, generators, and lambdas in `invalid-index-type` (`RUF016`)
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-09-03 14:09_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

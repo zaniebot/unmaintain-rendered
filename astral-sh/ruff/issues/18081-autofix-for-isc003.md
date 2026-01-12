@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-13T22:47:50Z
 updated_at: 2025-05-28T07:30:52Z
 url: https://github.com/astral-sh/ruff/issues/18081
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Autofix for ISC003
 
 ---
 
-_Issue opened by @ktbarrett on 2025-05-13 22:47_
+_@ktbarrett_
 
 ### Summary
 

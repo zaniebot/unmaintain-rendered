@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-10T16:32:09Z
 updated_at: 2025-12-04T09:49:18Z
 url: https://github.com/astral-sh/uv/issues/16669
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # Discover new Python version in airgapped environment
 
 ---
 
-_Issue opened by @etiennebonnafoux on 2025-11-10 16:32_
+_@etiennebonnafoux_
 
 ### Question
 

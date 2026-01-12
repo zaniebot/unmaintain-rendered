@@ -12,14 +12,14 @@ head: zb/735-add
 created_at: 2024-10-10T20:32:51Z
 updated_at: 2024-10-16T21:38:13Z
 url: https://github.com/astral-sh/uv/pull/8108
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:09Z
 ```
 
 # Add `--group` support to `uv add` and `uv remove`
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-10 20:32_
+_@zanieb_
 
 Part of #8090 
 

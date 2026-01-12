@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-13T08:13:49Z
 updated_at: 2024-10-04T19:22:27Z
 url: https://github.com/astral-sh/ruff/issues/13343
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Invalid fix for PLE1141
 
 ---
 
-_Issue opened by @martinlehoux on 2024-09-13 08:13_
+_@martinlehoux_
 
 - I think the autofix is not safe
 - Ruff version: 0.6.4

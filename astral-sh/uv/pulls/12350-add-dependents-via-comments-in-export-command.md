@@ -13,14 +13,14 @@ head: zmeir/export_like_pip_compile
 created_at: 2025-03-20T22:25:36Z
 updated_at: 2025-04-02T15:36:03Z
 url: https://github.com/astral-sh/uv/pull/12350
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:14Z
 ```
 
 # Add dependents ("via ..." comments) in export command
 
 ---
 
-_Pull request opened by @zmeir on 2025-03-20 22:25_
+_@zmeir_
 
 Adding dependency trace/parent comments ("via ...") to the export command output.  
 This is a similar behavior to the pip compile output.

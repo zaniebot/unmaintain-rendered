@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-21T23:41:42Z
 updated_at: 2023-02-22T15:44:48Z
 url: https://github.com/astral-sh/ruff/issues/3108
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # E701: false positive since 0.0.250
 
 ---
 
-_Issue opened by @bastimeyer on 2023-02-21 23:41_
+_@bastimeyer_
 
 **E701.py**
 ```py

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-04-03T12:00:55Z
 updated_at: 2024-04-05T22:12:33Z
 url: https://github.com/astral-sh/ruff/pull/10756
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # doc(FAQ): More precise PyLint comparision
 
 ---
 
-_Pull request opened by @buhtz on 2024-04-03 12:00_
+_@buhtz_
 
 Section about comparing Ruff to PyLint now is more precise about the following two points:
  - Ruff do count branches different and there for earlier give too-many-branches warning. 

@@ -14,14 +14,14 @@ head: micha/fix-rule-severity-link
 created_at: 2025-12-19T07:21:04Z
 updated_at: 2025-12-19T07:25:03Z
 url: https://github.com/astral-sh/ruff/pull/22069
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Fix rules severity URL
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-19 07:21_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: fix-20562
 created_at: 2025-09-25T03:38:01Z
 updated_at: 2025-10-24T14:27:03Z
 url: https://github.com/astral-sh/ruff/pull/20564
-synced_at: 2026-01-10T17:28:45Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [`pyflakes`] Fix false positive for `__class__` in lambda expressions within class definitions (`F821`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-25 03:38_
+_@danparizher_
 
 ## Summary
 

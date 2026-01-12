@@ -12,14 +12,14 @@ head: konsti/much-more-powershell
 created_at: 2025-06-10T10:24:16Z
 updated_at: 2025-07-24T10:00:16Z
 url: https://github.com/astral-sh/uv/pull/13941
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:56Z
 ```
 
 # Try more random PowerShell things to catch Windows CI crashes
 
 ---
 
-_Pull request opened by @konstin on 2025-06-10 10:24_
+_@konstin_
 
 As I'm out of ideas otherwise, I've generated even more extensive powershell code for the unexplainable Windows CI crashes in https://github.com/astral-sh/uv/issues/13812. This code should be deleted once we figured out the crash.
 

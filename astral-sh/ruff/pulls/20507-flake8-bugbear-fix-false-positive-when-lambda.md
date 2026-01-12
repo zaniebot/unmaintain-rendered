@@ -12,14 +12,14 @@ head: fix-15716
 created_at: 2025-09-22T05:06:51Z
 updated_at: 2025-12-04T19:55:38Z
 url: https://github.com/astral-sh/ruff/pull/20507
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [`flake8-bugbear`] Fix false positive when `lambda` parameters have same name as loop variables (`B023`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-22 05:06_
+_@danparizher_
 
 ## Summary
 

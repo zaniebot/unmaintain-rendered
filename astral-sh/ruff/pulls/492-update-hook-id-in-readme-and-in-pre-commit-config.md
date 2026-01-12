@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2022-10-27T21:23:14Z
 updated_at: 2022-10-27T21:32:53Z
 url: https://github.com/astral-sh/ruff/pull/492
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Update hook id in README and in .pre-commit-config.yaml
 
 ---
 
-_Pull request opened by @tgross35 on 2022-10-27 21:23_
+_@tgross35_
 
 _No description provided._
 

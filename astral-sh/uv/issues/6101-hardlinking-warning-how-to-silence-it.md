@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-15T01:24:21Z
 updated_at: 2024-08-21T02:22:33Z
 url: https://github.com/astral-sh/uv/issues/6101
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # hardlinking warning -> how to silence it?
 
 ---
 
-_Issue opened by @stas00 on 2024-08-15 01:24_
+_@stas00_
 
 @charliermarsh, in https://github.com/astral-sh/uv/issues/5581 you resolved the issue with hardlinking in a shared environment, but how do we get rid of this warning?
 

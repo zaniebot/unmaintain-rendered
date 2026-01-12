@@ -13,14 +13,14 @@ head: zb/refactor
 created_at: 2024-04-02T20:20:10Z
 updated_at: 2024-04-03T04:33:12Z
 url: https://github.com/astral-sh/uv/pull/2782
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:13Z
 ```
 
 # Simplify sorting of site package entries
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-02 20:20_
+_@zanieb_
 
 per https://github.com/astral-sh/uv/pull/2780#discussion_r1548340373
 

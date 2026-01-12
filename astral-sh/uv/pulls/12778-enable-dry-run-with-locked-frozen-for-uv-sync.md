@@ -14,14 +14,14 @@ head: uv/sync/dry-run-w-frozen-and-locked
 created_at: 2025-04-09T13:02:02Z
 updated_at: 2025-04-14T17:49:37Z
 url: https://github.com/astral-sh/uv/pull/12778
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:23Z
 ```
 
 # Enable `--dry-run` with `--locked` / `--frozen` for `uv sync`
 
 ---
 
-_Pull request opened by @christeefy on 2025-04-09 13:02_
+_@christeefy_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

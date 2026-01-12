@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-02T17:22:56Z
 updated_at: 2025-10-15T17:35:56Z
 url: https://github.com/astral-sh/uv/issues/16104
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:23Z
 ```
 
 # Add ability to refresh hashes in pinned requirements file (`uv pip compile`)
 
 ---
 
-_Issue opened by @thejcannon on 2025-10-02 17:22_
+_@thejcannon_
 
 ### Summary
 

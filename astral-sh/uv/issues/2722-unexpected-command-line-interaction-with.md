@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-28T22:19:39Z
 updated_at: 2024-04-04T15:53:19Z
 url: https://github.com/astral-sh/uv/issues/2722
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Unexpected command line interaction with pyproject.toml package
 
 ---
 
-_Issue opened by @bluss on 2024-03-28 22:19_
+_@bluss_
 
 This command line interaction is surprising. My directory contains a pyproject.toml:
 

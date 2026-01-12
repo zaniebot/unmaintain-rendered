@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-30T07:06:19Z
 updated_at: 2023-12-31T12:10:47Z
 url: https://github.com/astral-sh/ruff/issues/8338
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # The formatter's ParseError indicates the offset within the file but not the line number
 
 ---
 
-_Issue opened by @rgeronimi on 2023-10-30 07:06_
+_@rgeronimi_
 
 When ruff's formatter encounters an invalid Python file, it prints out the offset position of the offending Python statement rather than the line number. E.g.,:
 `

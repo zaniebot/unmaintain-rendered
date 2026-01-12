@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-05T09:59:06Z
 updated_at: 2023-12-13T16:02:14Z
 url: https://github.com/astral-sh/ruff/issues/7146
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Using ruff to format code examples in docstrings
 
 ---
 
-_Issue opened by @stinodego on 2023-09-05 09:59_
+_@stinodego_
 
 At @pola-rs , we currently use `ruff` in combination with `black` for our Python formatting needs. We also use [`blackdoc`](https://github.com/keewis/blackdoc) for formatting our docstring code examples. Out of these three, `blackdoc` is by far the slowest.
 

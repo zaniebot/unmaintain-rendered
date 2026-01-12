@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-01T04:40:32Z
 updated_at: 2023-12-01T17:35:03Z
 url: https://github.com/astral-sh/ruff/issues/8942
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Autotyping fails to account for implicit returns
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-01 04:40_
+_@charliermarsh_
 
 Given:
 

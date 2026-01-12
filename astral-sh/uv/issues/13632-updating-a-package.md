@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-24T00:05:20Z
 updated_at: 2025-07-16T13:47:19Z
 url: https://github.com/astral-sh/uv/issues/13632
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # Updating a package
 
 ---
 
-_Issue opened by @akshaybabloo on 2025-05-24 00:05_
+_@akshaybabloo_
 
 ### Question
 

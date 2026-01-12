@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-26T14:30:17Z
 updated_at: 2024-02-28T07:18:56Z
 url: https://github.com/astral-sh/ruff/issues/10137
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Rule request: Require uppercase variables to be typed with `typing.Final`
 
 ---
 
-_Issue opened by @adamtheturtle on 2024-02-26 14:30_
+_@adamtheturtle_
 
 In my projects, when I spot an uppercase variable, I make sure to type it with `typing.Final`.
 

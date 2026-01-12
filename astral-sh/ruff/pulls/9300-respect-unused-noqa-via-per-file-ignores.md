@@ -13,14 +13,14 @@ head: charlie/generic
 created_at: 2023-12-28T14:05:26Z
 updated_at: 2023-12-28T14:22:41Z
 url: https://github.com/astral-sh/ruff/pull/9300
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Respect `unused-noqa` via `per-file-ignores`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-28 14:05_
+_@charliermarsh_
 
 ## Summary
 

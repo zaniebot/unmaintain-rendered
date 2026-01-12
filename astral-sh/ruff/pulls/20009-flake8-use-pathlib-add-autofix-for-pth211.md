@@ -14,14 +14,14 @@ head: pth211-autofix
 created_at: 2025-08-20T19:29:11Z
 updated_at: 2025-08-22T18:37:11Z
 url: https://github.com/astral-sh/ruff/pull/20009
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [`flake8-use-pathlib`] Add autofix for `PTH211`
 
 ---
 
-_Pull request opened by @chirizxc on 2025-08-20 19:29_
+_@chirizxc_
 
 ## Summary
 Part of https://github.com/astral-sh/ruff/issues/2331

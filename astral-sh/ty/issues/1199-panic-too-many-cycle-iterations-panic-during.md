@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-18T07:18:59Z
 updated_at: 2025-09-18T14:45:29Z
 url: https://github.com/astral-sh/ty/issues/1199
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] "too many cycle iterations" panic during semantic analysis of dynamic imports
 
 ---
 
-_Issue opened by @floraCodes on 2025-09-18 07:18_
+_@floraCodes_
 
 ## Description
 The `ty` type checker panics with a cycle detection error when analyzing a Python file containing dynamic imports and complex type inference patterns.

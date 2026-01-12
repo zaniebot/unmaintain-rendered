@@ -12,14 +12,14 @@ head: format-like-black
 created_at: 2023-07-03T19:24:18Z
 updated_at: 2023-07-07T11:44:28Z
 url: https://github.com/astral-sh/ruff/pull/5492
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Extend ruff_dev formatter script to compute statistics and format a project
 
 ---
 
-_Pull request opened by @konstin on 2023-07-03 19:24_
+_@konstin_
 
 ## Summary
 

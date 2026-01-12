@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-21T03:18:16Z
 updated_at: 2025-11-21T17:48:03Z
 url: https://github.com/astral-sh/ty/issues/1605
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Figure out why the inlay_hint tests needed to escape backslash
 
 ---
 
-_Issue opened by @Gankra on 2025-11-21 03:18_
+_@Gankra_
 
 The goto-definition tests don't have this, what gives.
 

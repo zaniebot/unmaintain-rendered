@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-03-31T20:08:47Z
 updated_at: 2018-08-02T03:30:21Z
 url: https://github.com/clap-rs/clap/issues/1239
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # add ability to hide Subcommands from --help
 
 ---
 
-_Issue opened by @matthiaskrgr on 2018-03-31 20:08_
+_@matthiaskrgr_
 
 I'd like to be able to hide an entire Subcommand so it does not appear in the ````--help```` output, but currently it seems there is no ````.hidden(true)```` for subcommands.
 

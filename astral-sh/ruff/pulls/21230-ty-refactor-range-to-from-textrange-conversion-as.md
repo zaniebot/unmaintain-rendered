@@ -15,14 +15,14 @@ head: micha/lsp-range
 created_at: 2025-11-03T01:58:45Z
 updated_at: 2025-11-05T13:24:06Z
 url: https://github.com/astral-sh/ruff/pull/21230
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # [ty] Refactor `Range` to/from `TextRange` conversion as prep for notebook support
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-03 01:58_
+_@MichaReiser_
 
 ## Summary
 

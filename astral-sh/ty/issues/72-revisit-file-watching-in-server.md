@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-07T12:50:25Z
 updated_at: 2025-08-22T12:40:13Z
 url: https://github.com/astral-sh/ty/issues/72
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Revisit file watching in server
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-07 12:50_
+_@MichaReiser_
 
 https://github.com/astral-sh/ruff/pull/17912 added very basic file watching to the LSP. The main limitation is that it only watches project files. Files outside the project aren't watched. 
 

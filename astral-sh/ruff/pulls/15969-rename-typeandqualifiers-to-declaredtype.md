@@ -13,14 +13,14 @@ head: dhruv/rename-type-and-qualifiers
 created_at: 2025-02-05T13:36:45Z
 updated_at: 2025-02-14T09:58:54Z
 url: https://github.com/astral-sh/ruff/pull/15969
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Rename `TypeAndQualifiers` to `DeclaredType`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-05 13:36_
+_@dhruvmanila_
 
 ## Summary
 

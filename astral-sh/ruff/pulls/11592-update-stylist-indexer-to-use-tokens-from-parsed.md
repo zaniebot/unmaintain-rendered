@@ -13,14 +13,14 @@ head: dhruv/indexer-stylist
 created_at: 2024-05-29T01:51:00Z
 updated_at: 2024-05-31T04:53:26Z
 url: https://github.com/astral-sh/ruff/pull/11592
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Update `Stylist`, `Indexer` to use tokens from parsed output
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-29 01:51_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-16T17:36:25Z
 updated_at: 2025-12-16T18:42:51Z
 url: https://github.com/astral-sh/ty/issues/1948
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Warn on (accidentally) unreachable code blocks
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-16 17:36_
+_@AlexWaygood_
 
 Mypy and pyright both offer opt-in lints which, when enabled, cause them to complain about the `else` branch in this snippet:
 

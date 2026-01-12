@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-18T20:10:32Z
 updated_at: 2026-01-12T12:36:46Z
 url: https://github.com/astral-sh/ruff/issues/14443
-synced_at: 2026-01-12T12:59:48Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Feature request: Make *any* unknown rule code in "ignore" setting a warning, not an error
 
 ---
 
-_Issue opened by @Avasam on 2024-11-18 20:10_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

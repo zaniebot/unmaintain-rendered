@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-09-14T18:38:38Z
 updated_at: 2018-08-02T03:29:53Z
 url: https://github.com/clap-rs/clap/issues/663
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Compilation error on Rust 1.9 since 2.11.1
 
 ---
 
-_Issue opened by @i80and on 2016-09-14 18:38_
+_@i80and_
 
 When compiling Clap 2.11.1+ with Rust 1.9.0, I get the following error:
 

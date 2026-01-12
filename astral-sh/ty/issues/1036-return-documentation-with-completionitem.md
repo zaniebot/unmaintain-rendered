@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-18T07:23:22Z
 updated_at: 2025-08-21T06:35:11Z
 url: https://github.com/astral-sh/ty/issues/1036
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Return documentation with CompletionItem
 
 ---
 
-_Issue opened by @JaRoSchm on 2025-08-18 07:23_
+_@JaRoSchm_
 
 Hi, many editor allow to show the signature and docstring next to each suggested completion item. See for example this screenshot where python-lsp-server and neovim are used:
 

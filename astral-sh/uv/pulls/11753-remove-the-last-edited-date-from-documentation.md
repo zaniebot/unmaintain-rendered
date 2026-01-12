@@ -13,14 +13,14 @@ head: zb/edited
 created_at: 2025-02-24T18:55:24Z
 updated_at: 2025-02-24T19:27:03Z
 url: https://github.com/astral-sh/uv/pull/11753
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:59Z
 ```
 
 # Remove the last edited date from documentation pages
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-24 18:55_
+_@zanieb_
 
 I am bothered by the positioning of this immediately following the content. I explored some other things, like forcing it the bottom of the article, but in the end it was easiest to just hide it entirely
 

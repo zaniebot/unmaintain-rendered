@@ -13,14 +13,14 @@ head: charlie/sym
 created_at: 2024-02-23T20:47:44Z
 updated_at: 2024-02-24T03:22:15Z
 url: https://github.com/astral-sh/uv/pull/1944
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:48Z
 ```
 
 # Avoid erroring for source distributions with symlinks in archive
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-23 20:47_
+_@charliermarsh_
 
 ## Summary
 

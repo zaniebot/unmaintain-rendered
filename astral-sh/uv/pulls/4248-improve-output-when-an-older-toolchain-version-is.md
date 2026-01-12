@@ -14,14 +14,14 @@ head: zb/install
 created_at: 2024-06-11T19:30:49Z
 updated_at: 2024-06-11T19:49:16Z
 url: https://github.com/astral-sh/uv/pull/4248
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:06Z
 ```
 
 # Improve output when an older toolchain version is already installed
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-11 19:30_
+_@zanieb_
 
 e.g.
 

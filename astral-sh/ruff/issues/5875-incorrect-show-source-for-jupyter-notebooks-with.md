@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-19T02:13:49Z
 updated_at: 2023-07-19T03:59:36Z
 url: https://github.com/astral-sh/ruff/issues/5875
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Incorrect `--show-source` for Jupyter Notebooks with continuous import blocks
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-07-19 02:13_
+_@dhruvmanila_
 
 Take the [test case](https://github.com/astral-sh/ruff/blob/main/crates/ruff/resources/test/fixtures/jupyter/isort.ipynb) as an example where there are two cells with unsorted imports.
 

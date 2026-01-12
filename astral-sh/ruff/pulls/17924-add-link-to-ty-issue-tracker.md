@@ -13,14 +13,14 @@ head: dhruv/ty-issue
 created_at: 2025-05-07T16:19:24Z
 updated_at: 2025-05-07T16:33:29Z
 url: https://github.com/astral-sh/ruff/pull/17924
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # Add link to `ty` issue tracker
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-05-07 16:19_
+_@dhruvmanila_
 
 _No description provided._
 

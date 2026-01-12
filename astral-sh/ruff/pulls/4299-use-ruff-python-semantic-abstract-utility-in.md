@@ -12,14 +12,14 @@ head: charlie/pytest
 created_at: 2023-05-09T01:53:55Z
 updated_at: 2023-05-09T02:23:36Z
 url: https://github.com/astral-sh/ruff/pull/4299
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Use `ruff_python_semantic` abstract utility in flake8-pytest-style
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-09 01:53_
+_@charliermarsh_
 
 _No description provided._
 

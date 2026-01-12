@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-01T19:32:32Z
 updated_at: 2025-08-08T13:54:39Z
 url: https://github.com/astral-sh/ty/issues/105
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Support gradual equivalence for an overloaded callable
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-05-01 19:32_
+_@dhruvmanila_
 
 The task here is to resolve the following TODO and add support for `is_gradual_equivalent_to` for an overloaded callable. Note that this relation is supported when both types are non-overloaded callable i.e., a callable type with one signature.
 

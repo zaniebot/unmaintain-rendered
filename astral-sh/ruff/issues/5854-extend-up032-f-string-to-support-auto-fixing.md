@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-18T05:22:11Z
 updated_at: 2023-07-18T16:40:39Z
 url: https://github.com/astral-sh/ruff/issues/5854
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Extend `UP032` (`f-string`) to support auto-fixing multi-line triple-quoted strings
 
 ---
 
-_Issue opened by @harupy on 2023-07-18 05:22_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

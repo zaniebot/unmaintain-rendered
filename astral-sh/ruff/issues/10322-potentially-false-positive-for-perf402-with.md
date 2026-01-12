@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-11T01:35:55Z
 updated_at: 2024-03-11T02:05:13Z
 url: https://github.com/astral-sh/ruff/issues/10322
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Potentially false positive for PERF402 with custom iterable objects
 
 ---
 
-_Issue opened by @CoolCat467 on 2024-03-11 01:35_
+_@CoolCat467_
 
 Potentially false positive for rule `PERF402` with custom iterable objects.
 

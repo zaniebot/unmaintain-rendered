@@ -13,14 +13,14 @@ head: latyshev/up040-type-alias-type
 created_at: 2024-05-24T10:47:55Z
 updated_at: 2025-06-10T20:45:28Z
 url: https://github.com/astral-sh/ruff/pull/11530
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [`pyupgrade`] lint TypeAliasType in UP040
 
 ---
 
-_Pull request opened by @alex-700 on 2024-05-24 10:47_
+_@alex-700_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

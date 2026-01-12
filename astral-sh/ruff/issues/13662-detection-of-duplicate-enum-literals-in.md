@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-07T14:05:16Z
 updated_at: 2024-10-07T15:43:21Z
 url: https://github.com/astral-sh/ruff/issues/13662
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Detection of duplicate enum literals in dictionary keys (F601)
 
 ---
 
-_Issue opened by @tsx on 2024-10-07 14:05_
+_@tsx_
 
 [multi-value-repeated-key-literal (F601)](https://docs.astral.sh/ruff/rules/multi-value-repeated-key-literal/#multi-value-repeated-key-literal-f601) only works with primitive literals like keys and strings. In our codebase we use enums extensively for increased type safety over strings, and that includes mappings of enum values to other values. I'd love ruff to find issues in those too.
 

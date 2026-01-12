@@ -13,14 +13,14 @@ head: zb/fix-fetch
 created_at: 2024-04-23T13:48:50Z
 updated_at: 2024-04-23T14:02:31Z
 url: https://github.com/astral-sh/uv/pull/3206
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:29Z
 ```
 
 # Fix fetch of credentials when cache is seeded with username
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-23 13:48_
+_@zanieb_
 
 Fixes the failure to lookup credentials in https://github.com/astral-sh/uv/issues/3205
 

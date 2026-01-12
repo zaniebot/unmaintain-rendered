@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-19T22:37:22Z
 updated_at: 2025-09-21T03:47:17Z
 url: https://github.com/astral-sh/uv/issues/15957
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # Pathological resolution error: nucliadb
 
 ---
 
-_Issue opened by @konstin on 2025-09-19 22:37_
+_@konstin_
 
 The `uv pip compile` error when trying to resolve `nucliadb>=3` with `--no-build` on Python 3.11 is 135k lines (universal) or 133k lines (standard). This is a pathological case, as the are ~4500 release of nucliadb since. 
 

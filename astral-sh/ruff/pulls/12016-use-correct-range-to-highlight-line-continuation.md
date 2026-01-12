@@ -13,14 +13,14 @@ head: dhruv/unknown-range
 created_at: 2024-06-25T03:14:19Z
 updated_at: 2024-06-25T08:05:25Z
 url: https://github.com/astral-sh/ruff/pull/12016
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Use correct range to highlight line continuation error
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-25 03:14_
+_@dhruvmanila_
 
 ## Summary
 

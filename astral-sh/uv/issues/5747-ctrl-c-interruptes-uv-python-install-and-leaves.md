@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-03T13:00:48Z
 updated_at: 2024-08-05T02:32:25Z
 url: https://github.com/astral-sh/uv/issues/5747
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # `Ctrl-C` interruptes `uv python install` and leaves temporary files
 
 ---
 
-_Issue opened by @j178 on 2024-08-03 13:00_
+_@j178_
 
 `uv python install` creates a temporary directory at `$HOME/Library/Application Support/uv/python`. If the process is interrupted with `Ctrl-C`, the temporary files are not deleted, resulting in numerous hidden directories left behind. It might be beneficial to change the temporary download location to the system-level `/tmp`, which is periodically cleaned by the system.
 

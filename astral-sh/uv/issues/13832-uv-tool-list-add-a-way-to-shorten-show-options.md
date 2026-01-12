@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-04T12:47:27Z
 updated_at: 2025-06-04T23:25:02Z
 url: https://github.com/astral-sh/uv/issues/13832
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # `uv tool list`: add a way to shorten `--show-*` options
 
 ---
 
-_Issue opened by @richieadler on 2025-06-04 12:47_
+_@richieadler_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/run
 created_at: 2024-05-29T02:00:30Z
 updated_at: 2024-05-29T13:28:22Z
 url: https://github.com/astral-sh/uv/pull/3894
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:54Z
 ```
 
 # Use lockfile in `uv run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-29 02:00_
+_@charliermarsh_
 
 ## Summary
 

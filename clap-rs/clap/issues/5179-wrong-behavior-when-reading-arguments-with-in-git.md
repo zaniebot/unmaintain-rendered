@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-20T02:53:13Z
 updated_at: 2023-10-23T12:49:27Z
 url: https://github.com/clap-rs/clap/issues/5179
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Wrong behavior when reading arguments with / in git bash
 
 ---
 
-_Issue opened by @oriongonza on 2023-10-20 02:53_
+_@oriongonza_
 
 The argument expands to git bash root folder. This doesn't happen with other commands (`echo /foo` works fine)
 When the argument has only one letter (`/a`) it expands to `A:/`

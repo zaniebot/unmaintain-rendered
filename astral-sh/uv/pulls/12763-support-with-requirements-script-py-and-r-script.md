@@ -13,14 +13,14 @@ head: uvx-with-requirements-scripts
 created_at: 2025-04-08T21:08:47Z
 updated_at: 2025-09-05T16:46:02Z
 url: https://github.com/astral-sh/uv/pull/12763
-synced_at: 2026-01-10T06:44:32Z
+synced_at: 2026-01-12T16:10:22Z
 ```
 
 # Support `--with-requirements script.py` and `-r script.py` to include inline dependency metadata from another script
 
 ---
 
-_Pull request opened by @blueraft on 2025-04-08 21:08_
+_@blueraft_
 
 ## Summary
 

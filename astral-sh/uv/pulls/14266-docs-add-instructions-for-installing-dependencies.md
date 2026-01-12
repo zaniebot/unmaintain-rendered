@@ -11,14 +11,14 @@ head: vvanglro-patch-1
 created_at: 2025-06-26T02:10:25Z
 updated_at: 2025-06-26T02:19:02Z
 url: https://github.com/astral-sh/uv/pull/14266
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # docs: add instructions for installing dependencies for entire workspace or specific packages
 
 ---
 
-_Pull request opened by @vvanglro on 2025-06-26 02:10_
+_@vvanglro_
 
 https://github.com/astral-sh/uv/issues/14250
 

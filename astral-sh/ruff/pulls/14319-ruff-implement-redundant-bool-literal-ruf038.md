@@ -14,14 +14,14 @@ head: redundant-bool-literal
 created_at: 2024-11-13T14:10:42Z
 updated_at: 2024-11-16T22:02:07Z
 url: https://github.com/astral-sh/ruff/pull/14319
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`ruff`] Implement `redundant-bool-literal` (`RUF038`)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-13 14:10_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

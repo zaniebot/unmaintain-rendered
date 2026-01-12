@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-17T08:00:12Z
 updated_at: 2023-11-17T17:34:03Z
 url: https://github.com/astral-sh/ruff/issues/8738
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # UP022 incorrectly claims previous code was deprecated
 
 ---
 
-_Issue opened by @hauntsaninja on 2023-11-17 08:00_
+_@hauntsaninja_
 
 I don't think this is deprecated in any way, maybe just not new-fashioned :-)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-22T15:07:27Z
 updated_at: 2024-02-23T09:21:10Z
 url: https://github.com/astral-sh/uv/issues/1872
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # uv does not handle --find-link for pytorch, 403 Forbidden
 
 ---
 
-_Issue opened by @KacpiW on 2024-02-22 15:07_
+_@KacpiW_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

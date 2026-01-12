@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-16T20:38:53Z
 updated_at: 2025-07-16T20:47:46Z
 url: https://github.com/astral-sh/ty/issues/834
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `nonlocal` variable and `unresolved-reference`
 
 ---
 
-_Issue opened by @lswainemoore on 2025-07-16 20:38_
+_@lswainemoore_
 
 ### Summary
 

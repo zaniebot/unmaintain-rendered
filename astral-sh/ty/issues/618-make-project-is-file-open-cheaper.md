@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-09T16:05:19Z
 updated_at: 2025-07-24T17:15:23Z
 url: https://github.com/astral-sh/ty/issues/618
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Make `project.is_file_open` cheaper
 
 ---
 
-_Issue opened by @MichaReiser on 2025-06-09 16:05_
+_@MichaReiser_
 
 `project.is_file_open` can be pretty expensive because it requires indexing all project files. The main reason for it is to check if a file isn't gitignored. 
 

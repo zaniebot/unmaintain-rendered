@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-02T18:51:07Z
 updated_at: 2025-04-02T19:21:19Z
 url: https://github.com/astral-sh/uv/issues/12635
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # irm connection forcibly closed when installing on windows
 
 ---
 
-_Issue opened by @oseymour on 2025-04-02 18:51_
+_@oseymour_
 
 ### Question
 

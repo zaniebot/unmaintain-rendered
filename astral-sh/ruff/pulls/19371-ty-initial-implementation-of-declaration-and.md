@@ -14,14 +14,14 @@ head: goto_definition
 created_at: 2025-07-15T18:32:31Z
 updated_at: 2025-07-18T18:26:19Z
 url: https://github.com/astral-sh/ruff/pull/19371
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [ty] Initial implementation of declaration and definition providers.
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-15 18:32_
+_@UnboundVariable_
 
 This PR implements "go to definition" and "go to declaration" functionality for name nodes only. Future PRs will add support for attributes, module names in import statements, keyword argument names, etc.
 

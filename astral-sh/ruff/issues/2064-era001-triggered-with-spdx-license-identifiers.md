@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-21T17:34:25Z
 updated_at: 2023-01-21T18:46:05Z
 url: https://github.com/astral-sh/ruff/issues/2064
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # ERA001 triggered with SPDX license identifiers
 
 ---
 
-_Issue opened by @jdknight on 2023-01-21 17:34_
+_@jdknight_
 
 Have a project which uses `SPDX-License-Identifier` definitions at the top of each source file. A minimized example file (`__init__.py`) is as follows:
 

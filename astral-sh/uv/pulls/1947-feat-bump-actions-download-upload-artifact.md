@@ -13,14 +13,14 @@ head: upgrade-upload-download-actions
 created_at: 2024-02-24T03:33:46Z
 updated_at: 2024-02-26T13:57:32Z
 url: https://github.com/astral-sh/uv/pull/1947
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:48Z
 ```
 
 # feat: bump actions/{download,upload}-artifact
 
 ---
 
-_Pull request opened by @samypr100 on 2024-02-24 03:33_
+_@samypr100_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

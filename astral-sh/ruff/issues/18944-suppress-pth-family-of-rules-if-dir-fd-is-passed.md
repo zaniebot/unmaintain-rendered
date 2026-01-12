@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-25T19:41:25Z
 updated_at: 2025-06-25T20:05:16Z
 url: https://github.com/astral-sh/ruff/issues/18944
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Suppress PTH* family of rules if `dir_fd=` is passed
 
 ---
 
-_Issue opened by @septatrix on 2025-06-25 19:41_
+_@septatrix_
 
 ### Summary
 

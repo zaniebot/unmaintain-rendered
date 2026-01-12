@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-29T10:00:49Z
 updated_at: 2026-01-08T00:59:35Z
 url: https://github.com/astral-sh/ruff/issues/2323
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Support flake8-annotations-complexity
 
 ---
 
-_Issue opened by @Crocmagnon on 2023-01-29 10:00_
+_@Crocmagnon_
 
 I'm using https://github.com/best-doctor/flake8-annotations-complexity to keep my type annotations from going wild, and would love to see support in ruff :)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-03T23:38:10Z
 updated_at: 2025-01-04T15:53:30Z
 url: https://github.com/astral-sh/ruff/issues/15245
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Strange fix behavior for UP006/NonPEP585Annotation fixer since ruff 0.8.5
 
 ---
 
-_Issue opened by @oprypin on 2025-01-03 23:38_
+_@oprypin_
 
 I am reporting strange behaviors since ruff 0.8.5. I have not tried ruff from master branch.
 

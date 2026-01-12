@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2024-11-03T19:06:00Z
 updated_at: 2025-04-14T08:00:32Z
 url: https://github.com/astral-sh/uv/pull/8780
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:29Z
 ```
 
 # Separate use cases from non-use cases of workspaces in docs
 
 ---
 
-_Pull request opened by @astrojuanlu on 2024-11-03 19:06_
+_@astrojuanlu_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

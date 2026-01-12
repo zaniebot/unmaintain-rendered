@@ -13,14 +13,14 @@ head: zb/python-shim
 created_at: 2024-09-24T22:31:28Z
 updated_at: 2025-04-14T08:00:32Z
 url: https://github.com/astral-sh/uv/pull/7677
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Add a `uv-python` shim executable
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-24 22:31_
+_@zanieb_
 
 Adds a minimal `uv-python` binary to our distributions, which uses `uv python find` to determine which Python executable to use then invokes it with all the arguments.
 

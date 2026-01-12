@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-08T06:12:35Z
 updated_at: 2024-04-18T01:15:53Z
 url: https://github.com/astral-sh/ruff/issues/9890
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # False positive `SLOT000` on Enum subclasses
 
 ---
 
-_Issue opened by @jamesbraza on 2024-02-08 06:12_
+_@jamesbraza_
 
 With `ruff==0.2.1` and Python 3.12:
 

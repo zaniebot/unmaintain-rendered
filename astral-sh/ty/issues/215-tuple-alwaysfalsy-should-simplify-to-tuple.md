@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-16T10:28:50Z
 updated_at: 2025-08-22T13:11:42Z
 url: https://github.com/astral-sh/ty/issues/215
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # `tuple & AlwaysFalsy` should simplify to `tuple[()]`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-01-16 10:28_
+_@AlexWaygood_
 
 Here's what these types represent:
 - `tuple`: the set of all possible runtime instances of the class `tuple` (including instances of tuple subclasses)

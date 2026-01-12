@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-26T20:03:10Z
 updated_at: 2023-08-27T00:55:23Z
 url: https://github.com/clap-rs/clap/issues/5090
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Update documentation for `arg` attribute
 
 ---
 
-_Issue opened by @MiniaczQ on 2023-08-26 20:03_
+_@MiniaczQ_
 
 ### Please complete the following tasks
 

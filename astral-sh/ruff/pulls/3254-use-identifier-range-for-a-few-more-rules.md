@@ -12,14 +12,14 @@ head: charlie/range
 created_at: 2023-02-27T18:20:41Z
 updated_at: 2023-02-27T18:23:35Z
 url: https://github.com/astral-sh/ruff/pull/3254
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Use `identifier_range` for a few more rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-27 18:20_
+_@charliermarsh_
 
 See: #1469.
 

@@ -13,14 +13,14 @@ head: jane/server/contributing
 created_at: 2024-03-25T10:23:13Z
 updated_at: 2024-03-26T06:08:38Z
 url: https://github.com/astral-sh/ruff/pull/10565
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # High-level project overview and contributing guide for `ruff server`
 
 ---
 
-_Pull request opened by @snowsignal on 2024-03-25 10:23_
+_@snowsignal_
 
 ## Summary
 

@@ -15,14 +15,14 @@ head: micha/background-request-handler-db
 created_at: 2025-12-12T11:06:43Z
 updated_at: 2025-12-12T11:31:15Z
 url: https://github.com/astral-sh/ruff/pull/21941
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Attach db to background request handler task
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-12 11:06_
+_@MichaReiser_
 
 ## Summary
 

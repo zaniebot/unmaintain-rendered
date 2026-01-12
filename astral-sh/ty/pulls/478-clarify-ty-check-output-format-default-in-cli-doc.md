@@ -11,14 +11,14 @@ head: cli-guidance
 created_at: 2025-05-21T20:27:21Z
 updated_at: 2025-05-22T12:09:55Z
 url: https://github.com/astral-sh/ty/pull/478
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Clarify `ty check` output format default in CLI doc
 
 ---
 
-_Pull request opened by @brainwane on 2025-05-21 20:27_
+_@brainwane_
 
 ## Summary
 

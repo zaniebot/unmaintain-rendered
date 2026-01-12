@@ -13,14 +13,14 @@ head: dcreager/proptest-tuple
 created_at: 2025-06-23T17:38:53Z
 updated_at: 2025-06-24T22:13:50Z
 url: https://github.com/astral-sh/ruff/pull/18901
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [ty] Add property test generators for variable-length tuples
 
 ---
 
-_Pull request opened by @dcreager on 2025-06-23 17:38_
+_@dcreager_
 
 Add property test generators for the new variable-length tuples. This covers homogeneous tuples as well.
 

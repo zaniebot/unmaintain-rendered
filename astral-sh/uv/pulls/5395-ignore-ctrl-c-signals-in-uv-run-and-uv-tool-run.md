@@ -15,14 +15,14 @@ head: charlie/sig
 created_at: 2024-07-24T04:06:08Z
 updated_at: 2024-07-24T13:36:43Z
 url: https://github.com/astral-sh/uv/pull/5395
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:47Z
 ```
 
 # Ignore Ctrl-C signals in `uv run` and `uv tool run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-24 04:06_
+_@charliermarsh_
 
 ## Summary
 

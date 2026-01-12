@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-21T20:47:01Z
 updated_at: 2025-01-21T21:21:05Z
 url: https://github.com/astral-sh/uv/issues/10825
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # Unable to install pytorch audio with very simple pyproject.toml
 
 ---
 
-_Issue opened by @zackees on 2025-01-21 20:47_
+_@zackees_
 
 ### Summary
 

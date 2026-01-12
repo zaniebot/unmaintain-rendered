@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T08:49:03Z
 updated_at: 2025-01-24T17:24:11Z
 url: https://github.com/astral-sh/uv/issues/10931
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Diagnose `.dirty` version
 
 ---
 
-_Issue opened by @superlopuh on 2025-01-24 08:49_
+_@superlopuh_
 
 ### Question
 

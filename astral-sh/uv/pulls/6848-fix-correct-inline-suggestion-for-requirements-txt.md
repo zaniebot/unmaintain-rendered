@@ -11,14 +11,14 @@ head: fix-requirements-inline-help
 created_at: 2024-08-30T01:17:25Z
 updated_at: 2024-10-10T22:09:49Z
 url: https://github.com/astral-sh/uv/pull/6848
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:33Z
 ```
 
 # fix: correct inline suggestion for requirements.txt
 
 ---
 
-_Pull request opened by @dimaqq on 2024-08-30 01:17_
+_@dimaqq_
 
 Fixed #6845
 

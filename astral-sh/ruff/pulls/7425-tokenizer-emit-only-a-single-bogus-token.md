@@ -12,14 +12,14 @@ head: tokenizer-a-single-bogus-token
 created_at: 2023-09-15T22:02:02Z
 updated_at: 2023-09-19T14:06:05Z
 url: https://github.com/astral-sh/ruff/pull/7425
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Tokenizer: Emit only a single bogus token
 
 ---
 
-_Pull request opened by @konstin on 2023-09-15 22:02_
+_@konstin_
 
 **Summary** Instead of emitting a bogus token per char, we now only emit on single last bogus token. This leads to much more concise output.
 

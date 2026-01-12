@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T21:33:17Z
 updated_at: 2024-02-22T03:05:19Z
 url: https://github.com/astral-sh/uv/issues/1358
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Feature request: Ability to limit selected packages based on upload time
 
 ---
 
-_Issue opened by @notatallshaw on 2024-02-15 21:33_
+_@notatallshaw_
 
 Since PEP 700, Simple Index API 1.1 and above have supported the field `upload-time`. It would be useful for many use cases to support restricting what packages are installed by specifying an upper limit on this `upload-time`.
 

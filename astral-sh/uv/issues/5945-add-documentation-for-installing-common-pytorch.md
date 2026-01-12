@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-09T00:11:36Z
 updated_at: 2024-12-17T03:53:51Z
 url: https://github.com/astral-sh/uv/issues/5945
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Add documentation for installing common pytorch variants
 
 ---
 
-_Issue opened by @zanieb on 2024-08-09 00:11_
+_@zanieb_
 
 😭 but it must be done!
 

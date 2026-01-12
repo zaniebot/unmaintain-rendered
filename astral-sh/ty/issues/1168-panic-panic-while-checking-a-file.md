@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-11T00:33:16Z
 updated_at: 2025-09-11T00:41:47Z
 url: https://github.com/astral-sh/ty/issues/1168
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] panic while checking a file
 
 ---
 
-_Issue opened by @bellini666 on 2025-09-11 00:33_
+_@bellini666_
 
 Got those 2 panics while testing ty on https://github.com/strawberry-graphql/strawberry-django (which is currently using `pyright` as a typing linter)
 

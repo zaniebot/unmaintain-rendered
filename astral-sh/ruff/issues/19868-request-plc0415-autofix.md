@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-11T16:51:45Z
 updated_at: 2025-08-14T02:28:07Z
 url: https://github.com/astral-sh/ruff/issues/19868
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Request: `PLC0415` autofix
 
 ---
 
-_Issue opened by @jamesbraza on 2025-08-11 16:51_
+_@jamesbraza_
 
 ### Summary
 

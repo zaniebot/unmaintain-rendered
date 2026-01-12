@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-05T09:19:49Z
 updated_at: 2024-03-05T16:47:38Z
 url: https://github.com/astral-sh/uv/issues/2198
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # `-e .` not respected in nested requirements file
 
 ---
 
-_Issue opened by @wadevries on 2024-03-05 09:19_
+_@wadevries_
 
 I have the following minimal setup:
 

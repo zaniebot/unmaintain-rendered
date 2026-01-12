@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-28T21:18:58Z
 updated_at: 2022-12-29T00:46:46Z
 url: https://github.com/astral-sh/ruff/issues/1430
-synced_at: 2026-01-10T12:05:28Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [feature-request] Support dry run for --fix via --diff flag
 
 ---
 
-_Issue opened by @salmiakki on 2022-12-28 21:18_
+_@salmiakki_
 
 It's scary to apply automatic fixes before taking a look at them.
 

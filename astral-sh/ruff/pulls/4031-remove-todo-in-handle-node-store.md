@@ -12,14 +12,14 @@ head: charlie/todo
 created_at: 2023-04-19T19:19:53Z
 updated_at: 2023-04-19T19:53:01Z
 url: https://github.com/astral-sh/ruff/pull/4031
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Remove TODO in `handle_node_store`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-19 19:19_
+_@charliermarsh_
 
 I don't think this is relevant, since within a comprehension, assignments are part of the comprehension scope anyway.
 

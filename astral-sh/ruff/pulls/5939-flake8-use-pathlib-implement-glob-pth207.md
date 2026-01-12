@@ -13,14 +13,14 @@ head: glob-pth207
 created_at: 2023-07-21T02:48:33Z
 updated_at: 2023-08-09T20:30:07Z
 url: https://github.com/astral-sh/ruff/pull/5939
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # [`flake8-use-pathlib`] Implement `glob` (`PTH207`)
 
 ---
 
-_Pull request opened by @sbrugman on 2023-07-21 02:48_
+_@sbrugman_
 
 Discovered that the usage of `glob.glob` is [widespread](https://grep.app/search?current=7&q=glob.glob%28&filter%5Blang%5D%5B0%5D=Python) when working on the previous lints for `flake8-use-pathlib`.
 

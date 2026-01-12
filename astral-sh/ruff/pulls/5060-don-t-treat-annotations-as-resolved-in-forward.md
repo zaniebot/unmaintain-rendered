@@ -12,14 +12,14 @@ head: charlie/forward
 created_at: 2023-06-13T18:18:39Z
 updated_at: 2023-06-13T18:52:03Z
 url: https://github.com/astral-sh/ruff/pull/5060
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Don't treat annotations as resolved in forward references
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-13 18:18_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-22T18:48:12Z
 updated_at: 2025-12-12T17:04:24Z
 url: https://github.com/astral-sh/uv/issues/12395
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # `uv init` Add a .gitignore file?
 
 ---
 
-_Issue opened by @jordan-carson on 2025-03-22 18:48_
+_@jordan-carson_
 
 ### Question
 

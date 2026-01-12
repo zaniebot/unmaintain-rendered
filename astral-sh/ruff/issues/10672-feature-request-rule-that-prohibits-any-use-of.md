@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-30T17:05:09Z
 updated_at: 2024-05-21T17:49:39Z
 url: https://github.com/astral-sh/ruff/issues/10672
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Feature request: rule that prohibits any use of type:ignore, and other type-checking-suppression mechanisms
 
 ---
 
-_Issue opened by @wyattscarpenter on 2024-03-30 17:05_
+_@wyattscarpenter_
 
 PEP 484 lists several ways to ignore type checking https://peps.python.org/pep-0484/#compatibility-with-other-uses-of-function-annotations: 
 - `# type: ignore` comment

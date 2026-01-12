@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-09T14:52:52Z
 updated_at: 2025-09-11T18:25:07Z
 url: https://github.com/astral-sh/ty/issues/1158
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # LSP crashes with a stack overflow for recursive types
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-09 14:52_
+_@sharkdp_
 
 ### Summary
 

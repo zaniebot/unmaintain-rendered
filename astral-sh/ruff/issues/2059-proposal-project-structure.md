@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-21T13:25:54Z
 updated_at: 2023-04-06T17:50:07Z
 url: https://github.com/astral-sh/ruff/issues/2059
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Proposal: Project structure
 
 ---
 
-_Issue opened by @MichaReiser on 2023-01-21 13:25_
+_@MichaReiser_
 
 Hi 
 

@@ -13,14 +13,14 @@ head: fix-rooster-and-bump
 created_at: 2025-09-18T19:33:30Z
 updated_at: 2025-09-18T19:37:31Z
 url: https://github.com/astral-sh/ruff/pull/20475
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # Add `pyproject.toml` to rooster config `version_files` and bump to 0.13.1
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-18 19:33_
+_@dylwil3_
 
 It looks like the new `rooster` does not automatically bump `pyproject.toml`.
 

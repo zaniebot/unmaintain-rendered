@@ -13,14 +13,14 @@ head: charlie/c417
 created_at: 2023-07-05T00:10:45Z
 updated_at: 2023-07-05T00:38:03Z
 url: https://github.com/astral-sh/ruff/pull/5518
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Refactor the `unnecessary-map` (`C417`) implementation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-05 00:10_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-18T10:47:50Z
 updated_at: 2025-12-06T16:07:16Z
 url: https://github.com/astral-sh/ty/issues/1580
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Diagnostic shows wrong type in unpack assignment
 
 ---
 
-_Issue opened by @sharkdp on 2025-11-18 10:47_
+_@sharkdp_
 
 The diagnostic message in the following example should say *"Object of type **`int`** is not assignable to `str`"*:
 ```py

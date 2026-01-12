@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-04-05T03:44:10Z
 updated_at: 2020-04-07T14:15:16Z
 url: https://github.com/clap-rs/clap/issues/1787
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Missing file mentioned in readme
 
 ---
 
-_Issue opened by @huntj88 on 2020-04-05 03:44_
+_@huntj88_
 
 ### Clap version
 

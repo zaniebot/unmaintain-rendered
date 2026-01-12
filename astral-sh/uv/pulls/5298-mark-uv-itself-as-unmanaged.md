@@ -13,14 +13,14 @@ head: konsti/unmanaged-uv
 created_at: 2024-07-22T17:58:00Z
 updated_at: 2024-07-22T18:12:13Z
 url: https://github.com/astral-sh/uv/pull/5298
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:44Z
 ```
 
 # Mark uv itself as unmanaged
 
 ---
 
-_Pull request opened by @konstin on 2024-07-22 17:58_
+_@konstin_
 
 I like to create dummy packages in the workspace, which interacts badly with our pyproject.toml.
 

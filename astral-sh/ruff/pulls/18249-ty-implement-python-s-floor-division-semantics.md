@@ -14,14 +14,14 @@ head: floor-division
 created_at: 2025-05-22T06:24:50Z
 updated_at: 2025-05-22T14:42:30Z
 url: https://github.com/astral-sh/ruff/pull/18249
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Implement Python's floor division semantics for `Literal` `int`s
 
 ---
 
-_Pull request opened by @brandtbucher on 2025-05-22 06:24_
+_@brandtbucher_
 
 Division works differently in Python than in Rust. If the result is negative and there is a remainder, the division rounds down (instead of towards zero). The remainder needs to be adjusted to compensate so that `(lhs // rhs) * rhs + (lhs % rhs) == lhs`.
 

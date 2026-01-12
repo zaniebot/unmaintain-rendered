@@ -13,14 +13,14 @@ head: s606-docs
 created_at: 2024-10-07T11:20:53Z
 updated_at: 2024-10-07T12:31:03Z
 url: https://github.com/astral-sh/ruff/pull/13658
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Rework `S606` (`start-process-with-no-shell`) docs to make clear the security motivations
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-07 11:20_
+_@AlexWaygood_
 
 Helps with #13614. This docs rewrite draws on the [documentation for the original bandit rule](https://bandit.readthedocs.io/en/latest/plugins/b606_start_process_with_no_shell.html).
 

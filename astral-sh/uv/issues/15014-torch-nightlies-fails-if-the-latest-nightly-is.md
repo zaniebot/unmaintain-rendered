@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-01T16:30:37Z
 updated_at: 2025-08-01T18:29:34Z
 url: https://github.com/astral-sh/uv/issues/15014
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # torch nightlies fails if the latest nightly is missing
 
 ---
 
-_Issue opened by @pbontrager on 2025-08-01 16:30_
+_@pbontrager_
 
 ### Summary
 

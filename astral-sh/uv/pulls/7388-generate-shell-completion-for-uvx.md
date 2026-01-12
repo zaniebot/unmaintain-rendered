@@ -13,14 +13,14 @@ head: uvx-complete
 created_at: 2024-09-14T09:30:14Z
 updated_at: 2024-09-17T19:25:55Z
 url: https://github.com/astral-sh/uv/pull/7388
-synced_at: 2026-01-10T12:53:46Z
+synced_at: 2026-01-12T16:07:48Z
 ```
 
 # Generate shell completion for `uvx`
 
 ---
 
-_Pull request opened by @bluss on 2024-09-14 09:30_
+_@bluss_
 
 ## Summary
 

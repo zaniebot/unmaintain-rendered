@@ -13,14 +13,14 @@ head: move-locate-cmp-ops
 created_at: 2024-01-08T11:18:56Z
 updated_at: 2024-01-08T12:15:37Z
 url: https://github.com/astral-sh/ruff/pull/9438
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Move `locate_cmp_ops` to `invalid_literal_comparisons`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-01-08 11:18_
+_@MichaReiser_
 
 ## Summary
 

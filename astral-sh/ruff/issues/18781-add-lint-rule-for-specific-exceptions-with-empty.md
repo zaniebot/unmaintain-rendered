@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-19T03:29:55Z
 updated_at: 2025-06-19T03:54:15Z
 url: https://github.com/astral-sh/ruff/issues/18781
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add lint rule for specific exceptions with empty handlers?
 
 ---
 
-_Issue opened by @IndrajeetPatil on 2025-06-19 03:29_
+_@IndrajeetPatil_
 
 ## TLDR
 

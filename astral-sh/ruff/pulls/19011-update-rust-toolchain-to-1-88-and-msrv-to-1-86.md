@@ -13,14 +13,14 @@ head: micha/rust-1.88
 created_at: 2025-06-28T15:04:07Z
 updated_at: 2025-06-28T18:24:02Z
 url: https://github.com/astral-sh/ruff/pull/19011
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # Update Rust toolchain to 1.88 and MSRV to 1.86
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-28 15:04_
+_@MichaReiser_
 
 ## Summary
 

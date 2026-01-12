@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-07T17:27:32Z
 updated_at: 2025-07-08T15:34:52Z
 url: https://github.com/astral-sh/ty/issues/773
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Generate environment variable reference from code
 
 ---
 
-_Issue opened by @zanieb on 2025-07-07 17:27_
+_@zanieb_
 
 e.g., this would have automated https://github.com/astral-sh/ty/pull/768
 

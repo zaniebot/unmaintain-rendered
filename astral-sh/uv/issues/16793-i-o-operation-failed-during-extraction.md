@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-20T20:31:39Z
 updated_at: 2025-11-24T15:56:25Z
 url: https://github.com/astral-sh/uv/issues/16793
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # I/O operation failed during extraction
 
 ---
 
-_Issue opened by @wpcarro on 2025-11-20 20:31_
+_@wpcarro_
 
 ### Question
 

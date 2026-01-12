@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-30T13:10:30Z
 updated_at: 2024-10-30T13:56:44Z
 url: https://github.com/astral-sh/ruff/issues/13997
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # allow for multiple output formats in different output files
 
 ---
 
-_Issue opened by @MarcBresson on 2024-10-30 13:10_
+_@MarcBresson_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

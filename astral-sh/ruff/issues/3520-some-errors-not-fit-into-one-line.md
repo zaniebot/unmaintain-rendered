@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-14T18:32:17Z
 updated_at: 2023-05-10T06:37:58Z
 url: https://github.com/astral-sh/ruff/issues/3520
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Some errors not fit into one line
 
 ---
 
-_Issue opened by @qarmin on 2023-03-14 18:32_
+_@qarmin_
 
 ruff 0.0.255
 

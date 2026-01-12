@@ -13,14 +13,14 @@ head: dcreager/generate-ast
 created_at: 2025-01-17T01:38:16Z
 updated_at: 2025-01-17T19:23:05Z
 url: https://github.com/astral-sh/ruff/pull/15544
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Auto-generate AST boilerplate
 
 ---
 
-_Pull request opened by @dcreager on 2025-01-17 01:38_
+_@dcreager_
 
 This PR replaces most of the hard-coded AST definitions with a generation script, similar to what happens in `rust_python_formatter`.  I've replaced every "rote" definition that I could find, where the content is entirely boilerplate and only depends on what syntax nodes there are and which groups they belong to.
 

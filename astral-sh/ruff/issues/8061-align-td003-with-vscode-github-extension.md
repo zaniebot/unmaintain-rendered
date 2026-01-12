@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-19T09:19:24Z
 updated_at: 2025-01-15T23:47:34Z
 url: https://github.com/astral-sh/ruff/issues/8061
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Align `TD003` with VSCode github extension automatic issue creation
 
 ---
 
-_Issue opened by @MartinBernstorff on 2023-10-19 09:19_
+_@MartinBernstorff_
 
 Rule: https://docs.astral.sh/ruff/rules/missing-todo-link/#missing-todo-link-td003
 

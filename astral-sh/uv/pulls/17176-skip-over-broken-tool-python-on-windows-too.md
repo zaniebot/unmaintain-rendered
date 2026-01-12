@@ -13,14 +13,14 @@ head: konsti/windows-broken-tool-retry
 created_at: 2025-12-18T14:31:17Z
 updated_at: 2025-12-18T14:31:17Z
 url: https://github.com/astral-sh/uv/pull/17176
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:38Z
 ```
 
 # Skip over broken tool Python on Windows too
 
 ---
 
-_Pull request opened by @konstin on 2025-12-18 14:31_
+_@konstin_
 
 Fixes #16252
 

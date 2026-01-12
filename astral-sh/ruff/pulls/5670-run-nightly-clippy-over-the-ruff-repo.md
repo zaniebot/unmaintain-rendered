@@ -13,14 +13,14 @@ head: charlie/clippy
 created_at: 2023-07-11T03:25:17Z
 updated_at: 2023-07-17T09:55:37Z
 url: https://github.com/astral-sh/ruff/pull/5670
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Run nightly Clippy over the Ruff repo
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-11 03:25_
+_@charliermarsh_
 
 ## Summary
 

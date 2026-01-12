@@ -12,14 +12,14 @@ head: charlie/patterns
 created_at: 2022-12-22T00:31:15Z
 updated_at: 2022-12-22T00:31:21Z
 url: https://github.com/astral-sh/ruff/pull/1318
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Support code redirects in flake8-to-ruff
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-22 00:31_
+_@charliermarsh_
 
 _No description provided._
 

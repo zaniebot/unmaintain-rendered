@@ -12,14 +12,14 @@ head: unpin-adminitions-plugin
 created_at: 2025-07-15T19:45:30Z
 updated_at: 2025-07-16T08:30:56Z
 url: https://github.com/astral-sh/ruff/pull/19375
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # chore(deps): upgrade mkdocs-github-admonitions-plugin to v0.1.1
 
 ---
 
-_Pull request opened by @corneliusroemer on 2025-07-15 19:45_
+_@corneliusroemer_
 
 ## Summary
 

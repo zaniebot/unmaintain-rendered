@@ -12,14 +12,14 @@ head: initial-wasi-support
 created_at: 2022-10-13T11:51:03Z
 updated_at: 2022-10-15T08:45:42Z
 url: https://github.com/astral-sh/ruff/pull/416
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Add initial wasm32-wasi support
 
 ---
 
-_Pull request opened by @konstin on 2022-10-13 11:51_
+_@konstin_
 
 I'm currently experimenting whether it's feasible to make wasm32-wasi wheels. This is also the groundwork needed to make a web version of ruff, which might the more interesting use case.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-14T02:38:53Z
 updated_at: 2024-03-15T14:33:27Z
 url: https://github.com/astral-sh/ruff/issues/10403
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Rewrite `list(x for x in y)` to `list(y)`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-14 02:38_
+_@charliermarsh_
 
 Given `list(x for x in y)`, we first hit C400, which fixes to `[x for x in y]`, which hits C416, which fixes to `list(y)`. We should consider short-circuiting this.
 

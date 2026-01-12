@@ -13,14 +13,14 @@ head: jane/server/exe-command-warn
 created_at: 2024-06-10T14:14:23Z
 updated_at: 2024-06-11T19:00:24Z
 url: https://github.com/astral-sh/ruff/pull/11823
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # `ruff server`: Improve error message when a command is run on an unavailable document
 
 ---
 
-_Pull request opened by @snowsignal on 2024-06-10 14:14_
+_@snowsignal_
 
 ## Summary
 

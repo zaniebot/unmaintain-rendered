@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-02T11:48:21Z
 updated_at: 2024-07-02T12:54:15Z
 url: https://github.com/astral-sh/uv/issues/4726
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # uv run doesn't respect PEP 723
 
 ---
 
-_Issue opened by @mgaitan on 2024-07-02 11:48_
+_@mgaitan_
 
 I know it is still experimental but I wanted to make use of the requirements statement via metadata for a script that was implemented in https://github.com/astral-sh/uv/pull/4656 but it doesn't work. 
 

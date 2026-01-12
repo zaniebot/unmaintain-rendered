@@ -13,14 +13,14 @@ head: charlie/m
 created_at: 2024-11-14T21:09:57Z
 updated_at: 2024-11-14T21:24:05Z
 url: https://github.com/astral-sh/uv/pull/9131
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:40Z
 ```
 
 # Misc. touch-ups to target-to-resolution routine
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-14 21:09_
+_@charliermarsh_
 
 _No description provided._
 

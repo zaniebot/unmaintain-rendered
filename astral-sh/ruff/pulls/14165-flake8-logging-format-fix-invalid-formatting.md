@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2024-11-07T15:47:13Z
 updated_at: 2024-11-07T21:09:20Z
 url: https://github.com/astral-sh/ruff/pull/14165
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`flake8-logging-format`] Fix invalid formatting value in docs of `logging-extra-attr-clash` (`G101`)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-07 15:47_
+_@sbrugman_
 
 Fixes ValueError in example
 

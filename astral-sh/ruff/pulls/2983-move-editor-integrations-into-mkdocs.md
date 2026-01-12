@@ -13,14 +13,14 @@ head: charlie/editor-integrations
 created_at: 2023-02-17T13:09:46Z
 updated_at: 2023-02-17T13:12:22Z
 url: https://github.com/astral-sh/ruff/pull/2983
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Move editor integrations into MkDocs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-17 13:09_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-04T19:01:42Z
 updated_at: 2025-02-05T14:29:56Z
 url: https://github.com/astral-sh/uv/issues/11223
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:31Z
 ```
 
 # v0.5.27 fails to install pybabel-json==0.2.0
 
 ---
 
-_Issue opened by @vreon on 2025-02-04 19:01_
+_@vreon_
 
 ### Summary
 

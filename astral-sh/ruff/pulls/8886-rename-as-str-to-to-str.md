@@ -13,14 +13,14 @@ head: dhruv/rename-method
 created_at: 2023-11-29T00:40:46Z
 updated_at: 2023-11-29T00:56:37Z
 url: https://github.com/astral-sh/ruff/pull/8886
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Rename `as_str` to `to_str`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-29 00:40_
+_@dhruvmanila_
 
 This PR renames the method on `StringLiteralValue` from `as_str` to `to_str`. The main motivation is to follow the naming convention as described in the [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/naming.html#ad-hoc-conversions-follow-as_-to_-into_-conventions-c-conv). This method can perform a string allocation in case the string is implicitly concatenated.
 

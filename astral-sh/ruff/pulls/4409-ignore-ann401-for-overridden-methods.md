@@ -12,14 +12,14 @@ head: ignore-ann401-for-overriden-methods
 created_at: 2023-05-13T10:11:42Z
 updated_at: 2023-05-13T15:42:38Z
 url: https://github.com/astral-sh/ruff/pull/4409
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Ignore ANN401 for overridden methods
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-13 10:11_
+_@JonathanPlasse_
 
 - Close #4408
 

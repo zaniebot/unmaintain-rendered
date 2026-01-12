@@ -13,14 +13,14 @@ head: charlie/contrib
 created_at: 2023-09-02T16:15:40Z
 updated_at: 2023-09-02T16:25:24Z
 url: https://github.com/astral-sh/ruff/pull/7065
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Rename `ruff_python_formatter/README.md` to `CONTRIBUTING.md`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-02 16:15_
+_@charliermarsh_
 
 I want to use the README for getting-started instructions for the alpha. Elsewhere, we use `CONTRIBUTING.md` for contributor documentation, so this seems consistent.
 

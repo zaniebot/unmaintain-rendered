@@ -14,14 +14,14 @@ head: simplify-SIM113
 created_at: 2023-10-03T12:38:27Z
 updated_at: 2024-01-14T16:00:59Z
 url: https://github.com/astral-sh/ruff/pull/7777
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # [`flake8-simplify`] Implement `enumerate-for-loop` (`SIM113`)
 
 ---
 
-_Pull request opened by @chammika-become on 2023-10-03 12:38_
+_@chammika-become_
 
 Implements SIM113 from #998
 

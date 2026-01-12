@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-17T18:28:07Z
 updated_at: 2025-09-19T13:50:40Z
 url: https://github.com/astral-sh/uv/issues/15917
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # Support `tool.hatch.build.dev-mode-dirs` without requiring project dependencies to be installed
 
 ---
 
-_Issue opened by @NellyWhads on 2025-09-17 18:28_
+_@NellyWhads_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-09T03:39:36Z
 updated_at: 2024-04-09T15:44:03Z
 url: https://github.com/clap-rs/clap/issues/5449
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Arg dynamic completion via `ValueHint::Execute(String)`
 
 ---
 
-_Issue opened by @sigoden on 2024-04-09 03:39_
+_@sigoden_
 
 ### Please complete the following tasks
 

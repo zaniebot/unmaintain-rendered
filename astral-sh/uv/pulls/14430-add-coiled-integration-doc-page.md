@@ -12,14 +12,14 @@ head: coiled-integration
 created_at: 2025-07-02T19:53:08Z
 updated_at: 2025-09-12T12:24:33Z
 url: https://github.com/astral-sh/uv/pull/14430
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:13Z
 ```
 
 # Add Coiled integration doc page
 
 ---
 
-_Pull request opened by @jrbourbeau on 2025-07-02 19:53_
+_@jrbourbeau_
 
 This PR adds a new integrations doc page for using uv with [Coiled](https://coiled.io/). It's a slightly adapted version of this blog post https://docs.coiled.io/blog/uv-coiled-cloud-scripts.html
 

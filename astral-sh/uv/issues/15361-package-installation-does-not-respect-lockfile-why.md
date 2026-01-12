@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-18T20:46:25Z
 updated_at: 2025-08-18T22:33:17Z
 url: https://github.com/astral-sh/uv/issues/15361
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # Package installation does not respect lockfile; why?
 
 ---
 
-_Issue opened by @bocytko on 2025-08-18 20:46_
+_@bocytko_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: zb/test-managed
 created_at: 2024-10-22T14:58:32Z
 updated_at: 2024-10-24T16:18:22Z
 url: https://github.com/astral-sh/uv/pull/8462
-synced_at: 2026-01-10T12:54:10Z
+synced_at: 2026-01-12T16:08:19Z
 ```
 
 # Add basic testing of managed Python installs
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-22 14:58_
+_@zanieb_
 
 With a change like https://github.com/astral-sh/uv/pull/8458, we really need tests for these.
 

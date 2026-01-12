@@ -13,14 +13,14 @@ head: alex/type-unknown
 created_at: 2024-12-13T19:44:01Z
 updated_at: 2024-12-13T19:50:26Z
 url: https://github.com/astral-sh/ruff/pull/14961
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Use `type[Unknown]` rather than `Unknown` as the fallback metaclass for invalid classes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-13 19:44_
+_@AlexWaygood_
 
 ## Summary
 

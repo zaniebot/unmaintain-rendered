@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-11T13:02:09Z
 updated_at: 2024-09-17T21:07:30Z
 url: https://github.com/clap-rs/clap/issues/5727
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Support for Option Value Binding or ArgMatches Traversal
 
 ---
 
-_Issue opened by @JS-Zheng on 2024-09-11 13:02_
+_@JS-Zheng_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-05T19:41:39Z
 updated_at: 2025-10-14T08:06:19Z
 url: https://github.com/astral-sh/ruff/issues/20703
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `Truthiness:from_expr` has false negatives
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-05 19:41_
+_@dscorbett_
 
 ### Summary
 

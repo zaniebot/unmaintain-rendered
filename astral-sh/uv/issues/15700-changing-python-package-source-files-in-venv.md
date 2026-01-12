@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-05T10:43:01Z
 updated_at: 2025-09-06T02:39:32Z
 url: https://github.com/astral-sh/uv/issues/15700
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # Changing python package source files in venv changes cached uv files too
 
 ---
 
-_Issue opened by @S-Erik on 2025-09-05 10:43_
+_@S-Erik_
 
 ### Summary
 

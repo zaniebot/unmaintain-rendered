@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T01:38:11Z
 updated_at: 2025-11-02T19:56:44Z
 url: https://github.com/astral-sh/uv/issues/8064
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Support interactive script invocations
 
 ---
 
-_Issue opened by @zanieb on 2024-10-10 01:38_
+_@zanieb_
 
 > In: `main.py`
 >

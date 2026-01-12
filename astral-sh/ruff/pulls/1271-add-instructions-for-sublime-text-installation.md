@@ -12,14 +12,14 @@ head: charlie/sublime
 created_at: 2022-12-17T21:22:47Z
 updated_at: 2022-12-17T21:22:51Z
 url: https://github.com/astral-sh/ruff/pull/1271
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add instructions for Sublime Text installation
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-17 21:22_
+_@charliermarsh_
 
 Resolves #466.
 

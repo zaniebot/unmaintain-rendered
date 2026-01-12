@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T16:48:43Z
 updated_at: 2025-03-25T01:50:22Z
 url: https://github.com/astral-sh/uv/issues/12440
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # `setuptools` fails with "Invalid dash-separated key" or "Invalid uppercase key"
 
 ---
 
-_Issue opened by @zanieb on 2025-03-24 16:48_
+_@zanieb_
 
 `setuptools` [v78](https://setuptools.pypa.io/en/stable/history.html#v78-0-0) no longer accepts options containing uppercase or dash characters in `setup.cfg`. This means if your package uses this feature, or if any of your dependencies need to be built from source (and are using the invalid syntax) then an error will be raised.
 

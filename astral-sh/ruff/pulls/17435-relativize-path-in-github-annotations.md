@@ -11,14 +11,14 @@ head: fix-relativize-github-annotations
 created_at: 2025-04-16T21:10:36Z
 updated_at: 2025-05-26T09:38:44Z
 url: https://github.com/astral-sh/ruff/pull/17435
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Relativize path in github annotations
 
 ---
 
-_Pull request opened by @sochotnicky on 2025-04-16 21:10_
+_@sochotnicky_
 
 -------
 

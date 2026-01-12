@@ -13,14 +13,14 @@ head: type-relation-error
 created_at: 2025-07-27T22:44:40Z
 updated_at: 2025-10-29T15:05:27Z
 url: https://github.com/astral-sh/ruff/pull/19580
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # TypeRelationError
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-07-27 22:44_
+_@MatthewMckee4_
 
 ## Summary
 

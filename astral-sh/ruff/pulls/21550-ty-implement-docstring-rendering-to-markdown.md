@@ -14,14 +14,14 @@ head: gankra/doc-render
 created_at: 2025-11-20T22:57:14Z
 updated_at: 2025-11-21T15:47:40Z
 url: https://github.com/astral-sh/ruff/pull/21550
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:27Z
 ```
 
 # [ty] Implement docstring rendering to markdown
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-20 22:57_
+_@Gankra_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-16T23:27:53Z
 updated_at: 2024-12-17T11:45:38Z
 url: https://github.com/astral-sh/ruff/issues/15027
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Import-related mdtests aren't isolated
 
 ---
 
-_Issue opened by @dcreager on 2024-12-16 23:27_
+_@dcreager_
 
 When testing #15026 I got spurious test failures that look like the different test cases within an mdtest file aren't as isolated as they should be:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-26T15:22:22Z
 updated_at: 2025-12-26T17:29:24Z
 url: https://github.com/astral-sh/ty/issues/2229
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Narrowing to Any/Unknown loses type information
 
 ---
 
-_Issue opened by @Decodetalkers on 2025-12-26 15:22_
+_@Decodetalkers_
 
 ### Summary
 

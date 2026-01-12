@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-08T16:39:24Z
 updated_at: 2025-02-12T09:27:51Z
 url: https://github.com/astral-sh/ruff/issues/16040
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PLR1730 fix for `<=` and `>=` orders equal arguments wrong
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-08 16:39_
+_@dscorbett_
 
 ### Description
 

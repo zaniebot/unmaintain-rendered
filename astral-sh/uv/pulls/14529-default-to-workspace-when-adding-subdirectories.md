@@ -14,14 +14,14 @@ head: charlie/add-workspace
 created_at: 2025-07-09T21:15:35Z
 updated_at: 2025-07-11T02:05:51Z
 url: https://github.com/astral-sh/uv/pull/14529
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:16Z
 ```
 
 # Default to `--workspace` when adding subdirectories
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-09 21:15_
+_@charliermarsh_
 
 ## Summary
 

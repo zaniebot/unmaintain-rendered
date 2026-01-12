@@ -13,14 +13,14 @@ head: ref/addtypechecktoperf401402
 created_at: 2023-08-29T19:43:38Z
 updated_at: 2023-09-07T07:08:06Z
 url: https://github.com/astral-sh/ruff/pull/6994
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # [`perflint`] Expand `PERF401` and `PERF402` with type checks
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-08-29 19:43_
+_@qdegraaf_
 
 ## Summary
 

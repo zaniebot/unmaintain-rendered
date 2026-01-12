@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-31T01:04:22Z
 updated_at: 2022-12-31T03:19:31Z
 url: https://github.com/astral-sh/ruff/issues/1491
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # D211 & D203 Confliction
 
 ---
 
-_Issue opened by @OverzealousLotus on 2022-12-31 01:04_
+_@OverzealousLotus_
 
 Not entirely sure why this is happening, but when I go to fix D211 in any class, D203 is thrown in its place. I checked to see if I had any white space causing the issue, but that does not appear to be the case. I also tried to remove white space from both ends, and D204 is added into the mix.  Is this conflict normal, or a problem with Ruff? First time opening an issue, thanks! 
 

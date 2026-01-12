@@ -12,14 +12,14 @@ head: stale-doc
 created_at: 2024-09-20T06:41:29Z
 updated_at: 2024-09-20T06:47:53Z
 url: https://github.com/astral-sh/uv/pull/7571
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:53Z
 ```
 
 # Fix `-` to `_` in Packaged applications doc
 
 ---
 
-_Pull request opened by @JacobCoffee on 2024-09-20 06:41_
+_@JacobCoffee_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

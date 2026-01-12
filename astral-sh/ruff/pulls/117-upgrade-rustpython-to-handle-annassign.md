@@ -12,14 +12,14 @@ head: charlie/ann
 created_at: 2022-09-07T00:27:40Z
 updated_at: 2022-09-07T00:53:51Z
 url: https://github.com/astral-sh/ruff/pull/117
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Upgrade RustPython to handle AnnAssign
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-07 00:27_
+_@charliermarsh_
 
 Resolves #114.
 

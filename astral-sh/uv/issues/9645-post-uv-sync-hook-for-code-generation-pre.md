@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-04T18:13:04Z
 updated_at: 2025-09-02T23:15:22Z
 url: https://github.com/astral-sh/uv/issues/9645
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:55Z
 ```
 
 # Post-`uv sync` hook for code generation pre development
 
 ---
 
-_Issue opened by @galah92 on 2024-12-04 18:13_
+_@galah92_
 
 Hi guys, this is a feature request.
 

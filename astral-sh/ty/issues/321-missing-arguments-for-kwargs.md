@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-11T19:02:30Z
 updated_at: 2025-05-11T19:05:15Z
 url: https://github.com/astral-sh/ty/issues/321
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Missing arguments for kwargs
 
 ---
 
-_Issue opened by @Ryang20718 on 2025-05-11 19:02_
+_@Ryang20718_
 
 ### Summary
 

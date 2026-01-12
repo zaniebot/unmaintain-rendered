@@ -13,14 +13,14 @@ head: charlie/marker
 created_at: 2024-03-12T21:16:04Z
 updated_at: 2024-03-13T00:11:51Z
 url: https://github.com/astral-sh/uv/pull/2395
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:01Z
 ```
 
 # Trim injected `python_version` marker to (major, minor)
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-12 21:16_
+_@charliermarsh_
 
 ## Summary
 

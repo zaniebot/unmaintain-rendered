@@ -13,14 +13,14 @@ head: charlie/lifetime
 created_at: 2023-11-24T18:21:01Z
 updated_at: 2023-11-25T23:34:01Z
 url: https://github.com/astral-sh/uv/pull/500
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:59Z
 ```
 
 # Avoid clone for `WheelMetadataCache`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-24 18:21_
+_@charliermarsh_
 
 This doesn't need to own the underlying data which allows us to remove a number of clones.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-18T01:06:45Z
 updated_at: 2024-07-04T12:35:45Z
 url: https://github.com/astral-sh/uv/issues/1620
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Allow sparse checkouts/path exclusion for git dependencies
 
 ---
 
-_Issue opened by @mjclarke94 on 2024-02-18 01:06_
+_@mjclarke94_
 
 We currently have a number of binary files in a `tests/data` directory which account for 99.9% of the disk usage for a shallow clone (which I believe is already used?), and zero percent of the actual functionality. 
 

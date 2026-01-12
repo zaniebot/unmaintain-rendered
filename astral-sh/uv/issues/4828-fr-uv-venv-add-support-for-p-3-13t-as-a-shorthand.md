@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-05T08:35:12Z
 updated_at: 2024-09-23T22:36:17Z
 url: https://github.com/astral-sh/uv/issues/4828
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # FR: (`uv venv`) add support for '-p 3.13t' as a shorthand for '-p 3.13*t' ?
 
 ---
 
-_Issue opened by @neutrinoceros on 2024-07-05 08:35_
+_@neutrinoceros_
 
 pyenv recently introduced free-threading variants for Python 3.13:
 https://github.com/pyenv/pyenv/pull/2995

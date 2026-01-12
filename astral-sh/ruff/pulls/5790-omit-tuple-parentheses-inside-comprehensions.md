@@ -13,14 +13,14 @@ head: tuple-in-comp
 created_at: 2023-07-15T23:27:26Z
 updated_at: 2023-07-20T06:48:01Z
 url: https://github.com/astral-sh/ruff/pull/5790
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Omit tuple parentheses inside comprehensions
 
 ---
 
-_Pull request opened by @cnpryer on 2023-07-15 23:27_
+_@cnpryer_
 
 ## Summary
 

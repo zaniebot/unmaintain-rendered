@@ -13,14 +13,14 @@ head: charlie/config-settings-package
 created_at: 2025-07-11T23:51:29Z
 updated_at: 2025-07-18T01:27:55Z
 url: https://github.com/astral-sh/uv/pull/14573
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:17Z
 ```
 
 # Allow `--config-settings-package` to apply configuration settings at the package level
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-11 23:51_
+_@charliermarsh_
 
 ## Summary
 

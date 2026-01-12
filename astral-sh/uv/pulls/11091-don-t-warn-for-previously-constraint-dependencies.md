@@ -12,14 +12,14 @@ head: konsti/dont-warn-for-second-req
 created_at: 2025-01-30T11:58:32Z
 updated_at: 2025-02-03T20:14:31Z
 url: https://github.com/astral-sh/uv/pull/11091
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:40Z
 ```
 
 # Don't warn for previously constraint dependencies
 
 ---
 
-_Pull request opened by @konstin on 2025-01-30 11:58_
+_@konstin_
 
 Fixes the case reported at https://github.com/astral-sh/uv/issues/8870#issuecomment-2622783511
 

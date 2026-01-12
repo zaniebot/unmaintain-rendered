@@ -13,14 +13,14 @@ head: d403-split-on-whitespace
 created_at: 2024-12-20T14:42:15Z
 updated_at: 2024-12-20T19:37:04Z
 url: https://github.com/astral-sh/ruff/pull/15082
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`pydocstyle`] Split on first whitespace character (`D403`)
 
 ---
 
-_Pull request opened by @my1e5 on 2024-12-20 14:42_
+_@my1e5_
 
 ## Summary
 

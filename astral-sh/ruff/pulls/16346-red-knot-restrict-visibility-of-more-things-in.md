@@ -13,14 +13,14 @@ head: alex/class-private
 created_at: 2025-02-24T13:16:28Z
 updated_at: 2025-02-24T14:30:57Z
 url: https://github.com/astral-sh/ruff/pull/16346
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Restrict visibility of more things in `class.rs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-24 13:16_
+_@AlexWaygood_
 
 ## Summary
 

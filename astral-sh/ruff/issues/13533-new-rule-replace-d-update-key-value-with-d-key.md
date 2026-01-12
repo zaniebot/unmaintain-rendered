@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-27T10:19:17Z
 updated_at: 2025-11-10T09:32:56Z
 url: https://github.com/astral-sh/ruff/issues/13533
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # new rule - replace `d.update({'key': 'value'})` with `d['key'] = 'value'`
 
 ---
 
-_Issue opened by @spaceby on 2024-09-27 10:19_
+_@spaceby_
 
 I suggest adding a rule that detects this
 ```python

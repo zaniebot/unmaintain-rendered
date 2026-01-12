@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-21T11:45:05Z
 updated_at: 2025-10-21T11:52:17Z
 url: https://github.com/astral-sh/ruff/issues/21015
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # The contradiction between the TC003 detection rule and the pydantic model
 
 ---
 
-_Issue opened by @LIghtJUNction on 2025-10-21 11:45_
+_@LIghtJUNction_
 
 ### Question
 

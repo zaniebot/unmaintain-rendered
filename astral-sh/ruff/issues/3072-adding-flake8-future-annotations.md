@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-20T22:01:59Z
 updated_at: 2025-01-03T13:22:49Z
 url: https://github.com/astral-sh/ruff/issues/3072
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Adding flake8-future-annotations
 
 ---
 
-_Issue opened by @TylerYep on 2023-02-20 22:01_
+_@TylerYep_
 
 Hi, I authored the flake8-future-annotations plugin: https://github.com/TylerYep/flake8-future-annotations and I think it would be a good addition to ruff.
 

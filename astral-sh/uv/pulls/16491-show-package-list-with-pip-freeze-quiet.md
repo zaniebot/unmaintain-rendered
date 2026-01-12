@@ -13,14 +13,14 @@ head: charlie/q
 created_at: 2025-10-29T00:57:27Z
 updated_at: 2025-10-29T15:00:02Z
 url: https://github.com/astral-sh/uv/pull/16491
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:17Z
 ```
 
 # Show package list with `pip freeze --quiet`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-10-29 00:57_
+_@charliermarsh_
 
 ## Summary
 

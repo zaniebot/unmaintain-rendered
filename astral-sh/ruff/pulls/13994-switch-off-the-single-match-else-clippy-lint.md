@@ -14,14 +14,14 @@ head: clippy-lint
 created_at: 2024-10-30T12:05:43Z
 updated_at: 2024-10-30T12:24:40Z
 url: https://github.com/astral-sh/ruff/pull/13994
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Switch off the `single_match_else` Clippy lint
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-30 12:05_
+_@AlexWaygood_
 
 As discussed on Discord, this Clippy lint is pretty noisy and quite subjective. Sometimes it results in more concise/readable code, but sometimes you just want to use a `match` statement. Nobody seemed strongly in favour of keeping the lint.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-24T19:58:11Z
 updated_at: 2025-11-29T10:01:06Z
 url: https://github.com/astral-sh/uv/issues/13640
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:34Z
 ```
 
 # Debian/Ubuntu Package
 
 ---
 
-_Issue opened by @trymeouteh on 2025-05-24 19:58_
+_@trymeouteh_
 
 ### Summary
 

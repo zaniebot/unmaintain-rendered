@@ -13,14 +13,14 @@ head: konsti/ambiguous-update-context
 created_at: 2025-03-10T22:36:00Z
 updated_at: 2025-03-11T13:48:09Z
 url: https://github.com/astral-sh/uv/pull/12106
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:08Z
 ```
 
 # Show ambiguous requirements when `uv add` failed
 
 ---
 
-_Pull request opened by @konstin on 2025-03-10 22:36_
+_@konstin_
 
 Improves the error message.
 

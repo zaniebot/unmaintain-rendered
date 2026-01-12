@@ -14,14 +14,14 @@ head: gankra/fixup-owners
 created_at: 2026-01-07T04:21:03Z
 updated_at: 2026-01-07T06:44:48Z
 url: https://github.com/astral-sh/ruff/pull/22430
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] fix typo in CODEOWNERS
 
 ---
 
-_Pull request opened by @Gankra on 2026-01-07 04:21_
+_@Gankra_
 
 _No description provided._
 

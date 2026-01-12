@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-10T17:08:00Z
 updated_at: 2025-03-13T12:48:39Z
 url: https://github.com/astral-sh/uv/issues/4972
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `uv python pin` should support "global" pins
 
 ---
 
-_Issue opened by @zanieb on 2024-07-10 17:08_
+_@zanieb_
 
 e.g., specifying the default Python version at the user level in the uv configuration directory. This needs some details fleshed out before it's ready to implement.
 

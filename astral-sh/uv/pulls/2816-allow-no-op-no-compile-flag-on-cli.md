@@ -13,14 +13,14 @@ head: charlie/noop
 created_at: 2024-04-03T20:26:54Z
 updated_at: 2024-04-03T20:36:45Z
 url: https://github.com/astral-sh/uv/pull/2816
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:14Z
 ```
 
 # Allow no-op `--no-compile` flag on CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-03 20:26_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/2771.
 

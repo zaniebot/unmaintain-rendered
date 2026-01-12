@@ -12,14 +12,14 @@ head: 17008-nested-scope-attribute-assignment
 created_at: 2025-03-27T15:13:59Z
 updated_at: 2025-03-30T05:57:22Z
 url: https://github.com/astral-sh/ruff/pull/17012
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] resolve instance attributes bound in nested scopes
 
 ---
 
-_Pull request opened by @mtshiba on 2025-03-27 15:13_
+_@mtshiba_
 
 ## Summary
 

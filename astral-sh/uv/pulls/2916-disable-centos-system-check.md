@@ -13,14 +13,14 @@ head: zb/disable-centos
 created_at: 2024-04-08T21:26:24Z
 updated_at: 2024-04-08T21:33:32Z
 url: https://github.com/astral-sh/uv/pull/2916
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:18Z
 ```
 
 # Disable CentOS system check
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-08 21:26_
+_@zanieb_
 
 This is broken (see https://github.com/astral-sh/uv/issues/2915) and not a priority since we have Amazon Linux coverage
 

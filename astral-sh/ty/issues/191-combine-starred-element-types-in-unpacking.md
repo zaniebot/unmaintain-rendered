@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-25T10:34:12Z
 updated_at: 2025-06-11T00:44:27Z
 url: https://github.com/astral-sh/ty/issues/191
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Combine starred element types in unpacking
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-02-25 10:34_
+_@dhruvmanila_
 
 Combine starred element types. For example, in `(a, *b, c) = (1, 2, 3, 4)`, the `Literal[2]` and `Literal[3]` type should be combined into `list[int]` to be assigned to `*b`. **(Requires generic support over list)** https://github.com/astral-sh/ruff/blob/c6b311c54643c039d793fb836caf94d22f03cbb4/crates/red_knot_python_semantic/src/types/infer.rs#L1248-L1251
 

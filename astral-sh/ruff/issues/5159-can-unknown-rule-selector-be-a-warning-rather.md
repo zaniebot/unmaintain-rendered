@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-17T12:59:00Z
 updated_at: 2025-11-20T01:40:42Z
 url: https://github.com/astral-sh/ruff/issues/5159
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Can "Unknown rule selector" be a warning, rather than an error?
 
 ---
 
-_Issue opened by @KyleKing on 2023-06-17 12:59_
+_@KyleKing_
 
 I ran into an issue recently when:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-16T14:31:46Z
 updated_at: 2023-01-16T19:27:42Z
 url: https://github.com/astral-sh/ruff/issues/1917
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # F841 fix results in statement without effect or syntax error for multiline assignments
 
 ---
 
-_Issue opened by @sbrugman on 2023-01-16 14:31_
+_@sbrugman_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

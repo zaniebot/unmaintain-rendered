@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-06-22T04:32:53Z
 updated_at: 2021-06-22T14:00:43Z
 url: https://github.com/clap-rs/clap/issues/2564
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # subcommand names on windows are strange in help
 
 ---
 
-_Issue opened by @freshstrangemusic on 2021-06-22 04:32_
+_@freshstrangemusic_
 
 ### Please complete the following tasks
 

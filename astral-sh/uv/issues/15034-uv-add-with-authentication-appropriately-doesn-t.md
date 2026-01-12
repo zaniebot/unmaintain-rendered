@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-02T20:37:47Z
 updated_at: 2025-08-02T20:37:47Z
 url: https://github.com/astral-sh/uv/issues/15034
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # uv add with authentication appropriately doesn't store the secret, but should store the username
 
 ---
 
-_Issue opened by @mshunshin on 2025-08-02 20:37_
+_@mshunshin_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T21:41:38Z
 updated_at: 2025-04-01T20:21:40Z
 url: https://github.com/astral-sh/uv/issues/7052
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Include build dependencies in locked resolutions (`uv pip compile`, `uv lock`)
 
 ---
 
-_Issue opened by @alex on 2024-09-04 21:41_
+_@alex_
 
 Right now `uv pip compile` does not include build dependencies in its output. It would be incredibly helpful if there was a way to include them.
 

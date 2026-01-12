@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-05T21:12:07Z
 updated_at: 2024-04-05T21:32:34Z
 url: https://github.com/astral-sh/ruff/issues/10794
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff format` not producing same results as vs code extension
 
 ---
 
-_Issue opened by @alexdauenhauer on 2024-04-05 21:12_
+_@alexdauenhauer_
 
 in my local repo I have these pyproject.toml settings
 ```toml

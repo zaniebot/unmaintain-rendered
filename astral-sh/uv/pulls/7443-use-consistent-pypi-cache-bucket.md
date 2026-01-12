@@ -14,14 +14,14 @@ head: charlie/index-api
 created_at: 2024-09-16T22:05:48Z
 updated_at: 2024-09-16T23:33:33Z
 url: https://github.com/astral-sh/uv/pull/7443
-synced_at: 2026-01-10T12:53:47Z
+synced_at: 2026-01-12T16:07:49Z
 ```
 
 # Use consistent PyPI cache bucket
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-16 22:05_
+_@charliermarsh_
 
 ## Summary
 

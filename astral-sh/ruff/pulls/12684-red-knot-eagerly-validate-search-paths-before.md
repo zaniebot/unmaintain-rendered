@@ -12,14 +12,14 @@ head: alex/eager-search-validation
 created_at: 2024-08-05T10:46:02Z
 updated_at: 2025-01-31T15:05:30Z
 url: https://github.com/astral-sh/ruff/pull/12684
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Eagerly validate search paths before constructing `Program`s
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-05 10:46_
+_@AlexWaygood_
 
 ## Summary
 

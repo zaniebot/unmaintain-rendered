@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-14T06:12:42Z
 updated_at: 2025-09-14T16:15:40Z
 url: https://github.com/astral-sh/uv/issues/15833
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # editable mode
 
 ---
 
-_Issue opened by @gilgamesh1111 on 2025-09-14 06:12_
+_@gilgamesh1111_
 
 ### Question
 

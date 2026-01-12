@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-06T09:10:06Z
 updated_at: 2026-01-06T09:33:49Z
 url: https://github.com/astral-sh/ty/issues/2357
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Using the type alias created by `TypeAliasType` which is the base of a type statement, ty doesn't work properly
 
 ---
 
-_Issue opened by @hyperkai on 2026-01-06 09:10_
+_@hyperkai_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T16:58:46Z
 updated_at: 2025-04-02T13:53:55Z
 url: https://github.com/astral-sh/uv/issues/1601
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # vscode cannot help installing packages (e.g.: ipykernel for notebook)
 
 ---
 
-_Issue opened by @Julian-J-S on 2024-02-17 16:58_
+_@Julian-J-S_
 
 vs code cannot help installing packages as it used to
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-08T07:18:30Z
 updated_at: 2025-06-13T16:05:42Z
 url: https://github.com/clap-rs/clap/issues/6026
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Add a way to put subcommands first, before required positional arguments
 
 ---
 
-_Issue opened by @fck-gthb on 2025-06-08 07:18_
+_@fck-gthb_
 
 ### Please complete the following tasks
 

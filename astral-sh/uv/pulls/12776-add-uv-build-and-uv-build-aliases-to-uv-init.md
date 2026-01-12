@@ -14,14 +14,14 @@ head: konsti/uv-init-uv-build-alias
 created_at: 2025-04-09T11:58:57Z
 updated_at: 2025-04-09T12:33:39Z
 url: https://github.com/astral-sh/uv/pull/12776
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:23Z
 ```
 
 # Add `uv-build` and `uv_build` aliases to `uv init --build-backend`
 
 ---
 
-_Pull request opened by @konstin on 2025-04-09 11:58_
+_@konstin_
 
 This matches similar aliases for pdm/pdm-backend and hatch/hatchling.
 

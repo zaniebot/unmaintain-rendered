@@ -15,14 +15,14 @@ head: remove-deprecated-configuration
 created_at: 2024-02-04T19:00:13Z
 updated_at: 2024-06-25T18:14:09Z
 url: https://github.com/astral-sh/ruff/pull/9814
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Remove deprecated configuration '--show-source`
 
 ---
 
-_Pull request opened by @tibor-reiss on 2024-02-04 19:00_
+_@tibor-reiss_
 
 Fixes parts of https://github.com/astral-sh/ruff/issues/7650:
 

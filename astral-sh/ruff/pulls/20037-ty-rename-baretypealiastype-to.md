@@ -14,14 +14,14 @@ head: cjm/rename-bare
 created_at: 2025-08-22T05:53:39Z
 updated_at: 2025-08-22T14:40:32Z
 url: https://github.com/astral-sh/ruff/pull/20037
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # [ty] rename BareTypeAliasType to ManualPEP695TypeAliasType
 
 ---
 
-_Pull request opened by @carljm on 2025-08-22 05:53_
+_@carljm_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T12:32:22Z
 updated_at: 2025-06-12T14:43:27Z
 url: https://github.com/astral-sh/uv/issues/13963
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # `uv pip check` for extras/optional dependency groups?
 
 ---
 
-_Issue opened by @bollwyvl on 2025-06-11 12:32_
+_@bollwyvl_
 
 ### Summary
 

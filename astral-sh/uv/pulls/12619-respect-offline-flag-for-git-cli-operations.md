@@ -12,14 +12,14 @@ head: bug/git-cli-offline
 created_at: 2025-04-02T04:49:57Z
 updated_at: 2025-04-04T22:18:47Z
 url: https://github.com/astral-sh/uv/pull/12619
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # respect --offline flag for git cli operations
 
 ---
 
-_Pull request opened by @thejchap on 2025-04-02 04:49_
+_@thejchap_
 
 ## Summary
 closes #12234

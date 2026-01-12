@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-15T14:30:14Z
 updated_at: 2023-02-15T18:24:23Z
 url: https://github.com/astral-sh/ruff/issues/2921
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # git integration
 
 ---
 
-_Issue opened by @spaceone on 2023-02-15 14:30_
+_@spaceone_
 
 It would be nice if there would be a `git` integration so that via a command line option and a option in `pyproject.toml` would restrict `ruff .` to only files which are tracked in git and leave untracked files untouched.
 

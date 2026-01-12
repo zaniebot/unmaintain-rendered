@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-07T09:10:16Z
 updated_at: 2024-04-10T10:09:33Z
 url: https://github.com/astral-sh/ruff/issues/7845
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Rule idea: check for complex function type annotations
 
 ---
 
-_Issue opened by @tjkuson on 2023-10-07 09:10_
+_@tjkuson_
 
 It would be nice to have a lint rule that checks for convoluted type annotations, similar to rules that check for complicated functions.
 

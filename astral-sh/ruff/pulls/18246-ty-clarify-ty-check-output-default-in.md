@@ -14,14 +14,14 @@ head: cli-ty
 created_at: 2025-05-21T20:50:20Z
 updated_at: 2025-05-22T15:44:32Z
 url: https://github.com/astral-sh/ruff/pull/18246
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Clarify `ty check` output default in documentation.
 
 ---
 
-_Pull request opened by @brainwane on 2025-05-21 20:50_
+_@brainwane_
 
 ## Summary
 

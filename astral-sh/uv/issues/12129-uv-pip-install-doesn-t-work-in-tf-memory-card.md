@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-12T03:57:00Z
 updated_at: 2025-12-15T14:52:02Z
 url: https://github.com/astral-sh/uv/issues/12129
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # uv pip install doesn't work in TF memory card
 
 ---
 
-_Issue opened by @Word2VecT on 2025-03-12 03:57_
+_@Word2VecT_
 
 ### Summary
 

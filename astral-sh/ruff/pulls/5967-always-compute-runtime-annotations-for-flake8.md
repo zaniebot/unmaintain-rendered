@@ -13,14 +13,14 @@ head: charlie/strict
 created_at: 2023-07-22T03:39:10Z
 updated_at: 2023-07-22T04:06:13Z
 url: https://github.com/astral-sh/ruff/pull/5967
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Always compute runtime annotations for flake8-type-checking rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-22 03:39_
+_@charliermarsh_
 
 ## Summary
 

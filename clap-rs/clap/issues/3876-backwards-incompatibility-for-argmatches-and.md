@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-06-27T17:50:39Z
 updated_at: 2022-10-04T15:28:37Z
 url: https://github.com/clap-rs/clap/issues/3876
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Backwards incompatibility for ArgMatches and UnwindSafe
 
 ---
 
-_Issue opened by @doivosevic on 2022-06-27 17:50_
+_@doivosevic_
 
 ### Please complete the following tasks
 

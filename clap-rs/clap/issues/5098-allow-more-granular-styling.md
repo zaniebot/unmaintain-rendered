@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-28T17:44:15Z
 updated_at: 2023-08-28T18:46:41Z
 url: https://github.com/clap-rs/clap/issues/5098
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Allow more granular styling
 
 ---
 
-_Issue opened by @AndreasBackx on 2023-08-28 17:44_
+_@AndreasBackx_
 
 ### Please complete the following tasks
 

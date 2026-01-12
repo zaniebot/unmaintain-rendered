@@ -13,14 +13,14 @@ head: konsti/dedicated-direct-url-error-type
 created_at: 2024-04-22T11:46:48Z
 updated_at: 2024-04-22T11:57:37Z
 url: https://github.com/astral-sh/uv/pull/3181
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:29Z
 ```
 
 # Dedicated error type for direct url parsing
 
 ---
 
-_Pull request opened by @konstin on 2024-04-22 11:46_
+_@konstin_
 
 Add a dedicated error type for direct url parsing. This change is broken out from the new uv requirement type, which uses direct url parsing internally.
 

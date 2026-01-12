@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-30T13:51:13Z
 updated_at: 2024-01-30T16:53:51Z
 url: https://github.com/astral-sh/ruff/issues/9702
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Invalid rule violation when import is used only for type hints (flake8-bandit S404)
 
 ---
 
-_Issue opened by @divaltor on 2024-01-30 13:51_
+_@divaltor_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

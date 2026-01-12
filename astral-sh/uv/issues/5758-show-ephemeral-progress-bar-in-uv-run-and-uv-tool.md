@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-04T12:28:35Z
 updated_at: 2024-08-08T15:26:42Z
 url: https://github.com/astral-sh/uv/issues/5758
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Show ephemeral progress bar in `uv run` and `uv tool run`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-04 12:28_
+_@charliermarsh_
 
 When the environment _isn't_ cached / readily available, I think these now show _too little_ logging (for large environments, it feels like it's just hanging, when in reality it's preparing the environment). We should just show a spinner in those cases at least.
 

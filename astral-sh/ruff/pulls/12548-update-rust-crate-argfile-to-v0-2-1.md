@@ -13,14 +13,14 @@ head: renovate/argfile-0.x-lockfile
 created_at: 2024-07-29T01:44:09Z
 updated_at: 2024-08-02T16:54:40Z
 url: https://github.com/astral-sh/ruff/pull/12548
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Update Rust crate argfile to v0.2.1
 
 ---
 
-_Pull request opened by @renovate on 2024-07-29 01:44_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

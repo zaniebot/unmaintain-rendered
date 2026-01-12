@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-11T02:57:44Z
 updated_at: 2025-05-12T08:14:38Z
 url: https://github.com/astral-sh/ruff/issues/18012
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # RUF006: False positive warning for task stored in global variable
 
 ---
 
-_Issue opened by @5j9 on 2025-05-11 02:57_
+_@5j9_
 
 ### Summary
 

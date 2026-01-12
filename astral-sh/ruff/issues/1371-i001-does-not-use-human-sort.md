@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-25T10:20:27Z
 updated_at: 2022-12-25T23:11:42Z
 url: https://github.com/astral-sh/ruff/issues/1371
-synced_at: 2026-01-10T12:05:27Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # I001 does not use human sort.
 
 ---
 
-_Issue opened by @ghuls on 2022-12-25 10:20_
+_@ghuls_
 
 I001 does not use human sort like `isort`.
 

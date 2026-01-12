@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-04T06:14:51Z
 updated_at: 2024-06-04T08:45:48Z
 url: https://github.com/astral-sh/ruff/issues/11731
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Rule ANN201 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2024-06-04 06:14_
+_@qarmin_
 
 ruff 0.4.7 (latest changes from main branch)
 ```

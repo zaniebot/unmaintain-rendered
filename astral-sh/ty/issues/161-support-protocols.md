@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-26T12:11:34Z
 updated_at: 2025-10-17T09:47:30Z
 url: https://github.com/astral-sh/ty/issues/161
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # support Protocols
 
 ---
 
-_Issue opened by @carljm on 2025-03-26 12:11_
+_@carljm_
 
 Subtasks (these do not all need to be completed before the alpha):
 

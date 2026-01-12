@@ -13,14 +13,14 @@ head: renovate/codspeed-criterion-compat-3.x-lockfile
 created_at: 2025-07-14T03:56:04Z
 updated_at: 2025-07-14T13:48:49Z
 url: https://github.com/astral-sh/uv/pull/14594
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:18Z
 ```
 
 # Update Rust crate codspeed-criterion-compat to v3.0.3
 
 ---
 
-_Pull request opened by @renovate on 2025-07-14 03:56_
+_@renovate_
 
 This PR contains the following updates:
 

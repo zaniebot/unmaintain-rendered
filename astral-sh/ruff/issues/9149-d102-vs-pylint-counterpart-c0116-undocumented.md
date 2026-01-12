@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-15T11:58:18Z
 updated_at: 2024-07-26T01:35:30Z
 url: https://github.com/astral-sh/ruff/issues/9149
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # D102 vs pylint counterpart C0116 (undocumented-public-method)
 
 ---
 
-_Issue opened by @sigma67 on 2023-12-15 11:58_
+_@sigma67_
 
 As noted in https://github.com/astral-sh/ruff/issues/970#issuecomment-1341901539 , in #970 D102 is different from its pylint counterpart C0116.
 

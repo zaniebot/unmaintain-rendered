@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-12T18:52:51Z
 updated_at: 2025-04-22T09:52:34Z
 url: https://github.com/astral-sh/ruff/issues/16689
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Resolve `escape` and possibly auto-fix `unsafe-markup-use` (`S704`)
 
 ---
 
-_Issue opened by @ntBre on 2025-03-12 18:52_
+_@ntBre_
 
 ### Summary
 

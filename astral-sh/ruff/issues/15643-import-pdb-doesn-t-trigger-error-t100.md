@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-21T14:30:54Z
 updated_at: 2025-01-21T15:41:07Z
 url: https://github.com/astral-sh/ruff/issues/15643
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # __import__("pdb") doesn't trigger error T100
 
 ---
 
-_Issue opened by @BtPht on 2025-01-21 14:30_
+_@BtPht_
 
 The error [T100](https://docs.astral.sh/ruff/rules/debugger/) is correctly triggered when pdb is imported with `import pdb` but not when the dunder method `__import__` is used.
 

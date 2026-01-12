@@ -13,14 +13,14 @@ head: charlie/self-update
 created_at: 2025-01-07T18:08:51Z
 updated_at: 2025-01-07T18:17:46Z
 url: https://github.com/astral-sh/uv/pull/10374
-synced_at: 2026-01-10T11:44:45Z
+synced_at: 2026-01-12T16:09:15Z
 ```
 
 # Avoid enforcing project-level required version for `uv self`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-07 18:08_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-10-26T21:02:01Z
 updated_at: 2018-08-02T03:30:13Z
 url: https://github.com/clap-rs/clap/issues/1085
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Add a section to readme on relevant CLI crates and tools (testing, assertions, etc.)
 
 ---
 
-_Issue opened by @kbknapp on 2017-10-26 21:02_
+_@kbknapp_
 
 _No description provided._
 

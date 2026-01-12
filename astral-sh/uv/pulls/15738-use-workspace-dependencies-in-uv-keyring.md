@@ -13,14 +13,14 @@ head: konsti/workspace-deps-for-uv-keyring
 created_at: 2025-09-08T16:09:23Z
 updated_at: 2025-09-09T07:05:45Z
 url: https://github.com/astral-sh/uv/pull/15738
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:54Z
 ```
 
 # Use workspace dependencies in uv-keyring
 
 ---
 
-_Pull request opened by @konstin on 2025-09-08 16:09_
+_@konstin_
 
 It seems that this was during the vendoring of the keyring crate.
 

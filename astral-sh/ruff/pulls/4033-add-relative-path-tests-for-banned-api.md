@@ -12,14 +12,14 @@ head: charlie/path-perf
 created_at: 2023-04-19T19:49:34Z
 updated_at: 2023-04-19T20:24:05Z
 url: https://github.com/astral-sh/ruff/pull/4033
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add relative-path tests for `banned-api`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-19 19:49_
+_@charliermarsh_
 
 _No description provided._
 

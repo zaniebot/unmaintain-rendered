@@ -13,14 +13,14 @@ head: dcreager/generic-fix
 created_at: 2025-05-05T17:40:23Z
 updated_at: 2025-05-05T21:17:39Z
 url: https://github.com/astral-sh/ruff/pull/17865
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [ty] Specialize bound methods and nominal instances
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-05 17:40_
+_@dcreager_
 
 Fixes https://github.com/astral-sh/ruff/pull/17832#issuecomment-2851224968. We had a comment that we did not need to apply specializations to generic aliases, or to the bound `self` of a bound method, because they were already specialized.  But they might be specialized with a type variable, which _does_ need to be specialized, in the case of a "multi-step" specialization, such as:
 

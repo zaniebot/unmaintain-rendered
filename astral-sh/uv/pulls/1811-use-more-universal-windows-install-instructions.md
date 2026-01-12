@@ -13,14 +13,14 @@ head: konsti/update-powershell-instructions
 created_at: 2024-02-21T14:34:43Z
 updated_at: 2024-02-22T09:25:34Z
 url: https://github.com/astral-sh/uv/pull/1811
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:44Z
 ```
 
 # Use more universal windows install instructions
 
 ---
 
-_Pull request opened by @konstin on 2024-02-21 14:34_
+_@konstin_
 
 Recommend installing uv on windows with
 

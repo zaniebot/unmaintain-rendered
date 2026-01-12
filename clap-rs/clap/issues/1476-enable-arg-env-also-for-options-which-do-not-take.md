@@ -11,14 +11,14 @@ assignees: []
 created_at: 2019-05-22T12:52:19Z
 updated_at: 2021-05-28T09:42:31Z
 url: https://github.com/clap-rs/clap/issues/1476
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Enable Arg::env also for options which do not take value
 
 ---
 
-_Issue opened by @izderadicka on 2019-05-22 12:52_
+_@izderadicka_
 
 
 ### Affected Version of clap

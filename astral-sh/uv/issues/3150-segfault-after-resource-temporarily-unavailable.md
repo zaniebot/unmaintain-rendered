@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-19T23:19:59Z
 updated_at: 2024-04-23T20:32:40Z
 url: https://github.com/astral-sh/uv/issues/3150
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Segfault after Resource temporarily unavailable
 
 ---
 
-_Issue opened by @njzjz on 2024-04-19 23:19_
+_@njzjz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-01-10T17:29:21Z
 updated_at: 2024-01-11T16:36:07Z
 url: https://github.com/clap-rs/clap/issues/5297
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Subcommand flags can't conflict with arguments
 
 ---
 
-_Issue opened by @nix-enthusiast on 2024-01-10 17:29_
+_@nix-enthusiast_
 
 ### Please complete the following tasks
 

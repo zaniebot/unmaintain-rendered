@@ -13,14 +13,14 @@ head: feat/ruff-graph-type-checking-imports
 created_at: 2025-11-15T13:03:26Z
 updated_at: 2025-11-29T08:37:20Z
 url: https://github.com/astral-sh/ruff/pull/21472
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # `analyze`: Add option to skip over imports in `TYPE_CHECKING` blocks
 
 ---
 
-_Pull request opened by @gauthsvenkat on 2025-11-15 13:03_
+_@gauthsvenkat_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

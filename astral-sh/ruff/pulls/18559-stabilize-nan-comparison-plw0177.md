@@ -13,14 +13,14 @@ head: dylan/stabilize-plw0177
 created_at: 2025-06-08T19:09:11Z
 updated_at: 2025-06-09T19:05:15Z
 url: https://github.com/astral-sh/ruff/pull/18559
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # Stabilize `nan-comparison` (`PLW0177`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-08 19:09_
+_@dylwil3_
 
 _No description provided._
 

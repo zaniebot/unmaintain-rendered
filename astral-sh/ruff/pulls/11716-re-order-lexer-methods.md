@@ -13,14 +13,14 @@ head: dhruv/reorder-lexer-methods
 created_at: 2024-06-03T09:06:30Z
 updated_at: 2024-06-03T13:14:14Z
 url: https://github.com/astral-sh/ruff/pull/11716
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Re-order lexer methods
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-03 09:06_
+_@dhruvmanila_
 
 ## Summary
 

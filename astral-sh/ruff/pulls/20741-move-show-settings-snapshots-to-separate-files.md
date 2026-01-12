@@ -13,14 +13,14 @@ head: show-settings
 created_at: 2025-10-07T09:33:59Z
 updated_at: 2025-10-07T09:43:30Z
 url: https://github.com/astral-sh/ruff/pull/20741
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # Move --show-settings snapshots to separate files
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-07 09:33_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-30T10:56:29Z
 updated_at: 2022-12-31T18:10:58Z
 url: https://github.com/astral-sh/ruff/issues/1473
-synced_at: 2026-01-10T12:05:29Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Print warning when run against an unsupported file
 
 ---
 
-_Issue opened by @not-my-profile on 2022-12-30 10:56_
+_@not-my-profile_
 
 ```
 $ echo 'not json' > foo.json 

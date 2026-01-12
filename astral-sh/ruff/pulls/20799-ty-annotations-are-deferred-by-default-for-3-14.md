@@ -13,14 +13,14 @@ head: david/deferred-annotations-3.14
 created_at: 2025-10-10T09:32:26Z
 updated_at: 2025-10-10T10:05:05Z
 url: https://github.com/astral-sh/ruff/pull/20799
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] Annotations are deferred by default for 3.14+
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-10 09:32_
+_@sharkdp_
 
 ## Summary
 

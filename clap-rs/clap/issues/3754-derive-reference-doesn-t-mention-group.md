@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-05-25T19:13:01Z
 updated_at: 2022-08-18T14:07:27Z
 url: https://github.com/clap-rs/clap/issues/3754
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Derive reference doesn't mention group
 
 ---
 
-_Issue opened by @manfredlotz on 2022-05-25 19:13_
+_@manfredlotz_
 
 ### Please complete the following tasks
 

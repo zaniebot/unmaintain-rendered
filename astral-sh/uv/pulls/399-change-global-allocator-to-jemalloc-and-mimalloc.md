@@ -12,14 +12,14 @@ head: ag/change-global-allocator
 created_at: 2023-11-10T19:34:36Z
 updated_at: 2024-06-29T16:31:44Z
 url: https://github.com/astral-sh/uv/pull/399
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # change global allocator to jemalloc (and mimalloc on Windows)
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-11-10 19:34_
+_@BurntSushi_
 
 This copies the allocator configuration used in the Ruff project. In
 particular, this gives us an instant 10% win when resolving the top 1K

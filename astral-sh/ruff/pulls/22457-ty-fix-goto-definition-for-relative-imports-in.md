@@ -14,14 +14,14 @@ head: micha/remove-default-database
 created_at: 2026-01-08T12:58:57Z
 updated_at: 2026-01-09T08:30:33Z
 url: https://github.com/astral-sh/ruff/pull/22457
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [ty] Fix goto definition for relative imports in third-party files
 
 ---
 
-_Pull request opened by @MichaReiser on 2026-01-08 12:58_
+_@MichaReiser_
 
 ## Summary
 

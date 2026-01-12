@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-11T11:45:22Z
 updated_at: 2023-08-22T15:01:10Z
 url: https://github.com/astral-sh/ruff/issues/6499
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Unicode width is too high
 
 ---
 
-_Issue opened by @konstin on 2023-08-11 11:45_
+_@konstin_
 
 The following snippet fits visually in pycharm and is kept in this layout by black
 ```python

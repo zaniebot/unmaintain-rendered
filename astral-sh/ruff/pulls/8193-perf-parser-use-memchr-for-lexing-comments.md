@@ -13,14 +13,14 @@ head: main
 created_at: 2023-10-25T01:40:48Z
 updated_at: 2023-10-27T01:07:43Z
 url: https://github.com/astral-sh/ruff/pull/8193
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # perf(parser): use memchr for lexing comments
 
 ---
 
-_Pull request opened by @sno2 on 2023-10-25 01:40_
+_@sno2_
 
 ## Summary
 

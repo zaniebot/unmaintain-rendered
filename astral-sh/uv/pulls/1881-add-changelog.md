@@ -14,14 +14,14 @@ head: zb/rooster
 created_at: 2024-02-22T19:33:05Z
 updated_at: 2024-02-22T22:00:14Z
 url: https://github.com/astral-sh/uv/pull/1881
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:46Z
 ```
 
 # Add changelog
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-22 19:33_
+_@zanieb_
 
 Closes #1774 
 

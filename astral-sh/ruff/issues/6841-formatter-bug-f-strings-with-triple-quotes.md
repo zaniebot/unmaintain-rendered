@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-24T06:57:18Z
 updated_at: 2023-10-11T11:30:37Z
 url: https://github.com/astral-sh/ruff/issues/6841
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # formatter bug: f-strings with triple quotes
 
 ---
 
-_Issue opened by @davidszotten on 2023-08-24 06:57_
+_@davidszotten_
 
 the formatter is too conservative when making sure it doesn't try to escape quotes inside formatted values, and doesn't take into account triple quotes
 

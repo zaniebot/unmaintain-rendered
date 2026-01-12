@@ -13,14 +13,14 @@ head: blacklist_calls
 created_at: 2023-02-26T21:16:48Z
 updated_at: 2023-03-21T19:11:53Z
 url: https://github.com/astral-sh/ruff/pull/3239
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [`flake8-bandit`]: Implement deny-list rules for suspicious member calls
 
 ---
 
-_Pull request opened by @colin99d on 2023-02-26 21:16_
+_@colin99d_
 
 ref: #1646
 

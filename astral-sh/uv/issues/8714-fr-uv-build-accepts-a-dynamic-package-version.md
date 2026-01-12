@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T01:32:41Z
 updated_at: 2025-07-25T21:33:58Z
 url: https://github.com/astral-sh/uv/issues/8714
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # FR: `uv build` accepts a dynamic "package version" argument
 
 ---
 
-_Issue opened by @charlesnicholson on 2024-10-31 01:32_
+_@charlesnicholson_
 
 When we build "official" Python distribution package wheels from CI, we version the packages dynamically based on the current git tag. This is surprisingly complicated to do!
 

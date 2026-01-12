@@ -14,14 +14,14 @@ head: david/dataclass_transform-base-class-models
 created_at: 2025-10-09T10:25:37Z
 updated_at: 2025-10-17T12:04:32Z
 url: https://github.com/astral-sh/ruff/pull/20783
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 #  [ty] Support `dataclass_transform` for base class models 
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-09 10:25_
+_@sharkdp_
 
 ## Summary
 

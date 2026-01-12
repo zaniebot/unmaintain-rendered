@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-10-17T22:03:36Z
 updated_at: 2020-02-01T11:29:51Z
 url: https://github.com/clap-rs/clap/issues/1574
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # 3.0.0 beta: proc-macro derive panicked
 
 ---
 
-_Issue opened by @Walther on 2019-10-17 22:03_
+_@Walther_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

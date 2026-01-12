@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T16:26:50Z
 updated_at: 2024-09-04T15:23:48Z
 url: https://github.com/astral-sh/uv/issues/1510
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Expose `uv build` build frontend (`pypa/build` replacement)
 
 ---
 
-_Issue opened by @henryiii on 2024-02-16 16:26_
+_@henryiii_
 
 I'm curious if replacing `pypa/build` is something being considered. It would be a good idea, I think, to avoid implementing `pip wheel`, and instead focus on build. I think most of the components are already here - the ability to make temporary virtual environments is the key one. In fact, the ability to build (`pip install .` though config-settings are missing #1460) is here too. The procedure is simple, though you do need a Python interpreter to call the PEP 517 hooks, it's mostly making a venv, adding packagers, running a hook if it exists and adding those packages, then calling the build backend hook. There are a total of 5 hooks (wheel, sdist, requires for wheel and sdist, and a metadata hook). You can look at pypa/build, there's not that much code there, really. I'd be able to help a bit if needed.
 

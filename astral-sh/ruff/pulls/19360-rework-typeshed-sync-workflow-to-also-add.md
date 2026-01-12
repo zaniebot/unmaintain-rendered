@@ -14,14 +14,14 @@ head: alex/platform-api-docs
 created_at: 2025-07-15T16:08:43Z
 updated_at: 2025-07-15T17:21:21Z
 url: https://github.com/astral-sh/ruff/pull/19360
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # Rework typeshed-sync workflow to also add docstrings for Windows- and MacOS-specific APIs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-15 16:08_
+_@AlexWaygood_
 
 ## Summary
 

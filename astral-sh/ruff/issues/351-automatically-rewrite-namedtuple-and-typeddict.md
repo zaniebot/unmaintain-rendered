@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-07T20:07:48Z
 updated_at: 2022-11-20T15:26:33Z
 url: https://github.com/astral-sh/ruff/issues/351
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Automatically rewrite `NamedTuple` and `TypedDict` with newer syntaxes
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-07 20:07_
+_@charliermarsh_
 
 From `pyupgrade`:
 

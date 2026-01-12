@@ -13,14 +13,14 @@ head: zb/version-iii
 created_at: 2025-05-06T12:36:26Z
 updated_at: 2025-05-06T13:06:43Z
 url: https://github.com/astral-sh/ruff/pull/17888
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # Display `ty version` for `ty --version` and `ty -V`
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-06 12:36_
+_@zanieb_
 
 e.g.,
 

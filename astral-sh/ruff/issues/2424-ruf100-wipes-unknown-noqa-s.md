@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T22:49:31Z
 updated_at: 2023-04-13T16:17:09Z
 url: https://github.com/astral-sh/ruff/issues/2424
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # RUF100 wipes unknown noqa's
 
 ---
 
-_Issue opened by @henryiii on 2023-01-31 22:49_
+_@henryiii_
 
 I have a custom flake8 plugin that's specific for a project (it wouldn't make sense to port it to Ruff ;) ). I've moved everything else to Ruff, and this still is much faster than flake8 used to be running everything! But I'm unable to enable RUF100 since this is an unknown directive.
 

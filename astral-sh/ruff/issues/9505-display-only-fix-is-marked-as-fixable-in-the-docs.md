@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-13T12:37:01Z
 updated_at: 2024-01-26T14:47:03Z
 url: https://github.com/astral-sh/ruff/issues/9505
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Display-only fix is marked as fixable in the docs (`ERA001`)
 
 ---
 
-_Issue opened by @korchizhinskiy on 2024-01-13 12:37_
+_@korchizhinskiy_
 
 ![image](https://github.com/astral-sh/ruff/assets/100942887/4114397b-e8f4-41ac-b92f-5337f60c562a)
 

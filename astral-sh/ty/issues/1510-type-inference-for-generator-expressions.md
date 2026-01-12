@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-10T10:12:58Z
 updated_at: 2025-11-14T13:04:13Z
 url: https://github.com/astral-sh/ty/issues/1510
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Type inference for generator expressions
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-10 10:12_
+_@AlexWaygood_
 
 I think these should be basically the same as comprehensions (https://github.com/astral-sh/ruff/pull/20962, https://github.com/astral-sh/ty/issues/1388), except that `types.GeneratorType` is covariant. That means that Literal promotion probably won't be necessary, bidirectional inference is less important, and unioning with `Unknown` probably won't be necessary 
 

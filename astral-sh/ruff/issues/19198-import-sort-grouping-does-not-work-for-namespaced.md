@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-08T09:28:30Z
 updated_at: 2025-07-24T11:59:44Z
 url: https://github.com/astral-sh/ruff/issues/19198
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Import sort grouping does not work for namespaced editable workspace packages
 
 ---
 
-_Issue opened by @Spenhouet on 2025-07-08 09:28_
+_@Spenhouet_
 
 ### Summary
 

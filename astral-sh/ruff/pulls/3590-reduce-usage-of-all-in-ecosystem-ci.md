@@ -13,14 +13,14 @@ head: charlie/ecosystem-use-local-configuration
 created_at: 2023-03-17T23:22:06Z
 updated_at: 2023-03-18T22:31:55Z
 url: https://github.com/astral-sh/ruff/pull/3590
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Reduce usage of ALL in ecosystem CI
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-17 23:22_
+_@charliermarsh_
 
 ## Summary
 

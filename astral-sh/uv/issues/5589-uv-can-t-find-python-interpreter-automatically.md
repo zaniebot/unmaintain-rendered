@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T08:01:15Z
 updated_at: 2024-08-20T18:43:22Z
 url: https://github.com/astral-sh/uv/issues/5589
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # uv can't find python interpreter automatically
 
 ---
 
-_Issue opened by @newne on 2024-07-30 08:01_
+_@newne_
 
 Here is the problem:
 ```

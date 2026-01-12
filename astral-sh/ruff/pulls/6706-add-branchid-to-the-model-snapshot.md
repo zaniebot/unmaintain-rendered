@@ -13,14 +13,14 @@ head: charlie/branch-id
 created_at: 2023-08-20T15:25:37Z
 updated_at: 2023-08-20T15:57:57Z
 url: https://github.com/astral-sh/ruff/pull/6706
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add `BranchId` to the model snapshot
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-20 15:25_
+_@charliermarsh_
 
 This _probably_ never matters given the set of rules we support and in fact I'm having trouble thinking of a test-case for it, but it's definitely incorrect _not_ to pass on the `BranchId` here.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-29T06:52:41Z
 updated_at: 2023-05-08T06:10:05Z
 url: https://github.com/astral-sh/ruff/issues/3791
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # ruff can not run on aarch64 machine
 
 ---
 
-_Issue opened by @v1c77 on 2023-03-29 06:52_
+_@v1c77_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

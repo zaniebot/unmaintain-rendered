@@ -13,14 +13,14 @@ head: konsti/everything-explodes-if-metadata-isnt-consistent
 created_at: 2025-09-04T15:22:21Z
 updated_at: 2025-10-19T12:29:49Z
 url: https://github.com/astral-sh/uv/pull/15683
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # Document metadata consistency expectation
 
 ---
 
-_Pull request opened by @konstin on 2025-09-04 15:22_
+_@konstin_
 
 An opinionated write-up on why Python packaging needs metadata consistency, and that we need to extend metadata to accommodate ML and scientific users.
 

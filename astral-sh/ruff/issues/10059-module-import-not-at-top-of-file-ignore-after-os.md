@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T10:49:01Z
 updated_at: 2024-11-06T19:13:01Z
 url: https://github.com/astral-sh/ruff/issues/10059
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `module-import-not-at-top-of-file` ignore after `os.environ`
 
 ---
 
-_Issue opened by @Pastells on 2024-02-20 10:49_
+_@Pastells_
 
 Sometimes you need to set an environment variable before importing a package, for example:
 

@@ -11,14 +11,14 @@ head: main
 created_at: 2025-02-19T11:27:14Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/11617
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:55Z
 ```
 
 # Add documentation for running as unprivileged user
 
 ---
 
-_Pull request opened by @returnDanilo on 2025-02-19 11:27_
+_@returnDanilo_
 
 Hey! I took the initiative of writing a bit of docs for the things I had to figure out myself. Plus, it was asked in #10047.
 

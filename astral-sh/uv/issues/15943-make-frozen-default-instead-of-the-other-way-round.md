@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-19T07:59:42Z
 updated_at: 2025-09-29T15:29:25Z
 url: https://github.com/astral-sh/uv/issues/15943
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # Make --frozen default instead of the other way round
 
 ---
 
-_Issue opened by @ghpqans on 2025-09-19 07:59_
+_@ghpqans_
 
 ### Summary
 

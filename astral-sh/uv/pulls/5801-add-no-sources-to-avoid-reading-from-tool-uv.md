@@ -14,14 +14,14 @@ head: charlie/no-sources
 created_at: 2024-08-05T20:31:37Z
 updated_at: 2024-08-06T14:14:20Z
 url: https://github.com/astral-sh/uv/pull/5801
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:01Z
 ```
 
 # Add `--no-sources` to avoid reading from `tool.uv.sources`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-05 20:31_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: alex/star-statically-known-2
 created_at: 2025-04-07T20:21:41Z
 updated_at: 2025-04-09T14:41:04Z
 url: https://github.com/astral-sh/ruff/pull/17286
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Improve handling of visibility constraints in external modules when resolving `*` imports
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-07 20:21_
+_@AlexWaygood_
 
 ## Summary
 

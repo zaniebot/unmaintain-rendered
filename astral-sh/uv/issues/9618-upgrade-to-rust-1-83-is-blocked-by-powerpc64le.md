@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-03T19:23:22Z
 updated_at: 2025-01-08T13:33:32Z
 url: https://github.com/astral-sh/uv/issues/9618
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # Upgrade to Rust 1.83 is blocked by powerpc64le binary builds
 
 ---
 
-_Issue opened by @zanieb on 2024-12-03 19:23_
+_@zanieb_
 
 Maturin fails with `toolchain '1.83-x86_64-unknown-linux-gnu' does not support target 'powerpc64le-unknown-linux-musl'` during `rustup target add ${target}`. Alternatively, without specifying the a `1.83` nightly version the build fails because the image toolchain is still `1.82` which is no longer supported by our crates.
 

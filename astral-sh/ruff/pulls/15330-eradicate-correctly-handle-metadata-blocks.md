@@ -12,14 +12,14 @@ head: ERA001
 created_at: 2025-01-07T20:19:23Z
 updated_at: 2025-01-08T07:34:41Z
 url: https://github.com/astral-sh/ruff/pull/15330
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`eradicate`] Correctly handle metadata blocks directly followed by normal blocks (`ERA001`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-07 20:19_
+_@InSyncWithFoo_
 
 ## Summary
 

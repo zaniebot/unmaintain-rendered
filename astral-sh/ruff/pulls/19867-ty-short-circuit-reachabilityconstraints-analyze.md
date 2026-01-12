@@ -14,14 +14,14 @@ head: micha/short-circuit-into-callable
 created_at: 2025-08-11T16:29:36Z
 updated_at: 2025-08-11T19:58:36Z
 url: https://github.com/astral-sh/ruff/pull/19867
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] Short circuit `ReachabilityConstraints::analyze_single` for dynamic types
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-11 16:29_
+_@MichaReiser_
 
 ## Summary
 

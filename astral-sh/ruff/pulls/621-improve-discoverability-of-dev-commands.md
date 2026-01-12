@@ -12,14 +12,14 @@ head: ergonomic-ruff-dev
 created_at: 2022-11-06T12:55:01Z
 updated_at: 2022-12-27T05:42:50Z
 url: https://github.com/astral-sh/ruff/pull/621
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Improve discoverability of dev commands
 
 ---
 
-_Pull request opened by @squiddy on 2022-11-06 12:55_
+_@squiddy_
 
 Just some smaller changes of things I noticed during/after my first contribution. I completely missed the print-ast command and it took me a bit to figure out how to properly call it (although that is just my lack of rust/cargo experience likely).
 

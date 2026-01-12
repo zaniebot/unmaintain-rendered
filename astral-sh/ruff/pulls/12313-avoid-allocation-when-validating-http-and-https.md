@@ -14,14 +14,14 @@ head: charlie/alloc
 created_at: 2024-07-13T21:00:39Z
 updated_at: 2024-07-13T22:05:19Z
 url: https://github.com/astral-sh/ruff/pull/12313
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Avoid allocation when validating HTTP and HTTPS prefixes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-13 21:00_
+_@charliermarsh_
 
 _No description provided._
 

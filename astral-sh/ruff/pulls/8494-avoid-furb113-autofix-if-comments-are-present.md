@@ -13,14 +13,14 @@ head: dhruv/furb113
 created_at: 2023-11-05T11:00:21Z
 updated_at: 2023-11-09T03:24:50Z
 url: https://github.com/astral-sh/ruff/pull/8494
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Avoid `FURB113` autofix if comments are present
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-05 11:00_
+_@dhruvmanila_
 
 This PR avoids creating the fix for `FURB113` if there are comments in between the `append` calls.
 

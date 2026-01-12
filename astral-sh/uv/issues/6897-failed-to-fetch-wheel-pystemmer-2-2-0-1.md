@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-31T18:29:53Z
 updated_at: 2024-09-02T17:05:47Z
 url: https://github.com/astral-sh/uv/issues/6897
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Failed to fetch wheel: pystemmer==2.2.0.1
 
 ---
 
-_Issue opened by @sadaisystems on 2024-08-31 18:29_
+_@sadaisystems_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with `uv`.

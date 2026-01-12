@@ -13,14 +13,14 @@ head: zb/docs-projects-entry
 created_at: 2024-11-21T17:20:25Z
 updated_at: 2024-11-28T02:47:18Z
 url: https://github.com/astral-sh/uv/pull/9329
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:45Z
 ```
 
 # Expand entry points documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-21 17:20_
+_@zanieb_
 
 _No description provided._
 

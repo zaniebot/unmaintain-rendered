@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-04-18T07:03:14Z
 updated_at: 2022-04-20T14:04:30Z
 url: https://github.com/clap-rs/clap/issues/3638
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Explicitly doc the usage of ArgEnum
 
 ---
 
-_Issue opened by @Banyc on 2022-04-18 07:03_
+_@Banyc_
 
 ### Please complete the following tasks
 

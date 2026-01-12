@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-13T16:08:27Z
 updated_at: 2024-06-26T09:02:19Z
 url: https://github.com/astral-sh/ruff/issues/7349
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # CLI: Show source context by default in `ruff check`
 
 ---
 
-_Issue opened by @zanieb on 2023-09-13 16:08_
+_@zanieb_
 
 The `--show-source` flag can be used to show source information alongside violations during `ruff check`. This should be the default behavior.
 

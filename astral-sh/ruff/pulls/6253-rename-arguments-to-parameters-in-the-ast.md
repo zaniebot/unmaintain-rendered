@@ -12,14 +12,14 @@ head: charlie/parameters
 created_at: 2023-08-01T17:04:47Z
 updated_at: 2023-08-01T18:11:49Z
 url: https://github.com/astral-sh/ruff/pull/6253
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Rename `Arguments` to `Parameters` in the AST
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-01 17:04_
+_@charliermarsh_
 
 ## Summary
 

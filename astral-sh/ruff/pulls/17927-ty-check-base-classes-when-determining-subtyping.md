@@ -13,14 +13,14 @@ head: dcreager/generic-subclass
 created_at: 2025-05-07T17:05:48Z
 updated_at: 2025-05-07T19:21:13Z
 url: https://github.com/astral-sh/ruff/pull/17927
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [ty] Check base classes when determining subtyping etc for generic aliases
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-07 17:05_
+_@dcreager_
 
 #17897 added variance handling for legacy typevars — but they were only being considered when checking generic aliases of the same class:
 

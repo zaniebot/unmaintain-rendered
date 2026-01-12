@@ -14,14 +14,14 @@ head: charlie/prio
 created_at: 2024-09-19T17:02:32Z
 updated_at: 2024-09-19T17:25:22Z
 url: https://github.com/astral-sh/uv/pull/7556
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:53Z
 ```
 
 # Treat invalid platform as more compatible than invalid Python
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-19 17:02_
+_@charliermarsh_
 
 ## Summary
 

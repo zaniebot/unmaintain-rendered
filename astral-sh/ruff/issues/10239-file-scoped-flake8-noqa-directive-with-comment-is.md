@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-05T17:45:38Z
 updated_at: 2024-03-11T17:21:42Z
 url: https://github.com/astral-sh/ruff/issues/10239
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # File-scoped `flake8: noqa` directive with comment is not recognized
 
 ---
 
-_Issue opened by @tylerlaprade on 2024-03-05 17:45_
+_@tylerlaprade_
 
 ```
 # flake8: noqa -- comment explaining why we're disabling flake8 for this file

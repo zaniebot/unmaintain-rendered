@@ -11,14 +11,14 @@ head: thartman/url-requirements-2
 created_at: 2024-02-18T13:43:04Z
 updated_at: 2024-03-06T13:40:57Z
 url: https://github.com/astral-sh/uv/pull/1643
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # feat: Allow uv pip install to fetch requirements files from a remote URL.
 
 ---
 
-_Pull request opened by @ottaviohartman on 2024-02-18 13:43_
+_@ottaviohartman_
 
 ## Summary
 

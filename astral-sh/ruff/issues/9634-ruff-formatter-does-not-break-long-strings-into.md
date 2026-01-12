@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-24T14:41:43Z
 updated_at: 2024-01-24T18:32:30Z
 url: https://github.com/astral-sh/ruff/issues/9634
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Ruff formatter does not break long strings into multiple lines.
 
 ---
 
-_Issue opened by @MiguelMonteiro on 2024-01-24 14:41_
+_@MiguelMonteiro_
 
 The ruff formatter does not seem to obey  `line-length` when it comes to long strings. See [this example](https://play.ruff.rs/b2a3f481-06ec-4017-93a9-b290da212158).
 Is this intended behavior? Is there a configuration setting that breaks long strings into multiple lines? 

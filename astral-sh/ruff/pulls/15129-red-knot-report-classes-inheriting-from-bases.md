@@ -13,14 +13,14 @@ head: rk-slots
 created_at: 2024-12-24T00:28:01Z
 updated_at: 2024-12-27T14:01:53Z
 url: https://github.com/astral-sh/ruff/pull/15129
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Report classes inheriting from bases with incompatible `__slots__`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-24 00:28_
+_@InSyncWithFoo_
 
 ## Summary
 

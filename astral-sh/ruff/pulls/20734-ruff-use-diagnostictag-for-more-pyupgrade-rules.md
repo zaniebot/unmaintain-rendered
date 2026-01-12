@@ -13,14 +13,14 @@ head: add-DiagnosticTag-to-pyupgrade-rules
 created_at: 2025-10-07T06:29:04Z
 updated_at: 2025-10-08T04:52:43Z
 url: https://github.com/astral-sh/ruff/pull/20734
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # [`ruff`] Use `DiagnosticTag` for more pyupgrade rules
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-10-07 06:29_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

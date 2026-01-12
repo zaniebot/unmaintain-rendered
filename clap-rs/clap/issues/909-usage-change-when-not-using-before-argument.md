@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-03-21T09:37:42Z
 updated_at: 2018-08-02T03:30:04Z
 url: https://github.com/clap-rs/clap/issues/909
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # USAGE change when not using "=" before argument
 
 ---
 
-_Issue opened by @logaritmisk on 2017-03-21 09:37_
+_@logaritmisk_
 
 ### Rust Version
 rustc 1.16.0 (30cf806ef 2017-03-10)

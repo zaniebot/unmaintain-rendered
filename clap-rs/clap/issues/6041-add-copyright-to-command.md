@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-22T19:19:28Z
 updated_at: 2025-06-24T00:47:39Z
 url: https://github.com/clap-rs/clap/issues/6041
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Add copyright to Command
 
 ---
 
-_Issue opened by @dcampbell24 on 2025-06-22 19:19_
+_@dcampbell24_
 
 ### Please complete the following tasks
 

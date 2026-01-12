@@ -13,14 +13,14 @@ head: fix-intersection-ordering
 created_at: 2025-03-17T12:24:01Z
 updated_at: 2025-03-17T12:33:41Z
 url: https://github.com/astral-sh/ruff/pull/16801
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # [red-knot] Stabilize `negation_reverses_subtype_order` property test
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-17 12:24_
+_@AlexWaygood_
 
 ## Summary
 

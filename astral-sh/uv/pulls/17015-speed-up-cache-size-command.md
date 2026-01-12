@@ -14,14 +14,14 @@ head: cache-size-speed-up
 created_at: 2025-12-06T14:20:33Z
 updated_at: 2025-12-11T17:11:02Z
 url: https://github.com/astral-sh/uv/pull/17015
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:34Z
 ```
 
 # Speed up cache size command
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-12-06 14:20_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

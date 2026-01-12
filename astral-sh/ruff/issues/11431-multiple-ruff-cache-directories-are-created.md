@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-15T08:47:17Z
 updated_at: 2024-05-22T10:15:53Z
 url: https://github.com/astral-sh/ruff/issues/11431
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Multiple .ruff_cache directories are created
 
 ---
 
-_Issue opened by @mbyrnepr2 on 2024-05-15 08:47_
+_@mbyrnepr2_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

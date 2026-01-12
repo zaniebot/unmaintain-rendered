@@ -11,14 +11,14 @@ head: ag/fix-removal-stats
 created_at: 2024-02-03T02:12:10Z
 updated_at: 2024-02-03T02:47:55Z
 url: https://github.com/astral-sh/uv/pull/1240
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:31Z
 ```
 
 # test: update snapshot
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-03 02:12_
+_@BurntSushi_
 
 I'm seeing this test failure on main on both my Linux and macOS machines.
 

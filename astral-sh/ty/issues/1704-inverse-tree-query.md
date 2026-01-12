@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-01T12:36:37Z
 updated_at: 2025-12-02T11:59:56Z
 url: https://github.com/astral-sh/ty/issues/1704
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Inverse tree query
 
 ---
 
-_Issue opened by @MichaReiser on 2025-12-01 12:36_
+_@MichaReiser_
 
 Implement a salsa query that, given a file, returns an index that allows querying the ancestor chain of any given node. 
 

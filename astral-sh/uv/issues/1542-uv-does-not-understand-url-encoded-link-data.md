@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T21:06:02Z
 updated_at: 2024-02-16T21:47:05Z
 url: https://github.com/astral-sh/uv/issues/1542
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # `uv` does not understand URL-encoded link data
 
 ---
 
-_Issue opened by @SnoopJ on 2024-02-16 21:06_
+_@SnoopJ_
 
 `uv` commands offer `--find-links`, but do not behave as `pip` and `pip-compile` do when dealing with indices that URL-encode their package names/URLs. For reference, see the [implementation of the correct behavior in `pip`](https://github.com/pypa/pip/blob/51de88ca6459fdd5213f86a54b021a80884572f9/src/pip/_internal/models/link.py#L382-L394).
 

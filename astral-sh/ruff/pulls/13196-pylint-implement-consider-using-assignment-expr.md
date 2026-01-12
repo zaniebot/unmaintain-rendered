@@ -13,14 +13,14 @@ head: consider-using-assignment-expr
 created_at: 2024-09-01T17:31:09Z
 updated_at: 2025-02-20T08:53:33Z
 url: https://github.com/astral-sh/ruff/pull/13196
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [pylint] Implement `consider-using-assignment-expr` (`R6103`)
 
 ---
 
-_Pull request opened by @vincevannoort on 2024-09-01 17:31_
+_@vincevannoort_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-03T13:33:45Z
 updated_at: 2025-12-08T19:24:26Z
 url: https://github.com/astral-sh/uv/issues/16963
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # Add a hint when free-threaded selector is used in `requires-python`
 
 ---
 
-_Issue opened by @zanieb on 2025-12-03 13:33_
+_@zanieb_
 
 ### Summary
 

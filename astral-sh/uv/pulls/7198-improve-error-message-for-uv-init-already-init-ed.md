@@ -13,14 +13,14 @@ head: already-init-error
 created_at: 2024-09-08T20:04:59Z
 updated_at: 2024-09-08T22:28:28Z
 url: https://github.com/astral-sh/uv/pull/7198
-synced_at: 2026-01-10T12:53:42Z
+synced_at: 2026-01-12T16:07:44Z
 ```
 
 # Improve error message for uv init already init-ed
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-09-08 20:04_
+_@hauntsaninja_
 
 Someone in https://discord.com/channels/1039017663004942429/1207998321562619954/1282411049106145400 found this confusing
 

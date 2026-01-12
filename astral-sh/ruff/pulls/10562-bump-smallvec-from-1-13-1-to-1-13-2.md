@@ -13,14 +13,14 @@ head: dependabot/cargo/smallvec-1.13.2
 created_at: 2024-03-25T08:57:09Z
 updated_at: 2024-03-25T09:16:09Z
 url: https://github.com/astral-sh/ruff/pull/10562
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Bump smallvec from 1.13.1 to 1.13.2
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-25 08:57_
+_@dependabot_
 
 Bumps [smallvec](https://github.com/servo/rust-smallvec) from 1.13.1 to 1.13.2.
 <details>

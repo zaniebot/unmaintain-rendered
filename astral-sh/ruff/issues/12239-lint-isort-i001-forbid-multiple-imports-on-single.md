@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-08T08:28:16Z
 updated_at: 2025-01-13T07:43:14Z
 url: https://github.com/astral-sh/ruff/issues/12239
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # lint isort I001: forbid multiple imports on single line?
 
 ---
 
-_Issue opened by @fschulze on 2024-07-08 08:28_
+_@fschulze_
 
 I tried to configure lint.isort to block multiple imports on single lines without enforcing the way multiple imports are split.
 

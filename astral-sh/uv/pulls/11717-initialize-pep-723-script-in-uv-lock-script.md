@@ -13,14 +13,14 @@ head: charlie/lock-settings
 created_at: 2025-02-22T22:29:40Z
 updated_at: 2025-02-24T17:40:46Z
 url: https://github.com/astral-sh/uv/pull/11717
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:58Z
 ```
 
 # Initialize PEP 723 script in `uv lock --script`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-22 22:29_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-16T02:55:04Z
 updated_at: 2024-02-16T03:15:31Z
 url: https://github.com/astral-sh/uv/issues/1417
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Rename project to ruv
 
 ---
 
-_Issue opened by @jmoz on 2024-02-16 02:55_
+_@jmoz_
 
 In keeping with the r-prefix for ruff based tools, I suggest you rename uv to ruv.
 

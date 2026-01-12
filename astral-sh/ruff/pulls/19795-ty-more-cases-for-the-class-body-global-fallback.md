@@ -14,14 +14,14 @@ head: jack/class_body_corner_cases
 created_at: 2025-08-06T22:09:59Z
 updated_at: 2025-08-08T00:30:29Z
 url: https://github.com/astral-sh/ruff/pull/19795
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] more cases for the class body global fallback
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-08-06 22:09_
+_@oconnor663_
 
 I had been tracking https://github.com/astral-sh/ty/issues/875, and I took a look at @mtshiba's https://github.com/astral-sh/ruff/pull/19743 after it closed that bug. It looks like there are some obscure corner cases that don't match CPython's behavior, and some of the refactoring I've been doing for https://github.com/astral-sh/ruff/pull/19703 (particularly a `Symbol::is_local` method) might be helpful. I expect that all these cases are extremely rare, so this PR is more for my own understanding and to kick the tires on the refactorings I'm already considering. ~~I don't expect to get any ecosystem hits but we'll see.~~ (lol what is scipy doing :sweat_smile:)
 

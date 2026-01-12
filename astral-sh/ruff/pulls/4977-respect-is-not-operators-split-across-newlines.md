@@ -13,14 +13,14 @@ head: charlie/located-ops
 created_at: 2023-06-09T04:57:27Z
 updated_at: 2023-06-09T05:27:45Z
 url: https://github.com/astral-sh/ruff/pull/4977
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Respect 'is not' operators split across newlines
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-09 04:57_
+_@charliermarsh_
 
 Closes #4973.
 

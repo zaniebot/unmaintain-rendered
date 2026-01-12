@@ -13,14 +13,14 @@ head: thejcannon-patch-1
 created_at: 2025-11-17T15:53:47Z
 updated_at: 2025-11-17T18:04:51Z
 url: https://github.com/astral-sh/ruff/pull/21500
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # Mention `force-exclude` in "Configuration > Python file discovery"
 
 ---
 
-_Pull request opened by @thejcannon on 2025-11-17 15:53_
+_@thejcannon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

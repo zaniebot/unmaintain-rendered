@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T17:56:14Z
 updated_at: 2025-03-24T18:17:27Z
 url: https://github.com/astral-sh/uv/issues/12444
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # unexpected index usage when package exists on multiple indices
 
 ---
 
-_Issue opened by @hutch3232 on 2025-03-24 17:56_
+_@hutch3232_
 
 ### Summary
 

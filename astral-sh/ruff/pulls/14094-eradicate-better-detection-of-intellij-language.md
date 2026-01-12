@@ -13,14 +13,14 @@ head: ERA001
 created_at: 2024-11-04T17:11:11Z
 updated_at: 2024-11-07T20:18:35Z
 url: https://github.com/astral-sh/ruff/pull/14094
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [`eradicate`] Better detection of IntelliJ language injection comments (`ERA001`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-04 17:11_
+_@InSyncWithFoo_
 
 ## Summary
 

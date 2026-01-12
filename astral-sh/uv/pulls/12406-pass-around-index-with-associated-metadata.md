@@ -14,14 +14,14 @@ head: charlie/index-i
 created_at: 2025-03-24T01:55:55Z
 updated_at: 2025-03-24T14:15:52Z
 url: https://github.com/astral-sh/uv/pull/12406
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:16Z
 ```
 
 # Pass around index with associated metadata
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-24 01:55_
+_@charliermarsh_
 
 ## Summary
 

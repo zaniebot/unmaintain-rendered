@@ -14,14 +14,14 @@ head: ag/import-completions
 created_at: 2025-06-20T18:48:52Z
 updated_at: 2025-06-23T14:43:26Z
 url: https://github.com/astral-sh/ruff/pull/18830
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [ty] Add completions for `from module import <CURSOR>`
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-06-20 18:48_
+_@BurntSushi_
 
 There were two main challenges in this PR.
 

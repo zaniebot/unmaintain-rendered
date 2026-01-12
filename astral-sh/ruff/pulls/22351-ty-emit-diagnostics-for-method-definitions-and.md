@@ -14,14 +14,14 @@ head: typeddict_method_errors
 created_at: 2026-01-03T05:11:27Z
 updated_at: 2026-01-05T19:28:06Z
 url: https://github.com/astral-sh/ruff/pull/22351
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] emit diagnostics for method definitions and other invalid statements in `TypedDict` class bodies
 
 ---
 
-_Pull request opened by @oconnor663 on 2026-01-03 05:11_
+_@oconnor663_
 
 Fixes https://github.com/astral-sh/ty/issues/2277.
 

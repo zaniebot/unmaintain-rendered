@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-26T17:01:09Z
 updated_at: 2025-08-28T17:00:59Z
 url: https://github.com/astral-sh/uv/issues/12492
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # Align the progress bars
 
 ---
 
-_Issue opened by @debnath-d on 2025-03-26 17:01_
+_@debnath-d_
 
 ### Summary
 

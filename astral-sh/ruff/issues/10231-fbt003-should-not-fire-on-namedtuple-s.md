@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-04T21:41:05Z
 updated_at: 2024-03-11T17:25:35Z
 url: https://github.com/astral-sh/ruff/issues/10231
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `FBT003` should not fire on `NamedTuple`s
 
 ---
 
-_Issue opened by @tylerlaprade on 2024-03-04 21:41_
+_@tylerlaprade_
 
 ```
 class Foo(NamedTuple):

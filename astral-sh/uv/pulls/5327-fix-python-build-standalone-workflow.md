@@ -13,14 +13,14 @@ head: gh-action
 created_at: 2024-07-23T03:09:33Z
 updated_at: 2024-07-23T12:37:14Z
 url: https://github.com/astral-sh/uv/pull/5327
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:45Z
 ```
 
 # Fix `python-build-standalone` workflow
 
 ---
 
-_Pull request opened by @j178 on 2024-07-23 03:09_
+_@j178_
 
 ## Summary
 

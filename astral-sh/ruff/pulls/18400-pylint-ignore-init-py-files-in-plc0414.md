@@ -14,14 +14,14 @@ head: fix-f401-plc0414-conflict
 created_at: 2025-05-31T08:34:46Z
 updated_at: 2025-06-21T06:49:15Z
 url: https://github.com/astral-sh/ruff/pull/18400
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # [`pylint`] Ignore __init__.py files in (PLC0414)
 
 ---
 
-_Pull request opened by @GideonBear on 2025-05-31 08:34_
+_@GideonBear_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

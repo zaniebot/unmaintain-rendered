@@ -13,14 +13,14 @@ head: charlie/fix-docs
 created_at: 2023-05-29T21:27:53Z
 updated_at: 2023-05-29T21:55:24Z
 url: https://github.com/astral-sh/ruff/pull/4712
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Fix docs formatting for `iter-method-returns-iterable`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-29 21:27_
+_@charliermarsh_
 
 (My mistake.)
 

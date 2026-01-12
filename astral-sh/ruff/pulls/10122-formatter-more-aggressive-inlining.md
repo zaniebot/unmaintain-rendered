@@ -12,14 +12,14 @@ head: formatter-inline
 created_at: 2024-02-25T20:37:30Z
 updated_at: 2024-02-29T13:18:36Z
 url: https://github.com/astral-sh/ruff/pull/10122
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Formatter: More aggressive inlining
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-25 20:37_
+_@MichaReiser_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-10-02T17:47:03Z
 updated_at: 2025-05-22T13:51:24Z
 url: https://github.com/clap-rs/clap/issues/5156
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Show the type of arguments in help message?
 
 ---
 
-_Issue opened by @epage on 2023-10-02 17:47_
+_@epage_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/5153
 

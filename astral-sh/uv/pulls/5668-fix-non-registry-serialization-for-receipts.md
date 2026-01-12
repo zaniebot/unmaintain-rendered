@@ -14,14 +14,14 @@ head: charlie/ser
 created_at: 2024-07-31T19:27:16Z
 updated_at: 2024-07-31T21:09:55Z
 url: https://github.com/astral-sh/uv/pull/5668
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:57Z
 ```
 
 # Fix non-registry serialization for receipts
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-31 19:27_
+_@charliermarsh_
 
 ## Summary
 

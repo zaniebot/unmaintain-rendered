@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-21T13:08:46Z
 updated_at: 2025-11-18T16:10:25Z
 url: https://github.com/astral-sh/ty/issues/120
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Update `star.md` tests to avoid syntax errors
 
 ---
 
-_Issue opened by @ntBre on 2025-04-21 13:08_
+_@ntBre_
 
 A few `match` tests in `star.md` have cases like this:
 

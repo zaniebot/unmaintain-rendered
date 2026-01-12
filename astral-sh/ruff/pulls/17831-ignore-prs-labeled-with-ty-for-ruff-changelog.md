@@ -13,14 +13,14 @@ head: micha/rooster-ignore-ty
 created_at: 2025-05-04T13:34:48Z
 updated_at: 2025-05-04T13:42:12Z
 url: https://github.com/astral-sh/ruff/pull/17831
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # Ignore PRs labeled with `ty` for Ruff changelog
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-04 13:34_
+_@MichaReiser_
 
 ## Summary
 

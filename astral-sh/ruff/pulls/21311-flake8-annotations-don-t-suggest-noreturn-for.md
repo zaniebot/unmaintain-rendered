@@ -12,14 +12,14 @@ head: fix-18886
 created_at: 2025-11-07T05:08:03Z
 updated_at: 2025-12-01T19:26:21Z
 url: https://github.com/astral-sh/ruff/pull/21311
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [`flake8-annotations`] Don't suggest `NoReturn` for functions raising `NotImplementedError` (`ANN201`, `ANN202`, `ANN205`, `ANN206`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-07 05:08_
+_@danparizher_
 
 ## Summary
 

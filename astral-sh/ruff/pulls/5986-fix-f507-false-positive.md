@@ -13,14 +13,14 @@ head: fix-F507-false-positive
 created_at: 2023-07-22T16:14:18Z
 updated_at: 2023-07-23T00:12:04Z
 url: https://github.com/astral-sh/ruff/pull/5986
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Fix `F507` false positive
 
 ---
 
-_Pull request opened by @harupy on 2023-07-22 16:14_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

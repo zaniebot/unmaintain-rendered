@@ -13,14 +13,14 @@ head: zb/docs
 created_at: 2025-11-10T17:00:24Z
 updated_at: 2025-11-12T11:57:13Z
 url: https://github.com/astral-sh/uv/pull/16670
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:22Z
 ```
 
 # Switch from Mkdocs to Zensical
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-10 17:00_
+_@zanieb_
 
 _No description provided._
 

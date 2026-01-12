@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-19T07:36:55Z
 updated_at: 2025-10-12T21:16:51Z
 url: https://github.com/astral-sh/uv/issues/15371
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:09Z
 ```
 
 # Always install the latest version in `uv tool install`
 
 ---
 
-_Issue opened by @varioustoxins on 2025-08-19 07:36_
+_@varioustoxins_
 
 ### Summary
 

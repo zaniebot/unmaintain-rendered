@@ -13,14 +13,14 @@ head: brent/formatter-version
 created_at: 2025-02-14T20:48:49Z
 updated_at: 2025-02-18T17:03:16Z
 url: https://github.com/astral-sh/ruff/pull/16170
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Use `ast::PythonVersion` internally in the formatter and linter
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-14 20:48_
+_@ntBre_
 
 ## Summary
 

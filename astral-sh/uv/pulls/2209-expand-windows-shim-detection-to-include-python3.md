@@ -14,14 +14,14 @@ head: charlie/win
 created_at: 2024-03-05T17:53:13Z
 updated_at: 2024-03-05T18:25:06Z
 url: https://github.com/astral-sh/uv/pull/2209
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:55Z
 ```
 
 # Expand Windows shim detection to include `python3.12.exe`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-05 17:53_
+_@charliermarsh_
 
 ## Summary
 

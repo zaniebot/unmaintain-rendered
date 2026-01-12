@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-05T17:23:59Z
 updated_at: 2024-11-05T22:22:45Z
 url: https://github.com/astral-sh/ruff/issues/14113
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # B007 does not detect unused variables when they are shadowed or appear in inner scope
 
 ---
 
-_Issue opened by @LordAro on 2024-11-05 17:23_
+_@LordAro_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

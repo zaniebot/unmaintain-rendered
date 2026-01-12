@@ -12,14 +12,14 @@ head: charlie/eslint-fix
 created_at: 2022-09-04T02:34:25Z
 updated_at: 2022-09-05T16:16:07Z
 url: https://github.com/astral-sh/ruff/pull/97
-synced_at: 2026-01-12T05:48:44Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement ESLint-style fix for R0205
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-04 02:34_
+_@charliermarsh_
 
 _No description provided._
 

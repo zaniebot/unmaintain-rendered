@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-28T19:02:19Z
 updated_at: 2024-09-28T19:39:56Z
 url: https://github.com/astral-sh/uv/issues/7765
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # uv pip install -e fails with spaces
 
 ---
 
-_Issue opened by @csm10495 on 2024-09-28 19:02_
+_@csm10495_
 
 Hey folks,
 

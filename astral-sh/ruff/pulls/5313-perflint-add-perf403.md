@@ -12,14 +12,14 @@ head: feature/PERF403
 created_at: 2023-06-22T19:32:18Z
 updated_at: 2023-07-27T15:12:01Z
 url: https://github.com/astral-sh/ruff/pull/5313
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # [`perflint`] Add `PERF403`
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-06-22 19:32_
+_@qdegraaf_
 
 ## Summary
 

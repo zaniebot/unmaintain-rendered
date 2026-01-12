@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-19T09:00:08Z
 updated_at: 2025-09-19T15:30:16Z
 url: https://github.com/clap-rs/clap/issues/6134
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Cannot parse arguments with leading dash
 
 ---
 
-_Issue opened by @just-ero on 2025-09-19 09:00_
+_@just-ero_
 
 ### Please complete the following tasks
 

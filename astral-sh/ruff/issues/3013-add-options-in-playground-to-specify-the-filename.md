@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-18T16:31:35Z
 updated_at: 2023-02-19T00:39:51Z
 url: https://github.com/astral-sh/ruff/issues/3013
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Add options in playground to specify the filename
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-02-18 16:31_
+_@JonathanPlasse_
 
 It is useful to distinguish between `.py` and `.pyi` files.
 Also, I seem to remember that `__init__.py` is handled differently for different rules.

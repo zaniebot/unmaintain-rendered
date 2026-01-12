@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-14T18:13:35Z
 updated_at: 2023-12-15T01:03:11Z
 url: https://github.com/astral-sh/ruff/issues/9136
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Auto-quoting fails when type annotation spans multiple lines
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-14 18:13_
+_@charliermarsh_
 
 Given:
 

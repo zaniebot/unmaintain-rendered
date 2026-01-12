@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-04T12:58:48Z
 updated_at: 2023-12-04T16:07:55Z
 url: https://github.com/clap-rs/clap/issues/5245
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Feature Request : Add range validation for float types
 
 ---
 
-_Issue opened by @RaulTrombin on 2023-12-04 12:58_
+_@RaulTrombin_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-09T16:52:47Z
 updated_at: 2025-07-25T20:10:14Z
 url: https://github.com/astral-sh/uv/issues/14526
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # How to build dependencies with path as a source
 
 ---
 
-_Issue opened by @mauriciocm9 on 2025-07-09 16:52_
+_@mauriciocm9_
 
 ### Question
 

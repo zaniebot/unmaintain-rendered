@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-08T11:00:55Z
 updated_at: 2026-01-05T02:08:40Z
 url: https://github.com/astral-sh/uv/issues/5903
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Using `uv run` as a task runner
 
 ---
 
-_Issue opened by @my1e5 on 2024-08-08 11:00_
+_@my1e5_
 
 For those of us migrating over from Rye, one of its nice features is the built-in task runner using `rye run` and `[tool.rye.scripts]`. For example:
 ```

@@ -13,14 +13,14 @@ head: charlie/req
 created_at: 2024-02-17T14:18:13Z
 updated_at: 2024-02-17T14:24:59Z
 url: https://github.com/astral-sh/uv/pull/1590
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:40Z
 ```
 
 # Always run `get_requires_for_build_wheel`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-17 14:18_
+_@charliermarsh_
 
 ## Summary
 

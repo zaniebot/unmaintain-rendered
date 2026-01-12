@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-03T06:46:23Z
 updated_at: 2025-04-04T12:44:40Z
 url: https://github.com/astral-sh/uv/issues/12644
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # `uv pip sync` misses dependencies vs `uv pip install`
 
 ---
 
-_Issue opened by @RafaelWO on 2025-04-03 06:46_
+_@RafaelWO_
 
 ### Summary
 

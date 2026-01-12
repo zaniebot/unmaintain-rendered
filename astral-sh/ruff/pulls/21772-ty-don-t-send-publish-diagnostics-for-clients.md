@@ -15,14 +15,14 @@ head: micha/did-changed-watched-files-publish-diagnostics
 created_at: 2025-12-03T07:55:31Z
 updated_at: 2025-12-04T07:12:07Z
 url: https://github.com/astral-sh/ruff/pull/21772
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Don't send publish diagnostics for clients supporting pull diagnostics
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-03 07:55_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-18T20:01:28Z
 updated_at: 2023-08-20T03:33:14Z
 url: https://github.com/astral-sh/ruff/issues/6683
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Please implement PIE799 (prefer-col-init)
 
 ---
 
-_Issue opened by @nth10sd on 2023-08-18 20:01_
+_@nth10sd_
 
 From [flake8-pie](https://github.com/sbdchd/flake8-pie):
 

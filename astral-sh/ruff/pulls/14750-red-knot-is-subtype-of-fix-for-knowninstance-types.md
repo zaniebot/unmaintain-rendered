@@ -13,14 +13,14 @@ head: david/fix-14731
 created_at: 2024-12-03T08:55:41Z
 updated_at: 2024-12-03T11:03:29Z
 url: https://github.com/astral-sh/ruff/pull/14750
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] `is_subtype_of` fix for `KnownInstance` types
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-03 08:55_
+_@sharkdp_
 
 ## Summary
 

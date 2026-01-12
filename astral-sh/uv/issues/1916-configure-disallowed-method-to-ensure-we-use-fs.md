@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-23T15:17:03Z
 updated_at: 2024-02-26T14:15:09Z
 url: https://github.com/astral-sh/uv/issues/1916
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Configure `disallowed_method` to ensure we use `fs_err`
 
 ---
 
-_Issue opened by @zanieb on 2024-02-23 15:17_
+_@zanieb_
 
 We should set up https://rust-lang.github.io/rust-clippy/master/index.html#/disallowed_methods to ensure we use `fs_err` instead of `fs` as it helps with debugging and error messages.
 

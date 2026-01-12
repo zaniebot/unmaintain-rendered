@@ -13,14 +13,14 @@ head: konsti/check-cache-changes
 created_at: 2025-12-02T11:05:57Z
 updated_at: 2025-12-02T14:20:09Z
 url: https://github.com/astral-sh/uv/pull/16927
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:31Z
 ```
 
 # Add a check for accidental cache modifications
 
 ---
 
-_Pull request opened by @konstin on 2025-12-02 11:05_
+_@konstin_
 
 Add a script and associated CI check that checks whether a new uv build can use the cache of the previous uv version. This prevents accidental changes to cache keys, e.g. by changing nested data structures.
 

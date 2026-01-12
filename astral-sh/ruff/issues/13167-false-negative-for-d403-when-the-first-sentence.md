@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T18:44:21Z
 updated_at: 2024-12-30T10:58:15Z
 url: https://github.com/astral-sh/ruff/issues/13167
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # False negative for D403 when the first sentence only has one word but the whole docstring is longer
 
 ---
 
-_Issue opened by @dscorbett on 2024-08-30 18:44_
+_@dscorbett_
 
 [D403](https://docs.astral.sh/ruff/rules/first-line-capitalized/) has a false negative when the docstring’s first word (tokenized by spaces) is not ASCII alphabetic _and_ the docstring either contains a space or doesn’t end with ASCII terminal punctuation. This is similar to #10775. #10776 only fixed the case where a docstring contains no spaces and ends with ASCII terminal punctuation.
 

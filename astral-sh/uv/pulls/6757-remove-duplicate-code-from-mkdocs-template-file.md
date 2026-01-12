@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-08-28T15:25:37Z
 updated_at: 2024-08-28T15:31:30Z
 url: https://github.com/astral-sh/uv/pull/6757
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:31Z
 ```
 
 # Remove duplicate code from `mkdocs` template file
 
 ---
 
-_Pull request opened by @Joaopeuko on 2024-08-28 15:25_
+_@Joaopeuko_
 
 This PR remove a duplicated code from `mkdocs` template
 

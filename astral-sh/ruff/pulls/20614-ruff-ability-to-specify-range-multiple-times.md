@@ -12,14 +12,14 @@ head: format_multiple_ranges
 created_at: 2025-09-28T21:12:00Z
 updated_at: 2025-10-30T18:59:38Z
 url: https://github.com/astral-sh/ruff/pull/20614
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # [`ruff`] Ability to specify `--range` multiple times.
 
 ---
 
-_Pull request opened by @cristian64 on 2025-09-28 21:12_
+_@cristian64_
 
 [`ruff`] Ability to specify `--range` multiple times.
 

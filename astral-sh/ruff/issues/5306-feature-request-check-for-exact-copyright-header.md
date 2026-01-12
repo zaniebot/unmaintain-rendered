@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-22T16:39:00Z
 updated_at: 2024-06-18T15:23:40Z
 url: https://github.com/astral-sh/ruff/issues/5306
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Feature Request: Check for exact copyright header
 
 ---
 
-_Issue opened by @rbebb on 2023-06-22 16:39_
+_@rbebb_
 
 Building off of the request for [`flake8-copyright`](https://github.com/astral-sh/ruff/issues/3579), it would be great to have the ability to check for an exact copyright header in any file!
 

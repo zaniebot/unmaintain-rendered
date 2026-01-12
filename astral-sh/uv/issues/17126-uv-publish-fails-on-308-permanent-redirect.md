@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-13T15:35:00Z
 updated_at: 2025-12-15T15:46:18Z
 url: https://github.com/astral-sh/uv/issues/17126
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # `uv publish` fails on 308 Permanent Redirect
 
 ---
 
-_Issue opened by @zanieb on 2025-12-13 15:35_
+_@zanieb_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-21T14:25:51Z
 updated_at: 2024-10-21T15:05:32Z
 url: https://github.com/astral-sh/ruff/issues/13859
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Ruff formatter - unicode string inside of Enum object always lowercasing characters
 
 ---
 
-_Issue opened by @DashKenny on 2024-10-21 14:25_
+_@DashKenny_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

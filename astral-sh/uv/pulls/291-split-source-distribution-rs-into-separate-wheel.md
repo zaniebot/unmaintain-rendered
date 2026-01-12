@@ -12,14 +12,14 @@ head: charlie/split
 created_at: 2023-11-02T15:46:07Z
 updated_at: 2023-11-02T16:04:53Z
 url: https://github.com/astral-sh/uv/pull/291
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:51Z
 ```
 
 # Split `source_distribution.rs` into separate wheel and sdist fetchers
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-02 15:46_
+_@charliermarsh_
 
 _No description provided._
 

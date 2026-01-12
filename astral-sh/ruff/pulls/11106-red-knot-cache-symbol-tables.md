@@ -13,14 +13,14 @@ head: red-knot-cache-symbol-table
 created_at: 2024-04-23T16:11:52Z
 updated_at: 2024-04-24T17:06:14Z
 url: https://github.com/astral-sh/ruff/pull/11106
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # red-knot: Cache symbol tables
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-23 16:11_
+_@MichaReiser_
 
 ## Summary
 

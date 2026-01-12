@@ -13,14 +13,14 @@ head: charlie/proj
 created_at: 2024-03-25T03:04:12Z
 updated_at: 2024-03-25T03:56:01Z
 url: https://github.com/astral-sh/uv/pull/2644
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:09Z
 ```
 
 # Rename `scripts/editable-installs` to `scripts/packages`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-25 03:04_
+_@charliermarsh_
 
 ## Summary
 

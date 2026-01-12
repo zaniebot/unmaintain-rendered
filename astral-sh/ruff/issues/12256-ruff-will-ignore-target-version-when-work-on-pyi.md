@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-09T09:01:48Z
 updated_at: 2024-08-27T17:28:24Z
 url: https://github.com/astral-sh/ruff/issues/12256
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # ruff will Ignore target version when  work on pyi file
 
 ---
 
-_Issue opened by @rainzee on 2024-07-09 09:01_
+_@rainzee_
 
 The target version is specified as 3.8, and on the py file, everything works fine, but on the pyi file, it looks like the versioning rules are ignored, giving a not-yet-supported operation symbol
 

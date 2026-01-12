@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-03T15:28:38Z
 updated_at: 2022-10-14T16:37:17Z
 url: https://github.com/astral-sh/ruff/issues/305
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement flake8-comprehensions
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-03 15:28_
+_@charliermarsh_
 
 See: https://pypi.org/project/flake8-comprehensions/
 

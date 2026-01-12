@@ -14,14 +14,14 @@ head: format-lint-exclude-option
 created_at: 2023-10-17T03:01:00Z
 updated_at: 2024-01-16T10:03:22Z
 url: https://github.com/astral-sh/ruff/pull/8000
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add `[format|lint].exclude` options
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-17 03:01_
+_@MichaReiser_
 
 ## Summary
 

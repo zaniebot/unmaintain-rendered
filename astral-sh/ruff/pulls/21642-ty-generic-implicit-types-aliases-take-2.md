@@ -13,14 +13,14 @@ head: david/generic-implicit-aliases-new-knowninstance
 created_at: 2025-11-26T13:59:48Z
 updated_at: 2025-11-27T09:25:20Z
 url: https://github.com/astral-sh/ruff/pull/21642
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] Generic implicit types aliases (take 2)
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-26 13:59_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

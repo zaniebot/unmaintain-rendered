@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-07T14:17:42Z
 updated_at: 2024-06-26T00:59:01Z
 url: https://github.com/astral-sh/uv/issues/3422
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Add `uv run`-level settings to configuration file
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-07 14:17_
+_@charliermarsh_
 
 Separate from the `tool.uv.pip` section and interface. We're going to make them independent.
 

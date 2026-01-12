@@ -13,14 +13,14 @@ head: concurrency-limits
 created_at: 2024-05-09T18:37:12Z
 updated_at: 2024-05-10T16:43:09Z
 url: https://github.com/astral-sh/uv/pull/3493
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # Consolidate concurrency limits
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-05-09 18:37_
+_@ibraheemdev_
 
 ## Summary
 

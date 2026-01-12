@@ -13,14 +13,14 @@ head: fix-ruf007-false-positive
 created_at: 2023-03-21T19:34:11Z
 updated_at: 2023-03-22T15:02:08Z
 url: https://github.com/astral-sh/ruff/pull/3654
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Avoid `RUF007` fixes for more than two arguments
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-21 19:34_
+_@JonathanPlasse_
 
 - Close #3651
 

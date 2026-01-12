@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-03T08:09:38Z
 updated_at: 2025-11-05T04:10:20Z
 url: https://github.com/astral-sh/ty/issues/1468
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Is there a way to not check the whole file like ruff's "# ruff: noqa"
 
 ---
 
-_Issue opened by @monchin on 2025-11-03 08:09_
+_@monchin_
 
 ### Question
 

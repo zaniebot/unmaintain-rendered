@@ -14,14 +14,14 @@ head: formatter_ecosystem_ci_debugging
 created_at: 2023-07-31T09:23:50Z
 updated_at: 2023-07-31T17:20:20Z
 url: https://github.com/astral-sh/ruff/pull/6187
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Print log when formatter ecosystem checks fail
 
 ---
 
-_Pull request opened by @konstin on 2023-07-31 09:23_
+_@konstin_
 
 **Summary** Print the errors when the formatter ecosystem checks failed. Im not happy that we current collect the log in the first place, but this is the less invasive change and we need it to unblock reviewing #6152.
 

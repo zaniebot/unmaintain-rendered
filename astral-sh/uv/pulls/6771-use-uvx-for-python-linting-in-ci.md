@@ -13,14 +13,14 @@ head: zb/pipx-ci
 created_at: 2024-08-28T18:43:42Z
 updated_at: 2024-08-28T18:57:15Z
 url: https://github.com/astral-sh/uv/pull/6771
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:31Z
 ```
 
 # Use `uvx` for Python linting in CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-28 18:43_
+_@zanieb_
 
 _No description provided._
 

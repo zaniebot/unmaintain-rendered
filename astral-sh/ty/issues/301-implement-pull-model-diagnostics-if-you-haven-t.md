@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-10T03:50:21Z
 updated_at: 2025-05-10T07:02:20Z
 url: https://github.com/astral-sh/ty/issues/301
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Implement pull model diagnostics (if you haven't already)
 
 ---
 
-_Issue opened by @w0rp on 2025-05-10 03:50_
+_@w0rp_
 
 Hello! I did have to wait a good few years for Pyright to implement pull model diagnostics, and it would be a shame to wait years again for the same support from `ty`. Have a look at the history behind this change. See: https://github.com/microsoft/pyright/issues/3452
 

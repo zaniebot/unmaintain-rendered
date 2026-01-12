@@ -14,14 +14,14 @@ head: dcreager/union-none
 created_at: 2025-10-07T15:34:23Z
 updated_at: 2025-10-07T17:33:44Z
 url: https://github.com/astral-sh/ruff/pull/20749
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] Infer better specializations of unions with `None` (etc)
 
 ---
 
-_Pull request opened by @dcreager on 2025-10-07 15:34_
+_@dcreager_
 
 This PR adds a specialization inference special case that lets us handle the following examples better:
 

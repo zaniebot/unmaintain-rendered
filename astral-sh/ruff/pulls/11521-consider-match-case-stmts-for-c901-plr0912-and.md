@@ -13,14 +13,14 @@ head: match-case-statement
 created_at: 2024-05-23T19:34:21Z
 updated_at: 2024-05-27T10:35:04Z
 url: https://github.com/astral-sh/ruff/pull/11521
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Consider match-case stmts for `C901`, `PLR0912`, and `PLR0915`
 
 ---
 
-_Pull request opened by @blueraft on 2024-05-23 19:34_
+_@blueraft_
 
 Resolves #11421
 

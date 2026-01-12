@@ -12,14 +12,14 @@ head: dhruv/red-knot-bench
 created_at: 2024-08-14T05:12:19Z
 updated_at: 2024-08-14T06:32:02Z
 url: https://github.com/astral-sh/ruff/pull/12876
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] Update source root path for benchmark
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-14 05:12_
+_@dhruvmanila_
 
 ## Summary
 

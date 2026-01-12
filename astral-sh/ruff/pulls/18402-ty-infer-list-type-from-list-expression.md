@@ -12,14 +12,14 @@ head: infer-list-type-from-list-expression
 created_at: 2025-05-31T12:12:33Z
 updated_at: 2025-07-16T21:13:35Z
 url: https://github.com/astral-sh/ruff/pull/18402
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # [ty] Infer list type from list expression
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-05-31 12:12_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

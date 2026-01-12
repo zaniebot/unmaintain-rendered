@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-31T16:57:46Z
 updated_at: 2023-09-08T08:18:37Z
 url: https://github.com/astral-sh/ruff/issues/6203
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: August Goals
 
 ---
 
-_Issue opened by @MichaReiser on 2023-07-31 16:57_
+_@MichaReiser_
 
 Our goal for the next four weeks / August is to make progress on some of the remaining hard problems and close the gap to Black. We're looking for contributors that help us implement the remaining syntaxes (preliminary match statement at this point) and fix black incompatibilities. Please reach out if you're interested in tackling something else. 
 

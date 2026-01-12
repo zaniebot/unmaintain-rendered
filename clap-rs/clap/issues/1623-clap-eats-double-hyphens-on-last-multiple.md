@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-01-05T09:23:57Z
 updated_at: 2020-01-05T09:33:33Z
 url: https://github.com/clap-rs/clap/issues/1623
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Clap eats double hyphens on "last"+"multiple" arguments
 
 ---
 
-_Issue opened by @ejmahler on 2020-01-05 09:23_
+_@ejmahler_
 
 ### Rust Version
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-18T07:58:56Z
 updated_at: 2025-07-16T13:46:22Z
 url: https://github.com/astral-sh/uv/issues/14124
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # How to use uv to install local directories as packages in the venv
 
 ---
 
-_Issue opened by @gw12321 on 2025-06-18 07:58_
+_@gw12321_
 
 ### Question
 

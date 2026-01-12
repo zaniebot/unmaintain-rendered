@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-19T22:14:53Z
 updated_at: 2025-11-08T18:20:48Z
 url: https://github.com/astral-sh/ty/issues/122
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Allow narrowing with `isinstance(x, str | int)` (PEP 604 union types)
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-04-19 22:14_
+_@MatthewMckee4_
 
 Related:
 

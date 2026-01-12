@@ -12,14 +12,14 @@ head: zb/fmt-skip-reason
 created_at: 2023-11-28T19:28:09Z
 updated_at: 2023-12-14T18:29:43Z
 url: https://github.com/astral-sh/ruff/pull/8876
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Allow additional text following formatter pragma comments
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-28 19:28_
+_@zanieb_
 
 I'm not sure if we should do this, but I was curious what it would look like to implement.
 

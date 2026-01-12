@@ -12,14 +12,14 @@ head: SIM300
 created_at: 2023-01-01T22:15:17Z
 updated_at: 2023-01-05T07:40:03Z
 url: https://github.com/astral-sh/ruff/pull/1539
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add flake8-simplify SIM300 check for Yoda Conditions
 
 ---
 
-_Pull request opened by @PedramNavid on 2023-01-01 22:15_
+_@PedramNavid_
 
 Adds a SIM300 Check for Yoda Conditions
 

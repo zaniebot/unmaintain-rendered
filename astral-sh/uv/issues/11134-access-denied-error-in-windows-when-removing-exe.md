@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-31T14:19:45Z
 updated_at: 2025-11-27T09:54:09Z
 url: https://github.com/astral-sh/uv/issues/11134
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:29Z
 ```
 
 # Access Denied error in Windows when removing .exe files from `.venv`
 
 ---
 
-_Issue opened by @nathanjmcdougall on 2025-01-31 14:19_
+_@nathanjmcdougall_
 
 ### Summary
 

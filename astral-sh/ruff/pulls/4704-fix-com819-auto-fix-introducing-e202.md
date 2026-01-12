@@ -11,14 +11,14 @@ head: fix-com819-auto-fix-introducing-e202
 created_at: 2023-05-29T12:21:13Z
 updated_at: 2023-10-17T11:07:10Z
 url: https://github.com/astral-sh/ruff/pull/4704
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Fix COM819 auto-fix introducing E202
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-29 12:21_
+_@JonathanPlasse_
 
 - Close #1975
 <!--

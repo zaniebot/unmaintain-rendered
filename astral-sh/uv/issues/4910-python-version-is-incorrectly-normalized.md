@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-09T04:23:15Z
 updated_at: 2024-07-09T16:04:28Z
 url: https://github.com/astral-sh/uv/issues/4910
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # `python_version !=` is incorrectly normalized
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-09 04:23_
+_@charliermarsh_
 
 On main, this passes:
 

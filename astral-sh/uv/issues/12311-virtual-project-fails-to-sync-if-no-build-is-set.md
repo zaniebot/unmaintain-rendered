@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-19T11:57:13Z
 updated_at: 2025-03-22T16:00:04Z
 url: https://github.com/astral-sh/uv/issues/12311
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # Virtual project fails to sync if no-build is set.
 
 ---
 
-_Issue opened by @LordAro on 2025-03-19 11:57_
+_@LordAro_
 
 ### Summary
 

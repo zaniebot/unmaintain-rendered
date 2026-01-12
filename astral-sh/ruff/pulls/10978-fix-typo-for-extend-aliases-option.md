@@ -13,14 +13,14 @@ head: fix-extend-aliases-typo
 created_at: 2024-04-16T15:35:33Z
 updated_at: 2024-04-16T16:23:19Z
 url: https://github.com/astral-sh/ruff/pull/10978
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Fix Typo for `extend-aliases` Option
 
 ---
 
-_Pull request opened by @max-muoto on 2024-04-16 15:35_
+_@max-muoto_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

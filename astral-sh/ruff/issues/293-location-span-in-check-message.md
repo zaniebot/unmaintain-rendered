@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-30T17:58:19Z
 updated_at: 2022-10-02T16:50:43Z
 url: https://github.com/astral-sh/ruff/issues/293
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Location span in check / message
 
 ---
 
-_Issue opened by @Seamooo on 2022-09-30 17:58_
+_@Seamooo_
 
 A nice-to-have for editor integration would be some sort of span indicated by the check or message.
 The only information given at this stage is the start of the check, so the only inferred span possible is a single character.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-08T18:28:08Z
 updated_at: 2024-06-10T18:24:56Z
 url: https://github.com/astral-sh/ruff/issues/11805
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Cannot setup ruff-lsp configuration in Helix config file
 
 ---
 
-_Issue opened by @ondrej-ivanko on 2024-06-08 18:28_
+_@ondrej-ivanko_
 
 Hi,
 

@@ -14,14 +14,14 @@ head: charlie/venv-paths
 created_at: 2024-03-05T00:19:08Z
 updated_at: 2024-03-05T21:13:25Z
 url: https://github.com/astral-sh/uv/pull/2188
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:54Z
 ```
 
 # Query interpreter to determine correct `virtualenv` paths
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-05 00:19_
+_@charliermarsh_
 
 ## Summary
 

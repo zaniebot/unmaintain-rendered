@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-25T05:09:52Z
 updated_at: 2025-04-26T04:28:21Z
 url: https://github.com/astral-sh/uv/issues/13098
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # uv install nothing in venv .
 
 ---
 
-_Issue opened by @eromoe on 2025-04-25 05:09_
+_@eromoe_
 
 ### Summary
 

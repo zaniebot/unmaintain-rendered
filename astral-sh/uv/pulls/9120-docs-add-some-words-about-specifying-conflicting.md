@@ -13,14 +13,14 @@ head: ag/conflict-docs
 created_at: 2024-11-14T15:57:36Z
 updated_at: 2024-11-14T19:50:23Z
 url: https://github.com/astral-sh/uv/pull/9120
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:40Z
 ```
 
 # docs: add some words about specifying conflicting extras/groups
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-11-14 15:57_
+_@BurntSushi_
 
 This doesn't cover the optional `package` key since I wasn't quite sure
 how to articulate its utility in a digestible way.

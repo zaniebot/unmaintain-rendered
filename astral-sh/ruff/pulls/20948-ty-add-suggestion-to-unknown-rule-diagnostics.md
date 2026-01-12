@@ -14,14 +14,14 @@ head: micha/unknown-rule-suggestion
 created_at: 2025-10-17T19:22:08Z
 updated_at: 2025-10-18T10:44:23Z
 url: https://github.com/astral-sh/ruff/pull/20948
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # [ty] Add suggestion to unknown rule diagnostics, rename `unknown-rule` lint to `ignore-comment-unknown-rule`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-17 19:22_
+_@MichaReiser_
 
 ## Summary
 

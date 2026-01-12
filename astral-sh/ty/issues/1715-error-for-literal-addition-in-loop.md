@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-02T01:22:19Z
 updated_at: 2025-12-02T01:25:30Z
 url: https://github.com/astral-sh/ty/issues/1715
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Error for literal addition in loop
 
 ---
 
-_Issue opened by @vlashada on 2025-12-02 01:22_
+_@vlashada_
 
 ### Summary
 

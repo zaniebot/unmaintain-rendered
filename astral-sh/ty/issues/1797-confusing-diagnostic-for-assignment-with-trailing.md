@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-07T20:11:36Z
 updated_at: 2025-12-07T20:14:51Z
 url: https://github.com/astral-sh/ty/issues/1797
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Confusing diagnostic for assignment with trailing comma
 
 ---
 
-_Issue opened by @Gankra on 2025-12-07 20:11_
+_@Gankra_
 
 https://play.ty.dev/2fdc0a03-ef37-44f1-8074-f8558ff7a582
 

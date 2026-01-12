@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-08T10:07:00Z
 updated_at: 2024-10-29T11:02:31Z
 url: https://github.com/astral-sh/ruff/issues/13678
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # ARG003 does not seem to respect Protocols
 
 ---
 
-_Issue opened by @harahu on 2024-10-08 10:07_
+_@harahu_
 
 The ruff rule`ARG003: unused-class-method-argument` does not seem to understand that unused arguments sometimes are necessary in order to implement a protocol. See example below:
 

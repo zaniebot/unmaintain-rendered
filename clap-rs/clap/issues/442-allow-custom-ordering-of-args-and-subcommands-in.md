@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-03-09T12:38:26Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/442
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Allow custom ordering of args and subcommands in help message
 
 ---
 
-_Issue opened by @kbknapp on 2016-03-09 12:38_
+_@kbknapp_
 
 I'm imagining adding something like a `display_order` (or whatever it gets called) method which sets the display order. Items with the same order will be listed alphabetically and the default will be something like 999 so the custom orders appear first and have a low probability for being accidentally mixed in with defaults. This would also allow some overlap so that maintenance should be low.
 

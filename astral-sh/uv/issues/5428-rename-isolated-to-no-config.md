@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-24T22:13:29Z
 updated_at: 2024-07-25T23:58:37Z
 url: https://github.com/astral-sh/uv/issues/5428
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Rename `--isolated` to `--no-config`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-24 22:13_
+_@charliermarsh_
 
 With an alias and a deprecation warning.
 

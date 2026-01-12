@@ -13,14 +13,14 @@ head: zb/docker-tags
 created_at: 2024-08-28T18:07:46Z
 updated_at: 2024-08-28T18:51:25Z
 url: https://github.com/astral-sh/uv/pull/6768
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:31Z
 ```
 
 # Enumerate available Docker tags
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-28 18:07_
+_@zanieb_
 
 _No description provided._
 

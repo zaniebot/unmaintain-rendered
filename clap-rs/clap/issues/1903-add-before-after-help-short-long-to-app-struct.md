@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-05-03T16:15:09Z
 updated_at: 2020-07-19T12:51:27Z
 url: https://github.com/clap-rs/clap/issues/1903
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # add {before/after}_help_{short/long} to App struct
 
 ---
 
-_Issue opened by @jeffka11 on 2020-05-03 16:15_
+_@jeffka11_
 
 ### Make sure you completed the following tasks
 

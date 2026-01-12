@@ -13,14 +13,14 @@ head: dhruv/deprecate-editor-setting
 created_at: 2025-01-31T13:09:46Z
 updated_at: 2025-02-06T14:42:44Z
 url: https://github.com/astral-sh/ruff/pull/15850
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Add deprecation warning for `ruff-lsp` related settings
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-31 13:09_
+_@dhruvmanila_
 
 ## Summary
 

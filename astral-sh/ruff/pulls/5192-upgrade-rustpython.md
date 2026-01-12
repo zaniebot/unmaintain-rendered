@@ -12,14 +12,14 @@ head: charlie/upgrade
 created_at: 2023-06-19T19:16:18Z
 updated_at: 2023-06-19T21:13:56Z
 url: https://github.com/astral-sh/ruff/pull/5192
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Upgrade RustPython
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-19 19:16_
+_@charliermarsh_
 
 ## Summary
 

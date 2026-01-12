@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-22T21:28:34Z
 updated_at: 2024-07-24T01:16:47Z
 url: https://github.com/astral-sh/uv/issues/5315
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Missing files after uv pip install
 
 ---
 
-_Issue opened by @rnarma321 on 2024-07-22 21:28_
+_@rnarma321_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

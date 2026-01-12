@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-03T16:06:44Z
 updated_at: 2025-09-05T09:12:12Z
 url: https://github.com/astral-sh/uv/issues/15666
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # `uv` installs package that is incompatible with environment python version
 
 ---
 
-_Issue opened by @vdyma on 2025-09-03 16:06_
+_@vdyma_
 
 ### Summary
 

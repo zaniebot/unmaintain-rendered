@@ -13,14 +13,14 @@ head: charlie/stdin
 created_at: 2024-08-23T00:50:49Z
 updated_at: 2024-08-23T15:49:58Z
 url: https://github.com/astral-sh/uv/pull/6481
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:23Z
 ```
 
 # Respect `-` as stdin channel for `uv run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-23 00:50_
+_@charliermarsh_
 
 ## Summary
 

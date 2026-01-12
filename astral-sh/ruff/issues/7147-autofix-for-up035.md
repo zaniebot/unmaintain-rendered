@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-05T11:15:25Z
 updated_at: 2023-09-06T12:55:09Z
 url: https://github.com/astral-sh/ruff/issues/7147
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # autofix for UP035
 
 ---
 
-_Issue opened by @Olegt0rr on 2023-09-05 11:15_
+_@Olegt0rr_
 
 Source:
 

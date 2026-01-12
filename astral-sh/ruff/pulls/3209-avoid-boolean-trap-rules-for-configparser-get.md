@@ -13,14 +13,14 @@ head: patch-01
 created_at: 2023-02-24T17:36:55Z
 updated_at: 2023-02-24T17:52:42Z
 url: https://github.com/astral-sh/ruff/pull/3209
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Avoid boolean-trap rules for ConfigParser get() methods
 
 ---
 
-_Pull request opened by @monosans on 2023-02-24 17:36_
+_@monosans_
 
 See <https://docs.python.org/3/library/configparser.html#fallback-values>.
 

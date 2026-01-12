@@ -11,14 +11,14 @@ head: E122
 created_at: 2024-05-09T01:54:43Z
 updated_at: 2025-10-29T15:05:27Z
 url: https://github.com/astral-sh/ruff/pull/11349
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [`pycodestyle`] Implement `missing-or-outdented-indentation` (`E122`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-05-09 01:54_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

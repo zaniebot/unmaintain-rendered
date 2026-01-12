@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T02:50:33Z
 updated_at: 2025-08-19T08:39:30Z
 url: https://github.com/astral-sh/uv/issues/13959
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # How to install `flash-attn` and `transformer-engine[pytorch]` using `uv sync` in a clean environment (e.g., Docker)
 
 ---
 
-_Issue opened by @pplmx on 2025-06-11 02:50_
+_@pplmx_
 
 ### Question
 

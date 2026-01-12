@@ -13,14 +13,14 @@ head: unused-asyncio-dangling-task
 created_at: 2023-12-08T21:04:22Z
 updated_at: 2023-12-23T19:04:37Z
 url: https://github.com/astral-sh/ruff/pull/9060
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Detect `unused-asyncio-dangling-task` (`RUF006`) on unused assignments
 
 ---
 
-_Pull request opened by @asafamr-mm on 2023-12-08 21:04_
+_@asafamr-mm_
 
 
 ## Summary

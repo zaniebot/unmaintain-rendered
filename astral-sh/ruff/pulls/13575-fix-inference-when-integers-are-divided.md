@@ -14,14 +14,14 @@ head: zb/rk-int-div
 created_at: 2024-09-30T18:52:55Z
 updated_at: 2024-09-30T20:50:38Z
 url: https://github.com/astral-sh/ruff/pull/13575
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Fix inference when integers are divided
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-30 18:52_
+_@zanieb_
 
 Fixes the `Operator::Div` case and adds `Operator::FloorDiv` support
 

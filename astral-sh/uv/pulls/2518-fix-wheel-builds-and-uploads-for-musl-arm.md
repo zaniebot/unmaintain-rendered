@@ -13,14 +13,14 @@ head: charlie/arm
 created_at: 2024-03-18T18:26:48Z
 updated_at: 2024-03-18T18:47:21Z
 url: https://github.com/astral-sh/uv/pull/2518
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:05Z
 ```
 
 # Fix wheel builds and uploads for musl ARM
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-18 18:26_
+_@charliermarsh_
 
 If you look at https://pypi.org/project/uv/0.1.22/#files...
 

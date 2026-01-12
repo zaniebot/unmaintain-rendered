@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-01T19:01:33Z
 updated_at: 2025-07-01T20:47:20Z
 url: https://github.com/astral-sh/ruff/issues/19077
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Some invalid star expressions do not give syntax errors
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-07-01 19:01_
+_@MeGaGiGaGon_
 
 ### Summary
 

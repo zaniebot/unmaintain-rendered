@@ -13,14 +13,14 @@ head: fix/rf-not-fr
 created_at: 2023-11-03T05:13:28Z
 updated_at: 2023-11-03T21:01:56Z
 url: https://github.com/astral-sh/ruff/pull/8464
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Place 'r' prefix before 'f' for raw format strings
 
 ---
 
-_Pull request opened by @deepyaman on 2023-11-03 05:13_
+_@deepyaman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

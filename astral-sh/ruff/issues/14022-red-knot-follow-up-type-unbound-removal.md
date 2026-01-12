@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T18:51:47Z
 updated_at: 2024-11-12T14:30:23Z
 url: https://github.com/astral-sh/ruff/issues/14022
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Follow up: Type::Unbound removal
 
 ---
 
-_Issue opened by @sharkdp on 2024-10-31 18:51_
+_@sharkdp_
 
 This is a follow-up from astral-sh/ruff#13671 that lists some tasks that were intentionally left out from astral-sh/ruff#13980:
 

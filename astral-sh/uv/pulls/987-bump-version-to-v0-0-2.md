@@ -12,14 +12,14 @@ head: charlie/bump
 created_at: 2024-01-19T01:22:23Z
 updated_at: 2024-01-19T01:56:10Z
 url: https://github.com/astral-sh/uv/pull/987
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:20Z
 ```
 
 # Bump version to v0.0.2
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-19 01:22_
+_@charliermarsh_
 
 Bumping the version so that I can test the release process again (including PyPI publish).
 

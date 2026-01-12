@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-01-31T11:28:23Z
 updated_at: 2016-02-01T07:17:44Z
 url: https://github.com/clap-rs/clap/issues/405
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # argument with 'multiple' option enabled consumes subcommands that follow
 
 ---
 
-_Issue opened by @Byron on 2016-01-31 11:28_
+_@Byron_
 
 When I upgraded [google-apis-rs] to clap v2, I noticed that subcommands seem to be consumed by greedy options preceding them.
 

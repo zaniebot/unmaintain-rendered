@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-09T18:43:08Z
 updated_at: 2024-11-09T20:47:29Z
 url: https://github.com/astral-sh/ruff/issues/14231
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # UP044 has unsafe or incorrect fixes when `Unpack` is used in unusual ways
 
 ---
 
-_Issue opened by @dscorbett on 2024-11-09 18:43_
+_@dscorbett_
 
 The fixes for [`non-pep646-unpack` (UP044)](https://docs.astral.sh/ruff/rules/non-pep646-unpack/) have three problems in Ruff 0.7.3 when `Unpack` is used in unusual ways. One problem changes behavior, one introduces a syntax error, and one makes Ruff exit with an error.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-18T13:33:50Z
 updated_at: 2024-08-18T23:21:34Z
 url: https://github.com/astral-sh/ruff/issues/12963
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Feature: Disable unused args check for stub functions
 
 ---
 
-_Issue opened by @dargueta on 2024-08-18 13:33_
+_@dargueta_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

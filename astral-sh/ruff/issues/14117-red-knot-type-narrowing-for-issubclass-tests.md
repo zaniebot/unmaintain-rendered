@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-05T20:18:23Z
 updated_at: 2024-11-07T13:15:40Z
 url: https://github.com/astral-sh/ruff/issues/14117
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Type narrowing for `issubclass` tests
 
 ---
 
-_Issue opened by @sharkdp on 2024-11-05 20:18_
+_@sharkdp_
 
 Part of https://github.com/astral-sh/ruff/issues/13694. Add type narrowing for `issubclass(class, classinfo)` tests.
 

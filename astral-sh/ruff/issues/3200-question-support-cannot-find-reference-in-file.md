@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-24T04:00:02Z
 updated_at: 2023-02-24T04:42:15Z
 url: https://github.com/astral-sh/ruff/issues/3200
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Question: Support "Cannot find reference in file" (incorrect import)
 
 ---
 
-_Issue opened by @bbkgh on 2023-02-24 04:00_
+_@bbkgh_
 
 Hi. Thanks for this great project. I have a question about finding incorrect/non-existing class/methods imports in python with static analysers. Is there any static analyser here that can find this type of errors? (probably with some false-positives)
 ```

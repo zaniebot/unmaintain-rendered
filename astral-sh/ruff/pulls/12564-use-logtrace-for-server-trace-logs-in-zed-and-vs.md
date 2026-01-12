@@ -13,14 +13,14 @@ head: log_trace
 created_at: 2024-07-29T09:55:17Z
 updated_at: 2024-07-30T11:24:15Z
 url: https://github.com/astral-sh/ruff/pull/12564
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Use `$/logTrace` for server trace logs in Zed and VS Code
 
 ---
 
-_Pull request opened by @osiewicz on 2024-07-29 09:55_
+_@osiewicz_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

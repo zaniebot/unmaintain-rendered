@@ -12,14 +12,14 @@ head: rneff/isort-required-imports-doc-fix
 created_at: 2023-01-12T17:29:58Z
 updated_at: 2023-01-12T18:18:17Z
 url: https://github.com/astral-sh/ruff/pull/1824
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # 📝 Update readme example for adding isort required imports
 
 ---
 
-_Pull request opened by @nefrob on 2023-01-12 17:29_
+_@nefrob_
 
 Fixes use of  isort name to the ruff name.
 

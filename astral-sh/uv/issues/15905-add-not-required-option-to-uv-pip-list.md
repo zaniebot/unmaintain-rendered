@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-17T09:56:05Z
 updated_at: 2025-09-17T15:18:52Z
 url: https://github.com/astral-sh/uv/issues/15905
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # Add "--not-required" option to uv pip list
 
 ---
 
-_Issue opened by @NdagiStanley on 2025-09-17 09:56_
+_@NdagiStanley_
 
 ### Summary
 

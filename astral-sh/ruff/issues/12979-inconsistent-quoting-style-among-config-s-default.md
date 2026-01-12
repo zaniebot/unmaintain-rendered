@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-19T07:34:34Z
 updated_at: 2024-08-19T08:02:57Z
 url: https://github.com/astral-sh/ruff/issues/12979
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Inconsistent quoting style among `config`'s default values
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-08-19 07:34_
+_@InSyncWithFoo_
 
 Currently some default string(-like) values are quoted, some aren't:
 

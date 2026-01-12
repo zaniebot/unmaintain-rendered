@@ -13,14 +13,14 @@ head: remove-comprehension-priority
 created_at: 2023-08-28T17:06:16Z
 updated_at: 2023-08-29T06:30:16Z
 url: https://github.com/astral-sh/ruff/pull/6947
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Remove Comprehension priority
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-28 17:06_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

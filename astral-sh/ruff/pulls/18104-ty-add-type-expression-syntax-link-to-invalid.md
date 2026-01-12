@@ -14,14 +14,14 @@ head: david/invalid-type-expression-diag-info
 created_at: 2025-05-14T18:28:12Z
 updated_at: 2025-05-14T18:57:32Z
 url: https://github.com/astral-sh/ruff/pull/18104
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] Add type-expression syntax link to invalid-type-expression
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-14 18:28_
+_@sharkdp_
 
 ## Summary
 

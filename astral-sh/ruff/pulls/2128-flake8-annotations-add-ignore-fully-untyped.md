@@ -14,14 +14,14 @@ head: ann-allow-untyped-return-if-untyped
 created_at: 2023-01-24T13:59:57Z
 updated_at: 2023-02-07T16:36:04Z
 url: https://github.com/astral-sh/ruff/pull/2128
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # flake8-annotations: add ignore-fully-untyped
 
 ---
 
-_Pull request opened by @akx on 2023-01-24 13:59_
+_@akx_
 
 This PR adds a configuration option to inhibit ANN* violations for functions that have no other annotations either, for easier gradual typing of a large codebase (looking at you, Home Assistant 😁).
 

@@ -13,14 +13,14 @@ head: remove-zizmor-broad-ignores
 created_at: 2025-12-25T23:35:16Z
 updated_at: 2025-12-29T13:45:51Z
 url: https://github.com/astral-sh/ruff/pull/22199
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # ci(zizmor): remove broad zizmor ignores
 
 ---
 
-_Pull request opened by @samypr100 on 2025-12-25 23:35_
+_@samypr100_
 
 ## Summary
 

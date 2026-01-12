@@ -13,14 +13,14 @@ head: rk-type-guards
 created_at: 2025-02-22T12:17:43Z
 updated_at: 2025-07-09T20:32:05Z
 url: https://github.com/astral-sh/ruff/pull/16314
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Support `TypeGuard` and `TypeIs`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-22 12:17_
+_@InSyncWithFoo_
 
 ## Summary
 

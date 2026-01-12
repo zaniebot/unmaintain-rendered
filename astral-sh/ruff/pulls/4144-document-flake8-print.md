@@ -13,14 +13,14 @@ head: flake8-print-docs
 created_at: 2023-04-28T22:54:42Z
 updated_at: 2023-04-29T16:12:40Z
 url: https://github.com/astral-sh/ruff/pull/4144
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Document flake8-print
 
 ---
 
-_Pull request opened by @calumy on 2023-04-28 22:54_
+_@calumy_
 
 Add documentation for the flake8-print rules.
 

@@ -13,14 +13,14 @@ head: zb/out-of-bounds
 created_at: 2024-03-24T16:58:43Z
 updated_at: 2024-03-24T16:59:36Z
 url: https://github.com/zanieb/rooster/pull/31
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Fix out-of-bounds error during backfills
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-24 16:58_
+_@zanieb_
 
 _No description provided._
 

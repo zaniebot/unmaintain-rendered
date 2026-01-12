@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-03T05:18:44Z
 updated_at: 2023-02-03T16:33:41Z
 url: https://github.com/astral-sh/ruff/issues/2515
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Remove update-check support?
 
 ---
 
-_Issue opened by @charliermarsh on 2023-02-03 05:18_
+_@charliermarsh_
 
 This used to be on-by-default, then we made it off-by-default. I can find a _few_ usages of `update-check = true` via GitHub Code Search, but perhaps this isn't worth maintaining.
 

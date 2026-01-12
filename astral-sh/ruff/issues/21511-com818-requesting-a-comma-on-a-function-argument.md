@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-18T15:12:26Z
 updated_at: 2025-11-19T08:19:24Z
 url: https://github.com/astral-sh/ruff/issues/21511
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # COM818 requesting a comma on a function argument in multi-line formatting.
 
 ---
 
-_Issue opened by @a8 on 2025-11-18 15:12_
+_@a8_
 
 ### Summary
 

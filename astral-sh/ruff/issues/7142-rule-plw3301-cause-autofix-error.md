@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-05T06:22:46Z
 updated_at: 2023-09-06T03:27:06Z
 url: https://github.com/astral-sh/ruff/issues/7142
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rule PLW3301 cause autofix error
 
 ---
 
-_Issue opened by @qarmin on 2023-09-05 06:22_
+_@qarmin_
 
 
 Ruff 0.0.287 (latest changes from main branch)

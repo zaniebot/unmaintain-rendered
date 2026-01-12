@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-25T16:40:19Z
 updated_at: 2025-05-18T10:12:38Z
 url: https://github.com/astral-sh/uv/issues/6612
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # `uv add`/`uv sync`/... do not respect the active virtualenv, should they?
 
 ---
 
-_Issue opened by @akx on 2024-08-25 16:40_
+_@akx_
 
 Related to #1495, #5229, but not exactly the same IMO.
 

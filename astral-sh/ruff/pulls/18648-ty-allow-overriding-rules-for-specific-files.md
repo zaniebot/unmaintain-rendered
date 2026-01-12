@@ -14,14 +14,14 @@ head: micha/overrides
 created_at: 2025-06-12T14:25:07Z
 updated_at: 2025-06-15T13:27:40Z
 url: https://github.com/astral-sh/ruff/pull/18648
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [ty] Allow overriding rules for specific files
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-12 14:25_
+_@MichaReiser_
 
 ## Summary
 

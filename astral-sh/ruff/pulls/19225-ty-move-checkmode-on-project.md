@@ -14,14 +14,14 @@ head: dhruv/move-check-mode
 created_at: 2025-07-09T06:16:16Z
 updated_at: 2025-07-10T14:41:15Z
 url: https://github.com/astral-sh/ruff/pull/19225
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [ty] Move `CheckMode` on `Project`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-09 06:16_
+_@dhruvmanila_
 
 ## Summary
 

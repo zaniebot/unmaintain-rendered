@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-04-02T02:49:21Z
 updated_at: 2022-04-19T15:33:55Z
 url: https://github.com/clap-rs/clap/issues/3602
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # write_long_help is wonky on get_subcommands_mut values
 
 ---
 
-_Issue opened by @Gankra on 2022-04-02 02:49_
+_@Gankra_
 
 ### Please complete the following tasks
 

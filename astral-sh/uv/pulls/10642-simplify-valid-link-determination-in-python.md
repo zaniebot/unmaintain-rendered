@@ -13,14 +13,14 @@ head: zb/ref-link
 created_at: 2025-01-15T20:18:48Z
 updated_at: 2025-01-16T15:53:08Z
 url: https://github.com/astral-sh/uv/pull/10642
-synced_at: 2026-01-10T11:45:01Z
+synced_at: 2026-01-12T16:09:24Z
 ```
 
 # Simplify `valid_link` determination in `python install`
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-15 20:18_
+_@zanieb_
 
 Addresses review feedback at https://github.com/astral-sh/uv/pull/10639#discussion_r1917263236
 

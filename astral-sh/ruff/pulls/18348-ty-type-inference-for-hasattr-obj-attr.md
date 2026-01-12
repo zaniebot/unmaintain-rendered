@@ -13,14 +13,14 @@ head: david/hasattr-inference
 created_at: 2025-05-28T07:59:04Z
 updated_at: 2025-05-28T08:12:26Z
 url: https://github.com/astral-sh/ruff/pull/18348
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Type inference for `hasattr(obj, attr)`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-28 07:59_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: feat/uv-cache-size-command
 created_at: 2025-09-26T06:24:05Z
 updated_at: 2025-11-02T20:44:28Z
 url: https://github.com/astral-sh/uv/pull/16032
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:04Z
 ```
 
 # Add a `uv cache size` command
 
 ---
 
-_Pull request opened by @yumeminami on 2025-09-26 06:24_
+_@yumeminami_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

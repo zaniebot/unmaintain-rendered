@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-24T22:12:36Z
 updated_at: 2025-09-25T17:51:56Z
 url: https://github.com/astral-sh/ty/issues/1249
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # SQLAlchemy Extensions - Cannot resolve import module `sqlalchemy.ext.asyncio`
 
 ---
 
-_Issue opened by @Josh-M42 on 2025-09-24 22:12_
+_@Josh-M42_
 
 ### Summary
 

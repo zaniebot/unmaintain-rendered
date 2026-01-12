@@ -13,14 +13,14 @@ head: perf401_call_fix
 created_at: 2025-04-21T03:52:19Z
 updated_at: 2025-04-21T17:29:24Z
 url: https://github.com/astral-sh/ruff/pull/17519
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`perflint`] Allow list function calls to be replaced with a comprehension (`PERF401`)
 
 ---
 
-_Pull request opened by @w0nder1ng on 2025-04-21 03:52_
+_@w0nder1ng_
 
 This is an implementation of the discussion from #16719. 
 

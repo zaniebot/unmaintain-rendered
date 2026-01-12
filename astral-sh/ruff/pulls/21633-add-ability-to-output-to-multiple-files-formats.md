@@ -14,14 +14,14 @@ head: user/celestialorb/cli/output/format/multiple
 created_at: 2025-11-25T23:23:52Z
 updated_at: 2025-12-26T11:50:42Z
 url: https://github.com/astral-sh/ruff/pull/21633
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # Add Ability to Output to Multiple Files/Formats
 
 ---
 
-_Pull request opened by @celestialorb on 2025-11-25 23:23_
+_@celestialorb_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

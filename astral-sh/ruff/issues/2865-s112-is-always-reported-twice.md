@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-13T15:49:50Z
 updated_at: 2023-02-15T17:08:36Z
 url: https://github.com/astral-sh/ruff/issues/2865
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # S112 is always reported twice
 
 ---
 
-_Issue opened by @spaceone on 2023-02-13 15:49_
+_@spaceone_
 
 S112 is always reported twice for the same code
 

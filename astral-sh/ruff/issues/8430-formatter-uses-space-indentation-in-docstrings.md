@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-02T01:50:42Z
 updated_at: 2024-02-12T15:09:15Z
 url: https://github.com/astral-sh/ruff/issues/8430
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: Uses space indentation in docstrings when using `indent-style = "tab"`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-11-02 01:50_
+_@MichaReiser_
 
 If I have indent-style set to "tab", when I run ruff format it is still converting indentation within docstring comments to be spaces, which then causes ruff check to fail on rule E101: Indentation contains mixed spaces and tabs
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-02T13:31:50Z
 updated_at: 2025-10-21T09:24:09Z
 url: https://github.com/astral-sh/ruff/issues/10738
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # option to format other filetypes (eg. `toml`, `yaml`, `json`, `md`, etc.)
 
 ---
 
-_Issue opened by @DetachHead on 2024-04-02 13:31_
+_@DetachHead_
 
 it would be nice if ruff could format `toml`, `yaml` and `md` files.
 

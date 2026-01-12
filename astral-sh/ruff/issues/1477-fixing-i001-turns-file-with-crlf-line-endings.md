@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-30T12:42:36Z
 updated_at: 2022-12-30T17:59:41Z
 url: https://github.com/astral-sh/ruff/issues/1477
-synced_at: 2026-01-10T12:05:29Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Fixing I001 turns file with CRLF line endings into mixed line endings
 
 ---
 
-_Issue opened by @rhkleijn on 2022-12-30 12:42_
+_@rhkleijn_
 
 When fixing `I001` import related lint errors the fix introduces `\n` line endings even if the file originally was `\r\n` only. (On windows  `\r\n` line endings are widely used.)
 

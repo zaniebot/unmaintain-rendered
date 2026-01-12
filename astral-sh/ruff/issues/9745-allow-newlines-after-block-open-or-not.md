@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-31T17:07:59Z
 updated_at: 2025-11-11T13:36:32Z
 url: https://github.com/astral-sh/ruff/issues/9745
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Allow newlines after block open (or not)
 
 ---
 
-_Issue opened by @vaughnkoch on 2024-01-31 17:07_
+_@vaughnkoch_
 
 Hi, I'm opening this issue per a suggestion from @MichaReiser, based on this closed issue: https://github.com/astral-sh/ruff/issues/8893.
 

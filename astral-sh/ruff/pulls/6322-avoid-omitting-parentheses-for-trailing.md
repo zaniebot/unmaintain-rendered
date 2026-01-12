@@ -13,14 +13,14 @@ head: charlie/compare-call
 created_at: 2023-08-03T23:48:26Z
 updated_at: 2023-08-10T15:20:51Z
 url: https://github.com/astral-sh/ruff/pull/6322
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Avoid omitting parentheses for trailing attributes on call expressions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-03 23:48_
+_@charliermarsh_
 
 ## Summary
 

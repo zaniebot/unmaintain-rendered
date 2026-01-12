@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-18T13:43:24Z
 updated_at: 2025-06-09T23:50:37Z
 url: https://github.com/astral-sh/uv/issues/13513
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # [nit] uv pip install lists updating, updated for git source
 
 ---
 
-_Issue opened by @wyattscarpenter on 2025-05-18 13:43_
+_@wyattscarpenter_
 
 ### Summary
 

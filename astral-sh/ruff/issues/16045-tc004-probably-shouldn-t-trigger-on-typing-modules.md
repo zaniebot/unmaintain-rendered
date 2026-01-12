@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-08T22:08:58Z
 updated_at: 2025-02-09T16:27:08Z
 url: https://github.com/astral-sh/ruff/issues/16045
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # TC004 probably shouldn't trigger on typing-modules
 
 ---
 
-_Issue opened by @mikeshardmind on 2025-02-08 22:08_
+_@mikeshardmind_
 
 ### Description
 

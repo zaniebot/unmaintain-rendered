@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-08T04:20:48Z
 updated_at: 2026-01-08T13:36:48Z
 url: https://github.com/astral-sh/ruff/issues/22452
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # False positive for F821 in function with `lambda: var` arg when `del var` is present
 
 ---
 
-_Issue opened by @DeflateAwning on 2026-01-08 04:20_
+_@DeflateAwning_
 
 ### Summary
 

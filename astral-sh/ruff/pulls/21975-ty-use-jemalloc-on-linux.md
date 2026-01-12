@@ -14,14 +14,14 @@ head: claude/custom-allocators-mimalloc-01VFGzka5wDLFvvNY9bHrHgG
 created_at: 2025-12-14T09:30:43Z
 updated_at: 2025-12-15T16:24:50Z
 url: https://github.com/astral-sh/ruff/pull/21975
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Use jemalloc on linux
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-14 09:30_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T08:01:19Z
 updated_at: 2025-03-03T11:27:20Z
 url: https://github.com/astral-sh/uv/issues/8716
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # Automatic Python Trove Classifiers
 
 ---
 
-_Issue opened by @harkabeeparolus on 2024-10-31 08:01_
+_@harkabeeparolus_
 
 ### Summary
 

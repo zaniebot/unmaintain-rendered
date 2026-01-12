@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-23T06:40:23Z
 updated_at: 2023-07-31T08:58:02Z
 url: https://github.com/astral-sh/ruff/issues/5326
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Introduce `SuiteStatement`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-06-23 06:40_
+_@MichaReiser_
 
 RustPython's AST structure for the following two programs is identical (the ranges differ)
 

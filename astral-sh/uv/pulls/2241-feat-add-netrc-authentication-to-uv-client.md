@@ -13,14 +13,14 @@ head: netrc
 created_at: 2024-03-06T15:35:55Z
 updated_at: 2024-03-26T19:56:31Z
 url: https://github.com/astral-sh/uv/pull/2241
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:56Z
 ```
 
 # feat: Add netrc authentication to uv-client
 
 ---
 
-_Pull request opened by @bschoenmaeckers on 2024-03-06 15:35_
+_@bschoenmaeckers_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: alex/ephemeral-uv-envs
 created_at: 2025-05-27T16:33:26Z
 updated_at: 2025-05-28T14:55:00Z
 url: https://github.com/astral-sh/ruff/pull/18335
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Support ephemeral uv virtual environments
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-27 16:33_
+_@AlexWaygood_
 
 ## Summary
 

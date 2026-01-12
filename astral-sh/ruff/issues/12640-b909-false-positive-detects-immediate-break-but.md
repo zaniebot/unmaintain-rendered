@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-02T18:46:04Z
 updated_at: 2024-08-02T22:14:18Z
 url: https://github.com/astral-sh/ruff/issues/12640
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `B909` False-positive: Detects immediate `break` but not `return`
 
 ---
 
-_Issue opened by @Avasam on 2024-08-02 18:46_
+_@Avasam_
 
 * List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
 B909

@@ -14,14 +14,14 @@ head: micha/infer-standalone-expr-avoid-hashmap-lookup
 created_at: 2025-07-20T16:08:22Z
 updated_at: 2025-07-20T16:22:07Z
 url: https://github.com/astral-sh/ruff/pull/19439
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [ty] Avoid second lookup for `infer_maybe_standalone_expression`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-20 16:08_
+_@MichaReiser_
 
 I don't expect this to meaningfully improve performance but it seems very unnecessary :)
 

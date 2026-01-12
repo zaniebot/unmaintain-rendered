@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-05-13T12:57:58Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/505
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Values, OsValues not reachable in docs
 
 ---
 
-_Issue opened by @bluss on 2016-05-13 12:57_
+_@bluss_
 
 Iterators Values and OsValues are not reachable in the docs (they are black, non-links). This is because they are `pub` but not really reachable, so they are not linked.
 

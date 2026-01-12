@@ -12,14 +12,14 @@ head: charlie/pyx-torch
 created_at: 2025-09-10T16:55:03Z
 updated_at: 2025-09-10T19:38:02Z
 url: https://github.com/astral-sh/uv/pull/15769
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:55Z
 ```
 
 # Add pyx as a supported PyTorch index URL
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-10 16:55_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: charlie/patch
 created_at: 2024-03-08T19:41:22Z
 updated_at: 2024-03-08T19:53:50Z
 url: https://github.com/astral-sh/uv/pull/2305
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:58Z
 ```
 
 # Avoid using setuptools shim of distutils
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-08 19:41_
+_@charliermarsh_
 
 ## Summary
 

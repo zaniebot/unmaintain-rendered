@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-08T16:29:31Z
 updated_at: 2023-12-07T14:55:25Z
 url: https://github.com/astral-sh/ruff/issues/5616
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Replace `noqa` directive parser with an actual lexer
 
 ---
 
-_Issue opened by @charliermarsh on 2023-07-08 16:29_
+_@charliermarsh_
 
 In #5567 and related PRs, I moved away from regular expressions and exact matches to a more token-based approach to `noqa` parsing. There are two codepaths here, one for `# noqa: F401` (inline exemptions) and another for `# ruff: noqa: F401` (whole-file exemptions). We should replace both of these with an actual lexer to lex directives, and then match against the resulting token stream. That would likely simplify the code a lot and allow us to unify the implementations.
 

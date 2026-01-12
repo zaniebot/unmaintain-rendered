@@ -13,14 +13,14 @@ head: charlie/rm
 created_at: 2024-04-03T02:24:20Z
 updated_at: 2024-04-03T02:34:15Z
 url: https://github.com/astral-sh/uv/pull/2793
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:13Z
 ```
 
 # Remove unused `download_and_extract_archive` method
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-03 02:24_
+_@charliermarsh_
 
 ## Summary
 

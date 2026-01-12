@@ -13,14 +13,14 @@ head: konsti/alpine-note
 created_at: 2024-08-27T08:00:10Z
 updated_at: 2024-08-27T16:03:57Z
 url: https://github.com/astral-sh/uv/pull/6677
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:28Z
 ```
 
 # Add note about install python on alpine
 
 ---
 
-_Pull request opened by @konstin on 2024-08-27 08:00_
+_@konstin_
 
 When not using a python base image and using alpine, you need to install python by yourself. You should also pin the python version when doing so; currently, i see only python 3.12 in the alpine repository.
 

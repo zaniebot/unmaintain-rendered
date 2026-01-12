@@ -12,14 +12,14 @@ head: zb/release-runners-2
 created_at: 2025-12-06T14:28:37Z
 updated_at: 2025-12-09T22:04:46Z
 url: https://github.com/astral-sh/uv/pull/17016
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:34Z
 ```
 
 # Increase the size of binary build runners
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-06 14:28_
+_@zanieb_
 
 Summary from asking Claude to compare the runtime
 

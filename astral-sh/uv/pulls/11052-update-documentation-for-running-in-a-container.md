@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-01-29T08:27:44Z
 updated_at: 2025-02-19T09:20:53Z
 url: https://github.com/astral-sh/uv/pull/11052
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:39Z
 ```
 
 # Update documentation for running in a container
 
 ---
 
-_Pull request opened by @returnDanilo on 2025-01-29 08:27_
+_@returnDanilo_
 
 This PR rewords the instructions for using uv in a container. I'm a new user and was somewhat confused by it, so I've rewritten it as I'd have liked to have read it.
 

@@ -14,14 +14,14 @@ head: charlie/force
 created_at: 2024-03-19T19:00:10Z
 updated_at: 2024-05-01T16:34:53Z
 url: https://github.com/astral-sh/uv/pull/2548
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:05Z
 ```
 
 # Allow `--force` to overwrite existing virtualenv
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-19 19:00_
+_@charliermarsh_
 
 ## Summary
 

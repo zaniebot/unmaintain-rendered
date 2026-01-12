@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-17T12:55:26Z
 updated_at: 2025-11-10T18:53:48Z
 url: https://github.com/astral-sh/uv/issues/12942
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # Strange default owner/group when installed as root
 
 ---
 
-_Issue opened by @jklaiho on 2025-04-17 12:55_
+_@jklaiho_
 
 ### Summary
 

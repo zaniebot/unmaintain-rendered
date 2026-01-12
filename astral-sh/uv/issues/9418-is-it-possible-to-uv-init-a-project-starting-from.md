@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-25T14:18:20Z
 updated_at: 2025-08-01T13:33:19Z
 url: https://github.com/astral-sh/uv/issues/9418
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:50Z
 ```
 
 # Is it possible to `uv init` a project starting from a template TOML?
 
 ---
 
-_Issue opened by @NicholasPini on 2024-11-25 14:18_
+_@NicholasPini_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

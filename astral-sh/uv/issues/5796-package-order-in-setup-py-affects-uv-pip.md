@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-05T17:22:00Z
 updated_at: 2024-08-06T14:32:29Z
 url: https://github.com/astral-sh/uv/issues/5796
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Package order in setup.py affects `uv pip` dependency resolution
 
 ---
 
-_Issue opened by @tabedzki on 2024-08-05 17:22_
+_@tabedzki_
 
 ## Issue
 When trying to install [datajoint/element-calcium-imaging](https://github.com/datajoint/element-calcium-imaging) as the repo currently is, I get an error related to distutils not being installed because it was resolved to an older version (0.19.3), which required `distutils`, which Python 3.12 has removed. (Not the main issue)

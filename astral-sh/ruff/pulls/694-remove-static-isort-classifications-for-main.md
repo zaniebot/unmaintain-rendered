@@ -12,14 +12,14 @@ head: isort-static
 created_at: 2022-11-12T04:58:42Z
 updated_at: 2022-11-20T01:59:35Z
 url: https://github.com/astral-sh/ruff/pull/694
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Remove static isort classifications for __main__, disutils
 
 ---
 
-_Pull request opened by @andersk on 2022-11-12 04:58_
+_@andersk_
 
 isort lacks these overrides, and classifies them as third-party by default.
 

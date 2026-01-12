@@ -13,14 +13,14 @@ head: thejchap/adv-frozen-dataclasses
 created_at: 2025-07-13T12:37:46Z
 updated_at: 2025-07-18T18:26:46Z
 url: https://github.com/astral-sh/ruff/pull/19307
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [ty] synthesize __setattr__ for frozen dataclasses
 
 ---
 
-_Pull request opened by @thejchap on 2025-07-13 12:37_
+_@thejchap_
 
 ## Summary
 

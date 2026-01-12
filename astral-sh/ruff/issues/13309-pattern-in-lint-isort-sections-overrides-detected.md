@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-10T14:14:16Z
 updated_at: 2024-09-18T07:34:42Z
 url: https://github.com/astral-sh/ruff/issues/13309
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Pattern in `lint.isort.sections` overrides detected `first-party` 
 
 ---
 
-_Issue opened by @sscherfke on 2024-09-10 14:14_
+_@sscherfke_
 
 Ruff version: 0.6.3
 Rule: `I001` `unsorted-imports`

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-04T23:04:14Z
 updated_at: 2024-12-06T12:01:06Z
 url: https://github.com/astral-sh/ruff/issues/14778
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # 0.8.1 regression - formatter removes strings causing a syntax error on multiline fstring with implicitly concatenated strings and an `if` expression inside it
 
 ---
 
-_Issue opened by @DetachHead on 2024-12-04 23:04_
+_@DetachHead_
 
 before:
 ```py

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T10:25:38Z
 updated_at: 2025-05-28T08:54:54Z
 url: https://github.com/astral-sh/ty/issues/83
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Review used APIs in the LSP
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 10:25_
+_@MichaReiser_
 
 The LSP currently uses crate-internal APIs like `system_path_to_file` that can panic if there's a write in any other process (and it also reduces encapsulation). Review the APIs used in the server and decide on a facade between server/semantic model
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-20T19:55:31Z
 updated_at: 2025-01-27T15:09:31Z
 url: https://github.com/astral-sh/ruff/issues/4551
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Tab-autocomplete `ruff config`
 
 ---
 
-_Issue opened by @janosh on 2023-05-20 19:55_
+_@janosh_
 
 Would be great if `ruff config` tab autocompletes:
 

@@ -13,14 +13,14 @@ head: charlie/editable
 created_at: 2024-02-25T02:57:13Z
 updated_at: 2024-02-25T03:06:20Z
 url: https://github.com/astral-sh/uv/pull/1962
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:48Z
 ```
 
 # Don't write pip compile output to stdout with `-q`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-25 02:57_
+_@charliermarsh_
 
 ## Summary
 

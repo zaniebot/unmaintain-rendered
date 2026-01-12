@@ -14,14 +14,14 @@ head: micha/avoid-caching-trivial-is-redundant-with
 created_at: 2025-12-15T17:24:49Z
 updated_at: 2025-12-15T17:45:05Z
 url: https://github.com/astral-sh/ruff/pull/21989
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Avoid caching trivial is-redundant-with calls
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-15 17:24_
+_@MichaReiser_
 
 _No description provided._
 

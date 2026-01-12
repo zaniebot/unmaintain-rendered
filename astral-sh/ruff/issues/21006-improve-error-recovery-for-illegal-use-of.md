@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-20T22:14:23Z
 updated_at: 2025-10-20T23:10:00Z
 url: https://github.com/astral-sh/ruff/issues/21006
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Improve error recovery for illegal use of keywords in parameter positions
 
 ---
 
-_Issue opened by @samwgoldman on 2025-10-20 22:14_
+_@samwgoldman_
 
 ### Summary
 

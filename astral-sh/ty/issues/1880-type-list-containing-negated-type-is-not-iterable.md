@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-14T04:57:42Z
 updated_at: 2025-12-19T15:08:09Z
 url: https://github.com/astral-sh/ty/issues/1880
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Type `list[...]` containing negated type is not iterable
 
 ---
 
-_Issue opened by @mattgiles on 2025-12-14 04:57_
+_@mattgiles_
 
 ### Summary
 

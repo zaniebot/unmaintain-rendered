@@ -13,14 +13,14 @@ head: charlie/cli
 created_at: 2024-09-24T17:12:58Z
 updated_at: 2024-09-24T17:19:11Z
 url: https://github.com/astral-sh/uv/pull/7664
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Run `cargo dev generate-all`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-24 17:12_
+_@charliermarsh_
 
 A rebase somewhere let this slip by.
 

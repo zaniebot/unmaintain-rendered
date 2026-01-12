@@ -13,14 +13,14 @@ head: expose-yanks
 created_at: 2024-03-22T06:17:50Z
 updated_at: 2024-03-22T15:43:59Z
 url: https://github.com/astral-sh/uv/pull/2608
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:07Z
 ```
 
 # fix: expose `AllowedYanks`
 
 ---
 
-_Pull request opened by @wolfv on 2024-03-22 06:17_
+_@wolfv_
 
 ## Summary
 

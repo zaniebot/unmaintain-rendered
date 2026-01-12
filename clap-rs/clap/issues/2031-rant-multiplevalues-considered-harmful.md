@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-07-21T09:51:30Z
 updated_at: 2021-02-21T15:50:16Z
 url: https://github.com/clap-rs/clap/issues/2031
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Rant: MultipleValues considered harmful
 
 ---
 
-_Issue opened by @intgr on 2020-07-21 09:51_
+_@intgr_
 
 Sorry, but a rant here... I accept that other people might have a different view on this, but let me make my case.
 

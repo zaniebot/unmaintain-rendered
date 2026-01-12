@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-05T00:29:10Z
 updated_at: 2026-01-09T13:44:47Z
 url: https://github.com/astral-sh/ty/issues/2324
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # [panic] Interaction between the `__call__` method, decoraters, callable annotations, and self referential return types on 3.14
 
 ---
 
-_Issue opened by @eliasbenb on 2026-01-05 00:29_
+_@eliasbenb_
 
 A panic occurs when a class's `__call__` method is annotated to return a union containing multiple `Callable` types and the class's own type, and that method is used as a decorator. The issue appears to be specific to `__call__`; equivalent annotations on other methods do not reproduce the problem.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-21T18:01:32Z
 updated_at: 2025-10-28T19:14:59Z
 url: https://github.com/astral-sh/ruff/issues/21023
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ISC001 panic: begin <= end (1 <= 0) when slicing `'`
 
 ---
 
-_Issue opened by @correctmost on 2025-10-21 18:01_
+_@correctmost_
 
 ### Summary
 

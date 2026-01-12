@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-01T16:06:59Z
 updated_at: 2025-01-07T05:16:11Z
 url: https://github.com/astral-sh/ruff/issues/14046
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Adding go-to-definition support to `ruff server`
 
 ---
 
-_Issue opened by @JTKBowers on 2024-11-01 16:06_
+_@JTKBowers_
 
 Hi,
 

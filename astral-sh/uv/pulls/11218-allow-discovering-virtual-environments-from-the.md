@@ -13,14 +13,14 @@ head: zb/python-find-first
 created_at: 2025-02-04T16:15:25Z
 updated_at: 2025-02-04T21:41:39Z
 url: https://github.com/astral-sh/uv/pull/11218
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:44Z
 ```
 
 # Allow discovering virtual environments from the first interpreter found on the `PATH`
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-04 16:15_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/11214
 

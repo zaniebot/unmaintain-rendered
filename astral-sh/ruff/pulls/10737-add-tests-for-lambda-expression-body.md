@@ -14,14 +14,14 @@ head: dhruv/lambda-body
 created_at: 2024-04-02T13:04:57Z
 updated_at: 2024-04-03T10:08:57Z
 url: https://github.com/astral-sh/ruff/pull/10737
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for lambda expression body
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-02 13:04_
+_@dhruvmanila_
 
 ## Summary
 

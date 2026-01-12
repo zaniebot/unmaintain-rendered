@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-15T02:18:42Z
 updated_at: 2022-12-10T16:19:43Z
 url: https://github.com/astral-sh/ruff/issues/197
-synced_at: 2026-01-10T12:06:12Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Show an error when using a name prior to usage of global keyword
 
 ---
 
-_Issue opened by @Jackenmen on 2022-09-15 02:18_
+_@Jackenmen_
 
 e.g. this will error at runtime:
 ```py

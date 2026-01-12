@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-03T20:49:35Z
 updated_at: 2026-01-01T18:22:40Z
 url: https://github.com/astral-sh/uv/issues/15668
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # tkinter fonts look weird with shipped libtk
 
 ---
 
-_Issue opened by @eliasdorneles on 2025-09-03 20:49_
+_@eliasdorneles_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: zb/uv-run-python
 created_at: 2024-04-17T22:14:59Z
 updated_at: 2024-04-19T15:15:39Z
 url: https://github.com/astral-sh/uv/pull/3109
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:25Z
 ```
 
 # Default to `python` when `uv run` does not recieve a command
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-17 22:14_
+_@zanieb_
 
 This means that a bare `uv run` invocation drops you into a REPL.
 

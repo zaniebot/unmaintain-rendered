@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-06T08:10:54Z
 updated_at: 2024-03-07T21:35:06Z
 url: https://github.com/astral-sh/uv/issues/2233
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # “uv pip install -P PACKAGE“ error prompted
 
 ---
 
-_Issue opened by @zzm-note on 2024-03-06 08:10_
+_@zzm-note_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

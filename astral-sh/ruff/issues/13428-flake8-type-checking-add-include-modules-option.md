@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-20T19:38:33Z
 updated_at: 2024-09-23T09:08:00Z
 url: https://github.com/astral-sh/ruff/issues/13428
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [flake8-type-checking] Add include-modules option (Feature Request)
 
 ---
 
-_Issue opened by @gregbrowndev on 2024-09-20 19:38_
+_@gregbrowndev_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

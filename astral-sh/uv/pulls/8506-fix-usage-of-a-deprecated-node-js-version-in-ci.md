@@ -13,14 +13,14 @@ head: fix/usage-of-a-deprecated-nodejs-version-in-ci
 created_at: 2024-10-23T17:49:41Z
 updated_at: 2024-10-24T02:42:25Z
 url: https://github.com/astral-sh/uv/pull/8506
-synced_at: 2026-01-10T12:54:11Z
+synced_at: 2026-01-12T16:08:21Z
 ```
 
 # fix: usage of `a deprecated Node.js version` in CI
 
 ---
 
-_Pull request opened by @hamirmahal on 2024-10-23 17:49_
+_@hamirmahal_
 
 fixes #8505.
 

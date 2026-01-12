@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-19T20:26:18Z
 updated_at: 2024-10-29T15:18:51Z
 url: https://github.com/astral-sh/ruff/issues/11048
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # raw pathlib.Path truthyness checking
 
 ---
 
-_Issue opened by @hairmare on 2024-04-19 20:26_
+_@hairmare_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

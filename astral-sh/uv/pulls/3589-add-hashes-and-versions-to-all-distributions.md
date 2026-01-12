@@ -13,14 +13,14 @@ head: charlie/package-resolve
 created_at: 2024-05-14T19:26:38Z
 updated_at: 2024-05-14T23:07:26Z
 url: https://github.com/astral-sh/uv/pull/3589
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:44Z
 ```
 
 # Add hashes and versions to all distributions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-14 19:26_
+_@charliermarsh_
 
 ## Summary
 

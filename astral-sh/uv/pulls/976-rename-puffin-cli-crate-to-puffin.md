@@ -13,14 +13,14 @@ head: charlie/puffin-cli
 created_at: 2024-01-18T22:26:07Z
 updated_at: 2024-01-19T00:02:53Z
 url: https://github.com/astral-sh/uv/pull/976
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:20Z
 ```
 
 # Rename `puffin-cli` crate to `puffin`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-18 22:26_
+_@charliermarsh_
 
 ## Summary
 

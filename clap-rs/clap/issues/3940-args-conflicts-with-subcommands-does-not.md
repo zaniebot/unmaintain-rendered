@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-07-16T02:17:12Z
 updated_at: 2022-07-22T21:43:41Z
 url: https://github.com/clap-rs/clap/issues/3940
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `args_conflicts_with_subcommands` does not overriding requireds on arguments
 
 ---
 
-_Issue opened by @epage on 2022-07-16 02:17_
+_@epage_
 
 Maintainer's notes
 

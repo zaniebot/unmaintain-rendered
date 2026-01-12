@@ -13,14 +13,14 @@ head: dependabot/cargo/shlex-1.2.0
 created_at: 2023-09-14T09:02:35Z
 updated_at: 2023-09-14T14:40:06Z
 url: https://github.com/astral-sh/ruff/pull/7381
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Bump shlex from 1.1.0 to 1.2.0
 
 ---
 
-_Pull request opened by @dependabot on 2023-09-14 09:02_
+_@dependabot_
 
 Bumps [shlex](https://github.com/comex/rust-shlex) from 1.1.0 to 1.2.0.
 <details>

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-05-28T07:55:01Z
 updated_at: 2020-04-10T08:41:25Z
 url: https://github.com/clap-rs/clap/issues/1480
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # ArgMatcher with `max_values` consumes one more argument than it should
 
 ---
 
-_Issue opened by @sphynx on 2019-05-28 07:55_
+_@sphynx_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

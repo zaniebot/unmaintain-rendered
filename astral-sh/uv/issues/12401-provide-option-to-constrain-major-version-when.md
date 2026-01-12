@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-23T12:47:00Z
 updated_at: 2025-07-08T13:20:18Z
 url: https://github.com/astral-sh/uv/issues/12401
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # Provide option to constrain major version when adding a dependency
 
 ---
 
-_Issue opened by @rzuckerm on 2025-03-23 12:47_
+_@rzuckerm_
 
 ### Summary
 

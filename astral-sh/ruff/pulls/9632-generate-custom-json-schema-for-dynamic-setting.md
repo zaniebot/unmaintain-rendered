@@ -13,14 +13,14 @@ head: charlie/dyn
 created_at: 2024-01-24T03:32:20Z
 updated_at: 2024-01-24T04:31:00Z
 url: https://github.com/astral-sh/ruff/pull/9632
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Generate custom JSON schema for dynamic setting
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-24 03:32_
+_@charliermarsh_
 
 ## Summary
 

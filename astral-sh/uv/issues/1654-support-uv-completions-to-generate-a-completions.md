@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-18T15:43:46Z
 updated_at: 2024-02-19T03:43:19Z
 url: https://github.com/astral-sh/uv/issues/1654
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # support 'uv --completions' to generate a completions file for bash/zsh/fish/powershell
 
 ---
 
-_Issue opened by @woutervh on 2024-02-18 15:43_
+_@woutervh_
 
 Currently uv version0.1.4 does not support tab-completions out of the box:
 

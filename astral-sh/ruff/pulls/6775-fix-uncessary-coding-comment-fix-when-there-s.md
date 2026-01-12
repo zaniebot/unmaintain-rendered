@@ -14,14 +14,14 @@ head: fix/unecessary-coding-comment-fix-space
 created_at: 2023-08-22T15:51:46Z
 updated_at: 2023-08-23T17:01:59Z
 url: https://github.com/astral-sh/ruff/pull/6775
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fix `uncessary-coding-comment` fix when there's leading content
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-22 15:51_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/6756
 

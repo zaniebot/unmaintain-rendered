@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-02T21:17:47Z
 updated_at: 2024-08-03T15:45:03Z
 url: https://github.com/astral-sh/uv/issues/5739
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Presence of an extra index URL that does not contain the package fails the installation
 
 ---
 
-_Issue opened by @gaborbernat on 2024-08-02 21:17_
+_@gaborbernat_
 
 ```bash
 venv/bin/pip install confluent-kafka==2.4.0 --force-reinstall -vv

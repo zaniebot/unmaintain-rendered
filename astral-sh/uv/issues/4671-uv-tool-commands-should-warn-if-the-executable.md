@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-30T22:03:44Z
 updated_at: 2024-07-10T15:24:18Z
 url: https://github.com/astral-sh/uv/issues/4671
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `uv tool` commands should warn if the executable directory isn't on the `PATH`
 
 ---
 
-_Issue opened by @zanieb on 2024-06-30 22:03_
+_@zanieb_
 
 e.g. during `uv tool install` where the executable entry points are placed.
 

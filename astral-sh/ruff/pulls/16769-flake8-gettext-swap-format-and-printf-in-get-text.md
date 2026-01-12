@@ -13,14 +13,14 @@ head: brent/int-docs
 created_at: 2025-03-15T20:12:08Z
 updated_at: 2025-03-17T14:40:11Z
 url: https://github.com/astral-sh/ruff/pull/16769
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [`flake8-gettext`] Swap `format-` and `printf-in-get-text-func-call` examples (`INT002`, `INT003`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-15 20:12_
+_@ntBre_
 
 Summary
 --

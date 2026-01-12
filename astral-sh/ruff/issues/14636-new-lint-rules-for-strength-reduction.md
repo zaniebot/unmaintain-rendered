@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-27T16:01:25Z
 updated_at: 2025-07-24T15:05:25Z
 url: https://github.com/astral-sh/ruff/issues/14636
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # New lint rules for Strength Reduction optimizations
 
 ---
 
-_Issue opened by @tdulcet on 2024-11-27 16:01_
+_@tdulcet_
 
 Please consider adding new lint rules for [strength reduction](https://en.wikipedia.org/wiki/Strength_reduction) optimizations. All of the types of optimizations included in the below examples would improve the performance of Python code, some significantly, especially when the numbers are large. Ruff is fast, so lets help make Python fast as well! A few of the examples would also improve the accuracy/precision of the expression. They should hopefully not decrease the readability of the code and in a few cases might even improve it by simplifying the expressions. Most of them are language agnostic, but they are particularly important in Python, as there is of course typically no compiler to perform the optimizations automatically (at least in CPython). The indented ones are just additional examples of what the proposed new lint rules could fix.
 

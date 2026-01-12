@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-07-08T19:45:13Z
 updated_at: 2016-07-23T22:10:38Z
 url: https://github.com/clap-rs/clap/issues/575
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # The `require_unless_one` only works for the first argument name in array
 
 ---
 
-_Issue opened by @volks73 on 2016-07-08 19:45_
+_@volks73_
 
 Let me start by saying that this library (crate) is amazing. It has been a lot of fun creating small CLI applications with Rust and this library. This is also my first time submitting an issue on Github.
 

@@ -13,14 +13,14 @@ head: zb/mismatch-url
 created_at: 2024-06-18T18:06:34Z
 updated_at: 2024-06-19T14:50:14Z
 url: https://github.com/astral-sh/uv/pull/4393
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:12Z
 ```
 
 # Treat mismatched directory and file urls as unsatisfied requirements
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-18 18:06_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/4391
 

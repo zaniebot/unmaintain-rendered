@@ -12,14 +12,14 @@ head: ignore-0.4.24
 created_at: 2025-11-06T12:37:05Z
 updated_at: 2025-11-06T22:45:16Z
 url: https://github.com/astral-sh/ruff/pull/21292
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # Require ignore 0.4.24 in `Cargo.toml`
 
 ---
 
-_Pull request opened by @musicinmybrain on 2025-11-06 12:37_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

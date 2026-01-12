@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-05T19:55:00Z
 updated_at: 2025-02-27T16:48:13Z
 url: https://github.com/clap-rs/clap/issues/5625
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Usage: including positional arguments in a mutually-exclusive group renders them in the wrong order
 
 ---
 
-_Issue opened by @jrose-signal on 2024-08-05 19:55_
+_@jrose-signal_
 
 ### Please complete the following tasks
 

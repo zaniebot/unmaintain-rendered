@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-13T23:06:27Z
 updated_at: 2025-11-13T07:38:25Z
 url: https://github.com/astral-sh/ty/issues/653
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Support narrowing generic upper bounds
 
 ---
 
-_Issue opened by @thejchap on 2025-06-13 23:06_
+_@thejchap_
 
 ### Summary
 

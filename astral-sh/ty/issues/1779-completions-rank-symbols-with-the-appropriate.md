@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-05T15:00:44Z
 updated_at: 2025-12-05T15:00:44Z
 url: https://github.com/astral-sh/ty/issues/1779
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # [completions] Rank symbols with the appropriate type higher after `except <CURSOR>` and `raise <EXPR> from <CURSOR>`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-05 15:00_
+_@AlexWaygood_
 
 Similar to what we did for `raise <CURSOR>` in https://github.com/astral-sh/ruff/pull/21571:
 

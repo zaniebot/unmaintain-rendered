@@ -13,14 +13,14 @@ head: charlie/py
 created_at: 2024-02-28T02:35:27Z
 updated_at: 2024-02-28T14:48:52Z
 url: https://github.com/astral-sh/uv/pull/2031
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:50Z
 ```
 
 # Accept (e.g.) `'python3.8'` as `--python` argument
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-28 02:35_
+_@charliermarsh_
 
 ## Summary
 

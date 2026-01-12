@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-23T22:01:56Z
 updated_at: 2022-09-23T23:00:18Z
 url: https://github.com/astral-sh/ruff/issues/263
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Regression with 0.0.45 on `noqa:E501` annotations
 
 ---
 
-_Issue opened by @amotl on 2022-09-23 22:01_
+_@amotl_
 
 Dear Charlie,
 

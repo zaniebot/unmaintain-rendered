@@ -13,14 +13,14 @@ head: charlie/version
 created_at: 2025-02-07T02:00:38Z
 updated_at: 2025-02-07T22:20:13Z
 url: https://github.com/astral-sh/uv/pull/11306
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:46Z
 ```
 
 # Include archive bucket version in archive pointers
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-07 02:00_
+_@charliermarsh_
 
 ## Summary
 

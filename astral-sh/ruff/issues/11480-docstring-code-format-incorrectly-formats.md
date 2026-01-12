@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-05-21T00:14:45Z
 updated_at: 2024-05-21T21:01:15Z
 url: https://github.com/astral-sh/ruff/issues/11480
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # docstring-code-format incorrectly formats semicolons+expressions
 
 ---
 
-_Issue opened by @JasonGrace2282 on 2024-05-21 00:14_
+_@JasonGrace2282_
 
 ## Example
 ```py

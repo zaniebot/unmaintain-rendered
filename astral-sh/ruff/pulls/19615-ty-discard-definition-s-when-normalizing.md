@@ -14,14 +14,14 @@ head: alex/discard-definition
 created_at: 2025-07-29T10:34:30Z
 updated_at: 2025-07-29T13:37:49Z
 url: https://github.com/astral-sh/ruff/pull/19615
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [ty] Discard `Definition`s when normalizing `Signature`s
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-29 10:34_
+_@AlexWaygood_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: alex/up049-multiple
 created_at: 2025-02-08T12:05:11Z
 updated_at: 2025-02-08T15:44:06Z
 url: https://github.com/astral-sh/ruff/pull/16038
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`pyupgrade`] Ensure we do not rename two type parameters to the same name (`UP049`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-08 12:05_
+_@AlexWaygood_
 
 Fixes #16024
 

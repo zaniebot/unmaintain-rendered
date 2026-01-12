@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-29T14:36:56Z
 updated_at: 2025-10-03T16:06:07Z
 url: https://github.com/astral-sh/uv/issues/16066
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:22Z
 ```
 
 # How to enforce runtime version consistency for project build requirements?
 
 ---
 
-_Issue opened by @johnwalk-spotify on 2025-09-29 14:36_
+_@johnwalk-spotify_
 
 ### Question
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-26T06:38:05Z
 updated_at: 2023-01-26T06:52:36Z
 url: https://github.com/astral-sh/ruff/issues/2189
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # [question] only report lines from diff
 
 ---
 
-_Issue opened by @fschulze on 2023-01-26 06:38_
+_@fschulze_
 
 The ``flake8`` option ``--diff`` allows one to only get a report for lines that changed. That way it is possible to enforce rules on new code without requiring old code to be touched.
 

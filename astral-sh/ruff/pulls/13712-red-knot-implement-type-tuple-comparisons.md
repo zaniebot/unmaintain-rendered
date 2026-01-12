@@ -13,14 +13,14 @@ head: red-knot-tuple-comparision
 created_at: 2024-10-11T06:48:38Z
 updated_at: 2024-10-16T13:57:40Z
 url: https://github.com/astral-sh/ruff/pull/13712
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Implement `Type::Tuple` Comparisons
 
 ---
 
-_Pull request opened by @cake-monotone on 2024-10-11 06:48_
+_@cake-monotone_
 
 ## Summary
 

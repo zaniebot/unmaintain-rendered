@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-25T20:15:33Z
 updated_at: 2024-08-26T00:31:43Z
 url: https://github.com/astral-sh/uv/issues/6617
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # virtual workspace dev-dependency did not install extras
 
 ---
 
-_Issue opened by @tonnico on 2024-08-25 20:15_
+_@tonnico_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -14,14 +14,14 @@ head: charlie/sync-package
 created_at: 2024-07-31T14:54:10Z
 updated_at: 2024-07-31T15:16:49Z
 url: https://github.com/astral-sh/uv/pull/5656
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:56Z
 ```
 
 # Add `--package` to `uv sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-31 14:54_
+_@charliermarsh_
 
 ## Summary
 

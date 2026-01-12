@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-13T20:09:14Z
 updated_at: 2024-08-24T10:00:14Z
 url: https://github.com/astral-sh/ruff/issues/4421
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Rules/Request:  Airflow DAGs checks
 
 ---
 
-_Issue opened by @brucearctor on 2023-05-13 20:09_
+_@brucearctor_
 
 There are numerous problems that could go wrong with an Airflow DAG, ex:
 

@@ -13,14 +13,14 @@ head: export-no-header
 created_at: 2024-10-10T15:00:29Z
 updated_at: 2024-10-10T15:17:44Z
 url: https://github.com/astral-sh/uv/pull/8096
-synced_at: 2026-01-10T12:54:02Z
+synced_at: 2026-01-12T16:08:09Z
 ```
 
 # Support `uv export --no-header`
 
 ---
 
-_Pull request opened by @blueraft on 2024-10-10 15:00_
+_@blueraft_
 
 ## Summary
 

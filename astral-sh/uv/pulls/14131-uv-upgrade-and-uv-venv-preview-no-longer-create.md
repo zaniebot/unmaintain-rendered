@@ -13,14 +13,14 @@ head: jtfm/upgrade-doesnt-create-symlink
 created_at: 2025-06-18T16:01:41Z
 updated_at: 2025-06-19T07:27:55Z
 url: https://github.com/astral-sh/uv/pull/14131
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:02Z
 ```
 
 # `uv upgrade` and `uv venv --preview` no longer create symlink directories
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-18 16:01_
+_@jtfmumm_
 
 For the preview version of transparent upgrades, this PR helps to more clearly distinguish two features: (1) upgrading by installing the latest patch version for a minor version and (2) supporting transparent upgrades for things like virtual environments. 
 

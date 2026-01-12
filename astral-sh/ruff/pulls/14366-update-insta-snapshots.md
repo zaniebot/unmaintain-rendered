@@ -13,14 +13,14 @@ head: micha/update-snapshots
 created_at: 2024-11-15T18:02:07Z
 updated_at: 2024-11-15T18:31:17Z
 url: https://github.com/astral-sh/ruff/pull/14366
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Update insta snapshots
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-15 18:02_
+_@MichaReiser_
 
 ## Summary
 

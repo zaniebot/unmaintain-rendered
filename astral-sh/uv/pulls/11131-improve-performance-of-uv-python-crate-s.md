@@ -14,14 +14,14 @@ head: manylinux-performance-improvements
 created_at: 2025-01-31T11:09:30Z
 updated_at: 2025-05-28T13:25:54Z
 url: https://github.com/astral-sh/uv/pull/11131
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:41Z
 ```
 
 # Improve performance of uv-python crate's manylinux submodule
 
 ---
 
-_Pull request opened by @cthoyt on 2025-01-31 11:09_
+_@cthoyt_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-28T13:20:28Z
 updated_at: 2024-06-28T21:41:53Z
 url: https://github.com/astral-sh/uv/issues/4614
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # py -3.11 -m uv venv not working proprely 
 
 ---
 
-_Issue opened by @zakimimit on 2024-06-28 13:20_
+_@zakimimit_
 
 Hello ;
 

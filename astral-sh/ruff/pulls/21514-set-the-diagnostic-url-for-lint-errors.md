@@ -14,14 +14,14 @@ head: brent/ruff-links
 created_at: 2025-11-18T17:43:46Z
 updated_at: 2025-11-18T18:34:52Z
 url: https://github.com/astral-sh/ruff/pull/21514
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # Set the diagnostic URL for lint errors
 
 ---
 
-_Pull request opened by @ntBre on 2025-11-18 17:43_
+_@ntBre_
 
 Summary
 --

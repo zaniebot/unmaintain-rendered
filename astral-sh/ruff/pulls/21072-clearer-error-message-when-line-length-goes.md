@@ -12,14 +12,14 @@ head: invalid-line-len-err
 created_at: 2025-10-25T10:54:38Z
 updated_at: 2025-10-27T07:49:04Z
 url: https://github.com/astral-sh/ruff/pull/21072
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # Clearer error message when `line-length` goes beyond threshold
 
 ---
 
-_Pull request opened by @ShaharNaveh on 2025-10-25 10:54_
+_@ShaharNaveh_
 
 Fixes #20823 
 

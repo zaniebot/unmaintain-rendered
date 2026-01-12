@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-13T18:47:35Z
 updated_at: 2025-03-14T15:04:33Z
 url: https://github.com/astral-sh/uv/issues/12153
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # mention "correct" thing to put in #! for a script in documentation?
 
 ---
 
-_Issue opened by @adamse on 2025-03-13 18:47_
+_@adamse_
 
 ### Summary
 

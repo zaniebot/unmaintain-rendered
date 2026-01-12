@@ -14,14 +14,14 @@ head: promote-float
 created_at: 2025-12-26T23:03:12Z
 updated_at: 2025-12-27T00:19:37Z
 url: https://github.com/astral-sh/ruff/pull/22215
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] Promote float and complex when promoting literals
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-12-26 23:03_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

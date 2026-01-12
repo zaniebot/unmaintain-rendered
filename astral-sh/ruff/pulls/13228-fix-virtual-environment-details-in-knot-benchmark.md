@@ -13,14 +13,14 @@ head: alex/redknot-bench
 created_at: 2024-09-03T11:39:44Z
 updated_at: 2024-09-03T13:36:37Z
 url: https://github.com/astral-sh/ruff/pull/13228
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Fix virtual environment details in `knot_benchmark`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-03 11:39_
+_@AlexWaygood_
 
 Following https://github.com/astral-sh/ruff/pull/13227, pyright is looking for a virtual environment in a directory called '--threads', and no such directory exists. This PR fixes that, which slows pyright down again when checking black from 251.9ms to 1.751s on my machine
 

@@ -13,14 +13,14 @@ head: renovate/codspeedhq-action-3.x
 created_at: 2024-07-29T02:41:24Z
 updated_at: 2024-07-29T14:03:06Z
 url: https://github.com/astral-sh/uv/pull/5549
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:53Z
 ```
 
 # Update CodSpeedHQ/action action to v3
 
 ---
 
-_Pull request opened by @renovate on 2024-07-29 02:41_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

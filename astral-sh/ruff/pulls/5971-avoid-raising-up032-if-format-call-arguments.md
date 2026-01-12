@@ -13,14 +13,14 @@ head: UP032-multiline
 created_at: 2023-07-22T08:02:52Z
 updated_at: 2023-07-22T13:38:44Z
 url: https://github.com/astral-sh/ruff/pull/5971
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Avoid raising `UP032` if `format` call arguments contain multiline expressions
 
 ---
 
-_Pull request opened by @harupy on 2023-07-22 08:02_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

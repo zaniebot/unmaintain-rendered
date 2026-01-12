@@ -12,14 +12,14 @@ head: charlie/debugger
 created_at: 2023-05-04T19:39:38Z
 updated_at: 2023-05-04T20:15:27Z
 url: https://github.com/astral-sh/ruff/pull/4229
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Ignore __debuggerskip__ in unused variable checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-04 19:39_
+_@charliermarsh_
 
 ## Summary
 

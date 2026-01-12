@@ -14,14 +14,14 @@ head: charlie/resolve-call-path
 created_at: 2023-07-24T22:34:52Z
 updated_at: 2023-07-27T17:02:49Z
 url: https://github.com/astral-sh/ruff/pull/6047
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Cache name resolutions in the semantic model
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-24 22:34_
+_@charliermarsh_
 
 ## Summary
 

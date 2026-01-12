@@ -13,14 +13,14 @@ head: brent/gitlab-description
 created_at: 2025-08-13T14:28:41Z
 updated_at: 2025-08-13T15:19:28Z
 url: https://github.com/astral-sh/ruff/pull/19896
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # Add rule code to GitLab description
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-13 14:28_
+_@ntBre_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-13T13:09:19Z
 updated_at: 2025-12-13T13:09:19Z
 url: https://github.com/astral-sh/ty/issues/1878
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Emit diagnostic on issubclass calls against protocols with non-method members
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-13 13:09_
+_@AlexWaygood_
 
 ```pycon
 >>> from typing import Protocol, runtime_checkable

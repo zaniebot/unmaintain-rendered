@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T17:29:55Z
 updated_at: 2025-12-17T17:47:46Z
 url: https://github.com/astral-sh/ty/issues/2023
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Type narrowing for discriminated type unions
 
 ---
 
-_Issue opened by @konst-aa on 2025-12-17 17:29_
+_@konst-aa_
 
 ### Question
 

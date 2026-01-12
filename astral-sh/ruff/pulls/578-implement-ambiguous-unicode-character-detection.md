@@ -12,14 +12,14 @@ head: charlie/ambiguous
 created_at: 2022-11-04T03:39:56Z
 updated_at: 2022-11-04T16:08:27Z
 url: https://github.com/astral-sh/ruff/pull/578
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement ambiguous unicode character detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-04 03:39_
+_@charliermarsh_
 
 Example output:
 

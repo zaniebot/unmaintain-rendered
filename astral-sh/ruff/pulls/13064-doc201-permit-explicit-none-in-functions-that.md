@@ -15,14 +15,14 @@ head: doc201-explicit-none
 created_at: 2024-08-22T22:52:24Z
 updated_at: 2024-08-27T16:33:05Z
 url: https://github.com/astral-sh/ruff/pull/13064
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`DOC201`] Permit explicit `None` in functions that only return `None`
 
 ---
 
-_Pull request opened by @tjkuson on 2024-08-22 22:52_
+_@tjkuson_
 
 ## Summary
 

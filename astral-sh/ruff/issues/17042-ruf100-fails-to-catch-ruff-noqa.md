@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-28T18:05:26Z
 updated_at: 2025-04-07T14:21:54Z
 url: https://github.com/astral-sh/ruff/issues/17042
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RUF100 fails to catch `# ruff: noqa`
 
 ---
 
-_Issue opened by @ddeepwell on 2025-03-28 18:05_
+_@ddeepwell_
 
 ### Summary
 

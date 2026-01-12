@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-18T02:40:18Z
 updated_at: 2024-07-01T21:58:05Z
 url: https://github.com/astral-sh/uv/issues/2504
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Add system install test for pyenv shims
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-18 02:40_
+_@charliermarsh_
 
 _No description provided._
 

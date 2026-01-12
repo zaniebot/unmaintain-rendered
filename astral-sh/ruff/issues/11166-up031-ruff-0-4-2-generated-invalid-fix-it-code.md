@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-26T17:44:17Z
 updated_at: 2024-05-03T16:16:50Z
 url: https://github.com/astral-sh/ruff/issues/11166
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # UP031: ruff 0.4.2 generated invalid fix it code
 
 ---
 
-_Issue opened by @Skylion007 on 2024-04-26 17:44_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

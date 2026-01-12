@@ -13,14 +13,14 @@ head: trallard/patch-docs-pip
 created_at: 2024-11-18T12:33:53Z
 updated_at: 2024-11-18T13:31:09Z
 url: https://github.com/astral-sh/uv/pull/9193
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:41Z
 ```
 
 # DOC - Fix syntax for local directory installation
 
 ---
 
-_Pull request opened by @trallard on 2024-11-18 12:33_
+_@trallard_
 
 ## Summary
 

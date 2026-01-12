@@ -12,14 +12,14 @@ head: alex/isort-namespace-pkgs
 created_at: 2024-08-19T12:20:28Z
 updated_at: 2025-04-01T12:22:27Z
 url: https://github.com/astral-sh/ruff/pull/12987
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # isort: Don't infer namespace packages as first-party (only subpackages of namespace packages)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-19 12:20_
+_@AlexWaygood_
 
 Fixes #12984 (will add docs/PR description/tests after I've seen the ecosystem report)
 

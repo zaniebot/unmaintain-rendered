@@ -13,14 +13,14 @@ head: zb/cli-order
 created_at: 2024-08-06T20:45:36Z
 updated_at: 2024-08-06T21:18:06Z
 url: https://github.com/astral-sh/uv/pull/5830
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:03Z
 ```
 
 # Improve display order of top-level commands
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-06 20:45_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/5702
 

@@ -12,14 +12,14 @@ head: charlie/T201
 created_at: 2022-10-05T15:58:21Z
 updated_at: 2022-10-05T15:58:34Z
 url: https://github.com/astral-sh/ruff/pull/332
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Add T201 and T203 to string conversion match
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-05 15:58_
+_@charliermarsh_
 
 Resolves #330.
 

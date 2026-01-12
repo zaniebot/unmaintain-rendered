@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-05T13:57:31Z
 updated_at: 2024-03-05T19:26:55Z
 url: https://github.com/astral-sh/uv/issues/2202
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # uv cannot handle `+` in package version
 
 ---
 
-_Issue opened by @hashb on 2024-03-05 13:57_
+_@hashb_
 
 ## Summary
 uv encodes `+` in package version as a html character entity which causes pypi to return 400 error. webserver expects percent encoding

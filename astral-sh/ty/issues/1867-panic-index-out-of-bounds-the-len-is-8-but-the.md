@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-12T14:52:25Z
 updated_at: 2025-12-13T18:49:02Z
 url: https://github.com/astral-sh/ty/issues/1867
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # panic: `index out of bounds: the len is 8 but the index is 16479`
 
 ---
 
-_Issue opened by @correctmost on 2025-12-12 14:52_
+_@correctmost_
 
 ### Summary
 

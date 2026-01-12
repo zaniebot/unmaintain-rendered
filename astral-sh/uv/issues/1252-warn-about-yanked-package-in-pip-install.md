@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-05T16:56:36Z
 updated_at: 2024-02-05T17:15:46Z
 url: https://github.com/astral-sh/uv/issues/1252
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Warn about yanked package in pip install
 
 ---
 
-_Issue opened by @konstin on 2024-02-05 16:56_
+_@konstin_
 
 `puffin pip install` is currently missing warnings for yanked packages
 

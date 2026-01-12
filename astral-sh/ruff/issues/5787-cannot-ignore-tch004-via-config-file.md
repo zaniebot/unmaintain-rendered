@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-15T20:35:19Z
 updated_at: 2023-07-15T20:57:31Z
 url: https://github.com/astral-sh/ruff/issues/5787
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Cannot ignore `TCH004` via config file 
 
 ---
 
-_Issue opened by @deadnews on 2023-07-15 20:35_
+_@deadnews_
 
 Same behavior as https://github.com/astral-sh/ruff/issues/3472 with `ruff 0.0.278`.
 

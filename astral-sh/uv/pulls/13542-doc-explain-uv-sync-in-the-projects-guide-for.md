@@ -11,14 +11,14 @@ head: main
 created_at: 2025-05-19T18:52:52Z
 updated_at: 2025-10-21T07:41:58Z
 url: https://github.com/astral-sh/uv/pull/13542
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:10:44Z
 ```
 
 # [DOC] Explain `uv sync` in the projects guide for working on existing projects
 
 ---
 
-_Pull request opened by @turbotimon on 2025-05-19 18:52_
+_@turbotimon_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

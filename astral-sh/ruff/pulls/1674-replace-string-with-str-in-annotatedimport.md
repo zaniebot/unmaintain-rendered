@@ -12,14 +12,14 @@ head: ImportFrom-str
 created_at: 2023-01-06T01:40:28Z
 updated_at: 2023-01-06T01:56:22Z
 url: https://github.com/astral-sh/ruff/pull/1674
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Replace &String with &str in AnnotatedImport::ImportFrom
 
 ---
 
-_Pull request opened by @andersk on 2023-01-06 01:40_
+_@andersk_
 
 _No description provided._
 

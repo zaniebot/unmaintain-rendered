@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-19T11:14:06Z
 updated_at: 2023-11-20T09:21:05Z
 url: https://github.com/astral-sh/ruff/issues/8765
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Incorrect explanation for PYI019
 
 ---
 
-_Issue opened by @henribru on 2023-11-19 11:14_
+_@henribru_
 
 The explanation for PYI019 at https://docs.astral.sh/ruff/rules/custom-type-var-return-type/ seems incorrect to me. The rationale there applies when you use a fixed class as the return type (like what PYI034 flags), but _not_ when you use a `TypeVar`. You can see that Mypy and Pyright both correctly infer return types on a subclass based on that example:
 

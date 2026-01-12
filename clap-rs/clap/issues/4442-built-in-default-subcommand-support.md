@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-11-02T14:11:53Z
 updated_at: 2022-11-02T15:26:02Z
 url: https://github.com/clap-rs/clap/issues/4442
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Built-in default subcommand support
 
 ---
 
-_Issue opened by @9999years on 2022-11-02 14:11_
+_@9999years_
 
 ### Please complete the following tasks
 

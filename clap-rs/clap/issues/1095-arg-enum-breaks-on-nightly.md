@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-11-06T15:46:01Z
 updated_at: 2021-05-26T11:10:51Z
 url: https://github.com/clap-rs/clap/issues/1095
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # `arg_enum` breaks on nightly
 
 ---
 
-_Issue opened by @epage on 2017-11-06 15:46_
+_@epage_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-08-30T04:16:21Z
 updated_at: 2018-08-02T03:29:42Z
 url: https://github.com/clap-rs/clap/issues/204
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # warning: unused variable and non-snake case filename on examples
 
 ---
 
-_Issue opened by @sru on 2015-08-30 04:16_
+_@sru_
 
 Cargo spews out ~20 different warnings on examples when building tests. It doesn't on `cargo build` though.
 

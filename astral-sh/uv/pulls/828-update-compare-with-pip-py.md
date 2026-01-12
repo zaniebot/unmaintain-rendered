@@ -12,14 +12,14 @@ head: konsti/update-compare_with_pip.py
 created_at: 2024-01-08T09:41:51Z
 updated_at: 2024-01-08T09:46:31Z
 url: https://github.com/astral-sh/uv/pull/828
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:13Z
 ```
 
 # Update compare_with_pip.py
 
 ---
 
-_Pull request opened by @konstin on 2024-01-08 09:41_
+_@konstin_
 
 Preparing for #817
 

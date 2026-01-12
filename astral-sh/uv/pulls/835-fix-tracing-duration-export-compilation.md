@@ -13,14 +13,14 @@ head: charlie/trace
 created_at: 2024-01-08T17:55:06Z
 updated_at: 2024-01-08T18:05:02Z
 url: https://github.com/astral-sh/uv/pull/835
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:13Z
 ```
 
 # Fix `tracing-duration-export` compilation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-08 17:55_
+_@charliermarsh_
 
 ## Summary
 

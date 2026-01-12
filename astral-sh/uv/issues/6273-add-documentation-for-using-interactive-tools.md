@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T20:23:36Z
 updated_at: 2024-08-23T09:20:02Z
 url: https://github.com/astral-sh/uv/issues/6273
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Add documentation for using interactive tools with `uv run`
 
 ---
 
-_Issue opened by @zanieb on 2024-08-20 20:23_
+_@zanieb_
 
 e.g., in a project,
 

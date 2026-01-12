@@ -13,14 +13,14 @@ head: zb/trunc-comment
 created_at: 2023-12-29T23:59:50Z
 updated_at: 2023-12-30T03:40:13Z
 url: https://github.com/astral-sh/ruff/pull/9318
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Fix typo in truncation comment
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-29 23:59_
+_@zanieb_
 
 _No description provided._
 

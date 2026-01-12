@@ -13,14 +13,14 @@ head: codeman/714
 created_at: 2025-07-05T16:31:26Z
 updated_at: 2025-07-07T16:53:51Z
 url: https://github.com/astral-sh/ty/pull/768
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Document  `TY_MEMORY_REPORT`
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-07-05 16:31_
+_@CodeMan62_
 
 ## Summary
 closes #714 

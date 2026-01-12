@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-18T12:06:34Z
 updated_at: 2024-07-18T12:09:50Z
 url: https://github.com/astral-sh/ruff/issues/12377
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [EHN] Suppress Errors in Code Region
 
 ---
 
-_Issue opened by @randolf-scholz on 2024-07-18 12:06_
+_@randolf-scholz_
 
 Currently, one can suppress errors on a per-line level, per-file level, or globally.
 

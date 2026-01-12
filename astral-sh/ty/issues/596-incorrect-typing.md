@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-06T22:01:45Z
 updated_at: 2025-06-06T22:09:39Z
 url: https://github.com/astral-sh/ty/issues/596
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Incorrect typing
 
 ---
 
-_Issue opened by @Ryang20718 on 2025-06-06 22:01_
+_@Ryang20718_
 
 ### Summary
 

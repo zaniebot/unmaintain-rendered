@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-16T23:33:53Z
 updated_at: 2025-10-06T16:23:11Z
 url: https://github.com/astral-sh/ty/issues/835
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # detect unused names (including unused because shadowed)
 
 ---
 
-_Issue opened by @karlicoss on 2025-07-16 23:33_
+_@karlicoss_
 
 ### Summary
 

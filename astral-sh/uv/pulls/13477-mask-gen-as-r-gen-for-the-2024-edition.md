@@ -13,14 +13,14 @@ head: konst/r-gen
 created_at: 2025-05-15T19:13:20Z
 updated_at: 2025-05-15T19:21:13Z
 url: https://github.com/astral-sh/uv/pull/13477
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:42Z
 ```
 
 # Mask `gen` as `r#gen` for the 2024 edition
 
 ---
 
-_Pull request opened by @konstin on 2025-05-15 19:13_
+_@konstin_
 
 `gen` is a reserved keyword in Rust 2024. This is a requirement to run `cargo fmt` on the Rust 2024 edition.
 

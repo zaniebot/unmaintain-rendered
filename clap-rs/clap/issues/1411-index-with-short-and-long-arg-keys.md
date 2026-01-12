@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-02-11T16:38:45Z
 updated_at: 2020-02-01T19:17:44Z
 url: https://github.com/clap-rs/clap/issues/1411
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # index with short and long arg keys
 
 ---
 
-_Issue opened by @rerime on 2019-02-11 16:38_
+_@rerime_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

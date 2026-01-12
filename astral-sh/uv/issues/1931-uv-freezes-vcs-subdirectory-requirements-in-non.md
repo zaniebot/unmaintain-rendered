@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-23T18:53:44Z
 updated_at: 2024-02-24T17:50:21Z
 url: https://github.com/astral-sh/uv/issues/1931
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # uv freezes vcs subdirectory requirements in non-roundtrippable format
 
 ---
 
-_Issue opened by @mqudsi on 2024-02-23 18:53_
+_@mqudsi_
 
 _Apologies in advance if I'm missing something as I'm primarily a low-level (rust + others) dev and speaking from a position of little production Python experience here._
 

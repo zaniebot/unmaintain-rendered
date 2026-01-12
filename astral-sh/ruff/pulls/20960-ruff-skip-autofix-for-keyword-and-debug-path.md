@@ -14,14 +14,14 @@ head: fastapi-fast003-skip-keyword-fixes
 created_at: 2025-10-18T15:58:45Z
 updated_at: 2025-10-20T23:44:15Z
 url: https://github.com/astral-sh/ruff/pull/20960
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # [`ruff`] Skip autofix for keyword and `__debug__` path params
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-10-18 15:58_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

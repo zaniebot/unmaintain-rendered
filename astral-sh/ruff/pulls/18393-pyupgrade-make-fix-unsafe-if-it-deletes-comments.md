@@ -14,14 +14,14 @@ head: fix/useless-object-inheritance
 created_at: 2025-05-30T19:31:40Z
 updated_at: 2025-06-04T14:53:31Z
 url: https://github.com/astral-sh/ruff/pull/18393
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # [`pyupgrade`] Make fix unsafe if it deletes comments (`UP004`)
 
 ---
 
-_Pull request opened by @chirizxc on 2025-05-30 19:31_
+_@chirizxc_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

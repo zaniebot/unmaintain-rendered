@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-10T18:42:59Z
 updated_at: 2023-07-10T01:31:35Z
 url: https://github.com/astral-sh/ruff/issues/2730
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Add rule for detecting LDAP filter or DN injections
 
 ---
 
-_Issue opened by @spaceone on 2023-02-10 18:42_
+_@spaceone_
 
 A new rule which checks for LDAP filter and LDAP DN inections would be nice:
 

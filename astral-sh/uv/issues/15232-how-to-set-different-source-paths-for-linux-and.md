@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-12T08:22:35Z
 updated_at: 2025-08-25T10:26:51Z
 url: https://github.com/astral-sh/uv/issues/15232
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # How to set different source paths for linux and windows
 
 ---
 
-_Issue opened by @dmanikhine on 2025-08-12 08:22_
+_@dmanikhine_
 
 ### Question
 

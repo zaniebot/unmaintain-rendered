@@ -14,14 +14,14 @@ head: micha/workspace-diagnostics-progress
 created_at: 2025-07-29T13:13:57Z
 updated_at: 2025-07-30T10:27:35Z
 url: https://github.com/astral-sh/ruff/pull/19616
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [ty] Add progress reporting to workspace diagnostics
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-29 13:13_
+_@MichaReiser_
 
 ## Summary
 

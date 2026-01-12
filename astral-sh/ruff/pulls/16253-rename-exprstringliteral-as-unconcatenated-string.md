@@ -13,14 +13,14 @@ head: alex/as-single-part-string
 created_at: 2025-02-19T14:33:24Z
 updated_at: 2025-02-19T16:07:00Z
 url: https://github.com/astral-sh/ruff/pull/16253
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Rename `ExprStringLiteral::as_unconcatenated_string()` to `ExprStringLiteral::as_single_part_string()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-19 14:33_
+_@AlexWaygood_
 
 ## Summary
 

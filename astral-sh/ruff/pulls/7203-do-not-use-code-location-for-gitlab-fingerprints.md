@@ -14,14 +14,14 @@ head: 7159-dont-use-code-position-in-gitlab-fingerprint
 created_at: 2023-09-06T16:07:37Z
 updated_at: 2023-09-08T06:25:27Z
 url: https://github.com/astral-sh/ruff/pull/7203
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Do not use code location for Gitlab fingerprints.
 
 ---
 
-_Pull request opened by @gregersn on 2023-09-06 16:07_
+_@gregersn_
 
 Using code location when creating hash for Gitlab fingerprints makes the codequality reports in Gitlab very unstable. Any change of position would trigger both a "fixed" message, and a "new problem detected" message in Gitlab, making it very noisy.
 

@@ -13,14 +13,14 @@ head: charlie/pep-751-compile
 created_at: 2025-04-21T16:08:27Z
 updated_at: 2025-04-21T22:48:54Z
 url: https://github.com/astral-sh/uv/pull/13019
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:30Z
 ```
 
 # Add PEP 751 support to `uv pip compile`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-21 16:08_
+_@charliermarsh_
 
 ## Summary
 

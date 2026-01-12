@@ -12,14 +12,14 @@ head: konsti/tracing-panic
 created_at: 2024-01-12T14:46:06Z
 updated_at: 2024-01-12T14:47:59Z
 url: https://github.com/astral-sh/uv/pull/899
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:16Z
 ```
 
 # Fix a tracing panic
 
 ---
 
-_Pull request opened by @konstin on 2024-01-12 14:46_
+_@konstin_
 
 _No description provided._
 

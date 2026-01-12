@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-29T15:38:23Z
 updated_at: 2025-12-01T23:20:06Z
 url: https://github.com/astral-sh/ty/issues/1675
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # No diagnostic reported for bad use of `@override` if the method has other decorators too
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-29 15:38_
+_@AlexWaygood_
 
 Similar to #1674. We do not currently issue a complaint about this snippet, but pyre (the predecessor to pyrefly, and the reference implementation for PEP 698) [does](https://pyre-check.org/play?input=from%20typing%20import%20override%0Afrom%20functools%20import%20lru_cache%0A%0Aclass%20Bar%3A%0A%20%20%20%20%40override%0A%20%20%20%20%40lru_cache%0A%20%20%20%20def%20method(self%2C%20x%3A%20int)%20-%3E%20None%3A%20...):
 

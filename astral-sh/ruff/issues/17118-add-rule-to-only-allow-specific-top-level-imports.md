@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-01T12:36:55Z
 updated_at: 2025-07-24T15:51:06Z
 url: https://github.com/astral-sh/ruff/issues/17118
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Add rule to only allow specific top-level imports
 
 ---
 
-_Issue opened by @ofek on 2025-04-01 12:36_
+_@ofek_
 
 ### Summary
 

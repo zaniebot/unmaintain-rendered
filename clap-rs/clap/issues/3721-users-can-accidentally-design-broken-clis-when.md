@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-05-12T05:19:41Z
 updated_at: 2022-05-12T09:00:47Z
 url: https://github.com/clap-rs/clap/issues/3721
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Users can accidentally design broken CLIs when combining subcommands with unbounded positional arguments
 
 ---
 
-_Issue opened by @NickCondron on 2022-05-12 05:19_
+_@NickCondron_
 
 Maintainer's notes:  Below is the original issue that came from misusing clap's API.  We could add a debug assert to help guide users to use the API correctly. 
 

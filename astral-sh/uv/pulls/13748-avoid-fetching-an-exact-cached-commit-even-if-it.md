@@ -13,14 +13,14 @@ head: jack/git_exact_commit
 created_at: 2025-05-31T03:33:25Z
 updated_at: 2025-06-10T09:22:59Z
 url: https://github.com/astral-sh/uv/pull/13748
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:50Z
 ```
 
 # avoid fetching an exact, cached commit, even if it isn't locked
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-05-31 03:33_
+_@oconnor663_
 
 This is ~a rough draft of~ one approach we might take to fixing https://github.com/astral-sh/uv/issues/13513
 

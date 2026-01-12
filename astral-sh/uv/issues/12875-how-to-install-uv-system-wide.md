@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T09:08:03Z
 updated_at: 2025-06-03T03:08:02Z
 url: https://github.com/astral-sh/uv/issues/12875
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # How to install uv system wide?
 
 ---
 
-_Issue opened by @vitrinite on 2025-04-14 09:08_
+_@vitrinite_
 
 ### Question
 

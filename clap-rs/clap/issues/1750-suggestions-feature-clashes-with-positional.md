@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-03-17T12:59:04Z
 updated_at: 2020-04-11T10:19:02Z
 url: https://github.com/clap-rs/clap/issues/1750
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Suggestions feature clashes with positional arguments value
 
 ---
 
-_Issue opened by @kamilogorek on 2020-03-17 12:59_
+_@kamilogorek_
 
 ### Rust Version
 

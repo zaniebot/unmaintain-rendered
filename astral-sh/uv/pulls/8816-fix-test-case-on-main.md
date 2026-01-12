@@ -13,14 +13,14 @@ head: zb/boop
 created_at: 2024-11-04T19:43:33Z
 updated_at: 2024-11-04T19:51:00Z
 url: https://github.com/astral-sh/uv/pull/8816
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:30Z
 ```
 
 # Fix test case on `main`
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-04 19:43_
+_@zanieb_
 
 _No description provided._
 

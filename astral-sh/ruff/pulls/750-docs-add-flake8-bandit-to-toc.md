@@ -12,14 +12,14 @@ head: docs/add-flake8-bandit-toc
 created_at: 2022-11-15T05:09:18Z
 updated_at: 2022-11-15T05:11:43Z
 url: https://github.com/astral-sh/ruff/pull/750
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # docs: Add `flake8-bandit` to ToC
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2022-11-15 05:09_
+_@edgarrmondragon_
 
 _No description provided._
 

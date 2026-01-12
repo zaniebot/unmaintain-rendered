@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-01T09:56:08Z
 updated_at: 2024-11-04T16:20:22Z
 url: https://github.com/astral-sh/ruff/issues/14036
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Whether an import is treated as ThirdParty or FirstParty depends on whether the SAME config file is explicitly specified or implicitly discovered
 
 ---
 
-_Issue opened by @tnahm on 2024-11-01 09:56_
+_@tnahm_
 
 I am calling ruff in two different ways, once explicitly specifiying the config file as  /home/torsten/src/service-digital-agent/.ruff.toml, once having it autodiscovered via parent.
 

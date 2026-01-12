@@ -13,14 +13,14 @@ head: zanie/old-ecosystem-format
 created_at: 2023-10-27T17:56:15Z
 updated_at: 2023-10-29T05:13:29Z
 url: https://github.com/astral-sh/ruff/pull/8285
-synced_at: 2026-01-12T02:11:58Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Update old ecosystem checks for formatter for clarity
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-27 17:56_
+_@zanieb_
 
 Changes the title and adds some notes re the old formatter ecosystem checks in light of #8223 
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-20T14:38:53Z
 updated_at: 2024-04-08T04:42:20Z
 url: https://github.com/astral-sh/uv/issues/2564
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Use snapshots for linehaul tests
 
 ---
 
-_Issue opened by @zanieb on 2024-03-20 14:38_
+_@zanieb_
 
 e.g. in https://github.com/astral-sh/uv/pull/2509 you can see all the assertions in the linehaul tests do not use snapshots. We could probably use snapshots to simplify this testing.
 

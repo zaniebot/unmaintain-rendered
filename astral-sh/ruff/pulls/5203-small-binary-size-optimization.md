@@ -13,14 +13,14 @@ head: codegen-units-flag
 created_at: 2023-06-20T05:30:39Z
 updated_at: 2023-06-20T08:33:53Z
 url: https://github.com/astral-sh/ruff/pull/5203
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Small binary size optimization
 
 ---
 
-_Pull request opened by @dosisod on 2023-06-20 05:30_
+_@dosisod_
 
 This is a small PR that reduces the size of stripped release binaries by about ~11%. I haven't done any perf tests (I'll let the CI system do that for me), though eliminating more code should only improve performance (one would hope).
 

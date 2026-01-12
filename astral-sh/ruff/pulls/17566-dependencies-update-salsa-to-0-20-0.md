@@ -12,14 +12,14 @@ head: update-salsa
 created_at: 2025-04-22T20:51:02Z
 updated_at: 2025-07-15T19:53:57Z
 url: https://github.com/astral-sh/ruff/pull/17566
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # dependencies: Update salsa to 0.20.0
 
 ---
 
-_Pull request opened by @CreatedBySeb on 2025-04-22 20:51_
+_@CreatedBySeb_
 
 ## Summary
 

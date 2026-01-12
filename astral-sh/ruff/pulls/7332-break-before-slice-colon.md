@@ -12,14 +12,14 @@ head: break-before-slice-colon
 created_at: 2023-09-13T10:02:27Z
 updated_at: 2023-09-19T12:13:58Z
 url: https://github.com/astral-sh/ruff/pull/7332
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Break before slice colon
 
 ---
 
-_Pull request opened by @konstin on 2023-09-13 10:02_
+_@konstin_
 
 **Summary** Break slices at the colon first, since the colon is separator with the lowest precedence and we're in a parenthesized context.
 

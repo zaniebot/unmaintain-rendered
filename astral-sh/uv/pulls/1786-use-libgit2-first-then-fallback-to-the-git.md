@@ -13,14 +13,14 @@ head: zb/git-libgit2-fallback
 created_at: 2024-02-20T22:40:27Z
 updated_at: 2024-03-04T21:25:35Z
 url: https://github.com/astral-sh/uv/pull/1786
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:44Z
 ```
 
 # Use `libgit2` first then fallback to the `git` command on failure
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-20 22:40_
+_@zanieb_
 
 Some necessary context in https://github.com/astral-sh/uv/pull/1781.
 

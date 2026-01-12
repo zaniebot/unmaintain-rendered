@@ -13,14 +13,14 @@ head: main
 created_at: 2024-10-12T19:34:57Z
 updated_at: 2024-10-13T01:13:38Z
 url: https://github.com/astral-sh/uv/pull/8150
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:11Z
 ```
 
 # docs: correct typo in `index.md`
 
 ---
 
-_Pull request opened by @pantheraleo-7 on 2024-10-12 19:34_
+_@pantheraleo-7_
 
 This was added in [#5426](https://github.com/astral-sh/uv/pull/5426)
 

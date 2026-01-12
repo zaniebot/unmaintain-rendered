@@ -12,14 +12,14 @@ head: charlie/fix-add
 created_at: 2023-02-03T04:39:37Z
 updated_at: 2023-02-03T04:43:07Z
 url: https://github.com/astral-sh/ruff/pull/2513
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Mark `--add-noqa` as incompatible with `--fix`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-03 04:39_
+_@charliermarsh_
 
 Closes #2187.
 

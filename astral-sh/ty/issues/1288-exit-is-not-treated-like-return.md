@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-30T16:54:55Z
 updated_at: 2025-10-01T18:42:46Z
 url: https://github.com/astral-sh/ty/issues/1288
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # exit() is not treated like return
 
 ---
 
-_Issue opened by @markwaddle on 2025-09-30 16:54_
+_@markwaddle_
 
 ### Summary
 

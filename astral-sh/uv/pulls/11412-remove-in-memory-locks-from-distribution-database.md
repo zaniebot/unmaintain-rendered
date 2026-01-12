@@ -13,14 +13,14 @@ head: charlie/memory-locks
 created_at: 2025-02-11T00:48:54Z
 updated_at: 2025-02-21T04:57:33Z
 url: https://github.com/astral-sh/uv/pull/11412
-synced_at: 2026-01-10T11:10:37Z
+synced_at: 2026-01-12T16:09:50Z
 ```
 
 # Remove in-memory locks from distribution database
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-11 00:48_
+_@charliermarsh_
 
 ## Summary
 

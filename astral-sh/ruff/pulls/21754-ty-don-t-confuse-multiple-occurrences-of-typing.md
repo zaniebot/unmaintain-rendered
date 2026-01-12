@@ -13,14 +13,14 @@ head: dcreager/ty1713
 created_at: 2025-12-02T16:00:05Z
 updated_at: 2025-12-02T18:15:11Z
 url: https://github.com/astral-sh/ruff/pull/21754
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] Don't confuse multiple occurrences of `typing.Self` when binding bound methods
 
 ---
 
-_Pull request opened by @dcreager on 2025-12-02 16:00_
+_@dcreager_
 
 In the following example, there are two occurrences of `typing.Self`, one for `Foo.foo` and one for `Bar.bar`:
 

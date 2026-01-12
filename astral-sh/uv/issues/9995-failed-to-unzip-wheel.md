@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-18T12:48:44Z
 updated_at: 2025-07-18T12:29:10Z
 url: https://github.com/astral-sh/uv/issues/9995
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # Failed to unzip wheel
 
 ---
 
-_Issue opened by @gumikola on 2024-12-18 12:48_
+_@gumikola_
 
 Hi all!
 

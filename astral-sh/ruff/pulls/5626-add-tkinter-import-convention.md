@@ -12,14 +12,14 @@ head: tk
 created_at: 2023-07-09T10:14:19Z
 updated_at: 2023-07-09T11:13:14Z
 url: https://github.com/astral-sh/ruff/pull/5626
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add `tkinter` import convention
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-09 10:14_
+_@tjkuson_
 
 ## Summary
 

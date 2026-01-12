@@ -13,14 +13,14 @@ head: charlie/rust-1.83
 created_at: 2024-11-28T17:41:42Z
 updated_at: 2024-11-29T17:04:24Z
 url: https://github.com/astral-sh/uv/pull/9511
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:50Z
 ```
 
 # Upgrade to Rust 1.83
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-28 17:41_
+_@charliermarsh_
 
 ## Summary
 

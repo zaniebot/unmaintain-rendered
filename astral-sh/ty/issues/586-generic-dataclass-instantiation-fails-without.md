@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-05T13:19:52Z
 updated_at: 2025-06-05T16:21:07Z
 url: https://github.com/astral-sh/ty/issues/586
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # generic dataclass instantiation fails without explicitly specifying generic type
 
 ---
 
-_Issue opened by @aschulte201 on 2025-06-05 13:19_
+_@aschulte201_
 
 ### Summary
 

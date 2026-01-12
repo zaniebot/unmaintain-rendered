@@ -14,14 +14,14 @@ head: implicit-t-string-concat
 created_at: 2025-05-30T21:06:23Z
 updated_at: 2025-07-14T21:45:56Z
 url: https://github.com/astral-sh/ruff/pull/18396
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # [`ruff`] Lint for implicit concatenation of t-strings and f-strings
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-05-30 21:06_
+_@dylwil3_
 
 As advertised!
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-12T18:18:49Z
 updated_at: 2024-01-29T05:18:14Z
 url: https://github.com/astral-sh/ruff/issues/6525
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # COM812 Appears to Still Not Quite Be Right
 
 ---
 
-_Issue opened by @benjamin-kirkbride on 2023-08-12 18:18_
+_@benjamin-kirkbride_
 
 It seems that COM812 does not like when arguments overflow to a new line, but are still on a single line. It wants a trailing comma, which then activates [black's magic trailing comma](https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#the-magic-trailing-comma).
 

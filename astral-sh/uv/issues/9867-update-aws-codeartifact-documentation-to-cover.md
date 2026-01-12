@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-13T14:06:42Z
 updated_at: 2025-02-26T15:52:46Z
 url: https://github.com/astral-sh/uv/issues/9867
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # Update AWS CodeArtifact documentation to cover `[[tool.uv.index]]` API
 
 ---
 
-_Issue opened by @AdrianB-sovo on 2024-12-13 14:06_
+_@AdrianB-sovo_
 
 Currently, when using `UV_INDEX` and AWS CodeArtifact, a `[[tool.uv.index]]` section is automatically added in `pyproject.toml` (e.g. when calling `uv add pandas`) with the URL that includes the token, which mean I manually have to remove it before doing a `git commit`.
 

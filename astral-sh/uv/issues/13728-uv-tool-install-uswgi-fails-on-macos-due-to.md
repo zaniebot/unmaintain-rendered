@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-30T06:16:40Z
 updated_at: 2025-11-11T21:04:06Z
 url: https://github.com/astral-sh/uv/issues/13728
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # uv tool install uswgi fails on macos due to spaces in paths
 
 ---
 
-_Issue opened by @alberts on 2025-05-30 06:16_
+_@alberts_
 
 ### Summary
 

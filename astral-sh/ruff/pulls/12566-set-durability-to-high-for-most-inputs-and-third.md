@@ -13,14 +13,14 @@ head: set-input-durability
 created_at: 2024-07-29T13:49:21Z
 updated_at: 2024-07-30T09:18:32Z
 url: https://github.com/astral-sh/ruff/pull/12566
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Set Durability to 'HIGH' for most inputs and third-party libraries
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-29 13:49_
+_@MichaReiser_
 
 ## Summary
 

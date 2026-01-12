@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-07T08:01:08Z
 updated_at: 2024-09-20T05:33:07Z
 url: https://github.com/astral-sh/uv/issues/7157
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Wrong output of uv pip compile
 
 ---
 
-_Issue opened by @hexponent on 2024-09-07 08:01_
+_@hexponent_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

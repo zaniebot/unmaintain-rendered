@@ -13,14 +13,14 @@ head: charlie/org
 created_at: 2025-09-13T01:56:40Z
 updated_at: 2025-09-16T13:46:46Z
 url: https://github.com/astral-sh/uv/pull/15823
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:57Z
 ```
 
 # Show organization name after authenticating
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-13 01:56_
+_@charliermarsh_
 
 ## Summary
 

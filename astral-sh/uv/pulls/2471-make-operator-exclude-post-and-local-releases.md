@@ -13,14 +13,14 @@ head: charlie/max-version
 created_at: 2024-03-15T02:20:19Z
 updated_at: 2024-03-15T14:02:07Z
 url: https://github.com/astral-sh/uv/pull/2471
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:04Z
 ```
 
 # Make > operator exclude post and local releases
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-15 02:20_
+_@charliermarsh_
 
 ## Summary
 

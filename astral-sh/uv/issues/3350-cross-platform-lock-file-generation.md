@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-03T14:57:42Z
 updated_at: 2024-06-10T12:47:15Z
 url: https://github.com/astral-sh/uv/issues/3350
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # cross platform lock file generation
 
 ---
 
-_Issue opened by @BurntSushi on 2024-05-03 14:57_
+_@BurntSushi_
 
 ### Work items
 

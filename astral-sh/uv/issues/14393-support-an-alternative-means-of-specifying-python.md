@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-01T14:04:28Z
 updated_at: 2025-07-02T02:08:59Z
 url: https://github.com/astral-sh/uv/issues/14393
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # Support an alternative means of specifying python version except .python-version
 
 ---
 
-_Issue opened by @trondhindenes on 2025-07-01 14:04_
+_@trondhindenes_
 
 ### Summary
 

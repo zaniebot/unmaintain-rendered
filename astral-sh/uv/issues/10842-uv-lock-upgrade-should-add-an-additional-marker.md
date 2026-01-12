@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-22T03:27:12Z
 updated_at: 2025-02-03T23:19:56Z
 url: https://github.com/astral-sh/uv/issues/10842
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # `uv lock --upgrade` should add an additional marker for major version upgrades
 
 ---
 
-_Issue opened by @purajit on 2025-01-22 03:27_
+_@purajit_
 
 ### Summary
 

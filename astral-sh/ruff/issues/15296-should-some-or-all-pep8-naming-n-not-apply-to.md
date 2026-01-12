@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-06T04:32:21Z
 updated_at: 2025-01-06T08:04:19Z
 url: https://github.com/astral-sh/ruff/issues/15296
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Should some (or all) `pep8-naming (N)` not apply to stubs?
 
 ---
 
-_Issue opened by @Avasam on 2025-01-06 04:32_
+_@Avasam_
 
 As @harahu mentioned in https://github.com/astral-sh/ruff/issues/14535#issuecomment-2516967026, most pep8-naming rules don't apply for third-party stubs
   - **But** relevant rules could be made to apply to names decorated with `@type_check_only`, since that's a clear signal the stub author is very likely in control of that name (there's some niche exceptions for when a class is defined inside a function, but needs to be exposed in stubs)

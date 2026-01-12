@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-22T22:45:48Z
 updated_at: 2024-02-16T03:28:31Z
 url: https://github.com/astral-sh/uv/issues/166
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Add support for `--upgrade`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-22 22:45_
+_@charliermarsh_
 
 By default, we're supposed to avoid upgrading packages by looking at the locked resolution. `pip-compile` supports selective upgrades although I'm not sure that's necessary.
 

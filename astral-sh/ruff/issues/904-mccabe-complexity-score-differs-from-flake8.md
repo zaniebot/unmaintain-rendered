@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-25T15:37:04Z
 updated_at: 2022-11-25T18:16:04Z
 url: https://github.com/astral-sh/ruff/issues/904
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # mccabe complexity score differs from flake8
 
 ---
 
-_Issue opened by @kalekseev on 2022-11-25 15:37_
+_@kalekseev_
 
 ```
 ❯ flake8 --version

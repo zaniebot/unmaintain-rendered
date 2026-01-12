@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-30T19:34:28Z
 updated_at: 2026-01-06T02:11:34Z
 url: https://github.com/astral-sh/ty/issues/2280
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Avoid literal promotion when constructing `frozenset` from list/set literal
 
 ---
 
-_Issue opened by @Jammf on 2025-12-30 19:34_
+_@Jammf_
 
 ### Summary
 

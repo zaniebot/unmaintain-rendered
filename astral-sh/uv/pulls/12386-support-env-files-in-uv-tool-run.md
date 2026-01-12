@@ -14,14 +14,14 @@ head: charlie/tool-env
 created_at: 2025-03-22T01:12:11Z
 updated_at: 2025-03-22T17:29:05Z
 url: https://github.com/astral-sh/uv/pull/12386
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:15Z
 ```
 
 # Support `.env` files in `uv tool run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-22 01:12_
+_@charliermarsh_
 
 ## Summary
 

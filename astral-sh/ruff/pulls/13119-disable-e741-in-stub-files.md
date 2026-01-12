@@ -13,14 +13,14 @@ head: disable-E741-in-pyi-files
 created_at: 2024-08-26T22:52:35Z
 updated_at: 2024-08-27T14:56:38Z
 url: https://github.com/astral-sh/ruff/pull/13119
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Disable E741 in stub files
 
 ---
 
-_Pull request opened by @calumy on 2024-08-26 22:52_
+_@calumy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

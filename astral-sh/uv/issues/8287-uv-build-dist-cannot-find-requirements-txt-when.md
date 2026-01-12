@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T11:20:53Z
 updated_at: 2024-11-03T21:56:10Z
 url: https://github.com/astral-sh/uv/issues/8287
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # uv build dist . cannot find requirements.txt when using setup.py
 
 ---
 
-_Issue opened by @JohnStokes228 on 2024-10-17 11:20_
+_@JohnStokes228_
 
 in my package, i have the following minimal setup.py file:
 

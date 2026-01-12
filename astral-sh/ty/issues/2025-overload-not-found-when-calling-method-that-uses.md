@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T17:44:46Z
 updated_at: 2025-12-17T17:46:02Z
 url: https://github.com/astral-sh/ty/issues/2025
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Overload not found when calling method that uses Unpack
 
 ---
 
-_Issue opened by @steved-stripe on 2025-12-17 17:44_
+_@steved-stripe_
 
 ### Summary
 

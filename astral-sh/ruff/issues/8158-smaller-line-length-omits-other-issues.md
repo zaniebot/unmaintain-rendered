@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-24T08:41:31Z
 updated_at: 2023-10-24T13:52:24Z
 url: https://github.com/astral-sh/ruff/issues/8158
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Smaller line length omits other issues
 
 ---
 
-_Issue opened by @pespinel on 2023-10-24 08:41_
+_@pespinel_
 
 I've just seen that extending the line length on the ruff configuration brings "new" issues that are omitted when using a smaller line length:
 

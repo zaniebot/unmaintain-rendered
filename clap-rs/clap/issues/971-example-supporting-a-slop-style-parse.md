@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-05-27T17:26:05Z
 updated_at: 2018-08-02T03:30:07Z
 url: https://github.com/clap-rs/clap/issues/971
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Example supporting a "slop" style parse
 
 ---
 
-_Issue opened by @drusellers on 2017-05-27 17:26_
+_@drusellers_
 
 Would it be possible to get an example of using the `--` argument parsing concept?
 

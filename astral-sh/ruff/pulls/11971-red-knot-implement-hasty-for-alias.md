@@ -13,14 +13,14 @@ head: alias-has-type
 created_at: 2024-06-21T16:11:00Z
 updated_at: 2024-07-04T07:27:04Z
 url: https://github.com/astral-sh/ruff/pull/11971
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot]: Implement `HasTy` for `Alias`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-21 16:11_
+_@MichaReiser_
 
 ## Summary
 

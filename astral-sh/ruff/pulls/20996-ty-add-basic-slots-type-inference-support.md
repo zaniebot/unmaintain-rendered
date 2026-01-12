@@ -12,14 +12,14 @@ head: feature/slots-type-inference
 created_at: 2025-10-20T14:18:36Z
 updated_at: 2025-10-23T08:17:26Z
 url: https://github.com/astral-sh/ruff/pull/20996
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [ty] Add basic __slots__ type inference support
 
 ---
 
-_Pull request opened by @BlairAllan on 2025-10-20 14:18_
+_@BlairAllan_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

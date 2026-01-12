@@ -12,14 +12,14 @@ head: charlie/draft
 created_at: 2023-06-22T16:04:17Z
 updated_at: 2023-06-22T16:31:39Z
 url: https://github.com/astral-sh/ruff/pull/5304
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Publish GitHub release as draft
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-22 16:04_
+_@charliermarsh_
 
 I accidentally changed `draft: false` to `draft: true` in #5240. I actually think Copilot did this without me realizing.
 

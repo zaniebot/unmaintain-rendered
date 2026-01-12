@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-13T17:08:59Z
 updated_at: 2024-06-02T21:59:49Z
 url: https://github.com/astral-sh/ruff/issues/11413
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Update UP035 for Python 3.13
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-05-13 17:08_
+_@AlexWaygood_
 
 We should update UP035 to emit a diagnostic if `--target-version=py313` has been selected and a user imports `typing.TypeIs`, `warnings.deprecated`, `typing.ReadOnly`, `typing.NoDefault` `typing.get_protocol_members` or `typing.is_protocol` from `typing_extensions` rather than `typing`
 

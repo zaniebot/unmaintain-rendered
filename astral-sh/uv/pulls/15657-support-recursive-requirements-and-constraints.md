@@ -13,14 +13,14 @@ head: konsti/support-recursive-requirements-inclusion
 created_at: 2025-09-03T12:08:59Z
 updated_at: 2025-09-05T09:20:14Z
 url: https://github.com/astral-sh/uv/pull/15657
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:52Z
 ```
 
 # Support recursive requirements and constraints inclusion
 
 ---
 
-_Pull request opened by @konstin on 2025-09-03 12:08_
+_@konstin_
 
 uv currently panics with a stack overflow when requirements or constraints are recursively included. Instead, we ignore files we have already seen. The one complexity here is that we have to track whether we're in a requirements inclusion or in a constraints inclusion, to allow including a file separately for requirements and for constraints, and to handle `-r` inside or `-c` (which we treat as constraints too).
 

@@ -13,14 +13,14 @@ head: resolve-global-symbol-accept-module
 created_at: 2024-06-03T15:20:03Z
 updated_at: 2024-06-04T06:32:15Z
 url: https://github.com/astral-sh/ruff/pull/11723
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # red-knot: Change `resolve_global_symbol` to take `Module` as an argument
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-03 15:20_
+_@MichaReiser_
 
 ## Summary
 

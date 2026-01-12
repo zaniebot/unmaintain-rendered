@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-11T20:10:27Z
 updated_at: 2025-01-13T19:06:33Z
 url: https://github.com/astral-sh/uv/issues/10522
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # uv venv "Failed to parse: `pyproject.toml`" warning without the root cause + why the project version in `pyproject.toml`
 
 ---
 
-_Issue opened by @pabepadu on 2025-01-11 20:10_
+_@pabepadu_
 
 Hi, first uv is a really great tool, thanks!
 

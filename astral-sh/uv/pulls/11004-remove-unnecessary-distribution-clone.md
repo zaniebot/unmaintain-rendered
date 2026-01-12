@@ -13,14 +13,14 @@ head: charlie/c
 created_at: 2025-01-27T21:22:48Z
 updated_at: 2025-01-27T23:07:15Z
 url: https://github.com/astral-sh/uv/pull/11004
-synced_at: 2026-01-10T11:45:22Z
+synced_at: 2026-01-12T16:09:37Z
 ```
 
 # Remove unnecessary distribution clone
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-27 21:22_
+_@charliermarsh_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: B018
 created_at: 2022-11-04T14:48:44Z
 updated_at: 2022-11-04T14:53:34Z
 url: https://github.com/astral-sh/ruff/pull/582
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement B018
 
 ---
 
-_Pull request opened by @harupy on 2022-11-04 14:48_
+_@harupy_
 
 #389 
 

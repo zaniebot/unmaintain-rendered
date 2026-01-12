@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-02T21:21:52Z
 updated_at: 2025-10-06T17:03:07Z
 url: https://github.com/astral-sh/ty/issues/759
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Polars concat fails to typecheck with ty
 
 ---
 
-_Issue opened by @kszlim on 2025-07-02 21:21_
+_@kszlim_
 
 ### Summary
 

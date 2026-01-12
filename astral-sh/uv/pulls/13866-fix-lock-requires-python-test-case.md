@@ -13,14 +13,14 @@ head: zb/fix-test
 created_at: 2025-06-05T17:16:32Z
 updated_at: 2025-06-05T17:27:53Z
 url: https://github.com/astral-sh/uv/pull/13866
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:54Z
 ```
 
 # Fix `lock_requires_python` test case
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-05 17:16_
+_@zanieb_
 
 Tracking https://github.com/astral-sh/uv/issues/13867
 

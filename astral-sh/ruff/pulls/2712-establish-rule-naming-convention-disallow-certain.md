@@ -12,14 +12,14 @@ head: disallowed-rule-names
 created_at: 2023-02-10T06:14:34Z
 updated_at: 2023-02-10T14:25:30Z
 url: https://github.com/astral-sh/ruff/pull/2712
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # Establish rule naming convention & disallow certain rule names
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-02-10 06:14_
+_@not-my-profile_
 
 Part of #1773.
 

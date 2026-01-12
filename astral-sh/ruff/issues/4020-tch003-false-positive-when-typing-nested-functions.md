@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-19T13:33:26Z
 updated_at: 2023-04-19T18:43:56Z
 url: https://github.com/astral-sh/ruff/issues/4020
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # TCH003 false positive when typing nested functions
 
 ---
 
-_Issue opened by @VoodaGod on 2023-04-19 13:33_
+_@VoodaGod_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

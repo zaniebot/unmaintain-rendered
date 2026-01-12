@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-24T18:00:19Z
 updated_at: 2025-02-24T18:49:10Z
 url: https://github.com/astral-sh/uv/issues/11749
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # `uv python install` installing wrong architecture
 
 ---
 
-_Issue opened by @Crsk on 2025-02-24 18:00_
+_@Crsk_
 
 ### Summary
 

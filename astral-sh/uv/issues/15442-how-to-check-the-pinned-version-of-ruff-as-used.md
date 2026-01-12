@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-22T00:31:56Z
 updated_at: 2025-08-22T00:33:23Z
 url: https://github.com/astral-sh/uv/issues/15442
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # How to check the pinned version of ruff as used by uv format
 
 ---
 
-_Issue opened by @nth10sd on 2025-08-22 00:31_
+_@nth10sd_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: zb/export-git-token
 created_at: 2025-06-02T22:24:20Z
 updated_at: 2025-06-03T12:47:06Z
 url: https://github.com/astral-sh/uv/pull/13792
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:52Z
 ```
 
 # Add `uv export` test case with credentials in `pyproject.toml`
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-02 22:24_
+_@zanieb_
 
 Testing reported case in https://github.com/astral-sh/uv/issues/13791
 

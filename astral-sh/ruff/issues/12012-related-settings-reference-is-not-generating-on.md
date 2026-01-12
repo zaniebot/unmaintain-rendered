@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-24T09:32:26Z
 updated_at: 2024-06-24T10:29:11Z
 url: https://github.com/astral-sh/ruff/issues/12012
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Related settings reference is not generating on main
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-06-24 09:32_
+_@dhruvmanila_
 
 Added in https://github.com/astral-sh/ruff/pull/4157.
 

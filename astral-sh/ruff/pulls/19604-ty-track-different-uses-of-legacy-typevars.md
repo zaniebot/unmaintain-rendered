@@ -14,14 +14,14 @@ head: dcreager/typevar-context
 created_at: 2025-07-28T16:22:35Z
 updated_at: 2025-08-01T16:20:34Z
 url: https://github.com/astral-sh/ruff/pull/19604
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [ty] Track different uses of legacy typevars, including context when rendering typevars
 
 ---
 
-_Pull request opened by @dcreager on 2025-07-28 16:22_
+_@dcreager_
 
 This PR introduces a few related changes:
 

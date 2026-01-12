@@ -13,14 +13,14 @@ head: redknot.symbolkind
 created_at: 2024-05-29T21:02:16Z
 updated_at: 2025-02-20T09:00:27Z
 url: https://github.com/astral-sh/ruff/pull/11604
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [redknot] complete symbol table by populating Symbol::kind field
 
 ---
 
-_Pull request opened by @plredmond on 2024-05-29 21:02_
+_@plredmond_
 
 followup to #11134 
 

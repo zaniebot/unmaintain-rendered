@@ -13,14 +13,14 @@ head: cjm/test-framework
 created_at: 2024-10-05T02:50:29Z
 updated_at: 2024-10-08T19:33:21Z
 url: https://github.com/astral-sh/ruff/pull/13636
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] type inference/checking test framework
 
 ---
 
-_Pull request opened by @carljm on 2024-10-05 02:50_
+_@carljm_
 
 ## Summary
 

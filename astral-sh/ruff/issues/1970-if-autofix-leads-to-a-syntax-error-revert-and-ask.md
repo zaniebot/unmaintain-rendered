@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-18T18:06:57Z
 updated_at: 2023-02-03T01:02:11Z
 url: https://github.com/astral-sh/ruff/issues/1970
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # If autofix leads to a syntax error, revert and ask user to report an issue
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-18 18:06_
+_@charliermarsh_
 
 Similar to autofixes that lead to infinite loops.
 

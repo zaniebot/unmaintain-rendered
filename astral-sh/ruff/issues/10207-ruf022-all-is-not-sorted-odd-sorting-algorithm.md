@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-03T04:10:47Z
 updated_at: 2024-03-04T05:45:11Z
 url: https://github.com/astral-sh/ruff/issues/10207
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # RUF022 `__all__` is not sorted: odd sorting algorithm
 
 ---
 
-_Issue opened by @ilius on 2024-03-03 04:10_
+_@ilius_
 
 My code:
 ```

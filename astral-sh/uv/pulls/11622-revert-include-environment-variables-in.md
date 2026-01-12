@@ -12,14 +12,14 @@ head: konsti/revert-python-env-var-cache-key
 created_at: 2025-02-19T15:21:18Z
 updated_at: 2025-02-19T16:10:24Z
 url: https://github.com/astral-sh/uv/pull/11622
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:55Z
 ```
 
 # Revert: Include environment variables in interpreter info caching
 
 ---
 
-_Pull request opened by @konstin on 2025-02-19 15:21_
+_@konstin_
 
 Revert #11601 for now
 

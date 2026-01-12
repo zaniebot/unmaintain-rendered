@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-01T17:48:03Z
 updated_at: 2024-10-23T01:56:26Z
 url: https://github.com/clap-rs/clap/issues/5515
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Don't show flags in native completion that are already present
 
 ---
 
-_Issue opened by @HKalbasi on 2024-06-01 17:48_
+_@HKalbasi_
 
 ### Please complete the following tasks
 

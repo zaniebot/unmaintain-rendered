@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-09-15T21:33:00Z
 updated_at: 2018-08-02T03:29:53Z
 url: https://github.com/clap-rs/clap/issues/664
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # args_from_usage() has issues with non-ASCII identifiers
 
 ---
 
-_Issue opened by @tormol on 2016-09-15 21:33_
+_@tormol_
 
 Non-ASCII help on its own is OK:
 `clap::App::new("").args_from_usage("<h>  'with ŭnicode'");` works

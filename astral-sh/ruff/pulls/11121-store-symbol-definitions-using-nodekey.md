@@ -13,14 +13,14 @@ head: cjm/red-knot/symbols-types
 created_at: 2024-04-24T01:17:07Z
 updated_at: 2024-04-26T20:06:18Z
 url: https://github.com/astral-sh/ruff/pull/11121
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Store symbol definitions using NodeKey
 
 ---
 
-_Pull request opened by @carljm on 2024-04-24 01:17_
+_@carljm_
 
 ## Summary
 

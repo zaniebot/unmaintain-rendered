@@ -13,14 +13,14 @@ head: charlie/reach
 created_at: 2024-12-26T15:20:14Z
 updated_at: 2024-12-26T15:32:34Z
 url: https://github.com/astral-sh/uv/pull/10171
-synced_at: 2026-01-10T11:44:37Z
+synced_at: 2026-01-12T16:09:09Z
 ```
 
 # Avoid need for universal markers in `requirements.txt` export
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-26 15:20_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: konsti/windows-registry-no-patch
 created_at: 2024-12-09T10:18:18Z
 updated_at: 2024-12-09T19:58:59Z
 url: https://github.com/astral-sh/uv/pull/9736
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:57Z
 ```
 
 # Don't filter non-patch registry version
 
 ---
 
-_Pull request opened by @konstin on 2024-12-09 10:18_
+_@konstin_
 
 The `SysVersion` registry entry may or may not include the patch version, so if we encounter a registry entry without a patch version, we must not assume that the patch version is 0.
 

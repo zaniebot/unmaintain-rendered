@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-18T09:52:47Z
 updated_at: 2024-11-18T13:43:25Z
 url: https://github.com/astral-sh/ruff/issues/12961
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Idea: Test for bad version parsing `tuple(map(int, __version__)))`
 
 ---
 
-_Issue opened by @randolf-scholz on 2024-08-18 09:52_
+_@randolf-scholz_
 
 Inspired by a [recent bug in pycharm](https://youtrack.jetbrains.com/issue/PY-75115), caused by bad version parsing that went undetected until `matplotlib`, [for the first time in 20 years](https://pypi.org/project/matplotlib/#history), published a non-pre-release version with a postfix (`3.9.1.post1` on Aug 7th).
 

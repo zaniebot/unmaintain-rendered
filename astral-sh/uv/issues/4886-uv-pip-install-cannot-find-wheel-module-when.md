@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-08T06:35:11Z
 updated_at: 2024-07-08T13:22:54Z
 url: https://github.com/astral-sh/uv/issues/4886
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # ``uv pip install`` cannot find ``wheel`` module when installing ``openCC`` from git on uv 0.2.22.
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-07-08 06:35_
+_@FishAlchemist_
 
 **OS:** Ubuntu 20.04 (x86_64)
 **UV:** uv 0.2.22

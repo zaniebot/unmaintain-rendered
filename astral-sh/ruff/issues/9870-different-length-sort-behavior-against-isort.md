@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-07T02:43:59Z
 updated_at: 2025-12-05T21:41:32Z
 url: https://github.com/astral-sh/ruff/issues/9870
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Different length sort behavior against isort
 
 ---
 
-_Issue opened by @yanyongyu on 2024-02-07 02:43_
+_@yanyongyu_
 
 I'm trying to migrate isort and black to ruff but encountered some problems when using ruff's isort configs.
 

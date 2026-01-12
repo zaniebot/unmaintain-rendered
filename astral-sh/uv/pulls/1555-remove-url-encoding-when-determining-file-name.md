@@ -13,14 +13,14 @@ head: charlie/decode
 created_at: 2024-02-17T00:04:19Z
 updated_at: 2024-02-17T00:15:25Z
 url: https://github.com/astral-sh/uv/pull/1555
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # Remove URL encoding when determining file name
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-17 00:04_
+_@charliermarsh_
 
 ## Summary
 

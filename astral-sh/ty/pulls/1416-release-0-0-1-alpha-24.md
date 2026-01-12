@@ -13,14 +13,14 @@ head: alpha-24
 created_at: 2025-10-23T12:26:21Z
 updated_at: 2025-10-23T13:16:45Z
 url: https://github.com/astral-sh/ty/pull/1416
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Release 0.0.1-alpha.24
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-23 12:26_
+_@MichaReiser_
 
 _No description provided._
 

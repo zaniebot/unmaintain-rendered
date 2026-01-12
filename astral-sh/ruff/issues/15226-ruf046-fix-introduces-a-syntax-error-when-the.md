@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-02T18:18:43Z
 updated_at: 2025-01-02T22:43:17Z
 url: https://github.com/astral-sh/ruff/issues/15226
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # RUF046 fix introduces a syntax error when the cast expression contains a newline
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-02 18:18_
+_@dscorbett_
 
 The fix for [`unnecessary-cast-to-int` (RUF046)](https://docs.astral.sh/ruff/rules/unnecessary-cast-to-int/) can crash Ruff in version 0.8.5 or change behavior when the cast expression contains a newline.
 

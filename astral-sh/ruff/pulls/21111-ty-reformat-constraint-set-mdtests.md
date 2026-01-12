@@ -14,14 +14,14 @@ head: dcreager/refactor-constraint-mdtests
 created_at: 2025-10-28T17:52:26Z
 updated_at: 2025-10-28T18:59:51Z
 url: https://github.com/astral-sh/ruff/pull/21111
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [ty] Reformat constraint set mdtests
 
 ---
 
-_Pull request opened by @dcreager on 2025-10-28 17:52_
+_@dcreager_
 
 This PR updates the mdtests that test how our generics solver interacts with our new constraint set implementation. Because the rendering of a constraint set can get long, this standardizes on putting the `revealed` assertion on a separate line. We also add a `static_assert` test for each constraint set to verify that they are all coerced into simple `bool`s correctly.
 

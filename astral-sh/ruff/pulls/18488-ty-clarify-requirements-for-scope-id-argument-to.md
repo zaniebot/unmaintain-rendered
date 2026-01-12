@@ -14,14 +14,14 @@ head: cjm/in-type-expression-scope
 created_at: 2025-06-06T00:05:43Z
 updated_at: 2025-06-11T10:51:31Z
 url: https://github.com/astral-sh/ruff/pull/18488
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [ty] clarify requirements for scope_id argument to in_type_expression
 
 ---
 
-_Pull request opened by @carljm on 2025-06-06 00:05_
+_@carljm_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-29T01:16:49Z
 updated_at: 2023-12-22T03:41:05Z
 url: https://github.com/astral-sh/ruff/issues/8889
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: `wrap_multiple_context_managers_in_parens` preview style
 
 ---
 
-_Issue opened by @MichaReiser on 2023-11-29 01:16_
+_@MichaReiser_
 
 Implement Black's [`wrap_multiple_context_managers_in_parens`](https://github.com/psf/black/pull/3489) as a preview style. The new style only applies to Py39+. 
 

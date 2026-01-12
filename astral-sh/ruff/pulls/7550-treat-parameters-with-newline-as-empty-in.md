@@ -13,14 +13,14 @@ head: charlie/annotations
 created_at: 2023-09-20T17:02:19Z
 updated_at: 2023-09-20T20:20:23Z
 url: https://github.com/astral-sh/ruff/pull/7550
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Treat parameters-with-newline as empty in function formatting
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-20 17:02_
+_@charliermarsh_
 
 ## Summary
 

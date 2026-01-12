@@ -12,14 +12,14 @@ head: charlie/pycodestyle
 created_at: 2023-05-17T14:48:15Z
 updated_at: 2023-05-17T17:06:02Z
 url: https://github.com/astral-sh/ruff/pull/4472
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Bring pycodestyle rules into full compatibility (on SciPy)
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-17 14:48_
+_@charliermarsh_
 
 ## Summary
 

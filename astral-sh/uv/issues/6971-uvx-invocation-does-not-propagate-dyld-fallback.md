@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-03T14:47:10Z
 updated_at: 2025-11-16T08:38:31Z
 url: https://github.com/astral-sh/uv/issues/6971
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # `uvx`  invocation does not propagate `DYLD_FALLBACK_LIBRARY_PATH` to the invoked script on MacOS
 
 ---
 
-_Issue opened by @miccoli on 2024-09-03 14:47_
+_@miccoli_
 
 I was not able to pass environment variables to utilities run with `uvx`.
 

@@ -13,14 +13,14 @@ head: ci-chonkier-pre-commit-machines
 created_at: 2025-04-01T13:10:23Z
 updated_at: 2025-04-01T13:24:20Z
 url: https://github.com/astral-sh/ruff/pull/17120
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # CI: Run pre-commit on depot machine
 
 ---
 
-_Pull request opened by @akx on 2025-04-01 13:10_
+_@akx_
 
 ## Summary
 

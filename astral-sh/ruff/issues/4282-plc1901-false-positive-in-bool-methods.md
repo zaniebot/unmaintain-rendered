@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-08T13:18:47Z
 updated_at: 2023-09-10T16:09:01Z
 url: https://github.com/astral-sh/ruff/issues/4282
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # PLC1901 false positive in `__bool__` methods
 
 ---
 
-_Issue opened by @trag1c on 2023-05-08 13:18_
+_@trag1c_
 
 ```py
 class X:

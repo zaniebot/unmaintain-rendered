@@ -13,14 +13,14 @@ head: renovate/google-github-actions-setup-gcloud-digest
 created_at: 2025-08-25T01:55:34Z
 updated_at: 2025-08-25T13:09:16Z
 url: https://github.com/astral-sh/uv/pull/15490
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:46Z
 ```
 
 # Update google-github-actions/setup-gcloud digest to 26f734c
 
 ---
 
-_Pull request opened by @renovate on 2025-08-25 01:55_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -13,14 +13,14 @@ head: charlie/command
 created_at: 2023-12-09T16:09:34Z
 updated_at: 2023-12-11T08:40:32Z
 url: https://github.com/astral-sh/uv/pull/601
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:03Z
 ```
 
 # Use async `Command` for wheel build operations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-09 16:09_
+_@charliermarsh_
 
 Incredibly, this speeds up the install on a large project from 2m6s to 50s.
 

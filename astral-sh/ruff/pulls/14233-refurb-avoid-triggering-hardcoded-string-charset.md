@@ -13,14 +13,14 @@ head: charlie/f
 created_at: 2024-11-09T20:08:05Z
 updated_at: 2024-11-09T20:31:28Z
 url: https://github.com/astral-sh/ruff/pull/14233
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`refurb`] Avoid triggering `hardcoded-string-charset` for reordered sets
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-09 20:08_
+_@charliermarsh_
 
 ## Summary
 

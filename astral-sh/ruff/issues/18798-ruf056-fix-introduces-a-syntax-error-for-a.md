@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-19T17:44:19Z
 updated_at: 2025-06-20T21:24:42Z
 url: https://github.com/astral-sh/ruff/issues/18798
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # RUF056 fix introduces a syntax error for a parenthesized value
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-19 17:44_
+_@dscorbett_
 
 ### Summary
 

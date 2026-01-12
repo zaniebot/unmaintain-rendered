@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-28T18:32:40Z
 updated_at: 2024-03-11T14:52:16Z
 url: https://github.com/astral-sh/uv/issues/2050
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # `uv` cannot reproduce `pip install ".[others]"` (unless `-e` is specified)
 
 ---
 
-_Issue opened by @kelvindecosta on 2024-02-28 18:32_
+_@kelvindecosta_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

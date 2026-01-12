@@ -13,14 +13,14 @@ head: charlie/self
 created_at: 2024-11-09T17:49:17Z
 updated_at: 2024-11-09T18:17:41Z
 url: https://github.com/astral-sh/ruff/pull/14230
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Avoid using `typing.Self` in stub files pre-Python 3.11
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-09 17:49_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-27T20:48:13Z
 updated_at: 2023-03-28T15:48:20Z
 url: https://github.com/astral-sh/ruff/issues/3763
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # noqa comments for N812 don't apply to the correct line in multi-line imports
 
 ---
 
-_Issue opened by @ehdr on 2023-03-27 20:48_
+_@ehdr_
 
 When trying to apply a `noqa` comment for rule N812 (`lowercase-imported-as-non-lowercase`) on a multi-line import, it does not seem to apply to the correct line. For example, I would expect the following to not flag any errors:
 

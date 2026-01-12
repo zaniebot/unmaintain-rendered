@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-24T19:27:17Z
 updated_at: 2025-12-19T09:07:02Z
 url: https://github.com/astral-sh/ruff/issues/16355
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Take Python version from the .python-version file
 
 ---
 
-_Issue opened by @kevinrenskers on 2025-02-24 19:27_
+_@kevinrenskers_
 
 ### Description
 

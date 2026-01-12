@@ -12,14 +12,14 @@ head: charlie/unused
 created_at: 2023-04-12T03:49:58Z
 updated_at: 2023-04-12T04:13:08Z
 url: https://github.com/astral-sh/ruff/pull/3944
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Remove unused import
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-12 03:49_
+_@charliermarsh_
 
 ## Summary
 

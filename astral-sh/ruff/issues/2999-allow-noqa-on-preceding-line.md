@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-17T23:08:54Z
 updated_at: 2024-04-08T02:03:21Z
 url: https://github.com/astral-sh/ruff/issues/2999
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Allow noqa on preceding line
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-02-17 23:08_
+_@NeilGirdhar_
 
 Would it be possible to place the ignore comment on the preceding line?  Something like:
 ```python

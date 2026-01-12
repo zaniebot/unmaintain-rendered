@@ -13,14 +13,14 @@ head: ecosystem-check
 created_at: 2023-08-01T15:48:30Z
 updated_at: 2023-08-01T16:35:30Z
 url: https://github.com/astral-sh/ruff/pull/6248
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Run ecosystem checks on changes to ecosystem test script
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-01 15:48_
+_@zanieb_
 
 e.g. https://github.com/astral-sh/ruff/pull/6245 should probably run checks before merge
 

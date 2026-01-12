@@ -12,14 +12,14 @@ head: fixes-lru-cache
 created_at: 2022-11-10T14:21:06Z
 updated_at: 2022-11-10T15:45:22Z
 url: https://github.com/astral-sh/ruff/pull/667
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix unnecessary params in `lru_cache`
 
 ---
 
-_Pull request opened by @chammika-become on 2022-11-10 14:21_
+_@chammika-become_
 
 This PR closes the issue #642
 

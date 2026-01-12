@@ -12,14 +12,14 @@ head: zb/reflink-merge
 created_at: 2023-12-01T10:54:45Z
 updated_at: 2023-12-01T10:58:25Z
 url: https://github.com/astral-sh/uv/pull/523
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:00Z
 ```
 
 # Use upstream commit for reflink-copy requirement
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-01 10:54_
+_@zanieb_
 
 https://github.com/cargo-bins/reflink-copy/pull/51 was merged
 

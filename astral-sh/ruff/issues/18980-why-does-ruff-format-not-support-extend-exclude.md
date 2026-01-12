@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-27T09:58:22Z
 updated_at: 2025-07-07T08:53:48Z
 url: https://github.com/astral-sh/ruff/issues/18980
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Why does `ruff format` not support `--extend-exclude`?
 
 ---
 
-_Issue opened by @PatrickJordanNutanix on 2025-06-27 09:58_
+_@PatrickJordanNutanix_
 
 ### Question
 

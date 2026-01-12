@@ -14,14 +14,14 @@ head: patch-1
 created_at: 2025-07-03T15:52:45Z
 updated_at: 2025-07-04T20:45:45Z
 url: https://github.com/astral-sh/ruff/pull/19124
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # Add Weblate to Who's Using Ruff
 
 ---
 
-_Pull request opened by @NamelessGO on 2025-07-03 15:52_
+_@NamelessGO_
 
 https://github.com/WeblateOrg/weblate/issues/8867
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-06T09:34:37Z
 updated_at: 2024-08-06T15:03:55Z
 url: https://github.com/clap-rs/clap/issues/5629
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Filterable help flag/command
 
 ---
 
-_Issue opened by @crowlKats on 2024-08-06 09:34_
+_@crowlKats_
 
 ### Please complete the following tasks
 

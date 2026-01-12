@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-09-06T14:10:22Z
 updated_at: 2018-08-02T03:29:43Z
 url: https://github.com/clap-rs/clap/issues/228
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Various questions about implementation
 
 ---
 
-_Issue opened by @WildCryptoFox on 2015-09-06 14:10_
+_@WildCryptoFox_
 
 Hey all, just reading through code and wondering why various decisions have been made. Oh and this list is unordered and just whatever thoughts appear while reading the code.
 1. Why is validator `Rc`'d? Why not a `Box`?

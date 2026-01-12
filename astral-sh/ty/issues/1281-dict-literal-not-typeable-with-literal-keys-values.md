@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-29T21:16:23Z
 updated_at: 2025-09-30T15:48:11Z
 url: https://github.com/astral-sh/ty/issues/1281
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Dict literal not typeable with Literal keys/values
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-09-29 21:16_
+_@MeGaGiGaGon_
 
 ### Summary
 

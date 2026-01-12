@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-10T10:59:08Z
 updated_at: 2025-09-05T17:21:44Z
 url: https://github.com/astral-sh/ty/issues/621
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `invalid-return-type` false positive on constrained generic when narrowing for each constraint
 
 ---
 
-_Issue opened by @DetachHead on 2025-06-10 10:59_
+_@DetachHead_
 
 ### Summary
 

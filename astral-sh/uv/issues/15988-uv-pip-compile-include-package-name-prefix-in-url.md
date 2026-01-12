@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-22T16:48:44Z
 updated_at: 2025-11-03T15:21:19Z
 url: https://github.com/astral-sh/uv/issues/15988
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # uv pip compile: include package name prefix in URL dependencies
 
 ---
 
-_Issue opened by @tboddyspargo on 2025-09-22 16:48_
+_@tboddyspargo_
 
 ### Summary
 

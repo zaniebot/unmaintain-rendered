@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-20T15:02:04Z
 updated_at: 2024-03-20T16:51:43Z
 url: https://github.com/astral-sh/uv/issues/2565
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # `uv pip compile` does not include extra args in resulting requirements file. 
 
 ---
 
-_Issue opened by @jakesco on 2024-03-20 15:02_
+_@jakesco_
 
 Hello!
 

@@ -14,14 +14,14 @@ head: alex/new-enum-benchmark
 created_at: 2026-01-04T16:06:36Z
 updated_at: 2026-01-04T17:58:22Z
 url: https://github.com/astral-sh/ruff/pull/22364
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Add a second benchmark for enums with many members
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-04 16:06_
+_@AlexWaygood_
 
 ## Summary
 

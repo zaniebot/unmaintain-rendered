@@ -11,14 +11,14 @@ head: feature/flag-panic
 created_at: 2025-06-26T21:37:51Z
 updated_at: 2025-06-27T10:12:05Z
 url: https://github.com/astral-sh/uv/pull/14299
-synced_at: 2026-01-10T07:01:23Z
+synced_at: 2026-01-12T16:11:08Z
 ```
 
 # Fix reachable panic in CLI flag handling
 
 ---
 
-_Pull request opened by @gesslerpd on 2025-06-26 21:37_
+_@gesslerpd_
 
 ## Summary
 

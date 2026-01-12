@@ -14,14 +14,14 @@ head: charlie/RSE
 created_at: 2023-08-25T22:18:47Z
 updated_at: 2023-08-25T22:57:49Z
 url: https://github.com/astral-sh/ruff/pull/6886
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Insert space to avoid syntax error in RSE fixes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-25 22:18_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6810.
 

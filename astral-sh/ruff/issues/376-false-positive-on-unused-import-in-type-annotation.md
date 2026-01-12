@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-09T21:27:45Z
 updated_at: 2022-10-10T09:09:15Z
 url: https://github.com/astral-sh/ruff/issues/376
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # False positive on unused import in type annotation
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-09 21:27_
+_@charliermarsh_
 
 ```py
 import sys

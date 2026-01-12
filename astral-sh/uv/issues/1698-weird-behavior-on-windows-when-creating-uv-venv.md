@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T15:17:03Z
 updated_at: 2024-02-28T04:21:56Z
 url: https://github.com/astral-sh/uv/issues/1698
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Weird behavior on windows when creating uv venv
 
 ---
 
-_Issue opened by @fervand1 on 2024-02-19 15:17_
+_@fervand1_
 
 Steps to reproduce:
 - Create python 3.10 venv

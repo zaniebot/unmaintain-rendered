@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-17T11:17:37Z
 updated_at: 2024-02-09T22:24:07Z
 url: https://github.com/astral-sh/ruff/issues/8008
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # TRY401 false-positive detection
 
 ---
 
-_Issue opened by @a-shchupakov on 2023-10-17 11:17_
+_@a-shchupakov_
 
 TRY401 false-positively triggered if `error` object passed to function call inside of `logger.exception` arguments
 

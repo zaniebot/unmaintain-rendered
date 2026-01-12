@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-29T06:56:54Z
 updated_at: 2023-12-22T05:53:46Z
 url: https://github.com/astral-sh/ruff/issues/8904
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Other changes (discovered in test files)
 
 ---
 
-_Issue opened by @MichaReiser on 2023-11-29 06:56_
+_@MichaReiser_
 
 Changes to Black's formatting that seem to change but have no explicit preview feature?
 

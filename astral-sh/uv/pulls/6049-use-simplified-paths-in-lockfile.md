@@ -15,14 +15,14 @@ head: charlie/simplify
 created_at: 2024-08-12T23:27:17Z
 updated_at: 2024-08-12T23:34:31Z
 url: https://github.com/astral-sh/uv/pull/6049
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:10Z
 ```
 
 # Use simplified paths in lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-12 23:27_
+_@charliermarsh_
 
 ## Summary
 

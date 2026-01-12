@@ -14,14 +14,14 @@ head: micha/rename-attribute-override
 created_at: 2025-12-05T10:32:01Z
 updated_at: 2025-12-05T10:56:29Z
 url: https://github.com/astral-sh/ruff/pull/21809
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Add some attribute/method renaming test cases
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-05 10:32_
+_@MichaReiser_
 
 Add some more attribute/method-related tests to rename. Some of them already work as expected, others don't
 

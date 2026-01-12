@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-04T13:55:55Z
 updated_at: 2025-12-04T22:37:39Z
 url: https://github.com/astral-sh/ty/issues/1753
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # auto-import suggests `from random import random` but not `import random`
 
 ---
 
-_Issue opened by @Gankra on 2025-12-04 13:55_
+_@Gankra_
 
 ### Summary
 

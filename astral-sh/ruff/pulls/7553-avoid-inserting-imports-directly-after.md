@@ -14,14 +14,14 @@ head: charlie/continuation
 created_at: 2023-09-20T21:14:47Z
 updated_at: 2023-09-20T21:34:10Z
 url: https://github.com/astral-sh/ruff/pull/7553
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Avoid inserting imports directly after continuation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-20 21:14_
+_@charliermarsh_
 
 ## Summary
 

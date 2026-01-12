@@ -13,14 +13,14 @@ head: charlie/readme
 created_at: 2025-07-20T21:25:48Z
 updated_at: 2025-07-20T21:38:50Z
 url: https://github.com/astral-sh/uv/pull/14762
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:23Z
 ```
 
 # Fix kebab casing of README variants in build backend
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-20 21:25_
+_@charliermarsh_
 
 ## Summary
 

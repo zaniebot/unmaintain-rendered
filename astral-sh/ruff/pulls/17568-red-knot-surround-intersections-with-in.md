@@ -13,14 +13,14 @@ head: union-intersection-display
 created_at: 2025-04-23T00:44:40Z
 updated_at: 2025-04-23T08:38:16Z
 url: https://github.com/astral-sh/ruff/pull/17568
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Surround intersections with `()` in potentially ambiguous contexts
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-04-23 00:44_
+_@MatthewMckee4_
 
 ## Summary
 

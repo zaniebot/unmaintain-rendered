@@ -13,14 +13,14 @@ head: 706
 created_at: 2025-06-27T18:04:19Z
 updated_at: 2025-07-03T16:04:12Z
 url: https://github.com/astral-sh/ruff/pull/18991
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] Emit error for invalid binary operations in type expressions
 
 ---
 
-_Pull request opened by @med1844 on 2025-06-27 18:04_
+_@med1844_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

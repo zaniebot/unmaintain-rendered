@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-02T00:38:14Z
 updated_at: 2023-08-09T05:06:15Z
 url: https://github.com/astral-sh/ruff/issues/6260
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # type-comparison (E721) doesn't work when comparing against an actual type
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-02 00:38_
+_@DetachHead_
 
 ```py
 foo = 1

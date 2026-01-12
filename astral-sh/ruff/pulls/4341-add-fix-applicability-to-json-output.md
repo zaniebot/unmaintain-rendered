@@ -12,14 +12,14 @@ head: add-applicability-to-json
 created_at: 2023-05-10T09:25:24Z
 updated_at: 2023-05-10T14:52:39Z
 url: https://github.com/astral-sh/ruff/pull/4341
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add `Fix::applicability` to JSON output
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-10 09:25_
+_@MichaReiser_
 
 Add the `Fix::applicability` to the JSON output. I'll use the presence of the new field to detect whether this ruff version emits
 one-based indices for edits or not.

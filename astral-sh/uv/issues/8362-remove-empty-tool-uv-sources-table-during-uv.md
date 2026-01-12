@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-19T13:25:19Z
 updated_at: 2024-10-19T15:20:46Z
 url: https://github.com/astral-sh/uv/issues/8362
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # Remove empty `tool.uv.sources` table during `uv remove`
 
 ---
 
-_Issue opened by @zanieb on 2024-10-19 13:25_
+_@zanieb_
 
 Currently, we leave an empty table if we remove the last item.
 

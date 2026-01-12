@@ -12,14 +12,14 @@ head: issue-275
 created_at: 2022-09-29T10:14:48Z
 updated_at: 2022-09-29T20:37:43Z
 url: https://github.com/astral-sh/ruff/pull/284
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Adds flake8-builtins
 
 ---
 
-_Pull request opened by @sobolevn on 2022-09-29 10:14_
+_@sobolevn_
 
 I mark this as a WIP, because I don't have `rust` on my machine right now **because of the SECURITY reasons** 😒 
 

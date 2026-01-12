@@ -11,14 +11,14 @@ head: split-safety
 created_at: 2023-11-26T12:53:57Z
 updated_at: 2024-04-07T00:46:08Z
 url: https://github.com/astral-sh/ruff/pull/8840
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Mark some `deprecated-import` fixes as unsafe
 
 ---
 
-_Pull request opened by @tjkuson on 2023-11-26 12:53_
+_@tjkuson_
 
 ## Summary
 

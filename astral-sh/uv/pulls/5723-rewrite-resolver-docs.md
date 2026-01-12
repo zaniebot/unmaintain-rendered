@@ -14,14 +14,14 @@ head: konsti/resolver-docs
 created_at: 2024-08-02T11:34:09Z
 updated_at: 2024-08-06T08:12:34Z
 url: https://github.com/astral-sh/uv/pull/5723
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:06:59Z
 ```
 
 # Rewrite resolver docs
 
 ---
 
-_Pull request opened by @konstin on 2024-08-02 11:34_
+_@konstin_
 
 This PR rewrites the resolver concept and adds a resolver internals page targeted at power users.
 

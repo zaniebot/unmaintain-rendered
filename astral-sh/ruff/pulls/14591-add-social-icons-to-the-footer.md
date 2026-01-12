@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2024-11-25T18:14:36Z
 updated_at: 2024-11-27T13:48:51Z
 url: https://github.com/astral-sh/ruff/pull/14591
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Add social icons to the footer
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-25 18:14_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

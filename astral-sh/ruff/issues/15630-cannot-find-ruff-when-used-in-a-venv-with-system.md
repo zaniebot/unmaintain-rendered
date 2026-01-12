@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-21T08:57:13Z
 updated_at: 2025-12-04T19:36:53Z
 url: https://github.com/astral-sh/ruff/issues/15630
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Cannot find ruff when used in a venv with --system-site-packages
 
 ---
 
-_Issue opened by @sillydan1 on 2025-01-21 08:57_
+_@sillydan1_
 
 When running `ruff` as a module in a virtual environment with the `--system-site-packages`, I see a similar error as https://github.com/astral-sh/ruff/issues/2520 
 

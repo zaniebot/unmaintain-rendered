@@ -13,14 +13,14 @@ head: micha/fix-unpack-duplicate-diagnostics
 created_at: 2024-11-06T09:06:10Z
 updated_at: 2024-11-06T11:37:38Z
 url: https://github.com/astral-sh/ruff/pull/14125
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Fix duplicate unpack diagnostics
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-06 09:06_
+_@MichaReiser_
 
 ## Summary
 

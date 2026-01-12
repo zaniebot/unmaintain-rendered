@@ -12,14 +12,14 @@ head: charlie/pub
 created_at: 2023-05-10T15:52:35Z
 updated_at: 2023-05-10T16:33:49Z
 url: https://github.com/astral-sh/ruff/pull/4352
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Remove pub from some `Checker` fields
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-10 15:52_
+_@charliermarsh_
 
 _No description provided._
 

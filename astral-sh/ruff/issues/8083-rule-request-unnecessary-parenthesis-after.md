@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-20T01:46:51Z
 updated_at: 2025-08-11T07:36:31Z
 url: https://github.com/astral-sh/ruff/issues/8083
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Rule request: unnecessary parenthesis after `enumerate`
 
 ---
 
-_Issue opened by @jamesbraza on 2023-10-20 01:46_
+_@jamesbraza_
 
 With `ruff==0.1.1`:
 

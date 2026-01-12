@@ -13,14 +13,14 @@ head: alex/broken-links
 created_at: 2024-11-22T12:24:30Z
 updated_at: 2024-11-22T12:27:53Z
 url: https://github.com/astral-sh/ruff/pull/14526
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Fix broken link to `PYI063`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-22 12:24_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

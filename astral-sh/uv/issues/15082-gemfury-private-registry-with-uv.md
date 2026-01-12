@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-05T13:49:40Z
 updated_at: 2026-01-08T09:28:11Z
 url: https://github.com/astral-sh/uv/issues/15082
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # Gemfury private registry with UV
 
 ---
 
-_Issue opened by @Lyranile on 2025-08-05 13:49_
+_@Lyranile_
 
 Hey,
 

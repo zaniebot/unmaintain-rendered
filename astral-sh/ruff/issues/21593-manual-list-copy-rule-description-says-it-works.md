@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-23T12:04:07Z
 updated_at: 2025-11-25T18:27:14Z
 url: https://github.com/astral-sh/ruff/issues/21593
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `manual-list-copy` rule description says it works on existing lists, but it triggers on any iterable
 
 ---
 
-_Issue opened by @injust on 2025-11-23 12:04_
+_@injust_
 
 ### Summary
 

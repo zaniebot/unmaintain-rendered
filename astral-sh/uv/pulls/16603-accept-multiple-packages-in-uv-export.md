@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2025-11-05T17:22:36Z
 updated_at: 2025-11-05T22:52:23Z
 url: https://github.com/astral-sh/uv/pull/16603
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:20Z
 ```
 
 # Accept multiple packages in `uv export`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-05 17:22_
+_@charliermarsh_
 
 ## Summary
 

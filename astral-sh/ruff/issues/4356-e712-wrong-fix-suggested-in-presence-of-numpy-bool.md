@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-10T18:36:20Z
 updated_at: 2023-05-10T20:12:54Z
 url: https://github.com/astral-sh/ruff/issues/4356
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # E712 : Wrong fix suggested in presence of `numpy.bool_`
 
 ---
 
-_Issue opened by @kesinger-idexx on 2023-05-10 18:36_
+_@kesinger-idexx_
 
 Using ruff 0.0.265.
 

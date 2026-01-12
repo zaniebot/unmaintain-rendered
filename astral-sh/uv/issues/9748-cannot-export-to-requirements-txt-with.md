@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-09T19:41:29Z
 updated_at: 2024-12-09T22:21:24Z
 url: https://github.com/astral-sh/uv/issues/9748
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # Cannot export to requirements.txt with conflicting extras even if unused.
 
 ---
 
-_Issue opened by @lengau on 2024-12-09 19:41_
+_@lengau_
 
 When exporting to a requirements.txt file, the export fails if conflicting extras exist in pyproject.toml, even if they aren't used.
 

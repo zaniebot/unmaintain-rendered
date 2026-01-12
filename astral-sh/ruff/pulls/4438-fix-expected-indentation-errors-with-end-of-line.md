@@ -12,14 +12,14 @@ head: charlie/indentation
 created_at: 2023-05-15T13:23:31Z
 updated_at: 2023-05-16T14:45:56Z
 url: https://github.com/astral-sh/ruff/pull/4438
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Fix expected-indentation errors with end-of-line comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-15 13:23_
+_@charliermarsh_
 
 See: #4418 (which GitHub closed due to a misunderstood merge).
 

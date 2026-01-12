@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-14T13:36:07Z
 updated_at: 2026-01-11T09:29:30Z
 url: https://github.com/astral-sh/ty/issues/1882
-synced_at: 2026-01-12T02:26:11Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Default parameter values should be expressions, not types
 
 ---
 
-_Issue opened by @hamdanal on 2025-12-14 13:36_
+_@hamdanal_
 
 ### Summary
 

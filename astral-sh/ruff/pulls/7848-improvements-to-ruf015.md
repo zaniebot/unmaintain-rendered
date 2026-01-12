@@ -13,14 +13,14 @@ head: improve_ruf015
 created_at: 2023-10-07T17:15:38Z
 updated_at: 2023-10-08T14:55:47Z
 url: https://github.com/astral-sh/ruff/pull/7848
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Improvements to RUF015
 
 ---
 
-_Pull request opened by @hoxbro on 2023-10-07 17:15_
+_@hoxbro_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

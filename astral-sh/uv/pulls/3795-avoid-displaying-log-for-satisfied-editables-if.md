@@ -13,14 +13,14 @@ head: zb/editables
 created_at: 2024-05-23T14:35:54Z
 updated_at: 2024-05-23T15:07:36Z
 url: https://github.com/astral-sh/uv/pull/3795
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:51Z
 ```
 
 # Avoid displaying log for satisfied editables if none are requested
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-23 14:35_
+_@zanieb_
 
 e.g. in `uv pip install anyio -v` this message is just noise
 

@@ -13,14 +13,14 @@ head: zb/update-schemastore
 created_at: 2024-06-14T21:47:59Z
 updated_at: 2024-06-14T21:56:33Z
 url: https://github.com/astral-sh/ruff/pull/11881
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Fix prettier formatting in schema store update script
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-14 21:47_
+_@zanieb_
 
 How was this working for anyone else? The `prettier` path did not exist on my machine. Also added `--force` to the push because otherwise you can't re-run the script for a given Ruff commit.
 

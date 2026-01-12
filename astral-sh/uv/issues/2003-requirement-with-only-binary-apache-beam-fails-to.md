@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-27T05:09:57Z
 updated_at: 2024-03-08T20:55:10Z
 url: https://github.com/astral-sh/uv/issues/2003
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Requirement with `--only-binary apache-beam` fails to resolve even though solution exists
 
 ---
 
-_Issue opened by @notatallshaw on 2024-02-27 05:09_
+_@notatallshaw_
 
 Python 3.11.6, Linux x64, uv 0.1.11
 

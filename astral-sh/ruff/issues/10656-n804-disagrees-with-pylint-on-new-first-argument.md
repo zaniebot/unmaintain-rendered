@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-29T10:42:11Z
 updated_at: 2024-12-21T21:48:16Z
 url: https://github.com/astral-sh/ruff/issues/10656
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # N804 disagrees with pylint on __new__ first argument's name for metaclass
 
 ---
 
-_Issue opened by @Amvoled on 2024-03-29 10:42_
+_@Amvoled_
 
 Here's an example:
 ```py

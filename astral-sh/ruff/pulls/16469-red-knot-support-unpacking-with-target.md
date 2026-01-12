@@ -13,14 +13,14 @@ head: unpack-with-stmt
 created_at: 2025-03-03T06:27:53Z
 updated_at: 2025-03-08T14:58:06Z
 url: https://github.com/astral-sh/ruff/pull/16469
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Support unpacking `with` target
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2025-03-03 06:27_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-13T08:49:28Z
 updated_at: 2025-09-13T09:34:16Z
 url: https://github.com/astral-sh/ty/issues/1178
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Resolving the virtual environment of uv scripts
 
 ---
 
-_Issue opened by @PetterS on 2025-09-13 08:49_
+_@PetterS_
 
 ### Question
 

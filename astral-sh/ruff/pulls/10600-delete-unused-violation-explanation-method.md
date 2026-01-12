@@ -13,14 +13,14 @@ head: delete-unused-explanation-method
 created_at: 2024-03-26T07:42:40Z
 updated_at: 2024-03-27T05:59:25Z
 url: https://github.com/astral-sh/ruff/pull/10600
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Delete unused `Violation::explanation` method
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-26 07:42_
+_@MichaReiser_
 
 ## Summary
 

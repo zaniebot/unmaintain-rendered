@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-07T20:11:51Z
 updated_at: 2025-12-08T12:34:32Z
 url: https://github.com/astral-sh/ty/issues/1798
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `invalid-paramspec` with `typing_extensions.ParamSpec` on Python <3.13
 
 ---
 
-_Issue opened by @jorenham on 2025-12-07 20:11_
+_@jorenham_
 
 ### Summary
 

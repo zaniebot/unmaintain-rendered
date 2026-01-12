@@ -12,14 +12,14 @@ head: zb/debug-change
 created_at: 2023-12-07T04:14:01Z
 updated_at: 2023-12-07T04:30:37Z
 url: https://github.com/astral-sh/ruff/pull/9042
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Debug CI workflow
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-07 04:14_
+_@zanieb_
 
 Testing #9038 
 

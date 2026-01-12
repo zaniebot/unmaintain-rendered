@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-09-26T19:24:46Z
 updated_at: 2019-12-10T20:20:38Z
 url: https://github.com/clap-rs/clap/issues/1552
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Use of deprecated "std::sync::ONCE_INIT"
 
 ---
 
-_Issue opened by @Zooce on 2019-09-26 19:24_
+_@Zooce_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

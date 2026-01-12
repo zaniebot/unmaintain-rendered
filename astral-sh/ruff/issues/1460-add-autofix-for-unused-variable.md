@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-30T02:44:21Z
 updated_at: 2023-01-07T03:06:05Z
 url: https://github.com/astral-sh/ruff/issues/1460
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add autofix for "unused variable"
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-30 02:44_
+_@charliermarsh_
 
 To start, we can just mimic `autoflake`, whose logic is relatively simple: https://github.com/PyCQA/autoflake/blob/60eeb31082bf5290341e84a008d5c832fb04fd13/autoflake.py#L664.
 

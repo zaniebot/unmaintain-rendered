@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-12T02:37:54Z
 updated_at: 2023-09-12T12:41:07Z
 url: https://github.com/astral-sh/ruff/issues/7285
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Add import switching from `typing_extensions` to `typing` when reaches requisite version.
 
 ---
 
-_Issue opened by @nstarman on 2023-09-12 02:37_
+_@nstarman_
 
 `typing_extensions` backports a lot of code from `typing`. It would be great if `ruff` could switch the import from `typing_extensions` to `typing` when ruff's target version matches (or exceeds) the requisite python version.
 

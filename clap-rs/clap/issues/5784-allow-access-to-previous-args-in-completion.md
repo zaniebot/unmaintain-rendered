@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-21T12:10:02Z
 updated_at: 2025-01-20T15:28:46Z
 url: https://github.com/clap-rs/clap/issues/5784
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Allow access to previous args in completion function for context-sensitive completions
 
 ---
 
-_Issue opened by @LucasPickering on 2024-10-21 12:10_
+_@LucasPickering_
 
 ### Please complete the following tasks
 

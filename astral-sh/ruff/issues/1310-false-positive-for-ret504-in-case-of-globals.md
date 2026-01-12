@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-21T17:59:53Z
 updated_at: 2022-12-24T17:59:24Z
 url: https://github.com/astral-sh/ruff/issues/1310
-synced_at: 2026-01-10T12:05:25Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # false positive for RET504 in case of globals
 
 ---
 
-_Issue opened by @tlambert03 on 2022-12-21 17:59_
+_@tlambert03_
 
 The following code results in `RET504 Unnecessary variable assignment before `return` statement`
  

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-20T19:07:25Z
 updated_at: 2025-07-21T16:25:51Z
 url: https://github.com/astral-sh/uv/issues/14760
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # missing symlink in venv
 
 ---
 
-_Issue opened by @dotysan on 2025-07-20 19:07_
+_@dotysan_
 
 ### Summary
 

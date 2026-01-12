@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-22T13:57:38Z
 updated_at: 2025-12-22T16:43:19Z
 url: https://github.com/astral-sh/ty/issues/2159
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Type narrowing does not happen when covered by multiple branches
 
 ---
 
-_Issue opened by @omerhadari on 2025-12-22 13:57_
+_@omerhadari_
 
 ### Summary
 

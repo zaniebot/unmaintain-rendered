@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-02T18:12:45Z
 updated_at: 2023-11-02T19:10:04Z
 url: https://github.com/astral-sh/uv/issues/296
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Add support for Git revision references in VCS URLs
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-02 18:12_
+_@charliermarsh_
 
 See: https://pip.pypa.io/en/stable/topics/vcs-support. We need to support, e.g., `MyProject @ git+https://git.example.com/MyProject.git@v1.0`. I didn't realize that pip expects a different format here than Cargo, which uses query parameters.
 

@@ -11,14 +11,14 @@ head: too_many_try
 created_at: 2023-02-25T19:22:15Z
 updated_at: 2024-06-10T18:13:00Z
 url: https://github.com/astral-sh/ruff/pull/3226
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [`tryceratops`]: Too Many Try Statements
 
 ---
 
-_Pull request opened by @colin99d on 2023-02-25 19:22_
+_@colin99d_
 
 Merge after #3109 because this closes: #2056 
 

@@ -13,14 +13,14 @@ head: charlie/pcc
 created_at: 2025-02-05T03:30:15Z
 updated_at: 2025-02-05T04:21:59Z
 url: https://github.com/astral-sh/uv/pull/11229
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:44Z
 ```
 
 # Disable wheel testing for `powerpc64le-unknown-linux-gnu`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-05 03:30_
+_@charliermarsh_
 
 ## Summary
 

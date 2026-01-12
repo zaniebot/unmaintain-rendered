@@ -12,14 +12,14 @@ head: fix/f523-star-args
 created_at: 2023-04-09T06:16:36Z
 updated_at: 2023-04-10T04:57:42Z
 url: https://github.com/astral-sh/ruff/pull/3923
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Do not skip analysis if `*args` present for `F523`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-04-09 06:16_
+_@dhruvmanila_
 
 The `*args` argument will be skipped while collecting indices for extra positional arguments. Here, it's not required for the argument name to be `args`.
 

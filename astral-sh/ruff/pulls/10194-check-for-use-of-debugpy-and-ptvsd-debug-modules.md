@@ -13,14 +13,14 @@ head: add-debug-modules-to-t100
 created_at: 2024-03-02T02:33:54Z
 updated_at: 2024-03-02T04:02:44Z
 url: https://github.com/astral-sh/ruff/pull/10194
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Check for use of `debugpy` and `ptvsd` debug modules (#10177)
 
 ---
 
-_Pull request opened by @jeremy-hiatt on 2024-03-02 02:33_
+_@jeremy-hiatt_
 
 ## Summary
 

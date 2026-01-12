@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-15T15:47:25Z
 updated_at: 2024-03-16T19:06:43Z
 url: https://github.com/astral-sh/uv/issues/2475
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # uv fails to parse pyproject.toml when using Hatchling's `{root:uri}` for dependencies
 
 ---
 
-_Issue opened by @object-Object on 2024-03-15 15:47_
+_@object-Object_
 
 Hatchling includes a [feature](https://hatch.pypa.io/dev/config/dependency/#local) that allows specifying local dependencies relative to a project's root directory using the following syntax: 
 ```toml

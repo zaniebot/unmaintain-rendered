@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-10T21:12:22Z
 updated_at: 2025-09-11T13:40:09Z
 url: https://github.com/astral-sh/ruff/issues/20339
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF059 does not recognize variable string references like in pandas Dataframe.query
 
 ---
 
-_Issue opened by @JanSellner on 2025-09-10 21:12_
+_@JanSellner_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: dhruv/move-rules-to-ast-checker
 created_at: 2024-02-15T07:13:25Z
 updated_at: 2024-02-17T17:08:02Z
 url: https://github.com/astral-sh/ruff/pull/9993
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Move `RUF001`, `RUF002` to AST checker
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-02-15 07:13_
+_@dhruvmanila_
 
 ## Summary
 

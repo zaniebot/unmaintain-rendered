@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-12T13:21:36Z
 updated_at: 2025-06-12T13:38:38Z
 url: https://github.com/astral-sh/uv/issues/13989
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # Detect broken virtual environments when moved
 
 ---
 
-_Issue opened by @zanieb on 2025-06-12 13:21_
+_@zanieb_
 
 > We can read the beginning of all entrypoints we created (through `entry_points.txt`) and if any of them points to a python interpreter that doesn't exist, we invalidate the environment. There are some details to be figured out around perf and where the scripts come from, e.g. we don't cover non-entrypoint scripts (I don't think we keep a record of `#!python` script we rewrote vs. script where the shebang was user-provided).
 > 

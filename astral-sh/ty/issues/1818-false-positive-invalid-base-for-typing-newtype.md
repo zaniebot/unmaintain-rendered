@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-09T02:00:13Z
 updated_at: 2025-12-12T00:43:11Z
 url: https://github.com/astral-sh/ty/issues/1818
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # False positive "invalid base for `typing.NewType`" with `float`
 
 ---
 
-_Issue opened by @LeeeeT on 2025-12-09 02:00_
+_@LeeeeT_
 
 ### Summary
 

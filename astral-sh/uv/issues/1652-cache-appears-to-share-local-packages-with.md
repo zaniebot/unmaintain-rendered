@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T15:22:47Z
 updated_at: 2024-02-18T15:46:06Z
 url: https://github.com/astral-sh/uv/issues/1652
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # cache appears to share local packages with packages from PyPI
 
 ---
 
-_Issue opened by @alex on 2024-02-18 15:22_
+_@alex_
 
 ```
 /tmp ❯❯❯ uv --version

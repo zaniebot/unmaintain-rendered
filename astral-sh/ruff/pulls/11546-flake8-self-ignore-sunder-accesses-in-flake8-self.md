@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-05-26T17:41:16Z
 updated_at: 2024-05-26T17:57:25Z
 url: https://github.com/astral-sh/ruff/pull/11546
-synced_at: 2026-01-10T22:05:27Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [`flake8-self`] Ignore sunder accesses in `flake8-self` rule
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-26 17:41_
+_@charliermarsh_
 
 ## Summary
 

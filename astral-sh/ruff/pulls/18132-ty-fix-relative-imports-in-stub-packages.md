@@ -13,14 +13,14 @@ head: micha/relative-import-stubs
 created_at: 2025-05-16T13:19:11Z
 updated_at: 2025-05-16T13:36:39Z
 url: https://github.com/astral-sh/ruff/pull/18132
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # [ty] Fix relative imports in stub packages
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-16 13:19_
+_@MichaReiser_
 
 ## Summary
 

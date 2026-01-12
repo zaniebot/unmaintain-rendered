@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T17:27:41Z
 updated_at: 2025-02-21T09:41:51Z
 url: https://github.com/astral-sh/uv/issues/11672
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # Dynamic dependencies, `cache-keys` and `uv add` inconsistencies ?
 
 ---
 
-_Issue opened by @cmayet on 2025-02-20 17:27_
+_@cmayet_
 
 ### Summary
 

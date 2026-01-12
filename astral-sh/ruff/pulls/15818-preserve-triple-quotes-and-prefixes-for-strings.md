@@ -14,14 +14,14 @@ head: brent/preserve-triple
 created_at: 2025-01-29T21:57:29Z
 updated_at: 2025-02-04T13:41:08Z
 url: https://github.com/astral-sh/ruff/pull/15818
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Preserve triple quotes and prefixes for strings
 
 ---
 
-_Pull request opened by @ntBre on 2025-01-29 21:57_
+_@ntBre_
 
 ## Summary
 

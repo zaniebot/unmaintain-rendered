@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-05T08:18:49Z
 updated_at: 2025-02-05T16:56:35Z
 url: https://github.com/astral-sh/uv/issues/11238
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # `uv sync` runs indefinitely when symlinks exist in src
 
 ---
 
-_Issue opened by @dennismoe on 2025-02-05 08:18_
+_@dennismoe_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-18T19:05:56Z
 updated_at: 2024-10-18T19:20:38Z
 url: https://github.com/astral-sh/uv/issues/8346
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # Add a way to add a file to a build
 
 ---
 
-_Issue opened by @ebits21 on 2024-10-18 19:05_
+_@ebits21_
 
 Right now I've been able to do this by adding an include in a MANIFEST.in file.
 

@@ -13,14 +13,14 @@ head: charlie/rev
 created_at: 2024-12-26T23:31:13Z
 updated_at: 2024-12-26T23:40:26Z
 url: https://github.com/astral-sh/uv/pull/10187
-synced_at: 2026-01-10T11:44:38Z
+synced_at: 2026-01-12T16:09:10Z
 ```
 
 # Revert "Update `reqwest` (#10178)"
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-26 23:31_
+_@charliermarsh_
 
 This reverts commit d2f58d92991fa08b24596fcc6c6472dc5015d3bc.
 

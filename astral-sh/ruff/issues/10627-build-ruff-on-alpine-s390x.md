@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-27T12:33:29Z
 updated_at: 2024-04-11T07:02:19Z
 url: https://github.com/astral-sh/ruff/issues/10627
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Build ruff on Alpine s390x
 
 ---
 
-_Issue opened by @raspbeguy on 2024-03-27 12:33_
+_@raspbeguy_
 
 Hello, I wish to fix ruff package on Alpine Linux. Currently the package won't build on s390x arch because of a dependancy that won't update its own dependancies. I'm talking about clearscreen which uses an old version on nix which contains a bug for s390x. The bug has been patched on nix but clearscreen seems almost abandoned.
 

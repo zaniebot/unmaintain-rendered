@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-07-31T10:04:54Z
 updated_at: 2022-08-01T20:56:37Z
 url: https://github.com/clap-rs/clap/issues/4008
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Add ability to override default naming convention for ValueEnum variants
 
 ---
 
-_Issue opened by @mfreeborn on 2022-07-31 10:04_
+_@mfreeborn_
 
 ### Please complete the following tasks
 

@@ -14,14 +14,14 @@ head: charlie/unnamed-with
 created_at: 2024-07-02T00:26:46Z
 updated_at: 2024-07-02T01:42:59Z
 url: https://github.com/astral-sh/uv/pull/4716
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:24Z
 ```
 
 # Support unnamed requirements in `uv tool install`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-02 00:26_
+_@charliermarsh_
 
 ## Summary
 

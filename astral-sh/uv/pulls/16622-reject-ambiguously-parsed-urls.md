@@ -13,14 +13,14 @@ head: ww/url-ambiguity
 created_at: 2025-11-06T21:43:14Z
 updated_at: 2025-11-17T03:47:27Z
 url: https://github.com/astral-sh/uv/pull/16622
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:21Z
 ```
 
 # Reject ambiguously parsed URLs
 
 ---
 
-_Pull request opened by @woodruffw on 2025-11-06 21:43_
+_@woodruffw_
 
 ## Summary
 

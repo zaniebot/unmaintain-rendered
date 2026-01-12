@@ -13,14 +13,14 @@ head: renovate/anstream-0.x-lockfile
 created_at: 2025-08-11T01:35:53Z
 updated_at: 2025-08-11T16:39:13Z
 url: https://github.com/astral-sh/uv/pull/15210
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:38Z
 ```
 
 # Update Rust crate anstream to v0.6.20
 
 ---
 
-_Pull request opened by @renovate on 2025-08-11 01:35_
+_@renovate_
 
 This PR contains the following updates:
 

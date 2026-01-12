@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-31T10:49:54Z
 updated_at: 2025-08-05T14:41:38Z
 url: https://github.com/astral-sh/ty/issues/918
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Diagnostics for async context managers
 
 ---
 
-_Issue opened by @sharkdp on 2025-07-31 10:49_
+_@sharkdp_
 
 For *synchronous* context managers, we emit diagnostics when the context manager is not implemented properly. For example, if there is no `__enter__` method, or no `__exit__` method. Or if the call to these methods fails.
 

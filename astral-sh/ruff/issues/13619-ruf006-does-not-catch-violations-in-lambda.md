@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-03T21:46:19Z
 updated_at: 2024-10-04T15:30:42Z
 url: https://github.com/astral-sh/ruff/issues/13619
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # RUF006 does not catch violations in lambda expressions
 
 ---
 
-_Issue opened by @hpelwintervold on 2024-10-03 21:46_
+_@hpelwintervold_
 
 Ruff does not appear to find violations for rule `RUF006` ([link](https://docs.astral.sh/ruff/rules/asyncio-dangling-task/)) in lambda expressions. Example below:
 

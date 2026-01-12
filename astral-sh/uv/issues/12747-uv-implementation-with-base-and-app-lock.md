@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T16:32:26Z
 updated_at: 2025-04-09T21:00:36Z
 url: https://github.com/astral-sh/uv/issues/12747
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # UV implementation with Base and app lock/requirement files
 
 ---
 
-_Issue opened by @ihelmer07 on 2025-04-08 16:32_
+_@ihelmer07_
 
 ### Question
 

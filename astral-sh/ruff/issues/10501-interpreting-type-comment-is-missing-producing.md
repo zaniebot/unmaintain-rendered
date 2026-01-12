@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-21T03:08:23Z
 updated_at: 2024-03-22T00:09:25Z
 url: https://github.com/astral-sh/ruff/issues/10501
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Interpreting type comment is missing, producing different result from flake8
 
 ---
 
-_Issue opened by @cielavenir on 2024-03-21 03:08_
+_@cielavenir_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

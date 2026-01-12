@@ -13,14 +13,14 @@ head: dhruv/remove
 created_at: 2023-12-12T21:13:46Z
 updated_at: 2023-12-12T21:16:02Z
 url: https://github.com/astral-sh/ruff/pull/9108
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Remove `ExprFormattedValue` formatting impl
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-12-12 21:13_
+_@dhruvmanila_
 
 _No description provided._
 

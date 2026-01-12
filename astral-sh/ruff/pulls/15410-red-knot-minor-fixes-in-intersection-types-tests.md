@@ -13,14 +13,14 @@ head: david/minor-fixes-intersection-tests
 created_at: 2025-01-10T21:42:46Z
 updated_at: 2025-01-10T21:53:05Z
 url: https://github.com/astral-sh/ruff/pull/15410
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Minor fixes in intersection-types tests
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-10 21:42_
+_@sharkdp_
 
 ## Summary
 

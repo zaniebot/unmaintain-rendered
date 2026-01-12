@@ -13,14 +13,14 @@ head: dhruv/literal-refactor
 created_at: 2023-10-31T10:50:58Z
 updated_at: 2023-10-31T11:17:19Z
 url: https://github.com/astral-sh/ruff/pull/8374
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Inline AST helpers for new literal nodes
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-31 10:50_
+_@dhruvmanila_
 
 A small refactor to inline the `is_const_none` now that there's a dedicated `ExprNoneLiteral` node.
 

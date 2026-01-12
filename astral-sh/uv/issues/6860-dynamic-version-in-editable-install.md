@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T12:06:53Z
 updated_at: 2024-12-19T16:41:10Z
 url: https://github.com/astral-sh/uv/issues/6860
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # dynamic version in editable install
 
 ---
 
-_Issue opened by @pmeier on 2024-08-30 12:06_
+_@pmeier_
 
 [PEP 621](https://peps.python.org/pep-0621/) allows for dynamic metadata in `pyproject.toml`. Tools like [`setuptools-scm`](https://pypi.org/project/setuptools-scm/) make use of this feature by computing the version of the package at build time.
 

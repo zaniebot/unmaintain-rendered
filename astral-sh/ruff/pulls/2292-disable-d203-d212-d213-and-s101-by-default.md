@@ -12,14 +12,14 @@ head: nursery
 created_at: 2023-01-28T06:12:36Z
 updated_at: 2023-02-01T15:32:02Z
 url: https://github.com/astral-sh/ruff/pull/2292
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Disable D203, D212, D213 and S101 by default
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-28 06:12_
+_@not-my-profile_
 
 (see our discussion in #2289 as well as the commit messages for the reasoning)
 

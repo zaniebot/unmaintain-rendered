@@ -13,14 +13,14 @@ head: collect-preview-behaviors
 created_at: 2025-04-26T19:38:51Z
 updated_at: 2025-04-28T14:12:26Z
 url: https://github.com/astral-sh/ruff/pull/17646
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # Collect preview lint behaviors in separate module
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-04-26 19:38_
+_@dylwil3_
 
 This PR collects all behavior gated under preview into a new module `ruff_linter::preview` that exposes functions like `is_my_new_feature_enabled` - just as is done in the formatter crate.
 

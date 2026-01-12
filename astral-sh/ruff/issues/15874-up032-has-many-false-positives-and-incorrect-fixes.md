@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-01T19:14:05Z
 updated_at: 2025-02-01T22:42:58Z
 url: https://github.com/astral-sh/ruff/issues/15874
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # UP032 has many false positives and incorrect fixes
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-01 19:14_
+_@dscorbett_
 
 ### Description
 

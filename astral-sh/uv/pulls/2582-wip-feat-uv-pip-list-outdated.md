@@ -11,14 +11,14 @@ head: timl/pip-list-outdated
 created_at: 2024-03-21T05:34:36Z
 updated_at: 2024-04-09T16:30:14Z
 url: https://github.com/astral-sh/uv/pull/2582
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:07Z
 ```
 
 # WIP: feat: uv pip list --outdated
 
 ---
 
-_Pull request opened by @timleslie on 2024-03-21 05:34_
+_@timleslie_
 
 ## Summary
 

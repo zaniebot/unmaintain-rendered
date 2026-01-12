@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-04T09:39:38Z
 updated_at: 2024-03-04T14:24:03Z
 url: https://github.com/astral-sh/uv/issues/2148
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # uv doesn't read pip.ini on Windows
 
 ---
 
-_Issue opened by @RichardDally on 2024-03-04 09:39_
+_@RichardDally_
 
 Hello folks,
 

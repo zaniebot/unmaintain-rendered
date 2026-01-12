@@ -14,14 +14,14 @@ head: add-trio-109-support
 created_at: 2023-11-07T06:59:16Z
 updated_at: 2023-11-07T22:13:27Z
 url: https://github.com/astral-sh/ruff/pull/8534
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # [TRIO] Add TRIO109 rule
 
 ---
 
-_Pull request opened by @karpetrosyan on 2023-11-07 06:59_
+_@karpetrosyan_
 
 ## Summary
 

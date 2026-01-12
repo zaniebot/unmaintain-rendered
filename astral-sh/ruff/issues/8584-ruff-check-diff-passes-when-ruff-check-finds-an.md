@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-09T14:00:03Z
 updated_at: 2023-11-10T11:57:04Z
 url: https://github.com/astral-sh/ruff/issues/8584
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `ruff check --diff` passes when `ruff check` finds an error
 
 ---
 
-_Issue opened by @stinodego on 2023-11-09 14:00_
+_@stinodego_
 
 Example file:
 

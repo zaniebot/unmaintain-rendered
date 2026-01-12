@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-29T07:15:06Z
 updated_at: 2024-06-29T07:44:15Z
 url: https://github.com/astral-sh/ruff/issues/12098
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Invalid table header with mypy ignore missing import
 
 ---
 
-_Issue opened by @thisi5patrick on 2024-06-29 07:15_
+_@thisi5patrick_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

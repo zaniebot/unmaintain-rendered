@@ -12,14 +12,14 @@ head: charlie/mkdocs
 created_at: 2023-07-06T13:49:29Z
 updated_at: 2023-07-06T15:03:06Z
 url: https://github.com/astral-sh/ruff/pull/5562
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Use non-Insiders MkDocs for building in forks
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-06 13:49_
+_@charliermarsh_
 
 _No description provided._
 

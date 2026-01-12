@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-10T00:20:15Z
 updated_at: 2024-02-07T19:28:47Z
 url: https://github.com/astral-sh/ruff/issues/9451
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Request: Remove sequential blank lines in docstrings
 
 ---
 
-_Issue opened by @stinodego on 2024-01-10 00:20_
+_@stinodego_
 
 I'd like a way to get rid of extraneous whitespace in docstrings.
 

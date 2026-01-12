@@ -13,14 +13,14 @@ head: uv-add-optional
 created_at: 2024-06-28T00:01:26Z
 updated_at: 2024-06-28T01:24:22Z
 url: https://github.com/astral-sh/uv/pull/4607
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:20Z
 ```
 
 # Allow `uv add` to specify optional dependency groups
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-06-28 00:01_
+_@ibraheemdev_
 
 ## Summary
 

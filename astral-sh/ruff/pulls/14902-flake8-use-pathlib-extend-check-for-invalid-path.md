@@ -15,14 +15,14 @@ head: main
 created_at: 2024-12-10T23:33:32Z
 updated_at: 2024-12-12T19:30:18Z
 url: https://github.com/astral-sh/ruff/pull/14902
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`flake8-use-pathlib`] Extend check for invalid path suffix to include the case `"."` (`PTH210`)
 
 ---
 
-_Pull request opened by @TheBits on 2024-12-10 23:33_
+_@TheBits_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-10T16:45:19Z
 updated_at: 2024-11-26T16:24:45Z
 url: https://github.com/astral-sh/uv/issues/8991
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # feat: uv command to add `exclude-newer` with current date
 
 ---
 
-_Issue opened by @tlambert03 on 2024-11-10 16:45_
+_@tlambert03_
 
 Apologies if I missed an existing feature:
 I love the `exclude-newer` feature and wonder where there is a convenience to programmatically populate the exclude-newer field with the "current" timestamp:

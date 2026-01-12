@@ -13,14 +13,14 @@ head: charkie/E251
 created_at: 2023-12-09T18:04:53Z
 updated_at: 2023-12-09T18:22:20Z
 url: https://github.com/astral-sh/ruff/pull/9072
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Add fix for unexpected-spaces-around-keyword-parameter-equals
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-09 18:04_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9066.
 

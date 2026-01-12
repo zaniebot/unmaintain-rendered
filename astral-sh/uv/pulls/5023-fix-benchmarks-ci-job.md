@@ -13,14 +13,14 @@ head: ibraheem/benchmark-ci
 created_at: 2024-07-12T21:16:17Z
 updated_at: 2024-07-12T21:57:13Z
 url: https://github.com/astral-sh/uv/pull/5023
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:35Z
 ```
 
 # Fix benchmarks CI job
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-12 21:16_
+_@ibraheemdev_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-01T12:25:28Z
 updated_at: 2025-11-07T20:03:11Z
 url: https://github.com/astral-sh/uv/issues/16547
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # uv build backend lowercases package name in wheel metadata
 
 ---
 
-_Issue opened by @john-hen on 2025-11-01 12:25_
+_@john-hen_
 
 ### Summary
 

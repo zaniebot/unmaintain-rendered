@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-11-29T13:31:24Z
 updated_at: 2023-11-29T13:32:19Z
 url: https://github.com/astral-sh/ruff/issues/8909
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # docstring code formatter: add benchmarks
 
 ---
 
-_Issue opened by @BurntSushi on 2023-11-29 13:31_
+_@BurntSushi_
 
 There is some concern over whether the new docstring code snippet formatting could slow down the overall formatting process. To ameliorate this and understand its performance characteristics, we should try to write some micro-benchmarks that will help us track performance over time. @MichaReiser in particular had some suggestions here: https://github.com/astral-sh/ruff/issues/8857#issuecomment-1830959726
 

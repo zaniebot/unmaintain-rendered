@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T18:18:00Z
 updated_at: 2024-11-22T22:18:58Z
 url: https://github.com/astral-sh/uv/issues/9361
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # UV on gitlab CICD has some issue
 
 ---
 
-_Issue opened by @MaKaNu on 2024-11-22 18:18_
+_@MaKaNu_
 
 I am not sure at the moment, if this is an issue with the uv image or a [bug on gitlab](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/477), but I stumbled over a different issue when testing my pipelines:
 

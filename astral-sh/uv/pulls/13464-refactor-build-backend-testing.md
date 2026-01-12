@@ -13,14 +13,14 @@ head: konsti/refactor-build-backend-tests
 created_at: 2025-05-15T11:48:21Z
 updated_at: 2025-05-15T12:00:03Z
 url: https://github.com/astral-sh/uv/pull/13464
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:41Z
 ```
 
 # Refactor build backend testing
 
 ---
 
-_Pull request opened by @konstin on 2025-05-15 11:48_
+_@konstin_
 
 This is useful for adding more tests for build backend configuration.
 

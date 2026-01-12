@@ -13,14 +13,14 @@ head: dhruv/expr-name
 created_at: 2024-03-25T03:12:00Z
 updated_at: 2024-03-25T12:38:50Z
 url: https://github.com/astral-sh/ruff/pull/10552
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Update `ExprName` ctx, add tests
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-25 03:12_
+_@dhruvmanila_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-26T23:09:20Z
 updated_at: 2023-06-05T19:23:25Z
 url: https://github.com/astral-sh/ruff/issues/4126
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [feature request] Also watch config files, like `pyproject.toml` in `--watch` mode. 
 
 ---
 
-_Issue opened by @bgianfo on 2023-04-26 23:09_
+_@bgianfo_
 
 It would be very nice if the watch mode would also watch for changes to configuration files.
 

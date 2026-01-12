@@ -13,14 +13,14 @@ head: add-b040-rule
 created_at: 2024-08-08T21:30:09Z
 updated_at: 2024-10-05T11:51:11Z
 url: https://github.com/astral-sh/ruff/pull/12764
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Add b040: exception with note added not re-raised or used (#12097)
 
 ---
 
-_Pull request opened by @divident on 2024-08-08 21:30_
+_@divident_
 
 ## Summary
 This PR ports the B040 implementation from https://github.com/PyCQA/flake8-bugbear/pull/477.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-07T16:07:15Z
 updated_at: 2026-01-09T15:03:12Z
 url: https://github.com/astral-sh/ty/issues/2378
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # panic on Tauon's codebase
 
 ---
 
-_Issue opened by @C0rn3j on 2026-01-07 16:07_
+_@C0rn3j_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-06T20:15:34Z
 updated_at: 2024-01-29T12:55:45Z
 url: https://github.com/astral-sh/ruff/issues/8526
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # jupyter: ruff v0.1.4 ignores variables with the same name as magic commands
 
 ---
 
-_Issue opened by @njzjz on 2023-11-06 20:15_
+_@njzjz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

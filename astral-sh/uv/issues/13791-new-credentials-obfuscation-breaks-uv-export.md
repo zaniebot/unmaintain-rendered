@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-02T22:12:59Z
 updated_at: 2025-06-03T16:12:35Z
 url: https://github.com/astral-sh/uv/issues/13791
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # New credentials obfuscation breaks `uv export`
 
 ---
 
-_Issue opened by @jlconnor on 2025-06-02 22:12_
+_@jlconnor_
 
 ### Summary
 

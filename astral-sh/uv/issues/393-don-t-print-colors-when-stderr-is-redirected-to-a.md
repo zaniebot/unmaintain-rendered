@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-10T16:47:05Z
 updated_at: 2023-11-13T20:00:14Z
 url: https://github.com/astral-sh/uv/issues/393
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Don't print colors when stderr is redirected to a file
 
 ---
 
-_Issue opened by @konstin on 2023-11-10 16:47_
+_@konstin_
 
 When using
 

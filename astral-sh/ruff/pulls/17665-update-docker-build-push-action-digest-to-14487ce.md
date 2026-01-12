@@ -13,14 +13,14 @@ head: renovate/docker-build-push-action-digest
 created_at: 2025-04-28T03:25:49Z
 updated_at: 2025-04-28T06:15:56Z
 url: https://github.com/astral-sh/ruff/pull/17665
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:03Z
 ```
 
 # Update docker/build-push-action digest to 14487ce
 
 ---
 
-_Pull request opened by @renovate on 2025-04-28 03:25_
+_@renovate_
 
 This PR contains the following updates:
 

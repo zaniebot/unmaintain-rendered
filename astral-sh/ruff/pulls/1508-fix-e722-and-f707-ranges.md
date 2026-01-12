@@ -12,14 +12,14 @@ head: fix-except-range
 created_at: 2022-12-31T10:33:08Z
 updated_at: 2022-12-31T12:58:46Z
 url: https://github.com/astral-sh/ruff/pull/1508
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Fix E722 and F707 ranges
 
 ---
 
-_Pull request opened by @harupy on 2022-12-31 10:33_
+_@harupy_
 
 This PR fixes E722 and F707 ranges.
 

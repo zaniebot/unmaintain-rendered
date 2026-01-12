@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-18T09:55:18Z
 updated_at: 2024-10-25T07:23:30Z
 url: https://github.com/astral-sh/uv/issues/8323
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # `uv pip install torch` fails on Windows
 
 ---
 
-_Issue opened by @jplumail on 2024-10-18 09:55_
+_@jplumail_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

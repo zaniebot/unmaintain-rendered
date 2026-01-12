@@ -12,14 +12,14 @@ head: charlie/deterministic
 created_at: 2023-10-29T18:39:50Z
 updated_at: 2023-10-29T18:42:27Z
 url: https://github.com/astral-sh/uv/pull/218
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:48Z
 ```
 
 # Make the resolver deterministic
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-29 18:39_
+_@charliermarsh_
 
 At a minor performance cost...
 

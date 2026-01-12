@@ -12,14 +12,14 @@ head: ag/jiff
 created_at: 2025-04-13T22:24:38Z
 updated_at: 2025-04-15T11:47:57Z
 url: https://github.com/astral-sh/ruff/pull/17376
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # dependencies: switch from `chrono` to `jiff`
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-04-13 22:24_
+_@BurntSushi_
 
 We weren't really using `chrono` for anything other than getting the
 current time and formatting it for logs. So the switch to Jiff here

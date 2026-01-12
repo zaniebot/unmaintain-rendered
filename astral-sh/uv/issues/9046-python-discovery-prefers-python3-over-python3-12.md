@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-12T05:35:52Z
 updated_at: 2024-11-13T16:58:12Z
 url: https://github.com/astral-sh/uv/issues/9046
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # Python discovery prefers python3 over python3.12 when UV_PYTHON=python3.12
 
 ---
 
-_Issue opened by @hynek on 2024-11-12 05:35_
+_@hynek_
 
 This is something that happens with uv 0.5.0 and 0.5.1 but not uv 0.4.30.
 

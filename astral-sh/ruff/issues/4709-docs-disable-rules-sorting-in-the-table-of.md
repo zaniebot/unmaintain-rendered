@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-29T20:24:41Z
 updated_at: 2023-05-29T22:20:43Z
 url: https://github.com/astral-sh/ruff/issues/4709
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # docs: Disable rules sorting in the table of contents
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-05-29 20:24_
+_@saippuakauppias_
 
 On page https://beta.ruff.rs/docs/rules/ in the table of contents, the rules are sorted by name, and then they go on in the order in which they were added to the linter. 
 

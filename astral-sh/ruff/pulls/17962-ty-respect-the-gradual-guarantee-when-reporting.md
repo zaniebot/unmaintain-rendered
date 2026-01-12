@@ -13,14 +13,14 @@ head: alex/inconsistent-mro-gradual
 created_at: 2025-05-08T19:35:35Z
 updated_at: 2025-05-08T21:57:40Z
 url: https://github.com/astral-sh/ruff/pull/17962
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # [ty] Respect the gradual guarantee when reporting errors in resolving MROs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-08 19:35_
+_@AlexWaygood_
 
 ## Summary
 

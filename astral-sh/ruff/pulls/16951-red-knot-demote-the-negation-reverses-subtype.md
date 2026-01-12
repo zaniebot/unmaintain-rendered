@@ -15,14 +15,14 @@ head: alex/fix-property-tests
 created_at: 2025-03-24T15:09:22Z
 updated_at: 2025-03-24T15:37:05Z
 url: https://github.com/astral-sh/ruff/pull/16951
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Demote the `negation_reverses_subtype_order` test back to flaky
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-24 15:09_
+_@AlexWaygood_
 
 Fixes #16913. See my analysis in the issue for the rationale
 

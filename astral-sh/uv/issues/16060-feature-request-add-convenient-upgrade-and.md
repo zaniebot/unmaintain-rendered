@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-29T03:18:39Z
 updated_at: 2025-09-29T10:39:42Z
 url: https://github.com/astral-sh/uv/issues/16060
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:22Z
 ```
 
 # Feature Request: Add convenient upgrade and environment management features
 
 ---
 
-_Issue opened by @sysrootinit on 2025-09-29 03:18_
+_@sysrootinit_
 
 ### Summary
 

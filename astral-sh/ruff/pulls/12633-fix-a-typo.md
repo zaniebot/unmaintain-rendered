@@ -12,14 +12,14 @@ head: main
 created_at: 2024-08-02T15:28:11Z
 updated_at: 2024-08-02T15:46:29Z
 url: https://github.com/astral-sh/ruff/pull/12633
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Fix a typo
 
 ---
 
-_Pull request opened by @ember91 on 2024-08-02 15:28_
+_@ember91_
 
 I looked through the full source code for spelling errors. This is the only issue I found.
 

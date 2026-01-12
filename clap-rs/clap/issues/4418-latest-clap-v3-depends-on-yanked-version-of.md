@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-23T20:44:58Z
 updated_at: 2022-10-24T17:17:28Z
 url: https://github.com/clap-rs/clap/issues/4418
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Latest Clap v3 depends on yanked version of textwrap
 
 ---
 
-_Issue opened by @Enet4 on 2022-10-23 20:44_
+_@Enet4_
 
 ### Please complete the following tasks
 

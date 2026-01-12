@@ -11,14 +11,14 @@ head: optimized-parenthesized-ranges
 created_at: 2025-12-01T17:15:58Z
 updated_at: 2025-12-01T17:46:10Z
 url: https://github.com/astral-sh/ruff/pull/21734
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # Added token-based parenthesized_range functions to ruff_python_parser
 
 ---
 
-_Pull request opened by @FarhanAliRaza on 2025-12-01 17:15_
+_@FarhanAliRaza_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

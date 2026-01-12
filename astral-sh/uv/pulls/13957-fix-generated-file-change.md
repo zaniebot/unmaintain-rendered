@@ -13,14 +13,14 @@ head: zb/fix-main-ii
 created_at: 2025-06-10T21:52:48Z
 updated_at: 2025-06-10T22:03:02Z
 url: https://github.com/astral-sh/uv/pull/13957
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:57Z
 ```
 
 # Fix generated file change
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-10 21:52_
+_@zanieb_
 
 Regressed in https://github.com/astral-sh/uv/pull/13620
 

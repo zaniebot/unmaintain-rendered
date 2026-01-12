@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-13T14:24:08Z
 updated_at: 2024-03-18T13:32:37Z
 url: https://github.com/astral-sh/ruff/issues/10384
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Fix for F811 (Redefinition of unused) removes import needed at runtime
 
 ---
 
-_Issue opened by @Hnasar on 2024-03-13 14:24_
+_@Hnasar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

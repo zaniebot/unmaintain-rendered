@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-11T18:49:30Z
 updated_at: 2025-05-22T22:20:58Z
 url: https://github.com/astral-sh/uv/issues/9026
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # Run a uv tool with packages installed from pyproject.toml
 
 ---
 
-_Issue opened by @Levelleor on 2024-11-11 18:49_
+_@Levelleor_
 
 If I install packages via:
 ```shell

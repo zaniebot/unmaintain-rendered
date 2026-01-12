@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-23T16:23:29Z
 updated_at: 2024-07-30T13:28:56Z
 url: https://github.com/astral-sh/uv/issues/5344
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Diverging versions without markers
 
 ---
 
-_Issue opened by @konstin on 2024-07-23 16:23_
+_@konstin_
 
 Take the following `pyproject.toml`, which forks:
 

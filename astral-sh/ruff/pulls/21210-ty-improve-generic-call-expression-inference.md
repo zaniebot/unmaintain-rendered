@@ -14,14 +14,14 @@ head: ibraheem/generic-call-inference
 created_at: 2025-11-03T00:32:05Z
 updated_at: 2025-11-10T21:54:51Z
 url: https://github.com/astral-sh/ruff/pull/21210
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # [ty] Improve generic call expression inference
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-11-03 00:32_
+_@ibraheemdev_
 
 ## Summary
 

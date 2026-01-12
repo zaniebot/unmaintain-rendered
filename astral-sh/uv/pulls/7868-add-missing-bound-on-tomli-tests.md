@@ -13,14 +13,14 @@ head: konsti/fix-tests
 created_at: 2024-10-02T10:59:55Z
 updated_at: 2024-10-02T14:20:35Z
 url: https://github.com/astral-sh/uv/pull/7868
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:03Z
 ```
 
 # Add missing bound on tomli tests
 
 ---
 
-_Pull request opened by @konstin on 2024-10-02 10:59_
+_@konstin_
 
 tomli had a new release breaking the tests
 

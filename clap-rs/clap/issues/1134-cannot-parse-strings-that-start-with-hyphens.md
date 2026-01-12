@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-12-20T21:48:03Z
 updated_at: 2018-08-02T03:30:16Z
 url: https://github.com/clap-rs/clap/issues/1134
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Cannot parse strings that start with hyphens
 
 ---
 
-_Issue opened by @71 on 2017-12-20 21:48_
+_@71_
 
 ### Rust Version
 * rustc 1.24.0-nightly (dc39c3169 2017-12-17)

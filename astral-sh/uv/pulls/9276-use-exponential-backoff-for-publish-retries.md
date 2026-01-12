@@ -13,14 +13,14 @@ head: charlie/pub
 created_at: 2024-11-20T14:18:52Z
 updated_at: 2024-11-20T15:02:34Z
 url: https://github.com/astral-sh/uv/pull/9276
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:44Z
 ```
 
 # Use exponential backoff for publish retries
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-20 14:18_
+_@charliermarsh_
 
 ## Summary
 

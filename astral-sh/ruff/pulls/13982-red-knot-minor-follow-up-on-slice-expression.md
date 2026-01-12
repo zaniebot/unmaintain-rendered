@@ -13,14 +13,14 @@ head: david/slice-inference-follow-up
 created_at: 2024-10-29T19:28:08Z
 updated_at: 2024-10-29T19:50:02Z
 url: https://github.com/astral-sh/ruff/pull/13982
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Minor follow-up on slice expression inference
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-29 19:28_
+_@sharkdp_
 
 ## Summary
 

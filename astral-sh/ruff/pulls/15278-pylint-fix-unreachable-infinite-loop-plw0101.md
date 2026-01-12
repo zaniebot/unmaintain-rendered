@@ -13,14 +13,14 @@ head: unreachable-fix
 created_at: 2025-01-05T21:36:58Z
 updated_at: 2025-01-09T04:49:02Z
 url: https://github.com/astral-sh/ruff/pull/15278
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`pylint`] Fix `unreachable` infinite loop (`PLW0101`)
 
 ---
 
-_Pull request opened by @augustelalande on 2025-01-05 21:36_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

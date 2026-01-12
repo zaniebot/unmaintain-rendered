@@ -13,14 +13,14 @@ head: main
 created_at: 2024-08-01T15:39:24Z
 updated_at: 2024-08-02T16:16:54Z
 url: https://github.com/astral-sh/ruff/pull/12614
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Fix a typo in `docs/editors/settings.md`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-08-01 15:39_
+_@InSyncWithFoo_
 
 Diff:
 

@@ -13,14 +13,14 @@ head: dhruv/token-id
 created_at: 2024-03-24T09:41:46Z
 updated_at: 2024-03-24T10:02:02Z
 url: https://github.com/astral-sh/ruff/pull/10544
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Wrap around when incrementing token id
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-24 09:41_
+_@dhruvmanila_
 
 Ref: https://github.com/astral-sh/ruff/pull/10486#discussion_r1531938460
 

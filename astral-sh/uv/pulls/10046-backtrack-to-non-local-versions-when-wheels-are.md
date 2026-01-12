@@ -13,14 +13,14 @@ head: charlie/incomplete-locals-only
 created_at: 2024-12-20T03:01:18Z
 updated_at: 2024-12-20T19:11:29Z
 url: https://github.com/astral-sh/uv/pull/10046
-synced_at: 2026-01-10T11:44:31Z
+synced_at: 2026-01-12T16:09:05Z
 ```
 
 # Backtrack to non-local versions when wheels are missing platform support
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-20 03:01_
+_@charliermarsh_
 
 ## Summary
 

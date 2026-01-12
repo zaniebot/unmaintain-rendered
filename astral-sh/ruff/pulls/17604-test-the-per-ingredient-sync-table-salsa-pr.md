@@ -13,14 +13,14 @@ head: micha/per-ingredient-sync-table
 created_at: 2025-04-24T11:26:19Z
 updated_at: 2025-05-03T17:46:11Z
 url: https://github.com/astral-sh/ruff/pull/17604
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Test the per-ingredient-sync-table salsa PR
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-24 11:26_
+_@MichaReiser_
 
 _No description provided._
 

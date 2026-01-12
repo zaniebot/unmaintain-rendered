@@ -13,14 +13,14 @@ head: adam/uncaptured-invalid-exception
 created_at: 2025-05-19T17:34:19Z
 updated_at: 2025-05-19T22:14:02Z
 url: https://github.com/astral-sh/ruff/pull/18202
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # [ty] Raise `invalid-exception-caught` even when exception is not captured
 
 ---
 
-_Pull request opened by @adamaaronson on 2025-05-19 17:34_
+_@adamaaronson_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

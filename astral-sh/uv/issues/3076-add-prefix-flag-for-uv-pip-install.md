@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-16T22:35:21Z
 updated_at: 2024-06-06T20:15:30Z
 url: https://github.com/astral-sh/uv/issues/3076
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Add `--prefix` flag for `uv pip install`
 
 ---
 
-_Issue opened by @jorng on 2024-04-16 22:35_
+_@jorng_
 
 When performing multi-stage Docker builds, the `--prefix` flag is very useful to create an isolated install of dependencies that can then be copied to the final stage of a build.
 

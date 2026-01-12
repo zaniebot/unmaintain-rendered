@@ -13,14 +13,14 @@ head: charlie/multi-env
 created_at: 2024-10-22T15:01:16Z
 updated_at: 2024-10-22T15:15:12Z
 url: https://github.com/astral-sh/uv/pull/8463
-synced_at: 2026-01-10T12:54:10Z
+synced_at: 2026-01-12T16:08:19Z
 ```
 
 # Accept multiple `.env` files in `--env-file`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-22 15:01_
+_@charliermarsh_
 
 ## Summary
 

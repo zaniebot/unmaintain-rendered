@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-13T03:47:45Z
 updated_at: 2025-02-13T04:48:39Z
 url: https://github.com/astral-sh/uv/issues/11470
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # `choco install uv` fails for non-licensed users
 
 ---
 
-_Issue opened by @jakewilliami on 2025-02-13 03:47_
+_@jakewilliami_
 
 ### Summary
 

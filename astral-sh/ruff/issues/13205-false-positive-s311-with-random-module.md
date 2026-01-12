@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-02T03:41:28Z
 updated_at: 2024-09-02T09:29:22Z
 url: https://github.com/astral-sh/ruff/issues/13205
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # False positive S311 with `random` module
 
 ---
 
-_Issue opened by @DanielYang59 on 2024-09-02 03:41_
+_@DanielYang59_
 
 Hi ruff team,
 

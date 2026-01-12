@@ -13,14 +13,14 @@ head: charlie/install-plan
 created_at: 2023-12-06T20:28:03Z
 updated_at: 2023-12-07T04:44:57Z
 url: https://github.com/astral-sh/uv/pull/581
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:03Z
 ```
 
 # Modify install plan to support all distribution types
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-06 20:28_
+_@charliermarsh_
 
 This PR adds caching support for built wheels in the installer. Specifically, the `RegistryWheelIndex` now indexes both downloaded and built wheels (from registries), and we have a new `BuiltWheelIndex` that takes a subdirectory and returns the "best-matching" compatible wheel.
 

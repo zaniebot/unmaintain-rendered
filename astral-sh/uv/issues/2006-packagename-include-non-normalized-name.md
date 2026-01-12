@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-27T08:35:43Z
 updated_at: 2024-02-28T17:48:06Z
 url: https://github.com/astral-sh/uv/issues/2006
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # `PackageName` include non-normalized name
 
 ---
 
-_Issue opened by @tdejager on 2024-02-27 08:35_
+_@tdejager_
 
 Hi! We are currently integrating uv into pixi: https://github.com/prefix-dev/pixi/pull/863. Most of it works great, other than a few some things that could be improved. In RIP we also kept the source string as a base to refer back to, this is useful if people do not use a normalized name, and you want to work with the original name in some way.
 

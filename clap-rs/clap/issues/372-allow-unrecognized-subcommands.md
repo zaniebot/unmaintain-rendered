@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-01-07T18:11:50Z
 updated_at: 2018-08-02T03:29:47Z
 url: https://github.com/clap-rs/clap/issues/372
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Allow unrecognized subcommands
 
 ---
 
-_Issue opened by @sgrif on 2016-01-07 18:11_
+_@sgrif_
 
 It's a pretty common pattern for CLIs which take subcommands to attempt to subshell out to `appname-subcommand` if the command is unrecognized, to allow new commands to be easily added. This is impossible to do with clap today (at least not without writing the usage string by hand), as if you do `appname foo` it'll complain that it did not expect an argument `foo`.
 

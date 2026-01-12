@@ -14,14 +14,14 @@ head: dhruv/reset-for-in-ctx
 created_at: 2024-04-18T14:01:01Z
 updated_at: 2024-04-18T14:18:06Z
 url: https://github.com/astral-sh/ruff/pull/11009
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Reset `FOR_TARGET` context for all kinds of parentheses
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-18 14:01_
+_@dhruvmanila_
 
 ## Summary
 

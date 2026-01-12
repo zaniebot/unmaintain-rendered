@@ -13,14 +13,14 @@ head: charlie/parse-error
 created_at: 2023-12-30T21:51:29Z
 updated_at: 2023-12-31T15:53:12Z
 url: https://github.com/astral-sh/ruff/pull/9325
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Make `DisplayParseError` an error type
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-30 21:51_
+_@charliermarsh_
 
 ## Summary
 

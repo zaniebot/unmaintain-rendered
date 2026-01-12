@@ -12,14 +12,14 @@ head: fix(#18442)/class-binding-is-not-defined
 created_at: 2025-08-06T12:53:06Z
 updated_at: 2025-08-26T13:50:22Z
 url: https://github.com/astral-sh/ruff/pull/19783
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [`pyflakes`/`pylint`] Skip `__class__` checks in method definitions (…
 
 ---
 
-_Pull request opened by @mikeleppane on 2025-08-06 12:53_
+_@mikeleppane_
 
 ## Summary
 

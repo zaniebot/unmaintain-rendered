@@ -12,14 +12,14 @@ head: fix/ignore-typing-cast
 created_at: 2023-04-05T18:53:45Z
 updated_at: 2023-04-06T01:38:27Z
 url: https://github.com/astral-sh/ruff/pull/3891
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Ignore `PLW2901` when using typing cast
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-04-05 18:53_
+_@dhruvmanila_
 
 fixes: #3888
 fixes: #3652

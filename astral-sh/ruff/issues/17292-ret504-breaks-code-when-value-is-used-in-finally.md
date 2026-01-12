@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-08T10:28:55Z
 updated_at: 2025-07-05T15:57:07Z
 url: https://github.com/astral-sh/ruff/issues/17292
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RET504 breaks code when value is used in finally
 
 ---
 
-_Issue opened by @wikti on 2025-04-08 10:28_
+_@wikti_
 
 ### Summary
 

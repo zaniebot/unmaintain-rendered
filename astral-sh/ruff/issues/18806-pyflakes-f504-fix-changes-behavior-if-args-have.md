@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-19T23:09:31Z
 updated_at: 2025-06-26T08:48:31Z
 url: https://github.com/astral-sh/ruff/issues/18806
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`Pyflakes`] `F504` fix changes behavior if args have side effects
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-19 23:09_
+_@MeGaGiGaGon_
 
 ### Summary
 

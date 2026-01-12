@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-25T16:09:17Z
 updated_at: 2022-11-28T02:30:57Z
 url: https://github.com/astral-sh/ruff/issues/905
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implementing % formatting checks
 
 ---
 
-_Issue opened by @olliemath on 2022-11-25 16:09_
+_@olliemath_
 
 Now that I've implemented the `.format` checks, I feel like I should grind out the `%` format checks too. Although I won't have time for the implementation until the back half of next week.
 

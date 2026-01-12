@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-26T13:22:00Z
 updated_at: 2024-05-28T09:27:09Z
 url: https://github.com/astral-sh/uv/issues/3838
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Read-only file system (os error 30) error on Render deploy starting with uv 0.2.0
 
 ---
 
-_Issue opened by @yhoiseth on 2024-05-26 13:22_
+_@yhoiseth_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

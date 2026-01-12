@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-13T08:41:04Z
 updated_at: 2025-01-13T09:47:25Z
 url: https://github.com/astral-sh/uv/issues/10559
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # Question: why does uv.lock record the project's own version ?
 
 ---
 
-_Issue opened by @neutrinoceros on 2025-01-13 08:41_
+_@neutrinoceros_
 
 This is perhaps a naive question but I'm wondering why `uv.lock` would need to record the project's own version ?
 This behavior is generating friction in projects that have a dynamic version number. I got bitten by it myself: https://github.com/astral-sh/uv-pre-commit/issues/35

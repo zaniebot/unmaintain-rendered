@@ -14,14 +14,14 @@ head: david/enum-expansion
 created_at: 2025-07-16T09:56:13Z
 updated_at: 2025-07-21T17:37:57Z
 url: https://github.com/astral-sh/ruff/pull/19382
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:38Z
 ```
 
 # [ty] Expansion of enums into unions of literals
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-16 09:56_
+_@sharkdp_
 
 ## Summary
 

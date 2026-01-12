@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-18T13:54:17Z
 updated_at: 2024-10-19T14:18:30Z
 url: https://github.com/astral-sh/uv/issues/8328
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # Underscores in Git dependencies and [tool.uv.sources]
 
 ---
 
-_Issue opened by @cgravill on 2024-10-18 13:54_
+_@cgravill_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

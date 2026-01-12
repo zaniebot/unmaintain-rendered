@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-12T21:09:13Z
 updated_at: 2023-09-29T17:27:33Z
 url: https://github.com/astral-sh/ruff/issues/7320
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter undocumented deviation: remove parenthesis
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-09-12 21:09_
+_@JonathanPlasse_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-05T10:51:53Z
 updated_at: 2025-11-18T16:10:39Z
 url: https://github.com/astral-sh/ty/issues/1309
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Multi-version checking
 
 ---
 
-_Issue opened by @DetachHead on 2025-10-05 10:51_
+_@DetachHead_
 
 many python projects support a range of python versions, eg. `>=3.9,<3.14`, which means having to write checks like this:
 

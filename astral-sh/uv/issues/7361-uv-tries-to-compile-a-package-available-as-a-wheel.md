@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-13T13:41:51Z
 updated_at: 2024-09-13T15:15:27Z
 url: https://github.com/astral-sh/uv/issues/7361
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # UV tries to compile a package available as a wheel
 
 ---
 
-_Issue opened by @vilim on 2024-09-13 13:41_
+_@vilim_
 
 In gitlab CI, using the ` ghcr.io/astral-sh/uv:python3.12-alpine` image, running
 `uv sync --all-extras --dev` (as in the github actions guide)

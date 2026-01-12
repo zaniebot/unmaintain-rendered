@@ -14,14 +14,14 @@ head: micha/black-tests-unstable-style
 created_at: 2024-10-16T12:20:36Z
 updated_at: 2024-10-16T12:31:44Z
 url: https://github.com/astral-sh/ruff/pull/13776
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Enable preview mode for 'unstable' black tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-16 12:20_
+_@MichaReiser_
 
 ## Summary
 

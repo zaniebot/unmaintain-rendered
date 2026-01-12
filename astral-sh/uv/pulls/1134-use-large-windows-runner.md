@@ -13,14 +13,14 @@ head: zb/large-windows
 created_at: 2024-01-26T19:55:08Z
 updated_at: 2024-01-29T07:34:41Z
 url: https://github.com/astral-sh/uv/pull/1134
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:27Z
 ```
 
 # Use large Windows runner
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-26 19:55_
+_@zanieb_
 
 _No description provided._
 

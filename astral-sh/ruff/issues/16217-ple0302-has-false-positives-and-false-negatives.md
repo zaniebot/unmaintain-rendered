@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-17T16:39:00Z
 updated_at: 2025-02-21T13:38:53Z
 url: https://github.com/astral-sh/ruff/issues/16217
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PLE0302 has false positives and false negatives
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-17 16:39_
+_@dscorbett_
 
 ### Description
 

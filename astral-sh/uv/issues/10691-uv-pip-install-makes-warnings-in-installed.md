@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-16T17:45:22Z
 updated_at: 2025-01-16T18:23:08Z
 url: https://github.com/astral-sh/uv/issues/10691
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # `uv pip install` makes warnings in installed packages appear that don't appear with `pip install`
 
 ---
 
-_Issue opened by @gerhard4 on 2025-01-16 17:45_
+_@gerhard4_
 
 When I install my requirements into a virtual environment with `uv pip sync/install`, I get these warnings from `docopt` (version 0.6.2):
 ```

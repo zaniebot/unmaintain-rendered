@@ -14,14 +14,14 @@ head: multiline-string-preserve-indent
 created_at: 2024-01-24T17:22:16Z
 updated_at: 2024-01-26T07:18:32Z
 url: https://github.com/astral-sh/ruff/pull/9637
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Preserve indent around multiline strings
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-01-24 17:22_
+_@MichaReiser_
 
 ## Summary
 

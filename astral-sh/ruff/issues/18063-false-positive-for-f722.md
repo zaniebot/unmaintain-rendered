@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-13T04:46:52Z
 updated_at: 2025-05-13T07:09:13Z
 url: https://github.com/astral-sh/ruff/issues/18063
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # False positive for `F722`?
 
 ---
 
-_Issue opened by @gbaian10 on 2025-05-13 04:46_
+_@gbaian10_
 
 ### Summary
 

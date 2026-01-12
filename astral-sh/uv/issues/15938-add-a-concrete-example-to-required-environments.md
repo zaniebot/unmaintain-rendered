@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-18T21:08:23Z
 updated_at: 2025-12-18T15:40:42Z
 url: https://github.com/astral-sh/uv/issues/15938
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # Add a concrete example to `required-environments` hint
 
 ---
 
-_Issue opened by @zanieb on 2025-09-18 21:08_
+_@zanieb_
 
 We say "consider adding your platform to `tool.uv.required-environments` to ensure uv resolves to a version with compatible wheels" but I don't think this is friendly enough considering how often we see this reported in the issue tracker. We should show an example of how you should configure the `required-environments`.
 

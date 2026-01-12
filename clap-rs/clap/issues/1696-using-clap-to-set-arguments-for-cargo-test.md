@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-02-16T07:29:42Z
 updated_at: 2020-02-20T09:40:24Z
 url: https://github.com/clap-rs/clap/issues/1696
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Using clap to set arguments for `cargo test`
 
 ---
 
-_Issue opened by @hyunsukimsokcho on 2020-02-16 07:29_
+_@hyunsukimsokcho_
 
 I am trying to feed arguments to specific test using `clap`, and it has been hard time finding out what is getting me wrong. In `main.rs`, we were able to successfully use `clap` for proper argument parsing. Here is our projects configuration for `clap`:
 

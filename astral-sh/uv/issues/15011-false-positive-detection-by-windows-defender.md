@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-01T02:12:51Z
 updated_at: 2026-01-07T08:31:57Z
 url: https://github.com/astral-sh/uv/issues/15011
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # False positive detection by Windows Defender removes uvw.exe
 
 ---
 
-_Issue opened by @pansy1110 on 2025-08-01 02:12_
+_@pansy1110_
 
 ### Summary
 

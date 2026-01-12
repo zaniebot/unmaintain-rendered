@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-30T14:24:48Z
 updated_at: 2025-09-30T17:19:23Z
 url: https://github.com/astral-sh/ty/issues/1285
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # pd.read_parquet renders as an Unknown type.
 
 ---
 
-_Issue opened by @ExSidius on 2025-09-30 14:24_
+_@ExSidius_
 
 ### Summary
 

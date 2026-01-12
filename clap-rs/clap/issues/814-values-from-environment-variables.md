@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-01-10T20:09:42Z
 updated_at: 2025-01-29T15:34:44Z
 url: https://github.com/clap-rs/clap/issues/814
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Values from environment variables
 
 ---
 
-_Issue opened by @Mange on 2017-01-10 20:09_
+_@Mange_
 
 I suggest an option to `Arg` where one can specify a default value to be read from an environment variable. This would of course be visible in the `--help`, and any type conversions should still take place.
 

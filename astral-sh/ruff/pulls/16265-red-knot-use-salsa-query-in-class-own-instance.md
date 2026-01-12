@@ -13,14 +13,14 @@ head: micha/own-instance-member-query
 created_at: 2025-02-19T21:03:05Z
 updated_at: 2025-05-03T17:47:44Z
 url: https://github.com/astral-sh/ruff/pull/16265
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Use salsa query in `Class::own_instance_member`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-19 21:03_
+_@MichaReiser_
 
 ## Summary
 Fixes https://github.com/astral-sh/ruff/issues/16172

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-27T21:05:34Z
 updated_at: 2025-11-03T23:24:46Z
 url: https://github.com/astral-sh/uv/issues/16474
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # Certificate passed via `SSL_CERT_FILE` not trusted
 
 ---
 
-_Issue opened by @merlinz01 on 2025-10-27 21:05_
+_@merlinz01_
 
 ### Summary
 

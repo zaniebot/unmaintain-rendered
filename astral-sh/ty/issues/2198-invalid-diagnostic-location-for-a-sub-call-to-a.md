@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-24T07:17:27Z
 updated_at: 2025-12-24T07:19:14Z
 url: https://github.com/astral-sh/ty/issues/2198
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Invalid diagnostic location for a sub-call to a specialized `ParamSpec`
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-12-24 07:17_
+_@dhruvmanila_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: call-datetime-without-tzinfo
 created_at: 2023-07-26T20:23:27Z
 updated_at: 2023-07-26T23:40:04Z
 url: https://github.com/astral-sh/ruff/pull/6105
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # call-datetime-without-tzinfo comment
 
 ---
 
-_Pull request opened by @arembridge on 2023-07-26 20:23_
+_@arembridge_
 
 ## Summary
 

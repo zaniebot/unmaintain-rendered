@@ -13,14 +13,14 @@ head: charlie/re
 created_at: 2025-07-31T14:54:25Z
 updated_at: 2025-07-31T21:00:04Z
 url: https://github.com/astral-sh/uv/pull/14996
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:31Z
 ```
 
 # Remove retry wrapper when matching on error kind
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-31 14:54_
+_@charliermarsh_
 
 ## Summary
 

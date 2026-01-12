@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-01T15:01:47Z
 updated_at: 2025-08-11T19:29:59Z
 url: https://github.com/astral-sh/ty/issues/926
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Consider separate Rust types and `Type` enum variants for bound vs unbound type variables
 
 ---
 
-_Issue opened by @dcreager on 2025-08-01 15:01_
+_@dcreager_
 
 "Bind" can confusingly mean ~3 different things when talking about Python type variables. Here I mean that a legacy typevar is _defined_ before it is _used_ (or "bound"), and that it can be used/bound multiple times:
 

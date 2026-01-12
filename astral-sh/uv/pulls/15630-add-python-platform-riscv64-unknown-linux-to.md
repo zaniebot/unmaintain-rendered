@@ -14,14 +14,14 @@ head: dev/dhx/riscv64-target
 created_at: 2025-09-02T15:04:59Z
 updated_at: 2025-09-02T17:17:30Z
 url: https://github.com/astral-sh/uv/pull/15630
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:51Z
 ```
 
 # Add `--python-platform riscv64-unknown-linux` to various commands
 
 ---
 
-_Pull request opened by @directhex on 2025-09-02 15:04_
+_@directhex_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: zb/uv-toolchain-platform
 created_at: 2024-04-08T23:34:33Z
 updated_at: 2024-04-09T16:51:25Z
 url: https://github.com/astral-sh/uv/pull/2918
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:18Z
 ```
 
 # Improve operating system and architecture types in `uv-toolchain`
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-08 23:34_
+_@zanieb_
 
 Prompted in https://github.com/astral-sh/uv/pull/2842#discussion_r1555640300
 

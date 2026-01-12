@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-07T14:07:54Z
 updated_at: 2024-09-09T18:47:41Z
 url: https://github.com/astral-sh/ruff/issues/13278
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # ERA001 stops parsing an inline script metadata block at the first `# ///` line
 
 ---
 
-_Issue opened by @dscorbett on 2024-09-07 14:07_
+_@dscorbett_
 
 [ERA001](https://docs.astral.sh/ruff/rules/commented-out-code/) skips PEP 723 inline script metadata blocks as of #10455, except that it stops skipping after the first `# ///` line. However, a metadata block continues if the following lines are valid embedded content followed by another `# ///` line. ERA001 should skip over the full metadata block.
 

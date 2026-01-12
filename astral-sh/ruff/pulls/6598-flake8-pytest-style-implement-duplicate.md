@@ -13,14 +13,14 @@ head: PT014
 created_at: 2023-08-15T13:58:32Z
 updated_at: 2023-08-16T03:57:03Z
 url: https://github.com/astral-sh/ruff/pull/6598
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # [`flake8-pytest-style`] Implement duplicate parameterized fixture detection (`PT014`)
 
 ---
 
-_Pull request opened by @harupy on 2023-08-15 13:58_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

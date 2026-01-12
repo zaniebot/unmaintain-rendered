@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-13T19:14:47Z
 updated_at: 2025-02-14T06:57:15Z
 url: https://github.com/astral-sh/ruff/issues/16143
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Dead link in playground README
 
 ---
 
-_Issue opened by @ericwb on 2025-02-13 19:14_
+_@ericwb_
 
 ### Description
 

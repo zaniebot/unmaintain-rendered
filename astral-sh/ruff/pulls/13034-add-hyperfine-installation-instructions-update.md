@@ -13,14 +13,14 @@ head: hyperfine
 created_at: 2024-08-21T14:01:00Z
 updated_at: 2024-08-22T04:57:31Z
 url: https://github.com/astral-sh/ruff/pull/13034
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Add `hyperfine` installation instructions; update `hyperfine` code samples
 
 ---
 
-_Pull request opened by @olp-cs on 2024-08-21 14:01_
+_@olp-cs_
 
 ## Summary
 

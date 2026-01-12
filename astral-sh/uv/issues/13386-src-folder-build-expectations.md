@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-11T14:31:10Z
 updated_at: 2025-05-21T11:59:41Z
 url: https://github.com/astral-sh/uv/issues/13386
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # /src folder build expectations
 
 ---
 
-_Issue opened by @svdimitrov on 2025-05-11 14:31_
+_@svdimitrov_
 
 ### Question
 

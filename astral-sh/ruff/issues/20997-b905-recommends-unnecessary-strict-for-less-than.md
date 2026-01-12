@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-20T15:25:10Z
 updated_at: 2025-10-20T23:35:34Z
 url: https://github.com/astral-sh/ruff/issues/20997
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # B905 recommends unnecessary `strict` for less than two iterables
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-20 15:25_
+_@dscorbett_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/mixed
 created_at: 2024-07-17T15:36:01Z
 updated_at: 2024-07-18T15:16:42Z
 url: https://github.com/astral-sh/ruff/pull/12369
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Allow `repeated-equality-comparison` for mixed operations
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-17 15:36_
+_@charliermarsh_
 
 ## Summary
 

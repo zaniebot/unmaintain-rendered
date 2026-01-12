@@ -13,14 +13,14 @@ head: charlie/t
 created_at: 2025-01-21T01:28:58Z
 updated_at: 2025-01-21T01:41:35Z
 url: https://github.com/astral-sh/uv/pull/10799
-synced_at: 2026-01-10T11:45:11Z
+synced_at: 2026-01-12T16:09:30Z
 ```
 
 # Make `GitOid` a crate-public type
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-21 01:28_
+_@charliermarsh_
 
 _No description provided._
 

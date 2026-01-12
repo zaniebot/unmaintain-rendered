@@ -12,14 +12,14 @@ head: zb/uv
 created_at: 2024-02-14T22:40:19Z
 updated_at: 2024-02-15T17:19:47Z
 url: https://github.com/astral-sh/uv/pull/1302
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:34Z
 ```
 
 # Rename to `uv`
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-14 22:40_
+_@zanieb_
 
 First, replace all usages in files in-place. I used my editor for this. If someone wants to add a one-liner that'd be fun.
 

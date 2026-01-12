@@ -13,14 +13,14 @@ head: main
 created_at: 2025-11-26T19:41:50Z
 updated_at: 2025-11-29T23:03:29Z
 url: https://github.com/astral-sh/uv/pull/16866
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:29Z
 ```
 
 # Prefer updating existing `.zshenv` over creating a new one in `tool update-shell`
 
 ---
 
-_Pull request opened by @benberryallwood on 2025-11-26 19:41_
+_@benberryallwood_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

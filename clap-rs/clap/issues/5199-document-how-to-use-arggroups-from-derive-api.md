@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-07T18:50:46Z
 updated_at: 2023-11-27T22:21:07Z
 url: https://github.com/clap-rs/clap/issues/5199
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Document how to use ArgGroups from derive API
 
 ---
 
-_Issue opened by @kpreid on 2023-11-07 18:50_
+_@kpreid_
 
 ### Please complete the following tasks
 

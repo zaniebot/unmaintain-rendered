@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-30T17:35:27Z
 updated_at: 2024-11-07T14:38:53Z
 url: https://github.com/astral-sh/ruff/issues/14003
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Feature request: Lint rule to disallow unseeded RNGs (niche?)
 
 ---
 
-_Issue opened by @dmcc on 2024-10-30 17:35_
+_@dmcc_
 
 I'll preface that this lint rule would not be intended for many (maybe even most) use cases. I wouldn't expect it to be on by default or anything like that. I recognize this could be considered too niche so won't be offended if this isn't a good fit.
 

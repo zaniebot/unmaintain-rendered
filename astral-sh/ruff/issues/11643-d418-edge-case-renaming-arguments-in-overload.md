@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T17:44:35Z
 updated_at: 2024-12-09T11:26:41Z
 url: https://github.com/astral-sh/ruff/issues/11643
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # D418 edge case: renaming arguments in `overload`
 
 ---
 
-_Issue opened by @jamesbraza on 2024-05-31 17:44_
+_@jamesbraza_
 
 With `ruff==0.4.6`, [D418](https://docs.astral.sh/ruff/rules/overload-with-docstring/) will get thrown when there is a docstring in a `@overload`'d signature. This makes sense in the most common case where there's some type variation but no argument renames.
 

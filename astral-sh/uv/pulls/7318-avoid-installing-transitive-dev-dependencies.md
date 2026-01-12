@@ -13,14 +13,14 @@ head: charlie/dev-transitive
 created_at: 2024-09-12T01:29:10Z
 updated_at: 2024-09-19T10:56:04Z
 url: https://github.com/astral-sh/uv/pull/7318
-synced_at: 2026-01-10T12:53:44Z
+synced_at: 2026-01-12T16:07:47Z
 ```
 
 # Avoid installing transitive dev dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-12 01:29_
+_@charliermarsh_
 
 ## Summary
 

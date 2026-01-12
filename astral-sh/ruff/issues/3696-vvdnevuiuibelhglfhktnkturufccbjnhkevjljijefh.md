@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-23T20:53:28Z
 updated_at: 2023-03-23T21:00:20Z
 url: https://github.com/astral-sh/ruff/issues/3696
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # vvdnevuiuibelhglfhktnkturufccbjnhkevjljijefh
 
 ---
 
-_Issue opened by @bpblanken on 2023-03-23 20:53_
+_@bpblanken_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

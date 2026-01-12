@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-02-02T03:29:40Z
 updated_at: 2018-08-02T03:30:00Z
 url: https://github.com/clap-rs/clap/issues/838
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Cargo environment variables doesn't trigger a rebuild on update
 
 ---
 
-_Issue opened by @ishitatsuyuki on 2017-02-02 03:29_
+_@ishitatsuyuki_
 
 ### Rust Version
 

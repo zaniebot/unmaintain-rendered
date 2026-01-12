@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-03T06:40:27Z
 updated_at: 2025-07-03T16:37:13Z
 url: https://github.com/clap-rs/clap/issues/6059
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Suggestion: formatting help for [default] values with comma seperator instead a spaces
 
 ---
 
-_Issue opened by @GilShoshan94 on 2025-07-03 06:40_
+_@GilShoshan94_
 
 ### Please complete the following tasks
 

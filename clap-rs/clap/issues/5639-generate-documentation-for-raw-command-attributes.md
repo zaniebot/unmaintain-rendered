@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-09T02:23:04Z
 updated_at: 2024-08-09T13:33:22Z
 url: https://github.com/clap-rs/clap/issues/5639
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Generate documentation for raw Command attributes from builder setters
 
 ---
 
-_Issue opened by @heaths on 2024-08-09 02:23_
+_@heaths_
 
 Generate documentation for raw attributes from `Command` builder setter methods. These should not conflict with magic attributes with the same name: those should take precedent. This may help improve discoverability for those reading the higher-level tutorial/docs, but will generate a lot of content. Perhaps each attribute's documentation should generate a separate page that can be `#[doc = include_str!(...)]` on the member.
 

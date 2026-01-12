@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T07:20:19Z
 updated_at: 2024-08-30T12:06:25Z
 url: https://github.com/astral-sh/uv/issues/6854
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Add ability to update a project's version via the command line
 
 ---
 
-_Issue opened by @valentincalomme on 2024-08-30 07:20_
+_@valentincalomme_
 
 I love the new features in `uv`. One feature that I found myself wanting was the ability to do something like `uv version minor` or `uv version 1.2.3` to update the version of my package.
 

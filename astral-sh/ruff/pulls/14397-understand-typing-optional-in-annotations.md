@@ -13,14 +13,14 @@ head: redknot-typing-optional
 created_at: 2024-11-17T09:55:27Z
 updated_at: 2024-11-17T17:10:23Z
 url: https://github.com/astral-sh/ruff/pull/14397
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Understand `typing.Optional` in annotations
 
 ---
 
-_Pull request opened by @Glyphack on 2024-11-17 09:55_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

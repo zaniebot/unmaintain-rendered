@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-01T08:44:42Z
 updated_at: 2024-06-01T09:44:43Z
 url: https://github.com/astral-sh/ruff/issues/11676
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Single-line match-cases with Ellipsis (`...`) as body
 
 ---
 
-_Issue opened by @pfaion on 2024-06-01 08:44_
+_@pfaion_
 
 Thanks for the great work on ruff!
 

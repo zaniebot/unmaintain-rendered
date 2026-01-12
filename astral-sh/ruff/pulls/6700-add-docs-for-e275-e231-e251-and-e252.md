@@ -13,14 +13,14 @@ head: E275-doc
 created_at: 2023-08-20T07:31:17Z
 updated_at: 2023-08-20T15:14:13Z
 url: https://github.com/astral-sh/ruff/pull/6700
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add docs for `E275`, `E231`, `E251`, and `E252`
 
 ---
 
-_Pull request opened by @harupy on 2023-08-20 07:31_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

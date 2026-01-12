@@ -13,14 +13,14 @@ head: dependabot/cargo/unicode-ident-1.0.12
 created_at: 2023-09-18T08:43:51Z
 updated_at: 2023-09-18T09:31:07Z
 url: https://github.com/astral-sh/ruff/pull/7482
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Bump unicode-ident from 1.0.11 to 1.0.12
 
 ---
 
-_Pull request opened by @dependabot on 2023-09-18 08:43_
+_@dependabot_
 
 Bumps [unicode-ident](https://github.com/dtolnay/unicode-ident) from 1.0.11 to 1.0.12.
 <details>

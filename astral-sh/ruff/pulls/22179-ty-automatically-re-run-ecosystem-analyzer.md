@@ -15,14 +15,14 @@ head: alex/ecosystem-analyzer-workflow
 created_at: 2025-12-24T17:31:05Z
 updated_at: 2025-12-29T09:08:05Z
 url: https://github.com/astral-sh/ruff/pull/22179
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Automatically re-run ecosystem-analyzer workflow on subsequent pushes to a PR, if the PR has the `ecosystem-analyzer` label
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-24 17:31_
+_@AlexWaygood_
 
 ## Summary
 

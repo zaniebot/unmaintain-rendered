@@ -12,14 +12,14 @@ head: plr0133
 created_at: 2023-01-13T01:19:07Z
 updated_at: 2023-01-13T19:23:52Z
 url: https://github.com/astral-sh/ruff/pull/1841
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Implement `PLR0133` (`ComparisonOfConstants`)
 
 ---
 
-_Pull request opened by @max0x53 on 2023-01-13 01:19_
+_@max0x53_
 
 This PR adds [Pylint `R0133`](https://pylint.pycqa.org/en/latest/user_guide/messages/refactor/comparison-of-constants.html)
 

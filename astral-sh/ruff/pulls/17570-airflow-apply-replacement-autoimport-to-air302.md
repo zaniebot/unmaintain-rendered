@@ -14,14 +14,14 @@ head: auto-import-AIR312
 created_at: 2025-04-23T02:35:45Z
 updated_at: 2025-05-02T08:09:27Z
 url: https://github.com/astral-sh/ruff/pull/17570
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`airflow`] apply Replacement::AutoImport to `AIR302`
 
 ---
 
-_Pull request opened by @Lee-W on 2025-04-23 02:35_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T14:30:29Z
 updated_at: 2024-02-16T14:30:39Z
 url: https://github.com/astral-sh/uv/issues/1492
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Validate behavior of `--upgrade` and `--reinstall` with URL dependencies
 
 ---
 
-_Issue opened by @zanieb on 2024-02-16 14:30_
+_@zanieb_
 
 `pip` has some complicated logic around this https://github.com/pypa/pip/pull/10564
 

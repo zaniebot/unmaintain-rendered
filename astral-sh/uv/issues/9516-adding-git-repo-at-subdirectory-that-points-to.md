@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-29T09:01:02Z
 updated_at: 2024-12-03T09:23:09Z
 url: https://github.com/astral-sh/uv/issues/9516
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # Adding Git repo at subdirectory that points to source in same repo does not work
 
 ---
 
-_Issue opened by @Lauszus on 2024-11-29 09:01_
+_@Lauszus_
 
 I have a mono repo with two Python packages:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-09-13T18:42:56Z
 updated_at: 2018-08-02T03:30:11Z
 url: https://github.com/clap-rs/clap/issues/1044
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # require_equals(true).min_values(0) doens't work as expected
 
 ---
 
-_Issue opened by @kbknapp on 2017-09-13 18:42_
+_@kbknapp_
 
 Complains about missing value
 

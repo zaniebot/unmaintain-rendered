@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-11T12:41:57Z
 updated_at: 2024-03-28T16:52:23Z
 url: https://github.com/astral-sh/ruff/issues/8615
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # RFC: new rule category for array-agnostic code (XP)
 
 ---
 
-_Issue opened by @lucascolley on 2023-11-11 12:41_
+_@lucascolley_
 
 ## Context
 

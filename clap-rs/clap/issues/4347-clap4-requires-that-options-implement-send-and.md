@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-10-04T15:20:14Z
 updated_at: 2022-10-04T16:24:32Z
 url: https://github.com/clap-rs/clap/issues/4347
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # clap4 requires that options implement `Send` and `Sync`
 
 ---
 
-_Issue opened by @alexcrichton on 2022-10-04 15:20_
+_@alexcrichton_
 
 Maintainer's notes
 - For Clone, see #4286

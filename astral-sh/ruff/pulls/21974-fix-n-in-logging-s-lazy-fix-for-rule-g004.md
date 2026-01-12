@@ -11,14 +11,14 @@ head: main
 created_at: 2025-12-14T04:46:05Z
 updated_at: 2025-12-15T14:19:47Z
 url: https://github.com/astral-sh/ruff/pull/21974
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # Fix `\n` in logging's lazy fix for rule G004
 
 ---
 
-_Pull request opened by @richardhapb on 2025-12-14 04:46_
+_@richardhapb_
 
 ## Summary
 

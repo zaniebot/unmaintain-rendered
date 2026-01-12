@@ -13,14 +13,14 @@ head: release_branch_0.0.1-alpha.28
 created_at: 2025-11-25T21:26:46Z
 updated_at: 2025-11-26T00:45:01Z
 url: https://github.com/astral-sh/ty/pull/1638
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Release branch 0.0.1 alpha.28
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-11-25 21:26_
+_@oconnor663_
 
 I've kept the edits to the CHANGELOG in a separate commit here so that we can eyeball them.
 

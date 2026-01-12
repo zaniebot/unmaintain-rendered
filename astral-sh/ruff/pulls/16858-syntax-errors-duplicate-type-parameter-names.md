@@ -14,14 +14,14 @@ head: brent/syn-duplicate-type-params
 created_at: 2025-03-19T21:05:00Z
 updated_at: 2025-03-21T19:06:23Z
 url: https://github.com/astral-sh/ruff/pull/16858
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [syntax-errors] Duplicate type parameter names
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-19 21:05_
+_@ntBre_
 
 Summary
 --

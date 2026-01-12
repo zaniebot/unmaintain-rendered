@@ -13,14 +13,14 @@ head: cjm/while-bench
 created_at: 2024-07-22T20:53:43Z
 updated_at: 2024-07-25T14:35:05Z
 url: https://github.com/astral-sh/ruff/pull/12464
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] add while-loop to benchmark
 
 ---
 
-_Pull request opened by @carljm on 2024-07-22 20:53_
+_@carljm_
 
 So we can get some signal from the benchmark result on https://github.com/astral-sh/ruff/pull/12413
 

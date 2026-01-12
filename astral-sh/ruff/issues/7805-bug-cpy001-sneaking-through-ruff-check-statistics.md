@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-04T07:05:41Z
 updated_at: 2023-10-04T19:49:25Z
 url: https://github.com/astral-sh/ruff/issues/7805
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Bug: `CPY001` sneaking through `ruff check --statistics`
 
 ---
 
-_Issue opened by @jamesbraza on 2023-10-04 07:05_
+_@jamesbraza_
 
 With `ruff==0.0.292`, check the below Python script designed to make a `select` with no work:
 

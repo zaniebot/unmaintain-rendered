@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-07T10:46:36Z
 updated_at: 2025-07-22T12:11:06Z
 url: https://github.com/astral-sh/uv/issues/13327
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:25Z
 ```
 
 # Ephemeral environments lacking scripts entry points
 
 ---
 
-_Issue opened by @fvbrandt on 2025-05-07 10:46_
+_@fvbrandt_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-29T13:34:06Z
 updated_at: 2025-10-03T12:18:04Z
 url: https://github.com/astral-sh/ty/issues/1277
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Server panic on a `src/package/__init__.py` file containing just `fr`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-09-29 13:34_
+_@AlexWaygood_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: rule(pylint)/useless_exception_statement_PLW0133
 created_at: 2024-02-29T17:10:45Z
 updated_at: 2024-03-01T15:34:19Z
 url: https://github.com/astral-sh/ruff/pull/10176
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`pylint`] Implement `useless-exception-statement` (`W0133`)
 
 ---
 
-_Pull request opened by @mikeleppane on 2024-02-29 17:10_
+_@mikeleppane_
 
 ## Summary
 

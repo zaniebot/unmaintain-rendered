@@ -12,14 +12,14 @@ head: zanie/venv-default
 created_at: 2023-10-31T19:43:49Z
 updated_at: 2023-10-31T20:24:21Z
 url: https://github.com/astral-sh/uv/pull/261
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:50Z
 ```
 
 # Default to `puffin venv` path to `.venv`
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-31 19:43_
+_@zanieb_
 
 Closes https://github.com/astral-sh/puffin/issues/236
 

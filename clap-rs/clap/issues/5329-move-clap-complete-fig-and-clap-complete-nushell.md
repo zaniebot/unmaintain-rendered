@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-24T15:36:36Z
 updated_at: 2025-11-24T15:49:33Z
 url: https://github.com/clap-rs/clap/issues/5329
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Move clap_complete_fig and clap_complete_nushell into  clap_complete
 
 ---
 
-_Issue opened by @jcgruenhage on 2024-01-24 15:36_
+_@jcgruenhage_
 
 ### Please complete the following tasks
 

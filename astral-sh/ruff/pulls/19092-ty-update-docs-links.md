@@ -15,14 +15,14 @@ head: david/update-ty-docs-link
 created_at: 2025-07-02T14:58:12Z
 updated_at: 2025-07-02T15:34:58Z
 url: https://github.com/astral-sh/ruff/pull/19092
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [ty] Update docs links
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-02 14:58_
+_@sharkdp_
 
 Point everything to the new documentation at https://docs.astral.sh/ty/
 

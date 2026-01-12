@@ -14,14 +14,14 @@ head: david/suppression-comment-test
 created_at: 2025-02-04T13:49:29Z
 updated_at: 2025-02-04T14:24:55Z
 url: https://github.com/astral-sh/ruff/pull/15933
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Use unambiguous invalid-syntax-construct for suppression comment test
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-04 13:49_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-19T14:28:22Z
 updated_at: 2025-02-27T13:40:22Z
 url: https://github.com/astral-sh/uv/issues/9227
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # Allow `--token` to be empty if `--keyring-provider` is set with `uv publish`
 
 ---
 
-_Issue opened by @KalleDK on 2024-11-19 14:28_
+_@KalleDK_
 
 uv 0.4.30
 

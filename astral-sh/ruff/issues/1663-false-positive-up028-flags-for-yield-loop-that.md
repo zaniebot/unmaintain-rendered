@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-05T15:23:55Z
 updated_at: 2023-01-06T22:20:33Z
 url: https://github.com/astral-sh/ruff/issues/1663
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # False positive: `UP028` flags `for-yield` loop that can't be rewritten into a `yield from`
 
 ---
 
-_Issue opened by @woodruffw on 2023-01-05 15:23_
+_@woodruffw_
 
 Thanks again for the excellent tool! This time I think I have a real false positive 🙂 
 

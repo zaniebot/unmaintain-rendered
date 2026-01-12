@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-14T00:18:12Z
 updated_at: 2025-06-16T16:44:43Z
 url: https://github.com/astral-sh/ruff/issues/18671
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Invalid f-string conversion type code parses/passes
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-14 00:18_
+_@MeGaGiGaGon_
 
 ### Summary
 

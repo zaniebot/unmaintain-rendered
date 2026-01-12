@@ -13,14 +13,14 @@ head: alex/keyword-completion-labels
 created_at: 2025-12-13T23:11:52Z
 updated_at: 2025-12-15T15:51:07Z
 url: https://github.com/astral-sh/ruff/pull/21970
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Include `=` in keyword-argument autocomplete suggestion labels
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-13 23:11_
+_@AlexWaygood_
 
 ## Summary
 

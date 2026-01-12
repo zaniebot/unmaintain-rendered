@@ -13,14 +13,14 @@ head: dhruv/definition-range
 created_at: 2024-12-13T10:23:43Z
 updated_at: 2024-12-13T14:34:02Z
 url: https://github.com/astral-sh/ruff/pull/14955
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Display definition range in trace logs
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-12-13 10:23_
+_@dhruvmanila_
 
 I've mainly opened this PR to get some opinions. I've found having some additional information in the tracing logs to be useful to determine what we are currently inferring. For the `Definition` ingredient, the range seems to be much useful. I thought of using the identifier name but we would have to deconstruct the `Expr` to find out the identifier which seems a lot for just trace logs. Additionally, multiple identifiers _could_ have the same name where range would be useful.
 

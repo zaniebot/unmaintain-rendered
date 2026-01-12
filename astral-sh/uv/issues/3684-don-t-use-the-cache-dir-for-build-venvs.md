@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-21T01:22:04Z
 updated_at: 2024-05-21T11:56:35Z
 url: https://github.com/astral-sh/uv/issues/3684
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Don't use the cache dir for build venvs?
 
 ---
 
-_Issue opened by @thejcannon on 2024-05-21 01:22_
+_@thejcannon_
 
 👋 We're hoping to network mount a read-only (hot) cache for `uv` so our servers can bootstrap themselves quickly.
 

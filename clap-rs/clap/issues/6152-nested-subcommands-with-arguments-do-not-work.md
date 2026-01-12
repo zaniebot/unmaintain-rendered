@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-15T16:23:29Z
 updated_at: 2025-10-15T18:08:59Z
 url: https://github.com/clap-rs/clap/issues/6152
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Nested Subcommands with arguments do not work
 
 ---
 
-_Issue opened by @matthiasbeyer on 2025-10-15 16:23_
+_@matthiasbeyer_
 
 ### Please complete the following tasks
 

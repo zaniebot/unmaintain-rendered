@@ -13,14 +13,14 @@ head: dcreager/two-phase-binding
 created_at: 2025-03-07T01:55:50Z
 updated_at: 2025-03-21T13:38:14Z
 url: https://github.com/astral-sh/ruff/pull/16546
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Break up call binding into two phases
 
 ---
 
-_Pull request opened by @dcreager on 2025-03-07 01:55_
+_@dcreager_
 
 This breaks up call binding into two phases:
 

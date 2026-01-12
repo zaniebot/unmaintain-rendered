@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-05T05:37:14Z
 updated_at: 2024-09-05T06:13:15Z
 url: https://github.com/astral-sh/uv/issues/7067
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # "Non workspaced" monorepo editable dependencies path resolution is by relative path.
 
 ---
 
-_Issue opened by @nrbnlulu on 2024-09-05 05:37_
+_@nrbnlulu_
 
 Hey there, and thanks for uv!  
 I am trying to setup a monorepo with editable dependencies.  

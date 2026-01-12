@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-29T09:51:11Z
 updated_at: 2025-05-29T12:37:28Z
 url: https://github.com/astral-sh/ruff/issues/18364
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Disable ruff for block of code
 
 ---
 
-_Issue opened by @mitasov-ra on 2025-05-29 09:51_
+_@mitasov-ra_
 
 What I want:
 

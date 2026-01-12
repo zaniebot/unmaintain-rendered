@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-22T21:37:25Z
 updated_at: 2023-07-23T01:46:22Z
 url: https://github.com/astral-sh/ruff/issues/5989
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `SIM118` should detect `not in` as well
 
 ---
 
-_Issue opened by @dosisod on 2023-07-22 21:37_
+_@dosisod_
 
 Last issue for now!
 

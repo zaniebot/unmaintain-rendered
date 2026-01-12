@@ -8,16 +8,16 @@ labels:
   - internal
 assignees: []
 created_at: 2025-05-05T16:20:40Z
-updated_at: 2026-01-12T05:56:45Z
+updated_at: 2026-01-12T12:18:32Z
 url: https://github.com/astral-sh/ty/issues/31
-synced_at: 2026-01-12T06:54:49Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Dependency Dashboard
 
 ---
 
-_Issue opened by @renovate on 2025-05-05 16:20_
+_@renovate_
 
 This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/astral-sh/ty).
 
@@ -189,7 +189,7 @@ The following updates await pending status checks. To force their creation now, 
  - `pre-commit/pre-commit-hooks v6.0.0`
  - `astral-sh/ruff-pre-commit v0.14.10` → [Updates: `v0.14.11`]
  - `abravalheri/validate-pyproject v0.24.1`
- - `mdformat-mkdocs ==5.1.1` → [Updates: `==5.1.2`]
+ - `mdformat-mkdocs ==5.1.1` → [Updates: `==5.1.3`]
  - `mdformat-footnote ==0.1.2`
  - `executablebooks/mdformat 1.0.0`
  - `igorshubovych/markdownlint-cli v0.47.0`

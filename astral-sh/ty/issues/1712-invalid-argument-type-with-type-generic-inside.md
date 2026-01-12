@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-01T23:17:11Z
 updated_at: 2025-12-02T23:25:10Z
 url: https://github.com/astral-sh/ty/issues/1712
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `invalid-argument-type` with `type[]` generic inside union 
 
 ---
 
-_Issue opened by @aidandj on 2025-12-01 23:17_
+_@aidandj_
 
 Starting in alpha 29 this code started erroring. 
 

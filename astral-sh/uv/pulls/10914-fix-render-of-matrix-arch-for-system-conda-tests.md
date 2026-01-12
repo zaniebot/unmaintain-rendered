@@ -14,14 +14,14 @@ head: zb/fix-render
 created_at: 2025-01-23T21:31:01Z
 updated_at: 2025-01-23T21:32:00Z
 url: https://github.com/astral-sh/uv/pull/10914
-synced_at: 2026-01-10T11:45:18Z
+synced_at: 2026-01-12T16:09:34Z
 ```
 
 # Fix render of matrix arch for system conda tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-23 21:31_
+_@zanieb_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-26T07:56:40Z
 updated_at: 2024-10-26T16:47:28Z
 url: https://github.com/astral-sh/uv/issues/8587
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # BUG: uv pip install gets pre-releases by default (config dependent)
 
 ---
 
-_Issue opened by @neutrinoceros on 2024-10-26 07:56_
+_@neutrinoceros_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

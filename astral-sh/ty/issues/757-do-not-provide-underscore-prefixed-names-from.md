@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-02T19:50:22Z
 updated_at: 2025-10-03T12:19:33Z
 url: https://github.com/astral-sh/ty/issues/757
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # do not provide underscore-prefixed names from typeshed builtins as autocomplete suggestions
 
 ---
 
-_Issue opened by @carljm on 2025-07-02 19:50_
+_@carljm_
 
 ### Summary
 

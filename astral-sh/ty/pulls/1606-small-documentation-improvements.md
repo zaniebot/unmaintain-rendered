@@ -13,14 +13,14 @@ head: micha/docs-improvements
 created_at: 2025-11-21T08:40:03Z
 updated_at: 2025-11-21T09:24:12Z
 url: https://github.com/astral-sh/ty/pull/1606
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Small documentation improvements
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-21 08:40_
+_@MichaReiser_
 
 ## Summary
 

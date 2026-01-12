@@ -13,14 +13,14 @@ head: charlie/name-visitor
 created_at: 2024-01-06T20:41:55Z
 updated_at: 2024-01-06T21:00:07Z
 url: https://github.com/astral-sh/ruff/pull/9412
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Remove duplicated `NameFinder` struct
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-06 20:41_
+_@charliermarsh_
 
 _No description provided._
 

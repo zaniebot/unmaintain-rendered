@@ -13,14 +13,14 @@ head: zb/package-not-found
 created_at: 2024-02-03T16:18:26Z
 updated_at: 2024-02-05T14:43:06Z
 url: https://github.com/astral-sh/uv/pull/1241
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:31Z
 ```
 
 # Improve error messaging when a dependency is not found
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-03 16:18_
+_@zanieb_
 
 Previously, whenever we encountered a missing package we would throw an error without information about why the package was requested. This meant that if a transitive dependency required a missing package, the user would have no idea why it was even selected. Here, we track `NotFound` and `NoIndex` errors as `NoVersions` incompatibilities with an attached reason. Improves our test coverage for `--no-index` without `--find-links`.
 

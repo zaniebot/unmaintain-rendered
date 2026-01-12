@@ -12,14 +12,14 @@ head: zb/rev-16701
 created_at: 2025-11-16T16:32:23Z
 updated_at: 2025-11-17T19:17:29Z
 url: https://github.com/astral-sh/uv/pull/16752
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 # Revert "Fix CMD path in FastAPI Dockerfile (#16701)"
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-16 16:32_
+_@zanieb_
 
 This reverts commit 92230ba67900c3bcd140740000460c974af44a5d from #16701 
 

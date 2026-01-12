@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-30T17:06:57Z
 updated_at: 2024-07-02T20:46:32Z
 url: https://github.com/astral-sh/uv/issues/4659
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `uv tool install` should respect upgrades
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-30 17:06_
+_@charliermarsh_
 
 After running `cargo run tool install black==24.1.0`, both: (1) `cargo run tool install black --upgrade` and (2) `cargo run tool install black==24.2.0` are no-ops ("Tool is already installed").
 

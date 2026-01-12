@@ -12,14 +12,14 @@ assignees: []
 created_at: 2016-04-12T11:17:50Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/483
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Colored --help
 
 ---
 
-_Issue opened by @flying-sheep on 2016-04-12 11:17_
+_@flying-sheep_
 
 It would be nice to have an option to autocolor help, e.g. like this:
 

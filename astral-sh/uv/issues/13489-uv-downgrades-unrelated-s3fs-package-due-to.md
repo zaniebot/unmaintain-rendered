@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T12:40:10Z
 updated_at: 2025-05-16T14:03:17Z
 url: https://github.com/astral-sh/uv/issues/13489
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # uv downgrades unrelated s3fs package due to aiobotocore and boto3 version incompatibility
 
 ---
 
-_Issue opened by @cas-- on 2025-05-16 12:40_
+_@cas--_
 
 ### Summary
 

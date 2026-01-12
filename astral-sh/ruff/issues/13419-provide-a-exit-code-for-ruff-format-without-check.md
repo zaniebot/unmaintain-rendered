@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-20T05:54:51Z
 updated_at: 2024-10-27T19:01:19Z
 url: https://github.com/astral-sh/ruff/issues/13419
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # provide a exit code for `ruff format` (without --check) for source file syntax error
 
 ---
 
-_Issue opened by @trim21 on 2024-09-20 05:54_
+_@trim21_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

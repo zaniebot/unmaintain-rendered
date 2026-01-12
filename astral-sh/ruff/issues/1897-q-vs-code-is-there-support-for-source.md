@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-15T21:53:14Z
 updated_at: 2023-01-15T22:01:36Z
 url: https://github.com/astral-sh/ruff/issues/1897
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Q : VS code : Is there support for source.addMissingImports?
 
 ---
 
-_Issue opened by @StrohMatanya on 2023-01-15 21:53_
+_@StrohMatanya_
 
 Is there equivalent support for `source.addMissingImports` in VS code?
 

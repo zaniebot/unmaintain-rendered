@@ -13,14 +13,14 @@ head: alex/generic-protocol-instantiation
 created_at: 2025-04-30T15:56:38Z
 updated_at: 2025-04-30T16:01:29Z
 url: https://github.com/astral-sh/ruff/pull/17741
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [red-knot] Ban direct instantiation of generic protocols as well as non-generic ones
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-30 15:56_
+_@AlexWaygood_
 
 ## Summary
 

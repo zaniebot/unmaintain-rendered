@@ -14,14 +14,14 @@ head: cjm/oxidd
 created_at: 2024-12-19T19:46:06Z
 updated_at: 2025-02-14T19:01:57Z
 url: https://github.com/astral-sh/ruff/pull/15072
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] don't land, just playing around with oxidd
 
 ---
 
-_Pull request opened by @carljm on 2024-12-19 19:46_
+_@carljm_
 
 Run this using `cargo run --bin red_knot`; this PR replaces the entire red-knot CLI with outputting a graph visualization file instead, because it was the laziest possible way I could do this :)
 

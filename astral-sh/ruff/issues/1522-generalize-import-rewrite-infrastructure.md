@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-01T02:24:09Z
 updated_at: 2023-01-31T12:20:33Z
 url: https://github.com/astral-sh/ruff/issues/1522
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Generalize import-rewrite infrastructure
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-01 02:24_
+_@charliermarsh_
 
 In #1488, we added some infra to rewrite `mock` imports. But the problem is quite general. We've done similar stuff for `six` imports.
 

@@ -13,14 +13,14 @@ head: ag/conflicts
 created_at: 2024-11-13T19:43:40Z
 updated_at: 2024-11-23T15:59:51Z
 url: https://github.com/astral-sh/uv/pull/9096
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:39Z
 ```
 
 # add support for conflicting groups
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-11-13 19:43_
+_@BurntSushi_
 
 This PR adds support for conflicting groups. This is a follow-up PR to
 #8976, which added support for conflicting extras.

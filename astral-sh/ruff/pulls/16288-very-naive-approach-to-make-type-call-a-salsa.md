@@ -13,14 +13,14 @@ head: micha/call-query
 created_at: 2025-02-20T19:49:58Z
 updated_at: 2025-05-03T17:47:22Z
 url: https://github.com/astral-sh/ruff/pull/16288
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Very naive approach to make `Type::call` a salsa query
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-20 19:49_
+_@MichaReiser_
 
 _No description provided._
 

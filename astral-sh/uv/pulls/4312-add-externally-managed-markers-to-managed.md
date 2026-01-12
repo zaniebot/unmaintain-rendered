@@ -13,14 +13,14 @@ head: zb/externally-managed
 created_at: 2024-06-13T18:00:35Z
 updated_at: 2024-06-17T15:25:35Z
 url: https://github.com/astral-sh/uv/pull/4312
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:09Z
 ```
 
 # Add `EXTERNALLY-MANAGED` markers to managed toolchains
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-13 18:00_
+_@zanieb_
 
 Closes #4240 
 

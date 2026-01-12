@@ -14,14 +14,14 @@ head: line-ending-default-to-auto
 created_at: 2023-10-19T02:06:17Z
 updated_at: 2023-10-21T10:52:04Z
 url: https://github.com/astral-sh/ruff/pull/8057
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Change `line-ending` default to `auto`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-19 02:06_
+_@MichaReiser_
 
 ## Summary
 

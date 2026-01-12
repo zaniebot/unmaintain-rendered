@@ -13,14 +13,14 @@ head: sim-docs
 created_at: 2023-05-09T22:56:47Z
 updated_at: 2023-07-10T09:55:38Z
 url: https://github.com/astral-sh/ruff/pull/4334
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add docs for flake8-simplify rules
 
 ---
 
-_Pull request opened by @tjkuson on 2023-05-09 22:56_
+_@tjkuson_
 
 Adds docs for three flake8-simplify rules: `SIM107`, `SIM115`, and `SIM910`. This should complete all flake8-simplify rules that do not have auto-fix support (presumably the rules that users of ruff would appreciate documentation for the most).
 

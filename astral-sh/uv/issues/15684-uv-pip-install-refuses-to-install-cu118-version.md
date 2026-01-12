@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-04T16:26:25Z
 updated_at: 2025-09-05T01:08:38Z
 url: https://github.com/astral-sh/uv/issues/15684
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # `uv pip install` refuses to install `cu118` version of pytorch
 
 ---
 
-_Issue opened by @PaulScemama on 2025-09-04 16:26_
+_@PaulScemama_
 
 ### Summary
 

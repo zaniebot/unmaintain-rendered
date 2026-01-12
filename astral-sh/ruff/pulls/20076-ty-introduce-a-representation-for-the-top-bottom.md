@@ -13,14 +13,14 @@ head: materialization-relations
 created_at: 2025-08-25T03:59:17Z
 updated_at: 2025-08-28T00:53:58Z
 url: https://github.com/astral-sh/ruff/pull/20076
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [ty] Introduce a representation for the top/bottom materialization of an invariant generic
 
 ---
 
-_Pull request opened by @JelleZijlstra on 2025-08-25 03:59_
+_@JelleZijlstra_
 
 Part of #994. This adds a new field to the Specialization struct to record when we're dealing with the top or bottom materialization of an invariant generic. It also implements subtyping and assignability for these objects.
 

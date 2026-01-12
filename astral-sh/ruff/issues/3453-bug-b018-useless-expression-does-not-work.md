@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-11T23:18:31Z
 updated_at: 2023-03-23T22:34:00Z
 url: https://github.com/astral-sh/ruff/issues/3453
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [bug?] B018 `useless-expression` does not work
 
 ---
 
-_Issue opened by @smackesey on 2023-03-11 23:18_
+_@smackesey_
 
 None of the following trigger `B018` `useless-expression` for me, when I would expect them all to:
 

@@ -15,14 +15,14 @@ head: dcreager/dont-have-a-cow
 created_at: 2025-02-27T00:56:23Z
 updated_at: 2025-02-28T19:58:23Z
 url: https://github.com/astral-sh/ruff/pull/16408
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Reuse alist cells when possible
 
 ---
 
-_Pull request opened by @dcreager on 2025-02-27 00:56_
+_@dcreager_
 
 This is in support of #16311, and adds some additional tracking to the alist implementation so that we can tell when a cell is only used once. This lets us reuse and modify those cells in place when doing certain updates.
 

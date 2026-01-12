@@ -14,14 +14,14 @@ head: cjm/upgrade-salsa
 created_at: 2025-11-22T02:19:33Z
 updated_at: 2025-11-22T10:46:59Z
 url: https://github.com/astral-sh/ruff/pull/21575
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] upgrade salsa
 
 ---
 
-_Pull request opened by @carljm on 2025-11-22 02:19_
+_@carljm_
 
 ## Summary
 

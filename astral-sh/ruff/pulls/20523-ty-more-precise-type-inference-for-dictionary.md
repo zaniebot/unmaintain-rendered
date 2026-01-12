@@ -14,14 +14,14 @@ head: ibraheem/bidirectional-inference
 created_at: 2025-09-22T21:37:30Z
 updated_at: 2025-09-24T22:13:37Z
 url: https://github.com/astral-sh/ruff/pull/20523
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [ty] More precise type inference for dictionary literals
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-09-22 21:37_
+_@ibraheemdev_
 
 ## Summary
 

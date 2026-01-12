@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-22T10:42:11Z
 updated_at: 2025-03-04T02:16:06Z
 url: https://github.com/astral-sh/ruff/issues/15669
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Missing `invalid-assignment` diagnostics
 
 ---
 
-_Issue opened by @sharkdp on 2025-01-22 10:42_
+_@sharkdp_
 
 ### Description
 

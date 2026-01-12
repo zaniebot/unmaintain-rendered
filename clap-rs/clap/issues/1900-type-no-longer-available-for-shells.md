@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-05-02T23:03:56Z
 updated_at: 2021-03-11T15:55:08Z
 url: https://github.com/clap-rs/clap/issues/1900
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Type no longer available for shells
 
 ---
 
-_Issue opened by @alerque on 2020-05-02 23:03_
+_@alerque_
 
 Using StructOpt, I was able to parse an option like this:
 

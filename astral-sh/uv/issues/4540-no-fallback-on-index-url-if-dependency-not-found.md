@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-26T09:51:08Z
 updated_at: 2024-06-26T12:54:40Z
 url: https://github.com/astral-sh/uv/issues/4540
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # No fallback on index-url if dependency not found in local simple repository
 
 ---
 
-_Issue opened by @BenediktMaag on 2024-06-26 09:51_
+_@BenediktMaag_
 
 I have setup a simple repository (https://packaging.python.org/en/latest/specifications/simple-repository-api/ | PEP503).
 

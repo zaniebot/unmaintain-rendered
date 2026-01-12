@@ -12,14 +12,14 @@ head: charlie/homebrew
 created_at: 2022-11-28T02:37:27Z
 updated_at: 2022-11-28T02:37:35Z
 url: https://github.com/astral-sh/ruff/pull/930
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add Homebrew installation to README
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-28 02:37_
+_@charliermarsh_
 
 Resolves #927.
 

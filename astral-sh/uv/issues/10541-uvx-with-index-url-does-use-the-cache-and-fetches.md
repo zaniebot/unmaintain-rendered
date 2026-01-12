@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-12T14:08:10Z
 updated_at: 2025-01-13T07:29:17Z
 url: https://github.com/astral-sh/uv/issues/10541
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # Uvx with index url does use the cache and fetches data from reporistory.
 
 ---
 
-_Issue opened by @matejsp on 2025-01-12 14:08_
+_@matejsp_
 
 We have corporate Nexus as pypi proxy that we use instead pypi index. We really liked that you can have multiple versions of each tool.
 However this only works with default index pypi.org and not with our Nexus: 

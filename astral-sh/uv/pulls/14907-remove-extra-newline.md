@@ -13,14 +13,14 @@ head: zb/fix-newline
 created_at: 2025-07-25T20:23:40Z
 updated_at: 2025-07-25T20:40:10Z
 url: https://github.com/astral-sh/uv/pull/14907
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:28Z
 ```
 
 # Remove extra newline
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-25 20:23_
+_@zanieb_
 
 Fixes https://github.com/astral-sh/uv/pull/14905#discussion_r2231915714
 

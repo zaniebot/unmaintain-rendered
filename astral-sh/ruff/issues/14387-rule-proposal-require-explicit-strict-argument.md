@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-16T20:29:01Z
 updated_at: 2024-12-10T08:39:48Z
 url: https://github.com/astral-sh/ruff/issues/14387
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Rule proposal: require explicit `strict=` argument for `itertools.batched`
 
 ---
 
-_Issue opened by @tjkuson on 2024-11-16 20:29_
+_@tjkuson_
 
 [As of Python 3.13](https://docs.python.org/3/library/itertools.html#itertools.batched), `itertools.batched` has a `strict` parameter that defaults to `False`.  By default, the batches might not be of the same size, which may cause subtle bugs. When`strict=True`, it raises `ValueError` if the final batch is not the same size as the rest.
 

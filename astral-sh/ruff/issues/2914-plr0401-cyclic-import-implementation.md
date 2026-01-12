@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-02-15T09:40:10Z
 updated_at: 2024-10-24T14:32:58Z
 url: https://github.com/astral-sh/ruff/issues/2914
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PLR0401 Cyclic import implementation
 
 ---
 
-_Issue opened by @chanman3388 on 2023-02-15 09:40_
+_@chanman3388_
 
 Hello fellow ruffians(?)
 

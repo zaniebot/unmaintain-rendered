@@ -12,14 +12,14 @@ head: autofix-PT018
 created_at: 2023-02-10T19:05:47Z
 updated_at: 2023-02-16T00:36:08Z
 url: https://github.com/astral-sh/ruff/pull/2732
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # [`flake8-pytest-style`] autofix for composite-assertion (PT018)
 
 ---
 
-_Pull request opened by @sbrugman on 2023-02-10 19:05_
+_@sbrugman_
 
 Autofix for composite assertion/PT018
 

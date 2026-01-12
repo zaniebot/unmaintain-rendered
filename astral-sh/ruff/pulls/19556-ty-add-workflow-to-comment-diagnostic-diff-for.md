@@ -15,14 +15,14 @@ head: dhruv/conformance-test-comment
 created_at: 2025-07-25T14:00:53Z
 updated_at: 2025-07-25T15:24:30Z
 url: https://github.com/astral-sh/ruff/pull/19556
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Add workflow to comment diagnostic diff for conformance tests
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-25 14:00_
+_@dhruvmanila_
 
 ## Summary
 

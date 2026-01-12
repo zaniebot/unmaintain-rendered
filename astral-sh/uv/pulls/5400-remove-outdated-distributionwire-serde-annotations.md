@@ -13,14 +13,14 @@ head: konsti/remove-outdated-serde-annotation
 created_at: 2024-07-24T09:16:49Z
 updated_at: 2024-07-24T13:31:00Z
 url: https://github.com/astral-sh/uv/pull/5400
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:47Z
 ```
 
 # Remove outdated `DistributionWire` serde annotations
 
 ---
 
-_Pull request opened by @konstin on 2024-07-24 09:16_
+_@konstin_
 
 This struct doesn't implement `serde::Serialize`, the annotations are dead.
 

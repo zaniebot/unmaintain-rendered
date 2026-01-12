@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-17T21:25:40Z
 updated_at: 2025-08-18T14:54:37Z
 url: https://github.com/astral-sh/uv/issues/15333
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # `uvx` is not equivalent to `uv tool run`
 
 ---
 
-_Issue opened by @RafalSkolasinski on 2025-08-17 21:25_
+_@RafalSkolasinski_
 
 ### Question
 

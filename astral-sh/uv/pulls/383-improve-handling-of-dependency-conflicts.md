@@ -12,14 +12,14 @@ head: zanie/pubgrub-merge
 created_at: 2023-11-09T21:32:16Z
 updated_at: 2024-02-21T05:31:18Z
 url: https://github.com/astral-sh/uv/pull/383
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # Improve handling of dependency conflicts resulting in empty version ranges
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-09 21:32_
+_@zanieb_
 
 Uses an experimental pubgrub branch (#370) that allows us to handle multiple version ranges for a single dependency to the solver which results in better error messages because the derivation tree contains all of the relevant versions. Previously, the version ranges were merged (by us) in the resolver before handing them to pubgrub since only one range could be provided per package. Since we don't merge the versions anymore, we no longer give the solver an empty range for conflicting requirements; instead the solver comes to that conclusion from the provided versions. You can see the improved error message for direct dependencies in [this snapshot](https://github.com/astral-sh/puffin/pull/383/files#diff-a0437f2c20cde5e2f15199a3bf81a102b92580063268417847ec9c793a115bd0).
 

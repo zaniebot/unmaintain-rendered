@@ -14,14 +14,14 @@ head: gankra/add-gankra
 created_at: 2026-01-06T16:32:10Z
 updated_at: 2026-01-06T19:41:03Z
 url: https://github.com/astral-sh/ruff/pull/22420
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Add Gankra as a CODEOWNER for lsp and imports work
 
 ---
 
-_Pull request opened by @Gankra on 2026-01-06 16:32_
+_@Gankra_
 
 _No description provided._
 

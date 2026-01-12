@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-03T11:30:54Z
 updated_at: 2025-02-03T21:22:15Z
 url: https://github.com/astral-sh/uv/issues/11180
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # `conflicts` schema definition in schemastore seems incorrect
 
 ---
 
-_Issue opened by @mickvangelderen on 2025-02-03 11:30_
+_@mickvangelderen_
 
 ### Summary
 

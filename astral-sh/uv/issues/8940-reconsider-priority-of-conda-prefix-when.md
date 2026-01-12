@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-08T14:03:39Z
 updated_at: 2024-11-08T14:19:06Z
 url: https://github.com/astral-sh/uv/issues/8940
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # Reconsider priority of CONDA_PREFIX when discovering virtual environments
 
 ---
 
-_Issue opened by @simonw on 2024-11-08 14:03_
+_@simonw_
 
 Is the current treatment of `CONDA_PREFIX` definitely the right thing to do?
 

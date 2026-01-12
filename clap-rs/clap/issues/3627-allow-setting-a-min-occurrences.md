@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-04-13T16:58:26Z
 updated_at: 2022-04-13T17:11:19Z
 url: https://github.com/clap-rs/clap/issues/3627
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Allow setting a `min_occurrences`
 
 ---
 
-_Issue opened by @martinvonz on 2022-04-13 16:58_
+_@martinvonz_
 
 ### Please complete the following tasks
 

@@ -12,14 +12,14 @@ head: charlie/cache
 created_at: 2022-08-10T20:24:29Z
 updated_at: 2022-08-10T20:41:47Z
 url: https://github.com/astral-sh/ruff/pull/3
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Cache Cargo registry on GitHub Actions
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-08-10 20:24_
+_@charliermarsh_
 
 _No description provided._
 

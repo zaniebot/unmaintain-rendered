@@ -13,14 +13,14 @@ head: charlie/range
 created_at: 2023-12-01T03:03:36Z
 updated_at: 2023-12-01T03:15:45Z
 url: https://github.com/astral-sh/ruff/pull/8936
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Use full arguments range for zero-sleep-call
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-01 03:03_
+_@charliermarsh_
 
 _No description provided._
 

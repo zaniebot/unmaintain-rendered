@@ -13,14 +13,14 @@ head: alex/redknot-iterables
 created_at: 2024-09-04T12:05:17Z
 updated_at: 2024-09-04T15:19:50Z
 url: https://github.com/astral-sh/ruff/pull/13240
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Emit a diagnostic if the value of a starred expression or a `yield from` expression is not iterable
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-04 12:05_
+_@AlexWaygood_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-12T01:32:08Z
 updated_at: 2024-09-12T19:33:40Z
 url: https://github.com/astral-sh/ruff/issues/13330
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Allow character ranges or locales in `allowed-confusables` for RUF001, RUF002, & RUF003
 
 ---
 
-_Issue opened by @namurphy on 2024-09-12 01:32_
+_@namurphy_
 
 Rules [RUF001](https://docs.astral.sh/ruff/rules/ambiguous-unicode-character-string/), [RUF002](https://docs.astral.sh/ruff/rules/ambiguous-unicode-character-docstring/), and [RUF003](https://docs.astral.sh/ruff/rules/ambiguous-unicode-character-comment/) help flag potentially ambiguous Unicode characters. While the configuration variable `allowed-confusables` can be used to specify allowed Unicode characters, it can become cumbersome to define `allowed-confusables` for projects whose docstrings use a lot of mathematical notation, or projects that are written in languages that use (for example) the Cyrillic alphabet.  
 

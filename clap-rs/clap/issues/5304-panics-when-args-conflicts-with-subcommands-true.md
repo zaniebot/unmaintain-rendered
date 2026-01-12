@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-15T09:37:02Z
 updated_at: 2024-01-15T16:20:56Z
 url: https://github.com/clap-rs/clap/issues/5304
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Panics when `args_conflicts_with_subcommands(true)`
 
 ---
 
-_Issue opened by @sorairolake on 2024-01-15 09:37_
+_@sorairolake_
 
 ### Please complete the following tasks
 

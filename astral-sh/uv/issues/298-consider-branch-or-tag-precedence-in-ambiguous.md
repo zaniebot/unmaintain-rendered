@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-02T19:12:01Z
 updated_at: 2025-12-02T09:43:23Z
 url: https://github.com/astral-sh/uv/issues/298
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Consider branch or tag precedence in ambiguous git references
 
 ---
 
-_Issue opened by @zanieb on 2023-11-02 19:12_
+_@zanieb_
 
 We currently will use a branch name over a tag name if they both exist.
 

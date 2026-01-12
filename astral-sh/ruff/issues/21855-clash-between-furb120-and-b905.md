@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-09T00:10:06Z
 updated_at: 2025-12-09T08:06:00Z
 url: https://github.com/astral-sh/ruff/issues/21855
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Clash between `FURB120` and `B905`
 
 ---
 
-_Issue opened by @jamesbraza on 2025-12-09 00:10_
+_@jamesbraza_
 
 ### Summary
 

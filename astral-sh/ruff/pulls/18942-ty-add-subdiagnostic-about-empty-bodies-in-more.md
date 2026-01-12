@@ -14,14 +14,14 @@ head: alex/abstractmethod-diagnostic
 created_at: 2025-06-25T19:13:05Z
 updated_at: 2025-06-25T19:25:02Z
 url: https://github.com/astral-sh/ruff/pull/18942
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [ty] Add subdiagnostic about empty bodies in more cases
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-25 19:13_
+_@AlexWaygood_
 
 ## Summary
 

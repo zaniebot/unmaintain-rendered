@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-18T11:32:09Z
 updated_at: 2024-09-19T22:32:36Z
 url: https://github.com/astral-sh/uv/issues/7490
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # How to inject environment variables into uvx run
 
 ---
 
-_Issue opened by @Zethson on 2024-09-18 11:32_
+_@Zethson_
 
 Dear everyone,
 

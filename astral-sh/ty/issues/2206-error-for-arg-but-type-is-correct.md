@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-24T15:16:00Z
 updated_at: 2025-12-24T21:45:39Z
 url: https://github.com/astral-sh/ty/issues/2206
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Error for arg but type is correct
 
 ---
 
-_Issue opened by @vincenzon on 2025-12-24 15:16_
+_@vincenzon_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/s310
 created_at: 2024-07-13T23:06:54Z
 updated_at: 2024-07-14T14:44:10Z
 url: https://github.com/astral-sh/ruff/pull/12315
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`flake8-bandit`] Support explicit string concatenations in S310 HTTP detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-13 23:06_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/12314.
 

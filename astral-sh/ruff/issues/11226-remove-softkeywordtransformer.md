@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-01T02:37:17Z
 updated_at: 2024-05-02T05:03:04Z
 url: https://github.com/astral-sh/ruff/issues/11226
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # ☂️ Remove `SoftKeywordTransformer`
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-05-01 02:37_
+_@dhruvmanila_
 
 This issue is to keep track of the tasks required to remove the `SoftKeywordTransformer`.
 

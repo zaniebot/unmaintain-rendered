@@ -13,14 +13,14 @@ head: david/no-panic-for-stringified-annotations
 created_at: 2024-11-04T13:12:37Z
 updated_at: 2024-11-04T20:29:38Z
 url: https://github.com/astral-sh/ruff/pull/14091
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Do not panic when encountering string annotations
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-04 13:12_
+_@sharkdp_
 
 ## Summary
 

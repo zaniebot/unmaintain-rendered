@@ -14,14 +14,14 @@ head: charlie/count
 created_at: 2025-01-19T18:21:41Z
 updated_at: 2025-01-19T18:28:18Z
 url: https://github.com/astral-sh/ruff/pull/15585
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Avoid removing too many imports in `redefined-while-unused`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-19 18:21_
+_@charliermarsh_
 
 ## Summary
 

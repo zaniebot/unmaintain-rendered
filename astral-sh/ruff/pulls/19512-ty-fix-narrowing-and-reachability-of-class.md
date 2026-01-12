@@ -14,14 +14,14 @@ head: david/fix-class-patterns
 created_at: 2025-07-23T15:15:14Z
 updated_at: 2025-07-23T16:45:05Z
 url: https://github.com/astral-sh/ruff/pull/19512
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [ty] Fix narrowing and reachability of class patterns with arguments
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-23 15:15_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/prefect-test
 created_at: 2024-04-09T18:52:37Z
 updated_at: 2024-04-10T02:29:40Z
 url: https://github.com/astral-sh/uv/pull/2942
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:19Z
 ```
 
 # Add ecosystem test for Prefect
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-09 18:52_
+_@zanieb_
 
 Reproduced https://github.com/astral-sh/uv/issues/2941 and confirmed fix.
 

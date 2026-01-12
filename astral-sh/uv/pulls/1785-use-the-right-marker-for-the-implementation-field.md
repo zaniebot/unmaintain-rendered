@@ -13,14 +13,14 @@ head: fix/pyvenv.cfg-implementation-field
 created_at: 2024-02-20T22:04:09Z
 updated_at: 2024-02-22T02:52:41Z
 url: https://github.com/astral-sh/uv/pull/1785
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:44Z
 ```
 
 # Use the right marker for the `implementation` field of `pyvenv.cfg`
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2024-02-20 22:04_
+_@edgarrmondragon_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

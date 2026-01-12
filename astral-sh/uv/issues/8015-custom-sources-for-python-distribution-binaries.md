@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-08T19:08:34Z
 updated_at: 2025-04-10T14:08:43Z
 url: https://github.com/astral-sh/uv/issues/8015
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Custom sources for python distribution binaries
 
 ---
 
-_Issue opened by @brendan-morin on 2024-10-08 19:08_
+_@brendan-morin_
 
 Many companies have policies around sourcing artifacts from internal sources only. I'm seeing in the docs that uv uses pre-built third-party distributions from the [python-build-standalone](https://github.com/indygreg/python-build-standalone) project. Is it possible to configure uv to point to an alternate private index for python version distributions? 
 

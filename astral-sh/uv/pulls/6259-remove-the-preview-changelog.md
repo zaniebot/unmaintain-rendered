@@ -13,14 +13,14 @@ head: zb/3-changelog
 created_at: 2024-08-20T16:35:38Z
 updated_at: 2024-08-20T16:47:47Z
 url: https://github.com/astral-sh/uv/pull/6259
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:18Z
 ```
 
 # Remove the preview changelog
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-20 16:35_
+_@zanieb_
 
 I'll link to the old file in Git from the release changelog for 0.3.0
 

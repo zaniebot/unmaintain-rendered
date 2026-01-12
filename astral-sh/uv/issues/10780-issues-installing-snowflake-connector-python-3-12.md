@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-20T15:06:00Z
 updated_at: 2025-01-20T15:15:42Z
 url: https://github.com/astral-sh/uv/issues/10780
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:21Z
 ```
 
 # Issues installing snowflake-connector-python==3.12.4
 
 ---
 
-_Issue opened by @ndrezn on 2025-01-20 15:06_
+_@ndrezn_
 
 Running into issues when installing `snowflake-connector-python==3.12.4` using `uv` with an existing cache.
 

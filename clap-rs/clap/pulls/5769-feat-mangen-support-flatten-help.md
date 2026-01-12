@@ -11,14 +11,14 @@ head: flat-man
 created_at: 2024-10-07T09:11:58Z
 updated_at: 2025-07-10T15:41:59Z
 url: https://github.com/clap-rs/clap/pull/5769
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat(mangen): Support flatten_help
 
 ---
 
-_Pull request opened by @aparcar on 2024-10-07 09:11_
+_@aparcar_
 
 The `flatten_help` argument combines all subcommands on a single page. Until now this wasn't supported for `mangen`. With this command the sections `SYNOPSIS` as well as `(SUB)COMMANDS` are changed to imitate the style of `git stash --help`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-09T18:44:51Z
 updated_at: 2024-08-20T18:29:05Z
 url: https://github.com/astral-sh/uv/issues/5974
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Add landing page for uv at `astral.sh/uv` 
 
 ---
 
-_Issue opened by @zanieb on 2024-08-09 18:44_
+_@zanieb_
 
 The same as `astral.sh/ruff` (but better 😄)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-04T04:05:24Z
 updated_at: 2015-05-05T02:04:04Z
 url: https://github.com/clap-rs/clap/issues/99
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Correctly distinguish between multiple values, and multiple allowances
 
 ---
 
-_Issue opened by @kbknapp on 2015-05-04 04:05_
+_@kbknapp_
 
 This is a _slightly_ breaking change - not enough to warrant a label.
 

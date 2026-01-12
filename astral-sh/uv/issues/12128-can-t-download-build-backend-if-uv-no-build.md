@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-12T03:42:06Z
 updated_at: 2025-03-12T20:59:37Z
 url: https://github.com/astral-sh/uv/issues/12128
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # Can't download build-backend if UV_NO_BUILD_ISOLATION=1
 
 ---
 
-_Issue opened by @JakkuSakura on 2025-03-12 03:42_
+_@JakkuSakura_
 
 ### Summary
 

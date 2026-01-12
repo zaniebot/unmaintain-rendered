@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-02T22:27:37Z
 updated_at: 2023-01-09T06:06:57Z
 url: https://github.com/astral-sh/ruff/issues/1003
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # An equivalent to `force_sort_within_sections` from isort
 
 ---
 
-_Issue opened by @tmke8 on 2022-12-02 22:27_
+_@tmke8_
 
 I personally prefer to sort imports like this (which used to be the standard sorting for the Python extension on VS Code):
 ```python

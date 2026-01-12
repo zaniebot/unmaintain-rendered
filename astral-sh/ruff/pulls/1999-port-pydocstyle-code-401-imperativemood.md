@@ -12,14 +12,14 @@ head: imperative-mood
 created_at: 2023-01-19T15:35:24Z
 updated_at: 2023-01-20T12:18:33Z
 url: https://github.com/astral-sh/ruff/pull/1999
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Port pydocstyle code 401 (ImperativeMood)
 
 ---
 
-_Pull request opened by @akx on 2023-01-19 15:35_
+_@akx_
 
 This adds support for pydocstyle code D401 using the `imperative` crate.
 

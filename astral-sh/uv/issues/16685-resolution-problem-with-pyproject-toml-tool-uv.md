@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-11T11:34:27Z
 updated_at: 2025-11-28T15:00:49Z
 url: https://github.com/astral-sh/uv/issues/16685
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # Resolution problem with pyproject.toml tool.uv.index for torch / torchcodec / torchvision
 
 ---
 
-_Issue opened by @mscheltienne on 2025-11-11 11:34_
+_@mscheltienne_
 
 ### Summary
 

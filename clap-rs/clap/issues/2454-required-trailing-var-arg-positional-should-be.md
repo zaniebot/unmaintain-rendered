@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-04-25T23:51:33Z
 updated_at: 2021-05-20T18:59:22Z
 url: https://github.com/clap-rs/clap/issues/2454
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Required trailing var arg positional should be printed last in usage
 
 ---
 
-_Issue opened by @jarrodldavis on 2021-04-25 23:51_
+_@jarrodldavis_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-04T12:54:24Z
 updated_at: 2025-08-07T13:53:13Z
 url: https://github.com/astral-sh/uv/issues/15056
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # HTTP/2 Connection Issues with uv 0.8.4
 
 ---
 
-_Issue opened by @JonneDatanen on 2025-08-04 12:54_
+_@JonneDatanen_
 
 ### Summary
 

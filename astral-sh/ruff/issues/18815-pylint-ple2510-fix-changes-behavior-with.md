@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-20T06:18:12Z
 updated_at: 2025-06-23T08:11:52Z
 url: https://github.com/astral-sh/ruff/issues/18815
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`Pylint`] `PLE2510` fix changes behavior with preceding slash
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-20 06:18_
+_@MeGaGiGaGon_
 
 ### Summary
 

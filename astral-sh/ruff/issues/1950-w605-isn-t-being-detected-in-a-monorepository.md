@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-18T08:55:38Z
 updated_at: 2023-01-18T19:35:30Z
 url: https://github.com/astral-sh/ruff/issues/1950
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # W605 isn't being detected in a monorepository with legacy code.
 
 ---
 
-_Issue opened by @ljesparis on 2023-01-18 08:55_
+_@ljesparis_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

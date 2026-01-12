@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T11:43:13Z
 updated_at: 2024-02-19T19:59:16Z
 url: https://github.com/astral-sh/uv/issues/1582
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # uv does not install dynamic build dependencies before preparing metadata
 
 ---
 
-_Issue opened by @sbidoul on 2024-02-17 11:43_
+_@sbidoul_
 
 It seems `get_requires_for_build_wheel` is not invoked before `prepare_metadata_for_build_wheel`.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-05-17T21:27:18Z
 updated_at: 2025-07-28T09:45:49Z
 url: https://github.com/astral-sh/ruff/issues/4481
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Ruff --fix on SIM118 introducing TypeError 
 
 ---
 
-_Issue opened by @fennerm on 2023-05-17 21:27_
+_@fennerm_
 
 (Running a large repo through ruff --fix today, so might have a few of these tickets for you 😬)
 

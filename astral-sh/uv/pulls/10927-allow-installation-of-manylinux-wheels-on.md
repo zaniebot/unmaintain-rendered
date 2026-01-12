@@ -13,14 +13,14 @@ head: patch_loong64
 created_at: 2025-01-24T05:15:35Z
 updated_at: 2025-01-24T13:36:04Z
 url: https://github.com/astral-sh/uv/pull/10927
-synced_at: 2026-01-10T11:45:19Z
+synced_at: 2026-01-12T16:09:35Z
 ```
 
 # Allow installation of manylinux wheels on loongarch64
 
 ---
 
-_Pull request opened by @wojiushixiaobai on 2025-01-24 05:15_
+_@wojiushixiaobai_
 
 # Summary
 auditwheel is capable of generating loongarch64 wheels for manylinux_2_38 and above. Here we modify uv-platform-tags so that those wheels can be installed using uv.

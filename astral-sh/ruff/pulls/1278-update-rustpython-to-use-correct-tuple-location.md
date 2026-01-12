@@ -12,14 +12,14 @@ head: update-rust-python
 created_at: 2022-12-18T13:27:44Z
 updated_at: 2022-12-18T13:55:04Z
 url: https://github.com/astral-sh/ruff/pull/1278
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Update RustPython to use correct Tuple location
 
 ---
 
-_Pull request opened by @harupy on 2022-12-18 13:27_
+_@harupy_
 
 Update RustPython for https://github.com/RustPython/RustPython/pull/4340.
 

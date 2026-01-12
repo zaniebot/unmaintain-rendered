@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-27T10:03:51Z
 updated_at: 2024-12-27T14:03:35Z
 url: https://github.com/astral-sh/uv/issues/10191
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # "error decoding response body" when "uv self update" (uv version: 0.5.12)
 
 ---
 
-_Issue opened by @AxelThePop on 2024-12-27 10:03_
+_@AxelThePop_
 
 I've updated to the "0.5.12 (351d602d8 2024-12-26)" with "uv self update". If I hit "uv self update" now, I get:
 "error: error decoding response body

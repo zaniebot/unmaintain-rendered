@@ -14,14 +14,14 @@ head: references
 created_at: 2025-07-22T04:52:10Z
 updated_at: 2025-07-23T16:16:26Z
 url: https://github.com/astral-sh/ruff/pull/19475
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Implemented partial support for "find references" language server feature.
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-22 04:52_
+_@UnboundVariable_
 
 This PR adds basic support for the "find all references" language server feature. This same functionality will also be used to eventually implement "rename".
 

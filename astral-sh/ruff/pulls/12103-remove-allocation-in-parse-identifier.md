@@ -14,14 +14,14 @@ head: parse-identifier-reduce-alloc
 created_at: 2024-06-29T12:55:17Z
 updated_at: 2024-06-29T19:38:57Z
 url: https://github.com/astral-sh/ruff/pull/12103
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Remove allocation in `parse_identifier`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-29 12:55_
+_@MichaReiser_
 
 ## Summary
 

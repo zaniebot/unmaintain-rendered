@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-05T06:32:05Z
 updated_at: 2025-06-05T07:17:04Z
 url: https://github.com/astral-sh/ruff/issues/18474
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add a new rule for json.dump VS json.dumps
 
 ---
 
-_Issue opened by @stmlange on 2025-06-05 06:32_
+_@stmlange_
 
 ### Summary
 

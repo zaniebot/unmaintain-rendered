@@ -13,14 +13,14 @@ head: exe-docs
 created_at: 2023-06-13T19:56:02Z
 updated_at: 2023-07-10T09:55:27Z
 url: https://github.com/astral-sh/ruff/pull/5063
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add documentation to `flake8-executable` rules
 
 ---
 
-_Pull request opened by @tjkuson on 2023-06-13 19:56_
+_@tjkuson_
 
 ## Summary
 

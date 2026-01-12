@@ -11,14 +11,14 @@ head: main
 created_at: 2023-02-12T02:56:10Z
 updated_at: 2023-02-26T22:10:02Z
 url: https://github.com/astral-sh/ruff/pull/2793
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Update `PASSWORD_NAMES` to include `api_key` and remove `pass`
 
 ---
 
-_Pull request opened by @KittyBorgX on 2023-02-12 02:56_
+_@KittyBorgX_
 
 This updates `PASSWORD_NAMES` in `crates/ruff/src/rules/flake8_bandit/helpers.rs` as per #2384 
 

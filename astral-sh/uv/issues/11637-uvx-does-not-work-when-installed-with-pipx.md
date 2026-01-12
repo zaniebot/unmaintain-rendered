@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-19T20:25:21Z
 updated_at: 2025-04-16T18:52:11Z
 url: https://github.com/astral-sh/uv/issues/11637
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:42Z
 ```
 
 # uvx does not work when installed with `pipx install --suffix=... uv`
 
 ---
 
-_Issue opened by @cliebBS on 2025-02-19 20:25_
+_@cliebBS_
 
 ### Summary
 

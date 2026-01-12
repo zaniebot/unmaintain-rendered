@@ -13,14 +13,14 @@ head: main
 created_at: 2025-10-07T16:30:00Z
 updated_at: 2025-10-07T17:32:05Z
 url: https://github.com/astral-sh/uv/pull/16155
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:08Z
 ```
 
 # Update `uv pip compile` args in layout.md
 
 ---
 
-_Pull request opened by @Chance-Henney on 2025-10-07 16:30_
+_@Chance-Henney_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

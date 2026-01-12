@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-27T06:03:58Z
 updated_at: 2025-12-03T13:37:05Z
 url: https://github.com/astral-sh/uv/issues/15544
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # `--bounds` has no effect for `--script`
 
 ---
 
-_Issue opened by @nik-sm on 2025-08-27 06:03_
+_@nik-sm_
 
 ### Summary
 

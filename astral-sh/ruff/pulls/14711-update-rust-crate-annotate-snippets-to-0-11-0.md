@@ -12,14 +12,14 @@ head: renovate/annotate-snippets-0.x
 created_at: 2024-12-02T00:48:17Z
 updated_at: 2024-12-02T05:06:44Z
 url: https://github.com/astral-sh/ruff/pull/14711
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Update Rust crate annotate-snippets to 0.11.0
 
 ---
 
-_Pull request opened by @renovate on 2024-12-02 00:48_
+_@renovate_
 
 This PR contains the following updates:
 

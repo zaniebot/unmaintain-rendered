@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T21:52:27Z
 updated_at: 2025-05-17T12:39:14Z
 url: https://github.com/astral-sh/ty/issues/431
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Performance regression in 0.0.1a4
 
 ---
 
-_Issue opened by @danielhollas on 2025-05-16 21:52_
+_@danielhollas_
 
 ### Summary
 

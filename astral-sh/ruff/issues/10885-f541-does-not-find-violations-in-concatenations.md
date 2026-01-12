@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-11T16:00:55Z
 updated_at: 2024-04-16T14:33:25Z
 url: https://github.com/astral-sh/ruff/issues/10885
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # F541 does not find violations in concatenations
 
 ---
 
-_Issue opened by @samueljsb on 2024-04-11 16:00_
+_@samueljsb_
 
 `ruff` does not correctly identify f-strings with no placeholders if they are being concatenated with other f-strings that *do* have placeholders. e.g:
 

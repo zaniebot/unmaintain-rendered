@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-25T10:18:04Z
 updated_at: 2025-02-27T02:46:39Z
 url: https://github.com/astral-sh/uv/issues/11776
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # Platform specific indexes not working
 
 ---
 
-_Issue opened by @FredrikNoren on 2025-02-25 10:18_
+_@FredrikNoren_
 
 ### Summary
 

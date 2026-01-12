@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-29T10:33:42Z
 updated_at: 2025-06-06T09:10:31Z
 url: https://github.com/astral-sh/uv/issues/6801
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Provide an option to start `uv` on Windows without a console window
 
 ---
 
-_Issue opened by @piepero on 2024-08-29 10:33_
+_@piepero_
 
 I am using the Windows 11 Task Scheduler to periodically run a Python script using the `uv --quiet run` command.
 

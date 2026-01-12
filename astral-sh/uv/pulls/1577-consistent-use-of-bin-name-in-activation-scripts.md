@@ -13,14 +13,14 @@ head: dhruv/bin-name
 created_at: 2024-02-17T06:26:01Z
 updated_at: 2024-02-17T16:39:42Z
 url: https://github.com/astral-sh/uv/pull/1577
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # Consistent use of `BIN_NAME` in activation scripts
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-02-17 06:26_
+_@dhruvmanila_
 
 This PR fixes the bug where the `BIN_NAME` replacement field wasn't being used in the activator scripts.
 

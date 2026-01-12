@@ -12,14 +12,14 @@ head: improve-metadata-error
 created_at: 2023-11-10T14:13:18Z
 updated_at: 2023-11-10T18:33:51Z
 url: https://github.com/astral-sh/uv/pull/387
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # Add source to failing metadata parsing
 
 ---
 
-_Pull request opened by @konstin on 2023-11-10 14:13_
+_@konstin_
 
 Before:
 ```

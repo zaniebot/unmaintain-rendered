@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-06T10:48:48Z
 updated_at: 2024-09-15T22:27:53Z
 url: https://github.com/astral-sh/uv/issues/7121
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Command `uv pip sync requirements.txt` remove pip in venv create with `uv venv --seed`
 
 ---
 
-_Issue opened by @arthurc0102 on 2024-09-06 10:48_
+_@arthurc0102_
 
 Version info (on macOS)
 ```

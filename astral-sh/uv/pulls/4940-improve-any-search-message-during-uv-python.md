@@ -14,14 +14,14 @@ head: zb/install-search
 created_at: 2024-07-09T19:44:35Z
 updated_at: 2024-07-10T15:03:23Z
 url: https://github.com/astral-sh/uv/pull/4940
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:32Z
 ```
 
 # Improve 'any' search message during `uv python install`
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-09 19:44_
+_@zanieb_
 
 Special cases the `Any` request in output
 

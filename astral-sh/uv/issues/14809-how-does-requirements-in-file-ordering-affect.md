@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-22T11:58:14Z
 updated_at: 2025-08-04T17:53:18Z
 url: https://github.com/astral-sh/uv/issues/14809
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # How does requirements.in file ordering affect output?
 
 ---
 
-_Issue opened by @JulianKenwood on 2025-07-22 11:58_
+_@JulianKenwood_
 
 ### Question
 

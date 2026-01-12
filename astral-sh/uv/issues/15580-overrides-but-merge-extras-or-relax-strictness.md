@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-29T12:50:50Z
 updated_at: 2025-08-29T14:37:42Z
 url: https://github.com/astral-sh/uv/issues/15580
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # --overrides but merge extras OR relax strictness for --constrain with URLs
 
 ---
 
-_Issue opened by @nmichlo on 2025-08-29 12:50_
+_@nmichlo_
 
 ### Summary
 

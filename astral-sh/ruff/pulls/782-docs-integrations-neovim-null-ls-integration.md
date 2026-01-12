@@ -12,14 +12,14 @@ head: main
 created_at: 2022-11-17T08:26:25Z
 updated_at: 2022-11-17T16:55:09Z
 url: https://github.com/astral-sh/ruff/pull/782
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # docs(integrations): neovim `null-ls` integration
 
 ---
 
-_Pull request opened by @eddiebergman on 2022-11-17 08:26_
+_@eddiebergman_
 
 This PR just adds some documentation on how to integrate `ruff` with `null-ls` which is a handy plugin in `neovim` for integrating diagnostic and formatting tools and expose them as an LSP to neovim.
 

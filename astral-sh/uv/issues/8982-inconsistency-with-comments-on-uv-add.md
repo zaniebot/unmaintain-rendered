@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-10T02:40:52Z
 updated_at: 2025-06-22T14:58:40Z
 url: https://github.com/astral-sh/uv/issues/8982
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # Inconsistency with comments on uv add
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-11-10 02:40_
+_@inoa-jboliveira_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

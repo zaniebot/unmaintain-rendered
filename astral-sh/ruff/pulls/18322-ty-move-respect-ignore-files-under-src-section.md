@@ -14,14 +14,14 @@ head: micha/respect-ignore-files-src
 created_at: 2025-05-26T15:17:55Z
 updated_at: 2025-05-26T17:45:49Z
 url: https://github.com/astral-sh/ruff/pull/18322
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] Move `respect-ignore-files` under `src` section
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-26 15:17_
+_@MichaReiser_
 
 ## Summary
 

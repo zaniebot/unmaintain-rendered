@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-13T18:07:57Z
 updated_at: 2024-09-13T18:24:12Z
 url: https://github.com/astral-sh/uv/issues/7372
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # uv sync with pytorch gpu version is not working
 
 ---
 
-_Issue opened by @EtienneT on 2024-09-13 18:07_
+_@EtienneT_
 
 I can't seem to find any good example of how to add pytorch GPU version in a pyproject.toml.
 

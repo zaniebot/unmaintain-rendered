@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-18T19:09:54Z
 updated_at: 2025-03-19T14:36:31Z
 url: https://github.com/astral-sh/ruff/issues/15048
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Make `Type::in_type_expression()` exhaustive
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-12-18 19:09_
+_@AlexWaygood_
 
 `Type::in_type_expression()` already  errors for some types that are invalid in type expression contexts:
 https://github.com/astral-sh/ruff/blob/ed2bce6ebb56c84c5ecd22cbe8aac4a887c403ca/crates/red_knot_python_semantic/src/types.rs#L2031-L2043

@@ -11,14 +11,14 @@ head: main
 created_at: 2025-05-21T12:16:56Z
 updated_at: 2025-05-21T12:43:08Z
 url: https://github.com/astral-sh/uv/pull/13574
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:45Z
 ```
 
 # Fis ISSUE and QUESTION github template to correctly suggest to user on how to get the uv version
 
 ---
 
-_Pull request opened by @paulefoe on 2025-05-21 12:16_
+_@paulefoe_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

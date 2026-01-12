@@ -15,14 +15,14 @@ head: charlie/platform
 created_at: 2024-08-04T18:57:29Z
 updated_at: 2024-08-05T21:51:55Z
 url: https://github.com/astral-sh/uv/pull/5763
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:00Z
 ```
 
 # Filter `uv tree` to current platform by default
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-04 18:57_
+_@charliermarsh_
 
 ## Summary
 

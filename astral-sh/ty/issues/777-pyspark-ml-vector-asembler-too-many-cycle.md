@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-08T09:13:48Z
 updated_at: 2025-07-08T11:43:39Z
 url: https://github.com/astral-sh/ty/issues/777
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Pyspark ML Vector Asembler: too many cycle iterations
 
 ---
 
-_Issue opened by @michaelneely on 2025-07-08 09:13_
+_@michaelneely_
 
 ### Summary
 

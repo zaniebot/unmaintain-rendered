@@ -13,14 +13,14 @@ head: charlie/only-dev-ii
 created_at: 2024-09-13T16:20:59Z
 updated_at: 2024-09-16T20:06:21Z
 url: https://github.com/astral-sh/uv/pull/7367
-synced_at: 2026-01-10T12:53:45Z
+synced_at: 2026-01-12T16:07:47Z
 ```
 
 # Add support for `--only-dev` to `uv sync` and `uv export`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-13 16:20_
+_@charliermarsh_
 
 ## Summary
 

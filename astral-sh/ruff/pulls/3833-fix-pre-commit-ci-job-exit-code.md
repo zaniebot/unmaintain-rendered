@@ -13,14 +13,14 @@ head: fix-pre-commit-ci
 created_at: 2023-03-31T18:29:28Z
 updated_at: 2023-03-31T18:56:28Z
 url: https://github.com/astral-sh/ruff/pull/3833
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Fix pre-commit CI job exit code
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-31 18:29_
+_@JonathanPlasse_
 
 The pre-commit job always exited with 0.
 Fix scripts/add_rule.py

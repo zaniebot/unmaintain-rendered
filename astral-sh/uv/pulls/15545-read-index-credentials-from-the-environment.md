@@ -13,14 +13,14 @@ head: konsti/fix-11836
 created_at: 2025-08-27T08:44:14Z
 updated_at: 2025-08-27T16:19:30Z
 url: https://github.com/astral-sh/uv/pull/15545
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:48Z
 ```
 
 # Read index credentials from the environment during `uv publish` checks
 
 ---
 
-_Pull request opened by @konstin on 2025-08-27 08:44_
+_@konstin_
 
 We were previously missing the `index_locations.cache_index_credentials()` call in `uv publish` to load index credentials from the env.
 

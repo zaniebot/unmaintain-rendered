@@ -12,14 +12,14 @@ head: fix/b031-false-positive
 created_at: 2023-04-05T16:35:10Z
 updated_at: 2023-04-06T01:23:38Z
 url: https://github.com/astral-sh/ruff/pull/3887
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Visit comprehension to detect group name usage/overrides
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-04-05 16:35_
+_@dhruvmanila_
 
 As mentioned in the issue comment, the first commit fixes the false negative by visiting the right hand side of an assignment statement. The second commit fixes the actual bug by visiting the comprehension nodes.
 

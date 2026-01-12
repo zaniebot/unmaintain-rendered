@@ -13,14 +13,14 @@ head: konsti/remove-rust-1-75-workaround
 created_at: 2024-04-10T13:14:33Z
 updated_at: 2024-04-10T13:47:46Z
 url: https://github.com/astral-sh/uv/pull/2959
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:20Z
 ```
 
 # Remove rust 1.75 workaround
 
 ---
 
-_Pull request opened by @konstin on 2024-04-10 13:14_
+_@konstin_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: zb/check-system-names
 created_at: 2025-07-16T13:59:52Z
 updated_at: 2025-07-16T14:17:03Z
 url: https://github.com/astral-sh/uv/pull/14656
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:19Z
 ```
 
 # Display `sys.executable` names in check system jobs
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-16 13:59_
+_@zanieb_
 
 Cherry-picked from https://github.com/astral-sh/uv/pull/14652
 

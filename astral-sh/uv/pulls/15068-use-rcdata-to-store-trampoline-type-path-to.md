@@ -13,14 +13,14 @@ head: trampoline
 created_at: 2025-08-04T22:42:08Z
 updated_at: 2025-11-09T18:48:21Z
 url: https://github.com/astral-sh/uv/pull/15068
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:11:34Z
 ```
 
 # Use `.rcdata` to store trampoline type + path to python binary
 
 ---
 
-_Pull request opened by @paveldikov on 2025-08-04 22:42_
+_@paveldikov_
 
 `.rsrc` is the idiomatic way of storing metadata and non-code resources in PE
 binaries. This should make the resulting binaries more robust as they are no longer

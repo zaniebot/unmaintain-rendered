@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T11:26:04Z
 updated_at: 2025-08-07T10:38:40Z
 url: https://github.com/astral-sh/ty/issues/532
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Rename refactor
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-28 11:26_
+_@MichaReiser_
 
 Support renaming symbols in a project. See [rename](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_rename) request
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-20T13:30:07Z
 updated_at: 2024-10-20T19:06:29Z
 url: https://github.com/astral-sh/uv/issues/8383
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # Ability to specify package data to be included in distributed package
 
 ---
 
-_Issue opened by @butterlyn on 2024-10-20 13:30_
+_@butterlyn_
 
 Ability to specify package data to be included in the distribute package built with `uv`.
 

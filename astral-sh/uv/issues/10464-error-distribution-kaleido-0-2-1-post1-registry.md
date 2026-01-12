@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-10T10:14:48Z
 updated_at: 2025-02-20T11:19:47Z
 url: https://github.com/astral-sh/uv/issues/10464
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # error: Distribution `kaleido==0.2.1.post1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
 
 ---
 
-_Issue opened by @jamesdeluk on 2025-01-10 10:14_
+_@jamesdeluk_
 
 New to uv, sorry if PEBKAC.
 

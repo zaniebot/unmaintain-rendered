@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-01T20:16:52Z
 updated_at: 2025-11-20T17:45:04Z
 url: https://github.com/astral-sh/ty/issues/73
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Update hover implementation for overloads to account for the matched signature
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-05-01 20:16_
+_@dhruvmanila_
 
 This is a nice to have feature which Pyright has.
 

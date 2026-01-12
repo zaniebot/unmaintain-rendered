@@ -13,14 +13,14 @@ head: zb/python-313
 created_at: 2024-09-10T17:40:43Z
 updated_at: 2024-10-22T22:50:25Z
 url: https://github.com/astral-sh/uv/pull/7263
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Add support for managed Python 3.13 and update CPython versions
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-10 17:40_
+_@zanieb_
 
 Adds support for CPython 3.13.0rc2
 

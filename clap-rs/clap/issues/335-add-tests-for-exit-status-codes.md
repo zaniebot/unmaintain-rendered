@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-11-03T08:00:27Z
 updated_at: 2018-08-02T03:29:46Z
 url: https://github.com/clap-rs/clap/issues/335
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Add tests for exit status codes
 
 ---
 
-_Issue opened by @kbknapp on 2015-11-03 08:00_
+_@kbknapp_
 
 See #333 
 

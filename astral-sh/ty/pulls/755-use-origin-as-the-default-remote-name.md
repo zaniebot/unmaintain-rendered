@@ -13,14 +13,14 @@ head: david/update-contributing-guide
 created_at: 2025-07-02T16:06:33Z
 updated_at: 2025-07-02T16:25:36Z
 url: https://github.com/astral-sh/ty/pull/755
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Use 'origin' as the default remote name
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-02 16:06_
+_@sharkdp_
 
 We use `origin` as the default remote name elsewhere in this doc, so let's use it here as well?
 

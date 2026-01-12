@@ -12,14 +12,14 @@ head: charlie/allow-unsafe
 created_at: 2024-01-26T21:23:36Z
 updated_at: 2024-01-26T21:54:03Z
 url: https://github.com/astral-sh/uv/pull/1139
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:27Z
 ```
 
 # Add arguments for pip-compile compatibility
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-26 21:23_
+_@charliermarsh_
 
 ## Summary
 

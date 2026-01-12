@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-26T11:52:23Z
 updated_at: 2024-08-10T01:02:02Z
 url: https://github.com/astral-sh/uv/issues/5475
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # uv installs incompatible wheel if `data-requires-python` isn't set 
 
 ---
 
-_Issue opened by @konstin on 2024-07-26 11:52_
+_@konstin_
 
 This bug was accidentally surfaced by packse. My local index would generate a page with missing  `data-requires-python` entry: 
 

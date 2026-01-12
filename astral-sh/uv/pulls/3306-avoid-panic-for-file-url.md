@@ -13,14 +13,14 @@ head: konsti/avoid-panic-for-file-url
 created_at: 2024-04-29T11:07:58Z
 updated_at: 2024-04-29T14:39:17Z
 url: https://github.com/astral-sh/uv/pull/3306
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:34Z
 ```
 
 # Avoid panic for file url
 
 ---
 
-_Pull request opened by @konstin on 2024-04-29 11:07_
+_@konstin_
 
 When using find links with a file url, we shouldn't panic because we can't remove username/password for a host-less url.
 

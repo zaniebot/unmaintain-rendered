@@ -13,14 +13,14 @@ head: zb/download-improvements
 created_at: 2024-07-03T16:00:10Z
 updated_at: 2024-07-03T16:37:01Z
 url: https://github.com/astral-sh/uv/pull/4780
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:27Z
 ```
 
 # Improvements to the Python metadata fetch script
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-03 16:00_
+_@zanieb_
 
 This fell out of my investigation of https://github.com/astral-sh/uv/issues/4774 but the bug was fixed by the reporter in #4775
 

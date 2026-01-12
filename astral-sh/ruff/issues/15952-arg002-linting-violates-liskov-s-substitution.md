@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-04T22:30:19Z
 updated_at: 2025-12-18T15:32:09Z
 url: https://github.com/astral-sh/ruff/issues/15952
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # ARG002 Linting Violates Liskov's Substitution Principle
 
 ---
 
-_Issue opened by @kevdog824 on 2025-02-04 22:30_
+_@kevdog824_
 
 ### Description
 

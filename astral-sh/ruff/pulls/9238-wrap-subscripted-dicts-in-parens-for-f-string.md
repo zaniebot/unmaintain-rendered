@@ -13,14 +13,14 @@ head: charlie/paren-dict
 created_at: 2023-12-21T21:46:07Z
 updated_at: 2023-12-21T21:58:36Z
 url: https://github.com/astral-sh/ruff/pull/9238
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Wrap subscripted dicts in parens for f-string conversion
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-21 21:46_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9227.
 

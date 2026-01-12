@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-12T23:46:54Z
 updated_at: 2025-12-12T23:47:59Z
 url: https://github.com/astral-sh/ty/issues/1872
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Equivalence of generic callables
 
 ---
 
-_Issue opened by @carljm on 2025-12-12 23:46_
+_@carljm_
 
 We understand assignability and subtyping of generic functions/callables reasonably well, but not equivalence:
 

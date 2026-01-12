@@ -12,14 +12,14 @@ head: charlie/comment
 created_at: 2023-05-09T21:23:31Z
 updated_at: 2023-05-09T21:56:14Z
 url: https://github.com/astral-sh/ruff/pull/4330
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Avoid SIM105 autofixes that would remove comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-09 21:23_
+_@charliermarsh_
 
 Closes #4318.
 

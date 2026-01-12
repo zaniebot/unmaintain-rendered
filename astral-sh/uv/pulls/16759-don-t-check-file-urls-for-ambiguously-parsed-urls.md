@@ -13,14 +13,14 @@ head: konsti/dont-reject-file-urls
 created_at: 2025-11-17T12:38:53Z
 updated_at: 2025-11-17T14:16:15Z
 url: https://github.com/astral-sh/uv/pull/16759
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 #  Don't check file URLs for ambiguously parsed URLs
 
 ---
 
-_Pull request opened by @konstin on 2025-11-17 12:38_
+_@konstin_
 
 Fixes https://github.com/astral-sh/uv/issues/16756
 Follow-up for https://github.com/astral-sh/uv/pull/16622

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-13T00:55:59Z
 updated_at: 2023-01-14T03:30:42Z
 url: https://github.com/astral-sh/ruff/issues/1840
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Respect per-file-ignore directory globs for files passed via stdin
 
 ---
 
-_Issue opened by @john-kurkowski on 2023-01-13 00:55_
+_@john-kurkowski_
 
 `per-file-ignore` filename globs are respected when running Ruff against `.`  and stdin. However, directory globs are not respected when running Ruff against stdin.
 

@@ -13,14 +13,14 @@ head: charlie/mod
 created_at: 2024-07-03T21:13:39Z
 updated_at: 2024-07-03T21:23:22Z
 url: https://github.com/astral-sh/uv/pull/4790
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:27Z
 ```
 
 # Always use exact semantics in `update_environment`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-03 21:13_
+_@charliermarsh_
 
 ## Summary
 

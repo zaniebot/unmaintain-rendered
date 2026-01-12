@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-11T21:09:38Z
 updated_at: 2024-11-28T05:23:04Z
 url: https://github.com/astral-sh/uv/issues/7311
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Feature Request: Add a way to get tool venv specific information when using `uv tool`
 
 ---
 
-_Issue opened by @taranlu-houzz on 2024-09-11 21:09_
+_@taranlu-houzz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

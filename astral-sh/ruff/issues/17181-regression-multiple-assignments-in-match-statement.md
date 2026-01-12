@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-03T18:32:56Z
 updated_at: 2025-04-03T21:32:40Z
 url: https://github.com/astral-sh/ruff/issues/17181
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Regression: multiple assignments in match statement
 
 ---
 
-_Issue opened by @NeilGirdhar on 2025-04-03 18:32_
+_@NeilGirdhar_
 
 ### Summary
 

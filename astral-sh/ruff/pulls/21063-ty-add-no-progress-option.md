@@ -14,14 +14,14 @@ head: micha/no-progress
 created_at: 2025-10-24T14:07:24Z
 updated_at: 2025-10-24T16:00:02Z
 url: https://github.com/astral-sh/ruff/pull/21063
-synced_at: 2026-01-10T17:28:45Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [ty] Add `--no-progress` option
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-24 14:07_
+_@MichaReiser_
 
 ## Summary
 

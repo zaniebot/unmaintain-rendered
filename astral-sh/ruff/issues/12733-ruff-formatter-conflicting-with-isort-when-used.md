@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-07T15:17:12Z
 updated_at: 2024-08-08T05:57:48Z
 url: https://github.com/astral-sh/ruff/issues/12733
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Ruff formatter conflicting with isort when used as pre-commit hooks.
 
 ---
 
-_Issue opened by @vmatekole on 2024-08-07 15:17_
+_@vmatekole_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

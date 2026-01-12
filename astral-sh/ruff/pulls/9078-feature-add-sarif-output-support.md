@@ -13,14 +13,14 @@ head: feature-add-sarif-output
 created_at: 2023-12-10T02:03:22Z
 updated_at: 2023-12-19T20:15:24Z
 url: https://github.com/astral-sh/ruff/pull/9078
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Feature: Add SARIF output support
 
 ---
 
-_Pull request opened by @C-Hipple on 2023-12-10 02:03_
+_@C-Hipple_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: fix-19577
 created_at: 2025-07-28T03:14:51Z
 updated_at: 2025-08-03T16:34:04Z
 url: https://github.com/astral-sh/ruff/pull/19591
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [`flake8-simplify`] Fix raw string handling in `SIM905` for embedded quotes
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-28 03:14_
+_@danparizher_
 
 ## Summary
 

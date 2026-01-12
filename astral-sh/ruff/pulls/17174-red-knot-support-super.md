@@ -13,14 +13,14 @@ head: cake/support-super
 created_at: 2025-04-03T12:51:50Z
 updated_at: 2025-04-16T18:41:55Z
 url: https://github.com/astral-sh/ruff/pull/17174
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Support `super`
 
 ---
 
-_Pull request opened by @cake-monotone on 2025-04-03 12:51_
+_@cake-monotone_
 
 ## Summary
 

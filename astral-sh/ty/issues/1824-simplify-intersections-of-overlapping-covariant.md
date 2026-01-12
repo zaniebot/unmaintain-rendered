@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-09T14:04:07Z
 updated_at: 2026-01-08T18:52:09Z
 url: https://github.com/astral-sh/ty/issues/1824
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # simplify intersections of overlapping covariant generic protocols
 
 ---
 
-_Issue opened by @danielpopescu on 2025-12-09 14:04_
+_@danielpopescu_
 
 ### Summary
 

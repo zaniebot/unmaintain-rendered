@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-24T14:19:47Z
 updated_at: 2025-08-22T12:54:16Z
 url: https://github.com/astral-sh/ty/issues/884
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Changing `src.exclude` and `src.include` doesn't reload the project files
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-24 14:19_
+_@MichaReiser_
 
 ### Summary
 

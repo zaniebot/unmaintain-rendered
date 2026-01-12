@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-12T04:49:13Z
 updated_at: 2024-01-12T19:48:44Z
 url: https://github.com/astral-sh/ruff/issues/9486
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # (🐞) bad `unnecessary-dunder-call` report for `object.__getattribute__(self` within a `__getattribute__` implementation
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-01-12 04:49_
+_@KotlinIsland_
 
 ```py
 class A:

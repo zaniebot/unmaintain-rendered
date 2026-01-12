@@ -12,14 +12,14 @@ head: update-itertools
 created_at: 2023-09-19T09:42:43Z
 updated_at: 2023-09-19T09:59:22Z
 url: https://github.com/astral-sh/ruff/pull/7513
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Update itertools to 0.11
 
 ---
 
-_Pull request opened by @konstin on 2023-09-19 09:42_
+_@konstin_
 
 Preparation for #7469.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-01T19:32:34Z
 updated_at: 2024-04-22T15:40:52Z
 url: https://github.com/astral-sh/ruff/issues/10187
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # UP031 not violated for variables, only literal values
 
 ---
 
-_Issue opened by @lev-blit on 2024-03-01 19:32_
+_@lev-blit_
 
 UP031 (`printf-string-formatting`, suggests using `str.format` instead of percent formatting) doesn't trigger when using a variable and not a literal value.
 

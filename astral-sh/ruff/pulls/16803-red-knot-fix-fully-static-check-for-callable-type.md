@@ -13,14 +13,14 @@ head: dhruv/callable-static-fix
 created_at: 2025-03-17T14:19:05Z
 updated_at: 2025-03-17T14:31:32Z
 url: https://github.com/astral-sh/ruff/pull/16803
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # [red-knot] Fix fully static check for callable type
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-03-17 14:19_
+_@dhruvmanila_
 
 ## Summary
 

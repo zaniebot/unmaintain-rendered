@@ -13,14 +13,14 @@ head: charlie/o
 created_at: 2024-07-20T01:19:08Z
 updated_at: 2024-08-22T17:40:02Z
 url: https://github.com/astral-sh/ruff/pull/12415
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Avoid shadowing diagnostics for `@override` methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-20 01:19_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/12412.
 

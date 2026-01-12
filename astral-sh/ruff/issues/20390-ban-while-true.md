@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-15T00:46:09Z
 updated_at: 2025-09-16T17:18:13Z
 url: https://github.com/astral-sh/ruff/issues/20390
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ban-while-true
 
 ---
 
-_Issue opened by @Richienb on 2025-09-15 00:46_
+_@Richienb_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: ag/pep440-fix-bad-merge
 created_at: 2025-01-07T14:59:43Z
 updated_at: 2025-01-07T15:11:42Z
 url: https://github.com/astral-sh/uv/pull/10368
-synced_at: 2026-01-10T11:44:45Z
+synced_at: 2026-01-12T16:09:15Z
 ```
 
 # uv-pep440: fix bad merge
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-01-07 14:59_
+_@BurntSushi_
 
 This happened as a result of #10345 and #10362 being merged
 independently. The latter used the old `Version::release` API, but the

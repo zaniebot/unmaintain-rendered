@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T05:44:58Z
 updated_at: 2024-10-10T14:00:36Z
 url: https://github.com/astral-sh/uv/issues/8071
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # `uv sync`  isn't able to install dynamic extra dependencies
 
 ---
 
-_Issue opened by @falckt on 2024-10-10 05:44_
+_@falckt_
 
 Setuptools supports dynamic optional requirements, see [here](https://github.com/kornia/kornia/blob/ec347a978d23103e16cd8b439f51e1a1b6d56f33/pyproject.toml#L74) for an example.
 

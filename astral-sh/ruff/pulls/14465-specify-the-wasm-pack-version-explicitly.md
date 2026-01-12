@@ -13,14 +13,14 @@ head: zb/wasm-version
 created_at: 2024-11-19T17:50:16Z
 updated_at: 2024-11-20T00:00:29Z
 url: https://github.com/astral-sh/ruff/pull/14465
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Specify the wasm-pack version explicitly
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-19 17:50_
+_@zanieb_
 
 There is an upstream bug with latest version detection https://github.com/jetli/wasm-pack-action/issues/23
 

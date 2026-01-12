@@ -13,14 +13,14 @@ head: dhruv/lexical-error
 created_at: 2024-03-11T06:22:23Z
 updated_at: 2024-03-12T08:30:23Z
 url: https://github.com/astral-sh/ruff/pull/10328
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Introduce `LexicalError::InvalidByteLiteral`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-11 06:22_
+_@dhruvmanila_
 
 ## Summary
 

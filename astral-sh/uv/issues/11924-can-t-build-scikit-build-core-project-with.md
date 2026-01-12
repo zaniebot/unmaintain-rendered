@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-03T14:13:10Z
 updated_at: 2025-03-03T14:13:10Z
 url: https://github.com/astral-sh/uv/issues/11924
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # Can't build `scikit-build-core` project with Fortran component
 
 ---
 
-_Issue opened by @ZedThree on 2025-03-03 14:13_
+_@ZedThree_
 
 ### Summary
 

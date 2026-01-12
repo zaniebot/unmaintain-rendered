@@ -13,14 +13,14 @@ head: charlie/tag
 created_at: 2024-03-04T19:25:35Z
 updated_at: 2024-03-04T19:39:02Z
 url: https://github.com/astral-sh/uv/pull/2170
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # Allow empty values in WHEEL files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-04 19:25_
+_@charliermarsh_
 
 ## Summary
 

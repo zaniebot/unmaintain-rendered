@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-10T16:10:14Z
 updated_at: 2025-02-01T19:05:15Z
 url: https://github.com/astral-sh/uv/issues/9779
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # `uv lock --no-build` fails even if `tool.uv.dependency-metadata` is set
 
 ---
 
-_Issue opened by @konstin on 2024-12-10 16:10_
+_@konstin_
 
 We intended `tool.uv.dependency-metadata` as an escape hatch for packages that can't or shouldn't be built at resolve time, but currently, we treat packages with a `tool.uv.dependency-metadata` entry just like other non-static-metadata source distributions in `uv lock --no-build`.
 

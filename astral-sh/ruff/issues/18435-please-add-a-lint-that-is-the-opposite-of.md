@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-02T20:16:53Z
 updated_at: 2025-06-17T19:35:38Z
 url: https://github.com/astral-sh/ruff/issues/18435
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Please add a lint that is the opposite of redundant-open-modes (UP015)
 
 ---
 
-_Issue opened by @zackw on 2025-06-02 20:16_
+_@zackw_
 
 ### Summary
 

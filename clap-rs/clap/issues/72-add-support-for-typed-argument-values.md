@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-04-14T01:15:46Z
 updated_at: 2018-08-02T03:29:38Z
 url: https://github.com/clap-rs/clap/issues/72
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Add support for typed argument values
 
 ---
 
-_Issue opened by @kbknapp on 2015-04-14 01:15_
+_@kbknapp_
 
 Initially support `Int`, and `Float`. Implementation should allow additions down the road as well, based on usage, maybe a `File` or `Directory` too... 
 

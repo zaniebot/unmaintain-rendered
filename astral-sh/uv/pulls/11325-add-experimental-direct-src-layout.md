@@ -13,14 +13,14 @@ head: konsti/direct-src-layout
 created_at: 2025-02-07T18:14:55Z
 updated_at: 2025-10-06T20:26:42Z
 url: https://github.com/astral-sh/uv/pull/11325
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:09:47Z
 ```
 
 # Add experimental direct src layout
 
 ---
 
-_Pull request opened by @konstin on 2025-02-07 18:14_
+_@konstin_
 
 Currently, there are two main options for a project layout, as described in https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/.
 

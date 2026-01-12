@@ -13,14 +13,14 @@ head: emibe/esc_hex
 created_at: 2025-08-07T14:49:56Z
 updated_at: 2025-08-08T12:32:03Z
 url: https://github.com/astral-sh/ruff/pull/19808
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [`pylint`] Use lowercase hex characters to match the formatter (`PLE2513`)
 
 ---
 
-_Pull request opened by @ember91 on 2025-08-07 14:49_
+_@ember91_
 
 PLE2513 --fix changes ESC and SUB to uppercase hexadecimal values such as \x1B while the formatter changes them to lowercase \x1b
 

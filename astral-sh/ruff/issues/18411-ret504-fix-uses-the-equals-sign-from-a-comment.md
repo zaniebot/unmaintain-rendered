@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-01T15:03:50Z
 updated_at: 2025-06-11T13:38:44Z
 url: https://github.com/astral-sh/ruff/issues/18411
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # RET504 fix uses the equals sign from a comment
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-01 15:03_
+_@dscorbett_
 
 ### Summary
 

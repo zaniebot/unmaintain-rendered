@@ -12,14 +12,14 @@ head: dhruv/bump-bug
 created_at: 2024-05-20T06:38:46Z
 updated_at: 2024-05-20T06:39:02Z
 url: https://github.com/astral-sh/ruff/pull/11473
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Update prev token end before token bump
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-20 06:38_
+_@dhruvmanila_
 
 ## Summary
 

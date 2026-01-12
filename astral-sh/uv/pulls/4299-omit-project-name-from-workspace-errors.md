@@ -14,14 +14,14 @@ head: charlie/project-name
 created_at: 2024-06-13T02:44:27Z
 updated_at: 2024-06-14T01:32:52Z
 url: https://github.com/astral-sh/uv/pull/4299
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:08Z
 ```
 
 # Omit project name from workspace errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-13 02:44_
+_@charliermarsh_
 
 ## Summary
 

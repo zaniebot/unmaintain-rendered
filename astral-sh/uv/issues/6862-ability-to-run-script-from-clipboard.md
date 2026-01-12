@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-30T12:31:59Z
 updated_at: 2024-09-05T00:21:02Z
 url: https://github.com/astral-sh/uv/issues/6862
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Ability to run script from clipboard
 
 ---
 
-_Issue opened by @valentincalomme on 2024-08-30 12:31_
+_@valentincalomme_
 
 I love that we can now run scripts that define their dependencies in a top-level comment. A feature that would be even more "fun" is adding the ability to run a script from the clipboard.
 

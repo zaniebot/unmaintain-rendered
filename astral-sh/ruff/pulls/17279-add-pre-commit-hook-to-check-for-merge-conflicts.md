@@ -13,14 +13,14 @@ head: skylion007/add-merge-conflict-check-2025-04-07
 created_at: 2025-04-07T15:12:40Z
 updated_at: 2025-04-10T10:47:16Z
 url: https://github.com/astral-sh/ruff/pull/17279
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # Add pre-commit hook to check for merge conflicts
 
 ---
 
-_Pull request opened by @Skylion007 on 2025-04-07 15:12_
+_@Skylion007_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

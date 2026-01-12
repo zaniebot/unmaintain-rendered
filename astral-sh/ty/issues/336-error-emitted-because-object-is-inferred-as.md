@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-12T21:27:54Z
 updated_at: 2025-09-18T00:21:13Z
 url: https://github.com/astral-sh/ty/issues/336
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Error emitted because object is inferred as having `Element[Literal["testsuites"]]` when `Element[str]` was expected
 
 ---
 
-_Issue opened by @Guitaricet on 2025-05-12 21:27_
+_@Guitaricet_
 
 ### Summary
 

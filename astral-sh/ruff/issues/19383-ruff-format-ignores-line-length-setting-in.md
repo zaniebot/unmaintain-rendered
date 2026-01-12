@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-16T10:26:57Z
 updated_at: 2025-07-16T12:01:14Z
 url: https://github.com/astral-sh/ruff/issues/19383
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `ruff format` ignores `line-length` setting in assignment expression
 
 ---
 
-_Issue opened by @ALPA-Industry-and-Technology on 2025-07-16 10:26_
+_@ALPA-Industry-and-Technology_
 
 ### Question
 

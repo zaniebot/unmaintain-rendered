@@ -13,14 +13,14 @@ head: charlie/f
 created_at: 2024-07-02T20:55:58Z
 updated_at: 2024-07-02T21:03:41Z
 url: https://github.com/astral-sh/uv/pull/4740
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:25Z
 ```
 
 # Remove dangling environments in `tool uninstall`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-02 20:55_
+_@charliermarsh_
 
 ## Summary
 

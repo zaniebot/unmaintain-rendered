@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-08T12:22:20Z
 updated_at: 2024-07-08T14:25:06Z
 url: https://github.com/astral-sh/uv/issues/4889
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Sort `dependencies` before `sdist` in lockfile
 
 ---
 
-_Issue opened by @konstin on 2024-07-08 12:22_
+_@konstin_
 
 In the latest uv release, we split source dist and wheel entries:
 ```toml

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-14T21:48:50Z
 updated_at: 2024-02-16T16:52:59Z
 url: https://github.com/astral-sh/ruff/issues/9991
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Import sorting is breaking file
 
 ---
 
-_Issue opened by @theelderbeever on 2024-02-14 21:48_
+_@theelderbeever_
 
 I am using the vscode sort on save setting and the following happens when I save the file. Variations of this happen on multiple files to the point of affecting code as well.
 

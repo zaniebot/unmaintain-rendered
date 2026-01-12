@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-14T09:33:44Z
 updated_at: 2025-11-14T13:26:01Z
 url: https://github.com/astral-sh/ty/issues/1549
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # "Add import from..." code action
 
 ---
 
-_Issue opened by @MichaReiser on 2025-11-14 09:33_
+_@MichaReiser_
 
 When positioned at an unresolved symbol, offer a code action to import it from another module. 
 

@@ -14,14 +14,14 @@ head: inlay-hint-attribute-type-hint
 created_at: 2025-09-19T16:06:47Z
 updated_at: 2025-11-06T11:48:25Z
 url: https://github.com/astral-sh/ruff/pull/20485
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [ty] Add support for inlay hints on attribute assignment
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-09-19 16:06_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-02T08:15:16Z
 updated_at: 2026-01-04T13:41:11Z
 url: https://github.com/astral-sh/uv/issues/17283
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # Uninstall + Install 1 package everytime uv is called in a monorepo library with a different virtual environment from the root
 
 ---
 
-_Issue opened by @btakita on 2026-01-02 08:15_
+_@btakita_
 
 ### Question
 

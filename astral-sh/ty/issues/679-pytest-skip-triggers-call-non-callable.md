@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-18T14:37:24Z
 updated_at: 2025-06-18T14:56:11Z
 url: https://github.com/astral-sh/ty/issues/679
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # pytest.skip(...) triggers call-non-callable
 
 ---
 
-_Issue opened by @pawamoy on 2025-06-18 14:37_
+_@pawamoy_
 
 ### Summary
 

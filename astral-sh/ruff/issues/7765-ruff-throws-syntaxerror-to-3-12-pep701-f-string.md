@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-02T19:05:55Z
 updated_at: 2023-10-02T19:23:37Z
 url: https://github.com/astral-sh/ruff/issues/7765
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Ruff throws `SyntaxError` to 3.12 PEP701 f-string changes
 
 ---
 
-_Issue opened by @danparizher on 2023-10-02 19:05_
+_@danparizher_
 
 ```py
 songs = ["Take me back to Eden", "Alkaline", "Ascensionism"]

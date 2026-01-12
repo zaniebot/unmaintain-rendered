@@ -12,14 +12,14 @@ head: charlie/comments
 created_at: 2023-07-15T19:30:08Z
 updated_at: 2023-07-16T01:20:24Z
 url: https://github.com/astral-sh/ruff/pull/5785
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Remove lexer-based comment range detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-15 19:30_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-10-09T17:13:45Z
 updated_at: 2025-10-09T17:38:19Z
 url: https://github.com/astral-sh/uv/pull/16211
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:10Z
 ```
 
 # Fix pylock.toml config conflict error messages
 
 ---
 
-_Pull request opened by @ncoghlan on 2025-10-09 17:13_
+_@ncoghlan_
 
 ## Summary
 

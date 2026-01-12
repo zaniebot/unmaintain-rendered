@@ -14,14 +14,14 @@ head: alex/more-corpus-tests
 created_at: 2025-06-07T12:48:52Z
 updated_at: 2025-06-07T13:18:27Z
 url: https://github.com/astral-sh/ruff/pull/18531
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [ty] Enable more corpus tests
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-07 12:48_
+_@AlexWaygood_
 
 ## Summary
 

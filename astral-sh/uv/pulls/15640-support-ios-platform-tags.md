@@ -12,14 +12,14 @@ head: ios-support
 created_at: 2025-09-02T20:28:22Z
 updated_at: 2025-09-03T22:24:49Z
 url: https://github.com/astral-sh/uv/pull/15640
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:52Z
 ```
 
 # Support iOS platform tags
 
 ---
 
-_Pull request opened by @timrid on 2025-09-02 20:28_
+_@timrid_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

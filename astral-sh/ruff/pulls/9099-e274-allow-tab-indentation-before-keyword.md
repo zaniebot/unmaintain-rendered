@@ -13,14 +13,14 @@ head: e274-ignore-indentation
 created_at: 2023-12-11T20:12:32Z
 updated_at: 2023-12-12T03:15:10Z
 url: https://github.com/astral-sh/ruff/pull/9099
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # E274: allow tab indentation before keyword
 
 ---
 
-_Pull request opened by @sciyoshi on 2023-12-11 20:12_
+_@sciyoshi_
 
 ## Summary
 

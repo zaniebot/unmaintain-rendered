@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-30T17:01:12Z
 updated_at: 2024-10-01T19:18:39Z
 url: https://github.com/astral-sh/uv/issues/7816
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Warn if packages are missing wheels for the current python
 
 ---
 
-_Issue opened by @konstin on 2024-09-30 17:01_
+_@konstin_
 
 There are many packages in Python that are built against the unstable CPython C ABI, which publish wheels for only a set of Python versions, often simply the oldest one supported to the latest at date of publishing. When running `uv lock` (also as part of `uv sync`) and a package has a wheel that is compatible (correct platform etc.) save for the python version (e.g. `cp38` while we're on `cp310`), we should note this to the user: The sync goes from fast to very slow since we need to build the package, and often building fails because those source distributions aren't meant to be built on user's machines. We need to figure out when to show this, we shouldn't do it on every sync, but we should do when adding such a package and maybe the first time syncing on a particular Python version (e.g., there isn't a built wheel in cache yet). 
 

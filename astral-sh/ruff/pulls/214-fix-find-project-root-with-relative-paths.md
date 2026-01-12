@@ -12,14 +12,14 @@ head: find_project_root
 created_at: 2022-09-16T22:59:38Z
 updated_at: 2022-09-17T00:04:46Z
 url: https://github.com/astral-sh/ruff/pull/214
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Fix find_project_root with relative paths
 
 ---
 
-_Pull request opened by @andersk on 2022-09-16 22:59_
+_@andersk_
 
 The `common_path` crate doesn’t work correctly with relative paths: `common_path("a/b", "c/d") = None`. (I would have reported this upstream to `common_path`, but its [repository](https://gitlab.com/pwoolcoc/common-path) doesn’t exist anymore.)
 

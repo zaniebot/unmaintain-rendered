@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-10T13:03:51Z
 updated_at: 2023-05-10T15:06:09Z
 url: https://github.com/astral-sh/ruff/issues/4344
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # W505 not triggered on multi-line docstring
 
 ---
 
-_Issue opened by @andyluooo on 2023-05-10 13:03_
+_@andyluooo_
 
 I've enabled W505 and set max-doc-length to 72. However, it didn't trigger when I exceed the limit on muti-line docstring. 
 For example:

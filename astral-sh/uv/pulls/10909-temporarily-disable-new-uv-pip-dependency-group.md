@@ -13,14 +13,14 @@ head: gankra/hide-group
 created_at: 2025-01-23T18:13:46Z
 updated_at: 2025-01-23T20:43:09Z
 url: https://github.com/astral-sh/uv/pull/10909
-synced_at: 2026-01-10T11:45:17Z
+synced_at: 2026-01-12T16:09:34Z
 ```
 
 # temporarily disable new uv pip dependency-group flags
 
 ---
 
-_Pull request opened by @Gankra on 2025-01-23 18:13_
+_@Gankra_
 
 We'll probably end up shipping but we were moving ahead with this on the basis that pip may not even ship this, so let's play it safe and wait for a bit.
 

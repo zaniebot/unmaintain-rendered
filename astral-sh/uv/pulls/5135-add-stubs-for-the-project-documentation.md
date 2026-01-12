@@ -14,14 +14,14 @@ head: zb/stub-projects
 created_at: 2024-07-16T21:49:44Z
 updated_at: 2024-07-16T22:02:56Z
 url: https://github.com/astral-sh/uv/pull/5135
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:39Z
 ```
 
 # Add stubs for the project documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-16 21:49_
+_@zanieb_
 
 @ibraheemdev is going to do some work on these, I just sketched out some parts to try to understand how things will fit together.
 

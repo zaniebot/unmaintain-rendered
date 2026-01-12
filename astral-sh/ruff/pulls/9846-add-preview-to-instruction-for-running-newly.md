@@ -13,14 +13,14 @@ head: add-preview
 created_at: 2024-02-05T22:12:10Z
 updated_at: 2024-02-06T07:02:15Z
 url: https://github.com/astral-sh/ruff/pull/9846
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Add ``--preview`` to instruction for running newly added tests
 
 ---
 
-_Pull request opened by @DanielNoord on 2024-02-05 22:12_
+_@DanielNoord_
 
 
 

@@ -12,14 +12,14 @@ head: logical-lines-diagnostic-ranges
 created_at: 2023-04-27T14:47:35Z
 updated_at: 2023-05-10T07:11:46Z
 url: https://github.com/astral-sh/ruff/pull/4133
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Use non-empty ranges for logical-lines diagnostics
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-27 14:47_
+_@MichaReiser_
 
 This PR sets non-empty ranges for the logical-line rules that then get correctly highlighted by `--show-source`. 
 

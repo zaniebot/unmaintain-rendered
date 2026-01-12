@@ -12,14 +12,14 @@ head: charlie/eco
 created_at: 2024-07-01T02:14:49Z
 updated_at: 2024-07-01T12:34:28Z
 url: https://github.com/astral-sh/ruff/pull/12129
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Remove `demisto/content` from ecosystem checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-01 02:14_
+_@charliermarsh_
 
 ## Summary
 

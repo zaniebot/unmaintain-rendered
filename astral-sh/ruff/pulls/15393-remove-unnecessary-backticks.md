@@ -13,14 +13,14 @@ head: dhruv/fix-docs
 created_at: 2025-01-10T09:19:05Z
 updated_at: 2025-01-10T09:22:29Z
 url: https://github.com/astral-sh/ruff/pull/15393
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Remove unnecessary backticks
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-10 09:19_
+_@dhruvmanila_
 
 Ref: https://github.com/astral-sh/ruff/pull/15367#discussion_r1909448140
 

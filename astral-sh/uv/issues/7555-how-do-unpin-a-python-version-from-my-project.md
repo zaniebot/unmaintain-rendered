@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-19T17:02:13Z
 updated_at: 2024-09-19T20:13:11Z
 url: https://github.com/astral-sh/uv/issues/7555
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # How do "unpin" a Python version from my project?
 
 ---
 
-_Issue opened by @big88chungus on 2024-09-19 17:02_
+_@big88chungus_
 
 
 Hi everyone,

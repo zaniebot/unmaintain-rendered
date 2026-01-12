@@ -13,14 +13,14 @@ head: charlie/assert-type-block
 created_at: 2023-04-13T17:23:08Z
 updated_at: 2023-04-13T18:27:53Z
 url: https://github.com/astral-sh/ruff/pull/3960
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Ignore assert errors (S101) in `TYPE_CHECKING` blocks
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-13 17:23_
+_@charliermarsh_
 
 Closes #3958.
 

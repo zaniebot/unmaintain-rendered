@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-11T23:31:50Z
 updated_at: 2025-04-17T12:01:25Z
 url: https://github.com/astral-sh/uv/issues/8135
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:20Z
 ```
 
 # how to change default python version in uv? 
 
 ---
 
-_Issue opened by @aizimuji on 2024-10-11 23:31_
+_@aizimuji_
 
 for example, i just install python 3.13
 

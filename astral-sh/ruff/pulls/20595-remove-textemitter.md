@@ -13,14 +13,14 @@ head: brent/remove-text-emitter
 created_at: 2025-09-26T15:46:10Z
 updated_at: 2025-09-29T12:46:27Z
 url: https://github.com/astral-sh/ruff/pull/20595
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # Remove `TextEmitter`
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-26 15:46_
+_@ntBre_
 
 ## Summary
 

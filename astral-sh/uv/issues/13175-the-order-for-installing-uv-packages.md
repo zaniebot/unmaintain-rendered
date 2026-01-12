@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-28T13:00:33Z
 updated_at: 2025-04-28T19:35:19Z
 url: https://github.com/astral-sh/uv/issues/13175
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # The order for installing UV packages
 
 ---
 
-_Issue opened by @thebarkingdog-yh on 2025-04-28 13:00_
+_@thebarkingdog-yh_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: charlie/hint
 created_at: 2024-06-07T18:30:38Z
 updated_at: 2024-06-07T18:43:51Z
 url: https://github.com/astral-sh/uv/pull/4140
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:03Z
 ```
 
 # Omit URL dependencies from pre-release hints
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-07 18:30_
+_@charliermarsh_
 
 ## Summary
 

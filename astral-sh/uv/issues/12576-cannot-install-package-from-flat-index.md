@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-31T06:52:36Z
 updated_at: 2025-03-31T13:22:37Z
 url: https://github.com/astral-sh/uv/issues/12576
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # Cannot install package from "flat" index
 
 ---
 
-_Issue opened by @luh-t-to on 2025-03-31 06:52_
+_@luh-t-to_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-18T14:15:04Z
 updated_at: 2025-09-18T14:20:21Z
 url: https://github.com/astral-sh/ruff/issues/20468
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Reconsider `valid-magic-values` option
 
 ---
 
-_Issue opened by @julianstirling on 2025-09-18 14:15_
+_@julianstirling_
 
 ### Summary
 

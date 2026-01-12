@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-02-26T18:54:15Z
 updated_at: 2021-03-05T17:23:28Z
 url: https://github.com/clap-rs/clap/issues/2367
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Allow accessing the env name and default value when iterating over the arguments
 
 ---
 
-_Issue opened by @shepmaster on 2021-02-26 18:54_
+_@shepmaster_
 
 **Please complete the following tasks**
 

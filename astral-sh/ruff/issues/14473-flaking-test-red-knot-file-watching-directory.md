@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-20T02:21:00Z
 updated_at: 2024-12-03T07:22:43Z
 url: https://github.com/astral-sh/ruff/issues/14473
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Flaking test `red_knot::file_watching directory_renamed`
 
 ---
 
-_Issue opened by @zanieb on 2024-11-20 02:21_
+_@zanieb_
 
 ```
 --- STDOUT:              red_knot::file_watching directory_renamed ---

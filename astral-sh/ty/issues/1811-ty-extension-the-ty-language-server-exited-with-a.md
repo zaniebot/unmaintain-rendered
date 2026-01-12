@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-08T22:15:50Z
 updated_at: 2025-12-31T15:40:37Z
 url: https://github.com/astral-sh/ty/issues/1811
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # ty extension: The ty language server exited with a panic
 
 ---
 
-_Issue opened by @daltunay on 2025-12-08 22:15_
+_@daltunay_
 
 First, thank you all for uv, ruff and ty!
 

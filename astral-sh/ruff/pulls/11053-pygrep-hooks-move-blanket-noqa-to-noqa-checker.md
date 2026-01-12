@@ -13,14 +13,14 @@ head: pgh004
 created_at: 2024-04-20T03:09:47Z
 updated_at: 2024-04-22T17:37:59Z
 url: https://github.com/astral-sh/ruff/pull/11053
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [`pygrep_hooks`] Move `blanket-noqa` to noqa checker (`PGH004`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-04-20 03:09_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

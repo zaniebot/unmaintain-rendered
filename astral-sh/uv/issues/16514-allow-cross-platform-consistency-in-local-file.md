@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-30T15:26:50Z
 updated_at: 2025-12-12T13:53:55Z
 url: https://github.com/astral-sh/uv/issues/16514
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # Allow cross-platform consistency in local file paths for `pylock.toml` exports
 
 ---
 
-_Issue opened by @ncoghlan on 2025-10-30 15:26_
+_@ncoghlan_
 
 ### Summary
 

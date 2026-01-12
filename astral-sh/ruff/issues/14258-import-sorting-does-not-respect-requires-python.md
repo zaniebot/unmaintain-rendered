@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-11T01:15:05Z
 updated_at: 2024-11-11T08:06:50Z
 url: https://github.com/astral-sh/ruff/issues/14258
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Import sorting does not respect `requires-python` when specified via inline script metadata
 
 ---
 
-_Issue opened by @brettcannon on 2024-11-11 01:15_
+_@brettcannon_
 
 In the below example I would expect `tomllib` to be sorted as a stdlib module as the script specifies that it requires Python 3.13 or newer which guarantees tomllib in the stdlib:
 ```python

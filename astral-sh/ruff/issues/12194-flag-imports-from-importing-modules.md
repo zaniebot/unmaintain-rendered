@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-04T23:27:56Z
 updated_at: 2024-10-24T14:33:05Z
 url: https://github.com/astral-sh/ruff/issues/12194
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Flag imports from importing modules
 
 ---
 
-_Issue opened by @janosh on 2024-07-04 23:27_
+_@janosh_
 
 say i have modules `a.py`, `b.py`, `c.py` that each define a class `A`, `B` and `C`.
 

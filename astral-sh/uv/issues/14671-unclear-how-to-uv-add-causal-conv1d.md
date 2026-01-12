@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-16T20:29:36Z
 updated_at: 2025-11-03T02:34:49Z
 url: https://github.com/astral-sh/uv/issues/14671
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # unclear how to `uv add causal-conv1d`
 
 ---
 
-_Issue opened by @riklopfer on 2025-07-16 20:29_
+_@riklopfer_
 
 ### Question
 

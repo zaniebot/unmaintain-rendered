@@ -13,14 +13,14 @@ head: main
 created_at: 2025-02-24T11:52:38Z
 updated_at: 2025-02-26T03:44:17Z
 url: https://github.com/astral-sh/uv/pull/11744
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:59Z
 ```
 
 # Disable interactive git terminal prompts during fetches
 
 ---
 
-_Pull request opened by @piegamesde on 2025-02-24 11:52_
+_@piegamesde_
 
 ## Summary
 

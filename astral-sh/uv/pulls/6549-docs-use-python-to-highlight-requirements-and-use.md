@@ -12,14 +12,14 @@ head: docs/few-docs-improvements
 created_at: 2024-08-23T21:38:12Z
 updated_at: 2024-08-27T11:12:54Z
 url: https://github.com/astral-sh/uv/pull/6549
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:25Z
 ```
 
 # docs: use `python` to highlight requirements and use more content tabs
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-08-23 21:38_
+_@mkniewallner_
 
 ## Summary
 

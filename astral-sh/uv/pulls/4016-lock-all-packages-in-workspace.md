@@ -13,14 +13,14 @@ head: konsti/lock-all-packages-in-workspace
 created_at: 2024-06-04T17:19:49Z
 updated_at: 2024-06-06T19:09:46Z
 url: https://github.com/astral-sh/uv/pull/4016
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:59Z
 ```
 
 # Lock all packages in workspace
 
 ---
 
-_Pull request opened by @konstin on 2024-06-04 17:19_
+_@konstin_
 
 When creating a lockfile, lock the combined dependencies for all packages in a workspace. This make the lockfile independent of where you are in the workspace.
 

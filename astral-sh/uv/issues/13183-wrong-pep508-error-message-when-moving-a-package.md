@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-28T18:14:39Z
 updated_at: 2025-04-29T08:42:59Z
 url: https://github.com/astral-sh/uv/issues/13183
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # Wrong pep508 error message when moving a package from a mandatory to an optional dependency.
 
 ---
 
-_Issue opened by @facundoq on 2025-04-28 18:14_
+_@facundoq_
 
 ### Summary
 

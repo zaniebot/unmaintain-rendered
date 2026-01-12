@@ -13,14 +13,14 @@ head: zb/add-venv-tests
 created_at: 2024-01-25T16:01:59Z
 updated_at: 2024-01-25T19:57:07Z
 url: https://github.com/astral-sh/uv/pull/1096
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:25Z
 ```
 
 # Add venv tests for missing Python versions
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-25 16:01_
+_@zanieb_
 
 These demonstrate some lackluster error messages.
 

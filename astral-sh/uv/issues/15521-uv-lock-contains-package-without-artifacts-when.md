@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-25T22:39:34Z
 updated_at: 2025-08-27T20:59:01Z
 url: https://github.com/astral-sh/uv/issues/15521
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # UV lock contains package without artifacts (when installing `cuml-cu12`, `ray[data]`, `torch`)
 
 ---
 
-_Issue opened by @pimdh on 2025-08-25 22:39_
+_@pimdh_
 
 ### Summary
 

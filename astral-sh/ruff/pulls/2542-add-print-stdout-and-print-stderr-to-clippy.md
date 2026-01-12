@@ -12,14 +12,14 @@ head: charlie/print
 created_at: 2023-02-03T14:36:12Z
 updated_at: 2023-02-03T16:13:48Z
 url: https://github.com/astral-sh/ruff/pull/2542
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Add `print_stdout` and `print_stderr` to Clippy enforcement
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-03 14:36_
+_@charliermarsh_
 
 _No description provided._
 

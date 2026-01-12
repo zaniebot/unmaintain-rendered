@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T10:09:34Z
 updated_at: 2025-12-23T05:26:22Z
 url: https://github.com/astral-sh/ty/issues/1995
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Invalid assignability for a generic type using `ParamSpec`
 
 ---
 
-_Issue opened by @tudoroancea on 2025-12-17 10:09_
+_@tudoroancea_
 
 ### Summary
 

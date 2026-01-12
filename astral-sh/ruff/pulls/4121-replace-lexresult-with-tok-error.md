@@ -12,14 +12,14 @@ head: error-token
 created_at: 2023-04-26T17:23:15Z
 updated_at: 2023-07-24T15:01:45Z
 url: https://github.com/astral-sh/ruff/pull/4121
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Replace `LexResult` with `Tok::Error`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-26 17:23_
+_@MichaReiser_
 
 _No description provided._
 

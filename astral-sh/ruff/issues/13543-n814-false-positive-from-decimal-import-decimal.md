@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-28T03:39:16Z
 updated_at: 2024-11-20T14:51:35Z
 url: https://github.com/astral-sh/ruff/issues/13543
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # N814 false positive: `from decimal import Decimal as D`
 
 ---
 
-_Issue opened by @rdaysky on 2024-09-28 03:39_
+_@rdaysky_
 
 N814 ([camelcase-imported-as-constant](https://docs.astral.sh/ruff/rules/camelcase-imported-as-constant/)) triggers even if the alias is a single uppercase letter in [code like](https://docs.python.org/dev/library/statistics.html#statistics.mean)
 ```

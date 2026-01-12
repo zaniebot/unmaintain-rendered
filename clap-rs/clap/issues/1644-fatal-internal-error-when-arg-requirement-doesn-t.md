@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-01-26T19:39:15Z
 updated_at: 2020-04-10T02:00:15Z
 url: https://github.com/clap-rs/clap/issues/1644
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Fatal internal error when arg requirement doesn't exist
 
 ---
 
-_Issue opened by @sharnoff on 2020-01-26 19:39_
+_@sharnoff_
 
 ### Rust Version
 `rustc 1.40.0 (73528e339 2019-12-16)`

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-21T12:59:50Z
 updated_at: 2025-06-22T14:02:27Z
 url: https://github.com/astral-sh/uv/issues/14186
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # VS Code doesn't show the project name for the selected uv interpreter
 
 ---
 
-_Issue opened by @FLL-Team-24277 on 2025-06-21 12:59_
+_@FLL-Team-24277_
 
 ### Question
 

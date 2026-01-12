@@ -14,14 +14,14 @@ head: charlie/req
 created_at: 2024-12-31T03:13:02Z
 updated_at: 2024-12-31T15:37:47Z
 url: https://github.com/astral-sh/uv/pull/10248
-synced_at: 2026-01-10T11:44:39Z
+synced_at: 2026-01-12T16:09:11Z
 ```
 
 # Add a required version setting to uv
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-31 03:13_
+_@charliermarsh_
 
 ## Summary
 

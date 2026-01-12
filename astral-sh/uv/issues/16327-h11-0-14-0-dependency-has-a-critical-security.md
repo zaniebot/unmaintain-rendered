@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-16T07:19:54Z
 updated_at: 2025-10-17T07:51:29Z
 url: https://github.com/astral-sh/uv/issues/16327
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # h11 0.14.0 dependency has a critical security vulnerability
 
 ---
 
-_Issue opened by @kwmlodozeniec on 2025-10-16 07:19_
+_@kwmlodozeniec_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T14:13:54Z
 updated_at: 2025-02-07T10:11:26Z
 url: https://github.com/astral-sh/ruff/issues/15970
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Poetry install failure with `requires-python`
 
 ---
 
-_Issue opened by @justRishi on 2025-02-05 14:13_
+_@justRishi_
 
 ### Description
 

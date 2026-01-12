@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-16T21:23:52Z
 updated_at: 2026-01-06T08:20:03Z
 url: https://github.com/astral-sh/uv/issues/17153
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # Is there a clean way to achieve incremental builds?
 
 ---
 
-_Issue opened by @dograt on 2025-12-16 21:23_
+_@dograt_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: konsti/gitignore-on-the-root
 created_at: 2024-03-22T15:42:51Z
 updated_at: 2024-03-22T19:36:07Z
 url: https://github.com/astral-sh/uv/pull/2615
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:08Z
 ```
 
 # Avoid ignore crate finding cache gitignore
 
 ---
 
-_Pull request opened by @konstin on 2024-03-22 15:42_
+_@konstin_
 
 We put a `.gitignore` with `*` at the top of our cache. When maturin was building a source distribution inside the cache, it would walk up the tree to find a gitignore, see that and ignore all python files. We now add an (empty) `.git` directory one directory below, in the root of built-wheels cache. This prevents ignore walking further up (it marks the top level a git repository).
 

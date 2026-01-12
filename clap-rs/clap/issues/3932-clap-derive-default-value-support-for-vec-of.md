@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-07-14T03:15:03Z
 updated_at: 2022-07-25T21:45:05Z
 url: https://github.com/clap-rs/clap/issues/3932
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # clap_derive: Default value support for Vec of ValueEnums
 
 ---
 
-_Issue opened by @emersonford on 2022-07-14 03:15_
+_@emersonford_
 
 ### Please complete the following tasks
 

@@ -12,14 +12,14 @@ head: charlie/double
 created_at: 2023-12-15T04:57:03Z
 updated_at: 2023-12-15T17:27:18Z
 url: https://github.com/astral-sh/uv/pull/656
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:06Z
 ```
 
 # Avoid double resolution during source builds
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-15 04:57_
+_@charliermarsh_
 
 ## Summary
 

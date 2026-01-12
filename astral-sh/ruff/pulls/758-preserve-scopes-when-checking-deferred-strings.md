@@ -12,14 +12,14 @@ head: charlie/scopes
 created_at: 2022-11-15T17:16:47Z
 updated_at: 2022-11-15T17:19:24Z
 url: https://github.com/astral-sh/ruff/pull/758
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Preserve scopes when checking deferred strings
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-15 17:16_
+_@charliermarsh_
 
 Resolves #754.
 

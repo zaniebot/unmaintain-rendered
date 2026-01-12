@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T13:37:18Z
 updated_at: 2023-05-10T20:45:40Z
 url: https://github.com/astral-sh/ruff/issues/2395
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Possible `--interactive` flag/mode for use with `--fix`?
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-31 13:37_
+_@ngnpope_
 
 This is more just throwing an idea in the pot for consideration down the line.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-21T16:08:34Z
 updated_at: 2023-12-06T16:47:02Z
 url: https://github.com/astral-sh/uv/issues/478
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Generic file metadata based caching
 
 ---
 
-_Issue opened by @konstin on 2023-11-21 16:08_
+_@konstin_
 
 Both the interpreter info as well as path deps need to cache while using the file modification timestamp for cache invalidation. We should abstract this into a shared util, like we do with the `CachedClient`
 

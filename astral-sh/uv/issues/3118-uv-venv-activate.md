@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-18T08:42:04Z
 updated_at: 2024-04-19T00:23:41Z
 url: https://github.com/astral-sh/uv/issues/3118
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # uv venv activate
 
 ---
 
-_Issue opened by @katterfelto on 2024-04-18 08:42_
+_@katterfelto_
 
 I am really liking `uv`, great job!
 

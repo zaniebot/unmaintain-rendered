@@ -13,14 +13,14 @@ head: zb/compat-validate
 created_at: 2026-01-07T23:17:16Z
 updated_at: 2026-01-08T19:17:16Z
 url: https://github.com/astral-sh/ty/pull/2388
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Fail if maturin produces a PyPI incompatible wheel
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-07 23:17_
+_@zanieb_
 
 When we use automatic manylinux tag determination, we need to ensure that the wheel is uploadable to PyPI or the job will fail downstream and cause a partial release. 
 

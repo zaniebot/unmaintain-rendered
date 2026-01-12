@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-04T06:09:35Z
 updated_at: 2024-11-04T06:55:14Z
 url: https://github.com/astral-sh/ruff/issues/14086
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # How to avoid automatically adding parentheses when exceeding line-length？
 
 ---
 
-_Issue opened by @QJieWang on 2024-11-04 06:09_
+_@QJieWang_
 
 I have looked up the documentation to avoid automatically adding parentheses, but found no methods. I prefer to use `\` rather than `()` when exceeding the line length. How can I change this?
 

@@ -15,14 +15,14 @@ head: konsti/read-python-from-registry
 created_at: 2024-08-28T15:47:17Z
 updated_at: 2024-08-29T20:48:25Z
 url: https://github.com/astral-sh/uv/pull/6761
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:31Z
 ```
 
 # Use windows registry to discover python
 
 ---
 
-_Pull request opened by @konstin on 2024-08-28 15:47_
+_@konstin_
 
 Our current strategy of parsing the output of `py --list-paths` to get the installed python versions on windows is brittle (#6524, missing `py`, etc.) and it's slow (10ms last time i measured).
 

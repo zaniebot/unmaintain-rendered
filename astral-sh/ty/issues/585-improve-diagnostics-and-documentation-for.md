@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-05T12:25:29Z
 updated_at: 2025-11-13T15:31:54Z
 url: https://github.com/astral-sh/ty/issues/585
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Improve diagnostics (and documentation) for unresolved imports caused by editable installs that use setuptools as their build backend
 
 ---
 
-_Issue opened by @SoftwareApe on 2025-06-05 12:25_
+_@SoftwareApe_
 
 ### Summary
 

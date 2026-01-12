@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-16T15:26:04Z
 updated_at: 2025-12-15T17:15:57Z
 url: https://github.com/astral-sh/uv/issues/11555
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:40Z
 ```
 
 # Installation of PyDev.Debugger failed using uv
 
 ---
 
-_Issue opened by @emcek on 2025-02-16 15:26_
+_@emcek_
 
 ### Summary
 

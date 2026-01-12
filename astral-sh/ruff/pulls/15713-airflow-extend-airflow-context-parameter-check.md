@@ -14,14 +14,14 @@ head: extend-airflow-context-check
 created_at: 2025-01-24T10:45:39Z
 updated_at: 2025-02-03T05:48:40Z
 url: https://github.com/astral-sh/ruff/pull/15713
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`airflow`] Extend airflow context parameter check for `BaseOperator.execute` (`AIR302`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-01-24 10:45_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

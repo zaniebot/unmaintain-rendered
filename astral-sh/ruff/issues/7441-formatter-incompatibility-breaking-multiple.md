@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-16T16:43:34Z
 updated_at: 2023-11-10T04:32:32Z
 url: https://github.com/astral-sh/ruff/issues/7441
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter incompatibility: breaking multiple context managers
 
 ---
 
-_Issue opened by @charliermarsh on 2023-09-16 16:43_
+_@charliermarsh_
 
 Given:
 

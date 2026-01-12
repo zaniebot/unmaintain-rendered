@@ -13,14 +13,14 @@ head: cjm/unbound
 created_at: 2025-04-10T03:55:36Z
 updated_at: 2025-04-10T14:05:40Z
 url: https://github.com/astral-sh/ruff/pull/17326
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] avoid unnecessary evaluation of visibility constraint on definitely-unbound symbol
 
 ---
 
-_Pull request opened by @carljm on 2025-04-10 03:55_
+_@carljm_
 
 This causes spurious query cycles.
 

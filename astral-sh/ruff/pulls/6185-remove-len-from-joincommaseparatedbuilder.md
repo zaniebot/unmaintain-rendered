@@ -13,14 +13,14 @@ head: remove-len-from-comma-separated-builder
 created_at: 2023-07-31T08:32:05Z
 updated_at: 2023-07-31T12:40:21Z
 url: https://github.com/astral-sh/ruff/pull/6185
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Remove `len` from `JoinCommaSeparatedBuilder`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-31 08:32_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

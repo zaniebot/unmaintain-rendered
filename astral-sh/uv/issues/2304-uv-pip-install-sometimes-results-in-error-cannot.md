@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-08T19:01:27Z
 updated_at: 2024-03-14T01:08:13Z
 url: https://github.com/astral-sh/uv/issues/2304
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # uv pip install sometimes results in `error: Cannot uninstall package; RECORD file not found at ...`
 
 ---
 
-_Issue opened by @mkleinbort-ic on 2024-03-08 19:01_
+_@mkleinbort-ic_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

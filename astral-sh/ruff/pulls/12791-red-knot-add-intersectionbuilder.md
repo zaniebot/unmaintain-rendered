@@ -13,14 +13,14 @@ head: cjm/union-intersection
 created_at: 2024-08-09T23:17:28Z
 updated_at: 2024-08-12T18:56:06Z
 url: https://github.com/astral-sh/ruff/pull/12791
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] add IntersectionBuilder
 
 ---
 
-_Pull request opened by @carljm on 2024-08-09 23:17_
+_@carljm_
 
 For type narrowing, we'll need intersections (since applying type narrowing is just a type intersection.)
 

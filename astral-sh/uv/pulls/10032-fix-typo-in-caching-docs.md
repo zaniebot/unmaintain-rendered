@@ -13,14 +13,14 @@ head: fix-caching-docs
 created_at: 2024-12-19T16:26:39Z
 updated_at: 2024-12-19T17:15:32Z
 url: https://github.com/astral-sh/uv/pull/10032
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:05Z
 ```
 
 # Fix typo in Caching docs
 
 ---
 
-_Pull request opened by @slocoro on 2024-12-19 16:26_
+_@slocoro_
 
 Fix typo in Caching docs
 

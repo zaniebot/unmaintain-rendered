@@ -13,14 +13,14 @@ head: unnecessary-enumerate
 created_at: 2023-09-17T11:24:42Z
 updated_at: 2023-09-25T13:43:58Z
 url: https://github.com/astral-sh/ruff/pull/7454
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # [`refurb`] Implement `unnecessary-enumerate` (`FURB148`)
 
 ---
 
-_Pull request opened by @tjkuson on 2023-09-17 11:24_
+_@tjkuson_
 
 ## Summary
 

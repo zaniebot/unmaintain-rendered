@@ -13,14 +13,14 @@ head: alex/simple-mro
 created_at: 2024-10-31T22:18:58Z
 updated_at: 2024-11-04T20:11:11Z
 url: https://github.com/astral-sh/ruff/pull/14027
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Add MRO resolution for classes (take 2)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-31 22:18_
+_@AlexWaygood_
 
 A second attempt at implementing MRO resolution (see #13722 for the first attempt). Unlike the first attempt, this version does _not_ attempt to handle union types in a class's bases list (which would potentially mean that you would have to consider multiple possible MROs for any given class).
 

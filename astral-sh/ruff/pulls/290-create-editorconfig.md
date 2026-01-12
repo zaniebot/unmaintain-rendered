@@ -12,14 +12,14 @@ head: patch-3
 created_at: 2022-09-30T07:13:58Z
 updated_at: 2022-09-30T13:15:09Z
 url: https://github.com/astral-sh/ruff/pull/290
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Create .editorconfig
 
 ---
 
-_Pull request opened by @sobolevn on 2022-09-30 07:13_
+_@sobolevn_
 
 Docs: https://editorconfig.org/
 Examples:

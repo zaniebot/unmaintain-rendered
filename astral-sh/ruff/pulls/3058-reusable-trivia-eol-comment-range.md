@@ -11,14 +11,14 @@ head: trivia-eol
 created_at: 2023-02-20T13:05:11Z
 updated_at: 2023-02-25T16:42:10Z
 url: https://github.com/astral-sh/ruff/pull/3058
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # reusable trivia.eol_comment_range()
 
 ---
 
-_Pull request opened by @youknowone on 2023-02-20 13:05_
+_@youknowone_
 
 _No description provided._
 

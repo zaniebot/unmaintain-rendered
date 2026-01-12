@@ -11,14 +11,14 @@ head: doc_PyPI_uvx
 created_at: 2025-03-30T16:34:55Z
 updated_at: 2025-04-16T14:59:10Z
 url: https://github.com/astral-sh/uv/pull/12559
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:19Z
 ```
 
 # Docs: Clarify uvx on PyPI is unofficial.
 
 ---
 
-_Pull request opened by @FishAlchemist on 2025-03-30 16:34_
+_@FishAlchemist_
 
 ## Summary
 

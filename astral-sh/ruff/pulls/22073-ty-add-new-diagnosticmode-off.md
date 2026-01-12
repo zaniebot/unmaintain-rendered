@@ -15,14 +15,14 @@ head: micha/diagnostic-mode-off
 created_at: 2025-12-19T10:04:23Z
 updated_at: 2025-12-22T15:46:04Z
 url: https://github.com/astral-sh/ruff/pull/22073
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Add new `diagnosticMode: off`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-19 10:04_
+_@MichaReiser_
 
 ## Summary
 

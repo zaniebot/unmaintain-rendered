@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-09T21:27:20Z
 updated_at: 2024-10-10T12:00:57Z
 url: https://github.com/astral-sh/uv/issues/8058
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # relocatable entrypoints stop working if symlinked to
 
 ---
 
-_Issue opened by @paveldikov on 2024-10-09 21:27_
+_@paveldikov_
 
 The order of operations in the path canonicalisation is wrong, because of self-imposed usage of a very spartan subset of POSIX shell utilities (I'm sorry -- that was my doing 😰). Consider:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-14T14:42:14Z
 updated_at: 2024-08-23T13:42:12Z
 url: https://github.com/astral-sh/uv/issues/5046
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Bad resolver error for `colabfold[alphafold]==1.5.5` on python 3.11
 
 ---
 
-_Issue opened by @konstin on 2024-07-14 14:42_
+_@konstin_
 
 The resolver error for `echo "colabfold[alphafold]==1.5.5" | cargo run pip compile -p 3.11 --universal -` is verbose and has multiple problems. I'm filing this as one ticket rather than multiple since i expect that some of this is #5045 and others may be the same underlying problem. We should split it into multiple after tracking down the cause of the different problems.
 

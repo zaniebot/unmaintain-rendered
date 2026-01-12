@@ -13,14 +13,14 @@ head: zb/troubleshooting
 created_at: 2025-01-24T21:12:58Z
 updated_at: 2025-01-27T19:29:35Z
 url: https://github.com/astral-sh/uv/pull/10947
-synced_at: 2026-01-10T11:45:19Z
+synced_at: 2026-01-12T16:09:36Z
 ```
 
 # Add a troubleshooting section and reproducible example guide
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-24 21:12_
+_@zanieb_
 
 _No description provided._
 

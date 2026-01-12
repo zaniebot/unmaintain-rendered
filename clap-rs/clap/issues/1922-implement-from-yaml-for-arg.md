@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-05-12T08:37:39Z
 updated_at: 2020-05-27T14:29:39Z
 url: https://github.com/clap-rs/clap/issues/1922
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Implement `From<Yaml>` for Arg
 
 ---
 
-_Issue opened by @pksunkara on 2020-05-12 08:37_
+_@pksunkara_
 
 <!-- Issuehunt Badges -->
 [<img alt="Issuehunt badges" src="https://img.shields.io/badge/IssueHunt-%245%20Rewarded-%237E24E3.svg" />](https://issuehunt.io/r/clap-rs/clap/issues/1922)

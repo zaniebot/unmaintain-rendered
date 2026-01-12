@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-08T10:48:17Z
 updated_at: 2026-01-09T17:01:11Z
 url: https://github.com/astral-sh/ruff/issues/20762
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF100 fix removes remaining comment
 
 ---
 
-_Issue opened by @adamtheturtle on 2025-10-08 10:48_
+_@adamtheturtle_
 
 ### Summary
 

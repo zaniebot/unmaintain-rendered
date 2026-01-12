@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-28T05:55:33Z
 updated_at: 2025-11-18T16:10:29Z
 url: https://github.com/astral-sh/ty/issues/529
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Support or work-around for alternative base class declaration
 
 ---
 
-_Issue opened by @dimaqq on 2025-05-28 05:55_
+_@dimaqq_
 
 ### Question
 

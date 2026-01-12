@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-13T07:33:50Z
 updated_at: 2025-10-14T15:46:56Z
 url: https://github.com/astral-sh/ty/issues/1341
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Distinguish "declared" and "inferred" `Place`s
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-13 07:33_
+_@sharkdp_
 
 A `Place` is currently either `Place::Unbound`, `Place::Type(type, Boundness::PossiblyUnbound` or `Place::Type(type, Boundness::Bound)`:
 

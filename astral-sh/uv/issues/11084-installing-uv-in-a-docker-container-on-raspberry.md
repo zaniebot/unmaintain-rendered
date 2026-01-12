@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-29T21:57:37Z
 updated_at: 2025-01-30T21:03:09Z
 url: https://github.com/astral-sh/uv/issues/11084
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:27Z
 ```
 
 # Installing uv in a Docker container on Raspberry Pi (ARM)
 
 ---
 
-_Issue opened by @carrollpaul on 2025-01-29 21:57_
+_@carrollpaul_
 
 ### Question
 

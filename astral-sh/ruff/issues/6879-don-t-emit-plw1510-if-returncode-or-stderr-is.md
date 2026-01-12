@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-25T18:56:08Z
 updated_at: 2023-08-25T21:42:35Z
 url: https://github.com/astral-sh/ruff/issues/6879
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Don't emit `PLW1510` if `returncode` or `stderr` is checked explicitly
 
 ---
 
-_Issue opened by @dosisod on 2023-08-25 18:56_
+_@dosisod_
 
 `PLW1510` is meant to detect users not handling the return code of a subprocess, but there are other ways of checking the return code besides the `check` argument:
 

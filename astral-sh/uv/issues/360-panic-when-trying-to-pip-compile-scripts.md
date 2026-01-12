@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-07T18:06:20Z
 updated_at: 2023-11-07T18:58:19Z
 url: https://github.com/astral-sh/uv/issues/360
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # panic when trying to `pip-compile scripts/benchmarks/requirements/pydantic.in` for the second time
 
 ---
 
-_Issue opened by @BurntSushi on 2023-11-07 18:06_
+_@BurntSushi_
 
 To reproduce:
 

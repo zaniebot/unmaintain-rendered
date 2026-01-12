@@ -14,14 +14,14 @@ head: charlie/context
 created_at: 2024-06-11T23:55:51Z
 updated_at: 2024-08-19T19:37:00Z
 url: https://github.com/astral-sh/uv/pull/4257
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:07Z
 ```
 
 # Move concurrency settings to top-level
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-11 23:55_
+_@charliermarsh_
 
 ## Summary
 

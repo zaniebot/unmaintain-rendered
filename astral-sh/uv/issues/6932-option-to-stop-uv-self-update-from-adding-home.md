@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-02T09:49:07Z
 updated_at: 2024-09-06T09:59:38Z
 url: https://github.com/astral-sh/uv/issues/6932
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Option to stop `uv self update` from adding `. $HOME/.local/share/cargo/env`?
 
 ---
 
-_Issue opened by @baggiponte on 2024-09-02 09:49_
+_@baggiponte_
 
 Ciao! With rust on my machine already, my shell already sources the `cargo/env` script. Every time that I upgrade uv to a newer version with `uv self update`, the line is added to my zshrc and fish conf dir (which I do not use). This is absolutely nothing high priority, but I was wondering if you would consider setting an option to disable this behaviour.
 

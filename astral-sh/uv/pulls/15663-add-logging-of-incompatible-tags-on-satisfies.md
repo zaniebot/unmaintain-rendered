@@ -13,14 +13,14 @@ head: zb/incompatible-tag-log
 created_at: 2025-09-03T13:46:31Z
 updated_at: 2025-09-03T16:45:51Z
 url: https://github.com/astral-sh/uv/pull/15663
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:52Z
 ```
 
 # Add logging of incompatible tags on satisfies check
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-03 13:46_
+_@zanieb_
 
 I was trying to understand https://github.com/astral-sh/uv/issues/9559 and think we need more logs to see what's going on. 
 

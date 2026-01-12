@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-15T00:45:54Z
 updated_at: 2025-07-07T11:23:45Z
 url: https://github.com/astral-sh/uv/issues/14040
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # uv cannot find resolution for required-environment `sys_platform == 'win32' and platform_machine == 'AMD64'`
 
 ---
 
-_Issue opened by @RazerM on 2025-06-15 00:45_
+_@RazerM_
 
 ### Summary
 

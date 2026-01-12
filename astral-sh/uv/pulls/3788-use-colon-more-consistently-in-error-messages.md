@@ -13,14 +13,14 @@ head: konsti/more-consistent-colon
 created_at: 2024-05-23T11:32:26Z
 updated_at: 2024-05-23T12:33:22Z
 url: https://github.com/astral-sh/uv/pull/3788
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:51Z
 ```
 
 # Use colon more consistently in error messages
 
 ---
 
-_Pull request opened by @konstin on 2024-05-23 11:32_
+_@konstin_
 
 Make the error messages more consistent with the format use elsewhere. Split out from https://github.com/astral-sh/uv/pull/3705
 

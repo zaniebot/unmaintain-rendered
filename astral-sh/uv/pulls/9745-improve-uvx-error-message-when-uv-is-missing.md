@@ -13,14 +13,14 @@ head: zb/uvx-missing
 created_at: 2024-12-09T19:13:57Z
 updated_at: 2025-01-21T23:06:58Z
 url: https://github.com/astral-sh/uv/pull/9745
-synced_at: 2026-01-10T11:44:30Z
+synced_at: 2026-01-12T16:08:57Z
 ```
 
 # Improve uvx error message when uv is missing
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-09 19:13_
+_@zanieb_
 
 from https://github.com/astral-sh/uv/issues/9742
 

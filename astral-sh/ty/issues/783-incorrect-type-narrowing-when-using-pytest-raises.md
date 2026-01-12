@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-08T15:42:06Z
 updated_at: 2025-11-28T08:20:26Z
 url: https://github.com/astral-sh/ty/issues/783
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # incorrect type narrowing when using `pytest.raises`
 
 ---
 
-_Issue opened by @graipher on 2025-07-08 15:42_
+_@graipher_
 
 ### Summary
 

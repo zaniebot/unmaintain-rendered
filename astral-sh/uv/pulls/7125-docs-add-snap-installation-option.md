@@ -11,14 +11,14 @@ head: install-snap
 created_at: 2024-09-06T13:11:18Z
 updated_at: 2024-09-18T18:44:21Z
 url: https://github.com/astral-sh/uv/pull/7125
-synced_at: 2026-01-10T12:53:40Z
+synced_at: 2026-01-12T16:07:42Z
 ```
 
 # docs: add snap installation option
 
 ---
 
-_Pull request opened by @lengau on 2024-09-06 13:11_
+_@lengau_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

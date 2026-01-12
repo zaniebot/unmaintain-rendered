@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-26T01:14:08Z
 updated_at: 2024-11-10T03:03:35Z
 url: https://github.com/astral-sh/ruff/issues/13519
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `INP001` doesn't trigger if there are no Python files in the immediate directory
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-26 01:14_
+_@charliermarsh_
 
 If you have a directory within your project that's missing an `__init__.py` file, but it only contains Python modules (directories with `__init__.py` files), and no Python _files_, we won't catch it in the [implicit namespace package](https://docs.astral.sh/ruff/rules/implicit-namespace-package/) rule.
 

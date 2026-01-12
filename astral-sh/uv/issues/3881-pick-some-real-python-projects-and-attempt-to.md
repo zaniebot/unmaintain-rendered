@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-28T13:40:57Z
 updated_at: 2024-07-30T15:35:16Z
 url: https://github.com/astral-sh/uv/issues/3881
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # pick some real Python projects and attempt to port them to `uv` with universal locking
 
 ---
 
-_Issue opened by @BurntSushi on 2024-05-28 13:40_
+_@BurntSushi_
 
 I'd like to start small (as in, a small dependency tree) but with a project that benefits from having a platform independent lock file. So probably a project that utilizes the universal locking of Poetry or PDM.
 

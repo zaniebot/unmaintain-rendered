@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-11T17:29:39Z
 updated_at: 2025-10-12T12:29:33Z
 url: https://github.com/astral-sh/uv/issues/16254
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # Inadvertently convert HOME directory with uv init
 
 ---
 
-_Issue opened by @wyatt-wong on 2025-10-11 17:29_
+_@wyatt-wong_
 
 ### Question
 

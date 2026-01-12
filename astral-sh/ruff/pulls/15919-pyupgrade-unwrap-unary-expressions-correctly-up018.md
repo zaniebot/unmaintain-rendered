@@ -14,14 +14,14 @@ head: UP018
 created_at: 2025-02-04T00:26:37Z
 updated_at: 2025-02-14T08:23:46Z
 url: https://github.com/astral-sh/ruff/pull/15919
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`pyupgrade`] Unwrap unary expressions correctly (`UP018`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-04 00:26_
+_@InSyncWithFoo_
 
 ## Summary
 

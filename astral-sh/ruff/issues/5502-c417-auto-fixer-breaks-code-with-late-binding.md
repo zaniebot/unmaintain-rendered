@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-04T13:55:38Z
 updated_at: 2023-07-05T02:11:30Z
 url: https://github.com/astral-sh/ruff/issues/5502
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # C417 auto-fixer breaks code with late-binding
 
 ---
 
-_Issue opened by @mrcljx on 2023-07-04 13:55_
+_@mrcljx_
 
 Version: ruff 0.0.276 (no regression though)
 

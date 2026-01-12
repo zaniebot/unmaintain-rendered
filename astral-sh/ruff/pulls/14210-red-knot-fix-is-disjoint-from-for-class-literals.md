@@ -13,14 +13,14 @@ head: david/fix-is_disjoint_from-class-literals
 created_at: 2024-11-08T19:31:17Z
 updated_at: 2024-11-11T08:06:33Z
 url: https://github.com/astral-sh/ruff/pull/14210
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Fix `is_disjoint_from` for class literals
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-08 19:31_
+_@sharkdp_
 
 ## Summary
 

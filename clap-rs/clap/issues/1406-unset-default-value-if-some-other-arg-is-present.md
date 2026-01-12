@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-01-27T06:17:46Z
 updated_at: 2021-03-10T12:43:53Z
 url: https://github.com/clap-rs/clap/issues/1406
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # unset default value if some other Arg is present (or has a specific value)
 
 ---
 
-_Issue opened by @delan on 2019-01-27 06:17_
+_@delan_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

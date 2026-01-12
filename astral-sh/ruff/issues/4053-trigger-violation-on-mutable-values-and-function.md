@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-20T23:08:03Z
 updated_at: 2023-06-12T16:55:30Z
 url: https://github.com/astral-sh/ruff/issues/4053
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Trigger violation on mutable values and function calls for non-dataclass attribute defaults
 
 ---
 
-_Issue opened by @adampauls on 2023-04-20 23:08_
+_@adampauls_
 
 This is a feature request. I see in [this PR](https://github.com/charliermarsh/ruff/pull/3877) that there is some recent work in flagging mutable and function call defaults for dataclass attributes. Is there a plan to enable this check for non-dataclass attributes  as well? Right now, no Python tooling I know of catches this bug:
 

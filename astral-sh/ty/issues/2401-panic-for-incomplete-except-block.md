@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-08T18:09:38Z
 updated_at: 2026-01-09T03:47:55Z
 url: https://github.com/astral-sh/ty/issues/2401
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # panic for incomplete except block
 
 ---
 
-_Issue opened by @carljm on 2026-01-08 18:09_
+_@carljm_
 
 > [@AlexWaygood](https://github.com/AlexWaygood) saw a similar panic while typing in an `except` block.
 > 

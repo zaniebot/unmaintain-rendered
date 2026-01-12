@@ -13,14 +13,14 @@ head: charlie/trail
 created_at: 2024-01-04T05:29:40Z
 updated_at: 2024-01-04T14:46:25Z
 url: https://github.com/astral-sh/uv/pull/771
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:11Z
 ```
 
 # Make index URLs insensitive to trailing slashes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-04 05:29_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/770.
 

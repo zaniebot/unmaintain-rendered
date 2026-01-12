@@ -13,14 +13,14 @@ head: zb/version-docs
 created_at: 2025-04-30T19:30:01Z
 updated_at: 2025-05-01T12:55:54Z
 url: https://github.com/astral-sh/uv/pull/13241
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:37Z
 ```
 
 # Update "Viewing the version" docs
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-30 19:30_
+_@zanieb_
 
 Updates this section for
 

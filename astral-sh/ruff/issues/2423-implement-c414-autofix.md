@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T22:44:06Z
 updated_at: 2023-02-12T05:20:46Z
 url: https://github.com/astral-sh/ruff/issues/2423
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement C414 autofix
 
 ---
 
-_Issue opened by @spaceone on 2023-01-31 22:44_
+_@spaceone_
 
 C414 unnecessary-double-cast-or-process should be fairly easy autofixable.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-12T20:53:35Z
 updated_at: 2025-12-18T15:42:07Z
 url: https://github.com/astral-sh/ruff/issues/18653
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PT010 should be updated for pytest 8.4.0
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-12 20:53_
+_@dscorbett_
 
 ### Summary
 

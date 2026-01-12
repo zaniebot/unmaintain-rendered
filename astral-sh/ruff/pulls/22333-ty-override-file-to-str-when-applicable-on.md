@@ -13,14 +13,14 @@ head: type-module-dunder-file-str
 created_at: 2026-01-01T20:21:52Z
 updated_at: 2026-01-08T15:41:46Z
 url: https://github.com/astral-sh/ruff/pull/22333
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Override `__file__` to str when applicable on imported modules
 
 ---
 
-_Pull request opened by @sinon on 2026-01-01 20:21_
+_@sinon_
 
 ## Summary
 

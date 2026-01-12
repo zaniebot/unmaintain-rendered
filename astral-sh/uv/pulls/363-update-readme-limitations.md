@@ -12,14 +12,14 @@ head: charlie/readme
 created_at: 2023-11-08T02:58:02Z
 updated_at: 2023-11-08T03:01:35Z
 url: https://github.com/astral-sh/uv/pull/363
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:54Z
 ```
 
 # Update README limitations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-08 02:58_
+_@charliermarsh_
 
 _No description provided._
 

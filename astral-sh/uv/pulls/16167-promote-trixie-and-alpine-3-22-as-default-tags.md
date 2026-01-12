@@ -12,14 +12,14 @@ head: zb/trixie-default
 created_at: 2025-10-07T22:12:53Z
 updated_at: 2025-10-07T22:32:30Z
 url: https://github.com/astral-sh/uv/pull/16167
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:09Z
 ```
 
 # Promote trixie and alpine 3.22 as default tags
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-07 22:12_
+_@zanieb_
 
 Testing #15352
 

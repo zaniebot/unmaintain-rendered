@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-30T14:19:05Z
 updated_at: 2025-02-21T21:11:58Z
 url: https://github.com/astral-sh/uv/issues/11095
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # Add monorepo support to uv with `uv init --monorepo` and other supporting commands
 
 ---
 
-_Issue opened by @matthewadams on 2025-01-30 14:19_
+_@matthewadams_
 
 ### Summary
 

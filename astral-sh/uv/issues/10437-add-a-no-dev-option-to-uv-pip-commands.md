@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-09T16:50:53Z
 updated_at: 2025-01-10T13:26:47Z
 url: https://github.com/astral-sh/uv/issues/10437
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:13Z
 ```
 
 # Add a --no-dev option to `uv pip` commands
 
 ---
 
-_Issue opened by @soapergem on 2025-01-09 16:50_
+_@soapergem_
 
 It would be nice to include a `--no-dev` option to commands like:
 * uv pip install

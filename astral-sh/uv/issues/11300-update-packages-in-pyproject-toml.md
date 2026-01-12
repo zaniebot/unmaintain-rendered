@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-06T23:46:22Z
 updated_at: 2025-02-06T23:52:34Z
 url: https://github.com/astral-sh/uv/issues/11300
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # Update packages in pyproject.toml
 
 ---
 
-_Issue opened by @wanderleihuttel on 2025-02-06 23:46_
+_@wanderleihuttel_
 
 ### Question
 

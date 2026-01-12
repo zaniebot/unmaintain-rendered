@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-25T08:45:39Z
 updated_at: 2025-07-28T10:06:48Z
 url: https://github.com/astral-sh/uv/issues/14885
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:58Z
 ```
 
 # `uv` attempts to install the newer version if one has been released while `uv` is running.
 
 ---
 
-_Issue opened by @babinskiy on 2025-07-25 08:45_
+_@babinskiy_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2025-03-27T01:59:36Z
 updated_at: 2025-03-27T21:11:52Z
 url: https://github.com/astral-sh/uv/pull/12502
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:18Z
 ```
 
 # Respect build constraints in `uv sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-27 01:59_
+_@charliermarsh_
 
 ## Summary
 

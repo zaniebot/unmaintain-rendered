@@ -13,14 +13,14 @@ head: ibraheem/mypy-primer-release
 created_at: 2025-09-23T16:22:11Z
 updated_at: 2025-09-26T05:59:50Z
 url: https://github.com/astral-sh/ruff/pull/20537
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [ty] Run mypy-primer in release mode
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-09-23 16:22_
+_@ibraheemdev_
 
 ## Summary
 

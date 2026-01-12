@@ -13,14 +13,14 @@ head: charlie/walrus
 created_at: 2023-12-13T00:47:06Z
 updated_at: 2023-12-13T01:07:34Z
 url: https://github.com/astral-sh/ruff/pull/9109
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Add named expression handling to `find_assigned_value`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-13 00:47_
+_@charliermarsh_
 
 _No description provided._
 

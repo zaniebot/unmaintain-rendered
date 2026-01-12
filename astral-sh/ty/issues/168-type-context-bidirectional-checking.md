@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-19T00:25:07Z
 updated_at: 2025-10-17T03:17:42Z
 url: https://github.com/astral-sh/ty/issues/168
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # type context (bidirectional checking)
 
 ---
 
-_Issue opened by @carljm on 2025-03-19 00:25_
+_@carljm_
 
 Currently red-knot does "inside-out" type inference. The type of an expression is inferred by inferring types for all sub-expressions, bottom-up, and using those to infer a type for the outer expression. A given expression's type is independent of the expression or statement it is part of; it depends only on the expression itself (and of course on name resolution.)
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2018-06-24T18:31:28Z
 updated_at: 2018-08-02T03:30:25Z
 url: https://github.com/clap-rs/clap/issues/1303
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Make arg.short accept char instead of &str
 
 ---
 
-_Issue opened by @Pzixel on 2018-06-24 18:31_
+_@Pzixel_
 
 I'm writing an app using clap and it's wonderful. But I've encountered a problem with flags. I used this code:
 

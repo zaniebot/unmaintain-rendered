@@ -13,14 +13,14 @@ head: zb/typo-allow-unused
 created_at: 2024-10-07T18:43:19Z
 updated_at: 2024-10-07T19:08:39Z
 url: https://github.com/astral-sh/ruff/pull/13669
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Fix typo in `allow-unused-imports` documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-07 18:43_
+_@zanieb_
 
 _No description provided._
 

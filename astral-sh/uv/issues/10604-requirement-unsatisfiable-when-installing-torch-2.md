@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-14T17:07:27Z
 updated_at: 2025-01-14T17:29:30Z
 url: https://github.com/astral-sh/uv/issues/10604
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # Requirement unsatisfiable when installing torch 2.4.1
 
 ---
 
-_Issue opened by @pharmapsychotic on 2025-01-14 17:07_
+_@pharmapsychotic_
 
 # Steps to reproduce error
 ```shell

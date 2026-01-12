@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-27T16:13:45Z
 updated_at: 2025-12-27T19:08:59Z
 url: https://github.com/astral-sh/ty/issues/2237
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # io.TextIOWrapper: "Definition is incompatible with `IO.write`"
 
 ---
 
-_Issue opened by @bastimeyer on 2025-12-27 16:13_
+_@bastimeyer_
 
 ### Summary
 

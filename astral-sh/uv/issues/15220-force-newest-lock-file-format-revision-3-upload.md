@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-11T13:36:40Z
 updated_at: 2025-09-22T07:36:48Z
 url: https://github.com/astral-sh/uv/issues/15220
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # Force newest lock file format (revision = 3, upload-time=...)
 
 ---
 
-_Issue opened by @Ben-grmbl on 2025-08-11 13:36_
+_@Ben-grmbl_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-27T02:45:21Z
 updated_at: 2024-08-29T17:46:44Z
 url: https://github.com/astral-sh/uv/issues/6668
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Export `uv.lock` to `requirements.txt`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-27 02:45_
+_@charliermarsh_
 
 _No description provided._
 

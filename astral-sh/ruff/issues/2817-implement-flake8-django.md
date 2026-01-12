@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-12T16:59:22Z
 updated_at: 2023-03-22T03:07:59Z
 url: https://github.com/astral-sh/ruff/issues/2817
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Implement `flake8-django`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-02-12 16:59_
+_@charliermarsh_
 
 - [X] DJ01
 - [x] DJ03

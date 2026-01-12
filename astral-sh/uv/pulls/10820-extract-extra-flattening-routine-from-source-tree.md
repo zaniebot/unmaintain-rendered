@@ -14,14 +14,14 @@ head: charlie/flat
 created_at: 2025-01-21T19:40:01Z
 updated_at: 2025-01-21T19:52:56Z
 url: https://github.com/astral-sh/uv/pull/10820
-synced_at: 2026-01-10T11:45:12Z
+synced_at: 2026-01-12T16:09:30Z
 ```
 
 # Extract extra-flattening routine from source tree resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-21 19:40_
+_@charliermarsh_
 
 ## Summary
 

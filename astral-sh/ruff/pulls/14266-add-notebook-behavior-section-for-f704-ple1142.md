@@ -13,14 +13,14 @@ head: dhruv/docs
 created_at: 2024-11-11T10:49:49Z
 updated_at: 2024-11-11T11:03:40Z
 url: https://github.com/astral-sh/ruff/pull/14266
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Add "Notebook behavior" section for `F704`, `PLE1142`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-11 10:49_
+_@dhruvmanila_
 
 ## Summary
 

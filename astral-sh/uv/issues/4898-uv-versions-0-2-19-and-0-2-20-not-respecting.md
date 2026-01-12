@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-08T14:26:57Z
 updated_at: 2024-07-08T16:32:10Z
 url: https://github.com/astral-sh/uv/issues/4898
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # uv versions 0.2.19 and 0.2.20 not respecting wheel dependecies
 
 ---
 
-_Issue opened by @atrbgithub on 2024-07-08 14:26_
+_@atrbgithub_
 
 Given the following:
 

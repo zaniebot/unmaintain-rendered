@@ -15,14 +15,14 @@ head: charlie/print
 created_at: 2024-08-20T15:38:00Z
 updated_at: 2024-08-20T15:44:16Z
 url: https://github.com/astral-sh/uv/pull/6256
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:18Z
 ```
 
 # Show `python find` output with `-q`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-20 15:38_
+_@charliermarsh_
 
 _No description provided._
 

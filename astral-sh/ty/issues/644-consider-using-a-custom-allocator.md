@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T06:39:48Z
 updated_at: 2025-12-31T15:27:30Z
 url: https://github.com/astral-sh/ty/issues/644
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Consider using a custom allocator
 
 ---
 
-_Issue opened by @MichaReiser on 2025-06-13 06:39_
+_@MichaReiser_
 
 Mainly, mi-malloc. Considerations here are
 

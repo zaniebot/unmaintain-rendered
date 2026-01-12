@@ -13,14 +13,14 @@ head: exclude-upgrade-package-header
 created_at: 2024-07-13T03:43:44Z
 updated_at: 2024-07-13T04:55:02Z
 url: https://github.com/astral-sh/uv/pull/5032
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:35Z
 ```
 
 # pip compile: exclude --upgrade-package from the header
 
 ---
 
-_Pull request opened by @skshetry on 2024-07-13 03:43_
+_@skshetry_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: unnecessary-generator-set-autofix-parentheses
 created_at: 2025-01-17T16:05:20Z
 updated_at: 2025-01-17T17:15:11Z
 url: https://github.com/astral-sh/ruff/pull/15553
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`flake8-comprehensions`] strip parentheses around generators in `unnecessary-generator-set` (`C401`)
 
 ---
 
-_Pull request opened by @wooly18 on 2025-01-17 16:05_
+_@wooly18_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

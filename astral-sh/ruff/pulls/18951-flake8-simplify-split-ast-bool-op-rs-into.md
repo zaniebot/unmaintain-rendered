@@ -12,14 +12,14 @@ head: split-ast_bool_op
 created_at: 2025-06-26T05:47:20Z
 updated_at: 2025-07-11T22:55:13Z
 url: https://github.com/astral-sh/ruff/pull/18951
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [`flake8-simplify`] Split `ast_bool_op.rs` into multiple files
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-26 05:47_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

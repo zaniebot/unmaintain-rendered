@@ -13,14 +13,14 @@ head: dhruv/uv-publish
 created_at: 2024-11-01T14:24:40Z
 updated_at: 2024-11-01T14:54:31Z
 url: https://github.com/astral-sh/ruff/pull/14042
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Switch to `uv publish`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-01 14:24_
+_@dhruvmanila_
 
 ## Summary
 

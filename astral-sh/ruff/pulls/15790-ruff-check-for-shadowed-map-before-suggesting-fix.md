@@ -15,14 +15,14 @@ head: brent/shadow-map
 created_at: 2025-01-28T17:07:29Z
 updated_at: 2025-01-28T19:15:39Z
 url: https://github.com/astral-sh/ruff/pull/15790
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`ruff`] Check for shadowed `map` before suggesting fix (`RUF058`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-01-28 17:07_
+_@ntBre_
 
 ## Summary
 

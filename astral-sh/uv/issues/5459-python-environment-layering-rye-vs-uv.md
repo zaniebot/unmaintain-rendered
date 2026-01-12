@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-25T18:33:04Z
 updated_at: 2024-07-25T23:32:45Z
 url: https://github.com/astral-sh/uv/issues/5459
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Python environment "layering" Rye vs Uv
 
 ---
 
-_Issue opened by @bluss on 2024-07-25 18:33_
+_@bluss_
 
 Here we are comparing `rye run` and `uv run`, how they behave w.r.t the python virtual environment they are started from.
 

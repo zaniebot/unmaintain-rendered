@@ -13,14 +13,14 @@ head: unused-variablie-preview-behavior
 created_at: 2024-08-12T11:22:32Z
 updated_at: 2024-08-12T11:35:57Z
 url: https://github.com/astral-sh/ruff/pull/12841
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Add link to relevant issue for unused variable preview behavior
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-12 11:22_
+_@MichaReiser_
 
 So that we don't have to search for the issue everytime
 

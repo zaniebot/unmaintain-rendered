@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-16T12:25:28Z
 updated_at: 2024-10-16T13:36:10Z
 url: https://github.com/astral-sh/uv/issues/8252
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # `uv pip install` fails when building from git repo
 
 ---
 
-_Issue opened by @DetachHead on 2024-10-16 12:25_
+_@DetachHead_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

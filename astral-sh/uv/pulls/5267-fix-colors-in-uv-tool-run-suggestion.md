@@ -14,14 +14,14 @@ head: charlie/color
 created_at: 2024-07-21T23:34:19Z
 updated_at: 2024-07-21T23:43:28Z
 url: https://github.com/astral-sh/uv/pull/5267
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:43Z
 ```
 
 # Fix colors in `uv tool run` suggestion
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-21 23:34_
+_@charliermarsh_
 
 ## Summary
 

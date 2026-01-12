@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-23T16:07:01Z
 updated_at: 2025-07-14T17:18:50Z
 url: https://github.com/astral-sh/uv/issues/7643
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # `uv run --with` should not allow modifications to the `--with` environment
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-23 16:07_
+_@charliermarsh_
 
 The `--with` dependencies use a cached environment based on the resolved dependencies. If users modify that environment, it could affect `--with` invocations in other projects.
 

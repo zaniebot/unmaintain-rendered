@@ -13,14 +13,14 @@ head: charlie/ex-newer
 created_at: 2025-01-29T23:35:58Z
 updated_at: 2025-01-30T00:44:22Z
 url: https://github.com/astral-sh/uv/pull/11085
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:40Z
 ```
 
 # Allow `--exclude-newer` to be set at the test context level
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-29 23:35_
+_@charliermarsh_
 
 ## Summary
 

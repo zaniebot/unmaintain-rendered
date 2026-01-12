@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-24T10:15:55Z
 updated_at: 2023-12-01T03:04:59Z
 url: https://github.com/astral-sh/ruff/issues/6849
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # TCH002 false positive with `singledispatch`
 
 ---
 
-_Issue opened by @flying-sheep on 2023-08-24 10:15_
+_@flying-sheep_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

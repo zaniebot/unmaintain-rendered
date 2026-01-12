@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T14:23:24Z
 updated_at: 2024-08-30T19:02:07Z
 url: https://github.com/astral-sh/uv/issues/6872
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # `Error: cannot uninstall package` occurs on installing a package a second time
 
 ---
 
-_Issue opened by @mweislley on 2024-08-30 14:23_
+_@mweislley_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-13T05:28:02Z
 updated_at: 2024-12-13T21:06:40Z
 url: https://github.com/astral-sh/uv/issues/9861
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # Resolver error trees with collapsed unavailable conclusion is out of order
 
 ---
 
-_Issue opened by @zanieb on 2024-12-13 05:28_
+_@zanieb_
 
 e.g.,
 

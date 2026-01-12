@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-26T19:14:25Z
 updated_at: 2024-05-26T19:17:18Z
 url: https://github.com/astral-sh/uv/issues/3843
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # `uv run` always installs project even already installed in editable mode
 
 ---
 
-_Issue opened by @Vigilans on 2024-05-26 19:14_
+_@Vigilans_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

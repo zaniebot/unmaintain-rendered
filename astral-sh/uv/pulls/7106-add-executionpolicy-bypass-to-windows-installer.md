@@ -14,14 +14,14 @@ head: zb/install-bypass
 created_at: 2024-09-05T23:36:34Z
 updated_at: 2024-09-06T00:41:42Z
 url: https://github.com/astral-sh/uv/pull/7106
-synced_at: 2026-01-10T12:53:40Z
+synced_at: 2026-01-12T16:07:41Z
 ```
 
 # Add `-ExecutionPolicy ByPass` to Windows installer recommendations
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-05 23:36_
+_@zanieb_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-18T18:46:52Z
 updated_at: 2025-08-15T01:24:14Z
 url: https://github.com/astral-sh/ty/issues/682
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # fatal runtime error: stack overflow
 
 ---
 
-_Issue opened by @nzedler on 2025-06-18 18:46_
+_@nzedler_
 
 ### Summary
 

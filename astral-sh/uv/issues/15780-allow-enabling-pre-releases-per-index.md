@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-10T23:34:15Z
 updated_at: 2025-09-12T01:01:45Z
 url: https://github.com/astral-sh/uv/issues/15780
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Allow enabling pre-releases per index
 
 ---
 
-_Issue opened by @stretch4x4 on 2025-09-10 23:34_
+_@stretch4x4_
 
 ### Feature Request
 

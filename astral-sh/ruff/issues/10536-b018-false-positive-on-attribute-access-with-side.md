@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-23T14:09:12Z
 updated_at: 2024-03-25T02:46:35Z
 url: https://github.com/astral-sh/ruff/issues/10536
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # B018 false positive on attribute access with side effect
 
 ---
 
-_Issue opened by @jaraco on 2024-03-23 14:09_
+_@jaraco_
 
 Using ruff 0.3.4 and attempting to adopt bugbear (B) checks in the [keyring](/jaraco/keyring) project, I'm encountering what appear to be false positives:
 

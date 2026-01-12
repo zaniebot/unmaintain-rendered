@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-15T22:59:16Z
 updated_at: 2025-11-14T08:31:44Z
 url: https://github.com/astral-sh/ty/issues/1364
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Playground crashes on trying to rename a file to nothing
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-10-15 22:59_
+_@MeGaGiGaGon_
 
 ### Summary
 

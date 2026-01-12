@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-23T17:22:06Z
 updated_at: 2025-12-01T23:38:58Z
 url: https://github.com/astral-sh/ty/issues/1425
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Third-party dataclass-like libraries (pydantic, attrs) will sometimes treat unannotated assignments as dataclass fields
 
 ---
 
-_Issue opened by @franzkurt on 2025-10-23 17:22_
+_@franzkurt_
 
 ### Summary
 

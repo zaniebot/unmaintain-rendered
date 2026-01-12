@@ -13,14 +13,14 @@ head: charlie/reason
 created_at: 2023-06-13T00:47:18Z
 updated_at: 2023-06-13T01:17:55Z
 url: https://github.com/astral-sh/ruff/pull/5040
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Support 'reason' argument to `pytest.fail`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-13 00:47_
+_@charliermarsh_
 
 ## Summary
 

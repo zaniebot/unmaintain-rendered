@@ -14,14 +14,14 @@ head: david/fix-1402
 created_at: 2025-10-20T11:56:36Z
 updated_at: 2025-12-14T15:18:04Z
 url: https://github.com/astral-sh/ruff/pull/20991
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [ty] Avoid ever-growing default types
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-20 11:56_
+_@sharkdp_
 
 ## Summary
 

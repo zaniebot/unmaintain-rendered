@@ -13,14 +13,14 @@ head: format-pattern-match-singleton
 created_at: 2023-08-21T21:17:44Z
 updated_at: 2023-08-25T20:45:16Z
 url: https://github.com/astral-sh/ruff/pull/6741
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Format `PatternMatchSingleton`
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-08-21 21:17_
+_@LaBatata101_
 
 ## Summary
 There's a case where a trailing comment ins't formatted like in Black. Consider the following code:

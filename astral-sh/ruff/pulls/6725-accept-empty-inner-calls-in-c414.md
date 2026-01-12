@@ -13,14 +13,14 @@ head: charlie/C414
 created_at: 2023-08-21T13:15:41Z
 updated_at: 2023-08-21T14:22:33Z
 url: https://github.com/astral-sh/ruff/pull/6725
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Accept empty inner calls in C414
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-21 13:15_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6716.
 

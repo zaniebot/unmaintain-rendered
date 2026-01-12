@@ -12,14 +12,14 @@ head: charlie/exist
 created_at: 2022-11-26T15:23:29Z
 updated_at: 2022-11-26T19:42:20Z
 url: https://github.com/astral-sh/ruff/pull/913
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Preserve existing noqa codes in --add-noqa
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-26 15:23_
+_@charliermarsh_
 
 Resolves #912.
 

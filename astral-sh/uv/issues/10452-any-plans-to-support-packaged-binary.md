@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-10T00:08:08Z
 updated_at: 2025-01-10T10:53:37Z
 url: https://github.com/astral-sh/uv/issues/10452
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # Any plans to support packaged binary?
 
 ---
 
-_Issue opened by @sdbds on 2025-01-10 00:08_
+_@sdbds_
 
 Thanks for your work, UV always great!
 

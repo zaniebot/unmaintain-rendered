@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-19T21:50:36Z
 updated_at: 2024-12-26T16:51:48Z
 url: https://github.com/astral-sh/uv/issues/8375
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # `uv` does not try to install older versions of a package if an error occurs
 
 ---
 
-_Issue opened by @alphavector on 2024-10-19 21:50_
+_@alphavector_
 
 When specifying `7lk-ocr-deploy<=0.1.69` an error occurs, uv crashes, pip-compile tries to install an older version and manages to install `7lk-ocr-deploy==0.1.68`
 

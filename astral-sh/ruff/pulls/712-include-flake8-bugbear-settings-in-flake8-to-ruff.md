@@ -12,14 +12,14 @@ head: charlie/flake8-to-ruff
 created_at: 2022-11-12T21:46:10Z
 updated_at: 2022-11-12T21:46:13Z
 url: https://github.com/astral-sh/ruff/pull/712
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Include flake8-bugbear settings in flake8-to-ruff
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-12 21:46_
+_@charliermarsh_
 
 Closes #707.
 

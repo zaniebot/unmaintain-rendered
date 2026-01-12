@@ -14,14 +14,14 @@ head: phongddo/fstring-escape-n
 created_at: 2025-12-10T18:15:35Z
 updated_at: 2025-12-16T21:33:39Z
 url: https://github.com/astral-sh/ruff/pull/21901
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [`pyupgrade`] Fix parsing named Unicode escape sequences (`UP032`)
 
 ---
 
-_Pull request opened by @phongddo on 2025-12-10 18:15_
+_@phongddo_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

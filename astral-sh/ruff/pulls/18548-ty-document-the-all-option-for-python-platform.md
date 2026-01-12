@@ -14,14 +14,14 @@ head: document-python-platform-all
 created_at: 2025-06-08T09:31:40Z
 updated_at: 2025-06-09T12:01:25Z
 url: https://github.com/astral-sh/ruff/pull/18548
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # [ty] document the `"all"` option for `python-platform`
 
 ---
 
-_Pull request opened by @DetachHead on 2025-06-08 09:31_
+_@DetachHead_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

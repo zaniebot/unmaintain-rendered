@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-06-03T13:21:45Z
 updated_at: 2018-08-02T03:29:50Z
 url: https://github.com/clap-rs/clap/issues/519
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # ColoredHelp is overridden by subcommands
 
 ---
 
-_Issue opened by @clux on 2016-06-03 13:21_
+_@clux_
 
 Currently `.setting(AppSettings::ColoredHelp)` has to be added to every subcommand even though it is set on the "global scope"
 

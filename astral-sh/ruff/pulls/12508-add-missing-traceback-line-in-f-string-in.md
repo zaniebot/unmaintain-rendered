@@ -13,14 +13,14 @@ head: feature/add-missing-text-in-string-in-exception-docs
 created_at: 2024-07-25T14:05:23Z
 updated_at: 2024-07-25T15:04:35Z
 url: https://github.com/astral-sh/ruff/pull/12508
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Add missing traceback line in `f-string-in-exception` docstring.
 
 ---
 
-_Pull request opened by @UriyaHarpeness on 2024-07-25 14:05_
+_@UriyaHarpeness_
 
 ## Summary
 

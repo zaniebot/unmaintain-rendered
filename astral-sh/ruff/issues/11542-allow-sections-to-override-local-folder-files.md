@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-26T00:07:21Z
 updated_at: 2024-05-27T04:54:55Z
 url: https://github.com/astral-sh/ruff/issues/11542
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Allow `sections` to override `local-folder` files
 
 ---
 
-_Issue opened by @TerryRPatterson on 2024-05-26 00:07_
+_@TerryRPatterson_
 
 At the moment, imports having an import level greater than zero are always classified as a local folder import, even if they match a pattern specified in the sections configuration.
 

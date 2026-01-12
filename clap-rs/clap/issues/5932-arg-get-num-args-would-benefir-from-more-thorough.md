@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T13:25:36Z
 updated_at: 2025-02-27T18:42:05Z
 url: https://github.com/clap-rs/clap/issues/5932
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Arg::get_num_args would benefir from more thorough documentation
 
 ---
 
-_Issue opened by @nwalfield on 2025-02-27 13:25_
+_@nwalfield_
 
 ### Please complete the following tasks
 

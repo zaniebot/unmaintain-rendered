@@ -13,14 +13,14 @@ head: alex/moduletype-lookup
 created_at: 2025-02-20T19:06:38Z
 updated_at: 2025-02-21T19:03:58Z
 url: https://github.com/astral-sh/ruff/pull/16284
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Fix subtle detail in where the `types.ModuleType` attribute lookup should happen in `TypeInferenceBuilder::infer_name_load()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-20 19:06_
+_@AlexWaygood_
 
 ## Summary
 

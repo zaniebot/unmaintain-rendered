@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-12T10:31:12Z
 updated_at: 2025-12-12T14:17:16Z
 url: https://github.com/astral-sh/uv/issues/17095
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Docker tags pinning uv, python and alpine
 
 ---
 
-_Issue opened by @ixxie on 2025-12-12 10:31_
+_@ixxie_
 
 ### Summary
 

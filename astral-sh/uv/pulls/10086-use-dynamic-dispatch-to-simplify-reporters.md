@@ -13,14 +13,14 @@ head: charlie/reporter-dyn
 created_at: 2024-12-21T23:12:24Z
 updated_at: 2025-01-06T17:04:04Z
 url: https://github.com/astral-sh/uv/pull/10086
-synced_at: 2026-01-10T11:44:33Z
+synced_at: 2026-01-12T16:09:07Z
 ```
 
 # Use dynamic dispatch to simplify reporters
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-21 23:12_
+_@charliermarsh_
 
 ## Summary
 

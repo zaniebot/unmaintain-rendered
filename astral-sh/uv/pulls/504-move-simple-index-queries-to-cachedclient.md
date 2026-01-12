@@ -12,14 +12,14 @@ head: Move-simple-index-queries-to-CachedClient
 created_at: 2023-11-27T13:59:59Z
 updated_at: 2023-11-28T00:11:05Z
 url: https://github.com/astral-sh/uv/pull/504
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:59Z
 ```
 
 # Move simple index queries to `CachedClient`
 
 ---
 
-_Pull request opened by @konstin on 2023-11-27 13:59_
+_@konstin_
 
 Replaces the usage of `http-cache-reqwest` for simple index queries with our custom cached client, removing `http-cache-reqwest` altogether. 
 

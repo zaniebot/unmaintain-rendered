@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-03-26T15:33:09Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/460
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Customize help
 
 ---
 
-_Issue opened by @hgrecco on 2016-03-26 15:33_
+_@hgrecco_
 
 Is there a way to customize the help. In particular I am looking for a way to customize the header and footer of what is automatically generated.
 

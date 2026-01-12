@@ -12,14 +12,14 @@ head: charlie/readme
 created_at: 2022-10-04T15:19:45Z
 updated_at: 2022-10-04T16:30:36Z
 url: https://github.com/astral-sh/ruff/pull/322
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Add autofix and default status to README
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-04 15:19_
+_@charliermarsh_
 
 Resolves #319.
 

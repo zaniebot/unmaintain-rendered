@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-20T07:22:51Z
 updated_at: 2025-06-24T06:24:10Z
 url: https://github.com/astral-sh/ruff/issues/18818
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`Pylint`] [preview] `PLE4703` false negative on any reassignment
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-20 07:22_
+_@MeGaGiGaGon_
 
 ### Summary
 

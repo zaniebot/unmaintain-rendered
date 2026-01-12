@@ -12,14 +12,14 @@ head: dependabot/cargo/http-1.1.0
 created_at: 2024-03-18T21:41:58Z
 updated_at: 2024-03-18T21:52:19Z
 url: https://github.com/astral-sh/uv/pull/2521
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:05Z
 ```
 
 # Bump http from 0.2.12 to 1.1.0
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-18 21:41_
+_@dependabot_
 
 Bumps [http](https://github.com/hyperium/http) from 0.2.12 to 1.1.0.
 <details>

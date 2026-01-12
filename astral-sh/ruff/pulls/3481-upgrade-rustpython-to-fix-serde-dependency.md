@@ -13,14 +13,14 @@ head: charlie/serde
 created_at: 2023-03-13T12:58:26Z
 updated_at: 2023-03-13T16:29:33Z
 url: https://github.com/astral-sh/ruff/pull/3481
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Upgrade RustPython to fix Serde dependency
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-13 12:58_
+_@charliermarsh_
 
 ## Summary
 

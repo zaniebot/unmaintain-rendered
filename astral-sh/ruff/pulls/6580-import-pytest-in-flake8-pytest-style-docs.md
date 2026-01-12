@@ -13,14 +13,14 @@ head: import-pytest
 created_at: 2023-08-15T01:59:20Z
 updated_at: 2023-08-15T04:54:03Z
 url: https://github.com/astral-sh/ruff/pull/6580
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Import `pytest` in `flake8-pytest-style` docs
 
 ---
 
-_Pull request opened by @harupy on 2023-08-15 01:59_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

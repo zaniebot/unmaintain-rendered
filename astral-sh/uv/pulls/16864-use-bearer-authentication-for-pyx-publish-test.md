@@ -13,14 +13,14 @@ head: ww/test-publish
 created_at: 2025-11-26T16:52:12Z
 updated_at: 2025-11-26T17:05:49Z
 url: https://github.com/astral-sh/uv/pull/16864
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:29Z
 ```
 
 # Use Bearer authentication for pyx publish test
 
 ---
 
-_Pull request opened by @woodruffw on 2025-11-26 16:52_
+_@woodruffw_
 
 ## Summary
 

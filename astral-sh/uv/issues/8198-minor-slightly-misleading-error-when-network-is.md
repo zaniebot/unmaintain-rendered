@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-15T07:20:32Z
 updated_at: 2024-10-15T07:20:32Z
 url: https://github.com/astral-sh/uv/issues/8198
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # Minor: slightly misleading error when network is flaky
 
 ---
 
-_Issue opened by @callegar on 2024-10-15 07:20_
+_@callegar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

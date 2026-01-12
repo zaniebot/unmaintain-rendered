@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T15:10:24Z
 updated_at: 2024-11-25T18:46:06Z
 url: https://github.com/astral-sh/uv/issues/6339
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # uv seems not to respect custom virtual env when installing a dependency
 
 ---
 
-_Issue opened by @FilipLangr on 2024-08-21 15:10_
+_@FilipLangr_
 
 It seems like `uv` does not respect custom virtual env.
 

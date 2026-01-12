@@ -11,14 +11,14 @@ head: add_W2301
 created_at: 2023-05-30T15:17:45Z
 updated_at: 2023-11-30T22:14:05Z
 url: https://github.com/astral-sh/ruff/pull/4726
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # [`pylint`] Add `unnecessary_ellipsis` (`W2301`)
 
 ---
 
-_Pull request opened by @hoel-bagard on 2023-05-30 15:17_
+_@hoel-bagard_
 
 ## Summary
 

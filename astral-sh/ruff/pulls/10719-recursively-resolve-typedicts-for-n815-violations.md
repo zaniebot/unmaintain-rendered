@@ -13,14 +13,14 @@ head: charlie/dict
 created_at: 2024-04-01T17:32:36Z
 updated_at: 2024-04-01T17:45:23Z
 url: https://github.com/astral-sh/ruff/pull/10719
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Recursively resolve `TypeDicts` for N815 violations
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-01 17:32_
+_@charliermarsh_
 
 ## Summary
 

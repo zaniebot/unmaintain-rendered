@@ -13,14 +13,14 @@ head: zb/install-non-fatal
 created_at: 2025-07-14T18:05:00Z
 updated_at: 2025-07-15T17:12:37Z
 url: https://github.com/astral-sh/uv/pull/14612
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:18Z
 ```
 
 # Update preview installation of Python executables to be non-fatal
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-14 18:05_
+_@zanieb_
 
 Previously, if installation of executables into the bin directory failed we'd with a non-zero code. However, if we make this behavior the default we don't want it to be fatal. There's a `--bin` opt-in to _require_ successful executable installation and a `--no-bin` opt-out to silence the warning / opt-out of installation entirely.
 

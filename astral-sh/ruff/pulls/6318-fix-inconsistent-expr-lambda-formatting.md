@@ -13,14 +13,14 @@ head: chore/addformatlambdatestcases
 created_at: 2023-08-03T20:55:20Z
 updated_at: 2023-09-08T21:56:28Z
 url: https://github.com/astral-sh/ruff/pull/6318
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Fix inconsistent `expr_lambda` formatting
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-08-03 20:55_
+_@qdegraaf_
 
 ## Summary
 Lambda expression formatting ran into an issue with comments placed like:

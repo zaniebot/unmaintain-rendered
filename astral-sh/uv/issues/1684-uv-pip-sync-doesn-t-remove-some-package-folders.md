@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-19T10:24:49Z
 updated_at: 2024-02-19T10:41:39Z
 url: https://github.com/astral-sh/uv/issues/1684
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # `uv pip sync` doesn't remove some package folders
 
 ---
 
-_Issue opened by @jfcherng on 2024-02-19 10:24_
+_@jfcherng_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

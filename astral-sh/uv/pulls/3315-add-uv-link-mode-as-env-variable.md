@@ -13,14 +13,14 @@ head: env-var-link-mode
 created_at: 2024-04-29T17:20:14Z
 updated_at: 2024-04-29T17:35:54Z
 url: https://github.com/astral-sh/uv/pull/3315
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:34Z
 ```
 
 # add `UV_LINK_MODE` as env variable
 
 ---
 
-_Pull request opened by @blueraft on 2024-04-29 17:20_
+_@blueraft_
 
 Resolves https://github.com/astral-sh/uv/issues/3313
 

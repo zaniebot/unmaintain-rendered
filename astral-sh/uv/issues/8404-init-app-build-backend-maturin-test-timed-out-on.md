@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-21T03:20:35Z
 updated_at: 2024-11-26T15:01:05Z
 url: https://github.com/astral-sh/uv/issues/8404
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:25Z
 ```
 
 # `init_app_build_backend_maturin` test timed out on macOS
 
 ---
 
-_Issue opened by @zanieb on 2024-10-21 03:20_
+_@zanieb_
 
 ```
 --- STDERR:              uv::it init::init_app_build_backend_maturin ---

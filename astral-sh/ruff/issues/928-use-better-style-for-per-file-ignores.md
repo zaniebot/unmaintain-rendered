@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-27T22:26:01Z
 updated_at: 2022-11-28T02:38:44Z
 url: https://github.com/astral-sh/ruff/issues/928
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Use better style for per-file-ignores
 
 ---
 
-_Issue opened by @lovetox on 2022-11-27 22:26_
+_@lovetox_
 
 currently the docs say to use an inline table
 

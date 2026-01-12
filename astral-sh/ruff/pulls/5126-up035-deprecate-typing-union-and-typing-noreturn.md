@@ -11,14 +11,14 @@ head: deprecate-typing-noreturn-union
 created_at: 2023-06-15T19:04:47Z
 updated_at: 2023-07-20T22:15:57Z
 url: https://github.com/astral-sh/ruff/pull/5126
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # UP035: Deprecate `typing.Union` and `typing.NoReturn`
 
 ---
 
-_Pull request opened by @sollyvarcoe on 2023-06-15 19:04_
+_@sollyvarcoe_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

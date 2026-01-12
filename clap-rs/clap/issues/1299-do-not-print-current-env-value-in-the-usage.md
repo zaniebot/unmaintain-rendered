@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-06-18T07:15:36Z
 updated_at: 2018-08-02T03:30:25Z
 url: https://github.com/clap-rs/clap/issues/1299
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Do not print current env value in the usage
 
 ---
 
-_Issue opened by @zrzka on 2018-06-18 07:15_
+_@zrzka_
 
 I have a long list of configuration options and you can set values via short, long variants along with environment variables as well. Application documentation for operations includes the complete usage (`--help`) as well with additional comments. Usage is a simple copy & paste of `--help` output from my side.
 

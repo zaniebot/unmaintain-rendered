@@ -13,14 +13,14 @@ head: format-stmt-try-star
 created_at: 2023-06-28T13:27:58Z
 updated_at: 2023-07-07T20:47:42Z
 url: https://github.com/astral-sh/ruff/pull/5418
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # format StmtTryStar
 
 ---
 
-_Pull request opened by @davidszotten on 2023-06-28 13:27_
+_@davidszotten_
 
 refactor StmtTry to share most of impl with StmtTryStar
 

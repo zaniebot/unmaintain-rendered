@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-27T14:54:16Z
 updated_at: 2023-02-17T21:00:42Z
 url: https://github.com/astral-sh/ruff/issues/2259
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement com2ann?
 
 ---
 
-_Issue opened by @spaceone on 2023-01-27 14:54_
+_@spaceone_
 
 https://pypi.org/project/com2ann/ is a nice project, which could be considered to be added.
 it tansforms type comments into real annotations:

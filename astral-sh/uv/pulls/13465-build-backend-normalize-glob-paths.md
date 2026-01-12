@@ -13,14 +13,14 @@ head: konsti/normalize-build-backend-glob-paths
 created_at: 2025-05-15T12:02:49Z
 updated_at: 2025-05-15T15:19:05Z
 url: https://github.com/astral-sh/uv/pull/13465
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:41Z
 ```
 
 # Build backend: Normalize glob paths
 
 ---
 
-_Pull request opened by @konstin on 2025-05-15 12:02_
+_@konstin_
 
 Unlike OS APIs, glob inclusion checks don't work when there are relative path elements such as `./`. We normalize the path before using it for the glob.
 

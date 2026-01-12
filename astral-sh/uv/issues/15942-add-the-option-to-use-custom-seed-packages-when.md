@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-19T07:02:10Z
 updated_at: 2025-12-12T16:00:10Z
 url: https://github.com/astral-sh/uv/issues/15942
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # Add the option to use custom seed packages when creating a `venv`
 
 ---
 
-_Issue opened by @JMuff22 on 2025-09-19 07:02_
+_@JMuff22_
 
 ### Summary
 

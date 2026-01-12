@@ -12,14 +12,14 @@ head: pylint-w1514
 created_at: 2023-03-09T10:20:10Z
 updated_at: 2023-05-12T01:33:20Z
 url: https://github.com/astral-sh/ruff/pull/3416
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [pylint] unspecified-encoding (W1514)
 
 ---
 
-_Pull request opened by @csko on 2023-03-09 10:20_
+_@csko_
 
 Partially addresses https://github.com/charliermarsh/ruff/issues/3278
 

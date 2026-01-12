@@ -13,14 +13,14 @@ head: watch
 created_at: 2024-07-18T16:10:29Z
 updated_at: 2024-07-23T06:19:01Z
 url: https://github.com/astral-sh/ruff/pull/12382
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Improved file watching 
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-18 16:10_
+_@MichaReiser_
 
 ## Summary
 

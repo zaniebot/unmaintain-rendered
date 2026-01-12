@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-28T04:07:44Z
 updated_at: 2023-12-28T14:15:24Z
 url: https://github.com/astral-sh/ruff/issues/9297
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `per-file-ignores` with ALL creates a false positive
 
 ---
 
-_Issue opened by @tooruu on 2023-12-28 04:07_
+_@tooruu_
 
 Given the following Python file
 ```py

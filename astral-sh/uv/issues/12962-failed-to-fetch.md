@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-18T05:59:24Z
 updated_at: 2025-04-21T01:52:03Z
 url: https://github.com/astral-sh/uv/issues/12962
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # failed to fetch
 
 ---
 
-_Issue opened by @chenjn-n on 2025-04-18 05:59_
+_@chenjn-n_
 
 ### Question
 

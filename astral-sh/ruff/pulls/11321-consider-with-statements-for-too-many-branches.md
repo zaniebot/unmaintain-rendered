@@ -13,14 +13,14 @@ head: with-statements-too-many-branches
 created_at: 2024-05-07T10:19:51Z
 updated_at: 2024-05-08T08:19:55Z
 url: https://github.com/astral-sh/ruff/pull/11321
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Consider with statements for too many branches lint
 
 ---
 
-_Pull request opened by @blueraft on 2024-05-07 10:19_
+_@blueraft_
 
 Resolves https://github.com/astral-sh/ruff/issues/11313
 

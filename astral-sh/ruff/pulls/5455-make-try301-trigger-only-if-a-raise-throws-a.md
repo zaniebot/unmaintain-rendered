@@ -12,14 +12,14 @@ head: 5246_try301_identical_rule
 created_at: 2023-06-30T23:24:40Z
 updated_at: 2023-07-10T14:10:32Z
 url: https://github.com/astral-sh/ruff/pull/5455
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Make TRY301 trigger only if a `raise` throws a caught exception 
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-30 23:24_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

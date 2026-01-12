@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-12T07:53:19Z
 updated_at: 2025-03-12T20:58:27Z
 url: https://github.com/astral-sh/uv/issues/12131
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # uv build cannot find files specified with relative paths in force-include
 
 ---
 
-_Issue opened by @leon1995 on 2025-03-12 07:53_
+_@leon1995_
 
 ### Summary
 

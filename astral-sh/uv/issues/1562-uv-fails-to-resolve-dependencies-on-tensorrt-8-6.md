@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-17T02:39:22Z
 updated_at: 2024-02-17T14:18:41Z
 url: https://github.com/astral-sh/uv/issues/1562
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # uv fails to resolve dependencies on tensorrt==8.6.1.post1
 
 ---
 
-_Issue opened by @Di-Is on 2024-02-17 02:39_
+_@Di-Is_
 
 uv fails to resolve dependencies on tensorrt==8.6.1.post1.
 

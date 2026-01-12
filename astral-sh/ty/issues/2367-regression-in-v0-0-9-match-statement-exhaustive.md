@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-06T16:12:11Z
 updated_at: 2026-01-06T21:10:26Z
 url: https://github.com/astral-sh/ty/issues/2367
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Regression in v0.0.9: match statement exhaustive check of enum values
 
 ---
 
-_Issue opened by @scosman on 2026-01-06 16:12_
+_@scosman_
 
 ### Summary
 

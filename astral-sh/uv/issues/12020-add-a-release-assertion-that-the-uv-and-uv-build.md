@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-06T20:42:35Z
 updated_at: 2025-03-06T20:42:41Z
 url: https://github.com/astral-sh/uv/issues/12020
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # Add a release assertion that the uv and uv-build versions match
 
 ---
 
-_Issue opened by @zanieb on 2025-03-06 20:42_
+_@zanieb_
 
 These should always be updated together, but you could miss it — as I did in https://github.com/astral-sh/uv/pull/12019
 

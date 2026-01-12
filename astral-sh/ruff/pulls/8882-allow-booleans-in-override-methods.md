@@ -12,14 +12,14 @@ head: charlie/fbt
 created_at: 2023-11-28T21:22:36Z
 updated_at: 2023-11-28T21:42:38Z
 url: https://github.com/astral-sh/ruff/pull/8882
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Allow booleans in `@override` methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-28 21:22_
+_@charliermarsh_
 
 Closes #8867.
 

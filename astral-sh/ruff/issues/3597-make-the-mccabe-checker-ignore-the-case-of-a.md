@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-18T11:04:13Z
 updated_at: 2024-10-19T08:55:25Z
 url: https://github.com/astral-sh/ruff/issues/3597
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Make the mccabe checker ignore the case of a single top-level elif chain or match statement
 
 ---
 
-_Issue opened by @saolof on 2023-03-18 11:04_
+_@saolof_
 
 This is a somewhat common edge case where there shouldn't be a need to use noqa comments. Non-looping functions with a nesting depth of 1 should be excluded from the mccabe checker, or there should be a separate error code for this particular kind of pattern if you want to lint or ignore it separately, such as "elif chain exceeds mccabe complexity".
 

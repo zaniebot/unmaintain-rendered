@@ -13,14 +13,14 @@ head: konsti/use-crates-io-reqwest-middleware
 created_at: 2025-11-14T15:57:21Z
 updated_at: 2025-11-14T17:43:27Z
 url: https://github.com/astral-sh/uv/pull/16738
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 # Use crates.io reqwest-middleware fork
 
 ---
 
-_Pull request opened by @konstin on 2025-11-14 15:57_
+_@konstin_
 
 Requires forking async_http_range_reader too and a new ambient-id release.
 

@@ -13,14 +13,14 @@ head: alex/stringflags-nits
 created_at: 2025-02-04T18:04:33Z
 updated_at: 2025-02-04T18:14:30Z
 url: https://github.com/astral-sh/ruff/pull/15944
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Simplify the `StringFlags` trait
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-04 18:04_
+_@AlexWaygood_
 
 ## Summary
 

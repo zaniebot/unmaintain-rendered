@@ -13,14 +13,14 @@ head: dhruv/implicit-optional-tests
 created_at: 2023-07-12T17:39:37Z
 updated_at: 2023-07-13T13:10:09Z
 url: https://github.com/astral-sh/ruff/pull/5717
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Consider single element subscript expr for implicit optional
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-12 17:39_
+_@dhruvmanila_
 
 ## Summary
 

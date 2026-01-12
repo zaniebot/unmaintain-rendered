@@ -14,14 +14,14 @@ head: micha/binding-callable-ty
 created_at: 2025-02-13T09:31:11Z
 updated_at: 2025-02-14T07:15:27Z
 url: https://github.com/astral-sh/ruff/pull/16135
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Make `CallBinding::callable_ty` required
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-13 09:31_
+_@MichaReiser_
 
 ## Summary
 

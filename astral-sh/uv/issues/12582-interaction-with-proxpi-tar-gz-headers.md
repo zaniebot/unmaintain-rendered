@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-31T11:04:25Z
 updated_at: 2025-12-13T18:11:39Z
 url: https://github.com/astral-sh/uv/issues/12582
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # Interaction with proxpi tar.gz headers
 
 ---
 
-_Issue opened by @cgravill on 2025-03-31 11:04_
+_@cgravill_
 
 ### Question
 

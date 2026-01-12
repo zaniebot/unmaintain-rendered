@@ -14,14 +14,14 @@ head: micha/union-builder-simplify
 created_at: 2025-12-18T07:18:12Z
 updated_at: 2025-12-19T13:55:32Z
 url: https://github.com/astral-sh/ruff/pull/22048
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Improve union builder performance
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-18 07:18_
+_@MichaReiser_
 
 ## Summary
 

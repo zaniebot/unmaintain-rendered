@@ -13,14 +13,14 @@ head: charlie/wf
 created_at: 2025-08-24T14:08:59Z
 updated_at: 2025-08-24T15:53:13Z
 url: https://github.com/astral-sh/uv/pull/15483
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:45Z
 ```
 
 # Move WHEEL file parsing into a struct
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-24 14:08_
+_@charliermarsh_
 
 ## Summary
 

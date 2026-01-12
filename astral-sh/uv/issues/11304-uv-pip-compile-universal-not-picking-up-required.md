@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-07T01:14:34Z
 updated_at: 2025-05-13T02:57:10Z
 url: https://github.com/astral-sh/uv/issues/11304
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # `uv pip compile --universal` not picking up required transitive dependency for certain python versions
 
 ---
 
-_Issue opened by @brendan-morin on 2025-02-07 01:14_
+_@brendan-morin_
 
 ### Summary
 

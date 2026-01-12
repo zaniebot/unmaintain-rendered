@@ -13,14 +13,14 @@ head: bybrooks/gh-12387-split-wasm-workflow
 created_at: 2026-01-09T12:27:19Z
 updated_at: 2026-01-09T17:21:32Z
 url: https://github.com/astral-sh/ruff/pull/22476
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [ruff] Split WASM build and publish into separate workflows (#12387)
 
 ---
 
-_Pull request opened by @bybrooks on 2026-01-09 12:27_
+_@bybrooks_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-18T18:20:53Z
 updated_at: 2025-05-12T08:23:29Z
 url: https://github.com/astral-sh/ruff/issues/17468
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [Infinite loop]: I001
 
 ---
 
-_Issue opened by @normzhou on 2025-04-18 18:20_
+_@normzhou_
 
 ```shell
 inference/src/llm/utils.py:9:1: I001 Import block is un-sorted or un-formatted

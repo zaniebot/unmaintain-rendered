@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-11T11:16:44Z
 updated_at: 2025-08-11T14:11:56Z
 url: https://github.com/astral-sh/uv/issues/15217
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # uv.lock use different indexes for each package
 
 ---
 
-_Issue opened by @joselsegura on 2025-08-11 11:16_
+_@joselsegura_
 
 ### Question
 

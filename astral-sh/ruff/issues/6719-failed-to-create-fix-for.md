@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-21T09:01:02Z
 updated_at: 2023-08-21T23:45:34Z
 url: https://github.com/astral-sh/ruff/issues/6719
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Failed to create fix for UnconventionalImportAlias: Unable to rename any references to `matplotlib.pyplot`
 
 ---
 
-_Issue opened by @qarmin on 2023-08-21 09:01_
+_@qarmin_
 
 Ruff 0.0.285
 

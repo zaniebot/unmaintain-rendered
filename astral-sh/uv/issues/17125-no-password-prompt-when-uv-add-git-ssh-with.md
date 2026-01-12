@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-13T15:20:51Z
 updated_at: 2025-12-16T16:24:31Z
 url: https://github.com/astral-sh/uv/issues/17125
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # No password prompt when uv add git+ssh with password protected ssh key
 
 ---
 
-_Issue opened by @d3vyce on 2025-12-13 15:20_
+_@d3vyce_
 
 ### Summary
 

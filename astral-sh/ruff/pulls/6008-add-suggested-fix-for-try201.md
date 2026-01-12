@@ -13,14 +13,14 @@ head: dhruv/TRY201-autofix
 created_at: 2023-07-23T06:36:56Z
 updated_at: 2023-07-24T02:43:29Z
 url: https://github.com/astral-sh/ruff/pull/6008
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add suggested fix for `TRY201`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-23 06:36_
+_@dhruvmanila_
 
 ## Summary
 

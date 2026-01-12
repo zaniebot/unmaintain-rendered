@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-06T03:45:52Z
 updated_at: 2024-08-06T18:12:10Z
 url: https://github.com/astral-sh/ruff/issues/12705
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # D417 does not respect decorators that change the signature by filling an argument, disagreeing with Pylint W9015 (missing-param-doc)
 
 ---
 
-_Issue opened by @qthequartermasterman on 2024-08-06 03:45_
+_@qthequartermasterman_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-21T13:00:13Z
 updated_at: 2025-09-23T16:16:01Z
 url: https://github.com/astral-sh/uv/issues/15970
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # How to set proxy for `uv self update`
 
 ---
 
-_Issue opened by @qin-tain on 2025-09-21 13:00_
+_@qin-tain_
 
 ### Question
 

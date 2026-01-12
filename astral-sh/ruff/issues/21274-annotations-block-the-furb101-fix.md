@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-04T15:09:04Z
 updated_at: 2025-11-08T00:04:46Z
 url: https://github.com/astral-sh/ruff/issues/21274
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Annotations block the FURB101 fix
 
 ---
 
-_Issue opened by @dscorbett on 2025-11-04 15:09_
+_@dscorbett_
 
 ### Summary
 

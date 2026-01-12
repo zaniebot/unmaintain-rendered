@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-17T20:01:06Z
 updated_at: 2025-08-18T12:35:05Z
 url: https://github.com/astral-sh/uv/issues/15332
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # Support for comma-separated lists passed to `--group` and `--extra` flags
 
 ---
 
-_Issue opened by @paduszyk on 2025-08-17 20:01_
+_@paduszyk_
 
 ### Summary
 

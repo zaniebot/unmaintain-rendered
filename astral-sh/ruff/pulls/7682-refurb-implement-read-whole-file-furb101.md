@@ -13,14 +13,14 @@ head: refurb/furb101
 created_at: 2023-09-27T21:43:28Z
 updated_at: 2023-10-20T16:29:45Z
 url: https://github.com/astral-sh/ruff/pull/7682
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # [refurb] Implement `read-whole-file` [`FURB101`]
 
 ---
 
-_Pull request opened by @SavchenkoValeriy on 2023-09-27 21:43_
+_@SavchenkoValeriy_
 
 ## Summary
 

@@ -15,14 +15,14 @@ head: david/faster-subscript-assignment-checks
 created_at: 2025-11-11T12:59:58Z
 updated_at: 2025-11-12T19:16:40Z
 url: https://github.com/astral-sh/ruff/pull/21378
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # [ty] Faster subscript assignment checks for (unions of) `TypedDict`s
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-11 12:59_
+_@sharkdp_
 
 ## Summary
 

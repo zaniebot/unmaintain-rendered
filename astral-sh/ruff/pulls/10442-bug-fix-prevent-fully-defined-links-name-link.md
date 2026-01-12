@@ -14,14 +14,14 @@ head: minor-doc-bug
 created_at: 2024-03-18T01:06:21Z
 updated_at: 2024-03-18T02:05:52Z
 url: https://github.com/astral-sh/ruff/pull/10442
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Bug fix: Prevent fully defined links [``name``](link) from being reformatted
 
 ---
 
-_Pull request opened by @augustelalande on 2024-03-18 01:06_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

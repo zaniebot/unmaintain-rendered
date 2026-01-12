@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-22T14:23:59Z
 updated_at: 2025-09-10T14:22:44Z
 url: https://github.com/astral-sh/uv/issues/15454
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # Question: Is there a way to reduce the number of http requests uv makes if everything is already in cache?
 
 ---
 
-_Issue opened by @henryborchers on 2025-08-22 14:23_
+_@henryborchers_
 
 ### Question
 

@@ -14,14 +14,14 @@ head: gankra/add-link
 created_at: 2025-08-21T01:08:48Z
 updated_at: 2025-08-21T04:28:59Z
 url: https://github.com/astral-sh/ruff/pull/20015
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] Add link for namespaces being partial
 
 ---
 
-_Pull request opened by @Gankra on 2025-08-21 01:08_
+_@Gankra_
 
 As requested
 

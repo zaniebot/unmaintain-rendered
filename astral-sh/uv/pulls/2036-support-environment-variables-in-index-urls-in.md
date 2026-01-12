@@ -14,14 +14,14 @@ head: charlie/verbatim
 created_at: 2024-02-28T05:00:35Z
 updated_at: 2024-02-28T19:36:21Z
 url: https://github.com/astral-sh/uv/pull/2036
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:50Z
 ```
 
 # Support environment variables in index URLs in requirements files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-28 05:00_
+_@charliermarsh_
 
 ## Summary
 

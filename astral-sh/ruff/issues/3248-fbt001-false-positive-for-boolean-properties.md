@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-27T09:14:57Z
 updated_at: 2023-02-27T12:10:54Z
 url: https://github.com/astral-sh/ruff/issues/3248
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # FBT001: False-positive for boolean properties
 
 ---
 
-_Issue opened by @aberres on 2023-02-27 09:14_
+_@aberres_
 
 In the case below, I think ruff should not error out with `FBT002`. A property setter must be a positional arg.
 

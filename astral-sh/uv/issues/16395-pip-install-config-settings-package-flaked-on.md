@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-21T17:47:57Z
 updated_at: 2025-10-21T17:48:02Z
 url: https://github.com/astral-sh/uv/issues/16395
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:30Z
 ```
 
 # `pip_install::config_settings_package` flaked on Windows with access denied to `setuptools_editable`
 
 ---
 
-_Issue opened by @zanieb on 2025-10-21 17:47_
+_@zanieb_
 
 ```
  FAIL [   4.354s] uv::it pip_install::config_settings_package

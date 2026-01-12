@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-22T14:01:36Z
 updated_at: 2025-02-04T20:40:08Z
 url: https://github.com/astral-sh/ruff/issues/15672
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Stack overflow in `Type::bool`
 
 ---
 
-_Issue opened by @sharkdp on 2025-01-22 14:01_
+_@sharkdp_
 
 ### Description
 

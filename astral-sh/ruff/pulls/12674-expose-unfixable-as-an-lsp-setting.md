@@ -12,14 +12,14 @@ head: charlie/unfix
 created_at: 2024-08-05T02:51:14Z
 updated_at: 2024-08-06T06:08:10Z
 url: https://github.com/astral-sh/ruff/pull/12674
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Expose `unfixable` as an LSP setting
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-05 02:51_
+_@charliermarsh_
 
 ## Summary
 

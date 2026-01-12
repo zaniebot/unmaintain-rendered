@@ -12,14 +12,14 @@ head: migrate-flake8-unspecified
 created_at: 2023-05-24T05:00:37Z
 updated_at: 2023-05-24T19:24:49Z
 url: https://github.com/astral-sh/ruff/pull/4616
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Migrate flake8_bugbear rules to `unspecified`  to `suggested`
 
 ---
 
-_Pull request opened by @sladyn98 on 2023-05-24 05:00_
+_@sladyn98_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

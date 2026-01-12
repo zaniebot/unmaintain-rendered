@@ -13,14 +13,14 @@ head: david/identity-check-inference
 created_at: 2024-11-05T13:45:09Z
 updated_at: 2024-11-05T18:48:54Z
 url: https://github.com/astral-sh/ruff/pull/14109
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Precise inference for identity checks
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-05 13:45_
+_@sharkdp_
 
 ## Summary
 

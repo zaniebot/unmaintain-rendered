@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-11-11T21:25:52Z
 updated_at: 2025-11-11T21:27:15Z
 url: https://github.com/astral-sh/ty/issues/1528
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Add code-fix for missing imports
 
 ---
 
-_Issue opened by @Gankra on 2025-11-11 21:25_
+_@Gankra_
 
 The auto-importer is great but I often find myself typing (or pasting) a symbol and then noticing it's not imported, and then it's "too late" for the auto-importer to help. In rust-analyzer you get these two options to fix the import which cover the usecase well.
 

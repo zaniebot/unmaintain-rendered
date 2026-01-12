@@ -12,14 +12,14 @@ head: ww/pep740
 created_at: 2025-12-01T18:14:24Z
 updated_at: 2025-12-01T18:19:51Z
 url: https://github.com/astral-sh/ty/pull/1710
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Enable PEP 740 attestations when publishing to PyPI
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-01 18:14_
+_@woodruffw_
 
 ## Summary
 

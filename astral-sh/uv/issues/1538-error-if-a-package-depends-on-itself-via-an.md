@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T20:20:04Z
 updated_at: 2024-02-16T20:20:09Z
 url: https://github.com/astral-sh/uv/issues/1538
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Error if a package depends on itself via an optional group, but at the wrong version
 
 ---
 
-_Issue opened by @charliermarsh on 2024-02-16 20:20_
+_@charliermarsh_
 
 E.g., if you're developing `attrs` locally, and you add `attrs==2.0.0` to an optional group, we should error. Right now, we effectively "ignore" it. (This would be an extremely weird setup in practice, but still.)
 

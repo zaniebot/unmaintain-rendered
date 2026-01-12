@@ -14,14 +14,14 @@ head: better_expr_call_dummy
 created_at: 2023-06-22T08:12:48Z
 updated_at: 2023-06-22T08:59:32Z
 url: https://github.com/astral-sh/ruff/pull/5290
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Improve FormatExprCall dummy
 
 ---
 
-_Pull request opened by @konstin on 2023-06-22 08:12_
+_@konstin_
 
 This solves an instability when formatting cpython. It also introduces another one, but i think it's still a worthwhile change for now.
 

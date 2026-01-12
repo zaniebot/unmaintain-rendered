@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-07T11:31:52Z
 updated_at: 2023-02-09T02:28:30Z
 url: https://github.com/astral-sh/ruff/issues/2621
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Fixable error is not fixed
 
 ---
 
-_Issue opened by @WhyNotHugo on 2023-02-07 11:31_
+_@WhyNotHugo_
 
 
 

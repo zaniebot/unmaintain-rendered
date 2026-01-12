@@ -13,14 +13,14 @@ head: plr6104-docs
 created_at: 2024-08-14T09:22:59Z
 updated_at: 2024-08-14T09:50:02Z
 url: https://github.com/astral-sh/ruff/pull/12887
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Improve docs for `non-augmented-assignment` (`PLR6104`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-14 09:22_
+_@AlexWaygood_
 
 Some docs improvements I made while I was looking into whether we could stabilise this rule
 

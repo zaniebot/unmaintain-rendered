@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-06-12T21:39:43Z
 updated_at: 2018-08-02T03:29:50Z
 url: https://github.com/clap-rs/clap/issues/529
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # subcommands with hidden aliases show a visible '|' after the name
 
 ---
 
-_Issue opened by @joshtriplett on 2016-06-12 21:39_
+_@joshtriplett_
 
 If a subcommand has a hidden alias, but no visible alias, it shows up as `cmd|` in help.
 

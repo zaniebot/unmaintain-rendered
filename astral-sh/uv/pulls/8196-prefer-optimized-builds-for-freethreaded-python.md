@@ -13,14 +13,14 @@ head: zb/fix-freethreaded
 created_at: 2024-10-15T03:43:47Z
 updated_at: 2024-10-15T12:00:04Z
 url: https://github.com/astral-sh/uv/pull/8196
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:12Z
 ```
 
 # Prefer optimized builds for freethreaded Python downloads
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-15 03:43_
+_@zanieb_
 
 Addresses report in https://github.com/astral-sh/uv/issues/8194
 

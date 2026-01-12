@@ -14,14 +14,14 @@ head: charlie/cfg
 created_at: 2024-05-22T00:05:20Z
 updated_at: 2024-05-22T00:12:11Z
 url: https://github.com/astral-sh/uv/pull/3730
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Allow `--config-file` to be passed before or after command name
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-22 00:05_
+_@charliermarsh_
 
 _No description provided._
 

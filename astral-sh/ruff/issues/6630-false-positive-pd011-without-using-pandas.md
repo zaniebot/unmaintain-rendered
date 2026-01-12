@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-16T20:26:00Z
 updated_at: 2023-08-16T21:13:35Z
 url: https://github.com/astral-sh/ruff/issues/6630
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # False-positive PD011 without using pandas
 
 ---
 
-_Issue opened by @bersbersbers on 2023-08-16 20:26_
+_@bersbersbers_
 
 * A minimal code snippet that reproduces the bug.
 

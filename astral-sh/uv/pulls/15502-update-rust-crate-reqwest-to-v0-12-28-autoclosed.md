@@ -12,14 +12,14 @@ head: renovate/reqwest-0.x-lockfile
 created_at: 2025-08-25T02:20:31Z
 updated_at: 2026-01-06T15:49:20Z
 url: https://github.com/astral-sh/uv/pull/15502
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:11:46Z
 ```
 
 # Update Rust crate reqwest to v0.12.28 - autoclosed
 
 ---
 
-_Pull request opened by @renovate on 2025-08-25 02:20_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -12,14 +12,14 @@ head: ty_vscode_instructions
 created_at: 2025-11-26T00:41:15Z
 updated_at: 2025-11-26T01:13:52Z
 url: https://github.com/astral-sh/ty/pull/1639
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # remove the suggestion that updating ty-vscode is optional
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-11-26 00:41_
+_@oconnor663_
 
 _No description provided._
 

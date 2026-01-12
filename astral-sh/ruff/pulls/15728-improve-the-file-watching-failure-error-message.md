@@ -13,14 +13,14 @@ head: zb/watch-err
 created_at: 2025-01-24T18:04:56Z
 updated_at: 2025-01-24T21:28:32Z
 url: https://github.com/astral-sh/ruff/pull/15728
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Improve the file watching failure error message
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-24 18:04_
+_@zanieb_
 
 I really misunderstood this in https://github.com/astral-sh/ruff/pull/15664#issuecomment-2613079710
 

@@ -12,14 +12,14 @@ head: charlie/up003
 created_at: 2023-01-18T15:53:37Z
 updated_at: 2023-01-18T15:53:52Z
 url: https://github.com/astral-sh/ruff/pull/1962
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Confine type-of-primitive checks to builtin type calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-18 15:53_
+_@charliermarsh_
 
 Closes #1958.
 

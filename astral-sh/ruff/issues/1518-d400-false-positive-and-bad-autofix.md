@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-31T21:18:26Z
 updated_at: 2022-12-31T23:38:23Z
 url: https://github.com/astral-sh/ruff/issues/1518
-synced_at: 2026-01-10T12:05:30Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # D400: false positive and bad autofix
 
 ---
 
-_Issue opened by @buster-blue on 2022-12-31 21:18_
+_@buster-blue_
 
 I'm using ruff version 0.0.205
 

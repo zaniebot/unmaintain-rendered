@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-26T18:04:13Z
 updated_at: 2025-11-03T21:59:36Z
 url: https://github.com/clap-rs/clap/issues/6016
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # external_subcommand does not 'tab complete' in ZSH
 
 ---
 
-_Issue opened by @Alpha1337k on 2025-05-26 18:04_
+_@Alpha1337k_
 
 ### Please complete the following tasks
 

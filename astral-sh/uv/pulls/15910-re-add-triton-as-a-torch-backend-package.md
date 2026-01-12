@@ -13,14 +13,14 @@ head: charlie/triton
 created_at: 2025-09-17T13:53:55Z
 updated_at: 2025-09-17T14:04:51Z
 url: https://github.com/astral-sh/uv/pull/15910
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:01Z
 ```
 
 # Re-add `triton` as a torch backend package
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-17 13:53_
+_@charliermarsh_
 
 ## Summary
 

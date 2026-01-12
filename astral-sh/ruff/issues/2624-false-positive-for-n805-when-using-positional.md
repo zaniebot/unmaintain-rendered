@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-07T14:39:07Z
 updated_at: 2023-02-07T15:50:52Z
 url: https://github.com/astral-sh/ruff/issues/2624
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # False positive for N805 when using positional-only args
 
 ---
 
-_Issue opened by @WhyNotHugo on 2023-02-07 14:39_
+_@WhyNotHugo_
 
 ```console
 > cat test.py

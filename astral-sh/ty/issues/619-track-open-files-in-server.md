@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-09T18:27:40Z
 updated_at: 2025-07-18T14:03:36Z
 url: https://github.com/astral-sh/ty/issues/619
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Track open files in server
 
 ---
 
-_Issue opened by @MichaReiser on 2025-06-09 18:27_
+_@MichaReiser_
 
 https://github.com/astral-sh/ruff/pull/18482 starts purging AST nodes after checking a file is complete. However, purging the AST is undesired for open files in the server because providing completions or any other AST based information then requires reparsing the file. 
 

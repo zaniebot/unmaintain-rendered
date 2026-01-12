@@ -13,14 +13,14 @@ head: david/fix-14342
 created_at: 2024-11-22T09:58:05Z
 updated_at: 2024-11-22T12:13:57Z
 url: https://github.com/astral-sh/ruff/pull/14522
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [red-knot] Semantic index: handle invalid `break`s
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-22 09:58_
+_@sharkdp_
 
 ## Summary
 

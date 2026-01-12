@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-26T02:25:32Z
 updated_at: 2025-02-02T11:03:02Z
 url: https://github.com/astral-sh/ruff/issues/15747
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # F402 is triggered by `__future__.annotations`
 
 ---
 
-_Issue opened by @mattmess1221 on 2025-01-26 02:25_
+_@mattmess1221_
 
 ### Description
 

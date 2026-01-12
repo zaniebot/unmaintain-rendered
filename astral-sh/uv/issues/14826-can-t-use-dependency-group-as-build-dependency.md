@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-22T17:51:53Z
 updated_at: 2025-07-22T18:20:54Z
 url: https://github.com/astral-sh/uv/issues/14826
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # Can't use dependency group as build dependency
 
 ---
 
-_Issue opened by @saagarjha on 2025-07-22 17:51_
+_@saagarjha_
 
 ### Summary
 

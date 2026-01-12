@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-29T02:30:43Z
 updated_at: 2024-01-25T07:26:03Z
 url: https://github.com/astral-sh/ruff/issues/8893
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: `allow_empty_first_line_before_new_block_or_comment` preview style
 
 ---
 
-_Issue opened by @MichaReiser on 2023-11-29 02:30_
+_@MichaReiser_
 
 Implement Black's [`allow_empty_first_line_before_new_block_or_comment`](https://github.com/psf/black/pull/3967) as a Ruff preview style. 
 

@@ -12,14 +12,14 @@ head: charlie/constraint
 created_at: 2023-10-20T00:21:19Z
 updated_at: 2023-10-20T00:24:07Z
 url: https://github.com/astral-sh/uv/pull/144
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:46Z
 ```
 
 # Add support for constraints during pip-compile resolution
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-20 00:21_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/130.
 

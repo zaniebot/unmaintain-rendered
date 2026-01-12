@@ -13,14 +13,14 @@ head: zb/git-err
 created_at: 2024-02-21T19:49:13Z
 updated_at: 2024-02-22T01:22:01Z
 url: https://github.com/astral-sh/uv/pull/1826
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:45Z
 ```
 
 # Improve error message when git ref cannot be fetched
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-21 19:49_
+_@zanieb_
 
 Follow-up to #1781 improving the error message when a ref cannot be fetched
 

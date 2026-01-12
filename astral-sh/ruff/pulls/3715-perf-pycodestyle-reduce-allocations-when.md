@@ -12,14 +12,14 @@ head: logical-lines-perf-improvements
 created_at: 2023-03-24T17:35:06Z
 updated_at: 2023-03-28T07:17:35Z
 url: https://github.com/astral-sh/ruff/pull/3715
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # perf(pycodestyle): Reduce allocations when computing logical lines
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-24 17:35_
+_@MichaReiser_
 
 This PR refactors the logical lines computation that the pycodestyle rules use from using `O(lines)` allocations to `O(1)`.
 

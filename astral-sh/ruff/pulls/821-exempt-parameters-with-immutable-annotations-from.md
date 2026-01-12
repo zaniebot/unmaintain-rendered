@@ -12,14 +12,14 @@ head: immutable-annotation
 created_at: 2022-11-19T23:45:22Z
 updated_at: 2022-11-20T01:59:34Z
 url: https://github.com/astral-sh/ruff/pull/821
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Exempt parameters with immutable annotations from B006
 
 ---
 
-_Pull request opened by @andersk on 2022-11-19 23:45_
+_@andersk_
 
 Fixes #572.
 

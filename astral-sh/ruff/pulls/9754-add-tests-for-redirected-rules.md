@@ -13,14 +13,14 @@ head: zb/deprecated-renamed
 created_at: 2024-02-01T15:33:55Z
 updated_at: 2024-02-01T16:46:38Z
 url: https://github.com/astral-sh/ruff/pull/9754
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Add tests for redirected rules
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-01 15:33_
+_@zanieb_
 
 Extends https://github.com/astral-sh/ruff/pull/9752 adding internal test rules for redirection
 

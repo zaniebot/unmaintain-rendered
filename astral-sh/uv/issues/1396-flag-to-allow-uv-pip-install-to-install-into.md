@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T00:05:19Z
 updated_at: 2025-11-22T06:51:31Z
 url: https://github.com/astral-sh/uv/issues/1396
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Flag to allow `uv pip install` to install into specific environments (that do not necessarily contain uv)
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-02-16 00:05_
+_@hauntsaninja_
 
 It looks like `uv` already supports this, I just need to lie about `VIRTUAL_ENV`.
 

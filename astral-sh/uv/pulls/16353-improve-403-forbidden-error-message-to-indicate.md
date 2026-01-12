@@ -13,14 +13,14 @@ head: fix/issue-16340-incorrect-403-error
 created_at: 2025-10-18T06:43:15Z
 updated_at: 2025-10-20T12:49:25Z
 url: https://github.com/astral-sh/uv/pull/16353
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:13Z
 ```
 
 # Improve 403 Forbidden error message to indicate package may not exist
 
 ---
 
-_Pull request opened by @aug6th on 2025-10-18 06:43_
+_@aug6th_
 
 Fixes #16340
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-24T16:22:23Z
 updated_at: 2024-08-05T22:47:22Z
 url: https://github.com/clap-rs/clap/issues/5597
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # 4.5.10 release notes?
 
 ---
 
-_Issue opened by @mistydemeo on 2024-07-24 16:22_
+_@mistydemeo_
 
 It looks like v4.5.10 was created without release notes: https://github.com/clap-rs/clap/releases/tag/v4.5.10
 

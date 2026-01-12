@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-19T13:43:35Z
 updated_at: 2023-05-22T16:54:35Z
 url: https://github.com/astral-sh/ruff/issues/4529
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `FLY` flagged as missing in TOML `select` schema
 
 ---
 
-_Issue opened by @janosh on 2023-05-19 13:43_
+_@janosh_
 
 `FLY` appears to be missing from the TOML `select` schema.
 

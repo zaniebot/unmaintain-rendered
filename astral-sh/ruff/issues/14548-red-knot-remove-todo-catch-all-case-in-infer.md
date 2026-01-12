@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T23:30:55Z
 updated_at: 2024-12-18T19:37:35Z
 url: https://github.com/astral-sh/ruff/issues/14548
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] remove TODO catch-all case in infer_unary_expression
 
 ---
 
-_Issue opened by @carljm on 2024-11-22 23:30_
+_@carljm_
 
 Currently, the method `TypeInferenceBuilder::infer_unary_expression` handles some common cases, and has a catch-all arm that simply infers a "todo" type.
 

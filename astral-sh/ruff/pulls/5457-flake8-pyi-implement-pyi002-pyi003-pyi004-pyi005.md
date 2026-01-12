@@ -13,14 +13,14 @@ head: PYI-comparisons
 created_at: 2023-07-01T19:55:07Z
 updated_at: 2023-07-03T13:07:55Z
 url: https://github.com/astral-sh/ruff/pull/5457
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # [`flake8-pyi`] Implement PYI002, PYI003, PYI004, PYI005
 
 ---
 
-_Pull request opened by @density on 2023-07-01 19:55_
+_@density_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/fix-best-interp
 created_at: 2025-01-28T18:30:49Z
 updated_at: 2025-01-28T19:44:34Z
 url: https://github.com/astral-sh/uv/pull/11030
-synced_at: 2026-01-10T11:45:24Z
+synced_at: 2026-01-12T16:09:38Z
 ```
 
 # Fix best-interpreter lookups when there is an invalid interpreter in the PATH
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-28 18:30_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/10978
 

@@ -14,14 +14,14 @@ head: charlie/allows
 created_at: 2023-02-17T22:09:07Z
 updated_at: 2023-02-17T22:16:27Z
 url: https://github.com/astral-sh/ruff/pull/2998
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Ignore namedtuple methods in flake8-self
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-17 22:09_
+_@charliermarsh_
 
 Closes #2720.
 

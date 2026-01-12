@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-19T00:40:41Z
 updated_at: 2025-08-13T08:46:12Z
 url: https://github.com/astral-sh/uv/issues/5200
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Write migration guides
 
 ---
 
-_Issue opened by @zanieb on 2024-07-19 00:40_
+_@zanieb_
 
 e.g from Poetry and pip-tools to uv
 

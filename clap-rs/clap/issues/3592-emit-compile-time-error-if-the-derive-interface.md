@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-03-30T18:12:09Z
 updated_at: 2022-03-30T18:17:37Z
 url: https://github.com/clap-rs/clap/issues/3592
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Emit compile-time error if the derive interface produces duplicate short/long arguments
 
 ---
 
-_Issue opened by @nsunderland1 on 2022-03-30 18:12_
+_@nsunderland1_
 
 ### Please complete the following tasks
 

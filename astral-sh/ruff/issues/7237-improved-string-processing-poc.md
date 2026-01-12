@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-08T08:06:20Z
 updated_at: 2023-09-27T13:34:22Z
 url: https://github.com/astral-sh/ruff/issues/7237
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Improved string processing POC
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-08 08:06_
+_@MichaReiser_
 
 Create a POC for #6936 to explore possible implementations and the performance implications. 
 

@@ -14,14 +14,14 @@ head: push-tyvxlwmmrvxu
 created_at: 2025-09-16T20:07:16Z
 updated_at: 2025-09-22T13:47:10Z
 url: https://github.com/astral-sh/ruff/pull/20441
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [ty] Search PYTHONPATH to find modules
 
 ---
 
-_Pull request opened by @mmlb on 2025-09-16 20:07_
+_@mmlb_
 
 This brings ty in line with other type checkers and python interpreters, including on by default and no options to disable. Can be disabled by clearing the PYTHONPATH environment variable.
 

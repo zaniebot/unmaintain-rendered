@@ -13,14 +13,14 @@ head: charlie/runtime-annotations
 created_at: 2024-05-21T20:05:03Z
 updated_at: 2024-05-22T19:44:32Z
 url: https://github.com/astral-sh/ruff/pull/11485
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Mark quotes as unnecessary for non-evaluated annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-21 20:05_
+_@charliermarsh_
 
 ## Summary
 

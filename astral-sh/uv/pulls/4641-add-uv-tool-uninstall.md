@@ -14,14 +14,14 @@ head: zb/tool-uninstall
 created_at: 2024-06-29T03:48:36Z
 updated_at: 2024-06-29T17:56:22Z
 url: https://github.com/astral-sh/uv/pull/4641
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:22Z
 ```
 
 # Add `uv tool uninstall`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-29 03:48_
+_@zanieb_
 
 _No description provided._
 

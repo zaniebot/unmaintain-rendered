@@ -13,14 +13,14 @@ head: sync-python-releases
 created_at: 2025-02-27T00:22:08Z
 updated_at: 2025-03-02T22:48:36Z
 url: https://github.com/astral-sh/uv/pull/11814
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:01Z
 ```
 
 # Add pypy3.10-v7.3.19 to managed Python releases
 
 ---
 
-_Pull request opened by @github-actions on 2025-02-27 00:22_
+_@github-actions_
 
 Automated update for Python releases.
 

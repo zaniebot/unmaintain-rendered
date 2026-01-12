@@ -13,14 +13,14 @@ head: charlie/avoid
 created_at: 2023-02-13T15:18:24Z
 updated_at: 2023-02-13T15:37:57Z
 url: https://github.com/astral-sh/ruff/pull/2864
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Avoid noqa removal upon unhandled syntax errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-13 15:18_
+_@charliermarsh_
 
 Closes #2853.
 

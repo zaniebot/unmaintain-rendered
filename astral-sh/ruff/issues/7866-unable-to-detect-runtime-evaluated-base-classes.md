@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-09T09:15:14Z
 updated_at: 2025-12-12T20:45:07Z
 url: https://github.com/astral-sh/ruff/issues/7866
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Unable to detect `runtime-evaluated-base-classes` across files
 
 ---
 
-_Issue opened by @sujuka99 on 2023-10-09 09:15_
+_@sujuka99_
 
 `TCH001` seems to incorrectly trigger on the example below despite the settings only when `from __future__ import annotations` is present.
 

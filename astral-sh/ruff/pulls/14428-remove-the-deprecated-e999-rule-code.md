@@ -14,14 +14,14 @@ head: micha/remove-syntax-error-rule-code
 created_at: 2024-11-18T10:28:34Z
 updated_at: 2024-11-19T12:32:39Z
 url: https://github.com/astral-sh/ruff/pull/14428
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Remove the deprecated `E999` rule code
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-18 10:28_
+_@MichaReiser_
 
 ## Summary
 

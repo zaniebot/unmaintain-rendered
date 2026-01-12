@@ -13,14 +13,14 @@ head: dhruv/callable-property-tests
 created_at: 2025-03-27T02:09:58Z
 updated_at: 2025-04-01T21:09:16Z
 url: https://github.com/astral-sh/ruff/pull/17006
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Add property tests for callable types
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-03-27 02:09_
+_@dhruvmanila_
 
 ## Summary
 

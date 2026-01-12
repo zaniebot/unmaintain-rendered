@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-15T12:25:51Z
 updated_at: 2025-11-06T13:35:51Z
 url: https://github.com/astral-sh/ruff/issues/20890
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Unexpected behavior with Google `pydocstyle` convention
 
 ---
 
-_Issue opened by @jbschiratti on 2025-10-15 12:25_
+_@jbschiratti_
 
 ### Summary
 

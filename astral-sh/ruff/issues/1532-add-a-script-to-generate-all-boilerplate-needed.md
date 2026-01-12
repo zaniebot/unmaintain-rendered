@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-01T18:13:11Z
 updated_at: 2023-01-03T03:47:23Z
 url: https://github.com/astral-sh/ruff/issues/1532
-synced_at: 2026-01-10T12:05:30Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add a script to generate all boilerplate needed for a new rule
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-01 18:13_
+_@charliermarsh_
 
 - Stub declarations in `src/checks.rs`
 - Empty fixture file in `resources`

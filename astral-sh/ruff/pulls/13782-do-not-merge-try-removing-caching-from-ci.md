@@ -12,14 +12,14 @@ head: AlexWaygood-patch-1
 created_at: 2024-10-16T19:30:44Z
 updated_at: 2024-10-16T20:01:31Z
 url: https://github.com/astral-sh/ruff/pull/13782
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [DO-NOT-MERGE] try removing caching from CI
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-16 19:30_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

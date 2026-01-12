@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-18T15:51:24Z
 updated_at: 2024-10-21T22:12:12Z
 url: https://github.com/astral-sh/uv/issues/7506
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # --no-binary affects later pip install without that flag
 
 ---
 
-_Issue opened by @RazerM on 2024-09-18 15:51_
+_@RazerM_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

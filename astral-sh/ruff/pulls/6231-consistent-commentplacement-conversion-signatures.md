@@ -13,14 +13,14 @@ head: formatter-comment-placement-signature
 created_at: 2023-08-01T07:55:45Z
 updated_at: 2023-08-01T10:01:18Z
 url: https://github.com/astral-sh/ruff/pull/6231
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Consistent `CommentPlacement` conversion signatures
 
 ---
 
-_Pull request opened by @konstin on 2023-08-01 07:55_
+_@konstin_
 
 **Summary** Allow passing any node to `CommentPlacement::{leading, trailing, dangling}` without manually converting. Conversely, Restrict the comment to the only type we actually pass.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-26T06:19:34Z
 updated_at: 2025-01-25T10:55:10Z
 url: https://github.com/astral-sh/ruff/issues/14602
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # How to deal with counter-argument to rules? Concrete example PLC1901
 
 ---
 
-_Issue opened by @kaddkaka on 2024-11-26 06:19_
+_@kaddkaka_
 
 The pylint rule PLC1901 (`compare-to-empty-string`) checks for comparison with empty string which it considers "unnecessary", but I would argue this is not a problem, but rather the reverse!
 

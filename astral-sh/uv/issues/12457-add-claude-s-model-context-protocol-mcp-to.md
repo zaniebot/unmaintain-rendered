@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-25T06:30:23Z
 updated_at: 2025-04-02T13:30:47Z
 url: https://github.com/astral-sh/uv/issues/12457
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # Add Claude's Model Context Protocol(MCP) to automated tests(CI).
 
 ---
 
-_Issue opened by @FishAlchemist on 2025-03-25 06:30_
+_@FishAlchemist_
 
 ### Summary
 

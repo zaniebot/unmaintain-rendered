@@ -13,14 +13,14 @@ head: dependabot/github_actions/dawidd6/action-download-artifact-3
 created_at: 2023-12-18T08:14:09Z
 updated_at: 2023-12-18T13:18:15Z
 url: https://github.com/astral-sh/ruff/pull/9178
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Bump dawidd6/action-download-artifact from 2 to 3
 
 ---
 
-_Pull request opened by @dependabot on 2023-12-18 08:14_
+_@dependabot_
 
 Bumps [dawidd6/action-download-artifact](https://github.com/dawidd6/action-download-artifact) from 2 to 3.
 <details>

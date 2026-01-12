@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-23T18:30:40Z
 updated_at: 2025-03-24T13:16:35Z
 url: https://github.com/astral-sh/uv/issues/12403
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # can i create un venv and zip the folder share to another computer.
 
 ---
 
-_Issue opened by @baroi-ai on 2025-03-23 18:30_
+_@baroi-ai_
 
 ### Question
 

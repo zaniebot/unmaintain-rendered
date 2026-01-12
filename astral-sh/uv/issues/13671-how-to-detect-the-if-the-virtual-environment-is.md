@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-27T04:38:11Z
 updated_at: 2025-05-27T11:36:03Z
 url: https://github.com/astral-sh/uv/issues/13671
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:34Z
 ```
 
 # How to detect the if the virtual environment is managed by UV ?
 
 ---
 
-_Issue opened by @Ramesh-kumar-S on 2025-05-27 04:38_
+_@Ramesh-kumar-S_
 
 ### Question
 

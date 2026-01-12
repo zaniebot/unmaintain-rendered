@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-15T07:32:43Z
 updated_at: 2025-12-03T04:01:00Z
 url: https://github.com/astral-sh/uv/issues/15867
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # What is the point of uv python install?
 
 ---
 
-_Issue opened by @elygeo on 2025-09-15 07:32_
+_@elygeo_
 
 ### Question
 

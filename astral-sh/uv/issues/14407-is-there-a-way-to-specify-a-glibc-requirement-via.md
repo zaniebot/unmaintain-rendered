@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-02T06:47:08Z
 updated_at: 2025-07-11T01:54:42Z
 url: https://github.com/astral-sh/uv/issues/14407
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # Is there a way to specify a glibc requirement via uv?
 
 ---
 
-_Issue opened by @Ryang20718 on 2025-07-02 06:47_
+_@Ryang20718_
 
 ### Question
 

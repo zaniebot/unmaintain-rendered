@@ -13,14 +13,14 @@ head: patch-4
 created_at: 2023-11-20T05:48:16Z
 updated_at: 2023-11-20T18:21:52Z
 url: https://github.com/astral-sh/ruff/pull/8775
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Ruff ecosystem: pass no-preview cli arg by default
 
 ---
 
-_Pull request opened by @T-256 on 2023-11-20 05:48_
+_@T-256_
 
 Addresses https://github.com/astral-sh/ruff/pull/8489#issuecomment-1793513411
 That issues still exist on formatter, but since `black` doesn't support `no-preview` cli arg, I didn't include it in this PR.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-29T21:00:56Z
 updated_at: 2025-08-30T01:08:12Z
 url: https://github.com/astral-sh/uv/issues/1175
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Deduplicate `regex-automata`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-29 21:00_
+_@charliermarsh_
 
 It looks like `tracing-subscriber` is pulling in an old version:
 

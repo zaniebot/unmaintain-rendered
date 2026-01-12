@@ -11,14 +11,14 @@ head: PLW0101
 created_at: 2025-01-24T04:27:13Z
 updated_at: 2025-01-24T23:25:26Z
 url: https://github.com/astral-sh/ruff/pull/15709
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`pylint`] Remove "test-only" attributes (`PLW0101`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-24 04:27_
+_@InSyncWithFoo_
 
 ## Summary
 

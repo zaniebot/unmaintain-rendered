@@ -14,14 +14,14 @@ head: ag/red-knot-new-diagnostics
 created_at: 2025-04-01T18:59:24Z
 updated_at: 2025-04-02T14:10:03Z
 url: https://github.com/astral-sh/ruff/pull/17130
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] partially migrate to new `Diagnostic` types, delete old diagnostic code
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-04-01 18:59_
+_@BurntSushi_
 
 This "surgically" replaces Red Knot's use of "old" diagnostic types
 with the new `Diagnostic` type. It is surgical because it doesn't

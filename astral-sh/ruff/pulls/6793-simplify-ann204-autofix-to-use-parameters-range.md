@@ -12,14 +12,14 @@ head: dhruv/ann204-autofix
 created_at: 2023-08-22T20:03:01Z
 updated_at: 2023-08-23T03:55:54Z
 url: https://github.com/astral-sh/ruff/pull/6793
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Simplify `ANN204` autofix to use `Parameters` range
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-08-22 20:03_
+_@dhruvmanila_
 
 ## Summary
 

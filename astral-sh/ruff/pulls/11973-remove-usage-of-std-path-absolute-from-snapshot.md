@@ -13,14 +13,14 @@ head: jane/server/test/remove-path-absolute
 created_at: 2024-06-21T17:42:41Z
 updated_at: 2024-06-21T19:21:13Z
 url: https://github.com/astral-sh/ruff/pull/11973
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Remove usage of `std::path::absolute` from snapshot test
 
 ---
 
-_Pull request opened by @snowsignal on 2024-06-21 17:42_
+_@snowsignal_
 
 ## Summary
 

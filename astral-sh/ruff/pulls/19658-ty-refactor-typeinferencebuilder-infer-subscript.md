@@ -14,14 +14,14 @@ head: alex/binary-method-fallbacks
 created_at: 2025-07-31T11:17:56Z
 updated_at: 2025-07-31T13:39:16Z
 url: https://github.com/astral-sh/ruff/pull/19658
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [ty] Refactor `TypeInferenceBuilder::infer_subscript_expression_types`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-31 11:17_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-06T08:12:20Z
 updated_at: 2021-12-08T22:18:51Z
 url: https://github.com/clap-rs/clap/issues/3065
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Cannot enable crate features on Rust Playground because `[package.metadata.playground]` is absent in Cargo.toml
 
 ---
 
-_Issue opened by @pvshvp-oss on 2021-12-06 08:12_
+_@pvshvp-oss_
 
 ### Please complete the following tasks
 

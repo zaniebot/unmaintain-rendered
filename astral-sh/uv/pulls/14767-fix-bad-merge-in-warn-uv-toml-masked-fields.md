@@ -13,14 +13,14 @@ head: charlie/merge
 created_at: 2025-07-21T00:21:58Z
 updated_at: 2025-07-21T00:28:33Z
 url: https://github.com/astral-sh/uv/pull/14767
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:23Z
 ```
 
 # Fix bad merge in `warn_uv_toml_masked_fields`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-21 00:21_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: dont-preserve-tar-mtime
 created_at: 2023-12-13T11:08:39Z
 updated_at: 2023-12-13T15:15:33Z
 url: https://github.com/astral-sh/uv/pull/634
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:05Z
 ```
 
 # Don't preserve tar mtime to work around tar-rs bug.
 
 ---
 
-_Pull request opened by @konstin on 2023-12-13 11:08_
+_@konstin_
 
 Don't preserve mtime to work around https://github.com/alexcrichton/tar-rs/issues/349 to fix #579.
 

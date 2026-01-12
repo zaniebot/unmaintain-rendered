@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-03T18:43:19Z
 updated_at: 2024-09-03T19:11:31Z
 url: https://github.com/astral-sh/uv/issues/6975
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # `uv pip compile` not searching across multiple `extra-index-urls` if version match is not found in initial `extra-index-url`
 
 ---
 
-_Issue opened by @masonkirchner on 2024-09-03 18:43_
+_@masonkirchner_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

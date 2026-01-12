@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T09:01:39Z
 updated_at: 2025-01-15T05:47:25Z
 url: https://github.com/astral-sh/uv/issues/10587
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # uv run with a prefixed command
 
 ---
 
-_Issue opened by @codefromthecrypt on 2025-01-14 09:01_
+_@codefromthecrypt_
 
 I have a script like below, and I run it like this `uv run -q --env-file .env chat.py`
 

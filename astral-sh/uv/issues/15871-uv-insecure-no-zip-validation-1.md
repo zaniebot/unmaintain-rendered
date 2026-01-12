@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-15T14:20:41Z
 updated_at: 2025-09-17T14:34:51Z
 url: https://github.com/astral-sh/uv/issues/15871
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # UV_INSECURE_NO_ZIP_VALIDATION=1
 
 ---
 
-_Issue opened by @saifjarboui on 2025-09-15 14:20_
+_@saifjarboui_
 
 ### Summary
 

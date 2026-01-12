@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-05T22:28:22Z
 updated_at: 2024-07-12T05:00:10Z
 url: https://github.com/astral-sh/ruff/issues/11766
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `ruff server` does not load new configuration files when they are created
 
 ---
 
-_Issue opened by @snowsignal on 2024-06-05 22:28_
+_@snowsignal_
 
 If you create a new `pyproject.toml` / `ruff.toml` configuration file in your workspace, we reload any existing configuration but do not 'register' the new configuration file.
 

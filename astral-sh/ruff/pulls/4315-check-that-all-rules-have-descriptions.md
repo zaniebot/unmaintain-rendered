@@ -12,14 +12,14 @@ head: check-rule-descriotion
 created_at: 2023-05-09T16:39:07Z
 updated_at: 2023-05-10T14:55:28Z
 url: https://github.com/astral-sh/ruff/pull/4315
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Check that all rules have descriptions
 
 ---
 
-_Pull request opened by @calumy on 2023-05-09 16:39_
+_@calumy_
 
 Check that all rules have the headers "What it does" and "Why is this bad?".
 

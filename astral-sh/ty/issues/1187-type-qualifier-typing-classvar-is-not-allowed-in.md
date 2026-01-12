@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-15T09:49:35Z
 updated_at: 2025-09-15T11:16:58Z
 url: https://github.com/astral-sh/ty/issues/1187
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Type qualifier `typing.ClassVar` is not allowed in type expressions (only in annotation expressions)
 
 ---
 
-_Issue opened by @dmytro-GL on 2025-09-15 09:49_
+_@dmytro-GL_
 
 ### Summary
 

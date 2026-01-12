@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-06T12:51:54Z
 updated_at: 2024-06-06T14:00:02Z
 url: https://github.com/astral-sh/uv/issues/4091
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # constraints not respected by `uv pip compile`
 
 ---
 
-_Issue opened by @iisakkirotko on 2024-06-06 12:51_
+_@iisakkirotko_
 
 If I run `uv pip compile req.txt -c constraints.txt`, with the two files having the following content:
 

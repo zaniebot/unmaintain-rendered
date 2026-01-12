@@ -12,14 +12,14 @@ head: jtfm/auth-mode
 created_at: 2025-03-02T18:55:35Z
 updated_at: 2025-03-10T17:24:27Z
 url: https://github.com/astral-sh/uv/pull/11896
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:02Z
 ```
 
 # Add an optional authentication policy to [index] configuration
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-03-02 18:55_
+_@jtfmumm_
 
 Adds a new optional key `auth-policy` to `[tool.uv.index]` that sets the authentication policy for the index URL. 
 

@@ -13,14 +13,14 @@ head: charlie/trailing-comment
 created_at: 2023-08-07T01:50:18Z
 updated_at: 2023-08-07T14:28:32Z
 url: https://github.com/astral-sh/ruff/pull/6380
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Avoid hard line break after dangling open-parenthesis comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-07 01:50_
+_@charliermarsh_
 
 ## Summary
 

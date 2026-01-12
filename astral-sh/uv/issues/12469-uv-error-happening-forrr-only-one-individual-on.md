@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-25T18:18:03Z
 updated_at: 2025-04-01T19:46:38Z
 url: https://github.com/astral-sh/uv/issues/12469
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # uv error happening forrr only one individual on the team `RuntimeEor: Error getting the version from source "uv-dynamic-versioning"`
 
 ---
 
-_Issue opened by @adiberk on 2025-03-25 18:18_
+_@adiberk_
 
 ### Summary
 

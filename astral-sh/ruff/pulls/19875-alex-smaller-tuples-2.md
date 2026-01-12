@@ -14,14 +14,14 @@ head: alex/smaller-tuples-2
 created_at: 2025-08-12T10:58:36Z
 updated_at: 2025-08-12T11:11:39Z
 url: https://github.com/astral-sh/ruff/pull/19875
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # alex/smaller tuples 2
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-12 10:58_
+_@AlexWaygood_
 
 - **[ty] Reduce memory usage of `TupleSpec` and `TupleType`**
 - **cherry-pick Ibraheem's changes on top**

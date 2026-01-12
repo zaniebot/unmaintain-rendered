@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-06-14T13:33:36Z
 updated_at: 2023-07-12T05:23:08Z
 url: https://github.com/astral-sh/ruff/issues/5082
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Ruff fails to detect nonsensical list index
 
 ---
 
-_Issue opened by @dgjustice on 2023-06-14 13:33_
+_@dgjustice_
 
 `ruff` is an awesome project! :heart: I saw this in the wild today on a PR to fix a bug that passed through CI (with `ruff check`).
 

@@ -13,14 +13,14 @@ head: charlie/deviation
 created_at: 2023-10-05T15:52:20Z
 updated_at: 2023-10-05T16:06:08Z
 url: https://github.com/astral-sh/ruff/pull/7827
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Add trailing comment deviation to README
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-05 15:52_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7823.
 

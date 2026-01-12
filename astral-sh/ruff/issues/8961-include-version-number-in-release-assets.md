@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-02T02:53:01Z
 updated_at: 2023-12-05T19:42:12Z
 url: https://github.com/astral-sh/ruff/issues/8961
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Include version number in release assets
 
 ---
 
-_Issue opened by @tobbez on 2023-12-02 02:53_
+_@tobbez_
 
 The assets attached to [releases](https://github.com/astral-sh/ruff/releases) currently use the exact same archive names for every release.
 

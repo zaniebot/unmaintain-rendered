@@ -15,14 +15,14 @@ head: charlie/explicit
 created_at: 2025-03-14T20:15:13Z
 updated_at: 2025-03-17T21:12:22Z
 url: https://github.com/astral-sh/uv/pull/12176
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:09Z
 ```
 
 # Always reinstall local source trees passed to `uv pip install`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-14 20:15_
+_@charliermarsh_
 
 ## Summary
 

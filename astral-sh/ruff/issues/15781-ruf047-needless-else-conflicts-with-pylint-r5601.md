@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-28T08:28:58Z
 updated_at: 2025-01-28T16:57:43Z
 url: https://github.com/astral-sh/ruff/issues/15781
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # "RUF047" (needless-else) conflicts with pylint R5601 (confusing-consecutive-elif), Can't suppress the rule inline.
 
 ---
 
-_Issue opened by @IgnatKudriavtsev on 2025-01-28 08:28_
+_@IgnatKudriavtsev_
 
 ### Description
 ruff 0.9.3

@@ -13,14 +13,14 @@ head: PYI046
 created_at: 2023-07-26T15:13:36Z
 updated_at: 2023-07-27T21:04:33Z
 url: https://github.com/astral-sh/ruff/pull/6098
-synced_at: 2026-01-12T03:23:56Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # [`flake8-pyi`] Implement `PYI046`
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-07-26 15:13_
+_@LaBatata101_
 
 ## Summary
 Checks for the presence of unused private `typing.Protocol` definitions.

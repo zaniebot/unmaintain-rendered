@@ -12,14 +12,14 @@ head: brent/ruf039-0.10
 created_at: 2025-03-11T19:17:49Z
 updated_at: 2025-06-21T11:28:43Z
 url: https://github.com/astral-sh/ruff/pull/16644
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`ruff`] Stabilize `unraw-re-pattern` (`RUF039`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-11 19:17_
+_@ntBre_
 
 Summary
 --

@@ -13,14 +13,14 @@ head: jtfm/python-pin-global
 created_at: 2025-03-11T14:52:22Z
 updated_at: 2025-03-13T12:48:39Z
 url: https://github.com/astral-sh/uv/pull/12115
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:08Z
 ```
 
 # Add support for global `uv python pin`
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-03-11 14:52_
+_@jtfmumm_
 
 These changes add support for
 

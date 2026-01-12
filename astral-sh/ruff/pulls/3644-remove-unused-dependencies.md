@@ -12,14 +12,14 @@ head: remove-unused-deps
 created_at: 2023-03-21T08:50:56Z
 updated_at: 2023-03-21T10:02:45Z
 url: https://github.com/astral-sh/ruff/pull/3644
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Remove unused dependencies
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-21 08:50_
+_@MichaReiser_
 
 _No description provided._
 

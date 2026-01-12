@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-10-24T04:32:14Z
 updated_at: 2025-10-24T19:52:08Z
 url: https://github.com/astral-sh/uv/pull/16430
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:15Z
 ```
 
 # Update docs to reflect new signal forwarding semantics
 
 ---
 
-_Pull request opened by @bdentino on 2025-10-24 04:32_
+_@bdentino_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

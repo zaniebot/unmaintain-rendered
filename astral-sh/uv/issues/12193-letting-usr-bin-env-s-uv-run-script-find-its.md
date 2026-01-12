@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-15T19:54:48Z
 updated_at: 2025-07-08T16:45:27Z
 url: https://github.com/astral-sh/uv/issues/12193
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:57Z
 ```
 
 # Letting `#!/usr/bin/env -S uv run` script find its project even if run from outside the project
 
 ---
 
-_Issue opened by @andersk on 2025-03-15 19:54_
+_@andersk_
 
 ### Summary
 

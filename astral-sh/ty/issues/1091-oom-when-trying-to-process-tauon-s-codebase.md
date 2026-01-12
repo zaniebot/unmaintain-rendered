@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-23T20:07:04Z
 updated_at: 2025-08-28T06:43:02Z
 url: https://github.com/astral-sh/ty/issues/1091
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # OOM when trying to process Tauon's codebase
 
 ---
 
-_Issue opened by @C0rn3j on 2025-08-23 20:07_
+_@C0rn3j_
 
 ### Summary
 

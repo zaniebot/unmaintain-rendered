@@ -13,14 +13,14 @@ head: gi-version-exception
 created_at: 2025-09-07T22:05:27Z
 updated_at: 2025-09-16T20:50:46Z
 url: https://github.com/astral-sh/ruff/pull/20289
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [pycodestyle] Allow gi.require_version[s]() interspersed with imports, for PyGObject (E402) (fixes #20288)
 
 ---
 
-_Pull request opened by @ferdnyc on 2025-09-07 22:05_
+_@ferdnyc_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

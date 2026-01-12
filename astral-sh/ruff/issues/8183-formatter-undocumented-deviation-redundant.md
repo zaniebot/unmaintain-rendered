@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-24T20:46:23Z
 updated_at: 2023-10-26T06:29:00Z
 url: https://github.com/astral-sh/ruff/issues/8183
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter undocumented deviation: Redundant parentheses in boolean expression can lead to extra line breaks
 
 ---
 
-_Issue opened by @henribru on 2023-10-24 20:46_
+_@henribru_
 
 [Black:](https://black.vercel.app/?version=stable&state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4ADtAHtdAD2IimZxl1N_WlbvK5V9KEd0suDTtKdXyv9jIpYCegD3gYD7EyeAgiILbu4HLFJcJOGomsGIui2j4fvxg-ubYGm00rJ3POd7Otj7BsS8qKAOPqj5RYhHkKKWdavWCbQBVtBbfaMZwMbeFK26F0ek2yy-Pe023i3gAQ-rAAAATqNMSNT2D50AAZcB7gEAAKqHNMmxxGf7AgAAAAAEWVo=)
 ```

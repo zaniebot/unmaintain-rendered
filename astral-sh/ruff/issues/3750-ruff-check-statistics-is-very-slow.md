@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-26T20:36:59Z
 updated_at: 2023-03-26T22:46:45Z
 url: https://github.com/astral-sh/ruff/issues/3750
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # ruff check --statistics is very slow
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-03-26 20:36_
+_@JonathanPlasse_
 
 Running `--statistics` on Ruff fixtures.
 ```console

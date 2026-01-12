@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T19:50:21Z
 updated_at: 2025-12-18T14:47:04Z
 url: https://github.com/astral-sh/ty/issues/2031
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Bad VIRTUAL_ENV environment variable causes a panic
 
 ---
 
-_Issue opened by @joshzcold on 2025-12-17 19:50_
+_@joshzcold_
 
 ### Summary
 

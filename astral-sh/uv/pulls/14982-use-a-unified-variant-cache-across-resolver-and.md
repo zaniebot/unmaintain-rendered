@@ -12,14 +12,14 @@ head: charlie/wheel-variant-cache
 created_at: 2025-07-30T21:04:03Z
 updated_at: 2025-07-30T23:56:12Z
 url: https://github.com/astral-sh/uv/pull/14982
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:31Z
 ```
 
 # Use a unified variant cache across resolver and installer
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-30 21:04_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-12T20:17:29Z
 updated_at: 2025-06-22T14:14:00Z
 url: https://github.com/astral-sh/uv/issues/7341
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Project directory structure
 
 ---
 
-_Issue opened by @pkucmus on 2024-09-12 20:17_
+_@pkucmus_
 
 Hello.
 

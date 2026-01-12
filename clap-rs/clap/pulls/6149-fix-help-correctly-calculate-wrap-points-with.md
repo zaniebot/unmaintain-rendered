@@ -12,14 +12,14 @@ head: wrap
 created_at: 2025-10-13T15:50:59Z
 updated_at: 2025-10-13T16:10:55Z
 url: https://github.com/clap-rs/clap/pull/6149
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # fix(help): Correctly calculate wrap points with ANSI escape codes 
 
 ---
 
-_Pull request opened by @epage on 2025-10-13 15:50_
+_@epage_
 
 We mixed up whether `i` represented the absolute position or our
 incremental position.

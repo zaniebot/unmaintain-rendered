@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T10:42:19Z
 updated_at: 2025-12-24T09:24:35Z
 url: https://github.com/astral-sh/ty/issues/2060
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Conversion of abc.Collection[str] to set() becomes set[Unknown] instead of set[str]
 
 ---
 
-_Issue opened by @sinon on 2025-12-18 10:42_
+_@sinon_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: alex/is-property-3
 created_at: 2024-07-30T15:40:05Z
 updated_at: 2024-07-30T17:27:45Z
 url: https://github.com/astral-sh/ruff/pull/12583
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Consider more stdlib decorators to be property-like
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-30 15:40_
+_@AlexWaygood_
 
 ## Summary
 

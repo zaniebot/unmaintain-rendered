@@ -13,14 +13,14 @@ head: godot
 created_at: 2024-05-31T19:22:39Z
 updated_at: 2024-05-31T19:44:56Z
 url: https://github.com/astral-sh/ruff/pull/11647
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Update `Who's Using Ruff?` section to include `Godot`
 
 ---
 
-_Pull request opened by @Chubercik on 2024-05-31 19:22_
+_@Chubercik_
 
 ## Summary
 

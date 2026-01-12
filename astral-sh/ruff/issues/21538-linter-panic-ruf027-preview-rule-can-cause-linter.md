@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-20T14:01:13Z
 updated_at: 2025-12-10T14:20:30Z
 url: https://github.com/astral-sh/ruff/issues/21538
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [Linter panic] RUF027 preview rule can cause linter panic on specific string
 
 ---
 
-_Issue opened by @skraeven on 2025-11-20 14:01_
+_@skraeven_
 
 Ruff has crashed while running on our code base, due to a specific string/rule combination.
 

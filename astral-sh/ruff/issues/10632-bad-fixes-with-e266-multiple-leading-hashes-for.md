@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-27T17:36:25Z
 updated_at: 2024-04-18T01:22:20Z
 url: https://github.com/astral-sh/ruff/issues/10632
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Bad fixes with E266: multiple-leading-hashes-for-block-comment
 
 ---
 
-_Issue opened by @Hnasar on 2024-03-27 17:36_
+_@Hnasar_
 
 I'm trying out `--preview` with ruff 0.3.4. [E266](https://docs.astral.sh/ruff/rules/multiple-leading-hashes-for-block-comment/) which is a pycodestyle --preview rule has some weird fixes:
 

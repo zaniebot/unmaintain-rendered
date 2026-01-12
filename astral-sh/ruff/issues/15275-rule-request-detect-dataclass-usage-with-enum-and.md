@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-05T19:43:11Z
 updated_at: 2025-01-06T13:44:22Z
 url: https://github.com/astral-sh/ruff/issues/15275
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Rule request: Detect dataclass() usage with Enum and its subclasses
 
 ---
 
-_Issue opened by @correctmost on 2025-01-05 19:43_
+_@correctmost_
 
 ### Motivation
 

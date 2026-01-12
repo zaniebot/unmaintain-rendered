@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-04-16T00:29:13Z
 updated_at: 2023-04-16T23:08:13Z
 url: https://github.com/astral-sh/ruff/pull/3982
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add ONNX Runtime to user list
 
 ---
 
-_Pull request opened by @justinchuby on 2023-04-16 00:29_
+_@justinchuby_
 
 We use ruff over at ONNX Runtime too. Thank you for creating this amazing project!
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T11:10:32Z
 updated_at: 2025-12-17T00:45:51Z
 url: https://github.com/astral-sh/ty/issues/268
-synced_at: 2026-01-10T01:54:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Are we ready to replace mypy with ty?
 
 ---
 
-_Issue opened by @YeonwooSung on 2025-05-08 11:10_
+_@YeonwooSung_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: zb/canonical-interp
 created_at: 2025-06-27T20:21:49Z
 updated_at: 2025-06-30T15:39:48Z
 url: https://github.com/astral-sh/uv/pull/14331
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:09Z
 ```
 
 # Include the canonical path in the interpreter query cache key
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-27 20:21_
+_@zanieb_
 
 This fixes an obscure cache collision in Python interpreter queries, which we believe to be the root cause of CI flakes we've been seeing where a project environment is invalidated and recreated.
 

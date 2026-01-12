@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-15T22:02:30Z
 updated_at: 2024-09-20T08:22:03Z
 url: https://github.com/astral-sh/ruff/issues/8704
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add rule to encourage using type aliases (generalize PYI026)
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-11-15 22:02_
+_@NeilGirdhar_
 
 The following code has no errors, but it should use type aliases to indicate that `x` will not be used programmatically:
 ```python

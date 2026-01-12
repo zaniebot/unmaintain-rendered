@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-17T08:46:35Z
 updated_at: 2025-12-17T13:22:18Z
 url: https://github.com/astral-sh/ty/issues/1987
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Custom dataclasses with `__dataclass_{fields,params}__` fields are not considered `DataclassInstance`
 
 ---
 
-_Issue opened by @jeertmans on 2025-12-17 08:46_
+_@jeertmans_
 
 ### Summary
 

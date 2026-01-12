@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-23T10:49:59Z
 updated_at: 2025-06-24T06:04:26Z
 url: https://github.com/astral-sh/uv/issues/14213
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # No clear way to upgrade transitive dependency using uv
 
 ---
 
-_Issue opened by @mesropt on 2025-06-23 10:49_
+_@mesropt_
 
 I have a primary dependency `python-pptx~=1.0.2`, which has a transitive dependency on `xlsxwriter==3.2.3` and which is currently yanked, so I want it to be upgraded.
 

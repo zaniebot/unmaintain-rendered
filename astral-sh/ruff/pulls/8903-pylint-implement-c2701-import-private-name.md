@@ -11,14 +11,14 @@ head: add-C2701
 created_at: 2023-11-29T06:20:27Z
 updated_at: 2023-11-29T17:22:27Z
 url: https://github.com/astral-sh/ruff/pull/8903
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [pylint] - implement C2701 `import-private-name`
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-11-29 06:20_
+_@diceroll123_
 
 ## Summary
 

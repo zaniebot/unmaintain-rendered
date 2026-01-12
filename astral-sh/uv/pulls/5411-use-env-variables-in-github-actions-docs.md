@@ -14,14 +14,14 @@ head: doc-env-suggestion
 created_at: 2024-07-24T15:15:20Z
 updated_at: 2024-07-24T19:38:26Z
 url: https://github.com/astral-sh/uv/pull/5411
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:48Z
 ```
 
 # Use env variables in Github Actions docs
 
 ---
 
-_Pull request opened by @blueraft on 2024-07-24 15:15_
+_@blueraft_
 
 ## Summary
 

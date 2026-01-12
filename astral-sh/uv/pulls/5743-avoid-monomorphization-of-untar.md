@@ -13,14 +13,14 @@ head: charlie/mono
 created_at: 2024-08-03T01:24:54Z
 updated_at: 2024-08-03T23:29:18Z
 url: https://github.com/astral-sh/uv/pull/5743
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:59Z
 ```
 
 # Avoid monomorphization of `untar`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-03 01:24_
+_@charliermarsh_
 
 ## Summary
 

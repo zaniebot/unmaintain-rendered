@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-03T18:09:32Z
 updated_at: 2024-05-30T18:23:15Z
 url: https://github.com/astral-sh/uv/issues/3358
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # universal-lock: implement resolver forking
 
 ---
 
-_Issue opened by @BurntSushi on 2024-05-03 18:09_
+_@BurntSushi_
 
 This is blocked on #3354 and #3355. It's part of the larger task of #3350.
 

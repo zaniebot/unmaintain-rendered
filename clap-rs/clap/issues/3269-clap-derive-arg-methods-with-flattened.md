@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-08T03:15:07Z
 updated_at: 2022-05-04T18:21:05Z
 url: https://github.com/clap-rs/clap/issues/3269
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # clap_derive Arg methods with flattened
 
 ---
 
-_Issue opened by @pinkforest on 2022-01-08 03:15_
+_@pinkforest_
 
 ### Please complete the following tasks
 

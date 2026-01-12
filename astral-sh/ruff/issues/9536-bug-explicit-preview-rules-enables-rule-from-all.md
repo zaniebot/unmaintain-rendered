@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-15T18:54:45Z
 updated_at: 2024-01-15T22:50:29Z
 url: https://github.com/astral-sh/ruff/issues/9536
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # bug: explicit-preview-rules enables rule from ALL
 
 ---
 
-_Issue opened by @nstarman on 2024-01-15 18:54_
+_@nstarman_
 
 In https://github.com/astropy/astropy/pull/15889 I tried turning on `preview` mode with `explicit-preview-rules`. From https://docs.astral.sh/ruff/preview/#selecting-single-preview-rules I would expect that running `ruff lint` (really `pre-commit run ruff -a`) shouldn't do anything since no rules are explicitly selected (we use `select = ["ALL"]`). However ruff finds and fixes `SIM910`.
 Is this a bug?

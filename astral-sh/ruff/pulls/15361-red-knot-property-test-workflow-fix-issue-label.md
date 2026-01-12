@@ -14,14 +14,14 @@ head: david/property-test-updates-fix
 created_at: 2025-01-08T21:34:35Z
 updated_at: 2025-01-08T21:48:21Z
 url: https://github.com/astral-sh/ruff/pull/15361
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Property test workflow: Fix issue label, link to CI run
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-08 21:34_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-11T20:59:37Z
 updated_at: 2025-04-19T07:14:32Z
 url: https://github.com/astral-sh/uv/issues/12845
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # Add a flag to `uv export` to omit local packages
 
 ---
 
-_Issue opened by @fepegar on 2025-04-11 20:59_
+_@fepegar_
 
 ### Summary
 

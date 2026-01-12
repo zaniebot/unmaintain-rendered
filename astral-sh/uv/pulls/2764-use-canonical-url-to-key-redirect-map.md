@@ -13,14 +13,14 @@ head: charlie/canonical
 created_at: 2024-04-01T21:46:58Z
 updated_at: 2024-04-01T21:57:14Z
 url: https://github.com/astral-sh/uv/pull/2764
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:12Z
 ```
 
 # Use canonical URL to key redirect map
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-01 21:46_
+_@charliermarsh_
 
 ## Summary
 

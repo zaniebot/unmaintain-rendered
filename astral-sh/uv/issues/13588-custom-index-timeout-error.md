@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T23:46:28Z
 updated_at: 2025-07-16T13:54:32Z
 url: https://github.com/astral-sh/uv/issues/13588
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # Custom Index timeout error
 
 ---
 
-_Issue opened by @shiftysheep on 2025-05-21 23:46_
+_@shiftysheep_
 
 ### Question
 

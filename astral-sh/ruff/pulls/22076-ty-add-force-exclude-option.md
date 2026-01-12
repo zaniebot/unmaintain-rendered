@@ -14,14 +14,14 @@ head: micha/force-exclude
 created_at: 2025-12-19T10:33:14Z
 updated_at: 2025-12-20T09:03:43Z
 url: https://github.com/astral-sh/ruff/pull/22076
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Add `--force-exclude` option
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-19 10:33_
+_@MichaReiser_
 
 ## Summary
 

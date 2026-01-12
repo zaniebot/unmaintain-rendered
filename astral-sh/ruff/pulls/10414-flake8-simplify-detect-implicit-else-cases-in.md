@@ -14,14 +14,14 @@ head: thartman/sim103-detect-implicit-else
 created_at: 2024-03-15T00:11:30Z
 updated_at: 2024-03-18T02:05:57Z
 url: https://github.com/astral-sh/ruff/pull/10414
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`flake8-simplify`] Detect implicit `else` cases in `needless-bool` (`SIM103`)
 
 ---
 
-_Pull request opened by @ottaviohartman on 2024-03-15 00:11_
+_@ottaviohartman_
 
 Fixes #10402 
 

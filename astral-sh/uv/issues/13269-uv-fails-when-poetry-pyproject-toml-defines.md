@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-02T15:54:16Z
 updated_at: 2025-05-02T16:47:50Z
 url: https://github.com/astral-sh/uv/issues/13269
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # uv fails when Poetry pyproject.toml defines version under [tool.poetry] instead of [project]
 
 ---
 
-_Issue opened by @nhubbard on 2025-05-02 15:54_
+_@nhubbard_
 
 ### Summary
 

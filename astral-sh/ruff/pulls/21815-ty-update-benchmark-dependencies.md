@@ -14,14 +14,14 @@ head: micha/update-benchmarks
 created_at: 2025-12-05T15:29:35Z
 updated_at: 2025-12-05T16:23:20Z
 url: https://github.com/astral-sh/ruff/pull/21815
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Update benchmark dependencies
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-05 15:29_
+_@MichaReiser_
 
 _No description provided._
 

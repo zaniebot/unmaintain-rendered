@@ -13,14 +13,14 @@ head: docs/clarify-uv-toml-precedence
 created_at: 2024-09-03T23:02:12Z
 updated_at: 2024-09-04T16:56:15Z
 url: https://github.com/astral-sh/uv/pull/6986
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:37Z
 ```
 
 # docs(configuration): clarify `uv.toml` precedence
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-09-03 23:02_
+_@mkniewallner_
 
 ## Summary
 

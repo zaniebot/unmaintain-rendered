@@ -13,14 +13,14 @@ head: charlie/fork
 created_at: 2023-02-14T03:17:57Z
 updated_at: 2023-02-15T07:58:14Z
 url: https://github.com/astral-sh/ruff/pull/2883
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Add initial formatter implementation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-14 03:17_
+_@charliermarsh_
 
 # Summary
 

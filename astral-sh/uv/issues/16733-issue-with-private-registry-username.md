@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-14T06:20:09Z
 updated_at: 2025-12-03T09:31:37Z
 url: https://github.com/astral-sh/uv/issues/16733
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # Issue with private registry username
 
 ---
 
-_Issue opened by @MarthinusBosman on 2025-11-14 06:20_
+_@MarthinusBosman_
 
 ### Summary
 

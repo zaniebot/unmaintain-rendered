@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-24T19:44:54Z
 updated_at: 2025-11-18T16:10:21Z
 url: https://github.com/astral-sh/ty/issues/192
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # mdtest: implement auto-update for inline `# error: ` message assertions
 
 ---
 
-_Issue opened by @carljm on 2025-02-24 19:44_
+_@carljm_
 
 ### Description
 

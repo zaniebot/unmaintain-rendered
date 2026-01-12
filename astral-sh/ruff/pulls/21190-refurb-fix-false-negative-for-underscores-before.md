@@ -14,14 +14,14 @@ head: fix-21186
 created_at: 2025-11-01T19:26:35Z
 updated_at: 2025-11-04T16:13:38Z
 url: https://github.com/astral-sh/ruff/pull/21190
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [`refurb`] Fix false negative for underscores before sign in `Decimal` constructor (`FURB157`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-01 19:26_
+_@danparizher_
 
 ## Summary
 

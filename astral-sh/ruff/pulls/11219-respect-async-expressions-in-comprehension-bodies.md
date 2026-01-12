@@ -13,14 +13,14 @@ head: charlie/comp
 created_at: 2024-04-30T18:31:12Z
 updated_at: 2024-04-30T18:43:40Z
 url: https://github.com/astral-sh/ruff/pull/11219
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Respect `async` expressions in comprehension bodies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-30 18:31_
+_@charliermarsh_
 
 ## Summary
 

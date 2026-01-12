@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-02T14:59:01Z
 updated_at: 2024-03-03T00:05:34Z
 url: https://github.com/astral-sh/ruff/issues/10196
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # ruff format: whitespace before `:` (PEP 8: E203)
 
 ---
 
-_Issue opened by @Zerotask on 2024-03-02 14:59_
+_@Zerotask_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-15T16:31:22Z
 updated_at: 2025-07-15T17:26:00Z
 url: https://github.com/astral-sh/ruff/issues/19362
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [website] When hitting enter key in search field, browser navigates to first result - rather than opening a full page of search results which is what I would expect
 
 ---
 
-_Issue opened by @corneliusroemer on 2025-07-15 16:31_
+_@corneliusroemer_
 
 ### Summary
 

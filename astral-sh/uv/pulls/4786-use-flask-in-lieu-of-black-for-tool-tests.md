@@ -12,14 +12,14 @@ head: charlie/flask
 created_at: 2024-07-03T18:28:16Z
 updated_at: 2024-07-09T20:01:33Z
 url: https://github.com/astral-sh/uv/pull/4786
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:27Z
 ```
 
 # Use `flask` in lieu of `black` for tool tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-03 18:28_
+_@charliermarsh_
 
 ## Summary
 

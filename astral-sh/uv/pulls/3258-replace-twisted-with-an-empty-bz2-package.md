@@ -13,14 +13,14 @@ head: charlie/bz2
 created_at: 2024-04-25T03:10:37Z
 updated_at: 2024-04-25T03:45:24Z
 url: https://github.com/astral-sh/uv/pull/3258
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:32Z
 ```
 
 # Replace Twisted with an empty bz2 package
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-25 03:10_
+_@charliermarsh_
 
 ## Summary
 

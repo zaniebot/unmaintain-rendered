@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-23T19:21:09Z
 updated_at: 2023-03-23T20:21:17Z
 url: https://github.com/astral-sh/ruff/issues/3692
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `ignore` without `select` seems to work in reverse
 
 ---
 
-_Issue opened by @bersbersbers on 2023-03-23 19:21_
+_@bersbersbers_
 
 I'll show here various numbers of errors reported by `ruff` based on `pyproject.toml` settings:
 

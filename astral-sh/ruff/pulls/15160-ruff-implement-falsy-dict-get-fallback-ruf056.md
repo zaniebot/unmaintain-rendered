@@ -14,14 +14,14 @@ head: falsy-dict-get-fallback
 created_at: 2024-12-27T00:40:49Z
 updated_at: 2024-12-31T10:40:52Z
 url: https://github.com/astral-sh/ruff/pull/15160
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [ruff] Implement falsy-dict-get-fallback (RUF056)
 
 ---
 
-_Pull request opened by @guptaarnav on 2024-12-27 00:40_
+_@guptaarnav_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

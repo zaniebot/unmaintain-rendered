@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-18T04:03:12Z
 updated_at: 2025-01-08T20:34:47Z
 url: https://github.com/astral-sh/uv/issues/7483
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Add lock files for inline script metadata
 
 ---
 
-_Issue opened by @ketozhang on 2024-09-18 04:03_
+_@ketozhang_
 
 https://docs.astral.sh/uv/guides/scripts/#declaring-script-dependencies
 

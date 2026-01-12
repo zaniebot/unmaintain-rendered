@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-06T03:24:17Z
 updated_at: 2025-01-06T08:01:41Z
 url: https://github.com/astral-sh/ruff/issues/15291
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Should `subclass-builtin (FURB189)` not apply to stubs?
 
 ---
 
-_Issue opened by @Avasam on 2025-01-06 03:24_
+_@Avasam_
 
 I don't think that [subclass-builtin (FURB189)](https://docs.astral.sh/ruff/rules/subclass-builtin/#subclass-builtin-furb189) should apply to stubs (it currently does).
 Stubs authors should aim to faithfully represent the runtime implementation. And if the runtime subclasses `dict`, `list` or `str`. So should the stubs.

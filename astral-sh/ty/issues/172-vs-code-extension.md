@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-03-14T10:15:18Z
 updated_at: 2025-05-07T15:53:53Z
 url: https://github.com/astral-sh/ty/issues/172
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # VS Code extension
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 10:15_
+_@MichaReiser_
 
 We currently use Ruff's VS code extension to test Red Knot's LSP. We should publish a dedicated extension
 

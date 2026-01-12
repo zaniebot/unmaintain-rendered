@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-15T21:24:44Z
 updated_at: 2023-02-15T23:18:13Z
 url: https://github.com/astral-sh/ruff/issues/2941
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Add `asyncio.ensure_future` support to `RUF006`
 
 ---
 
-_Issue opened by @zunda-arrow on 2023-02-15 21:24_
+_@zunda-arrow_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

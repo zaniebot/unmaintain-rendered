@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-18T04:01:24Z
 updated_at: 2024-08-01T17:42:12Z
 url: https://github.com/astral-sh/uv/issues/5178
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Should `uv add` set lower version bounds?
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-07-18 04:01_
+_@ibraheemdev_
 
 Currently, `uv add foo` adds `"foo"` as a requirement with no version constraint. Should it instead perform a resolution and require `"foo>X"`?
 

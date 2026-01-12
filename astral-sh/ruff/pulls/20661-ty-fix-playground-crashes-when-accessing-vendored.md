@@ -14,14 +14,14 @@ head: fix-astral-sh/ty/issues/1290
 created_at: 2025-10-01T05:20:55Z
 updated_at: 2025-10-07T17:16:37Z
 url: https://github.com/astral-sh/ruff/pull/20661
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [`ty`] Fix playground crashes when accessing vendored files with leading slashes
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-01 05:20_
+_@danparizher_
 
 ## Summary
 

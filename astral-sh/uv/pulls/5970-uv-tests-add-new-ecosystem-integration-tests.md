@@ -13,14 +13,14 @@ head: ag/ecosystem
 created_at: 2024-08-09T17:59:19Z
 updated_at: 2024-08-13T13:48:02Z
 url: https://github.com/astral-sh/uv/pull/5970
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:08Z
 ```
 
 # uv/tests: add new 'ecosystem' integration tests
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-08-09 17:59_
+_@BurntSushi_
 
 At a high level, this PR adds a smattering of new tests that
 effectively snapshot the output of `uv lock` for a selection of

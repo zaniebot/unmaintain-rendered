@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-10T10:16:06Z
 updated_at: 2024-06-10T22:15:41Z
 url: https://github.com/clap-rs/clap/issues/5524
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Arg::new("set-import").num_args(3).value_names(["asdf"]) are listed 3 times in --help; should only list once
 
 ---
 
-_Issue opened by @qknight on 2024-06-10 10:16_
+_@qknight_
 
 ### Please complete the following tasks
 

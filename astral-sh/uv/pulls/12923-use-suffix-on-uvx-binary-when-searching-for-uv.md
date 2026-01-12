@@ -13,14 +13,14 @@ head: gankra/suffix-bin
 created_at: 2025-04-16T18:23:57Z
 updated_at: 2025-04-16T18:52:11Z
 url: https://github.com/astral-sh/uv/pull/12923
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:27Z
 ```
 
 # Use suffix on uvx binary when searching for uv binary
 
 ---
 
-_Pull request opened by @Gankra on 2025-04-16 18:23_
+_@Gankra_
 
 This is a rebased and updated version of #11925 based on my review (I didn't have permission to push to their branch).
 

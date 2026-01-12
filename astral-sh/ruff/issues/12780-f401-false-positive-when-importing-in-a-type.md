@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-09T10:36:14Z
 updated_at: 2025-02-01T17:06:32Z
 url: https://github.com/astral-sh/ruff/issues/12780
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # F401 false positive when importing in a type-checking block
 
 ---
 
-_Issue opened by @alexandermalyga on 2024-08-09 10:36_
+_@alexandermalyga_
 
 A false positive `F401` error is raised when the import is in a type-checking block and used as a generic parameter.
 

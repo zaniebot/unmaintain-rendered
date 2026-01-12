@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T13:23:01Z
 updated_at: 2024-10-31T13:44:24Z
 url: https://github.com/astral-sh/ruff/issues/14017
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # SIM108 is bad for code coverage
 
 ---
 
-_Issue opened by @maddrum on 2024-10-31 13:23_
+_@maddrum_
 
 `SIM108` suggests using ternary operators whenever possible due to readability. 
 

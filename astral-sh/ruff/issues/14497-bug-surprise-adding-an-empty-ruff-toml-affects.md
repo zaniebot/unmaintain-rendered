@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T19:39:36Z
 updated_at: 2024-11-25T19:12:42Z
 url: https://github.com/astral-sh/ruff/issues/14497
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # bug/surprise: adding an empty ruff.toml affects how import rules behaves
 
 ---
 
-_Issue opened by @kaddkaka on 2024-11-20 19:39_
+_@kaddkaka_
 
 Adding an `ruff.toml` to your project file structure affects how ruff finds and categorizes imports, and therefore how rule I001 behaves.
 

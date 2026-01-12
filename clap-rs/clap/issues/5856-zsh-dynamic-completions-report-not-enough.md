@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-23T17:38:20Z
 updated_at: 2025-02-18T21:05:18Z
 url: https://github.com/clap-rs/clap/issues/5856
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # zsh dynamic completions report `not enough arguments`
 
 ---
 
-_Issue opened by @Eh2406 on 2024-12-23 17:38_
+_@Eh2406_
 
 ### Please complete the following tasks
 

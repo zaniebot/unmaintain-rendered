@@ -13,14 +13,14 @@ head: dependabot/cargo/js-sys-0.3.66
 created_at: 2023-12-04T08:41:07Z
 updated_at: 2023-12-04T10:50:09Z
 url: https://github.com/astral-sh/ruff/pull/8992
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Bump js-sys from 0.3.65 to 0.3.66
 
 ---
 
-_Pull request opened by @dependabot on 2023-12-04 08:41_
+_@dependabot_
 
 Bumps [js-sys](https://github.com/rustwasm/wasm-bindgen) from 0.3.65 to 0.3.66.
 <details>

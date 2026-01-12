@@ -14,14 +14,14 @@ head: zb/bump-version-in-pyproject
 created_at: 2025-07-17T22:26:59Z
 updated_at: 2025-07-17T22:28:18Z
 url: https://github.com/astral-sh/uv/pull/14697
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:21Z
 ```
 
 # Bump version to 0.8.0
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-17 22:26_
+_@zanieb_
 
 Somehow this one was missed in #14690 
 

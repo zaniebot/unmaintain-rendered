@@ -12,14 +12,14 @@ head: renovate/bincode-3.x
 created_at: 2025-12-29T16:17:16Z
 updated_at: 2025-12-29T17:32:19Z
 url: https://github.com/astral-sh/ruff/pull/22282
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:45Z
 ```
 
 # Update Rust crate bincode to v3
 
 ---
 
-_Pull request opened by @renovate on 2025-12-29 16:17_
+_@renovate_
 
 This PR contains the following updates:
 

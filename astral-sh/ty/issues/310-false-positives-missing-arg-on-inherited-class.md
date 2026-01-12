@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-10T16:45:22Z
 updated_at: 2025-05-12T10:23:16Z
 url: https://github.com/astral-sh/ty/issues/310
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # False positives missing arg on inherited class
 
 ---
 
-_Issue opened by @ion-elgreco on 2025-05-10 16:45_
+_@ion-elgreco_
 
 ### Summary
 

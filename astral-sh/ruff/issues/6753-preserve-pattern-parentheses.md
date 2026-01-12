@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-22T06:45:42Z
 updated_at: 2023-08-25T03:45:51Z
 url: https://github.com/astral-sh/ruff/issues/6753
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Preserve pattern parentheses
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-22 06:45_
+_@MichaReiser_
 
 Black seems to preserve parentheses around nested patterns. 
 

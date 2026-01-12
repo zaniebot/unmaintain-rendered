@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-14T16:16:16Z
 updated_at: 2023-12-15T14:45:32Z
 url: https://github.com/astral-sh/ruff/issues/9130
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # No way to exclude folders from first-party detection for import sorting?
 
 ---
 
-_Issue opened by @celynw on 2023-12-14 16:16_
+_@celynw_
 
 In my use-case, I want to apply import sorting to a large repository which has packages and also many stand-alone scripts. Those scripts import from their sibling and child python files, so I they should have a large amount of first party imports. Those scripts don't support relative imports (like `from .app import func`), and I don't want to maintain a large list of `known-first-party` imports in my Ruff configuration.
 

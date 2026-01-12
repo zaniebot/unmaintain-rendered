@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-19T13:38:59Z
 updated_at: 2024-07-20T18:31:18Z
 url: https://github.com/astral-sh/uv/issues/5217
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # `uv pip tree` should show version specifiers for dependencies.
 
 ---
 
-_Issue opened by @Enayaaa on 2024-07-19 13:38_
+_@Enayaaa_
 
 With `uv==0.2.26` it is not possible to see version specifiers in dependency graph.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-26T15:32:28Z
 updated_at: 2023-08-04T02:29:59Z
 url: https://github.com/astral-sh/ruff/issues/5373
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Re-style the Ruff playground to match docs
 
 ---
 
-_Issue opened by @charliermarsh on 2023-06-26 15:32_
+_@charliermarsh_
 
 The playground still uses the old orange theme, old assets, etc.
 

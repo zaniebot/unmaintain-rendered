@@ -14,14 +14,14 @@ head: charlie/parrot
 created_at: 2023-11-10T03:49:16Z
 updated_at: 2023-11-10T04:15:15Z
 url: https://github.com/astral-sh/ruff/pull/8596
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Write unchanged, excluded files to stdout when read via stdin
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-10 03:49_
+_@charliermarsh_
 
 ## Summary
 

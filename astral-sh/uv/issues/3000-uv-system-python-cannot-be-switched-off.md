@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-11T20:45:27Z
 updated_at: 2024-04-12T19:51:18Z
 url: https://github.com/astral-sh/uv/issues/3000
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # UV_SYSTEM_PYTHON cannot be switched off
 
 ---
 
-_Issue opened by @hynek on 2024-04-11 20:45_
+_@hynek_
 
 I'm using uv as part of a GitHub Action and have noticed that when the caller sets `UV_SYSTEM_PYTHON=true`, it cannot be undone by locally setting `UV_SYSTEM_PYTHON=false` although the error indicates that false is a valid value. I always get the "system is incompatible with python":
 

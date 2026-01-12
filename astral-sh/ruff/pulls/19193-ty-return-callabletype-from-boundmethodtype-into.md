@@ -14,14 +14,14 @@ head: rename-bound-method-into-callable-type
 created_at: 2025-07-07T23:55:59Z
 updated_at: 2025-07-16T21:13:32Z
 url: https://github.com/astral-sh/ruff/pull/19193
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [ty] Return `CallableType` from `BoundMethodType.into_callable_type`
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-07-07 23:55_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

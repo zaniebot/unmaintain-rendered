@@ -12,14 +12,14 @@ head: charlie/range_
 created_at: 2023-08-03T01:38:29Z
 updated_at: 2023-08-03T02:14:13Z
 url: https://github.com/astral-sh/ruff/pull/6296
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Use `range: _` in lieu of `range: _range`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-03 01:38_
+_@charliermarsh_
 
 ## Summary
 

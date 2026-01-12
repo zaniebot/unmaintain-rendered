@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-26T06:57:12Z
 updated_at: 2024-04-02T03:47:21Z
 url: https://github.com/astral-sh/ruff/issues/10599
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `unconventional-import-alias` (ICN001) always flags imports without an `as` clause
 
 ---
 
-_Issue opened by @bardiharborow on 2024-03-26 06:57_
+_@bardiharborow_
 
 Currently `unconventional-import-alias` (ICN001) will always flag imports without an `as` clause, even if the conventional alias is the same as the module name:
 

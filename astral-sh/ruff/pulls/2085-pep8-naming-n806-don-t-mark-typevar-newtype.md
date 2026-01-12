@@ -12,14 +12,14 @@ head: fix-n806
 created_at: 2023-01-22T14:25:12Z
 updated_at: 2023-01-22T18:00:57Z
 url: https://github.com/astral-sh/ruff/pull/2085
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # [`pep8-naming`][`N806`] Don't mark `TypeVar` & `NewType` Assignment as Errors
 
 ---
 
-_Pull request opened by @saadmk11 on 2023-01-22 14:25_
+_@saadmk11_
 
 closes https://github.com/charliermarsh/ruff/issues/1985
 

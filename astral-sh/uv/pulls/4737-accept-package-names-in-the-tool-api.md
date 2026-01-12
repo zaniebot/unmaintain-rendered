@@ -13,14 +13,14 @@ head: charlie/tool-name
 created_at: 2024-07-02T19:21:33Z
 updated_at: 2024-07-02T19:30:42Z
 url: https://github.com/astral-sh/uv/pull/4737
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:25Z
 ```
 
 # Accept package names in the tool API
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-02 19:21_
+_@charliermarsh_
 
 ## Summary
 

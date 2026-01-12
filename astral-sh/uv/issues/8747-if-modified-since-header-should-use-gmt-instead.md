@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-01T08:40:51Z
 updated_at: 2024-11-01T13:55:47Z
 url: https://github.com/astral-sh/uv/issues/8747
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # `if-modified-since` header should use `GMT` instead of `-0000`
 
 ---
 
-_Issue opened by @camper42 on 2024-11-01 08:40_
+_@camper42_
 
 - command: `uv lock -U` uses our internal registry, backed by Tencent COS.
 - uv platform: macOS

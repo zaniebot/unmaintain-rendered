@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-29T05:39:48Z
 updated_at: 2024-09-29T05:39:48Z
 url: https://github.com/astral-sh/uv/issues/7776
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # FR: `uv tool upgrade --list` and `uv tool upgrade --quick` (?)
 
 ---
 
-_Issue opened by @ilyagr on 2024-09-29 05:39_
+_@ilyagr_
 
 It would be nice if I could find out whether any of my installed tools have upgrades available.
 

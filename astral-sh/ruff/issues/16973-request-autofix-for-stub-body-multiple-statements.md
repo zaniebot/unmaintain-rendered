@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T01:00:37Z
 updated_at: 2025-05-03T01:17:01Z
 url: https://github.com/astral-sh/ruff/issues/16973
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Request: Autofix for `stub-body-multiple-statements (PYI048)` with elipsis / pass
 
 ---
 
-_Issue opened by @Avasam on 2025-03-26 01:00_
+_@Avasam_
 
 ### Summary
 

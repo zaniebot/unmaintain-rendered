@@ -13,14 +13,14 @@ head: charlie/docs-repo
 created_at: 2024-07-16T01:45:12Z
 updated_at: 2024-07-18T15:35:51Z
 url: https://github.com/astral-sh/ruff/pull/12341
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Migrate to standalone docs repo
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-16 01:45_
+_@charliermarsh_
 
 ## Summary
 

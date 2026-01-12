@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-03T14:52:10Z
 updated_at: 2025-06-05T14:26:51Z
 url: https://github.com/astral-sh/uv/issues/12654
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Add some way to show what versions of packages were actually used for a `uv run` invocation
 
 ---
 
-_Issue opened by @cjw296 on 2025-04-03 14:52_
+_@cjw296_
 
 ### Summary
 

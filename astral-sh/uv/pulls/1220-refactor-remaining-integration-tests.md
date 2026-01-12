@@ -13,14 +13,14 @@ head: konsti/refactor-remaining-integration-tests
 created_at: 2024-02-01T09:33:58Z
 updated_at: 2024-02-02T17:01:40Z
 url: https://github.com/astral-sh/uv/pull/1220
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:31Z
 ```
 
 # Refactor remaining integration tests
 
 ---
 
-_Pull request opened by @konstin on 2024-02-01 09:33_
+_@konstin_
 
 Mostly a mechanical refactor to use the `puffin_snapshot!` and `TestContext` infrastructure in the add, remove, venv and pip uninstall tests, in preparation for adding programmatic windows testing filters. The is only one remaining usage of `assert_cmd_snapshot!` now in the `puffin_snapshot!` macro. 
 

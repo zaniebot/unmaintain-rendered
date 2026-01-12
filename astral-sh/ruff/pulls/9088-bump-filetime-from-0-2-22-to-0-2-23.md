@@ -13,14 +13,14 @@ head: dependabot/cargo/filetime-0.2.23
 created_at: 2023-12-11T08:44:33Z
 updated_at: 2023-12-11T09:01:08Z
 url: https://github.com/astral-sh/ruff/pull/9088
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Bump filetime from 0.2.22 to 0.2.23
 
 ---
 
-_Pull request opened by @dependabot on 2023-12-11 08:44_
+_@dependabot_
 
 Bumps [filetime](https://github.com/alexcrichton/filetime) from 0.2.22 to 0.2.23.
 <details>

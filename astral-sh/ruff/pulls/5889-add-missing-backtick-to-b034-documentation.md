@@ -13,14 +13,14 @@ head: dcain-B034-docs
 created_at: 2023-07-19T17:17:40Z
 updated_at: 2023-07-19T17:44:44Z
 url: https://github.com/astral-sh/ruff/pull/5889
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add missing backtick to B034 documentation
 
 ---
 
-_Pull request opened by @DavidCain on 2023-07-19 17:17_
+_@DavidCain_
 
 This is a great rule, but the documentation page shows some wonky formatting due to a missing backtick. Fix a typo too.
 

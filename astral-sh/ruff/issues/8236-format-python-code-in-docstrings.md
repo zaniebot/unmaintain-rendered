@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-26T02:50:42Z
 updated_at: 2023-10-26T06:06:41Z
 url: https://github.com/astral-sh/ruff/issues/8236
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Format python code in docstrings
 
 ---
 
-_Issue opened by @MichaReiser on 2023-10-26 02:50_
+_@MichaReiser_
 
 Support formatting python code in docstrings similar to [blacken-docs](https://github.com/adamchainz/blacken-docs) (minus markdown support, for markdown see https://github.com/astral-sh/ruff/issues/3792). 
 

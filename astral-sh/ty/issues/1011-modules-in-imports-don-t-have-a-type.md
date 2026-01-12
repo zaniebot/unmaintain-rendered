@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T14:58:59Z
 updated_at: 2025-11-22T16:06:18Z
 url: https://github.com/astral-sh/ty/issues/1011
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Modules in imports don't have a "type"
 
 ---
 
-_Issue opened by @Gankra on 2025-08-15 14:58_
+_@Gankra_
 
 This is really minor but it's also spooky/weird to me so I want to write this down. If you hover over a reference to a module, we know that it's of type module:
 

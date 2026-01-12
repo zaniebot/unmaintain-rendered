@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-02T16:53:19Z
 updated_at: 2025-10-03T06:20:55Z
 url: https://github.com/astral-sh/ruff/issues/20683
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Selecting `ALL` rules - the settings format/schema type
 
 ---
 
-_Issue opened by @paduszyk on 2025-10-02 16:53_
+_@paduszyk_
 
 ### Question
 

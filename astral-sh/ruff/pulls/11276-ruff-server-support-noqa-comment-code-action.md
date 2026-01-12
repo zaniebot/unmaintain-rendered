@@ -13,14 +13,14 @@ head: jane/server/noqa-code-action
 created_at: 2024-05-04T01:33:06Z
 updated_at: 2024-05-12T21:41:30Z
 url: https://github.com/astral-sh/ruff/pull/11276
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # `ruff server`: Support `noqa` comment code action
 
 ---
 
-_Pull request opened by @snowsignal on 2024-05-04 01:33_
+_@snowsignal_
 
 ## Summary
 

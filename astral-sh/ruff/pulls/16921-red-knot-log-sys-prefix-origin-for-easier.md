@@ -13,14 +13,14 @@ head: micha/log-sys-prefix-origin
 created_at: 2025-03-22T21:40:59Z
 updated_at: 2025-03-23T08:07:54Z
 url: https://github.com/astral-sh/ruff/pull/16921
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Log sys-prefix origin for easier debugging
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-22 21:40_
+_@MichaReiser_
 
 ## Summary
 

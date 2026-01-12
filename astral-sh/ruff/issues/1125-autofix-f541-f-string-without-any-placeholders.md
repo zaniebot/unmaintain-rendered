@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-07T16:01:19Z
 updated_at: 2023-01-03T03:28:33Z
 url: https://github.com/astral-sh/ruff/issues/1125
-synced_at: 2026-01-10T12:05:23Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Autofix F541 (f-string without any placeholders)?
 
 ---
 
-_Issue opened by @keul on 2022-12-07 16:01_
+_@keul_
 
 I think that a string like:
 

@@ -13,14 +13,14 @@ head: charlie/unhide
 created_at: 2024-04-17T13:37:10Z
 updated_at: 2024-04-17T13:48:46Z
 url: https://github.com/astral-sh/uv/pull/3093
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:25Z
 ```
 
 # Un-hide `--require-hashes` CLI argument
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-17 13:37_
+_@charliermarsh_
 
 ## Summary
 

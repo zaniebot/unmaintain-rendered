@@ -14,14 +14,14 @@ head: fix-for-statistics-unsafe-fixes
 created_at: 2025-03-14T16:53:01Z
 updated_at: 2025-03-18T07:03:14Z
 url: https://github.com/astral-sh/ruff/pull/16756
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [ruff] Fix `--statistics` reporting for unsafe fixes
 
 ---
 
-_Pull request opened by @ZedThree on 2025-03-14 16:53_
+_@ZedThree_
 
 Fixes #16751
 

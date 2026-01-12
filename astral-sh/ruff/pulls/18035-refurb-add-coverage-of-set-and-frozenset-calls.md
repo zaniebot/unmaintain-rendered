@@ -14,14 +14,14 @@ head: single-item-membership-test-missing-set-constructor
 created_at: 2025-05-12T09:39:49Z
 updated_at: 2025-05-29T18:59:49Z
 url: https://github.com/astral-sh/ruff/pull/18035
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # [`refurb`] Add coverage of `set` and `frozenset` calls (`FURB171`)
 
 ---
 
-_Pull request opened by @naslundx on 2025-05-12 09:39_
+_@naslundx_
 
 …ItemMembershipTest
 

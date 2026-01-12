@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-12T01:15:19Z
 updated_at: 2024-11-06T22:12:16Z
 url: https://github.com/astral-sh/uv/issues/7317
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # `uv self update` missing from CLI reference docs
 
 ---
 
-_Issue opened by @zanieb on 2024-09-12 01:15_
+_@zanieb_
 
 _No description provided._
 

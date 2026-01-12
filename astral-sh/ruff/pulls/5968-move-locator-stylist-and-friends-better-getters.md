@@ -13,14 +13,14 @@ head: charlie/accessors
 created_at: 2023-07-22T03:52:29Z
 updated_at: 2023-07-22T13:37:25Z
 url: https://github.com/astral-sh/ruff/pull/5968
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Move `locator`, `stylist`, and friends better getters
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-22 03:52_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/exp
 created_at: 2023-07-26T01:10:32Z
 updated_at: 2023-07-26T01:55:33Z
 url: https://github.com/astral-sh/ruff/pull/6080
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Ignore precedence when identifying explicit concatenations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-26 01:10_
+_@charliermarsh_
 
 This is the other piece of https://github.com/astral-sh/ruff/issues/5332.
 

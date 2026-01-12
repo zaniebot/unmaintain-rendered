@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-04T18:43:15Z
 updated_at: 2025-11-07T14:40:12Z
 url: https://github.com/astral-sh/uv/issues/7042
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Support curl uv/0.x/install.sh in addition to uv/0.x.y/install.sh
 
 ---
 
-_Issue opened by @quodlibetor on 2024-09-04 18:43_
+_@quodlibetor_
 
 It would be nice to be able to write docs and CI in a way that ensures that users get the most recent non-breaking version of uv.
 

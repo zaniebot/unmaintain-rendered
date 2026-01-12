@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-09T10:37:32Z
 updated_at: 2024-11-16T07:36:58Z
 url: https://github.com/astral-sh/ruff/issues/14222
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Spurious panic in file watcher test
 
 ---
 
-_Issue opened by @MichaReiser on 2024-11-09 10:37_
+_@MichaReiser_
 
 https://paste.glepage.com/upload/bat-otter-rat
 

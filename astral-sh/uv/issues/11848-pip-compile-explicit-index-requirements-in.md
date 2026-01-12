@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-28T04:15:36Z
 updated_at: 2025-03-03T03:16:38Z
 url: https://github.com/astral-sh/uv/issues/11848
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # pip compile: explicit index + requirements.in
 
 ---
 
-_Issue opened by @juftin on 2025-02-28 04:15_
+_@juftin_
 
 ### Summary
 

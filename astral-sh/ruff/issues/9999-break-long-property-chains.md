@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T13:00:11Z
 updated_at: 2024-02-17T19:22:19Z
 url: https://github.com/astral-sh/ruff/issues/9999
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Break long property chains
 
 ---
 
-_Issue opened by @winged on 2024-02-15 13:00_
+_@winged_
 
 Given a code line like the following, Ruff and Black both don't break the line, even it would be possible (and make it more readable IMHO). Black kinda tries to shorten the line a bit, but it would still be too long for the given limit.
 

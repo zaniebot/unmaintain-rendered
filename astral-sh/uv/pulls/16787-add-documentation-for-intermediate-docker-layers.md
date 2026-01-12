@@ -13,14 +13,14 @@ head: zb/docker-workspace
 created_at: 2025-11-20T14:44:03Z
 updated_at: 2025-11-24T15:27:25Z
 url: https://github.com/astral-sh/uv/pull/16787
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:26Z
 ```
 
 # Add documentation for intermediate Docker layers in a workspace
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-20 14:44_
+_@zanieb_
 
 _No description provided._
 

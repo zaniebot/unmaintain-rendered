@@ -13,14 +13,14 @@ head: cjm/eq
 created_at: 2025-04-24T15:08:09Z
 updated_at: 2025-04-24T15:12:06Z
 url: https://github.com/astral-sh/ruff/pull/17610
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] simplify != narrowing
 
 ---
 
-_Pull request opened by @carljm on 2025-04-24 15:08_
+_@carljm_
 
 ## Summary
 

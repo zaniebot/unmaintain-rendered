@@ -13,14 +13,14 @@ head: doc-docker-attestations
 created_at: 2025-01-31T19:09:23Z
 updated_at: 2025-02-04T23:01:56Z
 url: https://github.com/astral-sh/uv/pull/11140
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:42Z
 ```
 
 # Docs on how to verify uv docker image attestations
 
 ---
 
-_Pull request opened by @mjpieters on 2025-01-31 19:09_
+_@mjpieters_
 
 As [requested by @zanieb](https://github.com/astral-sh/uv/pull/8685#issuecomment-2627556992).
 

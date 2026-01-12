@@ -12,14 +12,14 @@ assignees: []
 created_at: 2016-02-08T21:22:15Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/420
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Positional Args with Value Names prints Arg Name
 
 ---
 
-_Issue opened by @kbknapp on 2016-02-08 21:22_
+_@kbknapp_
 
 ``` rust
 extern crate clap;

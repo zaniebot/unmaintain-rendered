@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T07:23:44Z
 updated_at: 2024-02-22T03:04:20Z
 url: https://github.com/astral-sh/uv/issues/1448
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # uv Doesnt install daphne correctly
 
 ---
 
-_Issue opened by @nofalx on 2024-02-16 07:23_
+_@nofalx_
 
 
 ### How to produce?

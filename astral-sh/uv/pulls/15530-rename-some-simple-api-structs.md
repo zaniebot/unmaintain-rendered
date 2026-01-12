@@ -13,14 +13,14 @@ head: charlie/simple
 created_at: 2025-08-26T13:36:29Z
 updated_at: 2025-08-26T13:55:59Z
 url: https://github.com/astral-sh/uv/pull/15530
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:48Z
 ```
 
 # Rename some Simple API structs
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-26 13:36_
+_@charliermarsh_
 
 ## Summary
 

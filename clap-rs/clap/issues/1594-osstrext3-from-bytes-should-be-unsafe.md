@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-11-03T15:25:51Z
 updated_at: 2020-04-23T14:54:30Z
 url: https://github.com/clap-rs/clap/issues/1594
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # `OsStrExt3::from_bytes` should be unsafe
 
 ---
 
-_Issue opened by @KillTheMule on 2019-11-03 15:25_
+_@KillTheMule_
 
 I'm opening this as a result from https://github.com/rust-secure-code/safety-dance/issues/49. The mentioned  method uses `unsafe`, but is not marked `unsafe` itself. I think that is not right, and while I've found no safety violations here, there's the possibility of a future bug in safe code if the necessary properties aren't upheld. @Shnatsel remarked
 

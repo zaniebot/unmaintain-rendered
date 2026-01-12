@@ -13,14 +13,14 @@ head: charlie/platform-deps
 created_at: 2024-09-15T17:45:20Z
 updated_at: 2024-09-15T21:55:39Z
 url: https://github.com/astral-sh/uv/pull/7411
-synced_at: 2026-01-10T12:53:46Z
+synced_at: 2026-01-12T16:07:48Z
 ```
 
 # Add documentation on platform-specific dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-15 17:45_
+_@charliermarsh_
 
 ## Summary
 

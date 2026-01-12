@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-25T00:13:41Z
 updated_at: 2023-01-25T04:06:30Z
 url: https://github.com/clap-rs/clap/issues/4674
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `disable_colored_help` doesn't work
 
 ---
 
-_Issue opened by @danteissaias on 2023-01-25 00:13_
+_@danteissaias_
 
 Similar to #4671 but in error output
 

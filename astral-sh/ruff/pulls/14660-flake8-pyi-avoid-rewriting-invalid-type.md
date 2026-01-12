@@ -13,14 +13,14 @@ head: pyi055-exclude-invalid-type-expression
 created_at: 2024-11-28T18:17:43Z
 updated_at: 2024-11-29T03:09:31Z
 url: https://github.com/astral-sh/ruff/pull/14660
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`flake8-pyi`] Avoid rewriting invalid type expressions in `unnecessary-type-union` (`PYI055`)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-28 18:17_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-11T06:37:47Z
 updated_at: 2024-08-20T18:22:16Z
 url: https://github.com/astral-sh/uv/issues/4988
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # uv python list doesn't show all possible combinations of python installation
 
 ---
 
-_Issue opened by @KhazAkar on 2024-07-11 06:37_
+_@KhazAkar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

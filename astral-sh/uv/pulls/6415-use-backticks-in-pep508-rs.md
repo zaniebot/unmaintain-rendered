@@ -13,14 +13,14 @@ head: konsti/backticks-in-pep508
 created_at: 2024-08-22T08:23:53Z
 updated_at: 2024-08-23T14:26:28Z
 url: https://github.com/astral-sh/uv/pull/6415
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:21Z
 ```
 
 # Use backticks in pep508-rs
 
 ---
 
-_Pull request opened by @konstin on 2024-08-22 08:23_
+_@konstin_
 
 In accordance with the style guide, use backticks in pep508-rs error messages.
 

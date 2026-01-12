@@ -14,14 +14,14 @@ head: fix-PT001
 created_at: 2025-06-19T13:42:44Z
 updated_at: 2025-06-20T13:50:33Z
 url: https://github.com/astral-sh/ruff/pull/18792
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [`flake8-pytest-style`] Mark autofix for `PT001` and `PT023` as unsafe if there's comments in the decorator
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-19 13:42_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

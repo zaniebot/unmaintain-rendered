@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-07T14:05:42Z
 updated_at: 2025-04-07T16:47:00Z
 url: https://github.com/astral-sh/ruff/issues/17276
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Incorrect syntax error persistent in playground
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-07 14:05_
+_@sharkdp_
 
 This is something that happened to me a few times. It's always the same situation. I add a return type annotation by typing ` -> …` after a function definition, and then I'm left with a syntax error that shouldn't be there:
 

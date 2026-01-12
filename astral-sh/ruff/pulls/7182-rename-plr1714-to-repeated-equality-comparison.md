@@ -13,14 +13,14 @@ head: rename-rule
 created_at: 2023-09-06T07:43:14Z
 updated_at: 2023-09-16T11:22:24Z
 url: https://github.com/astral-sh/ruff/pull/7182
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Rename `PLR1714` to `repeated-equality-comparison`
 
 ---
 
-_Pull request opened by @tjkuson on 2023-09-06 07:43_
+_@tjkuson_
 
 ## Summary
 

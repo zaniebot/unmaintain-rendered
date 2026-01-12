@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-14T16:38:43Z
 updated_at: 2023-06-16T14:12:36Z
 url: https://github.com/astral-sh/ruff/issues/5091
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add a method to iterate over all symbol usages in a scope
 
 ---
 
-_Issue opened by @charliermarsh on 2023-06-14 16:38_
+_@charliermarsh_
 
 Required for local symbol renaming.
 

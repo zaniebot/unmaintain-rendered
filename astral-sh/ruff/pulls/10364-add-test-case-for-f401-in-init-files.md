@@ -13,14 +13,14 @@ head: zb/f401-init-test
 created_at: 2024-03-12T17:31:53Z
 updated_at: 2024-03-12T18:30:19Z
 url: https://github.com/astral-sh/ruff/pull/10364
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Add test case for `F401` in `__init__` files
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-12 17:31_
+_@zanieb_
 
 In preparation for https://github.com/astral-sh/ruff/pull/5845
 

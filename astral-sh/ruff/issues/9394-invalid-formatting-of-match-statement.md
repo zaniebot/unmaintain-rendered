@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-04T20:53:21Z
 updated_at: 2024-01-09T14:39:14Z
 url: https://github.com/astral-sh/ruff/issues/9394
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Invalid formatting of match statement
 
 ---
 
-_Issue opened by @MSDehghan on 2024-01-04 20:53_
+_@MSDehghan_
 
 formatting below code with `ruff format file.py` command leads to invalid python code:
 ```python

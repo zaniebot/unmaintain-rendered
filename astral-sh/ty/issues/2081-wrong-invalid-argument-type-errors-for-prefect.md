@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-18T17:27:35Z
 updated_at: 2026-01-07T08:00:36Z
 url: https://github.com/astral-sh/ty/issues/2081
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # wrong invalid-argument-type errors for prefect task submit function
 
 ---
 
-_Issue opened by @maleasy on 2025-12-18 17:27_
+_@maleasy_
 
 ### Summary
 

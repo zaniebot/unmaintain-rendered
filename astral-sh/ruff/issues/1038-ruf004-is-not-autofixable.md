@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-04T16:19:38Z
 updated_at: 2022-12-04T17:04:27Z
 url: https://github.com/astral-sh/ruff/issues/1038
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # RUF004 is not autofixable
 
 ---
 
-_Issue opened by @LefterisJP on 2022-12-04 16:19_
+_@LefterisJP_
 
 This is with ruff `0.0.155`
 

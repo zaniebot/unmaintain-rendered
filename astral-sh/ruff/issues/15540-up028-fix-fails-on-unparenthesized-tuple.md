@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-16T22:23:10Z
 updated_at: 2025-01-17T01:13:52Z
 url: https://github.com/astral-sh/ruff/issues/15540
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # UP028 fix fails on unparenthesized tuple
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-16 22:23_
+_@dscorbett_
 
 Fixing [`yield-in-for-loop` (UP028)](https://docs.astral.sh/ruff/rules/yield-in-for-loop/) fails in Ruff 0.9.2 when the iterable expression is an unparenthesized tuple.
 ```console

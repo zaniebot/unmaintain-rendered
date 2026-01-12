@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-30T14:30:49Z
 updated_at: 2025-06-30T14:30:58Z
 url: https://github.com/astral-sh/uv/issues/14373
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # Detect manylinux-incompliant systems
 
 ---
 
-_Issue opened by @zanieb on 2025-06-30 14:30_
+_@zanieb_
 
 We could detect the fact that a system (such as NixOS) is not manylinux-compliant (e.g. that there's no libstdc++.so.6 on the default search path) and do something with that knowledge. For example, we could refuse to download manylinux wheels or print a warning or error to the user.
 

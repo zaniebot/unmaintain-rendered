@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-07T09:31:36Z
 updated_at: 2025-01-07T09:52:59Z
 url: https://github.com/astral-sh/ruff/issues/15314
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `logging-too-many-args (PLE1205)` isn't detected when initialized logger is imported from another module
 
 ---
 
-_Issue opened by @osauldmy on 2025-01-07 09:31_
+_@osauldmy_
 
 When `logger` isn't initialized in the module, but imported from another module like a singleton (which may be an antipattern anyway), `PLE1205` isn't detected.
 

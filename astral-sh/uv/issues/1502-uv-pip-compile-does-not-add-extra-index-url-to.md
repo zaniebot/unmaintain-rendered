@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T15:34:38Z
 updated_at: 2024-03-27T14:55:26Z
 url: https://github.com/astral-sh/uv/issues/1502
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # `uv pip compile` does not add `extra-index-url` to the generated output file
 
 ---
 
-_Issue opened by @hofrob on 2024-02-16 15:34_
+_@hofrob_
 
 I think #1143 was only about parsing it from an existing input file. Running `pip-compile` will add this flag (and probably others) to the generated output.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-08T18:17:33Z
 updated_at: 2025-04-09T07:43:23Z
 url: https://github.com/astral-sh/ruff/issues/17299
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Add `async-utils` to mypy_primer workflow
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-04-08 18:17_
+_@AlexWaygood_
 
 Mypy_primer hasn't had much to say about @dcreager's recent generics work, because we've been doing new-style generics first, and not very many projects "in the wild" use new-style generics yet (they're only valid syntax on Python 3.12+). We should consider adding https://github.com/mikeshardmind/async-utils to our mypy_primer workflow, as it makes use of PEP-695 generics, so will give us valuable signal on how well our implementation is progressing.
 

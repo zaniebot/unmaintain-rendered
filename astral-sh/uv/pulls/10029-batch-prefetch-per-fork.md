@@ -13,14 +13,14 @@ head: konsti/batch-prefetch-per-fork
 created_at: 2024-12-19T14:32:44Z
 updated_at: 2024-12-19T14:47:04Z
 url: https://github.com/astral-sh/uv/pull/10029
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:05Z
 ```
 
 # Batch prefetch per fork
 
 ---
 
-_Pull request opened by @konstin on 2024-12-19 14:32_
+_@konstin_
 
 Previously, the batch prefetcher was part of the solver loop, used across forks. This would lead to each preference in a fork being counted as a tried version, so that after 5 forks with the identical version, we would start batch prefetching. The reported numbers of tried versions are also reported. By tracking the batch prefetcher on the fork the numbers are corrected.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-18T23:49:43Z
 updated_at: 2025-03-24T15:17:02Z
 url: https://github.com/astral-sh/uv/issues/12303
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # uv wrongly detects PEP723 style magic comments in strings
 
 ---
 
-_Issue opened by @samuelcolvin on 2025-03-18 23:49_
+_@samuelcolvin_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-06T21:50:26Z
 updated_at: 2025-02-06T23:14:24Z
 url: https://github.com/astral-sh/ruff/issues/16003
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # files are modified in place potentially causing issues with hardlinks
 
 ---
 
-_Issue opened by @jjhelmus on 2025-02-06 21:50_
+_@jjhelmus_
 
 ### Description
 

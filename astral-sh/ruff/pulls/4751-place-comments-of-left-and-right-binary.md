@@ -14,14 +14,14 @@ head: binary-expression-comment-placement
 created_at: 2023-05-31T09:40:41Z
 updated_at: 2023-06-01T07:22:36Z
 url: https://github.com/astral-sh/ruff/pull/4751
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Place comments of left and right binary expression operands
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-31 09:40_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

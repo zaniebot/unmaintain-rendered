@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-15T19:59:28Z
 updated_at: 2023-03-21T03:48:07Z
 url: https://github.com/astral-sh/ruff/issues/3549
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `printf-style-formatting` ignores direct-string interpolation
 
 ---
 
-_Issue opened by @charliermarsh on 2023-03-15 19:59_
+_@charliermarsh_
 
 Given:
 

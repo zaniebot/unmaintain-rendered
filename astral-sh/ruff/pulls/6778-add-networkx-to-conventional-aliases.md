@@ -12,14 +12,14 @@ head: enh/6763
 created_at: 2023-08-22T16:09:13Z
 updated_at: 2023-08-22T16:49:05Z
 url: https://github.com/astral-sh/ruff/pull/6778
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add `networkx` to conventional aliases
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-22 16:09_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/6763
 

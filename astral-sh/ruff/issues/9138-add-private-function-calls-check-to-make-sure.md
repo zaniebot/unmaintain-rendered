@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-14T18:34:46Z
 updated_at: 2024-01-16T05:17:43Z
 url: https://github.com/astral-sh/ruff/issues/9138
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Add private function calls check to make sure there isn't one being called outside of the module it was defined 
 
 ---
 
-_Issue opened by @Eric-Mendes on 2023-12-14 18:34_
+_@Eric-Mendes_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

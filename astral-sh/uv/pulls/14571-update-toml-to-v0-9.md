@@ -13,14 +13,14 @@ head: ibraheem/toml-0.9
 created_at: 2025-07-11T22:58:54Z
 updated_at: 2025-07-21T13:18:18Z
 url: https://github.com/astral-sh/uv/pull/14571
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:17Z
 ```
 
 # Update `toml` to v0.9
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-07-11 22:58_
+_@ibraheemdev_
 
 ## Summary
 

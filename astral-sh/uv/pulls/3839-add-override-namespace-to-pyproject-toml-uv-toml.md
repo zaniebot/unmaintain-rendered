@@ -12,14 +12,14 @@ head: add-override-namaspace-to-toml
 created_at: 2024-05-26T13:42:03Z
 updated_at: 2024-07-19T06:29:51Z
 url: https://github.com/astral-sh/uv/pull/3839
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:05:53Z
 ```
 
 # Add override namespace to pyproject.toml/uv.toml
 
 ---
 
-_Pull request opened by @Di-Is on 2024-05-26 13:42_
+_@Di-Is_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

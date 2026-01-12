@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-14T08:20:07Z
 updated_at: 2025-05-15T02:38:01Z
 url: https://github.com/astral-sh/uv/issues/13446
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # How to set different source paths for multiple os
 
 ---
 
-_Issue opened by @triangle959 on 2025-05-14 08:20_
+_@triangle959_
 
 ### Question
 

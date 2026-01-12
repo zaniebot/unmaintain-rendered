@@ -14,14 +14,14 @@ head: alex/version-info-spec
 created_at: 2025-08-13T13:07:56Z
 updated_at: 2025-08-13T13:39:15Z
 url: https://github.com/astral-sh/ruff/pull/19894
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] Improve `sys.version_info` special casing
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-13 13:07_
+_@AlexWaygood_
 
 ## Summary
 

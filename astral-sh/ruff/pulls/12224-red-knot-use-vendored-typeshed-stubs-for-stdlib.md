@@ -13,14 +13,14 @@ head: module-resolver-vendored-paths-2
 created_at: 2024-07-07T22:01:49Z
 updated_at: 2024-07-09T09:31:05Z
 url: https://github.com/astral-sh/ruff/pull/12224
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Use vendored typeshed stubs for stdlib module resolution
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-07 22:01_
+_@AlexWaygood_
 
 ## Summary
 

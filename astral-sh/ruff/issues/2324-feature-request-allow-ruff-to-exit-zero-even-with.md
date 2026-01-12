@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-29T12:17:44Z
 updated_at: 2023-01-29T13:14:16Z
 url: https://github.com/astral-sh/ruff/issues/2324
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # feature request: Allow ruff to exit zero even with found violations
 
 ---
 
-_Issue opened by @93578237 on 2023-01-29 12:17_
+_@93578237_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

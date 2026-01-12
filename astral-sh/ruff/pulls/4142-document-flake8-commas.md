@@ -13,14 +13,14 @@ head: flake8-commas-docs
 created_at: 2023-04-28T22:21:23Z
 updated_at: 2023-04-29T08:53:21Z
 url: https://github.com/astral-sh/ruff/pull/4142
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Document flake8-commas
 
 ---
 
-_Pull request opened by @calumy on 2023-04-28 22:21_
+_@calumy_
 
 Add documentation for the flake8-commas rules.
 

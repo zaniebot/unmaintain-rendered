@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-01-06T02:35:09Z
 updated_at: 2025-01-06T04:26:12Z
 url: https://github.com/astral-sh/ruff/pull/15290
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Remove accidental empty block at the bottom of `split-static-string (SIM905)` doc
 
 ---
 
-_Pull request opened by @Avasam on 2025-01-06 02:35_
+_@Avasam_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

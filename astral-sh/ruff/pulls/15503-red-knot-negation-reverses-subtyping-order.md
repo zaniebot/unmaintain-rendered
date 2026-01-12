@@ -13,14 +13,14 @@ head: david/another-property-test
 created_at: 2025-01-15T15:21:10Z
 updated_at: 2025-01-15T17:26:58Z
 url: https://github.com/astral-sh/ruff/pull/15503
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Negation reverses subtyping order
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-15 15:21_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-22T02:37:55Z
 updated_at: 2024-03-05T10:09:17Z
 url: https://github.com/astral-sh/ruff/issues/10077
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [Infinite loop] for pyi file
 
 ---
 
-_Issue opened by @gaborbernat on 2024-02-22 02:37_
+_@gaborbernat_
 
 https://github.com/tox-dev/pyproject-api/blob/df39546/src/pyproject_api/_backend.pyi#L1
 

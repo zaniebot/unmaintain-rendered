@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-27T16:07:55Z
 updated_at: 2023-06-10T04:32:05Z
 url: https://github.com/astral-sh/ruff/issues/2263
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement autofix for RET504 Unnecessary variable assignment before `return` statement
 
 ---
 
-_Issue opened by @spaceone on 2023-01-27 16:07_
+_@spaceone_
 
 A fixer for `RET504 Unnecessary variable assignment before 'return' statement` would be nice.
 

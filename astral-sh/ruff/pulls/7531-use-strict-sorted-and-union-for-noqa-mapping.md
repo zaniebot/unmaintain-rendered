@@ -14,14 +14,14 @@ head: dhruv/noqa
 created_at: 2023-09-20T05:40:53Z
 updated_at: 2023-09-20T11:13:23Z
 url: https://github.com/astral-sh/ruff/pull/7531
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Use strict sorted and union for NoQA mapping insertion
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-20 05:40_
+_@dhruvmanila_
 
 ## Summary
 

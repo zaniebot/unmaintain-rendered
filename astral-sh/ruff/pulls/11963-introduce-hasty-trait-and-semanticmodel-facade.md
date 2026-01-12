@@ -13,14 +13,14 @@ head: semantic-model-api
 created_at: 2024-06-21T10:43:28Z
 updated_at: 2024-07-01T12:48:29Z
 url: https://github.com/astral-sh/ruff/pull/11963
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Introduce `HasTy` trait and `SemanticModel` facade
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-21 10:43_
+_@MichaReiser_
 
 ## Summary
 

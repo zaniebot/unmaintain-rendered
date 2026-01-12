@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-03T19:58:15Z
 updated_at: 2025-12-22T17:59:59Z
 url: https://github.com/astral-sh/ty/issues/1747
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Consider disallowing forward references to non-global names in `__future__.annotations` (for compatibility)
 
 ---
 
-_Issue opened by @BHSPitMonkey on 2025-12-03 19:58_
+_@BHSPitMonkey_
 
 ### Summary
 

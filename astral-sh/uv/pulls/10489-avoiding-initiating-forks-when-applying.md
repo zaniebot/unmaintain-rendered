@@ -12,14 +12,14 @@ head: charlie/fork-constraints
 created_at: 2025-01-11T01:53:27Z
 updated_at: 2025-01-11T02:16:45Z
 url: https://github.com/astral-sh/uv/pull/10489
-synced_at: 2026-01-10T11:44:52Z
+synced_at: 2026-01-12T16:09:19Z
 ```
 
 # Avoiding initiating forks when applying constraints to markers
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-11 01:53_
+_@charliermarsh_
 
 ## Summary
 

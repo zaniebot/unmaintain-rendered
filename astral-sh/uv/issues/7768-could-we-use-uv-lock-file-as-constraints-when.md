@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-28T22:05:36Z
 updated_at: 2025-09-19T17:14:11Z
 url: https://github.com/astral-sh/uv/issues/7768
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Could we use `uv.lock` file as constraints when performing a pip install/tool install?
 
 ---
 
-_Issue opened by @Coruscant11 on 2024-09-28 22:05_
+_@Coruscant11_
 
 Hi!
 

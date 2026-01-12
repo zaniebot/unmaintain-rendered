@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-24T10:11:37Z
 updated_at: 2024-06-24T12:03:40Z
 url: https://github.com/astral-sh/uv/issues/4465
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Index Strategy ignored for distributions packages
 
 ---
 
-_Issue opened by @MattiasDC on 2024-06-24 10:11_
+_@MattiasDC_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

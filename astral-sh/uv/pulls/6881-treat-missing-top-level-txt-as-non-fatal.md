@@ -13,14 +13,14 @@ head: charlie/graceful-top-level
 created_at: 2024-08-30T17:39:15Z
 updated_at: 2024-08-30T19:02:07Z
 url: https://github.com/astral-sh/uv/pull/6881
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:34Z
 ```
 
 # Treat missing `top_level.txt` as non-fatal
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-30 17:39_
+_@charliermarsh_
 
 ## Summary
 

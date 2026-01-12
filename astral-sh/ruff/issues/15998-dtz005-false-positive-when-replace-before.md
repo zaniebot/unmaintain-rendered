@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-06T16:15:33Z
 updated_at: 2025-02-09T15:49:00Z
 url: https://github.com/astral-sh/ruff/issues/15998
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `DTZ005`: false positive when `replace(...)` before `astimezone()`
 
 ---
 
-_Issue opened by @trim21 on 2025-02-06 16:15_
+_@trim21_
 
 ### Description
 

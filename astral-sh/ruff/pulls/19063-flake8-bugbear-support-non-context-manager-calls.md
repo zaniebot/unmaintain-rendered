@@ -14,14 +14,14 @@ head: fix-19050
 created_at: 2025-07-01T02:25:44Z
 updated_at: 2025-07-08T19:10:00Z
 url: https://github.com/astral-sh/ruff/pull/19063
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [`flake8-bugbear`] Support non-context-manager calls in `B017`
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-01 02:25_
+_@danparizher_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/fx
 created_at: 2023-12-13T05:28:04Z
 updated_at: 2023-12-13T05:36:04Z
 url: https://github.com/astral-sh/uv/pull/632
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:05Z
 ```
 
 # Use `FxHash` consistently
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-13 05:28_
+_@charliermarsh_
 
 _No description provided._
 

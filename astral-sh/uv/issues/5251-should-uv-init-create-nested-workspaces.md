@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-20T16:06:05Z
 updated_at: 2024-07-22T23:48:41Z
 url: https://github.com/astral-sh/uv/issues/5251
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Should `uv init` create nested workspaces?
 
 ---
 
-_Issue opened by @j178 on 2024-07-20 16:06_
+_@j178_
 
 ```sh
 $ uv init work

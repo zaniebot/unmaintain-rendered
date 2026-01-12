@@ -14,14 +14,14 @@ head: david/initvar
 created_at: 2025-07-24T11:32:59Z
 updated_at: 2025-07-24T19:01:32Z
 url: https://github.com/astral-sh/ruff/pull/19527
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [ty] Support `dataclasses.InitVar`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-24 11:32_
+_@sharkdp_
 
 ## Summary
 

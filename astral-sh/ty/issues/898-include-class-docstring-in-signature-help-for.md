@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-26T18:09:43Z
 updated_at: 2025-09-03T02:34:03Z
 url: https://github.com/astral-sh/ty/issues/898
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Include class docstring in signature help for constructor calls
 
 ---
 
-_Issue opened by @UnboundVariable on 2025-07-26 18:09_
+_@UnboundVariable_
 
 The "signature help" language server feature currently includes the docstring for the target function or method, but it doesn't have any special logic for constructor calls. It may be desirable to include the docstring for the class in addition to (or in place of) the docstring for the `__new__` or `__init__` method. I've left a TODO in the `signature_help.rs` module to revisit this based on user feedback.
 

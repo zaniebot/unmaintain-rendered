@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-22T00:56:59Z
 updated_at: 2022-12-22T01:30:21Z
 url: https://github.com/astral-sh/ruff/issues/1319
-synced_at: 2026-01-10T12:05:26Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [bug] Different import sorting rules in `ruff-lsp` and command line
 
 ---
 
-_Issue opened by @smackesey on 2022-12-22 00:56_
+_@smackesey_
 
 Sample case: file `python_modules/libraries/dagster-aws/dagster_aws/emr.py` in [Dagster](https://github.com/dagster-io/dagster). The language server does not recognize `dagster_aws` as first party, so it wants to do this:
 

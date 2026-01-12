@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-01T15:37:56Z
 updated_at: 2025-04-24T06:48:03Z
 url: https://github.com/astral-sh/ruff/issues/17124
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # UP018 fix introduces a syntax error when the argument contains a newline
 
 ---
 
-_Issue opened by @dscorbett on 2025-04-01 15:37_
+_@dscorbett_
 
 ### Summary
 

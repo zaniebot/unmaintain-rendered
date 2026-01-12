@@ -13,14 +13,14 @@ head: konsti/value_type-python
 created_at: 2024-11-11T14:47:13Z
 updated_at: 2024-11-11T17:38:48Z
 url: https://github.com/astral-sh/uv/pull/9017
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:36Z
 ```
 
 # Use Python syntax for `value_type` consistently
 
 ---
 
-_Pull request opened by @konstin on 2024-11-11 14:47_
+_@konstin_
 
 Spotted that when looking though `value_type =` declarations.
 

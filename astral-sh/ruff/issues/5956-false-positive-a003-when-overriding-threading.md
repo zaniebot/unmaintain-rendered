@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-21T21:34:55Z
 updated_at: 2023-07-25T15:54:37Z
 url: https://github.com/astral-sh/ruff/issues/5956
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # False positive `A003` when overriding `threading.Event.set`
 
 ---
 
-_Issue opened by @jamesbraza on 2023-07-21 21:34_
+_@jamesbraza_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

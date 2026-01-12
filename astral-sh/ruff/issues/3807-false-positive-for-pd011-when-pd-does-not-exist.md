@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-30T04:25:59Z
 updated_at: 2024-10-07T07:39:34Z
 url: https://github.com/astral-sh/ruff/issues/3807
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False positive for `PD011` when `pd` does not exist in module
 
 ---
 
-_Issue opened by @danparizher on 2023-03-30 04:25_
+_@danparizher_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -12,14 +12,14 @@ head: charlie/bugbear
 created_at: 2022-10-26T00:54:50Z
 updated_at: 2022-10-26T00:55:01Z
 url: https://github.com/astral-sh/ruff/pull/467
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement B017 (no assertRaises(Exception))
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-26 00:54_
+_@charliermarsh_
 
 See: #389.
 

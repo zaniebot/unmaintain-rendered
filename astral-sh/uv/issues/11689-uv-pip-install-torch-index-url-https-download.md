@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T05:54:58Z
 updated_at: 2025-02-24T21:36:03Z
 url: https://github.com/astral-sh/uv/issues/11689
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # uv pip install torch --index-url https://download.pytorch.org/whl/cu118
 
 ---
 
-_Issue opened by @qasymjomart on 2025-02-21 05:54_
+_@qasymjomart_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: charlie/macos
 created_at: 2024-03-30T02:33:36Z
 updated_at: 2024-03-30T14:55:18Z
 url: https://github.com/astral-sh/uv/pull/2729
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:11Z
 ```
 
 # Use python3.8 for 'python on macos aarch64'
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-30 02:33_
+_@charliermarsh_
 
 _No description provided._
 

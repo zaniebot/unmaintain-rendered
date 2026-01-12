@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-26T04:04:22Z
 updated_at: 2025-12-05T13:47:24Z
 url: https://github.com/astral-sh/ty/issues/1640
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Hover rendering has no title on non-trival stringified annotations
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-11-26 04:04_
+_@MeGaGiGaGon_
 
 ### Summary
 

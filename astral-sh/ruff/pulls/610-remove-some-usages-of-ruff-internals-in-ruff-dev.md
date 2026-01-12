@@ -12,14 +12,14 @@ head: charlie/vis
 created_at: 2022-11-05T20:07:17Z
 updated_at: 2022-11-05T20:07:22Z
 url: https://github.com/astral-sh/ruff/pull/610
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Remove some usages of Ruff internals in ruff_dev
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-05 20:07_
+_@charliermarsh_
 
 _No description provided._
 

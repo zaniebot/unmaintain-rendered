@@ -12,14 +12,14 @@ head: charlie/templates
 created_at: 2023-01-06T02:40:57Z
 updated_at: 2023-01-10T12:32:11Z
 url: https://github.com/astral-sh/ruff/pull/1679
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add requested context to issue template
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-06 02:40_
+_@charliermarsh_
 
 _No description provided._
 

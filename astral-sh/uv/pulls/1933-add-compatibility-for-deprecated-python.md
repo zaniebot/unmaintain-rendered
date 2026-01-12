@@ -14,14 +14,14 @@ head: charlie/impl
 created_at: 2024-02-23T19:18:57Z
 updated_at: 2024-02-23T19:47:59Z
 url: https://github.com/astral-sh/uv/pull/1933
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:47Z
 ```
 
 # Add compatibility for deprecated `python_implementation` marker
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-23 19:18_
+_@charliermarsh_
 
 ## Summary
 

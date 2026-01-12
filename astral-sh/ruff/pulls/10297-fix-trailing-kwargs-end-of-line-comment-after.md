@@ -14,14 +14,14 @@ head: fix-trailing-kwargs-comment-after-slash
 created_at: 2024-03-08T13:04:05Z
 updated_at: 2024-03-08T14:49:51Z
 url: https://github.com/astral-sh/ruff/pull/10297
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Fix trailing kwargs end of line comment after slash
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-08 13:04_
+_@MichaReiser_
 
 ## Summary
 

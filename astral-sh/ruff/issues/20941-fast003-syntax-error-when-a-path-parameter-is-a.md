@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-17T15:34:56Z
 updated_at: 2025-10-20T23:37:22Z
 url: https://github.com/astral-sh/ruff/issues/20941
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FAST003 syntax error when a path parameter is a Python keyword
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-17 15:34_
+_@dscorbett_
 
 ### Summary
 

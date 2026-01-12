@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-13T13:59:11Z
 updated_at: 2025-10-15T13:23:18Z
 url: https://github.com/astral-sh/ruff/issues/20844
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Unsupported syntax error false positive for escapes in f-string format specifier
 
 ---
 
-_Issue opened by @ntBre on 2025-10-13 13:59_
+_@ntBre_
 
 This string from our formatter test suite:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-10T15:21:34Z
 updated_at: 2024-12-10T20:10:52Z
 url: https://github.com/astral-sh/uv/issues/9776
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # `uv lock --no-build` fails when no build backend is specified in root package
 
 ---
 
-_Issue opened by @konstin on 2024-12-10 15:21_
+_@konstin_
 
 `uv lock --no-build` fails when no build backend is specified. This is a false positive, since we never build the package when locking:
 

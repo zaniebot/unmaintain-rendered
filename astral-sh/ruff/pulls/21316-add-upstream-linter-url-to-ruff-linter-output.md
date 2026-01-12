@@ -13,14 +13,14 @@ head: henryiii/fix/urlinlint
 created_at: 2025-11-07T15:30:42Z
 updated_at: 2025-11-14T02:30:11Z
 url: https://github.com/astral-sh/ruff/pull/21316
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # Add upstream linter URL to `ruff linter --output-format=json`
 
 ---
 
-_Pull request opened by @henryiii on 2025-11-07 15:30_
+_@henryiii_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

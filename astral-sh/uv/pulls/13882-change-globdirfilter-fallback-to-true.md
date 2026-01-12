@@ -14,14 +14,14 @@ head: micha/fix-no-dfa-fallback
 created_at: 2025-06-06T11:51:15Z
 updated_at: 2025-06-06T12:07:36Z
 url: https://github.com/astral-sh/uv/pull/13882
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:54Z
 ```
 
 # Change `GlobDirFilter` fallback to `true`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-06 11:51_
+_@MichaReiser_
 
 ## Summary
 

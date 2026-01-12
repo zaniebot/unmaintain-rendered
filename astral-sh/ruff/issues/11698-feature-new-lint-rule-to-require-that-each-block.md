@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-02T21:17:11Z
 updated_at: 2024-06-07T19:30:08Z
 url: https://github.com/astral-sh/ruff/issues/11698
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [Feature] new lint rule to require that each block must end with # or #. (HashtagDot) or a new line.
 
 ---
 
-_Issue opened by @EdSaleh on 2024-06-02 21:17_
+_@EdSaleh_
 
 Hello,
 

@@ -12,14 +12,14 @@ head: pep517-support-using-uv
 created_at: 2025-04-22T10:16:07Z
 updated_at: 2025-04-22T12:00:34Z
 url: https://github.com/astral-sh/uv/pull/13049
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Support using `uv build-backend` in the Python backend
 
 ---
 
-_Pull request opened by @mgorny on 2025-04-22 10:16_
+_@mgorny_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

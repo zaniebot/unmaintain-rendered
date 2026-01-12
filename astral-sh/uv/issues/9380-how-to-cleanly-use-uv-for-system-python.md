@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-23T09:57:10Z
 updated_at: 2024-11-23T23:48:22Z
 url: https://github.com/astral-sh/uv/issues/9380
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # How To Cleanly Use UV For System Python
 
 ---
 
-_Issue opened by @dapomeranz on 2024-11-23 09:57_
+_@dapomeranz_
 
 Hello,
 

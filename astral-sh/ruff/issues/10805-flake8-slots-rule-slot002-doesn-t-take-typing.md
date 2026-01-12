@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-06T17:07:15Z
 updated_at: 2024-04-06T23:16:07Z
 url: https://github.com/astral-sh/ruff/issues/10805
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # [`flake8-slots`] Rule `SLOT002` doesn't take `typing.NamedTuple` into account
 
 ---
 
-_Issue opened by @autinerd on 2024-04-06 17:07_
+_@autinerd_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

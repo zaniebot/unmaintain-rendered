@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-21T13:16:09Z
 updated_at: 2024-07-09T19:05:20Z
 url: https://github.com/astral-sh/uv/issues/3165
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # `uv run` doesn't think the current environment is compatible when it is [rye virtual package issue?]
 
 ---
 
-_Issue opened by @bluss on 2024-04-21 13:16_
+_@bluss_
 
 ```
 uv 0.1.35

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-28T15:01:33Z
 updated_at: 2025-08-28T14:22:55Z
 url: https://github.com/astral-sh/ruff/issues/19603
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Whitespace before classes not inserted when used with "modificationsIfAvailable" in vscode
 
 ---
 
-_Issue opened by @maltevesper on 2025-07-28 15:01_
+_@maltevesper_
 
 ### Summary
 

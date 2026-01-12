@@ -13,14 +13,14 @@ head: charlie/then-with
 created_at: 2023-08-04T13:27:24Z
 updated_at: 2023-08-04T14:16:06Z
 url: https://github.com/astral-sh/ruff/pull/6341
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Rename `CommentPlacement#then_with` to `or_else`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-04 13:27_
+_@charliermarsh_
 
 Per nits in the PR.
 

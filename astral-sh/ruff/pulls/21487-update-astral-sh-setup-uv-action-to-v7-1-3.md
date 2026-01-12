@@ -13,14 +13,14 @@ head: renovate/astral-sh-setup-uv-7.x
 created_at: 2025-11-17T01:58:26Z
 updated_at: 2025-11-17T05:21:33Z
 url: https://github.com/astral-sh/ruff/pull/21487
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # Update astral-sh/setup-uv action to v7.1.3
 
 ---
 
-_Pull request opened by @renovate on 2025-11-17 01:58_
+_@renovate_
 
 This PR contains the following updates:
 

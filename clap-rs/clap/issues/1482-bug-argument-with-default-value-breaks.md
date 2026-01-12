@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-05-31T23:12:47Z
 updated_at: 2020-02-01T19:55:11Z
 url: https://github.com/clap-rs/clap/issues/1482
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Bug: argument with default value breaks ArgRequiredElseHelp
 
 ---
 
-_Issue opened by @ghost on 2019-05-31 23:12_
+_@ghost_
 
 ### Rust Version
 rustc 1.37.0-nightly (3ade426ed 2019-05-30)

@@ -13,14 +13,14 @@ head: zb/uvx-python
 created_at: 2025-01-29T18:45:24Z
 updated_at: 2025-01-30T22:04:18Z
 url: https://github.com/astral-sh/uv/pull/11076
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:40Z
 ```
 
 # Add support for `uvx python`
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-29 18:45_
+_@zanieb_
 
 Supersedes https://github.com/astral-sh/uv/pull/7491
 Closes https://github.com/astral-sh/uv/issues/7430

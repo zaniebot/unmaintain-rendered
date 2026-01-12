@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-20T08:05:16Z
 updated_at: 2025-03-27T05:57:33Z
 url: https://github.com/astral-sh/uv/issues/1738
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # uv cache clean doesn't work
 
 ---
 
-_Issue opened by @sandipb on 2024-02-20 08:05_
+_@sandipb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-06-17T22:03:04Z
 updated_at: 2022-06-18T22:37:15Z
 url: https://github.com/clap-rs/clap/issues/3854
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Failed to get clap dependency
 
 ---
 
-_Issue opened by @iamgabrielsoft on 2022-06-17 22:03_
+_@iamgabrielsoft_
 
 ### Please complete the following tasks
 

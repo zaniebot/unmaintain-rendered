@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2023-12-15T03:21:19Z
 updated_at: 2023-12-15T03:33:33Z
 url: https://github.com/astral-sh/ruff/pull/9144
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # improve error message for RUF006
 
 ---
 
-_Pull request opened by @danking on 2023-12-15 03:21_
+_@danking_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

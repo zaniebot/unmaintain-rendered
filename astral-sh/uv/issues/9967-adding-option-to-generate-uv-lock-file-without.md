@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T11:23:28Z
 updated_at: 2025-08-12T08:08:42Z
 url: https://github.com/astral-sh/uv/issues/9967
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # Adding option to generate uv.lock file without the Development dependencies
 
 ---
 
-_Issue opened by @borisgurzhovski-itgma on 2024-12-17 11:23_
+_@borisgurzhovski-itgma_
 
 Is it possible (maybe add it as future improvement) to add an option to generate an `uv.lock` file which won't include the Development dependencies?
  

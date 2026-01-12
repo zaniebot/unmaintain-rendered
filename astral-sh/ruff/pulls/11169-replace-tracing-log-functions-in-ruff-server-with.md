@@ -12,14 +12,14 @@ head: jane/server/logging
 created_at: 2024-04-26T23:30:13Z
 updated_at: 2025-02-20T09:00:15Z
 url: https://github.com/astral-sh/ruff/pull/11169
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # Replace `tracing` log functions in `ruff server` with LSP-compliant logging functions
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-26 23:30_
+_@snowsignal_
 
 ## Summary
 

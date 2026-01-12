@@ -12,14 +12,14 @@ head: jtfm/redact-urls
 created_at: 2025-05-07T16:47:17Z
 updated_at: 2025-05-12T16:58:28Z
 url: https://github.com/astral-sh/uv/pull/13333
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:39Z
 ```
 
 # Redact credentials when displaying URLs
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-05-07 16:47_
+_@jtfmumm_
 
 This PR redacts credentials in displayed URLs. 
 

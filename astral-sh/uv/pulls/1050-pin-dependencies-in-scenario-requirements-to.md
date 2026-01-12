@@ -13,14 +13,14 @@ head: zb/pin
 created_at: 2024-01-22T22:26:58Z
 updated_at: 2024-01-22T23:11:12Z
 url: https://github.com/astral-sh/uv/pull/1050
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # Pin dependencies in scenario requirements to allow install with puffin
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-22 22:26_
+_@zanieb_
 
 _No description provided._
 

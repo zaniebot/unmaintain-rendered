@@ -14,14 +14,14 @@ head: gankra/goto-str
 created_at: 2025-08-13T22:36:43Z
 updated_at: 2025-11-21T20:16:32Z
 url: https://github.com/astral-sh/ruff/pull/19905
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [ty] support goto/hover on string annotations
 
 ---
 
-_Pull request opened by @Gankra on 2025-08-13 22:36_
+_@Gankra_
 
 The root issues with this implementation is that ty_python_semantic doesn't really provide a way to ask:
 * ~~hey there's a string literal here, is this a type annotation?~~

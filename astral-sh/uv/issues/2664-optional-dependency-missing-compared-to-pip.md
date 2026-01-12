@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-26T01:03:57Z
 updated_at: 2024-03-26T02:14:07Z
 url: https://github.com/astral-sh/uv/issues/2664
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Optional dependency missing compared to pip-compile from pip-tools
 
 ---
 
-_Issue opened by @mcarans on 2024-03-26 01:03_
+_@mcarans_
 
 uv pip compile seems to miss an optional dependency that pip-compile includes. You can reproduce:
 ```

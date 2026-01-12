@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-18T12:23:04Z
 updated_at: 2026-01-10T18:11:14Z
 url: https://github.com/astral-sh/uv/issues/17174
-synced_at: 2026-01-12T02:26:26Z
+synced_at: 2026-01-12T16:02:45Z
 ```
 
 # uv run pytest breaks history in pdb on windows
 
 ---
 
-_Issue opened by @RmStorm on 2025-12-18 12:23_
+_@RmStorm_
 
 ### Summary
 

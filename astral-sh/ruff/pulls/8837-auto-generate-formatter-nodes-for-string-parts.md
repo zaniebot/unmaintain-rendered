@@ -13,14 +13,14 @@ head: dhruv/formatted-nodes
 created_at: 2023-11-25T12:52:16Z
 updated_at: 2023-11-27T15:28:41Z
 url: https://github.com/astral-sh/ruff/pull/8837
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Auto-generate formatter nodes for string parts
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-25 12:52_
+_@dhruvmanila_
 
 A follow-up to auto-generate the `FormatNodeRule` implementation for the string part nodes. This is just a dummy implementation that is unreachable because it's handled by the parent nodes.
 

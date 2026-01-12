@@ -11,14 +11,14 @@ head: evanrittenhouse/runtime_eval_base_class
 created_at: 2023-11-06T04:39:45Z
 updated_at: 2023-11-10T03:33:44Z
 url: https://github.com/astral-sh/ruff/pull/8504
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Detect runtime-evaluated base classes defined in the current file
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-11-06 04:39_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

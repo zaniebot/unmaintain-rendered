@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T00:43:11Z
 updated_at: 2024-12-17T04:15:26Z
 url: https://github.com/astral-sh/ruff/issues/15028
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # ruff check --add-noqa struggles on lines that already have comments
 
 ---
 
-_Issue opened by @arrdem on 2024-12-17 00:43_
+_@arrdem_
 
 Consider the snippet
 

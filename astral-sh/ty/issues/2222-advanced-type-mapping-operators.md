@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-25T18:58:31Z
 updated_at: 2025-12-26T10:05:32Z
 url: https://github.com/astral-sh/ty/issues/2222
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Advanced type mapping operators
 
 ---
 
-_Issue opened by @rasmusfiskerbang on 2025-12-25 18:58_
+_@rasmusfiskerbang_
 
 ### Question
 

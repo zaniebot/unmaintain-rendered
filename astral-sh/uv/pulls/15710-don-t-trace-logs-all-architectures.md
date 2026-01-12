@@ -13,14 +13,14 @@ head: konsti/dont-trace-log-all-architectures
 created_at: 2025-09-07T11:08:52Z
 updated_at: 2025-09-08T13:20:56Z
 url: https://github.com/astral-sh/uv/pull/15710
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # Don't trace logs all architectures
 
 ---
 
-_Pull request opened by @konstin on 2025-09-07 11:08_
+_@konstin_
 
 On my machine, this statement print over 500 lines for `uv python list -vv` of evident statements.
 

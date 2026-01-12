@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T10:04:37Z
 updated_at: 2025-04-01T18:59:05Z
 url: https://github.com/astral-sh/uv/issues/12479
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # Do doc have migration guide from conda to uv?
 
 ---
 
-_Issue opened by @xnuohz on 2025-03-26 10:04_
+_@xnuohz_
 
 ### Question
 

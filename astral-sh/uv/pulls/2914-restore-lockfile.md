@@ -13,14 +13,14 @@ head: zb/revert-lock
 created_at: 2024-04-08T21:16:52Z
 updated_at: 2024-04-08T21:25:34Z
 url: https://github.com/astral-sh/uv/pull/2914
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:18Z
 ```
 
 # Restore lockfile
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-08 21:16_
+_@zanieb_
 
 Accidentally reverted the lockfile in https://github.com/astral-sh/uv/commit/538c88130e9004202244348ffdf63a5e8404ff9c
 

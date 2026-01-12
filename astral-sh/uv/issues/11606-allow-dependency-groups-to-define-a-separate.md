@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-18T22:40:16Z
 updated_at: 2025-06-13T22:04:14Z
 url: https://github.com/astral-sh/uv/issues/11606
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # Allow dependency groups to define a separate `requires-python`
 
 ---
 
-_Issue opened by @zanieb on 2025-02-18 22:40_
+_@zanieb_
 
 ### Summary
 

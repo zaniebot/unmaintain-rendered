@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-03T20:14:03Z
 updated_at: 2023-02-03T20:55:30Z
 url: https://github.com/astral-sh/ruff/issues/2555
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Error using '--force-exclude' with pre-commit
 
 ---
 
-_Issue opened by @ilya-grigoriev on 2023-02-03 20:14_
+_@ilya-grigoriev_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

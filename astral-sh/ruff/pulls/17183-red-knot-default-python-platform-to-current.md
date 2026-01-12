@@ -13,14 +13,14 @@ head: micha/default-to-current-platform
 created_at: 2025-04-03T19:39:58Z
 updated_at: 2025-04-09T10:05:20Z
 url: https://github.com/astral-sh/ruff/pull/17183
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Default `python-platform` to current platform
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-03 19:39_
+_@MichaReiser_
 
 ## Summary
 

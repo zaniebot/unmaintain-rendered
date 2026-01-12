@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-16T15:44:47Z
 updated_at: 2024-08-27T17:53:28Z
 url: https://github.com/astral-sh/ruff/issues/12936
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # ISC001 fix can modify octal escape sequences
 
 ---
 
-_Issue opened by @dscorbett on 2024-08-16 15:44_
+_@dscorbett_
 
 The fix for ISC001 changes behavior when the first string ends with a one- or two-digit octal escape sequence and the second begins with an octal digit.
 

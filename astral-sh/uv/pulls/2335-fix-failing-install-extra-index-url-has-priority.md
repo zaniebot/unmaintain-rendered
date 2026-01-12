@@ -13,14 +13,14 @@ head: konsti/install_extra_index_url_has_priority
 created_at: 2024-03-10T13:16:59Z
 updated_at: 2024-03-11T16:43:13Z
 url: https://github.com/astral-sh/uv/pull/2335
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:58Z
 ```
 
 # Fix failing install_extra_index_url_has_priority test
 
 ---
 
-_Pull request opened by @konstin on 2024-03-10 13:16_
+_@konstin_
 
 `install_extra_index_url_has_priority` started failing because `packaging` had a new release. I'm not sure if this preserves the index order check as intended, but it does unblock CI.
 

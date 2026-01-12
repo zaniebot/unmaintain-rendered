@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-23T14:32:05Z
 updated_at: 2024-02-23T16:09:15Z
 url: https://github.com/astral-sh/uv/issues/1914
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # For uv>0.1.6 Docker/Github Action fails to install package from Github URL 
 
 ---
 
-_Issue opened by @mtmpaulwulff on 2024-02-23 14:32_
+_@mtmpaulwulff_
 
 In my requirements file i am specifying to install the following package:
 `django-celery-beat @ git+https://github.com/celery/django-celery-beat.git@acd10a390c85414a59e9b37be6226e4a9ea4fb81`

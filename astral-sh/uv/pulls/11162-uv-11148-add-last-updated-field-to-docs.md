@@ -12,14 +12,14 @@ head: uv-11148-levinson
 created_at: 2025-02-02T10:04:26Z
 updated_at: 2025-02-14T02:07:11Z
 url: https://github.com/astral-sh/uv/pull/11162
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:42Z
 ```
 
 # Uv #11148 Add last updated field to docs
 
 ---
 
-_Pull request opened by @LEvinson2504 on 2025-02-02 10:04_
+_@LEvinson2504_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following: 

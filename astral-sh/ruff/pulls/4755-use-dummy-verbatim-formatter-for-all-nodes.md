@@ -12,14 +12,14 @@ head: formatter-definitions-verbatim
 created_at: 2023-05-31T13:46:06Z
 updated_at: 2023-06-01T08:42:12Z
 url: https://github.com/astral-sh/ruff/pull/4755
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Use dummy verbatim formatter for all nodes
 
 ---
 
-_Pull request opened by @konstin on 2023-05-31 13:46_
+_@konstin_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: 1-indexed-columns-on-error-reporting
 created_at: 2022-11-01T22:10:06Z
 updated_at: 2022-11-03T02:00:15Z
 url: https://github.com/astral-sh/ruff/pull/539
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Make columns indices 1-based in the text output format
 
 ---
 
-_Pull request opened by @fsouza on 2022-11-01 22:10_
+_@fsouza_
 
 Not changing the column in JSON errors. Not sure if we want to change that too.
 

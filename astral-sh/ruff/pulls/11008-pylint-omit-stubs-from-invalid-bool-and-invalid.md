@@ -14,14 +14,14 @@ head: charlie/is-stub
 created_at: 2024-04-18T01:41:33Z
 updated_at: 2024-04-18T02:03:22Z
 url: https://github.com/astral-sh/ruff/pull/11008
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [`pylint`] Omit stubs from `invalid-bool` and `invalid-str-return-type`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-18 01:41_
+_@charliermarsh_
 
 ## Summary
 

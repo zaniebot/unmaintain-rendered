@@ -13,14 +13,14 @@ head: fix/6821
 created_at: 2023-08-23T17:30:19Z
 updated_at: 2023-08-25T16:02:33Z
 url: https://github.com/astral-sh/ruff/pull/6822
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Update ERA100 to apply to commented dictionary items with trailing comments
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-23 17:30_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/6821
 

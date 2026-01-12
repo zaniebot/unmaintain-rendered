@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-04T17:48:31Z
 updated_at: 2025-06-04T18:41:08Z
 url: https://github.com/astral-sh/uv/issues/13845
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # Termux support
 
 ---
 
-_Issue opened by @geomlattice on 2025-06-04 17:48_
+_@geomlattice_
 
 ### Summary
 

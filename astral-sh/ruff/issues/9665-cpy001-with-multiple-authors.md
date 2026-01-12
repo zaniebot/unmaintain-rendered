@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-29T05:20:06Z
 updated_at: 2024-01-29T07:26:44Z
 url: https://github.com/astral-sh/ruff/issues/9665
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # CPY001 with multiple authors
 
 ---
 
-_Issue opened by @jonyscathe on 2024-01-29 05:20_
+_@jonyscathe_
 
 No obvious way to have multiple copyright authors.  
 It is quite plausible that one module would require a different copyright author in different files.

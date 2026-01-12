@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-28T15:34:22Z
 updated_at: 2025-06-08T16:00:32Z
 url: https://github.com/astral-sh/ruff/issues/17683
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # FURB129 fix should add spaces between tokens
 
 ---
 
-_Issue opened by @dscorbett on 2025-04-28 15:34_
+_@dscorbett_
 
 ### Summary
 

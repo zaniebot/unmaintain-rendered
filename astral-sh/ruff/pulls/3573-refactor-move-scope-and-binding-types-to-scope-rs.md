@@ -13,14 +13,14 @@ head: extract-scope
 created_at: 2023-03-17T10:42:01Z
 updated_at: 2023-03-17T16:31:34Z
 url: https://github.com/astral-sh/ruff/pull/3573
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # refactor: Move scope and binding types to `scope.rs`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-17 10:42_
+_@MichaReiser_
 
 This PR moves all the scope/binding related types out of `context.rs` and `types.rs` into `scope.rs`
 

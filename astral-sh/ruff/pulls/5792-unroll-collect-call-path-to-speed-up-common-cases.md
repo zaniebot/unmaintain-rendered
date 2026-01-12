@@ -12,14 +12,14 @@ head: charlie/unroll
 created_at: 2023-07-16T00:49:23Z
 updated_at: 2023-07-18T15:30:08Z
 url: https://github.com/astral-sh/ruff/pull/5792
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Unroll `collect_call_path` to speed up common cases
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-16 00:49_
+_@charliermarsh_
 
 ## Summary
 

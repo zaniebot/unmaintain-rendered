@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-13T11:38:32Z
 updated_at: 2025-07-14T15:49:00Z
 url: https://github.com/astral-sh/ruff/issues/19306
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # BLE001: detect contextlib.suppress ?
 
 ---
 
-_Issue opened by @spaceone on 2025-07-13 11:38_
+_@spaceone_
 
 ```python
 try:

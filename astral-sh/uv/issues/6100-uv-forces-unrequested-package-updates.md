@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-15T01:19:35Z
 updated_at: 2024-10-16T17:23:05Z
 url: https://github.com/astral-sh/uv/issues/6100
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # uv forces unrequested package updates
 
 ---
 
-_Issue opened by @stas00 on 2024-08-15 01:19_
+_@stas00_
 
 With uv==0.2.36
 

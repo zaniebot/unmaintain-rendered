@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-03T01:59:40Z
 updated_at: 2022-12-06T21:01:18Z
 url: https://github.com/astral-sh/ruff/issues/1004
-synced_at: 2026-01-10T12:06:15Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement import conventions
 
 ---
 
-_Issue opened by @edgarrmondragon on 2022-12-03 01:59_
+_@edgarrmondragon_
 
 There's https://github.com/joaopalmeiro/flake8-import-conventions to serve as inspiration, though I'm not sure if I'd like to replicate the behavior 100%.
 

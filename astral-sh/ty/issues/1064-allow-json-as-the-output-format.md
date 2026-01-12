@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-20T14:39:43Z
 updated_at: 2025-12-19T20:14:47Z
 url: https://github.com/astral-sh/ty/issues/1064
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Allow JSON as the output format
 
 ---
 
-_Issue opened by @Khoyo on 2025-08-20 14:39_
+_@Khoyo_
 
 The current allowed output formats of `ty check` are full and concise, which aren't great if you want to parse it (eg. in CI). Allowing the `json` and `json-lines` output formats that ruff already supports would make it easier.
 

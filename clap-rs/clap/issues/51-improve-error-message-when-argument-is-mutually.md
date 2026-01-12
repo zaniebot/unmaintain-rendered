@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-04-02T03:42:51Z
 updated_at: 2015-04-03T02:42:44Z
 url: https://github.com/clap-rs/clap/issues/51
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Improve error message when argument is mutually excluded
 
 ---
 
-_Issue opened by @kbknapp on 2015-04-02 03:42_
+_@kbknapp_
 
 Currently if an argument is mutually excluded by another argument and appears _before_ the argument that declared the exclusion, the error message only states "a required argument wasn't supplied" but it should state that the specific argument is excluded by another (which it correctly does when the excluded argument appears _after_ the one declaring the exclusion).
 

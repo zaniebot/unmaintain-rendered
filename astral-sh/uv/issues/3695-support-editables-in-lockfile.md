@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-21T12:15:26Z
 updated_at: 2024-05-22T13:06:20Z
 url: https://github.com/astral-sh/uv/issues/3695
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Support editables in lockfile
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-21 12:15_
+_@charliermarsh_
 
 E.g., in `uv sync` and `uv lock`.
 

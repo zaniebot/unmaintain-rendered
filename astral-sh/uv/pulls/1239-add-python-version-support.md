@@ -13,14 +13,14 @@ head: charlie/py
 created_at: 2024-02-02T21:55:47Z
 updated_at: 2024-02-04T21:56:01Z
 url: https://github.com/astral-sh/uv/pull/1239
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:31Z
 ```
 
 # Add Python version support
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-02 21:55_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/1221.
 

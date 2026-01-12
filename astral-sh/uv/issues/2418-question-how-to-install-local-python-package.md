@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-13T15:14:23Z
 updated_at: 2025-10-12T16:19:03Z
 url: https://github.com/astral-sh/uv/issues/2418
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Question: How to install local python package?
 
 ---
 
-_Issue opened by @mkleinbort-ic on 2024-03-13 15:14_
+_@mkleinbort-ic_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.
@@ -142,7 +142,7 @@ https://docs.astral.sh/uv/concepts/projects/dependencies/#path
 
 ---
 
-_Comment by @cpita-mutt on 2025-10-12 16:19_
+_Comment by @cpita-work on 2025-10-12 16:19_
 
 > You're looking for uv pip install -e . or uv pip install "your-project@."
 

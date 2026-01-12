@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-16T19:53:51Z
 updated_at: 2025-10-30T16:59:08Z
 url: https://github.com/astral-sh/ruff/issues/20929
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # False positive for UP046
 
 ---
 
-_Issue opened by @NeilGirdhar on 2025-10-16 19:53_
+_@NeilGirdhar_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-03T00:12:17Z
 updated_at: 2024-03-03T00:28:53Z
 url: https://github.com/astral-sh/ruff/issues/10205
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `futures.exception()` is flagged as "unnecessary parens on exception"
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-03 00:12_
+_@charliermarsh_
 
 An example from the python standard library: `concurrent.futures.Future.exception()` returns an exception raised by the called function, or `None` if no exception was raised.
 

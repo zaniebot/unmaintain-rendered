@@ -13,14 +13,14 @@ head: charlie/up-function
 created_at: 2024-03-07T04:14:42Z
 updated_at: 2024-03-07T04:33:20Z
 url: https://github.com/astral-sh/ruff/pull/10265
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Avoid repeating function calls in f-string conversions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-07 04:14_
+_@charliermarsh_
 
 ## Summary
 

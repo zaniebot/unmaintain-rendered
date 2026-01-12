@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-25T16:26:05Z
 updated_at: 2025-02-25T17:02:49Z
 url: https://github.com/astral-sh/uv/issues/11779
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # uv run uses older version of dependency even after upgrading
 
 ---
 
-_Issue opened by @pchalasani on 2025-02-25 16:26_
+_@pchalasani_
 
 ### Question
 

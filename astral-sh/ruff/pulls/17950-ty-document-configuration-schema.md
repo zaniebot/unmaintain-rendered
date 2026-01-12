@@ -14,14 +14,14 @@ head: micha/ty-options
 created_at: 2025-05-08T13:08:35Z
 updated_at: 2025-05-09T08:47:47Z
 url: https://github.com/astral-sh/ruff/pull/17950
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [ty] Document configuration schema
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-08 13:08_
+_@MichaReiser_
 
 ## Summary
 

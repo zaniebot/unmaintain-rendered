@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-20T02:10:27Z
 updated_at: 2024-04-02T12:39:46Z
 url: https://github.com/astral-sh/ruff/issues/8085
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `D102` - Don't enforce docstrings on `__new__` and `__call__`
 
 ---
 
-_Issue opened by @DetachHead on 2023-10-20 02:10_
+_@DetachHead_
 
 re-raising https://github.com/PyCQA/pydocstyle/issues/515 here:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-28T02:27:24Z
 updated_at: 2025-12-05T18:12:14Z
 url: https://github.com/astral-sh/ty/issues/1661
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # rename doesn't work for imports from third-party files
 
 ---
 
-_Issue opened by @Gankra on 2025-11-28 02:27_
+_@Gankra_
 
 ### Summary
 

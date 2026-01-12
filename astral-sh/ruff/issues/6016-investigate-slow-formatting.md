@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-23T13:06:25Z
 updated_at: 2023-09-08T08:18:37Z
 url: https://github.com/astral-sh/ruff/issues/6016
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Investigate slow formatting
 
 ---
 
-_Issue opened by @konstin on 2023-07-23 13:06_
+_@konstin_
 
 Some files are much slower to format than others, i've posted the top 20 below (for context: i can format 294k files in 290s on my 8 threads laptop, so roughly an average of 8ms per file, the real median is likely a good bit lower). The exact timings and order are inaccurate since we they come from the ecosystem check which runs in parallel, but no files should be that slow, especially since the files aren't that large. We need to format these files with a profiler attached (see CONTRIBUTING.md for instructions), find the bottleneck and optimize the relevant function.
 

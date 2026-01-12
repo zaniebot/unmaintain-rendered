@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-02T12:26:44Z
 updated_at: 2025-09-12T18:37:03Z
 url: https://github.com/astral-sh/ruff/issues/20204
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `invalid-index-type` (RUF016) has false negatives and false positives
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-02 12:26_
+_@dscorbett_
 
 ### Summary
 

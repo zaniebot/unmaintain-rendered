@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T14:26:57Z
 updated_at: 2025-04-07T16:13:59Z
 url: https://github.com/astral-sh/uv/issues/12715
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # Is UV_SYSTEM_PYTHON variable fully respected?
 
 ---
 
-_Issue opened by @houtianze on 2025-04-07 14:26_
+_@houtianze_
 
 ### Summary
 

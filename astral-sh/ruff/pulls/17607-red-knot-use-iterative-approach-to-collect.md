@@ -14,14 +14,14 @@ head: dhruv/overload-iterative
 created_at: 2025-04-24T13:34:42Z
 updated_at: 2025-04-28T23:56:52Z
 url: https://github.com/astral-sh/ruff/pull/17607
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Use iterative approach to collect overloads
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-24 13:34_
+_@dhruvmanila_
 
 ## Summary
 

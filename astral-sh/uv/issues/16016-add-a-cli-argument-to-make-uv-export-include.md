@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-24T14:26:59Z
 updated_at: 2025-09-24T16:08:39Z
 url: https://github.com/astral-sh/uv/issues/16016
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # Add a CLI argument to make `uv export` include build dependencies
 
 ---
 
-_Issue opened by @frazar on 2025-09-24 14:26_
+_@frazar_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: alex/shellcheck-pre-commit
 created_at: 2025-07-15T16:30:58Z
 updated_at: 2025-07-15T16:55:51Z
 url: https://github.com/astral-sh/ruff/pull/19361
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # Add shellcheck to pre-commit
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-15 16:30_
+_@AlexWaygood_
 
 ## Summary
 

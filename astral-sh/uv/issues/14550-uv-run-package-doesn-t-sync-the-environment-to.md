@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-10T20:38:00Z
 updated_at: 2025-07-10T20:49:47Z
 url: https://github.com/astral-sh/uv/issues/14550
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # `uv run --package` doesn't sync the environment to the listed package
 
 ---
 
-_Issue opened by @iandolge on 2025-07-10 20:38_
+_@iandolge_
 
 ### Summary
 

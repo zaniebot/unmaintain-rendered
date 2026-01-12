@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-13T23:38:00Z
 updated_at: 2025-02-18T14:34:15Z
 url: https://github.com/astral-sh/uv/issues/11498
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:38Z
 ```
 
 # uv sync: environment markers ignored when extra is given
 
 ---
 
-_Issue opened by @robinjhuang on 2025-02-13 23:38_
+_@robinjhuang_
 
 ### Summary
 

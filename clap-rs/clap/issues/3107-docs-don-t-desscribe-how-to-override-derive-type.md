@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-12-09T12:21:54Z
 updated_at: 2021-12-09T15:40:32Z
 url: https://github.com/clap-rs/clap/issues/3107
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Docs don't desscribe how to override derive type behavior
 
 ---
 
-_Issue opened by @epage on 2021-12-09 12:21_
+_@epage_
 
 ### Please complete the following tasks
 

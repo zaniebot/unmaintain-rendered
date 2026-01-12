@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T14:17:20Z
 updated_at: 2025-11-15T16:48:15Z
 url: https://github.com/astral-sh/ty/issues/1386
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support overwriting of `*_default` parameters when creating a new dataclass-like class
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-17 14:17_
+_@sharkdp_
 
 This works for decorator-based `dataclass_transform`ers, but not yet for (meta)class based ones.
 

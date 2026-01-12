@@ -13,14 +13,14 @@ head: roboto-font
 created_at: 2024-02-15T07:53:40Z
 updated_at: 2024-02-15T14:56:09Z
 url: https://github.com/astral-sh/uv/pull/1309
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:35Z
 ```
 
 # Document font used in benchmark charts
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-15 07:53_
+_@MichaReiser_
 
 The labels were missing when I generated the charts on my Arch machine. 
 

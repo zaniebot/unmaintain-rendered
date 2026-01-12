@@ -13,14 +13,14 @@ head: charlie/fbt
 created_at: 2024-01-08T04:25:17Z
 updated_at: 2024-01-08T18:02:18Z
 url: https://github.com/astral-sh/ruff/pull/9429
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Allow Boolean positionals in setters
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-08 04:25_
+_@charliermarsh_
 
 ## Summary
 

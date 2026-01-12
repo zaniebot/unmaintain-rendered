@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-18T12:14:24Z
 updated_at: 2025-08-07T16:11:26Z
 url: https://github.com/astral-sh/ruff/issues/13391
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Integration of Ruff in Codacy
 
 ---
 
-_Issue opened by @valeriupredoi on 2024-09-18 12:14_
+_@valeriupredoi_
 
 Hi folks, apologies if perhaps this would have been better off a Discussion object, but I reckon if code changes get involved it's better to have an Issue to quote.
 

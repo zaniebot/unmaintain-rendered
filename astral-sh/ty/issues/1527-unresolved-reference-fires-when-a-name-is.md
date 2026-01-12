@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-11T21:06:40Z
 updated_at: 2025-11-12T18:21:00Z
 url: https://github.com/astral-sh/ty/issues/1527
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `unresolved-reference` fires when a name is declared but not bound
 
 ---
 
-_Issue opened by @winterqt on 2025-11-11 21:06_
+_@winterqt_
 
 ### Summary
 

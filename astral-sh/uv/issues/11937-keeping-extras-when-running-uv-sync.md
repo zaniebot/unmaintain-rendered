@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-03T23:12:31Z
 updated_at: 2025-09-25T00:49:47Z
 url: https://github.com/astral-sh/uv/issues/11937
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # Keeping extras when running `uv sync`
 
 ---
 
-_Issue opened by @brysonwu on 2025-03-03 23:12_
+_@brysonwu_
 
 ### Question
 

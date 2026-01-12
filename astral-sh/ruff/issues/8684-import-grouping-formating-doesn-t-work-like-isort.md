@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-14T20:40:39Z
 updated_at: 2023-11-14T22:23:05Z
 url: https://github.com/astral-sh/ruff/issues/8684
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # import grouping/formating doesn't work like isort
 
 ---
 
-_Issue opened by @ArazHeydarov on 2023-11-14 20:40_
+_@ArazHeydarov_
 
 I want to use ruff as my primary format tool. Even though it fixes some other issues like, unused imports, single quotes and etc. it seems it has no effect on grouping imports.
 

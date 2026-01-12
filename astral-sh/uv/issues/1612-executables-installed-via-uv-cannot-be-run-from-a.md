@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-17T19:49:10Z
 updated_at: 2024-02-18T11:04:11Z
 url: https://github.com/astral-sh/uv/issues/1612
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Executables installed via `uv` cannot be run from a subprocess on Windows
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-02-17 19:49_
+_@AlexWaygood_
 
 Minimal repro in PowerShell:
 

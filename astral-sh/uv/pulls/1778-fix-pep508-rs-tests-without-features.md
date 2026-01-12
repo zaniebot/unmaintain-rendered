@@ -13,14 +13,14 @@ head: charlie/pep
 created_at: 2024-02-20T19:27:18Z
 updated_at: 2024-02-20T19:35:37Z
 url: https://github.com/astral-sh/uv/pull/1778
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:43Z
 ```
 
 # Fix pep508-rs tests without features
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-20 19:27_
+_@charliermarsh_
 
 _No description provided._
 

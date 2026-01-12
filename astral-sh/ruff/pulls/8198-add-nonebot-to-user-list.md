@@ -13,14 +13,14 @@ head: docs/add-nonebot
 created_at: 2023-10-25T05:43:03Z
 updated_at: 2023-10-26T02:32:05Z
 url: https://github.com/astral-sh/ruff/pull/8198
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add NoneBot to user list
 
 ---
 
-_Pull request opened by @yanyongyu on 2023-10-25 05:43_
+_@yanyongyu_
 
 ## Summary
 

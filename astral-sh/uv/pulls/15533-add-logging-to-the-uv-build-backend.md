@@ -14,14 +14,14 @@ head: konsti/build-backend-logging
 created_at: 2025-08-26T14:01:55Z
 updated_at: 2025-08-27T07:14:02Z
 url: https://github.com/astral-sh/uv/pull/15533
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:48Z
 ```
 
 # Add logging to the uv build backend
 
 ---
 
-_Pull request opened by @konstin on 2025-08-26 14:01_
+_@konstin_
 
 Add support for `RUST_LOG` to the uv build backend. While we were previously using logging statements in the uv build backend, they could only be shown when when using the direct build fast path through uv, as there was no tracing subscriber to write log messages out. This means no debug logging when using the build backend through pip, `python -m build`, an incompatible version of uv, or any other build frontend; No option to figure why includes and excludes behave the way they do.
 

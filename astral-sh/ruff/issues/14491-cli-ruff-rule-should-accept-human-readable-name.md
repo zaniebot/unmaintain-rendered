@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-20T15:26:02Z
 updated_at: 2024-11-20T15:38:46Z
 url: https://github.com/astral-sh/ruff/issues/14491
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # CLI: `ruff rule` should accept human-readable name
 
 ---
 
-_Issue opened by @sbrugman on 2024-11-20 15:26_
+_@sbrugman_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

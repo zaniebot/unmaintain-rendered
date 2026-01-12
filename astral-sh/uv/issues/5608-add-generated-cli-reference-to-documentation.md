@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T16:38:17Z
 updated_at: 2024-08-09T14:17:40Z
 url: https://github.com/astral-sh/uv/issues/5608
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Add generated CLI reference to documentation
 
 ---
 
-_Issue opened by @zanieb on 2024-07-30 16:38_
+_@zanieb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

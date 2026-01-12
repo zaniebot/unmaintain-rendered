@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-04T22:29:09Z
 updated_at: 2025-04-21T06:43:16Z
 url: https://github.com/astral-sh/uv/issues/4028
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Allow users to install a project's dependencies, without the project itself
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-04 22:29_
+_@charliermarsh_
 
 Not sure if we want this -- it's like Poetry's `--no-root`. Let's wait and see if we can find motivating use-cases for it. Poetry also has this concept of ["operating modes"](https://python-poetry.org/docs/basic-usage/#operating-modes) which toggle this automatically.
 

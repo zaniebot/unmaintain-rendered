@@ -12,14 +12,14 @@ head: fix_cargo_test_doc
 created_at: 2023-03-28T11:30:51Z
 updated_at: 2023-03-28T12:29:26Z
 url: https://github.com/astral-sh/ruff/pull/3766
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Fix `cargo test --doc`
 
 ---
 
-_Pull request opened by @konstin on 2023-03-28 11:30_
+_@konstin_
 
 See https://github.com/charliermarsh/ruff/issues/3752#issuecomment-1484243217
 

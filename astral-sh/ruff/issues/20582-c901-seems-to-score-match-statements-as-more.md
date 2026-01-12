@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-25T18:36:34Z
 updated_at: 2025-09-25T18:41:37Z
 url: https://github.com/astral-sh/ruff/issues/20582
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # C901 seems to score match statements as more complex than they are
 
 ---
 
-_Issue opened by @flying-sheep on 2025-09-25 18:36_
+_@flying-sheep_
 
 ### Summary
 

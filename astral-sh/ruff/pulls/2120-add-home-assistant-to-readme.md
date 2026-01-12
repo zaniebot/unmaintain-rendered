@@ -12,14 +12,14 @@ head: readme-ha
 created_at: 2023-01-24T10:48:50Z
 updated_at: 2023-01-24T12:27:52Z
 url: https://github.com/astral-sh/ruff/pull/2120
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add Home Assistant to Readme
 
 ---
 
-_Pull request opened by @akx on 2023-01-24 10:48_
+_@akx_
 
 Refs https://github.com/home-assistant/core/pull/86224 😁 
 

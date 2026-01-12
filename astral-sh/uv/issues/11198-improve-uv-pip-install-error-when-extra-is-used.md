@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-03T22:14:07Z
 updated_at: 2025-02-03T22:14:17Z
 url: https://github.com/astral-sh/uv/issues/11198
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # Improve `uv pip install` error when `--extra` is used
 
 ---
 
-_Issue opened by @zanieb on 2025-02-03 22:14_
+_@zanieb_
 
 > it'd be nice if we could "rewrite" the cli command they passed (or at least substitute the extras into the syntax)
 

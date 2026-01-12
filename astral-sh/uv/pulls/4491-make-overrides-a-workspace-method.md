@@ -13,14 +13,14 @@ head: charlie/overrides-toml
 created_at: 2024-06-24T20:40:35Z
 updated_at: 2024-06-24T21:09:24Z
 url: https://github.com/astral-sh/uv/pull/4491
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:15Z
 ```
 
 # Make overrides a workspace method
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-24 20:40_
+_@charliermarsh_
 
 ## Summary
 

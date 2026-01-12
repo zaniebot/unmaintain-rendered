@@ -14,14 +14,14 @@ head: dcreager/gradual-transitivity
 created_at: 2026-01-07T20:28:04Z
 updated_at: 2026-01-08T14:31:58Z
 url: https://github.com/astral-sh/ruff/pull/22444
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Only consider fully static pivots when deriving transitive constraints
 
 ---
 
-_Pull request opened by @dcreager on 2026-01-07 20:28_
+_@dcreager_
 
 When working with constraint sets, we track transitive relationships between the constraints in the set. For instance, in `S ≤ int ∧ int ≤ T`, we can infer that `S ≤ T`. However, we should only consider fully static types when looking for a "pivot" for this kind of transitive relationship. The same pattern does not hold for `S ≤ Any ∧ Any ≤ T`; because the two `Any`s can materialize to different types, we cannot infer that `S ≤ T`.
 

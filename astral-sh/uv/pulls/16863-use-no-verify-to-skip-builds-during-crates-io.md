@@ -13,14 +13,14 @@ head: zb/no-verify-crates
 created_at: 2025-11-26T16:20:47Z
 updated_at: 2025-11-26T16:34:31Z
 url: https://github.com/astral-sh/uv/pull/16863
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:29Z
 ```
 
 # Use `--no-verify` to skip builds during crates.io publish
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-26 16:20_
+_@zanieb_
 
 Otherwise, this is quite slow.
 

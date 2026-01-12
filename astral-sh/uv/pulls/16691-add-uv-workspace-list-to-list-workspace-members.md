@@ -13,14 +13,14 @@ head: zb/workspace-list
 created_at: 2025-11-11T20:19:01Z
 updated_at: 2025-11-17T15:35:53Z
 url: https://github.com/astral-sh/uv/pull/16691
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:23Z
 ```
 
 # Add `uv workspace list` to list workspace members
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-11 20:19_
+_@zanieb_
 
 I'm a little wary here, in the sense that it might be silly to have a command that does something so simple that's covered by `uv workspace metadata`? but I think this could be stabilized much faster than `uv workspace metadata` and makes it easier to write scripts against workspace members.
 

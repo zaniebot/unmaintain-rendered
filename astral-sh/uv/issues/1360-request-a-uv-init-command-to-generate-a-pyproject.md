@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T21:39:39Z
 updated_at: 2024-07-19T15:11:49Z
 url: https://github.com/astral-sh/uv/issues/1360
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Request: A `uv init` command to generate a pyproject.toml
 
 ---
 
-_Issue opened by @imbev on 2024-02-15 21:39_
+_@imbev_
 
 A downside of the "pip-tools style" interface is that there is no way to automatically generate a compatible pyproject.toml with the necessary fields. For those using the modern pyproject.toml format, it can be difficult or tedious to create an appropriate pyproject.toml file manually.
 

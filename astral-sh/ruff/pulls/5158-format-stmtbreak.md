@@ -12,14 +12,14 @@ head: format_break
 created_at: 2023-06-17T07:52:04Z
 updated_at: 2023-07-07T20:48:23Z
 url: https://github.com/astral-sh/ruff/pull/5158
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # format StmtBreak
 
 ---
 
-_Pull request opened by @davidszotten on 2023-06-17 07:52_
+_@davidszotten_
 
 ## Summary
 

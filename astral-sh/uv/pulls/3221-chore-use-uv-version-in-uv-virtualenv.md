@@ -13,14 +13,14 @@ head: uv-venv-small-cleanup
 created_at: 2024-04-23T20:05:40Z
 updated_at: 2024-05-03T20:10:07Z
 url: https://github.com/astral-sh/uv/pull/3221
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:30Z
 ```
 
 # chore: use uv-version in uv-virtualenv
 
 ---
 
-_Pull request opened by @samypr100 on 2024-04-23 20:05_
+_@samypr100_
 
 ## Summary
 

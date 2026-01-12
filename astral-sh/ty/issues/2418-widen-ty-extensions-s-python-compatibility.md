@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T15:13:43Z
 updated_at: 2026-01-09T15:26:35Z
 url: https://github.com/astral-sh/ty/issues/2418
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Widen ty_extensions's Python compatibility
 
 ---
 
-_Issue opened by @bartfeenstra on 2026-01-09 15:13_
+_@bartfeenstra_
 
 ### Question
 

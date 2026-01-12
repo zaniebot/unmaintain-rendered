@@ -14,14 +14,14 @@ head: thartman/furb192
 created_at: 2024-04-11T00:17:56Z
 updated_at: 2024-04-23T01:14:11Z
 url: https://github.com/astral-sh/ruff/pull/10868
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`refurb`] New rule to suggest min/max over sorted() (`FURB192`)
 
 ---
 
-_Pull request opened by @ottaviohartman on 2024-04-11 00:17_
+_@ottaviohartman_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-19T10:39:40Z
 updated_at: 2023-11-20T08:48:17Z
 url: https://github.com/astral-sh/uv/issues/448
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Track which index a `File` came from
 
 ---
 
-_Issue opened by @konstin on 2023-11-19 10:39_
+_@konstin_
 
 Currently, we don't track where a file came from, instead, we drop that information:
 

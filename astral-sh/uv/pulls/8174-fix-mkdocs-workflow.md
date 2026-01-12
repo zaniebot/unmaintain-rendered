@@ -13,14 +13,14 @@ head: zb/fix-mkdocs
 created_at: 2024-10-14T13:22:35Z
 updated_at: 2024-10-14T14:45:15Z
 url: https://github.com/astral-sh/uv/pull/8174
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:11Z
 ```
 
 # Fix mkdocs workflow
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-14 13:22_
+_@zanieb_
 
 GitHub changed these environments to "externally managed" (or something changed with the setup-python action?)
 

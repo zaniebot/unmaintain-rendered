@@ -12,14 +12,14 @@ head: improve-F811-location
 created_at: 2022-12-31T06:03:01Z
 updated_at: 2022-12-31T12:42:19Z
 url: https://github.com/astral-sh/ruff/pull/1499
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Improve F811 range for function and class definitions
 
 ---
 
-_Pull request opened by @harupy on 2022-12-31 06:03_
+_@harupy_
 
 This PR improves F811 range for function and class definitions using `helpers::identifier_range`.
 

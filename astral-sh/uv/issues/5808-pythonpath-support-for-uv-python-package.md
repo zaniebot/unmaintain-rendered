@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-06T07:33:43Z
 updated_at: 2024-10-21T21:19:51Z
 url: https://github.com/astral-sh/uv/issues/5808
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # PYTHONPATH support for `uv` Python Package
 
 ---
 
-_Issue opened by @ulucs on 2024-08-06 07:33_
+_@ulucs_
 
 (Sort-of related to, and would fix: https://github.com/astral-sh/uv/issues/4450)
 

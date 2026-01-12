@@ -13,14 +13,14 @@ head: tolerate-python3.6
 created_at: 2024-09-04T04:32:32Z
 updated_at: 2024-09-04T22:24:40Z
 url: https://github.com/astral-sh/uv/pull/6996
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:37Z
 ```
 
 # Remove unused import.
 
 ---
 
-_Pull request opened by @garthk on 2024-09-04 04:32_
+_@garthk_
 
 `_virtualenv.py` doesn't need to import `__future__.annotations`, as it has none.
 

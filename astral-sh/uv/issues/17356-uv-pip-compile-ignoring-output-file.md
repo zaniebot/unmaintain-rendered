@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-08T07:30:44Z
 updated_at: 2026-01-09T09:56:31Z
 url: https://github.com/astral-sh/uv/issues/17356
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # uv pip compile ignoring --output-file
 
 ---
 
-_Issue opened by @phw on 2026-01-08 07:30_
+_@phw_
 
 ### Summary
 

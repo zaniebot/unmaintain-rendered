@@ -13,14 +13,14 @@ head: zb/fix-docker-tags
 created_at: 2025-08-13T21:15:31Z
 updated_at: 2025-08-13T21:36:03Z
 url: https://github.com/astral-sh/uv/pull/15263
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:39Z
 ```
 
 # Fix missing uv version in Docker image tags
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-13 21:15_
+_@zanieb_
 
 The change in https://github.com/astral-sh/uv/pull/15245 added a variable to the step scope that's shadowed by the inner loop.
 

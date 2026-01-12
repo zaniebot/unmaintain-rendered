@@ -13,14 +13,14 @@ head: zb/creds
 created_at: 2025-10-07T20:55:38Z
 updated_at: 2025-10-08T16:26:32Z
 url: https://github.com/astral-sh/uv/pull/16162
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:09Z
 ```
 
 # Include the RFC in the docs for our `Credentials` variants
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-07 20:55_
+_@zanieb_
 
 _No description provided._
 

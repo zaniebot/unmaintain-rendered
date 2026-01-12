@@ -14,14 +14,14 @@ head: micha/playground-313
 created_at: 2025-03-24T16:35:42Z
 updated_at: 2025-03-24T16:40:51Z
 url: https://github.com/astral-sh/ruff/pull/16956
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Default playground to Python 3.13 for real
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-24 16:35_
+_@MichaReiser_
 
 ## Summary
 

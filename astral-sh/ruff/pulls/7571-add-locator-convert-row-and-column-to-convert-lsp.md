@@ -13,14 +13,14 @@ head: col-row-coords-to-bytes-offsets
 created_at: 2023-09-21T11:36:08Z
 updated_at: 2023-10-30T13:09:47Z
 url: https://github.com/astral-sh/ruff/pull/7571
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Add `Locator::convert_row_and_column` to convert LSP utf-16 coordinates to byte offsets
 
 ---
 
-_Pull request opened by @konstin on 2023-09-21 11:36_
+_@konstin_
 
 **Summary** Compute the byte offset from language server protocol zero-indexed row and column indices.
 

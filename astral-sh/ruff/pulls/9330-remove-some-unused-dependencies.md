@@ -13,14 +13,14 @@ head: charlie/udeps
 created_at: 2023-12-31T12:25:31Z
 updated_at: 2023-12-31T12:42:10Z
 url: https://github.com/astral-sh/ruff/pull/9330
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Remove some unused dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-31 12:25_
+_@charliermarsh_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-01T06:47:26Z
 updated_at: 2023-10-02T13:51:08Z
 url: https://github.com/astral-sh/ruff/issues/7734
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Panic when formatting file `editor_main.main_ui' contains an unsupported '\r' line terminator character`
 
 ---
 
-_Issue opened by @qarmin on 2023-10-01 06:47_
+_@qarmin_
 
 Ruff 0.0.291 (latest changes from main branch)
 ```

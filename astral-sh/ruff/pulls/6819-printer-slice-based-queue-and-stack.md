@@ -14,14 +14,14 @@ head: slice-based-queue
 created_at: 2023-08-23T13:33:37Z
 updated_at: 2023-08-24T12:49:28Z
 url: https://github.com/astral-sh/ruff/pull/6819
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Printer: Slice based queue and stack
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-23 13:33_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

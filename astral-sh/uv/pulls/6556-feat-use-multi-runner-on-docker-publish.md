@@ -13,14 +13,14 @@ head: multi-runner-docker-build
 created_at: 2024-08-23T22:31:50Z
 updated_at: 2024-08-24T01:03:58Z
 url: https://github.com/astral-sh/uv/pull/6556
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:25Z
 ```
 
 # feat: use multi-runner on docker publish
 
 ---
 
-_Pull request opened by @samypr100 on 2024-08-23 22:31_
+_@samypr100_
 
 ## Summary
 

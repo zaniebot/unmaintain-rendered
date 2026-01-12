@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-15T09:18:45Z
 updated_at: 2025-03-14T00:42:06Z
 url: https://github.com/astral-sh/uv/issues/11533
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # uv has different behaviour compared to python for brotli
 
 ---
 
-_Issue opened by @SerJaimeLannister on 2025-02-15 09:18_
+_@SerJaimeLannister_
 
 ### Summary
 This is where UV isn't working and python is

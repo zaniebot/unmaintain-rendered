@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-03T15:56:24Z
 updated_at: 2025-06-13T12:01:52Z
 url: https://github.com/astral-sh/uv/issues/13276
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # uv tree support for json output
 
 ---
 
-_Issue opened by @frlan on 2025-05-03 15:56_
+_@frlan_
 
 ### Summary
 

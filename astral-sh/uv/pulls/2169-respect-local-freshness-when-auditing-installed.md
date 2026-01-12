@@ -13,14 +13,14 @@ head: charlie/timestmap
 created_at: 2024-03-04T19:11:21Z
 updated_at: 2024-03-04T19:40:53Z
 url: https://github.com/astral-sh/uv/pull/2169
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # Respect local freshness when auditing installed environment
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-04 19:11_
+_@charliermarsh_
 
 ## Summary
 

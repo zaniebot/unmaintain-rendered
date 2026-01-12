@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-03T15:26:45Z
 updated_at: 2022-11-03T16:26:10Z
 url: https://github.com/astral-sh/ruff/issues/569
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # pre-commit hook does not respect directory
 
 ---
 
-_Issue opened by @brizzbuzz on 2022-11-03 15:26_
+_@brizzbuzz_
 
 Very cool tool 🔥 Ran it on a gigantic repo and it crunched through everything in 100 seconds, where as Flake8 would just puke if we tried to lint everything in 1 shot.
 

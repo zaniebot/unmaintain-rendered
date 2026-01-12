@@ -13,14 +13,14 @@ head: zb/release-manual
 created_at: 2025-11-20T23:48:20Z
 updated_at: 2025-11-21T16:45:11Z
 url: https://github.com/astral-sh/uv/pull/16799
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:27Z
 ```
 
 # Add manual release script
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-20 23:48_
+_@zanieb_
 
 Unfortunately I need this sometimes
 

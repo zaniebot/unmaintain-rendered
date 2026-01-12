@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-15T18:30:45Z
 updated_at: 2024-03-18T00:31:25Z
 url: https://github.com/astral-sh/ruff/issues/10426
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Bug in B030: False positive when adding tuples of exception classes
 
 ---
 
-_Issue opened by @autinerd on 2024-03-15 18:30_
+_@autinerd_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

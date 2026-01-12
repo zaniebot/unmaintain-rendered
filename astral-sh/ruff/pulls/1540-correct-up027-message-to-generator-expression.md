@@ -12,14 +12,14 @@ head: up027-message
 created_at: 2023-01-01T23:09:03Z
 updated_at: 2023-01-01T23:51:35Z
 url: https://github.com/astral-sh/ruff/pull/1540
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Correct UP027 message to “generator expression”
 
 ---
 
-_Pull request opened by @andersk on 2023-01-01 23:09_
+_@andersk_
 
 There’s no such thing as a “tuple comprehension”.
 

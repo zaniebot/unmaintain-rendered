@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-11T08:09:28Z
 updated_at: 2025-10-14T17:47:01Z
 url: https://github.com/astral-sh/ruff/issues/20808
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # lint .value from StrEnum
 
 ---
 
-_Issue opened by @asukaminato0721 on 2025-10-11 08:09_
+_@asukaminato0721_
 
 ### Summary
 

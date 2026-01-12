@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-25T09:05:53Z
 updated_at: 2023-05-04T19:03:17Z
 url: https://github.com/astral-sh/ruff/issues/4092
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `--fix-only` returns exit code 1 upon fixes
 
 ---
 
-_Issue opened by @spapanik on 2023-04-25 09:05_
+_@spapanik_
 
 Thank you for the great work! Ruff is fantastic, and I have replaced all my linters with it. I just have a small feature request on the fixers of it.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-20T22:47:21Z
 updated_at: 2023-01-23T19:08:09Z
 url: https://github.com/astral-sh/ruff/issues/2043
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Optionally include human-friendly error messages in inline comments added by `--add-noqa`
 
 ---
 
-_Issue opened by @cosmojg on 2023-01-20 22:47_
+_@cosmojg_
 
 I would like to be able to add human-readable error messages as well as error codes when running `ruff` with `--add-noqa`.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-09T14:09:09Z
 updated_at: 2024-08-09T15:38:20Z
 url: https://github.com/astral-sh/ruff/issues/12787
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Rule for PEP 515 - Underscores in Numeric Literals
 
 ---
 
-_Issue opened by @guillp on 2024-08-09 14:09_
+_@guillp_
 
 I would like to implement a rule for [PEP 515](https://peps.python.org/pep-0515/). This allows using underscores as visual separators in numerics. Large numbers are hard to read and using underscore as thousands, millions, etc. separators increases readability a lot.
 

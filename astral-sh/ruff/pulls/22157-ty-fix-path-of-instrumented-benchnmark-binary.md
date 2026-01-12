@@ -14,14 +14,14 @@ head: micha/instrumented-bin-path
 created_at: 2025-12-23T07:58:24Z
 updated_at: 2025-12-23T08:12:20Z
 url: https://github.com/astral-sh/ruff/pull/22157
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Fix path of instrumented benchnmark binary
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-23 07:58_
+_@MichaReiser_
 
 Codspeed changed the path of the target-binary in https://github.com/CodSpeedHQ/codspeed-rust/pull/150 
 

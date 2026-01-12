@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-07T18:20:13Z
 updated_at: 2025-01-08T08:41:31Z
 url: https://github.com/astral-sh/ruff/issues/15324
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # PT006 issue not raised when keyword arguments are used instead of positional arguments.
 
 ---
 
-_Issue opened by @caarmen on 2025-01-07 18:20_
+_@caarmen_
 
 # Summary
 For pytest checks:

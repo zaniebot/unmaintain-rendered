@@ -14,14 +14,14 @@ head: fix-AIR302-wrong-paths
 created_at: 2025-03-31T08:35:05Z
 updated_at: 2025-03-31T08:42:05Z
 url: https://github.com/astral-sh/ruff/pull/17082
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [airflow] fix typos in AIR302 implementation and test cases
 
 ---
 
-_Pull request opened by @Lee-W on 2025-03-31 08:35_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

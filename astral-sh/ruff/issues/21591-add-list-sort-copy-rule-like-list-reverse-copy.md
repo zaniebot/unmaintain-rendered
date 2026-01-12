@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-23T11:28:25Z
 updated_at: 2025-11-24T19:49:55Z
 url: https://github.com/astral-sh/ruff/issues/21591
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Add `list-sort-copy` rule (like `list-reverse-copy`)
 
 ---
 
-_Issue opened by @injust on 2025-11-23 11:28_
+_@injust_
 
 ### Summary
 

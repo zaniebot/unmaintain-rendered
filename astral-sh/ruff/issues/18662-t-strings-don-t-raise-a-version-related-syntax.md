@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-13T16:00:44Z
 updated_at: 2025-06-13T19:04:38Z
 url: https://github.com/astral-sh/ruff/issues/18662
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # t-strings don't raise a version related syntax errr
 
 ---
 
-_Issue opened by @MichaReiser on 2025-06-13 16:00_
+_@MichaReiser_
 
 ### Summary
 

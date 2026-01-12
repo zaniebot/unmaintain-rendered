@@ -13,14 +13,14 @@ head: david/docs-adjustments
 created_at: 2025-07-02T13:13:14Z
 updated_at: 2025-07-02T13:20:49Z
 url: https://github.com/astral-sh/ty/pull/752
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Minor adjustments to docs
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-02 13:13_
+_@sharkdp_
 
 ## Summary
 

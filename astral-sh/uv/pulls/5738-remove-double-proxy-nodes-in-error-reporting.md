@@ -14,14 +14,14 @@ head: charlie/collapse
 created_at: 2024-08-02T21:13:45Z
 updated_at: 2024-08-05T14:03:55Z
 url: https://github.com/astral-sh/uv/pull/5738
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:06:59Z
 ```
 
 # Remove double-proxy nodes in error reporting
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-02 21:13_
+_@charliermarsh_
 
 ## Summary
 

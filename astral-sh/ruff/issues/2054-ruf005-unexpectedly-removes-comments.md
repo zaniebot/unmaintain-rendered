@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-21T09:13:44Z
 updated_at: 2023-01-22T22:00:30Z
 url: https://github.com/astral-sh/ruff/issues/2054
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # [RUF005] Unexpectedly removes comments
 
 ---
 
-_Issue opened by @thomasdesr on 2023-01-21 09:13_
+_@thomasdesr_
 
 When running `ruff==0.0.228` on the following code sample via: `ruff --select RUF005 .`
 

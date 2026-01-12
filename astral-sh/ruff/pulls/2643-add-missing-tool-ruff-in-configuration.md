@@ -11,14 +11,14 @@ head: docs/fix-missing-config
 created_at: 2023-02-07T22:45:46Z
 updated_at: 2023-02-08T18:41:32Z
 url: https://github.com/astral-sh/ruff/pull/2643
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Add missing `tool.ruff` in configuration documentation.
 
 ---
 
-_Pull request opened by @Chris-May on 2023-02-07 22:45_
+_@Chris-May_
 
 The documentation includes a configuration example that shows one can configure ruff's per-file ignore patterns by adding the following section to `pyproject.toml`:
 

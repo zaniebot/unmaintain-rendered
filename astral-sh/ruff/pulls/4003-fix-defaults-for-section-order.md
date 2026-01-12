@@ -12,14 +12,14 @@ head: charlie/default
 created_at: 2023-04-18T02:54:59Z
 updated_at: 2023-04-18T03:24:45Z
 url: https://github.com/astral-sh/ruff/pull/4003
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Fix defaults for section-order
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-18 02:54_
+_@charliermarsh_
 
 _No description provided._
 

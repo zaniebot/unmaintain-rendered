@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-22T22:29:58Z
 updated_at: 2026-01-09T00:01:26Z
 url: https://github.com/astral-sh/ty/issues/1237
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Union normalization performance
 
 ---
 
-_Issue opened by @ibraheemdev on 2025-09-22 22:29_
+_@ibraheemdev_
 
 The new collection literal inference is running into problems with the performance of [union type normalization](https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/src/types.rs#L10230). Aggressive literal promotion helps avoid generating large unions, but sometime it is unavoidable. For example, [this dictionary in `mitmproxy`](https://github.com/mitmproxy/mitmproxy/blob/main/test/mitmproxy/io/test_tnetstring.py#L12), or [this list in CPython](https://github.com/python/cpython/blob/main/Lib/test/test_ast/snippets.py#L391).
 

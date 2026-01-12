@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-18T12:10:35Z
 updated_at: 2024-05-23T22:44:37Z
 url: https://github.com/astral-sh/uv/issues/1642
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Support project defaults in config
 
 ---
 
-_Issue opened by @rik on 2024-02-18 12:10_
+_@rik_
 
 pip-tools allows defining [default values for any command-line flag](https://pip-tools.readthedocs.io/en/stable/#configuration). I haven't found a way to do so for uv.
 

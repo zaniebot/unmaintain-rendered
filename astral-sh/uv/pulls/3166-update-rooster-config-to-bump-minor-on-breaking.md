@@ -13,14 +13,14 @@ head: zb/breaking-rooster
 created_at: 2024-04-21T16:22:52Z
 updated_at: 2024-04-21T21:01:09Z
 url: https://github.com/astral-sh/uv/pull/3166
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:28Z
 ```
 
 # Update Rooster config to bump minor on breaking label
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-21 16:22_
+_@zanieb_
 
 Following https://github.com/astral-sh/uv/pull/3151
 

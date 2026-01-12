@@ -13,14 +13,14 @@ head: zb/available-name
 created_at: 2024-08-16T20:09:37Z
 updated_at: 2024-08-16T20:21:51Z
 url: https://github.com/astral-sh/uv/pull/6162
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:15Z
 ```
 
 # Simplify available package version ranges when the name includes markers or extras
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-16 20:09_
+_@zanieb_
 
 There were different `PubGrubPackage` types so they never matched the available versions set! Luckily, the available versions are agnostic to the markers and optional dependencies so we can just broaden to using `PackageName` as a lookup key.
 

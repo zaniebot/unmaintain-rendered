@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-25T09:23:37Z
 updated_at: 2024-07-04T16:39:06Z
 url: https://github.com/astral-sh/ruff/issues/8206
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Disable some rule in `format`
 
 ---
 
-_Issue opened by @yasirroni on 2023-10-25 09:23_
+_@yasirroni_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

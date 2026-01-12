@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-05T13:10:48Z
 updated_at: 2024-11-05T15:00:13Z
 url: https://github.com/astral-sh/uv/issues/8828
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # Default index in `uv.toml`
 
 ---
 
-_Issue opened by @fchareyr on 2024-11-05 13:10_
+_@fchareyr_
 
 Working in a corporate setup with a PyPi mirror, we used to define the `[[tool.uv.index]]` in `pyproject.toml`. However, we are now working jointly on a project with another firm that does not have access to our mirror.
 

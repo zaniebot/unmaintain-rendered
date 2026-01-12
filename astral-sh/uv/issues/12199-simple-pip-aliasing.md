@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-16T09:31:21Z
 updated_at: 2025-04-01T17:56:43Z
 url: https://github.com/astral-sh/uv/issues/12199
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:57Z
 ```
 
 # Simple pip aliasing
 
 ---
 
-_Issue opened by @vitalik on 2025-03-16 09:31_
+_@vitalik_
 
 ### Summary
 

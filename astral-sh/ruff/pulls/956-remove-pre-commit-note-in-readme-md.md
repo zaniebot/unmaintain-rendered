@@ -12,14 +12,14 @@ head: charlie/remove
 created_at: 2022-11-29T03:18:55Z
 updated_at: 2022-11-29T03:19:00Z
 url: https://github.com/astral-sh/ruff/pull/956
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Remove pre-commit note in README.md
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-29 03:18_
+_@charliermarsh_
 
 _No description provided._
 

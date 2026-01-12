@@ -13,14 +13,14 @@ head: resolver-salsa-invalidation
 created_at: 2024-07-18T13:00:58Z
 updated_at: 2024-07-19T12:56:41Z
 url: https://github.com/astral-sh/ruff/pull/12378
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Fix bug where module resolution would not be invalidated if an entire package was deleted
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-18 13:00_
+_@AlexWaygood_
 
 ## Summary
 

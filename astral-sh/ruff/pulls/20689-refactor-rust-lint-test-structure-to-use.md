@@ -13,14 +13,14 @@ head: renkai19016
 created_at: 2025-10-03T00:58:06Z
 updated_at: 2025-10-07T09:33:54Z
 url: https://github.com/astral-sh/ruff/pull/20689
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # Refactor Rust lint test structure to use RuffTestFixture
 
 ---
 
-_Pull request opened by @Renkai on 2025-10-03 00:58_
+_@Renkai_
 
 Part of: https://github.com/astral-sh/ruff/issues/19016, for lint.rs
 

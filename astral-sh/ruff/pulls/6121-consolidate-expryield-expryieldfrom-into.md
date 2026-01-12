@@ -11,14 +11,14 @@ head: ref/anyexpryield
 created_at: 2023-07-27T10:42:08Z
 updated_at: 2023-07-27T15:26:56Z
 url: https://github.com/astral-sh/ruff/pull/6121
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Consolidate `ExprYield`/`ExprYieldFrom` into `AnyExpressionYield`
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-07-27 10:42_
+_@qdegraaf_
 
 ## Summary
 

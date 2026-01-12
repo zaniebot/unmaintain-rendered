@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-16T11:33:15Z
 updated_at: 2025-12-31T15:33:52Z
 url: https://github.com/astral-sh/ty/issues/1367
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Within-revision LRU collection for queries returning values with lifetime `&'static`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-10-16 11:33_
+_@MichaReiser_
 
 Salsa's fixpoint iteration is a very convenient feature to handle recursive queries as seen in https://github.com/astral-sh/ruff/pull/20477. The caching of some of the type operations can also help with performance. 
 

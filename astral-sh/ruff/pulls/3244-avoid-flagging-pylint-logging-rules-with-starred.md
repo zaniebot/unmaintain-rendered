@@ -13,14 +13,14 @@ head: charlie/logging
 created_at: 2023-02-27T03:55:12Z
 updated_at: 2023-02-27T03:58:26Z
 url: https://github.com/astral-sh/ruff/pull/3244
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Avoid flagging Pylint logging rules with starred arguments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-27 03:55_
+_@charliermarsh_
 
 Closes #3242.
 

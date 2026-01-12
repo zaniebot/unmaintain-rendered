@@ -13,14 +13,14 @@ head: charlie/c
 created_at: 2024-11-18T13:46:57Z
 updated_at: 2024-11-20T15:31:24Z
 url: https://github.com/astral-sh/uv/pull/9196
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:41Z
 ```
 
 # Accept either singular or plural for CLI constraints
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-18 13:46_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: unknown-argument-show-def
 created_at: 2025-08-21T13:09:22Z
 updated_at: 2025-08-21T21:00:45Z
 url: https://github.com/astral-sh/ruff/pull/20022
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] Improve diagnostics for bad calls to functions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-21 13:09_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-23T03:04:31Z
 updated_at: 2022-10-24T13:23:27Z
 url: https://github.com/clap-rs/clap/issues/4417
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # "Could not downcast" from `ArgAction::Count`
 
 ---
 
-_Issue opened by @ssokolow on 2022-10-23 03:04_
+_@ssokolow_
 
 ### Please complete the following tasks
 

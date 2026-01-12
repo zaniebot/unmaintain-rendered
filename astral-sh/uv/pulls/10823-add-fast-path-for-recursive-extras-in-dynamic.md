@@ -13,14 +13,14 @@ head: charlie/flat
 created_at: 2025-01-21T20:33:29Z
 updated_at: 2025-01-21T21:01:23Z
 url: https://github.com/astral-sh/uv/pull/10823
-synced_at: 2026-01-10T11:45:12Z
+synced_at: 2026-01-12T16:09:30Z
 ```
 
 # Add fast-path for recursive extras in dynamic validation
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-21 20:33_
+_@charliermarsh_
 
 ## Summary
 

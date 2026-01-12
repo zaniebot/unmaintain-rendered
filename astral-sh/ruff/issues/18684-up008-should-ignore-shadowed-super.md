@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-15T12:27:31Z
 updated_at: 2025-06-16T19:09:32Z
 url: https://github.com/astral-sh/ruff/issues/18684
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # UP008 should ignore shadowed `super`
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-15 12:27_
+_@dscorbett_
 
 ### Summary
 

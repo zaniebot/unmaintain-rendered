@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-17T21:59:12Z
 updated_at: 2024-08-26T21:33:42Z
 url: https://github.com/astral-sh/uv/issues/6176
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Apply fork markers at fork time
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-17 21:59_
+_@charliermarsh_
 
 It would be nice if we could find a way to apply the fork markers at fork time. As-is, we end up solving parts of the graph in a fork that are actually disjoint with the fork, if those dependencies were added prior to forking.
 

@@ -13,14 +13,14 @@ head: backoff-windows-only
 created_at: 2024-12-18T14:52:11Z
 updated_at: 2024-12-18T15:05:07Z
 url: https://github.com/astral-sh/uv/pull/10002
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:04Z
 ```
 
 # Make the backoff crate dependency Windows-only
 
 ---
 
-_Pull request opened by @musicinmybrain on 2024-12-18 14:52_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

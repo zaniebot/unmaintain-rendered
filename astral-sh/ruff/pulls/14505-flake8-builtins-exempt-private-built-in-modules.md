@@ -14,14 +14,14 @@ head: A005
 created_at: 2024-11-21T01:24:25Z
 updated_at: 2024-11-24T05:06:42Z
 url: https://github.com/astral-sh/ruff/pull/14505
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`flake8-builtins`] Exempt private built-in modules (`A005`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-21 01:24_
+_@InSyncWithFoo_
 
 ## Summary
 

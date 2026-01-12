@@ -13,14 +13,14 @@ head: zb/fix-link
 created_at: 2024-08-28T17:34:51Z
 updated_at: 2024-08-28T17:39:01Z
 url: https://github.com/astral-sh/uv/pull/6765
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:31Z
 ```
 
 # Fix link in changelog
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-28 17:34_
+_@zanieb_
 
 I bet you do not have the docs running
 

@@ -13,14 +13,14 @@ head: S607-CWE_ref
 created_at: 2023-09-15T03:51:26Z
 updated_at: 2023-09-15T04:12:54Z
 url: https://github.com/astral-sh/ruff/pull/7398
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Change CWE reference in documentation for S607 rule
 
 ---
 
-_Pull request opened by @manueljacob on 2023-09-15 03:51_
+_@manueljacob_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

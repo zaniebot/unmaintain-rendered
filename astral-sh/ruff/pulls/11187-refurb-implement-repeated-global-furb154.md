@@ -14,14 +14,14 @@ head: latyshev/furb154
 created_at: 2024-04-28T22:24:10Z
 updated_at: 2025-06-10T20:47:03Z
 url: https://github.com/astral-sh/ruff/pull/11187
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # [`refurb`] Implement `repeated-global` (`FURB154`)
 
 ---
 
-_Pull request opened by @alex-700 on 2024-04-28 22:24_
+_@alex-700_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

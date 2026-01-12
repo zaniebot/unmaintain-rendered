@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-10-05T15:25:41Z
 updated_at: 2021-10-15T19:13:08Z
 url: https://github.com/clap-rs/clap/issues/2816
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Verify we are communicating the right recommendations for multiple_values vs multiple_occurrenes
 
 ---
 
-_Issue opened by @epage on 2021-10-05 15:25_
+_@epage_
 
 ### Please complete the following tasks
 

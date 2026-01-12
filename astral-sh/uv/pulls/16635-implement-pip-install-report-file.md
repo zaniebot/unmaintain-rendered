@@ -11,14 +11,14 @@ head: report
 created_at: 2025-11-07T16:01:59Z
 updated_at: 2025-11-07T21:27:48Z
 url: https://github.com/astral-sh/uv/pull/16635
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:21Z
 ```
 
 # Implement `pip install --report <file>`
 
 ---
 
-_Pull request opened by @andrewjcg on 2025-11-07 16:01_
+_@andrewjcg_
 
 Support `pip`s `--report` flag, producing a JSON encoded file with metadata
 on the packages to be installed.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-20T10:33:16Z
 updated_at: 2024-08-20T11:00:50Z
 url: https://github.com/astral-sh/ruff/issues/13006
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # add `--show-files` for `ruff format`
 
 ---
 
-_Issue opened by @Enayaaa on 2024-08-20 10:33_
+_@Enayaaa_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: konsti/missing-bound
 created_at: 2024-05-02T09:33:30Z
 updated_at: 2024-05-02T10:01:12Z
 url: https://github.com/astral-sh/uv/pull/3336
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:35Z
 ```
 
 # Add missing optional rkyv feature bound
 
 ---
 
-_Pull request opened by @konstin on 2024-05-02 09:33_
+_@konstin_
 
 `PackageName` needs to derive the rkyv types.
 

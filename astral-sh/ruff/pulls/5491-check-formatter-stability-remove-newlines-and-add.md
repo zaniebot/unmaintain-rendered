@@ -12,14 +12,14 @@ head: check_formatter_stability_output
 created_at: 2023-07-03T19:24:14Z
 updated_at: 2023-07-04T08:17:33Z
 url: https://github.com/astral-sh/ruff/pull/5491
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # check-formatter-stability: Remove newlines and add `--error-file`
 
 ---
 
-_Pull request opened by @konstin on 2023-07-03 19:24_
+_@konstin_
 
 ## Summary
 

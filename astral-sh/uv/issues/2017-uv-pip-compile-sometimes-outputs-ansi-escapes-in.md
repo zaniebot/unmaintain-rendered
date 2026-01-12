@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-27T15:16:30Z
 updated_at: 2024-02-27T16:02:24Z
 url: https://github.com/astral-sh/uv/issues/2017
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # uv pip compile sometimes outputs ansi escapes in file
 
 ---
 
-_Issue opened by @bluss on 2024-02-27 15:16_
+_@bluss_
 
 Experienced behaviour: Can't call "rye add" or "rye sync" when uv is enabled in rye, from a jupyterlab python kernel command line.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-14T13:17:38Z
 updated_at: 2025-08-14T13:18:21Z
 url: https://github.com/astral-sh/uv/issues/15276
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Renovate fails to lookup `pypa/gh-action-pypi-publish`
 
 ---
 
-_Issue opened by @zanieb on 2025-08-14 13:17_
+_@zanieb_
 
 ```
 Renovate failed to look up the following dependencies:

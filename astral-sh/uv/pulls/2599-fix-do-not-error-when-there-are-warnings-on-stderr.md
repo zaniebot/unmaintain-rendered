@@ -13,14 +13,14 @@ head: fix-error-uv
 created_at: 2024-03-21T21:11:24Z
 updated_at: 2024-03-22T07:07:07Z
 url: https://github.com/astral-sh/uv/pull/2599
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:07Z
 ```
 
 # fix: do not error when there are warnings on stderr
 
 ---
 
-_Pull request opened by @wolfv on 2024-03-21 21:11_
+_@wolfv_
 
 ## Summary
 

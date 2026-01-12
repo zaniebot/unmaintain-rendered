@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-03T08:04:35Z
 updated_at: 2024-10-04T12:44:38Z
 url: https://github.com/astral-sh/uv/issues/7889
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Add --resolution=local or similar to help projects supporting wide ranges of Python versions
 
 ---
 
-_Issue opened by @TormodLandet on 2024-10-03 08:04_
+_@TormodLandet_
 
 I have several projects that supports a large range of versions of Python and numpy, starting from (Python=3.7, numpy=1.0) and up to (Python=3.12, numpy=2.1). I would like to test these projects at both ends of the supported version spectrum, and I would like to use uv for that.
 

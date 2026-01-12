@@ -14,14 +14,14 @@ head: david/mypy_primer-improvements
 created_at: 2025-03-11T09:45:59Z
 updated_at: 2025-03-11T10:13:35Z
 url: https://github.com/astral-sh/ruff/pull/16620
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] mypy_primer: pipeline improvements
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-11 09:45_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-24T20:44:24Z
 updated_at: 2024-11-30T20:15:21Z
 url: https://github.com/astral-sh/uv/issues/9399
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:49Z
 ```
 
 # Install from lockfile to system python (no venv) (Containerized env).
 
 ---
 
-_Issue opened by @g-bar on 2024-11-24 20:44_
+_@g-bar_
 
 I'm using uv to manage my dependencies in a Dockerfile.
 Like so:

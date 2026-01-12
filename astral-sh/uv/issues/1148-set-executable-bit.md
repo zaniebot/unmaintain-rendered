@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-27T10:47:16Z
 updated_at: 2024-01-28T00:22:45Z
 url: https://github.com/astral-sh/uv/issues/1148
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Set executable bit
 
 ---
 
-_Issue opened by @konstin on 2024-01-27 10:47_
+_@konstin_
 
 The command `python -m ziglang` works after `pip install ziglang`, but fails with `puffin pip install ziglang` ("PermissionError: [Errno 13] Permission denied") because we're not setting the executable bit for the zig executable:
 

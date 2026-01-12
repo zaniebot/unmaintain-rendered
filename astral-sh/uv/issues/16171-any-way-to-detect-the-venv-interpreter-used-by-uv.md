@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-08T01:51:25Z
 updated_at: 2025-10-09T00:04:05Z
 url: https://github.com/astral-sh/uv/issues/16171
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:25Z
 ```
 
 # Any way to detect the venv/interpreter used by `uv run --script my_script.py` (to enable IDE linting)
 
 ---
 
-_Issue opened by @aaronsteers on 2025-10-08 01:51_
+_@aaronsteers_
 
 ### Question
 

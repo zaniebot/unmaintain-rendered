@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-18T04:40:29Z
 updated_at: 2024-10-19T11:11:48Z
 url: https://github.com/astral-sh/uv/issues/8318
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # Let User Know Self Update is Disabled
 
 ---
 
-_Issue opened by @mahyarmirrashed on 2024-10-18 04:40_
+_@mahyarmirrashed_
 
 I had installed `uv` from `brew` and was trying to run `uv self update`. However, that won't work (and it shouldn't, so kudos)!
 The only thing was that the error message could be improved a bit.

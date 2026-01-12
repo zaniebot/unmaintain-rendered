@@ -14,14 +14,14 @@ head: charlie/ord
 created_at: 2024-07-08T14:14:10Z
 updated_at: 2024-07-08T14:25:06Z
 url: https://github.com/astral-sh/uv/pull/4897
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:31Z
 ```
 
 # Sort dependencies before wheels and source distributions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-08 14:14_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/4889.
 

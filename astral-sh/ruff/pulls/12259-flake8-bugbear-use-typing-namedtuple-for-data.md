@@ -11,14 +11,14 @@ head: simple-init-classes
 created_at: 2024-07-09T15:46:19Z
 updated_at: 2025-01-07T17:35:21Z
 url: https://github.com/astral-sh/ruff/pull/12259
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`flake8-bugbear`] Use typing.NamedTuple for data classes that only set attributes in an __init__ method (`B903`)
 
 ---
 
-_Pull request opened by @jkauerl on 2024-07-09 15:46_
+_@jkauerl_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

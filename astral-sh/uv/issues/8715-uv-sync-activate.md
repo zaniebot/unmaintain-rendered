@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-31T02:01:52Z
 updated_at: 2024-10-31T04:41:19Z
 url: https://github.com/astral-sh/uv/issues/8715
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # uv sync --activate
 
 ---
 
-_Issue opened by @dbrtly on 2024-10-31 02:01_
+_@dbrtly_
 
 Sometimes it would be convenient to sync and activate a virtual environment in one command. This has probably been discussed before but I didn't find it. Apologies if so.
 

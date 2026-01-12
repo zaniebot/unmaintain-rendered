@@ -13,14 +13,14 @@ head: comprehension-assign-attr-unresolved
 created_at: 2025-10-14T07:00:32Z
 updated_at: 2025-11-11T22:45:41Z
 url: https://github.com/astral-sh/ruff/pull/20856
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] Skip eagerly evaluated scopes for attribute storing
 
 ---
 
-_Pull request opened by @Glyphack on 2025-10-14 07:00_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

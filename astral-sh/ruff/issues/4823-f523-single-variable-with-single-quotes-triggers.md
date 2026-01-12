@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-03T04:14:01Z
 updated_at: 2023-06-03T19:53:59Z
 url: https://github.com/astral-sh/ruff/issues/4823
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F523: Single variable with single quotes triggers syntax violation
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-03 04:14_
+_@addisoncrump_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

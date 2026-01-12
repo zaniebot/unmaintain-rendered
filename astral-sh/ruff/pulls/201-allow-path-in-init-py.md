@@ -12,14 +12,14 @@ head: charlie/path
 created_at: 2022-09-15T13:42:21Z
 updated_at: 2022-09-15T13:44:04Z
 url: https://github.com/astral-sh/ruff/pull/201
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Allow __path__ in __init__.py
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-15 13:42_
+_@charliermarsh_
 
 Resolves #177.
 

@@ -13,14 +13,14 @@ head: charlie/warn-once
 created_at: 2023-11-17T02:20:25Z
 updated_at: 2023-11-17T08:59:22Z
 url: https://github.com/astral-sh/uv/pull/442
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:57Z
 ```
 
 # Add a `warn_user_once!` macro
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-17 02:20_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/429.
 

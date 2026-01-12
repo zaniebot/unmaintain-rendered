@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-13T11:41:21Z
 updated_at: 2023-07-13T13:48:31Z
 url: https://github.com/astral-sh/ruff/issues/5736
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [FEATURE] Ruff support for removing obsolete and not needed noqa in the code
 
 ---
 
-_Issue opened by @matejsp on 2023-07-13 11:41_
+_@matejsp_
 
 We have quite large codebase and have a lot of noqa in the code for various reasons.
 When we refactor or format the code some noqa statements are no longer required.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-10T21:07:35Z
 updated_at: 2024-07-11T08:12:00Z
 url: https://github.com/astral-sh/uv/issues/4976
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # uv pip installs installs override that does not match requested environment markers
 
 ---
 
-_Issue opened by @sbidoul on 2024-07-10 21:07_
+_@sbidoul_
 
 This is a variant of #4826, with uv 0.2.24
 

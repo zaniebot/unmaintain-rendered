@@ -13,14 +13,14 @@ head: zb/doc-auto-uninstall
 created_at: 2024-08-22T22:59:02Z
 updated_at: 2024-08-22T23:04:36Z
 url: https://github.com/astral-sh/uv/pull/6468
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:23Z
 ```
 
 # Update the installation documentation page
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-22 22:59_
+_@zanieb_
 
 Adds installation of autocompletion, uninstallation, and upgrades.
 

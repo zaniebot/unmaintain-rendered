@@ -12,14 +12,14 @@ head: charlie/mut
 created_at: 2022-11-22T21:42:34Z
 updated_at: 2022-11-22T21:43:33Z
 url: https://github.com/astral-sh/ruff/pull/876
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Return `Vec<Check>` from check_tokens
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-22 21:42_
+_@charliermarsh_
 
 _No description provided._
 

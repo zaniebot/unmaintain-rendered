@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-05T09:14:03Z
 updated_at: 2025-05-22T07:27:53Z
 url: https://github.com/astral-sh/ruff/issues/5528
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # SIM108 turns readable code into unreadable code
 
 ---
 
-_Issue opened by @karolinepauls on 2023-07-05 09:14_
+_@karolinepauls_
 
 The rule should only apply to trivial conditions with the simplest expressions (e.g. even having 2 sub-expressions joined with `and` or `or` is too much).
 

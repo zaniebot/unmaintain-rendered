@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-20T09:40:09Z
 updated_at: 2025-03-28T10:37:01Z
 url: https://github.com/astral-sh/uv/issues/12333
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # Comments for `pyproject.toml` dependencies get shifted unexpectedly
 
 ---
 
-_Issue opened by @christeefy on 2025-03-20 09:40_
+_@christeefy_
 
 ### Summary
 

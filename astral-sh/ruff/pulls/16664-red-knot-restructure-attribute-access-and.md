@@ -14,14 +14,14 @@ head: david/restructure-md-test-suites
 created_at: 2025-03-12T08:42:57Z
 updated_at: 2025-03-12T08:52:23Z
 url: https://github.com/astral-sh/ruff/pull/16664
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Restructure attribute-access and descriptor-protocol test suites.
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-12 08:42_
+_@sharkdp_
 
 ## Summary
 

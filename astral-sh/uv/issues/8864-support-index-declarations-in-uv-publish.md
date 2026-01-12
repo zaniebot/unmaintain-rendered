@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T16:06:19Z
 updated_at: 2024-12-10T21:17:49Z
 url: https://github.com/astral-sh/uv/issues/8864
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # Support index declarations in uv publish
 
 ---
 
-_Issue opened by @konstin on 2024-11-06 16:06_
+_@konstin_
 
 We want to support `uv publish --index example` with:
 

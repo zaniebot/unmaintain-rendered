@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-17T16:41:22Z
 updated_at: 2025-11-13T17:56:04Z
 url: https://github.com/astral-sh/ty/issues/843
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Implement `@warnings.deprecated` checking for dunder methods and properties
 
 ---
 
-_Issue opened by @Gankra on 2025-07-17 16:41_
+_@Gankra_
 
 I'm landing https://github.com/astral-sh/ruff/pull/19376 without this functionality.
 

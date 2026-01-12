@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-04T11:24:31Z
 updated_at: 2025-04-01T17:06:27Z
 url: https://github.com/astral-sh/uv/issues/11946
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # Support for `UV_PROJECT` environment variable that acts like the CLI `--project` argument
 
 ---
 
-_Issue opened by @ggueret on 2025-03-04 11:24_
+_@ggueret_
 
 ### Summary
 

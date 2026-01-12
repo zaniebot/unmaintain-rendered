@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-26T11:05:09Z
 updated_at: 2024-03-26T14:38:15Z
 url: https://github.com/astral-sh/uv/issues/2669
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # `uv` installs the wrong version of `multiprocess` for Python 3.11+
 
 ---
 
-_Issue opened by @ma-sadeghi on 2024-03-26 11:05_
+_@ma-sadeghi_
 
 ```
 # Create a fresh virtualenv with Python 3.11+

@@ -13,14 +13,14 @@ head: main
 created_at: 2025-03-30T06:56:55Z
 updated_at: 2025-03-30T15:47:05Z
 url: https://github.com/astral-sh/uv/pull/12551
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:19Z
 ```
 
 # changed where the fish completions get installed to where fish docs recommend
 
 ---
 
-_Pull request opened by @ndrew222 on 2025-03-30 06:56_
+_@ndrew222_
 
 ## Summary
 I only changed the location of where the fish completions get sent, from `~/.config/fish/config.fish` to `~/.config/fish/completions/uv.fish` and `~/.config/fish/completions/uvx.fish` respectively

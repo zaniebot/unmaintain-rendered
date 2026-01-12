@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-06-16T14:42:22Z
 updated_at: 2022-06-16T15:28:53Z
 url: https://github.com/clap-rs/clap/issues/3840
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Imply `value_hint = ValueHint::AnyPath` for PathBuf/Option<PathBuf>
 
 ---
 
-_Issue opened by @chrisduerr on 2022-06-16 14:42_
+_@chrisduerr_
 
 ### Please complete the following tasks
 

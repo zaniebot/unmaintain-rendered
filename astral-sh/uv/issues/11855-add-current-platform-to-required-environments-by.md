@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-28T14:15:08Z
 updated_at: 2025-02-28T14:57:58Z
 url: https://github.com/astral-sh/uv/issues/11855
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # Add "current platform" to `required-environments` by default
 
 ---
 
-_Issue opened by @jonaslb on 2025-02-28 14:15_
+_@jonaslb_
 
 ### Summary
 

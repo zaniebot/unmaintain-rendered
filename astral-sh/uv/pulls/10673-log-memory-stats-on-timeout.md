@@ -13,14 +13,14 @@ head: konsti/log-memory-on-timeout
 created_at: 2025-01-16T10:56:13Z
 updated_at: 2025-03-10T23:03:11Z
 url: https://github.com/astral-sh/uv/pull/10673
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:25Z
 ```
 
 # Log memory stats on timeout
 
 ---
 
-_Pull request opened by @konstin on 2025-01-16 10:56_
+_@konstin_
 
 Counter to #10672, i'm trying to log memory stats on a bytecode compilation timeout for #6105.
 

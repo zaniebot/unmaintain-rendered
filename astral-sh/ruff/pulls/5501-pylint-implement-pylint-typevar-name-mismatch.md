@@ -13,14 +13,14 @@ head: typevar-pylint-rules
 created_at: 2023-07-04T13:25:14Z
 updated_at: 2023-07-10T09:54:56Z
 url: https://github.com/astral-sh/ruff/pull/5501
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # [`pylint`] Implement Pylint `typevar-name-mismatch` (`C0132`)
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-04 13:25_
+_@tjkuson_
 
 ## Summary
 

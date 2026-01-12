@@ -13,14 +13,14 @@ head: charlie/conflict
 created_at: 2024-08-30T16:31:18Z
 updated_at: 2024-08-30T16:45:50Z
 url: https://github.com/astral-sh/ruff/pull/13166
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Avoid `no-self-use` for `attrs`-style validators
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-30 16:31_
+_@charliermarsh_
 
 ## Summary
 

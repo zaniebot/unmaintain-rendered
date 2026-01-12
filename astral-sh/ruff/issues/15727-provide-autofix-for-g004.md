@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T18:02:43Z
 updated_at: 2025-01-24T18:27:33Z
 url: https://github.com/astral-sh/ruff/issues/15727
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Provide autofix for G004
 
 ---
 
-_Issue opened by @ktbarrett on 2025-01-24 18:02_
+_@ktbarrett_
 
 ### Description
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-26T21:27:16Z
 updated_at: 2024-12-27T16:52:02Z
 url: https://github.com/astral-sh/ruff/issues/15152
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Feature request: ruff format toml files
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-12-26 21:27_
+_@inoa-jboliveira_
 
 Since ruff [can lint pyproject.toml](https://docs.astral.sh/ruff/rules/invalid-pyproject-toml/), it could also be able to format toml files.
 

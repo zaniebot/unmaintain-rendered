@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-29T18:49:04Z
 updated_at: 2024-10-29T22:18:47Z
 url: https://github.com/astral-sh/uv/issues/8678
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # Support cycles in `uv pip tree`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-10-29 18:49_
+_@charliermarsh_
 
 For example, `"testtools==2.3.0", "fixtures==3.0.0"` yields an empty tree.
 

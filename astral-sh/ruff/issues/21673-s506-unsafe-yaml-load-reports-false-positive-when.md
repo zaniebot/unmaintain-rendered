@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-28T09:57:33Z
 updated_at: 2025-12-07T10:40:48Z
 url: https://github.com/astral-sh/ruff/issues/21673
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [`S506`] `unsafe-yaml-load` reports false positive when using non-standard `CSafeLoader` path
 
 ---
 
-_Issue opened by @alastair on 2025-11-28 09:57_
+_@alastair_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-23T20:49:52Z
 updated_at: 2025-12-13T06:20:53Z
 url: https://github.com/astral-sh/ruff/issues/17594
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # duplicate diagnosis
 
 ---
 
-_Issue opened by @cnjackhu on 2025-04-23 20:49_
+_@cnjackhu_
 
 ### Summary
 

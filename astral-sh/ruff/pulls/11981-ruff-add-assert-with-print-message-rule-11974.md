@@ -15,14 +15,14 @@ head: assert-with-print-expression
 created_at: 2024-06-22T12:22:30Z
 updated_at: 2024-06-23T20:56:04Z
 url: https://github.com/astral-sh/ruff/pull/11981
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`ruff`] Add `assert-with-print-message` rule (#11974)
 
 ---
 
-_Pull request opened by @denwong47 on 2024-06-22 12:22_
+_@denwong47_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

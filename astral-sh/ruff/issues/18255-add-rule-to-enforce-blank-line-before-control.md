@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-22T14:16:01Z
 updated_at: 2025-05-22T14:36:23Z
 url: https://github.com/astral-sh/ruff/issues/18255
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add rule to enforce blank line before control blocks (if/for/while/etc.)
 
 ---
 
-_Issue opened by @MathieuLoutre on 2025-05-22 14:16_
+_@MathieuLoutre_
 
 ### Summary
 

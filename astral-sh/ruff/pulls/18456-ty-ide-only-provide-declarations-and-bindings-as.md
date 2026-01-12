@@ -14,14 +14,14 @@ head: david/ide-only-suggest-declarations-and-bindings
 created_at: 2025-06-04T09:14:53Z
 updated_at: 2025-06-04T14:11:07Z
 url: https://github.com/astral-sh/ruff/pull/18456
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] IDE: only provide declarations and bindings as completions
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-04 09:14_
+_@sharkdp_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: enum-work
 created_at: 2023-02-24T18:27:24Z
 updated_at: 2023-02-25T16:40:17Z
 url: https://github.com/astral-sh/ruff/pull/3212
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # More enum work
 
 ---
 
-_Pull request opened by @youknowone on 2023-02-24 18:27_
+_@youknowone_
 
 _No description provided._
 

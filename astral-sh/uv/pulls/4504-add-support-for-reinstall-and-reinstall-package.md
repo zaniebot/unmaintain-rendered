@@ -13,14 +13,14 @@ head: zb/tool-install-reinstall
 created_at: 2024-06-25T01:17:46Z
 updated_at: 2024-06-26T20:23:36Z
 url: https://github.com/astral-sh/uv/pull/4504
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:16Z
 ```
 
 # Add support for `--reinstall` and `--reinstall-package` in `uv tool install`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-25 01:17_
+_@zanieb_
 
 Adds support for `--reinstall` and `--reinstall-package` to `uv tool install`. These are already available via the installer settings, we just respect them now.
 

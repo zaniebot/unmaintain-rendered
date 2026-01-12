@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-05-28T07:23:24Z
 updated_at: 2022-05-29T17:01:39Z
 url: https://github.com/clap-rs/clap/issues/2505
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # value_of_t() is difficult to use with optional arguments 
 
 ---
 
-_Issue opened by @dimo414 on 2021-05-28 07:23_
+_@dimo414_
 
 ### Please complete the following tasks
 

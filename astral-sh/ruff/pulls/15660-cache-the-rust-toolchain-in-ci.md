@@ -13,14 +13,14 @@ head: zb/toolchain-cache
 created_at: 2025-01-21T23:23:14Z
 updated_at: 2025-01-22T07:11:54Z
 url: https://github.com/astral-sh/ruff/pull/15660
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Cache the Rust toolchain in CI
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-21 23:23_
+_@zanieb_
 
 We're spending a full 1.5m installing the Rust toolchain on Windows, e.g., https://github.com/astral-sh/ruff/actions/runs/12893749773/job/35950838258
 

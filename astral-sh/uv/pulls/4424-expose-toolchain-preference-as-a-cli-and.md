@@ -13,14 +13,14 @@ head: zb/toolchain-setting
 created_at: 2024-06-20T14:49:30Z
 updated_at: 2024-06-20T18:42:10Z
 url: https://github.com/astral-sh/uv/pull/4424
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:13Z
 ```
 
 # Expose `toolchain-preference` as a CLI and configuration file option
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-20 14:49_
+_@zanieb_
 
 Exposes the option added in #4416. Adds `--toolchain-preference` and `tool.uv.toolchain-preference` to configure if system or managed toolchains are preferred. Users can opt-out of managed toolchains or system toolchains entirely as well.
 

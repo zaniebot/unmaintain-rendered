@@ -13,14 +13,14 @@ head: charlie/safe
 created_at: 2024-11-12T20:53:53Z
 updated_at: 2024-11-13T13:04:01Z
 url: https://github.com/astral-sh/ruff/pull/14300
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Document comment policy around fix safety
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-12 20:53_
+_@charliermarsh_
 
 ## Summary
 

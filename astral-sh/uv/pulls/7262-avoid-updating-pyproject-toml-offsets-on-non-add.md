@@ -13,14 +13,14 @@ head: charlie/adds
 created_at: 2024-09-10T17:28:39Z
 updated_at: 2024-09-10T17:43:59Z
 url: https://github.com/astral-sh/uv/pull/7262
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Avoid updating `pyproject.toml` offsets on non-add edits
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-10 17:28_
+_@charliermarsh_
 
 ## Summary
 

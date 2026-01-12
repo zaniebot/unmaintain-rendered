@@ -13,14 +13,14 @@ head: micha/promote-fix-pyi018
 created_at: 2025-03-12T15:58:01Z
 updated_at: 2025-03-13T07:48:02Z
 url: https://github.com/astral-sh/ruff/pull/16682
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`flake8-pyi`] Stabilize fix for `unused-private-type-var` (`PYI018`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-12 15:58_
+_@MichaReiser_
 
 ## Summary
 

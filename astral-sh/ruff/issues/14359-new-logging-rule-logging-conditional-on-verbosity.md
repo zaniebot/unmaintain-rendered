@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-15T11:37:57Z
 updated_at: 2024-11-16T21:58:55Z
 url: https://github.com/astral-sh/ruff/issues/14359
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # New logging rule: logging conditional on verbosity
 
 ---
 
-_Issue opened by @sbrugman on 2024-11-15 11:37_
+_@sbrugman_
 
 The following anti-pattern occurs when users are not aware of how to adjust the stdlib logging visibility:
 

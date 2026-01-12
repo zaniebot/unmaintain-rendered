@@ -12,14 +12,14 @@ head: charlie/flags
 created_at: 2023-07-23T02:43:41Z
 updated_at: 2023-07-23T03:14:58Z
 url: https://github.com/astral-sh/ruff/pull/6006
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Store flags rather than `ExecutionContext` on references
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-23 02:43_
+_@charliermarsh_
 
 _No description provided._
 

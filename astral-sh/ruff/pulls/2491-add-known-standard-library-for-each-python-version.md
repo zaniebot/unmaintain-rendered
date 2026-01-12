@@ -12,14 +12,14 @@ head: isort/generate-known-standard-library
 created_at: 2023-02-02T19:42:11Z
 updated_at: 2023-02-02T21:25:07Z
 url: https://github.com/astral-sh/ruff/pull/2491
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Add known-standard-library for each Python version
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-02-02 19:42_
+_@JonathanPlasse_
 
 - Add a script to generate `known-standard-library` for each Python version as described in #2343.
 

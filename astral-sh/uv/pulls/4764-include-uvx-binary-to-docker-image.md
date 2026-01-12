@@ -13,14 +13,14 @@ head: copy-uvx-docker-final-stage
 created_at: 2024-07-03T11:38:35Z
 updated_at: 2024-07-03T12:40:01Z
 url: https://github.com/astral-sh/uv/pull/4764
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:26Z
 ```
 
 # Include uvx binary to docker image.
 
 ---
 
-_Pull request opened by @Di-Is on 2024-07-03 11:38_
+_@Di-Is_
 
 Fix #4763
 

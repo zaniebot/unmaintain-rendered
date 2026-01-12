@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-11-03T19:02:09Z
 updated_at: 2024-11-03T19:15:44Z
 url: https://github.com/astral-sh/ruff/pull/14067
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Fix wrong-size header in `open-file-with-context-handler`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-03 19:02_
+_@charliermarsh_
 
 _No description provided._
 

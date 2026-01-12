@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-06-10T12:52:10Z
 updated_at: 2024-06-10T12:58:09Z
 url: https://github.com/astral-sh/uv/pull/4195
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:05Z
 ```
 
 # Document bytecode compilation in pip compatibility guide
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-10 12:52_
+_@charliermarsh_
 
 ## Summary
 

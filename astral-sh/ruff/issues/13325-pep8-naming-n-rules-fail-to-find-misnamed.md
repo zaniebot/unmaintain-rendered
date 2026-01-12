@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-11T11:12:55Z
 updated_at: 2024-09-12T05:09:50Z
 url: https://github.com/astral-sh/ruff/issues/13325
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # pep8-naming N rules fail to find misnamed variables in generator/list comprehensions
 
 ---
 
-_Issue opened by @ember91 on 2024-09-11 11:12_
+_@ember91_
 
 ## List of keywords searched for
 

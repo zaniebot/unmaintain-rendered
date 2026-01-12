@@ -13,14 +13,14 @@ head: fix-try-clause-empty-lines
 created_at: 2023-08-22T09:06:49Z
 updated_at: 2023-08-22T09:50:29Z
 url: https://github.com/astral-sh/ruff/pull/6759
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Preserve empty lines between try clause headers
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-22 09:06_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

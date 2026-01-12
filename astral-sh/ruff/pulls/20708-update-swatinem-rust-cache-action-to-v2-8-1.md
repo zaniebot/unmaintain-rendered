@@ -13,14 +13,14 @@ head: renovate/swatinem-rust-cache-2.x
 created_at: 2025-10-06T02:08:18Z
 updated_at: 2025-10-06T06:25:18Z
 url: https://github.com/astral-sh/ruff/pull/20708
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # Update Swatinem/rust-cache action to v2.8.1
 
 ---
 
-_Pull request opened by @renovate on 2025-10-06 02:08_
+_@renovate_
 
 > [!NOTE]
 > Mend has cancelled [the proposed renaming](https://redirect.github.com/renovatebot/renovate/discussions/37842) of the Renovate GitHub app being renamed to `mend[bot]`.

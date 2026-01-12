@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-04T14:03:01Z
 updated_at: 2022-10-04T20:27:58Z
 url: https://github.com/astral-sh/ruff/issues/100
-synced_at: 2026-01-10T15:56:04Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement AST-to-source code generation
 
 ---
 
-_Issue opened by @charliermarsh on 2022-09-04 14:03_
+_@charliermarsh_
 
 Not critical but this could be somewhat useful for autofixing. Similar to [astor](https://github.com/berkerpeksag/astor/blob/a9c5f8d119d617c891b7ba0aa8bc046b8af01e84/astor/code_gen.py). The main issue with AST-to-code generation is that it's impossible to preserve formatting, including comments and docstrings, since those aren't captured in the AST. That's a big limitation, and means that you can really only use this for reconstructing small subtrees.
 

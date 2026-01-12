@@ -12,14 +12,14 @@ head: db-dbg
 created_at: 2024-07-15T18:00:52Z
 updated_at: 2024-08-14T08:54:39Z
 url: https://github.com/astral-sh/ruff/pull/12340
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Improve debuggability
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-15 18:00_
+_@AlexWaygood_
 
 ## Summary
 

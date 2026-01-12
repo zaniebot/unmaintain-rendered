@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-01T07:42:21Z
 updated_at: 2025-09-27T12:32:35Z
 url: https://github.com/astral-sh/uv/issues/7828
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # AST import traversal to generate requirements
 
 ---
 
-_Issue opened by @nmichlo on 2024-10-01 07:42_
+_@nmichlo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

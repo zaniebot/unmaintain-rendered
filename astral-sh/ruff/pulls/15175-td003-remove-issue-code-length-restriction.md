@@ -13,14 +13,14 @@ head: TD003-increase-max-issue-code-length
 created_at: 2024-12-29T01:04:29Z
 updated_at: 2025-01-03T09:42:05Z
 url: https://github.com/astral-sh/ruff/pull/15175
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # TD003: remove issue code length restriction
 
 ---
 
-_Pull request opened by @mdbernard on 2024-12-29 01:04_
+_@mdbernard_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

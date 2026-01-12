@@ -13,14 +13,14 @@ head: charlie/intmap
 created_at: 2023-07-24T23:31:11Z
 updated_at: 2023-07-25T00:01:47Z
 url: https://github.com/astral-sh/ruff/pull/6049
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Replace `NoHashHasher` usages with `FxHashMap`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-24 23:31_
+_@charliermarsh_
 
 ## Summary
 

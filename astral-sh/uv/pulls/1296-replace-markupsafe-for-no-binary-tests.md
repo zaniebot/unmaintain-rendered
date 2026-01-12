@@ -13,14 +13,14 @@ head: charlie/anyio
 created_at: 2024-02-13T15:08:41Z
 updated_at: 2024-02-14T04:44:09Z
 url: https://github.com/astral-sh/uv/pull/1296
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:34Z
 ```
 
 # Replace MarkupSafe for no-binary tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-13 15:08_
+_@charliermarsh_
 
 Want to see if this makes a difference.
 

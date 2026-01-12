@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-24T17:40:40Z
 updated_at: 2025-04-27T15:58:13Z
 url: https://github.com/astral-sh/uv/issues/8535
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # Test `publish::invalid_token` flake on Windows
 
 ---
 
-_Issue opened by @zanieb on 2024-10-24 17:40_
+_@zanieb_
 
 ```
 running 1 test

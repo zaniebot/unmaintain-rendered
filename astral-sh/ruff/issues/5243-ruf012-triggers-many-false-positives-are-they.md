@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-21T08:42:14Z
 updated_at: 2025-03-04T11:59:50Z
 url: https://github.com/astral-sh/ruff/issues/5243
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # RUF012 triggers many false positives (are they really? they are correct) in some projects
 
 ---
 
-_Issue opened by @scastlara on 2023-06-21 08:42_
+_@scastlara_
 
 Hello 👋🏽 
 

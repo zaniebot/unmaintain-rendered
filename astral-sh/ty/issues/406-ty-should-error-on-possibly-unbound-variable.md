@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-15T10:28:11Z
 updated_at: 2025-11-18T16:10:28Z
 url: https://github.com/astral-sh/ty/issues/406
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # ty should error on possibly unbound variable usage after exception, but allow guarded access via `locals()` check
 
 ---
 
-_Issue opened by @diego-pm on 2025-05-15 10:28_
+_@diego-pm_
 
 ty currently does not detect possible unbound variables in a try-except block, as show in the following example:
 

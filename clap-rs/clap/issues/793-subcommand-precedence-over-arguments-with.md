@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-12-29T02:19:36Z
 updated_at: 2016-12-31T15:48:51Z
 url: https://github.com/clap-rs/clap/issues/793
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Subcommand precedence over arguments with SubcommandsNegateReqs
 
 ---
 
-_Issue opened by @klemens on 2016-12-29 02:19_
+_@klemens_
 
 When using (at least) two positional arguments and a subcommand, the subcommand takes precedence when given as the second argument.
 

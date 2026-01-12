@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-31T04:08:52Z
 updated_at: 2025-12-31T11:00:36Z
 url: https://github.com/astral-sh/ty/issues/2286
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `repr` gets incorrect `Literal` types for strings
 
 ---
 
-_Issue opened by @dscorbett on 2025-12-31 04:08_
+_@dscorbett_
 
 ### Summary
 

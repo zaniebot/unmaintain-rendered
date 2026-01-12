@@ -13,14 +13,14 @@ head: fix/15639
 created_at: 2025-10-15T16:37:35Z
 updated_at: 2025-10-21T07:46:40Z
 url: https://github.com/astral-sh/uv/pull/16318
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:13Z
 ```
 
 # fix: Add a hint on `uv pip install` failure if the `--system` flag is used to select an externally managed interpreter
 
 ---
 
-_Pull request opened by @cmnemoi on 2025-10-15 16:37_
+_@cmnemoi_
 
 Hello,
 

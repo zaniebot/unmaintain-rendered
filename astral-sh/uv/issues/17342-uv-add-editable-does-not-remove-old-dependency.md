@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-07T00:39:59Z
 updated_at: 2026-01-07T19:11:53Z
 url: https://github.com/astral-sh/uv/issues/17342
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # `uv add --editable` does not remove old dependency
 
 ---
 
-_Issue opened by @rzuckerm on 2026-01-07 00:39_
+_@rzuckerm_
 
 ### Summary
 

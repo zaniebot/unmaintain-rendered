@@ -14,14 +14,14 @@ head: definiton-completion-clean-up
 created_at: 2025-10-30T23:50:10Z
 updated_at: 2025-11-06T11:48:52Z
 url: https://github.com/astral-sh/ruff/pull/21153
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] Fix tests for definition completions
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-10-30 23:50_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

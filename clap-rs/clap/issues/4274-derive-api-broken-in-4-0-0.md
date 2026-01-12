@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-28T19:19:56Z
 updated_at: 2022-09-28T19:53:37Z
 url: https://github.com/clap-rs/clap/issues/4274
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Derive API broken in 4.0.0
 
 ---
 
-_Issue opened by @rusty-snake on 2022-09-28 19:19_
+_@rusty-snake_
 
 ### Please complete the following tasks
 

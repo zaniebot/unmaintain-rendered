@@ -14,14 +14,14 @@ head: charlie/triple
 created_at: 2023-09-14T18:48:03Z
 updated_at: 2023-09-14T19:07:06Z
 url: https://github.com/astral-sh/ruff/pull/7392
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Avoid flagging single-quoted docstrings with continuations for multi-line rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-14 18:48_
+_@charliermarsh_
 
 Rules like D209 and D205 are only intended to apply to multi-line docstrings. If a docstring is single-quoted, but extends via a continuation, it should be excluded (it'll be flagged by another rule anyway). Closes https://github.com/astral-sh/ruff/issues/7058.
 

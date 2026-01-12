@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-30T18:30:34Z
 updated_at: 2024-03-30T18:48:27Z
 url: https://github.com/astral-sh/ruff/issues/10673
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Invoking isort can break circular imports
 
 ---
 
-_Issue opened by @jaraco on 2024-03-30 18:30_
+_@jaraco_
 
 In the [cssutils project](/jaraco/cssutils), I learned that running isort fixers can break the code:
 

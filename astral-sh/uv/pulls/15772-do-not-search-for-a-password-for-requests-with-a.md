@@ -13,14 +13,14 @@ head: zb/password-auth
 created_at: 2025-09-10T18:32:26Z
 updated_at: 2025-09-10T18:52:10Z
 url: https://github.com/astral-sh/uv/pull/15772
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:56Z
 ```
 
 # Do not search for a password for requests with a token attached already
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-10 18:32_
+_@zanieb_
 
 _No description provided._
 

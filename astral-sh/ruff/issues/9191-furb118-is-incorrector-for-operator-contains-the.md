@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-18T18:37:20Z
 updated_at: 2023-12-18T19:39:53Z
 url: https://github.com/astral-sh/ruff/issues/9191
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `FURB118` is incorrector for `operator.contains`. The operands are reversed!
 
 ---
 
-_Issue opened by @Skylion007 on 2023-12-18 18:37_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

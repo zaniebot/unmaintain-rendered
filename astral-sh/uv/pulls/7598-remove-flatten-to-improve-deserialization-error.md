@@ -13,14 +13,14 @@ head: charlie/flat
 created_at: 2024-09-20T18:28:02Z
 updated_at: 2024-09-20T18:54:14Z
 url: https://github.com/astral-sh/uv/pull/7598
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:54Z
 ```
 
 # Remove `flatten` to improve deserialization error messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-20 18:28_
+_@charliermarsh_
 
 ## Summary
 

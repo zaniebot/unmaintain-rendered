@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-05T15:12:59Z
 updated_at: 2026-01-05T23:06:01Z
 url: https://github.com/astral-sh/ty/issues/2345
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # ty is unable to infer the type of sqlalchemy hybrid properties
 
 ---
 
-_Issue opened by @iyad-f on 2026-01-05 15:12_
+_@iyad-f_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: zb/docker-tag-value
 created_at: 2025-05-05T23:29:55Z
 updated_at: 2025-07-08T10:38:37Z
 url: https://github.com/astral-sh/ty/pull/44
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Use `TAG_VALUE` instead of `latest` for extra Docker file base
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-05 23:29_
+_@zanieb_
 
 Debugging failed fetch in https://github.com/astral-sh/ty/actions/runs/14847918913/job/41685892238
 

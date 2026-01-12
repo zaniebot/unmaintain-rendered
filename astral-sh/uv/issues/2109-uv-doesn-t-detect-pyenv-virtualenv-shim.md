@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-01T11:22:25Z
 updated_at: 2025-02-11T23:27:59Z
 url: https://github.com/astral-sh/uv/issues/2109
-synced_at: 2026-01-10T03:50:29Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # uv doesn't detect pyenv-virtualenv shim environments
 
 ---
 
-_Issue opened by @jarshwah on 2024-03-01 11:22_
+_@jarshwah_
 
 `uv` doesn't seem able to detect the virtual-environment created by [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv).
 

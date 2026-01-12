@@ -13,14 +13,14 @@ head: charlie/dupe
 created_at: 2023-12-14T19:40:54Z
 updated_at: 2023-12-14T19:53:36Z
 url: https://github.com/astral-sh/ruff/pull/9140
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Deduplicate edits when quoting annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-14 19:40_
+_@charliermarsh_
 
 If you have multiple sub-expressions that need to be quoted, we'll generate the same edit twice.
 

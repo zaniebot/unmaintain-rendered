@@ -13,14 +13,14 @@ head: zb/freebsd-dis
 created_at: 2024-12-03T20:54:40Z
 updated_at: 2024-12-03T21:04:19Z
 url: https://github.com/astral-sh/uv/pull/9620
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:54Z
 ```
 
 # Disable freebsd test until we resolve the upstream problem
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-03 20:54_
+_@zanieb_
 
 See
 

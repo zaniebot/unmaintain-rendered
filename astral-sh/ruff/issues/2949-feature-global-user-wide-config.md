@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-16T05:20:16Z
 updated_at: 2023-02-16T16:27:31Z
 url: https://github.com/astral-sh/ruff/issues/2949
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # feature: global / user-wide config
 
 ---
 
-_Issue opened by @Roguelazer on 2023-02-16 05:20_
+_@Roguelazer_
 
 It would be nice to have a way to configure this tool system-wide; I'm imagining that it could look at the standard XDG configuration sources (`~/.config/ruff.toml` and `/etc/ruff.toml`) in addition to walking up the filesystem from the current directory.
 

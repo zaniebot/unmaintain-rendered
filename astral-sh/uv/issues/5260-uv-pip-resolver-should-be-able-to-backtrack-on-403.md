@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-21T16:29:25Z
 updated_at: 2025-03-18T01:09:54Z
 url: https://github.com/astral-sh/uv/issues/5260
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `uv pip` resolver should be able to backtrack on 403
 
 ---
 
-_Issue opened by @paveldikov on 2024-07-21 16:29_
+_@paveldikov_
 
 Many organisations employ in-band scanner tools on their internal PyPI mirrors, with the aim of preventing the ingress of compromised/non-compliant dependencies. Usually such tools will make their blocking decisions known by way of a HTTP 403 response code at download time.
 

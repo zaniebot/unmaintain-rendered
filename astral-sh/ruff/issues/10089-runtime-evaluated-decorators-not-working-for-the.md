@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-23T01:55:24Z
 updated_at: 2024-02-23T03:33:10Z
 url: https://github.com/astral-sh/ruff/issues/10089
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `runtime-evaluated-decorators` not working for the annotations of decorated functions.
 
 ---
 
-_Issue opened by @DetachHead on 2024-02-23 01:55_
+_@DetachHead_
 
 ```py
 from __future__ import annotations

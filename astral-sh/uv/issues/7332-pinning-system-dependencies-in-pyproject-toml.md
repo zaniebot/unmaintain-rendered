@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-12T14:14:00Z
 updated_at: 2024-09-24T16:36:13Z
 url: https://github.com/astral-sh/uv/issues/7332
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Pinning system dependencies in pyproject.toml
 
 ---
 
-_Issue opened by @thepowerfuldeez on 2024-09-12 14:14_
+_@thepowerfuldeez_
 
 Hi! I have a question which is related to using NGC Docker image with pre-release torch2.5.0 included.
 Version inside docker container (which comes with pre-installed CUTLASS, CUDNN and are of correct versions) is 2.5.0a0+872d972e41.nv24.08

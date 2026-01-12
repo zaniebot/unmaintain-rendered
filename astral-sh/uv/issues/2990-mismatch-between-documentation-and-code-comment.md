@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-11T12:23:51Z
 updated_at: 2024-04-11T17:31:36Z
 url: https://github.com/astral-sh/uv/issues/2990
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Mismatch between documentation and code comment on PyPI Index priority
 
 ---
 
-_Issue opened by @tdejager on 2024-04-11 12:23_
+_@tdejager_
 
 The code in `crates/distribution-types/src/index_url.rs:167` says: 
 

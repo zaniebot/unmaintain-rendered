@@ -14,14 +14,14 @@ head: konsti/testing-on-windows
 created_at: 2025-04-14T11:28:00Z
 updated_at: 2025-04-14T13:50:57Z
 url: https://github.com/astral-sh/uv/pull/12878
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:25Z
 ```
 
 # Fix tests on non-English Windows
 
 ---
 
-_Pull request opened by @konstin on 2025-04-14 11:28_
+_@konstin_
 
 By default, unlike on CI, a Windows machine does not allow creating symlinks, so we have to unix-gate tests that assume symlinks.
 

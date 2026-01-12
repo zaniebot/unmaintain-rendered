@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-18T09:37:18Z
 updated_at: 2025-07-28T21:51:08Z
 url: https://github.com/astral-sh/ruff/issues/19419
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Rule suggestion: suspicious usage of `len()`
 
 ---
 
-_Issue opened by @kaddkaka on 2025-07-18 09:37_
+_@kaddkaka_
 
 ### Summary
 

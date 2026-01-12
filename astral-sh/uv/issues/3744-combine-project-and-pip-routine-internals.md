@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-22T16:46:13Z
 updated_at: 2024-05-22T20:06:05Z
 url: https://github.com/astral-sh/uv/issues/3744
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Combine `project` and `pip` routine internals
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-22 16:46_
+_@charliermarsh_
 
 I think I can merge the utilities in `crates/uv/src/commands/project/mod.rs` with those in `crates/uv/src/commands/pip/operations.rs`, so that we can have shared routines for installing and resolving between the two APIs and across the various commands. Would lead to a lot of deduplication and ideally better abstractions.
 

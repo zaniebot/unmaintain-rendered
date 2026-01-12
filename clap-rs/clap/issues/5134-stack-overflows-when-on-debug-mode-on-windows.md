@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-23T16:31:08Z
 updated_at: 2025-06-02T19:35:21Z
 url: https://github.com/clap-rs/clap/issues/5134
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Stack overflows when on Debug mode on Windows
 
 ---
 
-_Issue opened by @prateekmedia on 2023-09-23 16:31_
+_@prateekmedia_
 
 ### Please complete the following tasks
 

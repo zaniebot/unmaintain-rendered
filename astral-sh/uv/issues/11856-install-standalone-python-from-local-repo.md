@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-28T14:35:50Z
 updated_at: 2025-02-28T14:59:24Z
 url: https://github.com/astral-sh/uv/issues/11856
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # Install standalone Python from local repo
 
 ---
 
-_Issue opened by @etiennebonnafoux on 2025-02-28 14:35_
+_@etiennebonnafoux_
 
 ### Question
 

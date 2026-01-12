@@ -13,14 +13,14 @@ head: charlie/com
 created_at: 2023-11-09T04:11:06Z
 updated_at: 2023-11-09T04:51:04Z
 url: https://github.com/astral-sh/ruff/pull/8574
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Avoid inserting trailing commas within f-strings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-09 04:11_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8556.
 

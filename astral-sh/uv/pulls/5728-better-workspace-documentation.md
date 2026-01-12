@@ -14,14 +14,14 @@ head: konsti/better-workspace-documentation
 created_at: 2024-08-02T14:58:18Z
 updated_at: 2024-08-03T13:49:11Z
 url: https://github.com/astral-sh/uv/pull/5728
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:59Z
 ```
 
 # Better workspace documentation
 
 ---
 
-_Pull request opened by @konstin on 2024-08-02 14:58_
+_@konstin_
 
 Add more context around using workspaces.
 

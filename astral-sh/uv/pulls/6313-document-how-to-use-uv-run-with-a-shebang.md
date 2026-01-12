@@ -12,14 +12,14 @@ head: shebang
 created_at: 2024-08-21T09:28:55Z
 updated_at: 2025-11-02T20:10:15Z
 url: https://github.com/astral-sh/uv/pull/6313
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:07:19Z
 ```
 
 # Document how to use `uv run` with a shebang
 
 ---
 
-_Pull request opened by @PaarthShah on 2024-08-21 09:28_
+_@PaarthShah_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

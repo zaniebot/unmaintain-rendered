@@ -12,14 +12,14 @@ head: renovate/mkdocs-llmstxt-0.x
 created_at: 2026-01-12T07:40:39Z
 updated_at: 2026-01-12T08:27:18Z
 url: https://github.com/astral-sh/ruff/pull/22524
-synced_at: 2026-01-12T08:53:00Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # Update dependency mkdocs-llmstxt to v0.5.0
 
 ---
 
-_Pull request opened by @renovate on 2026-01-12 07:40_
+_@renovate_
 
 This PR contains the following updates:
 

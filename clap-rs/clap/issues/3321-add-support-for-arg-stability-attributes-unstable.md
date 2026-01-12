@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-01-20T01:57:21Z
 updated_at: 2025-08-04T16:11:57Z
 url: https://github.com/clap-rs/clap/issues/3321
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Add support for arg stability attributes (unstable/deprecated)
 
 ---
 
-_Issue opened by @yaahc on 2022-01-20 01:57_
+_@yaahc_
 
 ### Please complete the following tasks
 

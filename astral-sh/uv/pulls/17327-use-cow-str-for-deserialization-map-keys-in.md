@@ -13,14 +13,14 @@ head: claude/fix-uv-17221-kmH49
 created_at: 2026-01-05T20:17:13Z
 updated_at: 2026-01-06T09:51:24Z
 url: https://github.com/astral-sh/uv/pull/17327
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:43Z
 ```
 
 # Use `Cow<str>` for deserialization map keys in `PypiFile` and `PyxFile`
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-05 20:17_
+_@zanieb_
 
 Use `Cow<'_, str>` when deserializing map keys. This allows serde to borrow strings directly from the input in the common case (no escaping needed), while still correctly handling cases where de-escaping is required.
 

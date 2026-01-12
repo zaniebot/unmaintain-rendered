@@ -14,14 +14,14 @@ head: charlie/py
 created_at: 2024-07-07T20:22:08Z
 updated_at: 2024-07-07T20:29:20Z
 url: https://github.com/astral-sh/uv/pull/4866
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:30Z
 ```
 
 # Fix always-plural message in uv python install
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-07 20:22_
+_@charliermarsh_
 
 _No description provided._
 

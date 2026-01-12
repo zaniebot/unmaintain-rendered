@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-05T10:48:28Z
 updated_at: 2024-11-05T12:44:05Z
 url: https://github.com/astral-sh/ruff/issues/14103
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `ruff format` not fomatting properly long line
 
 ---
 
-_Issue opened by @imperosol on 2024-11-05 10:48_
+_@imperosol_
 
 - keywords search : `format`, `E501`
 - commands invoked : `ruff format`, `ruff format --isolated`

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-21T06:43:52Z
 updated_at: 2025-07-21T13:48:39Z
 url: https://github.com/astral-sh/uv/issues/14781
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # how to find PythonWin7 in windows7?
 
 ---
 
-_Issue opened by @881997 on 2025-07-21 06:43_
+_@881997_
 
 ### Question
 

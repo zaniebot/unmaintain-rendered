@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-05T00:11:36Z
 updated_at: 2025-12-18T17:03:27Z
 url: https://github.com/astral-sh/uv/issues/16597
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # uv tool run failing for gitlab private pypi packages
 
 ---
 
-_Issue opened by @lmco-shuynh on 2025-11-05 00:11_
+_@lmco-shuynh_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-10T22:59:41Z
 updated_at: 2025-01-10T23:26:17Z
 url: https://github.com/astral-sh/uv/issues/10483
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # Does uv support backward compatibility for its cache?
 
 ---
 
-_Issue opened by @cc636489 on 2025-01-10 22:59_
+_@cc636489_
 
 Hi everyone,
 

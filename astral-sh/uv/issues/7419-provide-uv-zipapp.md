@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-16T09:51:40Z
 updated_at: 2024-12-03T15:30:48Z
 url: https://github.com/astral-sh/uv/issues/7419
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Provide uv zipapp
 
 ---
 
-_Issue opened by @ksamuel on 2024-09-16 09:51_
+_@ksamuel_
 
 Now that uv can run zipapps, there is the potential for a good story to build python projects before pushing them in production instead of doing the build on the server.
 

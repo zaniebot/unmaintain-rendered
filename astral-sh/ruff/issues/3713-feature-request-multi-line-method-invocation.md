@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-24T11:48:19Z
 updated_at: 2023-10-28T22:12:06Z
 url: https://github.com/astral-sh/ruff/issues/3713
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Feature request] multi-line method invocation style / multiline unhug parens (like add-trailing-comma)
 
 ---
 
-_Issue opened by @Avasam on 2023-03-24 11:48_
+_@Avasam_
 
 https://github.com/charliermarsh/ruff/issues/1058#issuecomment-1469037727
 > `add-trailing-commas` also has [unhug-trailing-paren](https://github.com/asottile/add-trailing-comma#unhug-trailing-paren), [unhug-leading-paren](https://github.com/asottile/add-trailing-comma#unhug-leading-paren) and [avoids arbitrary indentation](https://github.com/asottile/add-trailing-comma#multi-line-method-invocation-style----why). Which is not enforced by Ruff or Autopep8. Even Black only enforces it when magic commas are used:

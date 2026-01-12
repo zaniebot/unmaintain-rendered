@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T15:25:15Z
 updated_at: 2025-04-28T08:32:36Z
 url: https://github.com/astral-sh/ruff/issues/17316
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # I can't disable S608 for a whole file
 
 ---
 
-_Issue opened by @red8888 on 2025-04-09 15:25_
+_@red8888_
 
 ### Summary
 

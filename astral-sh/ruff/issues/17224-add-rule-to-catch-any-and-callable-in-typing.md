@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-05T20:22:47Z
 updated_at: 2025-04-07T12:18:47Z
 url: https://github.com/astral-sh/ruff/issues/17224
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # add rule to catch `any` and `callable` in typing context
 
 ---
 
-_Issue opened by @vpoverennov on 2025-04-05 20:22_
+_@vpoverennov_
 
 ### Summary
 

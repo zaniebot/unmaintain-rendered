@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-11T07:32:14Z
 updated_at: 2024-06-11T12:24:15Z
 url: https://github.com/astral-sh/ruff/issues/11833
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Bug - F401 Unused imports in Jupyter Notebook breaks shell commands
 
 ---
 
-_Issue opened by @jeertmans on 2024-06-11 07:32_
+_@jeertmans_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

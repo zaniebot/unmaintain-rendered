@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T09:28:24Z
 updated_at: 2025-05-28T12:06:57Z
 url: https://github.com/astral-sh/uv/issues/13698
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # The `uv sync` command is too slow when the project contains torch
 
 ---
 
-_Issue opened by @Ruoc26 on 2025-05-28 09:28_
+_@Ruoc26_
 
 ### Question
 

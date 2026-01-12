@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-09T16:16:34Z
 updated_at: 2025-06-25T08:02:08Z
 url: https://github.com/astral-sh/uv/issues/13921
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # Improve error for `--index <name>` when a name of an existing index is used
 
 ---
 
-_Issue opened by @jtfmumm on 2025-06-09 16:16_
+_@jtfmumm_
 
 The current message (added in #13917) is:
 

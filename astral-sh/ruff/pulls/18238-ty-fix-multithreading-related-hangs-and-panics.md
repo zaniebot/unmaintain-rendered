@@ -14,14 +14,14 @@ head: micha-verify-hang
 created_at: 2025-05-21T10:56:19Z
 updated_at: 2025-06-01T09:34:53Z
 url: https://github.com/astral-sh/ruff/pull/18238
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Fix multithreading related hangs and panics
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-21 10:56_
+_@MichaReiser_
 
 Pulls in https://github.com/salsa-rs/salsa/pull/882 which fixes multiple multithreaded fixpoint related hangs and panics
 

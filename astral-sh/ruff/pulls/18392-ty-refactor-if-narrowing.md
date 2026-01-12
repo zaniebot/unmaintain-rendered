@@ -12,14 +12,14 @@ head: refactor-if-narrowing
 created_at: 2025-05-30T19:29:24Z
 updated_at: 2025-06-17T07:56:38Z
 url: https://github.com/astral-sh/ruff/pull/18392
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Refactor if narrowing
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2025-05-30 19:29_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

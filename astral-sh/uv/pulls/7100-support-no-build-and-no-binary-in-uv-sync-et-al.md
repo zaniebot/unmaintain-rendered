@@ -13,14 +13,14 @@ head: charlie/intersect
 created_at: 2024-09-05T21:23:33Z
 updated_at: 2024-09-05T21:45:43Z
 url: https://github.com/astral-sh/uv/pull/7100
-synced_at: 2026-01-10T12:53:39Z
+synced_at: 2026-01-12T16:07:41Z
 ```
 
 # Support `--no-build` and `--no-binary` in `uv sync` et al
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-05 21:23_
+_@charliermarsh_
 
 ## Summary
 

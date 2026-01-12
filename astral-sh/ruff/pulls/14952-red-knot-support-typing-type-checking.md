@@ -13,14 +13,14 @@ head: david/typing-type_checking
 created_at: 2024-12-13T08:52:17Z
 updated_at: 2024-12-13T09:26:19Z
 url: https://github.com/astral-sh/ruff/pull/14952
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Support `typing.TYPE_CHECKING`
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-13 08:52_
+_@sharkdp_
 
 ## Summary
 

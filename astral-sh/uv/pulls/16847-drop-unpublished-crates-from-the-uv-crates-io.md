@@ -13,14 +13,14 @@ head: zb/crate-readme-gen
 created_at: 2025-11-25T18:32:42Z
 updated_at: 2025-11-26T16:42:27Z
 url: https://github.com/astral-sh/uv/pull/16847
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:28Z
 ```
 
 # Drop unpublished crates from the uv crates.io README
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-25 18:32_
+_@zanieb_
 
 _No description provided._
 

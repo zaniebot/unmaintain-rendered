@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-28T20:01:59Z
 updated_at: 2023-11-28T21:10:44Z
 url: https://github.com/astral-sh/ruff/issues/8879
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Unsafe fix for `ANN2XX` is too unsafe
 
 ---
 
-_Issue opened by @tylerlaprade on 2023-11-28 20:01_
+_@tylerlaprade_
 
 ```
 def do_thing(thing: Thing | None):

@@ -12,14 +12,14 @@ head: charlie/cli
 created_at: 2023-10-19T00:37:45Z
 updated_at: 2023-10-19T01:06:49Z
 url: https://github.com/astral-sh/uv/pull/124
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:45Z
 ```
 
 # Add CLI tests for add and remove commands
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-19 00:37_
+_@charliermarsh_
 
 _No description provided._
 

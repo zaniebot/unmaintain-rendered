@@ -13,14 +13,14 @@ head: charlie/acc
 created_at: 2024-08-24T22:34:45Z
 updated_at: 2024-08-24T22:45:06Z
 url: https://github.com/astral-sh/uv/pull/6594
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:26Z
 ```
 
 # Fix `lock_requires_python` fixture
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-24 22:34_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: konsti/tool-uv-is-in-preview
 created_at: 2024-04-26T12:35:35Z
 updated_at: 2024-05-04T02:47:48Z
 url: https://github.com/astral-sh/uv/pull/3277
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:33Z
 ```
 
 # Use preview mode for tool.uv.sources
 
 ---
 
-_Pull request opened by @konstin on 2024-04-26 12:35_
+_@konstin_
 
 Only allow using `tool.uv.sources` with preview mode, the design isn't finalized yet.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-11T00:09:38Z
 updated_at: 2025-09-03T12:12:27Z
 url: https://github.com/astral-sh/uv/issues/12107
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # Updating Documentation for `--all-packages`
 
 ---
 
-_Issue opened by @uhurusurfa on 2025-03-11 00:09_
+_@uhurusurfa_
 
 The --all-packages was added in 0.4 but took me a while to figure out that it was available because it has not yet made it to the documentation so had to trawl the issues and eventually found it in this very long issue:
 https://github.com/astral-sh/uv/issues/7143

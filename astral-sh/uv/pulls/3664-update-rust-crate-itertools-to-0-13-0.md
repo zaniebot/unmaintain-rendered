@@ -13,14 +13,14 @@ head: renovate/itertools-0.x
 created_at: 2024-05-20T00:27:40Z
 updated_at: 2024-05-20T00:49:43Z
 url: https://github.com/astral-sh/uv/pull/3664
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:47Z
 ```
 
 # Update Rust crate itertools to 0.13.0
 
 ---
 
-_Pull request opened by @renovate on 2024-05-20 00:27_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

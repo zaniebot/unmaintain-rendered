@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-27T01:28:39Z
 updated_at: 2023-02-27T03:58:26Z
 url: https://github.com/astral-sh/ruff/issues/3242
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # False positive PLE1206 when using star expansion in logging call
 
 ---
 
-_Issue opened by @adamtheturtle on 2023-02-27 01:28_
+_@adamtheturtle_
 
 * ruff 0.0.252
 

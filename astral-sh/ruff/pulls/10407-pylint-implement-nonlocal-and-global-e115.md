@@ -14,14 +14,14 @@ head: nonlocal-and-global
 created_at: 2024-03-14T05:36:25Z
 updated_at: 2024-03-18T05:04:27Z
 url: https://github.com/astral-sh/ruff/pull/10407
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`pylint`] Implement `nonlocal-and-global` (`E115`)
 
 ---
 
-_Pull request opened by @hikaru-kajita on 2024-03-14 05:36_
+_@hikaru-kajita_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

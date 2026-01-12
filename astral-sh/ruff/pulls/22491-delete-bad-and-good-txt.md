@@ -14,14 +14,14 @@ head: micha/bye-bye-bad-txt
 created_at: 2026-01-10T13:05:05Z
 updated_at: 2026-01-10T13:21:00Z
 url: https://github.com/astral-sh/ruff/pull/22491
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # Delete bad and good.txt
 
 ---
 
-_Pull request opened by @MichaReiser on 2026-01-10 13:05_
+_@MichaReiser_
 
 ## Summary
 

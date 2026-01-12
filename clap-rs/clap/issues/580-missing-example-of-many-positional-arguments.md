@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-07-14T13:40:46Z
 updated_at: 2018-08-02T03:29:51Z
 url: https://github.com/clap-rs/clap/issues/580
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # missing example of many positional arguments
 
 ---
 
-_Issue opened by @ghost on 2016-07-14 13:40_
+_@ghost_
 
 i cant find example handling many positional arguments, like
 

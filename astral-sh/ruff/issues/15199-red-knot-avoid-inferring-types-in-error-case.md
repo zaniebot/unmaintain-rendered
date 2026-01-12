@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-30T07:39:13Z
 updated_at: 2025-03-07T19:04:45Z
 url: https://github.com/astral-sh/ruff/issues/15199
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Avoid inferring types in error case during unpacking
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-12-30 07:39_
+_@dhruvmanila_
 
 Refer: https://github.com/astral-sh/ruff/pull/15086#discussion_r1896889031
 

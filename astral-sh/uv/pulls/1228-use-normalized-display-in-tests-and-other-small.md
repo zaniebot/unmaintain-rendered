@@ -14,14 +14,14 @@ head: konsti/small-windows-test-fixes-1
 created_at: 2024-02-01T15:07:14Z
 updated_at: 2024-02-01T15:12:31Z
 url: https://github.com/astral-sh/uv/pull/1228
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:31Z
 ```
 
 # Use normalized display in tests and other small windows fixes
 
 ---
 
-_Pull request opened by @konstin on 2024-02-01 15:07_
+_@konstin_
 
 Split out from the large test refactoring PR. Use `normalized_display` in tests and two more thiserror derives to match snapshots and output, and other small windows fixes.
 

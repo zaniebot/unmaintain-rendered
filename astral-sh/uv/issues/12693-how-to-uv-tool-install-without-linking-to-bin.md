@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-06T17:54:51Z
 updated_at: 2025-07-16T13:49:11Z
 url: https://github.com/astral-sh/uv/issues/12693
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # How to `uv tool install` without linking to bin?
 
 ---
 
-_Issue opened by @mathomp4 on 2025-04-06 17:54_
+_@mathomp4_
 
 ### Question
 

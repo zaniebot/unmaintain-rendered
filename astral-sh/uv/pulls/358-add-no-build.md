@@ -12,14 +12,14 @@ head: no-build
 created_at: 2023-11-07T14:42:25Z
 updated_at: 2023-11-08T15:05:16Z
 url: https://github.com/astral-sh/uv/pull/358
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:54Z
 ```
 
 # Add `--no-build`
 
 ---
 
-_Pull request opened by @konstin on 2023-11-07 14:42_
+_@konstin_
 
 By default, we will build source distributions for both resolving and installing, running arbitrary code. `--no-build` adds an option to ban this and only install from wheels, no source distributions or git builds allowed. We also don't fetch these and instead report immediately.
 

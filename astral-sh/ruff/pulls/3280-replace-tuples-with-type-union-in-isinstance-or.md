@@ -13,14 +13,14 @@ head: github-2923
 created_at: 2023-02-28T19:56:40Z
 updated_at: 2023-03-03T21:52:06Z
 url: https://github.com/astral-sh/ruff/pull/3280
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 #  Replace tuples with type union in isinstance or issubclass calls
 
 ---
 
-_Pull request opened by @martinlehoux on 2023-02-28 19:56_
+_@martinlehoux_
 
 - #2923 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-01-27T12:27:21Z
 updated_at: 2021-01-27T15:08:33Z
 url: https://github.com/clap-rs/clap/issues/2313
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 #  clap_version function built in shadow-rs adapt clap crates
 
 ---
 
-_Issue opened by @baoyachi on 2021-01-27 12:27_
+_@baoyachi_
 
 ## clap_version function built in shadow-rs
 ```rust

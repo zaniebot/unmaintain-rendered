@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-10T00:10:29Z
 updated_at: 2024-01-28T14:27:23Z
 url: https://github.com/astral-sh/uv/issues/863
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Flakey test failure in `dependency_excludes_range_of_compatible_versions`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-10 00:10_
+_@charliermarsh_
 
 This test failed for me in https://github.com/astral-sh/puffin/actions/runs/7468310714/job/20323498659?pr=842:
 

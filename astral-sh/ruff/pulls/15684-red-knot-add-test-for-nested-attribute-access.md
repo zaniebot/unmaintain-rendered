@@ -13,14 +13,14 @@ head: david/nested-attribute-access-test
 created_at: 2025-01-23T09:20:17Z
 updated_at: 2025-01-23T09:27:02Z
 url: https://github.com/astral-sh/ruff/pull/15684
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Add test for nested attribute access
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-23 09:20_
+_@sharkdp_
 
 ## Summary
 

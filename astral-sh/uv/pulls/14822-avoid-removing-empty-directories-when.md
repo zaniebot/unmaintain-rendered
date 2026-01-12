@@ -13,14 +13,14 @@ head: zb/no-remove-empty
 created_at: 2025-07-22T17:02:57Z
 updated_at: 2025-07-22T18:50:15Z
 url: https://github.com/astral-sh/uv/pull/14822
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:26Z
 ```
 
 # Avoid removing empty directories when constructing virtual environments
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-22 17:02_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/14815
 

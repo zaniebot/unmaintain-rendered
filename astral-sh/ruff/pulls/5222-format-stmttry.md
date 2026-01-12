@@ -13,14 +13,14 @@ head: format-stmt-try
 created_at: 2023-06-20T18:43:48Z
 updated_at: 2023-07-07T20:47:56Z
 url: https://github.com/astral-sh/ruff/pull/5222
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Format `StmtTry`
 
 ---
 
-_Pull request opened by @davidszotten on 2023-06-20 18:43_
+_@davidszotten_
 
 Format `StmtTry`
 

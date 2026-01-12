@@ -12,14 +12,14 @@ head: feature/flake8-datetimez
 created_at: 2022-12-17T12:27:35Z
 updated_at: 2022-12-20T08:15:53Z
 url: https://github.com/astral-sh/ruff/pull/1270
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # implement flake8-datetimez
 
 ---
 
-_Pull request opened by @Yasu-umi on 2022-12-17 12:27_
+_@Yasu-umi_
 
 https://github.com/charliermarsh/ruff/issues/1249
 https://github.com/pjknkda/flake8-datetimez

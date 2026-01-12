@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-18T15:55:38Z
 updated_at: 2025-08-08T02:40:07Z
 url: https://github.com/astral-sh/uv/issues/5190
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Locking of build dependencies
 
 ---
 
-_Issue opened by @sbidoul on 2024-07-18 15:55_
+_@sbidoul_
 
 Coming from https://github.com/astral-sh/uv/issues/3611#issuecomment-2226921962 and following comments.
 

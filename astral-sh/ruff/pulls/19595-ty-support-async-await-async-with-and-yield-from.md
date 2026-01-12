@@ -14,14 +14,14 @@ head: david/async-await
 created_at: 2025-07-28T11:58:05Z
 updated_at: 2025-07-30T09:51:22Z
 url: https://github.com/astral-sh/ruff/pull/19595
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [ty] Support `async`/`await`, `async with` and `yield from`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-28 11:58_
+_@sharkdp_
 
 ## Summary
 

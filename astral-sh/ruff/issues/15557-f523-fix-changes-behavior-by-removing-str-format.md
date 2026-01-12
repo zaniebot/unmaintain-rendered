@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-17T19:56:52Z
 updated_at: 2025-08-04T14:06:52Z
 url: https://github.com/astral-sh/ruff/issues/15557
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # F523 fix changes behavior by removing `str.format` call
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-17 19:56_
+_@dscorbett_
 
 When the fix for [`string-dot-format-extra-positional-arguments` (F523)](https://docs.astral.sh/ruff/rules/string-dot-format-extra-positional-arguments/) removes a string’s `format` method call, it can change the program’s behavior. If the string contains a double brace like `{{`, it originally represents an escape sequence for a single brace like `{`, but with the method call removed it literally represents a double brace. If the string contains an unset field name, removing the method call suppresses the expected `KeyError`.
 

@@ -13,14 +13,14 @@ head: arg002-em101-compatibility
 created_at: 2024-10-11T07:22:16Z
 updated_at: 2024-10-20T06:27:14Z
 url: https://github.com/astral-sh/ruff/pull/13714
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Make `ARG002` compatible with `EM101` when raising `NotImplementedError`
 
 ---
 
-_Pull request opened by @Watercycle on 2024-10-11 07:22_
+_@Watercycle_
 
 ## Summary
 

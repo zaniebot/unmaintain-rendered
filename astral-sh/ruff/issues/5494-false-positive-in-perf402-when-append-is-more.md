@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-03T20:19:59Z
 updated_at: 2023-07-04T18:21:07Z
 url: https://github.com/astral-sh/ruff/issues/5494
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # False positive in PERF402 when append is more complex. 
 
 ---
 
-_Issue opened by @bgianfo on 2023-07-03 20:19_
+_@bgianfo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

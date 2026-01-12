@@ -13,14 +13,14 @@ head: charlie/struct
 created_at: 2024-05-09T03:52:34Z
 updated_at: 2024-05-09T04:40:37Z
 url: https://github.com/astral-sh/uv/pull/3478
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # Add a dedicated struct for source annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-09 03:52_
+_@charliermarsh_
 
 _No description provided._
 

@@ -14,14 +14,14 @@ head: dcreager/alist-type
 created_at: 2025-02-27T14:52:12Z
 updated_at: 2025-02-28T19:55:56Z
 url: https://github.com/astral-sh/ruff/pull/16415
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Don't use separate ID types for each alist
 
 ---
 
-_Pull request opened by @dcreager on 2025-02-27 14:52_
+_@dcreager_
 
 Regardless of whether #16408 and #16311 pan out, this part is worth pulling out as a separate PR.
 

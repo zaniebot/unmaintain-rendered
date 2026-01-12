@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-01T02:48:16Z
 updated_at: 2024-03-05T03:38:14Z
 url: https://github.com/astral-sh/uv/issues/2099
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Fetching Error with Custom Index
 
 ---
 
-_Issue opened by @hmc-cs-mdrissi on 2024-03-01 02:48_
+_@hmc-cs-mdrissi_
 
 Hi, I'm looking forward to try uv. At work we use custom index server for security built on [pypicloud](https://pypicloud.readthedocs.io/en/latest/). When I try to install an internal library with --index-url I receive an error message of,
 

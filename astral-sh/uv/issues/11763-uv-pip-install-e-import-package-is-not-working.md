@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-25T04:46:18Z
 updated_at: 2025-02-25T07:01:35Z
 url: https://github.com/astral-sh/uv/issues/11763
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # `uv pip install -e .` -> import package is not working
 
 ---
 
-_Issue opened by @EED85 on 2025-02-25 04:46_
+_@EED85_
 
 ### Question
 

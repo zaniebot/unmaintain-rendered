@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-04T20:51:30Z
 updated_at: 2026-01-09T20:35:28Z
 url: https://github.com/astral-sh/ty/issues/2322
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Make some background for the benchmark image
 
 ---
 
-_Issue opened by @chirizxc on 2026-01-04 20:51_
+_@chirizxc_
 
 https://pypi.org/project/ty/
 

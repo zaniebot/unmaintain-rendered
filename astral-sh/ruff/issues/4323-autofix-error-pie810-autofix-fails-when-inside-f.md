@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-09T18:55:56Z
 updated_at: 2023-05-18T14:33:35Z
 url: https://github.com/astral-sh/ruff/issues/4323
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Autofix error] PIE810 autofix fails when inside f-string: `f"{key.startswith('a') or key.startswith('b')}"`
 
 ---
 
-_Issue opened by @konstin on 2023-05-09 18:55_
+_@konstin_
 
 In ruff https://github.com/charliermarsh/ruff/commit/99a755f936ebd73cdd1bfccbc121c31d4b27751e, the following snippet causes the autofix PIE810 from the flake8-pie rules to introduce a syntax error:
 

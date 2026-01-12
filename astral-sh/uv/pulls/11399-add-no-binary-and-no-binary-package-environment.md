@@ -13,14 +13,14 @@ head: 4291/no-binary-env-vars
 created_at: 2025-02-10T19:55:08Z
 updated_at: 2025-02-10T22:20:20Z
 url: https://github.com/astral-sh/uv/pull/11399
-synced_at: 2026-01-10T11:10:37Z
+synced_at: 2026-01-12T16:09:49Z
 ```
 
 # Add `NO_BINARY` and `NO_BINARY_PACKAGE` environment variables
 
 ---
 
-_Pull request opened by @lengau on 2025-02-10 19:55_
+_@lengau_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

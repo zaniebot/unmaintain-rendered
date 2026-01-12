@@ -12,14 +12,14 @@ head: charlie/import-structs
 created_at: 2023-03-28T22:22:10Z
 updated_at: 2023-03-30T12:58:04Z
 url: https://github.com/astral-sh/ruff/pull/3788
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Move some generic structs out of `isort`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-28 22:22_
+_@charliermarsh_
 
 ## Summary
 

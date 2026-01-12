@@ -13,14 +13,14 @@ head: config-processor-no-ref
 created_at: 2023-08-27T12:49:50Z
 updated_at: 2023-08-27T13:03:12Z
 url: https://github.com/astral-sh/ruff/pull/6915
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Implement ConfigProcessor on non-ref type
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-27 12:49_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

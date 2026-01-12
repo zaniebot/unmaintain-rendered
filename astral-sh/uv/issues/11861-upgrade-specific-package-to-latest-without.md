@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-28T16:56:38Z
 updated_at: 2025-02-28T17:37:45Z
 url: https://github.com/astral-sh/uv/issues/11861
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # upgrade specific package to latest without touching `pyproject.toml` ?
 
 ---
 
-_Issue opened by @pchalasani on 2025-02-28 16:56_
+_@pchalasani_
 
 ### Question
 

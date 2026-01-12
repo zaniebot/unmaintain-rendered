@@ -13,14 +13,14 @@ head: david/fix-350
 created_at: 2025-05-21T08:33:11Z
 updated_at: 2025-05-23T13:27:40Z
 url: https://github.com/astral-sh/ruff/pull/18237
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Ignore descriptor class-level declarations for purposes of finding instance attributes
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-21 08:33_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: alex/pyi-cleanup-2
 created_at: 2025-01-31T16:48:43Z
 updated_at: 2025-01-31T16:54:57Z
 url: https://github.com/astral-sh/ruff/pull/15855
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flake8-pyi`] Minor simplification for `PYI019`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-31 16:48_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/signal-ref
 created_at: 2025-01-28T20:59:26Z
 updated_at: 2025-01-29T14:27:54Z
 url: https://github.com/astral-sh/uv/pull/11041
-synced_at: 2026-01-10T11:45:25Z
+synced_at: 2026-01-12T16:09:39Z
 ```
 
 # Add docs for signal handling
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-28 20:59_
+_@zanieb_
 
 I'm not sure if this should go in the CLI reference or not? but here seems like an okay start. I want to figure out a way to avoid repeating this content.
 

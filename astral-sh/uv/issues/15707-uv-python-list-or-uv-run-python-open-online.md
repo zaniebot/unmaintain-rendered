@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-06T12:39:42Z
 updated_at: 2025-09-06T16:52:01Z
 url: https://github.com/astral-sh/uv/issues/15707
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # "uv python list" or "uv run python" open online Python help
 
 ---
 
-_Issue opened by @dalito on 2025-09-06 12:39_
+_@dalito_
 
 ### Summary
 

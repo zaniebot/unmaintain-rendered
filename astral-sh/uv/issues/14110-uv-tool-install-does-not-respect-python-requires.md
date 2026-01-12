@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-17T16:43:35Z
 updated_at: 2025-11-07T17:20:30Z
 url: https://github.com/astral-sh/uv/issues/14110
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # uv tool install does not respect python-requires
 
 ---
 
-_Issue opened by @gsemet on 2025-06-17 16:43_
+_@gsemet_
 
 ### Summary
 

@@ -11,14 +11,14 @@ head: feature-import-ignores
 created_at: 2023-05-28T11:50:59Z
 updated_at: 2023-07-30T18:30:03Z
 url: https://github.com/astral-sh/ruff/pull/4691
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # add dummy-import-rgx option
 
 ---
 
-_Pull request opened by @IamRezaMousavi on 2023-05-28 11:50_
+_@IamRezaMousavi_
 
 ## Summary
 check #4250 

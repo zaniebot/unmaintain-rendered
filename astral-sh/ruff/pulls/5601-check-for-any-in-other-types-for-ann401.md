@@ -13,14 +13,14 @@ head: dhruv/typing-target-contains-any
 created_at: 2023-07-07T20:38:51Z
 updated_at: 2023-07-13T12:49:28Z
 url: https://github.com/astral-sh/ruff/pull/5601
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Check for `Any` in other types for `ANN401`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-07 20:38_
+_@dhruvmanila_
 
 ## Summary
 

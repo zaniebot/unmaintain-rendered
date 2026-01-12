@@ -13,14 +13,14 @@ head: zb/run-module
 created_at: 2025-02-11T22:10:07Z
 updated_at: 2025-02-12T18:08:59Z
 url: https://github.com/astral-sh/uv/pull/11431
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:50Z
 ```
 
 # Prefer running executables in the environment with `<name>` over `<name>/__main__.py`
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-11 22:10_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/11423
 Closes https://github.com/astral-sh/uv/issues/9167

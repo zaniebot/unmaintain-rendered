@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-05-06T12:31:09Z
 updated_at: 2022-01-11T18:30:50Z
 url: https://github.com/clap-rs/clap/issues/1910
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Compute argument possible values based on other arguments
 
 ---
 
-_Issue opened by @fbecart on 2020-05-06 12:31_
+_@fbecart_
 
 I would like to be able to compute the possible values of an argument dynamically, based on the values provided for some other argument(s).
 

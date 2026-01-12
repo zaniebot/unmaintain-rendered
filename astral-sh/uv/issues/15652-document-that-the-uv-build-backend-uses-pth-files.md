@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-03T10:00:07Z
 updated_at: 2025-09-09T07:53:09Z
 url: https://github.com/astral-sh/uv/issues/15652
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:14Z
 ```
 
 # document that the uv build backend uses `.pth` files for editable installs by default
 
 ---
 
-_Issue opened by @DetachHead on 2025-09-03 10:00_
+_@DetachHead_
 
 there seems to be some confusion regarding the different methods of installing an editable package. from what i can tell, uv's build backend uses `.pth` files by default instead of import hooks. however the [pyright documentation](https://microsoft.github.io/pyright/#/import-resolution?id=uv) was recently updated to state that passing `{ editable_mode = "compat" }` to uv's build backend is necessary to enable this behavior. as far as i can tell, this is only necessary when using setuptools as the build backend.
 

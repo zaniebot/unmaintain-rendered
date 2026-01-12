@@ -13,14 +13,14 @@ head: todos-gh
 created_at: 2025-01-15T23:21:58Z
 updated_at: 2025-01-15T23:47:33Z
 url: https://github.com/astral-sh/ruff/pull/15519
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`flake8-todos`] Allow VSCode GitHub PR extension style links in `missing-todo-link` (`TD003`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-01-15 23:21_
+_@dylwil3_
 
 ## Summary
 Allow links to issues that appear on the same line as the TODO directive, if they conform to the format that VSCode's GitHub PR extension produces.

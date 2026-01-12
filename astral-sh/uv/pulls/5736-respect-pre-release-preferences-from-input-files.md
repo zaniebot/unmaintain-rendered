@@ -13,14 +13,14 @@ head: charlie/pres
 created_at: 2024-08-02T20:35:22Z
 updated_at: 2024-08-03T02:01:59Z
 url: https://github.com/astral-sh/uv/pull/5736
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:59Z
 ```
 
 # Respect pre-release preferences from input files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-02 20:35_
+_@charliermarsh_
 
 ## Summary
 

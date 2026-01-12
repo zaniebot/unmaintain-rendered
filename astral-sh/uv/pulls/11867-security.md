@@ -12,14 +12,14 @@ head: security
 created_at: 2025-02-28T21:11:00Z
 updated_at: 2025-02-28T21:16:00Z
 url: https://github.com/astral-sh/uv/pull/11867
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:01Z
 ```
 
 # security
 
 ---
 
-_Pull request opened by @mmaraya on 2025-02-28 21:11_
+_@mmaraya_
 
 add CODEOWNERS
 

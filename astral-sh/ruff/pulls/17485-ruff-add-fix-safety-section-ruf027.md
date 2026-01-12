@@ -13,14 +13,14 @@ head: document-fix-safety-missing-fstring-syntax
 created_at: 2025-04-19T19:46:52Z
 updated_at: 2025-04-26T21:44:00Z
 url: https://github.com/astral-sh/ruff/pull/17485
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`ruff`] add fix safety section (`RUF027`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-04-19 19:46_
+_@VascoSch92_
 
 The PR add the `fix safety` section for rule `RUF027` (#15584 ).
 

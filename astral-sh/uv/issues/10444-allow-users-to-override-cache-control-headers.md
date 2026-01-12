@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-09T21:02:49Z
 updated_at: 2025-07-15T18:31:41Z
 url: https://github.com/astral-sh/uv/issues/10444
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # Allow users to override cache control headers
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-09 21:02_
+_@charliermarsh_
 
 Some registries don't provide any cache-control headers, which can make for a suboptimal experience (see: #10359). (PyPI returns 10-minute caching headers.) I wonder if it makes sense to allow users to override the cache-control headers?
 

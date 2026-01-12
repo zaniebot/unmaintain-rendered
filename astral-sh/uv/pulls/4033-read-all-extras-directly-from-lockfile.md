@@ -13,14 +13,14 @@ head: charlie/e
 created_at: 2024-06-05T00:49:32Z
 updated_at: 2024-06-05T01:03:56Z
 url: https://github.com/astral-sh/uv/pull/4033
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:59Z
 ```
 
 # Read all extras directly from lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-05 00:49_
+_@charliermarsh_
 
 ## Summary
 We now pass `ExtrasSpecification` to the lock routine.

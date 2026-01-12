@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-02T22:28:59Z
 updated_at: 2025-11-05T17:07:34Z
 url: https://github.com/astral-sh/ruff/issues/21209
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF057 has false positives with starred arguments
 
 ---
 
-_Issue opened by @dscorbett on 2025-11-02 22:28_
+_@dscorbett_
 
 ### Summary
 

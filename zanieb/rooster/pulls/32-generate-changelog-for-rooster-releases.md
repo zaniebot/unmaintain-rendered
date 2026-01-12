@@ -13,14 +13,14 @@ head: zb/changelog
 created_at: 2024-03-24T17:01:03Z
 updated_at: 2024-03-24T17:01:29Z
 url: https://github.com/zanieb/rooster/pull/32
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Generate changelog for rooster releases
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-24 17:01_
+_@zanieb_
 
 - Add rooster configuration for releases
 - Backfill changelog

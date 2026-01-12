@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-26T12:45:14Z
 updated_at: 2024-09-30T07:46:49Z
 url: https://github.com/astral-sh/ruff/issues/10616
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PERF401 for cases with extend
 
 ---
 
-_Issue opened by @spaceby on 2024-03-26 12:45_
+_@spaceby_
 
 I propose to extend PERF401 to nested loops of the following format:
 

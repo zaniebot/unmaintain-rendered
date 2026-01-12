@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-11T00:44:04Z
 updated_at: 2025-01-11T13:38:50Z
 url: https://github.com/astral-sh/uv/issues/10486
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # Add `--constraint` flag to `uv add`
 
 ---
 
-_Issue opened by @krishsai7 on 2025-01-11 00:44_
+_@krishsai7_
 
 `--constraint` exists for `uv pip install` which has been terrific for adding dependencies to my environment but I would also really like the package I want to add to my project + constrained dependencies to my `uv.lock` file as well for deployment purposes. For example with Airflow, I would like to do something like
 ```

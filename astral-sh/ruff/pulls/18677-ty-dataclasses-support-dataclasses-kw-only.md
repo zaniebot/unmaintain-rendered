@@ -13,14 +13,14 @@ head: dataclass
 created_at: 2025-06-14T18:25:05Z
 updated_at: 2025-06-16T17:48:02Z
 url: https://github.com/astral-sh/ruff/pull/18677
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [ty] dataclasses: Support dataclasses.KW_ONLY
 
 ---
 
-_Pull request opened by @abhijeetbodas2001 on 2025-06-14 18:25_
+_@abhijeetbodas2001_
 
 ## Summary
 

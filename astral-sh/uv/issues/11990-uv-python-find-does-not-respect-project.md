@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-05T21:47:32Z
 updated_at: 2025-03-13T05:03:16Z
 url: https://github.com/astral-sh/uv/issues/11990
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # `uv python find` does not respect `--project`
 
 ---
 
-_Issue opened by @zanieb on 2025-03-05 21:47_
+_@zanieb_
 
 ### Summary
 

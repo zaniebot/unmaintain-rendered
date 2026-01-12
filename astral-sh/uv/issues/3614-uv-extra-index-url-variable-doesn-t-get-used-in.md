@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-15T17:21:18Z
 updated_at: 2024-05-16T20:11:39Z
 url: https://github.com/astral-sh/uv/issues/3614
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # `UV_EXTRA_INDEX_URL` variable doesn't get used in `uv 0.1.44 (d417daad7 2024-05-14)` 
 
 ---
 
-_Issue opened by @ArshanKhanifar on 2024-05-15 17:21_
+_@ArshanKhanifar_
 
 This must be a change recently introduced that broke things, but today my installations from my private pypi repository are failing. 
 

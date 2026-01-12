@@ -12,14 +12,14 @@ head: charlie/err
 created_at: 2025-12-03T14:48:29Z
 updated_at: 2025-12-06T13:50:58Z
 url: https://github.com/astral-sh/uv/pull/16967
-synced_at: 2026-01-10T01:57:38Z
+synced_at: 2026-01-12T16:12:32Z
 ```
 
 # Always treat paths after `-e` as directories
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-03 14:48_
+_@charliermarsh_
 
 ## Summary
 

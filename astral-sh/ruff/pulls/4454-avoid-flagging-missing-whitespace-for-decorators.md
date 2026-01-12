@@ -12,14 +12,14 @@ head: charlie/dec
 created_at: 2023-05-16T16:46:50Z
 updated_at: 2023-05-16T17:39:32Z
 url: https://github.com/astral-sh/ruff/pull/4454
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Avoid flagging missing whitespace for decorators
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-16 16:46_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-13T17:55:51Z
 updated_at: 2023-09-27T13:38:10Z
 url: https://github.com/astral-sh/ruff/issues/7358
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter: PyCharm support
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-13 17:55_
+_@MichaReiser_
 
 Coordinate with the PyCharm plugin to add support for Ruff's formatter
 

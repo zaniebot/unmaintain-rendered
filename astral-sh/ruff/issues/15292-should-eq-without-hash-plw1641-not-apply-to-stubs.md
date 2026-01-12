@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-06T03:29:39Z
 updated_at: 2025-01-07T02:51:08Z
 url: https://github.com/astral-sh/ruff/issues/15292
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Should `eq-without-hash (PLW1641)` not apply to stubs?
 
 ---
 
-_Issue opened by @Avasam on 2025-01-06 03:29_
+_@Avasam_
 
 I don't think that [eq-without-hash (PLW1641)](https://docs.astral.sh/ruff/rules/eq-without-hash/#eq-without-hash-plw1641) should apply to stubs (it currently does).
 Stubs authors should aim to faithfully represent the runtime implementation. And if the runtime doesn't implement `__hash__`, the stubs shouldn't define it either.

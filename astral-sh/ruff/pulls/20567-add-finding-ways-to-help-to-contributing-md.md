@@ -13,14 +13,14 @@ head: micha/finding-ways-to-help
 created_at: 2025-09-25T08:12:24Z
 updated_at: 2025-09-25T10:46:42Z
 url: https://github.com/astral-sh/ruff/pull/20567
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # Add 'Finding ways to help' to CONTRIBUTING.md
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-09-25 08:12_
+_@MichaReiser_
 
 ## Summary
 

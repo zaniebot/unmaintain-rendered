@@ -13,14 +13,14 @@ head: charlie/false
 created_at: 2023-02-02T17:31:32Z
 updated_at: 2023-02-02T17:36:05Z
 url: https://github.com/astral-sh/ruff/pull/2485
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Treat `if 0:` and `if False:` as type-checking blocks
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-02 17:31_
+_@charliermarsh_
 
 Closes #2408.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T18:09:59Z
 updated_at: 2024-07-31T22:27:42Z
 url: https://github.com/astral-sh/uv/issues/5623
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # `uvx` should note if no executables are provided by a package
 
 ---
 
-_Issue opened by @zanieb on 2024-07-30 18:09_
+_@zanieb_
 
 e.g.
 

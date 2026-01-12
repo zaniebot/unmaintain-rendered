@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-27T00:52:07Z
 updated_at: 2022-12-27T15:07:19Z
 url: https://github.com/astral-sh/ruff/issues/1397
-synced_at: 2026-01-10T12:05:28Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Add some sort of `cargo dev generate-all` command to run all build steps
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-27 00:52_
+_@charliermarsh_
 
 _No description provided._
 

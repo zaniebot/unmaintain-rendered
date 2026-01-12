@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-23T08:52:36Z
 updated_at: 2024-01-10T21:09:54Z
 url: https://github.com/astral-sh/ruff/issues/2104
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Potential inconsistency between Ruff's ``I`` and isort
 
 ---
 
-_Issue opened by @AA-Turner on 2023-01-23 08:52_
+_@AA-Turner_
 
 I believe this is distinct from https://github.com/charliermarsh/ruff/issues/1718; cross-linking in case there are similarities, though.
 

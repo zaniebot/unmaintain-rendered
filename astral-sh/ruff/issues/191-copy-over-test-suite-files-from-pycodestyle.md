@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-14T22:54:13Z
 updated_at: 2022-09-15T02:22:54Z
 url: https://github.com/astral-sh/ruff/issues/191
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Copy over test suite files from pycodestyle
 
 ---
 
-_Issue opened by @charliermarsh on 2022-09-14 22:54_
+_@charliermarsh_
 
 _No description provided._
 

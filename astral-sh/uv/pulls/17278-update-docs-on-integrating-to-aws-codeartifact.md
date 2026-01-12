@@ -11,14 +11,14 @@ head: main
 created_at: 2025-12-31T10:40:53Z
 updated_at: 2026-01-05T22:56:00Z
 url: https://github.com/astral-sh/uv/pull/17278
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:41Z
 ```
 
 # Update docs on integrating to AWS CodeArtifact with currently working version
 
 ---
 
-_Pull request opened by @jaltgen on 2025-12-31 10:40_
+_@jaltgen_
 
 ## Summary
 

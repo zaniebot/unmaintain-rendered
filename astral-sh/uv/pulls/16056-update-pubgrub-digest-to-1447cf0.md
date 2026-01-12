@@ -12,14 +12,14 @@ head: renovate/pubgrub-digest
 created_at: 2025-09-29T01:50:12Z
 updated_at: 2025-10-01T20:01:53Z
 url: https://github.com/astral-sh/uv/pull/16056
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:05Z
 ```
 
 # Update pubgrub digest to 1447cf0
 
 ---
 
-_Pull request opened by @renovate on 2025-09-29 01:50_
+_@renovate_
 
 > [!NOTE]
 > Mend has cancelled [the proposed renaming](https://redirect.github.com/renovatebot/renovate/discussions/37842) of the Renovate GitHub app being renamed to `mend[bot]`.

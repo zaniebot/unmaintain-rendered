@@ -11,14 +11,14 @@ head: main
 created_at: 2023-07-06T01:16:08Z
 updated_at: 2023-07-14T03:40:39Z
 url: https://github.com/astral-sh/ruff/pull/5550
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add `Issue Links` section to PR template
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-07-06 01:16_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

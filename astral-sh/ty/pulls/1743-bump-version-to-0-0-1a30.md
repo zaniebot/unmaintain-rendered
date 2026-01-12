@@ -13,14 +13,14 @@ head: alex/release
 created_at: 2025-12-03T13:13:02Z
 updated_at: 2025-12-03T13:29:52Z
 url: https://github.com/astral-sh/ty/pull/1743
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Bump version to 0.0.1a30
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-03 13:13_
+_@AlexWaygood_
 
 _No description provided._
 

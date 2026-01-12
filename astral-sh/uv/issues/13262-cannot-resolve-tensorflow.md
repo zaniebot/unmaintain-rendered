@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-02T10:17:01Z
 updated_at: 2025-05-02T10:54:38Z
 url: https://github.com/astral-sh/uv/issues/13262
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # Cannot resolve `tensorflow`
 
 ---
 
-_Issue opened by @cbrnr on 2025-05-02 10:17_
+_@cbrnr_
 
 ### Summary
 

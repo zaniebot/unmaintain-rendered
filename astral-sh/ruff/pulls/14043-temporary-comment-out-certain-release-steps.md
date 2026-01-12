@@ -12,14 +12,14 @@ head: dhruv/temp-release
 created_at: 2024-11-01T15:41:15Z
 updated_at: 2024-11-01T16:19:17Z
 url: https://github.com/astral-sh/ruff/pull/14043
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Temporary comment out certain release steps
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-01 15:41_
+_@dhruvmanila_
 
 ## Summary
 

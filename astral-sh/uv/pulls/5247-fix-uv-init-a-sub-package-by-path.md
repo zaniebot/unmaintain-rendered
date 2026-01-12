@@ -14,14 +14,14 @@ head: uv-init
 created_at: 2024-07-20T13:52:56Z
 updated_at: 2024-07-22T14:21:40Z
 url: https://github.com/astral-sh/uv/pull/5247
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:42Z
 ```
 
 # Fix `uv init` a sub-package by path
 
 ---
 
-_Pull request opened by @j178 on 2024-07-20 13:52_
+_@j178_
 
 ## Summary
 

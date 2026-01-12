@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-03T18:15:29Z
 updated_at: 2024-05-20T23:56:25Z
 url: https://github.com/astral-sh/uv/issues/3359
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # universal-lock: add marker expressions to PubGrubPackage
 
 ---
 
-_Issue opened by @BurntSushi on 2024-05-03 18:15_
+_@BurntSushi_
 
 As part of #3350, we'll need to distinguish conflicting dependencies among forks. We can achieve this by adding the relevant marker expressions to `PubGrubPackage`:
 

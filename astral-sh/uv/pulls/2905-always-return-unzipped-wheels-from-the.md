@@ -13,14 +13,14 @@ head: charlie/zip
 created_at: 2024-04-08T17:40:31Z
 updated_at: 2024-04-08T18:07:19Z
 url: https://github.com/astral-sh/uv/pull/2905
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:18Z
 ```
 
 # Always return unzipped wheels from the distribution database
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-08 17:40_
+_@charliermarsh_
 
 ## Summary
 

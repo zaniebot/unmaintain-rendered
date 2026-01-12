@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-05-21T15:51:34Z
 updated_at: 2023-06-26T06:43:49Z
 url: https://github.com/clap-rs/clap/issues/1938
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # error: cannot produce proc-macro for `clap_derive v3.0.0-beta.1` as the target `x86_64-unknown-linux-musl` does not support these crate types
 
 ---
 
-_Issue opened by @mrusme on 2020-05-21 15:51_
+_@mrusme_
 
 ### Make sure you completed the following tasks
 

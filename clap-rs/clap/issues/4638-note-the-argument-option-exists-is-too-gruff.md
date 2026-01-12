@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-13T19:30:52Z
 updated_at: 2023-07-17T14:12:49Z
 url: https://github.com/clap-rs/clap/issues/4638
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `note: the argument '--option' exists` is too gruff
 
 ---
 
-_Issue opened by @epage on 2023-01-13 19:30_
+_@epage_
 
 ### Please complete the following tasks
 

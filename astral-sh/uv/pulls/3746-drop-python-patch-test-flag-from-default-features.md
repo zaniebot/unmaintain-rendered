@@ -13,14 +13,14 @@ head: zb/patch
 created_at: 2024-05-22T16:53:56Z
 updated_at: 2024-05-22T17:19:26Z
 url: https://github.com/astral-sh/uv/pull/3746
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Drop Python patch test flag from default features
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-22 16:53_
+_@zanieb_
 
 _No description provided._
 

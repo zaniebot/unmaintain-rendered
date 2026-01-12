@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-30T14:47:31Z
 updated_at: 2023-03-30T16:19:55Z
 url: https://github.com/astral-sh/ruff/issues/3815
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # SIM101 false negatives with attr lookup
 
 ---
 
-_Issue opened by @Skylion007 on 2023-03-30 14:47_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

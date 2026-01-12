@@ -12,14 +12,14 @@ head: charlie/typing
 created_at: 2022-09-10T18:32:57Z
 updated_at: 2022-09-10T18:51:44Z
 url: https://github.com/astral-sh/ruff/pull/141
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Support remaining typing module members
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-10 18:32_
+_@charliermarsh_
 
 Resolves #139.
 

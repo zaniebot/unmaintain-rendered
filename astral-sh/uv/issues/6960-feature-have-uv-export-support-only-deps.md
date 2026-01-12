@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-03T08:33:55Z
 updated_at: 2024-09-06T01:01:48Z
 url: https://github.com/astral-sh/uv/issues/6960
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Feature:  have 'uv export' support --only-deps
 
 ---
 
-_Issue opened by @RomainBrault on 2024-09-03 08:33_
+_@RomainBrault_
 
 Have `uv export` support `--only-deps`
 

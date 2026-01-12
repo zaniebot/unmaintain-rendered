@@ -13,14 +13,14 @@ head: feature/ruff-18165
 created_at: 2025-06-11T19:49:03Z
 updated_at: 2025-06-23T20:09:18Z
 url: https://github.com/astral-sh/ruff/pull/18633
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [`pyupgrade`] Extend version detection to include `sys.version_info.major` (`UP036`)
 
 ---
 
-_Pull request opened by @IDrokin117 on 2025-06-11 19:49_
+_@IDrokin117_
 
 ## Summary
 

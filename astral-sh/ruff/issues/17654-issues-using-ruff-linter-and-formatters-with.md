@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-27T11:35:24Z
 updated_at: 2025-04-28T06:24:45Z
 url: https://github.com/astral-sh/ruff/issues/17654
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Issues using ruff linter and formatters with `jaxtyping`
 
 ---
 
-_Issue opened by @Doublonmousse on 2025-04-27 11:35_
+_@Doublonmousse_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-09T14:42:39Z
 updated_at: 2025-10-31T18:10:18Z
 url: https://github.com/astral-sh/ty/issues/1329
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Ty misses required-field diagnostic for SQLModel (works for BaseModel)
 
 ---
 
-_Issue opened by @Duckling92 on 2025-10-09 14:42_
+_@Duckling92_
 
 ### Summary
 Ty flags missing required fields for `pydantic.BaseModel` but not for `sqlmodel.SQLModel` subclasses, both using Pydantic v2.

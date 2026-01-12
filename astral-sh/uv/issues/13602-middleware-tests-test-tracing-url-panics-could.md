@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-22T18:48:06Z
 updated_at: 2025-05-22T19:06:23Z
 url: https://github.com/astral-sh/uv/issues/13602
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # `middleware::tests::test_tracing_url` panics: `Could not set global tracing subscriber: SetGlobalDefaultError("a global default trace dispatcher has already been set")`
 
 ---
 
-_Issue opened by @mgorny on 2025-05-22 18:48_
+_@mgorny_
 
 ### Summary
 

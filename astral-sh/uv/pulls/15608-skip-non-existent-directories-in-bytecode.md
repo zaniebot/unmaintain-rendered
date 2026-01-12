@@ -13,14 +13,14 @@ head: charlie/dir
 created_at: 2025-08-31T14:40:32Z
 updated_at: 2025-08-31T14:53:01Z
 url: https://github.com/astral-sh/uv/pull/15608
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:51Z
 ```
 
 # Skip non-existent directories in bytecode compilation
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-31 14:40_
+_@charliermarsh_
 
 ## Summary
 

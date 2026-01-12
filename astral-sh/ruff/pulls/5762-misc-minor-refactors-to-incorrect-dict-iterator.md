@@ -13,14 +13,14 @@ head: charlie/unused-loop
 created_at: 2023-07-14T17:23:39Z
 updated_at: 2023-07-14T17:55:05Z
 url: https://github.com/astral-sh/ruff/pull/5762
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Misc. minor refactors to `incorrect-dict-iterator`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-14 17:23_
+_@charliermarsh_
 
 ## Summary
 

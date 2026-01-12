@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-02-16T21:06:51Z
 updated_at: 2021-02-18T20:39:43Z
 url: https://github.com/clap-rs/clap/issues/2351
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # build failure with `--all-features`
 
 ---
 
-_Issue opened by @matthiaskrgr on 2021-02-16 21:06_
+_@matthiaskrgr_
 
 repo is @ 2b45011c9bed331319837eceb2b593e84b5b9cfa
 

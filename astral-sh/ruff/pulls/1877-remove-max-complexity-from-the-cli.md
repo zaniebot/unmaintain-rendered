@@ -12,14 +12,14 @@ head: charlie/cli-options
 created_at: 2023-01-14T23:27:17Z
 updated_at: 2023-03-06T02:35:25Z
 url: https://github.com/astral-sh/ruff/pull/1877
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Remove --max-complexity from the CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-14 23:27_
+_@charliermarsh_
 
 _No description provided._
 

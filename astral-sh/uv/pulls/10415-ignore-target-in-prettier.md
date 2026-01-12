@@ -12,14 +12,14 @@ head: charlie/target
 created_at: 2025-01-08T22:47:40Z
 updated_at: 2025-01-08T22:52:02Z
 url: https://github.com/astral-sh/uv/pull/10415
-synced_at: 2026-01-10T11:44:47Z
+synced_at: 2026-01-12T16:09:17Z
 ```
 
 # Ignore target in Prettier
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-08 22:47_
+_@charliermarsh_
 
 The [Prettier docs](https://prettier.io/docs/en/ignore.html) say that it should respect `.gitignore`, but in my experience it's... not? So `npx prettier --prose-wrap always --write "**/*.md"` keeps reformatting a bunch of files in `target`, slowing things down.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-18T16:57:37Z
 updated_at: 2025-05-09T14:03:56Z
 url: https://github.com/astral-sh/uv/issues/7509
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # uv falls back to copy instead of symlink
 
 ---
 
-_Issue opened by @ypnos on 2024-09-18 16:57_
+_@ypnos_
 
 When using a Docker cache mount, as recommended in the documentation, uv falls back to copying instead of hardlinking and complains about it. The message also recommends to suppress the complaint with explicitely setting the link mode to COPY.
 

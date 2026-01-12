@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-23T15:02:09Z
 updated_at: 2025-04-25T07:08:12Z
 url: https://github.com/astral-sh/uv/issues/13069
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # Allow override dependencies in workspace members
 
 ---
 
-_Issue opened by @haarisr on 2025-04-23 15:02_
+_@haarisr_
 
 ### Summary
 

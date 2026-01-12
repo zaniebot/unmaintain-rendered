@@ -14,14 +14,14 @@ head: remove-ty-property-tests
 created_at: 2025-05-15T20:55:19Z
 updated_at: 2025-05-16T07:58:55Z
 url: https://github.com/astral-sh/ruff/pull/18124
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # Remove ty property tests
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-05-15 20:55_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

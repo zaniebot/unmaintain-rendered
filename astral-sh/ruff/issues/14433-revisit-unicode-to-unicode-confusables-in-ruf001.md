@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-18T13:06:00Z
 updated_at: 2026-01-11T14:31:29Z
 url: https://github.com/astral-sh/ruff/issues/14433
-synced_at: 2026-01-11T15:05:49Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Revisit unicode-to-unicode confusables in `RUF001`, `RUF002`, `RUF003`
 
 ---
 
-_Issue opened by @dylwil3 on 2024-11-18 13:06_
+_@dylwil3_
 
 In #8473 the RUF rules regarding confusable/ambiguous unicode were extended, in preview, to include cases where one might confuse some non-ASCII unicode character with another (as opposed to only treating cases where a non-ASCII unicode character may be confused for an ASCII character). 
 

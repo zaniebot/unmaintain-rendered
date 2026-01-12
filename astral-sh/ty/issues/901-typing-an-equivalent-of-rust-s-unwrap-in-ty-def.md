@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-27T01:15:35Z
 updated_at: 2025-07-27T11:03:06Z
 url: https://github.com/astral-sh/ty/issues/901
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Typing an equivalent of rust's unwrap in ty (`def unwrap[T](x: T | None) -> T`)
 
 ---
 
-_Issue opened by @karlicoss on 2025-07-27 01:15_
+_@karlicoss_
 
 ### Summary
 

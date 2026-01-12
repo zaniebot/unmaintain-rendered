@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T17:41:09Z
 updated_at: 2025-03-18T18:52:41Z
 url: https://github.com/astral-sh/ruff/issues/16835
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Whitelist rule patterns to avoid "Invalid rule code provided to `# noqa`"
 
 ---
 
-_Issue opened by @mharrisb1 on 2025-03-18 17:41_
+_@mharrisb1_
 
 ### Summary
 

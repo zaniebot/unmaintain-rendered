@@ -14,14 +14,14 @@ head: alex/static-frame-bench
 created_at: 2025-08-10T13:06:52Z
 updated_at: 2025-08-11T14:38:58Z
 url: https://github.com/astral-sh/ruff/pull/19844
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # [ty] Add `static-frame` as a walltime benchmark
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-10 13:06_
+_@AlexWaygood_
 
 ## Summary
 

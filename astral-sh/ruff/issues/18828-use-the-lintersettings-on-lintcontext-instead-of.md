@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-20T18:10:22Z
 updated_at: 2025-06-23T09:06:45Z
 url: https://github.com/astral-sh/ruff/issues/18828
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Use the `LinterSettings` on `LintContext` instead of `Checker`
 
 ---
 
-_Issue opened by @ntBre on 2025-06-20 18:10_
+_@ntBre_
 
 There is currently a `&'a LinterSettings` field on both `Checker` and `LintContext`, which is redundant because `Checker` also holds a `LintContext`. To remove the redundancy, we should replace uses of `Checker::settings` with `Checker::context.settings`, or, more likely, a `Checker::settings` method since the `context` field is private.
 

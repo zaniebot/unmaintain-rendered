@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-17T20:48:09Z
 updated_at: 2025-07-17T20:53:50Z
 url: https://github.com/astral-sh/uv/issues/14692
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # opencv-python fails to install into relocatable non-.venv venv on Windows
 
 ---
 
-_Issue opened by @doctorpangloss on 2025-07-17 20:48_
+_@doctorpangloss_
 
 ### Summary
 

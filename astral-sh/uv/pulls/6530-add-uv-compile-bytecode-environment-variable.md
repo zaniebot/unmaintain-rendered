@@ -13,14 +13,14 @@ head: charlie/c
 created_at: 2024-08-23T15:52:41Z
 updated_at: 2024-08-23T18:05:33Z
 url: https://github.com/astral-sh/uv/pull/6530
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:24Z
 ```
 
 # Add `UV_COMPILE_BYTECODE` environment variable
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-23 15:52_
+_@charliermarsh_
 
 ## Summary
 

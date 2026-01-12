@@ -14,14 +14,14 @@ head: konsti/more-zip-compressions
 created_at: 2025-05-04T16:02:05Z
 updated_at: 2025-05-04T18:08:21Z
 url: https://github.com/astral-sh/uv/pull/13285
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:38Z
 ```
 
 # Support more zip compression formats: bzip2, lzma, xz, zstd
 
 ---
 
-_Pull request opened by @konstin on 2025-05-04 16:02_
+_@konstin_
 
 Wheels are zip files, and as such can internally be compressed with a number of compression algorithms besides the popular choices, DEFLATE and stored. I added all algorithms supported by async-zip except `deflate64`, which wasn't yet a part of our dependency tree.  All other compression algorithms and crates are already supported and dependencies for their source dist `.tar.<format>` support.
 

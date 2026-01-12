@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-26T03:03:58Z
 updated_at: 2023-05-26T03:03:58Z
 url: https://github.com/astral-sh/ruff/issues/4663
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Incorrect quotes after fix applied (C408 and Q000 rules fixes)
 
 ---
 
-_Issue opened by @charliermarsh on 2023-05-26 03:03_
+_@charliermarsh_
 
 _Originally posted as https://github.com/astral-sh/ruff-lsp/issues/123._
 

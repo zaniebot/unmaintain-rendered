@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-26T10:40:28Z
 updated_at: 2025-12-29T14:17:35Z
 url: https://github.com/astral-sh/ruff/issues/22204
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # FURB192 fix should always be unsafe?
 
 ---
 
-_Issue opened by @harupy on 2025-12-26 10:40_
+_@harupy_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-08T21:20:07Z
 updated_at: 2026-01-09T02:21:29Z
 url: https://github.com/astral-sh/ty/issues/958
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # improve local type inference for names with nonlocal writes in nested scopes
 
 ---
 
-_Issue opened by @carljm on 2025-08-08 21:20_
+_@carljm_
 
 After https://github.com/astral-sh/ruff/pull/19821 we will include types from nested-scope nonlocal bindings in the public type of a symbol, but we still won't consider them in local reads of such symbols. See https://github.com/astral-sh/ruff/pull/19821#issuecomment-3169019532 and https://github.com/astral-sh/ruff/pull/19821#issuecomment-3169316459 for examples of code where we get type inference wrong due to this, and ideas on how we could improve it.
 

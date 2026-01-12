@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-11T13:12:06Z
 updated_at: 2025-08-11T14:22:31Z
 url: https://github.com/astral-sh/ruff/issues/19863
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # UP047 Fails to indentify functions that have `Callable` in their signature
 
 ---
 
-_Issue opened by @Kroppeb on 2025-08-11 13:12_
+_@Kroppeb_
 
 ### Summary
 

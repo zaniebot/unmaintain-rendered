@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-09T02:52:27Z
 updated_at: 2024-02-09T14:02:43Z
 url: https://github.com/astral-sh/ruff/issues/9904
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Rule UP040 incorrect fix when `TypeVar` is used multiple times
 
 ---
 
-_Issue opened by @ostr00000 on 2024-02-09 02:52_
+_@ostr00000_
 
 ## Initial code
 This is code in stub file `decorators.pyi`:

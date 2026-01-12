@@ -12,14 +12,14 @@ head: charlie/isolation
 created_at: 2023-06-01T03:10:18Z
 updated_at: 2023-06-02T03:29:38Z
 url: https://github.com/astral-sh/ruff/pull/4774
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Use a separate fix-isolation group for every parent node
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-01 03:10_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

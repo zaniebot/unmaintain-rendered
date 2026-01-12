@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-10T13:43:28Z
 updated_at: 2025-08-28T09:02:55Z
 url: https://github.com/astral-sh/uv/issues/13949
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # Python installation can fail with HTTP 500 from GitHub
 
 ---
 
-_Issue opened by @zanieb on 2025-06-10 13:43_
+_@zanieb_
 
 e.g.,
 

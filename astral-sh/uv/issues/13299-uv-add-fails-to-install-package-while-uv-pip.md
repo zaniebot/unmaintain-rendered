@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-05T10:29:15Z
 updated_at: 2025-05-05T20:24:34Z
 url: https://github.com/astral-sh/uv/issues/13299
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # uv add fails to install package while  uv pip install doesn't
 
 ---
 
-_Issue opened by @SSchleehauf on 2025-05-05 10:29_
+_@SSchleehauf_
 
 ### Summary
 

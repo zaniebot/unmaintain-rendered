@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-16T13:31:49Z
 updated_at: 2025-12-16T20:34:53Z
 url: https://github.com/astral-sh/ty/issues/1927
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Emit diagnostic on unsound call to abstract `@classmethod` or `@staticmethod` with trivial body, when accessed on the class object itself
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-16 13:31_
+_@AlexWaygood_
 
 Both [pyright](https://pyright-play.net/?pyrightVersion=1.1.405&pythonVersion=3.13&reportUnreachable=true&code=GYJw9gtgBAhgRgYygSwgBzCALrOBnLEGBLCAUywAswATAKDoQBsY88oAxALjqj6gACzVnnJVavfgPgEiJMdXr8oNMsCgLaACmZ4AlFAC0APhQA7LFygA6WwxBkAbmRhMA%2BlgCeaMlo7XNGi09PTogA) and [pyrefly](https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEq2AxnRDcbpQC4PZxeVUTLjRhcAFrkwAddLKZRUcOHQBiiWXS10AAgqVxREqZu07G-QcKOSZ6bXUwwwdG1IAUCuAEo6AWgA%2BVnQuRDpCCNlZShgANxhUKAB9LlJiGHdVQjdMd29vWRAAGhAAVy5oOBJyRBAAYjoAVQqoCFS6MFL0YQhcdDgorGcOzhpULiT0UppsGEp3fDCIEN9AuksNe20YrlLKezBpEAA5adnKMOB8AF8jwpKyGLAoUkIuWigKBoAFUieX9YYHAEOhMPqQADme3GvXQhFkDQAyjAYHRxFwuMQ4IgAPQ4x7OF6ETgQnEwdA4zC4JhwHFg9CQ6EVPo4kaUBixVDQRiwUHgiBQwTM%2By4YjCqqyMjGdB%2BeKUOCwugAXjoRwAzIQAIwAJju6BA1xKQgq8VU0BgFDQWDwRDIBqAA) detect the unsoundness here, though [mypy](https://mypy-play.net/?mypy=latest&python=3.12&gist=cf7dbf1c58f50ff7fb4528abfceed39d) does not. We should also detect this as unsound and reject it:
 

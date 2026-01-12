@@ -12,14 +12,14 @@ head: charlie/option
 created_at: 2023-05-15T02:03:56Z
 updated_at: 2023-05-15T02:36:36Z
 url: https://github.com/astral-sh/ruff/pull/4434
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Make `extend_function_names` an `Option` type
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-15 02:03_
+_@charliermarsh_
 
 See discussion in #4431.
 

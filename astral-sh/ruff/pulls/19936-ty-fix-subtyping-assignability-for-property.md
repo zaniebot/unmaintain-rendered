@@ -14,14 +14,14 @@ head: alex/protocol-property-check-2
 created_at: 2025-08-16T13:47:18Z
 updated_at: 2025-10-29T15:05:27Z
 url: https://github.com/astral-sh/ruff/pull/19936
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [ty] Fix subtyping/assignability for `@property` protocol members
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-16 13:47_
+_@AlexWaygood_
 
 ## Summary
 

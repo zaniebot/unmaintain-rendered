@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-23T17:50:34Z
 updated_at: 2024-07-24T16:29:51Z
 url: https://github.com/astral-sh/uv/issues/5357
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Add highlight lines to documentation examples
 
 ---
 
-_Issue opened by @zanieb on 2024-07-23 17:50_
+_@zanieb_
 
 Where relevant, code blocks should use `hl_lines` to highlight the interesting part.
 

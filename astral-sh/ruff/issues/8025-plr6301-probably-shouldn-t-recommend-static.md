@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-17T21:16:59Z
 updated_at: 2023-10-26T19:03:54Z
 url: https://github.com/astral-sh/ruff/issues/8025
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # PLR6301 probably shouldn't recommend static methods
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-10-17 21:16_
+_@NeilGirdhar_
 
 If I remember correctly, Guido once suggested that adding static methods to Python was a mistake.  Whether or not that's apocryphal, I do think that Ruff shouldn't be recommending converting methods to static methods, which this rule does.
 

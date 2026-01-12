@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-01T13:07:42Z
 updated_at: 2025-09-03T12:12:40Z
 url: https://github.com/astral-sh/uv/issues/15619
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # Support for environment markers unclear – docs incomplete/need updating
 
 ---
 
-_Issue opened by @keikoro on 2025-09-01 13:07_
+_@keikoro_
 
 The docs include information about environment markers to narrow down dependency definitions and link to the relevant Python docs in several places, like [here](https://docs.astral.sh/uv/concepts/projects/dependencies/#dependency-specifiers) or [here](https://docs.astral.sh/uv/concepts/resolution/#dependency-overrides), but fail to warn users they can't actually use them all (!) since `uv` [doesn't fully support them](https://github.com/astral-sh/uv/issues/15520#issuecomment-3221289223).
 

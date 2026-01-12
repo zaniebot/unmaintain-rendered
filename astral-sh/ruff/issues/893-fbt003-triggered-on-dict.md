@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-23T14:20:58Z
 updated_at: 2022-12-01T22:33:59Z
 url: https://github.com/astral-sh/ruff/issues/893
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # FBT003 triggered on dict 
 
 ---
 
-_Issue opened by @obi-081 on 2022-11-23 14:20_
+_@obi-081_
 
 Hi !
 I found four false positives for the rule FBT003 on dict objects.

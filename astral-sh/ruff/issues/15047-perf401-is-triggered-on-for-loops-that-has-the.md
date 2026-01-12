@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-18T16:06:10Z
 updated_at: 2024-12-19T12:56:47Z
 url: https://github.com/astral-sh/ruff/issues/15047
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # PERF401 is triggered on for-loops that has the walrus operator inside
 
 ---
 
-_Issue opened by @Majsvaffla on 2024-12-18 16:06_
+_@Majsvaffla_
 
 PERF401 is triggered on code that has the walrus operator inside. The walrus operator is not available in the list-comprehension if-shorthand and it can not be recreated within a single list-comprehension.
 

@@ -12,14 +12,14 @@ head: lint-attributes
 created_at: 2023-01-25T05:29:40Z
 updated_at: 2023-01-25T05:40:30Z
 url: https://github.com/astral-sh/ruff/pull/2148
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add `#![warn(clippy::pedantic)]` to lib.rs and main.rs files
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-25 05:29_
+_@not-my-profile_
 
 _No description provided._
 

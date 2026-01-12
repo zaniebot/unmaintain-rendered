@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-29T13:55:25Z
 updated_at: 2025-07-29T15:43:16Z
 url: https://github.com/astral-sh/ty/issues/912
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # PyQt/PySide `unsupported-operator` error
 
 ---
 
-_Issue opened by @my1e5 on 2025-07-29 13:55_
+_@my1e5_
 
 ### Summary
 

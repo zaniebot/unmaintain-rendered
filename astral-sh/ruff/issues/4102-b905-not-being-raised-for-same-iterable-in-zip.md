@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-04-25T21:28:52Z
 updated_at: 2023-12-11T23:29:52Z
 url: https://github.com/astral-sh/ruff/issues/4102
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # B905 not being raised for same iterable in `zip`
 
 ---
 
-_Issue opened by @jamesbraza on 2023-04-25 21:28_
+_@jamesbraza_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

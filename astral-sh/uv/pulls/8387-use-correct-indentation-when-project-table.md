@@ -13,14 +13,14 @@ head: charlie/open
 created_at: 2024-10-20T17:11:00Z
 updated_at: 2024-10-20T19:56:38Z
 url: https://github.com/astral-sh/uv/pull/8387
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:17Z
 ```
 
 # Use correct indentation when project table contains open bracket comment
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-20 17:11_
+_@charliermarsh_
 
 ## Summary
 

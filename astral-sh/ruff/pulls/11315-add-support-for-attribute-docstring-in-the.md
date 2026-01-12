@@ -13,14 +13,14 @@ head: dhruv/attribute-docstring
 created_at: 2024-05-07T03:13:48Z
 updated_at: 2024-05-10T14:57:58Z
 url: https://github.com/astral-sh/ruff/pull/11315
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Add support for attribute docstring in the semantic model
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-07 03:13_
+_@dhruvmanila_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-11T04:22:32Z
 updated_at: 2024-11-12T06:08:26Z
 url: https://github.com/astral-sh/uv/issues/9007
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # [BUG] uv add does not consider the python version when resolving dependency versions
 
 ---
 
-_Issue opened by @TonyYanOnFire on 2024-11-11 04:22_
+_@TonyYanOnFire_
 
 I encountered an error when running the following command:
 ```

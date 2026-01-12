@@ -12,14 +12,14 @@ head: charlie/cache
 created_at: 2023-10-31T20:57:38Z
 updated_at: 2023-10-31T21:02:10Z
 url: https://github.com/astral-sh/uv/pull/265
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:50Z
 ```
 
 # Avoid re-parsing wheel filename in source distribution tree
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-31 20:57_
+_@charliermarsh_
 
 _No description provided._
 

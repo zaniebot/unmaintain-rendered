@@ -13,14 +13,14 @@ head: charlie/re
 created_at: 2025-12-13T03:23:39Z
 updated_at: 2025-12-17T00:16:24Z
 url: https://github.com/astral-sh/uv/pull/17119
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # Support remote `pylock.toml` files
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-13 03:23_
+_@charliermarsh_
 
 ## Summary
 

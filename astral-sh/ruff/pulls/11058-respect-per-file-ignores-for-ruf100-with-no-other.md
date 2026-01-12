@@ -14,14 +14,14 @@ head: charlie/per
 created_at: 2024-04-20T15:25:50Z
 updated_at: 2024-04-20T15:38:03Z
 url: https://github.com/astral-sh/ruff/pull/11058
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Respect per-file-ignores for RUF100 with no other diagnostics
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-20 15:25_
+_@charliermarsh_
 
 ## Summary
 

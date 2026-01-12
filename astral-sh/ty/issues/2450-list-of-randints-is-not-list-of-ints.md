@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-11T20:28:29Z
 updated_at: 2026-01-11T20:30:55Z
 url: https://github.com/astral-sh/ty/issues/2450
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # list of randints is not list of ints...
 
 ---
 
-_Issue opened by @danielpopescu on 2026-01-11 20:28_
+_@danielpopescu_
 
 ### Summary
 

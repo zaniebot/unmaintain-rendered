@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-08T00:45:54Z
 updated_at: 2024-03-08T02:24:15Z
 url: https://github.com/astral-sh/uv/issues/2292
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Is an venv created by uv updatable by pip?
 
 ---
 
-_Issue opened by @echoix on 2024-03-08 00:45_
+_@echoix_
 
 I'm one of the maintainers of [Megalinter](https://github.com/oxsecurity/megalinter), a tool and action that combines many linters to run on code. Most of our work is essentially integrating all these projects of different environments together. It is known to be very configurable to be able to use it any project.
 

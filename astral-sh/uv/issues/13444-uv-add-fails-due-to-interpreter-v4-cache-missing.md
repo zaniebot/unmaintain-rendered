@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-14T07:21:12Z
 updated_at: 2025-05-16T13:17:09Z
 url: https://github.com/astral-sh/uv/issues/13444
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # uv add fails due to interpreter-v4 cache missing invalidation
 
 ---
 
-_Issue opened by @tlandschoff-scale on 2025-05-14 07:21_
+_@tlandschoff-scale_
 
 ### Summary
 

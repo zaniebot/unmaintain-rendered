@@ -13,14 +13,14 @@ head: cjm/place-from-decls
 created_at: 2025-08-12T19:05:37Z
 updated_at: 2025-08-13T14:26:10Z
 url: https://github.com/astral-sh/ruff/pull/19884
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] simplify return type of place_from_declarations
 
 ---
 
-_Pull request opened by @carljm on 2025-08-12 19:05_
+_@carljm_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-17T12:56:25Z
 updated_at: 2023-02-24T22:40:00Z
 url: https://github.com/astral-sh/ruff/issues/2981
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # UP007 should leave type aliases alone
 
 ---
 
-_Issue opened by @aberres on 2023-02-17 12:56_
+_@aberres_
 
 Given the following snippet, `ruff` should not throw an error. At least this is the behavior of `pyupgrade`.
 

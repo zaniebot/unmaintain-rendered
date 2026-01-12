@@ -12,14 +12,14 @@ head: charlie/features
 created_at: 2022-09-06T17:56:25Z
 updated_at: 2022-09-06T18:19:39Z
 url: https://github.com/astral-sh/ruff/pull/113
-synced_at: 2026-01-12T05:48:44Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Disable update-informer on linux-cross
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-06 17:56_
+_@charliermarsh_
 
 Resolves #112.
 

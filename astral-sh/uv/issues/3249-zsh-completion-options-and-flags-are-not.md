@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-24T16:07:08Z
 updated_at: 2024-11-12T20:20:39Z
 url: https://github.com/astral-sh/uv/issues/3249
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # Zsh completion: Options and flags are not completed when they come after ordered arguments
 
 ---
 
-_Issue opened by @AndydeCleyre on 2024-04-24 16:07_
+_@AndydeCleyre_
 
 ```console
 $ uv pip compile requirements.in --  # mash TAB key here

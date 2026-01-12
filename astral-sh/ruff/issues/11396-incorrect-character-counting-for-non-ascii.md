@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-13T02:47:29Z
 updated_at: 2024-05-14T07:58:35Z
 url: https://github.com/astral-sh/ruff/issues/11396
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Incorrect character counting for non-ASCII characters
 
 ---
 
-_Issue opened by @kotet on 2024-05-13 02:47_
+_@kotet_
 
 I am a Japanese speaker and am working on a project where Japanese is used as part of the code.
 I have gotten different output from black and ruff for the line length.

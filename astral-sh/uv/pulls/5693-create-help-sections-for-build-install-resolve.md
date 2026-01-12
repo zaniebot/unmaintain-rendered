@@ -13,14 +13,14 @@ head: zb/help-sections
 created_at: 2024-08-01T16:36:37Z
 updated_at: 2024-08-05T21:28:36Z
 url: https://github.com/astral-sh/uv/pull/5693
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:06:57Z
 ```
 
 # Create help sections for build, install, resolve, and index
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-01 16:36_
+_@zanieb_
 
 Part of #4454 
 

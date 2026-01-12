@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-03T15:03:50Z
 updated_at: 2025-01-05T11:08:16Z
 url: https://github.com/astral-sh/ruff/issues/15239
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Windows archive detected as a trojan with ruff 0.8.5
 
 ---
 
-_Issue opened by @jcwillox on 2025-01-03 15:03_
+_@jcwillox_
 
 The windows download for 0.8.5, is detected as a trojan, thought I should report it, probably a false positive, but didn't see any other issues for it.
 

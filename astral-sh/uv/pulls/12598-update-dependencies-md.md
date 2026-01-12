@@ -13,14 +13,14 @@ head: main
 created_at: 2025-04-01T13:19:24Z
 updated_at: 2025-04-01T13:47:28Z
 url: https://github.com/astral-sh/uv/pull/12598
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:19Z
 ```
 
 # Update dependencies.md
 
 ---
 
-_Pull request opened by @xiaq on 2025-04-01 13:19_
+_@xiaq_
 
 Fix broken grammar and hl_lines.
 

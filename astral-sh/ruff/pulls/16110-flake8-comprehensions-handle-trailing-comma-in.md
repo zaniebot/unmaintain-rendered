@@ -14,14 +14,14 @@ head: fix-c403-trailing-comma
 created_at: 2025-02-12T01:04:05Z
 updated_at: 2025-02-16T01:33:22Z
 url: https://github.com/astral-sh/ruff/pull/16110
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-comprehensions`]: Handle trailing comma in `C403` fix
 
 ---
 
-_Pull request opened by @ayushbaweja on 2025-02-12 01:04_
+_@ayushbaweja_
 
 ## Summary
 

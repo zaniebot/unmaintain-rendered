@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-07-16T17:08:51Z
 updated_at: 2018-08-02T03:30:09Z
 url: https://github.com/clap-rs/clap/issues/1000
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # clap::Values should implement Default<'a> 
 
 ---
 
-_Issue opened by @fulara on 2017-07-16 17:08_
+_@fulara_
 
 Problem:
 ```

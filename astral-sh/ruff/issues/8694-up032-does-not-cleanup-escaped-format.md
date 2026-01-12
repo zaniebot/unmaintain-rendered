@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-15T13:30:46Z
 updated_at: 2023-11-16T19:59:55Z
 url: https://github.com/astral-sh/ruff/issues/8694
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # UP032 does not cleanup escaped format placeholders in string continuations
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-11-15 13:30_
+_@ThiefMaster_
 
 Original code:
 ```python

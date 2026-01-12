@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-16T08:45:21Z
 updated_at: 2025-06-16T08:49:32Z
 url: https://github.com/astral-sh/uv/issues/14070
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # Exit with error code if `uv sync --dry-run` would change anything
 
 ---
 
-_Issue opened by @sewi-cpan on 2025-06-16 08:45_
+_@sewi-cpan_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: konsti/satisfies2
 created_at: 2024-04-30T16:11:17Z
 updated_at: 2024-04-30T16:45:06Z
 url: https://github.com/astral-sh/uv/pull/3324
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:34Z
 ```
 
 # Centralize installed dist satisfies requirement check
 
 ---
 
-_Pull request opened by @konstin on 2024-04-30 16:11_
+_@konstin_
 
 Another split out from https://github.com/astral-sh/uv/pull/3263. This abstracts the copy&pasted check whether an installed distribution satisfies a requirement used by both plan.rs and site_packages.rs into a shared module. It's less useful here than with the new requirement but helps with reducing https://github.com/astral-sh/uv/pull/3263 diff size.
 

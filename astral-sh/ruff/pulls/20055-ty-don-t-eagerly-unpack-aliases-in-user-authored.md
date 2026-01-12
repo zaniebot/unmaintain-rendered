@@ -13,14 +13,14 @@ head: cjm/aliasinunion
 created_at: 2025-08-23T13:06:26Z
 updated_at: 2025-08-26T23:29:46Z
 url: https://github.com/astral-sh/ruff/pull/20055
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # [ty] don't eagerly unpack aliases in user-authored unions
 
 ---
 
-_Pull request opened by @carljm on 2025-08-23 13:06_
+_@carljm_
 
 ## Summary
 

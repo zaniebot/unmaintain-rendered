@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-07T10:22:56Z
 updated_at: 2025-10-07T12:49:42Z
 url: https://github.com/astral-sh/ty/issues/1317
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Narrow `str` to `Literal` type via `x in ["a", "b"]` check
 
 ---
 
-_Issue opened by @lypwig on 2025-10-07 10:22_
+_@lypwig_
 
 ### Summary
 

@@ -11,14 +11,14 @@ head: useless_return
 created_at: 2023-02-21T19:44:07Z
 updated_at: 2023-02-22T08:31:37Z
 url: https://github.com/astral-sh/ruff/pull/3094
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Useless return
 
 ---
 
-_Pull request opened by @fathom-tomek on 2023-02-21 19:44_
+_@fathom-tomek_
 
 will fill in shortly
 

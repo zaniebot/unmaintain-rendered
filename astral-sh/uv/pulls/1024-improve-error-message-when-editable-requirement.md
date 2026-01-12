@@ -13,14 +13,14 @@ head: charlie/edit-error
 created_at: 2024-01-20T17:56:38Z
 updated_at: 2024-01-20T17:59:19Z
 url: https://github.com/astral-sh/uv/pull/1024
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:22Z
 ```
 
 # Improve error message when editable requirement doesn't exist
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-20 17:56_
+_@charliermarsh_
 
 Making these a lot clearer in the common case by reducing the depth of the error.
 

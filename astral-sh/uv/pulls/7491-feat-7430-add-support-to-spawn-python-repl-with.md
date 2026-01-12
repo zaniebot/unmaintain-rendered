@@ -11,14 +11,14 @@ head: feat(7430)/spawn-repl-with-uvx-python
 created_at: 2024-09-18T11:37:31Z
 updated_at: 2025-02-17T05:06:23Z
 url: https://github.com/astral-sh/uv/pull/7491
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:07:51Z
 ```
 
 # `feat(7430)` - Add support to spawn python REPL with `uvx python` or `uvx python@<version>`
 
 ---
 
-_Pull request opened by @mikeleppane on 2024-09-18 11:37_
+_@mikeleppane_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-23T11:39:53Z
 updated_at: 2025-07-23T12:39:32Z
 url: https://github.com/astral-sh/uv/issues/14840
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # Installing python3 with an artifactory mirror fails on untarring files.
 
 ---
 
-_Issue opened by @Ronaphil on 2025-07-23 11:39_
+_@Ronaphil_
 
 ### Summary
 

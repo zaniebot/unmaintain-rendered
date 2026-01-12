@@ -13,14 +13,14 @@ head: charlie/time
 created_at: 2024-01-23T19:39:44Z
 updated_at: 2024-01-23T19:52:21Z
 url: https://github.com/astral-sh/uv/pull/1067
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # Use ctime for interpreter timestamps
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-23 19:39_
+_@charliermarsh_
 
 Per https://apenwarr.ca/log/20181113, `ctime` should be a lot more conservative, and should detect things like the issue we see with the python-build-standalone builds, where the `mtime` is identical across builds.
 

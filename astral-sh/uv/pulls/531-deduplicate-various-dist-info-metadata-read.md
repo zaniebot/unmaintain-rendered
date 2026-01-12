@@ -13,14 +13,14 @@ head: charlie/dist-info
 created_at: 2023-12-04T02:17:34Z
 updated_at: 2023-12-04T02:29:01Z
 url: https://github.com/astral-sh/uv/pull/531
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:01Z
 ```
 
 # Deduplicate various `.dist-info/METADATA` read implementations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-04 02:17_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/484.
 

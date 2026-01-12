@@ -14,14 +14,14 @@ head: gankra/remod
 created_at: 2025-07-21T18:28:05Z
 updated_at: 2025-07-22T12:50:36Z
 url: https://github.com/astral-sh/ruff/pull/19471
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Implement non-stdlib stub mapping for classes and functions
 
 ---
 
-_Pull request opened by @Gankra on 2025-07-21 18:28_
+_@Gankra_
 
 This implements mapping of definitions in stubs to definitions in the "real" implementation using the approach described in https://github.com/astral-sh/ty/issues/788#issuecomment-3097000287
 

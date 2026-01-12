@@ -13,14 +13,14 @@ head: typeshedbot/sync-typeshed
 created_at: 2025-04-15T00:29:59Z
 updated_at: 2025-04-15T11:39:22Z
 url: https://github.com/astral-sh/ruff/pull/17402
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # Sync vendored typeshed stubs
 
 ---
 
-_Pull request opened by @github-actions on 2025-04-15 00:29_
+_@github-actions_
 
 Close and reopen this PR to trigger CI
 

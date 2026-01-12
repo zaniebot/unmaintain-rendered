@@ -13,14 +13,14 @@ head: charlie/exc_info
 created_at: 2023-06-02T04:51:25Z
 updated_at: 2023-06-02T05:25:12Z
 url: https://github.com/astral-sh/ruff/pull/4797
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Ignore error calls with `exc_info` in TRY400
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-02 04:51_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

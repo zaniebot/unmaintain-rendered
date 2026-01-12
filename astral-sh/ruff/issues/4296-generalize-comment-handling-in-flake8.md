@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-09T01:08:47Z
 updated_at: 2023-05-09T03:37:31Z
 url: https://github.com/astral-sh/ruff/issues/4296
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Generalize comment handling in `flake8-comprehension` fixes
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-05-09 01:08_
+_@dhruvmanila_
 
 I've provided a few examples but there will be a few more. As mentioned that whenever the parenthesis or brackets are being dropped, that's where this will happen. It seems to be happening in most of comprehension fixes.
 

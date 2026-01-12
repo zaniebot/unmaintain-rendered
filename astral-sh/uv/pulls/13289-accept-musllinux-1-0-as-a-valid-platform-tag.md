@@ -13,14 +13,14 @@ head: charlie/musl
 created_at: 2025-05-04T23:50:19Z
 updated_at: 2025-05-05T06:53:43Z
 url: https://github.com/astral-sh/uv/pull/13289
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:38Z
 ```
 
 # Accept `musllinux_1_0` as a valid platform tag
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-04 23:50_
+_@charliermarsh_
 
 ## Summary
 

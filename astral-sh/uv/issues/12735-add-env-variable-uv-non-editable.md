@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-08T07:30:13Z
 updated_at: 2025-04-10T19:56:08Z
 url: https://github.com/astral-sh/uv/issues/12735
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # Add env variable UV_NON_EDITABLE
 
 ---
 
-_Issue opened by @haarisr on 2025-04-08 07:30_
+_@haarisr_
 
 ### Summary
 

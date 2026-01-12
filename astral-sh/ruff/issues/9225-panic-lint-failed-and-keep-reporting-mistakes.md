@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-21T09:34:24Z
 updated_at: 2023-12-21T10:40:36Z
 url: https://github.com/astral-sh/ruff/issues/9225
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [Panic]Lint failed and keep reporting mistakes
 
 ---
 
-_Issue opened by @majiayu000 on 2023-12-21 09:34_
+_@majiayu000_
 
 When using jupyter notebook , I have a string just like
 ```

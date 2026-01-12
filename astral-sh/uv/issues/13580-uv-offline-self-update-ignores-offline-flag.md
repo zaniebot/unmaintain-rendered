@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-21T16:29:21Z
 updated_at: 2025-05-27T03:29:59Z
 url: https://github.com/astral-sh/uv/issues/13580
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # `uv --offline self update` ignores --offline flag.
 
 ---
 
-_Issue opened by @collinanderson on 2025-05-21 16:29_
+_@collinanderson_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-18T14:24:06Z
 updated_at: 2024-08-08T20:48:16Z
 url: https://github.com/astral-sh/uv/issues/5188
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Add `uv tool upgrade` to upgrade a tool
 
 ---
 
-_Issue opened by @zanieb on 2024-07-18 14:24_
+_@zanieb_
 
 e.g. given `uv tool upgrade <package name>` we'd upgrade the tool associated with the package to the latest version within the constraints. The user cannot specify new constraints here, they'd need to use `uv tool install` for that.
 

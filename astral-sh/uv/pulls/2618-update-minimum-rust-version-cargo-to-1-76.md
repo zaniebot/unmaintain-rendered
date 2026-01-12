@@ -13,14 +13,14 @@ head: konsti/update-rust-version
 created_at: 2024-03-22T18:35:51Z
 updated_at: 2024-03-22T18:45:17Z
 url: https://github.com/astral-sh/uv/pull/2618
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:08Z
 ```
 
 # Update minimum rust version (cargo) to 1.76
 
 ---
 
-_Pull request opened by @konstin on 2024-03-22 18:35_
+_@konstin_
 
 This should address (fix?) #2442, it blocks building with a version that doesn't support return type impl trait.
 

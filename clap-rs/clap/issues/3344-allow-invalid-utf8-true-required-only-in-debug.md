@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-25T18:17:08Z
 updated_at: 2022-02-02T20:00:36Z
 url: https://github.com/clap-rs/clap/issues/3344
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # allow_invalid_utf8(true) required only in debug build
 
 ---
 
-_Issue opened by @njaard on 2022-01-25 18:17_
+_@njaard_
 
 ### Please complete the following tasks
 

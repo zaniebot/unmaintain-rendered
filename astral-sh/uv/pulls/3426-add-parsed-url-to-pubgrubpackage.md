@@ -13,14 +13,14 @@ head: konsti/add-parsed-url-to-pubgrub
 created_at: 2024-05-07T15:32:51Z
 updated_at: 2024-05-14T00:55:22Z
 url: https://github.com/astral-sh/uv/pull/3426
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:38Z
 ```
 
 # Add parsed url to PubGrubPackage
 
 ---
 
-_Pull request opened by @konstin on 2024-05-07 15:32_
+_@konstin_
 
 Avoid reparsing urls by storing the parsed parts across resolution on `PubGrubPackage`.
 

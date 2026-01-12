@@ -12,14 +12,14 @@ head: test-for-interpreter-cache
 created_at: 2023-12-04T09:59:51Z
 updated_at: 2023-12-04T10:03:44Z
 url: https://github.com/astral-sh/uv/pull/540
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:01Z
 ```
 
 # Test interpreter cache invalidation
 
 ---
 
-_Pull request opened by @konstin on 2023-12-04 09:59_
+_@konstin_
 
 Add missing test for #529/#508.
 

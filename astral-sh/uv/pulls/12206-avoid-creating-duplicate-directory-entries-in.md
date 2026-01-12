@@ -14,14 +14,14 @@ head: charlie/dupe
 created_at: 2025-03-16T23:39:09Z
 updated_at: 2025-03-16T23:48:36Z
 url: https://github.com/astral-sh/uv/pull/12206
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:10Z
 ```
 
 # Avoid creating duplicate directory entries in built wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-16 23:39_
+_@charliermarsh_
 
 ## Summary
 

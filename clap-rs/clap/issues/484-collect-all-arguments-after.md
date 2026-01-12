@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-04-12T21:16:45Z
 updated_at: 2020-08-05T08:49:41Z
 url: https://github.com/clap-rs/clap/issues/484
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Collect all arguments after --
 
 ---
 
-_Issue opened by @jimmycuadra on 2016-04-12 21:16_
+_@jimmycuadra_
 
 I have a program that wraps another one, and I'd like the ability to use the common `--` syntax as a separator that means "anything that appears after this should be passed through as raw input" so that I can treat all the extra trailing arguments as raw input for the underlying program. If I have a program invoked like this:
 

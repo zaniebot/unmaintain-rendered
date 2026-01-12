@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-05T09:42:42Z
 updated_at: 2024-01-02T18:55:49Z
 url: https://github.com/astral-sh/ruff/issues/4238
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [FEATURE] Remove blank comments
 
 ---
 
-_Issue opened by @andreyfedoseev on 2023-05-05 09:42_
+_@andreyfedoseev_
 
 I couldn't find a rule for removing blank comments, so I made one myself.
 

@@ -13,14 +13,14 @@ head: zb/toolchain-preview-mode
 created_at: 2024-05-25T14:05:07Z
 updated_at: 2024-05-27T04:05:20Z
 url: https://github.com/astral-sh/uv/pull/3835
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:53Z
 ```
 
 # Gate discovery of managed toolchains with preview
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-25 14:05_
+_@zanieb_
 
 Prepares for merge of https://github.com/astral-sh/uv/pull/3797, gating managed toolchain discovery with the preview flag to lower risk of releasing.
 

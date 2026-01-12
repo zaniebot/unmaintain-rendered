@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-10-12T20:05:13Z
 updated_at: 2022-05-03T21:45:53Z
 url: https://github.com/clap-rs/clap/issues/2862
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Output when multicall applet isn't found is unhelpful and ugly
 
 ---
 
-_Issue opened by @fishface60 on 2021-10-12 20:05_
+_@fishface60_
 
 ### Affected Version of clap
 

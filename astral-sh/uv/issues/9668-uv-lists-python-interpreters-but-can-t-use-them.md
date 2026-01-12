@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-06T04:18:30Z
 updated_at: 2024-12-09T23:38:45Z
 url: https://github.com/astral-sh/uv/issues/9668
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:55Z
 ```
 
 # UV lists python interpreters but can't use them!
 
 ---
 
-_Issue opened by @meitham on 2024-12-06 04:18_
+_@meitham_
 
 I'm on version uv 0.5.6 (b70c4f30e 2024-12-03) on windows
 uv sees my python interpreters from the windows registry  

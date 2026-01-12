@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-18T20:02:14Z
 updated_at: 2024-03-19T15:06:58Z
 url: https://github.com/astral-sh/uv/issues/2520
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # `uv pip check` gives a different result to `pip check`
 
 ---
 
-_Issue opened by @strickvl on 2024-03-18 20:02_
+_@strickvl_
 
 Added `uv pip check` to replace `pip check` in our CI (i.e. [here](https://github.com/zenml-io/zenml/pull/2520/files#diff-674e2904ada0d1873475b631dd3b95344eb79d8dedf60c0e341c4bbf831a4049R94). The CI passed previously without issue when running `pip check`, but when switching to `uv` I get [the following error](https://github.com/zenml-io/zenml/actions/runs/8332802769/job/22802845832?pr=2520#step:7:1):
 

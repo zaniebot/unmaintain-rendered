@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-01T08:57:36Z
 updated_at: 2025-10-16T11:24:43Z
 url: https://github.com/astral-sh/ty/issues/1111
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Excessive runtime for mutually referential instance attributes
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-01 08:57_
+_@sharkdp_
 
 The following example is adapted from the problematic `sympy` snippet in https://github.com/astral-sh/ruff/pull/18473#issuecomment-3240412138 (with explicitly-annotated `self` parameters). It takes ~3 seconds to type-check:
 

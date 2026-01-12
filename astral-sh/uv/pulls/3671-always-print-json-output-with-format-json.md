@@ -13,14 +13,14 @@ head: charlie/list
 created_at: 2024-05-20T16:28:55Z
 updated_at: 2024-05-20T16:39:32Z
 url: https://github.com/astral-sh/uv/pull/3671
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:47Z
 ```
 
 # Always print JSON output with --format json
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-20 16:28_
+_@charliermarsh_
 
 ## Summary
 

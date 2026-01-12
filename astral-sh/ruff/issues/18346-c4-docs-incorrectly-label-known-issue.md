@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T02:37:32Z
 updated_at: 2025-06-03T19:15:58Z
 url: https://github.com/astral-sh/ruff/issues/18346
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # C4 docs incorrectly label known issue
 
 ---
 
-_Issue opened by @AntiSol on 2025-05-28 02:37_
+_@AntiSol_
 
 ### Summary
 

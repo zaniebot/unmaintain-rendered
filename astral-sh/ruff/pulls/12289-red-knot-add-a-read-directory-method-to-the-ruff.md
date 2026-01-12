@@ -13,14 +13,14 @@ head: readdir
 created_at: 2024-07-11T16:22:23Z
 updated_at: 2024-07-12T20:45:54Z
 url: https://github.com/astral-sh/ruff/pull/12289
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Add a `read_directory()` method to the `ruff_db::system::System` trait
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-11 16:22_
+_@AlexWaygood_
 
 ## Summary
 

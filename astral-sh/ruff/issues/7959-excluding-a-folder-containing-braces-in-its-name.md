@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-14T11:11:43Z
 updated_at: 2024-01-19T19:44:44Z
 url: https://github.com/astral-sh/ruff/issues/7959
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Excluding a folder containing braces in its name fails
 
 ---
 
-_Issue opened by @LKajan on 2023-10-14 11:11_
+_@LKajan_
 
 If folder containing braces in its name is configured to the `extend-exclude` ruff fails to run. `ruff .` produces an error:
 ```

@@ -12,14 +12,14 @@ head: renovate/unicode_names2-2.x
 created_at: 2025-07-07T03:28:00Z
 updated_at: 2026-01-12T08:07:47Z
 url: https://github.com/astral-sh/ruff/pull/19172
-synced_at: 2026-01-12T08:52:59Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # Update Rust crate unicode_names2 to v2
 
 ---
 
-_Pull request opened by @renovate on 2025-07-07 03:28_
+_@renovate_
 
 This PR contains the following updates:
 

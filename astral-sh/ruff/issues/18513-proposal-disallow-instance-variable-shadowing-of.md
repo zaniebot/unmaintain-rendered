@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-06T20:07:12Z
 updated_at: 2025-06-10T09:27:11Z
 url: https://github.com/astral-sh/ruff/issues/18513
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Proposal: Disallow Instance Variable Shadowing of Class Variable Annotations
 
 ---
 
-_Issue opened by @stacey-gammon on 2025-06-06 20:07_
+_@stacey-gammon_
 
 ### Summary
 

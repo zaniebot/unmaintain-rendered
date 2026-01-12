@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-25T09:57:10Z
 updated_at: 2023-08-16T07:09:45Z
 url: https://github.com/astral-sh/ruff/issues/6059
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: Add parentheses around too long strings
 
 ---
 
-_Issue opened by @konstin on 2023-07-25 09:57_
+_@konstin_
 
 The formatter currently never adds parentheses around strings in the right hand side of an assignment. Black does add them if they help to match the line limit, otherwise it doesn't.
 

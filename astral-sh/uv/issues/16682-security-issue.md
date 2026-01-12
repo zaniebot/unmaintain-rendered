@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-11T04:35:48Z
 updated_at: 2025-11-11T04:35:59Z
 url: https://github.com/astral-sh/uv/issues/16682
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # Security Issue
 
 ---
 
-_Issue opened by @ghost on 2025-11-11 04:35_
+_@ghost_
 
 remote:       —— GitHub Personal Access Token ——————————————————————        
 remote:        locations:        

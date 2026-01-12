@@ -12,14 +12,14 @@ head: charlie/range
 created_at: 2023-05-24T22:09:40Z
 updated_at: 2023-05-24T22:45:22Z
 url: https://github.com/astral-sh/ruff/pull/4647
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Use class name as range for `B024`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-24 22:09_
+_@charliermarsh_
 
 ## Summary
 

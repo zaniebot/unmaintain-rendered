@@ -13,14 +13,14 @@ head: charlie/urls
 created_at: 2023-08-07T04:45:44Z
 updated_at: 2023-08-11T02:31:11Z
 url: https://github.com/astral-sh/ruff/pull/6383
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Enable short URLs in the playground
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-07 04:45_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-22T21:37:35Z
 updated_at: 2024-03-22T21:37:49Z
 url: https://github.com/astral-sh/uv/issues/2625
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Use terminal colors to improve readability of requirements
 
 ---
 
-_Issue opened by @zanieb on 2024-03-22 21:37_
+_@zanieb_
 
 As discussed in https://github.com/astral-sh/uv/pull/2601
 

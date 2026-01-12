@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-31T10:24:23Z
 updated_at: 2025-07-31T12:23:49Z
 url: https://github.com/astral-sh/uv/issues/14990
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # --project must be passed before "run"
 
 ---
 
-_Issue opened by @diegochine on 2025-07-31 10:24_
+_@diegochine_
 
 ### Summary
 

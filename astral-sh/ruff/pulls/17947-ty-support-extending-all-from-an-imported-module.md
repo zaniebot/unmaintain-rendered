@@ -13,14 +13,14 @@ head: alex/more-__all__-2
 created_at: 2025-05-08T12:14:18Z
 updated_at: 2025-05-08T22:54:21Z
 url: https://github.com/astral-sh/ruff/pull/17947
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [ty] Support extending `__all__` from an imported module even when the module is not an `ExprName` node
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-08 12:14_
+_@AlexWaygood_
 
 ## Summary
 

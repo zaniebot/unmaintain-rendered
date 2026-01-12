@@ -13,14 +13,14 @@ head: source-root
 created_at: 2024-07-25T14:10:18Z
 updated_at: 2024-08-02T16:47:15Z
 url: https://github.com/astral-sh/ruff/pull/12509
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Remove `salsa::report_untracked_read` when finding the dynamic module resolution paths
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-25 14:10_
+_@MichaReiser_
 
 ## Summary
 

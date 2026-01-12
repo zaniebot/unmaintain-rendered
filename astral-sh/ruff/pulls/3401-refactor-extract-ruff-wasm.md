@@ -13,14 +13,14 @@ head: refactor/extract-ruff-wasm
 created_at: 2023-03-08T11:04:33Z
 updated_at: 2023-03-09T10:07:41Z
 url: https://github.com/astral-sh/ruff/pull/3401
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # refactor: Extract `ruff_wasm`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-08 11:04_
+_@MichaReiser_
 
 This PR extracts the wasm bindings into a new `ruff_wasm` crate.
 

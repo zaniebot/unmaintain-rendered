@@ -13,14 +13,14 @@ head: soof-7081-tgz-source-dist
 created_at: 2024-09-08T22:22:50Z
 updated_at: 2024-09-08T23:09:40Z
 url: https://github.com/astral-sh/uv/pull/7201
-synced_at: 2026-01-10T12:53:42Z
+synced_at: 2026-01-12T16:07:44Z
 ```
 
 # treat .tgz the same as .tar.gz
 
 ---
 
-_Pull request opened by @soof-golan on 2024-09-08 22:22_
+_@soof-golan_
 
 
 ## Summary

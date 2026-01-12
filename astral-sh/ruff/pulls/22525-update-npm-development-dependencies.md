@@ -13,14 +13,14 @@ head: renovate/npm-development-dependencies
 created_at: 2026-01-12T07:41:01Z
 updated_at: 2026-01-12T07:53:58Z
 url: https://github.com/astral-sh/ruff/pull/22525
-synced_at: 2026-01-12T08:53:00Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # Update NPM Development dependencies
 
 ---
 
-_Pull request opened by @renovate on 2026-01-12 07:41_
+_@renovate_
 
 This PR contains the following updates:
 

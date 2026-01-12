@@ -12,14 +12,14 @@ head: charlie/relax
 created_at: 2023-02-10T18:48:23Z
 updated_at: 2023-02-10T19:26:00Z
 url: https://github.com/astral-sh/ruff/pull/2731
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # Relax conditions in bad-string-format-type
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-10 18:48_
+_@charliermarsh_
 
 An oversight on my part. We have to be _way_ more conservative here. If we can't identify the type of an expression, we _have_ to assume that it's ok.
 

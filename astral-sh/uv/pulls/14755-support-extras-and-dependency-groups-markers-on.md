@@ -14,14 +14,14 @@ head: charlie/dep-groups-install
 created_at: 2025-07-20T17:42:41Z
 updated_at: 2025-07-21T12:48:48Z
 url: https://github.com/astral-sh/uv/pull/14755
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:23Z
 ```
 
 # Support `extras` and `dependency_groups` markers on `uv pip install` and `uv pip sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-20 17:42_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: dhruv/tokens
 created_at: 2024-05-10T13:09:09Z
 updated_at: 2024-05-14T16:57:22Z
 url: https://github.com/astral-sh/ruff/pull/11361
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Add `Tokens` newtype wrapper, `TokenKind` iterator
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-10 13:09_
+_@dhruvmanila_
 
 ## Summary
 

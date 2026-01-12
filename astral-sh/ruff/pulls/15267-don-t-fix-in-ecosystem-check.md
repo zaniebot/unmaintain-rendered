@@ -13,14 +13,14 @@ head: ecosystem-check-no-fix
 created_at: 2025-01-05T09:34:17Z
 updated_at: 2025-01-06T09:21:35Z
 url: https://github.com/astral-sh/ruff/pull/15267
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Don't fix in ecosystem check
 
 ---
 
-_Pull request opened by @eclbg on 2025-01-05 09:34_
+_@eclbg_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-12T06:16:51Z
 updated_at: 2025-12-12T08:39:18Z
 url: https://github.com/astral-sh/ruff/issues/21932
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Ruff jetbrains plugin incompatible
 
 ---
 
-_Issue opened by @Airpy on 2025-12-12 06:16_
+_@Airpy_
 
 ### Summary
 

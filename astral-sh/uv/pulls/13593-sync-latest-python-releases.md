@@ -12,14 +12,14 @@ head: bump-pbs
 created_at: 2025-05-22T13:09:21Z
 updated_at: 2025-05-22T13:21:44Z
 url: https://github.com/astral-sh/uv/pull/13593
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:45Z
 ```
 
 # Sync latest Python releases
 
 ---
 
-_Pull request opened by @geofft on 2025-05-22 13:09_
+_@geofft_
 
 Pick up python-build-standalone 20250522, in particular to fix astral-sh/python-build-standalone#619
 

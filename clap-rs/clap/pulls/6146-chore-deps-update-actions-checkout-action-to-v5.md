@@ -12,14 +12,14 @@ head: renovate/actions-checkout-5.x
 created_at: 2025-10-01T02:14:05Z
 updated_at: 2025-10-01T14:53:29Z
 url: https://github.com/clap-rs/clap/pull/6146
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # chore(deps): Update actions/checkout action to v5
 
 ---
 
-_Pull request opened by @renovate on 2025-10-01 02:14_
+_@renovate_
 
 > [!NOTE]
 > Mend has cancelled [the proposed renaming](https://redirect.github.com/renovatebot/renovate/discussions/37842) of the Renovate GitHub app being renamed to `mend[bot]`.

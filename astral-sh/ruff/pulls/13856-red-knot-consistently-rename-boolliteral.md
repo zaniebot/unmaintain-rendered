@@ -13,14 +13,14 @@ head: david/bool-literal-rename
 created_at: 2024-10-21T11:38:44Z
 updated_at: 2024-10-22T20:14:32Z
 url: https://github.com/astral-sh/ruff/pull/13856
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Consistently rename BoolLiteral => BooleanLiteral
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-21 11:38_
+_@sharkdp_
 
 ## Summary
 

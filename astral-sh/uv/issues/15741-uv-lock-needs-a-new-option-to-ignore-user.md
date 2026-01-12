@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-08T18:36:18Z
 updated_at: 2025-11-24T22:58:55Z
 url: https://github.com/astral-sh/uv/issues/15741
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # `uv lock` needs a new option to ignore user-configured indexes
 
 ---
 
-_Issue opened by @Arcitec on 2025-09-08 18:36_
+_@Arcitec_
 
 ### Summary
 

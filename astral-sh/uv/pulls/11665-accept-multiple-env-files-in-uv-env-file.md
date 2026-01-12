@@ -14,14 +14,14 @@ head: Seven4ME/fix-multiple-env-files
 created_at: 2025-02-20T13:21:06Z
 updated_at: 2025-02-21T06:05:09Z
 url: https://github.com/astral-sh/uv/pull/11665
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:56Z
 ```
 
 # Accept multiple `.env` files in `UV_ENV_FILE`
 
 ---
 
-_Pull request opened by @Seven4ME on 2025-02-20 13:21_
+_@Seven4ME_
 
 According to the [UV documentation](https://docs.astral.sh/uv/configuration/files/#env), the UV_ENV_FILE environment variable should support multiple .env files, separated by spaces. However, when I tried using this feature in my repository, it didn’t work as expected.
 

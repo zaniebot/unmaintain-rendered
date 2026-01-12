@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-13T08:21:05Z
 updated_at: 2024-09-16T14:28:47Z
 url: https://github.com/astral-sh/uv/issues/7352
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Add additional Color Environment Variables+Values
 
 ---
 
-_Issue opened by @TheRealBecks on 2024-09-13 08:21_
+_@TheRealBecks_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

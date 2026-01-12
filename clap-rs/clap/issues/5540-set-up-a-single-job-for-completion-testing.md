@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-19T17:14:32Z
 updated_at: 2024-07-05T20:44:49Z
 url: https://github.com/clap-rs/clap/issues/5540
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Set up a single job for completion testing
 
 ---
 
-_Issue opened by @shannmu on 2024-06-19 17:14_
+_@shannmu_
 
 I found a issue when running the clap_complete tests locally (on the clap master branch) using the command:
 

@@ -12,14 +12,14 @@ head: master
 created_at: 2025-06-09T13:55:21Z
 updated_at: 2025-06-09T19:05:14Z
 url: https://github.com/clap-rs/clap/pull/6027
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Fix: external_subcommand does not 'tab complete' in ZSH
 
 ---
 
-_Pull request opened by @Alpha1337k on 2025-06-09 13:55_
+_@Alpha1337k_
 
 Proposal for #6016.
 

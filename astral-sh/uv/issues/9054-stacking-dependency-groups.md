@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-12T11:52:41Z
 updated_at: 2025-12-01T17:42:46Z
 url: https://github.com/astral-sh/uv/issues/9054
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # Stacking dependency groups
 
 ---
 
-_Issue opened by @patrick-egenlauf on 2024-11-12 11:52_
+_@patrick-egenlauf_
 
 The [example of dependency groups in PEP 735](https://peps.python.org/pep-0735/#example-dependency-groups-table) shows that dependency groups can depend on other dependency groups.
 Is there an uv command that allows a group to be added to another group? I could not find anything about this.

@@ -11,14 +11,14 @@ head: translate-0.4.24
 created_at: 2024-10-18T14:36:46Z
 updated_at: 2024-10-18T14:57:18Z
 url: https://github.com/astral-sh/uv/pull/8331
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:16Z
 ```
 
 # Translate 0.4.24
 
 ---
 
-_Pull request opened by @MtkN1 on 2024-10-18 14:36_
+_@MtkN1_
 
 uv 0.4.24 documentation translated into Japanese.
 

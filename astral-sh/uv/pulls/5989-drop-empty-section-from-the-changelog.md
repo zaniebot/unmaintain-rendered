@@ -14,14 +14,14 @@ head: zb/changelog-0235
 created_at: 2024-08-10T00:58:07Z
 updated_at: 2024-08-10T00:58:43Z
 url: https://github.com/astral-sh/uv/pull/5989
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:08Z
 ```
 
 # Drop empty section from the changelog
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-10 00:58_
+_@zanieb_
 
 _No description provided._
 

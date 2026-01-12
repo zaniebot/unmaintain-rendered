@@ -13,14 +13,14 @@ head: micha/fix-jemalloc-conf-nix
 created_at: 2024-09-16T07:16:11Z
 updated_at: 2024-09-16T07:55:48Z
 url: https://github.com/astral-sh/ruff/pull/13366
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Fix build of `ruff_benchmark` on NixOS
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-16 07:16_
+_@MichaReiser_
 
 ## Summary
 

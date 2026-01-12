@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-14T23:28:59Z
 updated_at: 2023-01-31T22:42:27Z
 url: https://github.com/clap-rs/clap/issues/4554
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # template documentation seems hard to find and possibly incomplete
 
 ---
 
-_Issue opened by @ehuss on 2022-12-14 23:28_
+_@ehuss_
 
 I was trying to find some documentation that would explain what `{n}` means in a help string. I ran across several issues:
 

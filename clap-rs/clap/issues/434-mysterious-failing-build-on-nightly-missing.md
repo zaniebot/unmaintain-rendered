@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-02-22T21:18:13Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/434
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Mysterious failing build on nightly (missing feature 'osstring_simple_functions')
 
 ---
 
-_Issue opened by @ketsuban on 2016-02-22 21:18_
+_@ketsuban_
 
 My [build is failing](https://travis-ci.org/Ketsuban/rustboyadvance/builds/111059085) on nightly, complaining about a missing feature annotation in clap. The weird thing is that the [previous commit](https://github.com/Ketsuban/rustboyadvance/commit/394c0d7eab4e998ea34d402e2c96e66735235c56), using the nightly from a couple days before with the same version of clap, worked fine and complained only about something in my code which previously was allowed and is being phased out.
 

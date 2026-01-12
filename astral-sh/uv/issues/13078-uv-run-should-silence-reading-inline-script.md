@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-23T23:03:55Z
 updated_at: 2025-05-10T20:43:40Z
 url: https://github.com/astral-sh/uv/issues/13078
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # `uv run` should silence "Reading inline script metadata from..." messages
 
 ---
 
-_Issue opened by @gregglind on 2025-04-23 23:03_
+_@gregglind_
 
 ### Summary
 

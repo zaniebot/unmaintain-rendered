@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-11T05:43:16Z
 updated_at: 2024-07-15T05:48:37Z
 url: https://github.com/astral-sh/uv/issues/4987
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Failure when tried to upgrade single package - No solution found when resolving dependencies:
 
 ---
 
-_Issue opened by @ajaysoman1993 on 2024-07-11 05:43_
+_@ajaysoman1993_
 
 When I tried to upgrade single package using below command its not working
 uv pip compile --upgrade-package=aenum --output-file=requirements_windows.txt requirements.in

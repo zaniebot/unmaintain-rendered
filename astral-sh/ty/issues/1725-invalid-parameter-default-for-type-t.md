@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-02T17:32:37Z
 updated_at: 2025-12-02T17:35:29Z
 url: https://github.com/astral-sh/ty/issues/1725
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `invalid-parameter-default` for `Type[T]`
 
 ---
 
-_Issue opened by @aidandj on 2025-12-02 17:32_
+_@aidandj_
 
 ### Summary
 

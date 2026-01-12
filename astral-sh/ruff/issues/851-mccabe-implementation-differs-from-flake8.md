@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-21T13:22:25Z
 updated_at: 2022-11-21T18:30:37Z
 url: https://github.com/astral-sh/ruff/issues/851
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # mccabe implementation differs from flake8
 
 ---
 
-_Issue opened by @kalekseev on 2022-11-21 13:22_
+_@kalekseev_
 
 ruff reports complexity - 11 while flake8 - 9, cc @edgarrmondragon 
 ```

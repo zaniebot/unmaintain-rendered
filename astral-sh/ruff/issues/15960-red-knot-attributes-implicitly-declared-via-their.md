@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-05T10:55:47Z
 updated_at: 2025-02-18T21:43:13Z
 url: https://github.com/astral-sh/ruff/issues/15960
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Attributes implicitly declared via their parameter types
 
 ---
 
-_Issue opened by @sharkdp on 2025-02-05 10:55_
+_@sharkdp_
 
 The idea of this ticket is to support the following use case.
 

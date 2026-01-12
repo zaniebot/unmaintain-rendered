@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-26T14:15:56Z
 updated_at: 2025-05-26T14:43:39Z
 url: https://github.com/astral-sh/ruff/issues/18319
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # UP015 fix should be unsafe when it removes `"U"`
 
 ---
 
-_Issue opened by @dscorbett on 2025-05-26 14:15_
+_@dscorbett_
 
 ### Summary
 

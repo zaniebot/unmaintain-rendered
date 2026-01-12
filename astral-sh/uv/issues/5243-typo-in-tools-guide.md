@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-20T11:08:31Z
 updated_at: 2024-07-20T13:10:45Z
 url: https://github.com/astral-sh/uv/issues/5243
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Typo in tools guide
 
 ---
 
-_Issue opened by @iw on 2024-07-20 11:08_
+_@iw_
 
 Apologies, 👀 were drawn to this typo in [guides/tools.md](https://github.com/astral-sh/uv/blob/841edc3718463f88821f63a76c20e6d6851dd7f7/docs/guides/tools.md?plain=1#L21):
 

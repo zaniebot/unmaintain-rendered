@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-14T02:10:30Z
 updated_at: 2025-05-14T02:34:05Z
 url: https://github.com/astral-sh/uv/issues/13440
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # How to change the Python installation path
 
 ---
 
-_Issue opened by @wzr0108 on 2025-05-14 02:10_
+_@wzr0108_
 
 ### Question
 

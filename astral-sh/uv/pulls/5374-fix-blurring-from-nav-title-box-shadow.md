@@ -14,14 +14,14 @@ head: zb/nav-shadow
 created_at: 2024-07-23T20:54:52Z
 updated_at: 2024-07-23T22:33:59Z
 url: https://github.com/astral-sh/uv/pull/5374
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:47Z
 ```
 
 # Fix blurring from nav title box shadow
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-23 20:54_
+_@zanieb_
 
 Fixes blur noted in https://github.com/astral-sh/uv/pull/5316 but doesn't drop the title entirely. https://github.com/astral-sh/uv/pull/5316 is my preferred design, if the implementation was cost-free.
 

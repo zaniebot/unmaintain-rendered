@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-22T08:45:49Z
 updated_at: 2025-10-01T17:58:25Z
 url: https://github.com/astral-sh/ruff/issues/20510
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PLR6201 should only apply to hashable types
 
 ---
 
-_Issue opened by @JoElfner on 2025-09-22 08:45_
+_@JoElfner_
 
 ### Summary
 

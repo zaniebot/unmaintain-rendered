@@ -12,14 +12,14 @@ head: rule/banned-aliases
 created_at: 2023-04-10T11:32:28Z
 updated_at: 2023-04-12T03:47:28Z
 url: https://github.com/astral-sh/ruff/pull/3926
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # [`flake8-import-conventions`] Add a rule for `BannedImportAlias`
 
 ---
 
-_Pull request opened by @stancld on 2023-04-10 11:32_
+_@stancld_
 
 This PR adds a new rule into `flake8-import-conventions` allowing to ban of certain import aliases (`ICN002`), for example, due to violating some project's rules.
 

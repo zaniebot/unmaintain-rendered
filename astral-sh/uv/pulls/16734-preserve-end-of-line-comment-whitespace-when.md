@@ -13,14 +13,14 @@ head: comment-formatting
 created_at: 2025-11-14T08:47:57Z
 updated_at: 2025-11-20T19:15:27Z
 url: https://github.com/astral-sh/uv/pull/16734
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:24Z
 ```
 
 # Preserve end-of-line comment whitespace when editing `pyproject.toml`
 
 ---
 
-_Pull request opened by @terror on 2025-11-14 08:47_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/16719
 

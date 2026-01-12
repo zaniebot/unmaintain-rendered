@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-01T01:07:23Z
 updated_at: 2025-08-08T14:33:45Z
 url: https://github.com/astral-sh/uv/issues/15009
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # Support `UV_NO_DEV` env var
 
 ---
 
-_Issue opened by @2bndy5 on 2025-08-01 01:07_
+_@2bndy5_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/gate
 created_at: 2025-01-02T16:30:09Z
 updated_at: 2025-01-02T16:40:50Z
 url: https://github.com/astral-sh/uv/pull/10274
-synced_at: 2026-01-10T11:44:40Z
+synced_at: 2026-01-12T16:09:12Z
 ```
 
 # Avoid forking on version in non-universal resolutions
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-02 16:30_
+_@charliermarsh_
 
 ## Summary
 

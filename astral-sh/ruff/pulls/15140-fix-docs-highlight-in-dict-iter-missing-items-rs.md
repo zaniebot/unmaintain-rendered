@@ -13,14 +13,14 @@ head: patch-5
 created_at: 2024-12-25T14:58:13Z
 updated_at: 2024-12-25T17:52:17Z
 url: https://github.com/astral-sh/ruff/pull/15140
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Fix docs highlight in `dict_iter_missing_items.rs`
 
 ---
 
-_Pull request opened by @sobolevn on 2024-12-25 14:58_
+_@sobolevn_
 
 It used to be like this:
 <img width="969" alt="Снимок экрана 2024-12-25 в 17 57 44" src="https://github.com/user-attachments/assets/b141b75d-71a7-4971-8e73-242839c44c6d" />

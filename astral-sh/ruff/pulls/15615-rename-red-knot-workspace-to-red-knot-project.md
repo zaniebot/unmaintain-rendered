@@ -14,14 +14,14 @@ head: micha/workspace-rename
 created_at: 2025-01-20T12:26:39Z
 updated_at: 2025-01-20T13:02:46Z
 url: https://github.com/astral-sh/ruff/pull/15615
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Rename `red_knot_workspace` to `red_knot_project`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-20 12:26_
+_@MichaReiser_
 
 ## Summary
 

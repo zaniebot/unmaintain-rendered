@@ -13,14 +13,14 @@ head: fuzz-workflow
 created_at: 2024-04-29T13:27:44Z
 updated_at: 2024-04-29T16:54:20Z
 url: https://github.com/astral-sh/ruff/pull/11203
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Add a daily workflow to fuzz the parser with randomly selected seeds
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-29 13:27_
+_@AlexWaygood_
 
 ## Summary
 

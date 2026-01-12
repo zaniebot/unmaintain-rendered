@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-06-30T17:00:09Z
 updated_at: 2018-08-02T03:29:51Z
 url: https://github.com/clap-rs/clap/issues/553
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Show help for all subcommands with --all option?
 
 ---
 
-_Issue opened by @rickystewart on 2016-06-30 17:00_
+_@rickystewart_
 
 I notice there is a `Hidden` option for subcommands to mark them as hidden from the default help screen.  I'd like some of my subcommands to be hidden by default, but I'd like there to be some option to display all subcommands on the help screen if the user wants to see them.  i.e. `help` should display only the information for the public subcommands, but `help --all` should display the information for every subcommand, including the hidden ones.  Does Clap support this use case?
 

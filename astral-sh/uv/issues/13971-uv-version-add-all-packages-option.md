@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T16:26:52Z
 updated_at: 2025-06-12T02:26:30Z
 url: https://github.com/astral-sh/uv/issues/13971
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # `uv version`: Add --all-packages option
 
 ---
 
-_Issue opened by @StephenRobin on 2025-06-11 16:26_
+_@StephenRobin_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: isort-force-single-line
 created_at: 2022-12-24T20:22:54Z
 updated_at: 2022-12-27T13:52:04Z
 url: https://github.com/astral-sh/ruff/pull/1366
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Support isort's force-single-line option
 
 ---
 
-_Pull request opened by @squiddy on 2022-12-24 20:22_
+_@squiddy_
 
 Forces all from imports to appear on their own line.
 

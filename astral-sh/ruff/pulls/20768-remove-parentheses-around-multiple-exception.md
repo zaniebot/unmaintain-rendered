@@ -15,14 +15,14 @@ head: brent/fmt-remove-exception-parens
 created_at: 2025-10-08T15:22:47Z
 updated_at: 2025-10-14T15:17:47Z
 url: https://github.com/astral-sh/ruff/pull/20768
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # Remove parentheses around multiple exception types on Python 3.14+
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-08 15:22_
+_@ntBre_
 
 Summary
 --

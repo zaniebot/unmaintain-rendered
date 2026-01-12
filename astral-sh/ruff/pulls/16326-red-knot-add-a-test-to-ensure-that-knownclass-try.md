@@ -14,14 +14,14 @@ head: alex/redknot-knownclass-enum
 created_at: 2025-02-23T21:49:28Z
 updated_at: 2025-02-24T12:15:41Z
 url: https://github.com/astral-sh/ruff/pull/16326
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Add a test to ensure that `KnownClass::try_from_file_and_name()` is kept up to date
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-23 21:49_
+_@AlexWaygood_
 
 ## Summary
 

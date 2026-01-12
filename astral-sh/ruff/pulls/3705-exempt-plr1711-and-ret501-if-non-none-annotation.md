@@ -12,14 +12,14 @@ head: exempt-annotated-function-return-none
 created_at: 2023-03-24T01:34:57Z
 updated_at: 2024-07-05T12:14:01Z
 url: https://github.com/astral-sh/ruff/pull/3705
-synced_at: 2026-01-10T21:47:01Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Exempt `PLR1711` and `RET501` if non-`None` annotation
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-24 01:34_
+_@JonathanPlasse_
 
 - Close #3704
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-30T01:33:08Z
 updated_at: 2025-05-30T01:41:05Z
 url: https://github.com/astral-sh/ruff/issues/18378
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Ruleset Suggestion: flake8-author
 
 ---
 
-_Issue opened by @jeaboswell on 2025-05-30 01:33_
+_@jeaboswell_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: hoel/fix_10295
 created_at: 2024-03-09T15:42:10Z
 updated_at: 2024-03-11T22:26:12Z
 url: https://github.com/astral-sh/ruff/pull/10315
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`pycodestyle`] Do not trigger `E225` and `E275` when the next token is a ')'
 
 ---
 
-_Pull request opened by @hoel-bagard on 2024-03-09 15:42_
+_@hoel-bagard_
 
 ## Summary
 

@@ -3,21 +3,21 @@ number: 13103
 title: How to use Apple Accelerate instead of OpenBlas when installing Numpy on Apple Silicon?
 type: issue
 state: closed
-author: Eureka-0
+author: eureka-0
 labels:
   - question
 assignees: []
 created_at: 2025-04-25T08:42:26Z
 updated_at: 2025-04-25T12:49:51Z
 url: https://github.com/astral-sh/uv/issues/13103
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # How to use Apple Accelerate instead of OpenBlas when installing Numpy on Apple Silicon?
 
 ---
 
-_Issue opened by @Eureka-0 on 2025-04-25 08:42_
+_@eureka-0_
 
 ### Question
 
@@ -95,7 +95,7 @@ uv 0.6.16 (Homebrew 2025-04-22)
 
 ---
 
-_Label `question` added by @Eureka-0 on 2025-04-25 08:42_
+_Label `question` added by @eureka-0 on 2025-04-25 08:42_
 
 ---
 
@@ -105,7 +105,7 @@ This is problem with numpy rather than uv and should be discussed with the numpy
 
 ---
 
-_Comment by @Eureka-0 on 2025-04-25 11:53_
+_Comment by @eureka-0 on 2025-04-25 11:53_
 
 > This is problem with numpy rather than uv and should be discussed with the numpy developers rather than uv.
 

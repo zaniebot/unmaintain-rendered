@@ -14,14 +14,14 @@ head: micha/filter-primary-annotations
 created_at: 2025-12-08T13:48:50Z
 updated_at: 2025-12-08T14:22:13Z
 url: https://github.com/astral-sh/ruff/pull/21845
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] Don't create a related diagnostic for the primary annotation of sub-diagnostics
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-08 13:48_
+_@MichaReiser_
 
 ## Summary
 

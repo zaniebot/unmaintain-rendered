@@ -12,14 +12,14 @@ head: tests
 created_at: 2025-03-19T21:22:16Z
 updated_at: 2025-03-19T21:28:10Z
 url: https://github.com/clap-rs/clap/pull/5954
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # test(complete): Minor test cleanup
 
 ---
 
-_Pull request opened by @epage on 2025-03-19 21:22_
+_@epage_
 
 <!--
 Thanks for helping out!

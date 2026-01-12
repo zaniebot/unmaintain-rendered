@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-14T05:05:43Z
 updated_at: 2023-03-15T16:58:07Z
 url: https://github.com/astral-sh/ruff/issues/3502
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # C4 should not be remapped to C40, leaves out C41
 
 ---
 
-_Issue opened by @onerandomusername on 2023-03-14 05:05_
+_@onerandomusername_
 
 Newest ruff version remaps C4 to C40 but that leaves out C41 of flake8-comphrehensions. https://beta.ruff.rs/docs/rules/#flake8-comprehensions-c4
 

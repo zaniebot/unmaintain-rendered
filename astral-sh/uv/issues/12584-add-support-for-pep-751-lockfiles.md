@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-31T13:48:05Z
 updated_at: 2025-12-02T17:10:34Z
 url: https://github.com/astral-sh/uv/issues/12584
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # Add support for PEP 751 lockfiles
 
 ---
 
-_Issue opened by @charliermarsh on 2025-03-31 13:48_
+_@charliermarsh_
 
 [PEP 751](https://discuss.python.org/t/pep-751-one-last-time/77293/150) is officially accepted.
 

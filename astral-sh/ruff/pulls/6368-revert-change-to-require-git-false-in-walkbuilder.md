@@ -12,14 +12,14 @@ head: charlie/gitignore
 created_at: 2023-08-05T19:35:46Z
 updated_at: 2023-08-05T20:09:13Z
 url: https://github.com/astral-sh/ruff/pull/6368
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Revert change to `require_git(false)` in `WalkBuilder`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-05 19:35_
+_@charliermarsh_
 
 ## Summary
 

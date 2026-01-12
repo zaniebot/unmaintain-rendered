@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-15T12:17:06Z
 updated_at: 2025-10-18T14:19:52Z
 url: https://github.com/astral-sh/uv/issues/16312
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # `uv`-installed Python fails on  macOS `arm64` runners: `Argument list too long`
 
 ---
 
-_Issue opened by @kdeldycke on 2025-10-15 12:17_
+_@kdeldycke_
 
 ### Summary
 

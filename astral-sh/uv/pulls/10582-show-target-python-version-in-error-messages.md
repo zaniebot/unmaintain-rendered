@@ -13,14 +13,14 @@ head: charlie/show-tag
 created_at: 2025-01-14T02:57:28Z
 updated_at: 2025-01-15T20:08:40Z
 url: https://github.com/astral-sh/uv/pull/10582
-synced_at: 2026-01-10T11:44:58Z
+synced_at: 2026-01-12T16:09:22Z
 ```
 
 # Show target Python version in error messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-14 02:57_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-22T21:55:58Z
 updated_at: 2023-07-24T02:23:03Z
 url: https://github.com/astral-sh/ruff/issues/5990
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Format VS Code-style `# %%` cell delimiters
 
 ---
 
-_Issue opened by @janosh on 2023-07-22 21:55_
+_@janosh_
 
 VS Code Python has a very nice feature called [Interactive Window](https://code.visualstudio.com/docs/python/jupyter-support-py) that allows to run regular Python scripts in a Jupyter-like interface.
 

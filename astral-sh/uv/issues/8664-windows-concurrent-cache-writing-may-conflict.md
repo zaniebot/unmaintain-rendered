@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-29T15:56:35Z
 updated_at: 2025-04-08T15:45:24Z
 url: https://github.com/astral-sh/uv/issues/8664
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:31Z
 ```
 
 # Windows: concurrent cache writing may conflict
 
 ---
 
-_Issue opened by @j178 on 2024-10-29 15:56_
+_@j178_
 
 On Windows, when running multiple uv instances in parallel (as we do in our CI, using uv as a test runner), there's a risk of concurrent writes to the cache directory, potentially resulting in "Access denied" errors.
 

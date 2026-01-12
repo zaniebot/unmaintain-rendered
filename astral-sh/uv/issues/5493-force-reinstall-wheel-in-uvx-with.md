@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-26T20:58:08Z
 updated_at: 2024-07-27T01:36:59Z
 url: https://github.com/astral-sh/uv/issues/5493
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Force reinstall wheel in uvx --with
 
 ---
 
-_Issue opened by @bluss on 2024-07-26 20:58_
+_@bluss_
 
 Here's a recipe for building a wheel and testing it in a project setup for pytest.
 

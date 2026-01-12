@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-03-16T08:14:49Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/452
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Help does not wrap for subcommands
 
 ---
 
-_Issue opened by @crumblingstatue on 2016-03-16 08:14_
+_@crumblingstatue_
 
 Help for flags, options and args do seem to wrap, but not for subcommands.
 ![](http://i.imgur.com/koPsb5V.png)

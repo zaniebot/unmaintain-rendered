@@ -13,14 +13,14 @@ head: konsti/uv-publish-no-codeberg-test
 created_at: 2025-04-16T23:30:20Z
 updated_at: 2025-06-11T19:24:19Z
 url: https://github.com/astral-sh/uv/pull/12928
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:27Z
 ```
 
 # Deactivate uv publish codeberg integration test
 
 ---
 
-_Pull request opened by @konstin on 2025-04-16 23:30_
+_@konstin_
 
 The codeberg server times out, failing the uv CI.
 

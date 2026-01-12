@@ -14,14 +14,14 @@ head: formatter-string-flags-2
 created_at: 2024-03-20T12:29:21Z
 updated_at: 2024-03-20T16:16:56Z
 url: https://github.com/astral-sh/ruff/pull/10489
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Simplify formatting of strings by using flags from the AST nodes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-20 12:29_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/h
 created_at: 2025-02-22T22:39:21Z
 updated_at: 2025-02-23T00:13:30Z
 url: https://github.com/astral-sh/uv/pull/11719
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:58Z
 ```
 
 # Check subdirectory existence after cache heal
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-22 22:39_
+_@charliermarsh_
 
 ## Summary
 

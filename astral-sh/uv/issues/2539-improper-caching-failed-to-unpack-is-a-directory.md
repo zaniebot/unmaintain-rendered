@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-19T09:40:15Z
 updated_at: 2024-03-22T15:35:47Z
 url: https://github.com/astral-sh/uv/issues/2539
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Improper Caching - failed to unpack - Is a directory
 
 ---
 
-_Issue opened by @AiyionPrime on 2024-03-19 09:40_
+_@AiyionPrime_
 
 This one might be a nasty one.
 The problem is not reliably reproducible, yet.

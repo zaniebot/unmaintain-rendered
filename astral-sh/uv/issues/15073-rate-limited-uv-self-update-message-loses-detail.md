@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-05T01:13:28Z
 updated_at: 2025-11-04T09:38:27Z
 url: https://github.com/astral-sh/uv/issues/15073
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # Rate limited `uv self update` message loses detail for downloading specific version
 
 ---
 
-_Issue opened by @nathanjmcdougall on 2025-08-05 01:13_
+_@nathanjmcdougall_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-12T10:30:16Z
 updated_at: 2023-08-12T13:23:13Z
 url: https://github.com/astral-sh/ruff/issues/6522
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # [PLE1300] ruff throws PLE1300 error in variable width string formatting
 
 ---
 
-_Issue opened by @SigureMo on 2023-08-12 10:30_
+_@SigureMo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

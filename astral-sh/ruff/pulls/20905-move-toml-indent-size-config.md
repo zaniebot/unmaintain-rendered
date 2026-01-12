@@ -13,14 +13,14 @@ head: editorconfig
 created_at: 2025-10-15T21:46:53Z
 updated_at: 2025-10-16T09:05:53Z
 url: https://github.com/astral-sh/ruff/pull/20905
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # Move TOML indent size config
 
 ---
 
-_Pull request opened by @esadek on 2025-10-15 21:46_
+_@esadek_
 
 Move TOML indent size configuration in `.editorconfig`. No need to have separate `indent_size = 4` configurations.
 

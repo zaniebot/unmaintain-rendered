@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-08T01:28:20Z
 updated_at: 2025-06-26T17:35:54Z
 url: https://github.com/astral-sh/ty/issues/607
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `possibly-unresolved-reference` false positive inside function when both variable and function are defined in the same branch of an if statement
 
 ---
 
-_Issue opened by @DetachHead on 2025-06-08 01:28_
+_@DetachHead_
 
 ### Summary
 

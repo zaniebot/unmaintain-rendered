@@ -12,14 +12,14 @@ head: charlie/bind
 created_at: 2023-07-17T04:22:31Z
 updated_at: 2023-07-17T17:02:23Z
 url: https://github.com/astral-sh/ruff/pull/5820
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Draw boundaries between various `Checker` visitation phases
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-17 04:22_
+_@charliermarsh_
 
 ## Summary
 

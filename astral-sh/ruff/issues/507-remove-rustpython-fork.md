@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-29T21:14:04Z
 updated_at: 2022-10-30T22:04:06Z
 url: https://github.com/astral-sh/ruff/issues/507
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Remove RustPython fork
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-29 21:14_
+_@charliermarsh_
 
 We've upstreamed a bunch of changes, so we should be able to just use the latest `RustPython`.
 

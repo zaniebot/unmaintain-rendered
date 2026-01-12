@@ -13,14 +13,14 @@ head: david/singleton-copy
 created_at: 2024-12-12T19:30:38Z
 updated_at: 2024-12-12T19:49:56Z
 url: https://github.com/astral-sh/ruff/pull/14943
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # ruff_python_ast: Make `Singleton` `Copy`
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-12 19:30_
+_@sharkdp_
 
 ## Summary
 

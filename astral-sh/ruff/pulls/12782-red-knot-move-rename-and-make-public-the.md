@@ -13,14 +13,14 @@ head: target-version
 created_at: 2024-08-09T12:16:16Z
 updated_at: 2024-08-09T15:49:18Z
 url: https://github.com/astral-sh/ruff/pull/12782
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] Move, rename and make public the `PyVersion` type
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-09 12:16_
+_@AlexWaygood_
 
 ## Summary
 

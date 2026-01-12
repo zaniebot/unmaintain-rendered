@@ -13,14 +13,14 @@ head: charlie/discord
 created_at: 2024-02-12T19:23:23Z
 updated_at: 2024-02-12T19:29:23Z
 url: https://github.com/astral-sh/uv/pull/1287
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:34Z
 ```
 
 # Swap out Discord icon
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-12 19:23_
+_@charliermarsh_
 
 _No description provided._
 

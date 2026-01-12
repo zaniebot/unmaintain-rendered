@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-24T16:40:29Z
 updated_at: 2025-10-23T06:51:36Z
 url: https://github.com/astral-sh/uv/issues/14874
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:58Z
 ```
 
 # `uv run --with` can't find installed ruff in subprocess
 
 ---
 
-_Issue opened by @charlesnicholson on 2025-07-24 16:40_
+_@charlesnicholson_
 
 ### Summary
 

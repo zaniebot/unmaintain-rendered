@@ -13,14 +13,14 @@ head: docs-version-update
 created_at: 2024-09-05T14:38:29Z
 updated_at: 2024-09-05T16:48:43Z
 url: https://github.com/astral-sh/uv/pull/7083
-synced_at: 2026-01-10T12:53:39Z
+synced_at: 2026-01-12T16:07:40Z
 ```
 
 # Document how to manually update locked package version
 
 ---
 
-_Pull request opened by @Kobzol on 2024-09-05 14:38_
+_@Kobzol_
 
 This PR updates documentation to explicitly mention how to update a specific package with a locked version to a different version.
 

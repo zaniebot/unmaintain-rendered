@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-12T14:30:46Z
 updated_at: 2026-01-08T18:05:27Z
 url: https://github.com/astral-sh/uv/issues/6037
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # Feature request: `uv metadata` showing metadata and entry points of any pypi package.
 
 ---
 
-_Issue opened by @zsimic on 2024-08-12 14:30_
+_@zsimic_
 
 It would be great if `uv` provided a command that could describe the metadata of a given python package. The output would be json, similar to how `cargo metadata` does it.
 

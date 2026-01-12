@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-23T18:16:32Z
 updated_at: 2025-09-24T17:16:52Z
 url: https://github.com/astral-sh/ty/issues/1242
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `--output-format gitlab` fails in Gitlab CI environment
 
 ---
 
-_Issue opened by @burrscurr on 2025-09-23 18:16_
+_@burrscurr_
 
 ### Summary
 

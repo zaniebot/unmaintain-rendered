@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-02T09:51:11Z
 updated_at: 2023-11-02T12:55:21Z
 url: https://github.com/astral-sh/ruff/issues/8443
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # E101 should ignore multiline strings
 
 ---
 
-_Issue opened by @konstin on 2023-11-02 09:51_
+_@konstin_
 
 In the code below, the whitespace ahead of a and b contains tabs and spaces:
 ```python

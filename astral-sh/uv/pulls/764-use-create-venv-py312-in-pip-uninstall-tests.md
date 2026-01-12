@@ -13,14 +13,14 @@ head: charlie/venv
 created_at: 2024-01-04T01:11:36Z
 updated_at: 2024-01-04T01:16:14Z
 url: https://github.com/astral-sh/uv/pull/764
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:10Z
 ```
 
 # Use `create_venv_py312` in pip-uninstall tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-04 01:11_
+_@charliermarsh_
 
 _No description provided._
 

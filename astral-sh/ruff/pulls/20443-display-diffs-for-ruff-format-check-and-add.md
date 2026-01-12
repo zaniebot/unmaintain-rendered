@@ -15,14 +15,14 @@ head: brent/formatter-diagnostics
 created_at: 2025-09-16T22:08:46Z
 updated_at: 2026-01-08T16:34:10Z
 url: https://github.com/astral-sh/ruff/pull/20443
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # Display diffs for `ruff format --check` and add support for different output formats
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-16 22:08_
+_@ntBre_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: avoid-contextlib
 created_at: 2024-02-16T01:14:02Z
 updated_at: 2024-02-16T01:43:42Z
 url: https://github.com/astral-sh/uv/pull/1406
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:37Z
 ```
 
 # Avoid import contextlib in `_virtualenv`
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-02-16 01:14_
+_@hauntsaninja_
 
 No need to pay 3ms on basically every Python invocation. I opened a PR upstream last week: https://github.com/pypa/virtualenv/pull/2688
 

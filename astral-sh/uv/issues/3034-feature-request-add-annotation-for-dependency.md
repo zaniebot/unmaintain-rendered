@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-15T10:23:24Z
 updated_at: 2024-04-20T01:27:22Z
 url: https://github.com/astral-sh/uv/issues/3034
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Feature request: add annotation for dependency artifact URL
 
 ---
 
-_Issue opened by @vlad-ivanov-name on 2024-04-15 10:23_
+_@vlad-ivanov-name_
 
 It would be good to be able to add URL to the compiled requirement files:
 

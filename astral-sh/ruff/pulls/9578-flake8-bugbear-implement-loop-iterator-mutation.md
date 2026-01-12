@@ -14,14 +14,14 @@ head: add-flake8-bugbear-b038
 created_at: 2024-01-19T15:12:02Z
 updated_at: 2024-04-11T19:57:58Z
 url: https://github.com/astral-sh/ruff/pull/9578
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`flake8-bugbear`] Implement `loop-iterator-mutation` (`B909`)
 
 ---
 
-_Pull request opened by @mimre25 on 2024-01-19 15:12_
+_@mimre25_
 
 ## Summary
 This PR adds the implementation for the current [flake8-bugbear](https://github.com/PyCQA/flake8-bugbear)'s B038 rule. 

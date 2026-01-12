@@ -13,14 +13,14 @@ head: issue-17311
 created_at: 2025-04-18T12:51:19Z
 updated_at: 2025-04-18T16:49:02Z
 url: https://github.com/astral-sh/ruff/pull/17459
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`pylint`] make fix unsafe if delete comments (`PLR1730`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-04-18 12:51_
+_@VascoSch92_
 
 The PR dresses issue #17311 
 

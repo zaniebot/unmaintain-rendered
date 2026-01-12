@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-10T15:35:55Z
 updated_at: 2024-09-25T21:49:08Z
 url: https://github.com/astral-sh/uv/issues/4963
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Feature Request: Add Requires Python Version similar to Pipenv
 
 ---
 
-_Issue opened by @vasudev-gm on 2024-07-10 15:35_
+_@vasudev-gm_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

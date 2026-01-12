@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-24T23:45:44Z
 updated_at: 2023-07-25T00:38:27Z
 url: https://github.com/clap-rs/clap/issues/5044
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `ContextKind::Custom` has no functionality
 
 ---
 
-_Issue opened by @benluelo on 2023-07-24 23:45_
+_@benluelo_
 
 As per the title, [`ContextKind::Custom`](https://github.com/clap-rs/clap/blob/1f022b83958334241c47de10195a2a502d99d81b/clap_builder/src/error/context.rs#L62) is currently useless as nothing ever reads it. I expected it to be used in a similar way to [`ContextKind::Usage`](https://github.com/clap-rs/clap/blob/master/clap_builder/src/error/format.rs#L118-L121), in that it could be attached to any ErrorKind and be printed as [An opaque message to the user](https://github.com/clap-rs/clap/blob/1f022b83958334241c47de10195a2a502d99d81b/clap_builder/src/error/context.rs#L38), but it just does nothing.
 

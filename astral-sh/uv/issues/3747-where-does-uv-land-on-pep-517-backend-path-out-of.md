@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-22T17:44:26Z
 updated_at: 2024-09-09T15:06:45Z
 url: https://github.com/astral-sh/uv/issues/3747
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Where does `uv` land on PEP 517 `backend-path` out-of-tree?
 
 ---
 
-_Issue opened by @thejcannon on 2024-05-22 17:44_
+_@thejcannon_
 
 👋 Ok, you caught me doing some weird things...
 

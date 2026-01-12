@@ -13,14 +13,14 @@ head: autofix-PLR1714
 created_at: 2023-10-11T06:09:43Z
 updated_at: 2023-10-11T14:49:31Z
 url: https://github.com/astral-sh/ruff/pull/7910
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # add autofix for `PLR1714`
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-10-11 06:09_
+_@diceroll123_
 
 ## Summary
 

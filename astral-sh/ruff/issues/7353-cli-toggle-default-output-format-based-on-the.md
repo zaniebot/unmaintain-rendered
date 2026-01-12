@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-13T16:25:57Z
 updated_at: 2024-04-02T07:47:45Z
 url: https://github.com/astral-sh/ruff/issues/7353
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # CLI: Toggle default output format based on the number of violations
 
 ---
 
-_Issue opened by @zanieb on 2023-09-13 16:25_
+_@zanieb_
 
 In #7349 and #7352 the default output of `ruff check` includes much more content. However, this comes with a performance degradation for large numbers of violations as computing the display of source and fixes is expensive. A possible solution is to toggle the default output format between "full" and "concise" (#7350) depending on the number of detected violations. If we see more than 30 violations (for example), we should switch to the concise output. If `--format full` or `--format concise` is provided explicitly (or in the configuration file) we should _always_ respect the given format regardless of the number of violations.
 

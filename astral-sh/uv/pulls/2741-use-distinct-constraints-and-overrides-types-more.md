@@ -13,14 +13,14 @@ head: charlie/constraints
 created_at: 2024-03-31T16:50:22Z
 updated_at: 2024-03-31T17:46:38Z
 url: https://github.com/astral-sh/uv/pull/2741
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:12Z
 ```
 
 # Use distinct `Constraints` and `Overrides` types more widely
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-31 16:50_
+_@charliermarsh_
 
 ## Summary
 

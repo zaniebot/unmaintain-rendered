@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-02-04T01:52:35Z
 updated_at: 2020-02-04T07:07:22Z
 url: https://github.com/clap-rs/clap/issues/1666
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # How to install 3.0.0 ?
 
 ---
 
-_Issue opened by @cryptohuang on 2020-02-04 01:52_
+_@cryptohuang_
 
 Hello, I am new to rust.
 I have `Cargo.toml`

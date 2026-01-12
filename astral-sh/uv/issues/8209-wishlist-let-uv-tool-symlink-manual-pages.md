@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T10:28:11Z
 updated_at: 2024-10-15T13:54:03Z
 url: https://github.com/astral-sh/uv/issues/8209
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # Wishlist: let uv tool symlink manual pages
 
 ---
 
-_Issue opened by @callegar on 2024-10-15 10:28_
+_@callegar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

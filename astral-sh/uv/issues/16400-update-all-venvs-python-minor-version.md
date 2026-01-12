@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-21T21:34:39Z
 updated_at: 2025-11-08T23:09:23Z
 url: https://github.com/astral-sh/uv/issues/16400
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # Update all venvs (python minor version)
 
 ---
 
-_Issue opened by @s-banach on 2025-10-21 21:34_
+_@s-banach_
 
 ### Summary
 

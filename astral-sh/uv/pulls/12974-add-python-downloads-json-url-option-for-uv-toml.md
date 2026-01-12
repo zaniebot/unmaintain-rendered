@@ -13,14 +13,14 @@ head: config-python_downloads_json_url-from-file
 created_at: 2025-04-18T20:57:45Z
 updated_at: 2025-04-30T20:09:35Z
 url: https://github.com/astral-sh/uv/pull/12974
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:29Z
 ```
 
 # Add `python-downloads-json-url` option for `uv.toml` to configure custom Python installations via JSON URL
 
 ---
 
-_Pull request opened by @MeitarR on 2025-04-18 20:57_
+_@MeitarR_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/inherit
 created_at: 2022-12-12T20:50:48Z
 updated_at: 2022-12-13T01:28:23Z
 url: https://github.com/astral-sh/ruff/pull/1219
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Enable configuration files to "extend" other configuration files
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-12 20:50_
+_@charliermarsh_
 
 This PR implements an `extends` keyword in the `pyproject.toml` schema. When provided, we resolve a `pyproject.toml` file by first loading the file pointed to by `extends`, then overriding it with any properties defined in the current file.
 

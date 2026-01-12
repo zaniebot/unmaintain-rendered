@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-21T18:50:40Z
 updated_at: 2024-09-01T17:03:45Z
 url: https://github.com/astral-sh/ruff/issues/13037
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # A004 Preview Mode ExceptionGroup import in pre-3.11
 
 ---
 
-_Issue opened by @CoolCat467 on 2024-08-21 18:50_
+_@CoolCat467_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

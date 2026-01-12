@@ -14,14 +14,14 @@ head: dhruv/reload-hierarchical-config
 created_at: 2024-07-09T07:12:46Z
 updated_at: 2024-07-12T05:09:13Z
 url: https://github.com/astral-sh/ruff/pull/12253
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Consider nested configs for settings reloading
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-09 07:12_
+_@dhruvmanila_
 
 ## Summary
 

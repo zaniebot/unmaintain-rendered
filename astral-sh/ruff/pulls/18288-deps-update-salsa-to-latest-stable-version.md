@@ -11,14 +11,14 @@ head: update-salsa
 created_at: 2025-05-24T16:12:07Z
 updated_at: 2025-05-25T06:42:08Z
 url: https://github.com/astral-sh/ruff/pull/18288
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # deps: Update salsa to latest stable version
 
 ---
 
-_Pull request opened by @ognevny on 2025-05-24 16:12_
+_@ognevny_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

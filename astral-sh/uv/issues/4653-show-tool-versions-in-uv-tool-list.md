@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-06-29T22:50:09Z
 updated_at: 2024-07-03T18:24:39Z
 url: https://github.com/astral-sh/uv/issues/4653
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Show tool versions in `uv tool list`
 
 ---
 
-_Issue opened by @zanieb on 2024-06-29 22:50_
+_@zanieb_
 
 In addition to the name, it'd be nice to show the installed version. Should this be behind a flag? Are there other commands like `uv pip list` or `pipx list` we should take inspiration from?
 

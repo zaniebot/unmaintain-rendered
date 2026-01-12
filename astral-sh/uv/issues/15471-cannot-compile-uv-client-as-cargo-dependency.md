@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-23T16:07:20Z
 updated_at: 2025-08-25T10:40:43Z
 url: https://github.com/astral-sh/uv/issues/15471
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # Cannot compile `uv-client` as cargo dependency
 
 ---
 
-_Issue opened by @felixmulder on 2025-08-23 16:07_
+_@felixmulder_
 
 ### Summary
 

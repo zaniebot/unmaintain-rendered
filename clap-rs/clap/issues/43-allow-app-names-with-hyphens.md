@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-03-29T19:42:48Z
 updated_at: 2018-08-02T03:29:37Z
 url: https://github.com/clap-rs/clap/issues/43
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Allow App names with hyphens ('-')
 
 ---
 
-_Issue opened by @kbknapp on 2015-03-29 19:42_
+_@kbknapp_
 
 Currently application names with a hyphen '-' get replaced with a space ' ' when displaying usage strings. This is ideal for determining subcommands, but the original application name, or subcommand name should allow '-'s.
 

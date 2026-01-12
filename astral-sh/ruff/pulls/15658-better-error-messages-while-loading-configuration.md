@@ -13,14 +13,14 @@ head: 20250121-inheritance-failure-err-msg
 created_at: 2025-01-21T22:41:43Z
 updated_at: 2025-02-17T09:37:25Z
 url: https://github.com/astral-sh/ruff/pull/15658
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # better error messages while loading configuration `extend`s
 
 ---
 
-_Pull request opened by @purajit on 2025-01-21 22:41_
+_@purajit_
 
 Improves error messages during errors caused while extending a configuration using `extend`.
 

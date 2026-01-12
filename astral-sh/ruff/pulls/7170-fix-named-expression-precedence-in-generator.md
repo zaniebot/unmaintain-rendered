@@ -14,14 +14,14 @@ head: charlie/E731
 created_at: 2023-09-05T16:56:51Z
 updated_at: 2023-09-05T17:13:15Z
 url: https://github.com/astral-sh/ruff/pull/7170
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Fix named expression precedence in generator
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-05 16:56_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7141.
 

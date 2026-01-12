@@ -12,14 +12,14 @@ head: null-ls-ruff-builtin
 created_at: 2023-01-31T10:16:30Z
 updated_at: 2023-01-31T12:22:18Z
 url: https://github.com/astral-sh/ruff/pull/2386
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # For neovim:null_ls use ruff builtin for formatting
 
 ---
 
-_Pull request opened by @has2k1 on 2023-01-31 10:16_
+_@has2k1_
 
 [null-ls](https://github.com/jose-elias-alvarez/null-ls.nvim) picked up the recommended snippet in README.md and ruff formatting now a builtin.
 

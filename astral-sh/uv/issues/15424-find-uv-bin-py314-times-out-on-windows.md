@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-21T18:24:27Z
 updated_at: 2025-10-14T12:13:46Z
 url: https://github.com/astral-sh/uv/issues/15424
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # `find_uv_bin_py314` times out on Windows
 
 ---
 
-_Issue opened by @zanieb on 2025-08-21 18:24_
+_@zanieb_
 
 ```
      TIMEOUT [ 120.100s] uv::it python_module::find_uv_bin_py314

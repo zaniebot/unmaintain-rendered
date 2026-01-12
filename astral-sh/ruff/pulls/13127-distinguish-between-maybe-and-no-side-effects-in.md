@@ -12,14 +12,14 @@ head: maybe-contain-effects
 created_at: 2024-08-27T20:36:36Z
 updated_at: 2024-12-30T09:08:34Z
 url: https://github.com/astral-sh/ruff/pull/13127
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Distinguish between maybe and no side effects in contains_effects()
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2024-08-27 20:36_
+_@JonathanPlasse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

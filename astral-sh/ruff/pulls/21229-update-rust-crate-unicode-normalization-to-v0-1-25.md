@@ -10,16 +10,16 @@ assignees: []
 base: main
 head: renovate/unicode-normalization-0.x-lockfile
 created_at: 2025-11-03T01:54:30Z
-updated_at: 2026-01-12T07:42:50Z
+updated_at: 2026-01-12T08:04:47Z
 url: https://github.com/astral-sh/ruff/pull/21229
-synced_at: 2026-01-12T07:59:41Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # Update Rust crate unicode-normalization to v0.1.25
 
 ---
 
-_Pull request opened by @renovate on 2025-11-03 01:54_
+_@renovate_
 
 This PR contains the following updates:
 

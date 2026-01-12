@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-05T22:40:01Z
 updated_at: 2024-04-23T19:55:20Z
 url: https://github.com/astral-sh/uv/issues/808
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Improve message when a transitive dependency requires a package that does not exist
 
 ---
 
-_Issue opened by @zanieb on 2024-01-05 22:40_
+_@zanieb_
 
 e.g. in the following scenario
 

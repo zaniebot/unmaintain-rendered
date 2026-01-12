@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-16T13:09:07Z
 updated_at: 2026-01-07T13:37:31Z
 url: https://github.com/astral-sh/uv/issues/17144
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # 401 when trying to `uv sync` on an Azure DevOps Server private index using `keyring`
 
 ---
 
-_Issue opened by @ubalklen on 2025-12-16 13:09_
+_@ubalklen_
 
 ### Summary
 

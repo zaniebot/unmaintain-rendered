@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-29T22:43:54Z
 updated_at: 2023-10-30T00:44:26Z
 url: https://github.com/astral-sh/ruff/issues/8328
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `--extend-per-file-ignores` isn't respected on the CLI
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-29 22:43_
+_@charliermarsh_
 
 _No description provided._
 

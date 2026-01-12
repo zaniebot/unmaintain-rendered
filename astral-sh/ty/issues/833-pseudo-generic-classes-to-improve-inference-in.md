@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-16T19:44:30Z
 updated_at: 2025-07-16T20:07:30Z
 url: https://github.com/astral-sh/ty/issues/833
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Pseudo-generic classes to improve inference in untyped code
 
 ---
 
-_Issue opened by @erictraut on 2025-07-16 19:44_
+_@erictraut_
 
 I was talking with @carljm, and I mentioned a feature in pyright that I've never really documented. He asked me to provide a brief description here for the benefit of the ty team. This feature is likely a low priority at this time, but it may be something to consider as ty's feature set matures.
 

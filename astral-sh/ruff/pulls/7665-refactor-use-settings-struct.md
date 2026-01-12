@@ -13,14 +13,14 @@ head: pass-settings-struct
 created_at: 2023-09-26T08:05:24Z
 updated_at: 2023-09-27T01:14:59Z
 url: https://github.com/astral-sh/ruff/pull/7665
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Refactor: use `Settings` struct
 
 ---
 
-_Pull request opened by @bluthej on 2023-09-26 08:05_
+_@bluthej_
 
 ## Summary
 

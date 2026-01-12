@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-09T16:34:08Z
 updated_at: 2024-07-25T16:02:25Z
 url: https://github.com/clap-rs/clap/issues/3131
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Question - how can I print the arguments given an opt instance?
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:34_
+_@epage_
 
 <a href="https://github.com/avnerbarr"><img src="https://avatars.githubusercontent.com/u/2404795?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [avnerbarr](https://github.com/avnerbarr)**
 _Thursday Oct 15, 2020 at 13:51 GMT_

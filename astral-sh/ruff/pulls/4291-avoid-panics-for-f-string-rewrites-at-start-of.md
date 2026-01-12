@@ -12,14 +12,14 @@ head: charlie/wrap
 created_at: 2023-05-08T19:40:19Z
 updated_at: 2023-05-08T19:52:34Z
 url: https://github.com/astral-sh/ruff/pull/4291
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Avoid panics for f-string rewrites at start-of-file
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-08 19:40_
+_@charliermarsh_
 
 Closes #4284.
 

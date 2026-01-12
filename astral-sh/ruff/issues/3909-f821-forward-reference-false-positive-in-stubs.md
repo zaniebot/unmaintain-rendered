@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-07T23:21:43Z
 updated_at: 2023-04-07T23:40:35Z
 url: https://github.com/astral-sh/ruff/issues/3909
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `F821` forward reference false positive in stubs (`.pyi` files)
 
 ---
 
-_Issue opened by @Avasam on 2023-04-07 23:21_
+_@Avasam_
 
 Given this code:
 ```py

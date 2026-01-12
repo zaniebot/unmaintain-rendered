@@ -13,14 +13,14 @@ head: zb/default-err
 created_at: 2024-05-22T20:19:17Z
 updated_at: 2024-05-22T21:28:53Z
 url: https://github.com/astral-sh/uv/pull/3770
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:50Z
 ```
 
 # Improve error message when default Python is not found
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-22 20:19_
+_@zanieb_
 
 _No description provided._
 

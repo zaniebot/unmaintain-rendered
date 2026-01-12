@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-11-05T16:58:15Z
 updated_at: 2021-11-05T17:59:01Z
 url: https://github.com/clap-rs/clap/issues/2995
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Enhance error messages, check argument names for correctness
 
 ---
 
-_Issue opened by @Tastaturtaste on 2021-11-05 16:58_
+_@Tastaturtaste_
 
 ### Please complete the following tasks
 

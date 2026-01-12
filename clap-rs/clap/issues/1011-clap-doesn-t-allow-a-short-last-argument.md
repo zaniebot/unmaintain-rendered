@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-07-24T08:32:57Z
 updated_at: 2018-08-02T03:30:09Z
 url: https://github.com/clap-rs/clap/issues/1011
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Clap doesn't allow a short last argument
 
 ---
 
-_Issue opened by @marmistrz on 2017-07-24 08:32_
+_@marmistrz_
 
 ### Rust Version
 

@@ -13,14 +13,14 @@ head: zanie/695-format-type-alias
 created_at: 2023-07-28T21:04:00Z
 updated_at: 2023-08-02T20:54:53Z
 url: https://github.com/astral-sh/ruff/pull/6162
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Add formatting of type alias statements
 
 ---
 
-_Pull request opened by @zanieb on 2023-07-28 21:04_
+_@zanieb_
 
 Part of #5062 
 Extends https://github.com/astral-sh/ruff/pull/6161

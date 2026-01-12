@@ -13,14 +13,14 @@ head: renovate/uraimo-run-on-arch-action-3.x
 created_at: 2025-07-11T07:31:17Z
 updated_at: 2025-07-11T07:44:11Z
 url: https://github.com/astral-sh/ty/pull/812
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Update uraimo/run-on-arch-action action to v3
 
 ---
 
-_Pull request opened by @renovate on 2025-07-11 07:31_
+_@renovate_
 
 This PR contains the following updates:
 

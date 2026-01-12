@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-15T13:48:01Z
 updated_at: 2025-05-15T16:15:46Z
 url: https://github.com/astral-sh/uv/issues/13467
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # Allow glob patterns in `[tool.uv.sources]` to simplify use of dynamic local wheels
 
 ---
 
-_Issue opened by @flitzpiepe93 on 2025-05-15 13:48_
+_@flitzpiepe93_
 
 ## Summary
 

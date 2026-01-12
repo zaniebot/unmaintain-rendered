@@ -12,14 +12,14 @@ head: charlie/path-cache
 created_at: 2024-01-24T14:59:08Z
 updated_at: 2024-01-24T15:01:18Z
 url: https://github.com/astral-sh/uv/pull/1076
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:24Z
 ```
 
 # Avoid unzipping local wheels when fresh
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-24 14:59_
+_@charliermarsh_
 
 Since the archive is a single file in this case, we can rely on the modification timestamp to check for freshness.
 

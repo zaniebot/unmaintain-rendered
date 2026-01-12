@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-13T20:31:57Z
 updated_at: 2023-09-13T20:32:02Z
 url: https://github.com/astral-sh/ruff/issues/7367
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Preview: Prevent duplicate warnings for repeated selections
 
 ---
 
-_Issue opened by @zanieb on 2023-09-13 20:31_
+_@zanieb_
 
 When we throw warnings for deprecated selections of nursery rules, we don't check if we have warned before. 
 

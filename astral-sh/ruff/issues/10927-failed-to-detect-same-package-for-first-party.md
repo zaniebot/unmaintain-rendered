@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-14T15:44:46Z
 updated_at: 2024-05-22T08:36:17Z
 url: https://github.com/astral-sh/ruff/issues/10927
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Failed to `detect-same-package` for `first-party`
 
 ---
 
-_Issue opened by @serjflint on 2024-04-14 15:44_
+_@serjflint_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

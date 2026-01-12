@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-28T00:49:01Z
 updated_at: 2024-11-28T03:32:26Z
 url: https://github.com/astral-sh/uv/issues/9489
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # Preserve compiled `file:/` requirement names.
 
 ---
 
-_Issue opened by @salomon-smekecohen on 2024-11-28 00:49_
+_@salomon-smekecohen_
 
 ## Issue
 Compiling requirements.in files with `file:` requirements that are named, creates `.txt` output that lacks the names.

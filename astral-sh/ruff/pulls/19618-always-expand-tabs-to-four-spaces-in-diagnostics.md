@@ -13,14 +13,14 @@ head: brent/tab-processing
 created_at: 2025-07-29T16:54:59Z
 updated_at: 2025-07-30T15:00:38Z
 url: https://github.com/astral-sh/ruff/pull/19618
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # Always expand tabs to four spaces in diagnostics
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-29 16:54_
+_@ntBre_
 
 ## Summary
 

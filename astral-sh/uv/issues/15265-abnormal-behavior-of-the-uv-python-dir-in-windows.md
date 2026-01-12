@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-14T00:14:03Z
 updated_at: 2025-08-14T00:29:03Z
 url: https://github.com/astral-sh/uv/issues/15265
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Abnormal behavior of the `uv python dir` in Windows systems
 
 ---
 
-_Issue opened by @shaonianche on 2025-08-14 00:14_
+_@shaonianche_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-25T02:31:38Z
 updated_at: 2025-02-13T22:17:53Z
 url: https://github.com/astral-sh/uv/issues/10953
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Add `provides-extra` to the lockfile
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-25 02:31_
+_@charliermarsh_
 
 ### Summary
 

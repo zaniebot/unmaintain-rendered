@@ -13,14 +13,14 @@ head: alex/redknot-to-instance
 created_at: 2024-09-10T21:55:59Z
 updated_at: 2024-09-10T22:50:38Z
 url: https://github.com/astral-sh/ruff/pull/13319
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Fix `.to_instance()` for union types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-10 21:55_
+_@AlexWaygood_
 
 _No description provided._
 

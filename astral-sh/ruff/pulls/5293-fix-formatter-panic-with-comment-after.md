@@ -12,14 +12,14 @@ head: Fix_formatter_panic_with_comment_after_parenthesized_dict_value
 created_at: 2023-06-22T09:40:49Z
 updated_at: 2023-06-22T14:52:49Z
 url: https://github.com/astral-sh/ruff/pull/5293
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix formatter panic with comment after parenthesized dict value
 
 ---
 
-_Pull request opened by @konstin on 2023-06-22 09:40_
+_@konstin_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-03T18:56:31Z
 updated_at: 2024-06-04T19:37:07Z
 url: https://github.com/astral-sh/uv/issues/3994
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # uv 0.2.6 broke editable installs in a local folder
 
 ---
 
-_Issue opened by @gibsondan on 2024-06-03 18:56_
+_@gibsondan_
 
 MRE:
 

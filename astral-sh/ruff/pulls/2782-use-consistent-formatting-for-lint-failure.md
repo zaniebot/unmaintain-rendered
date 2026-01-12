@@ -13,14 +13,14 @@ head: charlie/style
 created_at: 2023-02-11T22:45:50Z
 updated_at: 2023-02-11T22:52:19Z
 url: https://github.com/astral-sh/ruff/pull/2782
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Use consistent formatting for lint-failure messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-11 22:45_
+_@charliermarsh_
 
 That is: consistent with parse-failure messages.
 

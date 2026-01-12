@@ -13,14 +13,14 @@ head: charlie/comparable
 created_at: 2023-11-13T17:57:12Z
 updated_at: 2023-11-13T18:25:19Z
 url: https://github.com/astral-sh/ruff/pull/8659
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Treat `class C: ...` and `class C(): ...` equivalently
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-13 17:57_
+_@charliermarsh_
 
 ## Summary
 

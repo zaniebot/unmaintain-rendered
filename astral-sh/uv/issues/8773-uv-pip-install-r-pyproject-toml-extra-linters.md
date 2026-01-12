@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-03T10:14:07Z
 updated_at: 2024-11-03T13:25:51Z
 url: https://github.com/astral-sh/uv/issues/8773
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # `uv pip install -r pyproject.toml --extra linters` alias
 
 ---
 
-_Issue opened by @chirizxc on 2024-11-03 10:14_
+_@chirizxc_
 
 uv vesrion: uv 0.4.29 (85f9a0d0e 2024-10-30)
 os: windows 10

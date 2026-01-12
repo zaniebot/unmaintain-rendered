@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-26T15:58:52Z
 updated_at: 2024-11-26T20:11:35Z
 url: https://github.com/astral-sh/uv/issues/9445
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:50Z
 ```
 
 # `exclude-newer` does not influence selection of Python interpreter, should it?
 
 ---
 
-_Issue opened by @manzt on 2024-11-26 15:58_
+_@manzt_
 
 Context:
 - Prior discussion on [uv Discord](https://discord.com/channels/1039017663004942429/1207998321562619954/1306363222588129392)

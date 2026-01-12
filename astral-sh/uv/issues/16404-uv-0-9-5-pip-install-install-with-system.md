@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-22T02:34:14Z
 updated_at: 2025-10-22T18:24:03Z
 url: https://github.com/astral-sh/uv/issues/16404
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # uv-0.9.5: `pip_install::install_with_system_interpreter` fails (over `EXTERNALLY-MANAGED`?)
 
 ---
 
-_Issue opened by @mgorny on 2025-10-22 02:34_
+_@mgorny_
 
 ### Summary
 

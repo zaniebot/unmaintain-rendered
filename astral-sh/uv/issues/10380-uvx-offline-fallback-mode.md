@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-07T23:35:13Z
 updated_at: 2025-12-11T13:43:32Z
 url: https://github.com/astral-sh/uv/issues/10380
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # uvx offline fallback mode?
 
 ---
 
-_Issue opened by @alexjbuck on 2025-01-07 23:35_
+_@alexjbuck_
 
 I do a lot of work in offline environments with an alternate package index. That index goes down sometimes (much more often than the public pypi repo would).
 

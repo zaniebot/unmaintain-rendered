@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-10T12:52:38Z
 updated_at: 2025-04-10T20:22:18Z
 url: https://github.com/astral-sh/uv/issues/12806
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # UV_INDEX breaks when using newlines as delimiters
 
 ---
 
-_Issue opened by @winstonallo on 2025-04-10 12:52_
+_@winstonallo_
 
 ### Summary
 

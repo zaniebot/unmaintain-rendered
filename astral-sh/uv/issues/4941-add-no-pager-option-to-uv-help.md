@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-09T20:00:19Z
 updated_at: 2024-07-12T16:11:52Z
 url: https://github.com/astral-sh/uv/issues/4941
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Add `--no-pager` option to `uv help`
 
 ---
 
-_Issue opened by @zanieb on 2024-07-09 20:00_
+_@zanieb_
 
 To avoid paging if that's your deal.
 

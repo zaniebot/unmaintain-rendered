@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T10:42:34Z
 updated_at: 2025-05-12T20:37:22Z
 url: https://github.com/astral-sh/ty/issues/171
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Discovery of local venv
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 10:42_
+_@MichaReiser_
 
 Red Knot currently requires users to configure the path to their venv explicitly. Red Knot should try to detect the presence of a venv by following community best practices (`$VIRTUAL_ENV`, `.venv`, `venv`). 
 

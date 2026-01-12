@@ -14,14 +14,14 @@ head: fix-SIM905
 created_at: 2025-05-12T14:17:15Z
 updated_at: 2025-05-12T19:54:23Z
 url: https://github.com/astral-sh/ruff/pull/18045
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [`flake8-simplify`] Fix `SIM905` autofix for `rsplit` creating a reversed list literal
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-05-12 14:17_
+_@LaBatata101_
 
 
 

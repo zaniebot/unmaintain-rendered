@@ -13,14 +13,14 @@ head: charlie/quotes
 created_at: 2023-06-03T19:43:38Z
 updated_at: 2023-06-03T20:15:36Z
 url: https://github.com/astral-sh/ruff/pull/4836
-synced_at: 2026-01-12T03:50:04Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Preserve quotes in F523 fixer
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-03 19:43_
+_@charliermarsh_
 
 Closes #4823.
 

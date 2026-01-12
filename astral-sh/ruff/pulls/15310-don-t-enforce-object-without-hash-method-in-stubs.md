@@ -13,14 +13,14 @@ head: charlie/stub
 created_at: 2025-01-07T02:45:14Z
 updated_at: 2025-01-07T02:52:41Z
 url: https://github.com/astral-sh/ruff/pull/15310
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Don't enforce `object-without-hash-method` in stubs
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-07 02:45_
+_@charliermarsh_
 
 ## Summary
 

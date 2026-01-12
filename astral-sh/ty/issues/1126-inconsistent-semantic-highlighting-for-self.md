@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-04T08:01:20Z
 updated_at: 2025-10-20T17:32:50Z
 url: https://github.com/astral-sh/ty/issues/1126
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Inconsistent semantic highlighting for `self`
 
 ---
 
-_Issue opened by @sharkdp on 2025-09-04 08:01_
+_@sharkdp_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/fix-exec-name
 created_at: 2024-06-12T21:17:15Z
 updated_at: 2024-06-13T00:48:59Z
 url: https://github.com/astral-sh/uv/pull/4289
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:08Z
 ```
 
 # Fix incorrect parsing of requested Python version as empty version specifiers
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-12 21:17_
+_@zanieb_
 
 Before 0.2.10 we would parse `--python=python` as an executable name. After https://github.com/astral-sh/uv/pull/4214, we started treating this as a Python version range request (with an empty version range). This is not entirely unreasonable, but it was an unexpected regression and I don't think `VersionRequest` should support empty ranges in its `from_str` implementation without more consideration.
 

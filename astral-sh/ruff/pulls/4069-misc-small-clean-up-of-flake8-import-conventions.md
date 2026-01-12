@@ -12,14 +12,14 @@ head: charlie/import-convention
 created_at: 2023-04-23T04:50:20Z
 updated_at: 2023-04-23T05:18:43Z
 url: https://github.com/astral-sh/ruff/pull/4069
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Misc. small clean-up of `flake8-import-conventions` rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-23 04:50_
+_@charliermarsh_
 
 - Use more conventional function and module names.
 - Use named fields for structs.

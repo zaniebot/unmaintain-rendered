@@ -13,14 +13,14 @@ head: brent/diff-rendering
 created_at: 2025-08-26T16:33:00Z
 updated_at: 2025-08-28T14:57:01Z
 url: https://github.com/astral-sh/ruff/pull/20101
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # Use new diff rendering format in tests
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-26 16:33_
+_@ntBre_
 
 ## Summary
 

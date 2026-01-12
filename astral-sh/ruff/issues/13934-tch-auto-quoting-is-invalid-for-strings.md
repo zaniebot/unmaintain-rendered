@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-25T22:18:25Z
 updated_at: 2024-11-15T11:11:48Z
 url: https://github.com/astral-sh/ruff/issues/13934
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # TCH auto-quoting is invalid for strings containing quotation marks 
 
 ---
 
-_Issue opened by @dscorbett on 2024-10-25 22:18_
+_@dscorbett_
 
 The automated fixes for TCH001, TCH002, and TCH003 do not correctly handle string literals containing quotation marks. In the following example, running Ruff introduces an invalid type annotation, which mypy reports.
 

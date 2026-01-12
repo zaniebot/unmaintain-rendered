@@ -13,14 +13,14 @@ head: zb/python-request-any
 created_at: 2024-07-09T22:46:07Z
 updated_at: 2024-07-10T15:20:08Z
 url: https://github.com/astral-sh/uv/pull/4948
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:33Z
 ```
 
 # Add support for any Python requests
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-09 22:46_
+_@zanieb_
 
 For roundtrip in #4949 — it should also be fine to request `any` but the user can't construct it right now.
 

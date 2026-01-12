@@ -13,14 +13,14 @@ head: jtfm/workspace-default
 created_at: 2025-07-16T17:48:57Z
 updated_at: 2025-07-16T18:27:07Z
 url: https://github.com/astral-sh/uv/pull/14668
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:20Z
 ```
 
 # Add test for building transitive workspace member dependencies without build systems
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-07-16 17:48_
+_@jtfmumm_
 
 _No description provided._
 

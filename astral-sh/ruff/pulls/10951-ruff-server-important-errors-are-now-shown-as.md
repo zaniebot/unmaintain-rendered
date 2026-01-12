@@ -13,14 +13,14 @@ head: jane/server/show-message
 created_at: 2024-04-15T10:10:02Z
 updated_at: 2024-04-16T21:39:29Z
 url: https://github.com/astral-sh/ruff/pull/10951
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # `ruff server`: Important errors are now shown as popups
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-15 10:10_
+_@snowsignal_
 
 ## Summary
 

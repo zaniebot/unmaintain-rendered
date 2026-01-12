@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-21T06:30:55Z
 updated_at: 2024-06-21T14:29:37Z
 url: https://github.com/astral-sh/ruff/issues/11960
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Cargo version with pre-commit hooks
 
 ---
 
-_Issue opened by @wyardley on 2024-06-21 06:30_
+_@wyardley_
 
 * List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
 “fmt”

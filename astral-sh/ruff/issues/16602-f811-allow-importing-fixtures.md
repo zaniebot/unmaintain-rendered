@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-10T14:29:00Z
 updated_at: 2025-03-10T18:31:25Z
 url: https://github.com/astral-sh/ruff/issues/16602
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [F811] Allow importing fixtures
 
 ---
 
-_Issue opened by @alanhdu on 2025-03-10 14:29_
+_@alanhdu_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-13T02:09:59Z
 updated_at: 2024-06-13T12:55:58Z
 url: https://github.com/astral-sh/uv/issues/4296
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # `uv lock` does not respect `Requires-Python` in a virtual workspace
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-13 02:09_
+_@charliermarsh_
 
 E.g., `uv lock` is using 3.9.18 on my machine, even tough the workspace members need `>=3.12`:
 

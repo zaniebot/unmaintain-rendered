@@ -13,14 +13,14 @@ head: micha/hover
 created_at: 2025-03-29T16:32:36Z
 updated_at: 2025-04-04T13:25:30Z
 url: https://github.com/astral-sh/ruff/pull/17057
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Add basic on-hover to playground and LSP
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-29 16:32_
+_@MichaReiser_
 
 ## Summary
 

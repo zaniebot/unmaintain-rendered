@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-02T21:53:11Z
 updated_at: 2025-04-18T17:46:02Z
 url: https://github.com/astral-sh/ruff/issues/16457
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # FURB161 fix should be marked unsafe in some contexts
 
 ---
 
-_Issue opened by @dscorbett on 2025-03-02 21:53_
+_@dscorbett_
 
 ### Summary
 

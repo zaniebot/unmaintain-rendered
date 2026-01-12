@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-24T15:42:51Z
 updated_at: 2024-04-24T15:54:39Z
 url: https://github.com/astral-sh/uv/issues/3245
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # `sync_scenarios.sh` should update `BUILD_VENDOR_LINKS_URL`
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-04-24 15:42_
+_@ibraheemdev_
 
 Originally mentioned in https://github.com/astral-sh/uv/pull/3244#issuecomment-2075225101.
 

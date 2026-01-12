@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-10T16:43:08Z
 updated_at: 2025-09-10T17:06:53Z
 url: https://github.com/astral-sh/ty/issues/1166
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Inconsistent import handling of aiohttp.web
 
 ---
 
-_Issue opened by @hynek on 2025-09-10 16:43_
+_@hynek_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/from
 created_at: 2024-05-27T19:08:32Z
 updated_at: 2024-05-27T19:20:29Z
 url: https://github.com/astral-sh/uv/pull/3867
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:54Z
 ```
 
 # Remove unnecessary `::try_from`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-27 19:08_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-02-20T12:45:29Z
 updated_at: 2024-02-20T12:54:44Z
 url: https://github.com/astral-sh/uv/pull/1751
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:43Z
 ```
 
 # Clarify Windows install command in README.md
 
 ---
 
-_Pull request opened by @12932 on 2024-02-20 12:45_
+_@12932_
 
 Specify that the command to run for Windows is for powershell
 

@@ -13,14 +13,14 @@ head: cjm/select
 created_at: 2024-04-10T01:37:25Z
 updated_at: 2024-04-10T16:14:11Z
 url: https://github.com/astral-sh/ruff/pull/10852
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Support negated patterns in [extend-]per-file-ignores
 
 ---
 
-_Pull request opened by @carljm on 2024-04-10 01:37_
+_@carljm_
 
 Fixes #3172 
 

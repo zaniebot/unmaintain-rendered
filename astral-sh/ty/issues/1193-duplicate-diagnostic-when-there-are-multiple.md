@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-17T05:12:38Z
 updated_at: 2025-11-14T08:54:12Z
 url: https://github.com/astral-sh/ty/issues/1193
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Duplicate diagnostic when there are multiple functions with same signatures
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-09-17 05:12_
+_@dhruvmanila_
 
 ### Summary
 

@@ -15,14 +15,14 @@ head: gankra/global-err
 created_at: 2025-07-14T16:49:00Z
 updated_at: 2025-07-17T15:57:02Z
 url: https://github.com/astral-sh/ruff/pull/19335
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [ty] publish settings diagnostics
 
 ---
 
-_Pull request opened by @Gankra on 2025-07-14 16:49_
+_@Gankra_
 
 _No description provided._
 

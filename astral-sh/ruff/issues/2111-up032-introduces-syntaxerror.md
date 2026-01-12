@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-23T18:53:36Z
 updated_at: 2023-01-23T19:11:26Z
 url: https://github.com/astral-sh/ruff/issues/2111
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # UP032 introduces SyntaxError
 
 ---
 
-_Issue opened by @spaceone on 2023-01-23 18:53_
+_@spaceone_
 
 ```
 $ cat foo.py

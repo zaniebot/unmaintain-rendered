@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-09T09:43:23Z
 updated_at: 2025-06-13T16:20:54Z
 url: https://github.com/astral-sh/uv/issues/13916
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # component-detector support to read uv.lock
 
 ---
 
-_Issue opened by @cataggar on 2025-06-09 09:43_
+_@cataggar_
 
 ### Question
 

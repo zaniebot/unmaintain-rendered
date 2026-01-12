@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T11:10:00Z
 updated_at: 2024-03-29T20:04:30Z
 url: https://github.com/astral-sh/ruff/issues/10021
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # CPY001: allow SPDX copyright identifiers
 
 ---
 
-_Issue opened by @spaceone on 2024-02-18 11:10_
+_@spaceone_
 
 `CPY001` should not detect, e.g.:
 

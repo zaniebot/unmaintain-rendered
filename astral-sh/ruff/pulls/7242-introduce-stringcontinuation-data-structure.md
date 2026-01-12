@@ -12,14 +12,14 @@ head: create-string-continuation
 created_at: 2023-09-08T10:43:53Z
 updated_at: 2024-01-16T10:04:00Z
 url: https://github.com/astral-sh/ruff/pull/7242
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Introduce `StringContinuation` data structure
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-08 10:43_
+_@MichaReiser_
 
 
 ## Summary

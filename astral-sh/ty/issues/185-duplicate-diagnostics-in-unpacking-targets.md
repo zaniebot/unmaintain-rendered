@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-05T04:11:36Z
 updated_at: 2025-06-24T02:19:46Z
 url: https://github.com/astral-sh/ty/issues/185
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Duplicate diagnostics in unpacking targets
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-03-05 04:11_
+_@dhruvmanila_
 
 ### Summary
 

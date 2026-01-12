@@ -14,14 +14,14 @@ head: cjm/top-callable
 created_at: 2025-12-26T21:22:51Z
 updated_at: 2025-12-27T18:45:09Z
 url: https://github.com/astral-sh/ruff/pull/22213
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] fix and simplify callable type materializations
 
 ---
 
-_Pull request opened by @carljm on 2025-12-26 21:22_
+_@carljm_
 
 ## Summary
 

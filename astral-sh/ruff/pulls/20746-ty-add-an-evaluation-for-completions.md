@@ -14,14 +14,14 @@ head: ag/completion-eval
 created_at: 2025-10-07T15:11:08Z
 updated_at: 2025-10-08T12:44:23Z
 url: https://github.com/astral-sh/ruff/pull/20746
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] Add an evaluation for completions
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-10-07 15:11_
+_@BurntSushi_
 
 This is still early days, but I hope the framework introduced here makes
 it very easy to add new truth data. Truth data should be seen as a form

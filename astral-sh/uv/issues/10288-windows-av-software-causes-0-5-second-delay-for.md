@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-03T14:30:37Z
 updated_at: 2025-12-15T17:05:26Z
 url: https://github.com/astral-sh/uv/issues/10288
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # Windows AV software causes 0.5 second delay for unsigned binaries
 
 ---
 
-_Issue opened by @paugier on 2025-01-03 14:30_
+_@paugier_
 
 I observe a very slow Python startup in venv created by UV.
 

@@ -13,14 +13,14 @@ head: charlie/look
 created_at: 2024-01-09T06:15:18Z
 updated_at: 2024-01-09T13:33:23Z
 url: https://github.com/astral-sh/ruff/pull/9446
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Skip extra settings resolution when namespace packages are empty
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-09 06:15_
+_@charliermarsh_
 
 Saves 2% on Airflow:
 

@@ -13,14 +13,14 @@ head: ag/overlapping-marker
 created_at: 2025-01-21T16:50:49Z
 updated_at: 2025-01-21T19:04:36Z
 url: https://github.com/astral-sh/uv/pull/10818
-synced_at: 2026-01-10T11:45:12Z
+synced_at: 2026-01-12T16:09:30Z
 ```
 
 # uv-resolver: include conflict markers in fork markers
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-01-21 16:50_
+_@BurntSushi_
 
 When support for conflicting extras/groups was initially added, I
 stopped short of including the conflict markers in uv's "fork markers"

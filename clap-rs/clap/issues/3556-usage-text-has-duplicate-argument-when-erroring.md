@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-03-14T23:06:03Z
 updated_at: 2022-05-06T01:14:58Z
 url: https://github.com/clap-rs/clap/issues/3556
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Usage text has duplicate argument when erroring due to conflicting args
 
 ---
 
-_Issue opened by @chenxiaolong on 2022-03-14 23:06_
+_@chenxiaolong_
 
 ### Please complete the following tasks
 

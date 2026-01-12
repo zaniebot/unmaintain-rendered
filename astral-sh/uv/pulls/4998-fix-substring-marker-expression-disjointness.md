@@ -13,14 +13,14 @@ head: ibraheem/substring-disjointness
 created_at: 2024-07-11T21:10:51Z
 updated_at: 2024-07-12T15:21:22Z
 url: https://github.com/astral-sh/uv/pull/4998
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:34Z
 ```
 
 # Fix substring marker expression disjointness checks
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-11 21:10_
+_@ibraheemdev_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-14T11:29:28Z
 updated_at: 2025-02-16T02:28:36Z
 url: https://github.com/astral-sh/uv/issues/11506
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # uv pip install does not respect the python version specified in pyproject.toml
 
 ---
 
-_Issue opened by @Julfried on 2025-02-14 11:29_
+_@Julfried_
 
 ### Summary
 

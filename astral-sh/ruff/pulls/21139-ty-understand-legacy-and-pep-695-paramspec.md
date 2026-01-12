@@ -14,14 +14,14 @@ head: dhruv/paramspec
 created_at: 2025-10-30T14:24:17Z
 updated_at: 2025-11-06T16:14:42Z
 url: https://github.com/astral-sh/ruff/pull/21139
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] Understand legacy and PEP 695 `ParamSpec`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-10-30 14:24_
+_@dhruvmanila_
 
 ## Summary
 

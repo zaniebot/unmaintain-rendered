@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-04-28T22:45:40Z
 updated_at: 2015-09-01T04:04:03Z
 url: https://github.com/clap-rs/clap/issues/80
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Add support for building arguments from yaml
 
 ---
 
-_Issue opened by @kbknapp on 2015-04-28 22:45_
+_@kbknapp_
 
 Adds a `feature` and an additional dep, which is **not** included by default.
 

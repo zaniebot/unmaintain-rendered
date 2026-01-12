@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-19T02:08:28Z
 updated_at: 2024-10-19T02:28:40Z
 url: https://github.com/astral-sh/uv/issues/8354
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # uv venv 创建的虚拟环境，  bin目录下不包含pip，可能会存在虚拟环境的 python版本和pip 不对应的问题
 
 ---
 
-_Issue opened by @shell-nlp on 2024-10-19 02:08_
+_@shell-nlp_
 
 uv 0.4.22
 

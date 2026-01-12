@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-24T13:53:40Z
 updated_at: 2025-11-24T15:36:48Z
 url: https://github.com/astral-sh/ty/issues/1620
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Incorrect reporting of "Module `typing` has no member `LiteralString`"
 
 ---
 
-_Issue opened by @CarrotManMatt on 2025-11-24 13:53_
+_@CarrotManMatt_
 
 ### Summary
 

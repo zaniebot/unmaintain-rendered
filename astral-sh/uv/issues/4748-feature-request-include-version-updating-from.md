@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-02T22:57:58Z
 updated_at: 2024-08-23T13:50:29Z
 url: https://github.com/astral-sh/uv/issues/4748
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Feature Request: Include version updating from when running `uv self update`
 
 ---
 
-_Issue opened by @notatallshaw on 2024-07-02 22:57_
+_@notatallshaw_
 
 Very minor quality of life request, when you run `uv self update` it gives you an output like:
 

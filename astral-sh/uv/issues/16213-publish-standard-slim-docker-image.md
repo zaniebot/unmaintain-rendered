@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-09T18:57:51Z
 updated_at: 2025-10-09T19:22:09Z
 url: https://github.com/astral-sh/uv/issues/16213
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # Publish Standard Slim Docker Image
 
 ---
 
-_Issue opened by @rbebb on 2025-10-09 18:57_
+_@rbebb_
 
 ### Summary
 

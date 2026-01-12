@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-20T22:44:54Z
 updated_at: 2023-06-20T23:01:23Z
 url: https://github.com/astral-sh/ruff/issues/5228
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [Panic] new cache code causing panic in 0.0.273
 
 ---
 
-_Issue opened by @Edward-Knight on 2023-06-20 22:44_
+_@Edward-Knight_
 
 Running `RUST_BACKTRACE=full ruff <file>` on 0.0.273 resulted in this output:
 

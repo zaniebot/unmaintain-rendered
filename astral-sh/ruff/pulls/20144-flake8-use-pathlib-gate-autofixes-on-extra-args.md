@@ -11,14 +11,14 @@ head: fix-20134
 created_at: 2025-08-28T22:20:58Z
 updated_at: 2025-09-21T23:48:34Z
 url: https://github.com/astral-sh/ruff/pull/20144
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [`flake8-use-pathlib`] Gate autofixes on extra args, preserve chmod `follow_symlinks` (`PTH101`, `PTH104`, `PTH105`, `PTH121`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-08-28 22:20_
+_@danparizher_
 
 ## Summary
 

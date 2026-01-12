@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-22T21:17:58Z
 updated_at: 2025-10-24T10:02:30Z
 url: https://github.com/astral-sh/ty/issues/1412
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # [panic] infer_definition_types(Id(df00a)): execute: too many cycle iterations
 
 ---
 
-_Issue opened by @shi-yan on 2025-10-22 21:17_
+_@shi-yan_
 
 ```
 Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/918d35d/src/function/execute.rs:215:25 when checking `xxx.py`: `infer_definition_types(Id(df00a)): execute: too many cycle iterations`

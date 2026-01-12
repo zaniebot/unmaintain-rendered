@@ -13,14 +13,14 @@ head: zb/find-dir
 created_at: 2025-02-06T19:33:06Z
 updated_at: 2025-02-12T18:46:02Z
 url: https://github.com/astral-sh/uv/pull/11290
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:46Z
 ```
 
 # Allow `--python <dir>` requests to match existing environments if `sys.executable` is the same file
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-06 19:33_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/11288
 

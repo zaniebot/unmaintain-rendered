@@ -13,14 +13,14 @@ head: konsti/build-backend-scaffolding
 created_at: 2024-09-24T16:15:04Z
 updated_at: 2024-09-24T17:23:19Z
 url: https://github.com/astral-sh/uv/pull/7662
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Add build backend scaffolding
 
 ---
 
-_Pull request opened by @konstin on 2024-09-24 16:15_
+_@konstin_
 
 Add the PEP 517 and PEP 660 hooks and minimal `todo!()` backend implementations (they are e.g. still missing passing `sys.executable`). The CLI commands are hidden and will stay hidden (calling them directly is not supported), the Python part of the interface is hidden behind a `UV_PREVIEW` until they have an actual implementation, at which point we'll switch to the regular, warn-only preview mechanism.
 

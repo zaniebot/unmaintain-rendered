@@ -13,14 +13,14 @@ head: bad-string-format-type
 created_at: 2023-02-04T21:07:12Z
 updated_at: 2023-02-10T18:07:12Z
 url: https://github.com/astral-sh/ruff/pull/2572
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # [`pylint`]: bad-string-format-type
 
 ---
 
-_Pull request opened by @colin99d on 2023-02-04 21:07_
+_@colin99d_
 
 ref: #970 
 

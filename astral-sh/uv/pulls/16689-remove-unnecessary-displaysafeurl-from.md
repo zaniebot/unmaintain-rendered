@@ -13,14 +13,14 @@ head: konsti/display-safer-url
 created_at: 2025-11-11T18:58:54Z
 updated_at: 2025-11-11T19:12:22Z
 url: https://github.com/astral-sh/uv/pull/16689
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:23Z
 ```
 
 # Remove unnecessary `DisplaySafeUrl::from`
 
 ---
 
-_Pull request opened by @konstin on 2025-11-11 18:58_
+_@konstin_
 
 For #16622
 

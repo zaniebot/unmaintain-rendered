@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-16T14:17:33Z
 updated_at: 2025-11-27T17:03:37Z
 url: https://github.com/astral-sh/ruff/issues/20921
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Statistics output doesn't show `[*]` markers for partially-fixable error types
 
 ---
 
-_Issue opened by @tsvikas on 2025-10-16 14:17_
+_@tsvikas_
 
 ### Description
 

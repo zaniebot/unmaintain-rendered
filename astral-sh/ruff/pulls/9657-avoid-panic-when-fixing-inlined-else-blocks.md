@@ -13,14 +13,14 @@ head: charlie/inline
 created_at: 2024-01-27T14:10:18Z
 updated_at: 2024-01-27T17:53:01Z
 url: https://github.com/astral-sh/ruff/pull/9657
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Avoid panic when fixing inlined else blocks
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-27 14:10_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9655.
 

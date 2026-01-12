@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-25T02:50:05Z
 updated_at: 2025-06-25T08:12:33Z
 url: https://github.com/astral-sh/uv/issues/14249
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # `uv venv --allow-existing` no longer works in `0.7.14`
 
 ---
 
-_Issue opened by @weihenglim on 2025-06-25 02:50_
+_@weihenglim_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: isort-diagnostic-range
 created_at: 2025-01-15T22:28:36Z
 updated_at: 2025-01-18T17:08:58Z
 url: https://github.com/astral-sh/ruff/pull/15518
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`isort`] Omit trailing whitespace in `unsorted-imports` (`I001`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-01-15 22:28_
+_@dylwil3_
 
 ## Summary
 The fix range for sorting imports accounts for trailing whitespace, but we should only show the trimmed range to the user when displaying the diagnostic. So this PR changes the diagnostic range.

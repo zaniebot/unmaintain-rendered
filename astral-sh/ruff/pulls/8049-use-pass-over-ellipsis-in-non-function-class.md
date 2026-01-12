@@ -12,14 +12,14 @@ head: pass-over-ellipsis-for-preview
 created_at: 2023-10-18T16:59:39Z
 updated_at: 2023-10-19T09:11:19Z
 url: https://github.com/astral-sh/ruff/pull/8049
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Use `pass` over ellipsis in non-function/class contexts
 
 ---
 
-_Pull request opened by @konstin on 2023-10-18 16:59_
+_@konstin_
 
 Split out of #8044: In preview style, ellipsis are also collapsed in non-stub files. This should only affect function/class contexts since for other statements stub are generally not used. I've updated our tests to use `pass` instead to reflect this, which makes tracking the preview style changes much easier.
 

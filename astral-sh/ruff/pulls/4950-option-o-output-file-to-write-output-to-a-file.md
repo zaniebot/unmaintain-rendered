@@ -12,14 +12,14 @@ head: cli/output-file-option
 created_at: 2023-06-08T04:53:54Z
 updated_at: 2023-06-20T20:03:46Z
 url: https://github.com/astral-sh/ruff/pull/4950
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Option (`-o`/`--output-file`) to write output to a file
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-08 04:53_
+_@dhruvmanila_
 
 ## Summary
 

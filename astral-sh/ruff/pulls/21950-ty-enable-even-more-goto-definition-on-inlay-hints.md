@@ -14,14 +14,14 @@ head: alex/more-inlay-goto
 created_at: 2025-12-12T14:54:26Z
 updated_at: 2025-12-12T17:57:40Z
 url: https://github.com/astral-sh/ruff/pull/21950
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Enable even more goto-definition on inlay hints
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-12 14:54_
+_@AlexWaygood_
 
 ## Summary
 

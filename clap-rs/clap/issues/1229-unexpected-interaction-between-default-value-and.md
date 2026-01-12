@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-03-23T16:25:54Z
 updated_at: 2018-08-02T03:30:21Z
 url: https://github.com/clap-rs/clap/issues/1229
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Unexpected interaction between .default_value() and .required_unless_one()
 
 ---
 
-_Issue opened by @longborough on 2018-03-23 16:25_
+_@longborough_
 
 Hi. Thank you for clap. I'm a complete Rust newbie, and struggling; clap made things a lot easier and I appreciate it!
 

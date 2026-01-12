@@ -10,16 +10,16 @@ labels:
   - virtualenv
 assignees: []
 created_at: 2024-02-16T14:49:37Z
-updated_at: 2025-12-26T02:27:56Z
+updated_at: 2026-01-12T09:21:34Z
 url: https://github.com/astral-sh/uv/issues/1495
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Add an option to store virtual environments in a centralized location outside projects
 
 ---
 
-_Issue opened by @DanCardin on 2024-02-16 14:49_
+_@DanCardin_
 
 I ideally dont .venv/ folders cluttering my project folders (not the least because they may not be safe to move, at least with `venv`)
 

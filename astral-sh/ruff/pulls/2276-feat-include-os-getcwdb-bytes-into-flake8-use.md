@@ -12,14 +12,14 @@ head: use-pathlib-getcwdb
 created_at: 2023-01-27T21:25:34Z
 updated_at: 2023-01-27T23:50:59Z
 url: https://github.com/astral-sh/ruff/pull/2276
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # feat: include os.getcwdb (bytes) into flake8-use-pathlib
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-27 21:25_
+_@sbrugman_
 
 Grouping those together as they should be both replaced with `Path(...).cwd()`
 

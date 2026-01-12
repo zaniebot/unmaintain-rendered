@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-04T09:44:58Z
 updated_at: 2025-11-19T12:22:09Z
 url: https://github.com/astral-sh/uv/issues/7917
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # [feat] uv publish --skip-existing
 
 ---
 
-_Issue opened by @chassing on 2024-10-04 09:44_
+_@chassing_
 
 It would be great if `uv publish` had a `--skip-existing` option that ignores errors from files already on PyPI, similar to poetry's and twine's `--skip-existing` options.
 

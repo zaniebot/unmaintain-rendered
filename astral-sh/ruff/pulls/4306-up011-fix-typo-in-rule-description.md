@@ -13,14 +13,14 @@ head: pu011-parentheses
 created_at: 2023-05-09T12:39:51Z
 updated_at: 2023-05-09T13:23:00Z
 url: https://github.com/astral-sh/ruff/pull/4306
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # UP011: Fix typo in rule description
 
 ---
 
-_Pull request opened by @aureliojargas on 2023-05-09 12:39_
+_@aureliojargas_
 
 This rule is about removing the extra parentheses, not parameters :)
 

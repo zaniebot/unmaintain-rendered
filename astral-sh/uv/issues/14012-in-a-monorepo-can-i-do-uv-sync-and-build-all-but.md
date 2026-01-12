@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T00:25:32Z
 updated_at: 2025-06-17T17:29:47Z
 url: https://github.com/astral-sh/uv/issues/14012
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # In a monorepo, can I do `uv sync` and build *all but one* package?
 
 ---
 
-_Issue opened by @aw632 on 2025-06-13 00:25_
+_@aw632_
 
 ### Question
 

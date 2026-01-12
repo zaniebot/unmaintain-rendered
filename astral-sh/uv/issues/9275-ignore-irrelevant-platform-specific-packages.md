@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T14:16:24Z
 updated_at: 2024-12-07T01:51:45Z
 url: https://github.com/astral-sh/uv/issues/9275
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # Ignore irrelevant platform-specific packages during resolution
 
 ---
 
-_Issue opened by @Vinno97 on 2024-11-20 14:16_
+_@Vinno97_
 
 Hi,
 

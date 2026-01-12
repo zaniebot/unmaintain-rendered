@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-13T09:01:15Z
 updated_at: 2022-12-27T16:16:35Z
 url: https://github.com/astral-sh/ruff/issues/1227
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Ruff is removing used imports since 0.0.173 version 
 
 ---
 
-_Issue opened by @Czaki on 2022-12-13 09:01_
+_@Czaki_
 
 Since version 0.0.173 (up to 0.0.178 - newest when create this issue) the ruff is removing used imports
 

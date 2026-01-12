@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-20T02:15:57Z
 updated_at: 2025-12-20T02:15:57Z
 url: https://github.com/astral-sh/uv/issues/17196
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:45Z
 ```
 
 # Allow ignoring directories in workspace member globs that don't have pyproject.toml files
 
 ---
 
-_Issue opened by @tsudol-plaid on 2025-12-20 02:15_
+_@tsudol-plaid_
 
 ### Summary
 

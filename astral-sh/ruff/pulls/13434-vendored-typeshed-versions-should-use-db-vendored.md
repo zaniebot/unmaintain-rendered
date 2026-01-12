@@ -13,14 +13,14 @@ head: micha/use-vendored-fs-from-db
 created_at: 2024-09-21T09:20:53Z
 updated_at: 2024-09-21T14:35:09Z
 url: https://github.com/astral-sh/ruff/pull/13434
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # `vendored_typeshed_versions` should use `db.vendored`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-21 09:20_
+_@MichaReiser_
 
 ## Summary
 

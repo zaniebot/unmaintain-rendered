@@ -13,14 +13,14 @@ head: konsti/build-backend-fixes
 created_at: 2024-11-20T16:39:02Z
 updated_at: 2024-11-21T11:20:31Z
 url: https://github.com/astral-sh/uv/pull/9281
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:44Z
 ```
 
 # Improve build backend excludes
 
 ---
 
-_Pull request opened by @konstin on 2024-11-20 16:39_
+_@konstin_
 
 This PR contains three smaller improvements:
 * Improve the include/exclude logging. We're still showing the current directory as empty backticks, not sure what to do about that

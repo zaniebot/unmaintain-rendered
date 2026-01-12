@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-31T02:37:07Z
 updated_at: 2023-11-06T13:56:36Z
 url: https://github.com/astral-sh/ruff/issues/3826
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Support for Python 3.6+
 
 ---
 
-_Issue opened by @garthk on 2023-03-31 02:37_
+_@garthk_
 
 G'day! Ruff 0.0.2060, given this config…
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-02-07T21:21:48Z
 updated_at: 2022-11-08T04:31:20Z
 url: https://github.com/clap-rs/clap/issues/3413
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Not obvious how to provide multiple usage statements with `App::override_usage()`
 
 ---
 
-_Issue opened by @jpgrayson on 2022-02-07 21:21_
+_@jpgrayson_
 
 ### Please complete the following tasks
 

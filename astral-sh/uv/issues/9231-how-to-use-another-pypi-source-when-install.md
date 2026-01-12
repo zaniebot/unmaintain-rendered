@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-19T15:49:41Z
 updated_at: 2024-11-20T06:19:13Z
 url: https://github.com/astral-sh/uv/issues/9231
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # How to use another pypi source when install packages
 
 ---
 
-_Issue opened by @rxy1212 on 2024-11-19 15:49_
+_@rxy1212_
 
 How to use another pypi source when install packages just like "pip install -i" do.
 

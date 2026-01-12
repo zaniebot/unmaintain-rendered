@@ -13,14 +13,14 @@ head: f523-auto-fix
 created_at: 2023-03-19T20:06:36Z
 updated_at: 2023-03-21T07:18:11Z
 url: https://github.com/astral-sh/ruff/pull/3613
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add autofix functionality for `F523` (#3613)
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-19 20:06_
+_@JonathanPlasse_
 
 - Close #1186, the oldest auto-fix issue.
 It was more complex than I thought.

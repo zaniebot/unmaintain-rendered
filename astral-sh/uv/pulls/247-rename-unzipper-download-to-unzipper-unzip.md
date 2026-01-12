@@ -12,14 +12,14 @@ head: charlie/unzip
 created_at: 2023-10-31T01:17:32Z
 updated_at: 2023-10-31T01:19:29Z
 url: https://github.com/astral-sh/uv/pull/247
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:49Z
 ```
 
 # Rename `Unzipper#download` to `Unzipper#unzip`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-31 01:17_
+_@charliermarsh_
 
 _No description provided._
 

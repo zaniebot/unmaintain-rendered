@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-04T18:33:14Z
 updated_at: 2025-08-04T19:20:50Z
 url: https://github.com/astral-sh/uv/issues/15064
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # >=3.12,<3.13 for requires-python installs 3.12.0
 
 ---
 
-_Issue opened by @lexicalunit on 2025-08-04 18:33_
+_@lexicalunit_
 
 ### Question
 

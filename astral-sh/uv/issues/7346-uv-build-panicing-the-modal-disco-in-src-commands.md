@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-12T23:30:03Z
 updated_at: 2024-09-13T14:52:26Z
 url: https://github.com/astral-sh/uv/issues/7346
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # `uv build` panicing @ the modal disco in `src/commands/build.rs` 
 
 ---
 
-_Issue opened by @anthonycorletti on 2024-09-12 23:30_
+_@anthonycorletti_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

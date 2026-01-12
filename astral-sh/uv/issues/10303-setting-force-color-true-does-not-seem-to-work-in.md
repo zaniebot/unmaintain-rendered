@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-01-05T16:54:40Z
 updated_at: 2025-01-06T02:18:18Z
 url: https://github.com/astral-sh/uv/issues/10303
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # Setting FORCE_COLOR=true does not seem to work (in GH actions at least)
 
 ---
 
-_Issue opened by @scop on 2025-01-05 16:54_
+_@scop_
 
 Setting `FORCE_COLOR=true`  does not seem to give colorized output in GitHub actions.
 

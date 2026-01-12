@@ -13,14 +13,14 @@ head: recategorize-RUF035-to-S704
 created_at: 2025-02-05T08:15:50Z
 updated_at: 2025-03-11T12:24:26Z
 url: https://github.com/astral-sh/ruff/pull/15957
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-bandit`] Move `unsafe-markup-use` from `RUF035` to `S704`
 
 ---
 
-_Pull request opened by @Daverball on 2025-02-05 08:15_
+_@Daverball_
 
 ## Summary
 

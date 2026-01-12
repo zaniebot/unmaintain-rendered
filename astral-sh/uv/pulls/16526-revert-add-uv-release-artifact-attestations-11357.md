@@ -11,14 +11,14 @@ head: gankra/attest-announce
 created_at: 2025-10-30T22:41:00Z
 updated_at: 2025-10-31T01:41:23Z
 url: https://github.com/astral-sh/uv/pull/16526
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:18Z
 ```
 
 # Revert "Add uv release artifact attestations (#11357)"
 
 ---
 
-_Pull request opened by @Gankra on 2025-10-30 22:41_
+_@Gankra_
 
 This reverts commit f3d3203734436d5cbc2e539d2e2c7c672b9274e3.
 

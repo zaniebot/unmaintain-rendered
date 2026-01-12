@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-11T16:20:58Z
 updated_at: 2025-04-22T08:50:58Z
 url: https://github.com/astral-sh/ruff/issues/17356
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `noqa: TC003` not equivalent to `ignore = ["TC003"]` (TCH -> TC name change?)
 
 ---
 
-_Issue opened by @dmyersturnbull on 2025-04-11 16:20_
+_@dmyersturnbull_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-02T18:02:41Z
 updated_at: 2022-12-02T18:23:25Z
 url: https://github.com/astral-sh/ruff/issues/999
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # F401 false positive with future annotations
 
 ---
 
-_Issue opened by @joouha on 2022-12-02 18:02_
+_@joouha_
 
 Not sure if this is already fixed in #992, but given the follow code, ruff incorrectly flags F401:
 

@@ -15,14 +15,14 @@ head: renkai-replacing-unbound
 created_at: 2025-09-21T12:32:27Z
 updated_at: 2025-09-23T14:26:56Z
 url: https://github.com/astral-sh/ruff/pull/20492
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [ty] Rename "possibly unbound" diagnostics to "possibly missing"
 
 ---
 
-_Pull request opened by @Renkai on 2025-09-21 12:32_
+_@Renkai_
 
 Fixes https://github.com/astral-sh/ty/issues/636
 

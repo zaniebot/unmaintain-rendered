@@ -14,14 +14,14 @@ head: zb/benches-docs
 created_at: 2024-08-20T16:27:24Z
 updated_at: 2024-08-20T16:54:48Z
 url: https://github.com/astral-sh/uv/pull/6257
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:18Z
 ```
 
 # Add link to benchmarks in documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-20 16:27_
+_@zanieb_
 
 _No description provided._
 

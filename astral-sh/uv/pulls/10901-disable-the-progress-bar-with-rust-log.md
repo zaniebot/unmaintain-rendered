@@ -13,14 +13,14 @@ head: konsti/rust-log-disables-progress
 created_at: 2025-01-23T15:10:46Z
 updated_at: 2025-01-23T17:03:18Z
 url: https://github.com/astral-sh/uv/pull/10901
-synced_at: 2026-01-10T11:45:17Z
+synced_at: 2026-01-12T16:09:34Z
 ```
 
 # Disable the progress bar with `RUST_LOG`
 
 ---
 
-_Pull request opened by @konstin on 2025-01-23 15:10_
+_@konstin_
 
 Avoid output like this:
 

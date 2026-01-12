@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-02T12:36:26Z
 updated_at: 2024-10-02T22:47:55Z
 url: https://github.com/astral-sh/ruff/issues/13605
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Ruff analyze graph showing absolute paths on windows and no extra dependencies
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-10-02 12:36_
+_@inoa-jboliveira_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

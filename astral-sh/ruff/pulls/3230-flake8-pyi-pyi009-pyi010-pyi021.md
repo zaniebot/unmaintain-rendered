@@ -13,14 +13,14 @@ head: steve-more-flake8-pyi-rules
 created_at: 2023-02-26T00:17:13Z
 updated_at: 2023-02-26T03:29:04Z
 url: https://github.com/astral-sh/ruff/pull/3230
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [flake8-pyi]: PYI009, PYI010, PYI021
 
 ---
 
-_Pull request opened by @sbdchd on 2023-02-26 00:17_
+_@sbdchd_
 
 PYI009 and PYI010 are very similar, always use `...` in function and class bodies in stubs.
 

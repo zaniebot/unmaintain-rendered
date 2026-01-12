@@ -13,14 +13,14 @@ head: dhruv/with-item-parsing
 created_at: 2024-03-15T04:53:15Z
 updated_at: 2024-03-20T17:11:16Z
 url: https://github.com/astral-sh/ruff/pull/10418
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Update with item parsing to avoid infinite lookaheads
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-15 04:53_
+_@dhruvmanila_
 
 ## Summary
 

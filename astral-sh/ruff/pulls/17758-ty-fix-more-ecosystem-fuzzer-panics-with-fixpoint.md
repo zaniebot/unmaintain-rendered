@@ -13,14 +13,14 @@ head: cjm/mrocycle
 created_at: 2025-05-01T06:56:48Z
 updated_at: 2025-05-09T14:41:38Z
 url: https://github.com/astral-sh/ruff/pull/17758
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [ty] fix more ecosystem/fuzzer panics with fixpoint
 
 ---
 
-_Pull request opened by @carljm on 2025-05-01 06:56_
+_@carljm_
 
 ## Summary
 

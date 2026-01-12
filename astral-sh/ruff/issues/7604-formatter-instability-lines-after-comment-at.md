@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-22T16:20:04Z
 updated_at: 2023-09-22T17:49:41Z
 url: https://github.com/astral-sh/ruff/issues/7604
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter instability: lines after comment at module level
 
 ---
 
-_Issue opened by @charliermarsh on 2023-09-22 16:20_
+_@charliermarsh_
 
 Given:
 

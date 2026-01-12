@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-10T09:36:39Z
 updated_at: 2025-07-17T20:38:42Z
 url: https://github.com/astral-sh/uv/issues/13376
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # uv-python: panic when installing Python 3.12 on Windows (called \Option::unwrap()` on a `None` value in downloads.rs)`
 
 ---
 
-_Issue opened by @farukonfly on 2025-05-10 09:36_
+_@farukonfly_
 
 ### Question
 

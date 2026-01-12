@@ -13,14 +13,14 @@ head: david/fix-17861
 created_at: 2025-05-06T07:21:17Z
 updated_at: 2025-05-07T06:55:23Z
 url: https://github.com/astral-sh/ruff/pull/17880
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [ty] Protocols: Fixpoint iteration for fully-static check
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-06 07:21_
+_@sharkdp_
 
 ## Summary
 

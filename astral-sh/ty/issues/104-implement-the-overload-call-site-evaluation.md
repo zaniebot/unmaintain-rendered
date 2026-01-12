@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-01T19:33:19Z
 updated_at: 2025-06-27T15:36:03Z
 url: https://github.com/astral-sh/ty/issues/104
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Implement the overload call site evaluation algorithm
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-05-01 19:33_
+_@dhruvmanila_
 
 Reference spec: https://typing.python.org/en/latest/spec/overload.html#overload-call-evaluation
 

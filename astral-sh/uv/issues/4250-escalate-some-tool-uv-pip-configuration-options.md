@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-11T19:41:40Z
 updated_at: 2024-06-14T00:56:39Z
 url: https://github.com/astral-sh/uv/issues/4250
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Escalate some `tool.uv.pip` configuration options to the project API
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-11 19:41_
+_@charliermarsh_
 
 Right now, we don't read anything from `tool.uv.pip` in `uv lock`, `uv sync`, or `uv run`.
 

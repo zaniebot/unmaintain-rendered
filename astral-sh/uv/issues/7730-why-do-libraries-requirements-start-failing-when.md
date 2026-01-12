@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-27T05:57:48Z
 updated_at: 2024-09-28T19:10:12Z
 url: https://github.com/astral-sh/uv/issues/7730
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Why do libraries requirements start failing when specifying python version in `uv run`?
 
 ---
 
-_Issue opened by @gitgithan on 2024-09-27 05:57_
+_@gitgithan_
 
 demo.py tweaked from docs with more prints: 
 

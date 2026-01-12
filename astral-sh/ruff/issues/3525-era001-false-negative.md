@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-14T21:13:48Z
 updated_at: 2023-06-13T16:56:52Z
 url: https://github.com/astral-sh/ruff/issues/3525
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # ERA001 false negative
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-03-14 21:13_
+_@JonathanPlasse_
 
 ```python
 # if severity != logSeverity.DEBUG:

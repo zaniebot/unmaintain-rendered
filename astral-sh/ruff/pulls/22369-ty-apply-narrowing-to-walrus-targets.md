@@ -12,14 +12,14 @@ head: charlie/narorw
 created_at: 2026-01-04T18:38:00Z
 updated_at: 2026-01-09T14:58:50Z
 url: https://github.com/astral-sh/ruff/pull/22369
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Apply narrowing to walrus targets
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-04 18:38_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-28T22:18:33Z
 updated_at: 2025-08-03T00:15:29Z
 url: https://github.com/clap-rs/clap/issues/6078
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Make the `anstream/wincon` feature optional
 
 ---
 
-_Issue opened by @dullbananas on 2025-07-28 22:18_
+_@dullbananas_
 
 ### Please complete the following tasks
 

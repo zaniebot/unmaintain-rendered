@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-24T20:49:20Z
 updated_at: 2023-02-24T22:55:34Z
 url: https://github.com/astral-sh/ruff/issues/3214
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # disable EXE001 when linting from stdin
 
 ---
 
-_Issue opened by @dimbleby on 2023-02-24 20:49_
+_@dimbleby_
 
 I have set up my editor to run `ruff -- -`, passing the buffer contents via stdin
 

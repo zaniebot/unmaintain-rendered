@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-08T01:13:26Z
 updated_at: 2024-06-10T12:40:52Z
 url: https://github.com/astral-sh/uv/issues/4157
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Lockfile omits base package when extra has a marker
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-08 01:13_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/4156
 

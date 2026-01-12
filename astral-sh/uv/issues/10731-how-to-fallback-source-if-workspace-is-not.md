@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-18T10:59:19Z
 updated_at: 2025-01-18T10:59:19Z
 url: https://github.com/astral-sh/uv/issues/10731
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # how to fallback source if workspace is not available
 
 ---
 
-_Issue opened by @KevinNitroG on 2025-01-18 10:59_
+_@KevinNitroG_
 
 Currently I have a monorepo project. But each subrepos inside (git submodules) aren't published to Pypi.
 

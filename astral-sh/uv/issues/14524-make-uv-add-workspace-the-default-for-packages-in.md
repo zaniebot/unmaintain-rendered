@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-09T15:47:11Z
 updated_at: 2025-07-11T02:13:23Z
 url: https://github.com/astral-sh/uv/issues/14524
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # Make `uv add --workspace` the default for packages in the same source tree
 
 ---
 
-_Issue opened by @charliermarsh on 2025-07-09 15:47_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/14496
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-11-29T13:38:52Z
 updated_at: 2021-03-09T17:49:06Z
 url: https://github.com/clap-rs/clap/issues/2233
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Multiple set to false fails
 
 ---
 
-_Issue opened by @crowlKats on 2020-11-29 13:38_
+_@crowlKats_
 
 ### Make sure you completed the following tasks
 

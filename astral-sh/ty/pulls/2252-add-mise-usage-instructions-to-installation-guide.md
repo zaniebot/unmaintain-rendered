@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-12-29T01:19:31Z
 updated_at: 2026-01-10T00:04:30Z
 url: https://github.com/astral-sh/ty/pull/2252
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Add mise usage instructions to installation guide
 
 ---
 
-_Pull request opened by @kvokka on 2025-12-29 01:19_
+_@kvokka_
 
 The tool was added to [mise](https://github.com/jdx/mise) registry with https://github.com/jdx/mise/pull/7495 , and this commit updates the docs
 

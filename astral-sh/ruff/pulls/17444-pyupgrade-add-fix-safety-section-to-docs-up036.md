@@ -13,14 +13,14 @@ head: doc_fix_safety_for_outdated_version_block
 created_at: 2025-04-17T08:37:56Z
 updated_at: 2025-04-18T02:45:54Z
 url: https://github.com/astral-sh/ruff/pull/17444
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`pyupgrade`] Add fix safety section to docs (`UP036`)
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-17 08:37_
+_@Kalmaegi_
 
 
 ## Summary

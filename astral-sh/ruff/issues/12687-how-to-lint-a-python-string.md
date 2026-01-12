@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-05T11:44:42Z
 updated_at: 2024-09-17T03:01:23Z
 url: https://github.com/astral-sh/ruff/issues/12687
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # How to lint a Python string?
 
 ---
 
-_Issue opened by @shner-elmo on 2024-08-05 11:44_
+_@shner-elmo_
 
 Hello, I'm working on a script that generate Python code and returns it as a string (doesn't write to disk), and I was wondering whats the best way I can lint the string with `ruff`?
 

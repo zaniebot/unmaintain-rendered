@@ -11,14 +11,14 @@ head: main
 created_at: 2024-12-15T20:10:54Z
 updated_at: 2025-04-14T08:00:32Z
 url: https://github.com/astral-sh/uv/pull/9920
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:02Z
 ```
 
 # Enable user-level management of index credentials via uv (& keyring)
 
 ---
 
-_Pull request opened by @stoney95 on 2024-12-15 20:10_
+_@stoney95_
 
 ## Summary
 Currently reading credentials from `keyring` is only supported when a username is provided in the URL of the index. This prohibits to define indexes - in pyproject.toml - that are shared within a team. See these two issues for further details:

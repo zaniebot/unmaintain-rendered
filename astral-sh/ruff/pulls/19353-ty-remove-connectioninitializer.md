@@ -15,14 +15,14 @@ head: dhruv/remove-connection-initializer
 created_at: 2025-07-15T11:16:03Z
 updated_at: 2025-07-15T11:32:46Z
 url: https://github.com/astral-sh/ruff/pull/19353
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [ty] Remove `ConnectionInitializer`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-15 11:16_
+_@dhruvmanila_
 
 ## Summary
 

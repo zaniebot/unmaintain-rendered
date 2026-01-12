@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-13T18:11:07Z
 updated_at: 2025-01-14T18:17:20Z
 url: https://github.com/astral-sh/uv/issues/10574
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # Recommend `--native-tls` on SSL errors
 
 ---
 
-_Issue opened by @zanieb on 2025-01-13 18:11_
+_@zanieb_
 
 e.g., https://github.com/astral-sh/uv/issues/10563#issuecomment-2587288206
 

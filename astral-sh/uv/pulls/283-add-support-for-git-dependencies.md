@@ -12,14 +12,14 @@ head: charlie/vcs
 created_at: 2023-11-02T01:29:17Z
 updated_at: 2023-11-02T15:14:56Z
 url: https://github.com/astral-sh/uv/pull/283
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:51Z
 ```
 
 # Add support for Git dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-02 01:29_
+_@charliermarsh_
 
 ## Summary
 

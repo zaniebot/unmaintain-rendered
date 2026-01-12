@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-21T20:47:24Z
 updated_at: 2024-09-22T17:22:52Z
 url: https://github.com/astral-sh/uv/issues/7616
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # can't install jax[tpu]
 
 ---
 
-_Issue opened by @GallagherCommaJack on 2024-09-21 20:47_
+_@GallagherCommaJack_
 
 here's a snippet to reproduce
 

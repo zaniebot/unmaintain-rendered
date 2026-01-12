@@ -13,14 +13,14 @@ head: charlie/pyo
 created_at: 2025-07-11T01:32:19Z
 updated_at: 2025-07-11T01:41:33Z
 url: https://github.com/astral-sh/uv/pull/14554
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:17Z
 ```
 
 # Fix repeated word in Pyodide doc
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-11 01:32_
+_@charliermarsh_
 
 _No description provided._
 

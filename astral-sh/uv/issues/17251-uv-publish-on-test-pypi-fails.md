@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-29T14:25:24Z
 updated_at: 2026-01-04T18:59:03Z
 url: https://github.com/astral-sh/uv/issues/17251
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:47Z
 ```
 
 # UV publish on test Pypi fails
 
 ---
 
-_Issue opened by @UbeyOzcan on 2025-12-29 14:25_
+_@UbeyOzcan_
 
 ### Summary
 

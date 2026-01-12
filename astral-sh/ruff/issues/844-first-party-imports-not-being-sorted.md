@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-21T01:32:10Z
 updated_at: 2022-11-21T02:59:38Z
 url: https://github.com/astral-sh/ruff/issues/844
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # First-party imports not being sorted
 
 ---
 
-_Issue opened by @tekumara on 2022-11-21 01:32_
+_@tekumara_
 
 _myapp/main.py_:
 ```python

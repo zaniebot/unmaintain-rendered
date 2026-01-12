@@ -12,14 +12,14 @@ head: charliermarsh-patch-1
 created_at: 2023-04-04T19:30:07Z
 updated_at: 2023-04-04T19:55:02Z
 url: https://github.com/astral-sh/ruff/pull/3879
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add LangChain and LlamaIndex
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-04 19:30_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-26T14:20:12Z
 updated_at: 2025-01-14T13:40:40Z
 url: https://github.com/astral-sh/uv/issues/3279
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # uv does not support keyring after 0.1.32
 
 ---
 
-_Issue opened by @mvaldi on 2024-04-26 14:20_
+_@mvaldi_
 
 Hi astral team, I love this repository and save me a lot of time in github actions.
 

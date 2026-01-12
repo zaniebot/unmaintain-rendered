@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-03T23:12:31Z
 updated_at: 2025-02-07T15:41:01Z
 url: https://github.com/astral-sh/uv/issues/11205
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # uv --no-dev --group dev does not install dev group
 
 ---
 
-_Issue opened by @gaborbernat on 2025-02-03 23:12_
+_@gaborbernat_
 
 ### Summary
 

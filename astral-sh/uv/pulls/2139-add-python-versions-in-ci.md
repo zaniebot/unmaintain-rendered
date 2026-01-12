@@ -12,14 +12,14 @@ head: ci-multiple-python-versions
 created_at: 2024-03-03T17:05:13Z
 updated_at: 2024-03-09T23:50:34Z
 url: https://github.com/astral-sh/uv/pull/2139
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # add python versions in CI
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-03-03 17:05_
+_@ChannyClaus_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

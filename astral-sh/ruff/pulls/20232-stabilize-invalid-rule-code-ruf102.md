@@ -13,14 +13,14 @@ head: brent/ruf102
 created_at: 2025-09-04T13:36:07Z
 updated_at: 2025-09-04T14:04:18Z
 url: https://github.com/astral-sh/ruff/pull/20232
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # Stabilize `invalid-rule-code` (`RUF102`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-04 13:36_
+_@ntBre_
 
 Docs and tests look good
 

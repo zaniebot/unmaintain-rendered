@@ -14,14 +14,14 @@ head: furb101-fix
 created_at: 2025-09-22T20:07:08Z
 updated_at: 2025-10-06T22:51:12Z
 url: https://github.com/astral-sh/ruff/pull/20520
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [`refurb`] Add fixes for `FURB101`, `FURB103`
 
 ---
 
-_Pull request opened by @chirizxc on 2025-09-22 20:07_
+_@chirizxc_
 
 ## Summary
 

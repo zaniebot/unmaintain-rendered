@@ -14,14 +14,14 @@ head: fix-build-failure
 created_at: 2025-12-05T02:11:39Z
 updated_at: 2025-12-05T08:05:38Z
 url: https://github.com/astral-sh/ruff/pull/21802
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] fix build failure caused by conflicts between #21683 and #21800
 
 ---
 
-_Pull request opened by @mtshiba on 2025-12-05 02:11_
+_@mtshiba_
 
 ## Summary
 

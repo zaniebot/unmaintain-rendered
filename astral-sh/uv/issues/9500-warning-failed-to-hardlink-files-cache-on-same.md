@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-28T12:42:39Z
 updated_at: 2024-11-30T20:23:39Z
 url: https://github.com/astral-sh/uv/issues/9500
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # Warning `Failed to hardlink files`, cache on same drive
 
 ---
 
-_Issue opened by @rafguns on 2024-11-28 12:42_
+_@rafguns_
 
 This issue is similar to #6397 and #6613 but in those issues, the reason is that the project dir and cache dir are on separate drives. I get this error, however, when both are on the same drive.
 

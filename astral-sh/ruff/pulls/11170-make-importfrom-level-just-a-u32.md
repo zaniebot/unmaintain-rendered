@@ -14,14 +14,14 @@ head: cjm/import-level-2
 created_at: 2024-04-27T02:09:10Z
 updated_at: 2024-04-29T09:01:12Z
 url: https://github.com/astral-sh/ruff/pull/11170
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # Make ImportFrom level just a u32
 
 ---
 
-_Pull request opened by @carljm on 2024-04-27 02:09_
+_@carljm_
 
 ## Summary
 

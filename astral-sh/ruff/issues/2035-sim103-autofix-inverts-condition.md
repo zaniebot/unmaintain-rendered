@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-20T16:57:20Z
 updated_at: 2023-01-20T18:17:21Z
 url: https://github.com/astral-sh/ruff/issues/2035
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `SIM103` autofix inverts condition
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-20 16:57_
+_@charliermarsh_
 
 FYI `SIM103` autofix refactored my code to be incorrect:
 

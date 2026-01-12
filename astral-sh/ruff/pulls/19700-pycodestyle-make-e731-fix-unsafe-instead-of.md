@@ -13,14 +13,14 @@ head: fix-19650
 created_at: 2025-08-01T22:17:08Z
 updated_at: 2025-08-15T19:16:34Z
 url: https://github.com/astral-sh/ruff/pull/19700
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [`pycodestyle`] Make `E731` fix unsafe instead of display-only for class assignments
 
 ---
 
-_Pull request opened by @danparizher on 2025-08-01 22:17_
+_@danparizher_
 
 ## Summary
 

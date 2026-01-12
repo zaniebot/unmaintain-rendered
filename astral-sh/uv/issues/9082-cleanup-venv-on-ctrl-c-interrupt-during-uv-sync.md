@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-13T13:01:25Z
 updated_at: 2024-11-27T13:41:35Z
 url: https://github.com/astral-sh/uv/issues/9082
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # Cleanup .venv on Ctrl-C interrupt during `uv sync`
 
 ---
 
-_Issue opened by @atbraz on 2024-11-13 13:01_
+_@atbraz_
 
 When running `uv sync` without specifying a Python version, the command automatically selects the latest compatible version based on `project.requires-python`. If this selected version is undesirable (e.g., Python 3.13 for projects known to have compatibility issues), the only way to stop the process is using Ctrl-C. However, this leaves behind a partially created `.venv` directory that must be manually cleaned up before retrying with the correct Python version.
 

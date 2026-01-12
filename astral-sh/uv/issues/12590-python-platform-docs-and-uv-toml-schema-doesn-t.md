@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-31T16:57:41Z
 updated_at: 2025-04-01T13:08:37Z
 url: https://github.com/astral-sh/uv/issues/12590
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # python-platform docs and uv.toml schema doesn't match command requirements
 
 ---
 
-_Issue opened by @falkben on 2025-03-31 16:57_
+_@falkben_
 
 ### Summary
 

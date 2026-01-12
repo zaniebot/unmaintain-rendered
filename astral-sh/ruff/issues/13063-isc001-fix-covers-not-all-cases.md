@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T19:37:29Z
 updated_at: 2024-08-22T20:23:33Z
 url: https://github.com/astral-sh/ruff/issues/13063
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # ISC001 fix covers not all cases
 
 ---
 
-_Issue opened by @serjflint on 2024-08-22 19:37_
+_@serjflint_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

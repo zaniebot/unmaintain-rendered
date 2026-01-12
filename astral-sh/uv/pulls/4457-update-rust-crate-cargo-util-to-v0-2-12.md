@@ -13,14 +13,14 @@ head: renovate/cargo-util-0.x-lockfile
 created_at: 2024-06-24T00:00:50Z
 updated_at: 2024-06-24T00:08:15Z
 url: https://github.com/astral-sh/uv/pull/4457
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:14Z
 ```
 
 # Update Rust crate cargo-util to v0.2.12
 
 ---
 
-_Pull request opened by @renovate on 2024-06-24 00:00_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

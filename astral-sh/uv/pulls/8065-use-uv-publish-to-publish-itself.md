@@ -13,14 +13,14 @@ head: self-publish
 created_at: 2024-10-10T02:06:36Z
 updated_at: 2024-10-16T07:09:37Z
 url: https://github.com/astral-sh/uv/pull/8065
-synced_at: 2026-01-10T12:54:02Z
+synced_at: 2026-01-12T16:08:09Z
 ```
 
 # Use `uv publish` to publish itself
 
 ---
 
-_Pull request opened by @j178 on 2024-10-10 02:06_
+_@j178_
 
 _No description provided._
 

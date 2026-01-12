@@ -14,14 +14,14 @@ head: frank/19403
 created_at: 2025-07-17T23:21:41Z
 updated_at: 2025-07-22T17:09:50Z
 url: https://github.com/astral-sh/ruff/pull/19416
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [`flake8-pyi`] Skip fix if all `Union` members are `None` (`PYI016`) 
 
 ---
 
-_Pull request opened by @soundsonacid on 2025-07-17 23:21_
+_@soundsonacid_
 
 patches #19403 
 

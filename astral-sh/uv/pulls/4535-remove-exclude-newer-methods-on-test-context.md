@@ -13,14 +13,14 @@ head: charlie/exclude-newer
 created_at: 2024-06-25T23:28:34Z
 updated_at: 2024-06-25T23:45:36Z
 url: https://github.com/astral-sh/uv/pull/4535
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # Remove exclude newer methods on test context
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-25 23:28_
+_@charliermarsh_
 
 ## Summary
 

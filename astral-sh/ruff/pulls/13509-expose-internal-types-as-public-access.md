@@ -13,14 +13,14 @@ head: main
 created_at: 2024-09-25T09:21:27Z
 updated_at: 2024-09-26T15:43:56Z
 url: https://github.com/astral-sh/ruff/pull/13509
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Expose internal types as public access
 
 ---
 
-_Pull request opened by @zao111222333 on 2024-09-25 09:21_
+_@zao111222333_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

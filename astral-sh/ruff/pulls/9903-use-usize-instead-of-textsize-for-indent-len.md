@@ -13,14 +13,14 @@ head: docstring-indent-u32
 created_at: 2024-02-08T23:01:10Z
 updated_at: 2024-02-09T20:41:37Z
 url: https://github.com/astral-sh/ruff/pull/9903
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Use `usize` instead of `TextSize` for `indent_len`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-08 23:01_
+_@MichaReiser_
 
 Using `TextSize` as the return type for `indent_len` is problematic because it doesn't represent a byte offset but the indent's number of columns.
 

@@ -12,14 +12,14 @@ head: charlie/relative
 created_at: 2022-09-20T02:44:12Z
 updated_at: 2022-09-20T02:45:02Z
 url: https://github.com/astral-sh/ruff/pull/228
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Treat relative excludes as relative to project root
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-20 02:44_
+_@charliermarsh_
 
 Resolves #212.
 

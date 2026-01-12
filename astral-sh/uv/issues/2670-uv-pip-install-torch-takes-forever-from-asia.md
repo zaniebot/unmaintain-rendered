@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-26T14:43:16Z
 updated_at: 2024-03-26T16:24:30Z
 url: https://github.com/astral-sh/uv/issues/2670
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # uv pip install torch takes forever from asia
 
 ---
 
-_Issue opened by @ArshanKhanifar on 2024-03-26 14:43_
+_@ArshanKhanifar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

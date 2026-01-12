@@ -14,14 +14,14 @@ head: konsti/relative-wheel-paths
 created_at: 2024-08-09T17:37:58Z
 updated_at: 2024-08-09T21:57:17Z
 url: https://github.com/astral-sh/uv/pull/5969
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:08Z
 ```
 
 # Support relative path wheels
 
 ---
 
-_Pull request opened by @konstin on 2024-08-09 17:37_
+_@konstin_
 
 Surprisingly, this is a lockfile schema change: We can't store relative paths in urls, so we have to store a `filename` entry instead of the whole url.
 

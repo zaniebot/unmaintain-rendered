@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T09:04:33Z
 updated_at: 2025-08-22T06:59:55Z
 url: https://github.com/astral-sh/ty/issues/1077
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Do AsyncGenerators always need `None` to be part of the SendType?
 
 ---
 
-_Issue opened by @pfaion on 2025-08-21 09:04_
+_@pfaion_
 
 ### Question
 

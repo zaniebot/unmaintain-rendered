@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T19:35:20Z
 updated_at: 2024-10-17T21:10:34Z
 url: https://github.com/astral-sh/uv/issues/8303
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # Convention on pip installing uv
 
 ---
 
-_Issue opened by @paulf81 on 2024-10-17 19:35_
+_@paulf81_
 
 On a shared cluster I am using, the only available install option for users to install uv at the moment is to pip install uv into a virtual environment, for example via:
 

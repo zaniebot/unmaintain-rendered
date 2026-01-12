@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-01T08:15:05Z
 updated_at: 2025-05-05T16:40:02Z
 url: https://github.com/astral-sh/ruff/issues/17761
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # First-party vs third-party import detection for modules built with C++/Rust
 
 ---
 
-_Issue opened by @heiner on 2025-05-01 08:15_
+_@heiner_
 
 ### Summary
 

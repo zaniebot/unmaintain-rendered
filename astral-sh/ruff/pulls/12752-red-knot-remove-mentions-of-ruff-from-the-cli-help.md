@@ -13,14 +13,14 @@ head: alex/redknot-cli
 created_at: 2024-08-08T12:52:11Z
 updated_at: 2024-08-08T14:35:12Z
 url: https://github.com/astral-sh/ruff/pull/12752
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] Remove mentions of Ruff from the CLI help
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-08 12:52_
+_@AlexWaygood_
 
 And fixup some *very* long line lengths that aren't being autoformatted due to macro usage
 

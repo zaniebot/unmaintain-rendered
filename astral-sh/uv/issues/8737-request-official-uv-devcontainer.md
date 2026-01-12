@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-31T23:55:59Z
 updated_at: 2025-11-26T11:19:35Z
 url: https://github.com/astral-sh/uv/issues/8737
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # Request: Official uv devcontainer
 
 ---
 
-_Issue opened by @rdong8 on 2024-10-31 23:55_
+_@rdong8_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

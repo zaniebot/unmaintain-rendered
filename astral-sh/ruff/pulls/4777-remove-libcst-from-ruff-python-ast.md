@@ -11,14 +11,14 @@ head: no-libcst-dep
 created_at: 2023-06-01T07:00:15Z
 updated_at: 2023-06-12T12:37:22Z
 url: https://github.com/astral-sh/ruff/pull/4777
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove libcst from ruff_python_ast
 
 ---
 
-_Pull request opened by @konstin on 2023-06-01 07:00_
+_@konstin_
 
 Follow-up/alternative to https://github.com/charliermarsh/ruff/pull/4749 we can either merge into it or discard.
 

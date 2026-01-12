@@ -13,14 +13,14 @@ head: charlie/anchor
 created_at: 2024-09-22T19:09:51Z
 updated_at: 2024-09-22T23:35:47Z
 url: https://github.com/astral-sh/uv/pull/7626
-synced_at: 2026-01-10T12:53:51Z
+synced_at: 2026-01-12T16:07:55Z
 ```
 
 # Use anchorlinks rather than permalinks
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-22 19:09_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: david/mre-408
 created_at: 2025-05-15T18:23:44Z
 updated_at: 2025-05-16T10:49:39Z
 url: https://github.com/astral-sh/ruff/pull/18123
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] Regression test for relative import in stubs package
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-15 18:23_
+_@sharkdp_
 
 ## Summary
 

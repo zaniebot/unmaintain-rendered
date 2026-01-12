@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-07T18:15:41Z
 updated_at: 2024-07-08T07:57:47Z
 url: https://github.com/astral-sh/ruff/issues/12223
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Disable `ANN001` for arguments with defaults
 
 ---
 
-_Issue opened by @ghost on 2024-07-07 18:15_
+_@ghost_
 
 I would like to proposal a configuration option to disable `ANN001` if a function argument has a default value. Consider the following example:
 ```python

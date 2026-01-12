@@ -13,14 +13,14 @@ head: patch-5
 created_at: 2025-07-02T18:36:28Z
 updated_at: 2025-07-02T19:02:18Z
 url: https://github.com/astral-sh/ruff/pull/19098
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [`pyflakes`] Fix backslash in docs (`F621`)
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-02 18:36_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

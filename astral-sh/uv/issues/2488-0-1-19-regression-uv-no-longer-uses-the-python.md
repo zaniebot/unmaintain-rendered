@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-16T15:40:31Z
 updated_at: 2024-03-18T19:39:41Z
 url: https://github.com/astral-sh/uv/issues/2488
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # [0.1.19 regression] `uv` no longer uses the Python interpreter set by `pyenv`
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-03-16 15:40_
+_@AlexWaygood_
 
 From version 0.1.19 onwards, `uv` seems to no longer respect the Python interpreter set by using `pyenv local`, even though it did on previous versions. This still reproduces on the latest version (uv==0.1.21). Reproducer in the shell to show that this worked with `uv==0.1.18`, but not on later versions (the "Using Python 3.XX.X lines are the relevant ones that demonstrate the bug):
 

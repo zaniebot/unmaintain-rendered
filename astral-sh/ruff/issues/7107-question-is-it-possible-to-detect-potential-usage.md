@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-03T19:59:26Z
 updated_at: 2023-09-04T06:39:33Z
 url: https://github.com/astral-sh/ruff/issues/7107
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Question: Is it possible to detect potential usage of contextlib.nullcontext?
 
 ---
 
-_Issue opened by @nth10sd on 2023-09-03 19:59_
+_@nth10sd_
 
 ```
 if needs_with():

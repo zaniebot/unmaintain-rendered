@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-03T22:48:25Z
 updated_at: 2025-02-03T22:55:24Z
 url: https://github.com/astral-sh/uv/issues/11203
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:30Z
 ```
 
 # Include origin of requested Python version in Python discovery errors
 
 ---
 
-_Issue opened by @edmorley on 2025-02-03 22:48_
+_@edmorley_
 
 ### Summary
 

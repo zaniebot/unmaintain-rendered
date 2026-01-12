@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-04T18:41:27Z
 updated_at: 2025-08-04T19:19:31Z
 url: https://github.com/astral-sh/ruff/issues/19748
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Rule UP007 suggests to substitute type hints with Union with a pipe | even with Python 3.9
 
 ---
 
-_Issue opened by @JumboBear on 2025-08-04 18:41_
+_@JumboBear_
 
 ### Summary
 

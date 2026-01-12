@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-14T19:14:41Z
 updated_at: 2025-05-09T16:09:43Z
 url: https://github.com/astral-sh/uv/issues/12174
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:57Z
 ```
 
 # Connection reset by peer (os error 104) behind corporate proxy (zscaler)
 
 ---
 
-_Issue opened by @danpf on 2025-03-14 19:14_
+_@danpf_
 
 ### Summary
 

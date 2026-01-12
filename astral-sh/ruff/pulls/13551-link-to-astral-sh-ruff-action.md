@@ -13,14 +13,14 @@ head: charlie/gha
 created_at: 2024-09-29T23:46:06Z
 updated_at: 2024-09-29T23:49:26Z
 url: https://github.com/astral-sh/ruff/pull/13551
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Link to `astral-sh/ruff-action`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-29 23:46_
+_@charliermarsh_
 
 _No description provided._
 

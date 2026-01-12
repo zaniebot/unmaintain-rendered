@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-15T19:39:39Z
 updated_at: 2025-03-17T12:47:09Z
 url: https://github.com/astral-sh/ruff/issues/16768
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # ruff is using a compromised tj-actions/changed-files GitHub actio
 
 ---
 
-_Issue opened by @eslerm on 2025-03-15 19:39_
+_@eslerm_
 
 Filing a public issue instead of reporting this as a private vulnerability, since this malware is a publicly known and an urgent issue.
 

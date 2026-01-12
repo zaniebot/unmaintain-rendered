@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-30T08:32:15Z
 updated_at: 2025-06-16T00:39:27Z
 url: https://github.com/astral-sh/uv/issues/13216
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # Using UV_EXTRA_INDEX_URL fails in 0.7, regression from 0.6.17
 
 ---
 
-_Issue opened by @brynmathias on 2025-04-30 08:32_
+_@brynmathias_
 
 ### Summary
 

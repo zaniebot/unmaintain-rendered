@@ -12,14 +12,14 @@ head: charlie/rename
 created_at: 2023-05-29T22:33:54Z
 updated_at: 2023-05-29T23:21:44Z
 url: https://github.com/astral-sh/ruff/pull/4716
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Rename the `flake8-future-annotations` rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-29 22:33_
+_@charliermarsh_
 
 _No description provided._
 

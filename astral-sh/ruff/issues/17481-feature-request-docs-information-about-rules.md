@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-19T15:13:18Z
 updated_at: 2025-04-22T07:53:57Z
 url: https://github.com/astral-sh/ruff/issues/17481
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # feature_request(docs): information about rules missing from original tools/plugins
 
 ---
 
-_Issue opened by @Kristinita on 2025-04-19 15:13_
+_@Kristinita_
 
 ### 1. Summary
 

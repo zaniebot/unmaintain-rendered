@@ -12,14 +12,14 @@ head: micha/issue-template
 created_at: 2025-05-07T14:05:59Z
 updated_at: 2025-07-08T10:37:58Z
 url: https://github.com/astral-sh/ty/pull/67
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add basic issue template
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-07 14:05_
+_@MichaReiser_
 
 Closes https://github.com/astral-sh/ty/issues/18
 

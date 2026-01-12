@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-12T20:49:28Z
 updated_at: 2024-09-13T01:45:51Z
 url: https://github.com/astral-sh/uv/issues/7344
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Add `--system` flag to `uv sync` command to use it in Docker
 
 ---
 
-_Issue opened by @rfsan on 2024-09-12 20:49_
+_@rfsan_
 
 I have the current Dockerfile
 

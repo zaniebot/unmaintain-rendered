@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-08T21:21:16Z
 updated_at: 2025-09-12T18:00:13Z
 url: https://github.com/astral-sh/ruff/issues/20310
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ISC rules do not support t-strings
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-08 21:21_
+_@dscorbett_
 
 ### Summary
 

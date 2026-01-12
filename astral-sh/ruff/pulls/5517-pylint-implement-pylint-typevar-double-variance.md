@@ -13,14 +13,14 @@ head: bivariance
 created_at: 2023-07-04T23:18:24Z
 updated_at: 2023-07-10T09:54:54Z
 url: https://github.com/astral-sh/ruff/pull/5517
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # [`pylint`] Implement Pylint `typevar-double-variance` (`C0131`) 
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-04 23:18_
+_@tjkuson_
 
 ## Summary
 

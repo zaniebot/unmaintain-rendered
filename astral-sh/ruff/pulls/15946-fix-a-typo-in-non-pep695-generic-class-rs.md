@@ -13,14 +13,14 @@ head: rule-docs-links
 created_at: 2025-02-04T20:00:44Z
 updated_at: 2025-02-04T23:54:56Z
 url: https://github.com/astral-sh/ruff/pull/15946
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Fix a typo in `non_pep695_generic_class.rs`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-04 20:00_
+_@InSyncWithFoo_
 
 (Accidentally introduced in #15904.)
 

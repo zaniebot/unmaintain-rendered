@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-20T17:13:27Z
 updated_at: 2024-11-21T15:47:46Z
 url: https://github.com/astral-sh/ruff/issues/14495
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # How to pass the document version number for `workspace/executeCommand` request in Neovim?
 
 ---
 
-_Issue opened by @matt-gardner on 2024-11-20 17:13_
+_@matt-gardner_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-25T21:19:49Z
 updated_at: 2025-12-19T23:54:08Z
 url: https://github.com/astral-sh/ty/issues/236
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # principles for inferring the type of an expression that is a type error
 
 ---
 
-_Issue opened by @carljm on 2024-10-25 21:19_
+_@carljm_
 
 When we believe that an expression is a type error, and will raise at runtime, there are several plausible types we could assign to that expression:
 

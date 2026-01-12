@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-29T02:36:49Z
 updated_at: 2023-08-29T06:29:18Z
 url: https://github.com/astral-sh/ruff/issues/6962
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Allow suggested manual fixes for unfixable rules
 
 ---
 
-_Issue opened by @tylerlaprade on 2023-08-29 02:36_
+_@tylerlaprade_
 
 My `unfixable` list is the set of rules that I don't want _automatically_ fixed because I might need to make a judgement call. For example, do I really want to delete my `# noqa` flagged by `RUF100`, or did I accidentally change something in the code so that the directive wasn't applied?
 

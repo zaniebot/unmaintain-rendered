@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-08T10:31:25Z
 updated_at: 2025-09-08T11:29:21Z
 url: https://github.com/astral-sh/uv/issues/8931
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # Make uv the official Python package manager
 
 ---
 
-_Issue opened by @max-wittig on 2024-11-08 10:31_
+_@max-wittig_
 
 I really like `uv` and its approach, but right now its yet another package manager for Python and you have to decide to adapt it.
 

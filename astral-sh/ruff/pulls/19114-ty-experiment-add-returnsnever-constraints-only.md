@@ -13,14 +13,14 @@ head: never-only-function-scopes
 created_at: 2025-07-03T06:24:17Z
 updated_at: 2025-07-05T06:26:36Z
 url: https://github.com/astral-sh/ruff/pull/19114
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # [ty] [experiment] Add `ReturnsNever` constraints only in function scopes.
 
 ---
 
-_Pull request opened by @abhijeetbodas2001 on 2025-07-03 06:24_
+_@abhijeetbodas2001_
 
 An experiment to see if adding these constraints only in function scopes helps the perf situation at https://github.com/astral-sh/ruff/pull/18333.
 

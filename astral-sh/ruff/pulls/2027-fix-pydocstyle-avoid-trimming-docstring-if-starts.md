@@ -12,14 +12,14 @@ head: d200/leadind-quote
 created_at: 2023-01-20T13:00:24Z
 updated_at: 2023-01-20T14:57:49Z
 url: https://github.com/astral-sh/ruff/pull/2027
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # fix(pydocstyle): Avoid trimming docstring if starts with leading quote
 
 ---
 
-_Pull request opened by @spaceone on 2023-01-20 13:00_
+_@spaceone_
 
 Fixes: #2017
 

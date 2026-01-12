@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T12:19:09Z
 updated_at: 2025-01-13T19:03:12Z
 url: https://github.com/astral-sh/uv/issues/9909
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # Docker and snap-7
 
 ---
 
-_Issue opened by @MMartin09 on 2024-12-15 12:19_
+_@MMartin09_
 
 Hi, I am trying to Dockerize my project. However, I am always receiving an error from the Python snap7 library. 
 

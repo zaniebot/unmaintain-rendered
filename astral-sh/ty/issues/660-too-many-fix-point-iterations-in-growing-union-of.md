@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-16T07:10:59Z
 updated_at: 2025-08-28T14:46:38Z
 url: https://github.com/astral-sh/ty/issues/660
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Too-many fix point iterations in growing union of literals
 
 ---
 
-_Issue opened by @sharkdp on 2025-06-16 07:10_
+_@sharkdp_
 
 `ty` panics with "infer_expression_type(Id(1401)): execute: too many cycle iterations" for the following example:
 

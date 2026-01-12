@@ -13,14 +13,14 @@ head: zb/project-docs-app
 created_at: 2024-08-27T19:41:05Z
 updated_at: 2024-08-27T21:22:39Z
 url: https://github.com/astral-sh/uv/pull/6718
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:30Z
 ```
 
 # Update project documentation for the application / library concepts
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-27 19:41_
+_@zanieb_
 
 Follows https://github.com/astral-sh/uv/pull/6689 and https://github.com/astral-sh/uv/pull/6585
 

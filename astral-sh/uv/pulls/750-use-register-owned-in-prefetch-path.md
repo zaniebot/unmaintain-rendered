@@ -12,14 +12,14 @@ head: charlie/owned
 created_at: 2024-01-03T17:24:23Z
 updated_at: 2024-01-03T17:31:24Z
 url: https://github.com/astral-sh/uv/pull/750
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:10Z
 ```
 
 # Use `register_owned` in prefetch path
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-03 17:24_
+_@charliermarsh_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: required_unless_present_any
 created_at: 2022-11-28T05:25:47Z
 updated_at: 2022-11-28T05:40:20Z
 url: https://github.com/astral-sh/ruff/pull/937
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Don’t require files with --explain or --generate-shell-completion
 
 ---
 
-_Pull request opened by @andersk on 2022-11-28 05:25_
+_@andersk_
 
 _No description provided._
 

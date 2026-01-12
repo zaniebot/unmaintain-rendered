@@ -13,14 +13,14 @@ head: konsti/use-project-in-uv-version
 created_at: 2025-04-30T13:58:40Z
 updated_at: 2025-05-04T12:27:13Z
 url: https://github.com/astral-sh/uv/pull/13230
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:36Z
 ```
 
 # Respect `--project` in `uv version`
 
 ---
 
-_Pull request opened by @konstin on 2025-04-30 13:58_
+_@konstin_
 
 Previously, we were using the wrong `Workspace` discovery and would report the version of the workspace root, which would iterate up from the `--project` directory and return the workspace root (with or without a project in the root). Instead, we need `ProjectWorkspace` discovery that returns the closest project.
 

@@ -14,14 +14,14 @@ head: ibraheem/overlapping-local-base-fork
 created_at: 2024-08-06T12:14:17Z
 updated_at: 2024-08-06T16:04:38Z
 url: https://github.com/astral-sh/uv/pull/5812
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:02Z
 ```
 
 # Support overlapping local and non-local requirements in forks
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-08-06 12:14_
+_@ibraheemdev_
 
 ## Summary
 

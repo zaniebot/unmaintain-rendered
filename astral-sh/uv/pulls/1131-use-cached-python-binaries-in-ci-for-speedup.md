@@ -11,14 +11,14 @@ head: zb/cache-python-versions
 created_at: 2024-01-26T19:25:57Z
 updated_at: 2024-01-26T19:40:41Z
 url: https://github.com/astral-sh/uv/pull/1131
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:27Z
 ```
 
 # Use cached Python binaries in CI for speedup
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-26 19:25_
+_@zanieb_
 
 #1105 added [about a minute](https://github.com/astral-sh/puffin/actions/runs/7672068625/job/20911761233) of overhead downloading Python binaries to CI. Unacceptable :)
 

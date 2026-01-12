@@ -13,14 +13,14 @@ head: charlie/icons
 created_at: 2023-08-03T01:11:07Z
 updated_at: 2023-08-03T06:37:58Z
 url: https://github.com/astral-sh/ruff/pull/6292
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add an icon for FIR
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-03 01:11_
+_@charliermarsh_
 
 It's not a very _good_ icon, but I prefer the consistency. I'm also going to add tooltips to these.
 

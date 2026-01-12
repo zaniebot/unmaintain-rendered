@@ -14,14 +14,14 @@ head: refactor-with-item-formatting
 created_at: 2024-03-08T10:55:59Z
 updated_at: 2024-03-08T23:40:40Z
 url: https://github.com/astral-sh/ruff/pull/10296
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Refactor with statement formatting to have explicit layouts
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-08 10:55_
+_@MichaReiser_
 
 ## Summary
 

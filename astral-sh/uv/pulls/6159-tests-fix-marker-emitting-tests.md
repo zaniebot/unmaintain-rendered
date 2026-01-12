@@ -12,14 +12,14 @@ head: ag/fix-tests
 created_at: 2024-08-16T17:55:01Z
 updated_at: 2024-08-19T13:02:31Z
 url: https://github.com/astral-sh/uv/pull/6159
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:14Z
 ```
 
 # tests: fix marker emitting tests
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-08-16 17:55_
+_@BurntSushi_
 
 The test output seems to depend on using Python 3.12.1 specifically.
 While I'm not sure how it happens, it seems like these can get out of

@@ -14,14 +14,14 @@ head: gankra/func-fmt
 created_at: 2025-08-18T21:54:06Z
 updated_at: 2025-08-19T17:32:08Z
 url: https://github.com/astral-sh/ruff/pull/19979
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] introduce multiline pretty printer
 
 ---
 
-_Pull request opened by @Gankra on 2025-08-18 21:54_
+_@Gankra_
 
 Requires some iteration, but this includes the most tedious part -- threading a new concept of DisplaySettings through every type display impl. Currently it only holds a boolean for multiline, but in the future it could also take other things like "render to markdown" or "here's your base indent if you make a newline".
 

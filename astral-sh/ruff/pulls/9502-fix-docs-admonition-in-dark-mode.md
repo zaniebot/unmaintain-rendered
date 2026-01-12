@@ -13,14 +13,14 @@ head: fix/admonition-dark-mode
 created_at: 2024-01-13T03:57:41Z
 updated_at: 2024-01-13T12:43:13Z
 url: https://github.com/astral-sh/ruff/pull/9502
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # fix(docs): admonition in dark mode
 
 ---
 
-_Pull request opened by @pabepadu on 2024-01-13 03:57_
+_@pabepadu_
 
 ## Summary
 

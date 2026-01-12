@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-25T15:40:37Z
 updated_at: 2025-07-25T16:40:33Z
 url: https://github.com/astral-sh/ty/issues/892
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Can't infer type from pydantic field
 
 ---
 
-_Issue opened by @scosman on 2025-07-25 15:40_
+_@scosman_
 
 ### Summary
 

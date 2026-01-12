@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-26T13:22:23Z
 updated_at: 2024-07-08T01:24:00Z
 url: https://github.com/astral-sh/uv/issues/4547
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # `uv run --with=X` shouldn't install `X` if it's already available
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-26 13:22_
+_@charliermarsh_
 
 If it's already part of the project (and thus the environment), we shouldn't need to install it. Same goes for any of the dependencies of `X`.
 

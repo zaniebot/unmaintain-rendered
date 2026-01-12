@@ -13,14 +13,14 @@ head: zb/ci
 created_at: 2024-02-22T22:36:52Z
 updated_at: 2024-02-22T23:09:12Z
 url: https://github.com/astral-sh/uv/pull/1887
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:46Z
 ```
 
 # Disable fail-fast during CI jobs
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-22 22:36_
+_@zanieb_
 
 Rarely is this important, its good to see the status of all the builds
 

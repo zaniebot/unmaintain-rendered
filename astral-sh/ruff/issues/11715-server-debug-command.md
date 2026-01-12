@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-03T06:44:35Z
 updated_at: 2024-06-11T18:42:47Z
 url: https://github.com/astral-sh/ruff/issues/11715
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Server: Debug command
 
 ---
 
-_Issue opened by @MichaReiser on 2024-06-03 06:44_
+_@MichaReiser_
 
 Maybe ruff extension could provide a command to show current server info? This will be helpful to debugging.
 

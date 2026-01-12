@@ -13,14 +13,14 @@ head: charlie/formatter-i
 created_at: 2023-02-13T23:30:33Z
 updated_at: 2023-02-15T07:55:41Z
 url: https://github.com/astral-sh/ruff/pull/2872
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Add `rome_formatter` fork as `ruff_formatter`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-13 23:30_
+_@charliermarsh_
 
 The Ruff autoformatter is going to be based on an intermediate representation (IR) formatted via [Wadler's algorithm](https://homepages.inf.ed.ac.uk/wadler/papers/prettier/prettier.pdf). This is architecturally similar to [Rome](https://github.com/rome/tools), Prettier, [Skip](https://github.com/skiplang/skip/blob/master/src/tools/printer/printer.sk), and others.
 

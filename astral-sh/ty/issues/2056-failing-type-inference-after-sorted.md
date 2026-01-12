@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-18T09:42:15Z
 updated_at: 2025-12-18T09:46:22Z
 url: https://github.com/astral-sh/ty/issues/2056
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Failing type inference after sorted
 
 ---
 
-_Issue opened by @bvolkmer on 2025-12-18 09:42_
+_@bvolkmer_
 
 ### Summary
 

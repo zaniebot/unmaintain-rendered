@@ -13,14 +13,14 @@ head: sbatch-comments
 created_at: 2024-10-16T22:11:31Z
 updated_at: 2024-10-19T19:57:52Z
 url: https://github.com/astral-sh/ruff/pull/13784
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Do not put a space between `#` and `SBATCH` for comments
 
 ---
 
-_Pull request opened by @smsutherland on 2024-10-16 22:11_
+_@smsutherland_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

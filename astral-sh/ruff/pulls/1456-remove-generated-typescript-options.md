@@ -12,14 +12,14 @@ head: charlie/available-options
 created_at: 2022-12-30T00:35:40Z
 updated_at: 2022-12-30T00:37:50Z
 url: https://github.com/astral-sh/ruff/pull/1456
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Remove generated TypeScript options
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-30 00:35_
+_@charliermarsh_
 
 _No description provided._
 

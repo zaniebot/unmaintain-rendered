@@ -13,14 +13,14 @@ head: charlie/pragma
 created_at: 2023-09-28T02:06:41Z
 updated_at: 2023-09-28T19:03:13Z
 url: https://github.com/astral-sh/ruff/pull/7687
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Extend pragma comment cases
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-28 02:06_
+_@charliermarsh_
 
 ## Summary
 

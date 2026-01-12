@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-26T00:52:16Z
 updated_at: 2025-10-27T19:24:47Z
 url: https://github.com/astral-sh/ruff/issues/21077
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # After F821 (Undefined name) for "Literal", fix for PYI020 (QuotedAnnotationInStub) is undesirable
 
 ---
 
-_Issue opened by @pajod on 2025-10-26 00:52_
+_@pajod_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/comm
 created_at: 2024-04-12T18:46:18Z
 updated_at: 2024-04-12T19:02:36Z
 url: https://github.com/astral-sh/ruff/pull/10912
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Limit commutative non-augmented-assignments to primitive data types
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-12 18:46_
+_@charliermarsh_
 
 ## Summary
 

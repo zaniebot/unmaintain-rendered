@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-27T17:00:33Z
 updated_at: 2025-01-22T18:15:43Z
 url: https://github.com/astral-sh/uv/issues/10201
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # Workflow Headache: dev dependencies (private) are resolved when not included
 
 ---
 
-_Issue opened by @ayjayt on 2024-12-27 17:00_
+_@ayjayt_
 
 Hi!
 

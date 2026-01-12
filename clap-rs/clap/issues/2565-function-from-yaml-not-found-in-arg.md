@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-06-29T15:01:02Z
 updated_at: 2021-06-29T15:07:14Z
 url: https://github.com/clap-rs/clap/issues/2565
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # function `from_yaml` not found in `Arg<'_>`
 
 ---
 
-_Issue opened by @dwisiswant0 on 2021-06-29 15:01_
+_@dwisiswant0_
 
 ### Please complete the following tasks
 

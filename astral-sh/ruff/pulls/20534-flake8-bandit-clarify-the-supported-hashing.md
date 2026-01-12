@@ -13,14 +13,14 @@ head: fix-16572
 created_at: 2025-09-23T13:58:37Z
 updated_at: 2025-09-24T20:35:45Z
 url: https://github.com/astral-sh/ruff/pull/20534
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [`flake8-bandit`] Clarify the supported hashing functions (`S324`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-09-23 13:58_
+_@danparizher_
 
 ## Summary
 

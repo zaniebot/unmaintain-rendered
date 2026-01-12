@@ -13,14 +13,14 @@ head: charlie/uni
 created_at: 2024-08-26T23:41:46Z
 updated_at: 2024-08-26T23:58:18Z
 url: https://github.com/astral-sh/uv/pull/6663
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:28Z
 ```
 
 # Respect `tool.uv.environments` in `pip compile --universal`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-26 23:41_
+_@charliermarsh_
 
 ## Summary
 

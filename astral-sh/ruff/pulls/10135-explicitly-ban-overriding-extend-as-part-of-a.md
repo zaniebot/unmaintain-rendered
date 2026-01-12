@@ -14,14 +14,14 @@ head: config-extend-cli
 created_at: 2024-02-26T13:10:21Z
 updated_at: 2024-07-01T10:29:59Z
 url: https://github.com/astral-sh/ruff/pull/10135
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Explicitly ban overriding `extend` as part of a --config flag
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-02-26 13:10_
+_@AlexWaygood_
 
 ## Summary
 

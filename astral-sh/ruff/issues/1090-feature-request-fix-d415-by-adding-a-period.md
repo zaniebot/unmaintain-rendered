@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-05T23:49:52Z
 updated_at: 2022-12-06T01:24:57Z
 url: https://github.com/astral-sh/ruff/issues/1090
-synced_at: 2026-01-10T12:06:16Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [feature-request] Fix `D415` by adding a period
 
 ---
 
-_Issue opened by @smackesey on 2022-12-05 23:49_
+_@smackesey_
 
 Just ran `ruff --select=D415` on Dagster and got a whopping 1276 errors!
 

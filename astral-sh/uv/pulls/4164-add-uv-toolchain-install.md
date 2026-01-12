@@ -13,14 +13,14 @@ head: zb/toolchain-v-ii
 created_at: 2024-06-08T16:49:26Z
 updated_at: 2024-06-10T15:56:09Z
 url: https://github.com/astral-sh/uv/pull/4164
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:04Z
 ```
 
 # Add `uv toolchain install`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-08 16:49_
+_@zanieb_
 
 Adds a command (following #4163) to download and install specific toolchains. While we fetch toolchains on demand, this is useful for, e.g., pre-downloading a toolchain in a Docker image build.
 

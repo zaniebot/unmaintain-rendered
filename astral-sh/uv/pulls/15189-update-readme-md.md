@@ -11,14 +11,14 @@ head: main
 created_at: 2025-08-09T06:54:33Z
 updated_at: 2025-08-09T14:25:36Z
 url: https://github.com/astral-sh/uv/pull/15189
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:37Z
 ```
 
 # Update README.md
 
 ---
 
-_Pull request opened by @ergul13 on 2025-08-09 06:54_
+_@ergul13_
 
 some useful details added
 

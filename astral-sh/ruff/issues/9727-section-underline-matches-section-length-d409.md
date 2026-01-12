@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-31T00:44:35Z
 updated_at: 2024-02-01T12:39:11Z
 url: https://github.com/astral-sh/ruff/issues/9727
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `section-underline-matches-section-length` (`D409`) should warn on all titles instead of a list of known ones
 
 ---
 
-_Issue opened by @DetachHead on 2024-01-31 00:44_
+_@DetachHead_
 
 it seems that this rule only cares about specific titles ("Example", "Parameters", "Raises", "Returns") but i don't see why it can't just check every title
 

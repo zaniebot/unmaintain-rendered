@@ -13,14 +13,14 @@ head: alex/cleanup-isort
 created_at: 2024-08-19T17:20:16Z
 updated_at: 2024-08-19T18:06:59Z
 url: https://github.com/astral-sh/ruff/pull/12994
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # `flake8-type-checking`: Always recognise relative imports as first-party
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-19 17:20_
+_@AlexWaygood_
 
 A small refactor. The exact number of dots at the beginning of a relative import isnt relevant to the `isort` classification (and never will be). All that matters is whether there are any dots at the beginning or not. Using a boolean here improves readability and makes it clearer what the argument is for when the function is called from other rules elsewhere in Ruff.
 

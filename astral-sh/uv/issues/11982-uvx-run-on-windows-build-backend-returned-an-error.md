@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-05T16:19:22Z
 updated_at: 2025-07-07T06:37:57Z
 url: https://github.com/astral-sh/uv/issues/11982
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:51Z
 ```
 
 # uvx run on windows: build backend returned an error
 
 ---
 
-_Issue opened by @liquidcarbon on 2025-03-05 16:19_
+_@liquidcarbon_
 
 ### Summary
 

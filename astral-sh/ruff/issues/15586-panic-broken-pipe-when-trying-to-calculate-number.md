@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-19T20:57:32Z
 updated_at: 2025-02-25T07:42:54Z
 url: https://github.com/astral-sh/ruff/issues/15586
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Panic `broken pipe` when trying to calculate number of results in red_knot
 
 ---
 
-_Issue opened by @qarmin on 2025-01-19 20:57_
+_@qarmin_
 
 Ruff - 98fccec2e7c20be9a5b99907e912a678a8f29900
 

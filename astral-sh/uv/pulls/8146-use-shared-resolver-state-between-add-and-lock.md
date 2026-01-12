@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-10-12T14:19:11Z
 updated_at: 2024-10-12T14:58:08Z
 url: https://github.com/astral-sh/uv/pull/8146
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:10Z
 ```
 
 # Use shared resolver state between add and lock
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-12 14:19_
+_@charliermarsh_
 
 ## Summary
 

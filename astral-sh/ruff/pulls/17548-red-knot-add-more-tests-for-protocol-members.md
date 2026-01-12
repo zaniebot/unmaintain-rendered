@@ -12,14 +12,14 @@ head: alex/protocol-member-tests
 created_at: 2025-04-22T13:15:28Z
 updated_at: 2025-07-25T18:31:22Z
 url: https://github.com/astral-sh/ruff/pull/17548
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Add more tests for protocol members
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-22 13:15_
+_@AlexWaygood_
 
 ## Summary
 

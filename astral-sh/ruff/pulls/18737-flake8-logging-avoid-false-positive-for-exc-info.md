@@ -14,14 +14,14 @@ head: fix_log014
 created_at: 2025-06-17T20:58:53Z
 updated_at: 2025-06-20T18:43:08Z
 url: https://github.com/astral-sh/ruff/pull/18737
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # [`flake8-logging`] Avoid false positive for `exc_info=True` outside `logger.exception` (`LOG014`)
 
 ---
 
-_Pull request opened by @hmvp on 2025-06-17 20:58_
+_@hmvp_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

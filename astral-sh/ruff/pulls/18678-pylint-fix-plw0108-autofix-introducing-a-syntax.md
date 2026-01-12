@@ -14,14 +14,14 @@ head: fix-PLW0108
 created_at: 2025-06-14T21:09:12Z
 updated_at: 2025-06-26T20:56:55Z
 url: https://github.com/astral-sh/ruff/pull/18678
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [`pylint`] Fix `PLW0108` autofix introducing a syntax error when the lambda's body contains an assignment expression
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-14 21:09_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

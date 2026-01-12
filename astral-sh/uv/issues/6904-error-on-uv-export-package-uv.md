@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-01T01:53:07Z
 updated_at: 2024-09-01T02:56:19Z
 url: https://github.com/astral-sh/uv/issues/6904
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Error on `uv export --package uv`
 
 ---
 
-_Issue opened by @minmax on 2024-09-01 01:53_
+_@minmax_
 
 ```bash
 uv init

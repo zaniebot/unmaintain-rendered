@@ -13,14 +13,14 @@ head: micha/docs-FURB188-rendering
 created_at: 2024-09-19T07:21:52Z
 updated_at: 2024-09-19T07:38:50Z
 url: https://github.com/astral-sh/ruff/pull/13406
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Fix rendering of FURB188 docs
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-19 07:21_
+_@MichaReiser_
 
 
 ## Summary

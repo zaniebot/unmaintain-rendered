@@ -12,14 +12,14 @@ head: ag/fmt/docstrings
 created_at: 2023-11-21T20:14:21Z
 updated_at: 2023-12-14T12:49:59Z
 url: https://github.com/astral-sh/ruff/pull/8811
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # format doctests in docstrings
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-11-21 20:14_
+_@BurntSushi_
 
 ## Summary
 

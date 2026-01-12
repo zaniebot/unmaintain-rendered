@@ -12,14 +12,14 @@ head: charlie/split
 created_at: 2023-11-06T18:12:28Z
 updated_at: 2023-11-06T18:19:51Z
 url: https://github.com/astral-sh/uv/pull/341
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:53Z
 ```
 
 # Split `puffin-package` into requirements.txt parser and `pypi-types`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-06 18:12_
+_@charliermarsh_
 
 There are only two things left in this crate and they don't really have anything to do with one another.
 

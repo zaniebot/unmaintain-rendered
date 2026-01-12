@@ -12,14 +12,14 @@ head: zanie/695-visitor
 created_at: 2023-07-20T17:17:05Z
 updated_at: 2023-07-25T17:32:30Z
 url: https://github.com/astral-sh/ruff/pull/5927
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Implement visitation of type aliases and parameters
 
 ---
 
-_Pull request opened by @zanieb on 2023-07-20 17:17_
+_@zanieb_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

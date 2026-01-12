@@ -13,14 +13,14 @@ head: dcreager/static-terminal
 created_at: 2025-01-29T21:34:39Z
 updated_at: 2025-05-07T15:22:25Z
 url: https://github.com/astral-sh/ruff/pull/15817
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Combine terminal statement support with statically known branches
 
 ---
 
-_Pull request opened by @dcreager on 2025-01-29 21:34_
+_@dcreager_
 
 This example from @sharkdp shows how terminal statements can appear in statically known branches: https://github.com/astral-sh/ruff/pull/15676#issuecomment-2618809716
 

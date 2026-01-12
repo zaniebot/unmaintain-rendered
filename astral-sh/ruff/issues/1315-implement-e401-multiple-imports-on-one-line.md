@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-21T21:09:28Z
 updated_at: 2022-12-22T02:15:58Z
 url: https://github.com/astral-sh/ruff/issues/1315
-synced_at: 2026-01-10T12:05:25Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Implement E401 ("multiple imports on one line")
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-21 21:09_
+_@charliermarsh_
 
 This is _not_ made redundant by Black, so we should definitely support it.
 

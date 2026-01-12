@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-23T16:02:06Z
 updated_at: 2025-12-23T19:28:45Z
 url: https://github.com/astral-sh/ty/issues/2187
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # ty does not detect mutation of Mapping (read-only) types
 
 ---
 
-_Issue opened by @rick-jennings on 2025-12-23 16:02_
+_@rick-jennings_
 
 ### Question
 

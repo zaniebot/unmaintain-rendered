@@ -14,14 +14,14 @@ head: show-resolve-paths
 created_at: 2025-08-22T07:58:26Z
 updated_at: 2025-08-26T15:01:22Z
 url: https://github.com/astral-sh/ruff/pull/20040
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # [ty] Add search paths info to unresolved import diagnostics
 
 ---
 
-_Pull request opened by @Renkai on 2025-08-22 07:58_
+_@Renkai_
 
 Fixes https://github.com/astral-sh/ty/issues/457
 

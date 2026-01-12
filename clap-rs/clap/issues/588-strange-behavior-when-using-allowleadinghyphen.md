@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-07-22T01:46:03Z
 updated_at: 2018-08-02T03:29:51Z
 url: https://github.com/clap-rs/clap/issues/588
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Strange behavior when using AllowLeadingHyphen
 
 ---
 
-_Issue opened by @yodalee on 2016-07-22 01:46_
+_@yodalee_
 
 I'm trying to using clap-rs to build the interface of `chmod`. `chmod` accepts arguments like `-rwx` `+0700`, These are not real arguments so we cannot add them to arguments.
 I try to setting like this:

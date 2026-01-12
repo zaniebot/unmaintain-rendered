@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-24T11:36:57Z
 updated_at: 2023-02-25T02:57:50Z
 url: https://github.com/astral-sh/ruff/issues/3204
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `PLE1206`: whitespace strip bug
 
 ---
 
-_Issue opened by @sasanjac on 2023-02-24 11:36_
+_@sasanjac_
 
 When logging certain strings like `"100% dynamic"`, i get a false positive for `PLE1206`. I assume when checking for this, whitespace is stripped, so its interpreted as `"100%dynamic"`.
 

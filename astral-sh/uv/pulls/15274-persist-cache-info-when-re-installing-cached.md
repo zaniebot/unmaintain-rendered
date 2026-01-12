@@ -13,14 +13,14 @@ head: charlie/cache-info
 created_at: 2025-08-14T11:48:28Z
 updated_at: 2025-08-14T12:05:42Z
 url: https://github.com/astral-sh/uv/pull/15274
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:40Z
 ```
 
 # Persist cache info when re-installing cached wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-14 11:48_
+_@charliermarsh_
 
 ## Summary
 

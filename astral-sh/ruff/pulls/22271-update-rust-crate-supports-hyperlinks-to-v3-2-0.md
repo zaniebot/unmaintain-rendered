@@ -13,14 +13,14 @@ head: renovate/supports-hyperlinks-3.x-lockfile
 created_at: 2025-12-29T16:14:53Z
 updated_at: 2025-12-29T16:44:07Z
 url: https://github.com/astral-sh/ruff/pull/22271
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:45Z
 ```
 
 # Update Rust crate supports-hyperlinks to v3.2.0
 
 ---
 
-_Pull request opened by @renovate on 2025-12-29 16:14_
+_@renovate_
 
 This PR contains the following updates:
 

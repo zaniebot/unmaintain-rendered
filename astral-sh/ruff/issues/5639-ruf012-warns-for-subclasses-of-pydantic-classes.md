@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-10T10:19:56Z
 updated_at: 2025-11-25T20:01:29Z
 url: https://github.com/astral-sh/ruff/issues/5639
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # RUF012 warns for subclasses of Pydantic classes
 
 ---
 
-_Issue opened by @roikoren755 on 2023-07-10 10:19_
+_@roikoren755_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-11T14:55:27Z
 updated_at: 2023-04-13T18:46:41Z
 url: https://github.com/astral-sh/ruff/issues/3934
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # ISC003 false positive
 
 ---
 
-_Issue opened by @trim21 on 2023-04-11 14:55_
+_@trim21_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

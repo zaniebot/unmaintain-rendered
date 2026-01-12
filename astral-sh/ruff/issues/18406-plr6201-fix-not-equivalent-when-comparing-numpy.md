@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-31T22:15:12Z
 updated_at: 2025-06-02T12:59:45Z
 url: https://github.com/astral-sh/ruff/issues/18406
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `PLR6201` fix not equivalent when comparing `numpy.dtype` with numpy scalar types
 
 ---
 
-_Issue opened by @jorenham on 2025-05-31 22:15_
+_@jorenham_
 
 ### Summary
 

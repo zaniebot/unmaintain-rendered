@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-27T17:00:22Z
 updated_at: 2024-08-27T19:04:37Z
 url: https://github.com/astral-sh/uv/issues/6702
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Package not found in index ~Package with thousand of versions cannot be found~
 
 ---
 
-_Issue opened by @mina-asham on 2024-08-27 17:00_
+_@mina-asham_
 
 Hi, we have an internal registry, a package we use is setup for automated releases, and thus we have over 11K versions released!
 If I try to add that package (`xyz>=1.2.3` for obfuscation), I get this error:

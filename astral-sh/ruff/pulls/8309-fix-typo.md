@@ -12,14 +12,14 @@ head: main
 created_at: 2023-10-28T16:07:42Z
 updated_at: 2023-10-28T17:36:39Z
 url: https://github.com/astral-sh/ruff/pull/8309
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Fix typo 
 
 ---
 
-_Pull request opened by @FarukhS52 on 2023-10-28 16:07_
+_@FarukhS52_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

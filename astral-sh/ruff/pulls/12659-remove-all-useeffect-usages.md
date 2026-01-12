@@ -13,14 +13,14 @@ head: reduce-use-effect-usage
 created_at: 2024-08-04T09:23:33Z
 updated_at: 2024-08-08T11:16:40Z
 url: https://github.com/astral-sh/ruff/pull/12659
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Remove all `useEffect` usages
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-04 09:23_
+_@MichaReiser_
 
 ## Summary
 

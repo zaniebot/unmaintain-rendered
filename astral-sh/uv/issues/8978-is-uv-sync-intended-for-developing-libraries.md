@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-10T01:31:46Z
 updated_at: 2024-11-10T10:44:07Z
 url: https://github.com/astral-sh/uv/issues/8978
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # Is `uv sync` intended for developing libraries?
 
 ---
 
-_Issue opened by @ryanhiebert on 2024-11-10 01:31_
+_@ryanhiebert_
 
 I'm authoring a python library package ([Aldjemy](https://github.com/aldjemy/aldjemy)), and I'm running into a problem that I think I've seen before (with Poetry) that makes me think that I'm probably not using `uv` correctly, but I'm not really sure what is and is not intended.
 

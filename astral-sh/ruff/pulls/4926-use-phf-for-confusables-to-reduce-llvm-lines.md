@@ -12,14 +12,14 @@ head: phf-for-confusable
 created_at: 2023-06-07T12:33:48Z
 updated_at: 2023-06-08T06:13:22Z
 url: https://github.com/astral-sh/ruff/pull/4926
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Use phf for confusables to reduce llvm lines
 
 ---
 
-_Pull request opened by @konstin on 2023-06-07 12:33_
+_@konstin_
 
 ## Summary
 

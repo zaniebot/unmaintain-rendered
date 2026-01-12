@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-01T03:29:54Z
 updated_at: 2024-08-01T07:33:33Z
 url: https://github.com/astral-sh/uv/issues/5681
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # No solution found when resolving dependencies
 
 ---
 
-_Issue opened by @nguyenvulong on 2024-08-01 03:29_
+_@nguyenvulong_
 
 Requirement file: from https://github.com/ggerganov/llama.cpp
 

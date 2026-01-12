@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-12T21:30:24Z
 updated_at: 2024-06-12T21:43:50Z
 url: https://github.com/astral-sh/ruff/issues/11849
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # FR: Add human-friendly check/message ids. Numeric ids (E999 etc) are not human friendly - they communicate nothing on their own.
 
 ---
 
-_Issue opened by @gpshead on 2024-06-12 21:30_
+_@gpshead_
 
 Ruff appears to support `# noqa: E666` style directives in code to disable particular lint warnings.  (per https://docs.astral.sh/ruff/linter/#error-suppression)
 

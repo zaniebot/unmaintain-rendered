@@ -13,14 +13,14 @@ head: charlie/cache-dir
 created_at: 2023-10-14T18:51:40Z
 updated_at: 2023-10-14T19:06:53Z
 url: https://github.com/astral-sh/ruff/pull/7962
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Resolve `cache-dir` relative to project root
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-14 18:51_
+_@charliermarsh_
 
 ## Summary
 

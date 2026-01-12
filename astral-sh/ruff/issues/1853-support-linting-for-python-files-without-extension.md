@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-13T16:45:27Z
 updated_at: 2023-01-13T17:13:07Z
 url: https://github.com/astral-sh/ruff/issues/1853
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Support linting for python files without extension
 
 ---
 
-_Issue opened by @joshuachapnick-bc on 2023-01-13 16:45_
+_@joshuachapnick-bc_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

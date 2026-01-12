@@ -13,14 +13,14 @@ head: micha/update-rooster
 created_at: 2025-05-13T10:11:25Z
 updated_at: 2025-05-13T10:19:37Z
 url: https://github.com/astral-sh/ty/pull/352
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Update rooster
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-13 10:11_
+_@MichaReiser_
 
 ## Summary
 

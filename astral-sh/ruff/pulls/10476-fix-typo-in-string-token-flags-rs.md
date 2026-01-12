@@ -13,14 +13,14 @@ head: string-flags-bug
 created_at: 2024-03-19T17:35:15Z
 updated_at: 2024-03-19T17:53:07Z
 url: https://github.com/astral-sh/ruff/pull/10476
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Fix typo in `string_token_flags.rs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-19 17:35_
+_@AlexWaygood_
 
 Currently we produce the wrong prefix if it's a raw bytestring with a capital R.
 

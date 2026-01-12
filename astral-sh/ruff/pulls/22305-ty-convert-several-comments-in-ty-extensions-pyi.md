@@ -14,14 +14,14 @@ head: alex/ty-extension-docstrings
 created_at: 2025-12-30T17:37:48Z
 updated_at: 2025-12-30T17:41:45Z
 url: https://github.com/astral-sh/ruff/pull/22305
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:46Z
 ```
 
 # [ty] Convert several comments in `ty_extensions.pyi` to docstrings
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-30 17:37_
+_@AlexWaygood_
 
 ## Summary
 

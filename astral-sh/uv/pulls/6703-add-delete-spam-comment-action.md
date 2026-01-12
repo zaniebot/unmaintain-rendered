@@ -12,14 +12,14 @@ head: konsti/delete-mediafire-comments
 created_at: 2024-08-27T17:17:26Z
 updated_at: 2024-09-03T01:22:57Z
 url: https://github.com/astral-sh/uv/pull/6703
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:29Z
 ```
 
 # Add delete spam comment action
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-27 17:17_
+_@zanieb_
 
 > Stop gap measure since we're receiving a flood of spam comments. Taken from selenium (https://github.com/SeleniumHQ/selenium/pull/14439).
 >

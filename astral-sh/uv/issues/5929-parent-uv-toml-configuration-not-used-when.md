@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-08T20:23:14Z
 updated_at: 2024-08-08T21:05:03Z
 url: https://github.com/astral-sh/uv/issues/5929
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Parent uv.toml configuration not used when pyproject.toml present
 
 ---
 
-_Issue opened by @ttrei on 2024-08-08 20:23_
+_@ttrei_
 
 Given this project structure
 ```

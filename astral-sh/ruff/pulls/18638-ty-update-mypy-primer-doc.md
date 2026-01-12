@@ -15,14 +15,14 @@ head: thejchap/mypy-primer-doc
 created_at: 2025-06-11T23:58:36Z
 updated_at: 2025-06-12T06:32:12Z
 url: https://github.com/astral-sh/ruff/pull/18638
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [ty] Update mypy_primer doc
 
 ---
 
-_Pull request opened by @thejchap on 2025-06-11 23:58_
+_@thejchap_
 
 ## Summary
 Minor documentation update to make `mypy_primer` instructions a bit more verbose/helpful for running against a local branch

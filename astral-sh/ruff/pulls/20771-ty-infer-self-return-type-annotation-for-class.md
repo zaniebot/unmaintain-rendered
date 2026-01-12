@@ -13,14 +13,14 @@ head: function-argument-cls
 created_at: 2025-10-08T16:26:47Z
 updated_at: 2025-12-09T18:56:59Z
 url: https://github.com/astral-sh/ruff/pull/20771
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] infer `Self` return type annotation for class methods
 
 ---
 
-_Pull request opened by @Glyphack on 2025-10-08 16:26_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

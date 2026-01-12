@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T09:56:25Z
 updated_at: 2025-10-17T09:56:58Z
 url: https://github.com/astral-sh/ty/issues/1380
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support `ClassVar` protocol members
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-10-17 09:56_
+_@AlexWaygood_
 
 Consider the following two protocols:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-03T18:48:12Z
 updated_at: 2025-09-25T13:34:05Z
 url: https://github.com/astral-sh/uv/issues/13278
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # When does `uv pip` create a `REQUESTED` file?
 
 ---
 
-_Issue opened by @notatallshaw on 2025-05-03 18:48_
+_@notatallshaw_
 
 I was looking to write a small script that would be used in a one-liner with uv pip compile and uv pip sync to help people with the request in https://github.com/astral-sh/uv/issues/1419
 

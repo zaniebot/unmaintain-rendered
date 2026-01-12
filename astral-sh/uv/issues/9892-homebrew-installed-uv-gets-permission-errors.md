@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-14T01:08:17Z
 updated_at: 2024-12-14T01:23:41Z
 url: https://github.com/astral-sh/uv/issues/9892
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # Homebrew-installed uv gets permission errors trying to write to /.local/share/uv
 
 ---
 
-_Issue opened by @jasonmclaren on 2024-12-14 01:08_
+_@jasonmclaren_
 
 I installed `uv` using Homebrew v4.4.11 on MacOS 14.7.1.
 

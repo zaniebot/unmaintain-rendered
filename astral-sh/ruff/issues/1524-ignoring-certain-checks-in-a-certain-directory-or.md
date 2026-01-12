@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-01T04:47:37Z
 updated_at: 2023-01-01T04:49:32Z
 url: https://github.com/astral-sh/ruff/issues/1524
-synced_at: 2026-01-10T12:05:30Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Ignoring certain checks in a certain directory or files named a certain way
 
 ---
 
-_Issue opened by @not-my-profile on 2023-01-01 04:47_
+_@not-my-profile_
 
 You probably want to disable the public function/class/etc. should have a docstring lints for all files in `tests/` or all files named `test_*.py`.
 

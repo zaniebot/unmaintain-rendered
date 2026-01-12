@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-08T13:34:35Z
 updated_at: 2024-12-12T19:25:24Z
 url: https://github.com/astral-sh/ruff/issues/14836
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `I001` should not be triggered for one new line after imports
 
 ---
 
-_Issue opened by @samuelcolvin on 2024-12-08 13:34_
+_@samuelcolvin_
 
 Background: see https://github.com/pydantic/pytest-examples/issues/46, in [pytest-examples](https://github.com/pydantic/pytest-examples) we want to allow one new line between functions to keep examples short.
 

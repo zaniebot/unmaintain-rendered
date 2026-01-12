@@ -13,14 +13,14 @@ head: pyi009-docs
 created_at: 2023-09-18T16:47:44Z
 updated_at: 2023-09-18T17:33:16Z
 url: https://github.com/astral-sh/ruff/pull/7496
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Add documentation to `pass-statement-stub-body`
 
 ---
 
-_Pull request opened by @tjkuson on 2023-09-18 16:47_
+_@tjkuson_
 
 ## Summary
 

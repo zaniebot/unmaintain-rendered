@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-19T08:08:21Z
 updated_at: 2025-06-25T20:07:31Z
 url: https://github.com/astral-sh/uv/issues/14142
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # `uv tool` not playing nice with the "jupyter" metapackage and in general with packages providing executables via dependencies
 
 ---
 
-_Issue opened by @callegar on 2025-06-19 08:08_
+_@callegar_
 
 ### Summary
 

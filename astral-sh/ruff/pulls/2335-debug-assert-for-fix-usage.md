@@ -12,14 +12,14 @@ head: fix-nit
 created_at: 2023-01-30T00:46:46Z
 updated_at: 2023-01-30T02:13:42Z
 url: https://github.com/astral-sh/ruff/pull/2335
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # debug assert for fix usage
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-30 00:46_
+_@sbrugman_
 
 Helps prevent developers from choosing `replacement` instead of `deletion`.
 Is removed when optimized.

@@ -14,14 +14,14 @@ head: gankra/fix-comment
 created_at: 2025-03-26T20:15:14Z
 updated_at: 2025-07-10T12:26:02Z
 url: https://github.com/astral-sh/uv/pull/12495
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:17Z
 ```
 
 # use more conformant annotation for `uv pip compile --group`
 
 ---
 
-_Pull request opened by @Gankra on 2025-03-26 20:15_
+_@Gankra_
 
 
 

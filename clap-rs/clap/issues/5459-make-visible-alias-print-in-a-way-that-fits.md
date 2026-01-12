@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-15T21:12:45Z
 updated_at: 2024-07-08T21:52:42Z
 url: https://github.com/clap-rs/clap/issues/5459
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Make visible_alias print in a way that fits convention
 
 ---
 
-_Issue opened by @lolbinarycat on 2024-04-15 21:12_
+_@lolbinarycat_
 
 ### Please complete the following tasks
 

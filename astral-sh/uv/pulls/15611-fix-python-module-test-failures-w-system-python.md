@@ -12,14 +12,14 @@ head: python-module-test-prefix
 created_at: 2025-08-31T19:11:29Z
 updated_at: 2025-09-02T14:03:42Z
 url: https://github.com/astral-sh/uv/pull/15611
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:51Z
 ```
 
 # Fix `python_module` test failures w/ system Python and installed uv
 
 ---
 
-_Pull request opened by @mgorny on 2025-08-31 19:11_
+_@mgorny_
 
 ## Summary
 

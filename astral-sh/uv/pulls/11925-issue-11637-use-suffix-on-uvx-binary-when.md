@@ -11,14 +11,14 @@ head: feature/111637/pipx-suffix-uvx
 created_at: 2025-03-03T15:23:38Z
 updated_at: 2025-04-16T18:53:24Z
 url: https://github.com/astral-sh/uv/pull/11925
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:04Z
 ```
 
 # [Issue #11637] Use suffix on uvx binary when searching for uv binary
 
 ---
 
-_Pull request opened by @cliebBS on 2025-03-03 15:23_
+_@cliebBS_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

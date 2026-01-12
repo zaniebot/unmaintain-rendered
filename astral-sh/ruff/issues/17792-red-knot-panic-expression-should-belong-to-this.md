@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-02T12:06:16Z
 updated_at: 2025-05-05T11:52:10Z
 url: https://github.com/astral-sh/ruff/issues/17792
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [red-knot] Panic: "expression should belong to this TypeInference region"
 
 ---
 
-_Issue opened by @sharkdp on 2025-05-02 12:06_
+_@sharkdp_
 
 After fixing one panic on scipy, there is another panic remaining. I narrowed it down to this snippet:
 

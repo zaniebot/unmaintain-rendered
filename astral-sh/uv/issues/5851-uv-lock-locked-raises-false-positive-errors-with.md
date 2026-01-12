@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-07T12:26:13Z
 updated_at: 2024-08-07T16:06:40Z
 url: https://github.com/astral-sh/uv/issues/5851
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # `uv lock --locked` raises false-positive errors with git dependencies
 
 ---
 
-_Issue opened by @tpgillam on 2024-08-07 12:26_
+_@tpgillam_
 
 I am using uv `0.2.33`.
 

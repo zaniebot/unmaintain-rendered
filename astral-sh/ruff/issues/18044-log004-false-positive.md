@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-12T14:11:36Z
 updated_at: 2025-09-16T16:25:41Z
 url: https://github.com/astral-sh/ruff/issues/18044
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # LOG004 false positive
 
 ---
 
-_Issue opened by @sk- on 2025-05-12 14:11_
+_@sk-_
 
 ### Summary
 

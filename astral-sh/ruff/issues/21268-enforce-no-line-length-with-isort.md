@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-04T02:30:43Z
 updated_at: 2025-11-06T01:02:59Z
 url: https://github.com/astral-sh/ruff/issues/21268
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Enforce no line length with isort?
 
 ---
 
-_Issue opened by @jeremander on 2025-11-04 02:30_
+_@jeremander_
 
 ### Question
 

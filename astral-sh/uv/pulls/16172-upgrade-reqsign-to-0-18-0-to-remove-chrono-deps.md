@@ -13,14 +13,14 @@ head: reqsign-018
 created_at: 2025-10-08T02:38:39Z
 updated_at: 2025-10-08T14:49:39Z
 url: https://github.com/astral-sh/uv/pull/16172
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:09Z
 ```
 
 # Upgrade reqsign to 0.18.0 to remove chrono deps
 
 ---
 
-_Pull request opened by @tisonkun on 2025-10-08 02:38_
+_@tisonkun_
 
 This follows up https://github.com/astral-sh/uv/pull/15925.
 

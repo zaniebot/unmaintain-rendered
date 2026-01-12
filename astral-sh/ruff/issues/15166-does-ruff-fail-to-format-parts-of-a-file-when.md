@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-28T10:44:11Z
 updated_at: 2025-01-04T10:57:37Z
 url: https://github.com/astral-sh/ruff/issues/15166
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Does Ruff fail to format parts of a file when syntax errors are present?
 
 ---
 
-_Issue opened by @work4lazy on 2024-12-28 10:44_
+_@work4lazy_
 
 Hello,
 

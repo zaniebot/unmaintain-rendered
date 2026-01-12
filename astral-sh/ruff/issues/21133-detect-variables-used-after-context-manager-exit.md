@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-30T08:34:49Z
 updated_at: 2025-11-12T09:58:39Z
 url: https://github.com/astral-sh/ruff/issues/21133
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Detect variables used after context-manager exit
 
 ---
 
-_Issue opened by @loribonna on 2025-10-30 08:34_
+_@loribonna_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-05T12:57:23Z
 updated_at: 2026-01-05T20:58:37Z
 url: https://github.com/astral-sh/ruff/issues/11753
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Comprehension / generator, opt-in feature to preserve line breaks
 
 ---
 
-_Issue opened by @Martin19037 on 2024-06-05 12:57_
+_@Martin19037_
 
 Before I begin, here is some context:
 

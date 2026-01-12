@@ -13,14 +13,14 @@ head: typo
 created_at: 2025-07-14T18:53:26Z
 updated_at: 2025-07-14T19:21:45Z
 url: https://github.com/astral-sh/uv/pull/14613
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:18Z
 ```
 
 # Add missing comma in `projects/dependencies.md`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-07-14 18:53_
+_@InSyncWithFoo_
 
 ## Summary
 

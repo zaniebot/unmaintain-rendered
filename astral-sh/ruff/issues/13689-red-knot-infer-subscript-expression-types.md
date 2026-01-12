@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-09T09:08:13Z
 updated_at: 2024-10-29T11:14:43Z
 url: https://github.com/astral-sh/ruff/issues/13689
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Infer subscript expression types
 
 ---
 
-_Issue opened by @MichaReiser on 2024-10-09 09:08_
+_@MichaReiser_
 
 Limited support for inferring subscript expressions, e.g when the value is a tuple, or string.
 

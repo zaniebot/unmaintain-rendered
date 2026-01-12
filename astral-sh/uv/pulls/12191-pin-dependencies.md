@@ -13,14 +13,14 @@ head: renovate/pin-dependencies
 created_at: 2025-03-15T19:08:53Z
 updated_at: 2025-03-15T20:25:21Z
 url: https://github.com/astral-sh/uv/pull/12191
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:10Z
 ```
 
 # Pin dependencies
 
 ---
 
-_Pull request opened by @renovate on 2025-03-15 19:08_
+_@renovate_
 
 This PR contains the following updates:
 

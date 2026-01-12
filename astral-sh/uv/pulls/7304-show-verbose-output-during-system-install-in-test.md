@@ -14,14 +14,14 @@ head: zb/verbose-install
 created_at: 2024-09-11T19:03:57Z
 updated_at: 2024-09-11T19:31:53Z
 url: https://github.com/astral-sh/uv/pull/7304
-synced_at: 2026-01-10T12:53:44Z
+synced_at: 2026-01-12T16:07:46Z
 ```
 
 # Show verbose output during system install in test
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-11 19:03_
+_@zanieb_
 
 We do this for the other installs and it is helpful for debugging
 

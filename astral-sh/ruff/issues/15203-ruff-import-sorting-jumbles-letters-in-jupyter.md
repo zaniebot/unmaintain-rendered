@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-30T15:21:25Z
 updated_at: 2024-12-30T16:11:24Z
 url: https://github.com/astral-sh/ruff/issues/15203
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Ruff import sorting jumbles letters in jupyter notebook
 
 ---
 
-_Issue opened by @hhalaby on 2024-12-30 15:21_
+_@hhalaby_
 
 ## Description
 Automatic sorting of imports on save in jupyter notebook using Ruff leads to very weird behavior and the result is words and letters jumbled up together.

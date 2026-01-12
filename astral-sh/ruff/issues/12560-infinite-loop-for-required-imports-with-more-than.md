@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-29T04:24:27Z
 updated_at: 2024-07-29T19:42:34Z
 url: https://github.com/astral-sh/ruff/issues/12560
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [Infinite loop] for `required-imports` with more than one argument
 
 ---
 
-_Issue opened by @Anselmoo on 2024-07-29 04:24_
+_@Anselmoo_
 
 It looks like a `required-import` fails for more than one import. Would this in general possible to import more than _required_ import?
 

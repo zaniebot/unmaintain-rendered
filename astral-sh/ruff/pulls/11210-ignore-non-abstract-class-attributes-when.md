@@ -13,14 +13,14 @@ head: charlie/b
 created_at: 2024-04-30T03:40:08Z
 updated_at: 2024-04-30T16:01:09Z
 url: https://github.com/astral-sh/ruff/pull/11210
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Ignore non-abstract class attributes when enforcing B024
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-30 03:40_
+_@charliermarsh_
 
 ## Summary
 

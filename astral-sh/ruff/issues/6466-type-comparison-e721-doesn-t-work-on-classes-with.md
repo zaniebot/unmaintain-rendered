@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-10T01:11:55Z
 updated_at: 2023-08-10T14:20:11Z
 url: https://github.com/astral-sh/ruff/issues/6466
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # type-comparison (E721) doesn't work on classes with a method called `type`
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-10 01:11_
+_@DetachHead_
 
 ```py
 class A:

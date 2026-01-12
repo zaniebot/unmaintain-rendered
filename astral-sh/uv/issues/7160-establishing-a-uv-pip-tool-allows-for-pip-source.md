@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-07T09:24:00Z
 updated_at: 2024-09-10T04:46:42Z
 url: https://github.com/astral-sh/uv/issues/7160
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Establishing a UV pip tool allows for pip source swapping
 
 ---
 
-_Issue opened by @WangZhongDian on 2024-09-07 09:24_
+_@WangZhongDian_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

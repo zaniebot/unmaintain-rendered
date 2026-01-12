@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-13T20:31:24Z
 updated_at: 2021-09-23T00:12:32Z
 url: https://github.com/clap-rs/clap/issues/2691
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # clap `2.33.3` has incorrect MSRV due to bitflags `1.3` MSRV bump
 
 ---
 
-_Issue opened by @CosmicHorrorDev on 2021-08-13 20:31_
+_@CosmicHorrorDev_
 
 ### Please complete the following tasks
 

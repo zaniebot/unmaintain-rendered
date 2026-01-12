@@ -11,14 +11,14 @@ head: charlie/ls-remote
 created_at: 2025-11-09T04:13:39Z
 updated_at: 2025-11-09T04:31:29Z
 url: https://github.com/astral-sh/uv/pull/16648
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:22Z
 ```
 
 # Use `git ls-remote` to resolve Git SHAs
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-09 04:13_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: format-pattern-match-or
 created_at: 2023-08-26T21:45:11Z
 updated_at: 2023-12-01T23:46:20Z
 url: https://github.com/astral-sh/ruff/pull/6905
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Format `PatternMatchOr`
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-08-26 21:45_
+_@LaBatata101_
 
 ## Summary
 There was only one case where I couldn't figure it out how to format properly, which is the following

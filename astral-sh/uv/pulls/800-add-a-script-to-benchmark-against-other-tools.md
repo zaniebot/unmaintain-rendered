@@ -12,14 +12,14 @@ head: charlie/bench
 created_at: 2024-01-05T20:06:43Z
 updated_at: 2024-01-05T21:08:21Z
 url: https://github.com/astral-sh/uv/pull/800
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:12Z
 ```
 
 # Add a script to benchmark against other tools
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-05 20:06_
+_@charliermarsh_
 
 ## Summary
 

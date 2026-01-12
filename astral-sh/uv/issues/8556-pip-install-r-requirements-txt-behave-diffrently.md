@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-25T07:46:46Z
 updated_at: 2024-10-27T16:09:34Z
 url: https://github.com/astral-sh/uv/issues/8556
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # pip install - r requirements.txt behave diffrently than uv pip install - r requirements.txt
 
 ---
 
-_Issue opened by @samuelgarcia on 2024-10-25 07:46_
+_@samuelgarcia_
 
 In a fresh env created by `python -m venv` or relatively `uv venv`.
 `pip install - r requirements.txt` behave diffrently than `uv pip install - r requirements.txt`

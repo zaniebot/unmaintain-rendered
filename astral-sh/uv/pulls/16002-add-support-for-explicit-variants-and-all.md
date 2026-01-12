@@ -11,14 +11,14 @@ head: add-all-variants-flag
 created_at: 2025-09-23T14:46:02Z
 updated_at: 2025-12-16T01:41:22Z
 url: https://github.com/astral-sh/uv/pull/16002
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:04Z
 ```
 
 # Add support for explicit variants and `--all-variants` flag with `uv python list`
 
 ---
 
-_Pull request opened by @shaanmajid on 2025-09-23 14:46_
+_@shaanmajid_
 
 Adds `--all-variants` flag to `uv python list` to show debug Python builds that are normally hidden.
 

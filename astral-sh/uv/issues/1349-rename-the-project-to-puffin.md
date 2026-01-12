@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-15T21:17:33Z
 updated_at: 2025-02-21T06:27:20Z
 url: https://github.com/astral-sh/uv/issues/1349
-synced_at: 2026-01-10T03:50:29Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Rename the project to puffin
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-02-15 21:17_
+_@hauntsaninja_
 
 'nuff said
 

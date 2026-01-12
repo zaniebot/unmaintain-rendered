@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-20T10:00:53Z
 updated_at: 2025-03-20T15:38:22Z
 url: https://github.com/astral-sh/uv/issues/7576
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # UV Workspaces setup  and imports
 
 ---
 
-_Issue opened by @pablo-a on 2024-09-20 10:00_
+_@pablo-a_
 
 Hi ! Thanks a lot for this really promising project !
 I however fail to understand how to setup correctly uv workspaces even for a minimalist project that follow uv documentation

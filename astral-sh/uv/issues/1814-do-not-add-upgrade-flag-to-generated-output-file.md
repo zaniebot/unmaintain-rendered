@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-21T14:46:33Z
 updated_at: 2024-02-23T19:01:16Z
 url: https://github.com/astral-sh/uv/issues/1814
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Do not add `--upgrade` flag to generated output file
 
 ---
 
-_Issue opened by @hofrob on 2024-02-21 14:46_
+_@hofrob_
 
 `uv` and `pip-tools` both add the full command to the generated output file. When running an upgrade command, `uv` will add `--upgrade` too while `pip-tools` will not.
 

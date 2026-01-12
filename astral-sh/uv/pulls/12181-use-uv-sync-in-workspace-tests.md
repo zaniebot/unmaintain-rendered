@@ -13,14 +13,14 @@ head: charlie/w
 created_at: 2025-03-15T02:44:01Z
 updated_at: 2025-03-15T20:52:44Z
 url: https://github.com/astral-sh/uv/pull/12181
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:09Z
 ```
 
 # Use `uv sync` in workspace tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-15 02:44_
+_@charliermarsh_
 
 _No description provided._
 

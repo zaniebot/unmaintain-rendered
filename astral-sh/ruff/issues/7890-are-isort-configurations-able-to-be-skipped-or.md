@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-10T09:31:02Z
 updated_at: 2023-11-02T22:56:42Z
 url: https://github.com/astral-sh/ruff/issues/7890
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Are isort configurations able to be skipped or just applicable in some files?
 
 ---
 
-_Issue opened by @BT-rmartin on 2023-10-10 09:31_
+_@BT-rmartin_
 
 Hi, I would like to know if there is a way to skip the application of some isort checks for some specific files, or the other way round, to enforce the application of some isort configurations for specific files. 
 

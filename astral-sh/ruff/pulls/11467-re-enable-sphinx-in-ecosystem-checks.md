@@ -12,14 +12,14 @@ head: charlie/sphinx
 created_at: 2024-05-19T03:31:24Z
 updated_at: 2024-05-19T03:50:18Z
 url: https://github.com/astral-sh/ruff/pull/11467
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Re-enable Sphinx in ecosystem checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-19 03:31_
+_@charliermarsh_
 
 Just curious if this works now.
 

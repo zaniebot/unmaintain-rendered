@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-18T23:02:48Z
 updated_at: 2024-04-04T04:31:00Z
 url: https://github.com/astral-sh/uv/issues/977
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Update `--no-build` and `--no-binary` to match `pip` interfaces
 
 ---
 
-_Issue opened by @zanieb on 2024-01-18 23:02_
+_@zanieb_
 
 _No description provided._
 

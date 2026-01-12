@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-20T15:36:40Z
 updated_at: 2024-12-20T19:14:58Z
 url: https://github.com/astral-sh/uv/issues/10059
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # `uv lock` finds incorrect wheels for sys_platform == 'darwin' (pytorch)
 
 ---
 
-_Issue opened by @patrickhulce on 2024-12-20 15:36_
+_@patrickhulce_
 
 **Background**
 I'm trying to run the same project on macOS and Ubuntu. For that, I have two sources for pytorch as described in the [uv docs](https://docs.astral.sh/uv/guides/integration/pytorch/#using-a-pytorch-index). I'm using uv version `uv 0.5.11 (c4d0caaee 2024-12-19)` on macOS 14.4.1

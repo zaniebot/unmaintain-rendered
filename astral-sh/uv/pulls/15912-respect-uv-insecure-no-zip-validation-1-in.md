@@ -13,14 +13,14 @@ head: charlie/st
 created_at: 2025-09-17T14:22:11Z
 updated_at: 2025-09-17T14:34:51Z
 url: https://github.com/astral-sh/uv/pull/15912
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:01Z
 ```
 
 # Respect `UV_INSECURE_NO_ZIP_VALIDATION=1` in duplicate header errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-17 14:22_
+_@charliermarsh_
 
 ## Summary
 

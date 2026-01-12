@@ -13,14 +13,14 @@ head: combine-if-conditions2
 created_at: 2023-02-12T19:56:02Z
 updated_at: 2023-02-12T21:00:33Z
 url: https://github.com/astral-sh/ruff/pull/2823
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # [`flake8-simplify`]: combine-if-conditions
 
 ---
 
-_Pull request opened by @colin99d on 2023-02-12 19:56_
+_@colin99d_
 
 Ref: #998 
 

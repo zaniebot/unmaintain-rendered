@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-12T09:45:09Z
 updated_at: 2025-07-01T08:21:03Z
 url: https://github.com/astral-sh/ruff/issues/7300
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Removal of semicolon in notebooks
 
 ---
 
-_Issue opened by @peendebak on 2023-09-12 09:45_
+_@peendebak_
 
 One of the default rules in ruff is to remove a trailing semicolon. That is fine for python scripts, for for jupyter notebook this can change the output of the code cells. A screenshot to illustrate:
 

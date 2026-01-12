@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-03T10:20:16Z
 updated_at: 2026-01-05T22:35:34Z
 url: https://github.com/astral-sh/ty/issues/2314
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # False positive [invalid-assignment] on assigning to union with bounded typevar
 
 ---
 
-_Issue opened by @randolf-scholz on 2026-01-03 10:20_
+_@randolf-scholz_
 
 ### Summary
 

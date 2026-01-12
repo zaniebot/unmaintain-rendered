@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T06:27:05Z
 updated_at: 2025-06-20T20:09:39Z
 url: https://github.com/astral-sh/uv/issues/13960
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # Why do I lose many commands after UV sync?
 
 ---
 
-_Issue opened by @bbhxwl on 2025-06-11 06:27_
+_@bbhxwl_
 
 ### Question
 

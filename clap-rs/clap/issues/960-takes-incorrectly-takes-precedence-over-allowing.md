@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-05-15T17:39:51Z
 updated_at: 2018-08-02T03:30:07Z
 url: https://github.com/clap-rs/clap/issues/960
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # `--` takes (incorrectly) takes precedence over allowing hyphen values
 
 ---
 
-_Issue opened by @kbknapp on 2017-05-15 17:39_
+_@kbknapp_
 
 See BurntSushi/ripgrep#482
 

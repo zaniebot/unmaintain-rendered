@@ -10,16 +10,16 @@ draft: true
 base: main
 head: feat/upgrade-pyproject-toml
 created_at: 2025-06-09T20:35:56Z
-updated_at: 2025-11-21T08:55:04Z
+updated_at: 2026-01-11T15:50:57Z
 url: https://github.com/astral-sh/uv/pull/13934
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:10:56Z
 ```
 
 # feat: upgrade dependencies in pyproject.toml
 
 ---
 
-_Pull request opened by @reneleonhardt on 2025-06-09 20:35_
+_@reneleonhardt_
 
 ## Summary
 Provide `uv upgrade` to upgrade dependency constraints in pyproject.toml without changing/syncing uv.lock.

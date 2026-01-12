@@ -14,14 +14,14 @@ head: charlie/named-expr
 created_at: 2023-08-16T22:16:07Z
 updated_at: 2023-08-17T14:48:56Z
 url: https://github.com/astral-sh/ruff/pull/6632
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Expand `NamedExpr` range to include full range of parenthesized value
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-16 22:16_
+_@charliermarsh_
 
 ## Summary
 

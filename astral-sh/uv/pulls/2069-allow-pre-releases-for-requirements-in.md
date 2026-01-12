@@ -13,14 +13,14 @@ head: charlie/constraint-pre
 created_at: 2024-02-29T01:09:21Z
 updated_at: 2024-02-29T01:16:24Z
 url: https://github.com/astral-sh/uv/pull/2069
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:51Z
 ```
 
 # Allow pre-releases for requirements in constraints files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-29 01:09_
+_@charliermarsh_
 
 ## Summary
 

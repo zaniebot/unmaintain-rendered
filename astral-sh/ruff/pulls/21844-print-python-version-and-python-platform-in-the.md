@@ -14,14 +14,14 @@ head: alex/fuzzer-output
 created_at: 2025-12-08T13:45:37Z
 updated_at: 2025-12-08T14:42:31Z
 url: https://github.com/astral-sh/ruff/pull/21844
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # Print Python version and Python platform in the fuzzer output when fuzzing fails
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-08 13:45_
+_@AlexWaygood_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-11-29T13:18:19Z
 updated_at: 2023-12-23T12:38:15Z
 url: https://github.com/astral-sh/ruff/issues/8908
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # docstring code formatter: decide whether doctests should end with a empty PS2 prompt line or not
 
 ---
 
-_Issue opened by @BurntSushi on 2023-11-29 13:18_
+_@BurntSushi_
 
 (This issue is forked off from discussion beginning at https://github.com/astral-sh/ruff/issues/7146#issuecomment-1829264623.)
 

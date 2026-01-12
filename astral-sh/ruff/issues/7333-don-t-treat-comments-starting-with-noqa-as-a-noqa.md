@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-13T13:01:50Z
 updated_at: 2024-01-04T04:00:48Z
 url: https://github.com/astral-sh/ruff/issues/7333
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Don't treat comments starting with `noqa` as a `noqa` comment if they're clearly not
 
 ---
 
-_Issue opened by @jakkdl on 2023-09-13 13:01_
+_@jakkdl_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

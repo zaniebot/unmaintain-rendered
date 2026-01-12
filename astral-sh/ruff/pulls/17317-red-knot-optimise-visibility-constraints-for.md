@@ -14,14 +14,14 @@ head: alex/star-import-optimisation
 created_at: 2025-04-09T15:30:57Z
 updated_at: 2025-04-09T17:01:21Z
 url: https://github.com/astral-sh/ruff/pull/17317
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Optimise visibility constraints for `*`-import definitions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-09 15:30_
+_@AlexWaygood_
 
 ## Summary
 

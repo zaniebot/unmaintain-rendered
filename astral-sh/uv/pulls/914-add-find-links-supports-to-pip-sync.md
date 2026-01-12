@@ -12,14 +12,14 @@ head: konsti/flat-indexes-3-pip-install
 created_at: 2024-01-14T15:40:06Z
 updated_at: 2024-01-15T03:04:57Z
 url: https://github.com/astral-sh/uv/pull/914
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:17Z
 ```
 
 # Add find links supports to pip-sync
 
 ---
 
-_Pull request opened by @konstin on 2024-01-14 15:40_
+_@konstin_
 
 Closes #877
 

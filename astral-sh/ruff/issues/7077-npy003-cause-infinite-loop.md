@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-03T09:38:22Z
 updated_at: 2023-09-03T15:53:29Z
 url: https://github.com/astral-sh/ruff/issues/7077
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # NPY003 cause infinite loop 
 
 ---
 
-_Issue opened by @qarmin on 2023-09-03 09:38_
+_@qarmin_
 
 Ruff 0.0.287 (latest changes from main branch)
 

@@ -14,14 +14,14 @@ head: insta-required-by-ty-tests
 created_at: 2026-01-01T18:05:09Z
 updated_at: 2026-01-05T10:05:13Z
 url: https://github.com/astral-sh/ruff/pull/22332
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] (docs) - Note insta is required for working with ty tests in ty CONTRIBUTING.md
 
 ---
 
-_Pull request opened by @sinon on 2026-01-01 18:05_
+_@sinon_
 
 ## Summary
 

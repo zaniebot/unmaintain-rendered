@@ -13,14 +13,14 @@ head: dependabot/cargo/indicatif-0.17.8
 created_at: 2024-02-12T08:46:29Z
 updated_at: 2024-02-12T09:25:48Z
 url: https://github.com/astral-sh/ruff/pull/9942
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Bump indicatif from 0.17.7 to 0.17.8
 
 ---
 
-_Pull request opened by @dependabot on 2024-02-12 08:46_
+_@dependabot_
 
 Bumps [indicatif](https://github.com/console-rs/indicatif) from 0.17.7 to 0.17.8.
 <details>

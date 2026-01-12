@@ -12,14 +12,14 @@ head: charlie/once
 created_at: 2023-02-12T22:25:12Z
 updated_at: 2023-02-12T22:28:04Z
 url: https://github.com/astral-sh/ruff/pull/2829
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Fix unused multi-assignments in a single pass
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-12 22:25_
+_@charliermarsh_
 
 This can leave behind a constant expression (`toplevel = tt = 1` gets fixed to `1`, rather than `pass`), but it's a lot more efficient and clearer.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-15T19:13:27Z
 updated_at: 2024-03-17T21:29:34Z
 url: https://github.com/astral-sh/uv/issues/2481
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Should `--reinstall` default to true  with `uv pip install --editable .`?
 
 ---
 
-_Issue opened by @tlambert03 on 2024-03-15 19:13_
+_@tlambert03_
 
 If you run `pip install -e .` in a directory that has already been installed, I believe the default behavior is to re-install the package.  That's my observation, but please correct me if I'm wrong, or if I've missed something.
 

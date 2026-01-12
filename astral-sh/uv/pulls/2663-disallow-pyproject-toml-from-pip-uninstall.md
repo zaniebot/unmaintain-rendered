@@ -13,14 +13,14 @@ head: charlie/pyproj
 created_at: 2024-03-26T00:54:08Z
 updated_at: 2024-03-26T01:35:44Z
 url: https://github.com/astral-sh/uv/pull/2663
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:09Z
 ```
 
 # Disallow `pyproject.toml` from `pip uninstall`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-26 00:54_
+_@charliermarsh_
 
 ## Summary
 

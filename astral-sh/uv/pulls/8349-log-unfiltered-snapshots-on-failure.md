@@ -14,14 +14,14 @@ head: zb/snap-filt
 created_at: 2024-10-18T23:20:23Z
 updated_at: 2024-10-21T08:30:09Z
 url: https://github.com/astral-sh/uv/pull/8349
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:16Z
 ```
 
 # Log unfiltered snapshots on failure
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-18 23:20_
+_@zanieb_
 
 Cherry-picked from https://github.com/astral-sh/uv/pull/8347
 

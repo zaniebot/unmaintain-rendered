@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-01T00:27:49Z
 updated_at: 2025-09-01T06:47:28Z
 url: https://github.com/astral-sh/ty/issues/1110
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Incorrect possibly-unbound-attribute after checking for None and then sys.exit
 
 ---
 
-_Issue opened by @drichardson on 2025-09-01 00:27_
+_@drichardson_
 
 ### Summary
 

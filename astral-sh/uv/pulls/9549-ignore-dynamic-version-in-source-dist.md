@@ -14,14 +14,14 @@ head: konsti/allow-dynamic-version-in-source-dist
 created_at: 2024-12-01T09:05:48Z
 updated_at: 2024-12-04T11:40:32Z
 url: https://github.com/astral-sh/uv/pull/9549
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:51Z
 ```
 
 # Ignore dynamic version in source dist
 
 ---
 
-_Pull request opened by @konstin on 2024-12-01 09:05_
+_@konstin_
 
 When encountering `dynamic = ["version"]` in the pyproject.toml of a source dist, we can ignore that and treat it as a statically known metadata distribution, since the filename tells us the version and that version must not change on build.
 

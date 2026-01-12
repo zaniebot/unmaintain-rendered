@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T05:02:41Z
 updated_at: 2025-12-17T13:39:53Z
 url: https://github.com/astral-sh/ty/issues/1975
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `dict` literal not accepted as `Mapping` argument
 
 ---
 
-_Issue opened by @tibdex on 2025-12-17 05:02_
+_@tibdex_
 
 ### Summary
 

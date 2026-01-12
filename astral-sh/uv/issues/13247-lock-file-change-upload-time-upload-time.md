@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-01T06:47:38Z
 updated_at: 2025-05-01T07:10:23Z
 url: https://github.com/astral-sh/uv/issues/13247
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # lock file change `upload-time` --> `upload_time`
 
 ---
 
-_Issue opened by @dimaqq on 2025-05-01 06:47_
+_@dimaqq_
 
 ### Question
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-20T16:32:41Z
 updated_at: 2022-05-25T20:01:08Z
 url: https://github.com/clap-rs/clap/issues/3199
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Error text for derived numeric ranges is unclear
 
 ---
 
-_Issue opened by @epage on 2021-12-20 16:32_
+_@epage_
 
 ### Please complete the following tasks
 

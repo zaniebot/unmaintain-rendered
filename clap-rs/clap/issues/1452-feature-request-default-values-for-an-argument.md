@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-04-08T23:10:10Z
 updated_at: 2020-04-07T09:12:19Z
 url: https://github.com/clap-rs/clap/issues/1452
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # [Feature request] Default values for an argument with multiple values
 
 ---
 
-_Issue opened by @tprodanov on 2019-04-08 23:10_
+_@tprodanov_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

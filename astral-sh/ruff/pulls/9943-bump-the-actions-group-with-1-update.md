@@ -13,14 +13,14 @@ head: dependabot/github_actions/actions-076086ed28
 created_at: 2024-02-12T08:54:14Z
 updated_at: 2024-02-12T17:05:32Z
 url: https://github.com/astral-sh/ruff/pull/9943
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Bump the actions group with 1 update
 
 ---
 
-_Pull request opened by @dependabot on 2024-02-12 08:54_
+_@dependabot_
 
 Bumps the actions group with 1 update: [webfactory/ssh-agent](https://github.com/webfactory/ssh-agent).
 

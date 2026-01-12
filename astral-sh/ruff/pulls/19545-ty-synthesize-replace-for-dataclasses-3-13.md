@@ -13,14 +13,14 @@ head: thejchap/more-dataclasses
 created_at: 2025-07-25T01:21:22Z
 updated_at: 2025-07-29T15:32:01Z
 url: https://github.com/astral-sh/ruff/pull/19545
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] synthesize `__replace__` for dataclasses (>=3.13)
 
 ---
 
-_Pull request opened by @thejchap on 2025-07-25 01:21_
+_@thejchap_
 
 ## Summary
 https://github.com/astral-sh/ty/issues/111

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-07-09T02:11:11Z
 updated_at: 2018-08-02T03:29:51Z
 url: https://github.com/clap-rs/clap/issues/577
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Correctly bubbling exit codes
 
 ---
 
-_Issue opened by @dsoprea on 2016-07-09 02:11_
+_@dsoprea_
 
 It looks like CLAP methods often return integers, which I can only assume represent exit codes, and yet any integers returned by the user-defined subcommand handlers will seemingly be ignored (with the process always returning (0)). Is there _actually_ support for the user-defined handlers to return non-zero?
 

@@ -15,14 +15,14 @@ head: add-W0642
 created_at: 2023-12-24T22:05:01Z
 updated_at: 2024-04-15T09:15:56Z
 url: https://github.com/astral-sh/ruff/pull/9267
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [`pylint`] Implement `self-cls-assignment` (`W0642`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-12-24 22:05_
+_@diceroll123_
 
 ## Summary
 

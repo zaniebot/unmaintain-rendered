@@ -14,14 +14,14 @@ head: charlie/tls
 created_at: 2024-03-11T19:31:36Z
 updated_at: 2024-03-13T01:55:42Z
 url: https://github.com/astral-sh/uv/pull/2362
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:59Z
 ```
 
 # Enable TLS native root toggling at runtime
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-11 19:31_
+_@charliermarsh_
 
 ## Summary
 

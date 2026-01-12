@@ -13,14 +13,14 @@ head: cbachhuber-patch-1
 created_at: 2025-12-18T20:10:21Z
 updated_at: 2025-12-19T19:08:13Z
 url: https://github.com/astral-sh/ruff/pull/22059
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 #  Update T201 suggestion to not use root logger to satisfy LOG015
 
 ---
 
-_Pull request opened by @cbachhuber on 2025-12-18 20:10_
+_@cbachhuber_
 
 ## Summary
 

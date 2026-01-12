@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-03T09:31:42Z
 updated_at: 2023-06-02T06:18:48Z
 url: https://github.com/astral-sh/ruff/issues/3859
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # support flake8-fixme
 
 ---
 
-_Issue opened by @finswimmer on 2023-04-03 09:31_
+_@finswimmer_
 
 Hey,
 

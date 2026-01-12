@@ -12,14 +12,14 @@ head: zanie/all-extra
 created_at: 2023-10-31T19:34:28Z
 updated_at: 2023-11-01T18:39:50Z
 url: https://github.com/astral-sh/uv/pull/259
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:50Z
 ```
 
 # Add support for `--all-extras` to `pip-compile`
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-31 19:34_
+_@zanieb_
 
 Closes #244
 

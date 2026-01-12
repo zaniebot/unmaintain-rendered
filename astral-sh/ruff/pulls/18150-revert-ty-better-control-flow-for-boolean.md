@@ -13,14 +13,14 @@ head: cjm/revert-regression
 created_at: 2025-05-17T12:13:17Z
 updated_at: 2025-05-17T12:31:56Z
 url: https://github.com/astral-sh/ruff/pull/18150
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # Revert "[ty] Better control flow for boolean expressions that are inside if (#18010)"
 
 ---
 
-_Pull request opened by @carljm on 2025-05-17 12:13_
+_@carljm_
 
 This reverts commit 9910ec700c45efcb9734926fb1412bec22b34100.
 

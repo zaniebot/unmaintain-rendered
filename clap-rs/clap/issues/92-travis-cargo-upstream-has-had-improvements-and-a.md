@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-05-01T11:20:14Z
 updated_at: 2018-08-02T03:29:39Z
 url: https://github.com/clap-rs/clap/issues/92
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # travis-cargo upstream has had improvements and a breaking change
 
 ---
 
-_Issue opened by @huonw on 2015-05-01 11:20_
+_@huonw_
 
 I see you're using travis-cargo but had the forethought to fork it and hence avoid breaking changes. In any case, I thought I should inform you anyway, to ensure you don't get a nasty surprise in future. See http://huonw.github.io/blog/2015/05/travis-on-the-train-part-2/ for more details.
 

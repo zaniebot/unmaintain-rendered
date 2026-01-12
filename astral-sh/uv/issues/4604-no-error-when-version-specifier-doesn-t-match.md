@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-27T22:08:53Z
 updated_at: 2024-11-23T03:46:40Z
 url: https://github.com/astral-sh/uv/issues/4604
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # No error when version specifier doesn't match requirement source
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-06-27 22:08_
+_@ibraheemdev_
 
 Similar to https://github.com/astral-sh/uv/issues/4603, we should verify the version of a source matches the specifier. For example,
 ```toml

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-31T13:40:15Z
 updated_at: 2024-05-31T21:08:02Z
 url: https://github.com/astral-sh/uv/issues/3942
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Deduplicate unnamed URL and editable URL parsing
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-31 13:40_
+_@charliermarsh_
 
 I think the requirements here are identical, but we have two totally separate paths for them (and now have some bugs for unnamed URLs that we already fixed for editables).
 

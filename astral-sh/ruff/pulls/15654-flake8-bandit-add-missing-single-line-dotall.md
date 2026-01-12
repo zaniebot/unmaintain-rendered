@@ -13,14 +13,14 @@ head: S608
 created_at: 2025-01-21T19:32:02Z
 updated_at: 2025-01-22T12:10:14Z
 url: https://github.com/astral-sh/ruff/pull/15654
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flake8-bandit`] Add missing single-line/dotall regex flag (`S608`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-21 19:32_
+_@InSyncWithFoo_
 
 ## Summary
 

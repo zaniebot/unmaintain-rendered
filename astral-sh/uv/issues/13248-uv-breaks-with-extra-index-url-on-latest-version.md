@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-01T06:51:37Z
 updated_at: 2025-05-05T08:59:56Z
 url: https://github.com/astral-sh/uv/issues/13248
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # uv breaks with --extra-index-url on latest version
 
 ---
 
-_Issue opened by @desmondcheongzx on 2025-05-01 06:51_
+_@desmondcheongzx_
 
 ### Summary
 

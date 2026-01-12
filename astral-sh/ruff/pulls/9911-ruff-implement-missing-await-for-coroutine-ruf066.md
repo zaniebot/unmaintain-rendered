@@ -14,14 +14,14 @@ head: rule(RUF028)/detect-unused-await
 created_at: 2024-02-09T13:15:13Z
 updated_at: 2025-10-29T15:05:27Z
 url: https://github.com/astral-sh/ruff/pull/9911
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # [`ruff`] Implement missing `await` for coroutine (`RUF066`)
 
 ---
 
-_Pull request opened by @mikeleppane on 2024-02-09 13:15_
+_@mikeleppane_
 
 ## Summary
 

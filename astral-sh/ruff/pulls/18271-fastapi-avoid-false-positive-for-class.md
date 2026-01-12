@@ -13,14 +13,14 @@ head: fix-fast003-class-dependencies
 created_at: 2025-05-23T07:36:56Z
 updated_at: 2025-06-02T18:34:51Z
 url: https://github.com/astral-sh/ruff/pull/18271
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [`fastapi`] Avoid false positive for class dependencies (`FAST003`)
 
 ---
 
-_Pull request opened by @twentyone212121 on 2025-05-23 07:36_
+_@twentyone212121_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

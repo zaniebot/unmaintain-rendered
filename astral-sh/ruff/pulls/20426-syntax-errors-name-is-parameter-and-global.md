@@ -13,14 +13,14 @@ head: name_is_param_and_global
 created_at: 2025-09-15T22:47:58Z
 updated_at: 2025-10-21T17:02:29Z
 url: https://github.com/astral-sh/ruff/pull/20426
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # [syntax-errors] Name is parameter and global
 
 ---
 
-_Pull request opened by @11happy on 2025-09-15 22:47_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: link-macos
 created_at: 2025-01-15T11:02:26Z
 updated_at: 2025-01-16T05:48:24Z
 url: https://github.com/astral-sh/uv/pull/10629
-synced_at: 2026-01-10T11:45:00Z
+synced_at: 2026-01-12T16:09:24Z
 ```
 
 # Patch embedded install path for Python dylib on macOS during `python install`
 
 ---
 
-_Pull request opened by @LukeMathWalker on 2025-01-15 11:02_
+_@LukeMathWalker_
 
 ## Summary
 

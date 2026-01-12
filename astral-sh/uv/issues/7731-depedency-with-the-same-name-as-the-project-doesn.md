@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-27T06:16:59Z
 updated_at: 2024-09-28T20:02:12Z
 url: https://github.com/astral-sh/uv/issues/7731
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Depedency with the same name as the project doesn't error
 
 ---
 
-_Issue opened by @2531 on 2024-09-27 06:16_
+_@2531_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

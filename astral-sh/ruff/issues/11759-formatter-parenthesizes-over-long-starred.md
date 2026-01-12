@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-05T19:13:35Z
 updated_at: 2024-06-10T08:38:47Z
 url: https://github.com/astral-sh/ruff/issues/11759
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Formatter parenthesizes over-long starred expression in an assignment value which prodcues invalid syntax
 
 ---
 
-_Issue opened by @jasikpark on 2024-06-05 19:13_
+_@jasikpark_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

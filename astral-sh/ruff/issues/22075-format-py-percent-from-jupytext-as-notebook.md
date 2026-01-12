@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-19T10:28:38Z
 updated_at: 2025-12-19T15:02:35Z
 url: https://github.com/astral-sh/ruff/issues/22075
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # format `py:percent` from `jupytext` as notebook
 
 ---
 
-_Issue opened by @ogauthe on 2025-12-19 10:28_
+_@ogauthe_
 
 ### Question
 

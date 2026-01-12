@@ -11,14 +11,14 @@ head: master
 created_at: 2025-10-25T17:56:37Z
 updated_at: 2025-10-27T16:01:42Z
 url: https://github.com/clap-rs/clap/pull/6162
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # docs: Added example for figment toml config
 
 ---
 
-_Pull request opened by @Hecatron on 2025-10-25 17:56_
+_@Hecatron_
 
 Hi,
 I was having a dig around the issues and discussions for clap for a way to layer a configuration via default values, then a a toml file, then clap using command line arguments (in that order)

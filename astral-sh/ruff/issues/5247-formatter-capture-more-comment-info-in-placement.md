@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-21T11:46:08Z
 updated_at: 2023-09-08T07:22:36Z
 url: https://github.com/astral-sh/ruff/issues/5247
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # formatter: capture more comment info in placement.rs
 
 ---
 
-_Issue opened by @davidszotten on 2023-06-21 11:46_
+_@davidszotten_
 
 Hi,
 

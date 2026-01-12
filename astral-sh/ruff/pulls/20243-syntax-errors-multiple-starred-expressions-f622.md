@@ -13,14 +13,14 @@ head: F622
 created_at: 2025-09-04T16:36:26Z
 updated_at: 2025-09-24T19:41:31Z
 url: https://github.com/astral-sh/ruff/pull/20243
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [syntax-errors]: multiple-starred-expressions (F622)
 
 ---
 
-_Pull request opened by @11happy on 2025-09-04 16:36_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

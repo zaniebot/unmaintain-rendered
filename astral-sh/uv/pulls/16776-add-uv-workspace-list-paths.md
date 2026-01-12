@@ -13,14 +13,14 @@ head: zb/workspace-list-paths
 created_at: 2025-11-19T15:40:37Z
 updated_at: 2025-11-20T19:44:58Z
 url: https://github.com/astral-sh/uv/pull/16776
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:26Z
 ```
 
 # Add `uv workspace list --paths`
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-19 15:40_
+_@zanieb_
 
 I initially thought I didn't need this, but in some contexts, the workspace member name is not useful at all and I just want to iterate over the paths without composing with `uv workspace dir --package <name>`
 

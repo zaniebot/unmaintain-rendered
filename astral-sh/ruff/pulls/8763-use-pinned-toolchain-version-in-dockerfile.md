@@ -13,14 +13,14 @@ head: use-pinned-rust-version-in-dockerfile
 created_at: 2023-11-19T08:08:14Z
 updated_at: 2023-11-19T08:12:52Z
 url: https://github.com/astral-sh/ruff/pull/8763
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Use pinned toolchain version in Dockerfile
 
 ---
 
-_Pull request opened by @konstin on 2023-11-19 08:08_
+_@konstin_
 
 The previous build would use the cached rust version instead of rust-toolchain.toml
 

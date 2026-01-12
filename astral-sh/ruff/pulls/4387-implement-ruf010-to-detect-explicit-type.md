@@ -13,14 +13,14 @@ head: f-string-conversion
 created_at: 2023-05-11T23:52:22Z
 updated_at: 2023-05-12T18:32:22Z
 url: https://github.com/astral-sh/ruff/pull/4387
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Implement `RUF010` to detect explicit type conversions within f-strings
 
 ---
 
-_Pull request opened by @LotemAm on 2023-05-11 23:52_
+_@LotemAm_
 
 This rule will check if an f-string contains anything that can be replace with a conversion (e.g. `str(foo)` to `foo!s`)
 

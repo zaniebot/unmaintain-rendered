@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T23:36:14Z
 updated_at: 2024-12-10T19:58:40Z
 url: https://github.com/astral-sh/uv/issues/9296
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # Repeated markers in `resolution-markers`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-11-20 23:36_
+_@charliermarsh_
 
 If you lock:
 

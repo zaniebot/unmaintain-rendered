@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-22T23:02:09Z
 updated_at: 2024-01-31T15:27:05Z
 url: https://github.com/astral-sh/uv/issues/1053
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Run tests in CI on macOS
 
 ---
 
-_Issue opened by @zanieb on 2024-01-22 23:02_
+_@zanieb_
 
 Currently we only run CI tests on Linux.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-25T21:58:09Z
 updated_at: 2025-07-26T13:48:01Z
 url: https://github.com/astral-sh/ruff/issues/19566
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Trigger UP043 on <3.13 with __future__.annotations
 
 ---
 
-_Issue opened by @Gallaecio on 2025-07-25 21:58_
+_@Gallaecio_
 
 ### Summary
 

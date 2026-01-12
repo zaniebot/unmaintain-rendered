@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-07T00:16:20Z
 updated_at: 2025-02-11T17:05:30Z
 url: https://github.com/astral-sh/ruff/issues/16007
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [D214, D405, D417] False positive with arg keyword `attributes`
 
 ---
 
-_Issue opened by @JP-Ellis on 2025-02-07 00:16_
+_@JP-Ellis_
 
 ## Summary
 

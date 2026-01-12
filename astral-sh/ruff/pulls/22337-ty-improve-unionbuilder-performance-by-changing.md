@@ -14,14 +14,14 @@ head: alex/more-redundancy
 created_at: 2026-01-02T16:19:20Z
 updated_at: 2026-01-07T22:17:47Z
 url: https://github.com/astral-sh/ruff/pull/22337
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Improve `UnionBuilder` performance by changing `Type::is_subtype_of` calls to `Type::is_redundant_with`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-02 16:19_
+_@AlexWaygood_
 
 ## Summary
 

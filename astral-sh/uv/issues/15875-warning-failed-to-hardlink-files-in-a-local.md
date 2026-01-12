@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-15T16:05:16Z
 updated_at: 2025-09-16T16:42:35Z
 url: https://github.com/astral-sh/uv/issues/15875
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # `Warning: Failed to hardlink files;` In a local ubuntu system
 
 ---
 
-_Issue opened by @matrs on 2025-09-15 16:05_
+_@matrs_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-05T13:58:55Z
 updated_at: 2024-03-05T17:25:07Z
 url: https://github.com/astral-sh/uv/issues/2203
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # uv attempts (and fails) to install ancient setuptools
 
 ---
 
-_Issue opened by @mdekstrand on 2024-03-05 13:58_
+_@mdekstrand_
 
 With uv 0.1.14, using the following command:
 

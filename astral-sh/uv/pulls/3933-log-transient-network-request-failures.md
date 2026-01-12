@@ -14,14 +14,14 @@ head: konsti/log-transient-request-failures
 created_at: 2024-05-31T09:48:00Z
 updated_at: 2024-06-04T13:39:17Z
 url: https://github.com/astral-sh/uv/pull/3933
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:56Z
 ```
 
 # Log transient network request failures
 
 ---
 
-_Pull request opened by @konstin on 2024-05-31 09:48_
+_@konstin_
 
 We retry several kinds of network request failures, but it's often unclear whether a request was retried or not (https://github.com/astral-sh/uv/issues/3514#issuecomment-2105485773). This PR adds a small intermediary layer that logs all transient request failures, adding the `DEBUG Transient request failure` lines:
 

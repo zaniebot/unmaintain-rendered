@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-28T21:18:09Z
 updated_at: 2025-03-04T10:28:03Z
 url: https://github.com/astral-sh/ruff/issues/16445
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # UP028 false positive when a target variable is global or nonlocal
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-28 21:18_
+_@dscorbett_
 
 ### Summary
 

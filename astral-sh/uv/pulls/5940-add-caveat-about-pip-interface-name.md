@@ -14,14 +14,14 @@ head: zb/pip-docs-note
 created_at: 2024-08-08T21:57:44Z
 updated_at: 2024-08-08T22:01:09Z
 url: https://github.com/astral-sh/uv/pull/5940
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:07Z
 ```
 
 # Add caveat about pip interface name
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-08 21:57_
+_@zanieb_
 
 I'm not sure if this is worthwhile, but it is a point of confusion sometimes.
 

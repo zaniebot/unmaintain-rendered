@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-17T02:08:40Z
 updated_at: 2021-12-17T15:54:03Z
 url: https://github.com/clap-rs/clap/issues/3193
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Next-line help is always used despite no long-help being shown (despite `long_about` being set on a subcommand)
 
 ---
 
-_Issue opened by @epage on 2021-12-17 02:08_
+_@epage_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/3178
 

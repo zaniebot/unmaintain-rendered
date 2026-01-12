@@ -13,14 +13,14 @@ head: alex/signatures-exhaustive
 created_at: 2025-04-29T14:02:21Z
 updated_at: 2025-04-29T14:14:10Z
 url: https://github.com/astral-sh/ruff/pull/17706
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [red-knot] Make `Type::signatures()` exhaustive
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-29 14:02_
+_@AlexWaygood_
 
 ## Summary
 

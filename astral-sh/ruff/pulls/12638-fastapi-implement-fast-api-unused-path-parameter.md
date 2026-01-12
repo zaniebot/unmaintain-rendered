@@ -14,14 +14,14 @@ head: fastapi_unused_path_parameter
 created_at: 2024-08-02T18:10:07Z
 updated_at: 2024-08-16T01:55:44Z
 url: https://github.com/astral-sh/ruff/pull/12638
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [`fastapi`] Implement `fast-api-unused-path-parameter` (`FAST003`)
 
 ---
 
-_Pull request opened by @Matthieu-LAURENT39 on 2024-08-02 18:10_
+_@Matthieu-LAURENT39_
 
 This adds the `fast-api-unused-path-parameter` lint rule, as described in #12632.
 

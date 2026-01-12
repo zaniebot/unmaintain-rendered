@@ -13,14 +13,14 @@ head: charlie/editables
 created_at: 2024-01-04T01:26:21Z
 updated_at: 2024-01-05T13:35:42Z
 url: https://github.com/astral-sh/uv/pull/766
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:10Z
 ```
 
 # Make editable installs their own test feature flag
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-04 01:26_
+_@charliermarsh_
 
 For whatever reason these fail for me with mold, and it's not worth it to me to disable the linker.
 

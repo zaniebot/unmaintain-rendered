@@ -13,14 +13,14 @@ head: fix/expandisloggingcandidate
 created_at: 2023-09-19T15:23:59Z
 updated_at: 2023-09-27T09:00:12Z
 url: https://github.com/astral-sh/ruff/pull/7521
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Add `Expr::Name` checks to rules which use `is_logger_candidate` 
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-09-19 15:23_
+_@qdegraaf_
 
 ## Summary
 

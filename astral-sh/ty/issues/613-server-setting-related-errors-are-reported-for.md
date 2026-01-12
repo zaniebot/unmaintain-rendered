@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-09T07:09:04Z
 updated_at: 2025-07-23T08:49:39Z
 url: https://github.com/astral-sh/ty/issues/613
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Server setting related errors are reported for the Python file
 
 ---
 
-_Issue opened by @MichaReiser on 2025-06-09 07:09_
+_@MichaReiser_
 
 I've a `main.py` with an unresolved reference error and an error in my pyproject.toml
 

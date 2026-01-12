@@ -14,14 +14,14 @@ head: typeguard
 created_at: 2025-10-19T23:00:18Z
 updated_at: 2026-01-05T02:10:51Z
 url: https://github.com/astral-sh/ruff/pull/20974
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # [ty] implement `typing.TypeGuard`
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2025-10-19 23:00_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

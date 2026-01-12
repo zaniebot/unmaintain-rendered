@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-12-01T00:49:04Z
 updated_at: 2018-08-02T03:29:57Z
 url: https://github.com/clap-rs/clap/issues/760
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Help text doesn't line up for options that accept multiple occurrences
 
 ---
 
-_Issue opened by @jimmycuadra on 2016-12-01 00:49_
+_@jimmycuadra_
 
 Clap version: 2.19.0
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-12T14:12:33Z
 updated_at: 2025-08-18T16:35:37Z
 url: https://github.com/astral-sh/uv/issues/15239
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # Warning that PySide6 is provided by more than one package since uv 0.8.7
 
 ---
 
-_Issue opened by @my1e5 on 2025-08-12 14:12_
+_@my1e5_
 
 ### Question
 

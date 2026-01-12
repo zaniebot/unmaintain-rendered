@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-21T06:13:28Z
 updated_at: 2024-05-09T14:43:54Z
 url: https://github.com/astral-sh/uv/issues/1797
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Specify Constraints File In Dependencies
 
 ---
 
-_Issue opened by @juftin on 2024-02-21 06:13_
+_@juftin_
 
 `uv` doesn't specify a constraints file as a dependency when enumerating which packages depend on one-another. IMO, having `-c constraints.txt` is helpful information in the following example (`uv==0.1.6`):
 

@@ -12,14 +12,14 @@ head: zb/maturin
 created_at: 2025-05-02T17:57:38Z
 updated_at: 2025-07-08T10:38:46Z
 url: https://github.com/astral-sh/ty/pull/2
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Configure Python build system
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-02 17:57_
+_@zanieb_
 
 _No description provided._
 

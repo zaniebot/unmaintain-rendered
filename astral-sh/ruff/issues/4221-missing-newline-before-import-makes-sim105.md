@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-04T10:41:37Z
 updated_at: 2023-05-04T11:54:45Z
 url: https://github.com/astral-sh/ruff/issues/4221
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Missing newline before import makes SIM105 produce invalid autofix
 
 ---
 
-_Issue opened by @konstin on 2023-05-04 10:41_
+_@konstin_
 
 Command: `ruff --no-cache --select SIM105 --fix file.py`, ruff version 59d40f9f81056a8433db4de490857a6a23f93d2c
 

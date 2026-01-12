@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-18T06:48:40Z
 updated_at: 2025-08-18T18:25:30Z
 url: https://github.com/astral-sh/ty/issues/1035
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Inlay Hint Improvment
 
 ---
 
-_Issue opened by @alirezanobakht13 on 2025-08-18 06:48_
+_@alirezanobakht13_
 
 Inlay hint feature is super useful in the area of active line, but when it is activated everywhere, it makes code kind of messy and in my opinion sometimes harder to read. It would be great if it can be displayed only near active line of coding, and not in other lines. similar idea from `Error Lens` extension: 
 

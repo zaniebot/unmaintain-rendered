@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-19T02:02:36Z
 updated_at: 2025-07-10T13:19:49Z
 url: https://github.com/astral-sh/ruff/issues/11932
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [feature request] Please add an option to pyproject.toml to optionally use the external 'ruff' executable
 
 ---
 
-_Issue opened by @yurivict on 2024-06-19 02:02_
+_@yurivict_
 
 Our use case:
 We have both devel/ruff and devel/py-ruff ports on FreeBSD.

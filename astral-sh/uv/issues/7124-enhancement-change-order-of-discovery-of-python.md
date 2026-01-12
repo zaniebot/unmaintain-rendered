@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-06T11:51:06Z
 updated_at: 2024-11-07T20:29:57Z
 url: https://github.com/astral-sh/uv/issues/7124
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Enhancement: Change order of discovery of python environments for `uv pip install` 
 
 ---
 
-_Issue opened by @kdheepak on 2024-09-06 11:51_
+_@kdheepak_
 
 From https://docs.astral.sh/uv/pip/environments/#discovery-of-python-environments
 

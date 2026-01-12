@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-31T17:03:31Z
 updated_at: 2024-11-16T18:32:21Z
 url: https://github.com/astral-sh/ruff/issues/13184
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `pydoclint` diagnostics should target docstrings instead of the first undocumented return, yield, or exception
 
 ---
 
-_Issue opened by @tjkuson on 2024-08-31 17:03_
+_@tjkuson_
 
 Please consider changing the diagnostic target of the `pydoclint` rules in Ruff. I think the docstring itself should be the target instead.
 

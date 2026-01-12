@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-20T22:35:44Z
 updated_at: 2022-11-20T23:43:21Z
 url: https://github.com/astral-sh/ruff/issues/840
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # N807 should account for PEP 562
 
 ---
 
-_Issue opened by @ofek on 2022-11-20 22:35_
+_@ofek_
 
 `__getattr__` / `__dir__` - https://peps.python.org/pep-0562/
 

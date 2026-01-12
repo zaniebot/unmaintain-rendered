@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-28T08:23:27Z
 updated_at: 2024-02-28T06:29:45Z
 url: https://github.com/astral-sh/ruff/issues/6934
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # new rule - useless `super()`
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-28 08:23_
+_@DetachHead_
 
 ```py
 class Foo:

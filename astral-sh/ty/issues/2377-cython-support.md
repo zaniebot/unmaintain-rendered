@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-07T15:44:08Z
 updated_at: 2026-01-12T10:39:20Z
 url: https://github.com/astral-sh/ty/issues/2377
-synced_at: 2026-01-12T11:01:03Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Cython support
 
 ---
 
-_Issue opened by @sr0lle on 2026-01-07 15:44_
+_@sr0lle_
 
 Just like [the related issue in the ruff repo](https://github.com/astral-sh/ruff/issues/10250), I wanted to ask if you all would consider adding support for [Cython](https://github.com/cython/cython). Writing Cython is a common way for Python developers to write high performance code that compares to C speeds by typing the code properly, without the need to write in two languages like similar projects C++ & nanbind/pybind or Rust & pyo3.
 

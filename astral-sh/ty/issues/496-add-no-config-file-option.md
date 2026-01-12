@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-23T13:26:02Z
 updated_at: 2025-06-05T04:58:52Z
 url: https://github.com/astral-sh/ty/issues/496
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Add `--no-config-file` option
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-23 13:26_
+_@MichaReiser_
 
 Similar to uv's `--no-config-file` option
 

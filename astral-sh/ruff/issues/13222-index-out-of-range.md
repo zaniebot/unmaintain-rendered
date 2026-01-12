@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-03T04:06:48Z
 updated_at: 2024-09-03T04:57:02Z
 url: https://github.com/astral-sh/ruff/issues/13222
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # index out of range
 
 ---
 
-_Issue opened by @mmbart on 2024-09-03 04:06_
+_@mmbart_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

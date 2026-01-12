@@ -13,14 +13,14 @@ head: charlie/split
 created_at: 2023-10-04T19:28:14Z
 updated_at: 2023-10-04T19:46:24Z
 url: https://github.com/astral-sh/ruff/pull/7820
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Split up `ast_if.rs` into distinct rule files
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-04 19:28_
+_@charliermarsh_
 
 These node-centric rule files are too hard to navigate. Better to have a single file per rule as we do elsewhere.
 

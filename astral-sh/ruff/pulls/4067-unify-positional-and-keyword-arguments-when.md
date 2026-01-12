@@ -14,14 +14,14 @@ head: 4047_docs_kwargs
 created_at: 2023-04-22T22:09:44Z
 updated_at: 2023-06-15T21:15:54Z
 url: https://github.com/astral-sh/ruff/pull/4067
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Unify positional and keyword arguments when checking for missing arguments in docstring
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-04-22 22:09_
+_@evanrittenhouse_
 
 Fixes #4047. 
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-27T23:04:13Z
 updated_at: 2025-04-02T07:25:47Z
 url: https://github.com/astral-sh/ruff/issues/17028
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `unconventional-import-alias (ICN001)`: Add `import numpy.typing as npt` to default `lint.flake8-import-conventions.aliases`
 
 ---
 
-_Issue opened by @Avasam on 2025-03-27 23:04_
+_@Avasam_
 
 ### Summary
 

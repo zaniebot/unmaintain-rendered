@@ -11,14 +11,14 @@ head: yorickvp/exclude-newer-unavailable
 created_at: 2024-04-19T14:25:32Z
 updated_at: 2024-04-22T18:12:58Z
 url: https://github.com/astral-sh/uv/pull/3140
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:27Z
 ```
 
 # Change exclude-newer behavior to include indexes missing upload-time
 
 ---
 
-_Pull request opened by @yorickvP on 2024-04-19 14:25_
+_@yorickvP_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-13T21:24:21Z
 updated_at: 2024-11-07T10:27:37Z
 url: https://github.com/astral-sh/uv/issues/8161
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # Cannot install JupyterLab
 
 ---
 
-_Issue opened by @pollow on 2024-10-13 21:24_
+_@pollow_
 
 I am having trouble setting up the a JupyterLab environment. I would expect to simply `uv add jupyterlab` and it will set up the dependencies and ready to run, which is my expectation of a package management.
 

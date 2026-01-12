@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-07T18:16:10Z
 updated_at: 2025-01-07T19:03:08Z
 url: https://github.com/astral-sh/ruff/issues/15323
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # needless bool for needless-bool
 
 ---
 
-_Issue opened by @nickdrozd on 2025-01-07 18:16_
+_@nickdrozd_
 
 Function to check random numbers:
 

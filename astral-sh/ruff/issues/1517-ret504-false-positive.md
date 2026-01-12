@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-31T18:59:08Z
 updated_at: 2022-12-31T23:04:13Z
 url: https://github.com/astral-sh/ruff/issues/1517
-synced_at: 2026-01-10T12:05:30Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # RET504 - false positive
 
 ---
 
-_Issue opened by @Czaki on 2022-12-31 18:59_
+_@Czaki_
 
 I have checked that same problem also occurs in `flake8-return` so it is not a bug in logic translation, but definitely there is a problem with this rule. I also see #1035 with similar problems related to this plugin/set of rules.  
 

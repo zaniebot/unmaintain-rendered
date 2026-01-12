@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-13T17:56:53Z
 updated_at: 2024-05-15T00:02:35Z
 url: https://github.com/astral-sh/ruff/issues/10391
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Add fix to re-export unused first-party imports in `__init__.py` files
 
 ---
 
-_Issue opened by @zanieb on 2024-03-13 17:56_
+_@zanieb_
 
 See https://github.com/astral-sh/ruff/issues/10365#issuecomment-1995132836 and #10390 
 

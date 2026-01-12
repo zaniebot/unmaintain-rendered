@@ -14,14 +14,14 @@ head: charlie/class-x
 created_at: 2026-01-04T23:14:59Z
 updated_at: 2026-01-10T13:45:46Z
 url: https://github.com/astral-sh/ruff/pull/22378
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Support `dataclass_transform` as a function call
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-04 23:14_
+_@charliermarsh_
 
 ## Summary
 

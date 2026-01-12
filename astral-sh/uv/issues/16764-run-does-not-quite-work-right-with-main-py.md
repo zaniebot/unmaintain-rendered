@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-17T22:21:32Z
 updated_at: 2025-12-03T18:01:52Z
 url: https://github.com/astral-sh/uv/issues/16764
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # run does not quite work right with __main__.py
 
 ---
 
-_Issue opened by @larkost on 2025-11-17 22:21_
+_@larkost_
 
 ### Summary
 

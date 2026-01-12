@@ -14,14 +14,14 @@ head: micha/salsa-cycle-lock
 created_at: 2025-12-30T17:08:10Z
 updated_at: 2026-01-05T12:35:33Z
 url: https://github.com/astral-sh/ruff/pull/22304
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:46Z
 ```
 
 # Test impact of https://github.com/salsa-rs/salsa/pull/1050
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-30 17:08_
+_@MichaReiser_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/cachedir
 created_at: 2024-02-18T15:31:32Z
 updated_at: 2024-02-18T18:32:12Z
 url: https://github.com/astral-sh/uv/pull/1653
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # Add `CACHEDIR.TAG` to uv-created virtualenvs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-18 15:31_
+_@charliermarsh_
 
 ## Summary
 

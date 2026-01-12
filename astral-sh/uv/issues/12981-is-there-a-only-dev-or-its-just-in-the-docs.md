@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-19T11:12:14Z
 updated_at: 2025-05-10T20:45:29Z
 url: https://github.com/astral-sh/uv/issues/12981
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # Is there a `--only-dev` or its just in the docs?
 
 ---
 
-_Issue opened by @alexey-pelykh on 2025-04-19 11:12_
+_@alexey-pelykh_
 
 https://github.com/astral-sh/uv/blob/e9e4ad4d7d96a80bc20ad2efaa9aaab646414171/docs/concepts/projects/dependencies.md?plain=1#L633
 

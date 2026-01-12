@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-25T17:53:01Z
 updated_at: 2025-08-16T22:10:22Z
 url: https://github.com/astral-sh/uv/issues/10962
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Retrieving metadata for installed packages
 
 ---
 
-_Issue opened by @tjni on 2025-01-25 17:53_
+_@tjni_
 
 ### Summary
 

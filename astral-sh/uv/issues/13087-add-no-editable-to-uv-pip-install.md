@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-24T12:52:51Z
 updated_at: 2025-08-22T19:49:09Z
 url: https://github.com/astral-sh/uv/issues/13087
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # Add `--no-editable` to `uv pip install`
 
 ---
 
-_Issue opened by @kkpattern on 2025-04-24 12:52_
+_@kkpattern_
 
 ### Summary
 

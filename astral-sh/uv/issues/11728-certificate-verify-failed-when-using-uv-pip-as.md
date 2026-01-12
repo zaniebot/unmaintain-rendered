@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-23T21:10:43Z
 updated_at: 2025-02-25T10:34:56Z
 url: https://github.com/astral-sh/uv/issues/11728
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # certificate verify failed when using uv pip as opposed to pip
 
 ---
 
-_Issue opened by @KennethEnevoldsen on 2025-02-23 21:10_
+_@KennethEnevoldsen_
 
 ### Question
 

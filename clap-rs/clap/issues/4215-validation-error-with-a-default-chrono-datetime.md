@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-14T20:49:03Z
 updated_at: 2022-09-14T21:18:24Z
 url: https://github.com/clap-rs/clap/issues/4215
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Validation error with a default `chrono::DateTime` and custom parser function
 
 ---
 
-_Issue opened by @affanshahid on 2022-09-14 20:49_
+_@affanshahid_
 
 ### Please complete the following tasks
 

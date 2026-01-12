@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-26T15:08:58Z
 updated_at: 2025-04-15T13:24:09Z
 url: https://github.com/astral-sh/ruff/issues/16399
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Sorting imports with aliases expands to multiple lines (using ruff --select I)
 
 ---
 
-_Issue opened by @timotk on 2025-02-26 15:08_
+_@timotk_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-01T14:01:33Z
 updated_at: 2023-11-07T16:33:42Z
 url: https://github.com/astral-sh/ruff/issues/8404
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Usage of extend-unsafe-fixes = ["ALL"] option
 
 ---
 
-_Issue opened by @lukaspiatkowski on 2023-11-01 14:01_
+_@lukaspiatkowski_
 
 This is more of a feature request than a bug. I would like to configure Ruff in a manner that I can apply different set of fixes depending on the context when it is invoked.
 Some fixes that ruff has are considered to be "safe" since they don't change the semantic of the code, but they might indicate a typo or a mistake done by the author of code, e.g. the `B033 - Sets should not contain duplicate item {value}` might just mean that the author mistyped the value they wanted to the set. For those set of rules I would like them to require a manual call to `ruff`. Lets call them "manual" fixes for now.

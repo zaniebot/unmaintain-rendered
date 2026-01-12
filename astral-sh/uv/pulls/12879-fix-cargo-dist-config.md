@@ -13,14 +13,14 @@ head: gankra/dist-fix
 created_at: 2025-04-14T13:43:59Z
 updated_at: 2025-04-14T14:56:24Z
 url: https://github.com/astral-sh/uv/pull/12879
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:25Z
 ```
 
 # fix cargo-dist config
 
 ---
 
-_Pull request opened by @Gankra on 2025-04-14 13:43_
+_@Gankra_
 
 This is a followup from #12865, which broke cargo dist plan.
 

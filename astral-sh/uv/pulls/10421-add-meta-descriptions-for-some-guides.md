@@ -13,14 +13,14 @@ head: charlie/meta
 created_at: 2025-01-09T01:21:29Z
 updated_at: 2025-01-09T15:50:17Z
 url: https://github.com/astral-sh/uv/pull/10421
-synced_at: 2026-01-10T11:44:48Z
+synced_at: 2026-01-12T16:09:17Z
 ```
 
 # Add meta descriptions for some guides
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-09 01:21_
+_@charliermarsh_
 
 ## Summary
 

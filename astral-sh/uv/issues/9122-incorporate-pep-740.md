@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-14T16:30:50Z
 updated_at: 2025-07-29T22:29:07Z
 url: https://github.com/astral-sh/uv/issues/9122
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # Incorporate PEP 740
 
 ---
 
-_Issue opened by @alex on 2024-11-14 16:30_
+_@alex_
 
 These are now available on PyPI: https://blog.pypi.org/posts/2024-11-14-pypi-now-supports-digital-attestations/
 

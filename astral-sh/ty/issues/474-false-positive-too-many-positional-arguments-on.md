@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T17:29:57Z
 updated_at: 2025-05-30T01:07:14Z
 url: https://github.com/astral-sh/ty/issues/474
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # False positive too-many-positional-arguments on Protocols with ParamSpec for Python >= 3.12
 
 ---
 
-_Issue opened by @IbarraSamuel on 2025-05-21 17:29_
+_@IbarraSamuel_
 
 ### Summary
 

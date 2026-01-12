@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-16T22:18:42Z
 updated_at: 2025-12-17T19:34:35Z
 url: https://github.com/astral-sh/ty/issues/1960
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Release version of extension does not install in Cursor
 
 ---
 
-_Issue opened by @jdarpinian on 2025-12-16 22:18_
+_@jdarpinian_
 
 ### Summary
 

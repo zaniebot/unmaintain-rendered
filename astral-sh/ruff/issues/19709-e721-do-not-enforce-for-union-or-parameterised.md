@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-03T04:37:18Z
 updated_at: 2025-08-03T04:49:21Z
 url: https://github.com/astral-sh/ruff/issues/19709
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # E721: do not enforce for union or parameterised generics
 
 ---
 
-_Issue opened by @jakewilliami on 2025-08-03 04:37_
+_@jakewilliami_
 
 ### Summary
 

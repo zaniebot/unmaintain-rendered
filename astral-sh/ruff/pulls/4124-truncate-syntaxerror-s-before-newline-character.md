@@ -12,14 +12,14 @@ head: fix-multiline-syntax-errors
 created_at: 2023-04-26T21:46:56Z
 updated_at: 2023-05-10T06:37:58Z
 url: https://github.com/astral-sh/ruff/pull/4124
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Truncate `SyntaxError`s before newline character
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-26 21:46_
+_@MichaReiser_
 
 Fixes #3520
 

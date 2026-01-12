@@ -14,14 +14,14 @@ head: konsti/build-backend-docs
 created_at: 2025-04-10T10:40:26Z
 updated_at: 2025-04-21T11:45:29Z
 url: https://github.com/astral-sh/uv/pull/12803
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:23Z
 ```
 
 # Build backend: Add reference docs and schema
 
 ---
 
-_Pull request opened by @konstin on 2025-04-10 10:40_
+_@konstin_
 
 Add reference documentation and schema integration for the uv build backend. The reference documentation comes with a preview note upfront.
 

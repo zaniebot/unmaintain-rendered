@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T20:16:56Z
 updated_at: 2024-10-17T21:13:14Z
 url: https://github.com/astral-sh/uv/issues/8305
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # macos with asdf python: uv pip install --system does not install any scripts
 
 ---
 
-_Issue opened by @ssbarnea on 2024-10-17 20:16_
+_@ssbarnea_
 
 It seems that on macos when using python installed with asdf, when you try to install packages using `--system` option, it will install them but it will silently not try to create the scripts (executables) for them at all. Even running with verbose mode it does not show any attempts to create the scripts. Thus the only workaround for this is to attempt to call these as python modules and hope that they all allow to be called like this.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-22T13:30:09Z
 updated_at: 2024-07-22T19:57:54Z
 url: https://github.com/astral-sh/uv/issues/5285
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Resolution depends on empty extra
 
 ---
 
-_Issue opened by @konstin on 2024-07-22 13:30_
+_@konstin_
 
 On linux with with uv 0.2.27, the resolution of the pyproject.toml below depends on whether `onnx = []` is present. The resolution should be robust to adding or removing empty extras, even more the resolution should not care about empty extras at all.
 

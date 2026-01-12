@@ -12,14 +12,14 @@ head: add-PLR5601
 created_at: 2024-02-23T17:29:35Z
 updated_at: 2024-03-28T16:35:59Z
 url: https://github.com/astral-sh/ruff/pull/10103
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Add rule PLR5601
 
 ---
 
-_Pull request opened by @tibor-reiss on 2024-02-23 17:29_
+_@tibor-reiss_
 
 Add rule [confusing-consecutive-elif (PLR5601)](https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/confusing-consecutive-elif.html)
 

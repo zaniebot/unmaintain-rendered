@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-10T16:36:13Z
 updated_at: 2023-10-10T20:11:15Z
 url: https://github.com/astral-sh/ruff/issues/7899
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Unable to parse '.ruff.toml' when configured for Ruff linter
 
 ---
 
-_Issue opened by @echoix on 2023-10-10 16:36_
+_@echoix_
 
 **Describe the bug**
 A clear and concise description of what the bug is.

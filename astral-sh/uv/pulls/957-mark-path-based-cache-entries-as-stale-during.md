@@ -13,14 +13,14 @@ head: charlie/timestamp
 created_at: 2024-01-18T04:08:33Z
 updated_at: 2024-01-18T19:13:31Z
 url: https://github.com/astral-sh/uv/pull/957
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:19Z
 ```
 
 # Mark path-based cache entries as stale during install plan
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-18 04:08_
+_@charliermarsh_
 
 ## Summary
 

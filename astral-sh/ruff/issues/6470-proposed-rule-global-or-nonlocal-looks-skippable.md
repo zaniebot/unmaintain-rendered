@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-10T05:54:01Z
 updated_at: 2023-08-10T12:52:51Z
 url: https://github.com/astral-sh/ruff/issues/6470
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Proposed rule: `global` or `nonlocal` looks skippable but applies to the whole function
 
 ---
 
-_Issue opened by @andersk on 2023-08-10 05:54_
+_@andersk_
 
 In this example, the `global` declaration is misleading, because Python actually applies it to the whole function, not just the `if` branch it’s inside.
 

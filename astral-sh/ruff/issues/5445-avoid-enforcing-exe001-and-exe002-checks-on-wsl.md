@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-06-29T18:07:40Z
 updated_at: 2023-07-13T11:36:09Z
 url: https://github.com/astral-sh/ruff/issues/5445
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Avoid enforcing EXE001 and EXE002 checks on WSL + Windows *file systems*
 
 ---
 
-_Issue opened by @bersbersbers on 2023-06-29 18:07_
+_@bersbersbers_
 
 This is a follow-up to https://github.com/astral-sh/ruff/issues/3110, and I am not sure it is valid, but I wanted to at least bring it up.
 

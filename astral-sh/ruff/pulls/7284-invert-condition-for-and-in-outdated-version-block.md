@@ -13,14 +13,14 @@ head: charlie/UP036
 created_at: 2023-09-11T22:51:02Z
 updated_at: 2023-09-11T23:10:38Z
 url: https://github.com/astral-sh/ruff/pull/7284
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Invert condition for < and <= in outdated version block
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-11 22:51_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7258.
 

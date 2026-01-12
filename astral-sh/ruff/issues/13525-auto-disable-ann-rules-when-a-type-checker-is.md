@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-26T13:47:26Z
 updated_at: 2024-09-26T16:08:34Z
 url: https://github.com/astral-sh/ruff/issues/13525
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Auto-disable ANN rules when a type-checker is detected
 
 ---
 
-_Issue opened by @paduszyk on 2024-09-26 13:47_
+_@paduszyk_
 
 Ruff is a great linter and formatter, we all don't have any doubts 👍🏼 Thank you guys for maintaining this project!
 

@@ -13,14 +13,14 @@ head: charlie/bracketed
 created_at: 2023-08-12T02:00:05Z
 updated_at: 2023-08-14T13:52:21Z
 url: https://github.com/astral-sh/ruff/pull/6517
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Avoid marking inner-parenthesized comments as dangling bracket comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-12 02:00_
+_@charliermarsh_
 
 ## Summary
 

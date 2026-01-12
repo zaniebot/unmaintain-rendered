@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-10T16:53:19Z
 updated_at: 2025-07-22T23:42:12Z
 url: https://github.com/astral-sh/ty/issues/311
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Type of `global` variable is not narrowed in function scopes
 
 ---
 
-_Issue opened by @ion-elgreco on 2025-05-10 16:53_
+_@ion-elgreco_
 
 ### Summary
 

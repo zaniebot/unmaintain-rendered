@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-21T09:03:19Z
 updated_at: 2024-11-10T23:23:25Z
 url: https://github.com/astral-sh/ruff/issues/10505
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Add new rule to prevent nested list footgun
 
 ---
 
-_Issue opened by @qexat on 2024-03-21 09:03_
+_@qexat_
 
 Hello.
 

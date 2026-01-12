@@ -14,14 +14,14 @@ head: brent/fix-pyi059-syntax-error
 created_at: 2025-06-10T14:30:18Z
 updated_at: 2025-06-10T16:27:08Z
 url: https://github.com/astral-sh/ruff/pull/18611
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # [`flake8-pyi`] Avoid syntax error in the case of starred and keyword arguments (`PYI059`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-10 14:30_
+_@ntBre_
 
 ## Summary
 

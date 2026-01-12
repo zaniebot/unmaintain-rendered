@@ -12,14 +12,14 @@ head: zb/metadata-deps
 created_at: 2025-11-07T18:00:05Z
 updated_at: 2025-12-06T13:50:58Z
 url: https://github.com/astral-sh/uv/pull/16638
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:21Z
 ```
 
 # Show workspace dependencies in `uv workspace metadata`
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-07 18:00_
+_@zanieb_
 
 _No description provided._
 

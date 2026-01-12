@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-16T10:30:31Z
 updated_at: 2025-04-27T07:24:11Z
 url: https://github.com/astral-sh/ruff/issues/17423
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Allow to define comments (or arbitrary code) that act as barriers for code changes
 
 ---
 
-_Issue opened by @vnmabus on 2025-04-16 10:30_
+_@vnmabus_
 
 Some comments, like `sphinx_gallery_start_ignore` and `sphinx_gallery_end_ignore` design separate code "areas". It is in general incorrect to move code across these areas, as the semantics will change (in particular, code in between will not appear in the generated documentation).
 

@@ -12,14 +12,14 @@ head: doc_fix_safety_for_string_in_exception
 created_at: 2025-04-20T11:42:06Z
 updated_at: 2025-04-22T19:34:17Z
 url: https://github.com/astral-sh/ruff/pull/17493
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`flake8-errmsg`] Add fix safety section to docs (`EM101`, `EM102`, `EM103`) 
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-20 11:42_
+_@Kalmaegi_
 
 ## Summary
 

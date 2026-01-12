@@ -12,14 +12,14 @@ head: feat/d401-improvements
 created_at: 2023-01-21T21:24:26Z
 updated_at: 2023-01-23T08:11:25Z
 url: https://github.com/astral-sh/ruff/pull/2071
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # fix: issue D401 only for non-test/property functions and methods
 
 ---
 
-_Pull request opened by @scop on 2023-01-21 21:24_
+_@scop_
 
 Extend test fixture to verify the targeting.
 

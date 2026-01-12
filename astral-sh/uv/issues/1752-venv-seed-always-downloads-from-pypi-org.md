@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T14:09:39Z
 updated_at: 2024-02-21T06:24:47Z
 url: https://github.com/astral-sh/uv/issues/1752
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # venv --seed always downloads from pypi.org
 
 ---
 
-_Issue opened by @oriori1703 on 2024-02-20 14:09_
+_@oriori1703_
 
 When trying to create a seeded venv, uv still tries to download the packages from pypi.org.
 For example when blocking pypi.org in my dns and running `uv venv --seed --index-url https://mypypi.com/simple` the output is:

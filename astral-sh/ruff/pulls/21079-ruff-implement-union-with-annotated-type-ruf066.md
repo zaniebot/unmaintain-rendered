@@ -13,14 +13,14 @@ head: RUF066-implement
 created_at: 2025-10-26T03:52:10Z
 updated_at: 2025-12-16T16:43:46Z
 url: https://github.com/astral-sh/ruff/pull/21079
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [ruff] Implement union-with-annotated-type (RUF066)
 
 ---
 
-_Pull request opened by @wilt00 on 2025-10-26 03:52_
+_@wilt00_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

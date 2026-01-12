@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-10T08:38:14Z
 updated_at: 2024-12-14T13:26:56Z
 url: https://github.com/astral-sh/uv/issues/4958
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `uv sync` fails to find matching python version with pyenv
 
 ---
 
-_Issue opened by @konstin on 2024-07-10 08:38_
+_@konstin_
 
 When using `uv sync`, uv fails to find a python interpreter even if it exists if the default `python`/`python3` are incompatible. This happens e.g. with pyenv.
 

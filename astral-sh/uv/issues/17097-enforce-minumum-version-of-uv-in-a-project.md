@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-12T11:03:27Z
 updated_at: 2025-12-12T14:16:42Z
 url: https://github.com/astral-sh/uv/issues/17097
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Enforce minumum version of uv in a project
 
 ---
 
-_Issue opened by @jaseemabid on 2025-12-12 11:03_
+_@jaseemabid_
 
 ### Summary
 

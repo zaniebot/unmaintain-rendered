@@ -14,14 +14,14 @@ head: zanie/rooster
 created_at: 2023-11-08T17:02:46Z
 updated_at: 2023-11-08T19:08:20Z
 url: https://github.com/astral-sh/ruff/pull/8567
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add `rooster` release management configuration and instructions
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-08 17:02_
+_@zanieb_
 
 I'd rather not be the only one who can easily generate our changelog entries so I invested some time to get Rooster a bit further along and add instructions.
 

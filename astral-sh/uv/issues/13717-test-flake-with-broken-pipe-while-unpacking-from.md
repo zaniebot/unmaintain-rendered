@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-29T13:24:19Z
 updated_at: 2025-05-30T21:16:48Z
 url: https://github.com/astral-sh/uv/issues/13717
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # Test flake with broken pipe while unpacking from `ecosystem-test-caches`
 
 ---
 
-_Issue opened by @zanieb on 2025-05-29 13:24_
+_@zanieb_
 
 ```
 

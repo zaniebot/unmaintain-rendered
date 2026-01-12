@@ -12,14 +12,14 @@ head: ag/lock-dependency-trim
 created_at: 2024-06-25T13:01:09Z
 updated_at: 2024-06-26T12:18:24Z
 url: https://github.com/astral-sh/uv/pull/4513
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # remove `source` and `version` from dependencies in lock file when unambiguous
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-06-25 13:01_
+_@BurntSushi_
 
 When there is only one distribution for a particular package name, any
 dependencies (the edges in the resolution graph) that reference that

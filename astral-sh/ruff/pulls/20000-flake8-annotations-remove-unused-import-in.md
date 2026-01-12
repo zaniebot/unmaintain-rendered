@@ -13,14 +13,14 @@ head: fix-description
 created_at: 2025-08-20T09:51:02Z
 updated_at: 2025-08-20T13:19:18Z
 url: https://github.com/astral-sh/ruff/pull/20000
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [`flake8-annotations`] Remove unused import in example (`ANN401`)
 
 ---
 
-_Pull request opened by @Cjkjvfnby on 2025-08-20 09:51_
+_@Cjkjvfnby_
 
 ## Summary
 

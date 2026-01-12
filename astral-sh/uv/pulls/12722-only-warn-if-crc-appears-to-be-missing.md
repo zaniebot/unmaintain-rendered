@@ -13,14 +13,14 @@ head: gankra/crc2
 created_at: 2025-04-07T17:25:45Z
 updated_at: 2025-04-07T17:49:07Z
 url: https://github.com/astral-sh/uv/pull/12722
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:21Z
 ```
 
 # only warn if CRC appears to be missing
 
 ---
 
-_Pull request opened by @Gankra on 2025-04-07 17:25_
+_@Gankra_
 
 an alternative to #12706 
 

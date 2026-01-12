@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-01T08:37:12Z
 updated_at: 2025-03-06T07:20:07Z
 url: https://github.com/astral-sh/ruff/issues/11228
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Global indent width setting
 
 ---
 
-_Issue opened by @ipeglin on 2024-05-01 08:37_
+_@ipeglin_
 
 I would very much like to see a global VSCode extension setting for indent width, that omits the need for a `ruff.toml` or `pyproject.toml`. I personally prefer a different indent size than 4, and it seems really unnecessary to constantly create a local configuration file for such a small change in the config.
 

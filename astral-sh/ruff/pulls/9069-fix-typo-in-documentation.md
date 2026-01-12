@@ -13,14 +13,14 @@ head: its_is
 created_at: 2023-12-09T16:00:45Z
 updated_at: 2023-12-09T16:16:46Z
 url: https://github.com/astral-sh/ruff/pull/9069
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Fix typo in documentation
 
 ---
 
-_Pull request opened by @DimitriPapadopoulos on 2023-12-09 16:00_
+_@DimitriPapadopoulos_
 
 ## Summary
 

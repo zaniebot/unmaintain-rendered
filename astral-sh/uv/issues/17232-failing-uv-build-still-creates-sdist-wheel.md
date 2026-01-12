@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-23T23:13:09Z
 updated_at: 2026-01-06T14:27:06Z
 url: https://github.com/astral-sh/uv/issues/17232
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:46Z
 ```
 
 # Failing `uv build` still creates sdist/wheel
 
 ---
 
-_Issue opened by @mkniewallner on 2025-12-23 23:13_
+_@mkniewallner_
 
 ### Summary
 

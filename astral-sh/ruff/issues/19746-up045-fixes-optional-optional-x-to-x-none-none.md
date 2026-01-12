@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-04T18:11:18Z
 updated_at: 2025-08-19T22:12:16Z
 url: https://github.com/astral-sh/ruff/issues/19746
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # UP045 fixes Optional[Optional[x]] to x | None | None
 
 ---
 
-_Issue opened by @johncassil on 2025-08-04 18:11_
+_@johncassil_
 
 ### Summary
 

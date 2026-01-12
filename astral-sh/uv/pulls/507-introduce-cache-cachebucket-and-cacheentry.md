@@ -13,14 +13,14 @@ head: cache_abstraction_
 created_at: 2023-11-28T13:41:19Z
 updated_at: 2023-11-28T17:12:50Z
 url: https://github.com/astral-sh/uv/pull/507
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:59Z
 ```
 
 # Introduce `Cache`, `CacheBucket` and `CacheEntry`
 
 ---
 
-_Pull request opened by @konstin on 2023-11-28 13:41_
+_@konstin_
 
 This is mostly a mechanical refactor that moves 80% of our code to the same cache abstraction.
 

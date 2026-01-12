@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T21:33:02Z
 updated_at: 2024-11-08T22:17:57Z
 url: https://github.com/astral-sh/ruff/issues/14141
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] consolidate detection of cyclic class definitions
 
 ---
 
-_Issue opened by @carljm on 2024-11-06 21:33_
+_@carljm_
 
 Currently both MRO resolution and metaclass resolution separately detect cycles, but we emit the diagnostic only from MRO resolution and ignore it from metaclass resolution. This is inefficient both in code to maintain and runtime cost.
 

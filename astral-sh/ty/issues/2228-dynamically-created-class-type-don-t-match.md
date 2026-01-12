@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-26T14:58:29Z
 updated_at: 2025-12-26T17:03:24Z
 url: https://github.com/astral-sh/ty/issues/2228
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Dynamically created class type don't match against parent class
 
 ---
 
-_Issue opened by @condemil on 2025-12-26 14:58_
+_@condemil_
 
 ### Summary
 

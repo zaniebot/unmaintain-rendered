@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-11-14T14:25:56Z
 updated_at: 2018-08-02T03:29:46Z
 url: https://github.com/clap-rs/clap/issues/345
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Compilation error in errors.rs
 
 ---
 
-_Issue opened by @ennis on 2015-11-14 14:25_
+_@ennis_
 
 I get these errors when trying to compile using the latest nightly rustc:
 

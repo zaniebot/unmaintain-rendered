@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-11T07:54:54Z
 updated_at: 2025-01-11T10:12:13Z
 url: https://github.com/astral-sh/ruff/issues/15416
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # UP045 rule don't respect target-version after upgrage to 0.9.1 from 0.8.5
 
 ---
 
-_Issue opened by @57an on 2025-01-11 07:54_
+_@57an_
 
 I've upgraded from 0.8.5 to 0.9.1.
 When check python 3.8 code with pyproject.toml field tool.ruff.target-version = 'py38' now shows invalid errors from UP045:

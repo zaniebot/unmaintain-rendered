@@ -12,14 +12,14 @@ head: pd-read-table
 created_at: 2023-07-16T14:17:02Z
 updated_at: 2023-07-17T09:39:18Z
 url: https://github.com/astral-sh/ruff/pull/5807
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Change `pandas-use-of-dot-read-table` rule to emit only when `read_table` is used on CSV data
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-16 14:17_
+_@tjkuson_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: cjm/unionlimit2
 created_at: 2025-04-16T02:56:15Z
 updated_at: 2025-04-16T15:39:34Z
 url: https://github.com/astral-sh/ruff/pull/17419
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] set a size limit on unions of literals
 
 ---
 
-_Pull request opened by @carljm on 2025-04-16 02:56_
+_@carljm_
 
 ## Summary
 

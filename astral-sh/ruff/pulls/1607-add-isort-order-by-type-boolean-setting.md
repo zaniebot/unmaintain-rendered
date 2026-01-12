@@ -12,14 +12,14 @@ head: isort/order-by-type
 created_at: 2023-01-03T22:08:39Z
 updated_at: 2023-01-03T23:08:03Z
 url: https://github.com/astral-sh/ruff/pull/1607
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add isort.order-by-type boolean setting
 
 ---
 
-_Pull request opened by @mattoberle on 2023-01-03 22:08_
+_@mattoberle_
 
 The default `isort` behavior is `order-by-type = true`. When imports are ordered by type:
 

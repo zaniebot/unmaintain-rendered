@@ -12,14 +12,14 @@ head: charlie/required-platforms
 created_at: 2024-12-19T01:23:34Z
 updated_at: 2024-12-20T19:14:26Z
 url: https://github.com/astral-sh/uv/pull/10017
-synced_at: 2026-01-10T11:44:31Z
+synced_at: 2026-01-12T16:09:05Z
 ```
 
 # Denote required platforms in `[tool.uv]` metadata
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-19 01:23_
+_@charliermarsh_
 
 ## Summary
 

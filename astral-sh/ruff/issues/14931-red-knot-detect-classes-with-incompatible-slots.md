@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-12T11:02:16Z
 updated_at: 2024-12-27T11:43:50Z
 url: https://github.com/astral-sh/ruff/issues/14931
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Detect classes with incompatible `__slots__` being used in multiple inheritance
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-12-12 11:02_
+_@AlexWaygood_
 
 This isn't necessarily a priority for red-knot, but it's something that we'll want to do at some point and it could be easily done now.
 

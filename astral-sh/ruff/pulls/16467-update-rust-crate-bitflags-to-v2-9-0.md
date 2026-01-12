@@ -13,14 +13,14 @@ head: renovate/bitflags-2.x-lockfile
 created_at: 2025-03-03T03:20:41Z
 updated_at: 2025-03-03T07:12:00Z
 url: https://github.com/astral-sh/ruff/pull/16467
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Update Rust crate bitflags to v2.9.0
 
 ---
 
-_Pull request opened by @renovate on 2025-03-03 03:20_
+_@renovate_
 
 This PR contains the following updates:
 

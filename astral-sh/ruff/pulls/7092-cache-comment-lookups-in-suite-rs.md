@@ -14,14 +14,14 @@ head: charlie/comments
 created_at: 2023-09-03T16:49:45Z
 updated_at: 2023-09-04T08:45:16Z
 url: https://github.com/astral-sh/ruff/pull/7092
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Cache comment lookups in `suite.rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-03 16:49_
+_@charliermarsh_
 
 ## Summary
 

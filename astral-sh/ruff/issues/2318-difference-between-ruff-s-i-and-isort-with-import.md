@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-29T02:37:37Z
 updated_at: 2023-01-29T18:08:21Z
 url: https://github.com/astral-sh/ruff/issues/2318
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Difference between Ruff's I and isort with import *
 
 ---
 
-_Issue opened by @gvangool on 2023-01-29 02:37_
+_@gvangool_
 
 There's a difference in the import ordering between isort and ruff when an `import *` is included.
 

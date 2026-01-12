@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T13:55:09Z
 updated_at: 2025-03-09T17:44:22Z
 url: https://github.com/astral-sh/uv/issues/12044
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # Script to convert Pipefile to pyproject.toml with uv tool sections
 
 ---
 
-_Issue opened by @andrader on 2025-03-07 13:55_
+_@andrader_
 
 ### Question
 

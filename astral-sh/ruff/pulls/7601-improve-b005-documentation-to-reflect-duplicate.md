@@ -13,14 +13,14 @@ head: charlie/B005
 created_at: 2023-09-22T15:59:30Z
 updated_at: 2023-09-22T16:18:31Z
 url: https://github.com/astral-sh/ruff/pull/7601
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Improve `B005` documentation to reflect duplicate-character behavior
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-22 15:59_
+_@charliermarsh_
 
 ## Summary
 

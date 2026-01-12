@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-04-01T03:51:23Z
 updated_at: 2021-04-01T04:05:45Z
 url: https://github.com/clap-rs/clap/issues/2429
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # "--version" Prints to standard output with `get_matches_safe()`
 
 ---
 
-_Issue opened by @gerard-ryan-immersaview on 2021-04-01 03:51_
+_@gerard-ryan-immersaview_
 
 ### Please complete the following tasks
 

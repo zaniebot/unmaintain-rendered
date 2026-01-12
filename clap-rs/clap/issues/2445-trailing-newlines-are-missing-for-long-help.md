@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-04-18T00:38:11Z
 updated_at: 2021-04-18T12:33:50Z
 url: https://github.com/clap-rs/clap/issues/2445
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Trailing newlines are missing for long_help output when term width is exceeded  
 
 ---
 
-_Issue opened by @nkaretnikov on 2021-04-18 00:38_
+_@nkaretnikov_
 
 ### Please complete the following tasks
 

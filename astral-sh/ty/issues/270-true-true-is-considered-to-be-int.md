@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T12:42:55Z
 updated_at: 2025-05-08T13:16:07Z
 url: https://github.com/astral-sh/ty/issues/270
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # `True & True` is considered to be `int`
 
 ---
 
-_Issue opened by @lancelote on 2025-05-08 12:42_
+_@lancelote_
 
 ### Summary
 

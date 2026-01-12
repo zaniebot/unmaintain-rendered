@@ -14,14 +14,14 @@ head: latyshev/furb180
 created_at: 2024-01-27T20:49:36Z
 updated_at: 2024-02-03T22:09:05Z
 url: https://github.com/astral-sh/ruff/pull/9658
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`refurb`] Implement `metaclass_abcmeta` (`FURB180`)
 
 ---
 
-_Pull request opened by @alex-700 on 2024-01-27 20:49_
+_@alex-700_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

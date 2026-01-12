@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T10:00:19Z
 updated_at: 2025-07-18T10:57:37Z
 url: https://github.com/astral-sh/uv/issues/14710
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # Python version control used by uv venv
 
 ---
 
-_Issue opened by @cwiede on 2025-07-18 10:00_
+_@cwiede_
 
 ### Question
 

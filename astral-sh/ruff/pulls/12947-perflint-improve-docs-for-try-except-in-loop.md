@@ -13,14 +13,14 @@ head: perf-docs
 created_at: 2024-08-17T12:24:51Z
 updated_at: 2024-08-17T15:49:55Z
 url: https://github.com/astral-sh/ruff/pull/12947
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [`perflint`] Improve docs for `try-except-in-loop` (`PERF203`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-17 12:24_
+_@AlexWaygood_
 
 Note that LBYL idioms are often a better remedy than moving the whole loop inside the `try` block, and qualify the language around "zero-cost" exceptions. Fixes #12805
 

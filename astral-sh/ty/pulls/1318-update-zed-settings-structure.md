@@ -13,14 +13,14 @@ head: zed-settings
 created_at: 2025-10-07T11:53:13Z
 updated_at: 2025-10-07T11:55:05Z
 url: https://github.com/astral-sh/ty/pull/1318
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Update Zed settings structure
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-07 11:53_
+_@MichaReiser_
 
 ## Summary
 

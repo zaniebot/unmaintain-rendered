@@ -12,14 +12,14 @@ head: charlie/super
 created_at: 2022-10-04T17:45:55Z
 updated_at: 2022-10-04T17:55:33Z
 url: https://github.com/astral-sh/ruff/pull/323
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Only flag super calls in class-function scopes
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-04 17:45_
+_@charliermarsh_
 
 Resolves #316.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T05:40:18Z
 updated_at: 2025-01-29T18:05:47Z
 url: https://github.com/astral-sh/ruff/issues/15780
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # UP035 recommends change that changes runtime behavior for is_typeddict
 
 ---
 
-_Issue opened by @SebbyLaw on 2025-01-28 05:40_
+_@SebbyLaw_
 
 ### Description
 

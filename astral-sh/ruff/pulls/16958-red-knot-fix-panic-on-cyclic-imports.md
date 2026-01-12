@@ -13,14 +13,14 @@ head: alex/star-import-cycles
 created_at: 2025-03-24T17:59:59Z
 updated_at: 2025-03-24T18:24:59Z
 url: https://github.com/astral-sh/ruff/pull/16958
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Fix panic on cyclic `*` imports
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-24 17:59_
+_@AlexWaygood_
 
 ## Summary
 

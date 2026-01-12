@@ -12,14 +12,14 @@ head: charlie/cow
 created_at: 2023-10-16T16:34:53Z
 updated_at: 2023-10-16T16:54:20Z
 url: https://github.com/astral-sh/ruff/pull/7986
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Use Cow in printf rewrite rule
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-16 16:34_
+_@charliermarsh_
 
 Small thing that bothered me when looking into the regex update.
 

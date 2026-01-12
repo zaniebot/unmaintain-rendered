@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T11:20:42Z
 updated_at: 2025-11-18T16:10:30Z
 url: https://github.com/astral-sh/ty/issues/622
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # option to ban Unknown and `Any`
 
 ---
 
-_Issue opened by @DetachHead on 2025-06-10 11:20_
+_@DetachHead_
 
 opening an issue for this because it was mentioned [here](https://github.com/astral-sh/ruff/blob/161446a47a7f49b1da96e2547acdb1f963d9af10/crates/ty_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md?plain=1#L24) and i couldn't find an existing issue for it:
 

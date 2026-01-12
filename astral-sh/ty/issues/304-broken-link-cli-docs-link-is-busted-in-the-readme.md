@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-10T06:29:48Z
 updated_at: 2025-05-10T10:26:33Z
 url: https://github.com/astral-sh/ty/issues/304
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # [broken link] CLI Docs link is busted in the README
 
 ---
 
-_Issue opened by @tmcclintock on 2025-05-10 06:29_
+_@tmcclintock_
 
 ### Summary
 

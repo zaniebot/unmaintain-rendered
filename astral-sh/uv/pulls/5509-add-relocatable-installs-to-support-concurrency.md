@@ -15,14 +15,14 @@ head: charlie/safe
 created_at: 2024-07-27T17:05:29Z
 updated_at: 2024-07-29T00:32:12Z
 url: https://github.com/astral-sh/uv/pull/5509
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:51Z
 ```
 
 # Add relocatable installs to support concurrency-safe cached environments
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-27 17:05_
+_@charliermarsh_
 
 ## Summary
 

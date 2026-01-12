@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-17T06:52:45Z
 updated_at: 2025-12-17T21:40:42Z
 url: https://github.com/astral-sh/ty/issues/1980
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Large match/case on enum causes slowdown (exhaustiveness checks?)
 
 ---
 
-_Issue opened by @indigoviolet on 2025-12-17 06:52_
+_@indigoviolet_
 
 ### Summary
 

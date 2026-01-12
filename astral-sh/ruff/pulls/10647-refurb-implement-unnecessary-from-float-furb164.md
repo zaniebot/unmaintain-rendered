@@ -14,14 +14,14 @@ head: verbose-decimal-fraction-construction
 created_at: 2024-03-28T14:07:02Z
 updated_at: 2024-03-30T11:04:02Z
 url: https://github.com/astral-sh/ruff/pull/10647
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`refurb`] Implement `unnecessary-from-float` (`FURB164`)
 
 ---
 
-_Pull request opened by @hikaru-kajita on 2024-03-28 14:07_
+_@hikaru-kajita_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: latyshev/furb122
 created_at: 2024-03-27T17:02:06Z
 updated_at: 2025-06-10T20:46:53Z
 url: https://github.com/astral-sh/ruff/pull/10630
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`refurb`] Implement `for-loop-writes` (`FURB122`)
 
 ---
 
-_Pull request opened by @alex-700 on 2024-03-27 17:02_
+_@alex-700_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

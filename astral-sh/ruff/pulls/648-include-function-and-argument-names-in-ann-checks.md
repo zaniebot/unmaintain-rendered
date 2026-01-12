@@ -12,14 +12,14 @@ head: charlie/ann
 created_at: 2022-11-07T20:26:55Z
 updated_at: 2022-11-07T20:27:04Z
 url: https://github.com/astral-sh/ruff/pull/648
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Include function and argument names in ANN checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-07 20:26_
+_@charliermarsh_
 
 Resolves #647.
 

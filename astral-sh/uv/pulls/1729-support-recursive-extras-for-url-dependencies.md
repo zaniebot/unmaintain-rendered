@@ -13,14 +13,14 @@ head: charlie/rec
 created_at: 2024-02-20T02:43:33Z
 updated_at: 2024-02-20T02:56:22Z
 url: https://github.com/astral-sh/uv/pull/1729
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:42Z
 ```
 
 # Support recursive extras for URL dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-20 02:43_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/1680.
 

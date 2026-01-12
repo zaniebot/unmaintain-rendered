@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-30T23:13:41Z
 updated_at: 2025-11-22T15:00:03Z
 url: https://github.com/astral-sh/uv/issues/11121
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # [feat]: Request for more output in stdout/stderr for non-interactive process
 
 ---
 
-_Issue opened by @robinjhuang on 2025-01-30 23:13_
+_@robinjhuang_
 
 ### Summary
 

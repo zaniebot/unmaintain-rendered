@@ -13,14 +13,14 @@ head: extract-line-index
 created_at: 2023-04-06T09:23:06Z
 updated_at: 2023-04-11T07:56:45Z
 url: https://github.com/astral-sh/ruff/pull/3896
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Cheap cloneable LineIndex 
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-06 09:23_
+_@MichaReiser_
 
 This PR extracts the `Index` type from `Locator`, changes it to use an `Arc` internally to make it cheaply cloneable, and makes it public. 
 

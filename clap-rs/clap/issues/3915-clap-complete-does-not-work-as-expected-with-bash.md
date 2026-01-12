@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-07-13T04:45:26Z
 updated_at: 2022-07-13T20:51:00Z
 url: https://github.com/clap-rs/clap/issues/3915
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # clap_complete does not work as expected with Bash and ValueHint::Hostname
 
 ---
 
-_Issue opened by @Shatnerz on 2022-07-13 04:45_
+_@Shatnerz_
 
 ### Please complete the following tasks
 

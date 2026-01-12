@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-27T14:03:22Z
 updated_at: 2025-02-12T13:49:07Z
 url: https://github.com/astral-sh/uv/issues/6688
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Enable setting extra-index-url on uv add --script
 
 ---
 
-_Issue opened by @Mateuscvieira on 2024-08-27 14:03_
+_@Mateuscvieira_
 
 In the current version of uv, the only way I could manage to add an extra index URL to a script was manually adding a [tools.uv] field to the file header.
 The error message  on `uv add ` implies it's possible to combine --extra-index-url and --script, with the message:

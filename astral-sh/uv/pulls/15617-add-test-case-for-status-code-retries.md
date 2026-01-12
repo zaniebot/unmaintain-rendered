@@ -13,14 +13,14 @@ head: konsti/retry-status
 created_at: 2025-09-01T10:25:20Z
 updated_at: 2025-09-02T13:41:56Z
 url: https://github.com/astral-sh/uv/pull/15617
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:51Z
 ```
 
 # Add test case for status code retries
 
 ---
 
-_Pull request opened by @konstin on 2025-09-01 10:25_
+_@konstin_
 
 When migrating from the `reqwest_retry` crate, we want to ensure that the status codes we retry stay the same. This also helps us to intentionally migrate to a different list later, by enumerating the list of status codes that are retried.
 

@@ -14,14 +14,14 @@ head: micha/refactor-any-string-part
 created_at: 2024-10-08T15:06:23Z
 updated_at: 2024-10-09T06:25:41Z
 url: https://github.com/astral-sh/ruff/pull/13681
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Remove layout values from `AnyStringPart`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-08 15:06_
+_@MichaReiser_
 
 ## Summary
 

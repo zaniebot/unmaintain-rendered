@@ -13,14 +13,14 @@ head: renovate/mkdocs-1.x
 created_at: 2024-09-02T00:43:20Z
 updated_at: 2024-09-02T06:44:21Z
 url: https://github.com/astral-sh/ruff/pull/13199
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Update dependency mkdocs to v1.6.1
 
 ---
 
-_Pull request opened by @renovate on 2024-09-02 00:43_
+_@renovate_
 
 This PR contains the following updates:
 

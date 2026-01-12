@@ -13,14 +13,14 @@ head: global-help
 created_at: 2024-07-31T17:49:09Z
 updated_at: 2024-08-01T16:21:39Z
 url: https://github.com/astral-sh/uv/pull/5665
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:56Z
 ```
 
 # Add help sections for global options
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-07-31 17:49_
+_@eth3lbert_
 
 ## Summary
 

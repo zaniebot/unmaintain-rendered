@@ -13,14 +13,14 @@ head: fix-lint.future-annotations-link
 created_at: 2025-08-12T11:28:45Z
 updated_at: 2025-08-12T13:46:52Z
 url: https://github.com/astral-sh/ruff/pull/19876
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # Fix `lint.future-annotations` link
 
 ---
 
-_Pull request opened by @harupy on 2025-08-12 11:28_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

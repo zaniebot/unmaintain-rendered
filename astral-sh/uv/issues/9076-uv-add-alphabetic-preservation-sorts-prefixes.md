@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-13T04:04:51Z
 updated_at: 2024-11-13T20:47:58Z
 url: https://github.com/astral-sh/uv/issues/9076
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # (🐞) `uv add` alphabetic preservation sorts prefixes after longer entries
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-11-13 04:04_
+_@KotlinIsland_
 
 i would think that `pylint` would come before `pylint-module-boundaries`
 

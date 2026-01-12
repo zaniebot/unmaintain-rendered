@@ -13,14 +13,14 @@ head: charlie/with
 created_at: 2024-07-13T18:24:45Z
 updated_at: 2024-07-13T19:22:33Z
 url: https://github.com/astral-sh/ruff/pull/12311
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Consider `with` blocks as single-item branches
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-13 18:24_
+_@charliermarsh_
 
 ## Summary
 

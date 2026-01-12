@@ -13,14 +13,14 @@ head: charlie/up
 created_at: 2025-02-09T18:58:10Z
 updated_at: 2025-02-09T19:14:49Z
 url: https://github.com/astral-sh/uv/pull/11359
-synced_at: 2026-01-10T11:10:36Z
+synced_at: 2026-01-12T16:09:48Z
 ```
 
 # Upgrade `astral-tokio-tar` to v0.5.1
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-09 18:58_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-15T21:44:15Z
 updated_at: 2025-05-30T21:16:47Z
 url: https://github.com/astral-sh/uv/issues/10653
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # Publish integration test flakes
 
 ---
 
-_Issue opened by @zanieb on 2025-01-15 21:44_
+_@zanieb_
 
 at https://github.com/astral-sh/uv/actions/runs/12796865454/job/35677669338
 

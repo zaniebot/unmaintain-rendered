@@ -13,14 +13,14 @@ head: workaround-race-condition
 created_at: 2024-04-19T13:16:30Z
 updated_at: 2024-04-19T13:42:33Z
 url: https://github.com/astral-sh/ruff/pull/11039
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # `scripts/fuzz-parser`: work around race condition from running `cargo build` concurrently
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-19 13:16_
+_@AlexWaygood_
 
 ## Summary
 

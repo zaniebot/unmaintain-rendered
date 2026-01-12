@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T09:09:01Z
 updated_at: 2025-02-12T12:37:19Z
 url: https://github.com/astral-sh/uv/issues/11439
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # How to require a managed python installation in `pyproject.toml`?
 
 ---
 
-_Issue opened by @YouJiacheng on 2025-02-12 09:09_
+_@YouJiacheng_
 
 ### Question
 

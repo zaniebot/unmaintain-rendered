@@ -13,14 +13,14 @@ head: refactor/add-install-options-struct
 created_at: 2024-08-23T23:30:51Z
 updated_at: 2024-08-27T11:13:07Z
 url: https://github.com/astral-sh/uv/pull/6561
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:25Z
 ```
 
 # refactor: use a struct for install options
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-08-23 23:30_
+_@mkniewallner_
 
 ## Summary
 

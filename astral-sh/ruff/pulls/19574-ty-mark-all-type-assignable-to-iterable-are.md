@@ -14,14 +14,14 @@ head: flaky-property-test
 created_at: 2025-07-27T11:00:53Z
 updated_at: 2025-07-27T11:08:18Z
 url: https://github.com/astral-sh/ruff/pull/19574
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Mark `all_type_assignable_to_iterable_are_iterable` as flaky
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-27 11:00_
+_@AlexWaygood_
 
 ## Summary
 

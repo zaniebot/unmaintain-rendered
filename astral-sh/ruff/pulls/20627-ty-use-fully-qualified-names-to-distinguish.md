@@ -15,14 +15,14 @@ head: alex/protocol-instance-qualified
 created_at: 2025-09-29T11:54:58Z
 updated_at: 2025-09-29T12:02:08Z
 url: https://github.com/astral-sh/ruff/pull/20627
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # [ty] Use fully qualified names to distinguish ambiguous protocols in diagnostics
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-29 11:54_
+_@AlexWaygood_
 
 ## Summary
 

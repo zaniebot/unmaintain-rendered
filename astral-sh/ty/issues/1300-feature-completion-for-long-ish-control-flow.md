@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-02T17:42:29Z
 updated_at: 2025-10-02T17:52:44Z
 url: https://github.com/astral-sh/ty/issues/1300
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Feature: completion for long'ish control flow statements
 
 ---
 
-_Issue opened by @twoertwein on 2025-10-02 17:42_
+_@twoertwein_
 
 ### Summary
 

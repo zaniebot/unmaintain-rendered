@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-06T02:27:08Z
 updated_at: 2023-07-06T03:44:54Z
 url: https://github.com/astral-sh/ruff/issues/5551
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # 0.0.277 release was not completed
 
 ---
 
-_Issue opened by @chenrui333 on 2023-07-06 02:27_
+_@chenrui333_
 
 👋 it looks like 0.0.277 release was not completed, see [this action run](https://github.com/astral-sh/ruff/actions/runs/5458523781), raise this issue for some awareness. Thanks!
 

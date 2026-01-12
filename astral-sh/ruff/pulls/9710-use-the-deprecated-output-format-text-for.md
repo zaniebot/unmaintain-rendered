@@ -11,14 +11,14 @@ head: jane/ci/ecosystem-fix
 created_at: 2024-01-30T17:31:56Z
 updated_at: 2024-01-30T18:01:28Z
 url: https://github.com/astral-sh/ruff/pull/9710
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Use the deprecated output format `text` for ecosystem checks in release/0.2.0
 
 ---
 
-_Pull request opened by @snowsignal on 2024-01-30 17:31_
+_@snowsignal_
 
 This prevents us from running into the following error during an ecosystem check against `main`:
 ```

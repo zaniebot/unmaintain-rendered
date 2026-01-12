@@ -13,14 +13,14 @@ head: charlie/E501
 created_at: 2023-08-28T18:07:44Z
 updated_at: 2023-08-28T18:45:31Z
 url: https://github.com/astral-sh/ruff/pull/6949
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add `line-length` to E501 documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-28 18:07_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6908.
 

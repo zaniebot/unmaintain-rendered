@@ -13,14 +13,14 @@ head: skylion007/add-doc-usedforsecurity-S324
 created_at: 2025-02-16T16:13:47Z
 updated_at: 2025-02-16T18:06:56Z
 url: https://github.com/astral-sh/ruff/pull/16190
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Add doc about usedforsecurity flag for S324
 
 ---
 
-_Pull request opened by @Skylion007 on 2025-02-16 16:13_
+_@Skylion007_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

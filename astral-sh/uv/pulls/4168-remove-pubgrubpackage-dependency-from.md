@@ -14,14 +14,14 @@ head: charlie/markers-dep-ii
 created_at: 2024-06-08T19:33:09Z
 updated_at: 2024-06-10T13:41:41Z
 url: https://github.com/astral-sh/uv/pull/4168
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:04Z
 ```
 
 # Remove `PubGrubPackage` dependency from `ResolutionGraph`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-08 19:33_
+_@charliermarsh_
 
 ## Summary
 

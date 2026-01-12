@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-08T03:03:02Z
 updated_at: 2023-06-09T15:13:41Z
 url: https://github.com/clap-rs/clap/issues/4956
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # More heap allocations than structopt
 
 ---
 
-_Issue opened by @dullbananas on 2023-06-08 03:03_
+_@dullbananas_
 
 I tested the heap usage of wasm-pack when using it to compile wasm_game_of_life before and after upgrading from structopt to clap 4.3. The total allocated bytes increased by 22%, and the maximum allocated bytes (t-gmax) increased by 57%.
 

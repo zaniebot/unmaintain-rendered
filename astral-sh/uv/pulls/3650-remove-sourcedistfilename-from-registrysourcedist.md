@@ -13,14 +13,14 @@ head: charlie/filename
 created_at: 2024-05-18T16:56:25Z
 updated_at: 2024-05-20T13:25:24Z
 url: https://github.com/astral-sh/uv/pull/3650
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:46Z
 ```
 
 # Remove `SourceDistFilename` from `RegistrySourceDist`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-18 16:56_
+_@charliermarsh_
 
 ## Summary
 

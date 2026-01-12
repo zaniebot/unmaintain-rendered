@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-03-27T00:15:28Z
 updated_at: 2025-03-27T01:40:21Z
 url: https://github.com/clap-rs/clap/issues/5960
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Extra newline printed when a flat subcommand has no arguments
 
 ---
 
-_Issue opened by @BrandonXLF on 2025-03-27 00:15_
+_@BrandonXLF_
 
 When `flatten_help` is enabled and a subcommand doesn't have any arguments, an extra newline is printed like below:
 

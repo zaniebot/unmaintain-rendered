@@ -9,16 +9,16 @@ assignees: []
 base: charlie/git-cache
 head: charlie/git-cache-val
 created_at: 2026-01-12T03:54:02Z
-updated_at: 2026-01-12T09:59:05Z
+updated_at: 2026-01-12T15:20:53Z
 url: https://github.com/astral-sh/uv/pull/17411
-synced_at: 2026-01-12T11:01:31Z
+synced_at: 2026-01-12T16:12:46Z
 ```
 
 # Add fast-path validation for remote-cached wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-12 03:54_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: jane/server/settings/lint-enable
 created_at: 2024-04-06T00:23:42Z
 updated_at: 2024-04-08T14:53:29Z
 url: https://github.com/astral-sh/ruff/pull/10800
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # The linter and code actions can now be disabled in client settings for `ruff server`
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-06 00:23_
+_@snowsignal_
 
 ## Summary
 

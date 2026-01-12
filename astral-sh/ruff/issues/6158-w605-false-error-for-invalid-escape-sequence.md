@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-28T17:36:00Z
 updated_at: 2023-07-28T18:39:21Z
 url: https://github.com/astral-sh/ruff/issues/6158
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # W605 False error for 'Invalid escape sequence' inside docstring
 
 ---
 
-_Issue opened by @ssweber on 2023-07-28 17:36_
+_@ssweber_
 
 I have a docstring example:
 

@@ -13,14 +13,14 @@ head: konsti/slow-boto3
 created_at: 2024-03-14T09:48:02Z
 updated_at: 2024-03-14T09:58:02Z
 url: https://github.com/astral-sh/uv/pull/2451
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:03Z
 ```
 
 # Replace boto3.in with slow scenario
 
 ---
 
-_Pull request opened by @konstin on 2024-03-14 09:48_
+_@konstin_
 
 The previous scenario doesn't hit the slow path anymore
 

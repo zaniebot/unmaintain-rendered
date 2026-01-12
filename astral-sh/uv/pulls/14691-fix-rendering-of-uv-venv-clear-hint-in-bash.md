@@ -12,14 +12,14 @@ head: zb/clear-fix
 created_at: 2025-07-17T20:43:41Z
 updated_at: 2025-07-17T20:52:33Z
 url: https://github.com/astral-sh/uv/pull/14691
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:21Z
 ```
 
 # Fix rendering of `uv venv --clear` hint in bash
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-17 20:43_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/14688
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-15T22:22:46Z
 updated_at: 2024-06-14T13:29:09Z
 url: https://github.com/astral-sh/ruff/issues/10973
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # E203: Incompatible with formatter when closing `]` is on its own line
 
 ---
 
-_Issue opened by @antolu on 2024-04-15 22:22_
+_@antolu_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

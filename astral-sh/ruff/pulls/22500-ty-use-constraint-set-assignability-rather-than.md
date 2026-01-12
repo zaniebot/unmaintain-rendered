@@ -12,14 +12,14 @@ head: charlie/constraint-set
 created_at: 2026-01-10T19:41:49Z
 updated_at: 2026-01-10T20:01:06Z
 url: https://github.com/astral-sh/ruff/pull/22500
-synced_at: 2026-01-12T02:32:44Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # [ty] Use constraint-set assignability (rather than assignability) when bounds contain negated types
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-10 19:41_
+_@charliermarsh_
 
 ## Summary
 

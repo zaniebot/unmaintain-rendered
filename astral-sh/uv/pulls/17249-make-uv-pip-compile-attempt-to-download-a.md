@@ -12,14 +12,14 @@ head: tk/pip-compile-missing-py-4
 created_at: 2025-12-29T12:59:39Z
 updated_at: 2026-01-09T21:32:15Z
 url: https://github.com/astral-sh/uv/pull/17249
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:40Z
 ```
 
 # Make `uv pip compile` attempt to download a specified `--python-version` if it can.
 
 ---
 
-_Pull request opened by @EliteTK on 2025-12-29 12:59_
+_@EliteTK_
 
 ## Summary
 

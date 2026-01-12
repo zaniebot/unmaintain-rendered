@@ -13,14 +13,14 @@ head: charlie/inst
 created_at: 2024-03-10T13:25:23Z
 updated_at: 2024-03-10T13:52:07Z
 url: https://github.com/astral-sh/uv/pull/2336
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:59Z
 ```
 
 # Remove duplicate `INSTALLER` in `RECORD`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-10 13:25_
+_@charliermarsh_
 
 ## Summary
 

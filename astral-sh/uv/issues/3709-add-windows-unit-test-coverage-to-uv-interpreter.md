@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-05-21T17:26:07Z
 updated_at: 2024-05-23T02:04:52Z
 url: https://github.com/astral-sh/uv/issues/3709
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Add Windows unit test coverage to `uv-interpreter` discovery
 
 ---
 
-_Issue opened by @zanieb on 2024-05-21 17:26_
+_@zanieb_
 
 Follow-up to https://github.com/astral-sh/uv/pull/3266
 

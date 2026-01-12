@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-17T07:40:15Z
 updated_at: 2024-10-17T09:13:18Z
 url: https://github.com/astral-sh/ruff/issues/13788
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Interpreter can't open server
 
 ---
 
-_Issue opened by @FelixSoderstrom on 2024-10-17 07:40_
+_@FelixSoderstrom_
 
 ### Issue
 Ruff doesn't find server because it doesn't exist.

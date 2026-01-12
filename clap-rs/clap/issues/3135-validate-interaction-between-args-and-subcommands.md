@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-09T16:36:21Z
 updated_at: 2022-04-15T12:23:54Z
 url: https://github.com/clap-rs/clap/issues/3135
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Validate interaction between args and subcommands
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:36_
+_@epage_
 
 <a href="https://github.com/JayiceZ"><img src="https://avatars.githubusercontent.com/u/49588871?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [JayiceZ](https://github.com/JayiceZ)**
 _Monday Dec 06, 2021 at 10:56 GMT_

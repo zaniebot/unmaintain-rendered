@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T22:31:48Z
 updated_at: 2025-06-02T18:13:18Z
 url: https://github.com/astral-sh/ruff/issues/18358
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `flake8-bugbear.extend-immutable-calls` does not work with relative imports in sub-packages
 
 ---
 
-_Issue opened by @JuneStepp on 2025-05-28 22:31_
+_@JuneStepp_
 
 ### Summary
 

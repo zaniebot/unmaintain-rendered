@@ -13,14 +13,14 @@ head: david/generic-alias-base
 created_at: 2025-04-23T07:46:45Z
 updated_at: 2025-04-23T08:39:11Z
 url: https://github.com/astral-sh/ruff/pull/17575
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] GenericAlias instances as a base class
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-23 07:46_
+_@sharkdp_
 
 ## Summary
 

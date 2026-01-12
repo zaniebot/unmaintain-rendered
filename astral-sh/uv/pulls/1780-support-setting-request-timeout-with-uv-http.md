@@ -13,14 +13,14 @@ head: zb/tweak-timeout-vars
 created_at: 2024-02-20T19:51:55Z
 updated_at: 2024-02-21T00:48:19Z
 url: https://github.com/astral-sh/uv/pull/1780
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:43Z
 ```
 
 # Support setting request timeout with `UV_HTTP_TIMEOUT` and `HTTP_TIMEOUT`
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-20 19:51_
+_@zanieb_
 
 Follow-up to #1694 matching Cargo's environment variable names
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-02-21T23:38:19Z
 updated_at: 2018-08-02T03:30:02Z
 url: https://github.com/clap-rs/clap/issues/868
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Questions about zsh completion generated for ripgrep
 
 ---
 
-_Issue opened by @kastiglione on 2017-02-21 23:38_
+_@kastiglione_
 
 ### Rust Version
 

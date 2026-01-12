@@ -13,14 +13,14 @@ head: docs/typos-and-consistency-issues
 created_at: 2024-07-04T22:38:45Z
 updated_at: 2024-07-04T23:06:08Z
 url: https://github.com/astral-sh/ruff/pull/12193
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # docs(*): fix a few typos, consistency issues and links
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-07-04 22:38_
+_@mkniewallner_
 
 ## Summary
 

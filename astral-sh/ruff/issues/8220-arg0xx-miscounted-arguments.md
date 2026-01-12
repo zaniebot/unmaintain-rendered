@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-25T14:26:19Z
 updated_at: 2023-10-25T16:09:45Z
 url: https://github.com/astral-sh/ruff/issues/8220
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `ARG0xx`: Miscounted arguments
 
 ---
 
-_Issue opened by @smurfix on 2023-10-25 14:26_
+_@smurfix_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

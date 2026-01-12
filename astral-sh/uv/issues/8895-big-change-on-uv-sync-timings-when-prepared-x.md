@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-07T19:08:40Z
 updated_at: 2024-11-07T20:15:13Z
 url: https://github.com/astral-sh/uv/issues/8895
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # Big change on `uv sync` timings when "Prepared X packages in Ys"
 
 ---
 
-_Issue opened by @jamesbraza on 2024-11-07 19:08_
+_@jamesbraza_
 
 With `uv==0.4.30`, there is a big time variance in "Prepared X packages in Ys" in GitHub Actions.
 

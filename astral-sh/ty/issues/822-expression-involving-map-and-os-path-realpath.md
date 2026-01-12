@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-14T13:02:37Z
 updated_at: 2025-07-14T13:29:58Z
 url: https://github.com/astral-sh/ty/issues/822
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Expression involving `map` and `os.path.realpath`
 
 ---
 
-_Issue opened by @dalcinl on 2025-07-14 13:02_
+_@dalcinl_
 
 ### Summary
 

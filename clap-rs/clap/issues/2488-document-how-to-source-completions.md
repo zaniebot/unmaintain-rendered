@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-05-20T05:59:38Z
 updated_at: 2024-08-10T00:38:12Z
 url: https://github.com/clap-rs/clap/issues/2488
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Document how to source completions
 
 ---
 
-_Issue opened by @ajeetdsouza on 2021-05-20 05:59_
+_@ajeetdsouza_
 
 ### Please complete the following tasks
 

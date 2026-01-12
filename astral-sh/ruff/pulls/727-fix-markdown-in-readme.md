@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2022-11-13T20:08:46Z
 updated_at: 2022-11-13T20:19:25Z
 url: https://github.com/astral-sh/ruff/pull/727
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix Markdown in README
 
 ---
 
-_Pull request opened by @brettcannon on 2022-11-13 20:08_
+_@brettcannon_
 
 _No description provided._
 

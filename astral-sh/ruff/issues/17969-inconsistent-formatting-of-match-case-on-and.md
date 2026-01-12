@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-08T21:37:50Z
 updated_at: 2025-05-22T05:52:22Z
 url: https://github.com/astral-sh/ruff/issues/17969
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Inconsistent formatting of match-case on `[]` and `_`
 
 ---
 
-_Issue opened by @adamchainz on 2025-05-08 21:37_
+_@adamchainz_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: fix/useless-class-metaclass-type
 created_at: 2025-05-30T18:59:06Z
 updated_at: 2025-06-04T14:53:39Z
 url: https://github.com/astral-sh/ruff/pull/18390
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [`pyupgrade`] Make fix unsafe if it deletes comments (`UP050`)
 
 ---
 
-_Pull request opened by @chirizxc on 2025-05-30 18:59_
+_@chirizxc_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

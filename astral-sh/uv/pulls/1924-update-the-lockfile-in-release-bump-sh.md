@@ -13,14 +13,14 @@ head: zb/release-chceck
 created_at: 2024-02-23T17:35:14Z
 updated_at: 2024-02-23T19:45:47Z
 url: https://github.com/astral-sh/uv/pull/1924
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:47Z
 ```
 
 # Update the lockfile in `release/bump.sh`
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-23 17:35_
+_@zanieb_
 
 Otherwise it's easy to forget!
 

@@ -12,14 +12,14 @@ head: explain
 created_at: 2022-11-23T04:35:31Z
 updated_at: 2022-11-23T05:09:17Z
 url: https://github.com/astral-sh/ruff/pull/887
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add `--explain`
 
 ---
 
-_Pull request opened by @harupy on 2022-11-23 04:35_
+_@harupy_
 
 This PR adds `--explain` for explaining a ruff fule.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-28T20:10:27Z
 updated_at: 2023-04-12T03:39:46Z
 url: https://github.com/astral-sh/ruff/issues/3783
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Implement compatibility for `.pyw` file types
 
 ---
 
-_Issue opened by @danparizher on 2023-03-28 20:10_
+_@danparizher_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

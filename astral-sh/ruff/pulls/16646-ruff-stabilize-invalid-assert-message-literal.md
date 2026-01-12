@@ -13,14 +13,14 @@ head: brent/ruf040-0.10
 created_at: 2025-03-11T19:47:30Z
 updated_at: 2025-03-12T12:11:31Z
 url: https://github.com/astral-sh/ruff/pull/16646
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`ruff`] Stabilize `invalid-assert-message-literal-argument` (`RUF040`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-11 19:47_
+_@ntBre_
 
 Summary
 --

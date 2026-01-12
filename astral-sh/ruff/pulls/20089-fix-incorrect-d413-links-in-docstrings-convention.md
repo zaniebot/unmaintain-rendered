@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-08-25T19:28:33Z
 updated_at: 2025-08-26T11:05:45Z
 url: https://github.com/astral-sh/ruff/pull/20089
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # Fix incorrect D413 links in docstrings convention FAQ
 
 ---
 
-_Pull request opened by @Avasam on 2025-08-25 19:28_
+_@Avasam_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

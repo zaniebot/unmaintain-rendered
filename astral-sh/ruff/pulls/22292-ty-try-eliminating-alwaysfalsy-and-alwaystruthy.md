@@ -13,14 +13,14 @@ head: charlie/truthy
 created_at: 2025-12-29T22:52:18Z
 updated_at: 2025-12-29T23:07:12Z
 url: https://github.com/astral-sh/ruff/pull/22292
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:46Z
 ```
 
 # [ty] Try eliminating `~AlwaysFalsy` and `~AlwaysTruthy` from intersections
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-29 22:52_
+_@charliermarsh_
 
 ## Summary
 

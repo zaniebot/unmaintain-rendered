@@ -14,14 +14,14 @@ head: david/sqlalchemy-test-updates
 created_at: 2025-12-08T14:09:37Z
 updated_at: 2025-12-08T14:22:56Z
 url: https://github.com/astral-sh/ruff/pull/21846
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] More SQLAlchemy test updates
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-08 14:09_
+_@sharkdp_
 
 Minor updates to the SQLAlchemy test suite. I verified all expected results using pyright.
 

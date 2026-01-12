@@ -12,14 +12,14 @@ head: fix/b031-false-positive
 created_at: 2023-04-01T05:03:58Z
 updated_at: 2023-04-04T03:14:03Z
 url: https://github.com/astral-sh/ruff/pull/3844
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Support mutually exclusive branches for `B031`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-04-01 05:03_
+_@dhruvmanila_
 
 fixes: #3801 
 

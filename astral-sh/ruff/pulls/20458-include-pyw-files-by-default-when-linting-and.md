@@ -14,14 +14,14 @@ head: amy/pyw-extension
 created_at: 2025-09-18T00:22:13Z
 updated_at: 2025-09-24T15:39:32Z
 url: https://github.com/astral-sh/ruff/pull/20458
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # include `.pyw` files by default when linting and formatting
 
 ---
 
-_Pull request opened by @amyreese on 2025-09-18 00:22_
+_@amyreese_
 
 - Adds test cases exercising file selection by extension with `--preview` enabled and disabled.
 - Adds `INCLUDE_PREVIEW` with file patterns including `*.pyw`.

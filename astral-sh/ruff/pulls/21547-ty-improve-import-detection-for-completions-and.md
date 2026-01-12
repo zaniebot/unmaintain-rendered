@@ -14,14 +14,14 @@ head: ag/better-import-detection
 created_at: 2025-11-20T20:14:52Z
 updated_at: 2025-11-21T13:01:04Z
 url: https://github.com/astral-sh/ruff/pull/21547
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:27Z
 ```
 
 # [ty] Improve import detection for completions and support `from ...<CURSOR>` completions
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-11-20 20:14_
+_@BurntSushi_
 
 This PR has three main changes in it:
 

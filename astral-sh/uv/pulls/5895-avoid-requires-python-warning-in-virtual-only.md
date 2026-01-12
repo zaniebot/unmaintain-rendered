@@ -14,14 +14,14 @@ head: charlie/virtual-py
 created_at: 2024-08-07T23:06:35Z
 updated_at: 2024-08-08T00:43:21Z
 url: https://github.com/astral-sh/uv/pull/5895
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:05Z
 ```
 
 # Avoid requires-python warning in virtual-only workspace
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-07 23:06_
+_@charliermarsh_
 
 ## Summary
 

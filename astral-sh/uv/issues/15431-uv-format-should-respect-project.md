@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-21T19:58:47Z
 updated_at: 2025-08-22T16:27:35Z
 url: https://github.com/astral-sh/uv/issues/15431
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # `uv format` should respect `--project`
 
 ---
 
-_Issue opened by @zanieb on 2025-08-21 19:58_
+_@zanieb_
 
 Related to #15430 
 

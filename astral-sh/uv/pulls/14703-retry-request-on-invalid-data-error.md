@@ -13,14 +13,14 @@ head: konsti/retry-on-invalid-data
 created_at: 2025-07-18T07:23:40Z
 updated_at: 2025-07-20T22:28:35Z
 url: https://github.com/astral-sh/uv/pull/14703
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:21Z
 ```
 
 # Retry request on invalid data error
 
 ---
 
-_Pull request opened by @konstin on 2025-07-18 07:23_
+_@konstin_
 
 I also improved the trace logging.
 

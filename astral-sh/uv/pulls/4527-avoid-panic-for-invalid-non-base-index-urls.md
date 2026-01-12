@@ -13,14 +13,14 @@ head: charlie/not-a-base
 created_at: 2024-06-25T18:25:44Z
 updated_at: 2024-06-25T18:32:59Z
 url: https://github.com/astral-sh/uv/pull/4527
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:17Z
 ```
 
 # Avoid panic for invalid, non-base index URLs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-25 18:25_
+_@charliermarsh_
 
 ## Summary
 

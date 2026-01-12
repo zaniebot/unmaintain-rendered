@@ -15,14 +15,14 @@ head: dhruv/avoid-assertion
 created_at: 2025-12-06T06:56:27Z
 updated_at: 2025-12-08T05:20:42Z
 url: https://github.com/astral-sh/ruff/pull/21821
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Handle various invalid explicit specializations for `ParamSpec`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-12-06 06:56_
+_@dhruvmanila_
 
 ## Summary
 

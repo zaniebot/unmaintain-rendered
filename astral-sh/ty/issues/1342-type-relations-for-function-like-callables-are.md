@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-13T11:03:34Z
 updated_at: 2025-10-13T13:21:56Z
 url: https://github.com/astral-sh/ty/issues/1342
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Type relations for function-like callables are too strict
 
 ---
 
-_Issue opened by @sharkdp on 2025-10-13 11:03_
+_@sharkdp_
 
 Assignability, subtyping, and maybe also equivalence are currently too strict for function-like callables. For example, it should be possible to assign `Mock()` to a function-like callable, but we currently get:
 

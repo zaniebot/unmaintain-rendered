@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-16T18:31:20Z
 updated_at: 2024-08-17T14:51:11Z
 url: https://github.com/astral-sh/ruff/issues/12940
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # N817 not correctly detecting `from xml.etree import ElementTree as ET`
 
 ---
 
-_Issue opened by @lengau on 2024-08-16 18:31_
+_@lengau_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

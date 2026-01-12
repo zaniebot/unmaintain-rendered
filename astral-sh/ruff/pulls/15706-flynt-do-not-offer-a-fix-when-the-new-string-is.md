@@ -12,14 +12,14 @@ head: FLY002
 created_at: 2025-01-24T03:13:53Z
 updated_at: 2025-02-02T19:45:19Z
 url: https://github.com/astral-sh/ruff/pull/15706
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flynt`] Do not offer a fix when the new string is too long (`FLY002`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-24 03:13_
+_@InSyncWithFoo_
 
 ## Summary
 

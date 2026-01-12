@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-12T14:06:33Z
 updated_at: 2025-02-12T16:27:39Z
 url: https://github.com/astral-sh/ruff/issues/16117
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RUF001 reports multiple violations for the same character in a nested typing string
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-12 14:06_
+_@dscorbett_
 
 ### Description
 

@@ -13,14 +13,14 @@ head: charlie/for
 created_at: 2023-07-24T21:52:32Z
 updated_at: 2023-07-24T22:19:09Z
 url: https://github.com/astral-sh/ruff/pull/6046
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Remove empty newline in `deferred_for_loops`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-24 21:52_
+_@charliermarsh_
 
 Trivial change but none of the others have this empty newline.
 

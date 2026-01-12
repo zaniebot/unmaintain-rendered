@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-12T07:46:33Z
 updated_at: 2024-10-14T09:58:27Z
 url: https://github.com/astral-sh/ruff/issues/13724
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [Question]:Updating to a newer/latest version as having VsCode extension already installed.
 
 ---
 
-_Issue opened by @farzbood on 2024-10-12 07:46_
+_@farzbood_
 
 Hi there,
 I installed `ruff `with `Standalone Installer` on **Windows10 x86_64** and having its **VSCode** `extension `installed too.

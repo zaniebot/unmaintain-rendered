@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-07-06T14:50:32Z
 updated_at: 2023-07-06T16:18:33Z
 url: https://github.com/astral-sh/ruff/pull/5563
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # docs: add user
 
 ---
 
-_Pull request opened by @sbrugman on 2023-07-06 14:50_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

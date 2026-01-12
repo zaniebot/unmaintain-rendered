@@ -12,14 +12,14 @@ head: gankra/loose-test
 created_at: 2025-05-01T12:12:03Z
 updated_at: 2025-06-02T18:18:11Z
 url: https://github.com/astral-sh/uv/pull/13251
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:37Z
 ```
 
 # make snapshot test more permissive
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-01 12:12_
+_@Gankra_
 
 fixes #13212 
 

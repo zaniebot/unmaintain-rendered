@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-02T18:35:40Z
 updated_at: 2023-11-02T17:01:36Z
 url: https://github.com/astral-sh/ruff/issues/7066
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter collapses parenthesized if-expression
 
 ---
 
-_Issue opened by @cnpryer on 2023-09-02 18:35_
+_@cnpryer_
 
 Somewhat related: #6588
 

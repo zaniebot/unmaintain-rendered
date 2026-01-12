@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-17T11:07:23Z
 updated_at: 2025-03-17T16:01:36Z
 url: https://github.com/astral-sh/ruff/issues/16798
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Expansion to PLC1802 for `len(iterable) == 0` and `>0`
 
 ---
 
-_Issue opened by @DaniBodor on 2025-03-17 11:07_
+_@DaniBodor_
 
 ### Summary
 

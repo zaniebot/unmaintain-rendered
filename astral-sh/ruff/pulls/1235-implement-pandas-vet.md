@@ -12,14 +12,14 @@ head: pandas-vet
 created_at: 2022-12-14T06:06:19Z
 updated_at: 2022-12-18T16:55:33Z
 url: https://github.com/astral-sh/ruff/pull/1235
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Implement `pandas-vet`
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2022-12-14 06:06_
+_@edgarrmondragon_
 
 - [ ] PD001: pandas should always be imported as 'import pandas as pd'
 - [x] PD002: 'inplace = True' should be avoided; it has inconsistent behavior

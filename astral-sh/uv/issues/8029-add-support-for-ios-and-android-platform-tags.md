@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-09T00:51:38Z
 updated_at: 2025-09-03T22:24:53Z
 url: https://github.com/astral-sh/uv/issues/8029
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Add support for iOS and Android platform tags
 
 ---
 
-_Issue opened by @freakboy3742 on 2024-10-09 00:51_
+_@freakboy3742_
 
 PEP 730 added support for iOS as a tier 3 supported platform, using the platform tags:
 * `ios_X_Y_arm64_iphoneos` (iOS ARM64 device)

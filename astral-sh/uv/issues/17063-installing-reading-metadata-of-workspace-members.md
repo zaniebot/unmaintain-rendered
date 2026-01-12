@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T09:11:32Z
 updated_at: 2025-12-16T11:07:00Z
 url: https://github.com/astral-sh/uv/issues/17063
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # Installing / reading metadata of workspace members from wheels
 
 ---
 
-_Issue opened by @ktns on 2025-12-10 09:11_
+_@ktns_
 
 ### Summary
 

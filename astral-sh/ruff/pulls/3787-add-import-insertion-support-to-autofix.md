@@ -12,14 +12,14 @@ head: charlie/require-imports
 created_at: 2023-03-28T22:17:01Z
 updated_at: 2023-03-30T15:53:41Z
 url: https://github.com/astral-sh/ruff/pull/3787
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Add import insertion support to autofix capabilities
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-28 22:17_
+_@charliermarsh_
 
 ## Summary
 

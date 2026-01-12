@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-19T11:11:20Z
 updated_at: 2023-05-22T21:00:02Z
 url: https://github.com/astral-sh/ruff/issues/4526
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # ARG003 and ARG004 don't get triggered
 
 ---
 
-_Issue opened by @spapanik on 2023-05-19 11:11_
+_@spapanik_
 
 Hi,
 

@@ -13,14 +13,14 @@ head: dhruv/double-extend
 created_at: 2024-12-05T12:15:57Z
 updated_at: 2024-12-06T02:22:23Z
 url: https://github.com/astral-sh/ruff/pull/14788
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Move standalone expr inference to `for` non-name target
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-12-05 12:15_
+_@dhruvmanila_
 
 ## Summary
 

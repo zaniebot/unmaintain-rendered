@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-18T17:48:43Z
 updated_at: 2025-11-21T02:02:03Z
 url: https://github.com/astral-sh/uv/issues/4392
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Feature request: Publishing crate docs
 
 ---
 
-_Issue opened by @abhiaagarwal on 2024-06-18 17:48_
+_@abhiaagarwal_
 
 Hey there,
 

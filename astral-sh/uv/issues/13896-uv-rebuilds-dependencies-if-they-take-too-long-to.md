@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-07T04:04:57Z
 updated_at: 2025-07-03T12:10:22Z
 url: https://github.com/astral-sh/uv/issues/13896
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # uv rebuilds dependencies if they take too long to install
 
 ---
 
-_Issue opened by @saagarjha on 2025-06-07 04:04_
+_@saagarjha_
 
 ### Summary
 

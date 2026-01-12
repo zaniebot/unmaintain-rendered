@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-25T06:15:30Z
 updated_at: 2022-12-26T00:52:43Z
 url: https://github.com/astral-sh/ruff/issues/1370
-synced_at: 2026-01-10T12:05:27Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # `--show-source` used together with isort and line continuation characters panics
 
 ---
 
-_Issue opened by @squiddy on 2022-12-25 06:15_
+_@squiddy_
 
 ```python
 from module import member1, \

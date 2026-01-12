@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-28T09:23:07Z
 updated_at: 2025-03-11T09:53:12Z
 url: https://github.com/astral-sh/uv/issues/11849
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # Failed to download https://github.com/astral-sh/uv/releases/download/0.6.3/uv-x86_64-unknown-linux-gnu.tar.gz
 
 ---
 
-_Issue opened by @rmndrs89 on 2025-02-28 09:23_
+_@rmndrs89_
 
 ### Summary
 

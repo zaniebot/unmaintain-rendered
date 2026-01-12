@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-23T18:57:34Z
 updated_at: 2023-09-02T08:22:52Z
 url: https://github.com/astral-sh/ruff/issues/6823
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Comments around attribute dot are moved around incorrectly
 
 ---
 
-_Issue opened by @charliermarsh on 2023-08-23 18:57_
+_@charliermarsh_
 
 Given:
 

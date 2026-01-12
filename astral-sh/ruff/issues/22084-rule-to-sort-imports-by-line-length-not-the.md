@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-19T14:12:00Z
 updated_at: 2025-12-19T16:52:49Z
 url: https://github.com/astral-sh/ruff/issues/22084
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Rule to sort imports by line length, not the module name length
 
 ---
 
-_Issue opened by @kuyugama on 2025-12-19 14:12_
+_@kuyugama_
 
 ### Question
 

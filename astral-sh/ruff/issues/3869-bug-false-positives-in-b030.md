@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-03T20:01:47Z
 updated_at: 2023-04-04T07:43:04Z
 url: https://github.com/astral-sh/ruff/issues/3869
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # BUG: false positives in B030
 
 ---
 
-_Issue opened by @neutrinoceros on 2023-04-03 20:01_
+_@neutrinoceros_
 
 
 ```python

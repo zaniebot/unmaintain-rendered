@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-04T08:02:29Z
 updated_at: 2024-04-04T08:06:31Z
 url: https://github.com/astral-sh/ruff/issues/10772
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Q000 can't be ignored
 
 ---
 
-_Issue opened by @SimonDR-Boltzmann on 2024-04-04 08:02_
+_@SimonDR-Boltzmann_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

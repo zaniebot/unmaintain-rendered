@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-09T09:22:01Z
 updated_at: 2022-12-09T17:28:10Z
 url: https://github.com/astral-sh/ruff/issues/1159
-synced_at: 2026-01-10T12:06:18Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # False positive for “RET504: Unnecessary variable assignment before `return` statement”
 
 ---
 
-_Issue opened by @quassy on 2022-12-09 09:22_
+_@quassy_
 
 Code similar to the following will return a false positive for RET504, as the variable assignment here is in fact not unnecessary or optional:
 ```python

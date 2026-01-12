@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-25T10:15:28Z
 updated_at: 2025-07-27T03:50:42Z
 url: https://github.com/astral-sh/uv/issues/14886
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:58Z
 ```
 
 # uv installs pypy version into cpython venv
 
 ---
 
-_Issue opened by @tekumara on 2025-07-25 10:15_
+_@tekumara_
 
 ### Summary
 

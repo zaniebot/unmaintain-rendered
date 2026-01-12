@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-11T03:38:24Z
 updated_at: 2026-01-09T14:41:58Z
 url: https://github.com/astral-sh/ty/issues/632
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [panic] expression should belong to this 'UnpackResult' and 'Unpacker' should have inferred a type for it
 
 ---
 
-_Issue opened by @correctmost on 2025-06-11 03:38_
+_@correctmost_
 
 ### Summary
 

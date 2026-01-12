@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-08T07:18:53Z
 updated_at: 2023-07-16T18:12:36Z
 url: https://github.com/astral-sh/ruff/issues/5604
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Unstable formatting with expression comments in mypyc
 
 ---
 
-_Issue opened by @konstin on 2023-07-08 07:18_
+_@konstin_
 
 The formatter formats [mypy/mypy/stubgenc.py:637-648](https://github.com/python/mypy/blob/6cd8c00983a294b4b142ee0f01e91912363d3450/mypy/stubgenc.py#L637-L648) different on the second pass.
 

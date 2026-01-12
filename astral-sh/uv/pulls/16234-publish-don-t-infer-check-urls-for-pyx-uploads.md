@@ -13,14 +13,14 @@ head: ww/pyx-no-check-infer
 created_at: 2025-10-10T15:55:29Z
 updated_at: 2025-10-13T10:15:59Z
 url: https://github.com/astral-sh/uv/pull/16234
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:11Z
 ```
 
 # publish: don't infer check URLs for pyx uploads
 
 ---
 
-_Pull request opened by @woodruffw on 2025-10-10 15:55_
+_@woodruffw_
 
 I think I've got this right, but could use a sanity check from @charliermarsh and @konstin 🙂 
 

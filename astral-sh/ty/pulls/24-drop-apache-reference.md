@@ -12,14 +12,14 @@ head: zb/fix-license
 created_at: 2025-05-05T13:25:16Z
 updated_at: 2025-07-08T10:39:17Z
 url: https://github.com/astral-sh/ty/pull/24
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Drop Apache reference
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-05 13:25_
+_@zanieb_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/constraints-ii
 created_at: 2024-03-31T16:53:22Z
 updated_at: 2024-03-31T18:03:49Z
 url: https://github.com/astral-sh/uv/pull/2742
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:12Z
 ```
 
 # Respect overrides in all direct-dependency iterators
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-31 16:53_
+_@charliermarsh_
 
 ## Summary
 

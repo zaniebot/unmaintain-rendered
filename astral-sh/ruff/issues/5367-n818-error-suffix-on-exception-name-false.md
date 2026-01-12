@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-26T10:25:05Z
 updated_at: 2024-06-29T09:02:37Z
 url: https://github.com/astral-sh/ruff/issues/5367
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # N818 error-suffix-on-exception-name false positives because it doesn't know if a given exception is an error
 
 ---
 
-_Issue opened by @karolinepauls on 2023-06-26 10:25_
+_@karolinepauls_
 
 I believe that this rule does more harm than good.
 

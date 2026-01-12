@@ -12,14 +12,14 @@ head: sys-version-info
 created_at: 2024-09-05T18:15:50Z
 updated_at: 2024-10-26T18:28:36Z
 url: https://github.com/astral-sh/ruff/pull/13257
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Add a new type representing the set of objects available on a certain Python version
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-05 18:15_
+_@AlexWaygood_
 
 ## Summary
 

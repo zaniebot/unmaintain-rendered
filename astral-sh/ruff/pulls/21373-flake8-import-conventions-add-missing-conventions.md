@@ -13,14 +13,14 @@ head: fix-21300
 created_at: 2025-11-11T04:25:41Z
 updated_at: 2025-12-03T20:10:43Z
 url: https://github.com/astral-sh/ruff/pull/21373
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # [`flake8-import-conventions`] Add missing conventions from upstream (`ICN001`, `ICN002`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-11 04:25_
+_@danparizher_
 
 ## Summary
 

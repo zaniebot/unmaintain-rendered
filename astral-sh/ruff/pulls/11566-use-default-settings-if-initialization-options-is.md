@@ -14,14 +14,14 @@ head: dhruv/avoid-flatten
 created_at: 2024-05-27T11:23:53Z
 updated_at: 2024-05-27T15:36:35Z
 url: https://github.com/astral-sh/ruff/pull/11566
-synced_at: 2026-01-10T22:05:27Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Use default settings if initialization options is empty or not provided
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-27 11:23_
+_@dhruvmanila_
 
 ## Summary
 

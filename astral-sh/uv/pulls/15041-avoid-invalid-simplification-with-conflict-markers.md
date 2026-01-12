@@ -13,14 +13,14 @@ head: konsti/conflict-simplifcation-extras
 created_at: 2025-08-03T11:26:53Z
 updated_at: 2025-08-06T09:26:28Z
 url: https://github.com/astral-sh/uv/pull/15041
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:33Z
 ```
 
 #  Avoid invalid simplification with conflict markers 
 
 ---
 
-_Pull request opened by @konstin on 2025-08-03 11:26_
+_@konstin_
 
 Previously, `simplify_conflict_markers` assumed that it can remove all conflict set together, when we need to look at each conflict set individually. Specifically, `(platform_machine == 'x86_64' and extra == 'extra-5-foo-b') or extra == 'extra-5-foo-a'` can't be reduced `platform_machine == 'x86_64'` only because it reduces to true when both conflict extras are activated.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-07T02:51:52Z
 updated_at: 2025-03-12T02:08:55Z
 url: https://github.com/astral-sh/uv/issues/11307
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # No interpreter found for Python 3.11
 
 ---
 
-_Issue opened by @magdesign on 2025-02-07 02:51_
+_@magdesign_
 
 ### Summary
 

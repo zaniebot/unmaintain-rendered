@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-19T14:34:37Z
 updated_at: 2024-07-19T16:06:59Z
 url: https://github.com/clap-rs/clap/issues/5588
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # When the user specifies a global, the env variable is still validated
 
 ---
 
-_Issue opened by @xobs on 2024-07-19 14:34_
+_@xobs_
 
 ### Please complete the following tasks
 

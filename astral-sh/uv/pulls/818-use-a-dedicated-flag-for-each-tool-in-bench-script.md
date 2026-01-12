@@ -13,14 +13,14 @@ head: charlie/flags
 created_at: 2024-01-06T19:39:14Z
 updated_at: 2024-01-06T19:45:01Z
 url: https://github.com/astral-sh/uv/pull/818
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:12Z
 ```
 
 # Use a dedicated flag for each tool in bench script
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-06 19:39_
+_@charliermarsh_
 
 Taking some of Zanie's suggestions to make the custom-path API simpler in the benchmark script. Each tool is now a dedicated argument, like:
 

@@ -14,14 +14,14 @@ head: zanie/remove-format
 created_at: 2023-10-16T15:56:04Z
 updated_at: 2023-10-17T01:59:33Z
 url: https://github.com/astral-sh/ruff/pull/7984
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Remove support for providing output format via `format` option
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-16 15:56_
+_@zanieb_
 
 See the provided breaking changes note for details.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-07-31T21:22:48Z
 updated_at: 2021-10-09T02:09:16Z
 url: https://github.com/clap-rs/clap/issues/2043
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # specifying default value makes field required
 
 ---
 
-_Issue opened by @jgarvin on 2020-07-31 21:22_
+_@jgarvin_
 
 ### How to reproduce
 

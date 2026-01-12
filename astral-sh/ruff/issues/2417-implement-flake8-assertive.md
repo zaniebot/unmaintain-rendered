@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T21:16:48Z
 updated_at: 2024-10-23T07:15:21Z
 url: https://github.com/astral-sh/ruff/issues/2417
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement `flake8-assertive`
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-31 21:16_
+_@ngnpope_
 
 [GitHub](https://github.com/jparise/flake8-assertive), [PyPI](https://pypi.org/project/flake8-assertive/).
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-26T13:12:55Z
 updated_at: 2024-11-27T07:49:35Z
 url: https://github.com/astral-sh/ruff/issues/14608
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # F-string formatting: Invalid syntax for format-spec with double quotes when targeting pre Python 3.12
 
 ---
 
-_Issue opened by @MichaReiser on 2024-11-26 13:12_
+_@MichaReiser_
 
 ```py
 f'{x:a{y=:{z:hy "user"}}} \'\'\''

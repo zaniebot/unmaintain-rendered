@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-09T04:59:33Z
 updated_at: 2023-01-09T05:36:17Z
 url: https://github.com/astral-sh/ruff/issues/1741
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # ARG002 and Protocols
 
 ---
 
-_Issue opened by @nstarman on 2023-01-09 04:59_
+_@nstarman_
 
 ARG002 is raised for `typing.Protocol` classes, which generally do not have an implementation.
 I don't think these should be reported, or at suppressed by a configuration option.

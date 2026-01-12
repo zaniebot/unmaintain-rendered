@@ -13,14 +13,14 @@ head: uv3
 created_at: 2025-08-05T19:43:28Z
 updated_at: 2025-08-05T20:19:56Z
 url: https://github.com/astral-sh/uv/pull/15091
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:34Z
 ```
 
 # additional use of Self, remove * and & where not needed
 
 ---
 
-_Pull request opened by @adamnemecek on 2025-08-05 19:43_
+_@adamnemecek_
 
 continuation of #15074.
 

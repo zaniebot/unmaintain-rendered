@@ -12,14 +12,14 @@ head: fix-D404-starts-with-space
 created_at: 2023-01-20T17:26:16Z
 updated_at: 2023-01-20T18:18:23Z
 url: https://github.com/astral-sh/ruff/pull/2036
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Fix D404 NoThisPrefix not working with whitespace.
 
 ---
 
-_Pull request opened by @Zeddicus414 on 2023-01-20 17:26_
+_@Zeddicus414_
 
 D404 should trigger for """ This is a docstring."""
 

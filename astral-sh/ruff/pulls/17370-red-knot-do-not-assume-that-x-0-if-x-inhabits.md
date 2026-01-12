@@ -13,14 +13,14 @@ head: fix-eq-static-assert
 created_at: 2025-04-12T23:21:24Z
 updated_at: 2025-04-19T13:59:01Z
 url: https://github.com/astral-sh/ruff/pull/17370
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Do not assume that `x != 0` if `x` inhabits `~Literal[0]`
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-04-12 23:21_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

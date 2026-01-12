@@ -12,14 +12,14 @@ head: sim110-ignore-await
 created_at: 2023-06-14T21:03:52Z
 updated_at: 2023-07-10T09:55:26Z
 url: https://github.com/astral-sh/ruff/pull/5101
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Ignore `reimplemented-builtin` if using `await`
 
 ---
 
-_Pull request opened by @tjkuson on 2023-06-14 21:03_
+_@tjkuson_
 
 ## Summary
 

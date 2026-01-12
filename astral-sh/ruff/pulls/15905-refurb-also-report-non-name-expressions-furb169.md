@@ -14,14 +14,14 @@ head: FURB169
 created_at: 2025-02-03T06:15:19Z
 updated_at: 2025-02-05T08:10:19Z
 url: https://github.com/astral-sh/ruff/pull/15905
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`refurb`] Also report non-name expressions (`FURB169`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-03 06:15_
+_@InSyncWithFoo_
 
 ## Summary
 

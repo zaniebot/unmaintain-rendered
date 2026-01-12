@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-30T11:50:19Z
 updated_at: 2024-04-04T04:33:26Z
 url: https://github.com/astral-sh/uv/issues/2730
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Document that it's safe to run multiple `uv` instances in a single venv
 
 ---
 
-_Issue opened by @charlesnicholson on 2024-03-30 11:50_
+_@charlesnicholson_
 
 Historically, pip has had a [hard time](https://github.com/pypa/pip/issues/2361) with multiple instances running concurrently. Pip's cache could get corrupted, the venv could get corrupted, etc.
 

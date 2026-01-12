@@ -13,14 +13,14 @@ head: zb/tool-receipt-path-platform
 created_at: 2024-06-28T21:29:48Z
 updated_at: 2024-06-29T03:34:00Z
 url: https://github.com/astral-sh/uv/pull/4638
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:22Z
 ```
 
 # Use cross-platform paths in tool receipt entry point paths
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-28 21:29_
+_@zanieb_
 
 As https://github.com/astral-sh/uv/pull/4324 did for lock files, updates the tool receipts to use portable paths. This resolves CI failures on Windows in #4634 where the toml string literal type changes depending on the platform.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-04T01:21:32Z
 updated_at: 2025-10-25T09:28:23Z
 url: https://github.com/astral-sh/uv/issues/9626
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # uv monorepo tooling support
 
 ---
 
-_Issue opened by @gracevivi523 on 2024-12-04 01:21_
+_@gracevivi523_
 
 Hi team, we are exploring the use of `uv workspace` for our python monorepo. In our setup, the monorepo contains multiple internal libraries and some depend on each other, for example:
 - `library A` depends on `library B`, which depends on `library C`

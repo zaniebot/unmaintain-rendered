@@ -13,14 +13,14 @@ head: ww/release-publish-order
 created_at: 2025-12-04T19:30:39Z
 updated_at: 2025-12-11T16:03:16Z
 url: https://github.com/astral-sh/uv/pull/16989
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:33Z
 ```
 
 # Publish PyPI releases before crates.io artifacts
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-04 19:30_
+_@woodruffw_
 
 ## Summary
 

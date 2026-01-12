@@ -14,14 +14,14 @@ head: jane/server/ruff-source-actions
 created_at: 2024-04-13T06:27:38Z
 updated_at: 2024-04-16T18:26:23Z
 url: https://github.com/astral-sh/ruff/pull/10916
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Enable ruff-specific source actions
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-13 06:27_
+_@snowsignal_
 
 ## Summary
 

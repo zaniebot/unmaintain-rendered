@@ -12,14 +12,14 @@ head: charlie/pth
 created_at: 2023-01-25T01:40:24Z
 updated_at: 2023-01-25T01:40:39Z
 url: https://github.com/astral-sh/ruff/pull/2144
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Avoid generating dirty call paths
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-25 01:40_
+_@charliermarsh_
 
 Closes #2140.
 

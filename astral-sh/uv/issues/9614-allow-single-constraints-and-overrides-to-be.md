@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-03T18:08:29Z
 updated_at: 2024-12-07T22:21:44Z
 url: https://github.com/astral-sh/uv/issues/9614
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # Allow single constraints and overrides to be passed via the CLI
 
 ---
 
-_Issue opened by @zanieb on 2024-12-03 18:08_
+_@zanieb_
 
 The `--constraint` and `--override` flags should be updated to allow single constraints (in addition to the current behavior of accepting a file path), e.g., `--constraint "foo>=0.1"`. In the `--constraint` case, this is mostly unambiguous — if there's a version specifier then we can treat it as a constraint. It is possible to have a file with that name, but it seems very unlikely in practice. In the `--override` case, we do allow overriding a dependency to have _no_ specifiers, e.g., `--override foo`. I'm not sure if we should allow this via this interface? It seems nice to avoid the ambiguity. Historically, we've avoided inspecting the file system to determine the behavior of arguments and I think that is a good goal to maintain.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-19T13:00:30Z
 updated_at: 2024-09-25T22:13:04Z
 url: https://github.com/astral-sh/uv/issues/7547
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Is is a problem sharing uv cache between different versions
 
 ---
 
-_Issue opened by @freand76 on 2024-09-19 13:00_
+_@freand76_
 
 We use uv in a CI/CD environment where the .cache is shared within a build node.
 

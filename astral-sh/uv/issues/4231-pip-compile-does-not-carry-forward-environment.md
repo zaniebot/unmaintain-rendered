@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-11T14:46:22Z
 updated_at: 2024-06-11T17:36:06Z
 url: https://github.com/astral-sh/uv/issues/4231
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # pip compile does not carry forward environment markers like sys_platform
 
 ---
 
-_Issue opened by @AbdealiLoKo on 2024-06-11 14:46_
+_@AbdealiLoKo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

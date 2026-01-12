@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-08T21:28:11Z
 updated_at: 2024-08-09T18:27:40Z
 url: https://github.com/astral-sh/uv/issues/5935
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Installing packages sourced from one environment to another
 
 ---
 
-_Issue opened by @chrisrodrigue on 2024-08-08 21:28_
+_@chrisrodrigue_
 
 Is there a way that I can utilize `uv` to install packages sourced from a conda base environment into a virtual environment created with `uv`?
 

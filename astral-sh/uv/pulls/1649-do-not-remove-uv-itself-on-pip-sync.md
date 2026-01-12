@@ -13,14 +13,14 @@ head: do-not-uninstall-self-in-venv
 created_at: 2024-02-18T14:35:57Z
 updated_at: 2024-02-18T16:25:58Z
 url: https://github.com/astral-sh/uv/pull/1649
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # Do not remove uv itself on pip sync
 
 ---
 
-_Pull request opened by @flyaroundme on 2024-02-18 14:35_
+_@flyaroundme_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

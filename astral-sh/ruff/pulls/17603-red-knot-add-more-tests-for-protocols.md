@@ -14,14 +14,14 @@ head: alex/more-protocol-tests
 created_at: 2025-04-24T11:06:20Z
 updated_at: 2025-04-24T12:11:33Z
 url: https://github.com/astral-sh/ruff/pull/17603
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Add more tests for protocols
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-24 11:06_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-07T13:03:12Z
 updated_at: 2024-03-08T14:10:16Z
 url: https://github.com/astral-sh/uv/issues/2276
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # uv pip wont accept my requirements file
 
 ---
 
-_Issue opened by @yashranjan1 on 2024-03-07 13:03_
+_@yashranjan1_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

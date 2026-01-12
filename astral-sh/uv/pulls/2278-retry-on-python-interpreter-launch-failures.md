@@ -13,14 +13,14 @@ head: konsti/ignore-python-launch-failures
 created_at: 2024-03-07T14:15:39Z
 updated_at: 2024-03-07T15:07:59Z
 url: https://github.com/astral-sh/uv/pull/2278
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:57Z
 ```
 
 # Retry on python interpreter launch failures
 
 ---
 
-_Pull request opened by @konstin on 2024-03-07 14:15_
+_@konstin_
 
 Sometimes, the first time we read from the stdout of the bytecode compiler python subprocess, we get an empty string back (no newline). If we try to write to stdin, it will often be a broken pipe (#2245). After we got an empty string the first time, we will get the same empty string if we read a line again.
 

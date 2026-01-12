@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-15T02:48:24Z
 updated_at: 2025-02-17T09:40:25Z
 url: https://github.com/astral-sh/ruff/issues/16174
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RUF012 does not respect type aliases
 
 ---
 
-_Issue opened by @marcuslimdw on 2025-02-15 02:48_
+_@marcuslimdw_
 
 ### Description
 

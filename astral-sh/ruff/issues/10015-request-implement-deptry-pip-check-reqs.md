@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-17T03:04:50Z
 updated_at: 2025-08-02T21:19:57Z
 url: https://github.com/astral-sh/ruff/issues/10015
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Request: Implement deptry / pip-check-reqs
 
 ---
 
-_Issue opened by @adamtheturtle on 2024-02-17 03:04_
+_@adamtheturtle_
 
 [deptry](https://fpgmaas.github.io/deptry/) and [pip-check-reqs](https://github.com/r1chardj0n3s/pip-check-reqs) are similar tools.
 

@@ -13,14 +13,14 @@ head: charlie/nursery-docs
 created_at: 2023-07-10T02:46:30Z
 updated_at: 2023-07-10T03:28:47Z
 url: https://github.com/astral-sh/ruff/pull/5637
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add a link to the nursery; tweak icons
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-10 02:46_
+_@charliermarsh_
 
 ## Summary
 

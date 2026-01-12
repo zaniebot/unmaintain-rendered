@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-28T23:49:07Z
 updated_at: 2025-11-06T00:45:35Z
 url: https://github.com/astral-sh/ty/issues/1450
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # ty lsp not publishing diagnostics to Zed
 
 ---
 
-_Issue opened by @insane-dreamer on 2025-10-28 23:49_
+_@insane-dreamer_
 
 ### Summary
 

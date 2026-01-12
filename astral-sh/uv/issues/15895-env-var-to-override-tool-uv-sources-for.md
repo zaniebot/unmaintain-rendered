@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-16T16:17:49Z
 updated_at: 2025-12-03T08:17:31Z
 url: https://github.com/astral-sh/uv/issues/15895
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # Env var to override `[tool.uv.sources]` for development
 
 ---
 
-_Issue opened by @mawildoer on 2025-09-16 16:17_
+_@mawildoer_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-13T08:56:59Z
 updated_at: 2025-10-14T06:33:19Z
 url: https://github.com/astral-sh/ruff/issues/20838
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Missing "What it does" details on D300
 
 ---
 
-_Issue opened by @ulgens on 2025-10-13 08:56_
+_@ulgens_
 
 ### Summary
 

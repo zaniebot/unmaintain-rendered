@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-02T18:51:41Z
 updated_at: 2025-10-06T10:21:51Z
 url: https://github.com/astral-sh/uv/issues/16105
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:23Z
 ```
 
 # `uv cache prune --ci` sometimes takes forever on GitHub runners
 
 ---
 
-_Issue opened by @eifinger on 2025-10-02 18:51_
+_@eifinger_
 
 ### Summary
 

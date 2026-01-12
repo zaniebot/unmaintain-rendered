@@ -13,14 +13,14 @@ head: david/ty-3.14-update
 created_at: 2025-10-08T08:17:50Z
 updated_at: 2025-10-08T09:40:48Z
 url: https://github.com/astral-sh/ruff/pull/20759
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] Use 3.14 as the default version
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-08 08:17_
+_@sharkdp_
 
 ## Summary
 

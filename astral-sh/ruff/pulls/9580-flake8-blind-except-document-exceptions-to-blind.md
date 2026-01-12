@@ -13,14 +13,14 @@ head: charlie/ble
 created_at: 2024-01-19T16:44:39Z
 updated_at: 2024-01-19T17:06:07Z
 url: https://github.com/astral-sh/ruff/pull/9580
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`flake8-blind-except`] Document exceptions to `blind-except` rule
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-19 16:44_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9571.
 

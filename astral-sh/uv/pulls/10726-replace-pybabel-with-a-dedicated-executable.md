@@ -13,14 +13,14 @@ head: charlie/tool
 created_at: 2025-01-17T23:28:54Z
 updated_at: 2025-01-21T17:26:29Z
 url: https://github.com/astral-sh/uv/pull/10726
-synced_at: 2026-01-10T11:45:06Z
+synced_at: 2026-01-12T16:09:27Z
 ```
 
 # Replace `pybabel` with a dedicated executable package
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-17 23:28_
+_@charliermarsh_
 
 ## Summary
 

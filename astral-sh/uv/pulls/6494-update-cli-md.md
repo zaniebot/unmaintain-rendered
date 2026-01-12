@@ -12,14 +12,14 @@ head: patch-3
 created_at: 2024-08-23T07:05:11Z
 updated_at: 2024-08-23T07:13:43Z
 url: https://github.com/astral-sh/uv/pull/6494
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:23Z
 ```
 
 # Update cli.md
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-08-23 07:05_
+_@hauntsaninja_
 
 Noticed a typo
 

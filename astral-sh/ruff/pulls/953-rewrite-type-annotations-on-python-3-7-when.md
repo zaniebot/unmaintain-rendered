@@ -12,14 +12,14 @@ head: charlie/deferred
 created_at: 2022-11-29T01:55:57Z
 updated_at: 2022-11-29T01:57:39Z
 url: https://github.com/astral-sh/ruff/pull/953
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Rewrite type annotations on Python 3.7 when __future__ enabled
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-29 01:55_
+_@charliermarsh_
 
 Resolves #949.
 

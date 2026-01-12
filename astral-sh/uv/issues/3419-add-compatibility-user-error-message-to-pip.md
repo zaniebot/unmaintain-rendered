@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-07T13:50:49Z
 updated_at: 2024-05-07T14:59:55Z
 url: https://github.com/astral-sh/uv/issues/3419
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Add compatibility `--user` error message to `pip install`
 
 ---
 
-_Issue opened by @zanieb on 2024-05-07 13:50_
+_@zanieb_
 
 See #3418 / #1185
 

@@ -14,14 +14,14 @@ head: alex/moduletype-fallback-test
 created_at: 2025-02-21T22:19:15Z
 updated_at: 2025-02-21T22:28:43Z
 url: https://github.com/astral-sh/ruff/pull/16310
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Add a regression test for recent improvement to `TypeInferenceBuilder::infer_name_load()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-21 22:19_
+_@AlexWaygood_
 
 ## Summary
 

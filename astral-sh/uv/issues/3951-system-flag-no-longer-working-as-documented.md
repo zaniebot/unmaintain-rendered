@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T21:59:26Z
 updated_at: 2024-06-10T16:19:42Z
 url: https://github.com/astral-sh/uv/issues/3951
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # `--system` flag no longer working as documented
 
 ---
 
-_Issue opened by @dpoznik on 2024-05-31 21:59_
+_@dpoznik_
 
 I have been using `uv` in virtual environments managed by `pyenv virtualenv`. The `--system` flag worked great with `uv` 0.1.45 but does not work with 0.2.5, and the docs still suggest that it should still work:
 > For convenience, `uv pip install --system` will install into the system Python environment, as an approximate shorthand for, e.g., `uv pip install --python=$(which python3)`. 

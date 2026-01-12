@@ -13,14 +13,14 @@ head: charlie/v
 created_at: 2024-07-17T00:42:31Z
 updated_at: 2024-07-17T00:53:14Z
 url: https://github.com/astral-sh/uv/pull/5138
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:39Z
 ```
 
 # Update pre-commit version with rooster
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-17 00:42_
+_@charliermarsh_
 
 _No description provided._
 

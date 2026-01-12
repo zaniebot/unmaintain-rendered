@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-17T03:08:58Z
 updated_at: 2024-02-17T19:14:13Z
 url: https://github.com/astral-sh/uv/issues/1566
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # Feature request: machine-readable/parseable output
 
 ---
 
-_Issue opened by @joeyballentine on 2024-02-17 03:08_
+_@joeyballentine_
 
 Hi! This seems like a really cool project that could end up being a really nice replacement for pip :)
 

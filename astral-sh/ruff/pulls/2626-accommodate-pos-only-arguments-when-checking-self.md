@@ -13,14 +13,14 @@ head: charlie/N805
 created_at: 2023-02-07T15:49:07Z
 updated_at: 2023-02-07T15:50:52Z
 url: https://github.com/astral-sh/ruff/pull/2626
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Accommodate pos-only arguments when checking self name
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-07 15:49_
+_@charliermarsh_
 
 Closes #2624.
 

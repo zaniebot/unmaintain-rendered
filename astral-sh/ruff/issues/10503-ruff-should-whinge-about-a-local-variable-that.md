@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-21T04:31:09Z
 updated_at: 2024-03-21T08:18:31Z
 url: https://github.com/astral-sh/ruff/issues/10503
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # (🎁) Ruff should whinge about a local variable that prefixed with an underscore, and is also used
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-03-21 04:31_
+_@KotlinIsland_
 
 "underscore", "variable", "used"
 

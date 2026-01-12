@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-03T09:37:39Z
 updated_at: 2024-11-05T13:43:05Z
 url: https://github.com/astral-sh/uv/issues/8771
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:34Z
 ```
 
 # uv run with only a dependency-group
 
 ---
 
-_Issue opened by @nijel on 2024-11-03 09:37_
+_@nijel_
 
 I'd like to execute a tool of version pinned as a dependency group (PEP 735) in `pyproject.toml`. I was thinking about using `uv run` for that, but I don't see a way to omit it installing project.
 

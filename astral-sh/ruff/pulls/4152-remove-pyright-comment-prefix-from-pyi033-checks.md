@@ -13,14 +13,14 @@ head: 4151_pyi033_falsepos
 created_at: 2023-04-29T19:32:06Z
 updated_at: 2023-06-15T21:14:07Z
 url: https://github.com/astral-sh/ruff/pull/4152
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Remove `pyright` comment prefix from PYI033 checks
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-04-29 19:32_
+_@evanrittenhouse_
 
 Should close #4151 by removing `pyright` prefixes from the specified regex.
 

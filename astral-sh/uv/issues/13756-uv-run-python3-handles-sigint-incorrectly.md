@@ -3,21 +3,21 @@ number: 13756
 title: "`uv run python3` handles SIGINT incorrectly"
 type: issue
 state: closed
-author: Nemowang2003
+author: nemowang2003
 labels:
   - bug
 assignees: []
 created_at: 2025-05-31T21:33:43Z
 updated_at: 2025-06-01T15:10:55Z
 url: https://github.com/astral-sh/uv/issues/13756
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # `uv run python3` handles SIGINT incorrectly
 
 ---
 
-_Issue opened by @Nemowang2003 on 2025-05-31 21:33_
+_@nemowang2003_
 
 ### Summary
 
@@ -88,11 +88,11 @@ Python 3.13.3
 
 ---
 
-_Label `bug` added by @Nemowang2003 on 2025-05-31 21:33_
+_Label `bug` added by @nemowang2003 on 2025-05-31 21:33_
 
 ---
 
-_Comment by @Nemowang2003 on 2025-05-31 21:41_
+_Comment by @nemowang2003 on 2025-05-31 21:41_
 
 And when I deleted the `input()` line, the behavior changed again.
 ```python
@@ -141,7 +141,7 @@ i.e., https://github.com/astral-sh/uv/issues/12108
 
 ---
 
-_Comment by @Nemowang2003 on 2025-06-01 05:55_
+_Comment by @nemowang2003 on 2025-06-01 05:55_
 
 I see why it's designed to forward SIGINT when received at second time.
 I am working on my personal scripts, therefore it's really not quite a common usage.
@@ -149,7 +149,7 @@ Thank you for response, I think I should close this issue as duplicated.
 
 ---
 
-_Closed by @Nemowang2003 on 2025-06-01 05:55_
+_Closed by @nemowang2003 on 2025-06-01 05:55_
 
 ---
 

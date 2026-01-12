@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-05T07:47:17Z
 updated_at: 2023-04-05T22:03:13Z
 url: https://github.com/astral-sh/ruff/issues/3885
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False positive for B031 with generator used in method
 
 ---
 
-_Issue opened by @153957 on 2023-04-05 07:47_
+_@153957_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

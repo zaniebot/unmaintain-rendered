@@ -12,14 +12,14 @@ head: rc-fix-q000-and-q002
 created_at: 2024-03-02T17:10:10Z
 updated_at: 2024-03-18T01:37:12Z
 url: https://github.com/astral-sh/ruff/pull/10199
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`flake8-quotes`] Fix Autofix Error (`Q000, Q002`)
 
 ---
 
-_Pull request opened by @robincaloudis on 2024-03-02 17:10_
+_@robincaloudis_
 
 ## Summary
 In issue https://github.com/astral-sh/ruff/issues/6785 it is reported that a docstring in the form of `''"assert" ' SAM macro definitions '''` is autocorrected to `"""assert" ' SAM macro definitions '''` (note the triple quotes one only one side), which breaks the python program due `undetermined string lateral`.

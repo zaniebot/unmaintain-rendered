@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-11T10:54:01Z
 updated_at: 2025-12-12T16:11:23Z
 url: https://github.com/astral-sh/ty/issues/128
-synced_at: 2026-01-10T01:54:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Return type inference
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-11 10:54_
+_@sharkdp_
 
 It would be great if we could infer return types for functions where it is not annotated
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-28T13:12:48Z
 updated_at: 2024-08-23T14:14:19Z
 url: https://github.com/astral-sh/uv/issues/5514
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # uv self update does not update
 
 ---
 
-_Issue opened by @CruzanCaramele on 2024-07-28 13:12_
+_@CruzanCaramele_
 
 
 

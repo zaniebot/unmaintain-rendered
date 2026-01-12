@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-08T10:24:36Z
 updated_at: 2025-12-08T13:18:31Z
 url: https://github.com/astral-sh/uv/issues/17028
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # File URLs to Windows networks paths wrongly rewritten [not a bug, user error]
 
 ---
 
-_Issue opened by @FabianHellerViseca on 2025-12-08 10:24_
+_@FabianHellerViseca_
 
 ### Summary
 

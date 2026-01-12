@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-25T03:22:06Z
 updated_at: 2023-07-25T15:17:28Z
 url: https://github.com/astral-sh/ruff/issues/6051
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # S101 (assert detected) conflicts with mypy type narrowing
 
 ---
 
-_Issue opened by @messense on 2023-07-25 03:22_
+_@messense_
 
 ```python
 from typing import Any

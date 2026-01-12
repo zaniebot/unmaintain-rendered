@@ -13,14 +13,14 @@ head: revert-codspeed-criterion-compat-layer
 created_at: 2024-08-05T06:53:19Z
 updated_at: 2024-08-05T08:03:03Z
 url: https://github.com/astral-sh/ruff/pull/12680
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Revert "Remove criterion/codspeed compat layer (#12524)"
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-05 06:53_
+_@MichaReiser_
 
 ## Summary
 

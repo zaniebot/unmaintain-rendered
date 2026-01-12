@@ -13,14 +13,14 @@ head: typeddict_disjoint
 created_at: 2025-12-18T00:51:30Z
 updated_at: 2025-12-19T17:58:18Z
 url: https://github.com/astral-sh/ruff/pull/22044
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Implement disjointness for TypedDicts
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-12-18 00:51_
+_@oconnor663_
 
 This is a preliminary step to tagged union narrowing for `TypedDict`: https://github.com/astral-sh/ty/issues/1479
 
@@ -60,7 +60,19 @@ _@oconnor663 reviewed on 2025-12-18 00:53_
 
 ---
 
+_Review comment by @oconnor663 on `crates/ty_python_semantic/resources/mdtest/typed_dict.md`:1896 on 2025-12-18 00:53_
+
+Is this sort of "one dynamic type winds up in multiple fields" situation ever something we reason about? Is there a name for this?
+
+---
+
 _@oconnor663 reviewed on 2025-12-18 00:54_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types.rs`:4050 on 2025-12-18 00:54_
+
+Could we just make this `ConstraintSet::from(true)` and declare that `TypedDict`s are disjoint from anything that isn't a `TypedDict`? I assume cases like `object` and `Mapping` are handled above? (But I should probably test for that...)
 
 ---
 
@@ -284,6 +296,12 @@ _@oconnor663 reviewed on 2025-12-18 01:21_
 
 ---
 
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types.rs`:4050 on 2025-12-18 01:21_
+
+I added a "Disjointness with other types" section to the mdtests.
+
+---
+
 _Label `ty` added by @MichaReiser on 2025-12-18 06:58_
 
 ---
@@ -293,6 +311,149 @@ _Renamed from "[ty] `TypedDictType::is_disjoint_from_impl`" to "[ty] Implement d
 ---
 
 _@AlexWaygood reviewed on 2025-12-18 12:26_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types.rs`:4052 on 2025-12-18 12:26_
+
+I'm not sure cases like `object` and `Mapping` _are_ handled above. But yes, `TypedDict` types are disjoint from almost all non-`TypedDict` types. For now, I would do this:
+
+````diff
+diff --git a/crates/ty_python_semantic/resources/mdtest/typed_dict.md b/crates/ty_python_semantic/resources/mdtest/typed_dict.md
+index c303a61642..f7cff1f03b 100644
+--- a/crates/ty_python_semantic/resources/mdtest/typed_dict.md
++++ b/crates/ty_python_semantic/resources/mdtest/typed_dict.md
+@@ -2002,9 +2002,11 @@ class RegularNonTD: ...
+ 
+ static_assert(not is_disjoint_from(TD, object))
+ static_assert(not is_disjoint_from(TD, Mapping[str, object]))
+-# TODO: We should be able to assert that these are disjoint.
+-static_assert(not is_disjoint_from(TD, Mapping[int, object]))
+-static_assert(not is_disjoint_from(TD, RegularNonTD))
++static_assert(is_disjoint_from(TD, Mapping[int, object]))
++static_assert(is_disjoint_from(TD, RegularNonTD))
++
++# TODO: should pass
++static_assert(is_disjoint_from(TD, dict[str, str]))  # error: [static-assert-error]
+ ```
+ 
+ [subtyping section]: https://typing.python.org/en/latest/spec/typeddict.html#subtyping-between-typeddict-types
+diff --git a/crates/ty_python_semantic/src/types.rs b/crates/ty_python_semantic/src/types.rs
+index edb68a5b2c..d79173686e 100644
+--- a/crates/ty_python_semantic/src/types.rs
++++ b/crates/ty_python_semantic/src/types.rs
+@@ -4046,10 +4046,17 @@ impl<'db> Type<'db> {
+                 })
+             }
+ 
+-            (Type::TypedDict(_), _) | (_, Type::TypedDict(_)) => {
+-                // TODO: Implement disjointness for TypedDict with other types.
+-                ConstraintSet::from(false)
+-            }
++            (Type::TypedDict(_), other) | (other, Type::TypedDict(_)) => KnownClass::Dict
++                .to_specialized_instance(db, [KnownClass::Str.to_instance(db), Type::any()])
++                .has_relation_to_impl(
++                    db,
++                    other,
++                    inferable,
++                    TypeRelation::Assignability,
++                    relation_visitor,
++                    disjointness_visitor,
++                )
++                .negate(db),
+         }
+     }
+````
+
+What this is saying is: for any type `T`, if `dict[str, Any]` is not assignable to `T`, then all `TypedDict` types will always be disjoint from `T`. (Actually, that might be good to add as a comment, if you accept my patch above.)
+
+This still leave us with some false negatives: you can see the added failing test I added in my patch above. But it gets rid fo most false negatives, and it's okay for our disjointness implementation to have some false negatives. The main thing we want to avoid is false positives.
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/typed_dict.md`:1 on 2025-12-18 14:09_
+
+Fantastic test suite!
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/typed_dict.md`:1896 on 2025-12-18 14:11_
+
+hmm, yeah, this is pretty interesting. No, I haven't come across this problem before, but thinking about it, it must exist for other generic types in our model too. I wouldn't worry about it too much right now, but it could be worth opening a followup issue to discuss it.
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/typed_dict.rs`:348 on 2025-12-18 14:57_
+
+nit: if this whole comment uses `///` rather than `//`, it'll be rendered as a *beautiful* tooltip when I hover over the method in VSCode locally :-)
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/typed_dict.rs`:406 on 2025-12-18 15:00_
+
+🙃
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/typed_dict.rs`:416 on 2025-12-18 15:05_
+
+if we never look at the name here, can we simplify slightly by having `btreemap_overlapping_items` only yield the value pairs?
+
+```diff
+diff --git a/crates/ty_python_semantic/src/types/typed_dict.rs b/crates/ty_python_semantic/src/types/typed_dict.rs
+index d392a85db5..2d080f9104 100644
+--- a/crates/ty_python_semantic/src/types/typed_dict.rs
++++ b/crates/ty_python_semantic/src/types/typed_dict.rs
+@@ -413,7 +413,7 @@ impl<'db> TypedDictType<'db> {
+         relation_visitor: &HasRelationToVisitor<'db>,
+     ) -> ConstraintSet<'db> {
+         let fields_in_common = btreemap_overlapping_items(self.items(db), other.items(db));
+-        fields_in_common.when_any(db, |(_name, (self_field, other_field))| {
++        fields_in_common.when_any(db, |(self_field, other_field)| {
+             // Condition 1 above.
+             if self_field.is_required() || other_field.is_required() {
+                 if (!self_field.is_required() && !self_field.is_read_only())
+@@ -1051,14 +1051,14 @@ bitflags! {
+ 
+ impl get_size2::GetSize for TypedDictFieldFlags {}
+ 
+-/// Yield all the key/val pairs where the same key is present in both `BTreeMap`s. Take advantage
++/// Yield all the values where the same key is present in both `BTreeMap`s. Take advantage
+ /// of the fact that keys are sorted to walk through each map once without doing any lookups. It
+ /// would be nice if `BTreeMap` had something like `BTreeSet::intersection` that did this for us,
+ /// but as far as I know we have to do it ourselves. Life is hard.
+ fn btreemap_overlapping_items<'a, K, V1, V2>(
+     left: &'a BTreeMap<K, V1>,
+     right: &'a BTreeMap<K, V2>,
+-) -> impl Iterator<Item = (&'a K, (&'a V1, &'a V2))>
++) -> impl Iterator<Item = (&'a V1, &'a V2)>
+ where
+     K: Ord,
+ {
+@@ -1073,7 +1073,7 @@ where
+                     // Matching keys. Yield this pair of values and advance both iterators.
+                     left_items.next();
+                     right_items.next();
+-                    return Some((left_key, (left_val, right_val)));
++                    return Some((left_val, right_val));
+                 }
+                 Ordering::Less => {
+                     // `left_items` is behind `right_items` in key order. Advance `left_items`.
+@@ -1097,11 +1097,11 @@ fn test_btreemap_overlapping_items() {
+     let right = BTreeMap::from_iter([("b", 2.0), ("d", 4.0), ("f", 6.0)]);
+     assert_eq!(
+         btreemap_overlapping_items(&left, &right).collect::<Vec<_>>(),
+-        vec![(&"b", (&2, &2.0)), (&"d", (&4, &4.0))],
++        vec![(&2, &2.0), (&4, &4.0)],
+     );
+     assert_eq!(
+         btreemap_overlapping_items(&right, &left).collect::<Vec<_>>(),
+-        vec![(&"b", (&2.0, &2)), (&"d", (&4.0, &4))],
++        vec![(&2.0, &2), (&4.0, &4)],
+     );
+ 
+     // A case where one side is empty.
+```
 
 ---
 
@@ -306,7 +467,170 @@ _@oconnor663 reviewed on 2025-12-18 16:33_
 
 ---
 
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types/typed_dict.rs`:348 on 2025-12-18 16:33_
+
+I had it that way until 367e2f7ddff57ca2c048d9951dc2403f00732044 :sob::
+```
+Clippy and Cargo want very different things here. Clippy demands that
+the numbered list is indented, but that makes Cargo think it's Rust code
+and start trying to compile it. I don't know how to make them both
+happy, so I'm making it a regular `//` comment block instead of an
+actual `///` doc comment, which seems to shut them both up...
+```
+
+---
+
 _@AlexWaygood reviewed on 2025-12-18 16:57_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/typed_dict.rs`:348 on 2025-12-18 16:57_
+
+Bah, that's annoying. You could put the numbered list inside a ```` ```none ```` fence? This seems to appease both Clippy and Cargo:
+
+````diff
+
+diff --git a/crates/ty_python_semantic/src/types/typed_dict.rs b/crates/ty_python_semantic/src/types/typed_dict.rs
+index d392a85db5..e25ad80d07 100644
+--- a/crates/ty_python_semantic/src/types/typed_dict.rs
++++ b/crates/ty_python_semantic/src/types/typed_dict.rs
+@@ -343,67 +343,73 @@ impl<'db> TypedDictType<'db> {
+         )
+     }
+ 
+-    // Two `TypedDict`s `A` and `B` are disjoint if it's impossible to come up with a third
+-    // `TypedDict` `C` that's fully-static and assignable to both of them.
+-    //
+-    // `TypedDict` assignability is determined field-by-field, so we determine disjointness
+-    // similarly. For any field that's only in `A`, it's always possible for our hypothetical `C`
+-    // to copy/paste that field without losing assignability to `B` (and vice versa), so we only
+-    // need to consider fields that are present in both `A` and `B`.
+-    //
+-    // There are three properties of each field to consider: the declared type, whether it's
+-    // mutable ("mut" vs "imm" below), and whether it's required ("req" vs "opt" below). Here's a
+-    // table summary of the restrictions on the declared type of a source field (for us that means
+-    // in `C`, which we want to be assignable to both `A` and `B`) given a destination field (for
+-    // us that means in either `A` or `B`). For completeness we'll also include the possibility
+-    // that the source field is missing entirely, though we'll soon see that we can ignore that
+-    // case. This table is essentially what `has_relation_to_impl` implements above. Here
+-    // "equivalent" means the source and destination types must be equivalent/compatible,
+-    // "assignable" means the source must be assignable to the destination, and "-" means the
+-    // assignment is never allowed:
+-    //
+-    //    source→ | mut + req  | mut + opt  | imm + req  | imm + opt  |   [missing]   |
+-    // ↓dest      |            |            |            |            |               |
+-    // -----------|------------|------------|------------|------------|---------------|
+-    // mut + req  | equivalent |     -      |     -      |     -      |       -       |
+-    // mut + opt  |     -      | equivalent |     -      |     -      |       -       |
+-    // imm + req  | assignable |     -      | assignable |     -      |       -       |
+-    // imm + opt  | assignable | assignable | assignable | assignable | [dest is obj] |
+-    //
+-    // We can cut that table down substantially by noticing two things:
+-    //
+-    // - We don't need to consider the cases where the source field (in `C`) is `ReadOnly`/"imm",
+-    //   because the mutable version of the same field is always "strictly more assignable". In
+-    //   other words, nothing in the `TypedDict` assignability rules ever requires a source field
+-    //   to be immutable.
+-    // - We don't need to consider the special case where the source field is missing, because
+-    //   that's only allowed when the destination is `ReadOnly[NotRequired[object]]`, which is
+-    //   compatible with *any* choice of source field.
+-    //
+-    // The cases we actually need to reason about are this smaller table:
+-    //
+-    //    source→ | mut + req  | mut + opt  |
+-    // ↓dest      |            |            |
+-    // -----------|------------|------------|
+-    // mut + req  | equivalent |     -      |
+-    // mut + opt  |     -      | equivalent |
+-    // imm + req  | assignable |     -      |
+-    // imm + opt  | assignable | assignable |
+-    //
+-    // So, given a field name that's in both `A` and `B`, here are the conditions where it's
+-    // *impossible* to choose a source field for `C` that's compatible with both destinations,
+-    // which tells us that `A` and `B` are disjoint:
+-    //
+-    //  1. If one side is "mut+opt" (which forces the field in `C` to be "opt") and the other
+-    //     side is "req" (which forces the field in `C` to be "req").
+-    // 2a. If both sides are mutable, and their types are not equivalent/compatible. (Because
+-    //     the type in `C` must be compatible with both of them.)
+-    // 2b. If one sides is mutable, and its type is not assignable to the immutable side's type.
+-    //     (Because the type in `C` must be compatible with the mutable side.)
+-    // 2c. If both sides are immutable, and their types are disjoint. (Because the type in `C`
+-    //      must be assignable to both.)
+-    //
+-    // TODO: Adding support for `closed` and `extra_items` will complicate this.
++    /// Two `TypedDict`s `A` and `B` are disjoint if it's impossible to come up with a third
++    /// `TypedDict` `C` that's fully-static and assignable to both of them.
++    ///
++    /// `TypedDict` assignability is determined field-by-field, so we determine disjointness
++    /// similarly. For any field that's only in `A`, it's always possible for our hypothetical `C`
++    /// to copy/paste that field without losing assignability to `B` (and vice versa), so we only
++    /// need to consider fields that are present in both `A` and `B`.
++    ///
++    /// There are three properties of each field to consider: the declared type, whether it's
++    /// mutable ("mut" vs "imm" below), and whether it's required ("req" vs "opt" below). Here's a
++    /// table summary of the restrictions on the declared type of a source field (for us that means
++    /// in `C`, which we want to be assignable to both `A` and `B`) given a destination field (for
++    /// us that means in either `A` or `B`). For completeness we'll also include the possibility
++    /// that the source field is missing entirely, though we'll soon see that we can ignore that
++    /// case. This table is essentially what `has_relation_to_impl` implements above. Here
++    /// "equivalent" means the source and destination types must be equivalent/compatible,
++    /// "assignable" means the source must be assignable to the destination, and "-" means the
++    /// assignment is never allowed:
++    ///
++    /// ```none
++    ///    source→ | mut + req  | mut + opt  | imm + req  | imm + opt  |   [missing]   |
++    /// ↓dest      |            |            |            |            |               |
++    /// -----------|------------|------------|------------|------------|---------------|
++    /// mut + req  | equivalent |     -      |     -      |     -      |       -       |
++    /// mut + opt  |     -      | equivalent |     -      |     -      |       -       |
++    /// imm + req  | assignable |     -      | assignable |     -      |       -       |
++    /// imm + opt  | assignable | assignable | assignable | assignable | [dest is obj] |
++    /// ```
++    ///
++    /// We can cut that table down substantially by noticing two things:
++    ///
++    /// - We don't need to consider the cases where the source field (in `C`) is `ReadOnly`/"imm",
++    ///   because the mutable version of the same field is always "strictly more assignable". In
++    ///   other words, nothing in the `TypedDict` assignability rules ever requires a source field
++    ///   to be immutable.
++    /// - We don't need to consider the special case where the source field is missing, because
++    ///   that's only allowed when the destination is `ReadOnly[NotRequired[object]]`, which is
++    ///   compatible with *any* choice of source field.
++    ///
++    /// The cases we actually need to reason about are this smaller table:
++    ///
++    /// ```none
++    ///    source→ | mut + req  | mut + opt  |
++    /// ↓dest      |            |            |
++    /// -----------|------------|------------|
++    /// mut + req  | equivalent |     -      |
++    /// mut + opt  |     -      | equivalent |
++    /// imm + req  | assignable |     -      |
++    /// imm + opt  | assignable | assignable |
++    /// ```
++    ///
++    /// So, given a field name that's in both `A` and `B`, here are the conditions where it's
++    /// *impossible* to choose a source field for `C` that's compatible with both destinations,
++    /// which tells us that `A` and `B` are disjoint:
++    ///
++    /// ```none
++    /// 1. If one side is "mut+opt" (which forces the field in `C` to be "opt") and the other
++    ///    side is "req" (which forces the field in `C` to be "req").
++    /// 2a. If both sides are mutable, and their types are not equivalent/compatible. (Because
++    ///    the type in `C` must be compatible with both of them.)
++    /// 2b. If one sides is mutable, and its type is not assignable to the immutable side's type.
++    ///    (Because the type in `C` must be compatible with the mutable side.)
++    /// 2c. If both sides are immutable, and their types are disjoint. (Because the type in `C`
++    ///    must be assignable to both.)
++    /// ```
++    ///
++    /// TODO: Adding support for `closed` and `extra_items` will complicate this.
+     pub(crate) fn is_disjoint_from_impl(
+         self,
+         db: &'db dyn Db,
+
+````
 
 ---
 
@@ -314,11 +638,29 @@ _@oconnor663 reviewed on 2025-12-18 19:53_
 
 ---
 
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types/typed_dict.rs`:416 on 2025-12-18 19:53_
+
+1addb0bdbd
+
+---
+
 _@oconnor663 reviewed on 2025-12-18 19:54_
 
 ---
 
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types.rs`:4052 on 2025-12-18 19:54_
+
+Oh that's sick, ty. df5bc749a8
+
+---
+
 _@oconnor663 reviewed on 2025-12-18 19:55_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types/typed_dict.rs`:348 on 2025-12-18 19:55_
+
+I replaced 2a/2b/2c with 2/3/4, and that seemed to work: f64830ab4a
 
 ---
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-17T16:05:58Z
 updated_at: 2023-07-17T16:55:10Z
 url: https://github.com/astral-sh/ruff/issues/5836
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [question] `I001`, joined imports and `import as`
 
 ---
 
-_Issue opened by @dorschw on 2023-07-17 16:05_
+_@dorschw_
 
 Hi,`I001` suggests
 ```diff

@@ -14,14 +14,14 @@ head: brent/syn-duplicate-match-key
 created_at: 2025-04-01T18:06:24Z
 updated_at: 2025-04-03T14:26:10Z
 url: https://github.com/astral-sh/ruff/pull/17129
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [syntax-errors] Detect duplicate keys in `match` mapping patterns
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-01 18:06_
+_@ntBre_
 
 Summary
 --

@@ -13,14 +13,14 @@ head: fix-safety-check-implicit-optionals
 created_at: 2025-05-01T07:14:09Z
 updated_at: 2025-05-05T18:47:56Z
 url: https://github.com/astral-sh/ruff/pull/17759
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [`ruff`] add fix safety section (`RUF013`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-05-01 07:14_
+_@VascoSch92_
 
 The PR add the fix safety section for rule `RUF013` (https://github.com/astral-sh/ruff/issues/15584 )
 The fix was introduced here #4831

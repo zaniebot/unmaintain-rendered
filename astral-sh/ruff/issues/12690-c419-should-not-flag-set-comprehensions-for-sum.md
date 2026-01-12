@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-05T16:33:15Z
 updated_at: 2024-08-06T02:30:59Z
 url: https://github.com/astral-sh/ruff/issues/12690
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # C419 should not flag set comprehensions for `sum`
 
 ---
 
-_Issue opened by @dylwil3 on 2024-08-05 16:33_
+_@dylwil3_
 
 As was pointed out in a [recent comment](https://github.com/astral-sh/ruff/pull/12657#issuecomment-2267564369), set comprehension is not always as safe to remove as list comprehension in function calls because sets deduplicate elements.
 

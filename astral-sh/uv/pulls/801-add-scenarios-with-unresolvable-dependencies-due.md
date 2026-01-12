@@ -12,14 +12,14 @@ head: zb/excluded
 created_at: 2024-01-05T20:56:24Z
 updated_at: 2024-01-05T22:22:10Z
 url: https://github.com/astral-sh/uv/pull/801
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:12Z
 ```
 
 # Add scenarios with unresolvable dependencies due to excluded versions
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-05 20:56_
+_@zanieb_
 
 Scenarios added in https://github.com/zanieb/packse/pull/71
 

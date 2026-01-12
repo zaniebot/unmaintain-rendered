@@ -14,14 +14,14 @@ head: charlie/strict-file
 created_at: 2025-04-26T14:45:39Z
 updated_at: 2025-04-28T20:51:25Z
 url: https://github.com/astral-sh/uv/pull/13120
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Reject non-PEP 751 TOML files in install commands
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-26 14:45_
+_@charliermarsh_
 
 ## Summary
 

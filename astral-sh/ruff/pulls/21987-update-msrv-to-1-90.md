@@ -13,14 +13,14 @@ head: micha/rust-192
 created_at: 2025-12-15T12:48:58Z
 updated_at: 2025-12-15T13:29:14Z
 url: https://github.com/astral-sh/ruff/pull/21987
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # Update MSRV to 1.90
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-15 12:48_
+_@MichaReiser_
 
 ## Summary
 

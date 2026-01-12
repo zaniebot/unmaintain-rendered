@@ -13,14 +13,14 @@ head: charlie/all
 created_at: 2023-09-27T04:17:11Z
 updated_at: 2023-09-27T04:37:05Z
 url: https://github.com/astral-sh/ruff/pull/7673
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Allow named expressions in `__all__` assignments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-27 04:17_
+_@charliermarsh_
 
 ## Summary
 

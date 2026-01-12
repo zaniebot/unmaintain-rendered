@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-28T12:49:37Z
 updated_at: 2023-08-28T17:55:16Z
 url: https://github.com/astral-sh/ruff/issues/6942
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # PLE1206 is not raised when there is no arguments passed to the logging method call.
 
 ---
 
-_Issue opened by @pavel-beaufort on 2023-08-28 12:49_
+_@pavel-beaufort_
 
 `PLE1206` (logging-too-few-args) error is not shown for such code snippet:
 ```

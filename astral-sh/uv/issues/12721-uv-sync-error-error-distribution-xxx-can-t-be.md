@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T17:22:04Z
 updated_at: 2025-12-10T11:18:09Z
 url: https://github.com/astral-sh/uv/issues/12721
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # uv sync error: error: Distribution `xxx` can't be installed because it doesn't have a source distribution or wheel for the current platform
 
 ---
 
-_Issue opened by @SimFG on 2025-04-07 17:22_
+_@SimFG_
 
 ### Summary
 

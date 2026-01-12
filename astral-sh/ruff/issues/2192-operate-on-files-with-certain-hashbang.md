@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T12:21:15Z
 updated_at: 2023-04-12T14:40:24Z
 url: https://github.com/astral-sh/ruff/issues/2192
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # operate on files with certain hashbang
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 12:21_
+_@spaceone_
 
 ruff seems only to search for files with `.py` (maybe also `.pyi) file extensions?!
 

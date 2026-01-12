@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-06T06:21:52Z
 updated_at: 2025-01-06T14:51:33Z
 url: https://github.com/astral-sh/uv/issues/10320
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # Uv stalls when using pyproject.toml, but not when using installing using cli
 
 ---
 
-_Issue opened by @vedantroy on 2025-01-06 06:21_
+_@vedantroy_
 
 This works:
 ```

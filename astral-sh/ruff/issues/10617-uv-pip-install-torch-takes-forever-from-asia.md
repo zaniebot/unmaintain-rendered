@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-26T14:42:19Z
 updated_at: 2024-03-26T14:43:19Z
 url: https://github.com/astral-sh/ruff/issues/10617
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `uv pip install torch` takes forever from asia
 
 ---
 
-_Issue opened by @ArshanKhanifar on 2024-03-26 14:42_
+_@ArshanKhanifar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

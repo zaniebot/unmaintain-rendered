@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-27T15:14:00Z
 updated_at: 2025-11-25T16:09:48Z
 url: https://github.com/astral-sh/uv/issues/6692
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # What is the intended workflow for updating dependencies with uv?
 
 ---
 
-_Issue opened by @christianplatta1012 on 2024-08-27 15:14_
+_@christianplatta1012_
 
 Hi,
 I am looking into uv for several days now and try to determine whether my team should switch from poetry to uv.

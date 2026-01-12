@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T21:41:34Z
 updated_at: 2024-12-04T14:56:37Z
 url: https://github.com/astral-sh/ruff/issues/14544
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] support typing.Any in annotations
 
 ---
 
-_Issue opened by @carljm on 2024-11-22 21:41_
+_@carljm_
 
 We have an internal representation (`Type::Any`) for the dynamic type `Any`, but we don't yet understand  the `typing.Any` symbol as a spelling for that type in a type expression.
 

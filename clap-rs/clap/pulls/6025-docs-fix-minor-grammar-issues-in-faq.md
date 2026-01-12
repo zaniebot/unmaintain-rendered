@@ -12,14 +12,14 @@ head: typos-in-faq
 created_at: 2025-06-05T18:59:42Z
 updated_at: 2025-06-05T19:08:17Z
 url: https://github.com/clap-rs/clap/pull/6025
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # docs: Fix minor grammar issues in FAQ
 
 ---
 
-_Pull request opened by @AldaronLau on 2025-06-05 18:59_
+_@AldaronLau_
 
 <!--
 Thanks for helping out!

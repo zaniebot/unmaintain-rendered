@@ -12,14 +12,14 @@ head: remove-formatter-stability-check
 created_at: 2024-02-12T09:29:14Z
 updated_at: 2024-02-29T13:18:53Z
 url: https://github.com/astral-sh/ruff/pull/9944
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Remove (legacy) formatter stability check from CI pipeline
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-12 09:29_
+_@MichaReiser_
 
 ## Summary
 

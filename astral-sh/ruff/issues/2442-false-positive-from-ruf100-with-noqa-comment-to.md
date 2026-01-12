@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-01T15:24:51Z
 updated_at: 2023-02-01T22:04:59Z
 url: https://github.com/astral-sh/ruff/issues/2442
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # False positive from RUF100 with noqa comment to suppress SIM108
 
 ---
 
-_Issue opened by @henribru on 2023-02-01 15:24_
+_@henribru_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

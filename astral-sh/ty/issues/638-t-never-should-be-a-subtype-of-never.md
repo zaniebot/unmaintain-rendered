@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-06-12T04:55:05Z
 updated_at: 2025-06-16T17:46:18Z
 url: https://github.com/astral-sh/ty/issues/638
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `T: Never` should be a subtype of `Never`
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-06-12 04:55_
+_@dhruvmanila_
 
 ### Summary
 

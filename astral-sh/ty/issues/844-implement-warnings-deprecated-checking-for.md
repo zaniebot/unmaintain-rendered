@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-17T16:43:29Z
 updated_at: 2025-11-13T17:56:15Z
 url: https://github.com/astral-sh/ty/issues/844
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Implement `@warnings.deprecated` checking for `@override`s
 
 ---
 
-_Issue opened by @Gankra on 2025-07-17 16:43_
+_@Gankra_
 
 I'm landing https://github.com/astral-sh/ruff/pull/19376 without this functionality.
 

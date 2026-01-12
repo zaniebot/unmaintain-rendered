@@ -14,14 +14,14 @@ head: micha/fix-async-module-names
 created_at: 2025-05-01T17:46:59Z
 updated_at: 2025-05-01T21:37:11Z
 url: https://github.com/astral-sh/ruff/pull/17774
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # Fix module name in ASYNC110, 115, and 116 fixes
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-01 17:46_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-10T15:45:09Z
 updated_at: 2025-02-10T21:07:38Z
 url: https://github.com/astral-sh/uv/issues/7257
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Better Error Handling for Bad PyPIs
 
 ---
 
-_Issue opened by @CF-FHB-X on 2024-09-10 15:45_
+_@CF-FHB-X_
 
 Hi there!
 

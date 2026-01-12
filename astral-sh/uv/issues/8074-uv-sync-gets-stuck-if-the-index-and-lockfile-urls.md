@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-10T08:27:37Z
 updated_at: 2024-10-10T14:01:22Z
 url: https://github.com/astral-sh/uv/issues/8074
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # `uv sync` gets stuck if the index and lockfile URLs are not reachable and there are dynamic fields in pyproject
 
 ---
 
-_Issue opened by @mgab on 2024-10-10 08:27_
+_@mgab_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: charlie/v
 created_at: 2025-03-19T15:31:56Z
 updated_at: 2025-03-22T16:00:04Z
 url: https://github.com/astral-sh/uv/pull/12314
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:13Z
 ```
 
 # Allow virtual packages with `--no-build`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-19 15:31_
+_@charliermarsh_
 
 ## Summary
 

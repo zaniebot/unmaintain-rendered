@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-03-26T14:14:31Z
 updated_at: 2021-12-13T22:45:25Z
 url: https://github.com/clap-rs/clap/issues/918
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Add JSON Export for App
 
 ---
 
-_Issue opened by @mitsuhiko on 2017-03-26 14:14_
+_@mitsuhiko_
 
 It would be great to be able to export the app with all subcommands, options and args to JSON (or something similar) so documentation tools can then pick up on it and make documentation pages.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-06T16:42:11Z
 updated_at: 2026-01-06T16:43:19Z
 url: https://github.com/astral-sh/ty/issues/2368
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Support iter()
 
 ---
 
-_Issue opened by @abelcheung on 2026-01-06 16:42_
+_@abelcheung_
 
 ### Summary
 

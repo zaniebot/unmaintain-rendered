@@ -13,14 +13,14 @@ head: zsol/storage-docs
 created_at: 2025-09-19T20:22:11Z
 updated_at: 2025-11-17T14:38:16Z
 url: https://github.com/astral-sh/uv/pull/15954
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:02Z
 ```
 
 # Add a "storage" reference document
 
 ---
 
-_Pull request opened by @zsol on 2025-09-19 20:22_
+_@zsol_
 
 This is based on, and super**s**edes @zanieb's #13976 
 

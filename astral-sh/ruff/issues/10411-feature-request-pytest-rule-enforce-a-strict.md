@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-14T11:38:34Z
 updated_at: 2024-03-20T16:42:38Z
 url: https://github.com/astral-sh/ruff/issues/10411
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # [Feature Request][Pytest Rule] Enforce a strict argument being passed into pytest.mark.xfail
 
 ---
 
-_Issue opened by @rshanker779 on 2024-03-14 11:38_
+_@rshanker779_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

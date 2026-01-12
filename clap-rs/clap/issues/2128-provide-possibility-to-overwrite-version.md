@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-09-10T17:17:50Z
 updated_at: 2020-09-10T17:20:26Z
 url: https://github.com/clap-rs/clap/issues/2128
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Provide possibility to overwrite version
 
 ---
 
-_Issue opened by @nicolaiunrein on 2020-09-10 17:17_
+_@nicolaiunrein_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

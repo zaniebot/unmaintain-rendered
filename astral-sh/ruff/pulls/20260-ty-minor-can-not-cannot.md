@@ -14,14 +14,14 @@ head: david/cannot
 created_at: 2025-09-05T06:49:18Z
 updated_at: 2025-09-05T07:43:12Z
 url: https://github.com/astral-sh/ruff/pull/20260
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ty] Minor: 'can not' => cannot
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-05 06:49_
+_@sharkdp_
 
 _No description provided._
 

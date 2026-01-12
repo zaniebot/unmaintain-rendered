@@ -13,14 +13,14 @@ head: recursive-nominal-instance-is-disjoint-from
 created_at: 2025-09-23T16:41:51Z
 updated_at: 2025-09-25T14:20:10Z
 url: https://github.com/astral-sh/ruff/pull/20538
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [ty] fix stack overflow when comparing recursive `NamedTuple` types with `is_disjoint_from`
 
 ---
 
-_Pull request opened by @mtshiba on 2025-09-23 16:41_
+_@mtshiba_
 
 ## Summary
 

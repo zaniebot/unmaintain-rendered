@@ -13,14 +13,14 @@ head: konsti/remove-in-memory-index-ref
 created_at: 2024-06-26T12:37:01Z
 updated_at: 2024-06-26T13:12:26Z
 url: https://github.com/astral-sh/uv/pull/4544
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:18Z
 ```
 
 # Remove `InMemoryIndexRef`
 
 ---
 
-_Pull request opened by @konstin on 2024-06-26 12:37_
+_@konstin_
 
 `InMemoryIndex` has recently been turned into an `Arc`, so we can now freely copy it instead using `Cow` tricks.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-29T11:06:03Z
 updated_at: 2025-07-05T08:50:00Z
 url: https://github.com/astral-sh/uv/issues/11056
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:27Z
 ```
 
 # manage where venvs created with uv are to be stored
 
 ---
 
-_Issue opened by @krauspe on 2025-01-29 11:06_
+_@krauspe_
 
 ### Question
 

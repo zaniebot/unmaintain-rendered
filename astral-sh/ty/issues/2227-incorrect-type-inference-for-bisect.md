@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-26T14:42:17Z
 updated_at: 2025-12-26T17:11:30Z
 url: https://github.com/astral-sh/ty/issues/2227
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Incorrect type inference for `bisect`
 
 ---
 
-_Issue opened by @condemil on 2025-12-26 14:42_
+_@condemil_
 
 ### Summary
 

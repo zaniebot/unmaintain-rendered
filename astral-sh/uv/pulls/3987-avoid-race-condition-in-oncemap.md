@@ -12,14 +12,14 @@ head: deadlock
 created_at: 2024-06-03T15:23:13Z
 updated_at: 2024-06-04T13:39:59Z
 url: https://github.com/astral-sh/uv/pull/3987
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:57Z
 ```
 
 # Avoid race condition in `OnceMap`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-06-03 15:23_
+_@ibraheemdev_
 
 ## Summary
 

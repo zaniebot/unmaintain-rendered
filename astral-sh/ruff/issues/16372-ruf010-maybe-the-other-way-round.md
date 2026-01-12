@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-25T14:54:19Z
 updated_at: 2025-02-27T14:03:32Z
 url: https://github.com/astral-sh/ruff/issues/16372
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RUF010 Maybe the other way round?
 
 ---
 
-_Issue opened by @BLKSerene on 2025-02-25 14:54_
+_@BLKSerene_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-07T17:06:53Z
 updated_at: 2024-08-07T22:35:06Z
 url: https://github.com/astral-sh/uv/issues/5876
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Remove repeated Git fetch in resolver
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-07 17:06_
+_@charliermarsh_
 
 _No description provided._
 

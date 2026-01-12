@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T10:06:41Z
 updated_at: 2024-10-15T13:55:56Z
 url: https://github.com/astral-sh/uv/issues/8207
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # Inability to Switch Between Python 3.13 and 3.13t Using uv on macOS and Docker
 
 ---
 
-_Issue opened by @mrchoke on 2024-10-15 10:06_
+_@mrchoke_
 
 I encountered an issue when switching between different versions of Python (3.13 and 3.13t) on macOS, specifically when Python 3.13 is installed via Homebrew. This issue is also reproducible within a Docker image of Python 3.13.
 

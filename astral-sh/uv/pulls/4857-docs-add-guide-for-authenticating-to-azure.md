@@ -14,14 +14,14 @@ head: patch-1
 created_at: 2024-07-07T15:18:18Z
 updated_at: 2024-07-15T16:07:03Z
 url: https://github.com/astral-sh/uv/pull/4857
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:29Z
 ```
 
 # Docs: Add guide for authenticating to Azure Artifacts
 
 ---
 
-_Pull request opened by @benjamin-hodgson on 2024-07-07 15:18_
+_@benjamin-hodgson_
 
 ## Summary
 

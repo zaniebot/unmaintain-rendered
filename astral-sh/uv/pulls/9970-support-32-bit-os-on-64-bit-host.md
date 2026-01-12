@@ -13,14 +13,14 @@ head: konsti/32-os-on64-bit-host-but-its-arm
 created_at: 2024-12-17T12:46:55Z
 updated_at: 2024-12-17T14:17:40Z
 url: https://github.com/astral-sh/uv/pull/9970
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:04Z
 ```
 
 # Support 32-bit OS on 64-bit host
 
 ---
 
-_Pull request opened by @konstin on 2024-12-17 12:46_
+_@konstin_
 
 When using a 32-bit OS on 64-bit host, almost all Python std methods will report a 64-bit aarch64, but we most not install 64-bit executables since Python is actually 32-bit, identifiable through `struct.calcsize("P") == 4`.
 

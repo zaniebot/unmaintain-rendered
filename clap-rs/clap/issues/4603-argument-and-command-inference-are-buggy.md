@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-04T02:00:13Z
 updated_at: 2023-03-29T04:36:17Z
 url: https://github.com/clap-rs/clap/issues/4603
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Argument and command inference are buggy
 
 ---
 
-_Issue opened by @SUPERCILEX on 2023-01-04 02:00_
+_@SUPERCILEX_
 
 - Long argument inference randomly picks an argument on conflicts (https://github.com/clap-rs/clap/pull/4584).
 - Command name inference fails with conflicting aliases (https://github.com/clap-rs/clap/pull/4583).

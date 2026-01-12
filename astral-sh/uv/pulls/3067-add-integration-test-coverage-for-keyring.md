@@ -13,14 +13,14 @@ head: zb/keyring
 created_at: 2024-04-16T17:39:04Z
 updated_at: 2024-04-17T17:23:26Z
 url: https://github.com/astral-sh/uv/pull/3067
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:24Z
 ```
 
 # Add integration test coverage for keyring authentication
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-16 17:39_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/2464
 

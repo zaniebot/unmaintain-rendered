@@ -12,14 +12,14 @@ head: init-nested
 created_at: 2024-07-22T16:15:10Z
 updated_at: 2024-07-23T14:37:23Z
 url: https://github.com/astral-sh/uv/pull/5293
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:44Z
 ```
 
 # `uv init` should not create nested workspace
 
 ---
 
-_Pull request opened by @j178 on 2024-07-22 16:15_
+_@j178_
 
 ## Summary
 

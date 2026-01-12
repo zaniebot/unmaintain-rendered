@@ -14,14 +14,14 @@ head: alex/type-unknown-assignability
 created_at: 2024-12-14T16:17:14Z
 updated_at: 2025-05-07T15:22:46Z
 url: https://github.com/astral-sh/ruff/pull/14972
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Fix bugs relating to assignability of dynamic `type[]` types
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-14 16:17_
+_@AlexWaygood_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-05T10:01:18Z
 updated_at: 2022-12-05T17:43:22Z
 url: https://github.com/astral-sh/ruff/issues/1051
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Improve error message when `pyproject.toml` parsing fails
 
 ---
 
-_Issue opened by @XN137 on 2022-12-05 10:01_
+_@XN137_
 
 in a folder with `pyproject.toml` header as:
 ```

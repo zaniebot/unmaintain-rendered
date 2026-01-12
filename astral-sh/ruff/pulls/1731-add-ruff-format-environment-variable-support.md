@@ -12,14 +12,14 @@ head: ruff-format-env
 created_at: 2023-01-08T02:00:28Z
 updated_at: 2023-01-08T02:55:13Z
 url: https://github.com/astral-sh/ruff/pull/1731
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add `RUFF_FORMAT` environment variable support
 
 ---
 
-_Pull request opened by @messense on 2023-01-08 02:00_
+_@messense_
 
 Resolves #1716
 

@@ -11,14 +11,14 @@ head: linux-musl
 created_at: 2024-06-07T12:26:59Z
 updated_at: 2024-06-19T14:51:43Z
 url: https://github.com/astral-sh/uv/pull/4129
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:03Z
 ```
 
 # De-duplicate Linux builds with priority of MUSL targets
 
 ---
 
-_Pull request opened by @T-256 on 2024-06-07 12:26_
+_@T-256_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

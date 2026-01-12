@@ -12,14 +12,14 @@ head: zb/packse-test-root
 created_at: 2024-01-03T21:51:11Z
 updated_at: 2024-01-03T23:31:31Z
 url: https://github.com/astral-sh/uv/pull/757
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:10Z
 ```
 
 # Unpack scenario root requirements in test cases
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-03 21:51_
+_@zanieb_
 
 As mentioned in #746, instead of just installing the scenario root we will unpack the root dependencies into the install command to allow better coverage of direct user requests with scenarios.
 

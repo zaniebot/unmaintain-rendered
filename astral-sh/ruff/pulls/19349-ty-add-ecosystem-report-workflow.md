@@ -14,14 +14,14 @@ head: david/ecosystem-report
 created_at: 2025-07-15T10:18:33Z
 updated_at: 2025-07-15T10:29:46Z
 url: https://github.com/astral-sh/ruff/pull/19349
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # [ty] Add ecosystem-report workflow
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-15 10:18_
+_@sharkdp_
 
 ## Summary
 

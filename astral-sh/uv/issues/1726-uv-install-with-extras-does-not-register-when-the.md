@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T01:28:43Z
 updated_at: 2024-02-20T03:37:37Z
 url: https://github.com/astral-sh/uv/issues/1726
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # uv install with extras does not register when the package is already installed
 
 ---
 
-_Issue opened by @hsheth2 on 2024-02-20 01:28_
+_@hsheth2_
 
 Doing a `install package` followed by `install package[extra]` does not install extras.
 

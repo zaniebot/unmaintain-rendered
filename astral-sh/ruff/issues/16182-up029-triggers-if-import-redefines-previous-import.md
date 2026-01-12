@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-16T11:13:56Z
 updated_at: 2025-02-16T15:01:25Z
 url: https://github.com/astral-sh/ruff/issues/16182
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `UP029` triggers if import redefines previous import
 
 ---
 
-_Issue opened by @injust on 2025-02-16 11:13_
+_@injust_
 
 ### Description
 

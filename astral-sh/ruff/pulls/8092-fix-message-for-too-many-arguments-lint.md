@@ -13,14 +13,14 @@ head: fix-too-many-args-msg
 created_at: 2023-10-20T12:08:37Z
 updated_at: 2023-10-20T16:50:24Z
 url: https://github.com/astral-sh/ruff/pull/8092
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fix message for `too-many-arguments` lint
 
 ---
 
-_Pull request opened by @flying-sheep on 2023-10-20 12:08_
+_@flying-sheep_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

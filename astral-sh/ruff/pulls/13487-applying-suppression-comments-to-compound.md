@@ -13,14 +13,14 @@ head: suppression_on_clause_header
 created_at: 2024-09-23T20:40:13Z
 updated_at: 2024-10-14T20:23:46Z
 url: https://github.com/astral-sh/ruff/pull/13487
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Applying Suppression Comments to Compound Statements
 
 ---
 
-_Pull request opened by @bnkc on 2024-09-23 20:40_
+_@bnkc_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

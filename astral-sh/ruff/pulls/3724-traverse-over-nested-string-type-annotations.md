@@ -12,14 +12,14 @@ head: charlie/deferred
 created_at: 2023-03-24T21:46:25Z
 updated_at: 2023-03-26T01:56:11Z
 url: https://github.com/astral-sh/ruff/pull/3724
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Traverse over nested string type annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-24 21:46_
+_@charliermarsh_
 
 ## Summary
 

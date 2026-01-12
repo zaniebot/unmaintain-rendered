@@ -13,14 +13,14 @@ head: zb/markers
 created_at: 2025-02-24T17:47:05Z
 updated_at: 2025-02-24T17:57:31Z
 url: https://github.com/astral-sh/uv/pull/11748
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:59Z
 ```
 
 # Add link to environment marker specification
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-24 17:47_
+_@zanieb_
 
 _No description provided._
 

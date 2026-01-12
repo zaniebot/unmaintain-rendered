@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-16T14:44:28Z
 updated_at: 2023-09-19T03:42:53Z
 url: https://github.com/astral-sh/ruff/issues/7438
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # [New Rule] Match positional argument name
 
 ---
 
-_Issue opened by @jd-solanki on 2023-09-16 14:44_
+_@jd-solanki_
 
 Hi 👋🏻
 

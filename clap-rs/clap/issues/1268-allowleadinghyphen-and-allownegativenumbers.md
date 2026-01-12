@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-05-04T10:43:17Z
 updated_at: 2018-08-02T03:30:23Z
 url: https://github.com/clap-rs/clap/issues/1268
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # AllowLeadingHyphen and AllowNegativeNumbers breaks argument parsing for subsequent arguments
 
 ---
 
-_Issue opened by @Jarngreipr on 2018-05-04 10:43_
+_@Jarngreipr_
 
 ### Rust Version
 

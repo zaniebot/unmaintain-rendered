@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-09-18T10:00:13Z
 updated_at: 2023-09-18T13:10:17Z
 url: https://github.com/astral-sh/ruff/issues/7488
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `DTZ007` false-positive when using time format from const
 
 ---
 
-_Issue opened by @aw1cks on 2023-09-18 10:00_
+_@aw1cks_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

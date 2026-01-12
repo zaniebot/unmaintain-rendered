@@ -13,14 +13,14 @@ head: zb/discord
 created_at: 2025-02-06T18:20:51Z
 updated_at: 2025-02-06T22:47:25Z
 url: https://github.com/astral-sh/uv/pull/11286
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:46Z
 ```
 
 # Add Discord to PyPI project URLs
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-06 18:20_
+_@zanieb_
 
 Referencing https://daniel.feldroy.com/posts/2023-08-pypi-project-urls-cheatsheet
 

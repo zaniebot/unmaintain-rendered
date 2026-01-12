@@ -12,14 +12,14 @@ head: fix-compare-with-pyton-debug
 created_at: 2023-11-27T10:44:37Z
 updated_at: 2023-11-27T10:48:06Z
 url: https://github.com/astral-sh/uv/pull/503
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:59Z
 ```
 
 # Fix compare_with_pip.py debug profile
 
 ---
 
-_Pull request opened by @konstin on 2023-11-27 10:44_
+_@konstin_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-20T16:52:29Z
 updated_at: 2024-02-22T15:10:04Z
 url: https://github.com/astral-sh/uv/issues/1766
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Windows: symbolic link to the `exe` created by uv can not work
 
 ---
 
-_Issue opened by @j178 on 2024-02-20 16:52_
+_@j178_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -12,14 +12,14 @@ head: stop-highlighting-usage-as-shell
 created_at: 2023-01-05T06:13:11Z
 updated_at: 2023-01-05T14:46:49Z
 url: https://github.com/astral-sh/ruff/pull/1655
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Stop highlighting --help output in README as shell
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-05 06:13_
+_@not-my-profile_
 
 This PR is meant to address the following obviously unintended GitHub rendering:
 

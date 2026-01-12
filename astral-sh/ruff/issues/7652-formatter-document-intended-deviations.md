@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-25T11:59:52Z
 updated_at: 2023-09-29T17:27:32Z
 url: https://github.com/astral-sh/ruff/issues/7652
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter: Document intended deviations
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-25 11:59_
+_@MichaReiser_
 
 Document the intended [deviations](https://github.com/orgs/astral-sh/projects/3/views/5?query=is%3Aopen+sort%3Aupdated-desc)
 

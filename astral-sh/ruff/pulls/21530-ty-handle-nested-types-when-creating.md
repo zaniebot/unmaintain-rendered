@@ -14,14 +14,14 @@ head: dcreager/specialize-cycles
 created_at: 2025-11-19T19:56:19Z
 updated_at: 2025-11-19T22:37:17Z
 url: https://github.com/astral-sh/ruff/pull/21530
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Handle nested types when creating specializations from constraint sets
 
 ---
 
-_Pull request opened by @dcreager on 2025-11-19 19:56_
+_@dcreager_
 
 #21414 added the ability to create a specialization from a constraint set. It handled mutually constrained typevars just fine, e.g. given `T ≤ int ∧ U = T` we can infer `T = int, U = int`.
 

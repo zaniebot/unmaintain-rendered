@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-04T08:39:23Z
 updated_at: 2024-09-04T10:56:45Z
 url: https://github.com/astral-sh/uv/issues/6999
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Using uv pip and pip interchangeably
 
 ---
 
-_Issue opened by @timovp on 2024-09-04 08:39_
+_@timovp_
 
 Hi, 
 

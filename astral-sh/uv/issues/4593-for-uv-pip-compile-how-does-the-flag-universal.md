@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-27T18:06:41Z
 updated_at: 2024-06-27T18:51:46Z
 url: https://github.com/astral-sh/uv/issues/4593
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # For `uv pip compile` how does the flag `--universal` interact with flags `--python-version` and `--python-platform`?
 
 ---
 
-_Issue opened by @notatallshaw on 2024-06-27 18:06_
+_@notatallshaw_
 
 It looks like if I put in `--universal` it respects `--python-version` and ignores `--python-platform`?
 

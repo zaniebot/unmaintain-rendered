@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-19T08:25:35Z
 updated_at: 2025-02-19T10:03:11Z
 url: https://github.com/astral-sh/ruff/issues/16246
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ruff rule suggestion: warn for useless f-strings
 
 ---
 
-_Issue opened by @Datamine on 2025-02-19 08:25_
+_@Datamine_
 
 ### Description
 

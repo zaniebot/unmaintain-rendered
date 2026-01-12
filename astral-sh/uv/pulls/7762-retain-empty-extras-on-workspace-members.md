@@ -13,14 +13,14 @@ head: charlie/empty
 created_at: 2024-09-28T18:24:51Z
 updated_at: 2024-09-28T18:34:35Z
 url: https://github.com/astral-sh/uv/pull/7762
-synced_at: 2026-01-10T12:53:55Z
+synced_at: 2026-01-12T16:07:59Z
 ```
 
 # Retain empty extras on workspace members
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-28 18:24_
+_@charliermarsh_
 
 ## Summary
 

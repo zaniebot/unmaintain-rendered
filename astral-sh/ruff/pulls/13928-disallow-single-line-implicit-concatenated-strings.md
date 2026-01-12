@@ -15,14 +15,14 @@ head: micha/enforce-multiline-implicit-concatenated-strings
 created_at: 2024-10-25T15:42:42Z
 updated_at: 2024-11-03T11:49:27Z
 url: https://github.com/astral-sh/ruff/pull/13928
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Disallow single-line implicit concatenated strings
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-25 15:42_
+_@MichaReiser_
 
 ## Summary
 

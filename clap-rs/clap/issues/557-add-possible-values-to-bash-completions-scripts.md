@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-07-01T13:24:07Z
 updated_at: 2018-08-02T03:29:51Z
 url: https://github.com/clap-rs/clap/issues/557
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # add possible values to bash completions scripts
 
 ---
 
-_Issue opened by @kbknapp on 2016-07-01 13:24_
+_@kbknapp_
 
 Relates to #376
 

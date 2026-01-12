@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-20T09:57:00Z
 updated_at: 2024-12-21T13:50:53Z
 url: https://github.com/astral-sh/ruff/issues/15077
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # No way to avoid adding imports to a file (i.e. "isort: dont-add-imports")
 
 ---
 
-_Issue opened by @chrisburr on 2024-12-20 09:57_
+_@chrisburr_
 
 In my project there are a couple of files where `from __future__ import annotations` can't be used due to upstream bugs but we want to enforce the future import for all other files.
 

@@ -14,14 +14,14 @@ head: charlie/extend-from-slice
 created_at: 2023-07-16T01:14:28Z
 updated_at: 2023-07-16T01:48:13Z
 url: https://github.com/astral-sh/ruff/pull/5793
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Use `SmallVec#extend_from_slice` in lieu of `SmallVec#extend`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-16 01:14_
+_@charliermarsh_
 
 ## Summary
 

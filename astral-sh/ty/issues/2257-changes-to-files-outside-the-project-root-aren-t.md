@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-27T16:04:37Z
 updated_at: 2025-12-31T16:52:47Z
 url: https://github.com/astral-sh/ty/issues/2257
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Changes to files outside the project root aren't picked up by the server
 
 ---
 
-_Issue opened by @rivershah on 2025-12-27 16:04_
+_@rivershah_
 
 I am inside a devcontainer. venvs are not being used.
 packages are being installed like this:

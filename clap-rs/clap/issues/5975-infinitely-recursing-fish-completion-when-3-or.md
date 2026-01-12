@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-22T14:21:21Z
 updated_at: 2025-04-23T13:48:41Z
 url: https://github.com/clap-rs/clap/issues/5975
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Infinitely recursing fish completion when 3 or more subcommand levels
 
 ---
 
-_Issue opened by @Rawleenc on 2025-04-22 14:21_
+_@Rawleenc_
 
 ### Please complete the following tasks
 

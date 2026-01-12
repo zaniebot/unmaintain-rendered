@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-04T02:04:23Z
 updated_at: 2024-05-04T20:52:47Z
 url: https://github.com/clap-rs/clap/issues/5486
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Allow API users to deprecate args
 
 ---
 
-_Issue opened by @valadaptive on 2024-05-04 02:04_
+_@valadaptive_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-03T04:42:41Z
 updated_at: 2024-07-18T05:35:03Z
 url: https://github.com/astral-sh/ruff/issues/12161
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Update preview logic for Ruff server
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-07-03 04:42_
+_@dhruvmanila_
 
  I'm okay merging this but there are at least two follow-ups that are necessary
 

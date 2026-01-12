@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-02-03T18:31:10Z
 updated_at: 2018-08-02T03:30:17Z
 url: https://github.com/clap-rs/clap/issues/1161
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # All `--` parameters after the first `--` are dropped, not allowing nesting of programs?
 
 ---
 
-_Issue opened by @da-x on 2018-02-03 18:31_
+_@da-x_
 
 (clap-rs v2.29.2)
 

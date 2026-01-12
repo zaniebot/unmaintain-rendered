@@ -13,14 +13,14 @@ head: brent/remove-meson-python
 created_at: 2025-05-09T18:49:22Z
 updated_at: 2025-05-09T20:59:02Z
 url: https://github.com/astral-sh/ruff/pull/17993
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # Exclude broken symlinks from `meson-python` ecosystem check
 
 ---
 
-_Pull request opened by @ntBre on 2025-05-09 18:49_
+_@ntBre_
 
 Summary
 --

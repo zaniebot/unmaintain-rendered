@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-13T00:57:15Z
 updated_at: 2025-03-19T01:40:10Z
 url: https://github.com/astral-sh/uv/issues/12145
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # `uv sync --script` only syncs when there are packages to add to env
 
 ---
 
-_Issue opened by @manzt on 2025-03-13 00:57_
+_@manzt_
 
 ### Summary
 

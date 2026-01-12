@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-19T09:46:53Z
 updated_at: 2025-04-19T11:25:29Z
 url: https://github.com/astral-sh/uv/issues/12980
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # An error occurred while installing an older version of PyTorch.
 
 ---
 
-_Issue opened by @wzr0108 on 2025-04-19 09:46_
+_@wzr0108_
 
 The pip installation command is as follows:
 ```pip install torch==1.6.0+cu101 torchvision==0.7.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html```

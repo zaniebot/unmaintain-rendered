@@ -12,14 +12,14 @@ assignees: []
 created_at: 2018-08-24T17:55:46Z
 updated_at: 2023-11-10T22:21:54Z
 url: https://github.com/clap-rs/clap/issues/1334
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Display help for all subcommands at the same time
 
 ---
 
-_Issue opened by @mmstick on 2018-08-24 17:55_
+_@mmstick_
 
 **Maintainer's note: Proposed solution**
 

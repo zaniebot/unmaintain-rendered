@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-03T13:00:40Z
 updated_at: 2025-04-03T14:19:35Z
 url: https://github.com/astral-sh/uv/issues/12650
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Running `uv` in a read-only docker-like filesystem
 
 ---
 
-_Issue opened by @tgrohens on 2025-04-03 13:00_
+_@tgrohens_
 
 ### Question
 

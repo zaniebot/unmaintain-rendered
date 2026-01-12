@@ -13,14 +13,14 @@ head: micha/infer-chained-boolean-types
 created_at: 2025-02-18T08:52:37Z
 updated_at: 2025-02-19T10:13:37Z
 url: https://github.com/astral-sh/ruff/pull/16222
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Refactor `infer_chained_boolean_types` to have access to `TypeInferenceBuilder`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-18 08:52_
+_@MichaReiser_
 
 ## Summary
 

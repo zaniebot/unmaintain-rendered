@@ -12,14 +12,14 @@ assignees: []
 created_at: 2016-09-01T17:46:54Z
 updated_at: 2018-08-02T03:29:53Z
 url: https://github.com/clap-rs/clap/issues/644
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Support a public interface to make your own completion code
 
 ---
 
-_Issue opened by @kdar on 2016-09-01 17:46_
+_@kdar_
 
 My use case here is I'm making a debugger for an emulator, and I use clap as my command handler and [linefeed](https://github.com/murarth/linefeed) as my readliner. Linefeed has a way to do tab completion in it, so it would be nice if I could get at all the subcommand/options/whatever from clap.
 

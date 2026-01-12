@@ -12,14 +12,14 @@ head: master
 created_at: 2025-07-09T23:01:54Z
 updated_at: 2025-07-30T02:16:25Z
 url: https://github.com/clap-rs/clap/pull/6068
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # fix: added visible long flag aliases in help
 
 ---
 
-_Pull request opened by @GilShoshan94 on 2025-07-09 23:01_
+_@GilShoshan94_
 
 fix https://github.com/clap-rs/clap/issues/6067
 

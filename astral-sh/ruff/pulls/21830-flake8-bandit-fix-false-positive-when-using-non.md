@@ -12,14 +12,14 @@ head: fix-unsafe-yaml-load
 created_at: 2025-12-07T09:58:39Z
 updated_at: 2025-12-07T10:40:47Z
 url: https://github.com/astral-sh/ruff/pull/21830
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [flake8-bandit] Fix false positive when using non-standard `CSafeLoader` path (S506).
 
 ---
 
-_Pull request opened by @prakhar1144 on 2025-12-07 09:58_
+_@prakhar1144_
 
 ## Summary
 

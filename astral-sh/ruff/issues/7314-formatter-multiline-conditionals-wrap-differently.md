@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-12T19:29:59Z
 updated_at: 2023-09-29T17:27:34Z
 url: https://github.com/astral-sh/ruff/issues/7314
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter: multiline conditionals wrap differently
 
 ---
 
-_Issue opened by @DanCardin on 2023-09-12 19:29_
+_@DanCardin_
 
 Black wants to split boolean operators across lines, where they're being forced (at least here due to the comment) onto multiple lines:
 ```python

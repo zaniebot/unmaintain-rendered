@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-30T00:52:36Z
 updated_at: 2025-11-21T02:02:20Z
 url: https://github.com/astral-sh/ty/issues/544
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # support typing.TypeAlias (PEP 613)
 
 ---
 
-_Issue opened by @carljm on 2025-05-30 00:52_
+_@carljm_
 
 If a name is annotated as `typing.TypeAlias`, the RHS should be evaluated as a type expression.
 

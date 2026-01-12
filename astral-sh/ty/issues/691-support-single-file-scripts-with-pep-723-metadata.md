@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-22T21:47:05Z
 updated_at: 2026-01-06T00:52:07Z
 url: https://github.com/astral-sh/ty/issues/691
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Support single-file scripts with PEP 723 metadata
 
 ---
 
-_Issue opened by @thoughtpolice on 2025-06-22 21:47_
+_@thoughtpolice_
 
 I looked a bit through the bug tracker but didn't see this: I have a few projects that I develop with `uv run --script`, along with PEP 723 inline metadata for my dependencies. I find this is really nice for simple scripts in my monorepo:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-04T15:42:37Z
 updated_at: 2025-12-04T15:42:37Z
 url: https://github.com/astral-sh/ty/issues/1757
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `object.attr` completions should respect `__all__` more strictly
 
 ---
 
-_Issue opened by @BurntSushi on 2025-12-04 15:42_
+_@BurntSushi_
 
 Consider this `main.py`:
 

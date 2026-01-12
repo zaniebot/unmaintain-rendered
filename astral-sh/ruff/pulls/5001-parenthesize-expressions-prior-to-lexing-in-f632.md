@@ -13,14 +13,14 @@ head: charlie/paren
 created_at: 2023-06-10T04:11:11Z
 updated_at: 2023-06-10T04:48:00Z
 url: https://github.com/astral-sh/ruff/pull/5001
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Parenthesize expressions prior to lexing in F632
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-10 04:11_
+_@charliermarsh_
 
 Closes #5000.
 

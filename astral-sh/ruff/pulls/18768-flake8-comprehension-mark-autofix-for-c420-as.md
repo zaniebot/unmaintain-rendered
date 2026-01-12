@@ -13,14 +13,14 @@ head: fix-C420
 created_at: 2025-06-18T20:06:04Z
 updated_at: 2025-06-19T13:14:18Z
 url: https://github.com/astral-sh/ruff/pull/18768
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [`flake8-comprehension`] Mark autofix for `C420` as unsafe if there's comments inside the dict comprehension
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-18 20:06_
+_@LaBatata101_
 
 
 

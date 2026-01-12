@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-16T19:31:18Z
 updated_at: 2024-08-20T06:33:52Z
 url: https://github.com/astral-sh/ruff/issues/12942
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # D102 not silent for `overrides.overrides` or `overrides.override`
 
 ---
 
-_Issue opened by @lengau on 2024-08-16 19:31_
+_@lengau_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

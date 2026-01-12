@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-11T20:09:27Z
 updated_at: 2023-08-18T03:10:47Z
 url: https://github.com/astral-sh/ruff/issues/5695
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # formatter: comment formatting instability in named expr (and dict, others)
 
 ---
 
-_Issue opened by @davidszotten on 2023-07-11 20:09_
+_@davidszotten_
 
 input
 

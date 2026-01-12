@@ -12,14 +12,14 @@ head: main
 created_at: 2024-01-02T12:57:34Z
 updated_at: 2024-01-02T13:15:53Z
 url: https://github.com/astral-sh/ruff/pull/9356
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Port from obsolete wsl crate to is-wsl
 
 ---
 
-_Pull request opened by @decathorpe on 2024-01-02 12:57_
+_@decathorpe_
 
 The "wsl" crate was last touched in 2019, whereas the "is-wsl" crate was last updated in 2023. Additionally, it is unclear whether the "wsl" crate supports both WSL1 and WSL2 (which was announced in 2019), whereas the "is-wsl" crate explicitly supports both WSL1 and WSL2.
 

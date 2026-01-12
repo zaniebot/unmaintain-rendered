@@ -13,14 +13,14 @@ head: charlie/noqa-warnings
 created_at: 2023-07-06T20:11:08Z
 updated_at: 2023-07-13T00:19:49Z
 url: https://github.com/astral-sh/ruff/pull/5571
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Emit warnings for invalid `# noqa` directives
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-06 20:11_
+_@charliermarsh_
 
 ## Summary
 

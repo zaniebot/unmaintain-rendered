@@ -14,14 +14,14 @@ head: charlie/hea
 created_at: 2024-11-08T19:59:55Z
 updated_at: 2024-11-08T20:12:31Z
 url: https://github.com/astral-sh/uv/pull/8955
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:34Z
 ```
 
 # Compute superset of existing and required hashes when healing cache
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-08 19:59_
+_@charliermarsh_
 
 ## Summary
 

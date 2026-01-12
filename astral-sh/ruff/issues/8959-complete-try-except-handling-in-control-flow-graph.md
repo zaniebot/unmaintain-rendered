@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-01T23:07:23Z
 updated_at: 2025-01-03T03:55:01Z
 url: https://github.com/astral-sh/ruff/issues/8959
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Complete `try`-`except` handling in control-flow graph
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-01 23:07_
+_@charliermarsh_
 
 I'm not exactly sure what's required here, but there are a bunch of TODOs.
 

@@ -11,14 +11,14 @@ head: derive-arg-groups
 created_at: 2024-08-25T16:42:03Z
 updated_at: 2025-05-31T13:53:02Z
 url: https://github.com/clap-rs/clap/pull/5700
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # feat(derive): derive `clap::Args` for enum types
 
 ---
 
-_Pull request opened by @ysndr on 2024-08-25 16:42_
+_@ysndr_
 
 Implement `derive(clap::Args)` support for enum types, where each variant is a mutually exclusive `ArgGroup`.
 Relevant discussion and motivation for this PR is in #2621.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-06T12:07:46Z
 updated_at: 2024-08-15T09:04:30Z
 url: https://github.com/astral-sh/ruff/issues/2606
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Allow explicit select of docstring rule to override configured convention
 
 ---
 
-_Issue opened by @ngnpope on 2023-02-06 12:07_
+_@ngnpope_
 
 I know this is [documented](https://github.com/charliermarsh/ruff#does-ruff-support-numpy--or-google-style-docstrings)...
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-22T08:59:42Z
 updated_at: 2024-02-22T09:01:26Z
 url: https://github.com/astral-sh/uv/issues/1859
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # index-url/extra-index-url ignored from pip.conf
 
 ---
 
-_Issue opened by @jtanx on 2024-02-22 08:59_
+_@jtanx_
 
 ```
 (jeremy) [jeremy@machine ~]$ pip config debug

@@ -13,14 +13,14 @@ head: zb/forbidden
 created_at: 2024-01-10T05:31:26Z
 updated_at: 2024-01-10T20:49:41Z
 url: https://github.com/astral-sh/uv/pull/867
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:14Z
 ```
 
 # Say "cannot be used" and "must be used" instead of "forbidden" and "mandatory"
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-10 05:31_
+_@zanieb_
 
 Closes #858 
 

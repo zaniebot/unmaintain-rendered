@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-27T11:45:37Z
 updated_at: 2025-05-27T12:43:31Z
 url: https://github.com/astral-sh/uv/issues/13675
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:34Z
 ```
 
 # Gitlab CI example should quote varaibles to avoid version parsing as integer
 
 ---
 
-_Issue opened by @AKuederle on 2025-05-27 11:45_
+_@AKuederle_
 
 ### Summary
 

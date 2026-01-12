@@ -13,14 +13,14 @@ head: alex/unnecessary-redknot-branch
 created_at: 2024-12-11T13:20:14Z
 updated_at: 2024-12-11T16:57:42Z
 url: https://github.com/astral-sh/ruff/pull/14915
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Remove an unnecessary branch and a confusing TODO comment
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-11 13:20_
+_@AlexWaygood_
 
 ## Summary
 

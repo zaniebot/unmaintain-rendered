@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-07-19T16:06:43Z
 updated_at: 2021-07-27T19:19:41Z
 url: https://github.com/clap-rs/clap/issues/2605
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Nested `updates` implemented have bugs around subcommands
 
 ---
 
-_Issue opened by @epage on 2021-07-19 16:06_
+_@epage_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/2591
 

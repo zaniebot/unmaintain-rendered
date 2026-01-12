@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-18T14:48:31Z
 updated_at: 2025-01-09T21:01:25Z
 url: https://github.com/astral-sh/uv/issues/10001
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # Dependency backoff appears unmantained, and depends on unmaintained instant crate
 
 ---
 
-_Issue opened by @musicinmybrain on 2024-12-18 14:48_
+_@musicinmybrain_
 
 The dependency `backoff` appears unmaintained, https://github.com/ihrwein/backoff/issues/66, and its dependency `instant` is also unmaintained, https://rustsec.org/advisories/RUSTSEC-2024-0384.html.
 

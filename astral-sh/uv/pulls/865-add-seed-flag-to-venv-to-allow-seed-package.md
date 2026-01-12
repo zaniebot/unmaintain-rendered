@@ -13,14 +13,14 @@ head: charlie/seed
 created_at: 2024-01-10T01:33:08Z
 updated_at: 2024-01-10T01:45:57Z
 url: https://github.com/astral-sh/uv/pull/865
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:14Z
 ```
 
 # Add `--seed` flag to `venv` to allow seed package environments
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-10 01:33_
+_@charliermarsh_
 
 ## Summary
 

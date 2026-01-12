@@ -13,14 +13,14 @@ head: zb/install-pin
 created_at: 2025-12-16T19:45:44Z
 updated_at: 2025-12-16T20:16:35Z
 url: https://github.com/astral-sh/ty/pull/1955
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Add `docs/installation.md` to rooster bump files
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-16 19:45_
+_@zanieb_
 
 _No description provided._
 

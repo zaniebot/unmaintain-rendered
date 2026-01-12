@@ -13,14 +13,14 @@ head: FishAlchemist-docs-patch
 created_at: 2024-08-03T18:50:07Z
 updated_at: 2024-08-10T08:28:23Z
 url: https://github.com/astral-sh/uv/pull/5755
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:06:59Z
 ```
 
 # Fix the default value of python-preference in docs/reference/settings.md
 
 ---
 
-_Pull request opened by @FishAlchemist on 2024-08-03 18:50_
+_@FishAlchemist_
 
 ## Summary
 After referring to https://github.com/astral-sh/uv/pull/5637 and doing additional testing.

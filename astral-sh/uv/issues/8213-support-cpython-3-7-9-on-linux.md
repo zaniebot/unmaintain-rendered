@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-15T12:56:24Z
 updated_at: 2026-01-08T11:11:01Z
 url: https://github.com/astral-sh/uv/issues/8213
-synced_at: 2026-01-10T03:11:32Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # Support cpython 3.7.9 on linux
 
 ---
 
-_Issue opened by @timendum on 2024-10-15 12:56_
+_@timendum_
 
 Commit 5f33915e03faffbad46aa0720410dca3f76dcc03 removed the download configuration for CPython 3.7 on linux.
 

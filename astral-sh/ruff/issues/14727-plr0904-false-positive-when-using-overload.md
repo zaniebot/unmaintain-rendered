@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-02T12:27:42Z
 updated_at: 2024-12-02T14:36:52Z
 url: https://github.com/astral-sh/ruff/issues/14727
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # PLR0904: false positive when using overload
 
 ---
 
-_Issue opened by @Matt-Ord on 2024-12-02 12:27_
+_@Matt-Ord_
 
 This triggers PLR0904
 

@@ -14,14 +14,14 @@ head: brent/syn-f-strings
 created_at: 2025-03-06T20:36:02Z
 updated_at: 2025-03-18T15:12:17Z
 url: https://github.com/astral-sh/ruff/pull/16543
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [syntax-errors] PEP 701 f-strings before Python 3.12
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-06 20:36_
+_@ntBre_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-12T13:27:08Z
 updated_at: 2026-01-12T14:13:05Z
 url: https://github.com/astral-sh/ty/issues/2465
-synced_at: 2026-01-12T15:03:21Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Best way to use `dict`s as `kwargs`?
 
 ---
 
-_Issue opened by @galah92 on 2026-01-12 13:27_
+_@galah92_
 
 ### Question
 

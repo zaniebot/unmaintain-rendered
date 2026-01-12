@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T11:12:40Z
 updated_at: 2025-05-08T12:50:45Z
 url: https://github.com/astral-sh/ruff/issues/17944
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Server doesn't detect ruff config for files not under working directory of server
 
 ---
 
-_Issue opened by @harrymander on 2025-05-08 11:12_
+_@harrymander_
 
 ### Summary
 

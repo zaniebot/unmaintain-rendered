@@ -13,14 +13,14 @@ head: charlie/extra
 created_at: 2024-01-14T16:08:16Z
 updated_at: 2024-01-14T17:16:55Z
 url: https://github.com/astral-sh/uv/pull/915
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:17Z
 ```
 
 # Normalize extras when evaluating PEP 508 markers
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-14 16:08_
+_@charliermarsh_
 
 ## Summary
 

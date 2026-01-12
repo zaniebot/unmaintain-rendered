@@ -14,14 +14,14 @@ head: zb/docs-venv-discovery
 created_at: 2024-08-09T17:10:33Z
 updated_at: 2024-08-09T18:15:22Z
 url: https://github.com/astral-sh/uv/pull/5965
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:07Z
 ```
 
 # Document virtual environment discovery
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-09 17:10_
+_@zanieb_
 
 _No description provided._
 

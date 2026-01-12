@@ -12,14 +12,14 @@ head: charlie/bump
 created_at: 2024-03-07T21:53:33Z
 updated_at: 2024-03-07T23:12:19Z
 url: https://github.com/astral-sh/uv/pull/2289
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:57Z
 ```
 
 # Bump version to v0.1.16
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-07 21:53_
+_@charliermarsh_
 
 _No description provided._
 

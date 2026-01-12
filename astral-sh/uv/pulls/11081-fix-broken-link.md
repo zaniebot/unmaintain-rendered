@@ -13,14 +13,14 @@ head: zb/fix-link-2323
 created_at: 2025-01-29T19:37:43Z
 updated_at: 2025-01-29T19:41:19Z
 url: https://github.com/astral-sh/uv/pull/11081
-synced_at: 2026-01-10T11:45:27Z
+synced_at: 2026-01-12T16:09:40Z
 ```
 
 # Fix broken link
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-29 19:37_
+_@zanieb_
 
 _No description provided._
 

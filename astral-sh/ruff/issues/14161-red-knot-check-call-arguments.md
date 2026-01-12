@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-07T15:28:33Z
 updated_at: 2025-01-07T20:39:47Z
 url: https://github.com/astral-sh/ruff/issues/14161
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] check call arguments
 
 ---
 
-_Issue opened by @carljm on 2024-11-07 15:28_
+_@carljm_
 
 _No description provided._
 

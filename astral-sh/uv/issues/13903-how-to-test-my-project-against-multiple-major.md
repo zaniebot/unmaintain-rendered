@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-08T21:01:22Z
 updated_at: 2025-09-22T06:56:40Z
 url: https://github.com/astral-sh/uv/issues/13903
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # How to test my project against multiple major library versions?
 
 ---
 
-_Issue opened by @dimaqq on 2025-06-08 21:01_
+_@dimaqq_
 
 ### Question
 

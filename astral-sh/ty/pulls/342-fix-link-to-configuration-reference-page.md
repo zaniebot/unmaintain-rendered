@@ -13,14 +13,14 @@ head: dhruv/fix-link
 created_at: 2025-05-13T03:05:14Z
 updated_at: 2025-05-13T04:29:14Z
 url: https://github.com/astral-sh/ty/pull/342
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Fix link to configuration reference page
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-05-13 03:05_
+_@dhruvmanila_
 
 `references/configuration.md` -> `reference/configuration.md` (extra `s`)
 

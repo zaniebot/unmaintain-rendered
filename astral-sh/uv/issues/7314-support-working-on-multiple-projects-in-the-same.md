@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-11T22:47:10Z
 updated_at: 2025-10-21T21:25:32Z
 url: https://github.com/astral-sh/uv/issues/7314
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Support working on multiple projects in the same venv
 
 ---
 
-_Issue opened by @cdwilson on 2024-09-11 22:47_
+_@cdwilson_
 
 I'd like to be able to install multiple projects in "development mode" (editable install) into the same virtual environment.
 

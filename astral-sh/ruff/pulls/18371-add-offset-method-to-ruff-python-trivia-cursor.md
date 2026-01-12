@@ -13,14 +13,14 @@ head: alex/common-cursor-methods
 created_at: 2025-05-29T14:14:02Z
 updated_at: 2025-05-29T15:08:17Z
 url: https://github.com/astral-sh/ruff/pull/18371
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # Add `offset` method to `ruff_python_trivia::Cursor`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-29 14:14_
+_@AlexWaygood_
 
 ## Summary
 

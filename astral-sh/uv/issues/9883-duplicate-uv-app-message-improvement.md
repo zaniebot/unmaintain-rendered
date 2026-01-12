@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-13T20:57:49Z
 updated_at: 2024-12-17T16:33:35Z
 url: https://github.com/astral-sh/uv/issues/9883
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # Duplicate uv --app message improvement
 
 ---
 
-_Issue opened by @stefanofusai on 2024-12-13 20:57_
+_@stefanofusai_
 
 I've noticed (OCD...) that when doing `uv --app <project>`, when `<project>` already exists, the error message could be improved.
 

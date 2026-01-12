@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-08T23:57:45Z
 updated_at: 2025-09-24T20:10:25Z
 url: https://github.com/astral-sh/ruff/issues/16572
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # S324 false negatives for synonyms of insecure algorithm names
 
 ---
 
-_Issue opened by @dscorbett on 2025-03-08 23:57_
+_@dscorbett_
 
 ### Summary
 

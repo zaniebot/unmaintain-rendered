@@ -13,14 +13,14 @@ head: zb/auth-docs
 created_at: 2024-02-22T01:12:25Z
 updated_at: 2024-02-22T02:30:11Z
 url: https://github.com/astral-sh/uv/pull/1844
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:45Z
 ```
 
 # Add docs for git authentication
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-22 01:12_
+_@zanieb_
 
 [Rendered](https://github.com/astral-sh/uv/blob/zb/auth-docs/README.md#git-authentication)
 

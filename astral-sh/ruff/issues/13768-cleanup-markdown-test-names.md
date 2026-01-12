@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-16T06:24:33Z
 updated_at: 2024-10-21T10:27:04Z
 url: https://github.com/astral-sh/ruff/issues/13768
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # "Cleanup" markdown test names
 
 ---
 
-_Issue opened by @MichaReiser on 2024-10-16 06:24_
+_@MichaReiser_
 
 I don't know if rstest allows to do that but the generated test names are hard to read and the enumerating of the tests also leads to instable identifiers across runs (changing test names can be very annoying when bisecting a test failures). 
 

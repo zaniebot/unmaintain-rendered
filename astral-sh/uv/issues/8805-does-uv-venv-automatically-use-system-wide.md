@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-04T09:51:28Z
 updated_at: 2024-11-05T07:31:24Z
 url: https://github.com/astral-sh/uv/issues/8805
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # Does `uv venv` automatically use system-wide packages?
 
 ---
 
-_Issue opened by @AVHopp on 2024-11-04 09:51_
+_@AVHopp_
 
 Hello everyone :) Unsure if this is the right place to ask, but to me it seems like creating virtual environments with `uv` always puts the system wide packages into the environment. Is this actually the case or did I mess something up locally and hence get this behavior? Thanks in advance?
 

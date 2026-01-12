@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-23T17:12:55Z
 updated_at: 2025-12-27T06:50:11Z
 url: https://github.com/astral-sh/ty/issues/2188
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Improve predictability of instance attribute type inference
 
 ---
 
-_Issue opened by @wvanbergen on 2025-12-23 17:12_
+_@wvanbergen_
 
 ### Summary
 

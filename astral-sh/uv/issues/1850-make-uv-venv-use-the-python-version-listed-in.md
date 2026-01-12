@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-22T02:53:38Z
 updated_at: 2024-08-22T07:19:17Z
 url: https://github.com/astral-sh/uv/issues/1850
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Make `uv venv` use the python version listed in `.python-version` if no `--python` is provided
 
 ---
 
-_Issue opened by @jfcherng on 2024-02-22 02:53_
+_@jfcherng_
 
 As the title. People can list multiple versions in the `.python-version` file too. The first matched one should be used.
 

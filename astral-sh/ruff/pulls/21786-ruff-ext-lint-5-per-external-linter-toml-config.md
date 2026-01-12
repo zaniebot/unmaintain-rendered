@@ -11,14 +11,14 @@ head: pieterh/ext-lint-5-config-routing
 created_at: 2025-12-04T06:08:11Z
 updated_at: 2026-01-07T01:50:57Z
 url: https://github.com/astral-sh/ruff/pull/21786
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ruff][ext-lint] 5: per-external-linter toml config
 
 ---
 
-_Pull request opened by @pieterh-oai on 2025-12-04 06:08_
+_@pieterh-oai_
 
 ## Summary
 

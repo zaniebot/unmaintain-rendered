@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-16T13:35:52Z
 updated_at: 2022-12-16T20:15:35Z
 url: https://github.com/astral-sh/ruff/issues/1263
-synced_at: 2026-01-10T12:05:24Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Feature request: autofixable check for `-> None` return of `__init__(self)` with no other arguments
 
 ---
 
-_Issue opened by @tmke8 on 2022-12-16 13:35_
+_@tmke8_
 
 mypy has this somewhat silly rule that you have to annotate an `__init__` that doesn't have any arguments beyond `self` with `-> None`: https://mypy.readthedocs.io/en/stable/class_basics.html#annotating-init-methods
 

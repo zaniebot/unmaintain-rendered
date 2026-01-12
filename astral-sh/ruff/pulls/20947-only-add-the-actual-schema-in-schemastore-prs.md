@@ -14,14 +14,14 @@ head: david/schemastore
 created_at: 2025-10-17T19:04:28Z
 updated_at: 2025-10-17T19:15:18Z
 url: https://github.com/astral-sh/ruff/pull/20947
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # Only add the actual schema in schemastore PRs
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-17 19:04_
+_@sharkdp_
 
 Same as https://github.com/astral-sh/ty/pull/1391:
 

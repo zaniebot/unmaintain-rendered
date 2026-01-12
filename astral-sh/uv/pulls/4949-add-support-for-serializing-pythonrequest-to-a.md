@@ -13,14 +13,14 @@ head: zb/python-request-ser
 created_at: 2024-07-09T22:58:25Z
 updated_at: 2024-07-10T15:24:47Z
 url: https://github.com/astral-sh/uv/pull/4949
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:33Z
 ```
 
 # Add support for serializing `PythonRequest` to a canonical string
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-09 22:58_
+_@zanieb_
 
 For #4950 
 

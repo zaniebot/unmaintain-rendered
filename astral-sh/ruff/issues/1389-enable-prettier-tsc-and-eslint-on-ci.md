@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-26T19:05:57Z
 updated_at: 2022-12-26T20:08:59Z
 url: https://github.com/astral-sh/ruff/issues/1389
-synced_at: 2026-01-10T12:05:27Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Enable `prettier`, `tsc`, and `eslint` on CI
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-26 19:05_
+_@charliermarsh_
 
 _No description provided._
 

@@ -14,14 +14,14 @@ head: dir-tool-toolchain
 created_at: 2024-07-01T13:48:14Z
 updated_at: 2024-07-01T20:43:21Z
 url: https://github.com/astral-sh/uv/pull/4695
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:24Z
 ```
 
 # Add `tool dir` and `toolchain dir` commands
 
 ---
 
-_Pull request opened by @blueraft on 2024-07-01 13:48_
+_@blueraft_
 
 ## Summary
 

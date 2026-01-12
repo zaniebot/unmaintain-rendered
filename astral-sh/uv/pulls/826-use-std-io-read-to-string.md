@@ -12,14 +12,14 @@ head: konsti/std-io-read_to_string
 created_at: 2024-01-08T09:08:42Z
 updated_at: 2024-01-08T09:15:39Z
 url: https://github.com/astral-sh/uv/pull/826
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:13Z
 ```
 
 # Use `std::io::read_to_string`
 
 ---
 
-_Pull request opened by @konstin on 2024-01-08 09:08_
+_@konstin_
 
 The `std::io::read_to_string` shorthand was stabilized in 1.65.
 

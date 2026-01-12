@@ -14,14 +14,14 @@ head: geofft/changelog-0.7.21
 created_at: 2025-07-14T20:19:57Z
 updated_at: 2025-07-14T20:29:05Z
 url: https://github.com/astral-sh/uv/pull/14615
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:18Z
 ```
 
 # Fix 0.7.21 changelog
 
 ---
 
-_Pull request opened by @geofft on 2025-07-14 20:19_
+_@geofft_
 
 _No description provided._
 

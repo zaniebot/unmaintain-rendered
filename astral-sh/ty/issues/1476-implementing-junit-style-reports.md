@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-04T02:53:59Z
 updated_at: 2025-12-22T11:18:12Z
 url: https://github.com/astral-sh/ty/issues/1476
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Implementing junit style reports
 
 ---
 
-_Issue opened by @cetanu on 2025-11-04 02:53_
+_@cetanu_
 
 ### Question
 

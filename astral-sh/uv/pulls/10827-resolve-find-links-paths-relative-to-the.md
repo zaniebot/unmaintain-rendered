@@ -13,14 +13,14 @@ head: fix-relative-find-links
 created_at: 2025-01-21T21:34:36Z
 updated_at: 2025-01-22T21:16:44Z
 url: https://github.com/astral-sh/uv/pull/10827
-synced_at: 2026-01-10T11:45:13Z
+synced_at: 2026-01-12T16:09:31Z
 ```
 
 # Resolve `find-links` paths relative to the configuration file
 
 ---
 
-_Pull request opened by @NightRa on 2025-01-21 21:34_
+_@NightRa_
 
 ## One-liner
 Relative find-links configuration to local path from a pyproject.toml or uv.toml is now relative to the config file

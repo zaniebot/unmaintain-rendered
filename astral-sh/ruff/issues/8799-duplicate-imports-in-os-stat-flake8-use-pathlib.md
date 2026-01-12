@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-21T02:25:09Z
 updated_at: 2023-11-30T20:13:31Z
 url: https://github.com/astral-sh/ruff/issues/8799
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Duplicate Imports In os-stat flake8-use-pathlib Documentation
 
 ---
 
-_Issue opened by @jgarte on 2023-11-21 02:25_
+_@jgarte_
 
 There are duplicate imports in the pathlib documentation.
 

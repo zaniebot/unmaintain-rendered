@@ -14,14 +14,14 @@ head: charlie/SIM105
 created_at: 2023-09-06T13:27:26Z
 updated_at: 2023-09-06T13:42:02Z
 url: https://github.com/astral-sh/ruff/pull/7191
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Avoid attempting to fix SIM105 violations with multi-statement lines
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-06 13:27_
+_@charliermarsh_
 
 I may revisit this and fix it "properly", but so rare that it's worth disabling for now: https://github.com/astral-sh/ruff/issues/7123.
 

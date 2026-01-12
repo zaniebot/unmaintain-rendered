@@ -13,14 +13,14 @@ head: assignment-left-to-right
 created_at: 2023-07-13T07:51:56Z
 updated_at: 2023-07-14T07:57:13Z
 url: https://github.com/astral-sh/ruff/pull/5728
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Properly group assignment targets
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-13 07:51_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

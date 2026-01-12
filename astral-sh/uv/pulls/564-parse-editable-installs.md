@@ -12,14 +12,14 @@ head: konstin/parse-editable-installs
 created_at: 2023-12-05T12:57:58Z
 updated_at: 2023-12-07T21:28:06Z
 url: https://github.com/astral-sh/uv/pull/564
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:02Z
 ```
 
 # Parse editable installs
 
 ---
 
-_Pull request opened by @konstin on 2023-12-05 12:57_
+_@konstin_
 
 Parse `-e` for editable installs in `requirements.txt`.
 

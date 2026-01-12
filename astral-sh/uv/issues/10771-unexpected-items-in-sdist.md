@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-20T07:26:14Z
 updated_at: 2025-01-21T14:13:16Z
 url: https://github.com/astral-sh/uv/issues/10771
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # unexpected items in sdist
 
 ---
 
-_Issue opened by @cjw296 on 2025-01-20 07:26_
+_@cjw296_
 
 I created [this distribution](https://pypi.org/project/paradigms/0.0.0.dev0/#paradigms-0.0.0.dev0.tar.gz) from [this commit.](https://github.com/simplistix/paradigms/commit/27be6c6dade87f71a9722ea160d90b5bb23a63dd) and have found it contains some expected content:
 

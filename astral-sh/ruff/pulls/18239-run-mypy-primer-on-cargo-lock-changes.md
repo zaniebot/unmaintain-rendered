@@ -14,14 +14,14 @@ head: micha/mypy-cargo-lock
 created_at: 2025-05-21T11:10:44Z
 updated_at: 2025-05-21T11:21:40Z
 url: https://github.com/astral-sh/ruff/pull/18239
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # Run mypy primer on Cargo.lock changes
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-21 11:10_
+_@MichaReiser_
 
 I want to know if changes to dependencies result in any ecosystem changes (or new hangs)
 

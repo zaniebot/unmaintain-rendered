@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-10-13T09:31:43Z
 updated_at: 2025-10-13T09:49:03Z
 url: https://github.com/astral-sh/uv/pull/16278
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:12Z
 ```
 
 # add more desc for externally_managed error
 
 ---
 
-_Pull request opened by @lambdaq on 2025-10-13 09:31_
+_@lambdaq_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

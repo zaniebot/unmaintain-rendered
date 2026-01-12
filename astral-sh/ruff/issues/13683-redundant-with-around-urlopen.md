@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-08T18:20:55Z
 updated_at: 2024-10-09T10:58:14Z
 url: https://github.com/astral-sh/ruff/issues/13683
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Redundant `with` around `urlopen()`
 
 ---
 
-_Issue opened by @opk12 on 2024-10-08 18:20_
+_@opk12_
 
 What about a new check based on this example from the [`urllib.request` documentation](https://docs.python.org/3/library/urllib.request.html#examples), which tells that `urlopen` does not need to be used as a context manager? The first version is more verbose and has a level of indentation.
 

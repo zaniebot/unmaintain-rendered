@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T14:14:04Z
 updated_at: 2025-08-15T15:46:04Z
 url: https://github.com/astral-sh/uv/issues/15310
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # UV can not fall back to compatible PySide6 installation
 
 ---
 
-_Issue opened by @aduhan on 2025-08-15 14:14_
+_@aduhan_
 
 ### Summary
 

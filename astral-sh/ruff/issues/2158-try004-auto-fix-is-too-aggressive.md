@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-25T16:40:25Z
 updated_at: 2023-01-25T18:01:01Z
 url: https://github.com/astral-sh/ruff/issues/2158
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # `TRY004` auto-fix is too aggressive
 
 ---
 
-_Issue opened by @WilliamJamieson on 2023-01-25 16:40_
+_@WilliamJamieson_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

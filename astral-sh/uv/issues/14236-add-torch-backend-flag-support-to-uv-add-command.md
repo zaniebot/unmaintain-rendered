@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-24T11:08:08Z
 updated_at: 2025-09-02T09:54:46Z
 url: https://github.com/astral-sh/uv/issues/14236
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # Add `--torch-backend` flag support to `uv add` command for automatic PyTorch backend configuration
 
 ---
 
-_Issue opened by @FishAlchemist on 2025-06-24 11:08_
+_@FishAlchemist_
 
 ### Summary
 

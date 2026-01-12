@@ -11,14 +11,14 @@ head: pylint-while-used
 created_at: 2023-03-22T02:52:39Z
 updated_at: 2023-03-22T03:53:11Z
 url: https://github.com/astral-sh/ruff/pull/3662
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # [`pylint`]: Implement `while-used` (`W0149`)
 
 ---
 
-_Pull request opened by @latonis on 2023-03-22 02:52_
+_@latonis_
 
 Rule reference: https://pylint.pycqa.org/en/latest/user_guide/messages/warning/while-used.html
 

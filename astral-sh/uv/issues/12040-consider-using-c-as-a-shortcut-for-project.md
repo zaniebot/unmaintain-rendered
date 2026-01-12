@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T11:13:16Z
 updated_at: 2025-03-12T12:32:56Z
 url: https://github.com/astral-sh/uv/issues/12040
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # Consider using `-C` as a shortcut for `--project`
 
 ---
 
-_Issue opened by @nils-werner on 2025-03-07 11:13_
+_@nils-werner_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-13T15:31:14Z
 updated_at: 2025-08-13T15:43:34Z
 url: https://github.com/astral-sh/ruff/issues/19897
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FA102 doesn't follow inline script metadata (PEP 723)
 
 ---
 
-_Issue opened by @kiyoon on 2025-08-13 15:31_
+_@kiyoon_
 
 ### Summary
 

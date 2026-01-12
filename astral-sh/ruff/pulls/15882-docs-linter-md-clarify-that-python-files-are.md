@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-02-02T19:25:01Z
 updated_at: 2025-02-04T15:36:17Z
 url: https://github.com/astral-sh/ruff/pull/15882
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Docs (`linter.md`): clarify that Python files are always searched for in subdirectories
 
 ---
 
-_Pull request opened by @anordin95 on 2025-02-02 19:25_
+_@anordin95_
 
 ## Nits related to clarity of which files are linted
 

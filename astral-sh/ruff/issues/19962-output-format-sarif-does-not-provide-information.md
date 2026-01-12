@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-18T07:56:30Z
 updated_at: 2025-10-02T20:22:52Z
 url: https://github.com/astral-sh/ruff/issues/19962
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `--output-format sarif` does not provide information on autofixes
 
 ---
 
-_Issue opened by @alexanderlinne on 2025-08-18 07:56_
+_@alexanderlinne_
 
 ### Summary
 

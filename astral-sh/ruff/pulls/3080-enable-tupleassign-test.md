@@ -13,14 +13,14 @@ head: charlie/formatter-tests
 created_at: 2023-02-21T00:39:54Z
 updated_at: 2023-02-21T00:42:24Z
 url: https://github.com/astral-sh/ruff/pull/3080
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Enable `tupleassign` test
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-21 00:39_
+_@charliermarsh_
 
 This actually _does_ deviate from Black, but I don't yet understand Black's logic, so I'm enabling it anyway:
 

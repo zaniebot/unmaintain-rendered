@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-22T23:45:57Z
 updated_at: 2025-09-23T08:15:02Z
 url: https://github.com/astral-sh/ty/issues/1238
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Code Action: Bake inlay hints
 
 ---
 
-_Issue opened by @fightingdreamer on 2025-09-22 23:45_
+_@fightingdreamer_
 
 This feature exists in TypeScript language server, but I've never seen it in Python tooling.
 

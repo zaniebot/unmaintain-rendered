@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-04T12:55:46Z
 updated_at: 2024-09-18T04:01:39Z
 url: https://github.com/astral-sh/ruff/issues/13242
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # False positive D402 when mentioning a different function that has the function name as suffix
 
 ---
 
-_Issue opened by @Daraan on 2024-09-04 12:55_
+_@Daraan_
 
 I stumbled on the following false positive cases where the mention of `prefix_foo` flags a D402 on a function called `foo`
 

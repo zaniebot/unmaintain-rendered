@@ -12,14 +12,14 @@ head: charlie/once
 created_at: 2022-12-18T17:03:43Z
 updated_at: 2022-12-18T17:03:50Z
 url: https://github.com/astral-sh/ruff/pull/1280
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Print redirect warnings exactly once per code
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-18 17:03_
+_@charliermarsh_
 
 ```
 ∴ cargo run setup.py --select I252,I25,I25,I252

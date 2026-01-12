@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-11-21T13:23:52Z
 updated_at: 2022-01-11T18:29:05Z
 url: https://github.com/clap-rs/clap/issues/2218
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # print_help() et al. are conceptually read-only ops and should not take &mut self
 
 ---
 
-_Issue opened by @djeedai on 2020-11-21 13:23_
+_@djeedai_
 
 `print_help()` and other similar variants conceptually just print information to some output based on the already-configured `App`, and therefore it is quite unexpected for them to be mutating the `App` and take a `&mut self` reference. For a typical command-line tool which might want to print-help-and-exit deeper inside the program due to other errors not directly handled by `clap`'s argument validation, this forces `App` to be passed by `&mut self` everywhere for no good apparent reason, and thereby makes other unrelated parts of the code more complex.
 

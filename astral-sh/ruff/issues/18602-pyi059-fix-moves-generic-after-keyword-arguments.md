@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-10T00:37:18Z
 updated_at: 2025-06-10T16:27:07Z
 url: https://github.com/astral-sh/ruff/issues/18602
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PYI059 fix moves `Generic` after keyword arguments
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-10 00:37_
+_@dscorbett_
 
 ### Summary
 

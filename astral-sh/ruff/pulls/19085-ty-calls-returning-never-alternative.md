@@ -13,14 +13,14 @@ head: david/calls-returning-never-alternative
 created_at: 2025-07-02T07:50:35Z
 updated_at: 2025-07-07T11:47:53Z
 url: https://github.com/astral-sh/ruff/pull/19085
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [ty] Calls returning `Never` (alternative)
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-02 07:50_
+_@sharkdp_
 
 ## Summary
 

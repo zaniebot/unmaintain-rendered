@@ -13,14 +13,14 @@ head: zb/freethreaded-install
 created_at: 2024-10-10T16:44:24Z
 updated_at: 2024-10-15T08:55:03Z
 url: https://github.com/astral-sh/uv/pull/8100
-synced_at: 2026-01-10T12:54:02Z
+synced_at: 2026-01-12T16:08:09Z
 ```
 
 # Add support for managed installs of free-threaded Python
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-10 16:44_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/7193
 

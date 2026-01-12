@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-02T10:37:10Z
 updated_at: 2024-02-08T14:14:12Z
 url: https://github.com/astral-sh/ruff/issues/8445
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Investigate how documentation tooling treats indents in docstrings
 
 ---
 
-_Issue opened by @konstin on 2023-11-02 10:37_
+_@konstin_
 
 In the formatter, we currently normalize docstring indentation in the same way as black and cpython do. For example this is what cpython does, using `str.expandtabs` with a fixed width of 8 on python 3.13:
 ```

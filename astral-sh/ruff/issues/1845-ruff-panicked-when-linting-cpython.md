@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-13T05:51:24Z
 updated_at: 2023-01-14T13:03:43Z
 url: https://github.com/astral-sh/ruff/issues/1845
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # ruff panicked when linting cpython 
 
 ---
 
-_Issue opened by @messense on 2023-01-13 05:51_
+_@messense_
 
 ```bash
 RUST_BACKTRACE=1 cargo run -- --no-cache ../cpython

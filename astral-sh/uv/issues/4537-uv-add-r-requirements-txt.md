@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-26T04:56:40Z
 updated_at: 2024-08-16T21:57:47Z
 url: https://github.com/astral-sh/uv/issues/4537
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # `uv add -r requirements.txt`
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-06-26 04:56_
+_@ibraheemdev_
 
 Support a flag that would allow `uv add` to read requirements from a file, e.g. `uv add -r requirements.txt`. This would enable seamless migration from a `requirements.txt` to a `pyproject.toml`.
 

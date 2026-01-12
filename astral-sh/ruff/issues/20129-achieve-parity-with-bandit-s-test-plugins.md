@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-28T09:50:12Z
 updated_at: 2025-08-28T19:05:44Z
 url: https://github.com/astral-sh/ruff/issues/20129
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Achieve parity with Bandit's test plugins
 
 ---
 
-_Issue opened by @micmalti on 2025-08-28 09:50_
+_@micmalti_
 
 ### Summary
 

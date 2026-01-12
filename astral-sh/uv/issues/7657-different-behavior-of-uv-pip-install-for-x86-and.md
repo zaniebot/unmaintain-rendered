@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-24T12:12:44Z
 updated_at: 2024-09-24T12:22:26Z
 url: https://github.com/astral-sh/uv/issues/7657
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # different behavior of uv pip install for x86 and aarch64 archs
 
 ---
 
-_Issue opened by @senysenyseny16 on 2024-09-24 12:12_
+_@senysenyseny16_
 
 Hello, I encountered the following problem:
 

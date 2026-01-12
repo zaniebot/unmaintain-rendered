@@ -13,14 +13,14 @@ head: jane/linter/rule/fstring
 created_at: 2024-01-31T03:24:54Z
 updated_at: 2024-02-03T00:29:30Z
 url: https://github.com/astral-sh/ruff/pull/9728
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Implement RUF027: `Missing F-String Syntax` lint
 
 ---
 
-_Pull request opened by @snowsignal on 2024-01-31 03:24_
+_@snowsignal_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

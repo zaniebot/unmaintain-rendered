@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-09T10:53:04Z
 updated_at: 2024-04-09T11:14:59Z
 url: https://github.com/astral-sh/uv/issues/2929
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Specify global configurations similar to pip
 
 ---
 
-_Issue opened by @jmspereira on 2024-04-09 10:53_
+_@jmspereira_
 
 Hey everyone,
 

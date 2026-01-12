@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-11T12:56:40Z
 updated_at: 2024-10-11T13:13:03Z
 url: https://github.com/astral-sh/uv/issues/8127
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # uv sync without uninstalling packages
 
 ---
 
-_Issue opened by @skeapskeap on 2024-10-11 12:56_
+_@skeapskeap_
 
 I need to use a virtual environment of the base Docker image with the packages installed in it. The problem is that the `uv sync` command removes packages that are not listed in `uv.lock`. The only working solution for me at the moment is to export `uv.lock` to `requirements.txt` and install them using `uv pip install`.
 Is there a way to make the behavior of `uv sync` simillar to `pip install`, so that it only adds packages to the existing venv?

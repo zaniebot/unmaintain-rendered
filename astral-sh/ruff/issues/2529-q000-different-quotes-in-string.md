@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-03T11:46:41Z
 updated_at: 2023-02-03T12:39:11Z
 url: https://github.com/astral-sh/ruff/issues/2529
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Q000 different quotes in string
 
 ---
 
-_Issue opened by @FieryDruid on 2023-02-03 11:46_
+_@FieryDruid_
 
 ruff  `0.0.240`
 

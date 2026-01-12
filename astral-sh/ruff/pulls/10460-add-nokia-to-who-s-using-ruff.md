@@ -13,14 +13,14 @@ head: trag1c-patch-1
 created_at: 2024-03-18T15:25:29Z
 updated_at: 2024-03-18T15:43:22Z
 url: https://github.com/astral-sh/ruff/pull/10460
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Add Nokia to "Who's Using Ruff?"
 
 ---
 
-_Pull request opened by @trag1c on 2024-03-18 15:25_
+_@trag1c_
 
 ## Summary
 Added Nokia to the "Who's Using Ruff?" section in the README.

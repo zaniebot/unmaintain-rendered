@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-31T10:34:22Z
 updated_at: 2025-01-31T15:13:33Z
 url: https://github.com/astral-sh/uv/issues/11130
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:29Z
 ```
 
 # Azure Artifacts authentication stopped working: 401
 
 ---
 
-_Issue opened by @laenan8466 on 2025-01-31 10:34_
+_@laenan8466_
 
 ### Summary
 

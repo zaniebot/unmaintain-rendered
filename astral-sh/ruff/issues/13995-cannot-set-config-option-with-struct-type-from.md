@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-30T12:20:10Z
 updated_at: 2025-01-06T13:20:29Z
 url: https://github.com/astral-sh/ruff/issues/13995
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Cannot set config option with struct type from command-line
 
 ---
 
-_Issue opened by @LordAro on 2024-10-30 12:20_
+_@LordAro_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: konsti/marker-list
 created_at: 2025-07-21T15:48:19Z
 updated_at: 2025-07-21T16:21:48Z
 url: https://github.com/astral-sh/uv/pull/14792
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:25Z
 ```
 
 # Introduce a generic type for list operations
 
 ---
 
-_Pull request opened by @konstin on 2025-07-21 15:48_
+_@konstin_
 
 We currently have two marker keys that a list, `extras` and `dependency_groups`, both from PEP 751. With the variants PEP, we will add three more. This change is broken out of the wheel variants PR to introduce generic marker list support, plus a change to use `ContainerOperator` in more places.
 

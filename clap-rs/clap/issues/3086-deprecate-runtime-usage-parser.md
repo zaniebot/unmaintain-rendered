@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-12-08T16:56:07Z
 updated_at: 2021-12-08T17:10:00Z
 url: https://github.com/clap-rs/clap/issues/3086
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Deprecate runtime usage parser
 
 ---
 
-_Issue opened by @epage on 2021-12-08 16:56_
+_@epage_
 
 The runtime usage parser adds extra code (complexity / compile time), defers errors to runtime, and the syntax is driven by the parser implementation, leading to some odd behavior.
 

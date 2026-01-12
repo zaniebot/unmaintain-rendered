@@ -14,14 +14,14 @@ head: charlie/fragment
 created_at: 2024-03-01T22:54:30Z
 updated_at: 2024-03-04T20:51:09Z
 url: https://github.com/astral-sh/uv/pull/2123
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:52Z
 ```
 
 # Set `.metadata` suffix on URL path
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-01 22:54_
+_@charliermarsh_
 
 ## Summary
 

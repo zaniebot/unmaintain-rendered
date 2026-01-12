@@ -13,14 +13,14 @@ head: ibraheem/literal-promotion-soundness
 created_at: 2025-10-17T20:13:39Z
 updated_at: 2025-10-31T16:42:01Z
 url: https://github.com/astral-sh/ruff/pull/20950
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # [ty] Avoid promoting invariant generics during literal promotion
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-10-17 20:13_
+_@ibraheemdev_
 
 ## Summary
 

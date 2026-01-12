@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-09T13:21:43Z
 updated_at: 2024-08-12T05:44:07Z
 url: https://github.com/astral-sh/ruff/issues/12785
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Internal feature request: extend fuzzer `ruff_fix_validity` to non-default linter settings
 
 ---
 
-_Issue opened by @dylwil3 on 2024-08-09 13:21_
+_@dylwil3_
 
 The fuzzer looks very cool and I'd love to use it!
 

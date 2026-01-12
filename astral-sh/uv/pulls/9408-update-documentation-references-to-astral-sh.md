@@ -13,14 +13,14 @@ head: renovate/docs-astral-sh-setup-uv-4.x
 created_at: 2024-11-25T01:21:06Z
 updated_at: 2024-11-25T01:49:10Z
 url: https://github.com/astral-sh/uv/pull/9408
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:48Z
 ```
 
 # Update documentation references to astral-sh/setup-uv to v4
 
 ---
 
-_Pull request opened by @renovate on 2024-11-25 01:21_
+_@renovate_
 
 This PR contains the following updates:
 

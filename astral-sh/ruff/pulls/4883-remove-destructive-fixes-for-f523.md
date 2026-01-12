@@ -12,14 +12,14 @@ head: charlie/format-str
 created_at: 2023-06-05T21:38:04Z
 updated_at: 2023-06-06T01:06:43Z
 url: https://github.com/astral-sh/ruff/pull/4883
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove destructive fixes for F523
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-05 21:38_
+_@charliermarsh_
 
 ## Summary
 

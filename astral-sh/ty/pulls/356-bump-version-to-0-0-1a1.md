@@ -13,14 +13,14 @@ head: micha/alpha-8
 created_at: 2025-05-13T12:45:22Z
 updated_at: 2025-05-13T15:40:02Z
 url: https://github.com/astral-sh/ty/pull/356
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Bump version to 0.0.1a1
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-13 12:45_
+_@MichaReiser_
 
 _No description provided._
 

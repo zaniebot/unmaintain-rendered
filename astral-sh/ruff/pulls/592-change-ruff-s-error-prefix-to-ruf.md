@@ -12,14 +12,14 @@ head: charlie/ruf
 created_at: 2022-11-04T22:38:39Z
 updated_at: 2022-11-05T03:13:51Z
 url: https://github.com/astral-sh/ruff/pull/592
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Change Ruff's error prefix to RUF
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-04 22:38_
+_@charliermarsh_
 
 Resolves: #591.
 

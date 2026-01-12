@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-03-07T16:45:58Z
 updated_at: 2022-03-31T18:52:42Z
 url: https://github.com/clap-rs/clap/issues/3543
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `#[derive(ArgEnum)]` fails silently on enums with non-unit variants
 
 ---
 
-_Issue opened by @epage on 2022-03-07 16:45_
+_@epage_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/3533
 

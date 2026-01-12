@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-31T16:10:01Z
 updated_at: 2023-08-02T22:23:06Z
 url: https://github.com/astral-sh/ruff/issues/6201
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # missing TCH00(1-3) lint for typing.Callable function signature annotation
 
 ---
 
-_Issue opened by @bachmannscode on 2023-07-31 16:10_
+_@bachmannscode_
 
 ruff version: 0.0.280
 

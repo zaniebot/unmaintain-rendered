@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-10T15:37:17Z
 updated_at: 2025-08-11T15:44:09Z
 url: https://github.com/astral-sh/uv/issues/15203
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # `uv>=0.7.10` failed to use system proxy on Windows
 
 ---
 
-_Issue opened by @xymy on 2025-08-10 15:37_
+_@xymy_
 
 ### Summary
 

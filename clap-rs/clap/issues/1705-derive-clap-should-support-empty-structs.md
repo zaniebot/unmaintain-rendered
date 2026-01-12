@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-02-25T16:42:21Z
 updated_at: 2020-03-02T16:55:07Z
 url: https://github.com/clap-rs/clap/issues/1705
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # #[derive(Clap)] should support empty structs
 
 ---
 
-_Issue opened by @emilazy on 2020-02-25 16:42_
+_@emilazy_
 
 ### Describe your use case
 

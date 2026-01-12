@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-17T15:15:16Z
 updated_at: 2023-09-21T13:32:19Z
 url: https://github.com/astral-sh/ruff/issues/7465
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter instability: Leading clause header comments with preceding function
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-17 15:15_
+_@MichaReiser_
 
 ## Input
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-09T09:34:12Z
 updated_at: 2023-02-10T14:09:17Z
 url: https://github.com/astral-sh/ruff/issues/2685
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Python 2 style type hints are removed automatically by the autofix for F401
 
 ---
 
-_Issue opened by @Pierre-Sassoulas on 2023-02-09 09:34_
+_@Pierre-Sassoulas_
 
 On the following snippet:
 ```python

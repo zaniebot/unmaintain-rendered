@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-09T16:14:41Z
 updated_at: 2021-12-09T16:41:00Z
 url: https://github.com/clap-rs/clap/issues/3120
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Structopt derive doesn't like type-parametric structs
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:14_
+_@epage_
 
 <a href="https://github.com/vorner"><img src="https://avatars.githubusercontent.com/u/11783500?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [vorner](https://github.com/vorner)**
 _Thursday Jul 26, 2018 at 20:30 GMT_

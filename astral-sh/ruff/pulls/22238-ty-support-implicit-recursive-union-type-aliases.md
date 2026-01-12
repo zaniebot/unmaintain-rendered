@@ -14,14 +14,14 @@ head: implicit-recursive-union
 created_at: 2025-12-29T05:10:16Z
 updated_at: 2026-01-07T09:42:07Z
 url: https://github.com/astral-sh/ruff/pull/22238
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [ty] support implicit recursive union type aliases
 
 ---
 
-_Pull request opened by @mtshiba on 2025-12-29 05:10_
+_@mtshiba_
 
 ## Summary
 

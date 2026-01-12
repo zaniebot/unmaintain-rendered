@@ -14,14 +14,14 @@ head: zb/portable-activate
 created_at: 2024-08-09T13:35:20Z
 updated_at: 2025-03-02T17:52:13Z
 url: https://github.com/astral-sh/uv/pull/5956
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:07:07Z
 ```
 
 # Display portable paths in posix venv activation commands
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-09 13:35_
+_@zanieb_
 
 Closes #5950
 

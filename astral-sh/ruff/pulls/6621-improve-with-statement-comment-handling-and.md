@@ -13,14 +13,14 @@ head: charlie/with
 created_at: 2023-08-16T16:34:52Z
 updated_at: 2023-08-18T03:45:29Z
 url: https://github.com/astral-sh/ruff/pull/6621
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Improve `with` statement comment handling and expression breaking
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-16 16:34_
+_@charliermarsh_
 
 ## Summary
 

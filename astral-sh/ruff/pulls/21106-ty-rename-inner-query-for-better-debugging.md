@@ -14,14 +14,14 @@ head: micha/rename-query
 created_at: 2025-10-28T11:21:17Z
 updated_at: 2025-10-28T12:46:04Z
 url: https://github.com/astral-sh/ruff/pull/21106
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [ty] Rename `inner` query for better debugging experience
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-28 11:21_
+_@MichaReiser_
 
 ## Summary
 

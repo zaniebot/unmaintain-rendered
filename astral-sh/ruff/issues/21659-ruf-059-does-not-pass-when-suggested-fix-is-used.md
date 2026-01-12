@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-27T11:23:34Z
 updated_at: 2025-11-28T08:13:23Z
 url: https://github.com/astral-sh/ruff/issues/21659
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF 059 does not pass when suggested fix is used
 
 ---
 
-_Issue opened by @JeanBaptiste-dlb on 2025-11-27 11:23_
+_@JeanBaptiste-dlb_
 
 ### Summary
 

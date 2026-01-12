@@ -14,14 +14,14 @@ head: charlie/sdist-from-wheel
 created_at: 2024-08-31T18:31:31Z
 updated_at: 2024-09-04T15:30:33Z
 url: https://github.com/astral-sh/uv/pull/6898
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:35Z
 ```
 
 # Support `uv build --wheel` from source distributions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-31 18:31_
+_@charliermarsh_
 
 ## Summary
 

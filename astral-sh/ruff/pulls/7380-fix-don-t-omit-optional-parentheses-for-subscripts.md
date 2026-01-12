@@ -13,14 +13,14 @@ head: dont-omit-optional-parens-for-subscript
 created_at: 2023-09-14T08:34:34Z
 updated_at: 2023-09-14T08:43:54Z
 url: https://github.com/astral-sh/ruff/pull/7380
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # fix: Don't omit optional parentheses for subscripts
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-14 08:34_
+_@MichaReiser_
 
 ## Summary
 

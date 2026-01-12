@@ -13,14 +13,14 @@ head: dhruv/jupyter-lint-only
 created_at: 2023-07-19T02:26:56Z
 updated_at: 2023-07-21T13:41:22Z
 url: https://github.com/astral-sh/ruff/pull/5876
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Make `lint_only` aware of the source kind
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-19 02:26_
+_@dhruvmanila_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: charlie/i
 created_at: 2024-06-12T02:16:35Z
 updated_at: 2024-06-12T02:25:29Z
 url: https://github.com/astral-sh/uv/pull/4262
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:07Z
 ```
 
 # DRY up index argument parsing
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-12 02:16_
+_@charliermarsh_
 
 ## Summary
 

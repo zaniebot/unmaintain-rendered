@@ -13,14 +13,14 @@ head: renovate/env_logger-0.x-lockfile
 created_at: 2024-12-23T01:32:37Z
 updated_at: 2024-12-23T04:35:46Z
 url: https://github.com/astral-sh/ruff/pull/15107
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Update Rust crate env_logger to v0.11.6
 
 ---
 
-_Pull request opened by @renovate on 2024-12-23 01:32_
+_@renovate_
 
 This PR contains the following updates:
 

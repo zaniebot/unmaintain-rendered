@@ -12,14 +12,14 @@ head: rewrite-lru-cache
 created_at: 2022-11-09T05:51:08Z
 updated_at: 2022-11-09T16:02:15Z
 url: https://github.com/astral-sh/ruff/pull/664
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Detect unnecessary params in `lru_cache` 
 
 ---
 
-_Pull request opened by @chammika-become on 2022-11-09 05:51_
+_@chammika-become_
 
 This PR address #642
 Only detects atm. Fix for this check WIP.

@@ -13,14 +13,14 @@ head: charlie/discover
 created_at: 2025-09-14T01:55:26Z
 updated_at: 2025-09-14T13:49:36Z
 url: https://github.com/astral-sh/uv/pull/15831
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:57Z
 ```
 
 # Error when `pyproject.toml` target does not exist for dependency groups
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-14 01:55_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-06T08:12:12Z
 updated_at: 2025-03-06T09:45:45Z
 url: https://github.com/astral-sh/ruff/issues/16529
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # TC does not detect imports used only for type annotations
 
 ---
 
-_Issue opened by @devon-research on 2025-03-06 08:12_
+_@devon-research_
 
 ### Summary
 

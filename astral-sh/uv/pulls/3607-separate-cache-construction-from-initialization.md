@@ -13,14 +13,14 @@ head: charlie/init
 created_at: 2024-05-15T16:14:32Z
 updated_at: 2024-05-15T16:29:40Z
 url: https://github.com/astral-sh/uv/pull/3607
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:44Z
 ```
 
 # Separate cache construction from initialization
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-15 16:14_
+_@charliermarsh_
 
 ## Summary
 

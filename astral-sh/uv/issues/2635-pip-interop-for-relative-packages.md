@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-23T08:17:37Z
 updated_at: 2024-03-30T21:00:28Z
 url: https://github.com/astral-sh/uv/issues/2635
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # pip interop for relative packages
 
 ---
 
-_Issue opened by @serjflint on 2024-03-23 08:17_
+_@serjflint_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

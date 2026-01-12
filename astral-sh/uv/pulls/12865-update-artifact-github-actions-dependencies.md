@@ -13,14 +13,14 @@ head: renovate/artifact-github-actions-dependencies
 created_at: 2025-04-14T03:30:17Z
 updated_at: 2025-04-14T12:31:21Z
 url: https://github.com/astral-sh/uv/pull/12865
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:25Z
 ```
 
 # Update Artifact GitHub Actions dependencies
 
 ---
 
-_Pull request opened by @renovate on 2025-04-14 03:30_
+_@renovate_
 
 This PR contains the following updates:
 

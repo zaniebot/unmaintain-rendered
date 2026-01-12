@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-23T15:14:51Z
 updated_at: 2024-11-23T18:58:22Z
 url: https://github.com/astral-sh/uv/issues/9384
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # choose python installation dir
 
 ---
 
-_Issue opened by @davidszotten on 2024-11-23 15:14_
+_@davidszotten_
 
 Hi. Apologies if this is documented somewhere and i just failed to find it:
 

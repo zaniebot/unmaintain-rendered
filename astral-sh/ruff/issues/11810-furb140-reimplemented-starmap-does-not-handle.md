@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-09T14:04:23Z
 updated_at: 2024-06-10T21:10:07Z
 url: https://github.com/astral-sh/ruff/issues/11810
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `FURB140` (reimplemented-starmap) does not handle multiple uses of the loop variable
 
 ---
 
-_Issue opened by @tdulcet on 2024-06-09 14:04_
+_@tdulcet_
 
 Input code:
 ```py

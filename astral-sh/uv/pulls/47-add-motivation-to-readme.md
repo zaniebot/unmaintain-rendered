@@ -12,14 +12,14 @@ head: charlie/README
 created_at: 2023-10-07T22:55:01Z
 updated_at: 2023-10-07T23:39:58Z
 url: https://github.com/astral-sh/uv/pull/47
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:43Z
 ```
 
 # Add motivation to README
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-07 22:55_
+_@charliermarsh_
 
 _No description provided._
 

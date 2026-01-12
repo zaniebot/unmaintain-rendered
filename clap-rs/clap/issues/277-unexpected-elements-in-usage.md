@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-09-24T16:11:55Z
 updated_at: 2015-10-07T16:06:20Z
 url: https://github.com/clap-rs/clap/issues/277
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Unexpected elements in usage
 
 ---
 
-_Issue opened by @elszben on 2015-09-24 16:11_
+_@elszben_
 
 ``` rust
 extern crate clap;

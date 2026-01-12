@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-21T09:25:38Z
 updated_at: 2025-12-18T23:12:06Z
 url: https://github.com/astral-sh/ty/issues/860
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `__file__` import typed as `str | None`
 
 ---
 
-_Issue opened by @sinon on 2025-07-21 09:25_
+_@sinon_
 
 ### Summary
 

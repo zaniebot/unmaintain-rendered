@@ -12,14 +12,14 @@ head: add-visit_format_spec
 created_at: 2023-01-01T09:54:08Z
 updated_at: 2023-01-01T18:03:32Z
 url: https://github.com/astral-sh/ruff/pull/1528
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add `visit_format_spec` to avoid false positives for F541 in f-string format specifier
 
 ---
 
-_Pull request opened by @harupy on 2023-01-01 09:54_
+_@harupy_
 
 See #1514 for details.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-16T14:59:49Z
 updated_at: 2026-01-07T10:00:00Z
 url: https://github.com/astral-sh/uv/issues/15325
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # Dynamic shell completions
 
 ---
 
-_Issue opened by @andrewaylett on 2025-08-16 14:59_
+_@andrewaylett_
 
 ### Summary
 

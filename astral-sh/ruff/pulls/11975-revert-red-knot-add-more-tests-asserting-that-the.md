@@ -12,14 +12,14 @@ head: revert-11970-typeshed-validation
 created_at: 2024-06-21T19:10:23Z
 updated_at: 2024-06-21T19:30:11Z
 url: https://github.com/astral-sh/ruff/pull/11975
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Revert "[red-knot] Add more tests asserting that the VendoredFileSystem and the `VERSIONS` parser work with the vendored typeshed stubs"
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-21 19:10_
+_@AlexWaygood_
 
 Reverts astral-sh/ruff#11970
 

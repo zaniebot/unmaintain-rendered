@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-06T07:45:40Z
 updated_at: 2025-07-07T14:28:11Z
 url: https://github.com/astral-sh/ruff/issues/19158
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # New rule: useless `finally`
 
 ---
 
-_Issue opened by @harupy on 2025-07-06 07:45_
+_@harupy_
 
 ### Summary
 

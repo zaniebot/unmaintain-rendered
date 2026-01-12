@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-03T05:33:32Z
 updated_at: 2025-08-26T02:24:07Z
 url: https://github.com/astral-sh/uv/issues/15039
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # Deepspeed in uv usage
 
 ---
 
-_Issue opened by @Virtuoso461 on 2025-08-03 05:33_
+_@Virtuoso461_
 
 ### Summary
 

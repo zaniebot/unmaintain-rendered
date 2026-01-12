@@ -14,14 +14,14 @@ head: fix/1047
 created_at: 2025-08-19T09:52:10Z
 updated_at: 2025-08-19T19:24:50Z
 url: https://github.com/astral-sh/ruff/pull/19986
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] apply `KW_ONLY` sentinel only to local fields
 
 ---
 
-_Pull request opened by @PrettyWood on 2025-08-19 09:52_
+_@PrettyWood_
 
 fix https://github.com/astral-sh/ty/issues/1047
 

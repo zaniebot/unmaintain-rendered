@@ -12,14 +12,14 @@ head: zb/requires-python-scenarios
 created_at: 2024-01-04T04:01:56Z
 updated_at: 2024-01-04T20:15:14Z
 url: https://github.com/astral-sh/uv/pull/769
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:11Z
 ```
 
 # Update scenario tests to include `requires-python` coverage
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-04 04:01_
+_@zanieb_
 
 Includes creating a virtual env with the relevant environment python version.
 

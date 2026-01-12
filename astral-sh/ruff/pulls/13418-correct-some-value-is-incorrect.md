@@ -13,14 +13,14 @@ head: rupt/some-value
 created_at: 2024-09-20T05:23:21Z
 updated_at: 2024-09-20T06:39:36Z
 url: https://github.com/astral-sh/ruff/pull/13418
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Correct `Some value is incorrect`
 
 ---
 
-_Pull request opened by @Rupt on 2024-09-20 05:23_
+_@Rupt_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: dcreager/distinct-legacy-typevars
 created_at: 2025-05-09T19:14:53Z
 updated_at: 2025-07-28T21:37:29Z
 url: https://github.com/astral-sh/ruff/pull/17994
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # [ty] WIP: Disambiguate legacy typevars
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-09 19:14_
+_@dcreager_
 
 This addresses @carljm's comment https://github.com/astral-sh/ruff/pull/17956#pullrequestreview-2826559665 about wanting to disambiguate legacy typevars that are used in multiple generic contexts.
 

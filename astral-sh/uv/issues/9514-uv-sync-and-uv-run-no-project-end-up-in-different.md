@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-28T19:27:43Z
 updated_at: 2024-12-04T11:43:12Z
 url: https://github.com/astral-sh/uv/issues/9514
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # `uv sync` and `uv run --no-project` end up in different version with same requirements
 
 ---
 
-_Issue opened by @ThomasHezard on 2024-11-28 19:27_
+_@ThomasHezard_
 
 Hello
 

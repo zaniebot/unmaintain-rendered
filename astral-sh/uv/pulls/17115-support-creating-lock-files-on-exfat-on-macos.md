@@ -13,14 +13,14 @@ head: tk/fix-macos-exfat-lockfile
 created_at: 2025-12-12T23:04:34Z
 updated_at: 2025-12-15T14:05:08Z
 url: https://github.com/astral-sh/uv/pull/17115
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # Support creating lock files on ExFAT on MacOS
 
 ---
 
-_Pull request opened by @EliteTK on 2025-12-12 23:04_
+_@EliteTK_
 
 ## Summary
 

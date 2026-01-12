@@ -12,14 +12,14 @@ head: charlie/wildcard
 created_at: 2023-12-01T22:53:03Z
 updated_at: 2023-12-01T23:05:27Z
 url: https://github.com/astral-sh/ruff/pull/8956
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Consider more wildcards in control flow graph matches
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-01 22:53_
+_@charliermarsh_
 
 _No description provided._
 

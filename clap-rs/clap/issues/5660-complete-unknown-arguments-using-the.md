@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-11T00:11:16Z
 updated_at: 2024-09-20T20:42:53Z
 url: https://github.com/clap-rs/clap/issues/5660
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Complete "unknown" arguments using the `UnknownArgumentValueParser` suggestion
 
 ---
 
-_Issue opened by @epage on 2024-08-11 00:11_
+_@epage_
 
 We can check if a flag uses `UnknownArgumentValueParser` as its value parser and include the "suggested" argument as another candidate.
 

@@ -13,14 +13,14 @@ head: charlie/wait
 created_at: 2024-04-02T00:04:32Z
 updated_at: 2024-04-02T00:34:14Z
 url: https://github.com/astral-sh/uv/pull/2766
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:12Z
 ```
 
 # Use distribution database and index for all pre-resolution phases
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-02 00:04_
+_@charliermarsh_
 
 ## Summary
 

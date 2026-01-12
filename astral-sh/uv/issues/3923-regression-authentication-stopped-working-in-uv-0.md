@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-30T09:38:02Z
 updated_at: 2025-03-12T00:34:59Z
 url: https://github.com/astral-sh/uv/issues/3923
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # regression: authentication stopped working in uv 0.1.36
 
 ---
 
-_Issue opened by @morotti on 2024-05-30 09:38_
+_@morotti_
 
 Hello,
 

@@ -13,14 +13,14 @@ head: charlie/continue
 created_at: 2023-06-19T03:45:47Z
 updated_at: 2023-06-19T04:20:42Z
 url: https://github.com/astral-sh/ruff/pull/5173
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Detect continuations at start-of-file
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-19 03:45_
+_@charliermarsh_
 
 ## Summary
 

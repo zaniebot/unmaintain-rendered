@@ -11,14 +11,14 @@ head: pieterh/ext-lint-2-config
 created_at: 2025-11-12T20:54:25Z
 updated_at: 2026-01-07T01:47:14Z
 url: https://github.com/astral-sh/ruff/pull/21413
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # RFC [ruff][ext-lint] 2: external lint rule selection
 
 ---
 
-_Pull request opened by @pieterh-oai on 2025-11-12 20:54_
+_@pieterh-oai_
 
 ## Summary
 

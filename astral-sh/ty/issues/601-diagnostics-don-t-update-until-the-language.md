@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-07T08:29:47Z
 updated_at: 2025-06-29T09:29:13Z
 url: https://github.com/astral-sh/ty/issues/601
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # diagnostics don't update until the language server is restarted on windows
 
 ---
 
-_Issue opened by @DetachHead on 2025-06-07 08:29_
+_@DetachHead_
 
 ### Summary
 

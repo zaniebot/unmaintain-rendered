@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-06T15:22:56Z
 updated_at: 2024-12-06T17:04:38Z
 url: https://github.com/astral-sh/uv/issues/9686
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # Issue with uv backend to "sync"
 
 ---
 
-_Issue opened by @franzhaas on 2024-12-06 15:22_
+_@franzhaas_
 
 Dear all,
 

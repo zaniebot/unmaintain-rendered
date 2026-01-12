@@ -13,14 +13,14 @@ head: konsti/remove-dummy-file
 created_at: 2025-03-28T14:21:23Z
 updated_at: 2025-03-28T14:45:40Z
 url: https://github.com/astral-sh/uv/pull/12530
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:18Z
 ```
 
 # Remove dummy file
 
 ---
 
-_Pull request opened by @konstin on 2025-03-28 14:21_
+_@konstin_
 
 _No description provided._
 

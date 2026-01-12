@@ -14,14 +14,14 @@ head: micha/salsa-accumulators
 created_at: 2024-12-03T17:47:23Z
 updated_at: 2024-12-30T09:09:48Z
 url: https://github.com/astral-sh/ruff/pull/14760
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Use salsa accumulators for diagnostics
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-03 17:47_
+_@MichaReiser_
 
 ## Summary
 

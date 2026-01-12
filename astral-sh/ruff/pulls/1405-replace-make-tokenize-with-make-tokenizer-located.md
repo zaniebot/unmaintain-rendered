@@ -12,14 +12,14 @@ head: use-make_tokenizer_located
 created_at: 2022-12-27T14:36:40Z
 updated_at: 2023-04-20T15:40:33Z
 url: https://github.com/astral-sh/ruff/pull/1405
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Replace `make_tokenize` with `make_tokenizer_located`
 
 ---
 
-_Pull request opened by @harupy on 2022-12-27 14:36_
+_@harupy_
 
 This PR replaces `make_tokenize` with `make_tokenizer_located` to simplify the code.
 

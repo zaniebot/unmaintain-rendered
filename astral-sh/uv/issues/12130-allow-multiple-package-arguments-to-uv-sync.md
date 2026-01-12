@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-12T07:19:30Z
 updated_at: 2025-11-04T14:17:59Z
 url: https://github.com/astral-sh/uv/issues/12130
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # Allow multiple `--package` arguments to `uv sync`
 
 ---
 
-_Issue opened by @gedemagt on 2025-03-12 07:19_
+_@gedemagt_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-03T00:51:41Z
 updated_at: 2024-07-28T00:40:54Z
 url: https://github.com/astral-sh/uv/issues/4753
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Allow specifying different index strategies for different extra indexes
 
 ---
 
-_Issue opened by @nathanjmcdougall on 2024-07-03 00:51_
+_@nathanjmcdougall_
 
 ### Summary
 

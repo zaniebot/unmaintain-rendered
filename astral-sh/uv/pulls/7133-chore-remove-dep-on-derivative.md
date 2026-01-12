@@ -13,14 +13,14 @@ head: no-derivative
 created_at: 2024-09-06T17:44:09Z
 updated_at: 2024-09-06T22:18:51Z
 url: https://github.com/astral-sh/uv/pull/7133
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:42Z
 ```
 
 # chore: Remove dep on derivative
 
 ---
 
-_Pull request opened by @fasterthanlime on 2024-09-06 17:44_
+_@fasterthanlime_
 
 (This is part of #5711)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-21T15:34:31Z
 updated_at: 2026-01-09T01:50:05Z
 url: https://github.com/astral-sh/ty/issues/864
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # provide more diagnostic context for invalid-context-manager
 
 ---
 
-_Issue opened by @jelly on 2025-07-21 15:34_
+_@jelly_
 
 (The error initially reported below is a true positive, but our diagnostic message for bad context manager method implementations should describe why we consider `__enter__` or `__exit__` wrongly implemented. That is, we should propagate the actual call error encountered.)
 

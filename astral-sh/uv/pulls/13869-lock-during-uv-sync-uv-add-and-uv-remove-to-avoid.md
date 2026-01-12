@@ -13,14 +13,14 @@ head: konsti/lock-uv-sync
 created_at: 2025-06-05T17:48:08Z
 updated_at: 2025-06-06T12:16:42Z
 url: https://github.com/astral-sh/uv/pull/13869
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:54Z
 ```
 
 # Lock during `uv sync`, `uv add` and `uv remove` to avoid race conditions
 
 ---
 
-_Pull request opened by @konstin on 2025-06-05 17:48_
+_@konstin_
 
 Surprisingly, we weren't locking during `uv sync` so far, so running `uv sync` in parallel could cause errors in filesystem races.
 

@@ -13,14 +13,14 @@ head: charlie/type
 created_at: 2024-02-09T03:11:58Z
 updated_at: 2024-02-09T14:10:10Z
 url: https://github.com/astral-sh/ruff/pull/9905
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Respect duplicates when rewriting type aliases
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-09 03:11_
+_@charliermarsh_
 
 ## Summary
 

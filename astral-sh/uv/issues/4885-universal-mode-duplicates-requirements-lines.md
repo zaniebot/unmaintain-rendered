@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-08T02:00:13Z
 updated_at: 2024-07-11T14:22:02Z
 url: https://github.com/astral-sh/uv/issues/4885
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Universal mode duplicates requirements lines
 
 ---
 
-_Issue opened by @A5rocks on 2024-07-08 02:00_
+_@A5rocks_
 
 I just noticed the `--universal` flag and it looks like just what we need with `trio`! However, [when we try this out](https://github.com/python-trio/trio/pull/3032) (though it's not shown in that PR), we run into an issue where requirement lines are duplicated.
 

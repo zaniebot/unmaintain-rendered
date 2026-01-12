@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-18T22:02:17Z
 updated_at: 2026-01-08T18:00:52Z
 url: https://github.com/astral-sh/ty/issues/2091
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `map(str, cmd)` fails with `Sequence[str] & ~str`, succeeds with `Sequence[str]`
 
 ---
 
-_Issue opened by @carljm on 2025-12-18 22:02_
+_@carljm_
 
 From #2087:
 

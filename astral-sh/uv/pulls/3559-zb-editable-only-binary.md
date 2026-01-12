@@ -12,14 +12,14 @@ head: zb/editable-only-binary
 created_at: 2024-05-13T18:51:02Z
 updated_at: 2024-05-13T20:37:57Z
 url: https://github.com/astral-sh/uv/pull/3559
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:42Z
 ```
 
 # Zb/editable only binary
 
 ---
 
-_Pull request opened by @yeswalrus on 2024-05-13 18:51_
+_@yeswalrus_
 
 ! DO NOT MERGE!
 ## Summary

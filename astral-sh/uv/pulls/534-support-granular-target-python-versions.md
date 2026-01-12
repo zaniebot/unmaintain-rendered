@@ -13,14 +13,14 @@ head: charlie/python-version
 created_at: 2023-12-04T03:30:59Z
 updated_at: 2023-12-05T02:38:50Z
 url: https://github.com/astral-sh/uv/pull/534
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:01Z
 ```
 
 # Support granular target Python versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-04 03:30_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-09T09:26:51Z
 updated_at: 2024-12-09T10:10:46Z
 url: https://github.com/astral-sh/uv/issues/9732
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # Setting UV_CACHE_DIR breaks pylint
 
 ---
 
-_Issue opened by @max-wittig on 2024-12-09 09:26_
+_@max-wittig_
 
 Hi,
 

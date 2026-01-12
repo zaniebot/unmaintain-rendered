@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-30T02:03:03Z
 updated_at: 2025-06-16T12:45:52Z
 url: https://github.com/astral-sh/uv/issues/13208
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:22Z
 ```
 
 # Failure to download packages from Azure Artifacts starting version 0.7.0
 
 ---
 
-_Issue opened by @ycheng517 on 2025-04-30 02:03_
+_@ycheng517_
 
 ### Summary
 

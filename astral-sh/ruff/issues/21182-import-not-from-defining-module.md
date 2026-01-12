@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-01T12:51:44Z
 updated_at: 2025-11-03T18:36:03Z
 url: https://github.com/astral-sh/ruff/issues/21182
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `import-not-from-defining-module`
 
 ---
 
-_Issue opened by @K4liber on 2025-11-01 12:51_
+_@K4liber_
 
 ### Summary
 

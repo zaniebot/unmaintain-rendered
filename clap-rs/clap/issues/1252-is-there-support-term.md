@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-04-18T18:29:43Z
 updated_at: 2018-08-02T03:30:22Z
 url: https://github.com/clap-rs/clap/issues/1252
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Is there support term ?
 
 ---
 
-_Issue opened by @baoyachi on 2018-04-18 18:29_
+_@baoyachi_
 
 #### like show command line with fullcolor 
 

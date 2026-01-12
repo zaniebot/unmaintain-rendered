@@ -12,14 +12,14 @@ head: uv-resolver-serde
 created_at: 2024-04-29T19:41:14Z
 updated_at: 2024-04-29T20:31:37Z
 url: https://github.com/astral-sh/uv/pull/3317
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:34Z
 ```
 
 # Remove uncondtional `serde` usage in uv-resolver
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-04-29 19:41_
+_@ibraheemdev_
 
 ## Summary
 

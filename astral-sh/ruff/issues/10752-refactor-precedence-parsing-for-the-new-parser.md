@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-03T09:15:53Z
 updated_at: 2024-04-23T04:55:04Z
 url: https://github.com/astral-sh/ruff/issues/10752
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Refactor precedence parsing for the new parser
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-04-03 09:15_
+_@dhruvmanila_
 
 As suggested:
 - [x] Compare expressions: https://github.com/astral-sh/ruff/pull/10730#discussion_r1547594779

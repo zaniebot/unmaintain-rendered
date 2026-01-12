@@ -13,14 +13,14 @@ head: charlie/icons
 created_at: 2023-08-03T00:55:36Z
 updated_at: 2023-08-03T01:05:40Z
 url: https://github.com/astral-sh/ruff/pull/6291
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Increase icon opacity on-hover
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-03 00:55_
+_@charliermarsh_
 
 ## Summary
 

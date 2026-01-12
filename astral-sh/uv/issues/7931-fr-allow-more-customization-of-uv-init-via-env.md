@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-04T17:18:13Z
 updated_at: 2024-10-05T22:21:07Z
 url: https://github.com/astral-sh/uv/issues/7931
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # FR: allow more customization of uv init via env vars or settings
 
 ---
 
-_Issue opened by @richieadler on 2024-10-04 17:18_
+_@richieadler_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

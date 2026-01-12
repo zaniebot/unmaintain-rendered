@@ -14,14 +14,14 @@ head: recursive-union-literal-doc
 created_at: 2025-12-05T04:29:31Z
 updated_at: 2025-12-06T01:50:35Z
 url: https://github.com/astral-sh/ruff/pull/21804
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] more detailed description of "Size limit on unions of literals" in mdtest
 
 ---
 
-_Pull request opened by @mtshiba on 2025-12-05 04:29_
+_@mtshiba_
 
 ## Summary
 

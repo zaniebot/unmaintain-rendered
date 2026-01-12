@@ -13,14 +13,14 @@ head: charlie/duplicate-fixes
 created_at: 2023-07-28T04:18:57Z
 updated_at: 2023-07-29T12:27:24Z
 url: https://github.com/astral-sh/ruff/pull/6144
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Skip partial duplicates when applying multi-edit fixes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-28 04:18_
+_@charliermarsh_
 
 ## Summary
 

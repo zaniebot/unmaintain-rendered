@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-11-08T14:14:05Z
 updated_at: 2023-08-01T00:55:04Z
 url: https://github.com/clap-rs/clap/issues/3002
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Ability to apply a setting to all args
 
 ---
 
-_Issue opened by @epage on 2021-11-08 14:14_
+_@epage_
 
 ### Use Cases
 

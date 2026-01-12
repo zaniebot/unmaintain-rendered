@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-12T08:13:41Z
 updated_at: 2025-07-04T02:14:50Z
 url: https://github.com/astral-sh/uv/issues/13984
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # uv is poisoning its own cache when building on Rosetta systems
 
 ---
 
-_Issue opened by @hynek on 2025-06-12 08:13_
+_@hynek_
 
 ### Summary
 

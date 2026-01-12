@@ -14,14 +14,14 @@ head: add-formatter-to-line-length-doc
 created_at: 2023-10-24T02:26:10Z
 updated_at: 2023-10-25T06:14:58Z
 url: https://github.com/astral-sh/ruff/pull/8150
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add formatter to `line-length` documentation
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-24 02:26_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-10T22:20:38Z
 updated_at: 2024-07-12T14:34:02Z
 url: https://github.com/astral-sh/uv/issues/4981
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `--isolated` should not be a hidden option
 
 ---
 
-_Issue opened by @zanieb on 2024-07-10 22:20_
+_@zanieb_
 
 This feels like a meaningful flag! We will need to improve the documentation for specific sub-command invocations though.
 

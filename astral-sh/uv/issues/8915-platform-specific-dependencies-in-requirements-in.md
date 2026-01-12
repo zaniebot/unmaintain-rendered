@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T03:52:09Z
 updated_at: 2025-04-14T12:31:45Z
 url: https://github.com/astral-sh/uv/issues/8915
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # Platform-Specific Dependencies in requirements.in Not Working as Expected with `--universal`
 
 ---
 
-_Issue opened by @ewianda on 2024-11-08 03:52_
+_@ewianda_
 
 **Description**:  
 When specifying platform-specific dependencies in `requirements.in` for `optimum[onnxruntime]` and `optimum[onnxruntime-gpu]`, the generated `requirements.txt` file consolidates dependencies inappropriately. Specifically, `optimum[onnxruntime-gpu]; sys_platform == 'linux'` and `optimum[onnxruntime]; sys_platform == 'darwin'` results in `optimum[onnxruntime,onnxruntime]==1.18; sys_platform == 'linux'` in the output `requirements.txt`, which causes the Darwin platform dependency to be ignored.

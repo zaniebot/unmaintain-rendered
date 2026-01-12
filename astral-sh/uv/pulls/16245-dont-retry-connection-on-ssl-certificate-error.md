@@ -11,14 +11,14 @@ head: fix/16235-dont-retry-on-SSL-cert-errors
 created_at: 2025-10-11T00:18:06Z
 updated_at: 2025-12-18T12:54:02Z
 url: https://github.com/astral-sh/uv/pull/16245
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:11Z
 ```
 
 # Dont retry connection on SSL certificate error
 
 ---
 
-_Pull request opened by @assadyousuf on 2025-10-11 00:18_
+_@assadyousuf_
 
 ## Summary
 SSL errors should not be retryable from the cached on non cached client: https://github.com/astral-sh/uv/issues/16235

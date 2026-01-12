@@ -14,14 +14,14 @@ head: alex/raise-notimplemented
 created_at: 2025-11-15T19:44:31Z
 updated_at: 2025-11-15T22:12:01Z
 url: https://github.com/astral-sh/ruff/pull/21475
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [ty] Improve diagnostics for invalid exceptions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-15 19:44_
+_@AlexWaygood_
 
 ## Summary
 

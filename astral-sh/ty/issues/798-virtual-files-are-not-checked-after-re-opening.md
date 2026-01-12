@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-11T05:36:47Z
 updated_at: 2025-07-11T14:27:28Z
 url: https://github.com/astral-sh/ty/issues/798
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Virtual files are not checked after re-opening from an unsaved edit
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-07-11 05:36_
+_@dhruvmanila_
 
 ### Summary
 

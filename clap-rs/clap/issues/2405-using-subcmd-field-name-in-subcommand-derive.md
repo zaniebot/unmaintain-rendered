@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-03-10T18:06:18Z
 updated_at: 2021-03-10T20:18:55Z
 url: https://github.com/clap-rs/clap/issues/2405
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Using subcmd field name in subcommand derive
 
 ---
 
-_Issue opened by @omar25h on 2021-03-10 18:06_
+_@omar25h_
 
 ### Please complete the following tasks
 

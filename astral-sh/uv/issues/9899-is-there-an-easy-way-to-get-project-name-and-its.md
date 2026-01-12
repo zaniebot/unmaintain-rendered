@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-14T20:39:48Z
 updated_at: 2024-12-15T16:55:27Z
 url: https://github.com/astral-sh/uv/issues/9899
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # is there an easy way to get project name and its version with uv like the output of `poetry version`?
 
 ---
 
-_Issue opened by @HCharlie on 2024-12-14 20:39_
+_@HCharlie_
 
 is there an easy way to get project name and its version with uv like the output of `poetry version`?
 

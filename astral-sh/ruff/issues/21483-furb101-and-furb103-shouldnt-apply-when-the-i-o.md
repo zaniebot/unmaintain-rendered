@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-16T18:29:44Z
 updated_at: 2025-11-17T19:53:30Z
 url: https://github.com/astral-sh/ruff/issues/21483
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FURB101 and FURB103 shouldn’t apply when the I/O variable is used later
 
 ---
 
-_Issue opened by @dscorbett on 2025-11-16 18:29_
+_@dscorbett_
 
 ### Summary
 

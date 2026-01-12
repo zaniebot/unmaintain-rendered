@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-05T11:08:57Z
 updated_at: 2025-09-05T15:21:47Z
 url: https://github.com/astral-sh/uv/issues/15701
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # uv init --build-backend scikit followed by uv run --with jupyter jupyter lab has counterintuitive behaviour concerning rebuilds
 
 ---
 
-_Issue opened by @rimathia on 2025-09-05 11:08_
+_@rimathia_
 
 ### Question
 

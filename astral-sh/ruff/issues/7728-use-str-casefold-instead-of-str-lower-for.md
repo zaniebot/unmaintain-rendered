@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-01T00:05:17Z
 updated_at: 2023-10-02T17:49:51Z
 url: https://github.com/astral-sh/ruff/issues/7728
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Use str.casefold() instead of str.lower() for comparison.
 
 ---
 
-_Issue opened by @Jeremiah-England on 2023-10-01 00:05_
+_@Jeremiah-England_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

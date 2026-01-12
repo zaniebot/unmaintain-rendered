@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-11T12:25:45Z
 updated_at: 2025-03-11T17:11:06Z
 url: https://github.com/astral-sh/ruff/issues/16623
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Noise vscode error card every time I open a new window
 
 ---
 
-_Issue opened by @jpambrun on 2025-03-11 12:25_
+_@jpambrun_
 
 ### Summary
 

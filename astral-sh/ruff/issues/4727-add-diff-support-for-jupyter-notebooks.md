@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-30T15:36:07Z
 updated_at: 2023-07-29T04:22:58Z
 url: https://github.com/astral-sh/ruff/issues/4727
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Add `--diff` support for Jupyter notebooks
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-05-30 15:36_
+_@dhruvmanila_
 
 Depends on #1218 
 

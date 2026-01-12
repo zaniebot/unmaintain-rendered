@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-12T23:52:52Z
 updated_at: 2024-11-14T17:18:08Z
 url: https://github.com/astral-sh/uv/issues/9073
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # Inconsistent behavior with override-dependencies across package sources
 
 ---
 
-_Issue opened by @philipqueen on 2024-11-12 23:52_
+_@philipqueen_
 
 I'm trying to use the overrides feature to exclude a package download, as described in https://github.com/astral-sh/uv/issues/4422#issuecomment-2254182800
 

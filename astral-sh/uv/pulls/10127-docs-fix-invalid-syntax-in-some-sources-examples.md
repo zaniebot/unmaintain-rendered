@@ -13,14 +13,14 @@ head: docs/fix-invalid-syntax-in-sources-examples
 created_at: 2024-12-23T20:34:37Z
 updated_at: 2024-12-24T01:29:22Z
 url: https://github.com/astral-sh/uv/pull/10127
-synced_at: 2026-01-10T11:44:35Z
+synced_at: 2026-01-12T16:09:08Z
 ```
 
 # docs: fix invalid syntax in some sources examples
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-12-23 20:34_
+_@mkniewallner_
 
 ## Summary
 

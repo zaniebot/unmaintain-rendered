@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-28T03:59:43Z
 updated_at: 2023-09-28T05:22:17Z
 url: https://github.com/astral-sh/ruff/issues/7691
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Update logical line rules for the new f-string tokens
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-28 03:59_
+_@dhruvmanila_
 
 - [x] Ignore `E225` for the `=` operator
 - [x] Ignore `E231` for the `:` operator

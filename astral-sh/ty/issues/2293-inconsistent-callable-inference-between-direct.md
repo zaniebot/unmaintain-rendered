@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-31T16:09:14Z
 updated_at: 2026-01-05T10:31:12Z
 url: https://github.com/astral-sh/ty/issues/2293
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Inconsistent callable inference between direct method assignment and wrapper-returned method
 
 ---
 
-_Issue opened by @Cjkjvfnby on 2025-12-31 16:09_
+_@Cjkjvfnby_
 
 ### Summary
 

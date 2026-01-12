@@ -13,14 +13,14 @@ head: feature/custom-builtins
 created_at: 2025-12-17T12:30:23Z
 updated_at: 2025-12-23T13:48:42Z
 url: https://github.com/astral-sh/ruff/pull/22021
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Support custom builtins
 
 ---
 
-_Pull request opened by @Wizzerinus on 2025-12-17 12:30_
+_@Wizzerinus_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

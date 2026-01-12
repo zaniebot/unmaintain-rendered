@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-04T15:57:23Z
 updated_at: 2023-07-04T18:01:31Z
 url: https://github.com/astral-sh/ruff/issues/5505
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `suspicious-eval-usage` doesn't trigger when expected
 
 ---
 
-_Issue opened by @tjkuson on 2023-07-04 15:57_
+_@tjkuson_
 
 Using ruff `0.0.276`, running `ruff check --select S307 scratch.py` where `scratch.py` is
 

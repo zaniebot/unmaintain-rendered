@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-06T12:49:14Z
 updated_at: 2025-05-08T00:38:38Z
 url: https://github.com/clap-rs/clap/issues/5989
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # docs: Builder reference link just redirects to homepage
 
 ---
 
-_Issue opened by @thebrandonlucas on 2025-05-06 12:49_
+_@thebrandonlucas_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: zb/only-group-fix
 created_at: 2025-01-23T17:17:05Z
 updated_at: 2025-01-23T17:25:00Z
 url: https://github.com/astral-sh/uv/pull/10906
-synced_at: 2026-01-10T11:45:17Z
+synced_at: 2026-01-12T16:09:34Z
 ```
 
 # Fix test snapshot for `--only-group` changes
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-23 17:17_
+_@zanieb_
 
 _No description provided._
 

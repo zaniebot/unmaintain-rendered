@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-24T00:52:13Z
 updated_at: 2025-04-25T10:52:03Z
 url: https://github.com/astral-sh/uv/issues/13079
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # `Requires-Python` is ignored
 
 ---
 
-_Issue opened by @njzjz on 2025-04-24 00:52_
+_@njzjz_
 
 ### Summary
 

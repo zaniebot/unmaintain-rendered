@@ -14,14 +14,14 @@ head: charlie/run-output
 created_at: 2024-07-30T00:01:25Z
 updated_at: 2024-07-30T18:11:53Z
 url: https://github.com/astral-sh/uv/pull/5580
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:54Z
 ```
 
 # Suppress resolver output by default in `uv run` and `uv tool run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-30 00:01_
+_@charliermarsh_
 
 ## Summary
 

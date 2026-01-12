@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-18T13:21:09Z
 updated_at: 2024-12-18T15:25:03Z
 url: https://github.com/astral-sh/uv/issues/9997
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # uv publish does not read environment variables
 
 ---
 
-_Issue opened by @fleetingbytes on 2024-12-18 13:21_
+_@fleetingbytes_
 
 I have the environment variables `UV_PUBLISH_URL` and `UV_PUBLISH_TOKEN` set to my corporate PyPI package registry and my authentication token. When I run `uv publish dist/*`, uv tries to upload it to pypi.org:
 

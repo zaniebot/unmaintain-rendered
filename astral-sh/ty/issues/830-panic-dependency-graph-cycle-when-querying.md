@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-16T13:28:48Z
 updated_at: 2025-07-16T13:29:12Z
 url: https://github.com/astral-sh/ty/issues/830
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] dependency graph cycle when querying PEP695TypeAliasType
 
 ---
 
-_Issue opened by @floriankapaun on 2025-07-16 13:28_
+_@floriankapaun_
 
 ```
 error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/fc00eba/src/function/execute.rs:212:25 when checking `/workspace/.../foo.py`: `infer_scope_types(Id(1001)): execute: too many cycle iterations`

@@ -13,14 +13,14 @@ head: tool-build-constraints
 created_at: 2025-04-11T19:17:07Z
 updated_at: 2025-04-14T13:27:03Z
 url: https://github.com/astral-sh/uv/pull/12842
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:24Z
 ```
 
 # Support build constraints in `uv tool` and PEP723 scripts.
 
 ---
 
-_Pull request opened by @blueraft on 2025-04-11 19:17_
+_@blueraft_
 
 ## Summary
 

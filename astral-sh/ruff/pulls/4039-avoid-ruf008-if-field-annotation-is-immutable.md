@@ -12,14 +12,14 @@ head: fix/dataclass-immutable-annotation
 created_at: 2023-04-20T05:32:22Z
 updated_at: 2023-04-23T10:00:40Z
 url: https://github.com/astral-sh/ruff/pull/4039
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Avoid `RUF008` if field annotation is immutable
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-04-20 05:32_
+_@dhruvmanila_
 
 ## Summary
 

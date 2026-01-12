@@ -13,14 +13,14 @@ head: renovate/strum-monorepo
 created_at: 2025-02-17T03:42:53Z
 updated_at: 2025-02-17T07:22:18Z
 url: https://github.com/astral-sh/ruff/pull/16196
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Update Rust crate strum_macros to v0.27.1
 
 ---
 
-_Pull request opened by @renovate on 2025-02-17 03:42_
+_@renovate_
 
 This PR contains the following updates:
 

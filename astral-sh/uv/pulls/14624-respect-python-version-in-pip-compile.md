@@ -11,14 +11,14 @@ head: pip-compile-respect-python-version
 created_at: 2025-07-15T14:17:59Z
 updated_at: 2025-07-17T17:00:54Z
 url: https://github.com/astral-sh/uv/pull/14624
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:18Z
 ```
 
 # Respect .python-version in pip-compile
 
 ---
 
-_Pull request opened by @staticf0x on 2025-07-15 14:17_
+_@staticf0x_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

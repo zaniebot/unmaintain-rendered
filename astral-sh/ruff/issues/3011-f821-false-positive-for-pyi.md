@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-18T15:43:10Z
 updated_at: 2024-04-07T00:15:59Z
 url: https://github.com/astral-sh/ruff/issues/3011
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # F821 false positive for .pyi
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-02-18 15:43_
+_@JonathanPlasse_
 
 ```python
 class Distribution(IMetadataProvider): ...

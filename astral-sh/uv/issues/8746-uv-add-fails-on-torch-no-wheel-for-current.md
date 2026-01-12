@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-01T07:01:57Z
 updated_at: 2025-08-27T04:05:29Z
 url: https://github.com/astral-sh/uv/issues/8746
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # `uv add` fails on `torch` "no wheel for current platform" Docker Linux on Mac ARM
 
 ---
 
-_Issue opened by @bepuca on 2024-11-01 07:01_
+_@bepuca_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

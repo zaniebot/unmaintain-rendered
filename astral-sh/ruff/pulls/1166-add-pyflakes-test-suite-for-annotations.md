@@ -12,14 +12,14 @@ head: charlie/annotation-tests
 created_at: 2022-12-09T21:28:04Z
 updated_at: 2022-12-09T21:28:08Z
 url: https://github.com/astral-sh/ruff/pull/1166
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add pyflakes test suite for annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-09 21:28_
+_@charliermarsh_
 
 Fixes a couple of edge cases too.
 

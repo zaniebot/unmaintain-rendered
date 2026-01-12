@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-02T08:10:56Z
 updated_at: 2025-09-12T23:51:42Z
 url: https://github.com/astral-sh/ruff/issues/20203
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # superfluous-literal-comparison
 
 ---
 
-_Issue opened by @dorschw on 2025-09-02 08:10_
+_@dorschw_
 
 ### Summary
 

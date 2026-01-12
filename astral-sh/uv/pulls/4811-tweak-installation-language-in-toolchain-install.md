@@ -14,14 +14,14 @@ head: charlie/py
 created_at: 2024-07-04T17:21:17Z
 updated_at: 2024-07-04T22:45:15Z
 url: https://github.com/astral-sh/uv/pull/4811
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:28Z
 ```
 
 # Tweak installation language in toolchain install
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-04 17:21_
+_@charliermarsh_
 
 ## Summary
 

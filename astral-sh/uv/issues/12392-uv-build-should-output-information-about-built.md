@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-22T15:58:44Z
 updated_at: 2025-04-17T16:38:48Z
 url: https://github.com/astral-sh/uv/issues/12392
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # `uv build` should output information about built artifacts in machine-readable form.
 
 ---
 
-_Issue opened by @scolby33 on 2025-03-22 15:58_
+_@scolby33_
 
 ### Summary
 

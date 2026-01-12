@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-05T07:56:30Z
 updated_at: 2025-02-06T12:41:48Z
 url: https://github.com/astral-sh/uv/issues/11237
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # Two `run.rs` test regressions in 0.5.28, apparently due to installing `typing-extensions` (?)
 
 ---
 
-_Issue opened by @mgorny on 2025-02-05 07:56_
+_@mgorny_
 
 ### Summary
 

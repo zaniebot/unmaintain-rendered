@@ -13,14 +13,14 @@ head: charlie/yank
 created_at: 2024-02-05T17:11:34Z
 updated_at: 2024-02-07T21:24:29Z
 url: https://github.com/astral-sh/uv/pull/1253
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:32Z
 ```
 
 # Show yank warnings for `pip install`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-05 17:11_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/1252.
 

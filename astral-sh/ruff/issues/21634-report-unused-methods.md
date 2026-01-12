@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-26T04:12:49Z
 updated_at: 2025-11-26T07:12:13Z
 url: https://github.com/astral-sh/ruff/issues/21634
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Report unused methods
 
 ---
 
-_Issue opened by @acampove on 2025-11-26 04:12_
+_@acampove_
 
 ### Summary
 

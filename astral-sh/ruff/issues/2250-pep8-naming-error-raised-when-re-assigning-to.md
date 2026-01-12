@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-27T13:15:54Z
 updated_at: 2023-01-28T13:40:11Z
 url: https://github.com/astral-sh/ruff/issues/2250
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # PEP8 naming error raised when re-assigning to global
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-27 13:15_
+_@charliermarsh_
 
 ```py
 MAX_PORT = 8100

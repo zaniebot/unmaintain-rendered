@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-16T14:45:25Z
 updated_at: 2025-10-16T21:16:28Z
 url: https://github.com/astral-sh/ruff/issues/20923
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # DOC102 false positives
 
 ---
 
-_Issue opened by @ntBre on 2025-10-16 14:45_
+_@ntBre_
 
 There were two remaining false positives found in the [ecosystem check](https://github.com/astral-sh/ruff/pull/20376#issuecomment-3288875538) on #20376.
 

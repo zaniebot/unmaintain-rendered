@@ -12,14 +12,14 @@ head: charlie/ret
 created_at: 2023-02-14T02:48:06Z
 updated_at: 2023-02-14T02:51:13Z
 url: https://github.com/astral-sh/ruff/pull/2881
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Avoid unnecessary-else violations in `elif` branches
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-14 02:48_
+_@charliermarsh_
 
 Long-time source of confusion -- two reports over 1800 issues apart.
 

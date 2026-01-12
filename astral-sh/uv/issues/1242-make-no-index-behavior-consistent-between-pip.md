@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-03T16:45:22Z
 updated_at: 2024-02-04T23:46:03Z
 url: https://github.com/astral-sh/uv/issues/1242
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Make `--no-index` behavior consistent between `pip sync` and `pip install`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-02-03 16:45_
+_@charliermarsh_
 
 If you run `pip sync --no-index`, the install plan _will_ allow you to use cached distributions. But if you run `pip install --no-index`, it will fail (unless you're using local dependencies of `--find-links`, etc.), since we won't be able to find the _metadata_ for the package you're installing.
 

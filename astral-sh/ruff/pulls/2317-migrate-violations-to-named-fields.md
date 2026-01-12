@@ -12,14 +12,14 @@ head: violations-named-fields
 created_at: 2023-01-29T01:27:26Z
 updated_at: 2023-01-29T19:09:45Z
 url: https://github.com/astral-sh/ruff/pull/2317
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Migrate violations to named fields
 
 ---
 
-_Pull request opened by @sciyoshi on 2023-01-29 01:27_
+_@sciyoshi_
 
 Fairly mechanical. Did a few of the simple cases manually to make sure things were working, and I think the rest will be easily achievable via a quick `fastmod` command.
 

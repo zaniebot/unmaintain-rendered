@@ -12,14 +12,14 @@ head: arguments-parentheses
 created_at: 2023-07-25T12:47:03Z
 updated_at: 2023-07-25T16:05:40Z
 url: https://github.com/astral-sh/ruff/pull/6070
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Update `ArgumentsParentheses` usage
 
 ---
 
-_Pull request opened by @cnpryer on 2023-07-25 12:47_
+_@cnpryer_
 
 ## Summary
 

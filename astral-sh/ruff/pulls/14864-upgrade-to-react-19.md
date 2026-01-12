@@ -13,14 +13,14 @@ head: micha/upgrade-react-19
 created_at: 2024-12-09T10:11:10Z
 updated_at: 2024-12-09T10:15:39Z
 url: https://github.com/astral-sh/ruff/pull/14864
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Upgrade to react 19
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-09 10:11_
+_@MichaReiser_
 
 ## Summary
 

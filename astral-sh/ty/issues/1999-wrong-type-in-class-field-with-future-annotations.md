@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T11:22:24Z
 updated_at: 2025-12-17T11:24:21Z
 url: https://github.com/astral-sh/ty/issues/1999
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Wrong type in class field with __future__ annotations, when class has method with the same name
 
 ---
 
-_Issue opened by @DanilaMihailov on 2025-12-17 11:22_
+_@DanilaMihailov_
 
 ### Summary
 

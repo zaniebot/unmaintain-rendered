@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-12-08T23:13:17Z
 updated_at: 2023-09-08T20:33:27Z
 url: https://github.com/clap-rs/clap/issues/1125
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Multi valued flags and required argument do not work together very well
 
 ---
 
-_Issue opened by @rsertelon on 2017-12-08 23:13_
+_@rsertelon_
 
 ### Rust Version
 

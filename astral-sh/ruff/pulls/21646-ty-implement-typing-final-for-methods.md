@@ -14,14 +14,14 @@ head: alex/final-method
 created_at: 2025-11-26T21:19:41Z
 updated_at: 2025-12-03T11:51:20Z
 url: https://github.com/astral-sh/ruff/pull/21646
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] Implement `typing.final` for methods
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-26 21:19_
+_@AlexWaygood_
 
 ## Summary
 

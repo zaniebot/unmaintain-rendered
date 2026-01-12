@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-23T17:02:11Z
 updated_at: 2025-11-24T21:35:19Z
 url: https://github.com/astral-sh/ty/issues/1613
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # unresolved-attribute errors with maturin / pyo3
 
 ---
 
-_Issue opened by @mstarodub on 2025-11-23 17:02_
+_@mstarodub_
 
 maturin generates a wildcard import `__init__.py` for the rust package:
 https://github.com/PyO3/maturin/blob/72d210b06b1e5bd7cc0b24a0f77b9d07e36727ba/src/templates/__init__.py.j2

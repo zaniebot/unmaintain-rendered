@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-13T11:53:24Z
 updated_at: 2025-11-20T19:15:28Z
 url: https://github.com/astral-sh/uv/issues/16719
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # `uv add` also performs unprompted (and unrelated) toml formatting
 
 ---
 
-_Issue opened by @neutrinoceros on 2025-11-13 11:53_
+_@neutrinoceros_
 
 ### Summary
 

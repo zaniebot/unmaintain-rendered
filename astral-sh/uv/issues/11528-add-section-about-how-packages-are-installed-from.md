@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-15T00:51:37Z
 updated_at: 2025-04-01T18:38:41Z
 url: https://github.com/astral-sh/uv/issues/11528
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # Add section about how packages are installed from the cache
 
 ---
 
-_Issue opened by @zanieb on 2025-02-15 00:51_
+_@zanieb_
 
 per https://github.com/astral-sh/uv/issues/11504
 

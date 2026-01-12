@@ -13,14 +13,14 @@ head: renovate/rust-wasm-bindgen-monorepo
 created_at: 2024-12-02T00:47:58Z
 updated_at: 2024-12-02T01:03:45Z
 url: https://github.com/astral-sh/ruff/pull/14709
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Update rust-wasm-bindgen monorepo
 
 ---
 
-_Pull request opened by @renovate on 2024-12-02 00:47_
+_@renovate_
 
 This PR contains the following updates:
 

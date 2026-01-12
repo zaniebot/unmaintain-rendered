@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-05T00:07:37Z
 updated_at: 2022-05-16T13:57:14Z
 url: https://github.com/clap-rs/clap/issues/3259
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `min_values` when using Parser not respected
 
 ---
 
-_Issue opened by @jarrodsfarrell on 2022-01-05 00:07_
+_@jarrodsfarrell_
 
 ### Please complete the following tasks
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-31T04:37:18Z
 updated_at: 2024-09-01T11:13:23Z
 url: https://github.com/astral-sh/ruff/issues/13179
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Enrich messages of SARIF results
 
 ---
 
-_Issue opened by @RussellLuo on 2024-08-31 04:37_
+_@RussellLuo_
 
 Given the following code snippet:
 

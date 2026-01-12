@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-17T11:41:49Z
 updated_at: 2026-01-05T21:30:52Z
 url: https://github.com/astral-sh/ty/issues/1576
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `Iterable[list[int]]` as type context is not handled well
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-17 11:41_
+_@AlexWaygood_
 
 ### Summary
 

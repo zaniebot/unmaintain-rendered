@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-11T01:42:50Z
 updated_at: 2024-08-20T18:29:22Z
 url: https://github.com/astral-sh/uv/issues/4984
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # uv venv's activate command cannot work on MSYS2
 
 ---
 
-_Issue opened by @pplmx on 2024-07-11 01:42_
+_@pplmx_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

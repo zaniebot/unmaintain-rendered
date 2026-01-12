@@ -12,14 +12,14 @@ head: zb/lock-auth
 created_at: 2025-08-31T17:05:29Z
 updated_at: 2025-09-02T12:59:27Z
 url: https://github.com/astral-sh/uv/pull/15610
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:51Z
 ```
 
 # Lock the credentials store when reading or writing
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-31 17:05_
+_@zanieb_
 
 Adds locking of the credentials store for concurrency safety. It's important to hold the lock from read -> write so credentials are not dropped during concurrent writes.
 

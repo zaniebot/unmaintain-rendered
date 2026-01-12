@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-11T09:13:52Z
 updated_at: 2025-12-04T07:03:02Z
 url: https://github.com/astral-sh/uv/issues/7285
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 #  Failed to hardlink files: Issue with ruff cache
 
 ---
 
-_Issue opened by @PhantomSpike on 2024-09-11 09:13_
+_@PhantomSpike_
 
 When I run `uv add` or `uv pip install` I get this warning:
 ```

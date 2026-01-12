@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-31T17:58:44Z
 updated_at: 2023-10-31T18:37:17Z
 url: https://github.com/astral-sh/ruff/issues/8385
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Editor integrations link in README redirects to 404 page.
 
 ---
 
-_Issue opened by @niranjan-kurhade on 2023-10-31 17:58_
+_@niranjan-kurhade_
 
 The Editor integrations link in README is broken, it redirects to a 404 page.
 To reproduce-

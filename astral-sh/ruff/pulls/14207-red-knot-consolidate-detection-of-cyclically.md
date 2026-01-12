@@ -13,14 +13,14 @@ head: alex/cycle-detection
 created_at: 2024-11-08T17:49:55Z
 updated_at: 2024-11-08T22:17:57Z
 url: https://github.com/astral-sh/ruff/pull/14207
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Consolidate detection of cyclically defined classes
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-08 17:49_
+_@AlexWaygood_
 
 ## Summary
 

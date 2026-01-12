@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-26T14:12:30Z
 updated_at: 2024-11-26T16:57:25Z
 url: https://github.com/clap-rs/clap/issues/5828
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # next_help_heading doesn't seem to work with subcommands
 
 ---
 
-_Issue opened by @nwalfield on 2024-11-26 14:12_
+_@nwalfield_
 
 ### Please complete the following tasks
 

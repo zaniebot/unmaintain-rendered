@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-26T12:40:27Z
 updated_at: 2025-02-19T01:24:49Z
 url: https://github.com/astral-sh/uv/issues/5478
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Error installing wheel with "invalid version"
 
 ---
 
-_Issue opened by @albertotb on 2024-07-26 12:40_
+_@albertotb_
 
 Version: `uv 0.2.29`
 

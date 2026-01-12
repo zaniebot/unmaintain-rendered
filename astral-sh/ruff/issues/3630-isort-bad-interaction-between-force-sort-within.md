@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-20T16:47:25Z
 updated_at: 2023-03-22T18:00:02Z
 url: https://github.com/astral-sh/ruff/issues/3630
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # isort: bad interaction between `force-sort-within-sections` and `force-to-top`
 
 ---
 
-_Issue opened by @bluetech on 2023-03-20 16:47_
+_@bluetech_
 
 Given this config:
 

@@ -12,14 +12,14 @@ head: jack/scratch
 created_at: 2025-08-08T00:00:25Z
 updated_at: 2025-08-08T03:57:46Z
 url: https://github.com/astral-sh/ruff/pull/19816
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # dummy PR for ecosystem analysis
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-08-08 00:00_
+_@oconnor663_
 
 _No description provided._
 

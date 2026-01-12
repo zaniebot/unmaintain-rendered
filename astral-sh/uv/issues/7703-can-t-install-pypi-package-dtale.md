@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-26T09:44:19Z
 updated_at: 2025-01-14T13:38:24Z
 url: https://github.com/astral-sh/uv/issues/7703
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Can't install pypi package dtale
 
 ---
 
-_Issue opened by @kjyv on 2024-09-26 09:44_
+_@kjyv_
 
 Hey there,
 I'm trying to install [dtale](https://github.com/man-group/dtale) with a simple pyproject.toml running `uv sync` (.venv deleted, .cache/uv deleted). Even if it is the only package, I see this error:

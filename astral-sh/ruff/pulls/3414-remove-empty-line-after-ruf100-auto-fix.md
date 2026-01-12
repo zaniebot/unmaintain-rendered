@@ -12,14 +12,14 @@ head: remove-empty-line-after-ruf100-auto-fix
 created_at: 2023-03-09T09:53:51Z
 updated_at: 2023-03-11T06:40:17Z
 url: https://github.com/astral-sh/ruff/pull/3414
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Remove empty line after RUF100 auto-fix
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-09 09:53_
+_@JonathanPlasse_
 
 - Closes #2845
 - Comments after `noqa`s are removed after the auto-fix, this is not a regression. It was already the case.

@@ -13,14 +13,14 @@ head: charlie/tra
 created_at: 2024-08-26T00:14:40Z
 updated_at: 2024-08-26T02:11:57Z
 url: https://github.com/astral-sh/uv/pull/6633
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:27Z
 ```
 
 # Use `serde(transparent)` for `UrlString`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-26 00:14_
+_@charliermarsh_
 
 _No description provided._
 

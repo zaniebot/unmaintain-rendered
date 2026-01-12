@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-21T21:49:24Z
 updated_at: 2022-11-22T21:38:15Z
 url: https://github.com/astral-sh/ruff/issues/866
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # [Bug] unused `typing` imports are not auto-fixed when pyupgrade option is selected
 
 ---
 
-_Issue opened by @ukalwa on 2022-11-21 21:49_
+_@ukalwa_
 
 Ruff version: 0.0.132
 Ruff configuration: Default

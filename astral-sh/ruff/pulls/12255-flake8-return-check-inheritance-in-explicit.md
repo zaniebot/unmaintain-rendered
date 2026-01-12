@@ -12,14 +12,14 @@ head: 20240709-0923
 created_at: 2024-07-09T08:03:17Z
 updated_at: 2024-10-21T15:57:14Z
 url: https://github.com/astral-sh/ruff/pull/12255
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`flake8-return`] Check inheritance in explicit return rule (`RET501`)
 
 ---
 
-_Pull request opened by @epenet on 2024-07-09 08:03_
+_@epenet_
 
 Fixes #12198 
 

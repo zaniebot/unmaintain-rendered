@@ -13,14 +13,14 @@ head: B905-no-check-arg
 created_at: 2024-07-30T18:34:20Z
 updated_at: 2024-07-30T18:47:44Z
 url: https://github.com/astral-sh/ruff/pull/12588
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Fix an argument name in B905 description
 
 ---
 
-_Pull request opened by @eerovaher on 2024-07-30 18:34_
+_@eerovaher_
 
 The description of `zip-without-explicit-strict` erroneously mentions a non-existing `check` argument for `zip()`.
 

@@ -14,14 +14,14 @@ head: alex/never-say-never
 created_at: 2025-11-27T12:35:58Z
 updated_at: 2025-11-27T12:48:19Z
 url: https://github.com/astral-sh/ruff/pull/21660
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] Add subdiagnostic hint if a variable with type `Never` is used in a type expression
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-27 12:35_
+_@AlexWaygood_
 
 ## Summary
 

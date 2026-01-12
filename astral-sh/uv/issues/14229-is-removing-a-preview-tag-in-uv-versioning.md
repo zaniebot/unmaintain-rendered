@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-24T05:35:54Z
 updated_at: 2025-06-24T08:52:38Z
 url: https://github.com/astral-sh/uv/issues/14229
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # Is removing a preview tag in uv versioning considered a breaking change?
 
 ---
 
-_Issue opened by @FishAlchemist on 2025-06-24 05:35_
+_@FishAlchemist_
 
 ### Question
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-03T15:05:49Z
 updated_at: 2023-08-03T15:18:23Z
 url: https://github.com/astral-sh/ruff/issues/6306
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `extend-ignore` and `extend-unfixable` are not defined in `ruff.schema.json`
 
 ---
 
-_Issue opened by @eggplants on 2023-08-03 15:05_
+_@eggplants_
 
 In ruff playground's setting editor, `extend-ignore` and `extend-unfixable` are reported as `Property {} is not allowed.`.
 

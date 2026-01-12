@@ -13,14 +13,14 @@ head: zb/pin-uv
 created_at: 2025-10-09T13:38:35Z
 updated_at: 2025-10-09T13:54:29Z
 url: https://github.com/astral-sh/uv/pull/16207
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:10Z
 ```
 
 # Pin a uv version in CI
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-09 13:38_
+_@zanieb_
 
 To reduce rate-limiting by avoiding a latest version fetch
 

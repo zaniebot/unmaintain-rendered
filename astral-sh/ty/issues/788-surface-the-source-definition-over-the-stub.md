@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-09T08:52:19Z
 updated_at: 2025-08-11T14:54:24Z
 url: https://github.com/astral-sh/ty/issues/788
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Surface the "source definition" over the stub definition
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-09 08:52_
+_@MichaReiser_
 
 Untyped libraries use [stub files (`.pyi`)](https://typing.python.org/en/latest/spec/distributing.html#stub-files) to give downstream users a typed API even though the library itself might be untyped (or not fully typed). The stub files are all we need for type checking and ty's module resolver returns the stub files if both a regular python file and a stub file are present. That means, a type's `Definition` always points to the `Definition` in the stub file. This is fine for type checking but having access to the source definition has advantages for the LSP use case:
 

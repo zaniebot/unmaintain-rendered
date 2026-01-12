@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-18T15:19:25Z
 updated_at: 2026-01-09T11:14:21Z
 url: https://github.com/astral-sh/ty/issues/1584
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # parameter-already-assigned when unpacking list in function call
 
 ---
 
-_Issue opened by @Castavo on 2025-11-18 15:19_
+_@Castavo_
 
 ### Summary
 

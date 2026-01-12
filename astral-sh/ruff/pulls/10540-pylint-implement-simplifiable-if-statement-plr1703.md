@@ -11,14 +11,14 @@ head: simplifiable-if-statement
 created_at: 2024-03-24T00:39:04Z
 updated_at: 2024-04-22T18:02:07Z
 url: https://github.com/astral-sh/ruff/pull/10540
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`pylint`] Implement `simplifiable-if-statement` (`PLR1703`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-03-24 00:39_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

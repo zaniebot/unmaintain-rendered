@@ -13,14 +13,14 @@ head: charlie/find
 created_at: 2025-05-27T01:31:03Z
 updated_at: 2025-05-27T01:43:26Z
 url: https://github.com/astral-sh/uv/pull/13669
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:47Z
 ```
 
 # Reduce number of reference-checks for `uv cache clean`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-27 01:31_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-26T19:55:16Z
 updated_at: 2023-10-27T11:11:46Z
 url: https://github.com/astral-sh/ruff/issues/8262
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # [Linter panic] Trouble handling a syntax error
 
 ---
 
-_Issue opened by @chaburkland on 2023-10-26 19:55_
+_@chaburkland_
 
 Ruff version: `ruff 0.0.292`
 

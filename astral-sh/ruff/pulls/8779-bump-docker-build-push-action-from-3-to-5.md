@@ -13,14 +13,14 @@ head: dependabot/github_actions/docker/build-push-action-5
 created_at: 2023-11-20T08:17:57Z
 updated_at: 2023-11-20T08:32:23Z
 url: https://github.com/astral-sh/ruff/pull/8779
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Bump docker/build-push-action from 3 to 5
 
 ---
 
-_Pull request opened by @dependabot on 2023-11-20 08:17_
+_@dependabot_
 
 Bumps [docker/build-push-action](https://github.com/docker/build-push-action) from 3 to 5.
 <details>

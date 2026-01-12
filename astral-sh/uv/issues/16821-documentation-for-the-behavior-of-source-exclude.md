@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-23T09:46:52Z
 updated_at: 2025-12-10T04:56:53Z
 url: https://github.com/astral-sh/uv/issues/16821
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:38Z
 ```
 
 # Documentation for the behavior of `source-exclude`
 
 ---
 
-_Issue opened by @himkt on 2025-11-23 09:46_
+_@himkt_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-01T06:34:03Z
 updated_at: 2025-01-29T22:15:06Z
 url: https://github.com/astral-sh/uv/issues/8743
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # Incorrect suggestion when creating a new project with --backend instead of --build-backend
 
 ---
 
-_Issue opened by @issokuos on 2024-11-01 06:34_
+_@issokuos_
 
 `uv` suggests the wrong argument when creating a new project with a wrong `--backend` argument
 

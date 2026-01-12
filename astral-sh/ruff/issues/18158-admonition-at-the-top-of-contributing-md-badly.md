@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-17T22:11:52Z
 updated_at: 2025-05-20T06:22:07Z
 url: https://github.com/astral-sh/ruff/issues/18158
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Admonition at the top of `CONTRIBUTING.md` badly rendered by mkdocs
 
 ---
 
-_Issue opened by @k4lizen on 2025-05-17 22:11_
+_@k4lizen_
 
 ### Summary
 

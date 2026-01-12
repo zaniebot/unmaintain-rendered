@@ -13,14 +13,14 @@ head: ag/fix-indent
 created_at: 2024-02-16T20:53:41Z
 updated_at: 2024-02-16T21:11:27Z
 url: https://github.com/astral-sh/uv/pull/1540
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:39Z
 ```
 
 # change indent to sensible value
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-02-16 20:53_
+_@BurntSushi_
 
 _No description provided._
 

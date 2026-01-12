@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T11:23:28Z
 updated_at: 2025-11-06T15:29:31Z
 url: https://github.com/astral-sh/uv/issues/16611
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Default package entry point should be `__main__.py` not `__init__.py`
 
 ---
 
-_Issue opened by @vepain on 2025-11-06 11:23_
+_@vepain_
 
 ### Summary
 

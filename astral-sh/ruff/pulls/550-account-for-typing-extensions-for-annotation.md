@@ -12,14 +12,14 @@ head: charlie/ext
 created_at: 2022-11-02T13:00:35Z
 updated_at: 2022-11-02T13:01:13Z
 url: https://github.com/astral-sh/ruff/pull/550
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Account for typing_extensions for annotation parsing
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-02 13:00_
+_@charliermarsh_
 
 Resolves #548.
 

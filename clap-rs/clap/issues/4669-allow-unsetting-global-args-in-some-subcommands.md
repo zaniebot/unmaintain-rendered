@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-23T22:17:46Z
 updated_at: 2023-01-25T15:35:12Z
 url: https://github.com/clap-rs/clap/issues/4669
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Allow unsetting global args in some subcommands
 
 ---
 
-_Issue opened by @jeertmans on 2023-01-23 22:17_
+_@jeertmans_
 
 ### Please complete the following tasks
 

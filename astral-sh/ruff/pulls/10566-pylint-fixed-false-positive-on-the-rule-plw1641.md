@@ -13,14 +13,14 @@ head: false-positive-eq-without-hash
 created_at: 2024-03-25T12:03:38Z
 updated_at: 2024-03-25T14:50:26Z
 url: https://github.com/astral-sh/ruff/pull/10566
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`Pylint`] Fixed false-positive on the rule `PLW1641` (`eq-without-hash`)
 
 ---
 
-_Pull request opened by @hikaru-kajita on 2024-03-25 12:03_
+_@hikaru-kajita_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

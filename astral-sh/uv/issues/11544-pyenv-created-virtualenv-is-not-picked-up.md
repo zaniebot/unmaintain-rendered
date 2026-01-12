@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-15T23:45:17Z
 updated_at: 2025-04-03T19:27:25Z
 url: https://github.com/astral-sh/uv/issues/11544
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:40Z
 ```
 
 # `pyenv`-created virtualenv is not picked up
 
 ---
 
-_Issue opened by @fjarri on 2025-02-15 23:45_
+_@fjarri_
 
 ### Summary
 

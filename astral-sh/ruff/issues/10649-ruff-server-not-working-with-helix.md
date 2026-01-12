@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-28T20:13:01Z
 updated_at: 2024-04-05T00:41:51Z
 url: https://github.com/astral-sh/ruff/issues/10649
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server` not working with `helix`
 
 ---
 
-_Issue opened by @ghost on 2024-03-28 20:13_
+_@ghost_
 
 I've been using `ruff-lsp` with `helix` and I wanted to try out the new `ruff server`, but I can't get it to work. I have the following configuration in my `~/.config/helix/languages.toml`
 

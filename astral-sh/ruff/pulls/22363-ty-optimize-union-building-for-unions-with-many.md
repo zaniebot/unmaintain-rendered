@@ -14,14 +14,14 @@ head: alex/enum-literal-unions
 created_at: 2026-01-03T21:22:46Z
 updated_at: 2026-01-08T10:57:56Z
 url: https://github.com/astral-sh/ruff/pull/22363
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # [ty] Optimize union building for unions with many enum-literal members
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-03 21:22_
+_@AlexWaygood_
 
 ## Summary
 

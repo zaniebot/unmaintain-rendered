@@ -14,14 +14,14 @@ head: codeman/7710
 created_at: 2025-07-09T01:32:48Z
 updated_at: 2025-09-08T17:34:32Z
 url: https://github.com/astral-sh/ruff/pull/19223
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [`pandas-vet`] Remove `pandas-df-variable-name` (`PD901`)
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-07-09 01:32_
+_@CodeMan62_
 
 ## Summary
 closes #7710 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-25T19:34:08Z
 updated_at: 2025-07-25T21:07:49Z
 url: https://github.com/astral-sh/uv/issues/14904
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:59Z
 ```
 
 # `environments` setting ignored in uv.toml?
 
 ---
 
-_Issue opened by @dpprdan on 2025-07-25 19:34_
+_@dpprdan_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-13T16:44:39Z
 updated_at: 2023-07-13T16:47:19Z
 url: https://github.com/clap-rs/clap/issues/5006
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # clap_lex produces invalid error message
 
 ---
 
-_Issue opened by @pacak on 2023-07-13 16:44_
+_@pacak_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: charlie/join-set
 created_at: 2023-11-20T13:18:28Z
 updated_at: 2023-11-20T13:23:32Z
 url: https://github.com/astral-sh/uv/pull/469
-synced_at: 2026-01-10T15:50:29Z
+synced_at: 2026-01-12T16:03:58Z
 ```
 
 # Prefer future stream over `JoinSet` in downloader
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-20 13:18_
+_@charliermarsh_
 
 This avoids introducing a static lifetime requirement and, in my benchmarks, is even a little faster.
 

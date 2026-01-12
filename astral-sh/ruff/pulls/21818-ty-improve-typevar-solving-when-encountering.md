@@ -12,14 +12,14 @@ head: main
 created_at: 2025-12-05T20:19:59Z
 updated_at: 2025-12-18T16:31:58Z
 url: https://github.com/astral-sh/ruff/pull/21818
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Improve typevar solving when encountering unions of generic types
 
 ---
 
-_Pull request opened by @suleymanozkeskin on 2025-12-05 20:19_
+_@suleymanozkeskin_
 
 Improves type inference for union types with multiple generic parameters like
 Ok[T] | Err[E] by adding union-pairing logic to the constraint solver.

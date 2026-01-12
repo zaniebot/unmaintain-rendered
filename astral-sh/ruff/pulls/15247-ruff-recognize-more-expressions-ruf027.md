@@ -13,14 +13,14 @@ head: RUF027
 created_at: 2025-01-04T04:05:59Z
 updated_at: 2025-04-28T07:08:21Z
 url: https://github.com/astral-sh/ruff/pull/15247
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`ruff`] Recognize more expressions (`RUF027`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-04 04:05_
+_@InSyncWithFoo_
 
 ## Summary
 

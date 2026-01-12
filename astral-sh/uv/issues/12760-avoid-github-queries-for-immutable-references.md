@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T20:08:00Z
 updated_at: 2025-04-09T12:33:14Z
 url: https://github.com/astral-sh/uv/issues/12760
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # Avoid GitHub queries for immutable references
 
 ---
 
-_Issue opened by @zanieb on 2025-04-08 20:08_
+_@zanieb_
 
 per https://github.com/astral-sh/uv/issues/12746#issuecomment-2787524690 it looks like we're not doing this as intended. This may require some investigation.
 

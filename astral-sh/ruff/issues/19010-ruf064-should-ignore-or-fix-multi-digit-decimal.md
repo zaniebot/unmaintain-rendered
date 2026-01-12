@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-28T14:34:10Z
 updated_at: 2025-08-10T20:35:28Z
 url: https://github.com/astral-sh/ruff/issues/19010
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # RUF064 should ignore or fix multi-digit decimal zeros
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-28 14:34_
+_@dscorbett_
 
 ### Summary
 

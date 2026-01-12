@@ -13,14 +13,14 @@ head: charlie/B
 created_at: 2024-05-08T15:03:40Z
 updated_at: 2024-05-08T15:16:59Z
 url: https://github.com/astral-sh/ruff/pull/11341
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Make B024 and B027 documentation more nuanced
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-08 15:03_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/11334.
 

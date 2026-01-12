@@ -13,14 +13,14 @@ head: charlie/pyproject
 created_at: 2024-03-26T20:23:11Z
 updated_at: 2024-03-27T14:34:19Z
 url: https://github.com/astral-sh/uv/pull/2676
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:10Z
 ```
 
 # Read package metadata from `pyproject.toml` when statically defined
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-26 20:23_
+_@charliermarsh_
 
 ## Summary
 

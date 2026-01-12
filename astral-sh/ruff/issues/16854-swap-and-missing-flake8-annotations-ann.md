@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-19T17:33:40Z
 updated_at: 2025-03-19T21:45:48Z
 url: https://github.com/astral-sh/ruff/issues/16854
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # SWAP and MISSING flake8-annotations (ANN)
 
 ---
 
-_Issue opened by @p1-dta on 2025-03-19 17:33_
+_@p1-dta_
 
 ### Summary
 

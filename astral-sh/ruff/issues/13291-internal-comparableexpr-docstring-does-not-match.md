@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-09T05:38:15Z
 updated_at: 2024-09-25T14:58:58Z
 url: https://github.com/astral-sh/ruff/issues/13291
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [internal] `ComparableExpr` docstring does not match behavior
 
 ---
 
-_Issue opened by @dylwil3 on 2024-09-09 05:38_
+_@dylwil3_
 
 In the docstring for `ComparableExpr`, it says:
 

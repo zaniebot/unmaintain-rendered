@@ -14,14 +14,14 @@ head: charlie/without-hashes
 created_at: 2024-09-03T02:04:39Z
 updated_at: 2025-10-18T08:37:55Z
 url: https://github.com/astral-sh/uv/pull/6954
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:07:36Z
 ```
 
 # Add `--no-hashes` to `uv export`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-03 02:04_
+_@charliermarsh_
 
 ## Summary
 

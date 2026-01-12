@@ -13,14 +13,14 @@ head: zanie/preview-docs
 created_at: 2023-09-11T19:06:25Z
 updated_at: 2023-09-12T15:53:25Z
 url: https://github.com/astral-sh/ruff/pull/7281
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add preview documentation section
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-11 19:06_
+_@zanieb_
 
 Adds a basic documentation section for preview mode based on the FAQ entry and versioning RFC.
 

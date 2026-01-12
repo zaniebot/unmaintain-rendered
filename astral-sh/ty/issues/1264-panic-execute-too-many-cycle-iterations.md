@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-26T18:00:10Z
 updated_at: 2025-09-26T19:11:24Z
 url: https://github.com/astral-sh/ty/issues/1264
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] execute: too many cycle iterations
 
 ---
 
-_Issue opened by @wrongways on 2025-09-26 18:00_
+_@wrongways_
 
 Three files in my simpy simulation application produce the panic below. The simplest of them is this one:
 

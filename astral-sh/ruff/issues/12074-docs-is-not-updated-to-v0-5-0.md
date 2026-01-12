@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-27T16:24:12Z
 updated_at: 2024-06-28T11:29:05Z
 url: https://github.com/astral-sh/ruff/issues/12074
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Docs is not updated to v0.5.0
 
 ---
 
-_Issue opened by @yairp03 on 2024-06-27 16:24_
+_@yairp03_
 
 The docs weren't updated to comply with v0.5.0 changes.  
 For example, there is no deprecated note on [E999](https://docs.astral.sh/ruff/rules/syntax-error/) and [RUF024](https://docs.astral.sh/ruff/rules/mutable-fromkeys-value/) is still in preview.

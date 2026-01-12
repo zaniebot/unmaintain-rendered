@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-11T12:11:58Z
 updated_at: 2024-01-14T15:39:17Z
 url: https://github.com/astral-sh/uv/issues/883
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # `--python-version` isn't respected in pip-compile for tf-models-nightly
 
 ---
 
-_Issue opened by @konstin on 2024-01-11 12:11_
+_@konstin_
 
 `tf-models-nightly>2.14` fails on python 3.12 but succeeds on python 3.10.  The `--python-version` seems to have no effect here.
 

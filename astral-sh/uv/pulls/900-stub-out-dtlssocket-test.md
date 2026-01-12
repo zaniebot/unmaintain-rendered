@@ -13,14 +13,14 @@ head: konsti/stub-out-dtlssocket
 created_at: 2024-01-12T16:37:50Z
 updated_at: 2024-01-15T09:16:33Z
 url: https://github.com/astral-sh/uv/pull/900
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:16Z
 ```
 
 # Stub out DTLSsocket test
 
 ---
 
-_Pull request opened by @konstin on 2024-01-12 16:37_
+_@konstin_
 
 Replace the DTLSsocket test with a dummy package that does nothing but contain the build system specs that we need. This should speed up one of the slowest tests.
 

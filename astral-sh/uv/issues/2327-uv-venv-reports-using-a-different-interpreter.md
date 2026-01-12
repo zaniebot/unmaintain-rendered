@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-10T06:46:26Z
 updated_at: 2024-03-11T08:42:17Z
 url: https://github.com/astral-sh/uv/issues/2327
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # `uv venv` reports using a different interpreter path than it uses
 
 ---
 
-_Issue opened by @gschaffner on 2024-03-10 06:46_
+_@gschaffner_
 
 hi! if an interpreter path contains multiple symlinks, `uv venv` reports using a different interpreter path than it actually uses. e.g.:
 

@@ -14,14 +14,14 @@ head: release/3
 created_at: 2024-08-19T17:38:53Z
 updated_at: 2024-08-20T16:31:47Z
 url: https://github.com/astral-sh/uv/pull/6218
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Breaking changes for release 0.3.0 
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 17:38_
+_@zanieb_
 
 _No description provided._
 

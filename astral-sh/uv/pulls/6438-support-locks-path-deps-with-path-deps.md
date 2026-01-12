@@ -13,14 +13,14 @@ head: konsti/support-relative-path-hopping
 created_at: 2024-08-22T14:08:30Z
 updated_at: 2024-08-24T02:19:12Z
 url: https://github.com/astral-sh/uv/pull/6438
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:22Z
 ```
 
 # Support locks path deps with path deps
 
 ---
 
-_Pull request opened by @konstin on 2024-08-22 14:08_
+_@konstin_
 
 Pass the location of `uv.lock`, the base of our relative lockfile paths, around when locking in project mode. This fixes previous incorrect paths that were using the root of the other workspace as reference for the relative path.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-27T21:11:54Z
 updated_at: 2022-12-27T21:17:50Z
 url: https://github.com/astral-sh/ruff/issues/1411
-synced_at: 2026-01-10T12:05:28Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # `code_gen.rs` should default to double quotes
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-27 21:11_
+_@charliermarsh_
 
 Like Black.
 

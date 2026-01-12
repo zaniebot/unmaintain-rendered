@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-22T11:29:30Z
 updated_at: 2024-07-23T07:13:11Z
 url: https://github.com/astral-sh/ruff/issues/12451
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # F821: false positive if variable is defined in a loop
 
 ---
 
-_Issue opened by @JaRoSchm on 2024-07-22 11:29_
+_@JaRoSchm_
 
 Hi,
 

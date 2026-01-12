@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-04T12:52:05Z
 updated_at: 2025-01-05T08:49:16Z
 url: https://github.com/astral-sh/ruff/issues/15255
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # RUF025 is remapped to C420 but now it's also a new rule
 
 ---
 
-_Issue opened by @oprypin on 2025-01-04 12:52_
+_@oprypin_
 
 &bull; https://github.com/astral-sh/ruff/pull/12533 remapped the rule `RUF025`  as `C420`.
 

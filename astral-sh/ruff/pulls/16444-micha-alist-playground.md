@@ -12,14 +12,14 @@ head: micha/alist-playground
 created_at: 2025-02-28T18:41:04Z
 updated_at: 2025-05-03T17:47:06Z
 url: https://github.com/astral-sh/ruff/pull/16444
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # micha/alist playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-28 18:41_
+_@MichaReiser_
 
 _No description provided._
 

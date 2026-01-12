@@ -13,14 +13,14 @@ head: cjm/rename-module-global
 created_at: 2024-07-18T16:35:33Z
 updated_at: 2024-07-18T20:05:32Z
 url: https://github.com/astral-sh/ruff/pull/12385
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] rename module_global to global
 
 ---
 
-_Pull request opened by @carljm on 2024-07-18 16:35_
+_@carljm_
 
 Per comments in https://github.com/astral-sh/ruff/pull/12269, "module global" is kind of long, and arguably redundant.
 

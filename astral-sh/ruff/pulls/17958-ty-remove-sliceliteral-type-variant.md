@@ -13,14 +13,14 @@ head: dcreager/remove-slice
 created_at: 2025-05-08T16:26:46Z
 updated_at: 2025-05-09T00:16:43Z
 url: https://github.com/astral-sh/ruff/pull/17958
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # [ty] Remove `SliceLiteral` type variant
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-08 16:26_
+_@dcreager_
 
 @AlexWaygood pointed out that the `SliceLiteral` type variant was originally created to handle slices before we had generics. https://github.com/astral-sh/ruff/pull/17927#discussion_r2078115787
 

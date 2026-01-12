@@ -13,14 +13,14 @@ head: typed-dict-key-expr2
 created_at: 2025-10-10T18:06:40Z
 updated_at: 2025-10-10T23:51:16Z
 url: https://github.com/astral-sh/ruff/pull/20806
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] use type context more aggressively to infer values ​​when constructing a `TypedDict`
 
 ---
 
-_Pull request opened by @mtshiba on 2025-10-10 18:06_
+_@mtshiba_
 
 ## Summary
 

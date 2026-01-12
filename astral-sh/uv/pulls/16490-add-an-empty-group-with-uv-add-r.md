@@ -13,14 +13,14 @@ head: charlie/empty
 created_at: 2025-10-29T00:38:08Z
 updated_at: 2025-10-29T15:31:05Z
 url: https://github.com/astral-sh/uv/pull/16490
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:17Z
 ```
 
 # Add an empty group with `uv add -r`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-10-29 00:38_
+_@charliermarsh_
 
 ## Summary
 

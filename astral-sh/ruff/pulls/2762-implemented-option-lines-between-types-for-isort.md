@@ -12,14 +12,14 @@ head: lines-between-types
 created_at: 2023-02-11T11:26:40Z
 updated_at: 2023-02-11T17:17:42Z
 url: https://github.com/astral-sh/ruff/pull/2762
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # implemented option lines-between-types for isort
 
 ---
 
-_Pull request opened by @PushUpek on 2023-02-11 11:26_
+_@PushUpek_
 
 Fixes #2585
 

@@ -12,14 +12,14 @@ head: exclude-namedtuple
 created_at: 2022-11-14T12:23:09Z
 updated_at: 2022-11-14T18:21:04Z
 url: https://github.com/astral-sh/ruff/pull/735
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Ignore namedtuple assignment in N806, N815, and N816
 
 ---
 
-_Pull request opened by @harupy on 2022-11-14 12:23_
+_@harupy_
 
 `pep8-naming` ignores `namedtuple` assignment in N806, N815, and N816. This PR implements it.
 

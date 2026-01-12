@@ -12,14 +12,14 @@ head: ag/marker-negation
 created_at: 2024-07-11T18:07:51Z
 updated_at: 2024-07-12T11:37:38Z
 url: https://github.com/astral-sh/uv/pull/4996
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:34Z
 ```
 
 # pep508: add MarkerTree::negate
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-07-11 18:07_
+_@BurntSushi_
 
 This does pretty much what you might expect: it takes an existing
 `MarkerTree` and returns a new one that evaluates to the opposite of the

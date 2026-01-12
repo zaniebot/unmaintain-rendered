@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2024-10-30T12:03:11Z
 updated_at: 2024-10-30T12:29:51Z
 url: https://github.com/astral-sh/ruff/pull/13993
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # docs: typo in refurb-sorted-min-max
 
 ---
 
-_Pull request opened by @sbrugman on 2024-10-30 12:03_
+_@sbrugman_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: charlie/test-util
 created_at: 2022-11-11T00:21:47Z
 updated_at: 2022-11-11T00:22:01Z
 url: https://github.com/astral-sh/ruff/pull/672
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add a test utility for running lint checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-11 00:21_
+_@charliermarsh_
 
 _No description provided._
 

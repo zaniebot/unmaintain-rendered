@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-20T14:33:50Z
 updated_at: 2025-06-21T00:46:07Z
 url: https://github.com/astral-sh/uv/issues/14155
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # Clarification needed: Conflicting behavior between automatic sync and optional-dependencies
 
 ---
 
-_Issue opened by @Arist12 on 2025-06-20 14:33_
+_@Arist12_
 
 ### Question
 

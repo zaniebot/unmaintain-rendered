@@ -14,14 +14,14 @@ head: revise-AIR3-fix-title
 created_at: 2025-05-20T07:50:13Z
 updated_at: 2025-05-26T09:31:49Z
 url: https://github.com/astral-sh/ruff/pull/18215
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # [`airflow`] Revise fix title `AIR3`
 
 ---
 
-_Pull request opened by @Lee-W on 2025-05-20 07:50_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

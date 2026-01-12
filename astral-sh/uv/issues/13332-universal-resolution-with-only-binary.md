@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-07T16:00:51Z
 updated_at: 2025-05-08T20:11:18Z
 url: https://github.com/astral-sh/uv/issues/13332
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:25Z
 ```
 
 # Universal resolution with `only-binary`
 
 ---
 
-_Issue opened by @tkukushkin on 2025-05-07 16:00_
+_@tkukushkin_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-10T22:05:04Z
 updated_at: 2025-01-11T16:32:15Z
 url: https://github.com/astral-sh/ruff/issues/15417
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `D214` doesn't respect codeblocks
 
 ---
 
-_Issue opened by @ezorita on 2025-01-10 22:05_
+_@ezorita_
 
 When format on save is enabled in vscode, an indentation will be added to the nested docstring every time the file is saved:
 

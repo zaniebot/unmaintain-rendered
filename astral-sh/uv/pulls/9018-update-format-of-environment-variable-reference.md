@@ -13,14 +13,14 @@ head: zb/env-vars
 created_at: 2024-11-11T15:41:19Z
 updated_at: 2024-11-11T18:41:35Z
 url: https://github.com/astral-sh/uv/pull/9018
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:36Z
 ```
 
 # Update format of environment variable reference
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-11 15:41_
+_@zanieb_
 
 - Sorts the variables
 - Separates `UV_` variables from others

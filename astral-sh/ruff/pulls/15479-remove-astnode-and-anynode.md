@@ -13,14 +13,14 @@ head: dcreager/simplify-ast-node
 created_at: 2025-01-14T20:35:09Z
 updated_at: 2025-01-17T22:11:02Z
 url: https://github.com/astral-sh/ruff/pull/15479
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Remove `AstNode` and `AnyNode`
 
 ---
 
-_Pull request opened by @dcreager on 2025-01-14 20:35_
+_@dcreager_
 
 While looking into potential AST optimizations, I noticed the `AstNode` trait and `AnyNode` type aren't used anywhere in Ruff or Red Knot.  It looks like they might be historical artifacts of previous ways of consuming AST nodes?
 

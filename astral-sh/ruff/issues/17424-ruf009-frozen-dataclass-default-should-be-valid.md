@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-16T10:53:34Z
 updated_at: 2025-06-23T19:10:13Z
 url: https://github.com/astral-sh/ruff/issues/17424
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RUF009 - Frozen Dataclass default should be valid
 
 ---
 
-_Issue opened by @CarliJoy on 2025-04-16 10:53_
+_@CarliJoy_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-23T00:01:39Z
 updated_at: 2024-05-23T02:06:02Z
 url: https://github.com/astral-sh/ruff/issues/11501
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Make Bandit suspicious import rules into a single configurable rule
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2024-05-23 00:01_
+_@inoa-jboliveira_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

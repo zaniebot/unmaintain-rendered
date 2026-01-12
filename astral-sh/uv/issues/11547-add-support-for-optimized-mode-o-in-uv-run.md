@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-16T02:19:34Z
 updated_at: 2025-10-08T14:43:30Z
 url: https://github.com/astral-sh/uv/issues/11547
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:40Z
 ```
 
 # Add support for optimized mode (`-O`) in `uv run`
 
 ---
 
-_Issue opened by @gusutabopb on 2025-02-16 02:19_
+_@gusutabopb_
 
 ### Summary
 

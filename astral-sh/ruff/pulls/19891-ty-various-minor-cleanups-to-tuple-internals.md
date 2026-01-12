@@ -14,14 +14,14 @@ head: alex/tuple-cleanups
 created_at: 2025-08-13T09:43:18Z
 updated_at: 2025-08-13T13:47:18Z
 url: https://github.com/astral-sh/ruff/pull/19891
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] Various minor cleanups to tuple internals
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-13 09:43_
+_@AlexWaygood_
 
 ## Summary
 

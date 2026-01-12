@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-24T15:41:41Z
 updated_at: 2024-07-25T09:38:18Z
 url: https://github.com/astral-sh/uv/issues/5414
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Document use of existing lock as preferences
 
 ---
 
-_Issue opened by @zanieb on 2024-07-24 15:41_
+_@zanieb_
 
 Not going to be obvious, we should discuss this in the lock file concept.
 

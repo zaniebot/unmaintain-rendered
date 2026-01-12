@@ -12,14 +12,14 @@ head: charlie/min-index
 created_at: 2023-06-03T20:02:34Z
 updated_at: 2023-06-03T20:30:19Z
 url: https://github.com/astral-sh/ruff/pull/4837
-synced_at: 2026-01-12T03:50:04Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Fix min-index offset rewrites in F523
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-03 20:02_
+_@charliermarsh_
 
 ## Summary
 

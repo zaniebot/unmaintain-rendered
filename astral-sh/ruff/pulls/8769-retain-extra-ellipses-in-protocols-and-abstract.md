@@ -13,14 +13,14 @@ head: charlie/pie
 created_at: 2023-11-19T14:50:10Z
 updated_at: 2023-11-19T15:05:31Z
 url: https://github.com/astral-sh/ruff/pull/8769
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Retain extra ellipses in protocols and abstract methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-19 14:50_
+_@charliermarsh_
 
 ## Summary
 

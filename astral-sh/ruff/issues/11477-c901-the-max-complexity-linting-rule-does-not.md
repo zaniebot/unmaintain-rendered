@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-20T14:12:30Z
 updated_at: 2024-05-20T14:16:59Z
 url: https://github.com/astral-sh/ruff/issues/11477
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # C901: The `max-complexity` linting rule does not appear to work
 
 ---
 
-_Issue opened by @grahamlyons on 2024-05-20 14:12_
+_@grahamlyons_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

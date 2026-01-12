@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-14T05:39:03Z
 updated_at: 2025-02-15T15:08:14Z
 url: https://github.com/astral-sh/ruff/issues/12877
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Warn about un-annotated attributes in dataclass definition
 
 ---
 
-_Issue opened by @adigitoleo on 2024-08-14 05:39_
+_@adigitoleo_
 
 This is a feature request. The proposal is for a warning which would be triggered if a dataclass definition contains un-annotated attribute declarations. Attributes `d` and `e` in the following example would trigger the warning:
 

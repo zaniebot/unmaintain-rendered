@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-29T08:42:25Z
 updated_at: 2025-03-28T14:37:55Z
 url: https://github.com/astral-sh/uv/issues/7777
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Adding package dependency trace to `uv export`
 
 ---
 
-_Issue opened by @zmeir on 2024-09-29 08:42_
+_@zmeir_
 
 I have a project I'm developing with `uv`. I use `uv lock` to lock my dependency versions for my app, and `uv sync --frozen` to install my development and test environments.
 

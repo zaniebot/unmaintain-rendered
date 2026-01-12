@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T13:57:32Z
 updated_at: 2025-08-15T13:57:32Z
 url: https://github.com/astral-sh/uv/issues/15309
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # `uv pip compile` should support an option for not sending the compiled requirements to stdout, but not hiding other output with --quiet
 
 ---
 
-_Issue opened by @danny-todd-oxb on 2025-08-15 13:57_
+_@danny-todd-oxb_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: david/handle-lhs-union-in-is_subtype_of
 created_at: 2024-10-21T11:56:42Z
 updated_at: 2024-10-21T18:12:06Z
 url: https://github.com/astral-sh/ruff/pull/13857
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] handle unions on the LHS of is_subtype_of
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-21 11:56_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

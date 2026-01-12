@@ -13,14 +13,14 @@ head: charlie/S310
 created_at: 2023-10-18T14:16:23Z
 updated_at: 2023-10-18T14:42:34Z
 url: https://github.com/astral-sh/ruff/pull/8046
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Avoid flagging HTTP and HTTPS literals in urllib-open
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-18 14:16_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8040.
 

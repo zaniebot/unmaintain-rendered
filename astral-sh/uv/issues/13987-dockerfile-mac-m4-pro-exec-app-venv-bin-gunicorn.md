@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-12T11:58:54Z
 updated_at: 2025-07-18T23:45:19Z
 url: https://github.com/astral-sh/uv/issues/13987
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # [Dockerfile Mac M4 Pro] exec /app/.venv/bin/gunicorn: exec format error
 
 ---
 
-_Issue opened by @jakubbober on 2025-06-12 11:58_
+_@jakubbober_
 
 ### Summary
 

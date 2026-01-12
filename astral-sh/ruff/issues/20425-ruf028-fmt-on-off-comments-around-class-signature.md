@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-15T20:55:51Z
 updated_at: 2025-09-16T06:47:55Z
 url: https://github.com/astral-sh/ruff/issues/20425
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF028: `fmt: on/off` comments  around class signature not flagged as invalid
 
 ---
 
-_Issue opened by @Xophmeister on 2025-09-15 20:55_
+_@Xophmeister_
 
 ### Summary
 

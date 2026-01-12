@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-18T14:23:12Z
 updated_at: 2025-01-06T20:45:17Z
 url: https://github.com/astral-sh/uv/issues/9999
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # Feature Request: Ability to Assign Index to Dependency Groups with Priority Management
 
 ---
 
-_Issue opened by @andy-zmn on 2024-12-18 14:23_
+_@andy-zmn_
 
 Description:
 I propose a new feature for uv that allows assigning an index to entire dependency groups in the pyproject.toml file. Additionally, I suggest introducing a priority system to resolve conflicts between individual package index assignments and group-based index assignments.

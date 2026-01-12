@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T17:03:24Z
 updated_at: 2025-12-10T17:15:29Z
 url: https://github.com/astral-sh/ruff/issues/21900
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # [rule] mandatory brackets for `A or B and C`.
 
 ---
 
-_Issue opened by @randolf-scholz on 2025-12-10 17:03_
+_@randolf-scholz_
 
 ### Summary
 

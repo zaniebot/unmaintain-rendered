@@ -13,14 +13,14 @@ head: charlie/index-api
 created_at: 2024-09-18T01:57:10Z
 updated_at: 2024-11-15T03:52:57Z
 url: https://github.com/astral-sh/uv/pull/7481
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:07:51Z
 ```
 
 # Add support for named and explicit indexes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-18 01:57_
+_@charliermarsh_
 
 ## Summary
 

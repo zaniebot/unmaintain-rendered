@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-10-03T21:38:07Z
 updated_at: 2022-10-03T21:42:32Z
 url: https://github.com/clap-rs/clap/issues/4341
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Hide `--help` (but still handle it) if `help` subcommand exists
 
 ---
 
-_Issue opened by @joshtriplett on 2022-10-03 21:38_
+_@joshtriplett_
 
 For many CLIs with subcommands, a subcommand may be *required* (e.g. showing help if there's no subcommand). In this case, there will commonly be an automatic `help` subcommand, but *also* a `--help` option. For some CLIs this may be the *only* option.
 

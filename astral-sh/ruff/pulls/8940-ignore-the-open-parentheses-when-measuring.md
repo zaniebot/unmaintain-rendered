@@ -12,14 +12,14 @@ head: best-fit-content-only
 created_at: 2023-12-01T04:00:43Z
 updated_at: 2025-02-20T09:00:32Z
 url: https://github.com/astral-sh/ruff/pull/8940
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Ignore the open parentheses when measuring `BestFitsParenthesize`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-01 04:00_
+_@MichaReiser_
 
 ## Summary
 

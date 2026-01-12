@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-21T09:31:45Z
 updated_at: 2025-03-21T09:51:49Z
 url: https://github.com/astral-sh/ruff/issues/16891
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Cannot use star annotation false hit
 
 ---
 
-_Issue opened by @nijel on 2025-03-21 09:31_
+_@nijel_
 
 ### Summary
 

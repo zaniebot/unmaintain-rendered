@@ -14,14 +14,14 @@ head: gankra/modty
 created_at: 2025-11-21T19:58:56Z
 updated_at: 2025-11-22T16:06:18Z
 url: https://github.com/astral-sh/ruff/pull/21572
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Improve lsp handling of hover/goto on imports
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-21 19:58_
+_@Gankra_
 
 * Fixes https://github.com/astral-sh/ty/issues/1011
 * Also fixes the fact that we didn't handle `.x` properly *at all* in hover/goto

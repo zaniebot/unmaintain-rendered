@@ -13,14 +13,14 @@ head: dont-prefetch-unbounded-lowerbound-packages
 created_at: 2024-09-25T10:57:37Z
 updated_at: 2024-09-25T12:56:46Z
 url: https://github.com/astral-sh/uv/pull/7683
-synced_at: 2026-01-10T12:53:53Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Regression fix: don't prefetch source dists with unbounded lower-bound ranges
 
 ---
 
-_Pull request opened by @topherinternational on 2024-09-25 10:57_
+_@topherinternational_
 
 #7226 modified the check to skip prefetching of source dists without proper minimum-version bounds, and wound up flipping the boolean expression. This change flips the some/none expression so that the intended skip happens as expected.
 

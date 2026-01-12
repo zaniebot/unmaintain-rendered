@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-05-15T16:43:05Z
 updated_at: 2019-08-25T02:46:11Z
 url: https://github.com/clap-rs/clap/issues/1473
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Allow documentation inside of arg_enum! macro call for enum variants
 
 ---
 
-_Issue opened by @NickHackman on 2019-05-15 16:43_
+_@NickHackman_
 
 I believe this is a bug, writing documentation for the enum inside arg_enum! macro call as a whole is valid, but writing documentation for any of the variants results in a compile time error
 

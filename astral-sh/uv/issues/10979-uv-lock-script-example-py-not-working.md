@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T08:40:31Z
 updated_at: 2025-01-30T20:50:00Z
 url: https://github.com/astral-sh/uv/issues/10979
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # uv lock --script example.py not working
 
 ---
 
-_Issue opened by @Kugeleis on 2025-01-27 08:40_
+_@Kugeleis_
 
 ### Summary
 

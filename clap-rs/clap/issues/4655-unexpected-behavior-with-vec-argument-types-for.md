@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-22T15:14:51Z
 updated_at: 2023-04-24T00:56:03Z
 url: https://github.com/clap-rs/clap/issues/4655
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Unexpected behavior with `Vec<_>` argument types for positionals and options
 
 ---
 
-_Issue opened by @lucatrv on 2023-01-22 15:14_
+_@lucatrv_
 
 ### Please complete the following tasks
 

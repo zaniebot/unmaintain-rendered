@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-11T01:34:34Z
 updated_at: 2023-10-13T00:39:10Z
 url: https://github.com/astral-sh/ruff/issues/7908
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # F821 false positive in notebooks with %%time magic
 
 ---
 
-_Issue opened by @david-waterworth on 2023-10-11 01:34_
+_@david-waterworth_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

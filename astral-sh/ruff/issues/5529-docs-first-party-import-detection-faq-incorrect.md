@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-05T11:14:59Z
 updated_at: 2023-07-26T22:39:03Z
 url: https://github.com/astral-sh/ruff/issues/5529
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [docs] First party import detection FAQ incorrect
 
 ---
 
-_Issue opened by @smackesey on 2023-07-05 11:14_
+_@smackesey_
 
 Recently updated to `0.0.276` (though can't be sure when this behavior was introduced), and noticed the following. Here is a project layout with two packages, `foo` and `bar`:
 

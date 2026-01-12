@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-07T18:47:41Z
 updated_at: 2023-01-07T22:56:40Z
 url: https://github.com/astral-sh/ruff/issues/1718
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Discrepancies between ``isort`` and Ruff's ``I`` lint check
 
 ---
 
-_Issue opened by @AA-Turner on 2023-01-07 18:47_
+_@AA-Turner_
 
 It seems Ruff expects a space after ``isort:skip`` (i.e. Ruff wants ``isort: skip``), and Ruff seems to ignore F401 for the purposes of import sorting, whereas ``isort`` honours them as skip markers(?).
 

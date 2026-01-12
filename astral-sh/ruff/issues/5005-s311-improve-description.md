@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-10T13:22:18Z
 updated_at: 2025-03-26T05:26:32Z
 url: https://github.com/astral-sh/ruff/issues/5005
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # S311: improve description
 
 ---
 
-_Issue opened by @spaceone on 2023-06-10 13:22_
+_@spaceone_
 
 ```
 import random

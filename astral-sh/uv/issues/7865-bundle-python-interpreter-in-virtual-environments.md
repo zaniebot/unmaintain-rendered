@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-02T09:51:49Z
 updated_at: 2025-04-09T16:24:14Z
 url: https://github.com/astral-sh/uv/issues/7865
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Bundle Python Interpreter in virtual environments
 
 ---
 
-_Issue opened by @Turakar on 2024-10-02 09:51_
+_@Turakar_
 
 For system wide installations of applications build with `uv`, it would be nice to have an option to build an execution environment which is self contained and does not rely on the user's local files (`~/.local/share/uv`). My usecase for this would be an application that I want to install to a server for system-wide usage. At the moment, you can achieve this with the following commands (with some path adjustments):
 

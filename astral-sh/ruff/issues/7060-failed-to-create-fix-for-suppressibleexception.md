@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-02T06:23:15Z
 updated_at: 2023-09-02T11:24:07Z
 url: https://github.com/astral-sh/ruff/issues/7060
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Failed to create fix for SuppressibleException: Unable to use existing symbol due to incompatible context
 
 ---
 
-_Issue opened by @qarmin on 2023-09-02 06:23_
+_@qarmin_
 
 Ruff 0.0.287 (latest changes from main branch)
 

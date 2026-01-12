@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-29T01:36:48Z
 updated_at: 2024-01-08T08:38:08Z
 url: https://github.com/astral-sh/ruff/issues/8892
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: `single_line_format_skip_with_multiple_comments` preview style
 
 ---
 
-_Issue opened by @MichaReiser on 2023-11-29 01:36_
+_@MichaReiser_
 
 Implement Black's [`single_line_format_skip_with_multiple_comments`](https://github.com/psf/black/pull/3959) style in Ruff. 
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-19T15:11:03Z
 updated_at: 2024-12-23T08:22:11Z
 url: https://github.com/astral-sh/ruff/issues/15069
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Question: why doesn't ruff complain about CapsWords (PascalCase)?
 
 ---
 
-_Issue opened by @tribunsky-kir on 2024-12-19 15:11_
+_@tribunsky-kir_
 
 [PEP 8](https://peps.python.org/pep-0008/) describes that:
 

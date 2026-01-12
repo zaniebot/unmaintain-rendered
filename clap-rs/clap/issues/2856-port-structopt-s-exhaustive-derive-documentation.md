@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-10-12T14:29:45Z
 updated_at: 2021-12-29T04:16:41Z
 url: https://github.com/clap-rs/clap/issues/2856
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Port StructOpt's exhaustive derive documentation
 
 ---
 
-_Issue opened by @epage on 2021-10-12 14:29_
+_@epage_
 
 ### Please complete the following tasks
 

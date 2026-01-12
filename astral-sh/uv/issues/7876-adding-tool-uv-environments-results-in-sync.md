@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-02T17:59:56Z
 updated_at: 2024-10-03T13:15:09Z
 url: https://github.com/astral-sh/uv/issues/7876
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # adding tool.uv.environments results in `sync --locked` always failing
 
 ---
 
-_Issue opened by @garymm on 2024-10-02 17:59_
+_@garymm_
 
 Hi. Thank you for uv! It's awesome.
 I'm not sure if I'm doing something wrong, but I can't get `sync --locked` to work when specifying `tool.uv.environments` in my pyproject.toml. Example:

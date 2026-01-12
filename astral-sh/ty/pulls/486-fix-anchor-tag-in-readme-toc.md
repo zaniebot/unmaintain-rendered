@@ -13,14 +13,14 @@ head: ToC-fix
 created_at: 2025-05-22T12:14:08Z
 updated_at: 2025-05-22T15:45:38Z
 url: https://github.com/astral-sh/ty/pull/486
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Fix anchor tag in `README` ToC
 
 ---
 
-_Pull request opened by @brainwane on 2025-05-22 12:14_
+_@brainwane_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-24T07:14:09Z
 updated_at: 2025-05-26T17:45:49Z
 url: https://github.com/astral-sh/ty/issues/503
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Move respect-ignore-files to src
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-24 07:14_
+_@MichaReiser_
 
 This setting is about what files should be included. It makes more sense to move it under src
 

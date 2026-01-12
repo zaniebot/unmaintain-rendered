@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T19:34:10Z
 updated_at: 2024-02-17T04:17:14Z
 url: https://github.com/astral-sh/uv/issues/1533
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # `uv pip install -r requirements.txt` does not actually check hashes
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-02-16 19:34_
+_@hauntsaninja_
 
 This is maybe a duplicate of https://github.com/astral-sh/uv/issues/474 , but I found this surprising. Are there any other big security TODOs like this?
 ```

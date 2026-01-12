@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-28T20:24:48Z
 updated_at: 2024-07-15T14:32:49Z
 url: https://github.com/astral-sh/uv/issues/2719
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Use separate resource pools for downloads and source distribution builds
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-28 20:24_
+_@charliermarsh_
 
 I believe we have a fixed concurrency limit, and the atomic unit is "get the wheel for this distribution". For built distributions, that's typically a download + unzip. For source distributions, it's a download + unzip + build.
 

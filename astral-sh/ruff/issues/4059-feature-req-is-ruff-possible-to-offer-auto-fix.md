@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-21T14:30:35Z
 updated_at: 2023-04-23T19:47:29Z
 url: https://github.com/astral-sh/ruff/issues/4059
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [feature req] is ruff possible to offer auto-fix hint for auto-import?
 
 ---
 
-_Issue opened by @Shane-XB-Qian on 2023-04-21 14:30_
+_@Shane-XB-Qian_
 
 i am not very sure how ruff worked, but since pylsp-ruff based on this/ruff,
 per the discussion https://github.com/python-lsp/python-lsp-ruff/issues/29 here,

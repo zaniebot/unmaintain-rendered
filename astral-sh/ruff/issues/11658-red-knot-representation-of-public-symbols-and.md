@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T22:00:47Z
 updated_at: 2024-07-17T07:05:20Z
 url: https://github.com/astral-sh/ruff/issues/11658
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] representation of public symbols and types, independent of full symbol tables / definitions / CFG
 
 ---
 
-_Issue opened by @carljm on 2024-05-31 22:00_
+_@carljm_
 
 When doing type inference within a module, we need full symbol tables, definitions, and CFG. (We could also possibly build these more lazily/granularly, e.g. not descend into functions unless/until we are actually type checking them.)
 

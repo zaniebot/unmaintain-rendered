@@ -14,14 +14,14 @@ head: rk-readme
 created_at: 2025-02-18T13:02:15Z
 updated_at: 2025-02-19T08:12:11Z
 url: https://github.com/astral-sh/ruff/pull/16230
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Add `red_knot/README.md`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-18 13:02_
+_@InSyncWithFoo_
 
 ## Summary
 

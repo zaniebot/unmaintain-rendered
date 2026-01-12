@@ -14,14 +14,14 @@ head: david/remove-divergent-check
 created_at: 2025-12-12T08:06:11Z
 updated_at: 2025-12-13T15:32:11Z
 url: https://github.com/astral-sh/ruff/pull/21935
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Remove now-unnecessary Divergent check
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-12 08:06_
+_@sharkdp_
 
 ## Summary
 

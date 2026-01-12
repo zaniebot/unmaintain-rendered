@@ -12,14 +12,14 @@ head: zb/fixable-preview
 created_at: 2023-12-26T18:43:53Z
 updated_at: 2024-01-15T21:01:12Z
 url: https://github.com/astral-sh/ruff/pull/9284
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Do not take `explicit-preview-rules` into account when selecting `fixable` rules
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-26 18:43_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/9282
 

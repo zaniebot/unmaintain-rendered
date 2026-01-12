@@ -14,14 +14,14 @@ head: dcreager/merge-cleanup
 created_at: 2025-01-23T21:58:07Z
 updated_at: 2025-01-24T21:24:26Z
 url: https://github.com/astral-sh/ruff/pull/15702
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Use itertools to clean up `SymbolState::merge`
 
 ---
 
-_Pull request opened by @dcreager on 2025-01-23 21:58_
+_@dcreager_
 
 [`merge_join_by`](https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.merge_join_by) handles the "merge two sorted iterators" bit, and `zip` handles iterating through the bindings/definitions along with their associated constraints.
 

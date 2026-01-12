@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-08-14T01:46:43Z
 updated_at: 2022-05-06T19:15:48Z
 url: https://github.com/clap-rs/clap/issues/2695
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Help me catch mismatches in number of values and value names
 
 ---
 
-_Issue opened by @epage on 2021-08-14 01:46_
+_@epage_
 
 ### Please complete the following tasks
 

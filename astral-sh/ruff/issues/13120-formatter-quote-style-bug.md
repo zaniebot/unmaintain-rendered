@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-27T09:25:53Z
 updated_at: 2024-08-28T11:07:45Z
 url: https://github.com/astral-sh/ruff/issues/13120
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Formatter: quote-style bug
 
 ---
 
-_Issue opened by @blackteahamburger on 2024-08-27 09:25_
+_@blackteahamburger_
 
 With `quote-style = "double"`.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-30T19:29:06Z
 updated_at: 2024-07-02T01:37:15Z
 url: https://github.com/astral-sh/uv/issues/4664
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `uv tool install` should support unnamed requirements
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-30 19:29_
+_@charliermarsh_
 
 E.g., `uv tool install --from git+https://github.com/psf/black black` should work.
 

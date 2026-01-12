@@ -14,14 +14,14 @@ head: charlie/pan
 created_at: 2026-01-11T22:23:59Z
 updated_at: 2026-01-12T13:35:58Z
 url: https://github.com/astral-sh/ruff/pull/22509
-synced_at: 2026-01-12T14:03:35Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # [ty] Avoid panic for comparison on synthesized variants
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-11 22:23_
+_@charliermarsh_
 
 ## Summary
 

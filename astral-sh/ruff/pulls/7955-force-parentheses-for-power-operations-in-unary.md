@@ -14,14 +14,14 @@ head: charlie/bin-op
 created_at: 2023-10-13T20:48:40Z
 updated_at: 2023-10-16T01:41:52Z
 url: https://github.com/astral-sh/ruff/pull/7955
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Force parentheses for power operations in unary expressions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-13 20:48_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-12-23T16:16:25Z
 updated_at: 2021-12-27T16:29:13Z
 url: https://github.com/clap-rs/clap/issues/3211
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Regression: Subcommand attribute not supported for unit type
 
 ---
 
-_Issue opened by @dunnock on 2021-12-23 16:16_
+_@dunnock_
 
 ### Please complete the following tasks
 

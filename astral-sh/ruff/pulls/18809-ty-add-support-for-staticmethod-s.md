@@ -13,14 +13,14 @@ head: staticmethod
 created_at: 2025-06-20T01:17:19Z
 updated_at: 2025-06-20T08:40:36Z
 url: https://github.com/astral-sh/ruff/pull/18809
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [ty] Add support for `@staticmethod`s
 
 ---
 
-_Pull request opened by @med1844 on 2025-06-20 01:17_
+_@med1844_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: zb/clang
 created_at: 2024-05-22T18:50:27Z
 updated_at: 2024-05-22T19:16:52Z
 url: https://github.com/astral-sh/uv/pull/3756
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:50Z
 ```
 
 # Add changelog entry for #3753
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-22 18:50_
+_@zanieb_
 
 _No description provided._
 

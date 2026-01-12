@@ -13,14 +13,14 @@ head: charlie/del-typed
 created_at: 2025-12-21T01:07:33Z
 updated_at: 2025-12-24T03:39:56Z
 url: https://github.com/astral-sh/ruff/pull/22122
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # [ty] Synthesize `__delitem__` for TypedDict to allow deleting non-required keys
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-21 01:07_
+_@charliermarsh_
 
 ## Summary
 

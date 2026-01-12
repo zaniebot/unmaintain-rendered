@@ -11,14 +11,14 @@ head: main
 created_at: 2023-01-22T20:27:07Z
 updated_at: 2023-01-29T18:45:27Z
 url: https://github.com/astral-sh/ruff/pull/2092
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # feat: ruff --statistics
 
 ---
 
-_Pull request opened by @seanabreau on 2023-01-22 20:27_
+_@seanabreau_
 
 adds --statistics flag from issue #1814
 open to all feedback :)

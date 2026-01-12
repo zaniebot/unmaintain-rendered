@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-27T17:57:35Z
 updated_at: 2024-09-27T18:26:59Z
 url: https://github.com/astral-sh/uv/issues/7743
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Feature Request: Read from `.env` file in a project
 
 ---
 
-_Issue opened by @pythonweb2 on 2024-09-27 17:57_
+_@pythonweb2_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: dhruv/top-materialization
 created_at: 2025-06-09T14:40:45Z
 updated_at: 2025-06-17T22:35:28Z
 url: https://github.com/astral-sh/ruff/pull/18594
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # [ty] Generate the top and bottom materialization of a type
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-06-09 14:40_
+_@dhruvmanila_
 
 ## Summary
 

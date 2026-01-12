@@ -13,14 +13,14 @@ head: fix-typos
 created_at: 2024-09-01T11:30:43Z
 updated_at: 2024-09-01T11:54:41Z
 url: https://github.com/astral-sh/uv/pull/6910
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:35Z
 ```
 
 # Fix typos in docs, error messages and comments
 
 ---
 
-_Pull request opened by @edmorley on 2024-09-01 11:30_
+_@edmorley_
 
 What started off as spotting/fixing a user facing docs typo turned into a bit of a yak shave with my local spell-checker, as part of [upstreaming](https://github.com/crate-ci/typos/issues/1090#issuecomment-2323281389) improvements to `crate-ci/typos` (which runs in this repo's CI already, but [by design](https://github.com/crate-ci/typos?tab=readme-ov-file#why-was--not-corrected) uses a known-typos strategy rather than a purely dictionary based approach).
 

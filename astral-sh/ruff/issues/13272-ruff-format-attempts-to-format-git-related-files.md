@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-06T20:00:56Z
 updated_at: 2024-10-04T17:30:45Z
 url: https://github.com/astral-sh/ruff/issues/13272
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Ruff format attempts to format git related files
 
 ---
 
-_Issue opened by @naquiroz on 2024-09-06 20:00_
+_@naquiroz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

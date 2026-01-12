@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-25T06:09:34Z
 updated_at: 2025-11-22T14:25:19Z
 url: https://github.com/astral-sh/ruff/issues/19552
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Check Watch does not show output format error message from clearing too late
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-07-25 06:09_
+_@MeGaGiGaGon_
 
 ### Summary
 

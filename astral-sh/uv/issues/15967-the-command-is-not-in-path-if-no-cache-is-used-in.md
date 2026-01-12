@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-21T06:43:20Z
 updated_at: 2025-09-22T23:48:00Z
 url: https://github.com/astral-sh/uv/issues/15967
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # The command is not in PATH if `--no-cache` is used in `uv tool run`
 
 ---
 
-_Issue opened by @monosans on 2025-09-21 06:43_
+_@monosans_
 
 ### Summary
 

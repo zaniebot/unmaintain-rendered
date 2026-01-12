@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-01-26T09:01:03Z
 updated_at: 2024-10-24T14:33:44Z
 url: https://github.com/astral-sh/ruff/issues/9644
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # F821 (undefined imports) false positives (?) in notebooks when using the %run magic
 
 ---
 
-_Issue opened by @tvatter on 2024-01-26 09:01_
+_@tvatter_
 
 ## Context
 

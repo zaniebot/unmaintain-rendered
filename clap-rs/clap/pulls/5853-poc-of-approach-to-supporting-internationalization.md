@@ -12,14 +12,14 @@ head: i18n-refactor-2
 created_at: 2024-12-22T05:58:34Z
 updated_at: 2025-05-31T13:51:33Z
 url: https://github.com/clap-rs/clap/pull/5853
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # POC of Approach to Supporting Internationalization
 
 ---
 
-_Pull request opened by @toadslop on 2024-12-22 05:58_
+_@toadslop_
 
 # Support for Internationalization
 

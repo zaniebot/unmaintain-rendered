@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-12T17:15:14Z
 updated_at: 2022-11-15T02:31:38Z
 url: https://github.com/astral-sh/ruff/issues/702
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Refactor `from_imports` and import matching
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-12 17:15_
+_@charliermarsh_
 
 The current design doesn't feel very good, I think I'd prefer a struct with methods rather than passing around a map everywhere.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-14T10:28:39Z
 updated_at: 2024-06-17T06:24:02Z
 url: https://github.com/astral-sh/ruff/issues/11869
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PT017 (pytest-assert-in-except) differs from flake8
 
 ---
 
-_Issue opened by @pcavalar on 2024-06-14 10:28_
+_@pcavalar_
 
 ```python
 # test-pt017.py

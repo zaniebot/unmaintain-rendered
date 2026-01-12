@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-10T14:21:36Z
 updated_at: 2025-11-06T12:54:13Z
 url: https://github.com/astral-sh/uv/issues/16228
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # hatching build suddenly not working anymore in docker
 
 ---
 
-_Issue opened by @ion-elgreco on 2025-10-10 14:21_
+_@ion-elgreco_
 
 ### Summary
 

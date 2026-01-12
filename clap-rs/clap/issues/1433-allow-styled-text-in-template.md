@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-03-19T00:17:43Z
 updated_at: 2023-03-28T02:45:24Z
 url: https://github.com/clap-rs/clap/issues/1433
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Allow styled text in `template`
 
 ---
 
-_Issue opened by @ssokolow on 2019-03-19 00:17_
+_@ssokolow_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

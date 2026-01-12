@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T17:30:31Z
 updated_at: 2025-08-27T07:14:01Z
 url: https://github.com/astral-sh/uv/issues/12723
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # The uv build backend should support `RUST_LOG` or something similar
 
 ---
 
-_Issue opened by @konstin on 2025-04-07 17:30_
+_@konstin_
 
 ### Summary
 

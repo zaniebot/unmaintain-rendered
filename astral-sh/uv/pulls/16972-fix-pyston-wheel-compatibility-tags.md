@@ -13,14 +13,14 @@ head: konsti/fix-pyston-tag
 created_at: 2025-12-03T16:38:28Z
 updated_at: 2025-12-04T09:18:55Z
 url: https://github.com/astral-sh/uv/pull/16972
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:32Z
 ```
 
 # Fix Pyston wheel compatibility tags
 
 ---
 
-_Pull request opened by @konstin on 2025-12-03 16:38_
+_@konstin_
 
 This was discovered by https://github.com/astral-sh/uv/pull/16074, where the wrong tag now fails the Pyston integration test.
 

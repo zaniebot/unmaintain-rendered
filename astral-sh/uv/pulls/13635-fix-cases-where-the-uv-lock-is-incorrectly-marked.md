@@ -13,14 +13,14 @@ head: gankra/normal-groups
 created_at: 2025-05-24T00:51:54Z
 updated_at: 2025-05-26T18:29:18Z
 url: https://github.com/astral-sh/uv/pull/13635
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:47Z
 ```
 
 # Fix cases where the uv lock is incorrectly marked as out of date
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-24 00:51_
+_@Gankra_
 
 PackageMetadata, for whatever reason, does not have a mirrored Wire type so it was easy to not realize that it contains markers that need to be complexified.
 

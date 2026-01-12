@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-04T03:24:37Z
 updated_at: 2023-12-05T02:38:51Z
 url: https://github.com/astral-sh/uv/issues/533
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Support minor versions in `--python-version`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-04 03:24_
+_@charliermarsh_
 
 This is _necessary_ for `ruff-lsp`, where we want to resolve for Python 3.7, but only 3.7.9 and later.
 

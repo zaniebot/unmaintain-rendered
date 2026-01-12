@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-24T18:01:01Z
 updated_at: 2024-10-24T19:53:00Z
 url: https://github.com/astral-sh/uv/issues/8536
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # uv fails to install correct odrive version on old macOS
 
 ---
 
-_Issue opened by @alec-bike on 2024-10-24 18:01_
+_@alec-bike_
 
 I'm using `uv` on two macOS systems -- a newer M1 on macOS `15.1`, and an old Intel pegged to `11.7`. I'm trying to install the `odrive` package. Newer `odrive` packages (`>0.6.8`) require macOS 12+, so I can install `0.6.9.post0` on the M1 but only `0.6.8` on the Intel.
 

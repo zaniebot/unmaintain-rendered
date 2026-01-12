@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-14T14:09:06Z
 updated_at: 2025-07-16T13:41:10Z
 url: https://github.com/astral-sh/uv/issues/11509
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # uv add package upgrade doesn't work
 
 ---
 
-_Issue opened by @sglbl on 2025-02-14 14:09_
+_@sglbl_
 
 ### Question
 

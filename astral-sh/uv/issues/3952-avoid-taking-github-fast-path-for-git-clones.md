@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T22:22:56Z
 updated_at: 2024-06-04T00:34:27Z
 url: https://github.com/astral-sh/uv/issues/3952
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Avoid taking GitHub fast path for git clones
 
 ---
 
-_Issue opened by @ibraheemdev on 2024-05-31 22:22_
+_@ibraheemdev_
 
 Avoid using [`github_fast_path`](https://github.com/astral-sh/uv/blob/a0652921fcf01ac34dbd6ceb1126ff1250bf15cf/crates/uv-git/src/git.rs#L448) for the initial clone of a repository. This would require using `git clone` instead of `git init` + `git fetch`, and using the `--branch` argument to resolve refspecs.
 

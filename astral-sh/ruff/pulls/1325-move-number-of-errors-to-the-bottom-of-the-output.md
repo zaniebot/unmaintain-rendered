@@ -12,14 +12,14 @@ head: charlie/msg
 created_at: 2022-12-22T02:04:15Z
 updated_at: 2022-12-22T02:04:27Z
 url: https://github.com/astral-sh/ruff/pull/1325
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Move number of errors to the bottom of the output summary
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-22 02:04_
+_@charliermarsh_
 
 Resolves #1322.
 

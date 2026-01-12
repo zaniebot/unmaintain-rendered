@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-19T07:49:25Z
 updated_at: 2024-12-19T08:11:01Z
 url: https://github.com/astral-sh/ruff/issues/15053
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # --fix "UP031" fail when string contain `%d`
 
 ---
 
-_Issue opened by @un-pogaz on 2024-12-19 07:49_
+_@un-pogaz_
 
 Ruff fail to automaticly convert legacy Python2 string format to Python3 format when the original string contain `%d`, even with `--unsafe-fixes` enable.
 

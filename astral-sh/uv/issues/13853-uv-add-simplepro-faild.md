@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-05T03:46:15Z
 updated_at: 2025-06-05T11:16:45Z
 url: https://github.com/astral-sh/uv/issues/13853
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # uv add simplepro faild
 
 ---
 
-_Issue opened by @nightzjp on 2025-06-05 03:46_
+_@nightzjp_
 
 ### Summary
 

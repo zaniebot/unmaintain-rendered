@@ -13,14 +13,14 @@ head: micha/revert-relative-import-handling
 created_at: 2025-02-06T18:36:13Z
 updated_at: 2025-02-07T10:04:12Z
 url: https://github.com/astral-sh/ruff/pull/16001
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Partial revert of relative import handling for files in the root of a search path
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-06 18:36_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: clarify-package-priority-order
 created_at: 2024-08-25T21:35:39Z
 updated_at: 2024-08-27T00:07:45Z
 url: https://github.com/astral-sh/uv/pull/6619
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:27Z
 ```
 
 # Clarify package priority order in pip compatibility guide
 
 ---
 
-_Pull request opened by @notatallshaw on 2024-08-25 21:35_
+_@notatallshaw_
 
 This is a minor documentation update to a recently added section "Package priority" in the pip compatibility guide. The aim of this PR is clear up two things which I think the current paragraph implies but I don't think are (always) true:
 

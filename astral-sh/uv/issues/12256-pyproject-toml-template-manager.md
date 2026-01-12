@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T01:19:38Z
 updated_at: 2025-09-12T18:34:34Z
 url: https://github.com/astral-sh/uv/issues/12256
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # `pyproject.toml` template manager
 
 ---
 
-_Issue opened by @sarpuser on 2025-03-18 01:19_
+_@sarpuser_
 
 ### Summary
 

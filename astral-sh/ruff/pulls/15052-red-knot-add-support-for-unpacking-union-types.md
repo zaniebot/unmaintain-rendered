@@ -13,14 +13,14 @@ head: dhruv/unpack-union
 created_at: 2024-12-19T07:15:20Z
 updated_at: 2024-12-20T11:01:17Z
 url: https://github.com/astral-sh/ruff/pull/15052
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Add support for unpacking union types
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-12-19 07:15_
+_@dhruvmanila_
 
 ## Summary
 

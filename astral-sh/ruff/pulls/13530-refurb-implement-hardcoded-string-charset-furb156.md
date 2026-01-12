@@ -14,14 +14,14 @@ head: latyshev/furb-156
 created_at: 2024-09-26T18:14:27Z
 updated_at: 2025-06-10T20:46:23Z
 url: https://github.com/astral-sh/ruff/pull/13530
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [`refurb`] implement `hardcoded-string-charset` (FURB156)
 
 ---
 
-_Pull request opened by @alex-700 on 2024-09-26 18:14_
+_@alex-700_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

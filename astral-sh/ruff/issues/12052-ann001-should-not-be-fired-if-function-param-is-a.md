@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-26T17:10:14Z
 updated_at: 2024-06-28T04:22:52Z
 url: https://github.com/astral-sh/ruff/issues/12052
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # ANN001 should not be fired if function param is a pytest fixture
 
 ---
 
-_Issue opened by @buabaj on 2024-06-26 17:10_
+_@buabaj_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

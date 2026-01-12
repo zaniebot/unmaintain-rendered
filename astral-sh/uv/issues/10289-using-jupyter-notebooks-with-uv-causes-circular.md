@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-03T15:28:18Z
 updated_at: 2025-01-03T17:42:00Z
 url: https://github.com/astral-sh/uv/issues/10289
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # Using jupyter notebooks with uv causes circular imports
 
 ---
 
-_Issue opened by @anuroop18 on 2025-01-03 15:28_
+_@anuroop18_
 
 I did following
 

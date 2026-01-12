@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-09T17:08:31Z
 updated_at: 2024-08-12T10:57:53Z
 url: https://github.com/astral-sh/ruff/issues/12789
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Rule Request: useless function
 
 ---
 
-_Issue opened by @KangOl on 2024-08-09 17:08_
+_@KangOl_
 
 Today, I (mostly) wrote the following code:
 

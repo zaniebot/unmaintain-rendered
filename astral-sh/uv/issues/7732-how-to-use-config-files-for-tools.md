@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-27T07:28:00Z
 updated_at: 2024-12-02T17:41:58Z
 url: https://github.com/astral-sh/uv/issues/7732
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # How to use config files for tools?
 
 ---
 
-_Issue opened by @andreas-vester on 2024-09-27 07:28_
+_@andreas-vester_
 
 When using tools like ``ruff``, ``mypy``, ``pytest`` etc., I am using config files, such as ``ruff.toml`` or dedicated sections in ``pyproject.toml`` file.
 

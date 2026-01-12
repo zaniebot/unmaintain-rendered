@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-06T14:09:52Z
 updated_at: 2025-03-14T03:49:19Z
 url: https://github.com/astral-sh/uv/issues/12006
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # Redundant output of activate.bat due to changes made with #11831
 
 ---
 
-_Issue opened by @petermbauer on 2025-03-06 14:09_
+_@petermbauer_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-06T14:27:13Z
 updated_at: 2025-02-06T16:58:53Z
 url: https://github.com/astral-sh/uv/issues/11281
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # How can I run uv run in a specific environment?
 
 ---
 
-_Issue opened by @lskbr on 2025-02-06 14:27_
+_@lskbr_
 
 ### Question
 

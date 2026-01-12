@@ -12,14 +12,14 @@ head: konsti/fix-tilde-equal-python
 created_at: 2025-06-25T12:01:23Z
 updated_at: 2025-10-09T13:46:25Z
 url: https://github.com/astral-sh/uv/pull/14259
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # Fix handling of inverted `~=` with `python_version` and `python_full_version`
 
 ---
 
-_Pull request opened by @konstin on 2025-06-25 12:01_
+_@konstin_
 
 Fix the handling of `"<version>" ~= python_version` and `"<version>" ~= python_full_version`, which need custom handling as we know the number of digits on the RHS, but not their meaning.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-16T14:27:22Z
 updated_at: 2024-09-16T14:27:23Z
 url: https://github.com/clap-rs/clap/issues/5729
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `clap_complete::env::Elvish` generates code deprecated in 0.18, removed in 0.21
 
 ---
 
-_Issue opened by @epage on 2024-09-16 14:27_
+_@epage_
 
 As reported in rust-lang/cargo#14545
 ```

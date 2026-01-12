@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-17T06:18:16Z
 updated_at: 2023-04-17T13:55:50Z
 url: https://github.com/astral-sh/ruff/issues/3991
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # nit: Is ruff in Alpha or Beta?
 
 ---
 
-_Issue opened by @cclauss on 2023-04-17 06:18_
+_@cclauss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

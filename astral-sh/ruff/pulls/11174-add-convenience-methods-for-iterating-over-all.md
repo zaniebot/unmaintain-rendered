@@ -13,14 +13,14 @@ head: parameter-convenience-iterator
 created_at: 2024-04-27T12:53:40Z
 updated_at: 2024-04-29T11:31:28Z
 url: https://github.com/astral-sh/ruff/pull/11174
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # Add convenience methods for iterating over all parameter nodes in a function
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-27 12:53_
+_@AlexWaygood_
 
 ## Summary
 

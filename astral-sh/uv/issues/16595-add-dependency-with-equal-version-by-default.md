@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-04T18:43:01Z
 updated_at: 2025-11-04T19:00:45Z
 url: https://github.com/astral-sh/uv/issues/16595
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Add dependency with "equal" version by default?
 
 ---
 
-_Issue opened by @mquan86 on 2025-11-04 18:43_
+_@mquan86_
 
 ### Question
 

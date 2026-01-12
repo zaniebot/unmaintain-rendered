@@ -13,14 +13,14 @@ head: CJHarmath-readme-venv-activate
 created_at: 2024-02-16T02:11:31Z
 updated_at: 2024-02-16T02:20:25Z
 url: https://github.com/astral-sh/uv/pull/1411
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:37Z
 ```
 
 # Update README.md to include venv activate
 
 ---
 
-_Pull request opened by @CJHarmath on 2024-02-16 02:11_
+_@CJHarmath_
 
 This is just a small readme change to include venv activation.
 In case someone just follows the docs as-is, they will end up installing packages outside of the desired virtual env.

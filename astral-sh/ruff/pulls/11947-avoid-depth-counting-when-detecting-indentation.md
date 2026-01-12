@@ -13,14 +13,14 @@ head: dhruv/stylist-depth
 created_at: 2024-06-20T04:51:26Z
 updated_at: 2024-06-20T05:12:36Z
 url: https://github.com/astral-sh/ruff/pull/11947
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Avoid depth counting when detecting indentation
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-20 04:51_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: new_fix_unused_parameters
 created_at: 2024-03-10T17:11:46Z
 updated_at: 2025-04-28T07:01:00Z
 url: https://github.com/astral-sh/ruff/pull/10321
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`flake8-unused-arguments`] Add fixes for `ARG001`->`ARG005`
 
 ---
 
-_Pull request opened by @GtrMo on 2024-03-10 17:11_
+_@GtrMo_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

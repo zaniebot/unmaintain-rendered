@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-06-15T17:13:10Z
 updated_at: 2023-08-21T18:23:19Z
 url: https://github.com/clap-rs/clap/issues/3838
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Using `default_value_ifs` with `required` returns error about argument not being provided when default is matched sometime after 3.1.12
 
 ---
 
-_Issue opened by @dsherret on 2022-06-15 17:13_
+_@dsherret_
 
 ### Please complete the following tasks
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-31T16:47:45Z
 updated_at: 2025-01-01T14:21:44Z
 url: https://github.com/astral-sh/uv/issues/10255
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # Bug: Circular dependencies at build-time cause hang without error
 
 ---
 
-_Issue opened by @CarrotManMatt on 2024-12-31 16:47_
+_@CarrotManMatt_
 
 When a project uses a package for building that has the original project as a runtime dependency, all build/lock/sync commands hang without any message or error.
 

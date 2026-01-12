@@ -13,14 +13,14 @@ head: charlie/releases
 created_at: 2023-08-03T20:37:25Z
 updated_at: 2023-08-03T20:45:51Z
 url: https://github.com/astral-sh/ruff/pull/6317
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Omit formatter PRs from releases by default
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-03 20:37_
+_@charliermarsh_
 
 I end up removing these manually every time, seems easier to just omit them for now.
 

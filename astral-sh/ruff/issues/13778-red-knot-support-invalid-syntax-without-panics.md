@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-16T16:03:52Z
 updated_at: 2024-12-09T16:10:56Z
 url: https://github.com/astral-sh/ruff/issues/13778
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] support invalid syntax without panics
 
 ---
 
-_Issue opened by @carljm on 2024-10-16 16:03_
+_@carljm_
 
 The ruff parser is error-resilient and will generate a best-effort AST for any input, but red-knot currently assumes a valid AST in some places, and this can cause panics if it's run over an invalid AST.
 

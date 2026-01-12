@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-24T13:37:57Z
 updated_at: 2025-01-16T22:05:12Z
 url: https://github.com/astral-sh/ruff/issues/13086
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Allow short docstrings in pydoclint
 
 ---
 
-_Issue opened by @valentincalomme on 2024-08-24 13:37_
+_@valentincalomme_
 
 As of `ruff==0.6.2`, `pydoclint` rules (DOC) doesn't allow any settings. If prioritization is required, I would personally really value having the `--skip-checking-short-docstrings` setting (see: https://jsh9.github.io/pydoclint/config_options.html)
 

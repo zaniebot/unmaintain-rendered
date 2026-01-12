@@ -14,14 +14,14 @@ head: perf/parser-string
 created_at: 2023-10-25T20:41:51Z
 updated_at: 2023-10-28T23:01:24Z
 url: https://github.com/astral-sh/ruff/pull/8227
-synced_at: 2026-01-12T02:11:58Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # perf(parser): use faster string parser methods
 
 ---
 
-_Pull request opened by @sno2 on 2023-10-25 20:41_
+_@sno2_
 
 ## Summary
 

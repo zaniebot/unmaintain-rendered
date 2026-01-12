@@ -14,14 +14,14 @@ head: ibraheem/ast-node-ref-size
 created_at: 2025-08-21T18:28:25Z
 updated_at: 2025-08-22T21:03:24Z
 url: https://github.com/astral-sh/ruff/pull/20028
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # [ty] Shrink size of `AstNodeRef`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-08-21 18:28_
+_@ibraheemdev_
 
 ## Summary
 

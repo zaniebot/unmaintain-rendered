@@ -13,14 +13,14 @@ head: markdown-syntax
 created_at: 2024-02-18T18:15:52Z
 updated_at: 2024-02-18T18:43:52Z
 url: https://github.com/astral-sh/uv/pull/1664
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # Minimal markdown nits
 
 ---
 
-_Pull request opened by @sbrugman on 2024-02-18 18:15_
+_@sbrugman_
 
 VSCode complained about these when I was starting on #1662
 

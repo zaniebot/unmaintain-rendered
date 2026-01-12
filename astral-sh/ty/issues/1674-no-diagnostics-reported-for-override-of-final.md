@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-29T15:28:20Z
 updated_at: 2025-12-01T23:26:01Z
 url: https://github.com/astral-sh/ty/issues/1674
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # No diagnostics reported for override of `@final` method if the method has other decorators too
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-29 15:28_
+_@AlexWaygood_
 
 Similar to #1675. We currently issue no complaint about this snippet, for example, but mypy (the reference implementation for PEP 591) [does](https://mypy-play.net/?mypy=latest&python=3.12&gist=b4d60bd1cba3c19d627d0ff6144aa2c9):
 

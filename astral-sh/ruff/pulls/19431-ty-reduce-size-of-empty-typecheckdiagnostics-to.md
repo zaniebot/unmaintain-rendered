@@ -13,14 +13,14 @@ head: micha/shrink-type-check-diagnostics
 created_at: 2025-07-19T15:29:11Z
 updated_at: 2025-07-20T08:40:15Z
 url: https://github.com/astral-sh/ruff/pull/19431
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [ty] Reduce size of empty `TypeCheckDiagnostics` to one word
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-19 15:29_
+_@MichaReiser_
 
 ## Summary
 

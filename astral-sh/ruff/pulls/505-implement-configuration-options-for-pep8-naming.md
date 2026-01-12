@@ -12,14 +12,14 @@ head: charlie/pep8-naming-opts
 created_at: 2022-10-29T21:00:26Z
 updated_at: 2022-10-29T21:00:31Z
 url: https://github.com/astral-sh/ruff/pull/505
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement configuration options for pep8-naming
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-29 21:00_
+_@charliermarsh_
 
 _No description provided._
 

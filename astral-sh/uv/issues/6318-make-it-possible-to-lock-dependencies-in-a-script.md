@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-21T11:32:12Z
 updated_at: 2025-01-29T14:50:48Z
 url: https://github.com/astral-sh/uv/issues/6318
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Make it possible to lock dependencies in a script
 
 ---
 
-_Issue opened by @blin on 2024-08-21 11:32_
+_@blin_
 
 Uv's script support is amazing for creating self-contained scripts that can be written once and then executed by anyone with uv months later, as long as the upper boundaries for dependencies were specified.
 

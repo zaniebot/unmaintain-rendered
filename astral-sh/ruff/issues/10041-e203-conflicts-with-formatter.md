@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T07:35:42Z
 updated_at: 2024-02-26T17:22:37Z
 url: https://github.com/astral-sh/ruff/issues/10041
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # E203: conflicts with formatter
 
 ---
 
-_Issue opened by @MichaReiser on 2024-02-19 07:35_
+_@MichaReiser_
 
 
 Hi, I think there is another case, where it is not working and that is when we have multiple indices, like in pandas: 

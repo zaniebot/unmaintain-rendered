@@ -13,14 +13,14 @@ head: david/mypy_primer-manticore
 created_at: 2025-05-05T14:15:06Z
 updated_at: 2025-05-05T14:34:25Z
 url: https://github.com/astral-sh/ruff/pull/17862
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [ty] ecosystem: Activate running on 'materialize'
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-05 14:15_
+_@sharkdp_
 
 ## Summary
 

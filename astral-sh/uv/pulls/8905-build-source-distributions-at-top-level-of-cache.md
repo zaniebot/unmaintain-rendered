@@ -13,14 +13,14 @@ head: charlie/path
 created_at: 2024-11-08T00:09:52Z
 updated_at: 2024-11-08T00:39:05Z
 url: https://github.com/astral-sh/uv/pull/8905
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:33Z
 ```
 
 # Build source distributions at top-level of cache
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-08 00:09_
+_@charliermarsh_
 
 ## Summary
 

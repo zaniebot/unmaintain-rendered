@@ -13,14 +13,14 @@ head: main
 created_at: 2024-04-17T06:14:21Z
 updated_at: 2024-04-23T12:58:13Z
 url: https://github.com/astral-sh/uv/pull/3089
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:25Z
 ```
 
 # Make KeyringProvider::fetch_* async
 
 ---
 
-_Pull request opened by @naosense on 2024-04-17 06:14_
+_@naosense_
 
 To resolve #3073 
 

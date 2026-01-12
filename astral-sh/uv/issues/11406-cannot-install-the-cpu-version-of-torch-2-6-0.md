@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T21:33:11Z
 updated_at: 2025-02-22T17:24:26Z
 url: https://github.com/astral-sh/uv/issues/11406
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # Cannot install the CPU version of torch 2.6.0
 
 ---
 
-_Issue opened by @petteriTeikari on 2025-02-10 21:33_
+_@petteriTeikari_
 
 ### Summary
 

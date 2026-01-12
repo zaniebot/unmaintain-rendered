@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-04T17:59:26Z
 updated_at: 2024-07-04T22:31:41Z
 url: https://github.com/astral-sh/uv/issues/4816
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # `uv toolchain uninstall` should either error or remove all Pythons
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-04 17:59_
+_@charliermarsh_
 
 Right now, it looks like it passes an empty request vector to the command.
 

@@ -13,14 +13,14 @@ head: konsti/downgrade-reqwest
 created_at: 2025-06-04T13:40:29Z
 updated_at: 2025-06-04T16:48:55Z
 url: https://github.com/astral-sh/uv/pull/13835
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:53Z
 ```
 
 # Downgrade reqwest and hyper-util
 
 ---
 
-_Pull request opened by @konstin on 2025-06-04 13:40_
+_@konstin_
 
 Workaround for https://github.com/astral-sh/uv/issues/13831, see also https://github.com/hyperium/hyper/issues/3900
 

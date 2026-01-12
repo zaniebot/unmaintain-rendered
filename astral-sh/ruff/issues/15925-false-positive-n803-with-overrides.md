@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-04T08:33:49Z
 updated_at: 2025-02-05T08:35:58Z
 url: https://github.com/astral-sh/ruff/issues/15925
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # False-positive N803 with overrides
 
 ---
 
-_Issue opened by @bersbersbers on 2025-02-04 08:33_
+_@bersbersbers_
 
 ### Description
 

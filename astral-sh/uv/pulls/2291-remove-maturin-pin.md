@@ -13,14 +13,14 @@ head: charlie/maturin
 created_at: 2024-03-08T00:32:05Z
 updated_at: 2024-03-08T00:42:28Z
 url: https://github.com/astral-sh/uv/pull/2291
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:57Z
 ```
 
 # Remove Maturin pin
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-08 00:32_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/32
 created_at: 2024-08-20T13:52:42Z
 updated_at: 2024-08-20T14:06:26Z
 url: https://github.com/astral-sh/uv/pull/6252
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Add 32-bit Windows target
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-20 13:52_
+_@charliermarsh_
 
 ## Summary
 

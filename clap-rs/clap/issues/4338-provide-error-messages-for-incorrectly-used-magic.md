@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-10-03T16:26:21Z
 updated_at: 2022-10-31T17:41:18Z
 url: https://github.com/clap-rs/clap/issues/4338
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Provide error messages for incorrectly used magic attributes
 
 ---
 
-_Issue opened by @stevenengler on 2022-10-03 16:26_
+_@stevenengler_
 
 ### Please complete the following tasks
 

@@ -12,14 +12,14 @@ head: uv4
 created_at: 2025-08-05T21:05:29Z
 updated_at: 2025-08-12T17:29:43Z
 url: https://github.com/astral-sh/uv/pull/15094
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:34Z
 ```
 
 # Code style improvements
 
 ---
 
-_Pull request opened by @adamnemecek on 2025-08-05 21:05_
+_@adamnemecek_
 
 Continuation of #15074.
 

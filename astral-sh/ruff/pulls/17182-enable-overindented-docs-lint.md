@@ -13,14 +13,14 @@ head: micha/enable-overindented
 created_at: 2025-04-03T19:11:30Z
 updated_at: 2025-04-03T19:27:13Z
 url: https://github.com/astral-sh/ruff/pull/17182
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Enable overindented docs lint
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-03 19:11_
+_@MichaReiser_
 
 ## Summary
 

@@ -15,14 +15,14 @@ head: charlie/work
 created_at: 2024-08-08T20:49:16Z
 updated_at: 2024-08-08T21:05:04Z
 url: https://github.com/astral-sh/uv/pull/5931
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:06Z
 ```
 
 # Search beyond workspace root when discovering configuration
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-08 20:49_
+_@charliermarsh_
 
 ## Summary
 

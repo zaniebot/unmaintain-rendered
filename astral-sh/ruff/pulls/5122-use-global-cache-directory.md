@@ -12,14 +12,14 @@ head: thomas/global_cache
 created_at: 2023-06-15T14:31:13Z
 updated_at: 2025-02-20T08:59:40Z
 url: https://github.com/astral-sh/ruff/pull/5122
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Use global cache directory
 
 ---
 
-_Pull request opened by @Thomasdezeeuw on 2023-06-15 14:31_
+_@Thomasdezeeuw_
 
 ## Summary
 

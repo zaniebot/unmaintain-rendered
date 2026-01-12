@@ -13,14 +13,14 @@ head: renovate/sha2-0.x-lockfile
 created_at: 2025-05-12T03:52:47Z
 updated_at: 2025-05-12T09:13:25Z
 url: https://github.com/astral-sh/uv/pull/13398
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:40Z
 ```
 
 # Update Rust crate sha2 to v0.10.9
 
 ---
 
-_Pull request opened by @renovate on 2025-05-12 03:52_
+_@renovate_
 
 This PR contains the following updates:
 

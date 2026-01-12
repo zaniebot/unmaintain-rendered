@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-21T15:57:15Z
 updated_at: 2025-06-23T14:46:29Z
 url: https://github.com/astral-sh/ruff/issues/18851
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Which bare tuples are in scope for COM818?
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-21 15:57_
+_@dscorbett_
 
 ### Summary
 

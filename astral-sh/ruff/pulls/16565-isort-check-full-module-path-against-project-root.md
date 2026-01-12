@@ -16,14 +16,14 @@ head: namespaces
 created_at: 2025-03-08T09:43:44Z
 updated_at: 2025-05-05T16:40:01Z
 url: https://github.com/astral-sh/ruff/pull/16565
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`isort`] Check full module path against project root(s) when categorizing first-party
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-03-08 09:43_
+_@dylwil3_
 
 When attempting to determine whether `import foo.bar.baz` is a known first-party import relative to [user-provided source paths](https://docs.astral.sh/ruff/settings/#src), when `preview` is enabled we now check that `SRC/foo/bar/baz` is a directory or `SRC/foo/bar/baz.py` or `SRC/foo/bar/baz.pyi` exist.
 

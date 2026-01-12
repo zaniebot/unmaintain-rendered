@@ -13,14 +13,14 @@ head: konsti/build-backend
 created_at: 2024-09-29T15:46:45Z
 updated_at: 2024-10-07T12:55:59Z
 url: https://github.com/astral-sh/uv/pull/7781
-synced_at: 2026-01-10T12:53:55Z
+synced_at: 2026-01-12T16:07:59Z
 ```
 
 # Metadata transformation for the build backend
 
 ---
 
-_Pull request opened by @konstin on 2024-09-29 15:46_
+_@konstin_
 
 Implement the validation and transformation from `pyproject.toml` to `METADATA` and `entry_points.txt`. There is some incomplete plumbing code in `crates/uv-build-backend/src/lib.rs` to actually write `METADATA` and `entry_points.txt` into a stub wheel or dist-info directory, the logic lives in `crates/uv-build-backend/src/metadata.rs`.
 

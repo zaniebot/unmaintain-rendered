@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T13:25:44Z
 updated_at: 2023-03-02T03:25:28Z
 url: https://github.com/astral-sh/ruff/issues/2394
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # new rule for `not foo not in bar`
 
 ---
 
-_Issue opened by @spaceone on 2023-01-31 13:25_
+_@spaceone_
 
 I have hard to understand code like:
 `not foo not in bar`

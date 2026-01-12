@@ -14,14 +14,14 @@ head: ag/fix-local-var-completion-kind
 created_at: 2025-12-19T18:08:53Z
 updated_at: 2025-12-20T18:01:12Z
 url: https://github.com/astral-sh/ruff/pull/22092
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Determine completion "kind" primarily based on how the symbol was defined
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-12-19 18:08_
+_@BurntSushi_
 
 I'm not quite sure of the implementation here, so
 I'm opening this up as a draft. If this seems like a

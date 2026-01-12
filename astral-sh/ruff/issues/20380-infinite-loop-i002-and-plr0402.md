@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-14T19:40:03Z
 updated_at: 2025-09-25T21:08:16Z
 url: https://github.com/astral-sh/ruff/issues/20380
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [Infinite loop] I002 and PLR0402
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-14 19:40_
+_@dscorbett_
 
 ### Summary
 

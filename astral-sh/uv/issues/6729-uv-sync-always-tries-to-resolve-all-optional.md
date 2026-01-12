@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-27T23:14:59Z
 updated_at: 2025-10-02T18:27:51Z
 url: https://github.com/astral-sh/uv/issues/6729
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # `uv sync` always tries to resolve all `optional-dependencies`
 
 ---
 
-_Issue opened by @chrisjsewell on 2024-08-27 23:14_
+_@chrisjsewell_
 
 the initial options of `uv sync` would lead me to believe that extras should not be resolved by default
 

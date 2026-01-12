@@ -13,14 +13,14 @@ head: charlie/sync-python
 created_at: 2024-07-21T17:27:42Z
 updated_at: 2024-07-22T18:55:49Z
 url: https://github.com/astral-sh/uv/pull/5261
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:43Z
 ```
 
 # Add an automated job to sync `python-build-standalone` releases
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-21 17:27_
+_@charliermarsh_
 
 ## Summary
 

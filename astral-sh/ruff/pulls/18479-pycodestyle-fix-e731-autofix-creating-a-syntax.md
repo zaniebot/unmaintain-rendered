@@ -14,14 +14,14 @@ head: fix-E731
 created_at: 2025-06-05T14:33:19Z
 updated_at: 2025-06-13T06:44:16Z
 url: https://github.com/astral-sh/ruff/pull/18479
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [`pycodestyle`] Fix `E731` autofix creating a syntax error for expressions spanned across multiple lines
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-05 14:33_
+_@LaBatata101_
 
 
 

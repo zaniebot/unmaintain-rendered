@@ -13,14 +13,14 @@ head: charlie/ed
 created_at: 2024-04-23T18:53:28Z
 updated_at: 2024-04-23T19:03:45Z
 url: https://github.com/astral-sh/uv/pull/3219
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:30Z
 ```
 
 # Reinstall package when editable label is removed
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-23 18:53_
+_@charliermarsh_
 
 ## Summary
 

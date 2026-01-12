@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T12:27:56Z
 updated_at: 2024-08-22T23:21:33Z
 url: https://github.com/astral-sh/uv/issues/6427
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Package upgrading
 
 ---
 
-_Issue opened by @jacoverster on 2024-08-22 12:27_
+_@jacoverster_
 
 uv sync --upgrade not responding as expected. I expect it to upgrade the package to the latest version but it keeps it at the added version.
 

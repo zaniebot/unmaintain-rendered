@@ -13,14 +13,14 @@ head: feat/b905message
 created_at: 2024-10-07T10:04:53Z
 updated_at: 2024-10-07T12:05:30Z
 url: https://github.com/astral-sh/ruff/pull/13656
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [`flake8-bugbear`] Tweak `B905` message to not suggest setting parameter `strict=` to `False`
 
 ---
 
-_Pull request opened by @qdegraaf on 2024-10-07 10:04_
+_@qdegraaf_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: charlie/compare
 created_at: 2025-09-27T18:16:00Z
 updated_at: 2025-09-29T13:38:50Z
 url: https://github.com/astral-sh/uv/pull/16044
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:05Z
 ```
 
 # Respect `--no-color` on the CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-27 18:16_
+_@charliermarsh_
 
 ## Summary
 

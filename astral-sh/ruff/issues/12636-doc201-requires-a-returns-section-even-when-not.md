@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-02T17:27:03Z
 updated_at: 2024-08-06T06:46:40Z
 url: https://github.com/astral-sh/ruff/issues/12636
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # DOC201 requires a returns section even when not required by the Google style guide
 
 ---
 
-_Issue opened by @dscorbett on 2024-08-02 17:27_
+_@dscorbett_
 
 DOC201 requires a returns section in a docstring when the Google docstring convention is enabled, but [the Google style guide says](https://google.github.io/styleguide/pyguide.html#doc-function-returns) that that section “may also be omitted if the docstring starts with “Return”, “Returns”, “Yield”, or “Yields” (e.g. `"""Returns row from Bigtable as a tuple of strings."""`) _and_ the opening sentence is sufficient to describe the return value.” Ruff can’t validate whether the sentence is sufficient, so it should assume that if the docstring begins with the right word and the Google convention is enabled, the returns section was omitted intentionally.
 

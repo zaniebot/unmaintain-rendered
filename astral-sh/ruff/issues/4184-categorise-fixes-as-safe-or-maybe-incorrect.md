@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-02T09:18:33Z
 updated_at: 2023-06-28T16:37:51Z
 url: https://github.com/astral-sh/ruff/issues/4184
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Categorise `fixes` as `safe` or `maybe_incorrect`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-05-02 09:18_
+_@MichaReiser_
 
 Part of #4181 and depends on #4183
 

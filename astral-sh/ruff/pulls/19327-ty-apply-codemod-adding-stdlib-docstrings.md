@@ -14,14 +14,14 @@ head: alex/add-docstrings
 created_at: 2025-07-14T12:41:06Z
 updated_at: 2025-07-14T16:03:00Z
 url: https://github.com/astral-sh/ruff/pull/19327
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [ty] Apply codemod adding stdlib docstrings
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-14 12:41_
+_@AlexWaygood_
 
 ## Summary
 

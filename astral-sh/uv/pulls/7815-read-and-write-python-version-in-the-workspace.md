@@ -12,14 +12,14 @@ head: version-file
 created_at: 2024-09-30T16:28:26Z
 updated_at: 2024-11-09T07:06:04Z
 url: https://github.com/astral-sh/uv/pull/7815
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:01Z
 ```
 
 # Read and write `.python-version` in the workspace root
 
 ---
 
-_Pull request opened by @j178 on 2024-09-30 16:28_
+_@j178_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: alex/py-fuzzer-instructions
 created_at: 2024-11-27T22:15:19Z
 updated_at: 2024-11-27T22:24:09Z
 url: https://github.com/astral-sh/ruff/pull/14645
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # py-fuzzer: recommend using `uvx` rather than `uv run` to run the fuzzer
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-27 22:15_
+_@AlexWaygood_
 
 `uvx --from=foo bar` seems to accomplish the same thing as `uv run --no-project --with=foo bar`, but it's a fair bit less to type out on the command line
 

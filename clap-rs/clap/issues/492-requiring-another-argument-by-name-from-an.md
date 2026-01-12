@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-05-01T01:45:47Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/492
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Requiring another argument by name from an argument that is itself required creates a duplicate error message
 
 ---
 
-_Issue opened by @stensonowen on 2016-05-01 01:45_
+_@stensonowen_
 
 Hopefully the title is clear. In the example, argument `foo` is `required`, and it also `requires` `bar`. 
 

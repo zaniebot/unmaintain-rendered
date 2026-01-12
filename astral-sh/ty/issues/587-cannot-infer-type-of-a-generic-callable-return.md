@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-05T17:21:21Z
 updated_at: 2025-06-05T23:20:17Z
 url: https://github.com/astral-sh/ty/issues/587
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Cannot infer type of a generic Callable return
 
 ---
 
-_Issue opened by @lczyk on 2025-06-05 17:21_
+_@lczyk_
 
 ### Summary
 

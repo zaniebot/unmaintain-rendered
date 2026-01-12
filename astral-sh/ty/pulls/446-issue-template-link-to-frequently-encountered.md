@@ -13,14 +13,14 @@ head: frequently-encountered-problems
 created_at: 2025-05-19T12:10:09Z
 updated_at: 2025-05-19T12:13:21Z
 url: https://github.com/astral-sh/ty/pull/446
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Issue template: link to frequently encountered problems
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-19 12:10_
+_@sharkdp_
 
 _No description provided._
 

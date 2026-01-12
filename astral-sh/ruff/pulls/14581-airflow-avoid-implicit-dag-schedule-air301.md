@@ -14,14 +14,14 @@ head: airflow-upgrade-dag-schedule-argument
 created_at: 2024-11-25T07:31:37Z
 updated_at: 2024-11-26T12:38:18Z
 url: https://github.com/astral-sh/ruff/pull/14581
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [airflow] Avoid implicit DAG schedule (AIR301)
 
 ---
 
-_Pull request opened by @uranusjr on 2024-11-25 07:31_
+_@uranusjr_
 
 ## Summary
 

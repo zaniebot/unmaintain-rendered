@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-29T15:44:19Z
 updated_at: 2024-02-29T23:51:11Z
 url: https://github.com/astral-sh/uv/issues/2084
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Is the installation of `uv` from `conda-forge` officially supported?
 
 ---
 
-_Issue opened by @Yura52 on 2024-02-29 15:44_
+_@Yura52_
 
 Hi! I noticed that I could install `uv` via `conda` from `conda-forge`, here is the feedstock: https://github.com/conda-forge/uv-feedstock
 

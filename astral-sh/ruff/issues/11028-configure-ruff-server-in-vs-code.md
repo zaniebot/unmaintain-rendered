@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-19T06:19:26Z
 updated_at: 2024-04-19T08:23:46Z
 url: https://github.com/astral-sh/ruff/issues/11028
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Configure `ruff server` in VS Code
 
 ---
 
-_Issue opened by @xshapira on 2024-04-19 06:19_
+_@xshapira_
 
 Can we replace Pylance with `ruff server` in VS Code?
 

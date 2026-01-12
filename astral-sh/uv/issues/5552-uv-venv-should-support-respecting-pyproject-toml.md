@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-29T06:26:48Z
 updated_at: 2024-07-31T13:54:17Z
 url: https://github.com/astral-sh/uv/issues/5552
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # `uv venv` should support respecting `pyproject.toml`
 
 ---
 
-_Issue opened by @Vigilans on 2024-07-29 06:26_
+_@Vigilans_
 
 As per comment in https://github.com/astral-sh/uv/issues/5258#issuecomment-2241724467, `uv venv` may respect the `requires-python` config specified in `pyproject.toml`. This is a very useful feature to sync a python project not only with its dependencies, but also its python interpreter version.
 

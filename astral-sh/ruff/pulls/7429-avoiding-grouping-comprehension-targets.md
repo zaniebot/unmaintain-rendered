@@ -13,14 +13,14 @@ head: charlie/comp
 created_at: 2023-09-16T02:46:32Z
 updated_at: 2023-09-16T17:19:35Z
 url: https://github.com/astral-sh/ruff/pull/7429
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Avoiding grouping comprehension targets separately from conditions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-16 02:46_
+_@charliermarsh_
 
 ## Summary
 

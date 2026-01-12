@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-14T01:21:48Z
 updated_at: 2023-02-14T02:51:14Z
 url: https://github.com/astral-sh/ruff/issues/2879
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Example of incorrect RET508 Unnecessary `else` after `break` statement
 
 ---
 
-_Issue opened by @adamtheturtle on 2023-02-14 01:21_
+_@adamtheturtle_
 
 See the following example:
 

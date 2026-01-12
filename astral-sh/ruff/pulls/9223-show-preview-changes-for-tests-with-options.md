@@ -14,14 +14,14 @@ head: show-preview-changes-for-tests-with-options
 created_at: 2023-12-21T04:19:17Z
 updated_at: 2023-12-21T23:36:21Z
 url: https://github.com/astral-sh/ruff/pull/9223
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Show preview changes for tests with options
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-21 04:19_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-28T09:48:35Z
 updated_at: 2025-09-08T16:10:40Z
 url: https://github.com/astral-sh/ruff/issues/18349
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Warn about error being related to a deprecated rule
 
 ---
 
-_Issue opened by @Andrej730 on 2025-05-28 09:48_
+_@Andrej730_
 
 ### Summary
 

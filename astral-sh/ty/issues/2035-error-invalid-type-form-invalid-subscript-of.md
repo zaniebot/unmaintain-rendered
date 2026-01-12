@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T20:48:59Z
 updated_at: 2025-12-18T00:47:00Z
 url: https://github.com/astral-sh/ty/issues/2035
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # error[invalid-type-form]: Invalid subscript of object of type `def list(self) -> Unknown` in type expression
 
 ---
 
-_Issue opened by @kracekumar on 2025-12-17 20:48_
+_@kracekumar_
 
 ### Summary
 

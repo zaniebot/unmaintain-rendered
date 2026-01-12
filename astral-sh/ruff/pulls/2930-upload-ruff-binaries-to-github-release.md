@@ -13,14 +13,14 @@ head: ruff-bin
 created_at: 2023-02-15T16:52:17Z
 updated_at: 2023-02-15T17:17:51Z
 url: https://github.com/astral-sh/ruff/pull/2930
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Upload `ruff` binaries to GitHub release
 
 ---
 
-_Pull request opened by @messense on 2023-02-15 16:52_
+_@messense_
 
 Closes #2330
 Closes #2355

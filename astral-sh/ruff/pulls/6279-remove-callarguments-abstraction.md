@@ -13,14 +13,14 @@ head: charlie/call-args
 created_at: 2023-08-02T17:07:34Z
 updated_at: 2023-08-02T17:51:07Z
 url: https://github.com/astral-sh/ruff/pull/6279
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Remove `CallArguments` abstraction
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-02 17:07_
+_@charliermarsh_
 
 ## Summary
 

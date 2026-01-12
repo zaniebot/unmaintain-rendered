@@ -12,14 +12,14 @@ head: charlie/rustc-hash
 created_at: 2022-11-20T20:37:17Z
 updated_at: 2022-11-20T20:38:32Z
 url: https://github.com/astral-sh/ruff/pull/837
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Replace FNV with rustc-hash
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-20 20:37_
+_@charliermarsh_
 
 This drops the benchmark from ~316ms to ~313ms.
 

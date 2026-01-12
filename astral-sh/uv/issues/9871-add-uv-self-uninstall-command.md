@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-13T16:05:18Z
 updated_at: 2025-02-19T07:35:30Z
 url: https://github.com/astral-sh/uv/issues/9871
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:01Z
 ```
 
 # Add `uv self uninstall` command
 
 ---
 
-_Issue opened by @alexklavensnyt on 2024-12-13 16:05_
+_@alexklavensnyt_
 
 Uninstalling uv feels a bit hacky.
 

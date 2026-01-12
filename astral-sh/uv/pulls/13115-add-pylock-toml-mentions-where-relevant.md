@@ -12,14 +12,14 @@ head: main
 created_at: 2025-04-26T03:58:51Z
 updated_at: 2025-04-26T14:26:30Z
 url: https://github.com/astral-sh/uv/pull/13115
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Add pylock.toml mentions where relevant
 
 ---
 
-_Pull request opened by @ReinforcedKnowledge on 2025-04-26 03:58_
+_@ReinforcedKnowledge_
 
 Just a small PR to add mentions to `pylock.toml` in the CLI manual where appropriate.
 

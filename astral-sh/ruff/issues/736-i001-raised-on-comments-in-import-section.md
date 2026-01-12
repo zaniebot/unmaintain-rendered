@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-14T14:47:01Z
 updated_at: 2022-11-14T14:59:29Z
 url: https://github.com/astral-sh/ruff/issues/736
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `I001` raised on comments in import section
 
 ---
 
-_Issue opened by @lolrenx on 2022-11-14 14:47_
+_@lolrenx_
 
 raised on inline / single line comments
 not sure if this is intended. do commentaries in imports violate a PEP rule ? 

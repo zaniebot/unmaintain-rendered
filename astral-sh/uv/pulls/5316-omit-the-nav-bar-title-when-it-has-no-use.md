@@ -14,14 +14,14 @@ head: zb/docs-nav-title
 created_at: 2024-07-22T22:46:32Z
 updated_at: 2024-07-31T15:08:24Z
 url: https://github.com/astral-sh/uv/pull/5316
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:45Z
 ```
 
 # Omit the nav bar title when it has no use
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-22 22:46_
+_@zanieb_
 
 Turns out this is needed for navigation on mobile, but useless on larger screens. 
 

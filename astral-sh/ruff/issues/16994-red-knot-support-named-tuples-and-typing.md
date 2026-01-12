@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T18:09:08Z
 updated_at: 2025-04-30T20:57:15Z
 url: https://github.com/astral-sh/ruff/issues/16994
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] support named tuples and typing.NamedTuple
 
 ---
 
-_Issue opened by @carljm on 2025-03-26 18:09_
+_@carljm_
 
 _No description provided._
 

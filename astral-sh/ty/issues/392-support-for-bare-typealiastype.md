@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-14T18:14:51Z
 updated_at: 2025-05-19T14:36:50Z
 url: https://github.com/astral-sh/ty/issues/392
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # support for bare `TypeAliasType`
 
 ---
 
-_Issue opened by @jorenham on 2025-05-14 18:14_
+_@jorenham_
 
 For example `Unit = TypeAliasType("Unit", tuple[()])` is reported as `error[invalid-type-form]`, independent of whether `TypeAliasType` is imported from `typing` or `typing_extensions`.
 

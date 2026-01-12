@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-08T03:35:56Z
 updated_at: 2024-04-08T03:46:06Z
 url: https://github.com/astral-sh/uv/issues/2887
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Enhancement: uv activate
 
 ---
 
-_Issue opened by @tiagofassoni on 2024-04-08 03:35_
+_@tiagofassoni_
 
 Hello! 
 

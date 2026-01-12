@@ -14,14 +14,14 @@ head: brent/syn-paren-kwarg
 created_at: 2025-03-03T20:28:41Z
 updated_at: 2025-03-06T17:18:15Z
 url: https://github.com/astral-sh/ruff/pull/16482
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [syntax-errors] Parenthesized keyword argument names after Python 3.8
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-03 20:28_
+_@ntBre_
 
 Summary
 --

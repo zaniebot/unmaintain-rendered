@@ -14,14 +14,14 @@ head: david/union-type-tests
 created_at: 2025-01-09T13:34:51Z
 updated_at: 2025-01-09T20:45:08Z
 url: https://github.com/astral-sh/ruff/pull/15374
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Move `UnionBuilder` tests to Markdown
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-09 13:34_
+_@sharkdp_
 
 ## Summary
 

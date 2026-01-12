@@ -13,14 +13,14 @@ head: zb/native-realm
 created_at: 2025-09-15T16:16:37Z
 updated_at: 2025-09-15T17:28:00Z
 url: https://github.com/astral-sh/uv/pull/15877
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:59Z
 ```
 
 # Add tests for realm-level authentication
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-15 16:16_
+_@zanieb_
 
 Test coverage for https://github.com/astral-sh/uv/issues/15818
 

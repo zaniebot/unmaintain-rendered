@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T13:59:48Z
 updated_at: 2025-11-23T16:14:18Z
 url: https://github.com/astral-sh/ty/issues/1005
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # goto-declaration on a real definition doesn't work
 
 ---
 
-_Issue opened by @Gankra on 2025-08-15 13:59_
+_@Gankra_
 
 Similar to #1004 but the reverse (and I think actually a bit harder to solve).
 

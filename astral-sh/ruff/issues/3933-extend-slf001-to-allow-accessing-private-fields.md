@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-11T13:31:51Z
 updated_at: 2024-02-17T10:46:39Z
 url: https://github.com/astral-sh/ruff/issues/3933
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Extend SLF001 to allow accessing private fields on "other" instance in binary operators?
 
 ---
 
-_Issue opened by @tpgillam on 2023-04-11 13:31_
+_@tpgillam_
 
 Suppose I run the follow code through ruff with the `SLF` module enabled, with Ruff 0.0.256:
 

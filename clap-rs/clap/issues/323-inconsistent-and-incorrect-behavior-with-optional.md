@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-10-28T03:55:46Z
 updated_at: 2018-08-02T03:29:46Z
 url: https://github.com/clap-rs/clap/issues/323
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Inconsistent and incorrect behavior with optional options that take multiple values
 
 ---
 
-_Issue opened by @jimmycuadra on 2015-10-28 03:55_
+_@jimmycuadra_
 
 I've come across a few cases using optional options that take multiple values where the input on the CLI is parsed inconsistently or incorrectly depending on the argument order or form.
 

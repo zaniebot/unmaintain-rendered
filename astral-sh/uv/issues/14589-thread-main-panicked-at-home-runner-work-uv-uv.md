@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-13T18:29:43Z
 updated_at: 2025-11-18T10:44:04Z
 url: https://github.com/astral-sh/uv/issues/14589
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:52Z
 ```
 
 # thread 'main' panicked at /home/runner/work/uv/uv/crates/uv/src/lib.rs:2276:10:
 
 ---
 
-_Issue opened by @sdebruyn on 2025-07-13 18:29_
+_@sdebruyn_
 
 ### Summary
 

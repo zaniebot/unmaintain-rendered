@@ -11,14 +11,14 @@ head: isaacgemal/add-cursor-rules-on-init
 created_at: 2025-06-15T22:39:36Z
 updated_at: 2025-06-30T22:37:11Z
 url: https://github.com/astral-sh/uv/pull/14044
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:59Z
 ```
 
 # Feat: add cursor rules creation
 
 ---
 
-_Pull request opened by @IsaacGemal on 2025-06-15 22:39_
+_@IsaacGemal_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: micha/playground-fix-stale-diagnostics
 created_at: 2025-04-03T08:13:01Z
 updated_at: 2025-04-03T08:18:38Z
 url: https://github.com/astral-sh/ruff/pull/17165
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Fix playground crashes when diagnostics are stale
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-03 08:13_
+_@MichaReiser_
 
 ## Summary
 

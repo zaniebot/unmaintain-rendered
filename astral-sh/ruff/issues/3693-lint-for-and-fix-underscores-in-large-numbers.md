@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-23T20:19:32Z
 updated_at: 2023-07-10T01:29:07Z
 url: https://github.com/astral-sh/ruff/issues/3693
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # lint for and fix underscores in large numbers
 
 ---
 
-_Issue opened by @samuelcolvin on 2023-03-23 20:19_
+_@samuelcolvin_
 
 Would be great if
 

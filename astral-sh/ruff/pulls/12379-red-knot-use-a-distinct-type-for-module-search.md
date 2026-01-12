@@ -13,14 +13,14 @@ head: search-path-consistent-type-2
 created_at: 2024-07-18T13:49:04Z
 updated_at: 2024-07-22T19:53:48Z
 url: https://github.com/astral-sh/ruff/pull/12379
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Use a distinct type for module search paths in the module resolver
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-18 13:49_
+_@AlexWaygood_
 
 ## Summary
 

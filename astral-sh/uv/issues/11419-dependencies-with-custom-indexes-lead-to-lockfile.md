@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-11T12:20:21Z
 updated_at: 2025-07-25T12:18:29Z
 url: https://github.com/astral-sh/uv/issues/11419
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # Dependencies with custom indexes lead to lockfile always being outdated
 
 ---
 
-_Issue opened by @ew-pallon on 2025-02-11 12:20_
+_@ew-pallon_
 
 ### Summary
 

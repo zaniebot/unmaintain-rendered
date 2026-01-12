@@ -13,14 +13,14 @@ head: charlie/neg
 created_at: 2025-12-19T16:29:04Z
 updated_at: 2025-12-20T02:10:02Z
 url: https://github.com/astral-sh/ruff/pull/22089
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Avoid false positive for `not-iterable` with no-positive intersection types
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-19 16:29_
+_@charliermarsh_
 
 ## Summary
 

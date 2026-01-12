@@ -12,14 +12,14 @@ head: Cjkjvfnby-patch-1
 created_at: 2025-12-21T12:16:38Z
 updated_at: 2025-12-21T14:43:35Z
 url: https://github.com/astral-sh/ty/pull/2145
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # [docs] Switch override and src order in configurations
 
 ---
 
-_Pull request opened by @Cjkjvfnby on 2025-12-21 12:16_
+_@Cjkjvfnby_
 
 ## Summary
 

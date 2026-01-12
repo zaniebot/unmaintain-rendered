@@ -13,14 +13,14 @@ head: zb/python-markers-implied
 created_at: 2025-09-18T14:04:11Z
 updated_at: 2025-09-18T14:21:52Z
 url: https://github.com/astral-sh/uv/pull/15932
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:01Z
 ```
 
 # Always ensure wheels are compatible with the required Python versions
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-18 14:04_
+_@zanieb_
 
 Following up on https://github.com/astral-sh/uv/issues/14836 and #14913
 

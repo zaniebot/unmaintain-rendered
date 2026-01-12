@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-21T09:04:05Z
 updated_at: 2025-01-25T10:52:18Z
 url: https://github.com/astral-sh/ruff/issues/15092
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # False PD013 with pymc
 
 ---
 
-_Issue opened by @darosio on 2024-12-21 09:04_
+_@darosio_
 
 To reproduce this false warning it should be sufficient:
 

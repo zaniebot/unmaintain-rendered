@@ -13,14 +13,14 @@ head: dhruv/virtual-file
 created_at: 2024-08-22T06:58:17Z
 updated_at: 2024-08-23T07:13:21Z
 url: https://github.com/astral-sh/ruff/pull/13043
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] Simplify virtual file support
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-22 06:58_
+_@dhruvmanila_
 
 ## Summary
 

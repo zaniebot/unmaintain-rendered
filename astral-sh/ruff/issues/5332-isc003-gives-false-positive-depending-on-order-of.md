@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-23T13:26:29Z
 updated_at: 2023-07-30T22:12:51Z
 url: https://github.com/astral-sh/ruff/issues/5332
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 #  `ISC003` gives false positive depending on order of concatenation
 
 ---
 
-_Issue opened by @bendoerry on 2023-06-23 13:26_
+_@bendoerry_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

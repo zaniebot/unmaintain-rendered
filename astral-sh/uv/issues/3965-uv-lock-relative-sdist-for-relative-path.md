@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-02T12:28:22Z
 updated_at: 2024-06-02T16:48:10Z
 url: https://github.com/astral-sh/uv/issues/3965
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # uv lock: relative sdist for relative path dependencies
 
 ---
 
-_Issue opened by @considerate on 2024-06-02 12:28_
+_@considerate_
 
 Given a `requirements.txt` file that includes a relative path to a directory containing a distribution:
 

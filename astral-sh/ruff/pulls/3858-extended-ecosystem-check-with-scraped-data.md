@@ -12,14 +12,14 @@ head: extended_ecosystem_checker
 created_at: 2023-04-03T09:02:52Z
 updated_at: 2023-04-06T22:54:41Z
 url: https://github.com/astral-sh/ruff/pull/3858
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Extended ecosystem check with scraped data
 
 ---
 
-_Pull request opened by @konstin on 2023-04-03 09:02_
+_@konstin_
 
 This allows running the ecosystem CI locally in an isolated docker container using the data from https://github.com/akx/ruff-usage-aggregate. It also changes the output format of the ecosystem CI a little to include the repository URL.
 

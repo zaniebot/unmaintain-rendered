@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-22T13:45:24Z
 updated_at: 2025-12-18T20:34:09Z
 url: https://github.com/astral-sh/ty/issues/116
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Subscripted generic classes should not be considered instances of `type`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-04-22 13:45_
+_@AlexWaygood_
 
 ### Summary
 

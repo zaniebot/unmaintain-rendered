@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-07-27T12:23:47Z
 updated_at: 2018-08-02T03:29:41Z
 url: https://github.com/clap-rs/clap/issues/166
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Switch run_tests.py to Rust unit tests
 
 ---
 
-_Issue opened by @kbknapp on 2015-07-27 12:23_
+_@kbknapp_
 
 Now with `get_matches_with()` we can simulate a CLI and should switch all our tests to Rust tests.
 

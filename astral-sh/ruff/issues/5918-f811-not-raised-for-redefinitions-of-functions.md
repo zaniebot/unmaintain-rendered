@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-20T07:48:07Z
 updated_at: 2023-07-20T16:10:27Z
 url: https://github.com/astral-sh/ruff/issues/5918
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F811 not raised for redefinitions of functions inside class
 
 ---
 
-_Issue opened by @ragardner on 2023-07-20 07:48_
+_@ragardner_
 
 I am not 100% sure but isn't ruff meant to highlight redefinitions of functions outside as well as inside classes?
 

@@ -12,14 +12,14 @@ head: charlie/enabled
 created_at: 2022-10-26T02:02:43Z
 updated_at: 2022-10-26T02:02:59Z
 url: https://github.com/astral-sh/ruff/pull/470
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # DRY up usages of matches with fixer Mode
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-26 02:02_
+_@charliermarsh_
 
 Resolves #452.
 

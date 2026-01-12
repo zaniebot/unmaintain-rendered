@@ -13,14 +13,14 @@ head: uvx-legacy-windows-scripts-support
 created_at: 2025-03-10T02:49:49Z
 updated_at: 2025-03-11T16:22:59Z
 url: https://github.com/astral-sh/uv/pull/12079
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:07Z
 ```
 
 # Add support for Windows legacy scripts via uv tool run
 
 ---
 
-_Pull request opened by @samypr100 on 2025-03-10 02:49_
+_@samypr100_
 
 ## Summary
 

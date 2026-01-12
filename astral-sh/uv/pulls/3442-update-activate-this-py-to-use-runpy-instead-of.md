@@ -12,14 +12,14 @@ head: use_runpy_instead_of_exec
 created_at: 2024-05-07T23:02:54Z
 updated_at: 2024-05-13T01:21:25Z
 url: https://github.com/astral-sh/uv/pull/3442
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:39Z
 ```
 
 # Update activate_this.py to use runpy instead of exec in the docstring
 
 ---
 
-_Pull request opened by @FredStober on 2024-05-07 23:02_
+_@FredStober_
 
 ## Summary
 

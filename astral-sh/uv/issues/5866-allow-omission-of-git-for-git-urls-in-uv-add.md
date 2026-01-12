@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-07T15:10:07Z
 updated_at: 2024-08-07T15:50:38Z
 url: https://github.com/astral-sh/uv/issues/5866
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Allow omission of `git+` for `.git` URLs in `uv add`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-07 15:10_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/issues/5858
 

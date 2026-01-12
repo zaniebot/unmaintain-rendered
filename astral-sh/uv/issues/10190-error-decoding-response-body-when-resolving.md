@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-27T09:34:39Z
 updated_at: 2024-12-29T22:52:07Z
 url: https://github.com/astral-sh/uv/issues/10190
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:08Z
 ```
 
 # `error decoding response body` when resolving dependencies from aws codeartifact repo since 0.5.12
 
 ---
 
-_Issue opened by @okan-agca-entrix on 2024-12-27 09:34_
+_@okan-agca-entrix_
 
 Hello,
 I'm encountering a new error since upgrading to `0.5.12` while running `uv sync`. The setup is described below. The error is not present with version `0.5.11` of uv. If there are migration steps I missed, would be happy if you can direct me there. Had a brief look at the release notes but didn't see anything relevant.

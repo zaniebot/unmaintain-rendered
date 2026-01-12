@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-07T22:21:41Z
 updated_at: 2026-01-07T22:48:54Z
 url: https://github.com/astral-sh/ty/issues/2384
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Support installation on CI (GitHub Actions)
 
 ---
 
-_Issue opened by @amotl on 2026-01-07 22:21_
+_@amotl_
 
 Hi. First things first: Thanks a stack for conceiving `ty`, and a happy new year!
 

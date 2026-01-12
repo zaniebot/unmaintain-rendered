@@ -13,14 +13,14 @@ head: playground-gitignore
 created_at: 2025-04-18T17:44:28Z
 updated_at: 2025-04-25T20:54:38Z
 url: https://github.com/astral-sh/ruff/pull/17466
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Add playground workspace package-lock.json to gitignore
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-04-18 17:44_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

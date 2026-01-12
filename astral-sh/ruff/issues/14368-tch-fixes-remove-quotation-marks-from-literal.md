@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-15T19:36:33Z
 updated_at: 2024-11-16T17:58:04Z
 url: https://github.com/astral-sh/ruff/issues/14368
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # TCH fixes remove quotation marks from `Literal` strings
 
 ---
 
-_Issue opened by @dscorbett on 2024-11-15 19:36_
+_@dscorbett_
 
 The fixes for TCH001, TCH002, and TCH003 sometimes delete quotation marks from `Literal`s when `lint.flake8-type-checking.quote-annotations = true`. This can make a program fail to type-check. I am not sure exactly what makes it delete quotation marks but it seems to only happen to literals within nested brackets.
 

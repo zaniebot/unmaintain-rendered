@@ -15,14 +15,14 @@ head: charlie/requires-py-lock
 created_at: 2024-08-15T15:47:23Z
 updated_at: 2024-08-15T16:54:08Z
 url: https://github.com/astral-sh/uv/pull/6115
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:13Z
 ```
 
 # Remove `requires-python` application in lock deserialization
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-15 15:47_
+_@charliermarsh_
 
 ## Summary
 

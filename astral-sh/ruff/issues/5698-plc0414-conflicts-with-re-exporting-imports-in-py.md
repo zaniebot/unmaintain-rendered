@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-11T23:39:53Z
 updated_at: 2023-07-12T03:09:25Z
 url: https://github.com/astral-sh/ruff/issues/5698
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # PLC0414 conflicts with re-exporting imports in py files
 
 ---
 
-_Issue opened by @twoertwein on 2023-07-11 23:39_
+_@twoertwein_
 
 Pandas uses similar code in `pandas/_typing.py`
 

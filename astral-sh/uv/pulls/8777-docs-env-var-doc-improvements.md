@@ -13,14 +13,14 @@ head: env-var-doc-updates
 created_at: 2024-11-03T17:16:14Z
 updated_at: 2024-11-03T19:05:12Z
 url: https://github.com/astral-sh/uv/pull/8777
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:29Z
 ```
 
 # docs: env var doc improvements
 
 ---
 
-_Pull request opened by @samypr100 on 2024-11-03 17:16_
+_@samypr100_
 
 ## Summary
 

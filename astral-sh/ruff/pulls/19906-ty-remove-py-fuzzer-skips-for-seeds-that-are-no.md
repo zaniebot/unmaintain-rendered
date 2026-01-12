@@ -14,14 +14,14 @@ head: alex/pyfuzz-noskip
 created_at: 2025-08-13T23:04:45Z
 updated_at: 2025-08-13T23:26:57Z
 url: https://github.com/astral-sh/ruff/pull/19906
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # [ty] Remove py-fuzzer skips for seeds that are no longer slow
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-13 23:04_
+_@AlexWaygood_
 
 ## Summary
 

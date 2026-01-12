@@ -14,14 +14,14 @@ head: micha/f-string-expressions-format-spec
 created_at: 2024-11-20T15:49:52Z
 updated_at: 2024-11-22T12:45:32Z
 url: https://github.com/astral-sh/ruff/pull/14493
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Consider quotes inside format-specs when choosing the quotes for an f-string
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-20 15:49_
+_@MichaReiser_
 
 ## Summary
 

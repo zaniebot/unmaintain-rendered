@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-05T14:54:20Z
 updated_at: 2025-06-06T16:56:47Z
 url: https://github.com/astral-sh/uv/issues/13861
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # Support for project tool/plugin dependencies in pyproject.toml
 
 ---
 
-_Issue opened by @rabader on 2025-06-05 14:54_
+_@rabader_
 
 ### Summary
 

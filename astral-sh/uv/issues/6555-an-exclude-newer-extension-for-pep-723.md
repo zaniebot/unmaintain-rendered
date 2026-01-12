@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T22:30:13Z
 updated_at: 2024-10-21T21:18:11Z
 url: https://github.com/astral-sh/uv/issues/6555
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # An exclude newer extension for PEP 723
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-08-23 22:30_
+_@hauntsaninja_
 
 This would be a one liner you could add that to make most scripts 99% reproducible using uv's awesome `--exclude-newer`
 

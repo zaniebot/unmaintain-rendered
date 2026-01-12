@@ -13,14 +13,14 @@ head: gankra/qq
 created_at: 2025-03-18T19:34:03Z
 updated_at: 2025-03-26T20:46:18Z
 url: https://github.com/astral-sh/uv/pull/12300
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:12Z
 ```
 
 # distinguish -q and -qq
 
 ---
 
-_Pull request opened by @Gankra on 2025-03-18 19:34_
+_@Gankra_
 
 The idea here is that we introduce a new stdout_important method for things that want to care about the difference between "quiet" and "silent".
 

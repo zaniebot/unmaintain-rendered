@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-02-10T19:48:02Z
 updated_at: 2022-02-10T19:56:11Z
 url: https://github.com/clap-rs/clap/issues/3441
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # clap_mangen CONTRIBUTING link broken on docs.rs
 
 ---
 
-_Issue opened by @taladar on 2022-02-10 19:48_
+_@taladar_
 
 ### Please complete the following tasks
 

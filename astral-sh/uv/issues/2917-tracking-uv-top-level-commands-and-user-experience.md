@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-08T21:31:47Z
 updated_at: 2024-07-02T01:41:21Z
 url: https://github.com/astral-sh/uv/issues/2917
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Tracking: uv top-level commands and user experience
 
 ---
 
-_Issue opened by @zanieb on 2024-04-08 21:31_
+_@zanieb_
 
 This is a tracking issue for the uv user experience outside of the `pip`-compatible interface.
 

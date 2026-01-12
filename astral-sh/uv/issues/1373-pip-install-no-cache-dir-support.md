@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T22:30:53Z
 updated_at: 2024-02-15T23:26:17Z
 url: https://github.com/astral-sh/uv/issues/1373
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # `pip install --no-cache-dir` support
 
 ---
 
-_Issue opened by @Mikcl on 2024-02-15 22:30_
+_@Mikcl_
 
 Not necessarily asking for this feature but it may make sense to make `uv` more drop in replacement. 
 

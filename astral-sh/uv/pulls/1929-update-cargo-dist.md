@@ -13,14 +13,14 @@ head: konsti/update-cargo-dist
 created_at: 2024-02-23T18:21:53Z
 updated_at: 2024-02-23T22:35:14Z
 url: https://github.com/astral-sh/uv/pull/1929
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:47Z
 ```
 
 # Update cargo dist
 
 ---
 
-_Pull request opened by @konstin on 2024-02-23 18:21_
+_@konstin_
 
 Pull in the fixes in the last few releases.
 

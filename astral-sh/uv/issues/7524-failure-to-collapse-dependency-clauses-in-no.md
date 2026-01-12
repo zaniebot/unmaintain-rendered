@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-18T23:46:56Z
 updated_at: 2024-09-18T23:47:03Z
 url: https://github.com/astral-sh/uv/issues/7524
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Failure to collapse dependency clauses in no solution error message
 
 ---
 
-_Issue opened by @zanieb on 2024-09-18 23:46_
+_@zanieb_
 
 Tracking the bad error message at https://github.com/astral-sh/uv/issues/7329#issuecomment-2358554467
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-12T18:34:44Z
 updated_at: 2025-11-13T07:45:38Z
 url: https://github.com/astral-sh/ty/issues/1532
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Playground crashes if you name a file like a scheme with special characters
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-11-12 18:34_
+_@MeGaGiGaGon_
 
 ### Summary
 

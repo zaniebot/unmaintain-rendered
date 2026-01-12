@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-30T22:36:53Z
 updated_at: 2025-10-08T18:37:32Z
 url: https://github.com/astral-sh/ty/issues/733
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # ty reports `urllib.parse.urlunparse` as returning `Literal[b""]`
 
 ---
 
-_Issue opened by @charliermarsh on 2025-06-30 22:36_
+_@charliermarsh_
 
 Given:
 

@@ -13,14 +13,14 @@ head: add-pytest
 created_at: 2024-02-02T10:58:14Z
 updated_at: 2024-02-02T11:26:52Z
 url: https://github.com/astral-sh/ruff/pull/9782
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # add pytest to who's using ruff
 
 ---
 
-_Pull request opened by @graingert on 2024-02-02 10:58_
+_@graingert_
 
 ## Summary
 

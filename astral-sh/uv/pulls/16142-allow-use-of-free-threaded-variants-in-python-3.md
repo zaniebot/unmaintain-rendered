@@ -12,14 +12,14 @@ head: zb/ft-314
 created_at: 2025-10-06T20:45:14Z
 updated_at: 2025-10-11T16:45:54Z
 url: https://github.com/astral-sh/uv/pull/16142
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:07Z
 ```
 
 # Allow use of free-threaded variants in Python 3.14+ without explicit opt-in
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-06 20:45_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/15739
 Closes #12445

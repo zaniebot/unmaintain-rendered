@@ -13,14 +13,14 @@ head: brent/diagnostic-source-file
 created_at: 2025-05-16T20:00:00Z
 updated_at: 2025-05-19T17:40:47Z
 url: https://github.com/astral-sh/ruff/pull/18142
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # Attach a `SourceFile` to `Diagnostic`
 
 ---
 
-_Pull request opened by @ntBre on 2025-05-16 20:00_
+_@ntBre_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/conf
 created_at: 2025-07-01T00:07:41Z
 updated_at: 2025-07-01T12:18:03Z
 url: https://github.com/astral-sh/uv/pull/14380
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:11Z
 ```
 
 # Use parsed URLs for conflicting URL error message
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-01 00:07_
+_@charliermarsh_
 
 ## Summary
 

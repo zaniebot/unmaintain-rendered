@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-07T03:34:48Z
 updated_at: 2025-10-06T16:50:36Z
 url: https://github.com/astral-sh/ruff/issues/11316
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PERF401 triggers when adding items to collection from function arguments
 
 ---
 
-_Issue opened by @CoolCat467 on 2024-05-07 03:34_
+_@CoolCat467_
 
 PERF401 is triggered and suggests rewriting as async for loop when modifying a collection from arguments, which makes this not possible.
 

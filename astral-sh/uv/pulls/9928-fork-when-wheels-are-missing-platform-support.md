@@ -13,14 +13,14 @@ head: charlie/incomplete
 created_at: 2024-12-16T03:23:55Z
 updated_at: 2024-12-20T19:14:12Z
 url: https://github.com/astral-sh/uv/pull/9928
-synced_at: 2026-01-10T11:44:31Z
+synced_at: 2026-01-12T16:09:02Z
 ```
 
 # Fork when wheels are missing platform support
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-16 03:23_
+_@charliermarsh_
 
 ## Summary
 

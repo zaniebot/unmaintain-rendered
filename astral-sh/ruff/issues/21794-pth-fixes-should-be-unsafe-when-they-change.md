@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-04T16:22:10Z
 updated_at: 2025-12-17T17:31:28Z
 url: https://github.com/astral-sh/ruff/issues/21794
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # PTH fixes should be unsafe when they change return types in compound statements
 
 ---
 
-_Issue opened by @dscorbett on 2025-12-04 16:22_
+_@dscorbett_
 
 ### Summary
 

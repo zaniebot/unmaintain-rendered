@@ -14,14 +14,14 @@ head: fix-RET505-indent-errors
 created_at: 2024-08-08T06:26:51Z
 updated_at: 2024-08-08T08:57:40Z
 url: https://github.com/astral-sh/ruff/pull/12740
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [`ruff_linter`] - Use LibCST in `adjust_indentation` for mixed whitespace
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-08-08 06:26_
+_@diceroll123_
 
 ## Summary
 

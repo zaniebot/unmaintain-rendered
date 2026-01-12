@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-02T11:14:24Z
 updated_at: 2025-04-22T15:14:49Z
 url: https://github.com/astral-sh/ruff/issues/17146
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # exclude default configuration not working on github workflow
 
 ---
 
-_Issue opened by @lagamura on 2025-04-02 11:14_
+_@lagamura_
 
 ### Summary
 

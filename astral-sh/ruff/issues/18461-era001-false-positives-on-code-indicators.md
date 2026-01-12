@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-04T13:47:44Z
 updated_at: 2025-06-17T11:40:21Z
 url: https://github.com/astral-sh/ruff/issues/18461
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ERA001 false positives on CODE_INDICATORS
 
 ---
 
-_Issue opened by @SXHRYU on 2025-06-04 13:47_
+_@SXHRYU_
 
 ### Summary
 

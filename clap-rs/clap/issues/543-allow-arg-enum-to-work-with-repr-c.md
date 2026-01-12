@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-06-25T18:44:06Z
 updated_at: 2018-08-02T03:29:50Z
 url: https://github.com/clap-rs/clap/issues/543
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Allow arg_enum! to work with #[repr(c)]
 
 ---
 
-_Issue opened by @lilith on 2016-06-25 18:44_
+_@lilith_
 
 Goal: make this possible:
 

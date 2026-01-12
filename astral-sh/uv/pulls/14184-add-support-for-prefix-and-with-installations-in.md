@@ -13,14 +13,14 @@ head: zb/find-prefix
 created_at: 2025-06-21T12:33:49Z
 updated_at: 2025-08-08T22:50:19Z
 url: https://github.com/astral-sh/uv/pull/14184
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:04Z
 ```
 
 # Add support for `--prefix` and `--with` installations in `find_uv_bin`
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-21 12:33_
+_@zanieb_
 
 Follows #14182
 

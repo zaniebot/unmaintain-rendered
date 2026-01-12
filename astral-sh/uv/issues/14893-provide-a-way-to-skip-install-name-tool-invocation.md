@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-25T12:43:19Z
 updated_at: 2025-12-19T07:44:26Z
 url: https://github.com/astral-sh/uv/issues/14893
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:59Z
 ```
 
 # Provide a way to skip install_name_tool invocation?
 
 ---
 
-_Issue opened by @dae on 2025-07-25 12:43_
+_@dae_
 
 ### Summary
 

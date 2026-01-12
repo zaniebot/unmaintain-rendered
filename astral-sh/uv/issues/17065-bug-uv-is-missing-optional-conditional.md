@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T11:00:46Z
 updated_at: 2025-12-13T19:41:37Z
 url: https://github.com/astral-sh/uv/issues/17065
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # bug: `uv` is missing optional conditional dependencies(Almost got fired)
 
 ---
 
-_Issue opened by @Aviksaikat on 2025-12-10 11:00_
+_@Aviksaikat_
 
 ### Summary
 

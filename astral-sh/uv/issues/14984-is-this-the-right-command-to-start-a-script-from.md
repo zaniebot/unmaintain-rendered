@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-31T01:20:33Z
 updated_at: 2025-07-31T01:29:10Z
 url: https://github.com/astral-sh/uv/issues/14984
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # Is this the right command to start a script from within its own dedicated project venv?
 
 ---
 
-_Issue opened by @torchss on 2025-07-31 01:20_
+_@torchss_
 
 ### Question
 

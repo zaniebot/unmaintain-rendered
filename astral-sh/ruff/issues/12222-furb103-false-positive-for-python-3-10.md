@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-07T07:17:23Z
 updated_at: 2024-07-09T02:43:33Z
 url: https://github.com/astral-sh/ruff/issues/12222
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `FURB103` false positive for python <3.10
 
 ---
 
-_Issue opened by @danieleades on 2024-07-07 07:17_
+_@danieleades_
 
 `FURB103` has a false positive if the 'newline' argument is used in python <3.10
 

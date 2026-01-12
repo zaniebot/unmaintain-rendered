@@ -13,14 +13,14 @@ head: disable-testing-ruff-benchmark-by-default
 created_at: 2024-08-05T06:11:21Z
 updated_at: 2024-08-05T06:25:17Z
 url: https://github.com/astral-sh/ruff/pull/12678
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Disable testing `ruff_benchmark` by default
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-05 06:11_
+_@MichaReiser_
 
 ## Summary
 

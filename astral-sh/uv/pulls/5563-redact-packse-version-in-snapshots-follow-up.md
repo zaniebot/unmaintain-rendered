@@ -13,14 +13,14 @@ head: konsti/packse-redaction-follow-up
 created_at: 2024-07-29T15:13:39Z
 updated_at: 2024-07-29T15:22:22Z
 url: https://github.com/astral-sh/uv/pull/5563
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:53Z
 ```
 
 # Redact packse version in snapshots follow-up
 
 ---
 
-_Pull request opened by @konstin on 2024-07-29 15:13_
+_@konstin_
 
 I thought i had this included in #5483 but i had it on the wrong branch.
 

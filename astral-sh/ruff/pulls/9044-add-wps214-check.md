@@ -11,14 +11,14 @@ head: add-WPS214-check
 created_at: 2023-12-07T09:35:49Z
 updated_at: 2023-12-07T09:48:58Z
 url: https://github.com/astral-sh/ruff/pull/9044
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Add wps214 check
 
 ---
 
-_Pull request opened by @anderskate on 2023-12-07 09:35_
+_@anderskate_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

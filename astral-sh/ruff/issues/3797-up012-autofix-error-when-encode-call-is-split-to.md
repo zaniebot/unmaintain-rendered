@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-29T16:36:48Z
 updated_at: 2023-03-29T23:07:14Z
 url: https://github.com/astral-sh/ruff/issues/3797
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # UP012 autofix error when encode() call is split to multiple lines
 
 ---
 
-_Issue opened by @jvtm on 2023-03-29 16:36_
+_@jvtm_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

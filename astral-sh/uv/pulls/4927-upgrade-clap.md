@@ -14,14 +14,14 @@ head: zb/clap-up
 created_at: 2024-07-09T14:49:02Z
 updated_at: 2024-07-09T16:06:54Z
 url: https://github.com/astral-sh/uv/pull/4927
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:32Z
 ```
 
 # Upgrade `clap`
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-09 14:49_
+_@zanieb_
 
 For https://github.com/clap-rs/clap/pull/5574 for #4772 
 

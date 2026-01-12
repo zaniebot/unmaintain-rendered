@@ -13,14 +13,14 @@ head: charlie/b
 created_at: 2024-05-24T01:10:05Z
 updated_at: 2024-05-24T01:26:42Z
 url: https://github.com/astral-sh/uv/pull/3809
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:52Z
 ```
 
 # Remove `bz2` builds from tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-24 01:10_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/p-8
 created_at: 2025-02-25T06:26:48Z
 updated_at: 2025-02-25T07:05:33Z
 url: https://github.com/astral-sh/uv/pull/11771
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:00Z
 ```
 
 # Remove unnecessary clones when adding package names
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-25 06:26_
+_@charliermarsh_
 
 ## Summary
 

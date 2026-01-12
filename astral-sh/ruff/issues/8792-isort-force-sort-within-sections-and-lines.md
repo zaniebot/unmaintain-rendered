@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-20T19:11:30Z
 updated_at: 2023-12-07T04:56:15Z
 url: https://github.com/astral-sh/ruff/issues/8792
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [isort] force-sort-within-sections and lines-between-types should probably be incompatible
 
 ---
 
-_Issue opened by @bluthej on 2023-11-20 19:11_
+_@bluthej_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

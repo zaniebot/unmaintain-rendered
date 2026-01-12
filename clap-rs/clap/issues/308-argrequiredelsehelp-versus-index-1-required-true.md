@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-10-05T19:19:05Z
 updated_at: 2018-08-02T03:29:46Z
 url: https://github.com/clap-rs/clap/issues/308
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # ArgRequiredElseHelp versus index(1).required(true)
 
 ---
 
-_Issue opened by @birkenfeld on 2015-10-05 19:19_
+_@birkenfeld_
 
 If I have an argument with index(1).required(true) and give no arguments, I don't get the help, but only the short error and usage string.
 

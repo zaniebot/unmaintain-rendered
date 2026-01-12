@@ -13,14 +13,14 @@ head: konsti/trim-end-of-line-whitespace
 created_at: 2024-11-14T18:05:15Z
 updated_at: 2024-11-14T18:16:21Z
 url: https://github.com/astral-sh/uv/pull/9127
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:40Z
 ```
 
 # Remove end-of-line whitespace in snapshots
 
 ---
 
-_Pull request opened by @konstin on 2024-11-14 18:05_
+_@konstin_
 
 I've configured my IDE to remove trailing end-of-line whitespace, and these snapshots were causing trouble.
 

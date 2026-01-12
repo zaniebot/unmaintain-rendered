@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-25T23:22:05Z
 updated_at: 2025-08-21T11:12:35Z
 url: https://github.com/astral-sh/uv/issues/4534
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # `invalid peer certificate: BadSignature` when installing package from private index using ECDSA SHA-512 SSL cert
 
 ---
 
-_Issue opened by @kcon-stackav on 2024-06-25 23:22_
+_@kcon-stackav_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

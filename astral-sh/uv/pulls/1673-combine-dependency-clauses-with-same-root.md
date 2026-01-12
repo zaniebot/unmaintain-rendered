@@ -12,14 +12,14 @@ head: 1009-combine-dependency-clauses-with-same-root
 created_at: 2024-02-19T01:23:31Z
 updated_at: 2024-02-19T02:24:34Z
 url: https://github.com/astral-sh/uv/pull/1673
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:41Z
 ```
 
 # combine dependency clauses with same root
 
 ---
 
-_Pull request opened by @dwreeves on 2024-02-19 01:23_
+_@dwreeves_
 
 Resolves #1009
 

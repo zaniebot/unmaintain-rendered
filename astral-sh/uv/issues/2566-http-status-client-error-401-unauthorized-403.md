@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-20T15:13:53Z
 updated_at: 2024-03-21T17:10:44Z
 url: https://github.com/astral-sh/uv/issues/2566
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # HTTP status client error (401 Unauthorized) / (403 Forbidden) for packages hosted on a JFrog PyPI repo
 
 ---
 
-_Issue opened by @ealap on 2024-03-20 15:13_
+_@ealap_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

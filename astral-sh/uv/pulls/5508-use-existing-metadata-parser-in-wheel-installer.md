@@ -13,14 +13,14 @@ head: charlie/parse
 created_at: 2024-07-27T16:04:30Z
 updated_at: 2024-07-27T18:38:18Z
 url: https://github.com/astral-sh/uv/pull/5508
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:51Z
 ```
 
 # Use existing METADATA parser in wheel installer
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-27 16:04_
+_@charliermarsh_
 
 _No description provided._
 

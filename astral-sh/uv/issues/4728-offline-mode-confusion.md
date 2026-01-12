@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-02T12:49:11Z
 updated_at: 2024-11-06T19:59:27Z
 url: https://github.com/astral-sh/uv/issues/4728
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Offline mode confusion
 
 ---
 
-_Issue opened by @minusf on 2024-07-02 12:49_
+_@minusf_
 
 Here I go again trying to use `uv` as poor man's devpi offline replacement.
 

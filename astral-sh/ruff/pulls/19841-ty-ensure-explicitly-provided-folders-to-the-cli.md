@@ -12,14 +12,14 @@ head: issue-936
 created_at: 2025-08-09T11:52:50Z
 updated_at: 2026-01-09T14:14:58Z
 url: https://github.com/astral-sh/ruff/pull/19841
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # [ty] ensure explicitly provided folders to the cli are fully checked
 
 ---
 
-_Pull request opened by @leandrobbraga on 2025-08-09 11:52_
+_@leandrobbraga_
 
 When users directly specify directories on the command line (e.g., `ty check dir2`), they expect those directories to be fully processed, including all their contents. However, the directory contents were still subject to include rules in `pyproject.toml`, leading to confusing behavior.
 

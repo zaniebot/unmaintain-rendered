@@ -13,14 +13,14 @@ head: dependabot/cargo/tempfile-3.9.0
 created_at: 2024-01-08T08:50:52Z
 updated_at: 2024-01-08T09:11:00Z
 url: https://github.com/astral-sh/ruff/pull/9434
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Bump tempfile from 3.8.1 to 3.9.0
 
 ---
 
-_Pull request opened by @dependabot on 2024-01-08 08:50_
+_@dependabot_
 
 Bumps [tempfile](https://github.com/Stebalien/tempfile) from 3.8.1 to 3.9.0.
 <details>

@@ -13,14 +13,14 @@ head: test-rules-linter
 created_at: 2024-04-29T12:27:11Z
 updated_at: 2024-04-30T06:06:48Z
 url: https://github.com/astral-sh/ruff/pull/11201
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # linter: Enable test-rules for test build
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-29 12:27_
+_@MichaReiser_
 
 ## Summary
 

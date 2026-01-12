@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-21T10:14:21Z
 updated_at: 2024-10-29T09:17:46Z
 url: https://github.com/astral-sh/ruff/issues/13853
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Infer slice expression types
 
 ---
 
-_Issue opened by @sharkdp on 2024-10-21 10:14_
+_@sharkdp_
 
 Part of astral-sh/ty#244, and also astral-sh/ruff#13689. Infer types for [slice expressions](https://docs.python.org/3/reference/expressions.html#slicings).
 

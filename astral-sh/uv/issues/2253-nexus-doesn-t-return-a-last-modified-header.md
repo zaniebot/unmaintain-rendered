@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-06T23:21:58Z
 updated_at: 2024-05-26T00:42:32Z
 url: https://github.com/astral-sh/uv/issues/2253
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Nexus doesn't return a `Last-Modified` header
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-06 23:21_
+_@charliermarsh_
 
 Okay, so it looks like we're failing to use the cache because:
 

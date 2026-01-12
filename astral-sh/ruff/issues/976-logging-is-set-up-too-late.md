@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-01T07:44:24Z
 updated_at: 2022-12-01T15:19:33Z
 url: https://github.com/astral-sh/ruff/issues/976
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Logging is set up too late
 
 ---
 
-_Issue opened by @edgarrmondragon on 2022-12-01 07:44_
+_@edgarrmondragon_
 
 It seems that in https://github.com/charliermarsh/ruff/pull/964, the call to `set_up_logging` was moved so it could take into account the configured output format:
 

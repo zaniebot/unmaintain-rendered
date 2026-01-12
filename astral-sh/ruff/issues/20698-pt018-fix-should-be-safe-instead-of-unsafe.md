@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-04T13:07:15Z
 updated_at: 2025-10-06T13:14:25Z
 url: https://github.com/astral-sh/ruff/issues/20698
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # PT018 fix should be safe instead of unsafe generally, and unsafe with comments instead of suppressed
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-04 13:07_
+_@dscorbett_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: cjm/loopstate
 created_at: 2025-02-26T21:53:12Z
 updated_at: 2025-02-27T15:45:52Z
 url: https://github.com/astral-sh/ruff/pull/16406
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] unify LoopState and saved_break_states
 
 ---
 
-_Pull request opened by @carljm on 2025-02-26 21:53_
+_@carljm_
 
 We currently keep two separate pieces of state regarding the current loop on `SemanticIndexBuilder`. One is an enum simply reflecting whether we are currently inside a loop, and the other is the saved flow states for `break` statements found in the current loop.
 

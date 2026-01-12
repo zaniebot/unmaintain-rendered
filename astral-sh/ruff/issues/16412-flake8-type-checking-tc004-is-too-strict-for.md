@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T10:27:07Z
 updated_at: 2025-02-27T14:14:05Z
 url: https://github.com/astral-sh/ruff/issues/16412
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [`flake8-type-checking`] TC004 is too strict for SQLAlchemy's `Mapped`
 
 ---
 
-_Issue opened by @Daverball on 2025-02-27 10:27_
+_@Daverball_
 
 ### Summary
 

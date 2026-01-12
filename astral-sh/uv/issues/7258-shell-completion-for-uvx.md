@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-10T15:56:04Z
 updated_at: 2024-09-17T03:27:20Z
 url: https://github.com/astral-sh/uv/issues/7258
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Shell completion for uvx
 
 ---
 
-_Issue opened by @bluss on 2024-09-10 15:56_
+_@bluss_
 
 uv doesn't ship with any shell completion for the `uvx` binary.
 

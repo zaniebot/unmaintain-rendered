@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-01T19:28:22Z
 updated_at: 2025-09-03T20:39:12Z
 url: https://github.com/astral-sh/ruff/issues/20198
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # C417 fix introduces a syntax error for `yield` in lambda expression
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-01 19:28_
+_@dscorbett_
 
 ### Summary
 

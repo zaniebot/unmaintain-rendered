@@ -13,14 +13,14 @@ head: charlie/any-expression-ref
 created_at: 2023-08-17T01:11:37Z
 updated_at: 2023-08-17T14:07:18Z
 url: https://github.com/astral-sh/ruff/pull/6637
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Introduce `ExpressionRef`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-17 01:11_
+_@charliermarsh_
 
 ## Summary
 

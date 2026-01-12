@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-21T09:34:48Z
 updated_at: 2024-04-05T22:13:25Z
 url: https://github.com/astral-sh/uv/issues/1800
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Skip over versions with invalid metadata
 
 ---
 
-_Issue opened by @konstin on 2024-02-21 09:34_
+_@konstin_
 
 There are a number of (mostly older) releases on pypi with files with invalid metadata (e.g. #1363, #1686, #1798) we can't parse even with our fixups. We already skip over simple metadata entries we can't parse with fixups. We should do the same with versions that contain a wheel with invalid METADATA file. The failed packages should have a custom incompatibility in pubgrub so they get explained in resolution failures.
 

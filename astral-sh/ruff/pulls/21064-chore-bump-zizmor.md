@@ -13,14 +13,14 @@ head: ww/bump-zizmor
 created_at: 2025-10-24T14:34:22Z
 updated_at: 2025-10-24T14:58:25Z
 url: https://github.com/astral-sh/ruff/pull/21064
-synced_at: 2026-01-10T17:28:45Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # chore: bump zizmor
 
 ---
 
-_Pull request opened by @woodruffw on 2025-10-24 14:34_
+_@woodruffw_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: charlie/fuzz
 created_at: 2023-12-31T15:35:13Z
 updated_at: 2023-12-31T15:51:09Z
 url: https://github.com/astral-sh/ruff/pull/9332
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Fix continuation detection following multi-line strings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-31 15:35_
+_@charliermarsh_
 
 ## Summary
 

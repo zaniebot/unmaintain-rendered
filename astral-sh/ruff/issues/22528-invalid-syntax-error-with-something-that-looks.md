@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-12T08:42:37Z
 updated_at: 2026-01-12T08:54:48Z
 url: https://github.com/astral-sh/ruff/issues/22528
-synced_at: 2026-01-12T09:56:43Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # invalid syntax error with something that looks like a `match` statement
 
 ---
 
-_Issue opened by @KotlinIsland on 2026-01-12 08:42_
+_@KotlinIsland_
 
 ### Summary
 

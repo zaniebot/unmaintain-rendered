@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-28T00:13:41Z
 updated_at: 2025-07-04T04:49:00Z
 url: https://github.com/astral-sh/ruff/issues/19006
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [`flake8-bandit`] `S601` does not account for calls through clients
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-28 00:13_
+_@MeGaGiGaGon_
 
 ### Summary
 

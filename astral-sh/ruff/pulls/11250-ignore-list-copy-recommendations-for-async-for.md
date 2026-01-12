@@ -12,14 +12,14 @@ head: charlie/async
 created_at: 2024-05-02T18:37:33Z
 updated_at: 2024-05-02T18:49:53Z
 url: https://github.com/astral-sh/ruff/pull/11250
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Ignore list-copy recommendations for async `for` loops
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-02 18:37_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-12T23:27:57Z
 updated_at: 2024-11-13T03:53:58Z
 url: https://github.com/astral-sh/uv/issues/9072
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # uv init needlessly tries to discover a venv
 
 ---
 
-_Issue opened by @rdaysky on 2024-11-12 23:27_
+_@rdaysky_
 
 The existence of a directory named `.venv` in an ancestor of the current directory seems to influence the behavior of `uv init`. In particular, it will look for the version of Python installed in it and put it into requires-python. This is problematic because:
 

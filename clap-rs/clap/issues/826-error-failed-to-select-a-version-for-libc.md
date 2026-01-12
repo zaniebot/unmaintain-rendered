@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-01-28T18:04:43Z
 updated_at: 2018-08-02T03:30:00Z
 url: https://github.com/clap-rs/clap/issues/826
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # error: failed to select a version for `libc` (required by `appname`):
 
 ---
 
-_Issue opened by @CBSears on 2017-01-28 18:04_
+_@CBSears_
 
 rustc 1.15.0-beta.3 (a035041ba 2017-01-07)
 clap = "2.20.0"

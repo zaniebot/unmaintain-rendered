@@ -11,14 +11,14 @@ head: fish-uvx
 created_at: 2024-09-12T05:09:54Z
 updated_at: 2024-09-16T19:55:26Z
 url: https://github.com/astral-sh/uv/pull/7323
-synced_at: 2026-01-10T12:53:45Z
+synced_at: 2026-01-12T16:07:47Z
 ```
 
 # generate-shell-completion: generate `uvx` shell completions for the fish shell
 
 ---
 
-_Pull request opened by @ilyagr on 2024-09-12 05:09_
+_@ilyagr_
 
 Cc: #7258
 

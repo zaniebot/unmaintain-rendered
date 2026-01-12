@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T11:22:18Z
 updated_at: 2025-06-20T13:43:07Z
 url: https://github.com/astral-sh/uv/issues/13943
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # Mutually exclusive sources (path dependency vs. custom registry) are not properly resolved
 
 ---
 
-_Issue opened by @jonded94 on 2025-06-10 11:22_
+_@jonded94_
 
 ### Summary
 

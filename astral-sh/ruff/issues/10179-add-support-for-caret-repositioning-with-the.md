@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-01T06:07:19Z
 updated_at: 2025-07-17T21:42:55Z
 url: https://github.com/astral-sh/ruff/issues/10179
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Add support for caret repositioning with the formatter
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-03-01 06:07_
+_@KotlinIsland_
 
 Probably would apply to the `--fix`er as well.
 ```py

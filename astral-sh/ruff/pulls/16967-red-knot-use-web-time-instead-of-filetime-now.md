@@ -14,14 +14,14 @@ head: micha/file-time-now-wasm
 created_at: 2025-03-25T12:55:44Z
 updated_at: 2025-03-25T13:05:11Z
 url: https://github.com/astral-sh/ruff/pull/16967
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] Use `web-time` instead of `FileTime::now`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-25 12:55_
+_@MichaReiser_
 
 ## Summary
 

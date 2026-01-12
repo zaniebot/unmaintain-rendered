@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T09:31:09Z
 updated_at: 2025-05-15T21:05:08Z
 url: https://github.com/astral-sh/uv/issues/12877
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # no-config and config-file arguments still read pyproject.toml
 
 ---
 
-_Issue opened by @g4borg on 2025-04-14 09:31_
+_@g4borg_
 
 ### Summary
 

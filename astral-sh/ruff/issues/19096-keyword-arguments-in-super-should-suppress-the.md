@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-02T16:12:42Z
 updated_at: 2025-07-09T19:13:24Z
 url: https://github.com/astral-sh/ruff/issues/19096
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Keyword arguments in `super` should suppress the UP008 fix
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-02 16:12_
+_@dscorbett_
 
 ### Summary
 

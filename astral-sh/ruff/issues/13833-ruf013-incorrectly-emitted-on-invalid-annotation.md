@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-20T16:33:33Z
 updated_at: 2024-11-09T13:48:58Z
 url: https://github.com/astral-sh/ruff/issues/13833
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # RUF013 incorrectly emitted on invalid annotation with bare `Optional`
 
 ---
 
-_Issue opened by @Skylion007 on 2024-10-20 16:33_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

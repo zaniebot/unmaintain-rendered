@@ -15,14 +15,14 @@ head: jtfm/first-index-secure-by-default
 created_at: 2025-04-10T12:38:11Z
 updated_at: 2025-04-30T13:06:32Z
 url: https://github.com/astral-sh/uv/pull/12805
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:24Z
 ```
 
 # Make uv’s first-index strategy more secure by default by failing early on authentication failure
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-04-10 12:38_
+_@jtfmumm_
 
 uv’s default index strategy was designed with dependency confusion attacks in mind. [According to the docs](https://docs.astral.sh/uv/configuration/indexes/#searching-across-multiple-indexes), “if a package exists on an internal index, it should always be installed from the internal index, and never from PyPI”. Unfortunately, this is not true in the case where authentication fails on that internal index. In that case, uv will simply try the next index (even on the `first-index` strategy). This means that uv is not secure by default in this common scenario.
 

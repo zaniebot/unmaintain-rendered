@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-03T19:27:34Z
 updated_at: 2025-07-09T08:04:58Z
 url: https://github.com/astral-sh/ty/issues/760
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # dataclass class literal subtyping with callables not working
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-07-03 19:27_
+_@MatthewMckee4_
 
 ### Summary
 

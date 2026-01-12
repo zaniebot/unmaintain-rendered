@@ -13,14 +13,14 @@ head: charlie/e226
 created_at: 2025-06-23T00:26:03Z
 updated_at: 2025-06-23T00:37:59Z
 url: https://github.com/astral-sh/ruff/pull/18870
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # Clarify PEP 8 relationship to whitespace-around-operator rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-23 00:26_
+_@charliermarsh_
 
 ## Summary
 

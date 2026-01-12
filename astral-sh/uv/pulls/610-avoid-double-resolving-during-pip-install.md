@@ -12,14 +12,14 @@ head: charlie/pip-install-resolution
 created_at: 2023-12-12T01:53:34Z
 updated_at: 2023-12-12T17:29:11Z
 url: https://github.com/astral-sh/uv/pull/610
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:04Z
 ```
 
 # Avoid double-resolving during `pip-install`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-12 01:53_
+_@charliermarsh_
 
 ## Summary
 

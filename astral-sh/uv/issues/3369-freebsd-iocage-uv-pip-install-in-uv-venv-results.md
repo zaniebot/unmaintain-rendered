@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-04T04:12:54Z
 updated_at: 2024-05-07T05:05:18Z
 url: https://github.com/astral-sh/uv/issues/3369
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # FreeBSD iocage `uv pip install` in `uv venv` results in "invalid peer certificate"
 
 ---
 
-_Issue opened by @cmpadden on 2024-05-04 04:12_
+_@cmpadden_
 
 **Preface / Versions**
 

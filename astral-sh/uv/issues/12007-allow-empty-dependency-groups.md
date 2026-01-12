@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-06T14:18:51Z
 updated_at: 2025-03-07T10:00:35Z
 url: https://github.com/astral-sh/uv/issues/12007
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:52Z
 ```
 
 # Allow empty dependency groups
 
 ---
 
-_Issue opened by @jneuendorf-i4h on 2025-03-06 14:18_
+_@jneuendorf-i4h_
 
 ### Summary
 

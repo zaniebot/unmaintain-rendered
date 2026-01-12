@@ -12,14 +12,14 @@ head: doc-improved-by-precommit
 created_at: 2023-03-19T07:07:38Z
 updated_at: 2023-03-20T02:18:44Z
 url: https://github.com/astral-sh/ruff/pull/3604
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Doc/CLN: pass pre-commit
 
 ---
 
-_Pull request opened by @luke396 on 2023-03-19 07:07_
+_@luke396_
 
 xref #3603
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-24T03:22:25Z
 updated_at: 2025-12-18T00:14:14Z
 url: https://github.com/astral-sh/uv/issues/13080
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # How to migrate a uv project from an external network Ubuntu server to an offline internal network Ubuntu environment?
 
 ---
 
-_Issue opened by @phoenixor on 2025-04-24 03:22_
+_@phoenixor_
 
 ### Question
 

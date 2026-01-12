@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-10T02:04:42Z
 updated_at: 2023-03-10T03:24:19Z
 url: https://github.com/astral-sh/ruff/issues/3428
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 #  E402 is still check 
 
 ---
 
-_Issue opened by @me-v2 on 2023-03-10 02:04_
+_@me-v2_
 
 import pathlib
 import sys

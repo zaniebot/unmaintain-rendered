@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-03T23:31:17Z
 updated_at: 2025-07-04T14:48:08Z
 url: https://github.com/astral-sh/uv/issues/14451
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # uv build backend doesn't support PEP420 implicit namespace packages without __init__.py
 
 ---
 
-_Issue opened by @karlicoss on 2025-07-03 23:31_
+_@karlicoss_
 
 ### Summary
 

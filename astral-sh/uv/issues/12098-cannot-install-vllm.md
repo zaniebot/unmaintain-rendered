@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-10T16:16:57Z
 updated_at: 2025-03-14T10:25:42Z
 url: https://github.com/astral-sh/uv/issues/12098
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # cannot install vllm
 
 ---
 
-_Issue opened by @da-the-dev on 2025-03-10 16:16_
+_@da-the-dev_
 
 ### Summary
 

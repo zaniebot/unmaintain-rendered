@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-06T21:54:41Z
 updated_at: 2025-11-12T15:58:21Z
 url: https://github.com/astral-sh/uv/issues/16623
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # Forbid credentials in URLs in `pyproject.toml` index definitions
 
 ---
 
-_Issue opened by @woodruffw on 2025-11-06 21:54_
+_@woodruffw_
 
 Right now, uv allows URLs with credentials in the `[[tools.uv.index]]` table. For example, this is permitted:
 

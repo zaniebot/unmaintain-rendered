@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-14T17:32:59Z
 updated_at: 2023-02-14T20:42:22Z
 url: https://github.com/astral-sh/ruff/issues/2897
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # docstyle.convention = "google" should ignore D401
 
 ---
 
-_Issue opened by @PhilReinhold on 2023-02-14 17:32_
+_@PhilReinhold_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

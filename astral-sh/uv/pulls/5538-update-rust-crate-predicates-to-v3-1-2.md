@@ -13,14 +13,14 @@ head: renovate/predicates-3.x-lockfile
 created_at: 2024-07-29T00:09:27Z
 updated_at: 2024-07-29T00:31:31Z
 url: https://github.com/astral-sh/uv/pull/5538
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:52Z
 ```
 
 # Update Rust crate predicates to v3.1.2
 
 ---
 
-_Pull request opened by @renovate on 2024-07-29 00:09_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

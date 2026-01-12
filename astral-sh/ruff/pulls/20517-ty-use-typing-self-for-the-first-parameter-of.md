@@ -14,14 +14,14 @@ head: david/implicit-self-signature
 created_at: 2025-09-22T18:13:05Z
 updated_at: 2025-09-29T19:08:09Z
 url: https://github.com/astral-sh/ruff/pull/20517
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:03Z
 ```
 
 # [ty] Use `typing.Self` for the first parameter of instance methods
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-22 18:13_
+_@sharkdp_
 
 ## Summary
 

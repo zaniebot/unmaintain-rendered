@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T01:06:19Z
 updated_at: 2025-01-22T17:22:54Z
 url: https://github.com/astral-sh/uv/issues/10835
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # Be more explicit about inability to resolve workspace `requires-python`
 
 ---
 
-_Issue opened by @alex-debrecht-kcftech on 2025-01-22 01:06_
+_@alex-debrecht-kcftech_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-22T23:52:30Z
 updated_at: 2025-11-24T17:22:06Z
 url: https://github.com/astral-sh/ruff/issues/21584
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Flag variables that 1. aren't reassigned, and 2. are missing `Final`
 
 ---
 
-_Issue opened by @hamirmahal on 2025-11-22 23:52_
+_@hamirmahal_
 
 ### Summary
 

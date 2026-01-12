@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-11T11:07:36Z
 updated_at: 2024-12-11T14:44:57Z
 url: https://github.com/astral-sh/uv/issues/9804
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # uv sync --no-dev fails when local path dependency defined only in --dev is missing
 
 ---
 
-_Issue opened by @ddorian on 2024-12-11 11:07_
+_@ddorian_
 
 I added a local package that is only available and needed in dev environment.
 I exclude this package on production, but uv fails to create the env.

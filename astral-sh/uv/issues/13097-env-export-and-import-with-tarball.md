@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-25T03:43:50Z
 updated_at: 2025-04-25T07:56:24Z
 url: https://github.com/astral-sh/uv/issues/13097
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # env export and import with tarball
 
 ---
 
-_Issue opened by @coconil on 2025-04-25 03:43_
+_@coconil_
 
 ### Summary
 

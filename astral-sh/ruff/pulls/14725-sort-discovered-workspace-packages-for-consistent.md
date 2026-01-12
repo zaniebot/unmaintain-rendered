@@ -14,14 +14,14 @@ head: micha/fix-unstable-workspace-test
 created_at: 2024-12-02T07:31:47Z
 updated_at: 2024-12-02T07:37:43Z
 url: https://github.com/astral-sh/ruff/pull/14725
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Sort discovered workspace packages for consistent cross-platform package discovery
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-02 07:31_
+_@MichaReiser_
 
 ## Summary
 

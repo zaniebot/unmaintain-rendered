@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T01:23:18Z
 updated_at: 2026-01-09T20:43:21Z
 url: https://github.com/astral-sh/uv/issues/17370
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # Planner ignores resolved version difference in favour of cache hit
 
 ---
 
-_Issue opened by @EliteTK on 2026-01-09 01:23_
+_@EliteTK_
 
 ### Summary
 

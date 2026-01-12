@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-08T23:15:56Z
 updated_at: 2025-08-09T17:01:17Z
 url: https://github.com/astral-sh/uv/issues/15180
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # uv python install --reinstall should not add a bin symlink where one doesn't exist
 
 ---
 
-_Issue opened by @geofft on 2025-08-08 23:15_
+_@geofft_
 
 ### Summary
 

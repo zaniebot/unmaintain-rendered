@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-18T10:03:08Z
 updated_at: 2023-10-18T15:06:15Z
 url: https://github.com/astral-sh/ruff/issues/8040
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Avoid raising S310 on string literals
 
 ---
 
-_Issue opened by @ZeeD on 2023-10-18 10:03_
+_@ZeeD_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-29T08:52:08Z
 updated_at: 2024-11-29T21:40:41Z
 url: https://github.com/astral-sh/ruff/issues/14673
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # new rule - Removing extra spaces in dictionary
 
 ---
 
-_Issue opened by @spaceby on 2024-11-29 08:52_
+_@spaceby_
 
 Ruff does not remove extra spaces in such dictionaries.
 ```python

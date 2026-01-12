@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-07T12:00:04Z
 updated_at: 2023-09-12T17:19:35Z
 url: https://github.com/astral-sh/ruff/issues/7220
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # [Feature Request] Alphabetically sort `typing.Literal` types
 
 ---
 
-_Issue opened by @michaeloliverx on 2023-09-07 12:00_
+_@michaeloliverx_
 
 I want the ability to alphabetically `Literal` types e.g.
 

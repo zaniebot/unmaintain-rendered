@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-17T01:57:39Z
 updated_at: 2024-12-17T12:25:32Z
 url: https://github.com/astral-sh/ruff/issues/15029
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Fix for INP001 implicit-namespace-package
 
 ---
 
-_Issue opened by @kiyoon on 2024-12-17 01:57_
+_@kiyoon_
 
 Can there be a fix for the rule? I would like to add `__init__.py` files where missing.
 

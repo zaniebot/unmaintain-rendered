@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T03:15:32Z
 updated_at: 2024-10-18T05:44:56Z
 url: https://github.com/astral-sh/uv/issues/8194
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # `uv python install 3.13t` issues on Windows and Linux
 
 ---
 
-_Issue opened by @colesbury on 2024-10-15 03:15_
+_@colesbury_
 
 Nice work! This is my favorite way to install Python. I ran into two issues:
 

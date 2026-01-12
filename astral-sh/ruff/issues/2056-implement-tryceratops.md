@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-21T11:54:14Z
 updated_at: 2023-02-27T17:45:38Z
 url: https://github.com/astral-sh/ruff/issues/2056
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement `tryceratops`
 
 ---
 
-_Issue opened by @sbrugman on 2023-01-21 11:54_
+_@sbrugman_
 
 - [x] [TC002](https://github.com/guilatrova/tryceratops/blob/main/docs/violations/TC002.md): Create your own exception
 - [x] [TC003](https://github.com/guilatrova/tryceratops/blob/main/docs/violations/TC003.md): Avoid specifying long messages outside the exception class

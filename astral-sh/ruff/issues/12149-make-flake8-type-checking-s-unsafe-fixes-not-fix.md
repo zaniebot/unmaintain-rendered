@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-02T12:09:10Z
 updated_at: 2024-07-09T06:57:11Z
 url: https://github.com/astral-sh/ruff/issues/12149
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Make flake8-type-checking's unsafe fixes not fix if a library is used in a doctest
 
 ---
 
-_Issue opened by @mikeweltevrede on 2024-07-02 12:09_
+_@mikeweltevrede_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

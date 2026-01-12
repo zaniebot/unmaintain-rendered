@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-25T05:55:11Z
 updated_at: 2024-03-29T20:26:15Z
 url: https://github.com/astral-sh/ruff/issues/10557
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # False-positive `PLW1641` when setting `__hash__ = <ParentClass>.__hash__`
 
 ---
 
-_Issue opened by @janosh on 2024-03-25 05:55_
+_@janosh_
 
 with v0.3.4, `ruff check t.py --select PLW1641` on
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-23T15:53:24Z
 updated_at: 2025-10-27T16:07:24Z
 url: https://github.com/astral-sh/ty/issues/1421
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # 0.0.1a24 regression regarding inference of fields for pydantic models
 
 ---
 
-_Issue opened by @theelderbeever on 2025-10-23 15:53_
+_@theelderbeever_
 
 ### Summary
 

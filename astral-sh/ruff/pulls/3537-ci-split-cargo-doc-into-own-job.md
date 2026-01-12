@@ -12,14 +12,14 @@ head: ci/reject-unreferenced-snapshots
 created_at: 2023-03-15T10:02:32Z
 updated_at: 2023-07-24T15:01:53Z
 url: https://github.com/astral-sh/ruff/pull/3537
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # ci: split cargo doc into own job
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-15 10:02_
+_@MichaReiser_
 
 _No description provided._
 

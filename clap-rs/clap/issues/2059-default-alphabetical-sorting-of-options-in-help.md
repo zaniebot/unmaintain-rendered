@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-08-12T13:53:28Z
 updated_at: 2020-10-10T19:16:35Z
 url: https://github.com/clap-rs/clap/issues/2059
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Default alphabetical sorting of options in help message appears to be broken
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-08-12 13:53_
+_@CreepySkeleton_
 
 ### Make sure you completed the following tasks
 

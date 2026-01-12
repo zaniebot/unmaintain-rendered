@@ -13,14 +13,14 @@ head: charlie/fbt
 created_at: 2023-08-14T17:33:23Z
 updated_at: 2023-08-14T19:24:18Z
 url: https://github.com/astral-sh/ruff/pull/6567
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Clarify FBT documentation and refine rule names
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-14 17:33_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6530.
 

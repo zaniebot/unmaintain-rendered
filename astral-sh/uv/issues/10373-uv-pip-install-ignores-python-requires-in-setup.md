@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-07T18:05:32Z
 updated_at: 2025-01-07T18:48:43Z
 url: https://github.com/astral-sh/uv/issues/10373
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # uv pip install ignores python_requires in setup.py file
 
 ---
 
-_Issue opened by @devashish2203 on 2025-01-07 18:05_
+_@devashish2203_
 
 # Steps to reproduce
 

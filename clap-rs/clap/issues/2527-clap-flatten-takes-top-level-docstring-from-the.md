@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-06-08T13:48:33Z
 updated_at: 2021-08-12T20:34:49Z
 url: https://github.com/clap-rs/clap/issues/2527
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # `#[clap(flatten)]` takes top-level docstring from the flattened struct, not the struct being flattened into
 
 ---
 
-_Issue opened by @glittershark on 2021-06-08 13:48_
+_@glittershark_
 
 ### Please complete the following tasks
 

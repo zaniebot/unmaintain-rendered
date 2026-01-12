@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-25T15:00:26Z
 updated_at: 2024-11-25T15:16:25Z
 url: https://github.com/astral-sh/uv/issues/9419
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:50Z
 ```
 
 # `Configuring accelerators with optional dependencies` from docs fails
 
 ---
 
-_Issue opened by @jplumail on 2024-11-25 15:00_
+_@jplumail_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

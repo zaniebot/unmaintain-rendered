@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-26T03:03:13Z
 updated_at: 2024-03-04T19:48:42Z
 url: https://github.com/astral-sh/uv/issues/1977
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # User Agent includes uv's version
 
 ---
 
-_Issue opened by @samypr100 on 2024-02-26 03:03_
+_@samypr100_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

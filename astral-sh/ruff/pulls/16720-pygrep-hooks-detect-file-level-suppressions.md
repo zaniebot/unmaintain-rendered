@@ -14,14 +14,14 @@ head: micha/blanked-noqa-file-level2
 created_at: 2025-03-14T07:27:06Z
 updated_at: 2025-03-14T08:37:18Z
 url: https://github.com/astral-sh/ruff/pull/16720
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [`pygrep-hooks`]: Detect file-level suppressions comments without rul…
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-14 07:27_
+_@MichaReiser_
 
 ## Summary
 

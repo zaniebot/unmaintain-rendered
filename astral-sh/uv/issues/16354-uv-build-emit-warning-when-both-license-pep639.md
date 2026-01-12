@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-18T16:39:13Z
 updated_at: 2026-01-09T14:26:14Z
 url: https://github.com/astral-sh/uv/issues/16354
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # [`uv_build`] Emit warning when both license (`PEP639`) and legacy license classifiers are present in pyproject.toml
 
 ---
 
-_Issue opened by @chirizxc on 2025-10-18 16:39_
+_@chirizxc_
 
 ### Summary
 

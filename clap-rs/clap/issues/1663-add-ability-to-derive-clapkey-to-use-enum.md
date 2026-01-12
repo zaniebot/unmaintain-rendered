@@ -13,14 +13,14 @@ assignees: []
 created_at: 2017-11-12T20:12:40Z
 updated_at: 2022-05-03T14:13:13Z
 url: https://github.com/clap-rs/clap/issues/1663
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Add ability to derive ClapKey to use enum variants as keys
 
 ---
 
-_Issue opened by @kbknapp on 2017-11-12 20:12_
+_@kbknapp_
 
 Maintainer's notes:
 - This presupposes enum variants, so this is bocked on #1104

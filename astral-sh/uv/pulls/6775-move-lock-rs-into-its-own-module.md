@@ -13,14 +13,14 @@ head: charlie/mod
 created_at: 2024-08-28T21:03:31Z
 updated_at: 2024-08-28T22:04:47Z
 url: https://github.com/astral-sh/uv/pull/6775
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:31Z
 ```
 
 # Move `lock.rs` into its own module
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-28 21:03_
+_@charliermarsh_
 
 ## Summary
 

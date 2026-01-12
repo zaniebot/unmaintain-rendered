@@ -13,14 +13,14 @@ head: patch-3
 created_at: 2025-06-27T07:27:14Z
 updated_at: 2025-07-02T19:59:20Z
 url: https://github.com/astral-sh/ruff/pull/18978
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [`flake8-async`] Make `ASYNC220`, `ASYNC221`, and `ASYNC222` examples error out-of-the-box
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-27 07:27_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

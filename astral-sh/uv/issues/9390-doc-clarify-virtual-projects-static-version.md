@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-23T21:54:59Z
 updated_at: 2025-12-10T15:10:32Z
 url: https://github.com/astral-sh/uv/issues/9390
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:49Z
 ```
 
 # Doc: clarify "virtual projects" static version required[/-]
 
 ---
 
-_Issue opened by @mlec1 on 2024-11-23 21:54_
+_@mlec1_
 
 Hello, 
 

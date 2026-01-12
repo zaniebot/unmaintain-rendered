@@ -13,14 +13,14 @@ head: charlie/t
 created_at: 2025-03-27T16:17:30Z
 updated_at: 2025-03-27T16:25:10Z
 url: https://github.com/astral-sh/uv/pull/12510
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:18Z
 ```
 
 # Remove TODOs around caching workspace discovery
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-27 16:17_
+_@charliermarsh_
 
 ## Summary
 

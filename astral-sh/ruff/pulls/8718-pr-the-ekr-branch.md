@@ -12,14 +12,14 @@ head: ekr
 created_at: 2023-11-16T12:00:30Z
 updated_at: 2023-11-17T00:51:58Z
 url: https://github.com/astral-sh/ruff/pull/8718
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # PR: the ekr branch
 
 ---
 
-_Pull request opened by @edreamleo on 2023-11-16 12:00_
+_@edreamleo_
 
 PR for my study.
 

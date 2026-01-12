@@ -13,14 +13,14 @@ head: furb-156
 created_at: 2025-02-26T12:57:01Z
 updated_at: 2025-02-26T16:33:18Z
 url: https://github.com/astral-sh/ruff/pull/16391
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [FURB156] Do not consider docstring(s)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-02-26 12:57_
+_@VascoSch92_
 
 The PR solves issue #16351 
 

@@ -12,14 +12,14 @@ head: konsti/test-features
 created_at: 2024-01-18T11:45:36Z
 updated_at: 2024-01-18T14:24:32Z
 url: https://github.com/astral-sh/uv/pull/963
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:19Z
 ```
 
 # Fix `pep508_rs` doc test
 
 ---
 
-_Pull request opened by @konstin on 2024-01-18 11:45_
+_@konstin_
 
 Since nextest does not run doctests, this did not show up on CI.
 

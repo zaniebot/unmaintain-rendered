@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T22:31:44Z
 updated_at: 2024-12-10T21:12:39Z
 url: https://github.com/astral-sh/ruff/issues/14546
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] support type[Any]
 
 ---
 
-_Issue opened by @carljm on 2024-11-22 22:31_
+_@carljm_
 
 The Python type system supports the `type[Any]` type as a special case of [the `type[...]` special form](https://typing.readthedocs.io/en/latest/spec/special-types.html#type). This is a gradual type representing some unknown class and all of its subclasses.
 

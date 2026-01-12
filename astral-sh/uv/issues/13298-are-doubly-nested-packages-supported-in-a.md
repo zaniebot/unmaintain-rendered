@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-05T07:38:54Z
 updated_at: 2025-05-16T10:59:21Z
 url: https://github.com/astral-sh/uv/issues/13298
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # Are doubly-nested packages supported in a workspace?
 
 ---
 
-_Issue opened by @StefanSmith on 2025-05-05 07:38_
+_@StefanSmith_
 
 ### Question
 

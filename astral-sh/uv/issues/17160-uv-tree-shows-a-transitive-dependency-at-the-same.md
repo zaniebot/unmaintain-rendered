@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T08:13:55Z
 updated_at: 2025-12-17T11:24:09Z
 url: https://github.com/astral-sh/uv/issues/17160
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:44Z
 ```
 
 # `uv tree` shows a transitive dependency at the same depth (root) than the current package
 
 ---
 
-_Issue opened by @AlexandreDecan on 2025-12-17 08:13_
+_@AlexandreDecan_
 
 ### Summary
 

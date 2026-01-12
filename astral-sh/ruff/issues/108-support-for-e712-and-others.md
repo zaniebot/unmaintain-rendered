@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-05T21:31:07Z
 updated_at: 2022-09-07T21:08:54Z
 url: https://github.com/astral-sh/ruff/issues/108
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Support for E712 and others
 
 ---
 
-_Issue opened by @amotl on 2022-09-05 21:31_
+_@amotl_
 
 Dear Charlie,
 

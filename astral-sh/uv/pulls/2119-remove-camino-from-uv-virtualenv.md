@@ -13,14 +13,14 @@ head: charlie/camino
 created_at: 2024-03-01T19:29:32Z
 updated_at: 2024-03-01T19:36:57Z
 url: https://github.com/astral-sh/uv/pull/2119
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:52Z
 ```
 
 # Remove `camino` from `uv-virtualenv`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-01 19:29_
+_@charliermarsh_
 
 ## Summary
 

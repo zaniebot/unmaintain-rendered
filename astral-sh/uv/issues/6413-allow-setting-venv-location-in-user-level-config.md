@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T07:45:10Z
 updated_at: 2024-08-22T20:14:09Z
 url: https://github.com/astral-sh/uv/issues/6413
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Allow setting venv location in user level config
 
 ---
 
-_Issue opened by @symroe on 2024-08-22 07:45_
+_@symroe_
 
 For various reasons, I don't keep my `.venv` directory in the same directory as the project (as seems to be increasingly a convention and is default in `uv` currently).
 

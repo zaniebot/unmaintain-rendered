@@ -13,14 +13,14 @@ head: charlie/insiders
 created_at: 2023-07-05T22:28:20Z
 updated_at: 2023-07-05T22:55:36Z
 url: https://github.com/astral-sh/ruff/pull/5544
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add separate configuration for MkDocs Insiders plugins
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-05 22:28_
+_@charliermarsh_
 
 ## Summary
 

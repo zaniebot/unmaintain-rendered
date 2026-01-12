@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-30T03:47:04Z
 updated_at: 2023-03-30T12:11:43Z
 url: https://github.com/clap-rs/clap/issues/4811
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # unable to build older releases due to MSRV conflict
 
 ---
 
-_Issue opened by @tones111 on 2023-03-30 03:47_
+_@tones111_
 
 ### Please complete the following tasks
 

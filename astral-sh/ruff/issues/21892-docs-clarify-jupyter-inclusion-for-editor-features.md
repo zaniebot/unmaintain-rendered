@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T11:04:55Z
 updated_at: 2026-01-08T06:22:02Z
 url: https://github.com/astral-sh/ruff/issues/21892
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # docs: clarify jupyter inclusion for editor features
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-12-10 11:04_
+_@KotlinIsland_
 
 ### Summary
 

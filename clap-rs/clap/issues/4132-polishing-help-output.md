@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-08-27T00:59:37Z
 updated_at: 2023-07-13T12:43:44Z
 url: https://github.com/clap-rs/clap/issues/4132
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Polishing `--help` output
 
 ---
 
-_Issue opened by @epage on 2022-08-27 00:59_
+_@epage_
 
 We are looking to polish the help as part of the v4 release since some parts of an applications help might be dependent on how clap renders things (e.g. to match clap's ALL CAPS [help headings](https://docs.rs/clap/latest/clap/builder/struct.App.html#method.next_help_heading), a user might put theirs in ALL CAPS).
 

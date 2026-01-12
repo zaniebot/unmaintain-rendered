@@ -13,14 +13,14 @@ head: david/dunder_class_getitem
 created_at: 2025-09-01T08:37:59Z
 updated_at: 2025-09-01T09:22:21Z
 url: https://github.com/astral-sh/ruff/pull/20192
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [ty] `__class_getitem__` is a classmethod
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-01 08:37_
+_@sharkdp_
 
 ## Summary
 

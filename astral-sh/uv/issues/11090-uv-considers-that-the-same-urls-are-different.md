@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-30T10:21:20Z
 updated_at: 2025-01-31T18:11:05Z
 url: https://github.com/astral-sh/uv/issues/11090
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:28Z
 ```
 
 # uv considers that the same URLs are different from each other, and also uses old commits to collect dependencies.
 
 ---
 
-_Issue opened by @Wintreist on 2025-01-30 10:21_
+_@Wintreist_
 
 ### Summary
 

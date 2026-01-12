@@ -13,14 +13,14 @@ head: test-settings
 created_at: 2024-12-18T09:47:20Z
 updated_at: 2024-12-18T16:02:15Z
 url: https://github.com/astral-sh/uv/pull/9992
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:04Z
 ```
 
 # Fix show_settings tests not to be affected by system configs
 
 ---
 
-_Pull request opened by @mgorny on 2024-12-18 09:47_
+_@mgorny_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

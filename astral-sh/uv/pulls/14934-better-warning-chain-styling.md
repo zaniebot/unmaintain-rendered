@@ -14,14 +14,14 @@ head: konsti/better-warning-chain
 created_at: 2025-07-28T09:33:21Z
 updated_at: 2025-07-28T16:23:40Z
 url: https://github.com/astral-sh/uv/pull/14934
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:30Z
 ```
 
 #  Better warning chain styling 
 
 ---
 
-_Pull request opened by @konstin on 2025-07-28 09:33_
+_@konstin_
 
 Improve the styling of warning chains for Python installation errors. Apply the same logic to other internal warning and error formatting locations.
 

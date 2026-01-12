@@ -14,14 +14,14 @@ head: alex/init-override-tests
 created_at: 2025-10-14T16:05:45Z
 updated_at: 2025-10-14T18:31:36Z
 url: https://github.com/astral-sh/ruff/pull/20866
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] Improve and extend tests for instance attributes redeclared in subclasses
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-14 16:05_
+_@AlexWaygood_
 
 Part of https://github.com/astral-sh/ty/issues/1345
 

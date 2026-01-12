@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2024-02-21T14:37:42Z
 updated_at: 2024-02-21T14:45:10Z
 url: https://github.com/astral-sh/uv/pull/1812
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:44Z
 ```
 
 # Wait for distribution metadata with `--no-deps`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-21 14:37_
+_@charliermarsh_
 
 ## Summary
 

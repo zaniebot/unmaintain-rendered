@@ -15,14 +15,14 @@ head: gankra/syspath
 created_at: 2025-07-02T13:38:42Z
 updated_at: 2025-07-03T09:48:32Z
 url: https://github.com/astral-sh/ruff/pull/19088
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [ty] Remove last vestiges of `std::path` from `ty_server`
 
 ---
 
-_Pull request opened by @Gankra on 2025-07-02 13:38_
+_@Gankra_
 
 Fixes https://github.com/astral-sh/ty/issues/603
 

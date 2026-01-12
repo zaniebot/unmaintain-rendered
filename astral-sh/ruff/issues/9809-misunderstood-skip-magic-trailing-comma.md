@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-03T17:30:32Z
 updated_at: 2024-02-04T12:29:27Z
 url: https://github.com/astral-sh/ruff/issues/9809
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Misunderstood skip-magic-trailing-comma
 
 ---
 
-_Issue opened by @korolkevich on 2024-02-03 17:30_
+_@korolkevich_
 
 Hi. If we use the 'ruff' format with 'skip-magic-trailing-comma' set to false, with example:
 

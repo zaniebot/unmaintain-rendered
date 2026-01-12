@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-07T19:16:04Z
 updated_at: 2024-06-10T14:26:39Z
 url: https://github.com/astral-sh/uv/issues/4142
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # `uv lock` should not treat non-compliant `pyproject.toml` fields as dynamic
 
 ---
 
-_Issue opened by @zanieb on 2024-06-07 19:16_
+_@zanieb_
 
 e.g. with an invalid dependency section
 

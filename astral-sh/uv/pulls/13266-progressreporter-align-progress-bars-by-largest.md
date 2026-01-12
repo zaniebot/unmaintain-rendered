@@ -13,14 +13,14 @@ head: align-prog
 created_at: 2025-05-02T14:06:35Z
 updated_at: 2025-05-15T07:32:37Z
 url: https://github.com/astral-sh/uv/pull/13266
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:37Z
 ```
 
 # ProgressReporter: align progress bars by largest name length
 
 ---
 
-_Pull request opened by @eduardorittner on 2025-05-02 14:06_
+_@eduardorittner_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: konsti/better-marker-reporting
 created_at: 2024-07-16T09:57:30Z
 updated_at: 2024-07-17T16:59:35Z
 url: https://github.com/astral-sh/uv/pull/5099
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:38Z
 ```
 
 # Handle universal vs. fork markers with `ResolverMarkers`
 
 ---
 
-_Pull request opened by @konstin on 2024-07-16 09:57_
+_@konstin_
 
 * Use a dedicated `ResolverMarkers` check in the fork state. This is better than the `MarkerTree::And(Vec::new())` check.
 * Report the timing correct naming universal resolution instead of two spaces around an empty string when there are no markers.

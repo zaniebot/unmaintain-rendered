@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-21T12:57:45Z
 updated_at: 2024-04-24T17:51:59Z
 url: https://github.com/astral-sh/uv/issues/2587
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Warn when using `uv` with an incompatible Python version.
 
 ---
 
-_Issue opened by @MichaReiser on 2024-03-21 12:57_
+_@MichaReiser_
 
 `uv` only supports Python 3.8 or newer. However, that's not very obvious from our documentation (you need to scroll all the way down to platform support) and some or even most functionality works fine, even when using `uv` with a Python version older than 3.8, e.g. the Python discovery works fine and uv only fails to run scripts (https://github.com/astral-sh/uv/issues/2445).
 

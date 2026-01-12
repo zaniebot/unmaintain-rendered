@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-12T17:25:50Z
 updated_at: 2023-03-14T19:10:38Z
 url: https://github.com/astral-sh/ruff/issues/2818
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # noqa: F40 as shorcut for noqa: F401,F403
 
 ---
 
-_Issue opened by @cclauss on 2023-02-12 17:25_
+_@cclauss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

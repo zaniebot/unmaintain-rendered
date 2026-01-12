@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-07T11:16:59Z
 updated_at: 2024-08-15T23:09:10Z
 url: https://github.com/astral-sh/ruff/issues/9045
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # RUF017 Avoid quadratic list summation: consider itertools.chain.from_iterable
 
 ---
 
-_Issue opened by @RonnyPfannschmidt on 2023-12-07 11:16_
+_@RonnyPfannschmidt_
 
 currently `RUF017`
 

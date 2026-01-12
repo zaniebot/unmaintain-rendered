@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-18T14:55:31Z
 updated_at: 2023-02-20T18:00:41Z
 url: https://github.com/astral-sh/ruff/issues/3010
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # E402 false positive
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-02-18 14:55_
+_@JonathanPlasse_
 
 ```python
 from __future__ import annotations

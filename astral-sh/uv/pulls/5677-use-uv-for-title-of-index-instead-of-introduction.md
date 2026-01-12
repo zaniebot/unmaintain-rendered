@@ -14,14 +14,14 @@ head: zb/docs-index-name
 created_at: 2024-07-31T22:12:35Z
 updated_at: 2024-07-31T23:24:57Z
 url: https://github.com/astral-sh/uv/pull/5677
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:57Z
 ```
 
 # Use "uv" for title of index instead of "Introduction"
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-31 22:12_
+_@zanieb_
 
 <img width="807" alt="Screenshot 2024-07-31 at 5 12 48 PM" src="https://github.com/user-attachments/assets/8a3cc824-c242-4688-a7d9-5b88198a6b94">
 vs

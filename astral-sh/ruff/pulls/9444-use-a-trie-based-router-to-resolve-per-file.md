@@ -13,14 +13,14 @@ head: charlie/matchit
 created_at: 2024-01-09T05:27:39Z
 updated_at: 2024-01-09T06:09:39Z
 url: https://github.com/astral-sh/ruff/pull/9444
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Use a trie-based router to resolve per-file settings
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-09 05:27_
+_@charliermarsh_
 
 ## Summary
 

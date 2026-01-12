@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-12T09:53:05Z
 updated_at: 2025-05-23T18:07:54Z
 url: https://github.com/clap-rs/clap/issues/6001
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # docs(derive): Clarify that `arg_required_else_help(true)` is implicitly set when they define the required subcommand
 
 ---
 
-_Issue opened by @sorairolake on 2025-05-12 09:53_
+_@sorairolake_
 
 If they define the required subcommand (`command: Commands`), `arg_required_else_help(true)` and `subcommand_required(true)` are implicitly set.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-26T09:35:48Z
 updated_at: 2025-12-01T11:41:23Z
 url: https://github.com/astral-sh/uv/issues/1980
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # `install_git_private_https_pat_and_username` breaks git
 
 ---
 
-_Issue opened by @konstin on 2024-02-26 09:35_
+_@konstin_
 
 Running `install_git_private_https_pat_and_username` inserts the user and password for astral-test-user into my keyring:
 

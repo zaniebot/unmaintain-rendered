@@ -13,14 +13,14 @@ head: konsti/pubgrub
 created_at: 2024-03-13T18:57:06Z
 updated_at: 2024-03-13T22:48:25Z
 url: https://github.com/astral-sh/uv/pull/2421
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:02Z
 ```
 
 # Update pubgrub for faster range operations
 
 ---
 
-_Pull request opened by @konstin on 2024-03-13 18:57_
+_@konstin_
 
 This update pulls in https://github.com/pubgrub-rs/pubgrub/pull/177, optimizing common range operations in pubgrub. Please refer to this PR for a more extensive description and discussion of the changes.
 

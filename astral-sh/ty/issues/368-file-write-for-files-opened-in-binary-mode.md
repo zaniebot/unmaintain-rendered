@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-13T19:25:52Z
 updated_at: 2025-11-12T01:52:11Z
 url: https://github.com/astral-sh/ty/issues/368
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # file.write for files opened in binary mode
 
 ---
 
-_Issue opened by @heiner on 2025-05-13 19:25_
+_@heiner_
 
 ### Summary
 

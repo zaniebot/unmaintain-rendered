@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-20T09:04:09Z
 updated_at: 2025-12-14T21:22:27Z
 url: https://github.com/astral-sh/uv/issues/16368
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:30Z
 ```
 
 # Switching torch extra between pypi & torch backend
 
 ---
 
-_Issue opened by @tpgillam on 2025-10-20 09:04_
+_@tpgillam_
 
 uv 0.9.4. Consider the following pyproject.toml in an otherwise empty directory:
 

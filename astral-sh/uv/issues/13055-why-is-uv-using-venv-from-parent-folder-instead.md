@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-22T15:36:11Z
 updated_at: 2025-04-25T01:42:40Z
 url: https://github.com/astral-sh/uv/issues/13055
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # why is uv using .venv from parent folder instead of current folder?
 
 ---
 
-_Issue opened by @donghao1393 on 2025-04-22 15:36_
+_@donghao1393_
 
 ### Question
 

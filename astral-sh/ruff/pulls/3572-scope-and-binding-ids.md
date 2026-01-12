@@ -13,14 +13,14 @@ head: scope-banding-id
 created_at: 2023-03-17T10:41:55Z
 updated_at: 2023-03-17T16:12:34Z
 url: https://github.com/astral-sh/ruff/pull/3572
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Scope and Binding IDs
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-17 10:41_
+_@MichaReiser_
 
 This PR introduces the new `ScopeId` and `BindingId` types instead of using the generic `usize` type. 
 

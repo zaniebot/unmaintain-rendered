@@ -14,14 +14,14 @@ head: charlie/g
 created_at: 2024-05-04T18:36:18Z
 updated_at: 2024-05-06T11:36:00Z
 url: https://github.com/astral-sh/uv/pull/3374
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:35Z
 ```
 
 # Add branch and tag variants to Git reference
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-04 18:36_
+_@charliermarsh_
 
 ## Summary
 

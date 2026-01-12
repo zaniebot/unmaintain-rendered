@@ -13,14 +13,14 @@ head: fix-typo
 created_at: 2023-10-29T22:05:16Z
 updated_at: 2023-10-29T22:18:11Z
 url: https://github.com/astral-sh/ruff/pull/8327
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Fix typo (s/adding then/adding them).
 
 ---
 
-_Pull request opened by @jab on 2023-10-29 22:05_
+_@jab_
 
 Noticed this typo and figured I'd submit a drive-by fix.
 

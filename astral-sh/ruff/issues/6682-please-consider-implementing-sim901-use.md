@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-18T19:57:52Z
 updated_at: 2023-08-20T03:32:36Z
 url: https://github.com/astral-sh/ruff/issues/6682
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Please consider implementing SIM901 (Use comparisons directly instead of wrapping them in a bool(...) call )
 
 ---
 
-_Issue opened by @nth10sd on 2023-08-18 19:57_
+_@nth10sd_
 
 It is [an experimental](https://github.com/MartinThoma/flake8-simplify#SIM901) SIM9 flake8-simplify rule and I'm not sure if it's applicable yet.
 

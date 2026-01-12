@@ -13,14 +13,14 @@ head: alex/refurb-nits
 created_at: 2025-02-05T10:09:57Z
 updated_at: 2025-02-05T10:21:38Z
 url: https://github.com/astral-sh/ruff/pull/15958
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`refurb`] Minor nits regarding `for-loop-writes` and `for-loop-set-mutations`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-05 10:09_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: ibraheem/fork-locals
 created_at: 2024-07-19T20:49:09Z
 updated_at: 2024-07-19T21:56:11Z
 url: https://github.com/astral-sh/uv/pull/5232
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:42Z
 ```
 
 # Respect local versions for all user requirements
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-19 20:49_
+_@ibraheemdev_
 
 ## Summary
 

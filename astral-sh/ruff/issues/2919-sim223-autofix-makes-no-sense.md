@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-15T12:50:30Z
 updated_at: 2023-03-30T15:52:45Z
 url: https://github.com/astral-sh/ruff/issues/2919
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # SIM223 autofix makes no sense?
 
 ---
 
-_Issue opened by @spaceone on 2023-02-15 12:50_
+_@spaceone_
 
 `SIM223` fixes:
 

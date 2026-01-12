@@ -14,14 +14,14 @@ head: zb/uv-run-script
 created_at: 2024-04-17T22:40:58Z
 updated_at: 2024-04-19T21:29:58Z
 url: https://github.com/astral-sh/uv/pull/3110
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:26Z
 ```
 
 # Allow `uv run` to execute Python scripts directly
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-17 22:40_
+_@zanieb_
 
 e.g. `uv run foo.py` implies `python foo.py`
 

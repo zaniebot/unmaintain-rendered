@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-02T11:05:08Z
 updated_at: 2025-11-02T15:52:18Z
 url: https://github.com/astral-sh/ruff/issues/21203
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Allow alias/alternative for noqa comments
 
 ---
 
-_Issue opened by @kasium on 2025-11-02 11:05_
+_@kasium_
 
 In my repository, I would like to start using ruff, but I face the following issue
 * ruff uses noqa comments for line local disables

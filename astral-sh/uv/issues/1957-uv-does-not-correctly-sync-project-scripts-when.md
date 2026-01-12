@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-24T22:37:48Z
 updated_at: 2024-02-25T01:31:48Z
 url: https://github.com/astral-sh/uv/issues/1957
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # uv does not correctly sync `project.scripts` when changed
 
 ---
 
-_Issue opened by @dsp on 2024-02-24 22:37_
+_@dsp_
 
 `uv` does not correctly pick up new scripts in `project.scripts` when they changed. `project.scripts` are correctly synced when the venv is initially created and the initial sync is done. A change to `pyproject.toml` afterwards followed by a `uv pip sync` does not correctly pick up new scripts. This currently affects `rye` with uv enabled (changing project.scripts, running `rye sync` and then `rye run` will not show the new script)
 

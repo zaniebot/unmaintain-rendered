@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-11T14:44:30Z
 updated_at: 2025-02-26T04:03:40Z
 url: https://github.com/astral-sh/uv/issues/6008
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # (uv internal error) Failed to spawn the python child process.: The system cannot find the file specified.
 
 ---
 
-_Issue opened by @konosubakonoakua on 2024-08-11 14:44_
+_@konosubakonoakua_
 
 ```bash
 imp_blm_test on  main [!?⇡] via 🐍 v3.11.9 (imp_blm_test)                                                                                                       

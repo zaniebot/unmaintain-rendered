@@ -14,14 +14,14 @@ head: david/generic-implicit-aliases
 created_at: 2025-11-21T09:29:24Z
 updated_at: 2025-11-28T19:38:25Z
 url: https://github.com/astral-sh/ruff/pull/21553
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:27Z
 ```
 
 # [ty] Generic types aliases (implicit and PEP 613)
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-21 09:29_
+_@sharkdp_
 
 ## Summary
 

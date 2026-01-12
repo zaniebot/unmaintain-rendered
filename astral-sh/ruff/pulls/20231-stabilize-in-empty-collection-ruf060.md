@@ -12,14 +12,14 @@ head: brent/ruf060
 created_at: 2025-09-04T13:33:36Z
 updated_at: 2025-09-04T20:17:44Z
 url: https://github.com/astral-sh/ruff/pull/20231
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # Stabilize `in-empty-collection` (`RUF060`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-04 13:33_
+_@ntBre_
 
 Tests look good, just two very small comma changes to the docs
 

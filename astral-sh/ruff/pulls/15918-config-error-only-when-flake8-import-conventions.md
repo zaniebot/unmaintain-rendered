@@ -14,14 +14,14 @@ head: alias-config
 created_at: 2025-02-03T23:26:56Z
 updated_at: 2025-02-04T23:05:36Z
 url: https://github.com/astral-sh/ruff/pull/15918
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Config error only when  `flake8-import-conventions`  alias conflicts with `isort.required-imports` bound name
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-02-03 23:26_
+_@dylwil3_
 
 Previously an error was emitted any time the configuration required both an import of a module and an alias for that module. However, required imports could themselves contain an alias, which may or may not agree with the required alias.
 

@@ -12,14 +12,14 @@ head: charlie/fbt
 created_at: 2022-12-22T13:40:06Z
 updated_at: 2022-12-22T13:40:23Z
 url: https://github.com/astral-sh/ruff/pull/1333
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Allow unittest methods in flake8-boolean-trap
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-22 13:40_
+_@charliermarsh_
 
 Resolves #1330.
 

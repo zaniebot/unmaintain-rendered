@@ -13,14 +13,14 @@ head: konsti/merge-identical-forks
 created_at: 2024-07-24T12:16:12Z
 updated_at: 2024-07-25T09:54:55Z
 url: https://github.com/astral-sh/uv/pull/5405
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:48Z
 ```
 
 # Merge identical forks
 
 ---
 
-_Pull request opened by @konstin on 2024-07-24 12:16_
+_@konstin_
 
 Consider these requirements from pylint 3.2.5:
 

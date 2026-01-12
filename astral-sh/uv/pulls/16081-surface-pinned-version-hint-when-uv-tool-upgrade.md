@@ -12,14 +12,14 @@ head: hint-for-pinned-upgrade
 created_at: 2025-10-01T01:26:49Z
 updated_at: 2025-10-07T16:18:40Z
 url: https://github.com/astral-sh/uv/pull/16081
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:06Z
 ```
 
 # Surface pinned-version hint when `uv tool upgrade` can’t move the tool
 
 ---
 
-_Pull request opened by @terror on 2025-10-01 01:26_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/15665
 

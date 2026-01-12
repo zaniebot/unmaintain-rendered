@@ -14,14 +14,14 @@ head: micha/module-name-new-static
 created_at: 2025-12-23T07:54:16Z
 updated_at: 2025-12-23T08:24:51Z
 url: https://github.com/astral-sh/ruff/pull/22156
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Use `ModuleName::new_static` in more places
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-23 07:54_
+_@MichaReiser_
 
 _No description provided._
 

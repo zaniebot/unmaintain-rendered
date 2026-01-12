@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-19T07:20:49Z
 updated_at: 2024-08-20T07:00:04Z
 url: https://github.com/astral-sh/uv/issues/6198
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # `uv pip install --target` inconsistencies
 
 ---
 
-_Issue opened by @schlamar on 2024-08-19 07:20_
+_@schlamar_
 
 I use `pip install --target` to build compatible package directories for different platforms to distribute applications. For example
 

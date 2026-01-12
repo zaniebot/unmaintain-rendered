@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-03T12:38:14Z
 updated_at: 2025-12-26T11:56:00Z
 url: https://github.com/astral-sh/ty/issues/1742
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support for attrs private fields
 
 ---
 
-_Issue opened by @pwuertz on 2025-12-03 12:38_
+_@pwuertz_
 
 ### Summary
 

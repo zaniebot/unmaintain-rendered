@@ -13,14 +13,14 @@ head: charlie/m
 created_at: 2024-07-01T12:40:51Z
 updated_at: 2024-07-01T12:47:30Z
 url: https://github.com/astral-sh/uv/pull/4690
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:23Z
 ```
 
 # Use a single mutable preferences for forks
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-01 12:40_
+_@charliermarsh_
 
 ## Summary
 

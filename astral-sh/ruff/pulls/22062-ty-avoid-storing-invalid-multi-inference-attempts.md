@@ -14,14 +14,14 @@ head: ibraheem/failed-multi-inference
 created_at: 2025-12-18T21:20:51Z
 updated_at: 2025-12-19T15:38:49Z
 url: https://github.com/astral-sh/ruff/pull/22062
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Avoid storing invalid multi-inference attempts
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-12-18 21:20_
+_@ibraheemdev_
 
 ## Summary
 

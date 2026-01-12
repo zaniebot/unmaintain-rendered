@@ -13,14 +13,14 @@ assignees: []
 created_at: 2018-02-08T05:05:03Z
 updated_at: 2018-08-02T03:30:18Z
 url: https://github.com/clap-rs/clap/issues/1169
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # AppSettings::AllowExternalSubcommands [sometimes] triggers suggestions
 
 ---
 
-_Issue opened by @yrashk on 2018-02-08 05:05_
+_@yrashk_
 
 
 ### Rust Version

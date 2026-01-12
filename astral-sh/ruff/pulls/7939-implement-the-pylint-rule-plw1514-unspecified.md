@@ -13,14 +13,14 @@ head: add-PLW1514
 created_at: 2023-10-13T10:50:12Z
 updated_at: 2023-10-17T08:25:22Z
 url: https://github.com/astral-sh/ruff/pull/7939
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Implement the pylint rule PLW1514 (unspecified-encoding)
 
 ---
 
-_Pull request opened by @shager on 2023-10-13 10:50_
+_@shager_
 
 ## Summary
 

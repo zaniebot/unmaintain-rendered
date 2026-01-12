@@ -2,21 +2,21 @@
 number: 2468
 title: typing.Self is not recognized as compatible with self
 type: issue
-state: open
+state: closed
 author: lelit
 labels: []
 assignees: []
 created_at: 2026-01-12T14:44:52Z
-updated_at: 2026-01-12T14:44:52Z
+updated_at: 2026-01-12T15:07:16Z
 url: https://github.com/astral-sh/ty/issues/2468
-synced_at: 2026-01-12T15:03:21Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # typing.Self is not recognized as compatible with self
 
 ---
 
-_Issue opened by @lelit on 2026-01-12 14:44_
+_@lelit_
 
 ### Summary
 
@@ -120,5 +120,27 @@ See also the corresponding [playground](https://play.ty.dev/4b803ba2-7fe3-4be2-8
 ### Version
 
 0.0.10
+
+---
+
+_Comment by @AlexWaygood on 2026-01-12 14:56_
+
+I think this is https://github.com/astral-sh/ty/issues/1124
+
+---
+
+_Comment by @lelit on 2026-01-12 15:06_
+
+Yes, it seems so, sorry about not spotting it, distracted by the "dataclass" in the title 🤷 
+
+---
+
+_Comment by @AlexWaygood on 2026-01-12 15:07_
+
+No problem, GitHub issue search is anyway impossible to navigate :-)
+
+---
+
+_Closed by @AlexWaygood on 2026-01-12 15:07_
 
 ---

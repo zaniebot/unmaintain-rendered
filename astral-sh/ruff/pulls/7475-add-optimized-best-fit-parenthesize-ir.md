@@ -14,14 +14,14 @@ head: optional-parentheses-ir
 created_at: 2023-09-18T06:43:43Z
 updated_at: 2023-09-19T06:29:07Z
 url: https://github.com/astral-sh/ruff/pull/7475
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Add optimized `best_fit_parenthesize` IR
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-18 06:43_
+_@MichaReiser_
 
 ## Summary
 

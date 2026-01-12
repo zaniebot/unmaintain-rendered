@@ -14,14 +14,14 @@ head: dcreager/protocol-self
 created_at: 2025-11-21T19:04:02Z
 updated_at: 2025-11-24T19:05:11Z
 url: https://github.com/astral-sh/ruff/pull/21569
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Substitute for `typing.Self` when checking protocol members
 
 ---
 
-_Pull request opened by @dcreager on 2025-11-21 19:04_
+_@dcreager_
 
 This patch updates our protocol assignability checks to substitute for any occurrences of `typing.Self` in method signatures, replacing it with the class being checked for assignability against the protocol.
 

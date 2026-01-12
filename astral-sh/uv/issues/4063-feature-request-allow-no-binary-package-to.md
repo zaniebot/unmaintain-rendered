@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-05T19:14:28Z
 updated_at: 2024-06-12T20:47:47Z
 url: https://github.com/astral-sh/uv/issues/4063
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Feature Request: Allow `--no-binary <package>` to override `--only-binary :all:`
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-06-05 19:14_
+_@notatallshaw-gts_
 
 My use case is *in general* I do not want to use sdists, but there are a small number of exceptions to this rule, either because sdists are required, or because I am referencing local sources.
 

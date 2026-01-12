@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-08T16:19:17Z
 updated_at: 2024-07-13T20:57:06Z
 url: https://github.com/astral-sh/ruff/issues/12245
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Avoid raising S310 on safe f-strings
 
 ---
 
-_Issue opened by @dscorbett on 2024-07-08 16:19_
+_@dscorbett_
 
 Given this input file (s310_fstring.py):
 ```python

@@ -14,14 +14,14 @@ head: ag/low-hanging-diagnostic-fruits1
 created_at: 2025-04-25T18:11:39Z
 updated_at: 2025-04-28T15:03:43Z
 url: https://github.com/astral-sh/ruff/pull/17634
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # red_knot_python_semantic: improve `not-iterable` diagnostic
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-04-25 18:11_
+_@BurntSushi_
 
 This cleans up one particular TODO by splitting the "because" part of
 the `not-iterable` diagnostic out into an info sub-diagnostic.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-17T22:27:57Z
 updated_at: 2023-09-14T19:50:33Z
 url: https://github.com/astral-sh/ruff/issues/801
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Come up with a more declarative interface for adding simple checks to `Checker`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-17 22:27_
+_@charliermarsh_
 
 Right now, whenever we add a check to `Checker`, we have to expand the visit methods.
 

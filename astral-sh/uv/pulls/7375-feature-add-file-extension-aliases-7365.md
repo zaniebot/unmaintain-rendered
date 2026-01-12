@@ -11,14 +11,14 @@ head: feature/add-file-extension-aliases-7365
 created_at: 2024-09-13T19:31:47Z
 updated_at: 2024-09-14T07:50:29Z
 url: https://github.com/astral-sh/uv/pull/7375
-synced_at: 2026-01-10T12:53:45Z
+synced_at: 2026-01-12T16:07:48Z
 ```
 
 # Feature/add file extension aliases 7365
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2024-09-13 19:31_
+_@Aditya-PS-05_
 
 ## Summary
 This pull request adds support for additional file extension aliases in the SourceDistExtension and ExtensionError enums. The newly supported file extensions include .tbz, .tgz, .txz, .tar.lz, .tar.lzma. These changes align the extensions supported by the SourceDistExtension with those used in Python packaging tools, enhancing compatibility with a broader range of source distribution formats.

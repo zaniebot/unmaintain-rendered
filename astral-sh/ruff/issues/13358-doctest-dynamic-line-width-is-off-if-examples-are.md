@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-15T20:27:56Z
 updated_at: 2024-09-27T07:09:08Z
 url: https://github.com/astral-sh/ruff/issues/13358
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Doctest dynamic line width is off if examples are indented
 
 ---
 
-_Issue opened by @tugrulates on 2024-09-15 20:27_
+_@tugrulates_
 
 Thank you for the great tool. I am encountering an issue with the docstring code formatter in `dynamic` mode.
 

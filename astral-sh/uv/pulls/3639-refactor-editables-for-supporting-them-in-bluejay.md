@@ -13,14 +13,14 @@ head: konsti/editables-in-bluejay-commands
 created_at: 2024-05-17T15:14:31Z
 updated_at: 2024-05-21T09:17:01Z
 url: https://github.com/astral-sh/uv/pull/3639
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:46Z
 ```
 
 # Refactor editables for supporting them in bluejay commands
 
 ---
 
-_Pull request opened by @konstin on 2024-05-17 15:14_
+_@konstin_
 
 This is split out from workspaces support, which needs editables in the bluejay commands. It consists mainly of refactorings:
 

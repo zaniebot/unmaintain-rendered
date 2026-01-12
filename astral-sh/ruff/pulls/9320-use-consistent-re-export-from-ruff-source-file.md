@@ -13,14 +13,14 @@ head: charlie/pub
 created_at: 2023-12-30T19:22:52Z
 updated_at: 2023-12-30T19:48:46Z
 url: https://github.com/astral-sh/ruff/pull/9320
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Use consistent re-export from `ruff_source_file`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-30 19:22_
+_@charliermarsh_
 
 Right now, we both re-export (via `pub use`) and mark the modules themselves a `pub`, so they can be imported through two different paths.
 

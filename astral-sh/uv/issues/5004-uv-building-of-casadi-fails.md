@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-12T08:12:08Z
 updated_at: 2024-07-13T08:31:46Z
 url: https://github.com/astral-sh/uv/issues/5004
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # uv building of casadi fails
 
 ---
 
-_Issue opened by @andiradulescu on 2024-07-12 08:12_
+_@andiradulescu_
 
 When trying to build [casadi](https://github.com/casadi/casadi) with `uv` the build fails with:
 ```

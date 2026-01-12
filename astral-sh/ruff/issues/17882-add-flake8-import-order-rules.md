@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-06T08:08:16Z
 updated_at: 2025-05-06T09:12:53Z
 url: https://github.com/astral-sh/ruff/issues/17882
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add flake8-import-order rules
 
 ---
 
-_Issue opened by @Coacher on 2025-05-06 08:08_
+_@Coacher_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-12-04T04:54:06Z
 updated_at: 2025-08-15T13:46:36Z
 url: https://github.com/clap-rs/clap/issues/5244
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Clap completion can't tell regular and `last` positionals apart
 
 ---
 
-_Issue opened by @Morganamilo on 2023-12-04 04:54_
+_@Morganamilo_
 
 ### Please complete the following tasks
 

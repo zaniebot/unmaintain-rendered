@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-21T23:38:08Z
 updated_at: 2025-04-21T23:58:27Z
 url: https://github.com/astral-sh/uv/issues/13035
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # How to ensure indirect dependency is fetched from internal PyPI index?
 
 ---
 
-_Issue opened by @LewisGaul on 2025-04-21 23:38_
+_@LewisGaul_
 
 ### Question
 

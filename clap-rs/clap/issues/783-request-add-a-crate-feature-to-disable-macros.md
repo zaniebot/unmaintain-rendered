@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-12-24T05:55:24Z
 updated_at: 2018-08-02T03:29:58Z
 url: https://github.com/clap-rs/clap/issues/783
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Request: Add a crate_feature to disable macros that depend on cargo env vars
 
 ---
 
-_Issue opened by @acmcarther on 2016-12-24 05:55_
+_@acmcarther_
 
 The [crate_*! macros](https://github.com/kbknapp/clap-rs/blob/83bacb87bb854be8b559f9e9c4bda5c3f47a0489/src/macros.rs#L389) make a fairly valid assumption that consumers use `cargo` to build Rust projects by expecting certain environment variables to be present. Unfortunately, I am one of the very few not using `Cargo`. I'm actually experimenting with [Bazel](https://www.bazel.io/) to build my Rust projects -- but `clap` fails to compile because bazel is not providing the expected environment variables.
 

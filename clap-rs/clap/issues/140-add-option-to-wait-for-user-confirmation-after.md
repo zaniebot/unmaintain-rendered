@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-06-26T16:36:58Z
 updated_at: 2015-06-30T02:34:47Z
 url: https://github.com/clap-rs/clap/issues/140
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Add option to wait for user confirmation after displaying help
 
 ---
 
-_Issue opened by @sirideain on 2015-06-26 16:36_
+_@sirideain_
 
 On Windows a user is most likely going to double-click the executable to run it. That causes the help to display and the program to close before the user is able to read it. Providing an option to wait for confirmation would keep the cmd prompt open for the user.
 

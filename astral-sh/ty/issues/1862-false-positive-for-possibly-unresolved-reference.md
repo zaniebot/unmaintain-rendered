@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-12T12:21:10Z
 updated_at: 2025-12-12T12:24:29Z
 url: https://github.com/astral-sh/ty/issues/1862
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # False positive for `possibly-unresolved-reference` using walrus operator
 
 ---
 
-_Issue opened by @xoudini on 2025-12-12 12:21_
+_@xoudini_
 
 ### Summary
 

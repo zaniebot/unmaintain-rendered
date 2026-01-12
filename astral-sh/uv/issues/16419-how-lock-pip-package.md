@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-23T14:26:02Z
 updated_at: 2025-12-18T16:15:20Z
 url: https://github.com/astral-sh/uv/issues/16419
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # how lock pip package ?
 
 ---
 
-_Issue opened by @balabalabutton on 2025-10-23 14:26_
+_@balabalabutton_
 
 ### Question
 

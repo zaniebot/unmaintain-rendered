@@ -13,14 +13,14 @@ head: missing-fstring-docs
 created_at: 2024-10-07T11:45:12Z
 updated_at: 2024-10-07T11:59:02Z
 url: https://github.com/astral-sh/ruff/pull/13659
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Fixup docs markup for `RUF027` (`missing-fstring-syntax`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-07 11:45_
+_@AlexWaygood_
 
 ## Summary
 

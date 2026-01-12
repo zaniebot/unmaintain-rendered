@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-12T01:03:17Z
 updated_at: 2025-11-12T17:54:40Z
 url: https://github.com/astral-sh/ruff/issues/21393
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # SIM113 only applies when the index variable is initialized to `0`
 
 ---
 
-_Issue opened by @dscorbett on 2025-11-12 01:03_
+_@dscorbett_
 
 ### Summary
 

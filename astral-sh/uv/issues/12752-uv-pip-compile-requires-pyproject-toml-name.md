@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T16:57:52Z
 updated_at: 2025-04-08T18:10:51Z
 url: https://github.com/astral-sh/uv/issues/12752
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # uv pip compile requires pyproject.toml name exactly - why?
 
 ---
 
-_Issue opened by @ihelmer07 on 2025-04-08 16:57_
+_@ihelmer07_
 
 ### Summary
 

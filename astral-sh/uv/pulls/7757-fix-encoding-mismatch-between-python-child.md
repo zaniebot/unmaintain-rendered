@@ -14,14 +14,14 @@ head: fix-utf8
 created_at: 2024-09-28T12:32:33Z
 updated_at: 2024-10-11T04:27:43Z
 url: https://github.com/astral-sh/uv/pull/7757
-synced_at: 2026-01-10T12:53:55Z
+synced_at: 2026-01-12T16:07:59Z
 ```
 
 # Fix encoding mismatch between python child process and uv
 
 ---
 
-_Pull request opened by @kahojyun on 2024-09-28 12:32_
+_@kahojyun_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

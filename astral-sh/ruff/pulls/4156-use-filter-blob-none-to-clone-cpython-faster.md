@@ -12,14 +12,14 @@ head: faster-benchmark-setup
 created_at: 2023-04-30T09:14:55Z
 updated_at: 2023-04-30T14:23:50Z
 url: https://github.com/astral-sh/ruff/pull/4156
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Use --filter=blob:none to clone CPython faster
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-04-30 09:14_
+_@JonathanPlasse_
 
 ```console
 # Before

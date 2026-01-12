@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-11-02T05:15:03Z
 updated_at: 2024-01-10T16:52:59Z
 url: https://github.com/astral-sh/ruff/issues/8438
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: `parenthesize_conditional_expressions` preview style
 
 ---
 
-_Issue opened by @zanieb on 2023-11-02 05:15_
+_@zanieb_
 
 Implement Black's [`parenthesize_conditional_expressions`](https://github.com/psf/black/pull/2278) style as a preview style in Ruff. 
 

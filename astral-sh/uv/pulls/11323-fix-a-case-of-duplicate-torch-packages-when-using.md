@@ -14,14 +14,14 @@ head: ag/fix-11133
 created_at: 2025-02-07T17:19:06Z
 updated_at: 2025-02-18T12:47:48Z
 url: https://github.com/astral-sh/uv/pull/11323
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:47Z
 ```
 
 # fix a case of duplicate `torch` packages when using conflicting extras
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-02-07 17:19_
+_@BurntSushi_
 
 The underlying cause here, I believe, was that we weren't accounting
 for the case where an edge could be visited *without* any extras

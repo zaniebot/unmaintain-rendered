@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-25T07:01:40Z
 updated_at: 2023-03-25T15:11:15Z
 url: https://github.com/astral-sh/ruff/issues/3727
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # TCH004 incorrectly states that import is used for more than type checking
 
 ---
 
-_Issue opened by @tibbe on 2023-03-25 07:01_
+_@tibbe_
 
 Version: ruff 0.0.254
 

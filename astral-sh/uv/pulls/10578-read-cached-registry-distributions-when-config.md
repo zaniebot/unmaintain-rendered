@@ -14,14 +14,14 @@ head: charlie/cc
 created_at: 2025-01-13T21:12:57Z
 updated_at: 2025-01-13T21:25:14Z
 url: https://github.com/astral-sh/uv/pull/10578
-synced_at: 2026-01-10T11:44:58Z
+synced_at: 2026-01-12T16:09:22Z
 ```
 
 # Read cached registry distributions when `--config-settings` are present
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-13 21:12_
+_@charliermarsh_
 
 ## Summary
 

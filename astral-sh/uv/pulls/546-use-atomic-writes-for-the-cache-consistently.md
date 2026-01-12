@@ -12,14 +12,14 @@ head: konstin/atomic-writes
 created_at: 2023-12-04T16:07:00Z
 updated_at: 2023-12-04T17:02:02Z
 url: https://github.com/astral-sh/uv/pull/546
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:01Z
 ```
 
 # Use atomic writes for the cache consistently
 
 ---
 
-_Pull request opened by @konstin on 2023-12-04 16:07_
+_@konstin_
 
 Ensure we're using atomic writes everywhere in our cache to avoid broken cache records and error with parallel puffin actions (https://github.com/astral-sh/puffin/pull/544#issuecomment-1838841581).
 

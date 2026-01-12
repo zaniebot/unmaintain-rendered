@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-09T01:38:57Z
 updated_at: 2025-03-09T16:00:08Z
 url: https://github.com/astral-sh/ruff/issues/16573
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Port Pylint's `missing-raises-doc`
 
 ---
 
-_Issue opened by @gtkacz on 2025-03-09 01:38_
+_@gtkacz_
 
 ### Summary
 

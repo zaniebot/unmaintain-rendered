@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-17T18:51:11Z
 updated_at: 2023-10-24T19:21:09Z
 url: https://github.com/astral-sh/uv/issues/111
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Store truncated metadata in the metadata cache
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-17 18:51_
+_@charliermarsh_
 
 This might be difficult since we're just using an HTTP cache, but e.g., we don't need the full descriptions the metadata responses.
 

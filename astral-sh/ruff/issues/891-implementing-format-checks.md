@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-23T13:15:32Z
 updated_at: 2022-11-25T18:14:32Z
 url: https://github.com/astral-sh/ruff/issues/891
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implementing .format checks
 
 ---
 
-_Issue opened by @olliemath on 2022-11-23 13:15_
+_@olliemath_
 
 Hi, I'm interested in contributing pyflakes' `.format(...)` checks to ruff. These can give runtime errors (especially, in rarely hit code paths, like trying to give nice exception messages), so I think they'd be necessary to have for my team to move from flake8 to ruff.
 

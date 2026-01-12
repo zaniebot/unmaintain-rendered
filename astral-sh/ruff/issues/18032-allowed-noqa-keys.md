@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-12T06:14:39Z
 updated_at: 2025-05-12T07:18:04Z
 url: https://github.com/astral-sh/ruff/issues/18032
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Allowed noqa keys
 
 ---
 
-_Issue opened by @CharlesPerrotMinot on 2025-05-12 06:14_
+_@CharlesPerrotMinot_
 
 ### Summary
 

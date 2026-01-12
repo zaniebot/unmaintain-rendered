@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-31T07:07:20Z
 updated_at: 2025-01-17T01:44:09Z
 url: https://github.com/astral-sh/ruff/issues/9730
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # False Positive PT012 for async iterator
 
 ---
 
-_Issue opened by @nmzgnv on 2024-01-31 07:07_
+_@nmzgnv_
 
 ## What's wrong
 I want to test that async iterator raises error.

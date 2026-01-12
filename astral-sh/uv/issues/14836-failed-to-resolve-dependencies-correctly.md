@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-23T06:40:24Z
 updated_at: 2025-08-12T02:30:47Z
 url: https://github.com/astral-sh/uv/issues/14836
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # Failed to resolve dependencies correctly
 
 ---
 
-_Issue opened by @jalenzz on 2025-07-23 06:40_
+_@jalenzz_
 
 ### Summary
 

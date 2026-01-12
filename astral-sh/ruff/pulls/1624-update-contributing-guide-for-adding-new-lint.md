@@ -11,14 +11,14 @@ head: update-contributing
 created_at: 2023-01-04T04:42:13Z
 updated_at: 2023-01-04T04:50:58Z
 url: https://github.com/astral-sh/ruff/pull/1624
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Update contributing guide for adding new lint rules
 
 ---
 
-_Pull request opened by @messense on 2023-01-04 04:42_
+_@messense_
 
 Noticed when doing #1621 
 

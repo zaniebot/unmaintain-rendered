@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-28T03:46:35Z
 updated_at: 2024-09-28T03:50:20Z
 url: https://github.com/astral-sh/uv/issues/7749
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # FEATSupport to set the Project Version using uv command
 
 ---
 
-_Issue opened by @datnguye on 2024-09-28 03:46_
+_@datnguye_
 
 Currently I'm using `poetry` and would like move into `uv`.
 

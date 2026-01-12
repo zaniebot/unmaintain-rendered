@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-26T02:09:43Z
 updated_at: 2024-12-11T02:54:24Z
 url: https://github.com/astral-sh/ruff/issues/12520
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # DOC501 throwing errors when using Sphinx style docstrings
 
 ---
 
-_Issue opened by @Eutropios on 2024-07-26 02:09_
+_@Eutropios_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

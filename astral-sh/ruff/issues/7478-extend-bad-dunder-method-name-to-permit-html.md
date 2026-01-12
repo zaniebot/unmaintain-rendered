@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-18T07:37:21Z
 updated_at: 2023-09-18T15:16:24Z
 url: https://github.com/astral-sh/ruff/issues/7478
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Extend `bad-dunder-method-name` to permit `__html__`
 
 ---
 
-_Issue opened by @jaap3 on 2023-09-18 07:37_
+_@jaap3_
 
 The `__html__` dunder method is used by [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/templates/#jinja-filters.escape), [Django](https://docs.djangoproject.com/en/4.2/_modules/django/utils/safestring/) and other frameworks (?) to return the "safe" html representation of an object.
 

@@ -12,14 +12,14 @@ head: fix_readme_navi
 created_at: 2024-10-21T08:14:27Z
 updated_at: 2024-10-21T09:19:18Z
 url: https://github.com/astral-sh/uv/pull/8408
-synced_at: 2026-01-10T12:54:09Z
+synced_at: 2026-01-12T16:08:18Z
 ```
 
 # Fix navigators in crates/README.md
 
 ---
 
-_Pull request opened by @zhangkai803 on 2024-10-21 08:14_
+_@zhangkai803_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-10T17:06:59Z
 updated_at: 2024-09-22T23:37:55Z
 url: https://github.com/astral-sh/uv/issues/4971
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # `uv python pin` should find `.python-version` file in a workspace
 
 ---
 
-_Issue opened by @zanieb on 2024-07-10 17:06_
+_@zanieb_
 
 If working in a child directory of a workspace, `uv python pin` should support finding the `.python-version` file in the workspace root.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-05-27T00:35:12Z
 updated_at: 2018-08-02T03:30:07Z
 url: https://github.com/clap-rs/clap/issues/970
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Aliases the other way around (POSIX style)
 
 ---
 
-_Issue opened by @ericbn on 2017-05-27 00:35_
+_@ericbn_
 
 Clap 2.24.1 and rust 1.12 are currently being used.
 

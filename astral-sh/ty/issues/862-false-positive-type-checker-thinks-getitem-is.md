@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-21T12:22:22Z
 updated_at: 2025-07-30T18:34:54Z
 url: https://github.com/astral-sh/ty/issues/862
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # False positive: type checker thinks `__getitem__` is required for `foo[2] = 2`
 
 ---
 
-_Issue opened by @mflova on 2025-07-21 12:22_
+_@mflova_
 
 ### Summary
 

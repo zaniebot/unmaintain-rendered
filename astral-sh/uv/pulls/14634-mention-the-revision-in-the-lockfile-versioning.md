@@ -13,14 +13,14 @@ head: zb/lock-rev
 created_at: 2025-07-15T19:13:44Z
 updated_at: 2025-07-15T19:35:55Z
 url: https://github.com/astral-sh/uv/pull/14634
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:19Z
 ```
 
 # Mention the `revision` in the lockfile versioning doc
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-15 19:13_
+_@zanieb_
 
 _No description provided._
 

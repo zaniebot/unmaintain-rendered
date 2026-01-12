@@ -12,14 +12,14 @@ head: propagate-markers
 created_at: 2024-06-29T09:14:23Z
 updated_at: 2024-09-05T16:52:22Z
 url: https://github.com/astral-sh/uv/pull/4645
-synced_at: 2026-01-10T12:53:31Z
+synced_at: 2026-01-12T16:06:22Z
 ```
 
 # Use cycle aware algorithm for propagating markers
 
 ---
 
-_Pull request opened by @bluss on 2024-06-29 09:14_
+_@bluss_
 
 This is my attempt at this - I don't exactly have much prior experience with
 Uv's codebase and w.r.t graph algorithms I'm pretty rusty.

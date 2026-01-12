@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-26T07:33:20Z
 updated_at: 2024-12-26T18:19:37Z
 url: https://github.com/astral-sh/uv/issues/10167
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # Using a dynamic version causes the `uv-lock` pre-commit CI to fail on GitHub but pass locally.
 
 ---
 
-_Issue opened by @vivodi on 2024-12-26 07:33_
+_@vivodi_
 
 Using a dynamic version causes the `uv-lock` pre-commit CI to fail on GitHub but pass locally.
 

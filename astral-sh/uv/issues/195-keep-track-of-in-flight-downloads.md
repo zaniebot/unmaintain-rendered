@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-26T11:40:27Z
 updated_at: 2024-01-16T05:38:18Z
 url: https://github.com/astral-sh/uv/issues/195
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Keep track of in-flight downloads
 
 ---
 
-_Issue opened by @konstin on 2023-10-26 11:40_
+_@konstin_
 
 Like with resolver requests, we should make sure that we only schedule one download at a time. This is e.g. relevant when obtaining the build requirements for multiple source distributions at once.
 

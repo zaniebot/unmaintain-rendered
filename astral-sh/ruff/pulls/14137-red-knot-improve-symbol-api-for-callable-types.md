@@ -13,14 +13,14 @@ head: david/unbound-methods-follow-up
 created_at: 2024-11-06T19:34:56Z
 updated_at: 2024-11-07T18:58:34Z
 url: https://github.com/astral-sh/ruff/pull/14137
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Improve `Symbol` API for callable types
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-06 19:34_
+_@sharkdp_
 
 ## Summary
 

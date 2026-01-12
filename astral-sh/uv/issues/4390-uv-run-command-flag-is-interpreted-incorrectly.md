@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-18T17:16:10Z
 updated_at: 2024-06-19T14:55:22Z
 url: https://github.com/astral-sh/uv/issues/4390
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # `uv run command --flag` is interpreted incorrectly
 
 ---
 
-_Issue opened by @matterhorn103 on 2024-06-18 17:16_
+_@matterhorn103_
 
 Flags passed to commands executed using `uv run` are being interpreted as flags to `uv run` rather than to the command itself:
 

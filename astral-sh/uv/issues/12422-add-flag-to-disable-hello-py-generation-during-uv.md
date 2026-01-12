@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T03:38:02Z
 updated_at: 2025-03-24T03:49:59Z
 url: https://github.com/astral-sh/uv/issues/12422
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # Add flag to disable hello.py generation during `uv init`
 
 ---
 
-_Issue opened by @prdai on 2025-03-24 03:38_
+_@prdai_
 
 ### Summary
 

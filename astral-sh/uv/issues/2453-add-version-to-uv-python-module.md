@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-14T11:31:03Z
 updated_at: 2024-03-14T14:07:14Z
 url: https://github.com/astral-sh/uv/issues/2453
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Add __version__ to uv python module
 
 ---
 
-_Issue opened by @mkleinbort-ic on 2024-03-14 11:31_
+_@mkleinbort-ic_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

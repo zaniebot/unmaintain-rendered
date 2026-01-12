@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-25T22:44:34Z
 updated_at: 2023-08-26T18:51:35Z
 url: https://github.com/astral-sh/ruff/issues/6887
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Enable undocumented-param for pep257 docstrings
 
 ---
 
-_Issue opened by @joelberkeley on 2023-08-25 22:44_
+_@joelberkeley_
 
 I'd like to be able to check for undocumented parameters whilst using pep257 docstrings. I'm specifically using reST style
 

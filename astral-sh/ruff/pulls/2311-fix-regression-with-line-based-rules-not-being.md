@@ -12,14 +12,14 @@ head: line-based-per-file
 created_at: 2023-01-28T19:24:55Z
 updated_at: 2023-01-28T22:30:59Z
 url: https://github.com/astral-sh/ruff/pull/2311
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Fix regression with line-based rules not being ignored per-file
 
 ---
 
-_Pull request opened by @sciyoshi on 2023-01-28 19:24_
+_@sciyoshi_
 
 Apologies for the [broken previous PR](https://github.com/charliermarsh/ruff/pull/2309). I think there isn't much test coverage around per-file-ignores and I'm still getting used to the codebase!
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-22T13:11:06Z
 updated_at: 2024-11-06T16:22:15Z
 url: https://github.com/astral-sh/uv/issues/8451
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:26Z
 ```
 
 # Add MSRV build to CI
 
 ---
 
-_Issue opened by @charliermarsh on 2024-10-22 13:11_
+_@charliermarsh_
 
 Similar to the job we have in Ruff: https://github.com/astral-sh/ruff/blob/7dbd8f0f8e725d05cc1d15e6ef1c6cc2ed2b2090/.github/workflows/ci.yaml#L226. I don't think we need to run the test suite, just confirm that uv builds.
 

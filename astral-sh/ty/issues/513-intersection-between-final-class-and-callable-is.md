@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-26T01:27:47Z
 updated_at: 2025-05-29T23:27:28Z
 url: https://github.com/astral-sh/ty/issues/513
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Intersection between @final class and Callable is not reduced to Never
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-05-26 01:27_
+_@JelleZijlstra_
 
 ### Summary
 

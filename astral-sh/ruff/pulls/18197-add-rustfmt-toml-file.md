@@ -13,14 +13,14 @@ head: dcreager/rustfmt
 created_at: 2025-05-19T15:14:01Z
 updated_at: 2025-05-19T15:41:00Z
 url: https://github.com/astral-sh/ruff/pull/18197
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # Add rustfmt.toml file
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-19 15:14_
+_@dcreager_
 
 My editor runs `rustfmt` on save to format Rust code, not `cargo fmt`.
 

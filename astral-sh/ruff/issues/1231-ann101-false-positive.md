@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-13T21:42:58Z
 updated_at: 2022-12-14T01:13:05Z
 url: https://github.com/astral-sh/ruff/issues/1231
-synced_at: 2026-01-10T12:06:19Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # ANN101 False Positive
 
 ---
 
-_Issue opened by @Tomperez98 on 2022-12-13 21:42_
+_@Tomperez98_
 
 ```python
 class AClass:

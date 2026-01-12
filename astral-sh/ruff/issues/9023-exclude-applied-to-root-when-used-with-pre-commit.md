@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-06T12:31:37Z
 updated_at: 2023-12-08T08:52:18Z
 url: https://github.com/astral-sh/ruff/issues/9023
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Exclude applied to root, when used with pre-commit
 
 ---
 
-_Issue opened by @99njaggi on 2023-12-06 12:31_
+_@99njaggi_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

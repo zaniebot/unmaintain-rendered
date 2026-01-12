@@ -13,14 +13,14 @@ head: alex/dup-protocols
 created_at: 2025-05-08T22:11:43Z
 updated_at: 2025-05-08T22:41:24Z
 url: https://github.com/astral-sh/ruff/pull/17971
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # [ty] Report duplicate `Protocol` or `Generic` base classes with `[duplicate-base]`, not `[inconsistent-mro]`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-08 22:11_
+_@AlexWaygood_
 
 ## Summary
 

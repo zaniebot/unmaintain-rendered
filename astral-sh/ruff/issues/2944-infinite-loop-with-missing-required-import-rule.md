@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-16T01:25:12Z
 updated_at: 2023-02-16T03:24:57Z
 url: https://github.com/astral-sh/ruff/issues/2944
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Infinite loop] with missing required import rule
 
 ---
 
-_Issue opened by @underyx on 2023-02-16 01:25_
+_@underyx_
 
 - target file contents before ruff: https://gist.github.com/underyx/ad1478d388cd61bfcb89e25a5ea3ddde
   - after ruff: https://gist.github.com/underyx/5741723fd6ffd373ec96f7967552c123 

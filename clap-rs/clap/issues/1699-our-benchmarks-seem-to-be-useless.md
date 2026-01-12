@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-02-17T19:29:48Z
 updated_at: 2020-03-02T07:07:49Z
 url: https://github.com/clap-rs/clap/issues/1699
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Our benchmarks seem to be useless 
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-02-17 19:29_
+_@CreepySkeleton_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

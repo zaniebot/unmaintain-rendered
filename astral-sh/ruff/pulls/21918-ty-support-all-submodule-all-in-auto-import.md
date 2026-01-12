@@ -14,14 +14,14 @@ head: ag/support-all-submodule-extend
 created_at: 2025-12-11T15:10:28Z
 updated_at: 2025-12-12T15:11:07Z
 url: https://github.com/astral-sh/ruff/pull/21918
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] Support `__all__ += submodule.__all__` in auto-import
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-12-11 15:10_
+_@BurntSushi_
 
 ... and also `__all__.extend(submodule.__all__)`.
 

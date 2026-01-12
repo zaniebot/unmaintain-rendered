@@ -12,14 +12,14 @@ head: move-pylint-violations
 created_at: 2023-02-02T19:06:54Z
 updated_at: 2023-02-02T19:47:59Z
 url: https://github.com/astral-sh/ruff/pull/2489
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Move pylint violations to rule modules
 
 ---
 
-_Pull request opened by @akx on 2023-02-02 19:06_
+_@akx_
 
 _No description provided._
 

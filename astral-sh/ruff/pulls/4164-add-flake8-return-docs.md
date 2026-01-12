@@ -12,14 +12,14 @@ head: flake8-return-docs
 created_at: 2023-04-30T17:43:21Z
 updated_at: 2023-05-10T14:55:17Z
 url: https://github.com/astral-sh/ruff/pull/4164
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add `flake8-return` docs
 
 ---
 
-_Pull request opened by @calumy on 2023-04-30 17:43_
+_@calumy_
 
 Adds documentation for the flake8-return rules.
 

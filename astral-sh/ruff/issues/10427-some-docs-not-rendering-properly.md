@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-15T22:03:35Z
 updated_at: 2024-03-21T16:34:00Z
 url: https://github.com/astral-sh/ruff/issues/10427
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Some docs not rendering properly
 
 ---
 
-_Issue opened by @augustelalande on 2024-03-15 22:03_
+_@augustelalande_
 
 https://docs.astral.sh/ruff/rules/too-many-blank-lines/ (among others) is not rendering properly, even though the markdown seems fine.
 

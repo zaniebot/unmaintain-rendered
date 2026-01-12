@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-08T09:14:45Z
 updated_at: 2024-10-16T15:13:31Z
 url: https://github.com/astral-sh/uv/issues/7997
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Extend Git cache-keys to include Git tags
 
 ---
 
-_Issue opened by @my1e5 on 2024-10-08 09:14_
+_@my1e5_
 
 For projects with dynamic metadata, you can set 
 ```

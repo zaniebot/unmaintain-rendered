@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-24T22:01:39Z
 updated_at: 2023-05-24T22:16:15Z
 url: https://github.com/astral-sh/ruff/issues/4646
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # regression from 269 to 270: noqa expected on wrong line for B024
 
 ---
 
-_Issue opened by @atom-andrew on 2023-05-24 22:01_
+_@atom-andrew_
 
 ```
 from abc import ABC

@@ -15,14 +15,14 @@ head: fix-21315
 created_at: 2025-11-07T23:27:05Z
 updated_at: 2025-11-10T23:18:08Z
 url: https://github.com/astral-sh/ruff/pull/21330
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # [`ruff`] Ignore `str()` when not used for simple conversion (`RUF065`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-07 23:27_
+_@danparizher_
 
 ## Summary
 

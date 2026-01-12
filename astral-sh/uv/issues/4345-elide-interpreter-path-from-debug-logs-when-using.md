@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-16T23:34:01Z
 updated_at: 2024-08-20T18:23:41Z
 url: https://github.com/astral-sh/uv/issues/4345
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Elide interpreter path from debug logs when using managed toolchain
 
 ---
 
-_Issue opened by @zanieb on 2024-06-16 23:34_
+_@zanieb_
 
 e.g.
 

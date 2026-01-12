@@ -14,14 +14,14 @@ head: charlie/functional-namedtuple
 created_at: 2026-01-01T13:23:44Z
 updated_at: 2026-01-12T13:51:35Z
 url: https://github.com/astral-sh/ruff/pull/22327
-synced_at: 2026-01-12T14:03:34Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Add support for functional `namedtuple` creation
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-01 13:23_
+_@charliermarsh_
 
 ## Summary
 

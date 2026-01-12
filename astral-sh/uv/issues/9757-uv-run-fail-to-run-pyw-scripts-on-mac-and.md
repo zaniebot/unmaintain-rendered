@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-10T00:16:41Z
 updated_at: 2024-12-10T02:52:03Z
 url: https://github.com/astral-sh/uv/issues/9757
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # `uv run` fail to run `pyw` scripts on Mac (and probably Linux) with a confusing message
 
 ---
 
-_Issue opened by @ilyagr on 2024-12-10 00:16_
+_@ilyagr_
 
 I tried reproducing the second example from https://docs.astral.sh/uv/guides/scripts/#using-gui-scripts on my Mac, and got a confusing error. I'm guessing `uv` tries to run a `pythonw` executable that doesn't exist on my system, or it's trying to run `example_pyqt.pyw.py`.
 

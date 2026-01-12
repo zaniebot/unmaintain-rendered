@@ -13,14 +13,14 @@ head: hotfix/cmp0xff/#14455-b024-class-variable
 created_at: 2024-11-20T20:50:38Z
 updated_at: 2024-11-21T15:12:43Z
 url: https://github.com/astral-sh/ruff/pull/14502
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # doc(B024): #14455 add annotated but unassgined class variables
 
 ---
 
-_Pull request opened by @cmp0xff on 2024-11-20 20:50_
+_@cmp0xff_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

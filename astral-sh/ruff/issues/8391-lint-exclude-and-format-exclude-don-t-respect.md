@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-31T20:19:33Z
 updated_at: 2023-10-31T21:45:50Z
 url: https://github.com/astral-sh/ruff/issues/8391
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `lint.exclude` and `format.exclude` don't respect `--force-exclude`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-31 20:19_
+_@charliermarsh_
 
 _No description provided._
 

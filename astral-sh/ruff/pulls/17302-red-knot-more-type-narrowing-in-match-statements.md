@@ -13,14 +13,14 @@ head: more-match-narrowing
 created_at: 2025-04-08T21:36:00Z
 updated_at: 2025-04-18T01:18:34Z
 url: https://github.com/astral-sh/ruff/pull/17302
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] more type-narrowing in match statements
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2025-04-08 21:36_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

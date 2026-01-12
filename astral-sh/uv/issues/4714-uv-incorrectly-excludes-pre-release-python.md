@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-01T23:13:14Z
 updated_at: 2024-07-04T20:06:53Z
 url: https://github.com/astral-sh/uv/issues/4714
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # uv incorrectly excludes pre-release Python versions when `requires-python` is greater or equal to that version
 
 ---
 
-_Issue opened by @notatallshaw on 2024-07-01 23:13_
+_@notatallshaw_
 
 Tested on:
 

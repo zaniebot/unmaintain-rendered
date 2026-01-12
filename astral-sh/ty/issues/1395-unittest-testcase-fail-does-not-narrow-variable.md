@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-18T14:20:35Z
 updated_at: 2025-10-18T17:06:06Z
 url: https://github.com/astral-sh/ty/issues/1395
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Unittest.TestCase.fail() does not narrow variable type
 
 ---
 
-_Issue opened by @Manezki on 2025-10-18 14:20_
+_@Manezki_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: fix-debug-assert-message
 created_at: 2025-12-13T22:36:01Z
 updated_at: 2025-12-13T23:42:30Z
 url: https://github.com/astral-sh/ruff/pull/21969
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # Update debug_assert which pointed at missing method
 
 ---
 
-_Pull request opened by @PeterJCLaw on 2025-12-13 22:36_
+_@PeterJCLaw_
 
 ## Summary
 

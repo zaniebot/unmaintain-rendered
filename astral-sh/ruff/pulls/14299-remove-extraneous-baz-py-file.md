@@ -13,14 +13,14 @@ head: charlie/b
 created_at: 2024-11-12T13:55:53Z
 updated_at: 2024-11-12T14:01:21Z
 url: https://github.com/astral-sh/ruff/pull/14299
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Remove extraneous `baz.py` file
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-12 13:55_
+_@charliermarsh_
 
 _No description provided._
 

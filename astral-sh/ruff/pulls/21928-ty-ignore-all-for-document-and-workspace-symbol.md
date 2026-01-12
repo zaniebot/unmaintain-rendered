@@ -14,14 +14,14 @@ head: ag/ignore-all-in-symbol-visitor
 created_at: 2025-12-11T19:42:20Z
 updated_at: 2025-12-12T12:29:31Z
 url: https://github.com/astral-sh/ruff/pull/21928
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] Ignore `__all__` for document and workspace symbol requests
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-12-11 19:42_
+_@BurntSushi_
 
 We also ignore names introduced by import statements, which seems to
 match pylance behavior.

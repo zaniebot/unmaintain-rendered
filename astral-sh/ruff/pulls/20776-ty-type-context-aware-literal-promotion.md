@@ -14,14 +14,14 @@ head: ibraheem/literal-promotion
 created_at: 2025-10-08T21:36:00Z
 updated_at: 2025-10-09T20:59:08Z
 url: https://github.com/astral-sh/ruff/pull/20776
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] Type-context aware literal promotion
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-10-08 21:36_
+_@ibraheemdev_
 
 ## Summary
 

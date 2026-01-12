@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-30T22:46:37Z
 updated_at: 2025-05-02T12:52:03Z
 url: https://github.com/astral-sh/uv/issues/13245
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # `uv run` from multiple requirements
 
 ---
 
-_Issue opened by @patrick-kidger on 2025-04-30 22:46_
+_@patrick-kidger_
 
 ### Question
 

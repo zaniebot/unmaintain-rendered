@@ -13,14 +13,14 @@ head: dcreager/infer-binary
 created_at: 2024-12-27T15:54:49Z
 updated_at: 2025-01-06T18:50:21Z
 url: https://github.com/astral-sh/ruff/pull/15161
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Don't special-case class instances in binary expression inference
 
 ---
 
-_Pull request opened by @dcreager on 2024-12-27 15:54_
+_@dcreager_
 
 Just like in #15045 for unary expressions: In binary expressions, we were only looking for dunder expressions for `Type::Instance` types.  We had some special cases for coercing the various `Literal` types into their corresponding `Instance` types before doing the lookup.  But we can side-step all of that by using the existing `Type::to_meta_type` and `Type::to_instance` methods.
 

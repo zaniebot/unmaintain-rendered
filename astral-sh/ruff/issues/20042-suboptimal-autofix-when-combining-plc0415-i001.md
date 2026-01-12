@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-22T14:01:32Z
 updated_at: 2025-08-22T14:11:26Z
 url: https://github.com/astral-sh/ruff/issues/20042
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Suboptimal autofix when combining PLC0415,I001,RUF100 with a long line
 
 ---
 
-_Issue opened by @tpgillam on 2025-08-22 14:01_
+_@tpgillam_
 
 ### Summary
 

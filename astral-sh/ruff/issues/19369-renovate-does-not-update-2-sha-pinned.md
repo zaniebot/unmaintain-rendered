@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-15T18:15:58Z
 updated_at: 2025-07-15T19:56:55Z
 url: https://github.com/astral-sh/ruff/issues/19369
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Renovate does not update 2 sha-pinned dependencies used in docs build
 
 ---
 
-_Issue opened by @corneliusroemer on 2025-07-15 18:15_
+_@corneliusroemer_
 
 @ntBre pointed out in #19362 that mkdocs-material was likely lagging behind the latest version. I tried to find out why this dependency wasn't automatically updated and found that 2 dependencies used by the docs build are sha-pinned which renovate doesn't seem to (know how to) update. As renovate seems to be used widely, there might be a false sense of "everything is always kept up to date" so I thought I make an issue to document the status quo which is likely not the ideal state.
 

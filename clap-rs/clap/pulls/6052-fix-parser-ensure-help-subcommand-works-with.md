@@ -12,14 +12,14 @@ head: help_error_bug_fix
 created_at: 2025-06-30T15:42:18Z
 updated_at: 2025-06-30T18:05:14Z
 url: https://github.com/clap-rs/clap/pull/6052
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # fix(parser): Ensure help subcommand works with ignore_errors flag
 
 ---
 
-_Pull request opened by @imtherealnaska on 2025-06-30 15:42_
+_@imtherealnaska_
 
 Fixes: [5919](https://github.com/clap-rs/clap/issues/5919)
 

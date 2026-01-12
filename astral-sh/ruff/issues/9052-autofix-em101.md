@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-08T04:49:41Z
 updated_at: 2023-12-08T05:26:29Z
 url: https://github.com/astral-sh/ruff/issues/9052
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Autofix EM101
 
 ---
 
-_Issue opened by @kunaltyagi on 2023-12-08 04:49_
+_@kunaltyagi_
 
 EM101: Exception must not use a string literal, assign to variable first
 

@@ -13,14 +13,14 @@ head: main
 created_at: 2024-10-04T03:27:31Z
 updated_at: 2024-10-04T11:30:49Z
 url: https://github.com/astral-sh/uv/pull/7912
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Add `UV_FIND_LINKS` environment variable support for the `--find-links` command-line option
 
 ---
 
-_Pull request opened by @SethMMorton on 2024-10-04 03:27_
+_@SethMMorton_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

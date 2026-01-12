@@ -12,14 +12,14 @@ head: zb/auth-docs
 created_at: 2025-08-30T16:00:16Z
 updated_at: 2025-08-30T17:24:30Z
 url: https://github.com/astral-sh/uv/pull/15596
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:50Z
 ```
 
 # Add the native keyring to the documentation
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-30 16:00_
+_@zanieb_
 
 _No description provided._
 

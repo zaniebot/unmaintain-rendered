@@ -13,14 +13,14 @@ head: jtfm/log-safe-url
 created_at: 2025-05-20T19:09:43Z
 updated_at: 2025-06-02T22:13:35Z
 url: https://github.com/astral-sh/uv/pull/13560
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:44Z
 ```
 
 # Add `DisplaySafeUrl` newtype to prevent leaking of credentials by default
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-05-20 19:09_
+_@jtfmumm_
 
 Prior to this PR, there were numerous places where uv would leak credentials in logs. We had a way to mask credentials by calling methods or a recently-added `redact_url` function, but this was not secure by default. There were a number of other types (like `GitUrl`) that would leak credentials on display. 
 

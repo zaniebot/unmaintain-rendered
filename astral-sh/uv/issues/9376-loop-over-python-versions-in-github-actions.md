@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-23T01:30:05Z
 updated_at: 2024-11-26T23:30:17Z
 url: https://github.com/astral-sh/uv/issues/9376
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # loop over python versions in github actions
 
 ---
 
-_Issue opened by @zkurtz on 2024-11-23 01:30_
+_@zkurtz_
 
 [Here](https://github.com/zkurtz/dummio/blob/619e049bb005f0e30c0e17fe3822eb7de02dc625/.github/workflows/ci.yml#L13-L23) is what I did and it seems to work. But is that really the recommended way? It feels a bit hacky to overwrite `.python-version`. FWIW I'd appreciate any other feedback on that workflow config. I'm trying to set up uv with a few repos and would like to get my setup right.
 

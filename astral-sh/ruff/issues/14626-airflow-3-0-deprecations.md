@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-27T06:52:09Z
 updated_at: 2025-10-27T04:51:01Z
 url: https://github.com/astral-sh/ruff/issues/14626
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Airflow 3.0 deprecations
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-11-27 06:52_
+_@dhruvmanila_
 
 Tracking issue for the `AIR3xx` rules that implements Airflow 3.0 deprecations.
 

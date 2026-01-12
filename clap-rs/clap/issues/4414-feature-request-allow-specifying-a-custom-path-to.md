@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-10-22T11:35:35Z
 updated_at: 2022-10-26T12:42:38Z
 url: https://github.com/clap-rs/clap/issues/4414
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # [Feature request] Allow specifying a custom path to `clap`
 
 ---
 
-_Issue opened by @richard-uk1 on 2022-10-22 11:35_
+_@richard-uk1_
 
 ### Please complete the following tasks
 

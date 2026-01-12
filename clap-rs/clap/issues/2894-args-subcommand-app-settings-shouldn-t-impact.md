@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-10-16T15:03:26Z
 updated_at: 2022-02-08T23:58:08Z
 url: https://github.com/clap-rs/clap/issues/2894
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Args/Subcommand app settings shouldn't impact what they are flattened into
 
 ---
 
-_Issue opened by @epage on 2021-10-16 15:03_
+_@epage_
 
 ### Please complete the following tasks
 

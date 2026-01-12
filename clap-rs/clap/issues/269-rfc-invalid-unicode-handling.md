@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-09-22T17:49:36Z
 updated_at: 2018-08-02T03:29:45Z
 url: https://github.com/clap-rs/clap/issues/269
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # RFC: Invalid Unicode Handling
 
 ---
 
-_Issue opened by @kbknapp on 2015-09-22 17:49_
+_@kbknapp_
 
 This issue is to discuss how invalid unicode should be handled in 2.x **and** 1.x
 ### Currently

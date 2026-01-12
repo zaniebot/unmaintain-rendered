@@ -12,14 +12,14 @@ head: zb/install-pre
 created_at: 2025-03-15T20:43:48Z
 updated_at: 2025-04-21T21:16:08Z
 url: https://github.com/astral-sh/uv/pull/12194
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:10Z
 ```
 
 # Prefer stable releases over pre-releases in `uv python install`
 
 ---
 
-_Pull request opened by @zanieb on 2025-03-15 20:43_
+_@zanieb_
 
 e.g., `uv python install 3` should not install the 3.14 alpha
 

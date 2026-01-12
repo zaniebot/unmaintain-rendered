@@ -14,14 +14,14 @@ head: brent/newline-after-function-header
 created_at: 2025-10-28T16:51:12Z
 updated_at: 2025-11-26T17:13:10Z
 url: https://github.com/astral-sh/ruff/pull/21110
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # Allow newlines after function headers without docstrings
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-28 16:51_
+_@ntBre_
 
 Summary
 --

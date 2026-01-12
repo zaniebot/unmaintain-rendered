@@ -13,14 +13,14 @@ head: alex/uniontype-type-expression
 created_at: 2025-04-08T17:37:38Z
 updated_at: 2025-04-09T17:33:19Z
 url: https://github.com/astral-sh/ruff/pull/17297
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Fix false positives on `types.UnionType` instances in type expressions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-08 17:37_
+_@AlexWaygood_
 
 ## Summary
 

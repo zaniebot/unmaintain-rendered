@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-10T08:11:31Z
 updated_at: 2025-02-07T12:06:02Z
 url: https://github.com/astral-sh/ruff/issues/14242
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # SIM300 (yoda-conditions) triggered by CAPITAL class attributes with function call
 
 ---
 
-_Issue opened by @DanielYang59 on 2024-11-10 08:11_
+_@DanielYang59_
 
 [The following would trigger `SIM300`](https://github.com/materialsproject/pymatgen/pull/4159/commits/30e0f66de63c1605b2077394f4c21657455599f2), similar to #10848:
 

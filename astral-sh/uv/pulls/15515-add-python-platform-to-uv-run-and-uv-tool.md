@@ -13,14 +13,14 @@ head: charlie/run-py
 created_at: 2025-08-25T14:20:32Z
 updated_at: 2025-08-29T00:51:40Z
 url: https://github.com/astral-sh/uv/pull/15515
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:47Z
 ```
 
 # Add `--python-platform` to `uv run` and `uv tool`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-25 14:20_
+_@charliermarsh_
 
 ## Summary
 

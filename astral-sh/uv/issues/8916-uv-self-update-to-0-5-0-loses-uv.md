@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-08T04:14:48Z
 updated_at: 2024-11-08T14:36:12Z
 url: https://github.com/astral-sh/uv/issues/8916
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # uv self update to 0.5.0 loses uv
 
 ---
 
-_Issue opened by @hutcho on 2024-11-08 04:14_
+_@hutcho_
 
 After `uv self update` uv not found.
 I had to reinstall uv using installation instructions to get it working again.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-08T16:48:18Z
 updated_at: 2024-07-09T02:45:25Z
 url: https://github.com/astral-sh/ruff/issues/12247
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # help for "--output-format" incorrectly lists "concise" as the default
 
 ---
 
-_Issue opened by @DaniBodor on 2024-07-08 16:48_
+_@DaniBodor_
 
 I've noticed that as of v0.5.0 the default output format has changed from "concise" to "full". However, the help still states that the default is "concise".
 

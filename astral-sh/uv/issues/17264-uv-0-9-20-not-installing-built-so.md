@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-30T14:11:55Z
 updated_at: 2025-12-30T14:21:16Z
 url: https://github.com/astral-sh/uv/issues/17264
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:47Z
 ```
 
 # uv 0.9.20 not installing built .so
 
 ---
 
-_Issue opened by @alex on 2025-12-30 14:11_
+_@alex_
 
 ### Summary
 

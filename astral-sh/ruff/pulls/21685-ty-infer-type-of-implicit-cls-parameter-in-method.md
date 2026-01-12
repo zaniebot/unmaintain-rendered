@@ -14,14 +14,14 @@ head: ibraheem/implicit-cls-body
 created_at: 2025-11-28T22:04:58Z
 updated_at: 2025-12-10T09:31:30Z
 url: https://github.com/astral-sh/ruff/pull/21685
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] Infer type of implicit `cls` parameter in method bodies
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-11-28 22:04_
+_@ibraheemdev_
 
 ## Summary
 

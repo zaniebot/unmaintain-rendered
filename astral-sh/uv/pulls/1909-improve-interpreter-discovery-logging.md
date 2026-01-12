@@ -14,14 +14,14 @@ head: konsti/better-interpreter-detection-logging
 created_at: 2024-02-23T12:17:35Z
 updated_at: 2024-02-23T18:43:47Z
 url: https://github.com/astral-sh/uv/pull/1909
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:47Z
 ```
 
 # Improve interpreter discovery logging
 
 ---
 
-_Pull request opened by @konstin on 2024-02-23 12:17_
+_@konstin_
 
 We had several cases where interpreter discovery fails. This PR improves the verbose output to ensure interpreter discovery is debuggable for a user.
 

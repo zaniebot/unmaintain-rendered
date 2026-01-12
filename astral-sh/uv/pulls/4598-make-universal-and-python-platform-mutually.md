@@ -13,14 +13,14 @@ head: charlie/plat
 created_at: 2024-06-27T18:31:47Z
 updated_at: 2024-06-27T18:51:45Z
 url: https://github.com/astral-sh/uv/pull/4598
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:20Z
 ```
 
 # Make `--universal` and `--python-platform` mutually exclusive
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-27 18:31_
+_@charliermarsh_
 
 ## Summary
 

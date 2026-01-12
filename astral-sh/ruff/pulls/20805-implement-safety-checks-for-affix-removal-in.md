@@ -12,14 +12,14 @@ head: furb188-unsafe-fix
 created_at: 2025-10-10T14:10:19Z
 updated_at: 2025-10-15T14:15:45Z
 url: https://github.com/astral-sh/ruff/pull/20805
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # Implement safety checks for affix removal in slice_to_remove_prefix_or_suffix rule
 
 ---
 
-_Pull request opened by @tinkerer-shubh on 2025-10-10 14:10_
+_@tinkerer-shubh_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us with reviewing, please ensure the following:

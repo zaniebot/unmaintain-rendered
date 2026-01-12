@@ -11,14 +11,14 @@ head: fix-handles-grouping-parens-and-preserves-r-prefix-quotes
 created_at: 2025-09-04T08:24:01Z
 updated_at: 2025-11-21T07:57:36Z
 url: https://github.com/astral-sh/ruff/pull/20224
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [`flake8-logging-format`] handles grouping parens and preserves r-prefix/quotes
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-09-04 08:24_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

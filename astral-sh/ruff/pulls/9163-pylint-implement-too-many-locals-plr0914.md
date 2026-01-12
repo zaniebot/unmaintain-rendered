@@ -14,14 +14,14 @@ head: add-PLR0914
 created_at: 2023-12-16T15:19:26Z
 updated_at: 2023-12-18T20:05:28Z
 url: https://github.com/astral-sh/ruff/pull/9163
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [`pylint`] Implement `too-many-locals` (`PLR0914`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-12-16 15:19_
+_@diceroll123_
 
 ## Summary
 

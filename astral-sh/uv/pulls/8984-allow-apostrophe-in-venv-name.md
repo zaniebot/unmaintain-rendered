@@ -13,14 +13,14 @@ head: konsti/venv-apostrophe
 created_at: 2024-11-10T10:43:50Z
 updated_at: 2024-11-15T09:52:11Z
 url: https://github.com/astral-sh/uv/pull/8984
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:35Z
 ```
 
 # Allow apostrophe in venv name
 
 ---
 
-_Pull request opened by @konstin on 2024-11-10 10:43_
+_@konstin_
 
 Escape an apostrophe in the venv path name.
 

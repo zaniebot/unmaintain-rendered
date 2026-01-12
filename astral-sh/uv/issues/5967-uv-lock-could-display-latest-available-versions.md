@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-09T17:19:05Z
 updated_at: 2024-08-20T18:21:37Z
 url: https://github.com/astral-sh/uv/issues/5967
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # `uv lock` could display latest-available versions
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-09 17:19_
+_@charliermarsh_
 
 This is nice:
 

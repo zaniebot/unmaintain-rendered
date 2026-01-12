@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-19T16:48:28Z
 updated_at: 2024-08-20T15:00:04Z
 url: https://github.com/astral-sh/ruff/issues/12992
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Feature request: Require explanations on rule overrides
 
 ---
 
-_Issue opened by @tylerlaprade on 2024-08-19 16:48_
+_@tylerlaprade_
 
 Similar to [this ESLint rule](https://mysticatea.github.io/eslint-plugin-eslint-comments/rules/require-description.html), I don't want any Ruff rules to be overridden without an explanation of why.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-09T10:39:04Z
 updated_at: 2024-07-30T15:21:52Z
 url: https://github.com/astral-sh/uv/issues/4923
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Tracking issue: Documentation for preview features
 
 ---
 
-_Issue opened by @konstin on 2024-07-09 10:39_
+_@konstin_
 
 We need to write and publish documentation for all preview features.
 

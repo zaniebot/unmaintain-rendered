@@ -13,14 +13,14 @@ head: cjm/alias-iterate
 created_at: 2025-08-18T23:47:31Z
 updated_at: 2025-08-19T00:54:07Z
 url: https://github.com/astral-sh/ruff/pull/19981
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] fix unpacking a type alias with detailed tuple spec
 
 ---
 
-_Pull request opened by @carljm on 2025-08-18 23:47_
+_@carljm_
 
 ## Summary
 

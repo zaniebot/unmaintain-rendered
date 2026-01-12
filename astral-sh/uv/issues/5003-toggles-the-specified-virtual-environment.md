@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-12T07:58:06Z
 updated_at: 2024-07-12T13:24:15Z
 url: https://github.com/astral-sh/uv/issues/5003
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Toggles the specified virtual environment
 
 ---
 
-_Issue opened by @fishsixs on 2024-07-12 07:58_
+_@fishsixs_
 
 How to switch the specified virtual environment under the command (there are multiple virtual environments), thank you very much.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2019-12-28T01:05:40Z
 updated_at: 2021-01-20T18:10:16Z
 url: https://github.com/clap-rs/clap/issues/1613
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Visible aliases for Args from YAML file 
 
 ---
 
-_Issue opened by @GrayJack on 2019-12-28 01:05_
+_@GrayJack_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

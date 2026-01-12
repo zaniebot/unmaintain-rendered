@@ -13,14 +13,14 @@ head: build-backend-6-add-files
 created_at: 2024-10-07T11:21:22Z
 updated_at: 2024-10-07T17:30:54Z
 url: https://github.com/astral-sh/uv/pull/7966
-synced_at: 2026-01-10T12:54:00Z
+synced_at: 2026-01-12T16:08:06Z
 ```
 
 # Basic functional build backend wheels
 
 ---
 
-_Pull request opened by @konstin on 2024-10-07 11:21_
+_@konstin_
 
 Add file writing, basic module directory walking, RECORD writing and integration test to write basic functional wheels.
 

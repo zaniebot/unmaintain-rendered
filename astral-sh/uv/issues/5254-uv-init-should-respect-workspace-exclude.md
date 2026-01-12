@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-21T03:00:25Z
 updated_at: 2024-07-23T00:15:19Z
 url: https://github.com/astral-sh/uv/issues/5254
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `uv init` should respect `workspace.exclude`
 
 ---
 
-_Issue opened by @j178 on 2024-07-21 03:00_
+_@j178_
 
 Here is the root package:
 ```toml

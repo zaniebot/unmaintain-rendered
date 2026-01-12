@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-02T10:03:57Z
 updated_at: 2024-09-02T18:21:26Z
 url: https://github.com/astral-sh/uv/issues/6933
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # `uv add` confuses dependency versions when installing multiple libraries
 
 ---
 
-_Issue opened by @notypecheck on 2024-09-02 10:03_
+_@notypecheck_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

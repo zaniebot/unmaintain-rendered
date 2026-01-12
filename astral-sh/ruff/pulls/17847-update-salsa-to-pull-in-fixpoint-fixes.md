@@ -13,14 +13,14 @@ head: micha/perf-fixpoint-fix
 created_at: 2025-05-05T06:42:21Z
 updated_at: 2025-05-06T09:27:53Z
 url: https://github.com/astral-sh/ruff/pull/17847
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # Update salsa to pull in fixpoint fixes
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-05 06:42_
+_@MichaReiser_
 
 Pull in https://github.com/salsa-rs/salsa/pull/836 to get some fixpoint fixes.
 

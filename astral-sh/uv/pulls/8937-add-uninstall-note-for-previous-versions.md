@@ -13,14 +13,14 @@ head: zb/unin-not
 created_at: 2024-11-08T13:20:37Z
 updated_at: 2024-11-08T13:28:40Z
 url: https://github.com/astral-sh/uv/pull/8937
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:33Z
 ```
 
 # Add uninstall note for previous versions
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-08 13:20_
+_@zanieb_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ head: version-compat
 created_at: 2025-02-12T04:38:08Z
 updated_at: 2025-02-27T00:36:19Z
 url: https://github.com/astral-sh/uv/pull/11434
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:50Z
 ```
 
 # Be compatible with non-PEP440 version under env var UV_NON_PEP440_COMPAT
 
 ---
 
-_Pull request opened by @JakkuSakura on 2025-02-12 04:38_
+_@JakkuSakura_
 
 ## Summary
 Under env var UV_NON_PEP440_COMPAT, the version parser will tolerate non-PEP440 versions like the legacy pip. This will probably fix https://github.com/astral-sh/uv/issues/5478

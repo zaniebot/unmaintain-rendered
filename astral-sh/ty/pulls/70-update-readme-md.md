@@ -13,14 +13,14 @@ head: MichaReiser-patch-1
 created_at: 2025-05-07T14:44:49Z
 updated_at: 2025-07-08T10:37:55Z
 url: https://github.com/astral-sh/ty/pull/70
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Update README.md
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-07 14:44_
+_@MichaReiser_
 
 ## Summary
 

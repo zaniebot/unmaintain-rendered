@@ -13,14 +13,14 @@ head: docs-links-without-targets
 created_at: 2025-02-08T01:33:46Z
 updated_at: 2025-02-10T16:15:24Z
 url: https://github.com/astral-sh/ruff/pull/16035
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Fix reference definition labels for backtick-quoted shortcut links
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-08 01:33_
+_@InSyncWithFoo_
 
 ## Summary
 

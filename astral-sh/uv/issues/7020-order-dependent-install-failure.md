@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T13:59:23Z
 updated_at: 2024-10-23T09:04:06Z
 url: https://github.com/astral-sh/uv/issues/7020
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Order-dependent install failure
 
 ---
 
-_Issue opened by @wence- on 2024-09-04 13:59_
+_@wence-_
 
 When trying to install `numpy` and `numba` in a venv with python 3.10, it is only possible to do so with `uv` if passing `numba` before `numpy` in the requirements list. In contrast, `pip` does not seem to mind, see transcript:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-07T22:44:37Z
 updated_at: 2025-11-10T18:29:37Z
 url: https://github.com/astral-sh/ruff/issues/21328
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Unclear error if line-length goes beyond u16 boundaries
 
 ---
 
-_Issue opened by @chirizxc on 2025-11-07 22:44_
+_@chirizxc_
 
 ### Summary
 Refs https://github.com/astral-sh/ruff/issues/20823

@@ -13,14 +13,14 @@ head: ruf100-extend
 created_at: 2024-08-26T06:40:07Z
 updated_at: 2024-08-29T05:20:16Z
 url: https://github.com/astral-sh/ruff/pull/13105
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`ruff`] - extend comment deletions for unused-noqa (`RUF100`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-08-26 06:40_
+_@diceroll123_
 
 ## Summary
 

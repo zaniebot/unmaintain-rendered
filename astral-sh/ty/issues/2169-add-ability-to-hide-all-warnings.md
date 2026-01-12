@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-22T18:54:10Z
 updated_at: 2026-01-11T04:55:59Z
 url: https://github.com/astral-sh/ty/issues/2169
-synced_at: 2026-01-11T05:54:06Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Add ability to hide all warnings
 
 ---
 
-_Issue opened by @tino on 2025-12-22 18:54_
+_@tino_
 
 I just want to focus on errors for now. I guess I can look up all the warning rules and call `--ignore <RULE>` for each but that's a bit tedious.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-04T15:08:56Z
 updated_at: 2025-02-06T18:08:38Z
 url: https://github.com/astral-sh/ruff/issues/15940
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [`flake8-pyi`] Add autofix for `unused-private-type-var` (`PYI018`)
 
 ---
 
-_Issue opened by @ntBre on 2025-02-04 15:08_
+_@ntBre_
 
 We currently offer a diagnostic for unused private type variables like these:
 

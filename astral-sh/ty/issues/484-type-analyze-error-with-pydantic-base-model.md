@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-22T08:08:30Z
 updated_at: 2025-05-22T08:50:55Z
 url: https://github.com/astral-sh/ty/issues/484
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Type analyze error with pydantic base model instance
 
 ---
 
-_Issue opened by @birdhackor on 2025-05-22 08:08_
+_@birdhackor_
 
 ### Summary
 

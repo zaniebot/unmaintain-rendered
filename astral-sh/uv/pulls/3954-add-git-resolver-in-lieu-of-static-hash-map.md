@@ -13,14 +13,14 @@ head: charlie/git-lock
 created_at: 2024-06-01T02:31:24Z
 updated_at: 2024-06-03T08:06:41Z
 url: https://github.com/astral-sh/uv/pull/3954
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:56Z
 ```
 
 # Add Git resolver in lieu of static hash map
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-01 02:31_
+_@charliermarsh_
 
 ## Summary
 

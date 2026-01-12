@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-19T19:40:51Z
 updated_at: 2025-10-22T12:09:21Z
 url: https://github.com/astral-sh/ruff/issues/9585
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # pyproject.toml in excluded subdir is not excluded when passed explicitly (=pre-commit)
 
 ---
 
-_Issue opened by @reinout on 2024-01-19 19:40_
+_@reinout_
 
 Ruff `0.1.13`
 

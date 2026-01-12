@@ -13,14 +13,14 @@ head: ibraheem/canonical-markers
 created_at: 2024-08-07T23:55:54Z
 updated_at: 2024-08-10T04:02:52Z
 url: https://github.com/astral-sh/uv/pull/5898
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:05Z
 ```
 
 # Implement marker trees using algebraic decision diagrams
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-08-07 23:55_
+_@ibraheemdev_
 
 ## Summary
 

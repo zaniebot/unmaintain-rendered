@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-27T10:26:04Z
 updated_at: 2024-12-31T15:37:47Z
 url: https://github.com/astral-sh/uv/issues/8605
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # specify minimum uv version in pyproject.toml
 
 ---
 
-_Issue opened by @sebhoss on 2024-10-27 10:26_
+_@sebhoss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

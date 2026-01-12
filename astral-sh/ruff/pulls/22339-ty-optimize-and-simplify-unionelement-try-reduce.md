@@ -14,14 +14,14 @@ head: alex/optimize-try-reduce
 created_at: 2026-01-02T16:43:33Z
 updated_at: 2026-01-05T12:54:47Z
 url: https://github.com/astral-sh/ruff/pull/22339
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Optimize and simplify `UnionElement::try_reduce`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-02 16:43_
+_@AlexWaygood_
 
 ## Summary
 

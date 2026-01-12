@@ -13,14 +13,14 @@ head: fix/18508-up045-ignore-optional-none
 created_at: 2025-06-08T08:04:19Z
 updated_at: 2025-06-11T06:30:24Z
 url: https://github.com/astral-sh/ruff/pull/18545
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:21Z
 ```
 
 # [`pyupgrade`] Don't offer fix for `Optional[None]` in non-pep604-annotation-optional (`UP045)` or non-pep604-annotation-union (`UP007`)
 
 ---
 
-_Pull request opened by @robsdedude on 2025-06-08 08:04_
+_@robsdedude_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

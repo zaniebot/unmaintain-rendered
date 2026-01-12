@@ -13,14 +13,14 @@ head: maddy-docs-a11y-iconography
 created_at: 2025-05-25T13:14:34Z
 updated_at: 2025-05-26T14:36:49Z
 url: https://github.com/astral-sh/ruff/pull/18297
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # Docs a11y: improve and simplify rules table to improve readability
 
 ---
 
-_Pull request opened by @MaddyGuthridge on 2025-05-25 13:14_
+_@MaddyGuthridge_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

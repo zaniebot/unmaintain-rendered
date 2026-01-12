@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-09-24T14:34:17Z
 updated_at: 2021-10-04T18:57:33Z
 url: https://github.com/clap-rs/clap/issues/2784
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Cannot use multiple values with multiple occurrences with positional arguments
 
 ---
 
-_Issue opened by @epage on 2021-09-24 14:34_
+_@epage_
 
 ### Please complete the following tasks
 

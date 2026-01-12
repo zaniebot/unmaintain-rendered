@@ -12,14 +12,14 @@ head: konsti/improve-install-instrumentation
 created_at: 2024-01-08T10:08:16Z
 updated_at: 2024-01-08T10:14:00Z
 url: https://github.com/astral-sh/uv/pull/829
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:13Z
 ```
 
 # Improve install instrumentation
 
 ---
 
-_Pull request opened by @konstin on 2024-01-08 10:08_
+_@konstin_
 
 Add tracing spans to different phases of the wheel installation.
 

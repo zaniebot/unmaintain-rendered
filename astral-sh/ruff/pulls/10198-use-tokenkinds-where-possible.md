@@ -12,14 +12,14 @@ head: token-kinds
 created_at: 2024-03-02T16:01:33Z
 updated_at: 2024-08-12T07:53:28Z
 url: https://github.com/astral-sh/ruff/pull/10198
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Use TokenKinds where possible
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-02 16:01_
+_@MichaReiser_
 
 ## Summary
 

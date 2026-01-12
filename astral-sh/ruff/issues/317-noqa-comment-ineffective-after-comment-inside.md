@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-04T05:18:30Z
 updated_at: 2022-10-04T12:56:15Z
 url: https://github.com/astral-sh/ruff/issues/317
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # noqa comment ineffective after comment inside tuple
 
 ---
 
-_Issue opened by @andersk on 2022-10-04 05:18_
+_@andersk_
 
 ```python
 (

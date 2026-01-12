@@ -12,14 +12,14 @@ head: charlie/proxy
 created_at: 2024-01-06T21:56:36Z
 updated_at: 2024-01-06T22:02:36Z
 url: https://github.com/astral-sh/uv/pull/820
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:12Z
 ```
 
 # Remove unused `proxy` field from client
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-06 21:56_
+_@charliermarsh_
 
 _No description provided._
 

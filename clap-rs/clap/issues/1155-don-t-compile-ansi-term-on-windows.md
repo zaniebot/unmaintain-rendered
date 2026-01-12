@@ -10,14 +10,14 @@ assignees: []
 created_at: 2018-01-27T17:26:15Z
 updated_at: 2018-08-02T03:30:17Z
 url: https://github.com/clap-rs/clap/issues/1155
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Don't compile ansi_term on Windows
 
 ---
 
-_Issue opened by @XAMPPRocky on 2018-01-27 17:26_
+_@XAMPPRocky_
 
 `ansi_term` currently doesn't work on [32bit Windows platforms](https://github.com/ogham/rust-ansi-term/issues/31) and is not being maintained. `clap` being dependent by so many crates(mine included) needs to resolve this since there is no maintainer for `ansi_term`. There are two solutions I can think of.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-04T10:41:23Z
 updated_at: 2025-08-05T07:48:59Z
 url: https://github.com/astral-sh/ruff/issues/19739
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Rule request: `not` on non-empty tuple is always `False`
 
 ---
 
-_Issue opened by @tamir-bahar on 2025-08-04 10:41_
+_@tamir-bahar_
 
 ### Summary
 

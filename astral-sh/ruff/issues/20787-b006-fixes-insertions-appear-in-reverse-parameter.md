@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-09T13:31:11Z
 updated_at: 2025-10-13T20:22:37Z
 url: https://github.com/astral-sh/ruff/issues/20787
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # B006 fixes’ insertions appear in reverse parameter order
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-09 13:31_
+_@dscorbett_
 
 ### Summary
 

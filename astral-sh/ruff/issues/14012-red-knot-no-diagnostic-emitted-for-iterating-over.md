@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-31T11:23:47Z
 updated_at: 2025-02-20T12:50:09Z
 url: https://github.com/astral-sh/ruff/issues/14012
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] No diagnostic emitted for iterating over objects which might or might not be iterable
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-10-31 11:23_
+_@AlexWaygood_
 
 As spotted by @MichaReiser in https://github.com/astral-sh/ruff/pull/13992#pullrequestreview-2404711897, red-knot does not currently emit diagnostics if you attempt to iterate over an object that might be iterable, but also might not. For example, we should emit diagnostics on all of the following snippets, but currently do not:
 

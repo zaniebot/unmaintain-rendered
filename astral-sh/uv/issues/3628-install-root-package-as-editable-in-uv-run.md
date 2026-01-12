@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-16T16:52:24Z
 updated_at: 2025-03-27T21:21:08Z
 url: https://github.com/astral-sh/uv/issues/3628
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Install root package as editable in `uv run`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-16 16:52_
+_@charliermarsh_
 
 _No description provided._
 

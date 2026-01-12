@@ -14,14 +14,14 @@ head: jane/server/fix-config-reload
 created_at: 2024-05-22T09:08:56Z
 updated_at: 2024-05-22T18:20:46Z
 url: https://github.com/astral-sh/ruff/pull/11492
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Fix automatic configuration reloading for text and notebook documents
 
 ---
 
-_Pull request opened by @snowsignal on 2024-05-22 09:08_
+_@snowsignal_
 
 ## Summary
 

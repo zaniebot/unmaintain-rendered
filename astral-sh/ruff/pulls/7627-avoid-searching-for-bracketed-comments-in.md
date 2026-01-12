@@ -14,14 +14,14 @@ head: charlie/gen
 created_at: 2023-09-24T01:57:32Z
 updated_at: 2023-09-24T02:08:46Z
 url: https://github.com/astral-sh/ruff/pull/7627
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Avoid searching for bracketed comments in unparenthesized generators
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-24 01:57_
+_@charliermarsh_
 
 Similar to tuples, a generator _can_ be parenthesized or unparenthesized. Only search for bracketed comments if it contains its own parentheses.
 

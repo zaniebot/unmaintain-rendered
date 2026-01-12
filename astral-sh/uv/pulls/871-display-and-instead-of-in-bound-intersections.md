@@ -12,14 +12,14 @@ head: zb/range-and
 created_at: 2024-01-10T17:23:05Z
 updated_at: 2024-01-11T21:00:25Z
 url: https://github.com/astral-sh/uv/pull/871
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:15Z
 ```
 
 # Display "and" instead of "," in bound intersections
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-10 17:23_
+_@zanieb_
 
 Alternative to #870
 

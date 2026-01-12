@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-16T16:10:45Z
 updated_at: 2022-11-16T17:00:12Z
 url: https://github.com/astral-sh/ruff/issues/770
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # """ string should be allowed to be multiline
 
 ---
 
-_Issue opened by @LefterisJP on 2022-11-16 16:10_
+_@LefterisJP_
 
 I just updated to `ruff 0.0.122` from `ruff 0.0.105` and got a few new errors which should not have been thrown.
 
