@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-14T02:54:32Z
 updated_at: 2023-12-14T05:38:30Z
 url: https://github.com/astral-sh/ruff/issues/9123
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # ruff VSCode extension erases entire file on save
 
 ---
 
-_Issue opened by @bdewilde on 2023-12-14 02:54_
+_@bdewilde_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

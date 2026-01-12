@@ -13,14 +13,14 @@ head: zb/attest-cl
 created_at: 2025-11-08T15:07:08Z
 updated_at: 2025-11-08T15:43:12Z
 url: https://github.com/astral-sh/uv/pull/16644
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:22Z
 ```
 
 # Move attestations to the proper release in the changelog
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-08 15:07_
+_@zanieb_
 
 _No description provided._
 

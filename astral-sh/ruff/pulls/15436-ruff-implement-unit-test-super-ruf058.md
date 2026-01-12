@@ -14,14 +14,14 @@ head: unit-test-super
 created_at: 2025-01-11T19:35:50Z
 updated_at: 2025-06-13T18:53:09Z
 url: https://github.com/astral-sh/ruff/pull/15436
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [ruff] implement unit-test-super (RUF058)
 
 ---
 
-_Pull request opened by @njhearp on 2025-01-11 19:35_
+_@njhearp_
 
 ## Summary
 

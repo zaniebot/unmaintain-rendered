@@ -13,14 +13,14 @@ head: ssure/tree_access
 created_at: 2025-07-03T16:34:52Z
 updated_at: 2025-07-03T16:43:59Z
 url: https://github.com/astral-sh/uv/pull/14444
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:13Z
 ```
 
 # make `ErrorTree` for `NoSolutionError` externally accessible
 
 ---
 
-_Pull request opened by @RoldSI on 2025-07-03 16:34_
+_@RoldSI_
 
 Hey, are you okay with exposing the `ErrorTree` for library consumers?
 

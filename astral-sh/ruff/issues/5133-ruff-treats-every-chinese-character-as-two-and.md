@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-16T01:53:52Z
 updated_at: 2023-06-16T02:25:34Z
 url: https://github.com/astral-sh/ruff/issues/5133
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Ruff treats every Chinese character as two and often falsely reports the "Line too long (E501)" warning
 
 ---
 
-_Issue opened by @jackjyq on 2023-06-16 01:53_
+_@jackjyq_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

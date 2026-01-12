@@ -14,14 +14,14 @@ head: zb/docs-policies
 created_at: 2024-08-01T17:19:05Z
 updated_at: 2024-08-05T17:44:27Z
 url: https://github.com/astral-sh/uv/pull/5696
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:06:58Z
 ```
 
 # Collapse policies section into reference
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-01 17:19_
+_@zanieb_
 
 _No description provided._
 

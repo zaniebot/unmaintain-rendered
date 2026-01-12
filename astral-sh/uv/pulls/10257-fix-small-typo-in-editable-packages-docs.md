@@ -13,14 +13,14 @@ head: fix-typo
 created_at: 2025-01-01T00:52:56Z
 updated_at: 2025-01-01T03:23:07Z
 url: https://github.com/astral-sh/uv/pull/10257
-synced_at: 2026-01-10T11:44:39Z
+synced_at: 2026-01-12T16:09:11Z
 ```
 
 # Fix small typo in editable packages docs
 
 ---
 
-_Pull request opened by @savannahostrowski on 2025-01-01 00:52_
+_@savannahostrowski_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

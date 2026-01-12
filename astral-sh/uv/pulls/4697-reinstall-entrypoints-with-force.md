@@ -14,14 +14,14 @@ head: charlie/re
 created_at: 2024-07-01T14:05:14Z
 updated_at: 2024-07-01T14:52:48Z
 url: https://github.com/astral-sh/uv/pull/4697
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:24Z
 ```
 
 # Reinstall entrypoints with `--force`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-01 14:05_
+_@charliermarsh_
 
 ## Summary
 

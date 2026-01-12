@@ -13,14 +13,14 @@ head: annotate-line-fix
 created_at: 2024-05-17T12:30:48Z
 updated_at: 2024-05-17T14:30:51Z
 url: https://github.com/astral-sh/uv/pull/3637
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:46Z
 ```
 
 # Fix source annotation in pip compile `annotation-style=line` output
 
 ---
 
-_Pull request opened by @blueraft on 2024-05-17 12:30_
+_@blueraft_
 
 ## Summary
 

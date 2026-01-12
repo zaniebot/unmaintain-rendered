@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-23T12:34:39Z
 updated_at: 2025-08-21T12:55:41Z
 url: https://github.com/astral-sh/uv/issues/14844
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # unsafe-best-match works as CLI option but not in pyproject.toml
 
 ---
 
-_Issue opened by @SebBanDev on 2025-07-23 12:34_
+_@SebBanDev_
 
 ### Summary
 

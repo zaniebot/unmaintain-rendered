@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-25T06:59:57Z
 updated_at: 2026-01-10T08:51:56Z
 url: https://github.com/astral-sh/ty/issues/2218
-synced_at: 2026-01-10T11:36:39Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Go-to-definition for a class returns both the `__init__` definition and the class itself
 
 ---
 
-_Issue opened by @lkhphuc on 2025-12-25 06:59_
+_@lkhphuc_
 
 ### Summary
 

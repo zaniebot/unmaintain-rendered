@@ -13,14 +13,14 @@ head: zb/test-provided
 created_at: 2024-06-04T22:11:51Z
 updated_at: 2024-06-05T14:52:29Z
 url: https://github.com/astral-sh/uv/pull/4027
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:05:59Z
 ```
 
 # Add `ProvidedPath` to interpreter sources considered when `UV_TEST_PYTHON_PATH` is set
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-04 22:11_
+_@zanieb_
 
 Just a theory, but I presume this would close https://github.com/astral-sh/uv/issues/4023.
 

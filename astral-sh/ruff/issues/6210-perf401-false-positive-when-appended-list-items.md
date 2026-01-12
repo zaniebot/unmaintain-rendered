@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-31T20:26:20Z
 updated_at: 2023-08-01T03:56:54Z
 url: https://github.com/astral-sh/ruff/issues/6210
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # PERF401 false positive when appended list items depend on previous items
 
 ---
 
-_Issue opened by @andersk on 2023-07-31 20:26_
+_@andersk_
 
 This incorrectly triggers [PERF401 manual-list-comprehension](https://beta.ruff.rs/docs/rules/manual-list-comprehension/) (#5298):
 

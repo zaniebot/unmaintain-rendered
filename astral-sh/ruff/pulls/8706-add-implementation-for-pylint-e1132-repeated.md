@@ -14,14 +14,14 @@ head: Pylint-E1132
 created_at: 2023-11-15T23:01:27Z
 updated_at: 2023-11-19T00:33:11Z
 url: https://github.com/astral-sh/ruff/pull/8706
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add Implementation for Pylint E1132: Repeated Keyword
 
 ---
 
-_Pull request opened by @AlexBieg on 2023-11-15 23:01_
+_@AlexBieg_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

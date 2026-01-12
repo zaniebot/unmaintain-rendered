@@ -13,14 +13,14 @@ head: bandit-stabilisations
 created_at: 2024-06-25T16:29:43Z
 updated_at: 2024-06-25T19:46:03Z
 url: https://github.com/astral-sh/ruff/pull/12029
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Stabilise `django-extra` (`S610`) for release 0.5
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-25 16:29_
+_@AlexWaygood_
 
 The motivation for this rule is solid; it's been in preview for a long time; the implementation and tests seem sound; there are no open issues regarding it, and as far as I can tell there never have been any.
 

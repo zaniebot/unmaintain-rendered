@@ -12,14 +12,14 @@ head: konsti/fork-before-transforming
 created_at: 2024-06-20T18:34:46Z
 updated_at: 2024-06-25T21:13:48Z
 url: https://github.com/astral-sh/uv/pull/4430
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:13Z
 ```
 
 # Flatten requirements eagerly in `get_dependencies`
 
 ---
 
-_Pull request opened by @konstin on 2024-06-20 18:34_
+_@konstin_
 
 Downstack PR: #4515 Upstack PR: #4481
 

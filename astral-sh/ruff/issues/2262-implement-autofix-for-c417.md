@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-27T15:58:34Z
 updated_at: 2023-02-12T05:20:44Z
 url: https://github.com/astral-sh/ruff/issues/2262
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement autofix for C417
 
 ---
 
-_Issue opened by @spaceone on 2023-01-27 15:58_
+_@spaceone_
 
 A fixer for `C417` would be helpful.
 

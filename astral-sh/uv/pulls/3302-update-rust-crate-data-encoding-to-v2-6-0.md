@@ -13,14 +13,14 @@ head: renovate/data-encoding-2.x-lockfile
 created_at: 2024-04-29T00:27:29Z
 updated_at: 2024-04-29T14:32:00Z
 url: https://github.com/astral-sh/uv/pull/3302
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:34Z
 ```
 
 # Update Rust crate data-encoding to v2.6.0
 
 ---
 
-_Pull request opened by @renovate on 2024-04-29 00:27_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

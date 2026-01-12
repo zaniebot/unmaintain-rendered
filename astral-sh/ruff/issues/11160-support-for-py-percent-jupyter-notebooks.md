@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-26T08:46:47Z
 updated_at: 2025-12-15T09:42:13Z
 url: https://github.com/astral-sh/ruff/issues/11160
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Support for py:percent jupyter notebooks
 
 ---
 
-_Issue opened by @bluss on 2024-04-26 08:46_
+_@bluss_
 
 Does ruff support py:percent files? py:percent is one of the plain python formats jupytext supports, and it's the one I use for jupyter notebooks in git (not using .ipynb other as an intermediate product in execution/build), and it's also supported by vscode.
 

@@ -13,14 +13,14 @@ head: charlie/deduplicate
 created_at: 2023-11-19T19:44:16Z
 updated_at: 2023-11-20T11:22:54Z
 url: https://github.com/astral-sh/uv/pull/460
-synced_at: 2026-01-10T15:50:29Z
+synced_at: 2026-01-12T16:03:58Z
 ```
 
 # Unify distribution operations into a single crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-19 19:44_
+_@charliermarsh_
 
 ## Summary
 

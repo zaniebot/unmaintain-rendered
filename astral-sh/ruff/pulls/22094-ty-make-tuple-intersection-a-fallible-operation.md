@@ -13,14 +13,14 @@ head: charlie/int
 created_at: 2025-12-19T18:26:05Z
 updated_at: 2026-01-06T15:47:06Z
 url: https://github.com/astral-sh/ruff/pull/22094
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Make tuple intersection a fallible operation
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-19 18:26_
+_@charliermarsh_
 
 ## Summary
 

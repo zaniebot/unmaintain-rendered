@@ -13,14 +13,14 @@ head: zb/fix-link-win
 created_at: 2025-01-15T18:59:56Z
 updated_at: 2025-01-15T20:19:00Z
 url: https://github.com/astral-sh/uv/pull/10639
-synced_at: 2026-01-10T11:45:01Z
+synced_at: 2026-01-12T16:09:24Z
 ```
 
 # Avoid reading symlinks during `uv python install` on Windows
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-15 18:59_
+_@zanieb_
 
 Closes #10633
 

@@ -11,14 +11,14 @@ head: pieterh/ext-lint-types
 created_at: 2025-11-12T20:38:36Z
 updated_at: 2026-01-07T01:47:17Z
 url: https://github.com/astral-sh/ruff/pull/21412
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # RFC [ruff][ext-lint] external lint rule registry, type definitions and serde config
 
 ---
 
-_Pull request opened by @pieterh-oai on 2025-11-12 20:38_
+_@pieterh-oai_
 
 ## Summary
 

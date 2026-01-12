@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-30T19:05:30Z
 updated_at: 2023-05-20T21:48:11Z
 url: https://github.com/astral-sh/ruff/issues/2360
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Allow BLE001 if future.set_exception is used
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-01-30 19:05_
+_@JonathanPlasse_
 
 ```python
 try:

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-09T16:10:22Z
 updated_at: 2023-06-30T12:19:30Z
 url: https://github.com/clap-rs/clap/issues/3113
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Layering env, args, and config
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:10_
+_@epage_
 
 Maintainer's note
 - https://github.com/clap-rs/clap/discussions/2763

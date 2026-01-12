@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-30T15:23:24Z
 updated_at: 2025-11-01T02:08:31Z
 url: https://github.com/astral-sh/ruff/issues/21144
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Recognize charsets in different orders (`FURB156`)
 
 ---
 
-_Issue opened by @lypwig on 2025-10-30 15:23_
+_@lypwig_
 
 ### Summary
 

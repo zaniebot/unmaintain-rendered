@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-24T01:38:03Z
 updated_at: 2025-08-22T23:25:44Z
 url: https://github.com/astral-sh/uv/issues/14862
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:58Z
 ```
 
 # uv sync fails to find megatron.training due to incomplete package inclusion in Megatron-LM's pyproject.toml
 
 ---
 
-_Issue opened by @pjgao on 2025-07-24 01:38_
+_@pjgao_
 
 ### Question
 

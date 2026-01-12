@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-22T15:24:16Z
 updated_at: 2024-08-22T17:47:30Z
 url: https://github.com/astral-sh/uv/issues/6443
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # `uv sync` freezes infinitely at the container root
 
 ---
 
-_Issue opened by @sterliakov on 2024-08-22 15:24_
+_@sterliakov_
 
 To reproduce, try building the following Dockerfile (remove `sudo` if your docker is rootless):
 

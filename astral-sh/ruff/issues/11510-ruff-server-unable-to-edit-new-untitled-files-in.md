@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-23T10:51:53Z
 updated_at: 2024-05-31T06:34:11Z
 url: https://github.com/astral-sh/ruff/issues/11510
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `ruff server`: Unable to edit new, untitled files in VS Code
 
 ---
 
-_Issue opened by @T-256 on 2024-05-23 10:51_
+_@T-256_
 
 VSCode Repro: `Ctrl+Win+Alt+N` -> select `Python File`
 

@@ -13,14 +13,14 @@ head: charlie/partial-ord
 created_at: 2024-12-03T22:57:29Z
 updated_at: 2024-12-03T23:08:39Z
 url: https://github.com/astral-sh/uv/pull/9624
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:54Z
 ```
 
 # Implement `Ord` and `PartialOrd` without origin for `Requirement`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-03 22:57_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/cache
 created_at: 2023-01-17T20:07:38Z
 updated_at: 2023-01-17T20:12:41Z
 url: https://github.com/astral-sh/ruff/pull/1938
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Move `@functools.cache` rewrites to their own rule
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-17 20:07_
+_@charliermarsh_
 
 Closes #1934.
 

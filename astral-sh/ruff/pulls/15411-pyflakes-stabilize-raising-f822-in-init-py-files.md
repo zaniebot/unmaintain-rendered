@@ -12,14 +12,14 @@ head: stabilize_f822_for_init
 created_at: 2025-01-10T22:58:55Z
 updated_at: 2025-01-17T09:08:03Z
 url: https://github.com/astral-sh/ruff/pull/15411
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`pyflakes`] stabilize raising `F822` in `__init__.py` files.
 
 ---
 
-_Pull request opened by @hassec on 2025-01-10 22:58_
+_@hassec_
 
 ## Summary
 

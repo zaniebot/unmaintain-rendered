@@ -13,14 +13,14 @@ head: jtfm/auth-default-doc
 created_at: 2025-03-26T21:21:15Z
 updated_at: 2025-04-02T17:31:21Z
 url: https://github.com/astral-sh/uv/pull/12498
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:18Z
 ```
 
 # Add qualification to authenticate always documentation
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-03-26 21:21_
+_@jtfmumm_
 
 It might not be obvious to some users that authenticate always will not prevent uv from consulting other indexes.
 

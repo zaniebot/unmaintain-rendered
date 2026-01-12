@@ -13,14 +13,14 @@ head: charlie/fix-ii
 created_at: 2023-08-23T22:21:05Z
 updated_at: 2023-08-23T22:54:53Z
 url: https://github.com/astral-sh/ruff/pull/6828
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Remove remaining usages of `try_set_fix`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-23 22:21_
+_@charliermarsh_
 
 There are just a few remaining usages of this deprecated method.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-04T17:29:58Z
 updated_at: 2025-02-05T22:55:43Z
 url: https://github.com/astral-sh/uv/issues/11222
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:31Z
 ```
 
 # Please consider publishing astral-tokio-tar on crates.io
 
 ---
 
-_Issue opened by @musicinmybrain on 2025-02-04 17:29_
+_@musicinmybrain_
 
 ### Summary
 

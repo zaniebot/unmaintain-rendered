@@ -12,14 +12,14 @@ head: mockimports
 created_at: 2022-12-30T21:42:30Z
 updated_at: 2023-01-01T16:11:23Z
 url: https://github.com/astral-sh/ruff/pull/1488
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Pyupgrade: `import mock` to `from unittest import mock`
 
 ---
 
-_Pull request opened by @colin99d on 2022-12-30 21:42_
+_@colin99d_
 
 This gets us further on #827. I added a lot of tests not included in the original library. Also, the function to create the changes was a little complicated, so I added a BUNCH of comments to it.
 

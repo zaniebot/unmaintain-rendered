@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-29T02:18:39Z
 updated_at: 2025-12-29T14:23:11Z
 url: https://github.com/astral-sh/ty/issues/2253
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Unable to infer zip type
 
 ---
 
-_Issue opened by @phistep on 2025-12-29 02:18_
+_@phistep_
 
 ### Question
 

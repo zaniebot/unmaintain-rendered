@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T11:50:32Z
 updated_at: 2025-07-18T12:47:57Z
 url: https://github.com/astral-sh/uv/issues/14714
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # Python version removal from the Windows registry can race
 
 ---
 
-_Issue opened by @zanieb on 2025-07-18 11:50_
+_@zanieb_
 
 ### Summary
 

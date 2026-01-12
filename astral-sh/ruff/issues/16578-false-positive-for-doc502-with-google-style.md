@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-09T17:32:44Z
 updated_at: 2025-11-12T21:03:03Z
 url: https://github.com/astral-sh/ruff/issues/16578
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # False positive for `DOC502` with Google-style docstring
 
 ---
 
-_Issue opened by @gtkacz on 2025-03-09 17:32_
+_@gtkacz_
 
 ### Summary
 

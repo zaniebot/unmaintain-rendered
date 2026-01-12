@@ -13,14 +13,14 @@ head: charlie/sym
 created_at: 2024-06-12T13:19:46Z
 updated_at: 2024-06-12T13:36:28Z
 url: https://github.com/astral-sh/uv/pull/4268
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:07Z
 ```
 
 # Use relative path for lib64 symlink
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-12 13:19_
+_@charliermarsh_
 
 ## Summary
 

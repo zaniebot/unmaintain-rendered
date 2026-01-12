@@ -13,14 +13,14 @@ head: zb/git-term
 created_at: 2025-02-26T03:46:13Z
 updated_at: 2025-02-26T03:56:25Z
 url: https://github.com/astral-sh/uv/pull/11789
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:00Z
 ```
 
 # Move `GIT_TERMINAL_PROMPT` to env vars
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-26 03:46_
+_@zanieb_
 
 _No description provided._
 

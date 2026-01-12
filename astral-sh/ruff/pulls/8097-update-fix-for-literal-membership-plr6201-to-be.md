@@ -14,14 +14,14 @@ head: zanie/6201
 created_at: 2023-10-20T16:41:37Z
 updated_at: 2023-10-20T17:38:04Z
 url: https://github.com/astral-sh/ruff/pull/8097
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Update fix for `literal-membership` (`PLR6201`) to be unsafe
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-20 16:41_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/8096
 

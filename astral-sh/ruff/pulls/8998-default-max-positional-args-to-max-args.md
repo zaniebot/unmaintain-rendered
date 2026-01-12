@@ -13,14 +13,14 @@ head: charlie/args
 created_at: 2023-12-04T18:50:29Z
 updated_at: 2023-12-04T19:08:41Z
 url: https://github.com/astral-sh/ruff/pull/8998
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Default `max-positional-args` to `max-args`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-04 18:50_
+_@charliermarsh_
 
 _No description provided._
 

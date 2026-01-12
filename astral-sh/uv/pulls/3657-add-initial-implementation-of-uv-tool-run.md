@@ -13,14 +13,14 @@ head: zb/tool-run
 created_at: 2024-05-19T14:11:58Z
 updated_at: 2024-05-21T19:51:32Z
 url: https://github.com/astral-sh/uv/pull/3657
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:46Z
 ```
 
 # Add initial implementation of `uv tool run`
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-19 14:11_
+_@zanieb_
 
 This is mostly a shorter version of `uv run` that infers a requirement name from the command. The main goal here is to do the smallest amount of work necessary to get #3560 started.
 

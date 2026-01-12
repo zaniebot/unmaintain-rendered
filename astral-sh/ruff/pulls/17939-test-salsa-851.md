@@ -12,14 +12,14 @@ head: micha/fixpoint-changes
 created_at: 2025-05-08T08:54:10Z
 updated_at: 2025-05-08T09:15:54Z
 url: https://github.com/astral-sh/ruff/pull/17939
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # Test Salsa #851
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-08 08:54_
+_@MichaReiser_
 
 _No description provided._
 

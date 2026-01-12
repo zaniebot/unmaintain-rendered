@@ -13,14 +13,14 @@ head: charlie/offline
 created_at: 2024-04-05T16:57:55Z
 updated_at: 2024-04-05T17:10:24Z
 url: https://github.com/astral-sh/uv/pull/2837
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:15Z
 ```
 
 # Add a test for `--offline` direct URLs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-05 16:57_
+_@charliermarsh_
 
 ## Summary
 

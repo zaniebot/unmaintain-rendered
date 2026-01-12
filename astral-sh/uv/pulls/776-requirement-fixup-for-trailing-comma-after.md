@@ -13,14 +13,14 @@ head: trailing-comma-after-quote
 created_at: 2024-01-04T13:39:21Z
 updated_at: 2024-01-04T13:45:42Z
 url: https://github.com/astral-sh/uv/pull/776
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:11Z
 ```
 
 # Requirement fixup for trailing comma after trailing quote
 
 ---
 
-_Pull request opened by @konstin on 2024-01-04 13:39_
+_@konstin_
 
 Fixup for https://files.pythonhosted.org/packages/74/49/7349527cea7f708e7d3253ab6b32c9b5bdf84a57dde8fc265a33e6a4e662/boto3-1.2.0-py2.py3-none-any.whl:
 

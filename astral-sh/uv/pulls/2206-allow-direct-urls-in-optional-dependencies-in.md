@@ -13,14 +13,14 @@ head: charlie/ed-url
 created_at: 2024-03-05T16:42:26Z
 updated_at: 2024-03-05T16:57:56Z
 url: https://github.com/astral-sh/uv/pull/2206
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:55Z
 ```
 
 # Allow direct URLs in optional dependencies in editables
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-05 16:42_
+_@charliermarsh_
 
 See the additional test, which fails on `main`.
 

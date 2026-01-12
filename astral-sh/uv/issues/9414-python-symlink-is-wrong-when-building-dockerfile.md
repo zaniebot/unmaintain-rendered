@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-25T11:08:22Z
 updated_at: 2024-11-25T12:55:41Z
 url: https://github.com/astral-sh/uv/issues/9414
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:49Z
 ```
 
 # Python symlink is wrong when building Dockerfile
 
 ---
 
-_Issue opened by @timvink on 2024-11-25 11:08_
+_@timvink_
 
 Consider this Dockerfile:
 

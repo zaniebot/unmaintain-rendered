@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-08T23:54:01Z
 updated_at: 2023-12-11T21:43:45Z
 url: https://github.com/astral-sh/ruff/issues/9063
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # E712 fix results in unsafe behavior
 
 ---
 
-_Issue opened by @DavidSlayback on 2023-12-08 23:54_
+_@DavidSlayback_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

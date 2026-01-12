@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-03T18:21:54Z
 updated_at: 2025-03-04T17:49:53Z
 url: https://github.com/astral-sh/ruff/issues/16477
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [pydocstyle]: d417 being ignored with convention=google
 
 ---
 
-_Issue opened by @sjhw on 2025-03-03 18:21_
+_@sjhw_
 
 Hello ruff team! Thank you for making such an incredible tool, I've found my python project management experience has skyrocketed in ease since incorporating this into my organization's main Python repo.
 

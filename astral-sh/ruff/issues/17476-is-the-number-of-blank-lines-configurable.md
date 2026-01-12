@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-19T06:36:56Z
 updated_at: 2025-11-05T14:55:35Z
 url: https://github.com/astral-sh/ruff/issues/17476
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Is the number of blank lines configurable?
 
 ---
 
-_Issue opened by @arjun-menon on 2025-04-19 06:36_
+_@arjun-menon_
 
 ### Question
 

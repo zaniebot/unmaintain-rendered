@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-08T15:19:56Z
 updated_at: 2023-08-08T18:46:43Z
 url: https://github.com/astral-sh/ruff/issues/6428
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Consider adding "bad indentation" (from pylint)
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-08-08 15:19_
+_@NeilGirdhar_
 
 Consider:
 ```python

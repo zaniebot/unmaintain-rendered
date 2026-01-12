@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T15:47:26Z
 updated_at: 2025-04-10T19:53:12Z
 url: https://github.com/astral-sh/ruff/issues/17319
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # How do I make ruff linter to prefer single quotes?
 
 ---
 
-_Issue opened by @Ignalion on 2025-04-09 15:47_
+_@Ignalion_
 
 ### Question
 

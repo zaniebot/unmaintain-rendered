@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-05T13:22:53Z
 updated_at: 2025-12-11T11:10:44Z
 url: https://github.com/astral-sh/uv/issues/16999
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # Bytecode compilation can fail with "too many open files" on default Ubuntu settings
 
 ---
 
-_Issue opened by @vient on 2025-12-05 13:22_
+_@vient_
 
 ### Summary
 

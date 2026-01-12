@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-31T02:40:55Z
 updated_at: 2024-03-31T23:06:44Z
 url: https://github.com/astral-sh/uv/issues/2739
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Can this install the right version of python?
 
 ---
 
-_Issue opened by @dillfrescott on 2024-03-31 02:40_
+_@dillfrescott_
 
 Or do i have to go out and download the right version of python for the project I'm trying to run?
 

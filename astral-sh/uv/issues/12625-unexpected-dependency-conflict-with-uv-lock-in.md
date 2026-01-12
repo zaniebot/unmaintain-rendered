@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-02T14:58:17Z
 updated_at: 2025-04-02T16:13:50Z
 url: https://github.com/astral-sh/uv/issues/12625
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # Unexpected Dependency Conflict with uv lock in Python 3.11.11
 
 ---
 
-_Issue opened by @nordicsushi on 2025-04-02 14:58_
+_@nordicsushi_
 
 ### Summary
 

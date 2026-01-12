@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-18T03:26:57Z
 updated_at: 2025-10-23T10:55:40Z
 url: https://github.com/astral-sh/ruff/issues/20460
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `ruff check --fix` to stdout when reading from stdin
 
 ---
 
-_Issue opened by @pelson on 2025-09-18 03:26_
+_@pelson_
 
 ### Summary
 

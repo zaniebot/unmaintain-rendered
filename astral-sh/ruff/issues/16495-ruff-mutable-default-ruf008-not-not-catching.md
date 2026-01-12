@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-04T10:29:19Z
 updated_at: 2025-03-04T11:21:14Z
 url: https://github.com/astral-sh/ruff/issues/16495
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # ruff-mutable-default (RUF008) not not catching mutable default passed to attrs.field.
 
 ---
 
-_Issue opened by @ashb on 2025-03-04 10:29_
+_@ashb_
 
 Simple repro case
 ```

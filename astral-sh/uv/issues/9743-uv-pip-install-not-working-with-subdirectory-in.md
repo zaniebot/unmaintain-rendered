@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-09T18:26:51Z
 updated_at: 2024-12-10T03:42:50Z
 url: https://github.com/astral-sh/uv/issues/9743
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # `uv pip install` not working with `#subdirectory` in monorepo
 
 ---
 
-_Issue opened by @jamesbraza on 2024-12-09 18:26_
+_@jamesbraza_
 
 I have something like this, both in the same GitHub repo:
 

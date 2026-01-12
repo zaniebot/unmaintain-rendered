@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-15T12:28:52Z
 updated_at: 2025-04-11T11:00:49Z
 url: https://github.com/astral-sh/uv/issues/12185
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:00:57Z
 ```
 
 # uv under Win11 WSL-ubuntu sees wrong (win) python references
 
 ---
 
-_Issue opened by @krstp on 2025-03-15 12:28_
+_@krstp_
 
 Here is an interesting turn of things... in the past days I had to work with Win11 box... as unusable as Windows-box is, it made me install virtual Ubuntu shell via WSL...
 

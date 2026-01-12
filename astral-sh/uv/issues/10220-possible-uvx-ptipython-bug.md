@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-29T17:53:57Z
 updated_at: 2025-01-07T15:31:03Z
 url: https://github.com/astral-sh/uv/issues/10220
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # Possible `uvx ptipython` bug
 
 ---
 
-_Issue opened by @DimitarVanguelov on 2024-12-29 17:53_
+_@DimitarVanguelov_
 
 Hi, I read the sticky for new issues (#9452) and could not determine if this issue somehow exists somewhere else, but it looks like not. It could be related to build systems or packaging, but I don't know enough about that and figured this report might shed light on some edge cases. Apologies if it's somehow a duplicate.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-27T18:32:58Z
 updated_at: 2025-05-30T17:39:41Z
 url: https://github.com/astral-sh/uv/issues/12512
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # `uv lock` fails when using `dependency-metadata` with a URL dependency
 
 ---
 
-_Issue opened by @object-Object on 2025-03-27 18:32_
+_@object-Object_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: feature/cache-autoprune
 created_at: 2025-12-21T22:31:10Z
 updated_at: 2026-01-06T23:05:03Z
 url: https://github.com/astral-sh/uv/pull/17211
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # Add background autoprune to remove stale cache entries
 
 ---
 
-_Pull request opened by @TrevorBurnham on 2025-12-21 22:31_
+_@TrevorBurnham_
 
 Fixes #5731
 

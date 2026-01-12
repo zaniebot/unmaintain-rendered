@@ -13,14 +13,14 @@ head: simplify-benchmark-setup
 created_at: 2024-07-26T10:08:52Z
 updated_at: 2024-08-02T15:50:56Z
 url: https://github.com/astral-sh/ruff/pull/12524
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Remove criterion/codspeed compat layer
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-26 10:08_
+_@MichaReiser_
 
 ## Summary
 

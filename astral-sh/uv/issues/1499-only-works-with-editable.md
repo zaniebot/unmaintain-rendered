@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T15:11:13Z
 updated_at: 2024-03-22T21:24:50Z
 url: https://github.com/astral-sh/uv/issues/1499
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # `.` only works with `--editable`
 
 ---
 
-_Issue opened by @altendky on 2024-02-16 15:11_
+_@altendky_
 
 I am in an empty directory so the failure to install due to lack of `pyproject.toml` is expected.  What is not expected is the failure to parse `.` at all without `--editable` having been specified.
 

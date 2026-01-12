@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-25T05:49:37Z
 updated_at: 2025-03-28T16:02:13Z
 url: https://github.com/astral-sh/ruff/issues/16963
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `FIX` rules with expire date or deadlines
 
 ---
 
-_Issue opened by @edpyt on 2025-03-25 05:49_
+_@edpyt_
 
 ### Summary
 

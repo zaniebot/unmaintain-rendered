@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-20T23:03:06Z
 updated_at: 2025-12-22T13:02:31Z
 url: https://github.com/astral-sh/ty/issues/166
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Tracking issue for override-related checks (including the Liskov Substitution Principle)
 
 ---
 
-_Issue opened by @carljm on 2025-03-20 23:03_
+_@carljm_
 
 This means checking that subclass methods are subtypes of the superclass method they override, if any.
 

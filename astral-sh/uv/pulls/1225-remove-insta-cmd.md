@@ -13,14 +13,14 @@ head: konsti/replace_insta_cmd
 created_at: 2024-02-01T14:45:12Z
 updated_at: 2024-02-02T09:37:06Z
 url: https://github.com/astral-sh/uv/pull/1225
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:31Z
 ```
 
 # Remove insta_cmd
 
 ---
 
-_Pull request opened by @konstin on 2024-02-01 14:45_
+_@konstin_
 
 We need more flexible filters than those `inta` offers, and `insta_cmd` makes it impossible to plug in programmatic filters. At the same time we use barely any of `insta_cmd`'s features. We can replace the subset we need in about 50 loc.
 

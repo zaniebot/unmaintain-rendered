@@ -10,14 +10,14 @@ assignees: []
 created_at: 2018-07-23T11:12:12Z
 updated_at: 2020-04-04T15:50:35Z
 url: https://github.com/clap-rs/clap/issues/1325
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Incorrect documentation for the value_t macro
 
 ---
 
-_Issue opened by @kgnlp on 2018-07-23 11:12_
+_@kgnlp_
 
 The documentation for value_t (https://github.com/kbknapp/clap-rs/blob/master/src/macros.rs#L35) says the macro returns a `Result<T,String>` while it actually returns a `Result<T, clap::Error>` aka `clap::Result<T>`
 

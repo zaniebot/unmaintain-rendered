@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-25T11:01:49Z
 updated_at: 2025-05-26T15:05:05Z
 url: https://github.com/astral-sh/ty/issues/506
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Handle exhaustive overload mixing `bool` and `Literal[True]`/`Literal[False]`
 
 ---
 
-_Issue opened by @flying-sheep on 2025-05-25 11:01_
+_@flying-sheep_
 
 ### Summary
 

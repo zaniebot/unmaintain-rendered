@@ -14,14 +14,14 @@ head: dhruv/match-seq-pattern
 created_at: 2024-04-17T11:39:59Z
 updated_at: 2024-04-17T13:05:51Z
 url: https://github.com/astral-sh/ruff/pull/10996
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Add `if` as sequence pattern list terminator
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-17 11:39_
+_@dhruvmanila_
 
 ## Summary
 

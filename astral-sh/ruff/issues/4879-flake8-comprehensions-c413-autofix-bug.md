@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-05T20:55:17Z
 updated_at: 2023-06-07T22:23:21Z
 url: https://github.com/astral-sh/ruff/issues/4879
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [flake8-comprehensions] C413 autofix bug
 
 ---
 
-_Issue opened by @zariiii9003 on 2023-06-05 20:55_
+_@zariiii9003_
 
 The autofix for C413 can lead to bugs if the `key` parameter is used. Here is a little code example to show, that the results before and after the autofix are different.
 

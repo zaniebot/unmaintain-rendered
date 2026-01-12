@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T12:34:59Z
 updated_at: 2025-03-11T16:42:47Z
 url: https://github.com/astral-sh/ruff/issues/16302
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Decide if `Type::to_instance` should return a `Result`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-02-21 12:34_
+_@MichaReiser_
 
 ### Description
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T11:16:07Z
 updated_at: 2025-06-24T08:56:38Z
 url: https://github.com/astral-sh/uv/issues/13942
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # TensorRT optional dependency causes problems on MacOs
 
 ---
 
-_Issue opened by @PawelPeczek-Roboflow on 2025-06-10 11:16_
+_@PawelPeczek-Roboflow_
 
 ### Question
 

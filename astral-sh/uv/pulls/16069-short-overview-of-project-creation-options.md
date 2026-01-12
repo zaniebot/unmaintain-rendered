@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-09-30T08:29:02Z
 updated_at: 2025-09-30T08:29:02Z
 url: https://github.com/astral-sh/uv/pull/16069
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:05Z
 ```
 
 # Short overview of project creation options
 
 ---
 
-_Pull request opened by @moi90 on 2025-09-30 08:29_
+_@moi90_
 
 Added a short overview for project creation options
 

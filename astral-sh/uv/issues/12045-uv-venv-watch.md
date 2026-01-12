@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T14:06:59Z
 updated_at: 2025-03-07T18:09:05Z
 url: https://github.com/astral-sh/uv/issues/12045
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # uv venv watch
 
 ---
 
-_Issue opened by @gshotwell on 2025-03-07 14:06_
+_@gshotwell_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-20T10:19:36Z
 updated_at: 2025-09-01T08:26:44Z
 url: https://github.com/astral-sh/ruff/issues/20001
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Rule to lint usages of mutable types with cached_property
 
 ---
 
-_Issue opened by @DavideCanton on 2025-08-20 10:19_
+_@DavideCanton_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-29T21:21:10Z
 updated_at: 2024-10-17T01:07:07Z
 url: https://github.com/astral-sh/uv/issues/5576
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Avoid modifying `.bash_profile` every `uv self update`
 
 ---
 
-_Issue opened by @scienceplease on 2024-07-29 21:21_
+_@scienceplease_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

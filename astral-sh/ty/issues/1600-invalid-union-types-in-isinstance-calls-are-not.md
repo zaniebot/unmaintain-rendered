@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-20T12:08:40Z
 updated_at: 2025-11-21T00:08:24Z
 url: https://github.com/astral-sh/ty/issues/1600
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Invalid union types in `isinstance()` calls are not detected when nested in tuples
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-20 12:08_
+_@AlexWaygood_
 
 ### Summary
 

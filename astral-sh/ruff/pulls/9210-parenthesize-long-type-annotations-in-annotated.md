@@ -14,14 +14,14 @@ head: parenthesize-long-type-annotations-in-annotated-assigns
 created_at: 2023-12-20T10:29:35Z
 updated_at: 2023-12-22T03:33:48Z
 url: https://github.com/astral-sh/ruff/pull/9210
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Parenthesize long type annotations in annotated assignments
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-20 10:29_
+_@MichaReiser_
 
 ## Summary
 

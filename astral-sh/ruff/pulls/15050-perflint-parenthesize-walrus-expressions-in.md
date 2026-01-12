@@ -15,14 +15,14 @@ head: list-compr-walrus
 created_at: 2024-12-18T21:33:23Z
 updated_at: 2024-12-19T12:56:46Z
 url: https://github.com/astral-sh/ruff/pull/15050
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`perflint`] Parenthesize walrus expressions in autofix for `manual-list-comprehension` (`PERF401`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-12-18 21:33_
+_@dylwil3_
 
 This PR ensures that, when transforming a for-loop into a comprehension for the rule [manual-list-comprehension (PERF401)](https://docs.astral.sh/ruff/rules/manual-list-comprehension/#manual-list-comprehension-perf401), we parenthesize if-stmt tests when they are assignment expressions.
 

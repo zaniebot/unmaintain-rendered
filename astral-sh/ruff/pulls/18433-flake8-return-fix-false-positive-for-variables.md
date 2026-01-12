@@ -13,14 +13,14 @@ head: RET504-false-positive
 created_at: 2025-06-02T19:39:53Z
 updated_at: 2025-07-10T20:11:19Z
 url: https://github.com/astral-sh/ruff/pull/18433
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 #  [`flake8-return`] Fix false-positive for variables used inside nested functions in `RET504` 
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-02 19:39_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

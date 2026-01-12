@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-10-25T20:11:45Z
 updated_at: 2018-08-02T03:29:55Z
 url: https://github.com/clap-rs/clap/issues/706
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # AppSettings::DeriveDisplayOrder doesn't propagate to sub commands correctly
 
 ---
 
-_Issue opened by @Nemo157 on 2016-10-25 20:11_
+_@Nemo157_
 
 Adding `AppSettings::DeriveDisplayOrder` to the global settings of an `App` doesn't propagate down to the apps sub commands.
 

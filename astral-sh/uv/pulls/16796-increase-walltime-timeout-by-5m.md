@@ -13,14 +13,14 @@ head: zb/wall-time
 created_at: 2025-11-20T22:23:22Z
 updated_at: 2025-11-20T22:36:39Z
 url: https://github.com/astral-sh/uv/pull/16796
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:27Z
 ```
 
 # Increase walltime timeout by 5m
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-20 22:23_
+_@zanieb_
 
 It is failing while caching the dependencies
 

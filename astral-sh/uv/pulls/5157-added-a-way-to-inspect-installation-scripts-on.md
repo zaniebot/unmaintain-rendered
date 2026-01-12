@@ -14,14 +14,14 @@ head: FishAlchemist/add_inspect_windows
 created_at: 2024-07-17T17:59:49Z
 updated_at: 2024-07-19T14:59:14Z
 url: https://github.com/astral-sh/uv/pull/5157
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:40Z
 ```
 
 # Added a way to inspect installation scripts on Powershell(Windows)
 
 ---
 
-_Pull request opened by @FishAlchemist on 2024-07-17 17:59_
+_@FishAlchemist_
 
 ## Summary
 ### command

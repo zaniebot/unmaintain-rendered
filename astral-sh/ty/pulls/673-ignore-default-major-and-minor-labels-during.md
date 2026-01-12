@@ -13,14 +13,14 @@ head: zb/rooster-maj-min
 created_at: 2025-06-17T20:09:22Z
 updated_at: 2025-06-17T20:19:10Z
 url: https://github.com/astral-sh/ty/pull/673
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Ignore default major and minor labels during version determination
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-17 20:09_
+_@zanieb_
 
 Otherwise, a `breaking` label will move us to 1.0.0
 

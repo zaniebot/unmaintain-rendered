@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-08-28T13:54:26Z
 updated_at: 2022-08-30T03:04:54Z
 url: https://github.com/astral-sh/ruff/issues/36
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement F811 (redefinition of unused)
 
 ---
 
-_Issue opened by @charliermarsh on 2022-08-28 13:54_
+_@charliermarsh_
 
 _No description provided._
 

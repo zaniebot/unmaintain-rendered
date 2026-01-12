@@ -12,14 +12,14 @@ head: renovate/macos-14.x
 created_at: 2024-05-06T00:59:58Z
 updated_at: 2024-05-06T01:08:34Z
 url: https://github.com/astral-sh/ruff/pull/11300
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Update dependency macos to v14
 
 ---
 
-_Pull request opened by @renovate on 2024-05-06 00:59_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

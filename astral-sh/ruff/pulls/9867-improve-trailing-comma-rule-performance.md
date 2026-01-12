@@ -13,14 +13,14 @@ head: perf-trailing-comma
 created_at: 2024-02-06T22:30:08Z
 updated_at: 2024-02-06T23:05:58Z
 url: https://github.com/astral-sh/ruff/pull/9867
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Improve trailing comma rule performance
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-06 22:30_
+_@MichaReiser_
 
 ## Summary
 

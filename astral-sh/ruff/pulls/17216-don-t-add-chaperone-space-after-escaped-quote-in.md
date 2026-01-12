@@ -14,14 +14,14 @@ head: unex-space
 created_at: 2025-04-05T05:30:04Z
 updated_at: 2025-04-11T08:22:32Z
 url: https://github.com/astral-sh/ruff/pull/17216
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Don't add chaperone space after escaped quote in triple quote
 
 ---
 
-_Pull request opened by @maxmynter on 2025-04-05 05:30_
+_@maxmynter_
 
 Closes #16640
 

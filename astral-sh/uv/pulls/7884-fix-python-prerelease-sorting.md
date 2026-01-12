@@ -13,14 +13,14 @@ head: sort
 created_at: 2024-10-03T03:56:48Z
 updated_at: 2024-10-03T13:14:32Z
 url: https://github.com/astral-sh/uv/pull/7884
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:03Z
 ```
 
 # Fix Python prerelease sorting
 
 ---
 
-_Pull request opened by @j178 on 2024-10-03 03:56_
+_@j178_
 
 ## Summary
 

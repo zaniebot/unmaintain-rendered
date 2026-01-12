@@ -13,14 +13,14 @@ head: reword-py314-warning
 created_at: 2025-07-25T19:55:13Z
 updated_at: 2025-07-25T21:09:46Z
 url: https://github.com/astral-sh/ruff/pull/19563
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # Reword preview warning for `target-version` Python 3.14
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-07-25 19:55_
+_@dylwil3_
 
 Small rewording to indicate that core development is done but that we may add breaking changes.
 

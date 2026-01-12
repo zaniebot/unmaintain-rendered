@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-07T15:15:47Z
 updated_at: 2024-01-27T20:21:47Z
 url: https://github.com/astral-sh/uv/issues/585
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Running from multiple processes can lead to failure due to stale wheel deletion
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-07 15:15_
+_@charliermarsh_
 
 We'd like the installer and resolver to work when run from multiple concurrent processes (with a few exceptions, for example, if the user deletes the cache from one session while running a command from another, that seems okay).
 

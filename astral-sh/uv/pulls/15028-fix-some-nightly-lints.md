@@ -13,14 +13,14 @@ head: konsti/fix-nightly-clippy
 created_at: 2025-08-02T15:01:13Z
 updated_at: 2025-08-02T18:59:24Z
 url: https://github.com/astral-sh/uv/pull/15028
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:32Z
 ```
 
 # Fix some nightly lints
 
 ---
 
-_Pull request opened by @konstin on 2025-08-02 15:01_
+_@konstin_
 
 Apply fixes for some `cargo check` and `cargo clippy` lints that are on in nightly Rust.
 

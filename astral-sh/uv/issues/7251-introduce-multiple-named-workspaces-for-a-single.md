@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-10T11:00:01Z
 updated_at: 2025-09-23T17:18:06Z
 url: https://github.com/astral-sh/uv/issues/7251
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Introduce multiple, named-workspaces for a single project
 
 ---
 
-_Issue opened by @goraje on 2024-09-10 11:00_
+_@goraje_
 
 **Introduction**
 In our project we are dealing with the situation where we develop multiple Python packages and store them in a single monorepo. The packages that we are working on can essentially be divided into two groups (each of which could constitute a separate workspace), with some of the packages (workspace members) being common between the two groups. A simplified layout of the monorepo would look as follows.

@@ -14,14 +14,14 @@ head: dhruv/yield-expr
 created_at: 2024-03-29T14:22:07Z
 updated_at: 2024-04-03T08:29:09Z
 url: https://github.com/astral-sh/ruff/pull/10658
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Add tests for yield and yield from expressions
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-29 14:22_
+_@dhruvmanila_
 
 ## Summary
 

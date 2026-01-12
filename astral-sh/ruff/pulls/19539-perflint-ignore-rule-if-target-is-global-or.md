@@ -14,14 +14,14 @@ head: fix/ruff-19531
 created_at: 2025-07-24T19:39:13Z
 updated_at: 2025-07-28T21:03:23Z
 url: https://github.com/astral-sh/ruff/pull/19539
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [`perflint`] Ignore rule if target is `global` or `nonlocal` (`PERF401`)
 
 ---
 
-_Pull request opened by @IDrokin117 on 2025-07-24 19:39_
+_@IDrokin117_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-11T11:08:20Z
 updated_at: 2023-07-11T17:14:41Z
 url: https://github.com/astral-sh/ruff/issues/5684
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # What's missing in the contributing documentation?
 
 ---
 
-_Issue opened by @konstin on 2023-07-11 11:08_
+_@konstin_
 
 Are there things that are missing in the contributing documentation, parts that you need help understanding, explanations that are unclear? Report them here!
 

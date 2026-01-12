@@ -14,14 +14,14 @@ head: alex/callable-bind-self
 created_at: 2025-11-24T14:07:24Z
 updated_at: 2025-11-24T21:14:05Z
 url: https://github.com/astral-sh/ruff/pull/21614
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # [ty] Retain the function-like-ness of `Callable` types when binding `self`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-24 14:07_
+_@AlexWaygood_
 
 ## Summary
 

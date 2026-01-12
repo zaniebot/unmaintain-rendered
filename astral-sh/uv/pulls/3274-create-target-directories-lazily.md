@@ -13,14 +13,14 @@ head: charlie/target
 created_at: 2024-04-26T03:26:11Z
 updated_at: 2024-04-26T03:36:57Z
 url: https://github.com/astral-sh/uv/pull/3274
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:33Z
 ```
 
 # Create `--target` directories lazily
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-26 03:26_
+_@charliermarsh_
 
 ## Summary
 

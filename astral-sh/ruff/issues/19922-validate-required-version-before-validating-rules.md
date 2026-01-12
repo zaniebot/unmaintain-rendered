@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T00:25:44Z
 updated_at: 2026-01-07T17:29:28Z
 url: https://github.com/astral-sh/ruff/issues/19922
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Validate required_version before validating rules
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-08-15 00:25_
+_@hauntsaninja_
 
 If you have both a `required-version` and a new rule enabled in your ruff config, but try to run with an older version of ruff, you get something like:
 ```

@@ -12,14 +12,14 @@ head: format-expr-tupl-try-2
 created_at: 2023-06-08T15:21:20Z
 updated_at: 2023-06-17T13:40:29Z
 url: https://github.com/astral-sh/ruff/pull/4963
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Format ExprTuple
 
 ---
 
-_Pull request opened by @konstin on 2023-06-08 15:21_
+_@konstin_
 
 This implements formatting ExprTuple, including magic trailing comma. I intentionally didn't change the settings mechanism but just added a dummy global const flag.
 

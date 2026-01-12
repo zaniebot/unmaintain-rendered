@@ -14,14 +14,14 @@ head: zb/native-root
 created_at: 2025-09-15T14:41:52Z
 updated_at: 2025-09-15T18:47:26Z
 url: https://github.com/astral-sh/uv/pull/15873
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:59Z
 ```
 
 # Use the root index URL when retrieving credentials from the native store
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-15 14:41_
+_@zanieb_
 
 Part of https://github.com/astral-sh/uv/issues/15818
 

@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-06-07T11:38:01Z
 updated_at: 2025-06-07T12:38:40Z
 url: https://github.com/astral-sh/ty/pull/602
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Fix `fstring-type-annotation` example syntax
 
 ---
 
-_Pull request opened by @niraj-khatiwada on 2025-06-07 11:38_
+_@niraj-khatiwada_
 
 <!--
 Thank you for contributing to ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: alex/audit-importer
 created_at: 2025-02-01T15:39:19Z
 updated_at: 2025-02-01T15:46:34Z
 url: https://github.com/astral-sh/ruff/pull/15873
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Use `Diagnostic::try_set_fix` in `bad-generator-return-type`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-01 15:39_
+_@AlexWaygood_
 
 ## Summary
 

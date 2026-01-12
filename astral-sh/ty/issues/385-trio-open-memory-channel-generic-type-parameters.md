@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-14T15:00:55Z
 updated_at: 2025-05-14T15:14:20Z
 url: https://github.com/astral-sh/ty/issues/385
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # trio.open_memory_channel Generic Type Parameters Not Recognized
 
 ---
 
-_Issue opened by @rowillia on 2025-05-14 15:00_
+_@rowillia_
 
 ### Summary
 

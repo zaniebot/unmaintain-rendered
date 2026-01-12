@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-18T10:13:48Z
 updated_at: 2025-11-13T16:08:50Z
 url: https://github.com/astral-sh/ty/issues/169
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Change range for `unresolved-attribute` error to attribute
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-18 10:13_
+_@MichaReiser_
 
 The `unresolved-attribute` diagnostic currently highlights the entire attribute expression. I find this very noisy and the error, most of the time is with the attribute and not with the object. We could also use a secondary range to highlight the object's definition. 
 

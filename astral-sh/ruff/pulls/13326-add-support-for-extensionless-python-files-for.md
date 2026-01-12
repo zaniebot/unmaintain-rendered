@@ -13,14 +13,14 @@ head: dhruv/server-language-id
 created_at: 2024-09-11T15:33:12Z
 updated_at: 2024-09-11T19:05:29Z
 url: https://github.com/astral-sh/ruff/pull/13326
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Add support for extensionless Python files for server
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-09-11 15:33_
+_@dhruvmanila_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-13T13:23:12Z
 updated_at: 2023-01-14T11:44:04Z
 url: https://github.com/astral-sh/ruff/issues/1848
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # B024 and B027 false positives when using `@abc.abstractproperty`
 
 ---
 
-_Issue opened by @nsoranzo on 2023-01-13 13:23_
+_@nsoranzo_
 
 - A minimal code snippet that reproduces the bug:
 

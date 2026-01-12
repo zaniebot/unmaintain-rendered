@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-18T10:15:52Z
 updated_at: 2025-04-25T15:03:22Z
 url: https://github.com/astral-sh/ruff/issues/16223
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [Suggestion] Automatically replace "Class" with Self from typing
 
 ---
 
-_Issue opened by @montanarograziano on 2025-02-18 10:15_
+_@montanarograziano_
 
 ### Description
 

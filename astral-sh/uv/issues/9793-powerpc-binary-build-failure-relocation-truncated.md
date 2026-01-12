@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-11T00:13:06Z
 updated_at: 2024-12-11T14:33:07Z
 url: https://github.com/astral-sh/uv/issues/9793
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:59Z
 ```
 
 # PowerPC binary build failure "relocation truncated to fit: R_PPC64_REL24"
 
 ---
 
-_Issue opened by @zanieb on 2024-12-11 00:13_
+_@zanieb_
 
 The build failed during linking with
 

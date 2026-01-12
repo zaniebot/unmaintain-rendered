@@ -14,14 +14,14 @@ head: reference-uvx
 created_at: 2024-07-12T15:40:47Z
 updated_at: 2024-07-12T17:17:27Z
 url: https://github.com/astral-sh/uv/pull/5014
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:35Z
 ```
 
 # `uv tool run` error messages references `uvx` when appropriate
 
 ---
 
-_Pull request opened by @blueraft on 2024-07-12 15:40_
+_@blueraft_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: david/mdtest-runner-include-stderr
 created_at: 2025-01-21T14:54:49Z
 updated_at: 2025-01-21T15:01:49Z
 url: https://github.com/astral-sh/ruff/pull/15644
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] mdtest runner: include stderr for crashing tests
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-21 14:54_
+_@sharkdp_
 
 ## Summary
 

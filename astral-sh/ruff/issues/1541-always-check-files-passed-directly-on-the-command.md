@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-01T23:40:48Z
 updated_at: 2023-01-02T21:49:45Z
 url: https://github.com/astral-sh/ruff/issues/1541
-synced_at: 2026-01-10T12:05:30Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Always check files passed directly on the command-line
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-01 23:40_
+_@charliermarsh_
 
 ...regardless of whether they have a `.py` or `.pyi` extension.
 

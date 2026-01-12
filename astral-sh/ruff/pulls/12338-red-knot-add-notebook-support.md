@@ -13,14 +13,14 @@ head: notebook-support
 created_at: 2024-07-15T15:45:18Z
 updated_at: 2024-07-17T08:40:51Z
 url: https://github.com/astral-sh/ruff/pull/12338
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Add notebook support
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-15 15:45_
+_@MichaReiser_
 
 ## Summary
 

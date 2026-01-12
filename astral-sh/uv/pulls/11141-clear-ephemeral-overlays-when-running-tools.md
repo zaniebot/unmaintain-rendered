@@ -13,14 +13,14 @@ head: charlie/overlay
 created_at: 2025-01-31T19:15:13Z
 updated_at: 2025-02-04T22:45:46Z
 url: https://github.com/astral-sh/uv/pull/11141
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:42Z
 ```
 
 # Clear ephemeral overlays when running tools
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-31 19:15_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-16T14:03:27Z
 updated_at: 2024-03-18T16:31:09Z
 url: https://github.com/astral-sh/uv/issues/2487
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Errors when querying infos for Python interpreter on OpenBSD
 
 ---
 
-_Issue opened by @lcheylus on 2024-03-16 14:03_
+_@lcheylus_
 
 I'm trying to package `uv` on OpenBSD current/amd64 (future version 7.5).
 

@@ -13,14 +13,14 @@ head: micha/attrs-dataclasses
 created_at: 2025-01-08T10:28:41Z
 updated_at: 2025-01-08T11:57:23Z
 url: https://github.com/astral-sh/ruff/pull/15345
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`ruff`] Stabilize: Detect `attrs` dataclasses (`RUF008`, `RUF009`)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-08 10:28_
+_@MichaReiser_
 
 ## Summary
 

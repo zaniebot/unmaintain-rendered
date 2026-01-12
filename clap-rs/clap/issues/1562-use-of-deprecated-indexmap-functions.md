@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-10-04T12:36:08Z
 updated_at: 2019-10-21T10:26:41Z
 url: https://github.com/clap-rs/clap/issues/1562
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Use of deprecated indexmap functions 
 
 ---
 
-_Issue opened by @Dylan-DPC-zz on 2019-10-04 12:36_
+_@Dylan-DPC-zz_
 
 If you add `#[deprecated]` to lib.rs on master (3.0.0 alpha-1 candidate) we get the following warnings: 
 

@@ -14,14 +14,14 @@ head: micha/tuple-elements-slice
 created_at: 2025-12-25T09:14:36Z
 updated_at: 2025-12-27T09:30:36Z
 url: https://github.com/astral-sh/ruff/pull/22192
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Return slices for `Tuple` methods
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-25 09:14_
+_@MichaReiser_
 
 ## Summary
 

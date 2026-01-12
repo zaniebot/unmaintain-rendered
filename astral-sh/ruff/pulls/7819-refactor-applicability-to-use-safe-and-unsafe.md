@@ -12,14 +12,14 @@ head: zanie/app-refactor-safe
 created_at: 2023-10-04T19:05:10Z
 updated_at: 2023-10-05T18:04:11Z
 url: https://github.com/astral-sh/ruff/pull/7819
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Refactor applicability to use safe and unsafe
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-04 19:05_
+_@zanieb_
 
 Following much discussion for #4181 at https://github.com/astral-sh/ruff/pull/5119, https://github.com/astral-sh/ruff/discussions/5476, #7769, and in [Discord](https://discord.com/channels/1039017663004942429/1082324250112823306/1159144114231709746), this pull request changes `Applicability` from using `Suggested` for uncertain fixes to `Unsafe`.
 

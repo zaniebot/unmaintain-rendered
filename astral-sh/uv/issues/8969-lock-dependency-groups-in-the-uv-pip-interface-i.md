@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-09T13:10:41Z
 updated_at: 2025-03-18T12:47:34Z
 url: https://github.com/astral-sh/uv/issues/8969
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # Lock dependency groups in the `uv pip` interface, i.e., `uv pip compile --group`
 
 ---
 
-_Issue opened by @KasperZutterman on 2024-11-09 13:10_
+_@KasperZutterman_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

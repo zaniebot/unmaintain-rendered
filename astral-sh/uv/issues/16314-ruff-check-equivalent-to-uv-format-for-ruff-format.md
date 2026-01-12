@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-15T13:11:39Z
 updated_at: 2025-10-15T13:11:39Z
 url: https://github.com/astral-sh/uv/issues/16314
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # `ruff check` equivalent to `uv format` for `ruff format`
 
 ---
 
-_Issue opened by @domoritz on 2025-10-15 13:11_
+_@domoritz_
 
 ### Summary
 

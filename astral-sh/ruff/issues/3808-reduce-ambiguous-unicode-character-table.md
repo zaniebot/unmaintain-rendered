@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-30T10:41:20Z
 updated_at: 2023-06-27T13:16:24Z
 url: https://github.com/astral-sh/ruff/issues/3808
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Reduce ambiguous unicode character table
 
 ---
 
-_Issue opened by @MichaReiser on 2023-03-30 10:41_
+_@MichaReiser_
 
 The ambiguous Unicode character table generates by far the most lllvm instructions (1.3% of all generated instructions). 
 

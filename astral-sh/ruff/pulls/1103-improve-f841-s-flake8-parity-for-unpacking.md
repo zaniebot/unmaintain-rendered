@@ -12,14 +12,14 @@ head: charlie/F841-ii
 created_at: 2022-12-06T04:28:38Z
 updated_at: 2022-12-06T04:34:41Z
 url: https://github.com/astral-sh/ruff/pull/1103
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Improve F841's Flake8 parity for unpacking assignments
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-06 04:28_
+_@charliermarsh_
 
 _No description provided._
 

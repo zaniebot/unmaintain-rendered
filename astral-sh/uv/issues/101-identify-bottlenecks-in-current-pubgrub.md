@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-16T03:10:25Z
 updated_at: 2024-02-02T20:08:50Z
 url: https://github.com/astral-sh/uv/issues/101
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Identify bottlenecks in current PubGrub implementation
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-16 03:10_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-03-01T11:44:49Z
 updated_at: 2021-08-18T18:51:35Z
 url: https://github.com/clap-rs/clap/issues/1711
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Point clap_generate README to docs.rs
 
 ---
 
-_Issue opened by @pickfire on 2020-03-01 11:44_
+_@pickfire_
 
 ### Clap version
 

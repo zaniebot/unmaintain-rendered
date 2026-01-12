@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-08T03:21:52Z
 updated_at: 2023-12-09T04:12:42Z
 url: https://github.com/astral-sh/uv/issues/591
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # In install summary, break ties by change kind
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-08 03:21_
+_@charliermarsh_
 
 Right now, it's inconsistent when a package is removed and installed:
 

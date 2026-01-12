@@ -13,14 +13,14 @@ head: charlie/local
 created_at: 2024-05-14T23:48:45Z
 updated_at: 2024-05-15T00:02:10Z
 url: https://github.com/astral-sh/uv/pull/3596
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:44Z
 ```
 
 # Allow local versions in wheel filenames
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-14 23:48_
+_@charliermarsh_
 
 ## Summary
 

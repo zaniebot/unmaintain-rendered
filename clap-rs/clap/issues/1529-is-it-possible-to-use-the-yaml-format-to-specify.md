@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-07-30T03:12:08Z
 updated_at: 2020-02-01T12:59:47Z
 url: https://github.com/clap-rs/clap/issues/1529
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Is it possible to use the YAML format to specify that arguments have defaults?
 
 ---
 
-_Issue opened by @kozross on 2019-07-30 03:12_
+_@kozross_
 
 Suppose I want to have an option ``--output-dir``, which defaults to ``.``. Is there a way, using the YAML file method of CLI generation, to have the resulting help text inform me of this? For example, an entry like this in the YAML file:
 

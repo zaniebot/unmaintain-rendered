@@ -12,14 +12,14 @@ head: isort-force-to-top
 created_at: 2023-02-14T00:55:10Z
 updated_at: 2023-02-16T19:02:00Z
 url: https://github.com/astral-sh/ruff/pull/2877
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # feat(isort): Implement isort.force_to_top
 
 ---
 
-_Pull request opened by @spaceone on 2023-02-14 00:55_
+_@spaceone_
 
 test what `isort` does via:
 `isort -t "lib1" -t "lib3" -t "lib5" -t "lib3.lib4" -t "z" crates/ruff/resources/test/fixtures/isort/force_to_top.py`

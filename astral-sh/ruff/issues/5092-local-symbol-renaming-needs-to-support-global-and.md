@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-14T16:47:20Z
 updated_at: 2023-06-16T14:35:12Z
 url: https://github.com/astral-sh/ruff/issues/5092
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Local symbol renaming needs to support `global` and `nonlocal` symbols
 
 ---
 
-_Issue opened by @charliermarsh on 2023-06-14 16:47_
+_@charliermarsh_
 
 _No description provided._
 

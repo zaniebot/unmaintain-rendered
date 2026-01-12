@@ -13,14 +13,14 @@ head: PLW2101
 created_at: 2023-10-29T07:49:39Z
 updated_at: 2023-10-30T00:21:49Z
 url: https://github.com/astral-sh/ruff/pull/8321
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # [pylint] Implement `useless-with-lock`
 
 ---
 
-_Pull request opened by @harupy on 2023-10-29 07:49_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

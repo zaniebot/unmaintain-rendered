@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-03-10T14:28:22Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/445
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Display subcommand help when called with "help subcommand"
 
 ---
 
-_Issue opened by @Fiedzia on 2016-03-10 14:28_
+_@Fiedzia_
 
 Having "list" subcommand, I'd like to display help for it when called as "help list"
 (./prog help list). Currently it displays help for all available options and subcommands.

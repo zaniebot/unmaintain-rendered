@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-16T01:17:53Z
 updated_at: 2024-11-21T02:50:51Z
 url: https://github.com/astral-sh/uv/issues/9158
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # auto completion didn't work with zsh and oh my zsh
 
 ---
 
-_Issue opened by @amirreza8002 on 2024-11-16 01:17_
+_@amirreza8002_
 
 running 
 `echo 'eval "$(uv generate-shell-completion zsh)"' >> ~/.zshrc`

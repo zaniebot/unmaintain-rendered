@@ -13,14 +13,14 @@ head: dhruv/lexer-benchmark
 created_at: 2023-09-04T12:40:02Z
 updated_at: 2023-09-06T07:31:46Z
 url: https://github.com/astral-sh/ruff/pull/7132
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add lexer benchmark
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-04 12:40_
+_@dhruvmanila_
 
 ## Summary
 

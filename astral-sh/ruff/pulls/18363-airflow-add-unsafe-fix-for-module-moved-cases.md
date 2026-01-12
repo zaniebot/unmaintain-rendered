@@ -14,14 +14,14 @@ head: apply-autofix-t-AIR312
 created_at: 2025-05-29T09:22:38Z
 updated_at: 2025-05-30T13:36:21Z
 url: https://github.com/astral-sh/ruff/pull/18363
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [`airflow`] Add unsafe fix for module moved cases (`AIR312`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-05-29 09:22_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

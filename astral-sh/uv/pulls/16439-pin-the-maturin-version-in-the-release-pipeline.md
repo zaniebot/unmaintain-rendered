@@ -13,14 +13,14 @@ head: zb/maturin-pin
 created_at: 2025-10-24T15:51:11Z
 updated_at: 2025-10-24T18:16:33Z
 url: https://github.com/astral-sh/uv/pull/16439
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:15Z
 ```
 
 # Pin the maturin version in the release pipeline
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-24 15:51_
+_@zanieb_
 
 This should avoid hitting the GitHub API to determine the latest release, and more generally we should not automatically fetch the latest version of Maturin in our release pipeline as it opens us to supply-chain attacks.
 

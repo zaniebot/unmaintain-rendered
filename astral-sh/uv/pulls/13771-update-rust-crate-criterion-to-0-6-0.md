@@ -13,14 +13,14 @@ head: renovate/criterion-0.x
 created_at: 2025-06-02T00:24:49Z
 updated_at: 2025-06-02T01:57:27Z
 url: https://github.com/astral-sh/uv/pull/13771
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:51Z
 ```
 
 # Update Rust crate criterion to 0.6.0
 
 ---
 
-_Pull request opened by @renovate on 2025-06-02 00:24_
+_@renovate_
 
 This PR contains the following updates:
 

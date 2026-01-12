@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-23T00:41:10Z
 updated_at: 2024-08-23T03:25:06Z
 url: https://github.com/astral-sh/uv/issues/6480
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # uv tool install not working with Git Credential Manager for private GitHub repository
 
 ---
 
-_Issue opened by @daviewales on 2024-08-23 00:41_
+_@daviewales_
 
 **OS**: Windows 11
 **command invoked**: `uv tool install git+https://git@github.com/example/private-repo.git`

@@ -12,14 +12,14 @@ head: bool-like
 created_at: 2023-02-23T06:47:26Z
 updated_at: 2023-02-23T12:29:14Z
 url: https://github.com/astral-sh/ruff/pull/3165
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Replace Autofix::is_enabled to result_like::BoolLike
 
 ---
 
-_Pull request opened by @youknowone on 2023-02-23 06:47_
+_@youknowone_
 
 And another version of
 

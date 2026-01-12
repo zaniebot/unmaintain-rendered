@@ -12,14 +12,14 @@ head: charlie/closest
 created_at: 2025-01-12T02:55:33Z
 updated_at: 2025-01-14T03:33:58Z
 url: https://github.com/astral-sh/uv/pull/10534
-synced_at: 2026-01-10T11:44:56Z
+synced_at: 2026-01-12T16:09:21Z
 ```
 
 # Show 'closest' tag in tag incompatibility error messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-12 02:55_
+_@charliermarsh_
 
 ## Summary
 

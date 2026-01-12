@@ -14,14 +14,14 @@ head: alex/pyi019-heuristics
 created_at: 2025-02-02T22:51:29Z
 updated_at: 2025-02-03T15:49:47Z
 url: https://github.com/astral-sh/ruff/pull/15888
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [flake8-pyi] Significantly improve accuracy of `PYI019` if preview mode is enabled
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-02 22:51_
+_@AlexWaygood_
 
 (This PR is stacked on top of #15885; review that first.)
 

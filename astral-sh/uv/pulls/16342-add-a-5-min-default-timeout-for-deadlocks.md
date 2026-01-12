@@ -13,14 +13,14 @@ head: konsti/locked-file-timeout
 created_at: 2025-10-17T11:53:11Z
 updated_at: 2025-12-04T13:59:05Z
 url: https://github.com/astral-sh/uv/pull/16342
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:13Z
 ```
 
 #  Add a 5 min default timeout for deadlocks 
 
 ---
 
-_Pull request opened by @konstin on 2025-10-17 11:53_
+_@konstin_
 
 When a process is running and another calls `uv cache clean` or `uv cache prune` we currently deadlock - sometimes until the CI timeout (https://github.com/astral-sh/setup-uv/issues/588). To avoid this, we add a default 5 min timeout waiting for a lock. 5 min balances allowing in-progress builds to finish, especially with larger native dependencies, while also giving timely errors for deadlocks on (remote) systems.
 

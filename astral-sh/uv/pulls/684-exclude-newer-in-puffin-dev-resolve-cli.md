@@ -12,14 +12,14 @@ head: konsti/exclude-newer-in-puffin-dev
 created_at: 2023-12-18T14:01:48Z
 updated_at: 2023-12-18T14:06:55Z
 url: https://github.com/astral-sh/uv/pull/684
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:07Z
 ```
 
 # `exclude_newer` in puffin-dev resolve-cli
 
 ---
 
-_Pull request opened by @konstin on 2023-12-18 14:01_
+_@konstin_
 
 Internal dev tool change.
 

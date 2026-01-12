@@ -1,0 +1,190 @@
+```yaml
+number: 2111
+title: decompression binaries are searched for even when they will never be used
+type: issue
+state: closed
+author: Antiever
+labels:
+  - bug
+assignees: []
+created_at: 2021-12-21T14:27:48Z
+updated_at: 2025-10-12T20:31:21Z
+url: https://github.com/BurntSushi/ripgrep/issues/2111
+synced_at: 2026-01-12T16:13:24Z
+```
+
+# decompression binaries are searched for even when they will never be used
+
+---
+
+_@Antiever_
+
+####  Feature request
+
+Switch for turn off tools check
+
+For example, lets say I want to do multiple replacements like so:
+
+```
+rg --passthru "!RE1!" "!file!" -or "!RP1!" |^
+rg  --passthru "!RE2!" -or "!RP2!"  |^
+...
+rg  --passthru "!RE6!" -or "!RP6!"  |^
+rg  --passthru "!RE7!" -or "!RP7!"
+```
+and every new instance of rg wiil do:
+```
+decompress.rs:482: gzip: could not find executable in PATH
+decompress.rs:482: gzip: could not find executable in PATH
+decompress.rs:482: bzip2: could not find executable in PATH
+decompress.rs:482: bzip2: could not find executable in PATH
+decompress.rs:482: xz: could not find executable in PATH
+decompress.rs:482: xz: could not find executable in PATH
+decompress.rs:482: lz4: could not find executable in PATH
+decompress.rs:482: xz: could not find executable in PATH
+decompress.rs:482: brotli: could not find executable in PATH
+decompress.rs:482: zstd: could not find executable in PATH
+decompress.rs:482: zstd: could not find executable in PATH
+decompress.rs:482: uncompress: could not find executable in PATH
+```
+So this kind of switch can speed up things a little bit
+
+
+
+
+---
+
+_Comment by @BurntSushi on 2021-12-21 14:49_
+
+I don't know what you're asking for? It looks like you have `--search-zip` enabled, probably in a config file or alias somewhere. Why not use `--no-search-zip`?
+
+What does wanting to do "multiple replacements" have to do with this?
+
+---
+
+_Comment by @Antiever on 2021-12-21 15:21_
+
+```
+>echo 123 | rg --debug --no-search-zip "123" -or "321"
+
+DEBUG|grep_regex::literal|crates\regex\src\literal.rs:58: literal prefixes detected: Literals { lits: [Complete(123)], limit_size: 250, limit_class: 10 }
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: gzip: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: gzip: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: bzip2: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: bzip2: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: xz: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: xz: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: lz4: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: xz: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: brotli: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: zstd: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: zstd: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: uncompress: could not find executable in PATH
+321
+```
+I have no config file :)
+
+> What does wanting to do "multiple replacements" have to do with this?
+
+As an example of repeating operation where we can feel useless file system actions
+
+---
+
+_Comment by @BurntSushi on 2021-12-21 15:43_
+
+Hmmm, yes, I see now. A benchmark would be useful here to motivate how important this is with respect to how much time ripgrep is taking. It's also worth pointing out that these are debug logs, which was not at all clear from your original comment. It's really important to present the output of the tool as it is.
+
+Currently, indeed, these binaries are searched for unconditionally. I don't think this should happen when` --no-search-zip` is present (which is also the default), so I'd consider this a bug.
+
+---
+
+_Label `bug` added by @BurntSushi on 2021-12-21 15:43_
+
+---
+
+_Renamed from "Switch for turn off tools check" to "decompression binaries are searched for even when they will never be used" by @BurntSushi on 2021-12-21 15:43_
+
+---
+
+_Comment by @Antiever on 2021-12-21 16:29_
+
+> A benchmark would be useful here
+
+Well it's not fatal in general but in a big operations chain we can feel (adds ~30ms at each iteration)
+For the example above **85**% of execution time takes by CreateFileW while searching decompression binaries
+Not quite what you'd expect from the fastest engine ;)
+
+---
+
+_Comment by @BurntSushi on 2021-12-21 16:31_
+
+How do you know? Are you patching ripgrep to remove the PATH lookups to compare it? Are you using profiling tools? If so, what and how? (I'm not a Windows user.)
+
+> Not quite what you'd expect from the fastest engine ;)
+
+You can say this about literally any bug. There will always be bugs.
+
+---
+
+_Comment by @Antiever on 2021-12-21 16:39_
+
+Bugs it's ok, I know this well (it was just a joke about  fastest engine expectations BTW, no offense) :)
+On Windows you can use VTune (it's great tool but in this case not a best choice), for quick stack view (with time %) Process Monitor of course
+Some other options is UIforETW, Very Sleepy and maybe Luke Stackwalker and we have built-in tool on Windows too.
+
+
+
+---
+
+_Comment by @nikgoodley-ibboost on 2023-11-05 17:10_
+
+Worth noting that this behaviour seems to contribute to a state in VSCode on Windows that creates unkillable `rg.exe` processes, forcing a reboot to clear them for upgrades. I couldn't replicate with the same rg.exe binary outside of the VSCode environment, so I don't think that particular bug is in ripgrep itself, but it unfortunately seems to manifest only due to this check. As it had my attention thought maybe I could add the detail asked for so that this might be picked up?
+
+Regarding the original suggestion I had to dig into this a lot using ProcMon on Windows to see the generated events while investigating the issue mentioned above (https://github.com/microsoft/vscode/issues/193927), and I see the checks for these compression utilities being the _only_ events generated for a period up to 150ms on my machine as it was. So I'd add some weight to the comment of @Antiever that it could add significant overhead to the overall timing. 
+
+In essence, if you have everything available, early in the PATH, it's fairly modest, around 10ms. But this requires installing things most Windows users won't have - even users of mingw (Git Bash) which brings brotli and xz - generally wont have zstd and lz4. It takes around 15ms to go through my full PATH stack for each one, so that can easily add 30ms per ms (I've since installed them both via scoop now that I'm aware of this). 
+
+With some further finagling of my machine and PATH to make sure I have everything available near the front of the PATH (on a high-spec machine but one with a fair number of PATH entries) I can reduce this. If I have installed every one of the utilies it takes 10-15ms per "batch" of binary checks. If I miss lz4 and zstd it takes ~35ms. I can't comment on whether this is all it's doing so maybe the actual impact on real-time is less, but it certainly appears to be serially executed according to Windows events at least in that first batch.
+
+10ms isn't much - but this is only after installing libraries SOLELY to satisfy this check despite them not being used in my use cases. 
+
+It also seems to be a check run many times. If I run the below monitoring Windows events I see 13 looking for "C:\Windows\lz4.exe" (brotli, zstd, etc.), 26 for "C:\Windows\gzip.exe" amd 39 for `xz.exe`. The multiples seems to be because of these lines in `decompress.rs` where ARGS_XZ and ARGS_LZMA both map to the xz process
+
+```
+    add("*.xz", ARGS_XZ, &mut cmds);
+    add("*.txz", ARGS_XZ, &mut cmds);
+    ...
+    add("*.lzma", ARGS_LZMA, &mut cmds);
+```
+
+`d:\dev\opt\scoop\apps\vscode-insiders\1.84.0-insider+1696619477016\resources\app\node_modules.asar.unpacked\@vscode\ripgrep\bin\rg.exe --no-search-zip -- egggg . > nul 2>&1`
+
+However apart from the first "batch" (the 12 checks for 7 binaries, each checking with and without `.exe`) that doesn't seem to affecting timing as all batches after the first seem to be interleaved with actually accessing files so again hard to determine overall impact on time to result but suspect it's negligible.
+
+```
+15:21:12.0380088	rg.exe	33732	CreateFile	C:\Windows\gzip	NAME NOT FOUND	Desired Access: Read Attributes, Synchronize, Disposition: Open, Options: Synchronous IO Non-Alert, Attributes: n/a, ShareMode: Read, Write, Delete, AllocationSize: n/a
+15:21:12.0381672	rg.exe	33732	CreateFile	C:\Windows\gzip.exe	NAME NOT FOUND	Desired Access: Read Attributes, Synchronize, Disposition: Open, Options: Synchronous IO Non-Alert, Attributes: n/a, ShareMode: Read, Write, Delete, AllocationSize: n/a
+15:21:12.0387687	rg.exe	33732	CreateFile	C:\Windows\System32\gzip	NAME NOT FOUND	Desired Access: Read Attributes, Synchronize, Disposition: Open, Options: Synchronous IO Non-Alert, Attributes: n/a, ShareMode: Read, Write, Delete, AllocationSize: n/a
+15:21:12.0390636	rg.exe	33732	CreateFile	C:\Windows\System32\gzip.exe	NAME NOT FOUND	Desired Access: Read Attributes, Synchronize, Disposition: Open, Options: Synchronous IO Non-Alert, Attributes: n/a, ShareMode: Read, Write, Delete, AllocationSize: n/a
+15:21:12.0391482	rg.exe	33732	CreateFile	C:\Windows\System32\wbem\gzip	NAME NOT FOUND	Desired Access: Read Attributes, Synchronize, Disposition: Open, Options: Synchronous IO Non-Alert, Attributes: n/a, ShareMode: Read, Write, Delete, AllocationSize: n/a
+15:21:12.0392555	rg.exe	33732	CreateFile	C:\Windows\System32\wbem\gzip.exe	NAME NOT FOUND	Desired Access: Read Attributes, Synchronize, Disposition: Open, Options: Synchronous IO Non-Alert, Attributes: n/a, ShareMode: Read, Write, Delete, AllocationSize: n/a
+15:21:12.0396079	rg.exe	33732	CreateFile	C:\Program Files\Git\usr\bin\gzip	NAME NOT FOUND	Desired Access: Read Attributes, Synchronize, Disposition: Open, Options: Synchronous IO Non-Alert, Attributes: n/a, ShareMode: Read, Write, Delete, AllocationSize: n/a
+...
+15:21:12.0721815	rg.exe	33732	CreateFile	C:\Program Files\Git\usr\bin\uncompress	SUCCESS	Desired Access: Read Attributes, Synchronize, Disposition: Open, Options: Synchronous IO Non-Alert, Attributes: n/a, ShareMode: Read, Write, Delete, AllocationSize: n/a, OpenResult: Opened
+15:21:12.0722041	rg.exe	33732	QueryInformationVolume	C:\Program Files\Git\usr\bin\uncompress	BUFFER OVERFLOW	VolumeCreationTime: 22/12/2020 10:02:21, VolumeSerialNumber: 388A-40A8, SupportsObjects: True, VolumeLabel: WinＡ燸
+15:21:12.0722126	rg.exe	33732	QueryAllInformationFile	C:\Program Files\Git\usr\bin\uncompress	BUFFER OVERFLOW	CreationTime: 26/03/2023 12:11:15, LastAccessTime: 21/06/2023 16:27:50, LastWriteTime: 14/03/2023 06:10:34, ChangeTime: 26/03/2023 12:11:15, FileAttributes: A, AllocationSize: 4,096, EndOfFile: 2,346
+15:21:12.0722229	rg.exe	33732	CloseFile	C:\Program Files\Git\usr\bin\uncompress	SUCCESS	
+
+```
+
+As I say, from a typical user's perspective (of the type on Windows who uses ripgrep, so probably has Git Bash but probably hasn't tuned their PATH to stop all the Windows application guff that front-runs normally) it certainly appears judging by Windows filesystem calls seems to be adding in the range of 30-150ms where these checks seem to be the only thing done, which can be a material part of the time.
+
+Not sure if I can add anything more. I'm not really in a position to try compiling with and without these checks nor familiar enough with the code to know how much of the overall duration of a query on Windows is really due to this but I feel like the above is enough to show a real-world, material impact of timing on a typical Windows user's setup?
+
+Regarding the VSCode-ripgrep issue I believe it's one for them to look into but just to summarise, if it's of interest, the replicating conditions are: in VSCode running a search, or multiple searches, which uses rg.exe in the backend seemingly as a Node module, spawning several `rg.exe` processes concurrently AND having on one's PATH a network drive (possibly only a Google Drive mount) that is searched. As far as I can tell this just happens to be the trigger but it's unfortunate when it is actually unnecessary given how it's used in VSCode.
+
+---
+
+_Closed by @BurntSushi on 2025-10-12 20:31_
+
+---

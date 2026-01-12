@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-12T15:14:20Z
 updated_at: 2025-11-12T20:54:58Z
 url: https://github.com/astral-sh/ruff/issues/21407
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # S507 does not trigger when using class inheritance
 
 ---
 
-_Issue opened by @schnow265 on 2025-11-12 15:14_
+_@schnow265_
 
 ### Summary
 

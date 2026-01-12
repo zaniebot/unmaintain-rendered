@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-23T21:01:38Z
 updated_at: 2024-11-20T12:02:49Z
 url: https://github.com/astral-sh/ruff/issues/13488
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Formatter ignores nested f-strings
 
 ---
 
-_Issue opened by @tylerlaprade on 2024-09-23 21:01_
+_@tylerlaprade_
 
 `f'{    "\n".join([f"•{   k }" for k in [1,2,3]])}'`
 My extra whitespace is not removed from this line.

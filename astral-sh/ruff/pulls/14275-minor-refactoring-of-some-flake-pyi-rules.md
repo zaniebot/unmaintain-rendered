@@ -13,14 +13,14 @@ head: pyi-internal-tweaks
 created_at: 2024-11-11T12:49:05Z
 updated_at: 2024-11-11T13:10:49Z
 url: https://github.com/astral-sh/ruff/pull/14275
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Minor refactoring of some flake-pyi rules
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-11 12:49_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

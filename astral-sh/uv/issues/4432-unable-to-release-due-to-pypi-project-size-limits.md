@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-20T21:40:39Z
 updated_at: 2024-06-24T13:24:48Z
 url: https://github.com/astral-sh/uv/issues/4432
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Unable to release due to PyPI project size limits
 
 ---
 
-_Issue opened by @zanieb on 2024-06-20 21:40_
+_@zanieb_
 
 As previously encountered in Ruff https://github.com/astral-sh/ruff/issues/2136, we've reached the default project size limit on PyPI.
 

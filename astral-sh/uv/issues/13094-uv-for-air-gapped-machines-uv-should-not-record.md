@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-24T22:42:23Z
 updated_at: 2025-04-26T12:46:53Z
 url: https://github.com/astral-sh/uv/issues/13094
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # uv for air-gapped machines: uv should not record package url in uv.lock
 
 ---
 
-_Issue opened by @krupan on 2025-04-24 22:42_
+_@krupan_
 
 ### Summary
 

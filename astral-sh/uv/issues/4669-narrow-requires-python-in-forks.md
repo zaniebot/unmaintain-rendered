@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-30T21:30:07Z
 updated_at: 2024-07-30T15:35:00Z
 url: https://github.com/astral-sh/uv/issues/4669
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Narrow `requires-python` in forks
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-30 21:30_
+_@charliermarsh_
 
 I have some difficulties with `numpy` (macOS, uv 0.2.18). With a requirements.in
 

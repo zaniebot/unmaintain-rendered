@@ -13,14 +13,14 @@ head: alex/more-intersections
 created_at: 2025-01-15T13:43:23Z
 updated_at: 2025-01-15T15:02:43Z
 url: https://github.com/astral-sh/ruff/pull/15496
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Fix more edge cases for intersection simplification with `LiteralString` and `AlwaysTruthy`/`AlwaysFalsy`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-15 13:43_
+_@AlexWaygood_
 
 ## Summary
 

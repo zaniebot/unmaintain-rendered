@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-03T22:40:11Z
 updated_at: 2025-11-09T16:21:13Z
 url: https://github.com/astral-sh/uv/issues/15669
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:15Z
 ```
 
 # "uv python upgrade" always complains python is not managed by uv
 
 ---
 
-_Issue opened by @ismail on 2025-09-03 22:40_
+_@ismail_
 
 ### Summary
 

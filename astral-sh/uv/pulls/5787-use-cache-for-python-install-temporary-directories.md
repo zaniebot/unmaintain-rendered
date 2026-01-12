@@ -13,14 +13,14 @@ head: charlie/py
 created_at: 2024-08-05T02:21:36Z
 updated_at: 2024-08-05T02:32:25Z
 url: https://github.com/astral-sh/uv/pull/5787
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:07:01Z
 ```
 
 # Use cache for Python install temporary directories
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-05 02:21_
+_@charliermarsh_
 
 ## Summary
 

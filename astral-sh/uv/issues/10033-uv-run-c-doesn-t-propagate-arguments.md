@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-19T17:02:03Z
 updated_at: 2024-12-19T17:39:58Z
 url: https://github.com/astral-sh/uv/issues/10033
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # `uv run -c` doesn't propagate arguments
 
 ---
 
-_Issue opened by @charliermarsh on 2024-12-19 17:02_
+_@charliermarsh_
 
 > Also, is it not supported to read a script from stdin and pass along command line arguments at the same time?
 > 

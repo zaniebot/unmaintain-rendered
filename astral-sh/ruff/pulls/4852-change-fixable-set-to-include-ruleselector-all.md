@@ -12,14 +12,14 @@ head: 4761_fix_nursery_rules
 created_at: 2023-06-04T16:07:07Z
 updated_at: 2023-06-15T21:15:27Z
 url: https://github.com/astral-sh/ruff/pull/4852
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Change fixable_set to include RuleSelector::All/Nursery
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-04 16:07_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

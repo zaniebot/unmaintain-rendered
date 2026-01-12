@@ -15,14 +15,14 @@ head: fix/RECORD-path
 created_at: 2024-12-26T01:25:16Z
 updated_at: 2024-12-26T16:08:57Z
 url: https://github.com/astral-sh/uv/pull/10164
-synced_at: 2026-01-10T11:44:37Z
+synced_at: 2026-01-12T16:09:09Z
 ```
 
 # fix: always write slash paths to RECORD file
 
 ---
 
-_Pull request opened by @frostming on 2024-12-26 01:25_
+_@frostming_
 
 Signed-off-by: Frost Ming <me@frostming.com>
 

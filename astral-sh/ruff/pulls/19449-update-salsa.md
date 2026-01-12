@@ -14,14 +14,14 @@ head: ibraheem/update-salsa
 created_at: 2025-07-21T03:34:11Z
 updated_at: 2025-07-30T19:31:48Z
 url: https://github.com/astral-sh/ruff/pull/19449
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # Update salsa
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-07-21 03:34_
+_@ibraheemdev_
 
 ## Summary
 

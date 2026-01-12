@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-20T09:53:52Z
 updated_at: 2026-01-07T06:47:36Z
 url: https://github.com/astral-sh/uv/issues/10051
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # `uv pip install -e .` generates "warning: Failed to hardlink files; falling back to full copy."
 
 ---
 
-_Issue opened by @johann-petrak on 2024-12-20 09:53_
+_@johann-petrak_
 
 Running uv version 0.5.11 on Ubuntu 24.04.
 

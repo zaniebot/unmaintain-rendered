@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-30T03:02:31Z
 updated_at: 2022-12-16T05:26:19Z
 url: https://github.com/astral-sh/ruff/issues/967
-synced_at: 2026-01-10T12:05:22Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Discussion: check code representations
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-30 03:02_
+_@charliermarsh_
 
 Ruff was designed with Flake8-compatibility in mind: it uses the same check code representation (e.g., `F841` and friends), it supports many of the same command-line arguments, it supports the same `# noqa` syntax, etc. I consider this a strength, as it makes it much easier for existing projects to migrate to Ruff, and for users to familiarize themselves with Ruff's conventions.
 

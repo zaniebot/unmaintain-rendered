@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T21:02:04Z
 updated_at: 2025-12-18T22:22:41Z
 url: https://github.com/astral-sh/uv/issues/6275
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # How to convert requirements.txt to  `tool.uv.sources` ?
 
 ---
 
-_Issue opened by @sbidoul on 2024-08-20 21:02_
+_@sbidoul_
 
 With pip I use constraints files containing a bunch of git URLs to achieve the equivalent of `tool.uv.sources`. 
 

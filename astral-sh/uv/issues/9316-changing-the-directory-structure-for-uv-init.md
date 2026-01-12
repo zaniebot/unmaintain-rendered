@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-21T14:19:17Z
 updated_at: 2024-11-21T23:24:30Z
 url: https://github.com/astral-sh/uv/issues/9316
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # Changing the directory structure for uv init --package
 
 ---
 
-_Issue opened by @benedikt-mue on 2024-11-21 14:19_
+_@benedikt-mue_
 
 Hi,
 I am currently implementing uv as our package manager to replace poetry. In poetry, we defined the package entrypoints with `packages = [{ include = "backend", from = "src" }]` . 

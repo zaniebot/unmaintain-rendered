@@ -13,14 +13,14 @@ head: charlie/refresh
 created_at: 2024-01-15T18:14:59Z
 updated_at: 2024-01-15T18:56:19Z
 url: https://github.com/astral-sh/uv/pull/933
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:18Z
 ```
 
 # Refresh `BuildDispatch` when running pip install with `--reinstall`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-15 18:14_
+_@charliermarsh_
 
 ## Summary
 

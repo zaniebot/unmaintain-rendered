@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-07T01:29:09Z
 updated_at: 2024-03-07T03:51:11Z
 url: https://github.com/astral-sh/uv/issues/2257
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Please add the ability to  `uv pip install` for the global interpreter to speed up docker builds
 
 ---
 
-_Issue opened by @dempstert on 2024-03-07 01:29_
+_@dempstert_
 
 Feature Request:
 At the moment UV requires a virtualenv in order to install requirements.

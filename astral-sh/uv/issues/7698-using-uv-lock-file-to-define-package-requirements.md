@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-26T07:40:29Z
 updated_at: 2024-09-29T18:37:06Z
 url: https://github.com/astral-sh/uv/issues/7698
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Using uv.lock file to define package requirements?
 
 ---
 
-_Issue opened by @TARHiS on 2024-09-26 07:40_
+_@TARHiS_
 
 When building package with `uv build`, is it possible to use uv.lock file as a requirements of a package instead of using pyproject.toml dependencies? Use case for this is to create application package that is used to deploy web servers by using private PyPI as a distribution channel.
 

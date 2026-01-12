@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-04T08:28:00Z
 updated_at: 2025-09-05T15:36:10Z
 url: https://github.com/astral-sh/ty/issues/1127
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # No completion possible since version ty 0.0.1-alpha.20
 
 ---
 
-_Issue opened by @JaRoSchm on 2025-09-04 08:28_
+_@JaRoSchm_
 
 ### Summary
 

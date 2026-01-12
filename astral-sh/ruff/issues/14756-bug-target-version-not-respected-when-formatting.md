@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-03T12:44:38Z
 updated_at: 2024-12-03T17:39:21Z
 url: https://github.com/astral-sh/ruff/issues/14756
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # bug: `target-version` not respected when formatting `with` statement
 
 ---
 
-_Issue opened by @ziadkh0 on 2024-12-03 12:44_
+_@ziadkh0_
 
 Formatting the following code with `target-version` set to `"py39"` and `line-length` set to `10` (just for the example):
 ```py3

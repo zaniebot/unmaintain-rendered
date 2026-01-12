@@ -12,14 +12,14 @@ head: zb/rev-dock
 created_at: 2025-08-19T13:39:10Z
 updated_at: 2025-08-19T16:45:43Z
 url: https://github.com/astral-sh/uv/pull/15381
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:43Z
 ```
 
 # Restore DockerHub publishing
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-19 13:39_
+_@zanieb_
 
 - **Revert "Skip DockerHub annotations too (#15366)"**
 - **Revert "Disable DockerHub publish for extended images in 0.8.12 (#15365)"**

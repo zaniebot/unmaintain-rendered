@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-30T21:14:48Z
 updated_at: 2025-06-30T15:39:49Z
 url: https://github.com/astral-sh/uv/issues/13745
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:36Z
 ```
 
 # `uv::it sync::sync_script` flakes with "Recreating script environment"
 
 ---
 
-_Issue opened by @zanieb on 2025-05-30 21:14_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/issues/13744#issuecomment-2923510476
 

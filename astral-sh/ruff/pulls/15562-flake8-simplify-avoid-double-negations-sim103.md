@@ -14,14 +14,14 @@ head: SIM103
 created_at: 2025-01-18T00:07:49Z
 updated_at: 2025-01-18T17:09:25Z
 url: https://github.com/astral-sh/ruff/pull/15562
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`flake8-simplify`] Avoid double negations (`SIM103`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-18 00:07_
+_@InSyncWithFoo_
 
 ## Summary
 

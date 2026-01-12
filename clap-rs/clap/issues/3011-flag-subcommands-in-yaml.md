@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-11-09T16:18:17Z
 updated_at: 2021-12-08T20:01:12Z
 url: https://github.com/clap-rs/clap/issues/3011
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Flag SubCommands in YAML?
 
 ---
 
-_Issue opened by @epage on 2021-11-09 16:18_
+_@epage_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/3010
 

@@ -12,14 +12,14 @@ head: zb/uv-auth-ii
 created_at: 2025-08-26T17:20:10Z
 updated_at: 2025-08-28T14:56:51Z
 url: https://github.com/astral-sh/uv/pull/15539
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:48Z
 ```
 
 # Add `uv auth` commands (`login`, `logout`, and `token`)
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-26 17:20_
+_@zanieb_
 
 Picks up the work from
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-10T19:03:00Z
 updated_at: 2024-10-18T17:52:16Z
 url: https://github.com/astral-sh/uv/issues/7270
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Add support for pre-releases in Python version requests
 
 ---
 
-_Issue opened by @zanieb on 2024-09-10 19:03_
+_@zanieb_
 
 e.g. now that we have https://github.com/astral-sh/uv/pull/7263 we supply a release candidate but we don't support `--python 3.13rc2` (that's parsed as an executable name)
 

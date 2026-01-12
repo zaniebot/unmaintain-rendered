@@ -12,14 +12,14 @@ head: pyproject-option
 created_at: 2022-10-04T20:07:03Z
 updated_at: 2022-10-04T20:29:39Z
 url: https://github.com/astral-sh/ruff/pull/326
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Remove unnecessary Option wrapper from some pyproject::Config fields
 
 ---
 
-_Pull request opened by @andersk on 2022-10-04 20:07_
+_@andersk_
 
 For `extend_exclude`, `ignore`, and `per_file_ignores`, `None` has the same effect as `Some(vec![])`, so there’s no need to encode it separately.
 

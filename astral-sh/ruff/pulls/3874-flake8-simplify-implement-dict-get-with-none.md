@@ -13,14 +13,14 @@ head: impl_SIM910
 created_at: 2023-04-04T03:00:47Z
 updated_at: 2023-04-04T04:05:23Z
 url: https://github.com/astral-sh/ruff/pull/3874
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # [`flake8-simplify`] Implement `dict-get-with-none-default` (`SIM910`)
 
 ---
 
-_Pull request opened by @kyoto7250 on 2023-04-04 03:00_
+_@kyoto7250_
 
 close #3546 
 

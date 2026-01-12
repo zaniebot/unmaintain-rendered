@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-21T21:41:51Z
 updated_at: 2025-02-20T19:20:03Z
 url: https://github.com/astral-sh/ruff/issues/15655
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Auto-generate more of the AST representation
 
 ---
 
-_Issue opened by @dcreager on 2025-01-21 21:41_
+_@dcreager_
 
 In #15544 we added a [script](https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_ast/generate.py) to [auto-generate](https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_ast/src/generated.rs) large parts of the Rust data model that we use to store the AST of parsed Python code.  That script consumes a [TOML file](https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_ast/ast.toml), which describes all of the possible syntax nodes (e.g., `StmtIf`, `ExprBinOp`) and any groups those nodes belong to (e.g. `Stmt`, `Expr`).  The details of each syntax node are still [defined manually](https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_ast/src/nodes.rs) in Rust.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-11T17:51:27Z
 updated_at: 2025-12-11T17:58:33Z
 url: https://github.com/astral-sh/ruff/issues/21925
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Though about formatting mathematical code
 
 ---
 
-_Issue opened by @maxtremblay on 2025-12-11 17:51_
+_@maxtremblay_
 
 ### Question
 

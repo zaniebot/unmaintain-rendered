@@ -13,14 +13,14 @@ head: ruf017-fix
 created_at: 2023-08-18T00:00:01Z
 updated_at: 2023-08-18T02:17:37Z
 url: https://github.com/astral-sh/ruff/pull/6664
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Apply RUF017 when start is passed via position
 
 ---
 
-_Pull request opened by @hauntsaninja on 2023-08-18 00:00_
+_@hauntsaninja_
 
 As discussed in https://github.com/astral-sh/ruff/pull/6489#discussion_r1297858919. Linking https://github.com/astral-sh/ruff/issues/5073
 

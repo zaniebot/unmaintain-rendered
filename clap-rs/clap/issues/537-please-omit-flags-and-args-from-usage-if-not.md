@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-06-23T21:43:10Z
 updated_at: 2020-04-12T10:09:27Z
 url: https://github.com/clap-rs/clap/issues/537
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Please omit "[FLAGS]" and "[ARGS]" from usage if not applicable
 
 ---
 
-_Issue opened by @joshtriplett on 2016-06-23 21:43_
+_@joshtriplett_
 
 The automatically generated usage message includes placeholders for "[FLAGS]" and "[ARGS]", even when every flag or arg is already shown directly in the usage message.  For instance, for the example in https://github.com/kbknapp/clap-rs/issues/533#issuecomment-227947296 , the usage string looks like this:
 

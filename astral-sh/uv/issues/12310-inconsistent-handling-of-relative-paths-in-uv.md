@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-19T10:43:50Z
 updated_at: 2026-01-02T16:19:17Z
 url: https://github.com/astral-sh/uv/issues/12310
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # Inconsistent handling of relative paths in `uv build` with Hatch
 
 ---
 
-_Issue opened by @constantin-huetterer on 2025-03-19 10:43_
+_@constantin-huetterer_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-09T19:28:24Z
 updated_at: 2023-05-19T15:08:45Z
 url: https://github.com/clap-rs/clap/issues/4897
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Show subcommand `about` on same line, even in `--help`
 
 ---
 
-_Issue opened by @Centri3 on 2023-05-09 19:28_
+_@Centri3_
 
 ### Please complete the following tasks
 

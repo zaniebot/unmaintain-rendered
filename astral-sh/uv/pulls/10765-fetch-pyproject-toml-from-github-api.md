@@ -14,14 +14,14 @@ head: charlie/git-fetch
 created_at: 2025-01-20T01:26:16Z
 updated_at: 2025-01-20T17:50:41Z
 url: https://github.com/astral-sh/uv/pull/10765
-synced_at: 2026-01-10T11:45:08Z
+synced_at: 2026-01-12T16:09:28Z
 ```
 
 # Fetch `pyproject.toml` from GitHub API
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-20 01:26_
+_@charliermarsh_
 
 ## Summary
 

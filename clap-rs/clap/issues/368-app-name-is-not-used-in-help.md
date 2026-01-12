@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-12-24T13:55:28Z
 updated_at: 2018-08-02T03:29:47Z
 url: https://github.com/clap-rs/clap/issues/368
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # App name is not used in help
 
 ---
 
-_Issue opened by @ghost on 2015-12-24 13:55_
+_@ghost_
 
 The first line of help should be the app name but it's always the binary name (whether bin_name is 
 configured or not.) 

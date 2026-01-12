@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-08T12:39:14Z
 updated_at: 2025-10-17T04:56:51Z
 url: https://github.com/astral-sh/uv/issues/16185
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:25Z
 ```
 
 # Why does `uv sync` with `--no-editable` care if a `README.md` is around?
 
 ---
 
-_Issue opened by @omgMath on 2025-10-08 12:39_
+_@omgMath_
 
 ### Question
 

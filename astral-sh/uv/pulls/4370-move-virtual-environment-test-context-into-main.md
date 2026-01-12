@@ -13,14 +13,14 @@ head: zb/test-context
 created_at: 2024-06-17T21:12:21Z
 updated_at: 2024-06-18T14:52:26Z
 url: https://github.com/astral-sh/uv/pull/4370
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:11Z
 ```
 
 # Move virtual environment test context into main context
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-17 21:12_
+_@zanieb_
 
 It was becoming problematic that the virtual environment test context diverged from the other one i.e. we had to implement filtering twice. This combines the contexts and tweaks the `TestContext` API and filtering mechanisms for Python versions. Combined with my previous changes to the test context at #4364 and https://github.com/astral-sh/uv/pull/4368 this finally unblocks the snapshots for test cases in #4360 and https://github.com/astral-sh/uv/pull/4362.
 

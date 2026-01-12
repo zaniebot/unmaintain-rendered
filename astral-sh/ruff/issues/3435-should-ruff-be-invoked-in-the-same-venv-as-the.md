@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-10T09:26:38Z
 updated_at: 2023-03-10T16:05:30Z
 url: https://github.com/astral-sh/ruff/issues/3435
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Should ruff be invoked in the same venv as the python code?
 
 ---
 
-_Issue opened by @mpizenberg on 2023-03-10 09:26_
+_@mpizenberg_
 
 So ruff is a python linter. Are there any lints requiring access to correct `site-package` stuff or other things only available when executing in the same python context as the python code should be executed? (like for example pyright, which needs to check dependencies)
 

@@ -13,14 +13,14 @@ head: charlie/deepspeed
 created_at: 2024-07-30T17:38:54Z
 updated_at: 2024-08-01T15:57:59Z
 url: https://github.com/astral-sh/uv/pull/5615
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:55Z
 ```
 
 # Try installing deepspeed with copy semantics
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-30 17:38_
+_@charliermarsh_
 
 _No description provided._
 

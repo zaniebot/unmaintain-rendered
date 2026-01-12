@@ -13,14 +13,14 @@ head: refactor
 created_at: 2024-06-11T15:01:00Z
 updated_at: 2024-06-11T15:13:30Z
 url: https://github.com/astral-sh/uv/pull/4232
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:06Z
 ```
 
 # De-duplicate resolution environment logic
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-06-11 15:01_
+_@ibraheemdev_
 
 ## Summary
 

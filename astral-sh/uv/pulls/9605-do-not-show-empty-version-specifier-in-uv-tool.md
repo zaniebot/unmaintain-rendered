@@ -13,14 +13,14 @@ head: main
 created_at: 2024-12-03T12:19:28Z
 updated_at: 2024-12-03T13:56:05Z
 url: https://github.com/astral-sh/uv/pull/9605
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:53Z
 ```
 
 # Do not show empty version specifier in `uv tool list`
 
 ---
 
-_Pull request opened by @j178 on 2024-12-03 12:19_
+_@j178_
 
 ## Summary
 

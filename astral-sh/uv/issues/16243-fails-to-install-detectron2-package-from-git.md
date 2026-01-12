@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-10T22:48:33Z
 updated_at: 2025-10-29T00:22:26Z
 url: https://github.com/astral-sh/uv/issues/16243
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # Fails to install detectron2 package from git despite no-build-isolation-package set
 
 ---
 
-_Issue opened by @123marble on 2025-10-10 22:48_
+_@123marble_
 
 ### Summary
 

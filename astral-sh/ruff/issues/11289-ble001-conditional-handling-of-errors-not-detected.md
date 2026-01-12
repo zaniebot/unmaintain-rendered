@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-05T09:38:18Z
 updated_at: 2024-05-12T02:06:29Z
 url: https://github.com/astral-sh/ruff/issues/11289
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # BLE001: conditional handling of errors not detected
 
 ---
 
-_Issue opened by @bentheiii on 2024-05-05 09:38_
+_@bentheiii_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

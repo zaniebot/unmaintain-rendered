@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-05T07:58:07Z
 updated_at: 2025-04-10T19:02:57Z
 url: https://github.com/astral-sh/uv/issues/4824
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # `--override` not supported by `uv run`
 
 ---
 
-_Issue opened by @kdeldycke on 2024-07-05 07:58_
+_@kdeldycke_
 
 Using the latest `uv`:
 ```shell-session

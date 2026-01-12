@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-18T13:20:28Z
 updated_at: 2024-11-28T07:22:53Z
 url: https://github.com/astral-sh/ruff/issues/14434
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # TCH001 like rule for pre 3.12 generics like TypVar, ParamSpec and the likes
 
 ---
 
-_Issue opened by @bvolkmer on 2024-11-18 13:20_
+_@bvolkmer_
 
 
 It would be nice to have a rule, that checks if a TypeVar, ParamSpec and the likes is defined outside `if TYPE_CHECKING` eventhough it is not needed. Example:

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-12-15T16:09:06Z
 updated_at: 2022-02-08T23:49:16Z
 url: https://github.com/clap-rs/clap/issues/2257
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # `just run-tests` fails because of small terminal width
 
 ---
 
-_Issue opened by @nitsky on 2020-12-15 16:09_
+_@nitsky_
 
 Running `just run-tests` fails because many tests have been written specifically for the case where the wrap_help feature is disabled.
 

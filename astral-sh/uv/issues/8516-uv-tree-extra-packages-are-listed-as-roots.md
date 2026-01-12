@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-24T06:45:37Z
 updated_at: 2024-10-24T16:39:02Z
 url: https://github.com/astral-sh/uv/issues/8516
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # uv tree: extra packages are listed as roots
 
 ---
 
-_Issue opened by @bluss on 2024-10-24 06:45_
+_@bluss_
 
 new uv tree features are looking good. Here's one change from before that could maybe be a bug.
 

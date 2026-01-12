@@ -14,14 +14,14 @@ head: zb/docs-badges
 created_at: 2024-07-30T17:43:00Z
 updated_at: 2025-03-24T17:13:54Z
 url: https://github.com/astral-sh/uv/pull/5617
-synced_at: 2026-01-10T11:10:33Z
+synced_at: 2026-01-12T16:06:55Z
 ```
 
 # Drop badges from docs landing
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-30 17:43_
+_@zanieb_
 
 There has been opposition to these, we can have a dedicated community page instead
 

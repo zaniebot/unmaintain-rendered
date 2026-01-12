@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-21T11:04:54Z
 updated_at: 2025-03-22T12:08:52Z
 url: https://github.com/astral-sh/ruff/issues/16893
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Disambiguate display for union types
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-03-21 11:04_
+_@dhruvmanila_
 
 For example, when using callable types in a union:
 

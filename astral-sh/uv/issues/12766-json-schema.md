@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T01:30:06Z
 updated_at: 2025-04-10T14:17:03Z
 url: https://github.com/astral-sh/uv/issues/12766
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # json schema
 
 ---
 
-_Issue opened by @MalikRumi on 2025-04-09 01:30_
+_@MalikRumi_
 
 ### Question
 

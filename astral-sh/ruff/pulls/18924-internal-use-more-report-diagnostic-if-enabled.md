@@ -13,14 +13,14 @@ head: use-more-report_diagnostic_if_enabled
 created_at: 2025-06-24T20:27:31Z
 updated_at: 2025-06-25T01:43:55Z
 url: https://github.com/astral-sh/ruff/pull/18924
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [Internal] Use more `report_diagnostic_if_enabled`
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-24 20:27_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

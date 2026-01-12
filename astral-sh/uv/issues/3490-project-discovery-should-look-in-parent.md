@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-09T17:07:22Z
 updated_at: 2024-05-09T19:16:08Z
 url: https://github.com/astral-sh/uv/issues/3490
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Project discovery should look in parent directories
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-09 17:07_
+_@charliermarsh_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-08T03:29:40Z
 updated_at: 2025-05-13T14:59:12Z
 url: https://github.com/astral-sh/ty/issues/261
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Cycle when resolving an imported module with `__all__`
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-05-08 03:29_
+_@dhruvmanila_
 
 ### Summary
 

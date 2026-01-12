@@ -13,14 +13,14 @@ head: typeshed-versions
 created_at: 2024-06-11T14:06:16Z
 updated_at: 2024-06-12T12:00:39Z
 url: https://github.com/astral-sh/ruff/pull/11836
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # [red-knot] Add a parser for typeshed's VERSIONS file
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-11 14:06_
+_@AlexWaygood_
 
 Work towards https://github.com/astral-sh/ruff/issues/11653. This will be necessary for resolving standard-library modules.
 

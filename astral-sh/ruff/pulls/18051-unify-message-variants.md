@@ -14,14 +14,14 @@ head: brent/diagnostic-refactor-2
 created_at: 2025-05-12T17:33:34Z
 updated_at: 2025-05-19T17:34:06Z
 url: https://github.com/astral-sh/ruff/pull/18051
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # Unify `Message` variants
 
 ---
 
-_Pull request opened by @ntBre on 2025-05-12 17:33_
+_@ntBre_
 
 ## Summary
 

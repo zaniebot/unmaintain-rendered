@@ -13,14 +13,14 @@ head: zb/python-replace
 created_at: 2025-07-15T22:48:42Z
 updated_at: 2025-07-16T14:05:12Z
 url: https://github.com/astral-sh/uv/pull/14640
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:19Z
 ```
 
 # Use `[PYTHON]` placeholder in filtered Python names
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-15 22:48_
+_@zanieb_
 
 We should never replace with a non-placeholder, it is very confusing when trying to understand test behavior
 

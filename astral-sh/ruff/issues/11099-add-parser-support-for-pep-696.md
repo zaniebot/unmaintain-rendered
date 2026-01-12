@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-23T05:12:50Z
 updated_at: 2024-04-26T07:47:31Z
 url: https://github.com/astral-sh/ruff/issues/11099
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Add parser support for PEP 696
 
 ---
 
-_Issue opened by @JelleZijlstra on 2024-04-23 05:12_
+_@JelleZijlstra_
 
 Ruff's parser does not support the new syntax introduced by [PEP 696](https://peps.python.org/pep-0696/):
 

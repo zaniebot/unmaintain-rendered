@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-14T17:32:06Z
 updated_at: 2024-04-15T05:38:12Z
 url: https://github.com/astral-sh/ruff/issues/10929
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # LICENSE file in this repo is 13k lines long
 
 ---
 
-_Issue opened by @mistercrunch on 2024-04-14 17:32_
+_@mistercrunch_
 
 Trying to understand the licensing here, the LICENSE file is 13k lines long(!) Lots of copyright notice. Guessing if I just use it for CI and do not redistribute then I don't need to carry the copyright(s) (?)
 

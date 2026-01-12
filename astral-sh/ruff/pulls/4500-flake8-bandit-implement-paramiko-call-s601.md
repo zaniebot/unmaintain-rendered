@@ -13,14 +13,14 @@ head: feat/bandit-paramiko
 created_at: 2023-05-18T16:24:32Z
 updated_at: 2023-05-19T08:23:09Z
 url: https://github.com/astral-sh/ruff/pull/4500
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # [`flake8-bandit`] Implement `paramiko-call` (`S601`)
 
 ---
 
-_Pull request opened by @scop on 2023-05-18 16:24_
+_@scop_
 
 _No description provided._
 

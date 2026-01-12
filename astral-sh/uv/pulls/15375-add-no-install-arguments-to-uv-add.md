@@ -13,14 +13,14 @@ head: charlie/no
 created_at: 2025-08-19T09:39:21Z
 updated_at: 2025-08-19T14:32:58Z
 url: https://github.com/astral-sh/uv/pull/15375
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:43Z
 ```
 
 # Add `--no-install-*` arguments to `uv add`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-19 09:39_
+_@charliermarsh_
 
 ## Summary
 

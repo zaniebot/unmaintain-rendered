@@ -11,14 +11,14 @@ head: fix/logo-badge
 created_at: 2025-08-05T05:39:33Z
 updated_at: 2025-08-20T12:31:06Z
 url: https://github.com/astral-sh/uv/pull/15075
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:34Z
 ```
 
 # Update badge logo SVG
 
 ---
 
-_Pull request opened by @Onyx-Nostalgia on 2025-08-05 05:39_
+_@Onyx-Nostalgia_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

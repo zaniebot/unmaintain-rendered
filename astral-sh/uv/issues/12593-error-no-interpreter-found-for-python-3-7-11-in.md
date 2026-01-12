@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T01:39:21Z
 updated_at: 2025-04-02T05:08:32Z
 url: https://github.com/astral-sh/uv/issues/12593
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # error: No interpreter found for Python 3.7.11 in managed installations or search path
 
 ---
 
-_Issue opened by @duanshuaimin on 2025-04-01 01:39_
+_@duanshuaimin_
 
 ### Question
 

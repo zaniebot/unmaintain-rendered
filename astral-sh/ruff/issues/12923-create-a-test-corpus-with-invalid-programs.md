@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-16T10:10:30Z
 updated_at: 2025-01-15T09:50:17Z
 url: https://github.com/astral-sh/ruff/issues/12923
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Create a test corpus with invalid programs
 
 ---
 
-_Issue opened by @MichaReiser on 2024-08-16 10:10_
+_@MichaReiser_
 
 Invalid programs are the default-state in editors. We should add extensive tests on how red knot handles invalid programs.
 

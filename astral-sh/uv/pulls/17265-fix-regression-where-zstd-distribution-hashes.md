@@ -12,14 +12,14 @@ head: zb/zstd-wheel
 created_at: 2025-12-30T14:21:38Z
 updated_at: 2025-12-30T15:24:04Z
 url: https://github.com/astral-sh/uv/pull/17265
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:41Z
 ```
 
 # Fix regression where zstd distribution hashes were not considered valid
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-30 14:21_
+_@zanieb_
 
 Fixes a regression from https://github.com/astral-sh/uv/pull/17157 as reported in https://github.com/astral-sh/uv/issues/17260
 

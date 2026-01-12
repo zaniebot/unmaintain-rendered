@@ -13,14 +13,14 @@ head: dhruv/starts-at
 created_at: 2024-05-15T11:28:16Z
 updated_at: 2024-05-27T08:46:00Z
 url: https://github.com/astral-sh/ruff/pull/11433
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Fix starts at logic for the parser flow
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-15 11:28_
+_@dhruvmanila_
 
 ## Summary
 

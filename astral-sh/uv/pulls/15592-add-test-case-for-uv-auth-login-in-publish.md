@@ -12,14 +12,14 @@ head: zb/auth-test
 created_at: 2025-08-30T14:27:25Z
 updated_at: 2025-08-30T17:25:15Z
 url: https://github.com/astral-sh/uv/pull/15592
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:50Z
 ```
 
 # Add test case for `uv auth login` in publish integration tests
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-30 14:27_
+_@zanieb_
 
 _No description provided._
 

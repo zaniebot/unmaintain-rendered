@@ -14,14 +14,14 @@ head: charlie/C402
 created_at: 2023-09-05T12:09:03Z
 updated_at: 2023-09-05T12:26:53Z
 url: https://github.com/astral-sh/ruff/pull/7152
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add required space when fixing C402
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-05 12:09_
+_@charliermarsh_
 
 Another case where we're removing parentheses, and so need to take care to add space if not present.
 

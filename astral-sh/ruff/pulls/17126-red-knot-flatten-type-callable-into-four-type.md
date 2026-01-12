@@ -13,14 +13,14 @@ head: alex/flatten-callable-types
 created_at: 2025-04-01T17:08:20Z
 updated_at: 2025-04-01T21:03:40Z
 url: https://github.com/astral-sh/ruff/pull/17126
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Flatten `Type::Callable` into four `Type` variants
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-01 17:08_
+_@AlexWaygood_
 
 ## Summary
 

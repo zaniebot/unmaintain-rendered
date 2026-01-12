@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-26T07:44:02Z
 updated_at: 2023-07-26T09:24:01Z
 url: https://github.com/astral-sh/ruff/issues/6087
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add required changes for handling the new Jupyter AST nodes
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-07-26 07:44_
+_@dhruvmanila_
 
 - [`Visitor`](https://github.com/astral-sh/ruff/blob/62f821daaa5d3ec56d0ba5910b4982bb7fa2be35/crates/ruff_python_ast/src/visitor.rs#L19) and [`PreorderVisitor`](https://github.com/astral-sh/ruff/blob/62f821daaa5d3ec56d0ba5910b4982bb7fa2be35/crates/ruff_python_ast/src/visitor/preorder.rs#L9) support
 - [`ComparableExpr`](https://github.com/astral-sh/ruff/blob/62f821daaa5d3ec56d0ba5910b4982bb7fa2be35/crates/ruff_python_ast/src/comparable.rs#L656) and [`ComparableStmt`](https://github.com/astral-sh/ruff/blob/62f821daaa5d3ec56d0ba5910b4982bb7fa2be35/crates/ruff_python_ast/src/comparable.rs#L1159) support

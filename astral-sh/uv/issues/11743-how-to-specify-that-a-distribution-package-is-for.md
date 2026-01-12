@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-24T11:36:48Z
 updated_at: 2025-02-24T13:40:38Z
 url: https://github.com/astral-sh/uv/issues/11743
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # How to specify that a distribution package is for manylinux, not musllinux?
 
 ---
 
-_Issue opened by @sanmai-NL on 2025-02-24 11:36_
+_@sanmai-NL_
 
 ### Question
 

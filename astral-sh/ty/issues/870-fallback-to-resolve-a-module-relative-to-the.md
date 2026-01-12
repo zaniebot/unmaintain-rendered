@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-22T14:11:28Z
 updated_at: 2025-11-14T00:14:28Z
 url: https://github.com/astral-sh/ty/issues/870
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Fallback to resolve a module relative to the importing file
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-22 14:11_
+_@MichaReiser_
 
 Most users using ty as a LSP probably won't bother configuring all the search paths. However, ty might fail to resolve many imports if they don't, depending on their project structure. 
 

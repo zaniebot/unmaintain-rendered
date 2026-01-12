@@ -13,14 +13,14 @@ head: main
 created_at: 2025-01-04T16:08:47Z
 updated_at: 2025-01-04T18:31:36Z
 url: https://github.com/astral-sh/uv/pull/10297
-synced_at: 2026-01-10T11:44:40Z
+synced_at: 2026-01-12T16:09:13Z
 ```
 
 # Update copyright year
 
 ---
 
-_Pull request opened by @PerchunPak on 2025-01-04 16:08_
+_@PerchunPak_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-03T14:35:36Z
 updated_at: 2024-04-03T14:37:19Z
 url: https://github.com/astral-sh/uv/issues/2807
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Feedback wanted: wrapper for pixi+uv for local and containerized python
 
 ---
 
-_Issue opened by @liquidcarbon on 2024-04-03 14:35_
+_@liquidcarbon_
 
 Hello and thanks for your work!  This is a non-issue kind of issue, more of a discussion / show & tell.
 

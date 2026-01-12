@@ -12,14 +12,14 @@ assignees: []
 created_at: 2018-12-18T23:15:27Z
 updated_at: 2021-12-10T16:33:27Z
 url: https://github.com/clap-rs/clap/issues/1398
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Better looking visible aliases for subcommands
 
 ---
 
-_Issue opened by @sondr3 on 2018-12-18 23:15_
+_@sondr3_
 
 Right now when you create a visible alias for a subcommand it appears in brackets after the help message, so when I first added some visible aliases I thought it didn't work. I like how Jekyll for example does it:
 

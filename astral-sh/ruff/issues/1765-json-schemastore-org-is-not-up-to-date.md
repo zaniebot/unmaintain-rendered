@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-10T09:10:37Z
 updated_at: 2023-03-16T15:36:21Z
 url: https://github.com/astral-sh/ruff/issues/1765
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # json.schemastore.org is not up to date
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-01-10 09:10_
+_@JonathanPlasse_
 
 Hi,
 There is `flake8-pytest-style` missing in the schema from [json.schemastore.org](https://json.schemastore.org/ruff.json).

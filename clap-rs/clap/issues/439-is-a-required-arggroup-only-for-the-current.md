@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-03-06T11:39:34Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/439
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Is a required ArgGroup only for the current SubCommand, or global?
 
 ---
 
-_Issue opened by @matthiasbeyer on 2016-03-06 11:39_
+_@matthiasbeyer_
 
 This is a bit unclear in the documentation (at least for me):
 

@@ -14,14 +14,14 @@ head: david/fix-playground-crash
 created_at: 2025-10-30T21:32:14Z
 updated_at: 2025-11-04T17:36:39Z
 url: https://github.com/astral-sh/ruff/pull/21151
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [ty] Fix playground crash when file name includes path separator
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-30 21:32_
+_@sharkdp_
 
 _No description provided._
 

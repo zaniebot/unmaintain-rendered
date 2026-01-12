@@ -14,14 +14,14 @@ head: brent/pep695-generics
 created_at: 2025-01-18T04:17:41Z
 updated_at: 2025-01-22T16:35:24Z
 url: https://github.com/astral-sh/ruff/pull/15565
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`pyupgrade`] Add rules to use PEP 695 generics in classes and functions (`UP046`, `UP047`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-01-18 04:17_
+_@ntBre_
 
 ## Summary
 

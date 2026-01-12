@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-26T16:49:53Z
 updated_at: 2022-10-26T20:36:13Z
 url: https://github.com/astral-sh/ruff/issues/475
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Sometimes --fix doesn't work (unused imports)
 
 ---
 
-_Issue opened by @fsouza on 2022-10-26 16:49_
+_@fsouza_
 
 I haven't been able to dig into this yet, but sometimes `--fix` doesn't remove unused imports (but it does claim to have fixed the issue). Reproducing with the autoflake repo:
 

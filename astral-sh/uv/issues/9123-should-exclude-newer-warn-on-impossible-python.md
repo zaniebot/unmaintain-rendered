@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-14T16:53:16Z
 updated_at: 2024-11-16T03:11:23Z
 url: https://github.com/astral-sh/uv/issues/9123
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # Should --exclude-newer warn on "impossible" Python versions?
 
 ---
 
-_Issue opened by @mitsuhiko on 2024-11-14 16:53_
+_@mitsuhiko_
 
 Today I was presented with a problem that `--exclude-newer` managed to resolve.  The package was unmaintained for two years, and entirely unpinned.  It was impossible to install without `--exclude-newer`.  However what also was needed is that an older Python version was required as some of the dependencies did not run on 3.12.
 

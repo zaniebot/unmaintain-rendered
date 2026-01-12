@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-04T18:57:10Z
 updated_at: 2023-07-04T20:25:18Z
 url: https://github.com/astral-sh/ruff/issues/5510
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Expand Ruff's default exclusions
 
 ---
 
-_Issue opened by @charliermarsh on 2023-07-04 18:57_
+_@charliermarsh_
 
 Like Black, I'd like to add:
 

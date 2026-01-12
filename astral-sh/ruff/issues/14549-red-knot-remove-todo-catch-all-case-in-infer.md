@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T23:34:53Z
 updated_at: 2025-01-06T18:50:21Z
 url: https://github.com/astral-sh/ruff/issues/14549
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] remove TODO catch-all case in `infer_binary_expression`
 
 ---
 
-_Issue opened by @carljm on 2024-11-22 23:34_
+_@carljm_
 
 Similar to https://github.com/astral-sh/ruff/issues/14548, just a slightly bigger task, since binary expressions naturally have a larger possibility matrix (though again, many combinations should simply result in falling back to `Type::Instance` handling.)
 

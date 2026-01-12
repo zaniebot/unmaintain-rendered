@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-28T14:36:50Z
 updated_at: 2025-09-02T12:51:38Z
 url: https://github.com/astral-sh/ty/issues/1102
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # When will `ty` be ready for production use?
 
 ---
 
-_Issue opened by @axiomofjoy on 2025-08-28 14:36_
+_@axiomofjoy_
 
 I'm interested in migrating off `mypy` for [this project](https://github.com/Arize-ai/phoenix) and have had great experiences with astral tooling such as `ruff` and `uv` in the past. Wondering when will `ty` be ready for primetime?
 

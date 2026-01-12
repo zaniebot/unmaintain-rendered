@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-08T13:36:14Z
 updated_at: 2025-08-15T21:45:00Z
 url: https://github.com/astral-sh/uv/issues/15165
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # uvx can't find executables on Windows when the package name contains a "."
 
 ---
 
-_Issue opened by @crh23 on 2025-08-08 13:36_
+_@crh23_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T06:56:20Z
 updated_at: 2025-04-08T04:24:03Z
 url: https://github.com/astral-sh/uv/issues/12709
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # "flat index" option not work for pytorch install
 
 ---
 
-_Issue opened by @Cloud0310 on 2025-04-07 06:56_
+_@Cloud0310_
 
 ### Summary
 

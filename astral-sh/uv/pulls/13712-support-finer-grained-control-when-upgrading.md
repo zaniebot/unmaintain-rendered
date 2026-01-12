@@ -13,14 +13,14 @@ head: jtfm/python-upgrade-expanded-symlink-name
 created_at: 2025-05-28T22:56:21Z
 updated_at: 2025-06-10T17:24:28Z
 url: https://github.com/astral-sh/uv/pull/13712
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:49Z
 ```
 
 # Support finer-grained control when upgrading Python versions
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-05-28 22:56_
+_@jtfmumm_
 
 Previously a symlink directory would be named something like `python3.10`. This did not account for information like the architecture or variant. This PR supports finer-grained control when upgrading Python versions. Transparent upgrades can be tied to more than just the minor version (e.g., the architecture). Accordingly, symlink directories naming now follows the existing Python build standalone directory format (excluding patch and prerelease). For example: `cpython-3.10-macos-aarch64-none`.
 

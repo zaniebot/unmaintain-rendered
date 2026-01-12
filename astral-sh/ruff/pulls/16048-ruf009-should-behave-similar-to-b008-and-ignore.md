@@ -13,14 +13,14 @@ head: gh-issue-15772
 created_at: 2025-02-08T23:38:49Z
 updated_at: 2025-02-10T08:46:23Z
 url: https://github.com/astral-sh/ruff/pull/16048
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # RUF009 should behave similar to B008 and ignore attributes with immutable types
 
 ---
 
-_Pull request opened by @smokyabdulrahman on 2025-02-08 23:38_
+_@smokyabdulrahman_
 
 This PR resolved #15772
 

@@ -13,14 +13,14 @@ head: charlie/r
 created_at: 2024-09-07T02:03:28Z
 updated_at: 2024-09-07T02:10:29Z
 url: https://github.com/astral-sh/uv/pull/7151
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:42Z
 ```
 
 # Avoid removing entries during `read_dir`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-07 02:03_
+_@charliermarsh_
 
 I think this is the source of the test flakiness.
 

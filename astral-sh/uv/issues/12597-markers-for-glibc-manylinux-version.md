@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T09:11:33Z
 updated_at: 2025-10-28T14:55:34Z
 url: https://github.com/astral-sh/uv/issues/12597
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # Markers for Glibc/manylinux version
 
 ---
 
-_Issue opened by @PhilipVinc on 2025-04-01 09:11_
+_@PhilipVinc_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-04T03:41:09Z
 updated_at: 2024-09-06T01:01:48Z
 url: https://github.com/astral-sh/uv/issues/6995
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Add option `uv export --exclude-editable`
 
 ---
 
-_Issue opened by @vivienm on 2024-09-04 03:41_
+_@vivienm_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

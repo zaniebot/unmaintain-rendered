@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-07T20:46:40Z
 updated_at: 2025-03-20T18:44:58Z
 url: https://github.com/astral-sh/uv/issues/9711
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # Tracking issue: package without source distribution gets an "incomplete" resolution
 
 ---
 
-_Issue opened by @charliermarsh on 2024-12-07 20:46_
+_@charliermarsh_
 
 Using TensorFlow as an example: if you lock against the CPU index, we choose `2.5.2+cpu`. However, `2.5.2+cpu` doesn't have any macOS wheels. So the resulting resolution doesn't work on macOS at all -- you get something like:
 

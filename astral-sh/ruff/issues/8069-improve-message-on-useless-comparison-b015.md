@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-19T17:20:33Z
 updated_at: 2023-10-28T11:18:03Z
 url: https://github.com/astral-sh/ruff/issues/8069
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Improve message on "useless-comparison" (B015)
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2023-10-19 17:20_
+_@inoa-jboliveira_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -12,14 +12,14 @@ head: enable-pyi033-for-py-files
 created_at: 2023-04-30T21:20:10Z
 updated_at: 2023-10-17T11:07:22Z
 url: https://github.com/astral-sh/ruff/pull/4166
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Enable PYI033 for .py files
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-04-30 21:20_
+_@JonathanPlasse_
 
 - Asked in https://github.com/charliermarsh/ruff/issues/980#issuecomment-1529127615
 > > It is implemented as PYI033.

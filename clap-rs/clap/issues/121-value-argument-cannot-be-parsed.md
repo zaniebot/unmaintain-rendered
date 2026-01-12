@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-17T12:36:43Z
 updated_at: 2015-05-17T14:41:24Z
 url: https://github.com/clap-rs/clap/issues/121
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # '-' value argument cannot be parsed
 
 ---
 
-_Issue opened by @Byron on 2015-05-17 12:36_
+_@Byron_
 
 In an argument like the following: 
 

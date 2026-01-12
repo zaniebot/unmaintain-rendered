@@ -12,14 +12,14 @@ head: show_fixes
 created_at: 2023-05-02T14:22:17Z
 updated_at: 2023-05-10T15:45:59Z
 url: https://github.com/astral-sh/ruff/pull/4191
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Optionally show fixes when using `--features ecosystem_ci` with cargo and `--show-fixes` at runtime
 
 ---
 
-_Pull request opened by @konstin on 2023-05-02 14:22_
+_@konstin_
 
 Example command: `cargo run --bin ruff --features ecosystem_ci -- --ecosystem-ci --no-cache --select F401 --show-fixes crates/ruff/resources/test/fixtures/pyflakes/F401_9.py`
 

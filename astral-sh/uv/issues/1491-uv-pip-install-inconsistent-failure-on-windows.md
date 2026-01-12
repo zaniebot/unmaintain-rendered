@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T14:07:16Z
 updated_at: 2025-11-07T15:38:07Z
 url: https://github.com/astral-sh/uv/issues/1491
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # uv pip install inconsistent failure on Windows
 
 ---
 
-_Issue opened by @Wofiel on 2024-02-16 14:07_
+_@Wofiel_
 
 - Windows 22H2
 - Using PowerShell env (in either Windows Terminal or powershell.exe, non-elevated)

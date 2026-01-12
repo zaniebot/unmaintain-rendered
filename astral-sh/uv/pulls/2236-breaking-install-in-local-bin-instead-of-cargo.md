@@ -13,14 +13,14 @@ head: konsti/install-in-local-bin
 created_at: 2024-03-06T09:48:54Z
 updated_at: 2024-05-21T17:34:32Z
 url: https://github.com/astral-sh/uv/pull/2236
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:04:56Z
 ```
 
 # [Breaking] Install in `~/.local/bin` instead of cargo home
 
 ---
 
-_Pull request opened by @konstin on 2024-03-06 09:48_
+_@konstin_
 
 `uv` is not part of the rust toolchain nor is it usually installed or managed by cargo. Similarly, i expect that the majority of users does not have cargo installed. We should instead use a not-rust-associated directory for binaries.
 

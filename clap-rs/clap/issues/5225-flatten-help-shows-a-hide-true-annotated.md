@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-27T13:13:57Z
 updated_at: 2023-11-27T16:58:43Z
 url: https://github.com/clap-rs/clap/issues/5225
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `flatten_help` shows a `hide(true)` annotated subcommand in the overview
 
 ---
 
-_Issue opened by @Apanatshka on 2023-11-27 13:13_
+_@Apanatshka_
 
 ### Please complete the following tasks
 

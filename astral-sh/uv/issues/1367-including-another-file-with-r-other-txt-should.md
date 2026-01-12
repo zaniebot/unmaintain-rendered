@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T21:58:45Z
 updated_at: 2024-02-16T04:19:44Z
 url: https://github.com/astral-sh/uv/issues/1367
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Including another file with `-r other.txt` should resolve relative to the containing file
 
 ---
 
-_Issue opened by @carta-luc-ritchie on 2024-02-15 21:58_
+_@carta-luc-ritchie_
 
 We have a dev requirements file `lib/requirements/dev.txt` that starts with this:
 

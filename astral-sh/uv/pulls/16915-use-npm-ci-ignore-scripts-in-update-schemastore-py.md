@@ -13,14 +13,14 @@ head: ww/npm
 created_at: 2025-12-01T21:25:56Z
 updated_at: 2025-12-01T23:36:56Z
 url: https://github.com/astral-sh/uv/pull/16915
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:31Z
 ```
 
 # Use `npm ci --ignore-scripts` in update_schemastore.py
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-01 21:25_
+_@woodruffw_
 
 ## Summary
 

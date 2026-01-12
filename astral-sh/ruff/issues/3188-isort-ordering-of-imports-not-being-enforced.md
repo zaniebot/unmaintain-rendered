@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-23T19:28:59Z
 updated_at: 2023-02-23T19:36:09Z
 url: https://github.com/astral-sh/ruff/issues/3188
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # `isort` ordering of imports not being enforced.
 
 ---
 
-_Issue opened by @brysontyrrell on 2023-02-23 19:28_
+_@brysontyrrell_
 
 I'm experimenting replacing `isort` with `ruff` but it doesn't seem to be enforcing the order of imports even if I explicitly set `order-by-type = true`.
 

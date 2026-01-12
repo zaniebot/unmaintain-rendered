@@ -14,14 +14,14 @@ head: autofix-AIR302
 created_at: 2025-03-25T11:11:06Z
 updated_at: 2025-04-02T15:31:22Z
 url: https://github.com/astral-sh/ruff/pull/16965
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [`airflow`] Add autofix infrastructure to `AIR302` name checks
 
 ---
 
-_Pull request opened by @Lee-W on 2025-03-25 11:11_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

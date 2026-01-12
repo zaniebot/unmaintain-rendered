@@ -13,14 +13,14 @@ head: brent/ruf059
 created_at: 2025-09-04T13:47:07Z
 updated_at: 2025-09-04T20:20:01Z
 url: https://github.com/astral-sh/ruff/pull/20233
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # Stabilize `unused-unpacked-variable` (`RUF059`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-04 13:47_
+_@ntBre_
 
 The tests looked good. For the docs, I added a `## See also` section pointing to
 the closely-related F841 (unused-variable) and the corresponding section to F841

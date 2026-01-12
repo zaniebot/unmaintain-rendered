@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-02T03:55:31Z
 updated_at: 2023-03-17T03:50:47Z
 url: https://github.com/astral-sh/ruff/issues/3297
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Use itertools.pairwise instead of zipping a sequence against itself
 
 ---
 
-_Issue opened by @Jeremiah-England on 2023-03-02 03:55_
+_@Jeremiah-England_
 
 Tonight I discovered [`itertools.pairwise`][0] (new in 3.10) and replaced 6 lines like this in a ~10,000 line codebase:
 

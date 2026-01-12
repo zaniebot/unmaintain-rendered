@@ -12,14 +12,14 @@ head: charlie/prefix-codes
 created_at: 2022-10-28T01:56:08Z
 updated_at: 2022-10-28T22:19:59Z
 url: https://github.com/astral-sh/ruff/pull/493
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Enable prefix-based check code selection
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-28 01:56_
+_@charliermarsh_
 
 Resolves #325.
 

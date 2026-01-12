@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-24T09:35:52Z
 updated_at: 2025-07-24T09:36:21Z
 url: https://github.com/astral-sh/uv/issues/14868
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:58Z
 ```
 
 # [FR] uv pip compile via lists - show relevant extras
 
 ---
 
-_Issue opened by @RonnyPfannschmidt on 2025-07-24 09:35_
+_@RonnyPfannschmidt_
 
 ### Summary
 

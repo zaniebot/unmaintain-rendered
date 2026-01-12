@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-24T12:46:11Z
 updated_at: 2025-12-25T15:05:48Z
 url: https://github.com/astral-sh/ty/issues/2203
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Keyword-argument completions not shown in a decorator call without a class/function below it
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-24 12:46_
+_@AlexWaygood_
 
 ### Summary
 

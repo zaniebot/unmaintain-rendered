@@ -12,14 +12,14 @@ head: charlie/allocator
 created_at: 2023-02-14T00:20:42Z
 updated_at: 2023-02-15T13:13:41Z
 url: https://github.com/astral-sh/ruff/pull/2876
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Re-enable custom allocators
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-14 00:20_
+_@charliermarsh_
 
 This PR un-reverts #2768 with extra guards to ensure that (e.g.) `i686` builds work as expected.
 

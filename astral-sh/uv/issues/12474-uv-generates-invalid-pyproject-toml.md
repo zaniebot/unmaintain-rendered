@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T00:29:18Z
 updated_at: 2025-03-26T12:34:39Z
 url: https://github.com/astral-sh/uv/issues/12474
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # uv generates invalid pyproject.toml
 
 ---
 
-_Issue opened by @builder555 on 2025-03-26 00:29_
+_@builder555_
 
 ### Summary
 

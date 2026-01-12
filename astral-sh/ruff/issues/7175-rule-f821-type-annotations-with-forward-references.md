@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-06T00:50:41Z
 updated_at: 2025-05-13T03:32:30Z
 url: https://github.com/astral-sh/ruff/issues/7175
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rule F821 Type Annotations With Forward References
 
 ---
 
-_Issue opened by @mikedh on 2023-09-06 00:50_
+_@mikedh_
 
 Thanks for the great library!! I've been loving unifying around the ruff rules. 
 

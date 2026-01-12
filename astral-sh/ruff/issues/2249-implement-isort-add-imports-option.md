@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-27T11:37:22Z
 updated_at: 2023-01-27T12:31:41Z
 url: https://github.com/astral-sh/ruff/issues/2249
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement isort `add_imports` option
 
 ---
 
-_Issue opened by @ngnpope on 2023-01-27 11:37_
+_@ngnpope_
 
 It would be handy if we could have isort's [`add_imports`](https://pycqa.github.io/isort/docs/configuration/options.html#add-imports) configuration option.
 

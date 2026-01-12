@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-10T18:51:49Z
 updated_at: 2023-08-11T00:54:40Z
 url: https://github.com/astral-sh/ruff/issues/6483
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `SLF001` should not emit error for `os._exit()`
 
 ---
 
-_Issue opened by @dosisod on 2023-08-10 18:51_
+_@dosisod_
 
 The [`os._exit()`](https://docs.python.org/3/library/os.html#os._exit) function is often used to exit without doing any cleanup, either because you don't have any resources to cleanup, or you're running in another thread/subprocess like the docs describe.
 

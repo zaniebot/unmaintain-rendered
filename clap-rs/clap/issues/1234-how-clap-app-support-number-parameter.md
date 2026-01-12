@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-03-28T03:42:23Z
 updated_at: 2018-08-02T03:30:21Z
 url: https://github.com/clap-rs/clap/issues/1234
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # how clap_app support number parameter
 
 ---
 
-_Issue opened by @dllhlx on 2018-03-28 03:42_
+_@dllhlx_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

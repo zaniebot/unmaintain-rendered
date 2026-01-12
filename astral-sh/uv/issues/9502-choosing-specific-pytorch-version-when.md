@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-28T12:56:35Z
 updated_at: 2024-12-27T13:58:37Z
 url: https://github.com/astral-sh/uv/issues/9502
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # Choosing specific Pytorch version when configuring accelerators with optional dependencies
 
 ---
 
-_Issue opened by @eginhard on 2024-11-28 12:56_
+_@eginhard_
 
 On Ubuntu with uv 0.5.5 with the following `pyproject.toml`, adapted from https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies (torchvision removed for simplicity and minimum Pytorch version lowered):
 

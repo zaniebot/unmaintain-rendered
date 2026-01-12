@@ -13,14 +13,14 @@ head: charlie/env
 created_at: 2024-11-12T17:27:44Z
 updated_at: 2024-11-12T17:55:01Z
 url: https://github.com/astral-sh/uv/pull/9064
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:38Z
 ```
 
 # Fix `.env` file example in docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-12 17:27_
+_@charliermarsh_
 
 ## Summary
 

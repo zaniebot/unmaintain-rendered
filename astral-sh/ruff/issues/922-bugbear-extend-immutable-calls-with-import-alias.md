@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-27T16:15:44Z
 updated_at: 2022-11-27T23:39:25Z
 url: https://github.com/astral-sh/ruff/issues/922
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Bugbear extend-immutable-calls with import alias does not work
 
 ---
 
-_Issue opened by @JonathanPlasse on 2022-11-27 16:15_
+_@JonathanPlasse_
 
 ```python
 from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel

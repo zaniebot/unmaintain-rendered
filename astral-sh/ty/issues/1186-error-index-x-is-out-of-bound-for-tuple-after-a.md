@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-15T08:10:35Z
 updated_at: 2025-09-15T08:26:21Z
 url: https://github.com/astral-sh/ty/issues/1186
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Error: `Index X is out of bound for tuple` after a if-guard that guarantees in-bounds
 
 ---
 
-_Issue opened by @jeertmans on 2025-09-15 08:10_
+_@jeertmans_
 
 ### Summary
 

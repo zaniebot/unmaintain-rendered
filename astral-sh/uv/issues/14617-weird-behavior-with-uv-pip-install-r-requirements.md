@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-14T22:38:34Z
 updated_at: 2025-07-15T21:47:47Z
 url: https://github.com/astral-sh/uv/issues/14617
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # Weird behavior with `uv pip install -r requirements.txt` when using relative directories
 
 ---
 
-_Issue opened by @Panacea729 on 2025-07-14 22:38_
+_@Panacea729_
 
 ### Question
 

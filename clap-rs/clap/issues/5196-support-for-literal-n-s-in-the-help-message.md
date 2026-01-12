@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-11-06T19:41:00Z
 updated_at: 2025-08-07T20:10:56Z
 url: https://github.com/clap-rs/clap/issues/5196
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Support for literal `{n}`s in the help message
 
 ---
 
-_Issue opened by @andreykaere on 2023-11-06 19:41_
+_@andreykaere_
 
 ### Please complete the following tasks
 

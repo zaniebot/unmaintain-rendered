@@ -13,14 +13,14 @@ head: e203-tuple-whitespace
 created_at: 2024-02-23T10:05:47Z
 updated_at: 2024-02-26T17:22:36Z
 url: https://github.com/astral-sh/ruff/pull/10094
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # E203: Don't warn about single whitespace before tuple ,
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-23 10:05_
+_@MichaReiser_
 
 ## Summary
 

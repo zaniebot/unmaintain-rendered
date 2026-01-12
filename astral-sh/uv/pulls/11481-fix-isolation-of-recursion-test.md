@@ -13,14 +13,14 @@ head: zb/recurse
 created_at: 2025-02-13T15:31:55Z
 updated_at: 2025-02-13T17:12:10Z
 url: https://github.com/astral-sh/uv/pull/11481
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:52Z
 ```
 
 # Fix isolation of recursion test
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-13 15:31_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/11471
 

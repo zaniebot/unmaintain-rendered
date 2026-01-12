@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-31T08:21:39Z
 updated_at: 2023-08-31T08:22:47Z
 url: https://github.com/astral-sh/ruff/issues/7017
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `output` flag in CLI
 
 ---
 
-_Issue opened by @OmAximani0 on 2023-08-31 08:21_
+_@OmAximani0_
 
 Can we add output flag for the CLI ? Like output stuff in a a file ?
 

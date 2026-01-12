@@ -13,14 +13,14 @@ head: ag/new-renderer
 created_at: 2025-03-13T16:30:43Z
 updated_at: 2025-03-14T19:06:32Z
 url: https://github.com/astral-sh/ruff/pull/16711
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # ruff_db: add new diagnostic renderer
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-03-13 16:30_
+_@BurntSushi_
 
 This PR adds a new renderer using the new diagnostic type defined in
 #16503 and built on top of our vendored copy of `annotate-snippets`.

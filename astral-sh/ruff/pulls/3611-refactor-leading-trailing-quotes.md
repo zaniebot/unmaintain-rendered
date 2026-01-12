@@ -12,14 +12,14 @@ head: quotes
 created_at: 2023-03-19T18:47:39Z
 updated_at: 2023-07-24T15:01:51Z
 url: https://github.com/astral-sh/ruff/pull/3611
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Refactor leading/trailing quotes 
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-19 18:47_
+_@MichaReiser_
 
 _No description provided._
 

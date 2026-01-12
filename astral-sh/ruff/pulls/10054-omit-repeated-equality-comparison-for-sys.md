@@ -13,14 +13,14 @@ head: omit-repeated-equality-comparison-for-sys
 created_at: 2024-02-19T23:53:55Z
 updated_at: 2024-02-20T22:10:22Z
 url: https://github.com/astral-sh/ruff/pull/10054
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Omit repeated equality comparison for sys
 
 ---
 
-_Pull request opened by @arjunnn on 2024-02-19 23:53_
+_@arjunnn_
 
 ## Summary
 Update PLR1714 to ignore `sys.platform` and `sys.version` checks. 

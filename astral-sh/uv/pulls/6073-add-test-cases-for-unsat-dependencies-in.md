@@ -14,14 +14,14 @@ head: zb/test-workspace
 created_at: 2024-08-13T23:31:06Z
 updated_at: 2024-08-14T15:51:01Z
 url: https://github.com/astral-sh/uv/pull/6073
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:11Z
 ```
 
 # Add test cases for unsat dependencies in workspace members
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-13 23:31_
+_@zanieb_
 
 Adding some test cases to help inform the work in #6066 
 

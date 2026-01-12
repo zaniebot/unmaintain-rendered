@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-04T19:40:35Z
 updated_at: 2025-03-05T07:43:28Z
 url: https://github.com/astral-sh/ruff/issues/16508
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Auto-fixes for PD `use-of` rules
 
 ---
 
-_Issue opened by @allen-pattern on 2025-03-04 19:40_
+_@allen-pattern_
 
 ### Summary
 

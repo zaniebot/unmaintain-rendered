@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-15T17:55:00Z
 updated_at: 2025-10-25T21:12:25Z
 url: https://github.com/astral-sh/ruff/issues/8700
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Distinguish between F821 "undefined name" for undefined variables VS undefined string types
 
 ---
 
-_Issue opened by @BenQuigley on 2023-11-15 17:55_
+_@BenQuigley_
 
 I'm running into a similar issue as https://github.com/astral-sh/ruff/issues/7175 and I see that the user who raised the issue and maintainers ended up agreeing that ruff should complain about, e.g. `def foo(bar: "Bar")` if `Bar` is not defined as a type. That makes sense to me, but my team and I would disable that particular error from ruff (which is error `F821`). We use Python type annotations mostly the same way we use code comments; that is, we view them as helpful but we don't programmatically check them, a system that works well for us.
 

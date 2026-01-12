@@ -13,14 +13,14 @@ head: brent/plw1641-docs
 created_at: 2025-06-10T18:04:24Z
 updated_at: 2025-06-10T18:25:17Z
 url: https://github.com/astral-sh/ruff/pull/18613
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # [`pylint`] De-emphasize `__hash__ = Parent.__hash__` (`PLW1641`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-10 18:04_
+_@ntBre_
 
 Summary
 --

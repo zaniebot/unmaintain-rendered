@@ -13,14 +13,14 @@ head: charlie/find-links
 created_at: 2024-04-11T00:57:50Z
 updated_at: 2024-04-11T01:25:59Z
 url: https://github.com/astral-sh/uv/pull/2986
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:21Z
 ```
 
 # Add `--find-links` source distributions to the registry cache
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-11 00:57_
+_@charliermarsh_
 
 ## Summary
 

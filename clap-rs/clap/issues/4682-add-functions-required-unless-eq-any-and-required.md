@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-01-28T05:26:12Z
 updated_at: 2023-02-23T21:24:08Z
 url: https://github.com/clap-rs/clap/issues/4682
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Add functions `required_unless_eq_any` and `required_unless_eq_all` for `Arg` and `ArgGroup`
 
 ---
 
-_Issue opened by @rob-p on 2023-01-28 05:26_
+_@rob-p_
 
 ### Please complete the following tasks
 

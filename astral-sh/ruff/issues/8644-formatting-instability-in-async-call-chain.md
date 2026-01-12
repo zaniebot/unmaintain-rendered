@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-13T05:03:19Z
 updated_at: 2023-11-17T17:24:41Z
 url: https://github.com/astral-sh/ruff/issues/8644
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatting instability in `async` call chain
 
 ---
 
-_Issue opened by @roshanjrajan-zip on 2023-11-13 05:03_
+_@roshanjrajan-zip_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

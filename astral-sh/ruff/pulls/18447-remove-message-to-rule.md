@@ -14,14 +14,14 @@ head: brent/remove-to-rule
 created_at: 2025-06-03T18:55:47Z
 updated_at: 2025-06-05T16:48:31Z
 url: https://github.com/astral-sh/ruff/pull/18447
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # Remove `Message::to_rule`
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-03 18:55_
+_@ntBre_
 
 ## Summary
 

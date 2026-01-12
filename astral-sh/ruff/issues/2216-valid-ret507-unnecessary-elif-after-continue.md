@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-26T19:16:21Z
 updated_at: 2023-01-26T21:17:09Z
 url: https://github.com/astral-sh/ruff/issues/2216
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # valid `RET507 Unnecessary `elif` after `continue` statement` ?
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 19:16_
+_@spaceone_
 
 I get `RET507` Unnecessary `elif` after `continue` statement for:
 

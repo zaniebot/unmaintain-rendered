@@ -13,14 +13,14 @@ head: main
 created_at: 2025-08-05T04:30:44Z
 updated_at: 2025-08-05T19:17:16Z
 url: https://github.com/astral-sh/uv/pull/15074
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:34Z
 ```
 
 # Make the use of `Self` consistent.
 
 ---
 
-_Pull request opened by @adamnemecek on 2025-08-05 04:30_
+_@adamnemecek_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

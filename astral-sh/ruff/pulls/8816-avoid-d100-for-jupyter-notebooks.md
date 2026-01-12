@@ -13,14 +13,14 @@ head: dhruv/notebook-d100
 created_at: 2023-11-21T22:24:59Z
 updated_at: 2023-11-22T15:32:51Z
 url: https://github.com/astral-sh/ruff/pull/8816
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Avoid `D100` for Jupyter Notebooks
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-21 22:24_
+_@dhruvmanila_
 
 This PR avoids triggering `D100` for Jupyter Notebooks.
 

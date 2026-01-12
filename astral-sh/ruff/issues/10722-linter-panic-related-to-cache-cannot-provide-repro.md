@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-01T18:10:05Z
 updated_at: 2024-09-26T06:31:19Z
 url: https://github.com/astral-sh/ruff/issues/10722
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # [Linter panic] related to cache, cannot provide repro
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-04-01 18:10_
+_@hauntsaninja_
 
 With ruff 0.3.5
 

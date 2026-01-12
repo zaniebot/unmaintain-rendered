@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-28T22:32:47Z
 updated_at: 2022-09-29T02:06:37Z
 url: https://github.com/astral-sh/ruff/issues/277
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Infinite loop on unclosed parenthesis
 
 ---
 
-_Issue opened by @andersk on 2022-09-28 22:32_
+_@andersk_
 
 If you run ruff on this file with an unclosed parenthesis:
 

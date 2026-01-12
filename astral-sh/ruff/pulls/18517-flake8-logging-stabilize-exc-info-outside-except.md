@@ -13,14 +13,14 @@ head: brent/stabilize-log014
 created_at: 2025-06-06T22:26:16Z
 updated_at: 2025-06-10T20:11:56Z
 url: https://github.com/astral-sh/ruff/pull/18517
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [`flake8-logging`] Stabilize `exc-info-outside-except-handler` (`LOG014`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-06 22:26_
+_@ntBre_
 
 ## Summary
 - Stabilizes LOG014 (exc-info-outside-except-handler) rule by changing it from Preview to Stable

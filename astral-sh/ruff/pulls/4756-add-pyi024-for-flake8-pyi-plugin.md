@@ -13,14 +13,14 @@ head: feature/PYI024
 created_at: 2023-05-31T14:08:38Z
 updated_at: 2023-05-31T16:32:34Z
 url: https://github.com/astral-sh/ruff/pull/4756
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Add PYI024 for `flake8-pyi` plugin
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-05-31 14:08_
+_@qdegraaf_
 
 ## Summary
 

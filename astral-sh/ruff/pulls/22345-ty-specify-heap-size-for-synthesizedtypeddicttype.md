@@ -14,14 +14,14 @@ head: alex/synthetic-typeddict-heapsize
 created_at: 2026-01-02T20:05:30Z
 updated_at: 2026-01-02T20:09:36Z
 url: https://github.com/astral-sh/ruff/pull/22345
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Specify `heap_size` for `SynthesizedTypedDictType`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-02 20:05_
+_@AlexWaygood_
 
 ## Summary
 

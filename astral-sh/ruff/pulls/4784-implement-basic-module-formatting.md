@@ -12,14 +12,14 @@ head: basic-module-formatter
 created_at: 2023-06-01T12:39:38Z
 updated_at: 2023-06-01T13:25:51Z
 url: https://github.com/astral-sh/ruff/pull/4784
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Implement basic module formatting 
 
 ---
 
-_Pull request opened by @konstin on 2023-06-01 12:39_
+_@konstin_
 
 This implements formatting each statement in a module with a hard line break in between, so that we can start formatting statements. It also adds Format for Stmt in the process.
 

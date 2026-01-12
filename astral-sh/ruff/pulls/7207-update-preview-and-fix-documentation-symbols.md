@@ -13,14 +13,14 @@ head: zanie/preview-symbol
 created_at: 2023-09-06T17:47:20Z
 updated_at: 2023-09-11T23:08:01Z
 url: https://github.com/astral-sh/ruff/pull/7207
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Update preview and fix documentation symbols
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-06 17:47_
+_@zanieb_
 
 I don't love the sunrise emoji and 🧪 seems nice :)
 

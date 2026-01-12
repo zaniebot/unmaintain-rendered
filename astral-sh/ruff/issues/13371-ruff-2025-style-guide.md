@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-16T16:19:01Z
 updated_at: 2025-01-13T15:25:04Z
 url: https://github.com/astral-sh/ruff/issues/13371
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Ruff 2025 style guide
 
 ---
 
-_Issue opened by @MichaReiser on 2024-09-16 16:19_
+_@MichaReiser_
 
 From [Black's changelog](https://github.com/psf/black/blob/main/CHANGES.md). Last checked 16.09.2024, Last release: v24.8.0.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T03:36:02Z
 updated_at: 2025-10-11T01:22:52Z
 url: https://github.com/astral-sh/uv/issues/6488
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # `uvx uwsgi` failed to build uwsgi
 
 ---
 
-_Issue opened by @j178 on 2024-08-23 03:36_
+_@j178_
 
 `uvx uwsgi` fails with this error:
 ```

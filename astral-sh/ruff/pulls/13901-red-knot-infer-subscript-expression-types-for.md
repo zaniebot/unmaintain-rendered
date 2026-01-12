@@ -13,14 +13,14 @@ head: david/infer-subscript-expr-for-bytes
 created_at: 2024-10-24T07:38:03Z
 updated_at: 2024-10-24T10:07:52Z
 url: https://github.com/astral-sh/ruff/pull/13901
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Infer subscript expression types for bytes literals
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-24 07:38_
+_@sharkdp_
 
 ## Summary
 

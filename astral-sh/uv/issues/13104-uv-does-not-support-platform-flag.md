@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-25T11:04:53Z
 updated_at: 2025-04-26T14:08:53Z
 url: https://github.com/astral-sh/uv/issues/13104
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # uv does not support --platform flag
 
 ---
 
-_Issue opened by @rotimi-ajayi on 2025-04-25 11:04_
+_@rotimi-ajayi_
 
 ### Summary
 

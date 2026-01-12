@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-04T07:03:57Z
 updated_at: 2023-10-04T15:12:45Z
 url: https://github.com/astral-sh/ruff/issues/7804
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Bug: `ruff rule` shows `PLR6301` as non-preview
 
 ---
 
-_Issue opened by @jamesbraza on 2023-10-04 07:03_
+_@jamesbraza_
 
 With `ruff==0.0.292`, it seems `PLR6301` from `ruff rule --all --format=json` has `"preview": False`.  I think it should be `True` per https://docs.astral.sh/ruff/rules/no-self-use/
 

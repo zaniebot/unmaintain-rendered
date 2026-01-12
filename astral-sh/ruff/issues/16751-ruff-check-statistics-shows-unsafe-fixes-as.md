@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T15:41:57Z
 updated_at: 2025-03-18T07:03:15Z
 url: https://github.com/astral-sh/ruff/issues/16751
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `ruff check --statistics` shows unsafe fixes as fixable
 
 ---
 
-_Issue opened by @ZedThree on 2025-03-14 15:41_
+_@ZedThree_
 
 ### Summary
 

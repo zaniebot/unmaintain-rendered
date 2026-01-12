@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-20T02:41:47Z
 updated_at: 2024-08-20T05:02:29Z
 url: https://github.com/astral-sh/uv/issues/6242
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # uv sync fails with relative packages
 
 ---
 
-_Issue opened by @Eyal-Shalev on 2024-08-20 02:41_
+_@Eyal-Shalev_
 
 UV Version: `0.2.37`
 Platform: MacOS `14.3.1`

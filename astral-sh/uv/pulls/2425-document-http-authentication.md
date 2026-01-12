@@ -13,14 +13,14 @@ head: zb/doc-auth
 created_at: 2024-03-13T20:27:00Z
 updated_at: 2024-03-13T22:53:27Z
 url: https://github.com/astral-sh/uv/pull/2425
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:02Z
 ```
 
 # Document HTTP authentication
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-13 20:27_
+_@zanieb_
 
 _No description provided._
 

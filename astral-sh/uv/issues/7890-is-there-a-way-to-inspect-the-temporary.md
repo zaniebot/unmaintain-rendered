@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-03T08:27:09Z
 updated_at: 2024-10-21T21:56:40Z
 url: https://github.com/astral-sh/uv/issues/7890
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Is there a way to inspect the temporary environment created?
 
 ---
 
-_Issue opened by @gitgithan on 2024-10-03 08:27_
+_@gitgithan_
 
 Previously I reported in #7730 that `uv run test_uv/demo.py` works unexpectedly but `uv run --python 3.10 test_uv/demo.py` fails.
 

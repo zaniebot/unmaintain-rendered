@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-07-13T22:37:43Z
 updated_at: 2024-08-12T16:54:34Z
 url: https://github.com/clap-rs/clap/issues/3930
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Switch native completions to encourage env var initialization
 
 ---
 
-_Issue opened by @epage on 2022-07-13 22:37_
+_@epage_
 
 Maintainer's notes
 

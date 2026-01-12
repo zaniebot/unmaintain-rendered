@@ -11,14 +11,14 @@ head: dylan/stabilize-nested-root
 created_at: 2025-09-05T18:42:29Z
 updated_at: 2025-09-05T19:23:05Z
 url: https://github.com/astral-sh/ruff/pull/20269
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [`flake8-no-pep420`] Stabilize allowing nested roots in `implicit-namespace-package` (`INP001`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-05 18:42_
+_@dylwil3_
 
 Stabilizes the behavior from #14236
 

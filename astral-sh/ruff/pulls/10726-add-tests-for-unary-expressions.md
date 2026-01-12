@@ -14,14 +14,14 @@ head: dhruv/unary-expr
 created_at: 2024-04-02T02:12:58Z
 updated_at: 2024-04-03T09:03:44Z
 url: https://github.com/astral-sh/ruff/pull/10726
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for unary expressions
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-02 02:12_
+_@dhruvmanila_
 
 ## Summary
 

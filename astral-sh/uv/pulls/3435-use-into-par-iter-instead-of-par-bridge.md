@@ -12,14 +12,14 @@ head: par-bridge
 created_at: 2024-05-07T18:11:16Z
 updated_at: 2024-05-07T21:26:15Z
 url: https://github.com/astral-sh/uv/pull/3435
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:38Z
 ```
 
 # Use `into_par_iter` instead of `par_bridge`
 
 ---
 
-_Pull request opened by @DaniPopes on 2024-05-07 18:11_
+_@DaniPopes_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

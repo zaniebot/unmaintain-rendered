@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-24T00:38:28Z
 updated_at: 2025-10-24T13:49:09Z
 url: https://github.com/astral-sh/ruff/issues/21053
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [Feature request] Can Ruff "output format" group by violation code?
 
 ---
 
-_Issue opened by @jsh9 on 2025-10-24 00:38_
+_@jsh9_
 
 Currently the Ruff linter offer "grouped" as one of the output formats, which groups violations by file.
 

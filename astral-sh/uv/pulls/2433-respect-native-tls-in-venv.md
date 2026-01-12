@@ -13,14 +13,14 @@ head: charlie/native
 created_at: 2024-03-13T22:43:54Z
 updated_at: 2024-03-13T22:54:52Z
 url: https://github.com/astral-sh/uv/pull/2433
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:02Z
 ```
 
 # Respect `--native-tls` in `venv`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-13 22:43_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/2432.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-16T02:43:00Z
 updated_at: 2023-07-17T01:31:55Z
 url: https://github.com/astral-sh/ruff/issues/5794
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Does `crates/ruff/resources/test/fixtures/pyupgrade/UP014.py` contain incorrect `NamedTuple` calls?
 
 ---
 
-_Issue opened by @harupy on 2023-07-16 02:43_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

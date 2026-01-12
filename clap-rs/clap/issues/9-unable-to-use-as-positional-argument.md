@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-03-17T01:15:10Z
 updated_at: 2018-08-02T03:29:36Z
 url: https://github.com/clap-rs/clap/issues/9
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Unable to use `-` as positional argument
 
 ---
 
-_Issue opened by @jhelwig on 2015-03-17 01:15_
+_@jhelwig_
 
 Working on an app that should be able to operate on either STDIN or a file, I was trying to use `-` as the file name to indicate STDIN (as is the convention used in the app I'm porting, and elsewhere), but that causes an index out of bounds panic.
 

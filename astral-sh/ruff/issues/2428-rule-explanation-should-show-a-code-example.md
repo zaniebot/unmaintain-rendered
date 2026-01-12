@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-31T23:24:11Z
 updated_at: 2023-02-01T04:54:56Z
 url: https://github.com/astral-sh/ruff/issues/2428
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # rule explanation should show a code example
 
 ---
 
-_Issue opened by @spaceone on 2023-01-31 23:24_
+_@spaceone_
 
 Every rule explanation should show show a code example:
 

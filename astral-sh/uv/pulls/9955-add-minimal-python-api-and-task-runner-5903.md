@@ -12,14 +12,14 @@ head: main
 created_at: 2024-12-17T03:48:20Z
 updated_at: 2024-12-19T10:29:55Z
 url: https://github.com/astral-sh/uv/pull/9955
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:03Z
 ```
 
 # Add minimal Python API and task runner (#5903)
 
 ---
 
-_Pull request opened by @chrisrodrigue on 2024-12-17 03:48_
+_@chrisrodrigue_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

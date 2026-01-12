@@ -12,14 +12,14 @@ head: dd/f633
 created_at: 2022-09-13T23:06:10Z
 updated_at: 2022-09-14T08:12:13Z
 url: https://github.com/astral-sh/ruff/pull/182
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # feat: Implement `InvalidPrintSyntax` (`F633`)
 
 ---
 
-_Pull request opened by @Stranger6667 on 2022-09-13 23:06_
+_@Stranger6667_
 
 Hi! I tried to implement F633 - looks like it works :) Let me know what you think
 

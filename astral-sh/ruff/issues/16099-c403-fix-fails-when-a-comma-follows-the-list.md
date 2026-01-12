@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-11T15:02:30Z
 updated_at: 2025-02-15T17:45:42Z
 url: https://github.com/astral-sh/ruff/issues/16099
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # C403 fix fails when a comma follows the list
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-11 15:02_
+_@dscorbett_
 
 ### Description
 

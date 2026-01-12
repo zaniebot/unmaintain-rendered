@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-06-13T16:14:06Z
 updated_at: 2024-06-13T23:53:04Z
 url: https://github.com/astral-sh/ruff/pull/11861
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Update Python compatibility to 3.13
 
 ---
 
-_Pull request opened by @starsep on 2024-06-13 16:14_
+_@starsep_
 
 Reference: https://github.com/astral-sh/ruff/pull/11411
 

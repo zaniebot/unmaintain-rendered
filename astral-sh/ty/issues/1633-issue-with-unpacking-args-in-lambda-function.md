@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-25T20:15:44Z
 updated_at: 2025-12-19T12:06:21Z
 url: https://github.com/astral-sh/ty/issues/1633
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Issue with unpacking args in lambda function
 
 ---
 
-_Issue opened by @jrdnh on 2025-11-25 20:15_
+_@jrdnh_
 
 ### Summary
 

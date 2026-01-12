@@ -13,14 +13,14 @@ head: PYI011-math-consts
 created_at: 2023-03-13T16:55:48Z
 updated_at: 2023-03-13T18:24:34Z
 url: https://github.com/astral-sh/ruff/pull/3484
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # PYI011: allow `math` constants in defaults
 
 ---
 
-_Pull request opened by @XuehaiPan on 2023-03-13 16:55_
+_@XuehaiPan_
 
 Allow `math` constants in defaults:
 

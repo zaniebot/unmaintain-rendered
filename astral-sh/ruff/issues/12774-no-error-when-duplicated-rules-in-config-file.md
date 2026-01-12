@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-09T05:45:27Z
 updated_at: 2024-08-09T06:23:21Z
 url: https://github.com/astral-sh/ruff/issues/12774
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # no error when duplicated rules in config file
 
 ---
 
-_Issue opened by @DetachHead on 2024-08-09 05:45_
+_@DetachHead_
 
 ```json
 {

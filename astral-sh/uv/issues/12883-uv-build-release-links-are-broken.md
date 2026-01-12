@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T17:44:03Z
 updated_at: 2025-04-14T22:05:34Z
 url: https://github.com/astral-sh/uv/issues/12883
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # uv-build* release links are broken
 
 ---
 
-_Issue opened by @the-connoisseur on 2025-04-14 17:44_
+_@the-connoisseur_
 
 ### Summary
 

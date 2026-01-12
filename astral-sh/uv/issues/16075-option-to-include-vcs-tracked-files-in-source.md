@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-30T13:27:15Z
 updated_at: 2025-12-16T13:57:06Z
 url: https://github.com/astral-sh/uv/issues/16075
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:23Z
 ```
 
 # Option to include vcs tracked files in source distribution with uv build backend
 
 ---
 
-_Issue opened by @wpk-nist-gov on 2025-09-30 13:27_
+_@wpk-nist-gov_
 
 ### Summary
 

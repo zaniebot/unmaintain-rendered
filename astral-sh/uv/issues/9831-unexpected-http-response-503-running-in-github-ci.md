@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-12T02:08:35Z
 updated_at: 2024-12-12T12:18:17Z
 url: https://github.com/astral-sh/uv/issues/9831
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # `Unexpected HTTP response: 503` running in Github CI workflow
 
 ---
 
-_Issue opened by @DanielYang59 on 2024-12-12 02:08_
+_@DanielYang59_
 
 We have a [minimal setup of `uv` in Github workflow as](https://github.com/materialsproject/pymatgen/blob/653714e4fe6914a5b9bea6eef0f44da507db1a2f/.github/workflows/test.yml#L77-L78):
 ```

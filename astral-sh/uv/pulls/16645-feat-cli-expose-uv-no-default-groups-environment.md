@@ -13,14 +13,14 @@ head: feat/expose-uv-no-default-groups-env-var
 created_at: 2025-11-09T00:06:47Z
 updated_at: 2025-11-10T21:34:16Z
 url: https://github.com/astral-sh/uv/pull/16645
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:22Z
 ```
 
 # feat(cli): expose `UV_NO_DEFAULT_GROUPS` environment variable
 
 ---
 
-_Pull request opened by @mkniewallner on 2025-11-09 00:06_
+_@mkniewallner_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

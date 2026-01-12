@@ -13,14 +13,14 @@ head: dhruv/PLW0129
 created_at: 2023-11-14T11:40:17Z
 updated_at: 2023-11-14T13:26:19Z
 url: https://github.com/astral-sh/ruff/pull/8675
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # F-strings doesn't contain bytes literal for `PLW0129`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-14 11:40_
+_@dhruvmanila_
 
 For the `PLW0129` rule, the f-string case shouldn't match against bytes literal as f-strings cannot contain them. F-strings are made up of either string literals or formatted expressions.
 

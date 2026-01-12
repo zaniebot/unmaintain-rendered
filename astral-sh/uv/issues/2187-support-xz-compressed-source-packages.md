@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-04T23:56:49Z
 updated_at: 2024-07-28T18:37:50Z
 url: https://github.com/astral-sh/uv/issues/2187
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Support `xz` compressed source packages
 
 ---
 
-_Issue opened by @lengau on 2024-03-04 23:56_
+_@lengau_
 
 Example failure:
 

@@ -12,14 +12,14 @@ head: f50x_implementation
 created_at: 2022-11-27T02:57:34Z
 updated_at: 2022-11-28T10:23:54Z
 url: https://github.com/astral-sh/ruff/pull/919
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # F50x implementation
 
 ---
 
-_Pull request opened by @olliemath on 2022-11-27 02:57_
+_@olliemath_
 
 Closes https://github.com/charliermarsh/ruff/issues/905
 

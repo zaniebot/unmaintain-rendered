@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-03T18:01:11Z
 updated_at: 2025-05-04T21:16:31Z
 url: https://github.com/astral-sh/uv/issues/13277
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # Provide universal (fat) Python builds on macOS
 
 ---
 
-_Issue opened by @danra on 2025-05-03 18:01_
+_@danra_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-03T14:46:41Z
 updated_at: 2024-12-09T14:55:49Z
 url: https://github.com/astral-sh/uv/issues/7898
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Allow for `uv` global instantiation
 
 ---
 
-_Issue opened by @krstp on 2024-10-03 14:46_
+_@krstp_
 
 I would like to see `uv` recognized for global virtual environments in a similar way to how `pyenv` works. Instead of focusing solely on in-project folder development, allow for global env instantiation.
 

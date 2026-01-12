@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-04T09:42:23Z
 updated_at: 2023-05-04T16:25:51Z
 url: https://github.com/astral-sh/ruff/issues/4218
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Invalid JSON schema on ruff isort settings
 
 ---
 
-_Issue opened by @ddahan on 2023-05-04 09:42_
+_@ddahan_
 
 Is there any reason I get this warning in my `pyproject.toml` file, using VS Code?
 It seems it's related to the corresponding JSON Schema.

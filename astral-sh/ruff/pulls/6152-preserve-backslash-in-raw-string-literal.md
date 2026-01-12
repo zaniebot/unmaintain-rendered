@@ -13,14 +13,14 @@ head: preserve-backslash
 created_at: 2023-07-28T14:05:13Z
 updated_at: 2023-07-31T16:29:44Z
 url: https://github.com/astral-sh/ruff/pull/6152
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Preserve backslash in raw string literal
 
 ---
 
-_Pull request opened by @harupy on 2023-07-28 14:05_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

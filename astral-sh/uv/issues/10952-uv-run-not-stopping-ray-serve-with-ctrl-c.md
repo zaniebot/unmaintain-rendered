@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-25T01:30:30Z
 updated_at: 2025-01-28T20:00:39Z
 url: https://github.com/astral-sh/uv/issues/10952
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # uv run not stopping ray serve with ctrl c
 
 ---
 
-_Issue opened by @ds-kylance on 2025-01-25 01:30_
+_@ds-kylance_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T12:46:10Z
 updated_at: 2024-02-22T17:44:24Z
 url: https://github.com/astral-sh/ruff/issues/10061
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # CPY001: recognize copyright unicode symbol
 
 ---
 
-_Issue opened by @nijel on 2024-02-20 12:46_
+_@nijel_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

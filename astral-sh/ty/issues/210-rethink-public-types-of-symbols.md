@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-27T21:16:48Z
 updated_at: 2025-06-26T10:24:42Z
 url: https://github.com/astral-sh/ty/issues/210
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Rethink public types of symbols
 
 ---
 
-_Issue opened by @dcreager on 2025-01-27 21:16_
+_@dcreager_
 
 
 https://github.com/astral-sh/ruff/pull/15676 currently has the following mdtest with incorrect results:

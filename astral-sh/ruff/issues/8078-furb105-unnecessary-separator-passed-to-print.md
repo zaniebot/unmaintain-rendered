@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-19T21:50:13Z
 updated_at: 2023-10-19T22:30:14Z
 url: https://github.com/astral-sh/ruff/issues/8078
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # FURB105 [*] Unnecessary separator passed to `print`
 
 ---
 
-_Issue opened by @SHEscher on 2023-10-19 21:50_
+_@SHEscher_
 
 Hi, there seems to be a mismatch: 
 

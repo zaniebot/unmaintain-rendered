@@ -13,14 +13,14 @@ head: charlie/extr
 created_at: 2024-07-22T19:09:32Z
 updated_at: 2024-07-22T19:57:54Z
 url: https://github.com/astral-sh/uv/pull/5306
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:44Z
 ```
 
 # Avoid including empty extras in resolution
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-22 19:09_
+_@charliermarsh_
 
 ## Summary
 

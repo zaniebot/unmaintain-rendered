@@ -13,14 +13,14 @@ head: zb/prerelease-ranges
 created_at: 2024-12-16T21:35:48Z
 updated_at: 2024-12-17T17:05:16Z
 url: https://github.com/astral-sh/uv/pull/9944
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:03Z
 ```
 
 # Improve display of ranges when pre-releases are not allowed
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-16 21:35_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/9891
 

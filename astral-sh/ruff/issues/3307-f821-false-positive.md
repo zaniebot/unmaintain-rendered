@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-02T14:40:18Z
 updated_at: 2023-03-03T23:07:32Z
 url: https://github.com/astral-sh/ruff/issues/3307
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # F821 false positive
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-03-02 14:40_
+_@JonathanPlasse_
 
 ```python
 import bpy

@@ -13,14 +13,14 @@ head: david/test-function-and-module-literals-is_disjoint
 created_at: 2024-11-11T08:06:07Z
 updated_at: 2024-11-11T08:20:04Z
 url: https://github.com/astral-sh/ruff/pull/14264
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] is_disjoint_from: tests for function/module literals
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-11 08:06_
+_@sharkdp_
 
 ## Summary
 

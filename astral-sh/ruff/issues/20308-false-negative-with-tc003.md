@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-08T18:08:40Z
 updated_at: 2025-09-08T19:40:09Z
 url: https://github.com/astral-sh/ruff/issues/20308
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # False-negative with `TC003`
 
 ---
 
-_Issue opened by @osauldmy on 2025-09-08 18:08_
+_@osauldmy_
 
 ### Summary
 

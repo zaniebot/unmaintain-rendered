@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-06-23T13:49:22Z
 updated_at: 2016-06-23T20:26:22Z
 url: https://github.com/clap-rs/clap/issues/534
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Add better examples to ArgGroup
 
 ---
 
-_Issue opened by @kbknapp on 2016-06-23 13:49_
+_@kbknapp_
 
 actual uses would be nice.
 - [x] `arg`

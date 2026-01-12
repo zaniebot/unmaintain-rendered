@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-25T19:12:53Z
 updated_at: 2025-06-25T19:14:15Z
 url: https://github.com/astral-sh/ty/issues/705
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # The return type should not be detected as None
 
 ---
 
-_Issue opened by @tonka3000 on 2025-06-25 19:12_
+_@tonka3000_
 
 ### Summary
 

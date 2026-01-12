@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-20T06:41:50Z
 updated_at: 2025-09-22T20:12:48Z
 url: https://github.com/astral-sh/ty/issues/1212
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # infer type of parameter from super type
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-20 06:41_
+_@KotlinIsland_
 
 ### Summary
 

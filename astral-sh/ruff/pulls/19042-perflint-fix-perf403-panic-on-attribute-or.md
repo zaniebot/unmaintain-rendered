@@ -13,14 +13,14 @@ head: fix/19005-PERF403-panic
 created_at: 2025-06-30T07:25:11Z
 updated_at: 2025-06-30T19:02:18Z
 url: https://github.com/astral-sh/ruff/pull/19042
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # [`perflint`] Fix `PERF403` panic on attribute or subscription loop variable
 
 ---
 
-_Pull request opened by @robsdedude on 2025-06-30 07:25_
+_@robsdedude_
 
 ## Summary
 

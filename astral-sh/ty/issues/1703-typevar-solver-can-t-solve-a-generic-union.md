@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-01T11:37:57Z
 updated_at: 2025-12-05T20:11:13Z
 url: https://github.com/astral-sh/ty/issues/1703
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # typevar solver can't solve a generic union
 
 ---
 
-_Issue opened by @suleymanozkeskin on 2025-12-01 11:37_
+_@suleymanozkeskin_
 
 ### Summary
 

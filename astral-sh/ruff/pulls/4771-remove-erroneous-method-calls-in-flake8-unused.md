@@ -13,14 +13,14 @@ head: charlie/arg-docs
 created_at: 2023-06-01T02:14:52Z
 updated_at: 2023-06-01T06:59:52Z
 url: https://github.com/astral-sh/ruff/pull/4771
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove erroneous method calls in flake8-unused-arguments docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-01 02:14_
+_@charliermarsh_
 
 Closes #4765.
 

@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-04-15T09:31:58Z
 updated_at: 2025-04-15T09:56:13Z
 url: https://github.com/astral-sh/uv/pull/12894
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:26Z
 ```
 
 # correctly describe the compatible release clause "~="
 
 ---
 
-_Pull request opened by @opyate on 2025-04-15 09:31_
+_@opyate_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-22T19:46:50Z
 updated_at: 2023-03-22T22:46:59Z
 url: https://github.com/astral-sh/ruff/issues/3673
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Beginner ruff in vscode question
 
 ---
 
-_Issue opened by @dlasusa on 2023-03-22 19:46_
+_@dlasusa_
 
 Sorry for such a basic question, but I've always used the tools built into vscode.
 TLDR: Are there any basic tutorials on how to use ruff inside of VSC?

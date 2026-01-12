@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T22:21:56Z
 updated_at: 2025-12-12T00:00:23Z
 url: https://github.com/astral-sh/ruff/issues/21907
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Ratcheting system for ruff rules
 
 ---
 
-_Issue opened by @siscia on 2025-12-10 22:21_
+_@siscia_
 
 Hello,
 

@@ -13,14 +13,14 @@ head: konsti/build-backend9-check-prepare-build-match
 created_at: 2024-10-07T18:29:26Z
 updated_at: 2024-10-08T16:38:23Z
 url: https://github.com/astral-sh/uv/pull/7986
-synced_at: 2026-01-10T12:54:00Z
+synced_at: 2026-01-12T16:08:07Z
 ```
 
 #  Check consistency between prepare and build step 
 
 ---
 
-_Pull request opened by @konstin on 2024-10-07 18:29_
+_@konstin_
 
 PEP 517 mandates that the metadata must be consistent between `prepare_metadata_for_build_wheel` and `build_wheel` by passing the directory written in the prepare step to the build step (https://peps.python.org/pep-0517/#build-wheel). There is no reason why we would violate this guarantee, but we are prudent and check that `METADATA` and `entry_points.txt` (the main metadata files) actually match.
 

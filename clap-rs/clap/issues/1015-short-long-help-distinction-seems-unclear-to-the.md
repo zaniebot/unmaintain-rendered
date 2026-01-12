@@ -13,14 +13,14 @@ assignees: []
 created_at: 2017-07-29T08:31:05Z
 updated_at: 2023-10-23T13:14:20Z
 url: https://github.com/clap-rs/clap/issues/1015
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Short/long help distinction seems unclear to the end-user
 
 ---
 
-_Issue opened by @8573 on 2017-07-29 08:31_
+_@8573_
 
     FLAGS:
         -h, --help       Prints help information

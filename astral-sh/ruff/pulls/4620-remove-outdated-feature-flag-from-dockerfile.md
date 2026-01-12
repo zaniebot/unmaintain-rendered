@@ -13,14 +13,14 @@ head: remove_nonexistent_feature_flag
 created_at: 2023-05-24T08:10:49Z
 updated_at: 2023-05-24T08:38:40Z
 url: https://github.com/astral-sh/ruff/pull/4620
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove outdated feature flag from Dockerfile.ecosystem
 
 ---
 
-_Pull request opened by @konstin on 2023-05-24 08:10_
+_@konstin_
 
 Missed that in #4528
 

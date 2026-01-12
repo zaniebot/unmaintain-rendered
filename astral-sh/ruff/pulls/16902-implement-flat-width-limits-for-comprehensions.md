@@ -13,14 +13,14 @@ head: main
 created_at: 2025-03-21T17:41:22Z
 updated_at: 2025-03-31T09:24:07Z
 url: https://github.com/astral-sh/ruff/pull/16902
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # Implement flat width limits for comprehensions
 
 ---
 
-_Pull request opened by @aronhoff on 2025-03-21 17:41_
+_@aronhoff_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

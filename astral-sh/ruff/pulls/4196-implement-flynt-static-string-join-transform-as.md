@@ -12,14 +12,14 @@ head: flynt-static-string-joins
 created_at: 2023-05-02T20:10:07Z
 updated_at: 2023-05-09T00:46:39Z
 url: https://github.com/astral-sh/ruff/pull/4196
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Implement Flynt static string join transform as FLY002
 
 ---
 
-_Pull request opened by @akx on 2023-05-02 20:10_
+_@akx_
 
 Refs https://github.com/charliermarsh/ruff/issues/2102 (being one half of it).
 

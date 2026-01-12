@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-30T09:50:36Z
 updated_at: 2025-04-29T14:27:29Z
 url: https://github.com/astral-sh/ruff/issues/13989
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Improve `not-iterable` diagnostic
 
 ---
 
-_Issue opened by @MichaReiser on 2024-10-30 09:50_
+_@MichaReiser_
 
 It's hard to debug why a type isn't considered iterable by red knot:
 

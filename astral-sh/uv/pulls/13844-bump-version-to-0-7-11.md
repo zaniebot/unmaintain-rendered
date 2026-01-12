@@ -13,14 +13,14 @@ head: jack/release_0.7.11
 created_at: 2025-06-04T17:06:31Z
 updated_at: 2025-06-04T19:35:57Z
 url: https://github.com/astral-sh/uv/pull/13844
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:53Z
 ```
 
 # Bump version to 0.7.11
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-06-04 17:06_
+_@oconnor663_
 
 _No description provided._
 

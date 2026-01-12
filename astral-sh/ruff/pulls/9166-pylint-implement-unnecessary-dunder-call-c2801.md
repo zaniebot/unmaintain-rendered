@@ -14,14 +14,14 @@ head: add-C2801
 created_at: 2023-12-16T22:46:19Z
 updated_at: 2024-01-03T18:15:06Z
 url: https://github.com/astral-sh/ruff/pull/9166
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # [`pylint`] Implement `unnecessary-dunder-call` (`C2801`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-12-16 22:46_
+_@diceroll123_
 
 ## Summary
 

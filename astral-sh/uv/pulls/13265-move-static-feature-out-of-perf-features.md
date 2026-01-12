@@ -13,14 +13,14 @@ head: konsti/split-perf-and-static-features
 created_at: 2025-05-02T13:59:25Z
 updated_at: 2025-05-02T15:56:41Z
 url: https://github.com/astral-sh/uv/pull/13265
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:37Z
 ```
 
 # Move static feature out of perf features
 
 ---
 
-_Pull request opened by @konstin on 2025-05-02 13:59_
+_@konstin_
 
 #5577 fixed a bug on macos due to dynamically linking lzma/xz through static linking. In #7686, this feature was moved to the performance category.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-13T12:25:38Z
 updated_at: 2025-11-13T14:21:37Z
 url: https://github.com/astral-sh/ruff/issues/21426
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Intended behavior of `analyze` re missing third party dependencies
 
 ---
 
-_Issue opened by @gwdekker on 2025-11-13 12:25_
+_@gwdekker_
 
 ### Question
 

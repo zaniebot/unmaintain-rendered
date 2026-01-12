@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-14T09:45:04Z
 updated_at: 2025-07-21T03:38:26Z
 url: https://github.com/astral-sh/uv/issues/14603
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:52Z
 ```
 
 # How can I use `uv` to manage an independent python env folder
 
 ---
 
-_Issue opened by @ansvver on 2025-07-14 09:45_
+_@ansvver_
 
 ### Question
 

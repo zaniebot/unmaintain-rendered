@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-05T22:02:11Z
 updated_at: 2025-01-06T20:25:46Z
 url: https://github.com/astral-sh/ruff/issues/15279
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Rule request: prefer async for FastAPI dependencies
 
 ---
 
-_Issue opened by @spladug on 2025-01-05 22:02_
+_@spladug_
 
 When a synchronous function is used as a dependency factory for FastAPI, the framework runs the function on a threadpool. This is done even if the factory never does IO, which can be quite wasteful. Since it's super tempting to not async-color the function when it's doing something super simple, it seems like it'd be useful to lint for this to avoid potential performance pitfalls.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-06T18:14:40Z
 updated_at: 2025-06-06T19:27:17Z
 url: https://github.com/astral-sh/ruff/issues/18508
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # UP045 fixes `Optional[None]` to `None | None`
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-06 18:14_
+_@dscorbett_
 
 ### Summary
 

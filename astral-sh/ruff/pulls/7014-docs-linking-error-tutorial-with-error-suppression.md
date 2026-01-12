@@ -13,14 +13,14 @@ head: documenting-noqa-docstring
 created_at: 2023-08-31T05:20:15Z
 updated_at: 2023-09-14T01:23:50Z
 url: https://github.com/astral-sh/ruff/pull/7014
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Docs linking error tutorial with error suppression
 
 ---
 
-_Pull request opened by @jamesbraza on 2023-08-31 05:20_
+_@jamesbraza_
 
 Documents takeaway from https://github.com/astral-sh/ruff/discussions/7011#discussioncomment-6869239.
 

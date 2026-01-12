@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-26T08:21:42Z
 updated_at: 2023-05-26T12:56:52Z
 url: https://github.com/astral-sh/ruff/issues/4664
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # RUF100 only removes noqa string when using names
 
 ---
 
-_Issue opened by @JannKleen on 2023-05-26 08:21_
+_@JannKleen_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

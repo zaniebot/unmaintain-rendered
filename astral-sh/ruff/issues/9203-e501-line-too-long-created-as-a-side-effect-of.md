@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-19T22:49:18Z
 updated_at: 2024-01-02T17:59:22Z
 url: https://github.com/astral-sh/ruff/issues/9203
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # E501 line-too-long created as a side effect of applying UP015
 
 ---
 
-_Issue opened by @eli-schwartz on 2023-12-19 22:49_
+_@eli-schwartz_
 
 - Given a ruff.toml that declares the line length to be 79.
 - On the https://github.com/openstack/ironic-python-agent codebase:

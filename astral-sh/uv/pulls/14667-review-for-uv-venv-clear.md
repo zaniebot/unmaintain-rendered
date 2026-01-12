@@ -12,14 +12,14 @@ head: zb/venv-clear
 created_at: 2025-07-16T17:33:09Z
 updated_at: 2025-07-16T18:14:30Z
 url: https://github.com/astral-sh/uv/pull/14667
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:20Z
 ```
 
 # Review for `uv venv --clear`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-16 17:33_
+_@zanieb_
 
 Edits to https://github.com/astral-sh/uv/pull/14309
 

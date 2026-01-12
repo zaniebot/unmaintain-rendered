@@ -13,14 +13,14 @@ head: charlie/docstring
 created_at: 2023-12-23T14:03:29Z
 updated_at: 2023-12-23T15:03:13Z
 url: https://github.com/astral-sh/ruff/pull/9261
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Remove special pre-visit for module docstrings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-23 14:03_
+_@charliermarsh_
 
 This ensures that we visit the module docstring like any other string.
 

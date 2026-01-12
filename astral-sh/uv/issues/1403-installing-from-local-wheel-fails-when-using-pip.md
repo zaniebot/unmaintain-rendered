@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-16T00:40:32Z
 updated_at: 2024-03-22T21:23:39Z
 url: https://github.com/astral-sh/uv/issues/1403
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Installing from local wheel fails when using pip install <path> 
 
 ---
 
-_Issue opened by @cfculhane on 2024-02-16 00:40_
+_@cfculhane_
 
 This is occuring when installing a package with cuda version specified with `+cu117` in the wheel name, e.g. for `detectron2` or `torch`
 

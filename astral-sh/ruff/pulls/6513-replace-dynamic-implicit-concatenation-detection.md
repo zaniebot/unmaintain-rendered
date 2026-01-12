@@ -13,14 +13,14 @@ head: charlie/implicit-concat-ii
 created_at: 2023-08-11T20:02:53Z
 updated_at: 2023-08-14T14:27:18Z
 url: https://github.com/astral-sh/ruff/pull/6513
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Replace dynamic implicit concatenation detection with parser flag
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-11 20:02_
+_@charliermarsh_
 
 ## Summary
 

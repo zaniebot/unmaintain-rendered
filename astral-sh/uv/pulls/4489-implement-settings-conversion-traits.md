@@ -13,14 +13,14 @@ head: charlie/convert-settings
 created_at: 2024-06-24T19:56:45Z
 updated_at: 2024-06-24T20:08:13Z
 url: https://github.com/astral-sh/uv/pull/4489
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:15Z
 ```
 
 # Implement settings conversion traits
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-24 19:56_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-26T18:49:04Z
 updated_at: 2023-05-28T07:16:20Z
 url: https://github.com/astral-sh/ruff/issues/4672
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Isort I001 conflicts with pylint C0411
 
 ---
 
-_Issue opened by @sansmoraxz on 2023-05-26 18:49_
+_@sansmoraxz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-16T10:43:12Z
 updated_at: 2023-12-18T04:51:24Z
 url: https://github.com/astral-sh/ruff/issues/9159
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # PEP 695 type annotations with lambdas produce false F401
 
 ---
 
-_Issue opened by @rijenkii on 2023-12-16 10:43_
+_@rijenkii_
 
 Minimal reproduction:
 ```python

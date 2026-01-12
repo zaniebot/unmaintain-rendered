@@ -14,14 +14,14 @@ head: charlie/furb118
 created_at: 2024-05-03T19:55:40Z
 updated_at: 2024-05-03T20:08:47Z
 url: https://github.com/astral-sh/ruff/pull/11270
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [`refurb`] Ignore methods in `reimplemented-operator` (`FURB118`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-03 19:55_
+_@charliermarsh_
 
 ## Summary
 

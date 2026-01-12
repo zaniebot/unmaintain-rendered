@@ -13,14 +13,14 @@ head: PT002345
 created_at: 2023-08-12T05:51:45Z
 updated_at: 2023-08-14T22:27:57Z
 url: https://github.com/astral-sh/ruff/pull/6521
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add PT002 ~ PT005 docs
 
 ---
 
-_Pull request opened by @harupy on 2023-08-12 05:51_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

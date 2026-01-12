@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-22T17:49:27Z
 updated_at: 2024-07-22T18:46:58Z
 url: https://github.com/astral-sh/uv/issues/5295
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `uv tool install` fails on invalid receipt
 
 ---
 
-_Issue opened by @zanieb on 2024-07-22 17:49_
+_@zanieb_
 
 An old receipt breaks the install, we should overwrite it or provide a better message:
 ```

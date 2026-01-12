@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-11-09T07:04:55Z
 updated_at: 2018-08-02T03:29:46Z
 url: https://github.com/clap-rs/clap/issues/340
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # clippy should be a dev-dependency
 
 ---
 
-_Issue opened by @nagisa on 2015-11-09 07:04_
+_@nagisa_
 
 clippy probably should be a dev-dependency. There’s no reason to pull in clippy for every build of clap even if optionally, if clap is not build for development purposes.
 

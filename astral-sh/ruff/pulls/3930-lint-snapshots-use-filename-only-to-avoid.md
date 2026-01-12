@@ -13,14 +13,14 @@ head: Fix_path_in_windows_snapshots
 created_at: 2023-04-11T09:27:39Z
 updated_at: 2023-04-11T09:53:51Z
 url: https://github.com/astral-sh/ruff/pull/3930
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # lint snapshots: Use filename only to avoid platform specific separators
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-11 09:27_
+_@MichaReiser_
 
 I was sure I pushed this change before... This PR uses the filename only in `assert_messages` to avoid different output between windows using `\` and UNIX using `/`. 
 

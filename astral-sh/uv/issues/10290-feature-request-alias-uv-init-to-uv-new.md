@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-03T15:37:00Z
 updated_at: 2025-05-20T01:50:07Z
 url: https://github.com/astral-sh/uv/issues/10290
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # [Feature Request] alias `uv init` to `uv new`
 
 ---
 
-_Issue opened by @Heus-Sueh on 2025-01-03 15:37_
+_@Heus-Sueh_
 
 the word `new` is used in `cargo` and `poetry` to create new projects, I think it would make sense to have the word `new` as an alias for `uv init`, saving the need to implement a lot of things in the code and those who are used to `init` are not affected and those who are coming from `poetry` or `cargo` do not need to learn a new keyword.
 

@@ -13,14 +13,14 @@ head: zb/toolchain-environment
 created_at: 2024-06-20T13:57:30Z
 updated_at: 2024-06-20T17:54:18Z
 url: https://github.com/astral-sh/uv/pull/4423
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:13Z
 ```
 
 # Add `PythonEnvironment::find` API
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-20 13:57_
+_@zanieb_
 
 Restores the `PythonEnvironment::find` API which was removed a while back in favor of `Toolchain::find`. As mentioned in #4416, I'm attempting to separate the case where you want an active environment from the case where you want an installed toolchain in order to create environments.
 

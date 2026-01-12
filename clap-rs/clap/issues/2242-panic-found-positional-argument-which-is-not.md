@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-12-07T16:03:36Z
 updated_at: 2020-12-08T15:43:11Z
 url: https://github.com/clap-rs/clap/issues/2242
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Panic: found positional argument which is not required with a lower index than a required positional argument
 
 ---
 
-_Issue opened by @nagisa on 2020-12-07 16:03_
+_@nagisa_
 
 ### Make sure you completed the following tasks
 

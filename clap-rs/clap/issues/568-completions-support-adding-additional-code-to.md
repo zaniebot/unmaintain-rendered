@@ -12,14 +12,14 @@ assignees: []
 created_at: 2016-07-04T12:48:21Z
 updated_at: 2022-01-11T18:27:03Z
 url: https://github.com/clap-rs/clap/issues/568
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # completions: Support adding additional code to complete values
 
 ---
 
-_Issue opened by @joshtriplett on 2016-07-04 12:48_
+_@joshtriplett_
 
 [Closing comment](https://github.com/clap-rs/clap/issues/568#issuecomment-992733258):
 > We currently provide [ValueHint](https://docs.rs/clap/3.0.0-rc.4/clap/enum.ValueHint.html) for leveraging shell logic, though it isn't customizable. For that, we have #1232.

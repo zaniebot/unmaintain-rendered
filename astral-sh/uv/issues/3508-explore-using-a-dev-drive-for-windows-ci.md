@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-10T14:40:46Z
 updated_at: 2024-05-13T16:15:55Z
 url: https://github.com/astral-sh/uv/issues/3508
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Explore using a dev drive for windows CI
 
 ---
 
-_Issue opened by @konstin on 2024-05-10 14:40_
+_@konstin_
 
 We observe that windows is much slower on any io operations, e.g. just downloading and unpacking the python versions takes 1.5min. We should explore using using a VHDX virtual harddisk as described in https://github.com/actions/cache/issues/752#issuecomment-1847036770 to see if this solves the performance bottleneck in github actions.
 

@@ -12,14 +12,14 @@ head: zb/signals
 created_at: 2025-01-28T00:36:30Z
 updated_at: 2025-01-28T20:04:15Z
 url: https://github.com/astral-sh/uv/pull/11009
-synced_at: 2026-01-10T11:45:23Z
+synced_at: 2026-01-12T16:09:37Z
 ```
 
 # Improve SIGINT handling in `uv run`
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-28 00:36_
+_@zanieb_
 
 There should be two functional changes here:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-24T12:22:28Z
 updated_at: 2025-07-02T19:19:50Z
 url: https://github.com/astral-sh/uv/issues/14237
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # torch missing required nvidia dependencies
 
 ---
 
-_Issue opened by @dolfim-ibm on 2025-06-24 12:22_
+_@dolfim-ibm_
 
 ### Summary
 

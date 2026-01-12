@@ -13,14 +13,14 @@ head: charlie/error
 created_at: 2023-07-23T02:22:03Z
 updated_at: 2023-07-23T02:57:35Z
 url: https://github.com/astral-sh/ruff/pull/6002
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Remove extra `error!` call
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-23 02:22_
+_@charliermarsh_
 
 _No description provided._
 

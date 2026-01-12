@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-21T16:33:52Z
 updated_at: 2025-07-22T19:08:34Z
 url: https://github.com/astral-sh/uv/issues/14795
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # Error message on direct references isn't super helpful
 
 ---
 
-_Issue opened by @thatch on 2025-07-21 16:33_
+_@thatch_
 
 ### Summary
 

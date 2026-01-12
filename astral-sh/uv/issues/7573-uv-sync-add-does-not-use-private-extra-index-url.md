@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T08:24:52Z
 updated_at: 2024-09-20T18:18:41Z
 url: https://github.com/astral-sh/uv/issues/7573
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # `uv sync/add` does not use (private) extra-index-url/index-url specified in pyproject.toml (but works from command line)
 
 ---
 
-_Issue opened by @caseytomlin on 2024-09-20 08:24_
+_@caseytomlin_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: zb/option-version-req
 created_at: 2024-10-16T03:11:48Z
 updated_at: 2024-10-16T19:44:35Z
 url: https://github.com/astral-sh/uv/pull/8239
-synced_at: 2026-01-10T12:54:05Z
+synced_at: 2026-01-12T16:08:13Z
 ```
 
 # Fix selection of free-threaded interpreters during default Python discovery
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-16 03:11_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/8228
 

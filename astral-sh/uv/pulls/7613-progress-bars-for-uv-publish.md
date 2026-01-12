@@ -13,14 +13,14 @@ head: konsti/publish5
 created_at: 2024-09-21T14:31:30Z
 updated_at: 2024-09-24T15:55:35Z
 url: https://github.com/astral-sh/uv/pull/7613
-synced_at: 2026-01-10T12:53:51Z
+synced_at: 2026-01-12T16:07:54Z
 ```
 
 # Progress bars for `uv publish`
 
 ---
 
-_Pull request opened by @konstin on 2024-09-21 14:31_
+_@konstin_
 
 Add progress bars to `uv publish`, helpful when uploading large packages.
 

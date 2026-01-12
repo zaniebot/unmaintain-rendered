@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-11T07:34:19Z
 updated_at: 2023-07-11T14:51:26Z
 url: https://github.com/astral-sh/ruff/issues/5672
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: Don't insert a newline between if and parentheses in list comprehensions
 
 ---
 
-_Issue opened by @konstin on 2023-07-11 07:34_
+_@konstin_
 
 We format this black formatted code from django [django/apps/config.py](https://github.com/django/django/blob/e54f711d4287b3ea57026a02b48ab7e28ca6dcc1/django/apps/config.py#L128-L136)
 ```python

@@ -11,14 +11,14 @@ head: main
 created_at: 2025-02-13T12:45:06Z
 updated_at: 2025-06-24T13:58:19Z
 url: https://github.com/astral-sh/uv/pull/11477
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:51Z
 ```
 
 # Make the cache dir  wherever uv is called from when --no-cache specified
 
 ---
 
-_Pull request opened by @shaneikennedy on 2025-02-13 12:45_
+_@shaneikennedy_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

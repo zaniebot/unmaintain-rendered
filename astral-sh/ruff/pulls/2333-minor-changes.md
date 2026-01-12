@@ -12,14 +12,14 @@ head: vs-code-gitignore
 created_at: 2023-01-30T00:44:03Z
 updated_at: 2023-01-30T02:16:35Z
 url: https://github.com/astral-sh/ruff/pull/2333
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Minor changes
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-30 00:44_
+_@sbrugman_
 
 - Add vscode to gitignore
 - Fix typo in pathlib messages

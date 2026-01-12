@@ -13,14 +13,14 @@ head: david/fix-17792
 created_at: 2025-05-05T10:56:22Z
 updated_at: 2025-05-05T11:52:11Z
 url: https://github.com/astral-sh/ruff/pull/17849
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # [ty] Fix standalone expression type retrieval in presence of cycles
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-05 10:56_
+_@sharkdp_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: alex/type-checking-attributes
 created_at: 2025-11-14T12:33:46Z
 updated_at: 2025-11-14T13:11:51Z
 url: https://github.com/astral-sh/ruff/pull/21449
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [ty] Support attribute-expression `TYPE_CHECKING` conditionals
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-14 12:33_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-18T20:19:13Z
 updated_at: 2025-08-19T09:13:05Z
 url: https://github.com/astral-sh/ty/issues/1045
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Oddities with ANSI escape codes and terminal output in the PyCharm console on Windows
 
 ---
 
-_Issue opened by @AA-Turner on 2025-08-18 20:19_
+_@AA-Turner_
 
 ### Summary
 

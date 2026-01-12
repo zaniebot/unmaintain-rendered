@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-14T14:55:46Z
 updated_at: 2025-07-02T16:03:57Z
 url: https://github.com/astral-sh/ty/issues/384
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Declared-only attributes are not accessible on instances of the class
 
 ---
 
-_Issue opened by @rowillia on 2025-05-14 14:55_
+_@rowillia_
 
 ### Summary
 

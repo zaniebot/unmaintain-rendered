@@ -11,14 +11,14 @@ head: freeze-exclude
 created_at: 2025-12-09T10:20:22Z
 updated_at: 2025-12-13T18:33:43Z
 url: https://github.com/astral-sh/uv/pull/17045
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:35Z
 ```
 
 # Implement `uv pip freeze --exclude` flag
 
 ---
 
-_Pull request opened by @gaardhus on 2025-12-09 10:20_
+_@gaardhus_
 
 ## Summary
 

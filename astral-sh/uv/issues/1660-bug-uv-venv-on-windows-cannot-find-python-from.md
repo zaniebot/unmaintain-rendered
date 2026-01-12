@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-18T17:51:35Z
 updated_at: 2024-02-22T07:47:35Z
 url: https://github.com/astral-sh/uv/issues/1660
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Bug: `uv venv` on windows cannot find python from pyenv
 
 ---
 
-_Issue opened by @Warchant on 2024-02-18 17:51_
+_@Warchant_
 
 ```powershell
 (latest windows 11)

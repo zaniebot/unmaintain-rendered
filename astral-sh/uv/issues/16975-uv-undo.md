@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-03T20:15:29Z
 updated_at: 2026-01-12T11:34:16Z
 url: https://github.com/astral-sh/uv/issues/16975
-synced_at: 2026-01-12T11:55:21Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # Uv undo
 
 ---
 
-_Issue opened by @SimonVervisch on 2025-12-03 20:15_
+_@SimonVervisch_
 
 ### Summary
 

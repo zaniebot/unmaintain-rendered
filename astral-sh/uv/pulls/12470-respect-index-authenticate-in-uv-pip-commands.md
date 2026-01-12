@@ -13,14 +13,14 @@ head: jtfm/auth-test
 created_at: 2025-03-25T18:56:45Z
 updated_at: 2025-04-01T18:49:08Z
 url: https://github.com/astral-sh/uv/pull/12470
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:17Z
 ```
 
 # Respect `index.authenticate` in `uv pip` commands 
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-03-25 18:56_
+_@jtfmumm_
 
 We were not applying the `authenticate = "always"` behavior to `uv pip` commands (related to #12362). This PR addresses that, applying authentication policies wherever we set up a registry client.
 

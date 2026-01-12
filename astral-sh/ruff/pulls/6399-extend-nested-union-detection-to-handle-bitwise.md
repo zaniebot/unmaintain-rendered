@@ -12,14 +12,14 @@ head: charlie/nested-unions
 created_at: 2023-08-07T18:19:11Z
 updated_at: 2023-08-07T19:17:28Z
 url: https://github.com/astral-sh/ruff/pull/6399
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Extend nested union detection to handle bitwise or `Union` expressions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-07 18:19_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-29T18:21:00Z
 updated_at: 2025-05-29T18:21:25Z
 url: https://github.com/astral-sh/ruff/issues/18376
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Consider combining `Locator` and `SourceFile`
 
 ---
 
-_Issue opened by @ntBre on 2025-05-29 18:21_
+_@ntBre_
 
 It could make sense (can be a follow up PR/issue to do it later) to investigate if we can remove `locator.line_index` and instead use `source_file` everywhere. We could even consider implementing `Located` on source file, which should allow us to replace most `Locator` usages.
 

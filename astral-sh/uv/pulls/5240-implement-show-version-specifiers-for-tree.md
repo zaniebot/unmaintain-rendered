@@ -14,14 +14,14 @@ head: pip-tree-version-specifier
 created_at: 2024-07-20T06:43:34Z
 updated_at: 2024-07-20T19:04:45Z
 url: https://github.com/astral-sh/uv/pull/5240
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:42Z
 ```
 
 # Implement `--show-version-specifiers` for `tree`
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-07-20 06:43_
+_@ChannyClaus_
 
 ## Summary
 resolves https://github.com/astral-sh/uv/issues/5217

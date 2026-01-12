@@ -12,14 +12,14 @@ head: infer-generator
 created_at: 2024-08-27T22:27:21Z
 updated_at: 2024-08-28T00:58:48Z
 url: https://github.com/astral-sh/ruff/pull/13129
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Infer generator expressions
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-08-27 22:27_
+_@dylwil3_
 
 Adds a `Generator` type and infers the type of a generator expression as `Generator[T, None, None]` where `T` is the inferred type of the first comprehension.
 

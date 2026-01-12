@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-05T10:50:13Z
 updated_at: 2025-12-05T14:38:33Z
 url: https://github.com/astral-sh/uv/issues/16997
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # BUG: unhelpful error message when resolution fails due to a dependency cycle involving the project (with a broken version number)
 
 ---
 
-_Issue opened by @neutrinoceros on 2025-12-05 10:50_
+_@neutrinoceros_
 
 ### Summary
 

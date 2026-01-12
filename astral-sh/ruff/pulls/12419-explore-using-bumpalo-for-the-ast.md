@@ -12,14 +12,14 @@ head: bump-allo
 created_at: 2024-07-20T14:47:27Z
 updated_at: 2024-08-07T14:48:38Z
 url: https://github.com/astral-sh/ruff/pull/12419
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Explore using `bumpalo` for the AST
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-20 14:47_
+_@MichaReiser_
 
 This doesn't make full use of the bump allocator yet. We should also
 

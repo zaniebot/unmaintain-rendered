@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-03-29T10:16:07Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/469
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Aliases for subcommands
 
 ---
 
-_Issue opened by @hoodie on 2016-03-29 10:16_
+_@hoodie_
 
 Hi, is there a way to alias subcommands, perhaps even with preset configuration?
 I'm thinking of something as simple as making `tool list` equivalent to `tool ls`,

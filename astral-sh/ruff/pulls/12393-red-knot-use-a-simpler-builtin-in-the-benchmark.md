@@ -13,14 +13,14 @@ head: cjm/simplify-benchmark
 created_at: 2024-07-18T20:23:45Z
 updated_at: 2024-07-18T21:04:35Z
 url: https://github.com/astral-sh/ruff/pull/12393
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] use a simpler builtin in the benchmark
 
 ---
 
-_Pull request opened by @carljm on 2024-07-18 20:23_
+_@carljm_
 
 In preparation for supporting resolving builtins, simplify the benchmark so it doesn't look up `str`, which is actually a complex builtin to deal with because it inherits `Sequence[str]`.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-19T20:26:23Z
 updated_at: 2025-06-28T06:13:22Z
 url: https://github.com/astral-sh/ruff/issues/18804
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Formatter deindents block quotes if they are not followed by a second paragraph.
 
 ---
 
-_Issue opened by @randolf-scholz on 2025-06-19 20:26_
+_@randolf-scholz_
 
 ### Summary
 

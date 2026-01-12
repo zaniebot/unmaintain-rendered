@@ -13,14 +13,14 @@ head: fix/expose_more_types
 created_at: 2024-02-22T12:47:21Z
 updated_at: 2024-02-22T14:59:03Z
 url: https://github.com/astral-sh/uv/pull/1862
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:45Z
 ```
 
 # fix: expose types to implement custom `ResolverProvider`
 
 ---
 
-_Pull request opened by @baszalmstra on 2024-02-22 12:47_
+_@baszalmstra_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

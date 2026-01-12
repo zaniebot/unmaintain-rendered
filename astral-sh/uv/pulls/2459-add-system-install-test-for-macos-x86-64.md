@@ -12,14 +12,14 @@ head: zb/macos-x64
 created_at: 2024-03-14T14:48:12Z
 updated_at: 2024-03-14T17:26:47Z
 url: https://github.com/astral-sh/uv/pull/2459
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:03Z
 ```
 
 # Add system install test for macOS x86_64
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-14 14:48_
+_@zanieb_
 
 Adds binary builds for x86_64 macOS and a corresponding test
 

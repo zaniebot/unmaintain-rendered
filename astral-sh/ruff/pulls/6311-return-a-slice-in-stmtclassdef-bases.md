@@ -13,14 +13,14 @@ head: charlie/slice
 created_at: 2023-08-03T16:08:07Z
 updated_at: 2023-08-03T16:45:48Z
 url: https://github.com/astral-sh/ruff/pull/6311
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Return a slice in `StmtClassDef#bases`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-03 16:08_
+_@charliermarsh_
 
 Slices are strictly more flexible, since you can always convert to an iterator, etc., but not the other way around. Suggested in https://github.com/astral-sh/ruff/pull/6259#discussion_r1282730994.
 

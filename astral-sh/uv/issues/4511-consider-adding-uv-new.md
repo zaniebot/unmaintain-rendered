@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-25T09:41:24Z
 updated_at: 2024-06-25T16:45:35Z
 url: https://github.com/astral-sh/uv/issues/4511
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Consider adding `uv new`
 
 ---
 
-_Issue opened by @vlad-ivanov-name on 2024-06-25 09:41_
+_@vlad-ivanov-name_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

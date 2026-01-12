@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-06T13:25:32Z
 updated_at: 2024-05-06T13:35:10Z
 url: https://github.com/astral-sh/ruff/issues/11307
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PD011 also applies to pytorch tensors
 
 ---
 
-_Issue opened by @Modexus on 2024-05-06 13:25_
+_@Modexus_
 
 ```python
 torch.tensor([3, 2, 1]).sort().values

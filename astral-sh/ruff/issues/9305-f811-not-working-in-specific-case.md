@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-29T08:41:43Z
 updated_at: 2023-12-31T12:40:01Z
 url: https://github.com/astral-sh/ruff/issues/9305
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # F811 not working in specific case
 
 ---
 
-_Issue opened by @albertopoljak on 2023-12-29 08:41_
+_@albertopoljak_
 
 RUFF rule F811 does not catch this case:
 

@@ -12,14 +12,14 @@ head: konsti/from-network-settings
 created_at: 2025-08-06T11:00:12Z
 updated_at: 2025-08-29T18:30:53Z
 url: https://github.com/astral-sh/uv/pull/15105
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:35Z
 ```
 
 # Don't destructure global network settings
 
 ---
 
-_Pull request opened by @konstin on 2025-08-06 11:00_
+_@konstin_
 
 From reviewing #14687, I was reminded that every base client construction requires manually destructuring the `NetworkSettings`. We can avoid that by passing the global network settings directly.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-06T11:34:24Z
 updated_at: 2024-03-06T15:49:15Z
 url: https://github.com/astral-sh/uv/issues/2238
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # `uv pip` installs a broken package while `pip` works correctly
 
 ---
 
-_Issue opened by @stinodego on 2024-03-06 11:34_
+_@stinodego_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

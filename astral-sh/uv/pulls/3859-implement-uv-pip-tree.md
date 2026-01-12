@@ -12,14 +12,14 @@ head: uv-pip-tree
 created_at: 2024-05-27T06:46:45Z
 updated_at: 2024-06-21T19:48:31Z
 url: https://github.com/astral-sh/uv/pull/3859
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:05:53Z
 ```
 
 # implement `uv pip tree`
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-05-27 06:46_
+_@ChannyClaus_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

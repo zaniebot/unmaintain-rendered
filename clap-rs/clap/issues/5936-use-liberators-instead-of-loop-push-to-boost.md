@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-02T23:18:11Z
 updated_at: 2025-03-04T14:24:42Z
 url: https://github.com/clap-rs/clap/issues/5936
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Use liberators instead of loop push to boost performance
 
 ---
 
-_Issue opened by @Unparalleled-Calvin on 2025-03-02 23:18_
+_@Unparalleled-Calvin_
 
 ### Please complete the following tasks
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-03T12:20:21Z
 updated_at: 2026-01-06T17:09:42Z
 url: https://github.com/astral-sh/ty/issues/1741
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Emit diagnostics for unsupported comparisons involving non-fixed-length tuples
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-03 12:20_
+_@AlexWaygood_
 
 Pyright, mypy and pyrefly all emit diagnostics on all four comparisons here, but ty currently does not emit any diagnostics on this snippet:
 

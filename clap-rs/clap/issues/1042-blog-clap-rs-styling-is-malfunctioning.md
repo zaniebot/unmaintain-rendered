@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-09-09T01:46:28Z
 updated_at: 2018-08-02T03:30:11Z
 url: https://github.com/clap-rs/clap/issues/1042
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # blog.clap.rs styling is malfunctioning
 
 ---
 
-_Issue opened by @chrisvittal on 2017-09-09 01:46_
+_@chrisvittal_
 
 I don't know where else to put this, but when trying to connect to the [clap.rs](https://clap.rs) website. I am getting an invalid certificate error. The error message is below.
 

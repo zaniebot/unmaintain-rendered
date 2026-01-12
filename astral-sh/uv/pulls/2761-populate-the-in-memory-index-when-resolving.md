@@ -13,14 +13,14 @@ head: charlie/recursive-index
 created_at: 2024-04-01T21:30:32Z
 updated_at: 2024-04-01T22:07:55Z
 url: https://github.com/astral-sh/uv/pull/2761
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:12Z
 ```
 
 # Populate the in-memory index when resolving lookahead URLs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-01 21:30_
+_@charliermarsh_
 
 ## Summary
 

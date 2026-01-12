@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T20:11:37Z
 updated_at: 2025-02-20T20:14:19Z
 url: https://github.com/astral-sh/uv/issues/11677
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # uv sync --no-default-groups: error Default group `dev` (from `tool.uv.default-groups`) is not defined in `dependency-groups` table
 
 ---
 
-_Issue opened by @JWCS on 2025-02-20 20:11_
+_@JWCS_
 
 ### Summary
 

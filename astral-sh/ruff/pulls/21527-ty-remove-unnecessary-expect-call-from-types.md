@@ -14,14 +14,14 @@ head: alex/isprotocol-crash
 created_at: 2025-11-19T14:40:33Z
 updated_at: 2025-11-19T19:26:38Z
 url: https://github.com/astral-sh/ruff/pull/21527
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Remove unnecessary `.expect()` call from `types/instance.rs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-19 14:40_
+_@AlexWaygood_
 
 ## Summary
 

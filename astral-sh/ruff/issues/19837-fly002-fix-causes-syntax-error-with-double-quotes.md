@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-08T20:59:07Z
 updated_at: 2025-10-03T13:15:59Z
 url: https://github.com/astral-sh/ruff/issues/19837
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FLY002 fix causes syntax error with double quotes in the strings
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-08-08 20:59_
+_@MeGaGiGaGon_
 
 ### Summary
 

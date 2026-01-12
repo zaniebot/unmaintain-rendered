@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-22T12:16:55Z
 updated_at: 2023-02-23T13:14:20Z
 url: https://github.com/astral-sh/ruff/issues/3120
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # TCH002 autofix
 
 ---
 
-_Issue opened by @Olegt0rr on 2023-02-22 12:16_
+_@Olegt0rr_
 
 It would be great to implement the ability to automatically fix the TCH002 error so that the import is automatically placed in the TYPE_CHECKING block.
 

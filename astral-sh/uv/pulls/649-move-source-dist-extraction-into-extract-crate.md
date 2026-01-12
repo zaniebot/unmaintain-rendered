@@ -12,14 +12,14 @@ head: charlie/extract
 created_at: 2023-12-14T05:51:52Z
 updated_at: 2023-12-14T05:56:50Z
 url: https://github.com/astral-sh/uv/pull/649
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:05Z
 ```
 
 # Move source dist extraction into extract crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-14 05:51_
+_@charliermarsh_
 
 _No description provided._
 

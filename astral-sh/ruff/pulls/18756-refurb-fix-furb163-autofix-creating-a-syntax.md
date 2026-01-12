@@ -13,14 +13,14 @@ head: fix-FURB163
 created_at: 2025-06-18T14:46:50Z
 updated_at: 2025-06-23T13:11:27Z
 url: https://github.com/astral-sh/ruff/pull/18756
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [`refurb`] Fix `FURB163` autofix creating a syntax error for `yield` expressions
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-06-18 14:46_
+_@LaBatata101_
 
 
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T09:45:52Z
 updated_at: 2026-01-09T10:48:19Z
 url: https://github.com/astral-sh/uv/issues/6418
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Add incremental resolution benchmark to codspeed
 
 ---
 
-_Issue opened by @konstin on 2024-08-22 09:45_
+_@konstin_
 
 There are three scenarios for the uv resolver:
 * Fresh resolution: We have a set of requirements, but no lockfile. We need to figure a resolution without any prior context. These are continuously tested by `resolve_warm_airflow`, `resolve_warm_jupyter` and `resolve_warm_jupyter_universal`.

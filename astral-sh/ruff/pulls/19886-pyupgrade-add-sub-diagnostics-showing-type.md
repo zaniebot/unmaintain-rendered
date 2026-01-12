@@ -13,14 +13,14 @@ head: brent/up046-subdiagnostics
 created_at: 2025-08-12T21:40:34Z
 updated_at: 2025-08-25T17:57:01Z
 url: https://github.com/astral-sh/ruff/pull/19886
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [`pyupgrade`] Add sub-diagnostics showing type variable definitions (`UP046`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-12 21:40_
+_@ntBre_
 
 Summary
 --

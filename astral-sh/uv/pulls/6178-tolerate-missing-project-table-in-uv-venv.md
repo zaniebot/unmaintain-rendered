@@ -12,14 +12,14 @@ head: venv
 created_at: 2024-08-17T23:47:21Z
 updated_at: 2024-08-20T00:46:32Z
 url: https://github.com/astral-sh/uv/pull/6178
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:15Z
 ```
 
 # Tolerate missing `[project]` table in `uv venv`
 
 ---
 
-_Pull request opened by @branchv on 2024-08-17 23:47_
+_@branchv_
 
 ## Summary
 

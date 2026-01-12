@@ -14,14 +14,14 @@ head: micha/ty-options-brackets
 created_at: 2025-05-12T11:12:55Z
 updated_at: 2025-05-12T11:16:17Z
 url: https://github.com/astral-sh/ruff/pull/18037
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # [ty] Remove brackets around option names
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-12 11:12_
+_@MichaReiser_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/b
 created_at: 2025-12-16T18:57:08Z
 updated_at: 2025-12-16T18:59:48Z
 url: https://github.com/astral-sh/ty/pull/1951
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Update benchmark image in README
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-16 18:57_
+_@charliermarsh_
 
 _No description provided._
 

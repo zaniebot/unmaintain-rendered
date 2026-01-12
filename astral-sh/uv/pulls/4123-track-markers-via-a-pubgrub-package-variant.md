@@ -14,14 +14,14 @@ head: charlie/marker-pkg
 created_at: 2024-06-07T02:13:48Z
 updated_at: 2024-06-07T19:57:03Z
 url: https://github.com/astral-sh/uv/pull/4123
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:03Z
 ```
 
 # Track `Markers` via a PubGrub package variant
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-07 02:13_
+_@charliermarsh_
 
 ## Summary
 

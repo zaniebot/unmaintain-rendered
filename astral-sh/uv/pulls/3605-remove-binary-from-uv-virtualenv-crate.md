@@ -13,14 +13,14 @@ head: charlie/v
 created_at: 2024-05-15T15:54:09Z
 updated_at: 2024-05-15T16:02:46Z
 url: https://github.com/astral-sh/uv/pull/3605
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:44Z
 ```
 
 # Remove binary from `uv-virtualenv` crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-15 15:54_
+_@charliermarsh_
 
 ## Summary
 

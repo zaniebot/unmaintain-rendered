@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-09T00:11:57Z
 updated_at: 2024-10-09T00:44:04Z
 url: https://github.com/astral-sh/uv/issues/8027
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Add `uv tool upgrade-all`
 
 ---
 
-_Issue opened by @dpoznik on 2024-10-09 00:11_
+_@dpoznik_
 
 I think it would be helpful to add a `uv tool upgrade-all` subcommand to upgrade all installed tools, like [`pipx upgrade-all`](https://pipx.pypa.io/stable/docs/#pipx-upgrade-all).
 

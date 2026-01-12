@@ -13,14 +13,14 @@ head: main
 created_at: 2023-07-07T16:01:52Z
 updated_at: 2023-07-10T19:23:50Z
 url: https://github.com/astral-sh/ruff/pull/5595
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Format `raise` statement
 
 ---
 
-_Pull request opened by @LouisDISPA on 2023-07-07 16:01_
+_@LouisDISPA_
 
 ## Summary
 

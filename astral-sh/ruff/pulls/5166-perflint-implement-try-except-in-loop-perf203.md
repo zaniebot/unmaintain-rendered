@@ -13,14 +13,14 @@ head: 4789_perflint
 created_at: 2023-06-17T19:52:29Z
 updated_at: 2023-06-27T12:17:55Z
 url: https://github.com/astral-sh/ruff/pull/5166
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # [`perflint`] Implement `try-except-in-loop` (`PERF203`)
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-17 19:52_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

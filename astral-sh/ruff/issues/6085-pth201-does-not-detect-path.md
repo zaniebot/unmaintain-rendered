@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-26T04:28:45Z
 updated_at: 2023-07-26T13:22:47Z
 url: https://github.com/astral-sh/ruff/issues/6085
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `PTH201` does not detect `Path("")`
 
 ---
 
-_Issue opened by @dosisod on 2023-07-26 04:28_
+_@dosisod_
 
 The following 3 snippets are the equivalent, though `Path("")` is not detected:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-29T09:08:17Z
 updated_at: 2025-02-02T18:47:54Z
 url: https://github.com/astral-sh/ruff/issues/15806
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # New rule prohibiting modification of `sys.path`
 
 ---
 
-_Issue opened by @vraintanakarei on 2025-01-29 09:08_
+_@vraintanakarei_
 
 ### Description
 

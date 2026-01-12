@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-24T00:54:49Z
 updated_at: 2025-01-15T07:43:54Z
 url: https://github.com/astral-sh/ruff/issues/12482
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # duplicate symbol definition: _malloc_printf
 
 ---
 
-_Issue opened by @serjflint on 2024-07-24 00:54_
+_@serjflint_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-18T02:23:56Z
 updated_at: 2024-08-22T07:43:41Z
 url: https://github.com/astral-sh/ruff/issues/12960
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `config`'s default output format might not render as expected
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-08-18 02:23_
+_@InSyncWithFoo_
 
 Currently, the output of a `config` command is something like this:
 

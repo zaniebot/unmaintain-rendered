@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-22T14:04:15Z
 updated_at: 2024-11-27T17:25:49Z
 url: https://github.com/astral-sh/ruff/issues/14531
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `redirected-noqa` (`RUF101`) does not detect file-level `# ruff: noqa` comments
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-11-22 14:04_
+_@AlexWaygood_
 
 Ruff supports file-level `noqa` comments: `# ruff: noqa: TC002` on its own line at the top of a file will lead to the `TC002` code being suppressed for the whole file. `RUF101`, however, appears not to detect these file-level comments when it looks for redirected rule codes; it only flags inline `noqa` comments of the form `# noqa: TCH001`.
 

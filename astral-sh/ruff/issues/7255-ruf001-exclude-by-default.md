@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-10T06:35:45Z
 updated_at: 2023-09-12T19:49:10Z
 url: https://github.com/astral-sh/ruff/issues/7255
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # RUF001: exclude `×` by default
 
 ---
 
-_Issue opened by @bersbersbers on 2023-09-10 06:35_
+_@bersbersbers_
 
 From https://github.com/astral-sh/ruff/issues/4859#issuecomment-1576776381, I see that you seem to consider VS Code as (one) reference to determine which characters should be reported in `RUF001`. VS Code does not flag `×`, so maybe ruff should allow it by default, too.
 

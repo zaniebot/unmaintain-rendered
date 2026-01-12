@@ -13,14 +13,14 @@ head: charlie/rev
 created_at: 2024-05-16T21:28:00Z
 updated_at: 2024-05-18T17:26:16Z
 url: https://github.com/astral-sh/uv/pull/3631
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:45Z
 ```
 
 # Make `from_rev` take an owned value
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-16 21:28_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: zb/auth-not-provider
 created_at: 2025-08-31T20:06:12Z
 updated_at: 2025-09-02T13:37:14Z
 url: https://github.com/astral-sh/uv/pull/15612
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:51Z
 ```
 
 # Remove the native system store from the keyring providers
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-31 20:06_
+_@zanieb_
 
 We're not sure what the best way to expose the native store to users is yet and it's a bit weird that you can use this in the `uv auth` commands but can't use any of the other keyring provider options. The simplest path forward is to just not expose it to users as a keyring provider, and instead frame it as a preview alternative to the plaintext uv credentials store. We can revisit the best way to expose configuration before stabilization.
 

@@ -15,14 +15,14 @@ head: pip-freeze-path
 created_at: 2025-01-11T01:45:17Z
 updated_at: 2025-01-13T22:50:05Z
 url: https://github.com/astral-sh/uv/pull/10488
-synced_at: 2026-01-10T11:44:52Z
+synced_at: 2026-01-12T16:09:19Z
 ```
 
 # Pip freeze path
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2025-01-11 01:45_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

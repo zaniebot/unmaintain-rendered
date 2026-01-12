@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-07-25T11:40:54Z
 updated_at: 2021-12-09T00:58:08Z
 url: https://github.com/clap-rs/clap/issues/2035
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Create own error message in clap's style
 
 ---
 
-_Issue opened by @LoganDark on 2020-07-25 11:40_
+_@LoganDark_
 
 ### Make sure you completed the following tasks
 

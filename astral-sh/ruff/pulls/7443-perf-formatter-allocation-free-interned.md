@@ -14,14 +14,14 @@ head: allocation-free-interned
 created_at: 2023-09-16T17:15:24Z
 updated_at: 2024-01-16T10:04:12Z
 url: https://github.com/astral-sh/ruff/pull/7443
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # perf(formatter): Allocation free interned
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-16 17:15_
+_@MichaReiser_
 
 ## Summary
 

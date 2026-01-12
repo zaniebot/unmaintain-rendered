@@ -14,14 +14,14 @@ head: konsti/normalize-fork-markers
 created_at: 2024-06-28T15:31:11Z
 updated_at: 2024-06-28T15:55:50Z
 url: https://github.com/astral-sh/uv/pull/4623
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:21Z
 ```
 
 # Normalize fork markers
 
 ---
 
-_Pull request opened by @konstin on 2024-06-28 15:31_
+_@konstin_
 
 Looks much better than #4618:
 

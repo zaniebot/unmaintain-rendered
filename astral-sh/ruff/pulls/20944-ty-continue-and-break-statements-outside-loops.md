@@ -13,14 +13,14 @@ head: alex/break-outside-loop
 created_at: 2025-10-17T17:09:23Z
 updated_at: 2025-10-17T17:13:41Z
 url: https://github.com/astral-sh/ruff/pull/20944
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] `continue` and `break` statements outside loops are syntax errors
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-17 17:09_
+_@AlexWaygood_
 
 ## Summary
 

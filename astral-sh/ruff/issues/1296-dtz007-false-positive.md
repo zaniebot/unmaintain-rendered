@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-20T06:16:01Z
 updated_at: 2022-12-20T18:26:55Z
 url: https://github.com/astral-sh/ruff/issues/1296
-synced_at: 2026-01-10T12:05:25Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # DTZ007 False positive
 
 ---
 
-_Issue opened by @notypecheck on 2022-12-20 06:16_
+_@notypecheck_
 
 Ruff Version: 0.0.188
 

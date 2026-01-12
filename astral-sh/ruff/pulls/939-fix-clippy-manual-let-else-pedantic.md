@@ -12,14 +12,14 @@ head: clippy-manual-let-else
 created_at: 2022-11-28T06:13:01Z
 updated_at: 2023-07-01T20:40:01Z
 url: https://github.com/astral-sh/ruff/pull/939
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix clippy::manual_let_else (pedantic)
 
 ---
 
-_Pull request opened by @andersk on 2022-11-28 06:13_
+_@andersk_
 
 This is part of nightly clippy::pedantic for MSRV ≥ 1.65.
 

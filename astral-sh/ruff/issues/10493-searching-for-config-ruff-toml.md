@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-20T17:15:52Z
 updated_at: 2024-04-02T09:10:52Z
 url: https://github.com/astral-sh/ruff/issues/10493
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Searching for .config/ruff.toml
 
 ---
 
-_Issue opened by @bersace on 2024-03-20 17:15_
+_@bersace_
 
 Hi,
 

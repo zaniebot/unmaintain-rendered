@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-07T13:16:51Z
 updated_at: 2022-12-07T15:55:47Z
 url: https://github.com/astral-sh/ruff/issues/1119
-synced_at: 2026-01-10T12:06:17Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [Question] Re-raising errors and BLE001
 
 ---
 
-_Issue opened by @notypecheck on 2022-12-07 13:16_
+_@notypecheck_
 
 Not sure if this is the right place to ask since this is a check from flake8-blind-except, but:
 Using this check is a bit hard in some cases without ignoring it, for example when we want to report an exception and explicitly re-raise it:

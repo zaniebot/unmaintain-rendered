@@ -14,14 +14,14 @@ head: charlie/err
 created_at: 2024-08-10T03:03:22Z
 updated_at: 2024-08-10T14:02:59Z
 url: https://github.com/astral-sh/uv/pull/5991
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:08Z
 ```
 
 # Add resolver error context to `run` and `tool run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-10 03:03_
+_@charliermarsh_
 
 ## Summary
 

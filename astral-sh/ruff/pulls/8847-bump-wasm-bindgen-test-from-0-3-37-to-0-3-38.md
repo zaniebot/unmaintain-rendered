@@ -13,14 +13,14 @@ head: dependabot/cargo/wasm-bindgen-test-0.3.38
 created_at: 2023-11-27T08:47:16Z
 updated_at: 2023-11-27T10:02:54Z
 url: https://github.com/astral-sh/ruff/pull/8847
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Bump wasm-bindgen-test from 0.3.37 to 0.3.38
 
 ---
 
-_Pull request opened by @dependabot on 2023-11-27 08:47_
+_@dependabot_
 
 Bumps [wasm-bindgen-test](https://github.com/rustwasm/wasm-bindgen) from 0.3.37 to 0.3.38.
 <details>

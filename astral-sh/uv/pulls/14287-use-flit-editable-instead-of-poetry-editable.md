@@ -13,14 +13,14 @@ head: zb/flit-v-poetry
 created_at: 2025-06-26T17:38:59Z
 updated_at: 2025-06-27T22:05:29Z
 url: https://github.com/astral-sh/uv/pull/14287
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # Use `flit_editable` instead of `poetry_editable` throughout
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-26 17:38_
+_@zanieb_
 
 Extends https://github.com/astral-sh/uv/pull/14285 to more of the test suite, retaining a couple tests covering the `poetry_editable` case.
 

@@ -13,14 +13,14 @@ head: gankra/fixif
 created_at: 2025-06-26T15:54:42Z
 updated_at: 2025-06-26T16:05:47Z
 url: https://github.com/astral-sh/uv/pull/14278
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # add more proper docker login if
 
 ---
 
-_Pull request opened by @Gankra on 2025-06-26 15:54_
+_@Gankra_
 
 _No description provided._
 

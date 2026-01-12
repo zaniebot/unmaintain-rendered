@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-12-22T14:03:18Z
 updated_at: 2018-12-30T19:31:22Z
 url: https://github.com/clap-rs/clap/issues/1399
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # How to do link-commands like cargo web ...?
 
 ---
 
-_Issue opened by @ghost on 2018-12-22 14:03_
+_@ghost_
 
 This is kind of a suggestion. There could probably be a sample in how to write a `SubCommand` that's **_not parsed_** and goes directly to an **_executable_**, i.e., `cargo web`. Me myself I don't know how, but [Cargo uses `clap`](https://github.com/rust-lang/cargo/blob/master/src/bin/cargo/cli.rs). I'm still kinda unsure how that's done...
 

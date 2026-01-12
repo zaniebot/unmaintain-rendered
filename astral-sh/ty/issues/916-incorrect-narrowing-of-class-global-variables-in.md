@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-30T16:16:16Z
 updated_at: 2025-07-30T17:18:40Z
 url: https://github.com/astral-sh/ty/issues/916
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Incorrect narrowing of class/global variables in nested scopes
 
 ---
 
-_Issue opened by @mtshiba on 2025-07-30 16:16_
+_@mtshiba_
 
 ### Summary
 

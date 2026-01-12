@@ -13,14 +13,14 @@ head: docs/bunch-of-fixes
 created_at: 2024-07-16T23:19:47Z
 updated_at: 2024-07-17T00:49:00Z
 url: https://github.com/astral-sh/uv/pull/5136
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:39Z
 ```
 
 # docs: bunch of fixes and improvements
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-07-16 23:19_
+_@mkniewallner_
 
 ## Summary
 

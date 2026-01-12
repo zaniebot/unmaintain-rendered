@@ -13,14 +13,14 @@ head: tuple-split-comma
 created_at: 2023-10-27T10:58:05Z
 updated_at: 2023-10-30T00:25:45Z
 url: https://github.com/astral-sh/ruff/pull/8280
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Split tuples in return positions by comma first
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-27 10:58_
+_@MichaReiser_
 
 ## Summary
 

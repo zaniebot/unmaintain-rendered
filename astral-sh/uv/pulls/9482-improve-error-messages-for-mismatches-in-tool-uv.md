@@ -13,14 +13,14 @@ head: charlie/workspace-err
 created_at: 2024-11-27T19:35:03Z
 updated_at: 2024-11-27T20:10:40Z
 url: https://github.com/astral-sh/uv/pull/9482
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:49Z
 ```
 
 # Improve error messages for mismatches in `tool.uv.sources`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-27 19:35_
+_@charliermarsh_
 
 ## Summary
 

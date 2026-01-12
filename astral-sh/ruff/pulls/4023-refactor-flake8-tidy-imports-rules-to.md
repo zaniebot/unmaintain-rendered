@@ -12,14 +12,14 @@ head: charlie/banned-api
 created_at: 2023-04-19T16:36:41Z
 updated_at: 2023-04-19T17:09:09Z
 url: https://github.com/astral-sh/ruff/pull/4023
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Refactor `flake8_tidy_imports` rules to consistently take `Checker`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-19 16:36_
+_@charliermarsh_
 
 _No description provided._
 

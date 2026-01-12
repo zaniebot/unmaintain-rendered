@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-18T03:41:22Z
 updated_at: 2024-09-20T01:27:26Z
 url: https://github.com/astral-sh/uv/issues/7482
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 #  uv generate-shell-completion powershell script error in uv 0.4.11.
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-09-18 03:41_
+_@FishAlchemist_
 
 **UV Version:** uv 0.4.11 (e5dd67f58 2024-09-17)
 **Error:** A 'using' statement must appear before any other statements in a script.

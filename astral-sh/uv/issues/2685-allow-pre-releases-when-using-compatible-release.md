@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-27T03:41:05Z
 updated_at: 2025-10-03T10:41:55Z
 url: https://github.com/astral-sh/uv/issues/2685
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Allow pre-releases when using compatible release syntax
 
 ---
 
-_Issue opened by @matthewfeickert on 2024-03-27 03:41_
+_@matthewfeickert_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

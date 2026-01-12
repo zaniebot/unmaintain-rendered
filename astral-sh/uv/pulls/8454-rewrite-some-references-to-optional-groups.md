@@ -13,14 +13,14 @@ head: charlie/group-ref
 created_at: 2024-10-22T13:45:41Z
 updated_at: 2024-10-22T14:18:18Z
 url: https://github.com/astral-sh/uv/pull/8454
-synced_at: 2026-01-10T12:54:09Z
+synced_at: 2026-01-12T16:08:19Z
 ```
 
 # Rewrite some references to "optional groups"
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-22 13:45_
+_@charliermarsh_
 
 ## Summary
 

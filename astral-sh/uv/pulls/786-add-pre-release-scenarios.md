@@ -12,14 +12,14 @@ head: zb/pre-releases
 created_at: 2024-01-04T19:05:52Z
 updated_at: 2024-01-04T20:51:28Z
 url: https://github.com/astral-sh/uv/pull/786
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:11Z
 ```
 
 # Add pre-release scenarios
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-04 19:05_
+_@zanieb_
 
 Scenarios at https://github.com/zanieb/packse/pull/58
 

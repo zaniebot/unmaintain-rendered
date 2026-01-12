@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-18T18:13:18Z
 updated_at: 2024-11-18T18:21:32Z
 url: https://github.com/astral-sh/uv/issues/9209
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # `uv lock` locks incorrect torch cpu version on macOS 
 
 ---
 
-_Issue opened by @MKVatinyan on 2024-11-18 18:13_
+_@MKVatinyan_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

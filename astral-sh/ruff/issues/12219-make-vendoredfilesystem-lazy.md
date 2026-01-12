@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-06T16:11:17Z
 updated_at: 2024-07-08T07:57:10Z
 url: https://github.com/astral-sh/ruff/issues/12219
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Make `VendoredFileSystem` lazy
 
 ---
 
-_Issue opened by @MichaReiser on 2024-07-06 16:11_
+_@MichaReiser_
 
 The `VendoredFileSystem` reads the entire zip file when calling `new`. We should consider making the `VendoredFileSystem` lazy by using internal mutability with an inner `enum` that has two variants `Raw(Cow<'static, [u8]>)` and `Zip(ZipArchive)`. The `VendoredFileSystem::new` initializes with `Raw` and transitions to `Zip` when calling the first method.
 

@@ -13,14 +13,14 @@ head: unnecessary_dict_kwargs_doc
 created_at: 2025-06-13T19:16:29Z
 updated_at: 2025-06-20T06:46:11Z
 url: https://github.com/astral-sh/ruff/pull/18666
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # unnecessary_dict_kwargs doc - a note on type checking benefits
 
 ---
 
-_Pull request opened by @Andrej730 on 2025-06-13 19:16_
+_@Andrej730_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

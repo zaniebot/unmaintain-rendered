@@ -13,14 +13,14 @@ head: zb/tool-install-toml
 created_at: 2024-06-26T18:05:03Z
 updated_at: 2024-06-26T20:48:19Z
 url: https://github.com/astral-sh/uv/pull/4560
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:18Z
 ```
 
 # Move from a shared `tools.toml` to separated tool receipts
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-26 18:05_
+_@zanieb_
 
 Refactors the installed tool metadata per commentary in #4492 
 

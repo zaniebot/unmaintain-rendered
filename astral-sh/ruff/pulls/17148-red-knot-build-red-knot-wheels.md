@@ -14,14 +14,14 @@ head: david/build-red_knot-wheels
 created_at: 2025-04-02T12:04:07Z
 updated_at: 2025-05-07T14:18:10Z
 url: https://github.com/astral-sh/ruff/pull/17148
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Build red knot wheels
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-02 12:04_
+_@sharkdp_
 
 ## Summary
 

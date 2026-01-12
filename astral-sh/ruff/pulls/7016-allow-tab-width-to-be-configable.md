@@ -13,14 +13,14 @@ head: fix/configuable-tab-width
 created_at: 2023-08-31T07:31:56Z
 updated_at: 2024-01-20T06:40:37Z
 url: https://github.com/astral-sh/ruff/pull/7016
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Allow `tab_width` to be configable
 
 ---
 
-_Pull request opened by @magic-akari on 2023-08-31 07:31_
+_@magic-akari_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

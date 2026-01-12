@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-16T08:07:39Z
 updated_at: 2025-01-16T09:45:26Z
 url: https://github.com/astral-sh/uv/issues/10668
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # uv export with --no-editable still contains the dot from the editable install
 
 ---
 
-_Issue opened by @marioweid on 2025-01-16 08:07_
+_@marioweid_
 
 Hey,
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-20T10:38:13Z
 updated_at: 2024-01-11T01:37:33Z
 url: https://github.com/astral-sh/ruff/issues/4541
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Improve docs regarding ruff's development philosophy
 
 ---
 
-_Issue opened by @Mr-Pepe on 2023-05-20 10:38_
+_@Mr-Pepe_
 
 I might have overlooked the relevant section but I don't fully understand the development philosophy behind ruff and think that could be made clearer in the docs. 
 

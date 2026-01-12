@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-24T23:42:23Z
 updated_at: 2025-04-22T18:55:36Z
 url: https://github.com/astral-sh/ruff/issues/2143
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # PD010: pivot table false positive
 
 ---
 
-_Issue opened by @sbrugman on 2023-01-24 23:42_
+_@sbrugman_
 
 When a Spark DataFrame is used, PD010 will still generate an error (pandas and spark are often used within the same file):
 

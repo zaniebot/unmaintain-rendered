@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-19T01:07:45Z
 updated_at: 2025-12-31T15:20:15Z
 url: https://github.com/astral-sh/ty/issues/2096
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # special-case try/except ImportError if all imports resolve
 
 ---
 
-_Issue opened by @carljm on 2025-12-19 01:07_
+_@carljm_
 
 > I encountered a case of this with library `mypy_boto3_s3` ([pypi](https://pypi.org/project/mypy-boto3-s3/), [github generator code](https://github.com/youtype/mypy_boto3_builder)). It uses a `try / except ImportError` pattern, I think for Python backwards compatibility?
 > 

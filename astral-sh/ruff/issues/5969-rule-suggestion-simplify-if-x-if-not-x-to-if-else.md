@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-22T07:05:26Z
 updated_at: 2023-07-28T04:33:50Z
 url: https://github.com/astral-sh/ruff/issues/5969
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # [rule suggestion] simplify `if x, if not x` to `if/else`
 
 ---
 
-_Issue opened by @ScDor on 2023-07-22 07:05_
+_@ScDor_
 
 Instead of 
 ```python

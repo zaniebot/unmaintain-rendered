@@ -14,14 +14,14 @@ head: micha/simplify-token-tests
 created_at: 2025-11-02T15:53:25Z
 updated_at: 2025-11-03T15:35:44Z
 url: https://github.com/astral-sh/ruff/pull/21206
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [ty] Simplify semantic token tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-02 15:53_
+_@MichaReiser_
 
 ## Summary
 

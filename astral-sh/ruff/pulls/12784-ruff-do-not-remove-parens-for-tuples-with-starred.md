@@ -14,14 +14,14 @@ head: ruf031-py38-unpacking
 created_at: 2024-08-09T13:01:37Z
 updated_at: 2024-08-09T15:43:28Z
 url: https://github.com/astral-sh/ruff/pull/12784
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [ruff] Do not remove parens for tuples with starred expressions in Python <=3.10 `RUF031`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-08-09 13:01_
+_@dylwil3_
 
 ## Summary
 

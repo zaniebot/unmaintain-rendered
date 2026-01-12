@@ -12,14 +12,14 @@ head: uv-init-outside
 created_at: 2024-07-20T15:40:43Z
 updated_at: 2024-07-22T14:21:30Z
 url: https://github.com/astral-sh/uv/pull/5250
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:43Z
 ```
 
 # `uv init` discovers workspace from the target path
 
 ---
 
-_Pull request opened by @j178 on 2024-07-20 15:40_
+_@j178_
 
 ## Summary
 

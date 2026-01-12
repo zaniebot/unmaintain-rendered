@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-05-17T15:16:35Z
 updated_at: 2018-08-02T03:30:07Z
 url: https://github.com/clap-rs/clap/issues/964
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Compatibility policy vs crate graph resolution in Cargo
 
 ---
 
-_Issue opened by @alexcrichton on 2017-05-17 15:16_
+_@alexcrichton_
 
 Hello! I've noticed that in the [compatibility policy section of the README](https://github.com/kbknapp/clap-rs/blob/2923515a0aec80a7ebd4b1fc3430aad859bcda8a/README.md#compatibility-policy) you recommend a tilde dependency such as:
 

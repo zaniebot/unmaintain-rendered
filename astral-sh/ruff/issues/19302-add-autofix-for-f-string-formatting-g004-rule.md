@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-12T22:46:25Z
 updated_at: 2025-08-26T14:51:25Z
 url: https://github.com/astral-sh/ruff/issues/19302
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Add Autofix for f-string formatting G004 rule
 
 ---
 
-_Issue opened by @hamirmahal on 2025-07-12 22:46_
+_@hamirmahal_
 
 > The current rule we need the most in microsoft/onnxruntime is G004. Because everything else can be turned into an f-string first. 
 

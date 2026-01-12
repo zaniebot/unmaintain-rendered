@@ -13,14 +13,14 @@ head: zanie/app-msg
 created_at: 2023-11-07T15:26:59Z
 updated_at: 2023-11-07T16:27:59Z
 url: https://github.com/astral-sh/ruff/pull/8541
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Update applicability messages for clarity in tests
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-07 15:26_
+_@zanieb_
 
 These names are only ever displayed internally right now and we could be clearer in our test snapshots.
 

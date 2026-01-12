@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-05-21T19:46:51Z
 updated_at: 2022-05-23T17:00:13Z
 url: https://github.com/clap-rs/clap/issues/3741
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Request: an env-variable-only version of clap::Parser::parse() that doesn't interact with env::args
 
 ---
 
-_Issue opened by @wimax-grapl on 2022-05-21 19:46_
+_@wimax-grapl_
 
 ### Please complete the following tasks
 

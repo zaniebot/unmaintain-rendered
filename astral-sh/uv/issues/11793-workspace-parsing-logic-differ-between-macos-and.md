@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-26T09:45:47Z
 updated_at: 2025-02-28T12:40:20Z
 url: https://github.com/astral-sh/uv/issues/11793
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # Workspace parsing logic differ between macOS and windows
 
 ---
 
-_Issue opened by @gab23r on 2025-02-26 09:45_
+_@gab23r_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-23T17:18:10Z
 updated_at: 2025-05-07T15:22:01Z
 url: https://github.com/astral-sh/ruff/issues/15697
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] add ecosystem check
 
 ---
 
-_Issue opened by @carljm on 2025-01-23 17:18_
+_@carljm_
 
 ### Description
 

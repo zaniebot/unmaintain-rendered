@@ -12,14 +12,14 @@ head: charlie/ignore-init-module-imports
 created_at: 2022-12-04T19:22:52Z
 updated_at: 2022-12-04T19:45:55Z
 url: https://github.com/astral-sh/ruff/pull/1042
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Remove unused imports in `__init__.py` files by default
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-04 19:22_
+_@charliermarsh_
 
 This PR makes the current `F401` behavior (of flagging, but not removing unused imports in `__init__.py` files) opt-in, rather than enabled-for-all.
 

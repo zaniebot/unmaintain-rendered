@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-23T15:06:27Z
 updated_at: 2024-04-23T15:31:09Z
 url: https://github.com/astral-sh/ruff/issues/11105
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # [Panic] Accidental Space after function name (instead of opening parenthesis) crashes Ruff
 
 ---
 
-_Issue opened by @greywidget on 2024-04-23 15:06_
+_@greywidget_
 
 Keywords checked: "function name", "trailing space"
 

@@ -14,14 +14,14 @@ head: cjm/contributing-guide
 created_at: 2025-05-13T02:07:51Z
 updated_at: 2025-05-13T08:55:03Z
 url: https://github.com/astral-sh/ruff/pull/18061
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] contribution guide
 
 ---
 
-_Pull request opened by @carljm on 2025-05-13 02:07_
+_@carljm_
 
 First take on a contributing guide for `ty`. Lots of it is copied from the existing Ruff contribution guide.
 

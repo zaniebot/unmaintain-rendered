@@ -13,14 +13,14 @@ head: charlie/py
 created_at: 2023-02-23T00:35:29Z
 updated_at: 2023-02-23T00:38:48Z
 url: https://github.com/astral-sh/ruff/pull/3153
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Omit non-.py[i] files from module naming rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-23 00:35_
+_@charliermarsh_
 
 Closes #3151.
 

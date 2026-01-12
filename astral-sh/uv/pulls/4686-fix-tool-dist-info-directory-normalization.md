@@ -14,14 +14,14 @@ head: konsti/fix-dist-info-naming
 created_at: 2024-07-01T10:36:39Z
 updated_at: 2024-07-01T12:43:35Z
 url: https://github.com/astral-sh/uv/pull/4686
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:23Z
 ```
 
 # Fix tool dist-info directory normalization
 
 ---
 
-_Pull request opened by @konstin on 2024-07-01 10:36_
+_@konstin_
 
 `.dist-info` directories use a different normalization.
 

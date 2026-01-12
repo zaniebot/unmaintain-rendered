@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-14T15:39:21Z
 updated_at: 2025-11-19T08:38:34Z
 url: https://github.com/astral-sh/ruff/issues/21458
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF065: Complex conversion specifiers can make `oct` and `hex` not unnecessary
 
 ---
 
-_Issue opened by @dscorbett on 2025-11-14 15:39_
+_@dscorbett_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-23T21:10:41Z
 updated_at: 2024-07-23T21:22:49Z
 url: https://github.com/astral-sh/uv/issues/5375
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Different color for `$` in `console` syntax highlighting?
 
 ---
 
-_Issue opened by @zanieb on 2024-07-23 21:10_
+_@zanieb_
 
 <img width="812" alt="Screenshot 2024-07-23 at 4 08 11 PM" src="https://github.com/user-attachments/assets/4a6f2ea5-afba-44da-851d-f232e411d822">
 

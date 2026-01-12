@@ -13,14 +13,14 @@ head: 06-29-Preserve_parentheses_around_left_side_of_binary_expressions
 created_at: 2023-06-29T13:47:31Z
 updated_at: 2023-06-30T07:52:17Z
 url: https://github.com/astral-sh/ruff/pull/5440
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Preserve parentheses around left side of binary expression
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-29 13:47_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

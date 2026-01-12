@@ -12,14 +12,14 @@ head: charlie/once
 created_at: 2022-11-15T21:14:06Z
 updated_at: 2022-11-15T21:14:11Z
 url: https://github.com/astral-sh/ruff/pull/762
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Only notify once for each app update
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-15 21:14_
+_@charliermarsh_
 
 I thought `update-informer` handled this, but apparently not! Instead, the `update-informer` setting controls how frequently we _poll_ for a new version. Now, we only print the reminder once per new version.
 

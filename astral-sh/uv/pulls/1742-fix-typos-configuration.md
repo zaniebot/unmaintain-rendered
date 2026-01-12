@@ -13,14 +13,14 @@ head: typos
 created_at: 2024-02-20T09:26:33Z
 updated_at: 2024-02-20T15:09:56Z
 url: https://github.com/astral-sh/uv/pull/1742
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:42Z
 ```
 
 # Fix typos configuration
 
 ---
 
-_Pull request opened by @szepeviktor on 2024-02-20 09:26_
+_@szepeviktor_
 
 ## Summary
 

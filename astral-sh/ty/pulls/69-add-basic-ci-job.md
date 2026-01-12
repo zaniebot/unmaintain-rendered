@@ -13,14 +13,14 @@ head: micha/ci-job
 created_at: 2025-05-07T14:22:07Z
 updated_at: 2025-07-08T10:37:56Z
 url: https://github.com/astral-sh/ty/pull/69
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add basic CI job
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-07 14:22_
+_@MichaReiser_
 
 https://github.com/astral-sh/ty/pull/57 was merged into the wrong branch.
 

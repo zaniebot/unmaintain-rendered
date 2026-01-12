@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-10T16:23:23Z
 updated_at: 2024-03-10T23:37:23Z
 url: https://github.com/astral-sh/ruff/issues/10320
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Feature: file-specificity on `lint.pyupgrade.keep-runtime-typing`
 
 ---
 
-_Issue opened by @tlambert03 on 2024-03-10 16:23_
+_@tlambert03_
 
 Not sure if I missed an already-possible feature, but I often find myself working in libraries that need `keep-runtime-typing = True` for only a select few files.  It would be convenient, in those cases, to enforce the rule for a subset of files with something like:
 

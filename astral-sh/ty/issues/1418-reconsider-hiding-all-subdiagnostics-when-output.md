@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-23T13:33:38Z
 updated_at: 2025-11-14T08:25:11Z
 url: https://github.com/astral-sh/ty/issues/1418
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Reconsider hiding all subdiagnostics when `--output-format=concise` is specified
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-10-23 13:33_
+_@AlexWaygood_
 
 Many of our existing diagnostics are unactionable when using `--output-format=concise`. For example:
 

@@ -13,14 +13,14 @@ head: docs-rule-tweaks
 created_at: 2024-11-07T23:19:32Z
 updated_at: 2024-11-08T09:30:21Z
 url: https://github.com/astral-sh/ruff/pull/14180
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Docs: tweak rules documentation
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-07 23:19_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

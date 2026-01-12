@@ -14,14 +14,14 @@ head: del_mark_bound
 created_at: 2025-07-16T18:22:49Z
 updated_at: 2025-07-18T21:58:34Z
 url: https://github.com/astral-sh/ruff/pull/19389
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:38Z
 ```
 
 # [ty] make `del x` force local resolution of `x` in the current scope
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-07-16 18:22_
+_@oconnor663_
 
 Fixes https://github.com/astral-sh/ty/issues/769.
 

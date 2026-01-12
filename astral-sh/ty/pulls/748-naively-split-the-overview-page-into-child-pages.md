@@ -12,14 +12,14 @@ head: zb/docs-ii-nav
 created_at: 2025-07-01T17:24:22Z
 updated_at: 2025-07-02T13:25:09Z
 url: https://github.com/astral-sh/ty/pull/748
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Naively split the "Overview" page into child pages
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-01 17:24_
+_@zanieb_
 
 I don't think this is "good", but it splits each top-level heading of the existing documentation into a dedicated page as a starting point.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-15T09:23:28Z
 updated_at: 2023-03-15T23:22:43Z
 url: https://github.com/astral-sh/ruff/issues/3536
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # API Docu missing
 
 ---
 
-_Issue opened by @buhtz on 2023-03-15 09:23_
+_@buhtz_
 
 Hello,
 

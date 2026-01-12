@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-30T01:00:15Z
 updated_at: 2024-08-30T12:49:22Z
 url: https://github.com/astral-sh/uv/issues/6846
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Build / local dev: running uvx is weird?
 
 ---
 
-_Issue opened by @dimaqq on 2024-08-30 01:00_
+_@dimaqq_
 
 Sorry, a 🦀 newbie here...
 

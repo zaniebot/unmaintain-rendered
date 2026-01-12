@@ -13,14 +13,14 @@ head: alex/protocol-member-inference
 created_at: 2025-04-22T16:40:01Z
 updated_at: 2025-04-23T21:37:29Z
 url: https://github.com/astral-sh/ruff/pull/17556
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Infer the members of a protocol class
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-22 16:40_
+_@AlexWaygood_
 
 ## Summary
 

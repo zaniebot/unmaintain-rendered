@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-21T16:49:28Z
 updated_at: 2022-12-21T19:34:10Z
 url: https://github.com/astral-sh/ruff/issues/1309
-synced_at: 2026-01-10T12:05:25Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # False positive for PLE0118 when mixing globals and f-strings
 
 ---
 
-_Issue opened by @PhilReinhold on 2022-12-21 16:49_
+_@PhilReinhold_
 
 It seems like we get a false positive from using globals inside of f-strings
 

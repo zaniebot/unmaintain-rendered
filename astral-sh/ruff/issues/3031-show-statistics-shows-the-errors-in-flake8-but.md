@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-19T14:29:50Z
 updated_at: 2023-02-19T14:54:45Z
 url: https://github.com/astral-sh/ruff/issues/3031
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # --show-statistics shows the errors in flake8 but not in ruff
 
 ---
 
-_Issue opened by @cclauss on 2023-02-19 14:29_
+_@cclauss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

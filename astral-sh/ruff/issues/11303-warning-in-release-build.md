@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-06T07:22:45Z
 updated_at: 2024-05-06T07:43:17Z
 url: https://github.com/astral-sh/ruff/issues/11303
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Warning in release build: `MarkVerbatimCommentsAsFormattedVisitor` is unused
 
 ---
 
-_Issue opened by @konstin on 2024-05-06 07:22_
+_@konstin_
 
 ```console
 $ cargo build --release

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T09:09:51Z
 updated_at: 2024-02-21T09:24:26Z
 url: https://github.com/astral-sh/uv/issues/1635
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # support on manylinux builder image (older glibc)?
 
 ---
 
-_Issue opened by @davidszotten on 2024-02-18 09:09_
+_@davidszotten_
 
 atm the newest images from https://github.com/pypa/manylinux `manylinux_2_28 ` use glibc 2.28
 

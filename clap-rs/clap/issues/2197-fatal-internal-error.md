@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-11-01T18:41:24Z
 updated_at: 2020-11-03T21:40:52Z
 url: https://github.com/clap-rs/clap/issues/2197
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Fatal internal error
 
 ---
 
-_Issue opened by @AldaronLau on 2020-11-01 18:41_
+_@AldaronLau_
 
 ### Code
 

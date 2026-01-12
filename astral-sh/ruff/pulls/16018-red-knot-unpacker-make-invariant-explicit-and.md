@@ -13,14 +13,14 @@ head: david/unpacker-explicit-invariant
 created_at: 2025-02-07T11:18:47Z
 updated_at: 2025-02-07T12:00:07Z
 url: https://github.com/astral-sh/ruff/pull/16018
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Unpacker: Make invariant explicit and directly return a Type
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-07 11:18_
+_@sharkdp_
 
 ## Summary
 

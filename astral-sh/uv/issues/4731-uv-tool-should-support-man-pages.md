@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-02T15:23:06Z
 updated_at: 2024-09-05T07:58:44Z
 url: https://github.com/astral-sh/uv/issues/4731
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `uv tool` should support man pages
 
 ---
 
-_Issue opened by @zanieb on 2024-07-02 15:23_
+_@zanieb_
 
 pipx supports installation of man pages for documentation. We should do the same in the `uv tool` commands.
 

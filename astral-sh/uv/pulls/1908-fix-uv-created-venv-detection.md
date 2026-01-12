@@ -13,14 +13,14 @@ head: konsti/fix-venv-creator-detection
 created_at: 2024-02-23T10:54:00Z
 updated_at: 2024-02-23T17:11:23Z
 url: https://github.com/astral-sh/uv/pull/1908
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:47Z
 ```
 
 # Fix uv-created venv detection
 
 ---
 
-_Pull request opened by @konstin on 2024-02-23 10:54_
+_@konstin_
 
 Read the key read for uv from `pyenv.cfg` from `gourgeist` instead of `uv`. I missed that we're also reading pyenv.cfg when reviewing #1852. We could check for gourgeist for backwards compatibility, but i think it's fine this way.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-27T20:46:05Z
 updated_at: 2025-08-27T20:55:26Z
 url: https://github.com/astral-sh/ruff/issues/20119
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Drop `pathdiff` dependency for GitLab output
 
 ---
 
-_Issue opened by @ntBre on 2025-08-27 20:46_
+_@ntBre_
 
 As noted in #20117, we only use `pathdiff` for one `relativize_path_to` call in our GitLab output format. This was added in #3475 to make the GitLab output relative to the `CI_PROJECT_DIR` environment variable. According to the [docs](https://docs.gitlab.com/ci/variables/predefined_variables/), this is a pre-defined variable with this description:
 

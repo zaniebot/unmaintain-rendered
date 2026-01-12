@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-01T20:57:34Z
 updated_at: 2024-09-03T05:21:50Z
 url: https://github.com/astral-sh/ruff/issues/12617
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # pointless comparison hint is frequently very off base
 
 ---
 
-_Issue opened by @lolbinarycat on 2024-08-01 20:57_
+_@lolbinarycat_
 
 code [(playground)](https://play.ruff.rs/0a603c34-c21e-4ab2-b645-54116e8fcdd0):
 ```python

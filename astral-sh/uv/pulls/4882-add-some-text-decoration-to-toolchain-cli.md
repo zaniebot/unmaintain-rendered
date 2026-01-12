@@ -14,14 +14,14 @@ head: charlie/toolchain-cli
 created_at: 2024-07-08T01:19:24Z
 updated_at: 2024-07-08T14:03:40Z
 url: https://github.com/astral-sh/uv/pull/4882
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:31Z
 ```
 
 # Add some text decoration to toolchain CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-08 01:19_
+_@charliermarsh_
 
 ## Summary
 

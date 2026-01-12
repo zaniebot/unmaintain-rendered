@@ -13,14 +13,14 @@ head: uv-add
 created_at: 2024-06-10T11:36:58Z
 updated_at: 2024-06-11T20:52:05Z
 url: https://github.com/astral-sh/uv/pull/4193
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:05Z
 ```
 
 # Initial implementation of `uv add` and `uv remove`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-06-10 11:36_
+_@ibraheemdev_
 
 ## Summary
 

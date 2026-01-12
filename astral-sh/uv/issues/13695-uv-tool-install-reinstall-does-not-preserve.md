@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T07:29:29Z
 updated_at: 2025-07-09T10:59:30Z
 url: https://github.com/astral-sh/uv/issues/13695
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # `uv tool install --reinstall` does not preserve packages injected with `--with`
 
 ---
 
-_Issue opened by @GideonBear on 2025-05-28 07:29_
+_@GideonBear_
 
 ### Summary
 

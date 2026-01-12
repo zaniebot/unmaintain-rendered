@@ -14,14 +14,14 @@ head: micha/fix-server-configuration-extend
 created_at: 2024-09-08T19:26:09Z
 updated_at: 2024-09-09T18:46:41Z
 url: https://github.com/astral-sh/ruff/pull/13285
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Fix configuration inheritance for configurations specified in the LSP settings
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-08 19:26_
+_@MichaReiser_
 
 ## Summary
 This PR addresses a bug where the ruff LSP didn't follow a configuration's `extend` when the configuration is specified in the LSP settings.

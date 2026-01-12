@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-08T23:13:05Z
 updated_at: 2025-08-11T20:20:05Z
 url: https://github.com/astral-sh/uv/issues/15179
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # Add a way to upgrade or reinstall Python versions as needed
 
 ---
 
-_Issue opened by @geofft on 2025-08-08 23:13_
+_@geofft_
 
 ### Summary
 

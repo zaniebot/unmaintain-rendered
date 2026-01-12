@@ -13,14 +13,14 @@ head: charlie/colon
 created_at: 2024-11-11T01:51:35Z
 updated_at: 2024-11-11T02:00:04Z
 url: https://github.com/astral-sh/uv/pull/8994
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:35Z
 ```
 
 # Consistent colon usage in build failure errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-11 01:51_
+_@charliermarsh_
 
 _No description provided._
 

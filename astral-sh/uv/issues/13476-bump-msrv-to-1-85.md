@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-15T18:58:54Z
 updated_at: 2025-05-18T23:38:45Z
 url: https://github.com/astral-sh/uv/issues/13476
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # Bump MSRV to 1.85
 
 ---
 
-_Issue opened by @charliermarsh on 2025-05-15 18:58_
+_@charliermarsh_
 
 See: https://blog.rust-lang.org/2025/05/15/Rust-1.87.0/
 

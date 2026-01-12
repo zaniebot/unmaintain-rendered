@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-15T14:10:59Z
 updated_at: 2025-05-16T12:58:46Z
 url: https://github.com/astral-sh/uv/issues/13470
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:29Z
 ```
 
 # Use an existing venv
 
 ---
 
-_Issue opened by @Oscaarjs on 2025-05-15 14:10_
+_@Oscaarjs_
 
 ### Question
 

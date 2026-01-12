@@ -14,14 +14,14 @@ head: alex/panic-regrtest
 created_at: 2025-04-29T18:07:43Z
 updated_at: 2025-04-29T21:25:40Z
 url: https://github.com/astral-sh/ruff/pull/17719
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [red-knot] Run py-fuzzer in CI to check for new panics
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-29 18:07_
+_@AlexWaygood_
 
 ## Summary
 

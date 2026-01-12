@@ -14,14 +14,14 @@ head: change-default-for-pt001-pt023
 created_at: 2024-08-12T10:08:36Z
 updated_at: 2024-08-21T01:32:00Z
 url: https://github.com/astral-sh/ruff/pull/12838
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Change default for PT001 and PT023
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-12 10:08_
+_@MichaReiser_
 
 ## Summary
 

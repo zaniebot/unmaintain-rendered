@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-05T07:18:42Z
 updated_at: 2025-02-19T11:28:19Z
 url: https://github.com/astral-sh/ruff/issues/4858
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # UP007: opt out of Optional
 
 ---
 
-_Issue opened by @Fogapod on 2023-06-05 07:18_
+_@Fogapod_
 
 Hello, currently UP007 covers both `Union[a, b, c]` -> `a | b | c` and `Optional[a]` -> `a | None`.
 Personally i find Optional to be more readable and PEP 604 does not deprecate this syntax either.

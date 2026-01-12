@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-25T13:53:59Z
 updated_at: 2025-01-25T21:37:27Z
 url: https://github.com/astral-sh/uv/issues/10957
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Different outputs from `pip compile` when output file already exists
 
 ---
 
-_Issue opened by @AbdealiLoKo on 2025-01-25 13:53_
+_@AbdealiLoKo_
 
 ### Summary
 

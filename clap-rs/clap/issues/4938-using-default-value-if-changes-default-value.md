@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-24T18:59:58Z
 updated_at: 2023-05-24T21:19:19Z
 url: https://github.com/clap-rs/clap/issues/4938
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Using `default_value_if` changes default value
 
 ---
 
-_Issue opened by @sw0x2A on 2023-05-24 18:59_
+_@sw0x2A_
 
 ### Please complete the following tasks
 

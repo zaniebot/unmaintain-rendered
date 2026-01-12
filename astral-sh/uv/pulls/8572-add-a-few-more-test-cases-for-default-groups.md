@@ -13,14 +13,14 @@ head: zb/default-group-test
 created_at: 2024-10-25T17:15:55Z
 updated_at: 2024-10-25T18:15:42Z
 url: https://github.com/astral-sh/uv/pull/8572
-synced_at: 2026-01-10T12:54:12Z
+synced_at: 2026-01-12T16:08:22Z
 ```
 
 # Add a few more test cases for `default-groups`
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-25 17:15_
+_@zanieb_
 
 _No description provided._
 

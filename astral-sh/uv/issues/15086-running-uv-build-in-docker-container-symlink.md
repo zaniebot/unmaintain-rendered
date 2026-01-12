@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-05T17:45:26Z
 updated_at: 2025-08-05T17:48:17Z
 url: https://github.com/astral-sh/uv/issues/15086
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # Running `uv build` in Docker container: `symlink destination for /usr/bin/python3 is outside of the target directory`
 
 ---
 
-_Issue opened by @alechouse97 on 2025-08-05 17:45_
+_@alechouse97_
 
 ### Summary
 

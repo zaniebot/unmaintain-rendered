@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-02T12:23:37Z
 updated_at: 2023-08-24T12:09:27Z
 url: https://github.com/astral-sh/ruff/issues/6271
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: overlong values without breakpoint are never parenthesized
 
 ---
 
-_Issue opened by @konstin on 2023-08-02 12:23_
+_@konstin_
 
 Overlong values in e.g. assignment position without sometimes be parenthesized, this seems to depend on whether parenthesizing actually help too not be overlong anymore. The first step of fixing this issue is figuring out the exact criteria for what is indented and what isn't.
 

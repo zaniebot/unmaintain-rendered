@@ -14,14 +14,14 @@ head: konsti/check-module-dir-exists
 created_at: 2025-04-09T13:10:12Z
 updated_at: 2025-04-09T15:47:02Z
 url: https://github.com/astral-sh/uv/pull/12779
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:23Z
 ```
 
 # Build backend: Check module dir exists for sdist build
 
 ---
 
-_Pull request opened by @konstin on 2025-04-09 13:10_
+_@konstin_
 
 Check that the source and module directory exist when build a source distribution, instead of delaying the check to building the wheel. This prevents building source distributions that can never be built into wheels.
 

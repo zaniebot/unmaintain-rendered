@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-31T19:50:15Z
 updated_at: 2023-03-31T19:54:04Z
 url: https://github.com/clap-rs/clap/issues/4816
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Short option names must be unique for each argument - Not detected during compilation
 
 ---
 
-_Issue opened by @ohaddahan on 2023-03-31 19:50_
+_@ohaddahan_
 
 ### Please complete the following tasks
 

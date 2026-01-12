@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-21T23:01:46Z
 updated_at: 2023-05-10T21:56:13Z
 url: https://github.com/astral-sh/ruff/issues/3106
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Suggested fix columns in JSON output may be off by 1
 
 ---
 
-_Issue opened by @tasgon on 2023-02-21 23:01_
+_@tasgon_
 
 Consider the following file:
 ```py

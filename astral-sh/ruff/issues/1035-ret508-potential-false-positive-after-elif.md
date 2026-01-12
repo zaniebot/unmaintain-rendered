@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-04T15:06:51Z
 updated_at: 2023-11-04T23:42:53Z
 url: https://github.com/astral-sh/ruff/issues/1035
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # RET508 potential false positive after elif
 
 ---
 
-_Issue opened by @LefterisJP on 2022-12-04 15:06_
+_@LefterisJP_
 
 This is with `ruff==0.0.155`
 

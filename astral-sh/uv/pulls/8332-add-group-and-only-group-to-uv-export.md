@@ -12,14 +12,14 @@ head: zb/735-group-export
 created_at: 2024-10-18T14:46:39Z
 updated_at: 2024-10-18T17:06:44Z
 url: https://github.com/astral-sh/uv/pull/8332
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:16Z
 ```
 
 # Add `--group` and `--only-group` to `uv export`
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-18 14:46_
+_@zanieb_
 
 Part of #8090 
 

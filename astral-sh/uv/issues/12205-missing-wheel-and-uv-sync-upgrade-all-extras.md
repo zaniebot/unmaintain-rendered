@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-16T21:43:42Z
 updated_at: 2025-03-17T02:37:37Z
 url: https://github.com/astral-sh/uv/issues/12205
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:58Z
 ```
 
 # missing wheel and `uv sync --upgrade --all-extras`
 
 ---
 
-_Issue opened by @jorgeperezg on 2025-03-16 21:43_
+_@jorgeperezg_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: charlie/place
 created_at: 2025-12-19T18:19:21Z
 updated_at: 2025-12-24T04:19:59Z
 url: https://github.com/astral-sh/ruff/pull/22093
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Store un-widened type in `Place`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-19 18:19_
+_@charliermarsh_
 
 ## Summary
 

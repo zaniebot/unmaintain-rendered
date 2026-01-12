@@ -13,14 +13,14 @@ head: fix/wrong-fix-article
 created_at: 2024-08-11T01:13:06Z
 updated_at: 2024-08-11T01:29:58Z
 url: https://github.com/astral-sh/ruff/pull/12797
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [Minor typo] Fix article in "an fix"
 
 ---
 
-_Pull request opened by @yury-fedotov on 2024-08-11 01:13_
+_@yury-fedotov_
 
 Fixing a minor typo I came across: "an fix" -> "a fix".
 

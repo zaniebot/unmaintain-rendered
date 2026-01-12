@@ -13,14 +13,14 @@ head: fix-diff
 created_at: 2023-10-09T05:38:46Z
 updated_at: 2023-11-26T16:26:04Z
 url: https://github.com/astral-sh/ruff/pull/7855
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Fix diff (old and new were reversed)
 
 ---
 
-_Pull request opened by @bluthej on 2023-10-09 05:38_
+_@bluthej_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

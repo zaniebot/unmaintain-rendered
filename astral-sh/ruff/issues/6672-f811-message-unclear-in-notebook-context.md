@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-18T08:24:41Z
 updated_at: 2024-01-04T14:02:24Z
 url: https://github.com/astral-sh/ruff/issues/6672
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # F811: Message unclear in Notebook context
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-18 08:24_
+_@MichaReiser_
 
 ## Input
 

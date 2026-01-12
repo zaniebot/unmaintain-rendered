@@ -12,14 +12,14 @@ head: 15960-implement-attributes-implicitly-declared-via-param-types
 created_at: 2025-02-12T03:14:18Z
 updated_at: 2025-03-30T20:46:03Z
 url: https://github.com/astral-sh/ruff/pull/16111
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Implement support for attributes implicitly declared via their parameter types
 
 ---
 
-_Pull request opened by @mishamsk on 2025-02-12 03:14_
+_@mishamsk_
 
 ## Summary
 

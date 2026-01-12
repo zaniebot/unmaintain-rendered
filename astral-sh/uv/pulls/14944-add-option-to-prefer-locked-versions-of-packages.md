@@ -14,14 +14,14 @@ head: zb/lock-extra-build-dependencies
 created_at: 2025-07-28T19:04:52Z
 updated_at: 2025-08-07T13:50:11Z
 url: https://github.com/astral-sh/uv/pull/14944
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:30Z
 ```
 
 # Add option to prefer locked versions of packages in build environments
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-28 19:04_
+_@zanieb_
 
 Adds a new `build-dependency-strategy = latest | prefer-locked` setting. `latest` is the current behavior. `prefer-locked` will prefer to use locked versions of runtime dependencies for build dependencies when they match. This is intended to work with #14735 to allow adding `torch` as an extra build dependency for `flash-attn` and prefer using the same version as you would at runtime (that's what `flash-attn` requires, but it's usually achieved by disabling build isolation).
 

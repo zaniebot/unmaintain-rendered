@@ -10,14 +10,14 @@ assignees: []
 created_at: 2018-09-05T11:19:28Z
 updated_at: 2022-01-11T18:47:57Z
 url: https://github.com/clap-rs/clap/issues/1337
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Consider supporting the CWL standard CommandLineTool for YAML specification of a CLI interface
 
 ---
 
-_Issue opened by @mr-c on 2018-09-05 11:19_
+_@mr-c_
 
 ### Bug or Feature Request Summary
 

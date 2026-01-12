@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-09T14:14:05Z
 updated_at: 2023-11-28T05:39:43Z
 url: https://github.com/astral-sh/uv/issues/376
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Unify distribution handling and caching between resolver and installer
 
 ---
 
-_Issue opened by @konstin on 2023-11-09 14:14_
+_@konstin_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/flags
 created_at: 2026-01-09T15:51:07Z
 updated_at: 2026-01-09T16:32:52Z
 url: https://github.com/astral-sh/uv/pull/17381
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:45Z
 ```
 
 # Include headers when uploading to S3
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-09 15:51_
+_@charliermarsh_
 
 ## Summary
 

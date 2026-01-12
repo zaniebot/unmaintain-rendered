@@ -13,14 +13,14 @@ head: zb/pre-up
 created_at: 2025-10-07T19:39:27Z
 updated_at: 2025-10-07T20:07:12Z
 url: https://github.com/astral-sh/uv/pull/16160
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:08Z
 ```
 
 # Ban pre-release versions in `uv python upgrade` requests
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-07 19:39_
+_@zanieb_
 
 _No description provided._
 

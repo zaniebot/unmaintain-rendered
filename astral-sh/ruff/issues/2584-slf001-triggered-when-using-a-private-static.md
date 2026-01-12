@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-05T17:17:12Z
 updated_at: 2023-02-05T23:39:28Z
 url: https://github.com/astral-sh/ruff/issues/2584
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # SLF001 triggered when using a private static method within the class
 
 ---
 
-_Issue opened by @twoertwein on 2023-02-05 17:17_
+_@twoertwein_
 
 ```py
 class A:

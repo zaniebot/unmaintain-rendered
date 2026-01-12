@@ -13,14 +13,14 @@ head: zb/python-exec-default
 created_at: 2024-10-28T22:48:47Z
 updated_at: 2024-12-03T01:05:00Z
 url: https://github.com/astral-sh/uv/pull/8650
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:25Z
 ```
 
 # Add `uv python install --default`
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-28 22:48_
+_@zanieb_
 
 This pull request is best viewed with [whitespace hidden](https://github.com/astral-sh/uv/pull/8650/files?diff=unified&w=1)
 

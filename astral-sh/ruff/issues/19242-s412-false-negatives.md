@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-09T18:16:08Z
 updated_at: 2025-07-09T18:29:58Z
 url: https://github.com/astral-sh/ruff/issues/19242
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `S412` false negatives
 
 ---
 
-_Issue opened by @ntBre on 2025-07-09 18:16_
+_@ntBre_
 
 [suspicious-httpoxy-import (S412)](https://docs.astral.sh/ruff/rules/suspicious-httpoxy-import/#suspicious-httpoxy-import-s412) has false negatives, as uncovered in #19009. The rule currently only applies to `ImportFrom` statements, not calls to the insecure code:
 

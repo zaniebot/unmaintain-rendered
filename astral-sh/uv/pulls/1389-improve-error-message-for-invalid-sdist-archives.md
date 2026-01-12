@@ -13,14 +13,14 @@ head: invalid-archive-error
 created_at: 2024-02-15T23:46:10Z
 updated_at: 2024-02-16T00:03:56Z
 url: https://github.com/astral-sh/uv/pull/1389
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:36Z
 ```
 
 # Improve error message for invalid sdist archives
 
 ---
 
-_Pull request opened by @robin-nitrokey on 2024-02-15 23:46_
+_@robin-nitrokey_
 
 This PR improves the error message for the problem described in https://github.com/astral-sh/uv/issues/1376.  The original output duplicates the actual error message and includes lots of noise (`DirEntry { inner: DirEntry(...) }`).
 

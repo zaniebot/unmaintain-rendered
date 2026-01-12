@@ -13,14 +13,14 @@ head: dhruv/deduplicate-expr-error-handling
 created_at: 2024-04-07T02:23:46Z
 updated_at: 2024-04-09T09:07:49Z
 url: https://github.com/astral-sh/ruff/pull/10809
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Avoid error handling duplication for starred, yield, lambda expressions
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-07 02:23_
+_@dhruvmanila_
 
 ## Summary
 

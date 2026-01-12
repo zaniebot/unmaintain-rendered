@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-26T03:59:07Z
 updated_at: 2025-04-26T17:42:09Z
 url: https://github.com/astral-sh/uv/issues/13116
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # [Doc, CLI] Add mentions to `pylock.toml` where appropriate
 
 ---
 
-_Issue opened by @ReinforcedKnowledge on 2025-04-26 03:59_
+_@ReinforcedKnowledge_
 
 ### Summary
 

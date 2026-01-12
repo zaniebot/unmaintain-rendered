@@ -13,14 +13,14 @@ head: fix-pycodestyle-max-line-length-link
 created_at: 2024-02-26T13:38:25Z
 updated_at: 2024-02-26T13:58:13Z
 url: https://github.com/astral-sh/ruff/pull/10136
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # docs: fix pycodestyle.max-line-length link
 
 ---
 
-_Pull request opened by @arkinmodi on 2024-02-26 13:38_
+_@arkinmodi_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

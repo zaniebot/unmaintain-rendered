@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-25T14:52:39Z
 updated_at: 2023-05-09T06:43:06Z
 url: https://github.com/astral-sh/ruff/issues/4094
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # C419 autofix can remove comment
 
 ---
 
-_Issue opened by @Skylion007 on 2023-04-25 14:52_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

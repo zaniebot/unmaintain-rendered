@@ -13,14 +13,14 @@ head: doc/w505-max-doc-length
 created_at: 2023-07-25T04:34:48Z
 updated_at: 2023-07-25T15:58:26Z
 url: https://github.com/astral-sh/ruff/pull/6052
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # `pycodestyle.max-doc-length` doc updates
 
 ---
 
-_Pull request opened by @scop on 2023-07-25 04:34_
+_@scop_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

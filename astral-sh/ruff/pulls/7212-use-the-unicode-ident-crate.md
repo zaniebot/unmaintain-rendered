@@ -14,14 +14,14 @@ head: use-unicode-ident
 created_at: 2023-09-07T08:06:38Z
 updated_at: 2023-09-07T08:25:33Z
 url: https://github.com/astral-sh/ruff/pull/7212
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Use the unicode-ident crate
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-07 08:06_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

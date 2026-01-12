@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-10T17:48:03Z
 updated_at: 2025-08-29T12:39:59Z
 url: https://github.com/astral-sh/uv/issues/12101
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # uv installer erroneously complains about shadowed commands
 
 ---
 
-_Issue opened by @thatch on 2025-03-10 17:48_
+_@thatch_
 
 ### Summary
 

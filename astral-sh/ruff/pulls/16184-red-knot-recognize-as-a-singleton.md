@@ -13,14 +13,14 @@ head: alex/ellipsistype-singleton
 created_at: 2025-02-16T14:22:18Z
 updated_at: 2025-02-16T22:01:03Z
 url: https://github.com/astral-sh/ruff/pull/16184
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Recognize `...` as a singleton
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-16 14:22_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-20T10:29:53Z
 updated_at: 2024-09-24T15:28:33Z
 url: https://github.com/astral-sh/uv/issues/7579
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # uv hangs when PyPI is timing out, even when installing a local wheel with all dependencies being met
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-09-20 10:29_
+_@ThiefMaster_
 
 A few days ago, `uv pip install ...` just got stuck for me because `https://pypi.org/simple/lxml/` was timing out.
 

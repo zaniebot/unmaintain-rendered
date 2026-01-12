@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-11T00:12:23Z
 updated_at: 2023-05-11T02:43:29Z
 url: https://github.com/astral-sh/ruff/issues/4363
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Linter panic] so-vits-svc-fork-main\src\so_vits_svc_fork\modules\mel_processing.py
 
 ---
 
-_Issue opened by @FishAlchemist on 2023-05-11 00:12_
+_@FishAlchemist_
 
 ## File Source 
 https://github.com/voicepaw/so-vits-svc-fork/blob/69560c4134bebbafb921d16b34896e5d68a01531/src/so_vits_svc_fork/modules/mel_processing.py

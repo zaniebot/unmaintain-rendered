@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-04-24T04:20:05Z
 updated_at: 2018-08-02T03:30:05Z
 url: https://github.com/clap-rs/clap/issues/940
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Bug/inconsistency with the help formatting
 
 ---
 
-_Issue opened by @golddranks on 2017-04-24 04:20_
+_@golddranks_
 
 Not sure if this is intended or not, but I can't see any reason for this: the value name of trailing var arguments is printed differently in the usage string from how it's printed in the argument list.
 

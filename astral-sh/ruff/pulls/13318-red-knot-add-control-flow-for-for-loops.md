@@ -13,14 +13,14 @@ head: alex/for-loop-flow
 created_at: 2024-09-10T20:57:59Z
 updated_at: 2024-09-10T22:14:00Z
 url: https://github.com/astral-sh/ruff/pull/13318
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Add control flow for `for` loops
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-10 20:57_
+_@AlexWaygood_
 
 ## Summary
 

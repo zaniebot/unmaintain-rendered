@@ -13,14 +13,14 @@ head: charlie/auto
 created_at: 2024-01-26T14:48:13Z
 updated_at: 2024-01-26T15:02:48Z
 url: https://github.com/astral-sh/ruff/pull/9650
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Add Pydantic's `BaseConfig` to default-copy list
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-26 14:48_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9647.
 

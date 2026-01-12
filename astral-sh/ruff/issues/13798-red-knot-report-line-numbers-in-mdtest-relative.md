@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-17T17:06:00Z
 updated_at: 2024-10-22T07:42:41Z
 url: https://github.com/astral-sh/ruff/issues/13798
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Report line numbers in mdtest relative to the markdown file, not the test snippet
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-10-17 17:06_
+_@AlexWaygood_
 
 Currently if an assertion in `mdtest` fails, it gives you a message as follows:
 

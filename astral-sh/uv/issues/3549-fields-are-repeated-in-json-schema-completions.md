@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-13T15:00:01Z
 updated_at: 2024-05-14T00:18:54Z
 url: https://github.com/astral-sh/uv/issues/3549
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Fields are repeated in JSON Schema completions
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-13 15:00_
+_@charliermarsh_
 
 Not sure who is at fault (the schema or the plugin):
 

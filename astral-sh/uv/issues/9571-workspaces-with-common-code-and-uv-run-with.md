@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-02T09:06:46Z
 updated_at: 2025-05-16T07:19:43Z
 url: https://github.com/astral-sh/uv/issues/9571
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # Workspaces with common code and `uv run` with subset of packages?
 
 ---
 
-_Issue opened by @bepuca on 2024-12-02 09:06_
+_@bepuca_
 
 Hello! I am using workspaces for my project and they are really a game changer. I was waiting for some tooling supporting this nicely for a very very long time and had to do different shanenigans to simulate it. Now, I have a bit of a specific situation and I am unsure what would be the recommended way to solve it using `uv`. I have the hunch it is solvable in a nice way but I am not sure how to put the pieces together.
 

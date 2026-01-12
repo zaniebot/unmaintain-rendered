@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-07-13T15:15:12Z
 updated_at: 2022-07-13T15:36:57Z
 url: https://github.com/clap-rs/clap/issues/3924
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # clap_derive CommandFactory::command_for_update implementations set required to true by default instead of true
 
 ---
 
-_Issue opened by @AndreasBackx on 2022-07-13 15:15_
+_@AndreasBackx_
 
 ### Please complete the following tasks
 

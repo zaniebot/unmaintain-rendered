@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-13T10:39:18Z
 updated_at: 2024-03-21T02:38:13Z
 url: https://github.com/astral-sh/ruff/issues/10380
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # ruff check --fix changes Jupyter notebook output data
 
 ---
 
-_Issue opened by @dionhaefner on 2024-03-13 10:39_
+_@dionhaefner_
 
 Notebook to reproduce:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-12T16:50:58Z
 updated_at: 2024-05-21T19:37:25Z
 url: https://github.com/astral-sh/uv/issues/2386
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Selecting a Python interpreter
 
 ---
 
-_Issue opened by @zanieb on 2024-03-12 16:50_
+_@zanieb_
 
 In #2338 some questions came up around Python interpreter selection. Here we'll summarize our expected behavior and have some discussion around it.
 

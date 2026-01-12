@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-13T00:24:01Z
 updated_at: 2025-11-13T00:24:01Z
 url: https://github.com/astral-sh/ty/issues/1536
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support functools.partial
 
 ---
 
-_Issue opened by @carljm on 2025-11-13 00:24_
+_@carljm_
 
 The type stubs for `partial` can't describe its behavior in a useful way, so type checkers special case it. We should too, so that the return type of `partial` tracks the full underlying signature and the partial arguments provided, and we can later combine the partial arguments with newly-supplied arguments and check them against the wrapped signature. For example:
 

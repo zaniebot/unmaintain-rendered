@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-10-27T16:36:25Z
 updated_at: 2018-08-02T03:30:13Z
 url: https://github.com/clap-rs/clap/issues/1086
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Deprecation warnings
 
 ---
 
-_Issue opened by @durka on 2017-10-27 16:36_
+_@durka_
 
 When compiling clap from git master, I get a bunch of warnings from within clap:
 

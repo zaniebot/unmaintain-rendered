@@ -13,14 +13,14 @@ head: brent/s704-link
 created_at: 2025-12-17T22:14:37Z
 updated_at: 2025-12-17T22:35:06Z
 url: https://github.com/astral-sh/ruff/pull/22039
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [`flake8-bandit`] Fix broken link (`S704`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-12-17 22:14_
+_@ntBre_
 
 Summary
 --

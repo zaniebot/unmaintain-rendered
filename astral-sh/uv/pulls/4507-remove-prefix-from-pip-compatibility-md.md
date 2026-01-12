@@ -13,14 +13,14 @@ head: remove-prefix-from-compatibility
 created_at: 2024-06-25T04:51:24Z
 updated_at: 2024-06-25T12:43:23Z
 url: https://github.com/astral-sh/uv/pull/4507
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:16Z
 ```
 
 # Remove --prefix from PIP_COMPATIBILITY.md
 
 ---
 
-_Pull request opened by @ericmarkmartin on 2024-06-25 04:51_
+_@ericmarkmartin_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

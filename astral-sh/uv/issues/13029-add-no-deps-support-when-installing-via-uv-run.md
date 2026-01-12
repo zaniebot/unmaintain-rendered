@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-21T22:49:10Z
 updated_at: 2025-12-31T18:47:38Z
 url: https://github.com/astral-sh/uv/issues/13029
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # Add `--no-deps` support when installing via `uv run --with <pkg>`?
 
 ---
 
-_Issue opened by @LewisGaul on 2025-04-21 22:49_
+_@LewisGaul_
 
 ### Summary
 

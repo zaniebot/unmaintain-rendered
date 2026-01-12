@@ -11,14 +11,14 @@ head: feature/relative-sibling-imports
 created_at: 2023-04-16T16:48:03Z
 updated_at: 2023-10-19T15:04:47Z
 url: https://github.com/astral-sh/ruff/pull/3986
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add supports for TID253/relative-siblings rule
 
 ---
 
-_Pull request opened by @noirbizarre on 2023-04-16 16:48_
+_@noirbizarre_
 
 This PR is the `ruff` counterpart of adamchainz/flake8-tidy-imports#441.
 

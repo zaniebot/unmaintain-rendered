@@ -13,14 +13,14 @@ head: moduletype-attrs
 created_at: 2024-10-24T11:02:02Z
 updated_at: 2024-10-29T11:39:47Z
 url: https://github.com/astral-sh/ruff/pull/13904
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Fallback to attributes on types.ModuleType if a symbol can't be found in locals or globals
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-24 11:02_
+_@AlexWaygood_
 
 ## Summary
 

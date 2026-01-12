@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-06T07:16:45Z
 updated_at: 2025-05-06T10:11:11Z
 url: https://github.com/astral-sh/uv/issues/13309
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # Permission Denied: Running UV Installed Python with Non-Root User
 
 ---
 
-_Issue opened by @yxtay on 2025-05-06 07:16_
+_@yxtay_
 
 ### Question
 

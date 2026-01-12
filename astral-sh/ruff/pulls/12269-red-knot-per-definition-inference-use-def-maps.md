@@ -13,14 +13,14 @@ head: cjm/defs
 created_at: 2024-07-10T06:55:21Z
 updated_at: 2024-07-18T16:39:48Z
 url: https://github.com/astral-sh/ruff/pull/12269
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] per-definition inference, use-def maps
 
 ---
 
-_Pull request opened by @carljm on 2024-07-10 06:55_
+_@carljm_
 
 Implements definition-level type inference, with basic control flow (only if statements and if expressions so far) in Salsa.
 

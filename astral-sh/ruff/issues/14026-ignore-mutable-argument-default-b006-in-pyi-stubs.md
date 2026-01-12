@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-31T21:31:36Z
 updated_at: 2024-11-03T02:48:49Z
 url: https://github.com/astral-sh/ruff/issues/14026
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Ignore `mutable-argument-default (B006)` in `.pyi` stubs
 
 ---
 
-_Issue opened by @jorenham on 2024-10-31 21:31_
+_@jorenham_
 
 [Mutable argument defaults](https://docs.astral.sh/ruff/rules/mutable-argument-default/) can only be a problem at runtime. But at the moment, `B006` will also be reported in `.pyi` stub files, even though it is certain that mutations can never occur there.
 

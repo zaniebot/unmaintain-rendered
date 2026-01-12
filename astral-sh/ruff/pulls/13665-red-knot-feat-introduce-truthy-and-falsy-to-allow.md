@@ -12,14 +12,14 @@ head: feat/truthy-falsy-type-narrowing
 created_at: 2024-10-07T15:56:05Z
 updated_at: 2024-10-28T10:06:21Z
 url: https://github.com/astral-sh/ruff/pull/13665
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] feat: Introduce `Truthy` and `Falsy` to allow more precise typing
 
 ---
 
-_Pull request opened by @Slyces on 2024-10-07 15:56_
+_@Slyces_
 
 ## Summary
 

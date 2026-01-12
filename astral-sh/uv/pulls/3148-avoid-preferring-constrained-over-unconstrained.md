@@ -13,14 +13,14 @@ head: charlie/prio
 created_at: 2024-04-19T23:16:27Z
 updated_at: 2024-04-19T23:30:09Z
 url: https://github.com/astral-sh/uv/pull/3148
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:27Z
 ```
 
 # Avoid preferring constrained over unconstrained packages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-19 23:16_
+_@charliermarsh_
 
 ## Summary
 

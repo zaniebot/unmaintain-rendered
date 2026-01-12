@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-06T08:33:01Z
 updated_at: 2025-02-06T12:12:19Z
 url: https://github.com/astral-sh/uv/issues/11275
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # `uv sync` not working when running through ssh on windows
 
 ---
 
-_Issue opened by @Chiggy-Playz on 2025-02-06 08:33_
+_@Chiggy-Playz_
 
 ### Summary
 

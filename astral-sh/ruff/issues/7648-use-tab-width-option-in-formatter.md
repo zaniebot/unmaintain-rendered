@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-25T09:20:29Z
 updated_at: 2023-10-18T23:48:17Z
 url: https://github.com/astral-sh/ruff/issues/7648
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Use `tab_width` option in formatter
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-25 09:20_
+_@MichaReiser_
 
 Allow customizing the `tab_width` in the formatter by respecting the global `tab_width` (`tab-size` today) option. 
 

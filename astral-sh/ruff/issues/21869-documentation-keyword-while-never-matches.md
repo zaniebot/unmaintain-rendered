@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-09T17:58:21Z
 updated_at: 2025-12-10T02:03:00Z
 url: https://github.com/astral-sh/ruff/issues/21869
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Documentation: keyword `while` never matches anything (not even a rule name)
 
 ---
 
-_Issue opened by @Avasam on 2025-12-09 17:58_
+_@Avasam_
 
 ### Summary
 

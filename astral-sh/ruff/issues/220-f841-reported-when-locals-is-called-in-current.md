@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-18T02:15:22Z
 updated_at: 2023-02-03T18:28:29Z
 url: https://github.com/astral-sh/ruff/issues/220
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # F841 reported when locals() is called in current scope
 
 ---
 
-_Issue opened by @Jackenmen on 2022-09-18 02:15_
+_@Jackenmen_
 
 I found this while comparing some of pylint's errors to flake8/ruff's - pyflakes ignores unused variables if `locals()` is used in the current scope:
 ```py

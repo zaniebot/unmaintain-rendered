@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-22T22:19:16Z
 updated_at: 2025-12-22T22:37:57Z
 url: https://github.com/astral-sh/ty/issues/2173
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Some operations on `NewType`s do not preserve their `NewType`-ness
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-12-22 22:19_
+_@MeGaGiGaGon_
 
 ### Summary
 

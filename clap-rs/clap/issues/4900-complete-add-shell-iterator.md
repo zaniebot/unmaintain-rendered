@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-12T04:22:25Z
 updated_at: 2023-05-13T18:36:46Z
 url: https://github.com/clap-rs/clap/issues/4900
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # complete: Add `Shell` iterator
 
 ---
 
-_Issue opened by @CosmicHorrorDev on 2023-05-12 04:22_
+_@CosmicHorrorDev_
 
 ### Please complete the following tasks
 

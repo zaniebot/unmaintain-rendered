@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-09T18:29:51Z
 updated_at: 2025-11-18T16:10:22Z
 url: https://github.com/astral-sh/ty/issues/222
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # `type[Any]` is equivalent to `type & Any`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-01-09 18:29_
+_@AlexWaygood_
 
 The type `type[Any]` is exactly equivalent to `type & Any` (or `type[object] & Any`). Conceptually, these are all equivalent spellings of "a type of unknown size and bounds, but which is known to be no larger than the type `type`[^1]". By the same token, `type[Unknown]` is equivalent to `type & Unknown`; `type[@Todo("do the thing")]` is equivalent to `type & @Todo("do the thing")`.
 

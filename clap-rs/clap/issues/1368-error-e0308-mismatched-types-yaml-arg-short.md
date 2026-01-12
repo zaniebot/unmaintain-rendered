@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-10-31T17:06:03Z
 updated_at: 2018-11-10T00:04:23Z
 url: https://github.com/clap-rs/clap/issues/1368
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # error[E0308]: mismatched types yaml Arg::short
 
 ---
 
-_Issue opened by @andrewmiller1 on 2018-10-31 17:06_
+_@andrewmiller1_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

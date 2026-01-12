@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-22T15:39:33Z
 updated_at: 2024-06-26T21:17:26Z
 url: https://github.com/clap-rs/clap/issues/5040
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `value_terminator` has no effect when it is the first argument
 
 ---
 
-_Issue opened by @mamekoro on 2023-07-22 15:39_
+_@mamekoro_
 
 ### Please complete the following tasks
 

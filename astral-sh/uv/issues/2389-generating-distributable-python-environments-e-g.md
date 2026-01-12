@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-12T18:52:17Z
 updated_at: 2025-06-11T11:23:52Z
 url: https://github.com/astral-sh/uv/issues/2389
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Generating distributable python environments (e.g. for use in PySpark)
 
 ---
 
-_Issue opened by @brendan-morin on 2024-03-12 18:52_
+_@brendan-morin_
 
 Hi! Let's start off - this is a low priority issue and more something to think about as you continue to build out functionality and your roadmap. I understand uv uses something like copy-on-write or symbolic linking to create the environments, which helps provide its speed. 
 

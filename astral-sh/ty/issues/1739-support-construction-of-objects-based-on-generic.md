@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-03T09:37:21Z
 updated_at: 2025-12-10T16:58:54Z
 url: https://github.com/astral-sh/ty/issues/1739
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Support construction of objects based on generic implicit/PEP-613 type aliases
 
 ---
 
-_Issue opened by @sharkdp on 2025-12-03 09:37_
+_@sharkdp_
 
 We should support construction of objects based on (some) generic implicit/PEP-613 type aliases:
 

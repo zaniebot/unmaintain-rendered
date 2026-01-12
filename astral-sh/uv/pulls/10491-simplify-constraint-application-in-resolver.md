@@ -12,14 +12,14 @@ head: charlie/sim
 created_at: 2025-01-11T02:30:55Z
 updated_at: 2025-01-11T03:30:50Z
 url: https://github.com/astral-sh/uv/pull/10491
-synced_at: 2026-01-10T11:44:52Z
+synced_at: 2026-01-12T16:09:19Z
 ```
 
 # Simplify constraint application in resolver
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-11 02:30_
+_@charliermarsh_
 
 _No description provided._
 

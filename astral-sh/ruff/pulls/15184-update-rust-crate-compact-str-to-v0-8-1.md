@@ -13,14 +13,14 @@ head: renovate/compact_str-0.x-lockfile
 created_at: 2024-12-30T02:15:48Z
 updated_at: 2024-12-30T02:28:58Z
 url: https://github.com/astral-sh/ruff/pull/15184
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Update Rust crate compact_str to v0.8.1
 
 ---
 
-_Pull request opened by @renovate on 2024-12-30 02:15_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-10T07:30:07Z
 updated_at: 2025-07-10T07:34:29Z
 url: https://github.com/astral-sh/ty/issues/795
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Type narrowing with `assert x is not None` does not work with `global`
 
 ---
 
-_Issue opened by @thorbenk on 2025-07-10 07:30_
+_@thorbenk_
 
 ### Summary
 

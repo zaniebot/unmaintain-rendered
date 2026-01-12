@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-10T11:13:41Z
 updated_at: 2025-12-10T16:18:11Z
 url: https://github.com/astral-sh/ty/issues/1513
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `issubclass()` narrowing leads to incorrect results for a generic `@final` class
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-10 11:13_
+_@AlexWaygood_
 
 ### Summary
 

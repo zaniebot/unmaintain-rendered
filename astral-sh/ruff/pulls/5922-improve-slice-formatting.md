@@ -13,14 +13,14 @@ head: format-slice
 created_at: 2023-07-20T14:39:45Z
 updated_at: 2023-07-20T15:34:08Z
 url: https://github.com/astral-sh/ruff/pull/5922
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Improve slice formatting
 
 ---
 
-_Pull request opened by @lkh42t on 2023-07-20 14:39_
+_@lkh42t_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

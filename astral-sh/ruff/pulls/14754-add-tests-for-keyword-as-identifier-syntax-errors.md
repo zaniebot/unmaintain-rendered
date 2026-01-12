@@ -13,14 +13,14 @@ head: dhruv/keyword-as-identifier
 created_at: 2024-12-03T11:25:28Z
 updated_at: 2024-12-05T12:02:51Z
 url: https://github.com/astral-sh/ruff/pull/14754
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Add tests for "keyword as identifier" syntax errors
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-12-03 11:25_
+_@dhruvmanila_
 
 ## Summary
 

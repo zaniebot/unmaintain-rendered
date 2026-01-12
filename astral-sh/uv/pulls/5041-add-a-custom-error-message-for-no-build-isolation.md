@@ -13,14 +13,14 @@ head: charlie/torch
 created_at: 2024-07-13T21:04:37Z
 updated_at: 2024-07-13T21:12:27Z
 url: https://github.com/astral-sh/uv/pull/5041
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:36Z
 ```
 
 # Add a custom error message for `--no-build-isolation` `torch` dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-13 21:04_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-11T12:25:43Z
 updated_at: 2025-12-15T14:26:16Z
 url: https://github.com/astral-sh/uv/issues/17083
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # `uv add` fails if UV_GIT_LFS=1
 
 ---
 
-_Issue opened by @kod-kristoff on 2025-12-11 12:25_
+_@kod-kristoff_
 
 ### Summary
 

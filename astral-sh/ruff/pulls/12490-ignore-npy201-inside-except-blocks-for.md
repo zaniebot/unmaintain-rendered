@@ -13,14 +13,14 @@ head: alex/numpy-depr
 created_at: 2024-07-24T12:32:45Z
 updated_at: 2024-08-02T16:08:58Z
 url: https://github.com/astral-sh/ruff/pull/12490
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Ignore `NPY201` inside `except` blocks for compatibility with older numpy versions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-24 12:32_
+_@AlexWaygood_
 
 ## Summary
 

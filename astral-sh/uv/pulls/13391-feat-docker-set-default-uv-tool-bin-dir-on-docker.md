@@ -13,14 +13,14 @@ head: docker-default-uv-tool-bin-dir
 created_at: 2025-05-12T01:47:13Z
 updated_at: 2025-08-04T03:26:55Z
 url: https://github.com/astral-sh/uv/pull/13391
-synced_at: 2026-01-10T06:44:32Z
+synced_at: 2026-01-12T16:10:40Z
 ```
 
 # feat(docker): set default `UV_TOOL_BIN_DIR` on docker images
 
 ---
 
-_Pull request opened by @samypr100 on 2025-05-12 01:47_
+_@samypr100_
 
 ## Summary
 

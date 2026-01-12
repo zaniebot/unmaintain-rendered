@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-10-25T16:30:08Z
 updated_at: 2025-10-27T01:54:23Z
 url: https://github.com/astral-sh/uv/pull/16450
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:15Z
 ```
 
 # Upgrade setup-python action to version 6
 
 ---
 
-_Pull request opened by @sadikkuzu on 2025-10-25 16:30_
+_@sadikkuzu_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

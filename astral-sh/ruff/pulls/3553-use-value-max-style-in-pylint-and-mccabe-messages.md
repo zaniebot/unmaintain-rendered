@@ -12,14 +12,14 @@ head: fix/add-max-complexity-to-message
 created_at: 2023-03-16T03:25:40Z
 updated_at: 2023-03-16T06:32:17Z
 url: https://github.com/astral-sh/ruff/pull/3553
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Use `value > max` style in pylint and mccabe messages
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2023-03-16 03:25_
+_@edgarrmondragon_
 
 Closes https://github.com/charliermarsh/ruff/issues/3539
 

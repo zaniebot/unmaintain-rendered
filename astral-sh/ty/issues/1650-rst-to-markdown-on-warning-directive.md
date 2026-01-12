@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-27T03:27:40Z
 updated_at: 2025-11-28T13:27:53Z
 url: https://github.com/astral-sh/ty/issues/1650
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # RST to markdown on warning directive
 
 ---
 
-_Issue opened by @klonuo on 2025-11-27 03:27_
+_@klonuo_
 
 Hi,
 

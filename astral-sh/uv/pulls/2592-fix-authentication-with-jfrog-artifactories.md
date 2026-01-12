@@ -13,14 +13,14 @@ head: zb/fix-jfrog
 created_at: 2024-03-21T16:22:12Z
 updated_at: 2024-03-21T17:10:44Z
 url: https://github.com/astral-sh/uv/pull/2592
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:07Z
 ```
 
 # Fix authentication with JFrog artifactories
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-21 16:22_
+_@zanieb_
 
 Closes #2566 
 

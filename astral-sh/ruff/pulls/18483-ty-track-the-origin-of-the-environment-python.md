@@ -14,14 +14,14 @@ head: alex/track-python-setting-origin
 created_at: 2025-06-05T18:17:58Z
 updated_at: 2025-06-11T10:50:29Z
 url: https://github.com/astral-sh/ruff/pull/18483
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Track the origin of the `environment.python` setting for better error messages
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-05 18:17_
+_@AlexWaygood_
 
 ## Summary
 

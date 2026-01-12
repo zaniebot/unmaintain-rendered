@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-25T21:44:32Z
 updated_at: 2023-04-27T18:53:28Z
 url: https://github.com/astral-sh/ruff/issues/4103
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Request: autofix for EM102 with `msg`
 
 ---
 
-_Issue opened by @jamesbraza on 2023-04-25 21:44_
+_@jamesbraza_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: charlie/gourgeist
 created_at: 2024-03-01T18:53:05Z
 updated_at: 2024-03-01T19:02:41Z
 url: https://github.com/astral-sh/uv/pull/2118
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:52Z
 ```
 
 # Rename `gourgeist` to `uv-virtualenv`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-01 18:53_
+_@charliermarsh_
 
 As agreed on Discord!
 

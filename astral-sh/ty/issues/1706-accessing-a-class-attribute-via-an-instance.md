@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-01T13:47:29Z
 updated_at: 2025-12-01T21:33:22Z
 url: https://github.com/astral-sh/ty/issues/1706
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Accessing a class attribute via an instance produces Unknown type
 
 ---
 
-_Issue opened by @alex on 2025-12-01 13:47_
+_@alex_
 
 ### Summary
 

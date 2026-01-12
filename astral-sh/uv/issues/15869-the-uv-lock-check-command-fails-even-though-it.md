@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-15T08:07:55Z
 updated_at: 2025-10-01T15:03:44Z
 url: https://github.com/astral-sh/uv/issues/15869
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # The uv lock --check command fails even though it should pass.
 
 ---
 
-_Issue opened by @yshiftanlightricks on 2025-09-15 08:07_
+_@yshiftanlightricks_
 
 ### Summary
 

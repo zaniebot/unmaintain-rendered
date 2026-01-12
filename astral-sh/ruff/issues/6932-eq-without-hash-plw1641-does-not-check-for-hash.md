@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-28T07:16:45Z
 updated_at: 2024-12-10T00:26:26Z
 url: https://github.com/astral-sh/ruff/issues/6932
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `eq-without-hash` (`PLW1641`) does not check for `__hash__` in superclasses
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-28 07:16_
+_@DetachHead_
 
 i noticed this is mentioned [in the rule's docs](https://beta.ruff.rs/docs/rules/eq-without-hash/) but i'm raising it because i couldn't see an issue for it
 

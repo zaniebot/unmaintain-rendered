@@ -14,14 +14,14 @@ head: charlie/place
 created_at: 2025-12-24T13:57:40Z
 updated_at: 2026-01-06T17:24:53Z
 url: https://github.com/astral-sh/ruff/pull/22172
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Add named fields for `Place` enum
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-24 13:57_
+_@charliermarsh_
 
 ## Summary
 

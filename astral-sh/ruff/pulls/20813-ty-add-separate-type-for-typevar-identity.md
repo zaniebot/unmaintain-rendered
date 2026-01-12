@@ -15,14 +15,14 @@ head: dcreager/typevar-identity
 created_at: 2025-10-11T19:54:07Z
 updated_at: 2025-10-14T00:09:29Z
 url: https://github.com/astral-sh/ruff/pull/20813
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] Add separate type for typevar "identity"
 
 ---
 
-_Pull request opened by @dcreager on 2025-10-11 19:54_
+_@dcreager_
 
 As part of #20598, we added `is_identical_to` methods to `TypeVarInstance` and `BoundTypeVarInstance`, which compare when two typevar instances refer to "the same" underlying typevar, even if we have forced their lazy bounds/constraints as part of marking typevars as inferable. (Doing so results in a different salsa interned struct ID, since we've changed the contents of the `bounds_or_constraints` field.)
 

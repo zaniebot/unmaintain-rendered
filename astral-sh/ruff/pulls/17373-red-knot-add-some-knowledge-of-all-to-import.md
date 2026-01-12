@@ -13,14 +13,14 @@ head: alex/star-imports-dunder-all-2
 created_at: 2025-04-13T12:20:41Z
 updated_at: 2025-04-15T11:56:41Z
 url: https://github.com/astral-sh/ruff/pull/17373
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Add some knowledge of `__all__` to `*`-import machinery
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-13 12:20_
+_@AlexWaygood_
 
 ## Summary
 

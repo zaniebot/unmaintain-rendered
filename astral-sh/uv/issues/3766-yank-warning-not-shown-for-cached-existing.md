@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-22T20:02:19Z
 updated_at: 2024-05-22T21:21:38Z
 url: https://github.com/astral-sh/uv/issues/3766
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Yank warning not shown for cached / existing packages
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-05-22 20:02_
+_@notatallshaw-gts_
 
 This is presumably related to https://github.com/astral-sh/uv/issues/3703, not only do I not see the yank message in `uv pip compile` or `uv pip install --dry-run`. I no longer see it in `uv pip install`
 ```

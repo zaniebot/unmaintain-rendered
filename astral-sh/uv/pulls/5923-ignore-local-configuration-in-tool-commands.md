@@ -14,14 +14,14 @@ head: charlie/tool
 created_at: 2024-08-08T17:50:02Z
 updated_at: 2024-08-08T18:25:14Z
 url: https://github.com/astral-sh/uv/pull/5923
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:06Z
 ```
 
 # Ignore local configuration in tool commands
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-08 17:50_
+_@charliermarsh_
 
 ## Summary
 

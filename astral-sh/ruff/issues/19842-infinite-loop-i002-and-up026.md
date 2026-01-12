@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-09T13:35:47Z
 updated_at: 2025-09-12T20:45:27Z
 url: https://github.com/astral-sh/ruff/issues/19842
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [Infinite loop] I002 and UP026
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-09 13:35_
+_@dscorbett_
 
 ### Summary
 

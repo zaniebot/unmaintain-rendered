@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-23T12:26:24Z
 updated_at: 2025-06-13T06:57:02Z
 url: https://github.com/astral-sh/ruff/issues/16925
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # RET503 reported for method returning None only
 
 ---
 
-_Issue opened by @stefan6419846 on 2025-03-23 12:26_
+_@stefan6419846_
 
 ### Summary
 

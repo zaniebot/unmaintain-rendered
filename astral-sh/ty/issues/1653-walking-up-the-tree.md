@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-27T09:42:17Z
 updated_at: 2025-12-01T10:19:25Z
 url: https://github.com/astral-sh/ty/issues/1653
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Walking up the tree
 
 ---
 
-_Issue opened by @alexei on 2025-11-27 09:42_
+_@alexei_
 
 ### Question
 

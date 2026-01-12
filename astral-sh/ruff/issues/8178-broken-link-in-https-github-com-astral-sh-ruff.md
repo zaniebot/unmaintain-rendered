@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-24T19:32:59Z
 updated_at: 2023-10-24T19:55:55Z
 url: https://github.com/astral-sh/ruff/issues/8178
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Broken link in https://github.com/astral-sh/ruff/blob/main/docs/formatter.md#configuration
 
 ---
 
-_Issue opened by @brettcannon on 2023-10-24 19:32_
+_@brettcannon_
 
 https://github.com/astral-sh/ruff/blob/main/docs/formatter.md#configuration has a link to "Settings", but it's a 404.
 

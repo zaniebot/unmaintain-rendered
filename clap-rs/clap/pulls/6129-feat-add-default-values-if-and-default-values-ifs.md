@@ -12,14 +12,14 @@ head: feat_default_values_if_and_default_values_ifs
 created_at: 2025-09-13T14:22:46Z
 updated_at: 2025-11-19T20:49:38Z
 url: https://github.com/clap-rs/clap/pull/6129
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # feat: Add default_values_if and default_values_ifs
 
 ---
 
-_Pull request opened by @cooronx on 2025-09-13 14:22_
+_@cooronx_
 
 Fixes #5698 
 

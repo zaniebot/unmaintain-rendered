@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-21T14:53:04Z
 updated_at: 2025-03-01T05:06:19Z
 url: https://github.com/astral-sh/uv/issues/10082
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # A command to install/get version of the package from `uv.lock`
 
 ---
 
-_Issue opened by @paduszyk on 2024-12-21 14:53_
+_@paduszyk_
 
 In some circumstances, one may need a package installed using an exact version pinned in `uv.lock`.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-27T09:04:33Z
 updated_at: 2025-01-22T16:42:35Z
 url: https://github.com/astral-sh/ruff/issues/12542
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Rules pertaining to PEP 695
 
 ---
 
-_Issue opened by @Goldziher on 2024-07-27 09:04_
+_@Goldziher_
 
 MyPy released support for PEP 695 generics: https://github.com/python/mypy/issues/15238
 

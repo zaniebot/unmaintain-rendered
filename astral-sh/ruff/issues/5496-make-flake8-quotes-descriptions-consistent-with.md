@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-03T23:38:23Z
 updated_at: 2023-07-04T18:06:03Z
 url: https://github.com/astral-sh/ruff/issues/5496
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Make flake8-quotes descriptions consistent with default settings
 
 ---
 
-_Issue opened by @trag1c on 2023-07-03 23:38_
+_@trag1c_
 
 ![34882](https://github.com/astral-sh/ruff/assets/77130613/101e593a-d610-48b4-a589-0624a211b5b9)
 

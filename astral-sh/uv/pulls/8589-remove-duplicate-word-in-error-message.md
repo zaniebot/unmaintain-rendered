@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-10-26T08:29:38Z
 updated_at: 2024-10-26T18:32:35Z
 url: https://github.com/astral-sh/uv/pull/8589
-synced_at: 2026-01-10T12:54:13Z
+synced_at: 2026-01-12T16:08:23Z
 ```
 
 # Remove duplicate word in error message
 
 ---
 
-_Pull request opened by @memark on 2024-10-26 08:29_
+_@memark_
 
 ## Summary
 

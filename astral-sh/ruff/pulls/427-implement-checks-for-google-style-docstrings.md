@@ -12,14 +12,14 @@ head: charlie/pydocstyle
 created_at: 2022-10-14T15:49:30Z
 updated_at: 2022-10-14T15:53:30Z
 url: https://github.com/astral-sh/ruff/pull/427
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement checks for Google-style docstrings
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-14 15:49_
+_@charliermarsh_
 
 See: #274.
 

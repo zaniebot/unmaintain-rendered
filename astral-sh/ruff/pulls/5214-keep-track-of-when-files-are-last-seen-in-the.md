@@ -12,14 +12,14 @@ head: thomas/shrink_cache_size
 created_at: 2023-06-20T15:54:50Z
 updated_at: 2023-06-23T13:40:37Z
 url: https://github.com/astral-sh/ruff/pull/5214
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Keep track of when files are last seen in the cache
 
 ---
 
-_Pull request opened by @Thomasdezeeuw on 2023-06-20 15:54_
+_@Thomasdezeeuw_
 
 ## Summary
 

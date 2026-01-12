@@ -13,14 +13,14 @@ head: dhruv/settings-index-error
 created_at: 2024-08-09T12:08:39Z
 updated_at: 2024-08-12T15:52:15Z
 url: https://github.com/astral-sh/ruff/pull/12781
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Collect errors while building up the settings index
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-09 12:08_
+_@dhruvmanila_
 
 ## Summary
 

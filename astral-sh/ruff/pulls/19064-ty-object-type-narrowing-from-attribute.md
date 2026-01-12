@@ -13,14 +13,14 @@ head: 643-adv-attr-narrowing
 created_at: 2025-07-01T05:54:19Z
 updated_at: 2025-10-29T15:05:28Z
 url: https://github.com/astral-sh/ruff/pull/19064
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [ty] Object type narrowing from attribute constraints
 
 ---
 
-_Pull request opened by @mtshiba on 2025-07-01 05:54_
+_@mtshiba_
 
 ## Summary
 

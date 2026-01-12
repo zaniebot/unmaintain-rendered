@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-24T19:46:45Z
 updated_at: 2025-01-25T13:14:20Z
 url: https://github.com/astral-sh/ruff/issues/15729
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # PLR6201 on an empty list
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-01-24 19:46_
+_@JelleZijlstra_
 
 ### Description
 

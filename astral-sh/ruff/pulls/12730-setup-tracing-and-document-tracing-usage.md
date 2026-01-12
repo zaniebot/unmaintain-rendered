@@ -13,14 +13,14 @@ head: red-knot-tracing
 created_at: 2024-08-07T11:55:33Z
 updated_at: 2024-08-08T06:42:41Z
 url: https://github.com/astral-sh/ruff/pull/12730
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Setup tracing and document tracing usage
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-07 11:55_
+_@MichaReiser_
 
 This PR extends our tracing configuration with more refined verbosity levels and adds a small guide on how/when to use tracing. 
 

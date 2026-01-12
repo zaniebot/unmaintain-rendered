@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-02-22T07:08:13Z
 updated_at: 2022-05-23T15:33:38Z
 url: https://github.com/clap-rs/clap/issues/3496
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # derive: default to parse_os_str for OsString or PathBuf types
 
 ---
 
-_Issue opened by @joshtriplett on 2022-02-22 07:08_
+_@joshtriplett_
 
 ### Please complete the following tasks
 

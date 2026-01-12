@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-20T15:10:28Z
 updated_at: 2025-01-09T18:21:04Z
 url: https://github.com/astral-sh/uv/issues/1760
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Question about space efficiency of the git cache
 
 ---
 
-_Issue opened by @sbidoul on 2024-02-20 15:10_
+_@sbidoul_
 
 If I understand correctly, installing from git URL creates the following in the uv cache:
 1. the git objects in `git-v0/db`

@@ -14,14 +14,14 @@ head: zb/project-guide
 created_at: 2024-07-30T18:49:03Z
 updated_at: 2024-07-30T23:26:25Z
 url: https://github.com/astral-sh/uv/pull/5626
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:55Z
 ```
 
 # Improve the project guide
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-30 18:49_
+_@zanieb_
 
 _No description provided._
 

@@ -14,14 +14,14 @@ head: charlie/gnu
 created_at: 2024-05-22T19:32:48Z
 updated_at: 2024-05-23T07:15:58Z
 url: https://github.com/astral-sh/uv/pull/3761
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:50Z
 ```
 
 # Remove `aarch64-unknown-linux-gnu` from list of expected binaries
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-22 19:32_
+_@charliermarsh_
 
 ## Summary
 

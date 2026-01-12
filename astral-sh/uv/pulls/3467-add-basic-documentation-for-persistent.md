@@ -14,14 +14,14 @@ head: charlie/config-docs
 created_at: 2024-05-08T18:23:17Z
 updated_at: 2024-05-08T19:03:18Z
 url: https://github.com/astral-sh/uv/pull/3467
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # Add basic documentation for persistent configuration
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-08 18:23_
+_@charliermarsh_
 
 _No description provided._
 

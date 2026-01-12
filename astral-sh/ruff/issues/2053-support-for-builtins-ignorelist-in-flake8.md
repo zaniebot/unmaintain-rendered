@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-21T09:02:08Z
 updated_at: 2023-01-21T18:04:32Z
 url: https://github.com/astral-sh/ruff/issues/2053
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Support for --builtins-ignorelist in flake8-builtins checks
 
 ---
 
-_Issue opened by @ehdr on 2023-01-21 09:02_
+_@ehdr_
 
 [flake8-builtins](https://pypi.org/project/flake8-builtins/) provides a [`--builtins-ignorelist` option](https://pypi.org/project/flake8-builtins/#options) that lets you ignore a custom list of builtins, e.g.:
 ```

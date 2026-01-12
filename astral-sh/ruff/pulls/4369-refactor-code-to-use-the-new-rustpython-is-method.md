@@ -12,14 +12,14 @@ head: ast-utilities
 created_at: 2023-05-11T09:54:52Z
 updated_at: 2023-05-11T20:54:43Z
 url: https://github.com/astral-sh/ruff/pull/4369
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Refactor code to use the new RustPython `is` method
 
 ---
 
-_Pull request opened by @youknowone on 2023-05-11 09:54_
+_@youknowone_
 
 Related parser patch https://github.com/RustPython/Parser/pull/20
 

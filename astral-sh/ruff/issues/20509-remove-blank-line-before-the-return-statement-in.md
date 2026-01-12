@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-22T07:32:21Z
 updated_at: 2025-09-22T07:59:19Z
 url: https://github.com/astral-sh/ruff/issues/20509
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # remove blank line before the return statement in a last nested function
 
 ---
 
-_Issue opened by @ngdangtu-vn on 2025-09-22 07:32_
+_@ngdangtu-vn_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: ruf/unused-variable-accessed
 created_at: 2024-11-26T13:47:27Z
 updated_at: 2024-12-03T07:51:38Z
 url: https://github.com/astral-sh/ruff/pull/14611
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`ruff`] Implemented `used-dummy-variable` (`RUF052`)
 
 ---
 
-_Pull request opened by @Lokejoke on 2024-11-26 13:47_
+_@Lokejoke_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

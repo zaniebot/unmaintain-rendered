@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-05-26T19:25:22Z
 updated_at: 2021-07-30T07:35:49Z
 url: https://github.com/clap-rs/clap/issues/2500
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Change default help and version message to infinitive form
 
 ---
 
-_Issue opened by @ajeetdsouza on 2021-05-26 19:25_
+_@ajeetdsouza_
 
 ### Please complete the following tasks
 

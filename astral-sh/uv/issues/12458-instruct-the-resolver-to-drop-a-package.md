@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-25T08:12:37Z
 updated_at: 2025-10-31T14:18:47Z
 url: https://github.com/astral-sh/uv/issues/12458
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # Instruct the resolver to drop a package
 
 ---
 
-_Issue opened by @zmeir on 2025-03-25 08:12_
+_@zmeir_
 
 ### Question
 

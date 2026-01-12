@@ -14,14 +14,14 @@ head: cjm/visitor-interior-mutability
 created_at: 2025-08-11T21:33:06Z
 updated_at: 2025-08-11T22:42:56Z
 url: https://github.com/astral-sh/ruff/pull/19871
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] use interior mutability in type visitors
 
 ---
 
-_Pull request opened by @carljm on 2025-08-11 21:33_
+_@carljm_
 
 ## Summary
 

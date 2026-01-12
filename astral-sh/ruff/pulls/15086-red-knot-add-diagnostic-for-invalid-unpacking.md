@@ -13,14 +13,14 @@ head: dhruv/unpack-diagnostic
 created_at: 2024-12-20T17:11:58Z
 updated_at: 2024-12-30T07:40:50Z
 url: https://github.com/astral-sh/ruff/pull/15086
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Add diagnostic for invalid unpacking
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-12-20 17:11_
+_@dhruvmanila_
 
 ## Summary
 

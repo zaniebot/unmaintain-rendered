@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-05T14:52:14Z
 updated_at: 2025-11-05T14:59:22Z
 url: https://github.com/astral-sh/ruff/issues/21283
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Would this project accept a PR that makes the number of top-level blank lines configurable?
 
 ---
 
-_Issue opened by @arjun-menon on 2025-11-05 14:52_
+_@arjun-menon_
 
 ### Summary
 

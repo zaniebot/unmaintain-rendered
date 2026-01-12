@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-17T19:05:55Z
 updated_at: 2024-06-18T05:31:24Z
 url: https://github.com/astral-sh/ruff/issues/11909
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # NPY201 does not catch `ptp` updates for numpy v2
 
 ---
 
-_Issue opened by @jvavrek on 2024-06-17 19:05_
+_@jvavrek_
 
 `ruff` does not catch the `arr.ptp() --> np.ptp(arr)` updates necessary in `numpy>=2`
 

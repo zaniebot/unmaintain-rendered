@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-08T22:20:46Z
 updated_at: 2026-01-09T21:15:06Z
 url: https://github.com/astral-sh/ty/issues/2405
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Generic constraints inferred incorrectly in ty vs pyright
 
 ---
 
-_Issue opened by @kszlim on 2026-01-08 22:20_
+_@kszlim_
 
 ### Summary
 

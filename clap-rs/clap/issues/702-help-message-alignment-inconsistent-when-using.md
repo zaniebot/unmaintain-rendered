@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-10-24T10:02:44Z
 updated_at: 2018-08-02T03:29:54Z
 url: https://github.com/clap-rs/clap/issues/702
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Help message alignment inconsistent when using .multiple(true)
 
 ---
 
-_Issue opened by @mattcl on 2016-10-24 10:02_
+_@mattcl_
 
 Given the following code and clap version 2.16.0
 OS is Ubuntu 14.04

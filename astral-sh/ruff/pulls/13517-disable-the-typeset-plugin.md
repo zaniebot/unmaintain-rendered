@@ -13,14 +13,14 @@ head: charlie/typeset
 created_at: 2024-09-25T23:54:05Z
 updated_at: 2024-09-26T10:27:55Z
 url: https://github.com/astral-sh/ruff/pull/13517
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Disable the `typeset` plugin
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-25 23:54_
+_@charliermarsh_
 
 ## Summary
 

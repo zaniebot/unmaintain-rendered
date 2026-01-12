@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-29T03:31:42Z
 updated_at: 2024-05-29T05:14:00Z
 url: https://github.com/astral-sh/ruff/issues/11593
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Incorrect error message when double open brace is present in f-string
 
 ---
 
-_Issue opened by @yurivict on 2024-05-29 03:31_
+_@yurivict_
 
 This code
 ```

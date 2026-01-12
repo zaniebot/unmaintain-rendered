@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-20T19:17:15Z
 updated_at: 2022-11-21T15:21:28Z
 url: https://github.com/clap-rs/clap/issues/4494
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Optional value with require_equals leads to debug assertion failure: mismatch between `num_args` (0) and `takes_value`
 
 ---
 
-_Issue opened by @dsherret on 2022-11-20 19:17_
+_@dsherret_
 
 ### Please complete the following tasks
 

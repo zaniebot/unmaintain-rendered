@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-22T10:43:25Z
 updated_at: 2024-09-22T17:36:13Z
 url: https://github.com/astral-sh/uv/issues/7618
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Dependencies not installed for `python <= 3.11` after changing `requires-python`
 
 ---
 
-_Issue opened by @blueraft on 2024-09-22 10:43_
+_@blueraft_
 
 This came up originally in the discord, but here's an MRE for this issue.
 

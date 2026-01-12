@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T07:15:30Z
 updated_at: 2025-05-16T08:16:51Z
 url: https://github.com/astral-sh/uv/issues/13484
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # uv always tries to install x86_64 version of python ranther than arm64 version on macOS/M2 chip
 
 ---
 
-_Issue opened by @qhtian on 2025-05-16 07:15_
+_@qhtian_
 
 ### Summary
 

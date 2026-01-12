@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-11-14T01:16:14Z
 updated_at: 2024-11-17T19:18:16Z
 url: https://github.com/astral-sh/ruff/pull/14329
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Improve rule & options documentation
 
 ---
 
-_Pull request opened by @CarrotManMatt on 2024-11-14 01:16_
+_@CarrotManMatt_
 
 * Add links within rule documentation to the options that the given rule uses
 * Add links within option documentation the the rules that use the given option

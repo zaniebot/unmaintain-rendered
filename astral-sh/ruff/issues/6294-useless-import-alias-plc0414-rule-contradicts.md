@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-03T01:30:57Z
 updated_at: 2025-06-20T18:20:28Z
 url: https://github.com/astral-sh/ruff/issues/6294
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `useless-import-alias` (`PLC0414`) rule contradicts PEP484
 
 ---
 
-_Issue opened by @DetachHead on 2023-08-03 01:30_
+_@DetachHead_
 
 ```py
 import numpy as numpy

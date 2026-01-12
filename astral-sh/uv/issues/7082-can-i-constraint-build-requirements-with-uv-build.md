@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-05T13:26:29Z
 updated_at: 2024-09-05T18:46:38Z
 url: https://github.com/astral-sh/uv/issues/7082
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Can I constraint build requirements with uv build?
 
 ---
 
-_Issue opened by @notatallshaw on 2024-09-05 13:26_
+_@notatallshaw_
 
 I tried using the new uv build with a pyproject.toml that looks like this:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-22T14:44:19Z
 updated_at: 2023-01-16T19:46:21Z
 url: https://github.com/astral-sh/ruff/issues/1334
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Lint when line characters are higher than maximum
 
 ---
 
-_Issue opened by @DataHearth on 2022-12-22 14:44_
+_@DataHearth_
 
 Hey!
 

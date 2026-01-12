@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-07T08:01:22Z
 updated_at: 2025-09-02T13:06:22Z
 url: https://github.com/astral-sh/uv/issues/15124
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # `extra-build-dependencies` docs example is wrong
 
 ---
 
-_Issue opened by @konstin on 2025-08-07 08:01_
+_@konstin_
 
 The example rendering for `extra-build-dependencies` is wrong at https://docs.astral.sh/uv/reference/settings/#extra-build-dependencies:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-12T15:37:43Z
 updated_at: 2025-04-19T16:13:03Z
 url: https://github.com/astral-sh/uv/issues/9061
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # Running unit tests with pytest in scripts
 
 ---
 
-_Issue opened by @wrdls on 2024-11-12 15:37_
+_@wrdls_
 
 I use `uv` to run scripts with [inline dependencies](https://docs.astral.sh/uv/guides/scripts/#declaring-script-dependencies).
 

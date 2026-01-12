@@ -13,14 +13,14 @@ head: alex/subscript-inference
 created_at: 2025-03-20T17:40:51Z
 updated_at: 2025-03-20T21:46:05Z
 url: https://github.com/astral-sh/ruff/pull/16877
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # Special-case value-expression inference of special form subscriptions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-20 17:40_
+_@AlexWaygood_
 
 ## Summary
 

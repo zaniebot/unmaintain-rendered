@@ -12,14 +12,14 @@ head: feat/9189-uv-audit
 created_at: 2025-08-04T06:54:11Z
 updated_at: 2025-09-23T19:19:11Z
 url: https://github.com/astral-sh/uv/pull/15053
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:33Z
 ```
 
 # feat(audit): add audit command for Python package vulnerability scanning
 
 ---
 
-_Pull request opened by @nyudenkov on 2025-08-04 06:54_
+_@nyudenkov_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

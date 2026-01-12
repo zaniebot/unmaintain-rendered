@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-09T04:31:37Z
 updated_at: 2023-08-16T07:11:20Z
 url: https://github.com/astral-sh/ruff/issues/6437
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter fails to parenthesize walrus expressions in function return types
 
 ---
 
-_Issue opened by @charliermarsh on 2023-08-09 04:31_
+_@charliermarsh_
 
 I saw this example in Black:
 

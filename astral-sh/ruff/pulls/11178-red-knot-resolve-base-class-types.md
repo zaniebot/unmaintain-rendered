@@ -13,14 +13,14 @@ head: cjm/follow-class
 created_at: 2024-04-27T15:41:24Z
 updated_at: 2024-04-29T22:22:31Z
 url: https://github.com/astral-sh/ruff/pull/11178
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # [red-knot] resolve base class types
 
 ---
 
-_Pull request opened by @carljm on 2024-04-27 15:41_
+_@carljm_
 
 ## Summary
 

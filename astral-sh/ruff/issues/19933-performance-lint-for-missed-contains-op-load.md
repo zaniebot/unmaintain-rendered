@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-16T08:40:10Z
 updated_at: 2025-08-18T17:20:21Z
 url: https://github.com/astral-sh/ruff/issues/19933
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Performance lint for missed CONTAINS_OP LOAD_CONST optimization
 
 ---
 
-_Issue opened by @Zaczero on 2025-08-16 08:40_
+_@Zaczero_
 
 ### Summary
 

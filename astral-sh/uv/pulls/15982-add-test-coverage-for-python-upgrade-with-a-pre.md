@@ -13,14 +13,14 @@ head: zb/upgrade-pre
 created_at: 2025-09-22T14:15:14Z
 updated_at: 2025-09-22T14:26:14Z
 url: https://github.com/astral-sh/uv/pull/15982
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:03Z
 ```
 
 # Add test coverage for `python_upgrade` with a pre-release version
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-22 14:15_
+_@zanieb_
 
 Coverage for https://github.com/astral-sh/uv/pull/15959
 

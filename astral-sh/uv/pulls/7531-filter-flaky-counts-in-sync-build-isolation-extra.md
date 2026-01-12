@@ -13,14 +13,14 @@ head: zb/counts-filter
 created_at: 2024-09-19T02:18:19Z
 updated_at: 2024-09-19T12:03:05Z
 url: https://github.com/astral-sh/uv/pull/7531
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:52Z
 ```
 
 # Filter flaky counts in `sync_build_isolation_extra`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-19 02:18_
+_@zanieb_
 
 I've seen this flake several times now, e.g., https://github.com/astral-sh/uv/actions/runs/10933201998/job/30351289277?pr=7530
 

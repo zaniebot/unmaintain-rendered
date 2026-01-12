@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-27T20:09:29Z
 updated_at: 2025-10-28T14:13:16Z
 url: https://github.com/astral-sh/ty/issues/1447
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Extend `KnownFunction` machinery to work with class methods
 
 ---
 
-_Issue opened by @dcreager on 2025-10-27 20:09_
+_@dcreager_
 
 `KnownFunction` lets us detect particular functions that need to be handled specially in our type inference logic. We use this for things like `is_subtype_of`, to implement "evaluation" rules that are visible in the inferred return type of the function.
 

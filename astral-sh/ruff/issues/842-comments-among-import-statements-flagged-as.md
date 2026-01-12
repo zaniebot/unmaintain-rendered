@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-20T23:44:44Z
 updated_at: 2022-11-22T01:39:32Z
 url: https://github.com/astral-sh/ruff/issues/842
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Comments among import statements flagged as incorrect
 
 ---
 
-_Issue opened by @brettcannon on 2022-11-20 23:44_
+_@brettcannon_
 
 For instance, having a comment at the end of an import line gets flagged:
 

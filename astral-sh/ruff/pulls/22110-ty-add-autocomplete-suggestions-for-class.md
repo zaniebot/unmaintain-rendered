@@ -14,14 +14,14 @@ head: add-class-parameter-completions
 created_at: 2025-12-20T12:46:09Z
 updated_at: 2026-01-06T14:36:55Z
 url: https://github.com/astral-sh/ruff/pull/22110
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Add autocomplete suggestions for class arguments
 
 ---
 
-_Pull request opened by @RasmusNygren on 2025-12-20 12:46_
+_@RasmusNygren_
 
 ## Summary
 

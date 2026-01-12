@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-15T20:17:50Z
 updated_at: 2025-11-13T00:40:47Z
 url: https://github.com/astral-sh/ty/issues/216
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # `AlwaysTruthy | bool` is equivalent to `AlwaysTruthy | Literal[False]`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-01-15 20:17_
+_@AlexWaygood_
 
 This equivalence follows from the fact that `bool` is equivalent to `Literal[True] | Literal[False]` and from the fact that `Literal[True]` is a subtype of `AlwaysTruthy`. A proof of the fact that these are equivalent can be found in the fact that there are two ways that the union `Literal[False] | Literal[True] | AlwaysTruthy` could be validly simplified:
 

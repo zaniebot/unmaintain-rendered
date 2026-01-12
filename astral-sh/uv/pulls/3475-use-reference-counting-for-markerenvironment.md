@@ -12,14 +12,14 @@ head: ag/arc-marker-environment
 created_at: 2024-05-09T00:21:10Z
 updated_at: 2024-05-09T14:06:03Z
 url: https://github.com/astral-sh/uv/pull/3475
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # use reference counting for MarkerEnvironment
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-05-09 00:21_
+_@BurntSushi_
 
 This PR makes the `MarkerEnvironment` type in the `pep508_rs` crate
 fully encapsulated. It then changes its internal representation to use

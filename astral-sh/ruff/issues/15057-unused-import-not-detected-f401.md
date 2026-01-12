@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-19T11:10:12Z
 updated_at: 2024-12-19T12:21:56Z
 url: https://github.com/astral-sh/ruff/issues/15057
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Unused import not detected F401
 
 ---
 
-_Issue opened by @schlamar on 2024-12-19 11:10_
+_@schlamar_
 
 ```python
 import mylib.mylib as cli

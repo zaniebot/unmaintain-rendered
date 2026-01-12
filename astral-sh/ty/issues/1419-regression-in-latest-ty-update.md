@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-23T13:49:36Z
 updated_at: 2025-12-12T18:50:58Z
 url: https://github.com/astral-sh/ty/issues/1419
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Regression in latest ty update
 
 ---
 
-_Issue opened by @Matt-Ord on 2025-10-23 13:49_
+_@Matt-Ord_
 
 ### Summary
 

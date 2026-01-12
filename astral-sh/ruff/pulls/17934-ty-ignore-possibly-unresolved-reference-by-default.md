@@ -14,14 +14,14 @@ head: micha/disable-possibly-unbound-reference
 created_at: 2025-05-08T06:10:30Z
 updated_at: 2025-05-08T15:44:58Z
 url: https://github.com/astral-sh/ruff/pull/17934
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [ty] Ignore `possibly-unresolved-reference` by default
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-08 06:10_
+_@MichaReiser_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: add_message_to_syntax_error
 created_at: 2023-07-19T13:56:47Z
 updated_at: 2023-07-19T15:26:53Z
 url: https://github.com/astral-sh/ruff/pull/5881
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add message to formatter SyntaxError
 
 ---
 
-_Pull request opened by @konstin on 2023-07-19 13:56_
+_@konstin_
 
 
 **Summary** Add a static string error message to the formatter syntax error so we can disambiguate where the syntax error came from

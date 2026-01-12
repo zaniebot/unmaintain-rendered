@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-06T04:07:05Z
 updated_at: 2025-01-06T08:21:58Z
 url: https://github.com/astral-sh/ruff/issues/15295
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Ignoring `import-private-name (PLC2701)` for `_typeshed` import
 
 ---
 
-_Issue opened by @Avasam on 2025-01-06 04:07_
+_@Avasam_
 
 `_typeshed` exposes plenty of very useful type aliases and protocols. A lot of those are even marked as `stable` by typeshed maintainers.
 `_typeshed` imports can *only* be used in annotations and type-stubs.

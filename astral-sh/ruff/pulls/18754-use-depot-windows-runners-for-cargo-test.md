@@ -13,14 +13,14 @@ head: zb/depot-windows
 created_at: 2025-06-18T14:25:14Z
 updated_at: 2025-06-18T15:52:26Z
 url: https://github.com/astral-sh/ruff/pull/18754
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # Use Depot Windows runners for `cargo test`
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-18 14:25_
+_@zanieb_
 
 From 6m 15s -> 3m 54s (total runtime)
 

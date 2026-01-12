@@ -13,14 +13,14 @@ head: charlie/sync-venv
 created_at: 2025-05-04T22:30:19Z
 updated_at: 2025-05-05T14:57:48Z
 url: https://github.com/astral-sh/uv/pull/13287
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:38Z
 ```
 
 # Avoid re-creating virtual environment with `--no-sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-04 22:30_
+_@charliermarsh_
 
 ## Summary
 

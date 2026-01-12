@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-17T03:24:59Z
 updated_at: 2024-09-02T19:46:11Z
 url: https://github.com/astral-sh/uv/issues/1567
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # A way to get sub-command output when running `uv pip install`
 
 ---
 
-_Issue opened by @alex on 2024-02-17 03:24_
+_@alex_
 
 Currently if you run `uv pip install -v` you get, more or less, a trace of all the operations `uv` does internally.
 

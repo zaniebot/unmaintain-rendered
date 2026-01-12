@@ -13,14 +13,14 @@ head: checker-remove-unreachable
 created_at: 2023-09-06T07:12:08Z
 updated_at: 2023-09-06T07:27:32Z
 url: https://github.com/astral-sh/ruff/pull/7181
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Checker: Remove unnecessary unreachable
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-06 07:12_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ head: charlie/after
 created_at: 2022-11-17T19:57:42Z
 updated_at: 2022-11-17T20:01:59Z
 url: https://github.com/astral-sh/ruff/pull/797
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Fix D202 to remove line after docstring
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-17 19:57_
+_@charliermarsh_
 
 Fixes: #795.
 

@@ -12,14 +12,14 @@ head: zb/disable-line-wrap
 created_at: 2024-01-04T16:55:41Z
 updated_at: 2024-01-04T19:07:18Z
 url: https://github.com/astral-sh/uv/pull/784
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:11Z
 ```
 
 # Disable line wrapping during scenario tests
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-04 16:55_
+_@zanieb_
 
 Adds support for a `PUFFIN_NO_WRAP` environment variable which disables line wrapping in `miette` output.
 

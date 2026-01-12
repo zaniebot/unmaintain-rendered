@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-08T12:10:12Z
 updated_at: 2024-07-18T18:07:50Z
 url: https://github.com/astral-sh/uv/issues/4888
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Remove extra duplication from lockfile
 
 ---
 
-_Issue opened by @konstin on 2024-07-08 12:10_
+_@konstin_
 
 When declaring a dependency `pandas[excel,html,plot]`, the lockfile shows:
 

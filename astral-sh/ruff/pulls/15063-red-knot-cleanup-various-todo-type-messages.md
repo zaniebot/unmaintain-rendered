@@ -13,14 +13,14 @@ head: alex/redknot-todo-messages
 created_at: 2024-12-19T12:53:14Z
 updated_at: 2024-12-19T13:05:11Z
 url: https://github.com/astral-sh/ruff/pull/15063
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Cleanup various `todo_type!()` messages
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-19 12:53_
+_@AlexWaygood_
 
 ## Summary
 

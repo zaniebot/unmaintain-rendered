@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-07T20:58:41Z
 updated_at: 2022-10-07T21:36:18Z
 url: https://github.com/astral-sh/ruff/issues/355
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Warn user if they try to `select` something that's overridden by an `ignore`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-07 20:58_
+_@charliermarsh_
 
 I don't know what the exact semantics should be, but it's confusing that passing `--select F401` on the command-line can be ineffectual if `F401` is an `ignore` in your `pyproject.toml`. See #352 as an example.
 

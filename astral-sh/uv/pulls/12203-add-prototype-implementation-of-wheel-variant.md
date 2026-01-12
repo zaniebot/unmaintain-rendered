@@ -14,14 +14,14 @@ head: charlie/wheel-variant
 created_at: 2025-03-16T16:35:56Z
 updated_at: 2025-12-08T17:01:08Z
 url: https://github.com/astral-sh/uv/pull/12203
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:10:10Z
 ```
 
 # Add prototype implementation of wheel variant specification
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-16 16:35_
+_@charliermarsh_
 
 (Branch taken over by @konstin)
 

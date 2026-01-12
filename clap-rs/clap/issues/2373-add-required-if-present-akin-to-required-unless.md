@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-03-01T15:22:56Z
 updated_at: 2021-03-01T18:55:11Z
 url: https://github.com/clap-rs/clap/issues/2373
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Add `required_if_present*` akin to `required_unless_present*`
 
 ---
 
-_Issue opened by @nixpulvis on 2021-03-01 15:22_
+_@nixpulvis_
 
 **Please complete the following tasks**
 

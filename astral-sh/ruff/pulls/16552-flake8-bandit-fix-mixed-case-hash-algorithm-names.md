@@ -13,14 +13,14 @@ head: S324
 created_at: 2025-03-07T13:22:11Z
 updated_at: 2025-03-07T15:21:07Z
 url: https://github.com/astral-sh/ruff/pull/16552
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [flake8-bandit] Fix mixed-case hash algorithm names (S324)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-03-07 13:22_
+_@VascoSch92_
 
 The PR solves issue #16525 
 

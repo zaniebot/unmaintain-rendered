@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-11-29T11:07:05Z
 updated_at: 2024-07-10T15:52:11Z
 url: https://github.com/clap-rs/clap/issues/4520
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `requires` is bypassed when using `conflicts_with` a certain way
 
 ---
 
-_Issue opened by @pierrechevalier83 on 2022-11-29 11:07_
+_@pierrechevalier83_
 
 ### Please complete the following tasks
 

@@ -14,14 +14,14 @@ head: david/treat-dunder-method-callables-as-bound-method-descriptors
 created_at: 2025-10-14T10:12:11Z
 updated_at: 2025-10-14T12:27:54Z
 url: https://github.com/astral-sh/ruff/pull/20860
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] Treat `Callable` dunder members as bound method descriptors
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-14 10:12_
+_@sharkdp_
 
 ## Summary
 

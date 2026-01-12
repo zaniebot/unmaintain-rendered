@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-08-14T04:06:37Z
 updated_at: 2021-02-07T15:11:09Z
 url: https://github.com/clap-rs/clap/issues/1026
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Distinguish between multiple sets of values for a multiple, min_values arg
 
 ---
 
-_Issue opened by @soumya92 on 2017-08-14 04:06_
+_@soumya92_
 
 ### Rust Version
 

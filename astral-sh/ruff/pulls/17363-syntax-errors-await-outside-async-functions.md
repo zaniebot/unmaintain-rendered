@@ -13,14 +13,14 @@ head: brent/syn-await-outside-async-function
 created_at: 2025-04-11T19:26:45Z
 updated_at: 2025-04-22T14:48:39Z
 url: https://github.com/astral-sh/ruff/pull/17363
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [syntax-errors] `await` outside async functions
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-11 19:26_
+_@ntBre_
 
 Summary
 --

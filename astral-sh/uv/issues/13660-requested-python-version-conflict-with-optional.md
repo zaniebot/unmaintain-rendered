@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-26T12:42:46Z
 updated_at: 2025-05-26T16:39:14Z
 url: https://github.com/astral-sh/uv/issues/13660
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:34Z
 ```
 
 # requested python version conflict with optional dependencies
 
 ---
 
-_Issue opened by @bathal1 on 2025-05-26 12:42_
+_@bathal1_
 
 ### Summary
 

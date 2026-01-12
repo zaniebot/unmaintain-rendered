@@ -13,14 +13,14 @@ head: dhruv/whitespace
 created_at: 2025-12-05T07:16:34Z
 updated_at: 2025-12-05T07:21:42Z
 url: https://github.com/astral-sh/ruff/pull/21806
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # Remove unused whitespaces in test cases
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-12-05 07:16_
+_@dhruvmanila_
 
 These aren't used in the tests themselves. There are more instances of them in other files but those require code changes so I've left them as it is.
 

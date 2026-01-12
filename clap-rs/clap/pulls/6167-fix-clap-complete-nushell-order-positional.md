@@ -12,14 +12,14 @@ head: feat/nushell-completion-arguments-index
 created_at: 2025-10-30T00:29:42Z
 updated_at: 2025-10-31T14:29:13Z
 url: https://github.com/clap-rs/clap/pull/6167
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # fix(clap_complete_nushell): order positional arguments by index
 
 ---
 
-_Pull request opened by @nitsky on 2025-10-30 00:29_
+_@nitsky_
 
 In clap_complete_nushell, arguments are written in the order they are added to the `Command`, not according to the
 `index` they are specified with. If required positional arguments with a lower `index` are added to the command after

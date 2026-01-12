@@ -7,16 +7,16 @@ author: ShaiAvr
 labels: []
 assignees: []
 created_at: 2024-12-21T14:11:04Z
-updated_at: 2024-12-21T16:32:44Z
+updated_at: 2025-12-11T20:00:45Z
 url: https://github.com/astral-sh/uv/issues/10079
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # Antivirus detects `uv` installer as malicious on Windows
 
 ---
 
-_Issue opened by @ShaiAvr on 2024-12-21 14:11_
+_@ShaiAvr_
 
 I wanted to give a try to `uv` to see if I like it as a project and dependencies manager. I tried installing it on my Windows 11 PC using the command: `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
 However, I get an error stating that this script contains malicious content and has been blocked by my antivirus software:

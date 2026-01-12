@@ -14,14 +14,14 @@ head: gankra/qualify
 created_at: 2025-12-13T21:57:23Z
 updated_at: 2025-12-15T15:14:38Z
 url: https://github.com/astral-sh/ruff/pull/21968
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Add "qualify ..." code fix for undefined references
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-13 21:57_
+_@Gankra_
 
 ## Summary
 

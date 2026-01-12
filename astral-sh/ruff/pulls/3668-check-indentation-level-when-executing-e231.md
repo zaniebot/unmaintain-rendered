@@ -12,14 +12,14 @@ head: check_indent_level
 created_at: 2023-03-22T14:54:35Z
 updated_at: 2023-03-22T16:32:09Z
 url: https://github.com/astral-sh/ruff/pull/3668
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Check indentation level when executing E231
 
 ---
 
-_Pull request opened by @kyoto7250 on 2023-03-22 14:54_
+_@kyoto7250_
 
 close #3620
 

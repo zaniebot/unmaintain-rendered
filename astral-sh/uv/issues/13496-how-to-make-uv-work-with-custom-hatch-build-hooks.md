@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T19:15:36Z
 updated_at: 2025-05-17T02:29:28Z
 url: https://github.com/astral-sh/uv/issues/13496
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # How to make `uv` work with custom `hatch` build hooks
 
 ---
 
-_Issue opened by @ma-sadeghi on 2025-05-16 19:15_
+_@ma-sadeghi_
 
 ### Question
 

@@ -14,14 +14,14 @@ head: bake-inlay-hints
 created_at: 2025-11-24T00:14:32Z
 updated_at: 2025-12-27T00:21:12Z
 url: https://github.com/astral-sh/ruff/pull/21600
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Double click to insert inlay hint
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-11-24 00:14_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

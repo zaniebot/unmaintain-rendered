@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-06T02:28:41Z
 updated_at: 2025-02-06T02:28:45Z
 url: https://github.com/astral-sh/uv/issues/11272
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # Show all downloads regardless of size in non-interactive output
 
 ---
 
-_Issue opened by @zanieb on 2025-02-06 02:28_
+_@zanieb_
 
 > It's a bit strange that we hide these [files less than 1MB] but _always_ show them if we don't have a size? I'd expect them to be always visible.
 

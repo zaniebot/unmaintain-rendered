@@ -13,14 +13,14 @@ head: zb/toolchain-find
 created_at: 2024-06-10T17:50:24Z
 updated_at: 2024-06-14T17:03:18Z
 url: https://github.com/astral-sh/uv/pull/4206
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:05Z
 ```
 
 # Add `uv toolchain find`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-10 17:50_
+_@zanieb_
 
 Adds a command to find a toolchain on the system. Right now, it displays the path to the first matching toolchain. We'll probably have more rich output in the future (after implementing `toolchain show`).
 

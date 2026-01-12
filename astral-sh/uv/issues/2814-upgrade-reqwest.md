@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-03T17:53:26Z
 updated_at: 2024-04-10T15:20:46Z
 url: https://github.com/astral-sh/uv/issues/2814
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Upgrade `reqwest`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-04-03 17:53_
+_@charliermarsh_
 
 We should be able to do this shortly. I can handle it since it will require some changes to the cert logic.
 

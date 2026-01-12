@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-20T05:27:59Z
 updated_at: 2023-11-01T13:19:08Z
 url: https://github.com/astral-sh/uv/issues/152
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Add support for URL dependencies (at least for wheels)
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-20 05:27_
+_@charliermarsh_
 
 - VCS:
     - Start with just git+

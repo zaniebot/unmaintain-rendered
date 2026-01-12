@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-31T14:18:15Z
 updated_at: 2024-12-31T16:48:14Z
 url: https://github.com/astral-sh/uv/issues/10252
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:09Z
 ```
 
 # Bug: cannot build local project package even when listed in `no-binary-package`
 
 ---
 
-_Issue opened by @CarrotManMatt on 2024-12-31 14:18_
+_@CarrotManMatt_
 
 I have a bit of a peculiar workflow. I like to use wheels for all my dependencies and never let them be built from sdists unless explicitly stated in the `no-binary-package` setting. An example of my `[tool.uv]` settings could look like this:
 

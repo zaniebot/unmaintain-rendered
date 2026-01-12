@@ -13,14 +13,14 @@ head: move-TRACING_DURATIONS_FILE-to-EnvironmentOptions
 created_at: 2025-10-03T02:57:10Z
 updated_at: 2025-10-04T05:10:25Z
 url: https://github.com/astral-sh/uv/pull/16109
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:06Z
 ```
 
 # Move `TRACING_DURATIONS_FILE` to `EnvironmentOptions`
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-10-03 02:57_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

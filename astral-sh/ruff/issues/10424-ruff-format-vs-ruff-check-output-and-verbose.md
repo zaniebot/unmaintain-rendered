@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-15T16:24:59Z
 updated_at: 2024-03-15T16:41:46Z
 url: https://github.com/astral-sh/ruff/issues/10424
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # ruff format vs ruff check output and verbose option
 
 ---
 
-_Issue opened by @isparks-tg on 2024-03-15 16:24_
+_@isparks-tg_
 
 When running `ruff format --check` you get a count of files unchanged. When running `ruff check` you get nothing returned if there is nothing to report.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-21T08:02:57Z
 updated_at: 2026-01-06T10:40:40Z
 url: https://github.com/astral-sh/uv/issues/10808
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:00:21Z
 ```
 
 # uv roadmap
 
 ---
 
-_Issue opened by @HenriBlacksmith on 2025-01-21 08:02_
+_@HenriBlacksmith_
 
 Hey,
 

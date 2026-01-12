@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-07-13T18:12:15Z
 updated_at: 2022-08-18T14:07:19Z
 url: https://github.com/clap-rs/clap/issues/3925
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Undocumented Derive Attributes
 
 ---
 
-_Issue opened by @Iron-E on 2022-07-13 18:12_
+_@Iron-E_
 
 On `master`, looking at the [derive_ref](https://github.com/clap-rs/clap/blob/master/examples/derive_ref/README.md), I have come across several options from other places in the documentation which do not appear to be documented in that file:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-27T05:04:48Z
 updated_at: 2023-12-27T09:08:36Z
 url: https://github.com/astral-sh/ruff/issues/9292
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Ruff doesn't detect unsorted imports if there is an extra newline between imports and next block
 
 ---
 
-_Issue opened by @discentem on 2023-12-27 05:04_
+_@discentem_
 
 > A minimal code snippet that reproduces the bug.
 

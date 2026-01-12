@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-15T12:32:56Z
 updated_at: 2025-09-10T21:06:34Z
 url: https://github.com/astral-sh/ruff/issues/19927
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # S602, S604, and S609 treat `{**{}}` as truthy
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-15 12:32_
+_@dscorbett_
 
 ### Summary
 

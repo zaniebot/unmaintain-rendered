@@ -13,14 +13,14 @@ head: micha/type-non-comparison-other-expressions
 created_at: 2025-03-12T09:34:53Z
 updated_at: 2025-03-13T07:43:32Z
 url: https://github.com/astral-sh/ruff/pull/16666
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Stabilize FURB169 preview behavior
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-12 09:34_
+_@MichaReiser_
 
 ## Summary
 

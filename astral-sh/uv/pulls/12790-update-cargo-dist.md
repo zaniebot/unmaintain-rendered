@@ -12,14 +12,14 @@ head: gankra/update-dist2
 created_at: 2025-04-09T21:21:52Z
 updated_at: 2025-04-10T13:42:43Z
 url: https://github.com/astral-sh/uv/pull/12790
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:23Z
 ```
 
 # update cargo-dist
 
 ---
 
-_Pull request opened by @Gankra on 2025-04-09 21:21_
+_@Gankra_
 
 Putting this up to confirm that it does what it should:
 

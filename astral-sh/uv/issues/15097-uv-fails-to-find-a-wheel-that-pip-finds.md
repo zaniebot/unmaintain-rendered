@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-06T02:59:20Z
 updated_at: 2025-08-06T03:11:06Z
 url: https://github.com/astral-sh/uv/issues/15097
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # uv fails to find a wheel that pip finds
 
 ---
 
-_Issue opened by @sidnarayanan on 2025-08-06 02:59_
+_@sidnarayanan_
 
 ### Summary
 

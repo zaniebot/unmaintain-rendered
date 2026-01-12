@@ -13,14 +13,14 @@ head: zb/fix-test-ii
 created_at: 2025-07-02T19:52:04Z
 updated_at: 2025-07-02T20:11:52Z
 url: https://github.com/astral-sh/uv/pull/14429
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:13Z
 ```
 
 # Fix `workspace_unsatisfiable_member_dependencies`
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-02 19:52_
+_@zanieb_
 
 _No description provided._
 

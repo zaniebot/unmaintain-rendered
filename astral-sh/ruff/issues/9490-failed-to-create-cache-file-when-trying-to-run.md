@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-12T11:58:02Z
 updated_at: 2024-01-12T16:11:07Z
 url: https://github.com/astral-sh/ruff/issues/9490
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Failed to create cache file when trying to run ruff
 
 ---
 
-_Issue opened by @golgor on 2024-01-12 11:58_
+_@golgor_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

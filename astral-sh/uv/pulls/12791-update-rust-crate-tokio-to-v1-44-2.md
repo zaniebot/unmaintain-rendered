@@ -14,14 +14,14 @@ head: renovate/crate-tokio-vulnerability
 created_at: 2025-04-09T21:31:08Z
 updated_at: 2025-04-10T08:26:49Z
 url: https://github.com/astral-sh/uv/pull/12791
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:23Z
 ```
 
 # Update Rust crate tokio to v1.44.2
 
 ---
 
-_Pull request opened by @renovate on 2025-04-09 21:31_
+_@renovate_
 
 This PR contains the following updates:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-20T15:26:11Z
 updated_at: 2022-12-16T05:27:39Z
 url: https://github.com/astral-sh/ruff/issues/233
-synced_at: 2026-01-10T12:05:20Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Can `DEFAULT_EXCLUDE` use glob-style items?
 
 ---
 
-_Issue opened by @amotl on 2022-09-20 15:26_
+_@amotl_
 
 Hi again,
 

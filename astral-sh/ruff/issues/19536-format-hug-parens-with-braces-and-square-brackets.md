@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-24T18:45:08Z
 updated_at: 2025-07-25T06:42:53Z
 url: https://github.com/astral-sh/ruff/issues/19536
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # format: `hug_parens_with_braces_and_square_brackets` preview style does not affect item access
 
 ---
 
-_Issue opened by @codethief on 2025-07-24 18:45_
+_@codethief_
 
 ### Summary
 

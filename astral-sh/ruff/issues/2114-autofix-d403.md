@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-23T22:46:30Z
 updated_at: 2023-03-25T19:21:47Z
 url: https://github.com/astral-sh/ruff/issues/2114
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Autofix D403
 
 ---
 
-_Issue opened by @mmarras on 2023-01-23 22:46_
+_@mmarras_
 
 Rule D403 
 >First word of the first line should be properly capitalized

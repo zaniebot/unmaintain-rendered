@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-17T02:23:48Z
 updated_at: 2025-11-08T03:18:28Z
 url: https://github.com/astral-sh/uv/issues/15901
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # Preparing packages slow while install flash-attn
 
 ---
 
-_Issue opened by @MrHandsomeljn on 2025-09-17 02:23_
+_@MrHandsomeljn_
 
 ### Question
 

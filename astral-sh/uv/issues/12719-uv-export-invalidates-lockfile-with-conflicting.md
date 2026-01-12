@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T15:00:07Z
 updated_at: 2025-04-07T19:11:00Z
 url: https://github.com/astral-sh/uv/issues/12719
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # `uv export` invalidates lockfile with conflicting groups
 
 ---
 
-_Issue opened by @andyatmiami on 2025-04-07 15:00_
+_@andyatmiami_
 
 ### Summary
 

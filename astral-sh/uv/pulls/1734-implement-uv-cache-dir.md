@@ -14,14 +14,14 @@ head: charlie/cache-show
 created_at: 2024-02-20T04:24:24Z
 updated_at: 2024-02-20T04:29:11Z
 url: https://github.com/astral-sh/uv/pull/1734
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:42Z
 ```
 
 # Implement `uv cache dir`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-20 04:24_
+_@charliermarsh_
 
 ## Summary
 

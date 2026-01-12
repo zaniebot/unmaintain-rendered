@@ -13,14 +13,14 @@ head: zb/macro
 created_at: 2025-05-21T21:54:30Z
 updated_at: 2025-05-30T08:08:42Z
 url: https://github.com/astral-sh/uv/pull/13586
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:45Z
 ```
 
 # Use codspeed runner for wall time benchmarking
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-21 21:54_
+_@zanieb_
 
 We couldn't use the CodSpeed "walltime" runner because it required administrative permissions on our repositories, but following some feedback they've adjusted the required permissions so we can give it a try now.
 

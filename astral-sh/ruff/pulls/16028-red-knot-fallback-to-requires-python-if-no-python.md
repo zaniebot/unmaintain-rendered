@@ -14,14 +14,14 @@ head: micha/requires-python
 created_at: 2025-02-07T18:58:12Z
 updated_at: 2025-02-12T11:48:44Z
 url: https://github.com/astral-sh/ruff/pull/16028
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Fallback to `requires-python` if no `python-version` is specified
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-07 18:58_
+_@MichaReiser_
 
 ## Summary
 

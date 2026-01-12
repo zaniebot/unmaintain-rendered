@@ -13,14 +13,14 @@ head: zb/docs-spacing
 created_at: 2025-01-16T18:36:09Z
 updated_at: 2025-01-16T21:02:46Z
 url: https://github.com/astral-sh/uv/pull/10692
-synced_at: 2026-01-10T11:45:04Z
+synced_at: 2026-01-12T16:09:26Z
 ```
 
 # Improve the styling of collapsible nav items
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-16 18:36_
+_@zanieb_
 
 I've been a bit unhappy with the collapsible project section. I think it feels a little crowded and consequently hard to read. Here, we tweak the styling to decrease the font size a little and increase the margins. I aimed for a subtle change — we can change it more drastically later if we want.
 

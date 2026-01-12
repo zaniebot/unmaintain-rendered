@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-26T21:01:16Z
 updated_at: 2025-10-25T02:31:41Z
 url: https://github.com/astral-sh/ruff/issues/10622
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # bug: child configs that use 'select' or 'extend-select' invalidate the parent config's 'ignore' list.
 
 ---
 
-_Issue opened by @Hnasar on 2024-03-26 21:01_
+_@Hnasar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

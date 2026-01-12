@@ -14,14 +14,14 @@ head: alex/typeshed-sync-timeout
 created_at: 2025-12-19T17:54:48Z
 updated_at: 2025-12-19T18:09:10Z
 url: https://github.com/astral-sh/ruff/pull/22090
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Fix sync-typeshed workflow timeouts
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-19 17:54_
+_@AlexWaygood_
 
 ## Summary
 

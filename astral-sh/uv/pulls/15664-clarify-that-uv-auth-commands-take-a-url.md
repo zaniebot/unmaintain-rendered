@@ -13,14 +13,14 @@ head: konsti/lookup-url
 created_at: 2025-09-03T13:50:54Z
 updated_at: 2025-09-03T14:16:17Z
 url: https://github.com/astral-sh/uv/pull/15664
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # Clarify that `uv auth` commands take a URL
 
 ---
 
-_Pull request opened by @konstin on 2025-09-03 13:50_
+_@konstin_
 
 From the previous description I tried `uv auth token pyx`, which didn't work.
 

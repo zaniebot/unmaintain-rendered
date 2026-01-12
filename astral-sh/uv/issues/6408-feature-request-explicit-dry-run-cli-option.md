@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T04:57:04Z
 updated_at: 2024-10-24T03:22:19Z
 url: https://github.com/astral-sh/uv/issues/6408
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # [Feature request] Explicit dry-run cli option
 
 ---
 
-_Issue opened by @birdhackor on 2024-08-22 04:57_
+_@birdhackor_
 
 If I want to know which packages versions will change when I do a upgradable relock, I might want to do the following command
 

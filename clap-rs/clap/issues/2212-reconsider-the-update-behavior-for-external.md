@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-11-14T12:50:57Z
 updated_at: 2021-08-13T19:51:22Z
 url: https://github.com/clap-rs/clap/issues/2212
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Reconsider the update behavior for external commands and other values-taking fields
 
 ---
 
-_Issue opened by @lu-zero on 2020-11-14 12:50_
+_@lu-zero_
 
 As discussed [here](https://github.com/clap-rs/clap/pull/1878#discussion_r523415453).
 

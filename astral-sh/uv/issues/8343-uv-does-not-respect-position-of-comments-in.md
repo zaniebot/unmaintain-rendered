@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-18T17:48:18Z
 updated_at: 2024-10-20T17:16:14Z
 url: https://github.com/astral-sh/uv/issues/8343
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # uv does not respect position of comments in `pyproject.toml`
 
 ---
 
-_Issue opened by @notatallshaw on 2024-10-18 17:48_
+_@notatallshaw_
 
 uv 0.4.24
 

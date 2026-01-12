@@ -13,14 +13,14 @@ head: tfsingh/script-run
 created_at: 2024-09-27T13:47:39Z
 updated_at: 2024-10-11T09:53:31Z
 url: https://github.com/astral-sh/uv/pull/7739
-synced_at: 2026-01-10T12:53:54Z
+synced_at: 2026-01-12T16:07:58Z
 ```
 
 # Support `uv run --script`
 
 ---
 
-_Pull request opened by @tfsingh on 2024-09-27 13:47_
+_@tfsingh_
 
 This PR adds support for executing a script with ```uv run```, even when the script does not have a ```.py``` extension. Addresses #7396.
 

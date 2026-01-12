@@ -13,14 +13,14 @@ head: charlie/bare-vii
 created_at: 2024-03-21T01:05:18Z
 updated_at: 2024-03-21T13:52:49Z
 url: https://github.com/astral-sh/uv/pull/2579
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:07Z
 ```
 
 # Move requirements resolution into its own crate
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-21 01:05_
+_@charliermarsh_
 
 ## Summary
 

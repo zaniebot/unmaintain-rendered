@@ -13,14 +13,14 @@ head: konsti/add-missing-trailing-newline-to-error
 created_at: 2025-07-17T20:18:42Z
 updated_at: 2025-07-17T20:37:37Z
 url: https://github.com/astral-sh/uv/pull/14689
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:21Z
 ```
 
 # Add missing trailing newline to outdated error
 
 ---
 
-_Pull request opened by @konstin on 2025-07-17 20:18_
+_@konstin_
 
 Unlike the other branch in match, which uses a fully formatted error, we need to print the newline ourselves.
 

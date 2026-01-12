@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-02T13:39:02Z
 updated_at: 2024-01-25T20:44:13Z
 url: https://github.com/astral-sh/ruff/issues/8964
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Rule suggestion: lint against the use of `in` with compound comparisons
 
 ---
 
-_Issue opened by @tjkuson on 2023-12-02 13:39_
+_@tjkuson_
 
 The use of `in` with compound comparisons often leads to unintended/surprising behaviour.
 

@@ -13,14 +13,14 @@ head: zb/toolchain-fix-ii
 created_at: 2024-06-21T21:38:13Z
 updated_at: 2024-06-22T14:42:52Z
 url: https://github.com/astral-sh/uv/pull/4441
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:14Z
 ```
 
 # Fix ordering of prefer-system toolchain preference
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-21 21:38_
+_@zanieb_
 
 Whoopsies!
 

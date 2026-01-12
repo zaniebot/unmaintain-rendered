@@ -13,14 +13,14 @@ head: zb/doc-type-checking
 created_at: 2025-12-16T03:57:51Z
 updated_at: 2025-12-16T08:24:38Z
 url: https://github.com/astral-sh/ty/pull/1915
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Add a "type checking" page
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-16 03:57_
+_@zanieb_
 
 [Rendered](https://update-docs-zb-doc-type-chec.docs-119.pages.dev/ty/type-checking/)
 

@@ -13,14 +13,14 @@ head: fix_virtual_env_prompt_in_activate
 created_at: 2025-05-17T02:07:50Z
 updated_at: 2025-05-17T16:08:34Z
 url: https://github.com/astral-sh/uv/pull/13501
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:42Z
 ```
 
 # Fix VIRTUAL_ENV_PROMPT value in activator/activate
 
 ---
 
-_Pull request opened by @ericbn on 2025-05-17 02:07_
+_@ericbn_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

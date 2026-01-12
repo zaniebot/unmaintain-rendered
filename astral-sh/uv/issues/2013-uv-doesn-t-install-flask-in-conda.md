@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-27T13:15:20Z
 updated_at: 2024-04-08T02:14:11Z
 url: https://github.com/astral-sh/uv/issues/2013
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # uv doesn't install flask in conda
 
 ---
 
-_Issue opened by @matt-sd-watson on 2024-02-27 13:15_
+_@matt-sd-watson_
 
 The following commands were used to create a conda environment for a flask application:
 

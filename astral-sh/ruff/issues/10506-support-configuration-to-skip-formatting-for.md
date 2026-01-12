@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-21T09:54:35Z
 updated_at: 2024-03-21T10:20:50Z
 url: https://github.com/astral-sh/ruff/issues/10506
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Support configuration to skip formatting for certain lines.
 
 ---
 
-_Issue opened by @zen-xu on 2024-03-21 09:54_
+_@zen-xu_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-04T18:13:55Z
 updated_at: 2024-08-05T19:15:04Z
 url: https://github.com/astral-sh/uv/issues/5759
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Indicate extra and dev dependencies in `uv tree`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-04 18:13_
+_@charliermarsh_
 
 Right now, we don't include these at all. But we could.
 

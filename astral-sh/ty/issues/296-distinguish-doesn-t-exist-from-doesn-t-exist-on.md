@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-09T16:09:06Z
 updated_at: 2025-11-18T16:10:26Z
 url: https://github.com/astral-sh/ty/issues/296
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # distinguish "doesn't exist" from "doesn't exist on this Python version"
 
 ---
 
-_Issue opened by @carljm on 2025-05-09 16:09_
+_@carljm_
 
 If a user has their Python version mis-configured, and gets an error like `module 'datetime' has no attribute 'UTC'`, it's not necessarily obvious that the reason for this is that they are on the wrong Python version. It would be nice if we could offer an info context on the diagnostic saying "it exists on other Python versions, but you are running with Python 3.9"
 

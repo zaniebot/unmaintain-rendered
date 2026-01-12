@@ -13,14 +13,14 @@ head: fix-safety-reimplemented_builtin
 created_at: 2025-05-15T06:53:27Z
 updated_at: 2025-05-19T20:38:08Z
 url: https://github.com/astral-sh/ruff/pull/18114
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [`flake8-simplify`] add fix safety section (`SIM110`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-05-15 06:53_
+_@VascoSch92_
 
 The PR add the `fix safety` section for rule `SIM110` (#15584 )
 

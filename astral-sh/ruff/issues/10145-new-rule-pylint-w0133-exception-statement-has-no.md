@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-27T16:17:12Z
 updated_at: 2024-03-11T17:39:06Z
 url: https://github.com/astral-sh/ruff/issues/10145
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [new rule] pylint W0133: Exception statement has no effect
 
 ---
 
-_Issue opened by @Taragolis on 2024-02-27 16:17_
+_@Taragolis_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

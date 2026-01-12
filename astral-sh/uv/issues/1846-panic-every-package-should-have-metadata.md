@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-22T02:09:50Z
 updated_at: 2024-02-22T16:44:47Z
 url: https://github.com/astral-sh/uv/issues/1846
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # panic: Every package should have metadata: NameVersion(PackageName("coverage"), "6.4")
 
 ---
 
-_Issue opened by @amartani on 2024-02-22 02:09_
+_@amartani_
 
 I can't reproduce it, but my first attempt at `uv pip install -r requirements.txt` failed with the following error:
 

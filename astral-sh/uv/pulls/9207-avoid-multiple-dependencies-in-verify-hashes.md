@@ -13,14 +13,14 @@ head: charlie/h
 created_at: 2024-11-18T17:13:52Z
 updated_at: 2024-11-18T17:24:56Z
 url: https://github.com/astral-sh/uv/pull/9207
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:42Z
 ```
 
 # Avoid multiple dependencies in `verify_hashes_mismatch`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-18 17:13_
+_@charliermarsh_
 
 ## Summary
 

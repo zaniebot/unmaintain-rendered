@@ -13,14 +13,14 @@ head: charlie/com
 created_at: 2025-01-08T22:54:42Z
 updated_at: 2025-01-08T23:06:10Z
 url: https://github.com/astral-sh/uv/pull/10416
-synced_at: 2026-01-10T11:44:47Z
+synced_at: 2026-01-12T16:09:17Z
 ```
 
 # Remove duplicated comment
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-08 22:54_
+_@charliermarsh_
 
 _No description provided._
 

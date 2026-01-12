@@ -13,14 +13,14 @@ head: self-documenting-f-strings
 created_at: 2023-07-29T08:08:36Z
 updated_at: 2023-08-01T05:55:04Z
 url: https://github.com/astral-sh/ruff/pull/6167
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # add `DebugText` for self-documenting f-strings
 
 ---
 
-_Pull request opened by @davidszotten on 2023-07-29 08:08_
+_@davidszotten_
 
 instead of modelling self-documenting f-strings (`f"{ foo= }"`) as a (simplified)
 `Constant("foo=")` followed by a `FormattedValue(Expr("x"))`, instead model this case with a `DebugText(leading, trailing)` attribute on the `FormattedValue` so that we don't have to synthesize nodes (which results in siblings with overlapping ranges). We need to be able to preserve the whitespace for self-documenting f-strings, as well as reproduce the source (eg unparse, format).

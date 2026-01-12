@@ -13,14 +13,14 @@ head: dependabot/cargo/indexmap-2.2.5
 created_at: 2024-03-11T21:33:43Z
 updated_at: 2024-03-11T21:43:35Z
 url: https://github.com/astral-sh/uv/pull/2367
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:00Z
 ```
 
 # Bump indexmap from 2.2.3 to 2.2.5
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-11 21:33_
+_@dependabot_
 
 Bumps [indexmap](https://github.com/indexmap-rs/indexmap) from 2.2.3 to 2.2.5.
 <details>

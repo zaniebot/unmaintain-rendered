@@ -12,14 +12,14 @@ head: charlie/tsc-eslint
 created_at: 2022-12-26T18:31:09Z
 updated_at: 2022-12-26T20:08:23Z
 url: https://github.com/astral-sh/ruff/pull/1384
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add ESLint, Prettier, and TypeScript checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-26 18:31_
+_@charliermarsh_
 
 _No description provided._
 

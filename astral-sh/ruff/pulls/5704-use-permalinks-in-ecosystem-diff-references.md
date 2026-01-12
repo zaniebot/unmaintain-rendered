@@ -12,14 +12,14 @@ head: ci/ecosystem-permalinks
 created_at: 2023-07-12T05:02:02Z
 updated_at: 2023-07-12T07:05:00Z
 url: https://github.com/astral-sh/ruff/pull/5704
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Use permalinks in ecosystem diff references
 
 ---
 
-_Pull request opened by @zanieb on 2023-07-12 05:02_
+_@zanieb_
 
 ## Summary
 

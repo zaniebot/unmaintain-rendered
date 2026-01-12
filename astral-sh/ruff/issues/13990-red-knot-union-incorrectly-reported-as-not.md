@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-30T10:06:56Z
 updated_at: 2024-10-30T11:54:17Z
 url: https://github.com/astral-sh/ruff/issues/13990
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Union incorrectly reported as not iterable
 
 ---
 
-_Issue opened by @MichaReiser on 2024-10-30 10:06_
+_@MichaReiser_
 
 Given:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-24T08:58:48Z
 updated_at: 2025-06-24T09:08:23Z
 url: https://github.com/astral-sh/uv/issues/14233
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # Support sort of wrapper with uv version in-repo
 
 ---
 
-_Issue opened by @janario on 2025-06-24 08:58_
+_@janario_
 
 ### Summary
 

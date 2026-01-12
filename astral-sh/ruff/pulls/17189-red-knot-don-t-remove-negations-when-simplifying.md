@@ -12,14 +12,14 @@ head: cjm/tvinter
 created_at: 2025-04-03T23:15:55Z
 updated_at: 2025-04-03T23:30:59Z
 url: https://github.com/astral-sh/ruff/pull/17189
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] don't remove negations when simplifying constrained typevars
 
 ---
 
-_Pull request opened by @carljm on 2025-04-03 23:15_
+_@carljm_
 
 For two non-disjoint types `P` and `Q`, the simplification of `(P | Q) & ~Q` is not `P`, but `P & ~Q`. In other words, the non-empty set `P & Q` is also excluded from the type.
 

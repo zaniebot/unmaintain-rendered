@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-12T03:42:04Z
 updated_at: 2025-05-13T03:02:32Z
 url: https://github.com/astral-sh/uv/issues/13392
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # support a consistent file structure for virtual environments across operating systems
 
 ---
 
-_Issue opened by @DetachHead on 2025-05-12 03:42_
+_@DetachHead_
 
 ### Summary
 

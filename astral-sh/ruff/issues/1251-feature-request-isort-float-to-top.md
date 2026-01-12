@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-15T20:14:11Z
 updated_at: 2024-08-15T13:54:40Z
 url: https://github.com/astral-sh/ruff/issues/1251
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Feature request: isort.float-to-top
 
 ---
 
-_Issue opened by @tlambert03 on 2022-12-15 20:14_
+_@tlambert03_
 
 I have some code-autogeneration projects where isort's [Float To Top](https://pycqa.github.io/isort/docs/configuration/options.html#float-to-top) feature is super useful.  (as a reminder, it causes all non-indented imports to float to the top of the file)
 

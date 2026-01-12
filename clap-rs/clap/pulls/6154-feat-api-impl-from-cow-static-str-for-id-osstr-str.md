@@ -12,14 +12,14 @@ head: impl-from-cow
 created_at: 2025-10-16T09:48:40Z
 updated_at: 2025-10-21T09:59:58Z
 url: https://github.com/clap-rs/clap/pull/6154
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # feat(api): impl From<Cow<'static, str>> for Id,OsStr, Str
 
 ---
 
-_Pull request opened by @germangarces on 2025-10-16 09:48_
+_@germangarces_
 
 Implements #5785
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-08T16:05:43Z
 updated_at: 2024-09-27T08:06:22Z
 url: https://github.com/astral-sh/ruff/issues/8566
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # formatter removes blank line after class definition
 
 ---
 
-_Issue opened by @spaceone on 2023-11-08 16:05_
+_@spaceone_
 
 ```sh
 $ black --diff foo.py 

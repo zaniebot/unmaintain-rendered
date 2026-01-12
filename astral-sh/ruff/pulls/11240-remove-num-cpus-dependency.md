@@ -13,14 +13,14 @@ head: remove-num-cpus
 created_at: 2024-05-02T07:15:15Z
 updated_at: 2024-05-02T20:30:49Z
 url: https://github.com/astral-sh/ruff/pull/11240
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Remove num-cpus dependency
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-05-02 07:15_
+_@MichaReiser_
 
 ## Summary
 

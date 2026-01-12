@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-05T07:36:22Z
 updated_at: 2025-01-08T21:48:55Z
 url: https://github.com/astral-sh/uv/issues/9657
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:55Z
 ```
 
 # `uv export --script` being able to export the requirements of a script to a `requirements.txt`
 
 ---
 
-_Issue opened by @samster25 on 2024-12-05 07:36_
+_@samster25_
 
 It would be very useful to be able to export the requirements from a script to a `requirements.txt` file. 
 

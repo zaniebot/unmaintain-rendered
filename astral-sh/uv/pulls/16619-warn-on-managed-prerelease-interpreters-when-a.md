@@ -13,14 +13,14 @@ head: run-warn-stable-python-version
 created_at: 2025-11-06T18:55:29Z
 updated_at: 2025-11-12T19:54:49Z
 url: https://github.com/astral-sh/uv/pull/16619
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:21Z
 ```
 
 # Warn on managed prerelease interpreters when a stable build is available
 
 ---
 
-_Pull request opened by @terror on 2025-11-06 18:55_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/16616
 

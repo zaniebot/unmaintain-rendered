@@ -11,14 +11,14 @@ head: remove-the-future
 created_at: 2025-05-20T15:34:34Z
 updated_at: 2025-05-20T15:54:16Z
 url: https://github.com/astral-sh/ruff/pull/18223
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # remove unnecessary `__future__` import in `ruff.__main__`
 
 ---
 
-_Pull request opened by @jorenham on 2025-05-20 15:34_
+_@jorenham_
 
 ## Summary
 

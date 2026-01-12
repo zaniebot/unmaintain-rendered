@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-02T19:43:18Z
 updated_at: 2026-01-07T21:25:15Z
 url: https://github.com/astral-sh/uv/issues/16940
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # Clarify UV_HTTP_TIMEOUT format in error message
 
 ---
 
-_Issue opened by @wrp on 2025-12-02 19:43_
+_@wrp_
 
 # Feature Request: Clarify UV_HTTP_TIMEOUT format in error message
 

@@ -13,14 +13,14 @@ head: bybrooks/atomic-build-output
 created_at: 2025-12-31T09:05:28Z
 updated_at: 2026-01-06T14:27:05Z
 url: https://github.com/astral-sh/uv/pull/17276
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:41Z
 ```
 
 # Avoid broken build artifacts on build failure
 
 ---
 
-_Pull request opened by @bybrooks on 2025-12-31 09:05_
+_@bybrooks_
 
 ## Summary
 

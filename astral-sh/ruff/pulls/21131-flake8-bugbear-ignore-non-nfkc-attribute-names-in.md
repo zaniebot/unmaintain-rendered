@@ -14,14 +14,14 @@ head: fix-21126
 created_at: 2025-10-29T22:19:36Z
 updated_at: 2025-11-03T15:07:41Z
 url: https://github.com/astral-sh/ruff/pull/21131
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:17Z
 ```
 
 # [`flake8-bugbear`] Ignore non-NFKC attribute names in B009 and B010 (`B009`, `B010`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-29 22:19_
+_@danparizher_
 
 ## Summary
 

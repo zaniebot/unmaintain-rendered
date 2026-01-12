@@ -13,14 +13,14 @@ head: broken-env-tool-list
 created_at: 2025-01-08T20:13:46Z
 updated_at: 2025-01-10T08:16:49Z
 url: https://github.com/astral-sh/uv/pull/10409
-synced_at: 2026-01-10T11:44:47Z
+synced_at: 2026-01-12T16:09:17Z
 ```
 
 # Improve tool list output when tool environment is broken
 
 ---
 
-_Pull request opened by @blueraft on 2025-01-08 20:13_
+_@blueraft_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/no-proxy
 created_at: 2025-09-12T16:23:29Z
 updated_at: 2025-09-12T17:11:06Z
 url: https://github.com/astral-sh/uv/pull/15816
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:57Z
 ```
 
 # Document `NO_PROXY` support
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-12 16:23_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/15785.
 

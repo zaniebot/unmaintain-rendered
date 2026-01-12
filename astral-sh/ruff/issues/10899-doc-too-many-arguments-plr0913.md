@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-12T07:17:05Z
 updated_at: 2024-06-02T08:07:43Z
 url: https://github.com/astral-sh/ruff/issues/10899
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # doc (too-many-arguments PLR0913): 
 
 ---
 
-_Issue opened by @buhtz on 2024-04-12 07:17_
+_@buhtz_
 
 This is about the [`too-many-arguments` (PLR0913)](https://docs.astral.sh/ruff/rules/too-many-arguments/) rule and its documentation.
 I would suggest to improve the documentation about that rule because there is a difference in its treatment between ruff and pylint.

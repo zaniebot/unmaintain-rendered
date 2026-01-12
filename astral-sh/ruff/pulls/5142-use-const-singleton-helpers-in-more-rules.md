@@ -12,14 +12,14 @@ head: charlie/const
 created_at: 2023-06-16T04:22:07Z
 updated_at: 2023-06-16T04:48:39Z
 url: https://github.com/astral-sh/ruff/pull/5142
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Use const-singleton helpers in more rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-16 04:22_
+_@charliermarsh_
 
 _No description provided._
 

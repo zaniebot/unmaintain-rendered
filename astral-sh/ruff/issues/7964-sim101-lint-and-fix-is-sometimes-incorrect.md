@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-15T12:58:34Z
 updated_at: 2023-10-17T13:43:50Z
 url: https://github.com/astral-sh/ruff/issues/7964
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `SIM101` lint and fix is sometimes incorrect
 
 ---
 
-_Issue opened by @Zac-HD on 2023-10-15 12:58_
+_@Zac-HD_
 
 The `SIM101` rule suggests replacing `isinstance(a. b) or isinstance(a, c)` with `isinstance(a, (b, c))` - but the lint and autofix also trigger when there is an intermediate term in the `or`-expression.  This is a problem because code can (and does) rely on short-circuiting evaluation in some such cases.  For example, `ruff --isolated --select=SIM101 --fix demo.py` will break:
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-09-20T12:48:56Z
 updated_at: 2023-09-20T12:52:28Z
 url: https://github.com/astral-sh/ruff/issues/7546
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Questionable PD011 autofix
 
 ---
 
-_Issue opened by @s-banach on 2023-09-20 12:48_
+_@s-banach_
 
 (For reference, PD011 replaces `Series.values` with `Series.to_numpy()`.)
 If somebody wrote `Series.values` in the first place, they probably had the intention of accessing the underlying data.

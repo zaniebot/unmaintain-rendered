@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T18:00:03Z
 updated_at: 2024-04-01T22:10:47Z
 url: https://github.com/astral-sh/uv/issues/1661
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # `uv pip install` fails for dependencies on already-installed local packages
 
 ---
 
-_Issue opened by @charlesnicholson on 2024-02-18 18:00_
+_@charlesnicholson_
 
 When a package depends on an editable-installed namespaced package, `uv pip install` fails saying that the already-installed package can't be found. Possibly related to string hygiene and converting `ns1.package1` to `ns1-package1`?
 

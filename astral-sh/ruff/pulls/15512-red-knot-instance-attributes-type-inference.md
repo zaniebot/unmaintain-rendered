@@ -13,14 +13,14 @@ head: david/instance-attributes-clarify-inference
 created_at: 2025-01-15T19:43:57Z
 updated_at: 2025-01-15T20:17:57Z
 url: https://github.com/astral-sh/ruff/pull/15512
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Instance attributes: type inference clarifications
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-15 19:43_
+_@sharkdp_
 
 ## Summary
 

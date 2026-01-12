@@ -13,14 +13,14 @@ head: charlie/init
 created_at: 2024-07-23T20:18:47Z
 updated_at: 2024-07-23T20:33:55Z
 url: https://github.com/astral-sh/uv/pull/5367
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:46Z
 ```
 
 # Pre-populate authentication sources in Project and Tools APIs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-23 20:18_
+_@charliermarsh_
 
 ## Summary
 

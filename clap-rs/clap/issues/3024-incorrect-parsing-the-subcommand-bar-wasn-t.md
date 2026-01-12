@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-11-14T13:04:38Z
 updated_at: 2021-11-16T16:23:10Z
 url: https://github.com/clap-rs/clap/issues/3024
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Incorrect parsing - The subcommand 'bar' wasn't recognized, did you mean 'bar'?
 
 ---
 
-_Issue opened by @Ten0 on 2021-11-14 13:04_
+_@Ten0_
 
 ### Please complete the following tasks
 

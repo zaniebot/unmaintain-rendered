@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-27T18:46:36Z
 updated_at: 2024-09-05T02:26:59Z
 url: https://github.com/astral-sh/ruff/issues/12076
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Exempting certain classes/methods from various things
 
 ---
 
-_Issue opened by @benjamin-kirkbride on 2024-06-27 18:46_
+_@benjamin-kirkbride_
 
 A lot of frameworks provide classes/functions that have a set number of arguments. It is idiomatic and/or required to have them in place even when not used (ARG002), and they often have too many args (PLR0913).
 

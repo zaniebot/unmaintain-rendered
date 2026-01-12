@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-19T16:45:44Z
 updated_at: 2025-05-19T17:07:32Z
 url: https://github.com/astral-sh/ty/issues/454
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `sys.exit` is not being acknowledged as an exit point of the function
 
 ---
 
-_Issue opened by @inoa-jboliveira on 2025-05-19 16:45_
+_@inoa-jboliveira_
 
 ### Summary
 

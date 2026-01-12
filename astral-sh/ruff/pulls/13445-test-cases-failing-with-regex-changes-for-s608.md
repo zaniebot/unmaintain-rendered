@@ -11,14 +11,14 @@ head: main
 created_at: 2024-09-22T03:17:58Z
 updated_at: 2024-09-30T17:59:35Z
 url: https://github.com/astral-sh/ruff/pull/13445
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Test cases failing with regex changes for S608
 
 ---
 
-_Pull request opened by @DataEnggNerd on 2024-09-22 03:17_
+_@DataEnggNerd_
 
 @MichaReiser 
 

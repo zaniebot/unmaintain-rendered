@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-19T21:42:25Z
 updated_at: 2025-10-19T22:10:39Z
 url: https://github.com/astral-sh/uv/issues/16362
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:30Z
 ```
 
 # uv run recreates virtual environment every time when using asdf-managed Python
 
 ---
 
-_Issue opened by @joelleibow on 2025-10-19 21:42_
+_@joelleibow_
 
 ## Summary
 

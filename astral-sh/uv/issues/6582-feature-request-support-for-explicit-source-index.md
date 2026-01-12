@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-24T13:39:19Z
 updated_at: 2024-08-24T13:43:55Z
 url: https://github.com/astral-sh/uv/issues/6582
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # [feature request] Support for explicit source/index specification on individual dependencies
 
 ---
 
-_Issue opened by @menzenski on 2024-08-24 13:39_
+_@menzenski_
 
 We currently use a mix of pyenv, pipx, and Poetry in our Python projects and I'm very interested in uv's potential to replace all of these tools.
 

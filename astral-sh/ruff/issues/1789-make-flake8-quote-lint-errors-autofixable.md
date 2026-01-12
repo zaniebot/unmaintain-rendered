@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-11T22:23:41Z
 updated_at: 2023-01-12T17:42:30Z
 url: https://github.com/astral-sh/ruff/issues/1789
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Make flake8-quote lint errors autofixable
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-11 22:23_
+_@charliermarsh_
 
 _No description provided._
 

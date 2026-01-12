@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-02-17T03:57:38Z
 updated_at: 2022-02-17T17:53:25Z
 url: https://github.com/clap-rs/clap/issues/3482
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Subcommand headings do not work 
 
 ---
 
-_Issue opened by @milesj on 2022-02-17 03:57_
+_@milesj_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-05-24T20:11:30Z
 updated_at: 2023-05-24T20:42:57Z
 url: https://github.com/astral-sh/ruff/pull/4644
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Docs: mention `task-tags` option in two rules
 
 ---
 
-_Pull request opened by @bersbersbers on 2023-05-24 20:11_
+_@bersbersbers_
 
 ## Summary
 

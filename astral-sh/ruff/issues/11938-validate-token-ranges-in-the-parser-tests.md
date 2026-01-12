@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-19T11:19:07Z
 updated_at: 2024-06-25T08:14:30Z
 url: https://github.com/astral-sh/ruff/issues/11938
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Validate token ranges in the parser tests
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-06-19 11:19_
+_@dhruvmanila_
 
 Issues such as #11937, #11929 basically suggests that the token ranges are overlapping which is causing the panic in downstream tools.
 

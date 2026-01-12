@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-01T13:55:00Z
 updated_at: 2025-05-03T21:13:41Z
 url: https://github.com/astral-sh/uv/issues/13252
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:23Z
 ```
 
 # Add --docker flag to `uv init` to create Dockerfile
 
 ---
 
-_Issue opened by @jackwotherspoon on 2025-05-01 13:55_
+_@jackwotherspoon_
 
 ### Summary
 

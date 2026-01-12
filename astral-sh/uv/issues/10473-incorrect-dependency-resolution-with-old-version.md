@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-10T16:59:42Z
 updated_at: 2025-10-01T15:28:35Z
 url: https://github.com/astral-sh/uv/issues/10473
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # Incorrect dependency resolution with old version of pandas and Python 3.10
 
 ---
 
-_Issue opened by @zoof on 2025-01-10 16:59_
+_@zoof_
 
 With a new environment, using Python 3.10, `uv add pandas==1.5.3 numpy matplotlib scikit-learn openpyxl` results in a version of `numpy` that is incompatible with `pandas` 1.5.3.  I have not check if this problem holds for other versions of Python.
 

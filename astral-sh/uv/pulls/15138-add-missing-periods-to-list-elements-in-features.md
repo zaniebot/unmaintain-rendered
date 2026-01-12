@@ -13,14 +13,14 @@ head: yury/add-missing-dots
 created_at: 2025-08-07T15:17:15Z
 updated_at: 2025-08-07T20:42:50Z
 url: https://github.com/astral-sh/uv/pull/15138
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:35Z
 ```
 
 # Add missing periods (`.`) to list elements in `Features` docs page
 
 ---
 
-_Pull request opened by @yury-fedotov on 2025-08-07 15:17_
+_@yury-fedotov_
 
 The [**Features**](https://docs.astral.sh/uv/getting-started/features/) page of docs contains a lot of markdown lists, elements of which end with `.`.
 

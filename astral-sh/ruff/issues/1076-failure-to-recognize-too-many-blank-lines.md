@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-05T20:52:47Z
 updated_at: 2022-12-06T20:24:32Z
 url: https://github.com/astral-sh/ruff/issues/1076
-synced_at: 2026-01-10T12:06:16Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Failure to recognize too many blank lines
 
 ---
 
-_Issue opened by @facundobatista on 2022-12-05 20:52_
+_@facundobatista_
 
 Check the following code:
 

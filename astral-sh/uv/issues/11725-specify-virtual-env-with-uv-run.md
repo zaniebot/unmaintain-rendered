@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-23T16:04:24Z
 updated_at: 2025-02-24T17:45:43Z
 url: https://github.com/astral-sh/uv/issues/11725
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # specify virtual env with uv run
 
 ---
 
-_Issue opened by @insane-dreamer on 2025-02-23 16:04_
+_@insane-dreamer_
 
 ### Summary
 

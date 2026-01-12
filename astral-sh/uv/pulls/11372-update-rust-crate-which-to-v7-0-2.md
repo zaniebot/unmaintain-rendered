@@ -13,14 +13,14 @@ head: renovate/which-7.x-lockfile
 created_at: 2025-02-10T01:07:29Z
 updated_at: 2025-02-10T01:46:30Z
 url: https://github.com/astral-sh/uv/pull/11372
-synced_at: 2026-01-10T11:10:37Z
+synced_at: 2026-01-12T16:09:49Z
 ```
 
 # Update Rust crate which to v7.0.2
 
 ---
 
-_Pull request opened by @renovate on 2025-02-10 01:07_
+_@renovate_
 
 This PR contains the following updates:
 

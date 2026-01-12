@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-15T12:19:27Z
 updated_at: 2025-04-15T12:58:55Z
 url: https://github.com/astral-sh/uv/issues/12896
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # Should I run uv lock or uv sync before uv build?
 
 ---
 
-_Issue opened by @Gabriel-p on 2025-04-15 12:19_
+_@Gabriel-p_
 
 ### Question
 

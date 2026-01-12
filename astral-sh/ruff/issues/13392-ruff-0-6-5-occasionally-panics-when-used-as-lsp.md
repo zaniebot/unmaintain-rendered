@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-18T13:18:19Z
 updated_at: 2024-10-04T09:00:24Z
 url: https://github.com/astral-sh/ruff/issues/13392
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # ruff 0.6.5 occasionally panics when used as LSP inside Emacs
 
 ---
 
-_Issue opened by @offby1 on 2024-09-18 13:18_
+_@offby1_
 
 - I searched for `in:title ruff in:title panic`
 - I have no idea how to reproduce the bug; it seems to happen at random

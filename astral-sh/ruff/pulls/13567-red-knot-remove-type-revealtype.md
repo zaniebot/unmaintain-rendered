@@ -13,14 +13,14 @@ head: remove-revealtype-variant
 created_at: 2024-09-30T12:44:55Z
 updated_at: 2024-10-01T10:10:15Z
 url: https://github.com/astral-sh/ruff/pull/13567
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] Remove `Type::RevealType`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-30 12:44_
+_@AlexWaygood_
 
 Instead, store the information about the kind of function it is as a field on instances of `FunctionType`. This is more extensible, as it means we won't have to add new `Type` variants for each of `cast`, `runtime_checkable`, `no_type_check`, `type_check_only`, `dataclasses.dataclass`, `dataclasses.field`, etc. etc. Since these special-cased functions work like normal functions in almost every respect, this should lead to much less branching in the long term. We'll be able to have just one or two `match` statements in `Type::call` and similar, instead of adding unnecessary branches for `DisplayType::Display`, `Type::bool`, etc.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-16T18:55:18Z
 updated_at: 2025-11-18T16:10:23Z
 url: https://github.com/astral-sh/ty/issues/224
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # simplify across intersections in a union
 
 ---
 
-_Issue opened by @carljm on 2024-12-16 18:55_
+_@carljm_
 
 When we add multiple intersection types to a union, we miss some opportunities to simplify across those intersections.
 

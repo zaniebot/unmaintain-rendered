@@ -13,14 +13,14 @@ head: jtfm/venv-compatibility
 created_at: 2025-04-14T18:10:48Z
 updated_at: 2025-04-15T10:01:16Z
 url: https://github.com/astral-sh/uv/pull/12884
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:26Z
 ```
 
 # Ensure virtual environment is compatible with interpreter on sync
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-04-14 18:10_
+_@jtfmumm_
 
 It was possible that a virtual environment became out of sync with the interpreter it pointed to (for example, if a symlink was changed to an updated Python version). In such a case, `pyvenv.cfg` and `activate_this.py` would no longer be correct. This PR detects when the `version` (`venv` module) or `version_info` (uv and `virtualenv`) field in `pyvenv.cfg` is out of sync with the interpreter. In such a case, uv recreates the virtual environment.
 

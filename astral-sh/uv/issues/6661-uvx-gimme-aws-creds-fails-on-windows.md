@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-26T22:52:10Z
 updated_at: 2024-10-23T16:58:26Z
 url: https://github.com/astral-sh/uv/issues/6661
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # `uvx gimme-aws-creds` fails on Windows
 
 ---
 
-_Issue opened by @knowsuchagency on 2024-08-26 22:52_
+_@knowsuchagency_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: charlie/uv-add
 created_at: 2024-09-17T02:06:08Z
 updated_at: 2024-09-17T03:20:42Z
 url: https://github.com/astral-sh/uv/pull/7447
-synced_at: 2026-01-10T12:53:47Z
+synced_at: 2026-01-12T16:07:50Z
 ```
 
 # Include `--branch` et al when resolving unnamed URLs in `uv add`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-17 02:06_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: source-frame-context
 created_at: 2023-04-06T14:54:56Z
 updated_at: 2023-04-11T08:32:35Z
 url: https://github.com/astral-sh/ruff/pull/3901
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Render code frame with context
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-04-06 14:54_
+_@MichaReiser_
 
 This PR changes the `text` and `grouped` emitter to show up to two lines of context before and after the offending code. 
 

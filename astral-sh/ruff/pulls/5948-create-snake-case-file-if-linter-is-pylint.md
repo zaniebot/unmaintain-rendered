@@ -13,14 +13,14 @@ head: add_rule_script
 created_at: 2023-07-21T15:08:27Z
 updated_at: 2023-07-22T14:05:35Z
 url: https://github.com/astral-sh/ruff/pull/5948
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Create snake_case file if linter is Pylint
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-21 15:08_
+_@tjkuson_
 
 ## Summary
 

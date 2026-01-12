@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-25T00:10:29Z
 updated_at: 2025-12-31T12:00:38Z
 url: https://github.com/astral-sh/ruff/issues/22188
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # FAST002 (FastAPI dependency without `Annotated`) could be made even smarter
 
 ---
 
-_Issue opened by @tuttle on 2025-12-25 00:10_
+_@tuttle_
 
 ### Summary
 

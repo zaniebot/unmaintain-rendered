@@ -13,14 +13,14 @@ head: docs/add-rule-code-to-tags
 created_at: 2024-11-01T14:09:13Z
 updated_at: 2024-11-01T16:06:06Z
 url: https://github.com/astral-sh/ruff/pull/14040
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [docs] Add rule short code to mkdocs tags
 
 ---
 
-_Pull request opened by @hreeder on 2024-11-01 14:09_
+_@hreeder_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

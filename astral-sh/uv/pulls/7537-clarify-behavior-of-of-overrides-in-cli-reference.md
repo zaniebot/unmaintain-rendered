@@ -13,14 +13,14 @@ head: override-dependencies-docs
 created_at: 2024-09-19T08:32:19Z
 updated_at: 2024-09-19T12:02:42Z
 url: https://github.com/astral-sh/uv/pull/7537
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:52Z
 ```
 
 # Clarify behavior of of overrides in CLI reference
 
 ---
 
-_Pull request opened by @YouJiacheng on 2024-09-19 08:32_
+_@YouJiacheng_
 
 ## Summary
 Improve the description of override-dependencies based on the statement in `concepts/resolution.md`: "As with constraints, overrides do not add a dependency on the package and only take effect if the package is requested in a direct or transitive dependency."

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-30T05:04:59Z
 updated_at: 2024-10-21T22:59:12Z
 url: https://github.com/astral-sh/uv/issues/5588
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Paths to using published versions of vendored, forked crates?
 
 ---
 
-_Issue opened by @musicinmybrain on 2024-07-30 05:04_
+_@musicinmybrain_
 
 While finishing up a `uv` package for Fedora Linux, I’ve documented several cases where third-party crates have been copied into `uv`.
 

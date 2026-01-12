@@ -13,14 +13,14 @@ head: w1510-fix
 created_at: 2023-08-20T19:55:58Z
 updated_at: 2023-12-12T05:14:22Z
 url: https://github.com/astral-sh/ruff/pull/6708
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # [`pylint`] Add fix for `subprocess-run-without-check` (`PLW1510`)
 
 ---
 
-_Pull request opened by @hauntsaninja on 2023-08-20 19:55_
+_@hauntsaninja_
 
 Let me know if I should care more about whitespace (and would appreciate pointers if so)
 

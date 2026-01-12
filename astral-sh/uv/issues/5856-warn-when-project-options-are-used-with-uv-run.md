@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-08-07T13:11:56Z
 updated_at: 2024-08-09T23:10:35Z
 url: https://github.com/astral-sh/uv/issues/5856
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Warn when project options are used with `uv run` outside a project
 
 ---
 
-_Issue opened by @zanieb on 2024-08-07 13:11_
+_@zanieb_
 
 e.g., `--dev`, `--no-dev`, `--extra`, `--all-extras`, `--no-all-extras`
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-20T14:31:00Z
 updated_at: 2025-12-23T04:37:26Z
 url: https://github.com/astral-sh/ty/issues/1063
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Add migration guides
 
 ---
 
-_Issue opened by @ShravanSunder on 2025-08-20 14:31_
+_@ShravanSunder_
 
 ### Question
 

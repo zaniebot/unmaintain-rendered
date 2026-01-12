@@ -14,14 +14,14 @@ head: dhruv/list-terminator-kind
 created_at: 2024-06-12T05:11:14Z
 updated_at: 2024-06-12T08:49:56Z
 url: https://github.com/astral-sh/ruff/pull/11843
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Add list terminator kind for error recovery
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-12 05:11_
+_@dhruvmanila_
 
 ## Summary
 

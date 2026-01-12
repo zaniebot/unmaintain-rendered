@@ -13,14 +13,14 @@ head: david/remove-type-none
 created_at: 2024-10-31T20:09:33Z
 updated_at: 2024-11-04T13:00:08Z
 url: https://github.com/astral-sh/ruff/pull/14024
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Remove `Type::None`
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-31 20:09_
+_@sharkdp_
 
 ## Summary
 

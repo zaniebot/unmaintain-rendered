@@ -13,14 +13,14 @@ head: dhruv/watch-generated-mkdocs
 created_at: 2024-11-20T04:46:41Z
 updated_at: 2024-11-20T04:51:21Z
 url: https://github.com/astral-sh/ruff/pull/14476
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Watch for changes to the generated file during documentation serve
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-20 04:46_
+_@dhruvmanila_
 
 ## Summary
 

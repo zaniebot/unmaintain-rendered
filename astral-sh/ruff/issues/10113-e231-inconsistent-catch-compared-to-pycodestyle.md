@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-24T19:11:01Z
 updated_at: 2024-03-21T08:13:39Z
 url: https://github.com/astral-sh/ruff/issues/10113
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [E231] Inconsistent catch compared to pycodestyle, such as when dict nested in list
 
 ---
 
-_Issue opened by @dfrtz on 2024-02-24 19:11_
+_@dfrtz_
 
 Searching through closed and opened issues, I did not see anywhere that this is intentional or known, apologies if I missed something. It appears that in certain scenarios E231 is not triggering as expected, whereas in pycodestyle is it being caught. It may impact other scenarios, but the primary one I could find is it not working on dicts inside a list. Strangely enough it does work in tuples, and outside lists, just not in lists. Even stranger, only if not the first key/value; it does work if it is the first key/value in the dict in the list.
 

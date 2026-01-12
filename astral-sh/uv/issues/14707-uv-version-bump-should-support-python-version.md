@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T09:37:45Z
 updated_at: 2025-07-18T11:37:07Z
 url: https://github.com/astral-sh/uv/issues/14707
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # uv version --bump should support python version numbers convention
 
 ---
 
-_Issue opened by @leandrodamascena on 2025-07-18 09:37_
+_@leandrodamascena_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: micha/token-free-codspeed
 created_at: 2025-12-01T07:21:10Z
 updated_at: 2025-12-01T16:51:36Z
 url: https://github.com/astral-sh/ruff/pull/21719
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # Use OIDC instead of codspeed token
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-01 07:21_
+_@MichaReiser_
 
 Don't use a persistent token, instead use OIDC to generate a token on the fly, as recommended by codspeed.
 

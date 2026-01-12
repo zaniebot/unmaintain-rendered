@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-29T22:05:19Z
 updated_at: 2025-07-30T11:48:03Z
 url: https://github.com/astral-sh/uv/issues/3917
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Different understanding of environment markers vs pip
 
 ---
 
-_Issue opened by @wimglenn on 2024-05-29 22:05_
+_@wimglenn_
 
 Minimal reproducer:
 

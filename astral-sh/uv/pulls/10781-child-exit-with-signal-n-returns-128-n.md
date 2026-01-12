@@ -13,14 +13,14 @@ head: konsti/exit-status-on-signal
 created_at: 2025-01-20T15:13:59Z
 updated_at: 2025-01-24T15:20:34Z
 url: https://github.com/astral-sh/uv/pull/10781
-synced_at: 2026-01-10T11:45:09Z
+synced_at: 2026-01-12T16:09:29Z
 ```
 
 # Child exit with signal n returns 128+n 
 
 ---
 
-_Pull request opened by @konstin on 2025-01-20 15:13_
+_@konstin_
 
 Following https://tldp.org/LDP/abs/html/exitcodes.html, a fatal signal n gets the exit code 128+n (unix only).
 

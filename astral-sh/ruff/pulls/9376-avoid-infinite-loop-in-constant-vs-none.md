@@ -14,14 +14,14 @@ head: charlie/eq
 created_at: 2024-01-03T02:52:17Z
 updated_at: 2024-01-03T03:05:12Z
 url: https://github.com/astral-sh/ruff/pull/9376
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Avoid infinite loop in constant vs. `None` comparisons
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-03 02:52_
+_@charliermarsh_
 
 ## Summary
 

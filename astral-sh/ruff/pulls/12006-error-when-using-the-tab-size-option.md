@@ -15,14 +15,14 @@ head: remove-deprecated-tab-size-option
 created_at: 2024-06-24T07:00:20Z
 updated_at: 2024-06-25T07:36:05Z
 url: https://github.com/astral-sh/ruff/pull/12006
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Error when using the `tab-size` option
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-24 07:00_
+_@MichaReiser_
 
 ## Summary
 

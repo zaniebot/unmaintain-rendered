@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-31T22:44:55Z
 updated_at: 2023-08-01T04:20:31Z
 url: https://github.com/astral-sh/ruff/issues/6214
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Unnecessary semicolon fix removes subsequent lines
 
 ---
 
-_Issue opened by @addisoncrump on 2023-07-31 22:44_
+_@addisoncrump_
 
 Consider the following snippet:
 

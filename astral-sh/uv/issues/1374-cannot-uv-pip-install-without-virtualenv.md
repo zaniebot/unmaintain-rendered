@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-15T22:37:25Z
 updated_at: 2024-07-09T15:56:03Z
 url: https://github.com/astral-sh/uv/issues/1374
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Cannot `uv pip install` without virtualenv
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-02-15 22:37_
+_@hauntsaninja_
 
 It's common to not use virtual environments in containers, e.g. see discussion around PEP 704. I don't mind the default being to prevent installation into a base environment, but it would be nice to have some low level flag to override it.
 

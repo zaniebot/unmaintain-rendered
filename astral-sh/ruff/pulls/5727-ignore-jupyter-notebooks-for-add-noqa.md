@@ -12,14 +12,14 @@ head: dhruv/ignore-notebooks-add-noqa
 created_at: 2023-07-13T07:25:21Z
 updated_at: 2023-07-13T07:56:48Z
 url: https://github.com/astral-sh/ruff/pull/5727
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Ignore Jupyter Notebooks for `--add-noqa`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-13 07:25_
+_@dhruvmanila_
 
 Refer: https://github.com/astral-sh/ruff/issues/5189#issuecomment-1633213214
 

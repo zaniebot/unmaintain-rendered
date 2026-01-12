@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-14T16:18:42Z
 updated_at: 2025-08-14T16:25:12Z
 url: https://github.com/astral-sh/ruff/issues/19918
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # 0.12.9 does not contain a wheel for Windows
 
 ---
 
-_Issue opened by @davidbrownell on 2025-08-14 16:18_
+_@davidbrownell_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: david/add-new-unreachable-test-case
 created_at: 2025-04-09T09:26:10Z
 updated_at: 2025-04-09T09:45:44Z
 url: https://github.com/astral-sh/ruff/pull/17306
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Add new 'unreachable code' test case
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-09 09:26_
+_@sharkdp_
 
 ## Summary
 

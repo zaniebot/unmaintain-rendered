@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-03T20:24:04Z
 updated_at: 2024-11-07T19:51:31Z
 url: https://github.com/astral-sh/ruff/issues/13618
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Compare expressions
 
 ---
 
-_Issue opened by @Slyces on 2024-10-03 20:24_
+_@Slyces_
 
 This is a roadmap of features and `// TODO` to mark `compare expression` as complete in astral-sh/ty#244.
 

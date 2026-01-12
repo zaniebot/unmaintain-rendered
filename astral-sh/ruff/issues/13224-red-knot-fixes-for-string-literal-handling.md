@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-03T07:29:20Z
 updated_at: 2024-09-08T03:25:11Z
 url: https://github.com/astral-sh/ruff/issues/13224
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [red-knot] Fixes for string literal handling
 
 ---
 
-_Issue opened by @MichaReiser on 2024-09-03 07:29_
+_@MichaReiser_
 
 * Chane the type of `StringLiteralType::value` to `Option<Box>` so that we can distinguish between empty strings in the source code and strings that were truncated
 * Avoid building strings that are larger than `MAX_STRING_LITERAL_SIZE` when concatenating strings with `+` in `infer_binary_expression`

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-30T18:02:07Z
 updated_at: 2023-10-23T07:39:56Z
 url: https://github.com/astral-sh/ruff/issues/3821
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # `TCH004` false positive with submodule imports and rebinding
 
 ---
 
-_Issue opened by @shiftinv on 2023-03-30 18:02_
+_@shiftinv_
 
 Importing the same top-level module through two submodule imports, one at runtime and one in a type-checking block, results in `TCH004` false positives.
 This is certainly more of an edge case, seems like it could be related to #60 :thinking: 

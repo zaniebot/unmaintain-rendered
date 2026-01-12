@@ -13,14 +13,14 @@ head: brent/stabilize-up046
 created_at: 2025-06-06T23:06:21Z
 updated_at: 2025-06-12T14:27:47Z
 url: https://github.com/astral-sh/ruff/pull/18519
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [`pyupgrade`] Stabilize `non-pep695-generic-class` (`UP046`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-06 23:06_
+_@ntBre_
 
 ## Summary
 - Stabilizes UP046 (non-pep695-generic-class) rule by changing it from Preview to Stable

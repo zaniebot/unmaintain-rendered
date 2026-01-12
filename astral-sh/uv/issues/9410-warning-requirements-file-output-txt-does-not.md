@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-25T07:36:02Z
 updated_at: 2024-11-25T22:09:20Z
 url: https://github.com/astral-sh/uv/issues/9410
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:49Z
 ```
 
 # `warning: Requirements file output.txt does not contain any dependencies` when output file exists but is empty for `uv pip compile --output-file`
 
 ---
 
-_Issue opened by @harupy on 2024-11-25 07:36_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

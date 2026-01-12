@@ -12,14 +12,14 @@ head: isort-creates-mixed-indentation
 created_at: 2023-01-30T20:28:05Z
 updated_at: 2023-01-30T20:46:10Z
 url: https://github.com/astral-sh/ruff/pull/2361
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # [`I001`] fix isort for files with tab-based indentation
 
 ---
 
-_Pull request opened by @sciyoshi on 2023-01-30 20:28_
+_@sciyoshi_
 
 This PR fixes two related issues with using isort on files using tabs for indentation:
 

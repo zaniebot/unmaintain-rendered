@@ -13,14 +13,14 @@ head: alex/unsafe-up
 created_at: 2024-12-08T18:44:00Z
 updated_at: 2024-12-08T18:51:39Z
 url: https://github.com/astral-sh/ruff/pull/14842
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`pyupgrade`] Mark fixes for `convert-typed-dict-functional-to-class` and `convert-named-tuple-functional-to-class` as unsafe if they will remove comments (`UP013`, `UP014`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-08 18:44_
+_@AlexWaygood_
 
 Helps with #9715 (but doesn't close it, as I agree that ideally we'd preserve the comments, and this isn't that uncommon!)
 

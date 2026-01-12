@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-22T08:08:55Z
 updated_at: 2022-12-22T13:40:23Z
 url: https://github.com/astral-sh/ruff/issues/1330
-synced_at: 2026-01-10T12:05:26Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # `FBT003 Boolean positional value in function call` triggered in unittest assert methods
 
 ---
 
-_Issue opened by @actionless on 2022-12-22 08:08_
+_@actionless_
 
 for example, 
 

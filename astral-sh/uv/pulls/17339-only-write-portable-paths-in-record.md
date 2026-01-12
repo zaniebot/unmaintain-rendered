@@ -13,14 +13,14 @@ head: konsti/record-portable-path
 created_at: 2026-01-06T20:26:19Z
 updated_at: 2026-01-07T19:40:22Z
 url: https://github.com/astral-sh/uv/pull/17339
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:44Z
 ```
 
 # Only write portable paths in RECORD
 
 ---
 
-_Pull request opened by @konstin on 2026-01-06 20:26_
+_@konstin_
 
 The spec allows both, but we're already using forward paths for paths that are not created by uv.
 

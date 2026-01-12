@@ -13,14 +13,14 @@ head: charlie/raw
 created_at: 2023-07-14T03:06:38Z
 updated_at: 2023-07-14T04:43:56Z
 url: https://github.com/astral-sh/ruff/pull/5755
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Avoid removing raw strings in comparison fixes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-14 03:06_
+_@charliermarsh_
 
 ## Summary
 

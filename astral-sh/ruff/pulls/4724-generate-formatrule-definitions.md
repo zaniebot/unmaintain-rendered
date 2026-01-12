@@ -14,14 +14,14 @@ head: generate_definitions
 created_at: 2023-05-30T12:53:40Z
 updated_at: 2023-06-01T06:38:55Z
 url: https://github.com/astral-sh/ruff/pull/4724
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Generate FormatRule definitions
 
 ---
 
-_Pull request opened by @konstin on 2023-05-30 12:53_
+_@konstin_
 
 This is a first stab at generating a newtype for each AST node with implementations of `FormatNodeRule`, `FormatRule`, `AsFormat` and `IntoFormat` on it to circumvent the orphan rules, copying the strategy from rome. See Docs.md for more details.
 

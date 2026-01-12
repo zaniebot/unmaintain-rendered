@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-10-29T00:23:54Z
 updated_at: 2019-11-27T19:55:08Z
 url: https://github.com/clap-rs/clap/issues/1089
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # [Question] Dynamic Flags
 
 ---
 
-_Issue opened by @sergeyklay on 2017-10-29 00:23_
+_@sergeyklay_
 
 Hi!
 

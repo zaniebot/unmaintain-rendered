@@ -14,14 +14,14 @@ head: micha/fix-completion-order
 created_at: 2025-06-05T16:27:33Z
 updated_at: 2025-06-05T16:55:56Z
 url: https://github.com/astral-sh/ruff/pull/18480
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Fix completion order in playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-05 16:27_
+_@MichaReiser_
 
 ## Summary
 

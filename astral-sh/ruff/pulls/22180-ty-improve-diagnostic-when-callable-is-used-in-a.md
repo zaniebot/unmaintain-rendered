@@ -14,14 +14,14 @@ head: alex/callable-hint
 created_at: 2025-12-24T18:33:10Z
 updated_at: 2025-12-24T19:18:53Z
 url: https://github.com/astral-sh/ruff/pull/22180
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Improve diagnostic when `callable` is used in a type expression instead of `collections.abc.Callable` or `typing.Callable`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-24 18:33_
+_@AlexWaygood_
 
 ## Summary
 

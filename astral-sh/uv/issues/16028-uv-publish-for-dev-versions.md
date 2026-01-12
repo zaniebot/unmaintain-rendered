@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-25T17:39:27Z
 updated_at: 2025-09-28T09:21:23Z
 url: https://github.com/astral-sh/uv/issues/16028
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # uv publish for dev versions
 
 ---
 
-_Issue opened by @berkorbay on 2025-09-25 17:39_
+_@berkorbay_
 
 ### Question
 

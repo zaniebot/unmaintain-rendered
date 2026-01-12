@@ -14,14 +14,14 @@ head: gankra/only-group
 created_at: 2025-01-23T15:28:25Z
 updated_at: 2025-01-23T16:35:50Z
 url: https://github.com/astral-sh/uv/pull/10902
-synced_at: 2026-01-10T11:45:17Z
+synced_at: 2026-01-12T16:09:34Z
 ```
 
 # fix `--only-group` in `uv pip` interface
 
 ---
 
-_Pull request opened by @Gankra on 2025-01-23 15:28_
+_@Gankra_
 
 This was an oversight in the implementation, thankfully it appears to be a simple fix? (My only hesitation is this implementation essentially claims that --only-group is defacto incompatible with --extra and I *think* that's the case but I'm not certain.)
 

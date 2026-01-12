@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-26T14:16:44Z
 updated_at: 2025-08-29T00:01:59Z
 url: https://github.com/astral-sh/uv/issues/15534
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # missing --index-url in `uv pip compile pyproject.toml` for packages that come from `explicit = true` indexes
 
 ---
 
-_Issue opened by @jiridanek on 2025-08-26 14:16_
+_@jiridanek_
 
 * https://github.com/astral-sh/uv/issues/10008 (related issue)
 

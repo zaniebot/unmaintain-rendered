@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-09-07T12:50:25Z
 updated_at: 2021-09-08T12:55:36Z
 url: https://github.com/clap-rs/clap/issues/2757
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # If default_value is specified then zero values are treated as one value
 
 ---
 
-_Issue opened by @egrimley-arm on 2021-09-07 12:50_
+_@egrimley-arm_
 
 ### Please complete the following tasks
 

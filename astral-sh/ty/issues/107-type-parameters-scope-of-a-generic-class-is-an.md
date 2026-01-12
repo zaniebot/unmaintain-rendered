@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-01T00:02:30Z
 updated_at: 2025-08-15T15:00:56Z
 url: https://github.com/astral-sh/ty/issues/107
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # type parameters scope of a generic class is an eager scope (in a non-stub file)
 
 ---
 
-_Issue opened by @carljm on 2025-05-01 00:02_
+_@carljm_
 
 Currently we treat the type parameters scope of a PEP 695 generic class as a lazy scope, even in a `.py` file:
 

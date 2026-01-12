@@ -12,14 +12,14 @@ head: named_expr_stash
 created_at: 2023-07-10T11:52:05Z
 updated_at: 2023-07-10T12:56:25Z
 url: https://github.com/astral-sh/ruff/pull/5642
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Format named expressions (walrus operator)
 
 ---
 
-_Pull request opened by @konstin on 2023-07-10 11:52_
+_@konstin_
 
 ## Summary
 

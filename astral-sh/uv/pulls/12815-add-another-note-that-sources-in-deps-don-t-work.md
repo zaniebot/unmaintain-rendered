@@ -12,14 +12,14 @@ head: gankra/gitdep
 created_at: 2025-04-10T17:22:59Z
 updated_at: 2025-04-14T08:00:30Z
 url: https://github.com/astral-sh/uv/pull/12815
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:24Z
 ```
 
 # add another note that sources in deps don't work
 
 ---
 
-_Pull request opened by @Gankra on 2025-04-10 17:22_
+_@Gankra_
 
 To document the issue described in #11760
 

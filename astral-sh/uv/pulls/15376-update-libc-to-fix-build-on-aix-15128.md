@@ -13,14 +13,14 @@ head: 15128-aix-libc
 created_at: 2025-08-19T10:15:08Z
 updated_at: 2025-09-10T08:00:55Z
 url: https://github.com/astral-sh/uv/pull/15376
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:43Z
 ```
 
 # Update libc to fix build on AIX #15128
 
 ---
 
-_Pull request opened by @ponchofiesta on 2025-08-19 10:15_
+_@ponchofiesta_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

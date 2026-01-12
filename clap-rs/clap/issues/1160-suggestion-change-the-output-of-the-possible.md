@@ -13,14 +13,14 @@ assignees: []
 created_at: 2018-02-02T03:01:21Z
 updated_at: 2018-08-02T03:30:17Z
 url: https://github.com/clap-rs/clap/issues/1160
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Suggestion: Change the output of the `possible_values` help
 
 ---
 
-_Issue opened by @phrohdoh on 2018-02-02 03:01_
+_@phrohdoh_
 
 My suggestion is to change `[values: ...]` to `[possible values: ...]` to match the builder API.
 

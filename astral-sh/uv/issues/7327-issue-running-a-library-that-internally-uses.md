@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-12T09:22:26Z
 updated_at: 2025-10-01T21:17:28Z
 url: https://github.com/astral-sh/uv/issues/7327
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Issue running a library that internally uses `python -m pip ...`
 
 ---
 
-_Issue opened by @EdgyEdgemond on 2024-09-12 09:22_
+_@EdgyEdgemond_
 
 I understand the issue behind this, uv is replacing pip so there is no pip in the virtualenv, I am wondering if there is a way to ensure there is a pip in the venv using uv correctly.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-29T15:21:30Z
 updated_at: 2025-11-29T15:21:30Z
 url: https://github.com/astral-sh/ty/issues/1673
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Show bounds or constraints of `T` when hovering over a variable that has type `T`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-11-29 15:21_
+_@AlexWaygood_
 
 When hovering over a variable that has type `T`, ty currently tells you the variance of `T`, which is really useful. It would also be very useful to know what the upper bound or constraints of `T` are, however. E.g. here, `T@f` has an upper bound of `F`.
 

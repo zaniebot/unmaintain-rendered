@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-19T16:30:01Z
 updated_at: 2024-06-20T06:01:05Z
 url: https://github.com/astral-sh/ruff/issues/11941
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Specify custom pragmas to be ignored for line-too-long by the formatter 
 
 ---
 
-_Issue opened by @getzze on 2024-06-19 16:30_
+_@getzze_
 
 Some pragma comments (for instance "noqa", "type", "pylint") when put at the end of a long line do not trigger a reformatting of the line when running `ruff format`
 

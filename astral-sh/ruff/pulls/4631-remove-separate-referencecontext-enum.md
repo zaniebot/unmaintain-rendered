@@ -13,14 +13,14 @@ head: charlie/synthetic
 created_at: 2023-05-24T14:39:50Z
 updated_at: 2023-05-24T15:44:44Z
 url: https://github.com/astral-sh/ruff/pull/4631
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove separate `ReferenceContext` enum
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-24 14:39_
+_@charliermarsh_
 
 ## Summary
 

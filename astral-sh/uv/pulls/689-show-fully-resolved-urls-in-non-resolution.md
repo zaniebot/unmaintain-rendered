@@ -13,14 +13,14 @@ head: charlie/resolved-name
 created_at: 2023-12-18T17:40:53Z
 updated_at: 2023-12-18T22:10:25Z
 url: https://github.com/astral-sh/uv/pull/689
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:07Z
 ```
 
 # Show fully-resolved URLs in non-resolution contexts
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-18 17:40_
+_@charliermarsh_
 
 We now show the fully-resolved URL, rather than the URL as given by the user, _everywhere_ except for the output resolution file (which should retain relative paths, unexpanded environment variables, etc.).
 

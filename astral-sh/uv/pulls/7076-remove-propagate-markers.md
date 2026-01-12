@@ -13,14 +13,14 @@ head: konsti/propagate_markers
 created_at: 2024-09-05T10:54:59Z
 updated_at: 2024-09-05T17:26:26Z
 url: https://github.com/astral-sh/uv/pull/7076
-synced_at: 2026-01-10T12:53:39Z
+synced_at: 2026-01-12T16:07:40Z
 ```
 
 # Remove propagate_markers
 
 ---
 
-_Pull request opened by @konstin on 2024-09-05 10:54_
+_@konstin_
 
 Follow-up to #6959 and #6961: Use the reachability computation instead of `propagate_markers` everywhere.
 

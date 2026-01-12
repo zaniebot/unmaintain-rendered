@@ -14,14 +14,14 @@ head: zb/breadcrumbs
 created_at: 2024-07-31T22:09:49Z
 updated_at: 2024-07-31T22:10:34Z
 url: https://github.com/astral-sh/uv/pull/5676
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:57Z
 ```
 
 # Remove breadcrumbs for navigation
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-31 22:09_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/5671
 

@@ -14,14 +14,14 @@ head: micha/playground-completions
 created_at: 2025-06-02T07:49:37Z
 updated_at: 2025-06-04T09:29:30Z
 url: https://github.com/astral-sh/ruff/pull/18425
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # Use ty's completions in playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-02 07:49_
+_@MichaReiser_
 
 ## Summary
 

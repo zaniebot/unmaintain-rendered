@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T19:55:41Z
 updated_at: 2024-08-26T14:41:56Z
 url: https://github.com/astral-sh/uv/issues/6544
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # uv does not appear to parse multiple sources in pyproject.toml
 
 ---
 
-_Issue opened by @jauderho on 2024-08-23 19:55_
+_@jauderho_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

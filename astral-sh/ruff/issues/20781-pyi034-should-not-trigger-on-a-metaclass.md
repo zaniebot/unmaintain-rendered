@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-09T08:56:29Z
 updated_at: 2025-10-24T13:40:27Z
 url: https://github.com/astral-sh/ruff/issues/20781
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `PYI034` should not trigger on a metaclass
 
 ---
 
-_Issue opened by @tylerlaprade on 2025-10-09 08:56_
+_@tylerlaprade_
 
 ### Summary
 

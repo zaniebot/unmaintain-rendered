@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-20T19:36:09Z
 updated_at: 2025-05-28T21:01:04Z
 url: https://github.com/astral-sh/ruff/issues/18231
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # FURB129 fix fails when the variable is parenthesized
 
 ---
 
-_Issue opened by @dscorbett on 2025-05-20 19:36_
+_@dscorbett_
 
 ### Summary
 

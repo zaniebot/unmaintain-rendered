@@ -13,14 +13,14 @@ head: charlie/req
 created_at: 2024-06-24T23:28:42Z
 updated_at: 2024-06-24T23:37:09Z
 url: https://github.com/astral-sh/uv/pull/4498
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:16Z
 ```
 
 # Change Operations API to always accept `PythonRequirement`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-24 23:28_
+_@charliermarsh_
 
 ## Summary
 

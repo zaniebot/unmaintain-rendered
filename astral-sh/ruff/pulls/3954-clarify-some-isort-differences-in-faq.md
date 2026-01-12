@@ -13,14 +13,14 @@ head: charlie/isort-docs
 created_at: 2023-04-13T03:59:08Z
 updated_at: 2023-04-13T04:25:29Z
 url: https://github.com/astral-sh/ruff/pull/3954
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Clarify some isort differences in FAQ
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-13 03:59_
+_@charliermarsh_
 
 Closes #3908.
 

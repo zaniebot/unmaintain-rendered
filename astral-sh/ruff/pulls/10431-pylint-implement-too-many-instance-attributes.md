@@ -11,14 +11,14 @@ head: add-R0902
 created_at: 2024-03-16T20:34:04Z
 updated_at: 2024-03-23T03:40:44Z
 url: https://github.com/astral-sh/ruff/pull/10431
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # [`pylint`] - implement `too-many-instance-attributes` (`R0902`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-03-16 20:34_
+_@diceroll123_
 
 ## Summary
 

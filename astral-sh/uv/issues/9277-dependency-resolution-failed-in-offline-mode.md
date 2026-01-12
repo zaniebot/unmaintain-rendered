@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-20T14:51:10Z
 updated_at: 2025-04-24T21:26:50Z
 url: https://github.com/astral-sh/uv/issues/9277
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # Dependency resolution failed in offline mode
 
 ---
 
-_Issue opened by @Winand on 2024-11-20 14:51_
+_@Winand_
 
 I'm trying to install a project in offline environment on CentOS 7.
 [Here's a project](https://github.com/Winand/uv-offline-project-installation) with numpy and pytest dependencies.

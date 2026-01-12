@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-05T15:27:23Z
 updated_at: 2025-05-07T10:53:15Z
 url: https://github.com/astral-sh/uv/issues/13302
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:24Z
 ```
 
 # error: Operation not supported (os error 95)
 
 ---
 
-_Issue opened by @thatlittleboy on 2025-05-05 15:27_
+_@thatlittleboy_
 
 ### Summary
 

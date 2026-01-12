@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-10T02:53:03Z
 updated_at: 2025-04-10T03:52:57Z
 url: https://github.com/astral-sh/uv/issues/12798
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # The existing command does not allow me to directly install the Python interpreter into the environment directory when creating a virtual environment.
 
 ---
 
-_Issue opened by @tian969 on 2025-04-10 02:53_
+_@tian969_
 
 ### Summary
 

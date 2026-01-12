@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-09-20T14:14:10Z
 updated_at: 2018-08-02T03:30:11Z
 url: https://github.com/clap-rs/clap/issues/1052
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Could the setting and requiring value delimiter automatically reflect in the help messages?
 
 ---
 
-_Issue opened by @zolnov on 2017-09-20 14:14_
+_@zolnov_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

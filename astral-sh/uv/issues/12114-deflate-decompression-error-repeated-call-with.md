@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-11T13:06:39Z
 updated_at: 2025-03-14T00:29:57Z
 url: https://github.com/astral-sh/uv/issues/12114
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # deflate decompression error: repeated call with bad state
 
 ---
 
-_Issue opened by @nijel on 2025-03-11 13:06_
+_@nijel_
 
 ### Summary
 

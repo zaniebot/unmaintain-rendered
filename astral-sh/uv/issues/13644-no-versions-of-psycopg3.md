@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-25T19:38:33Z
 updated_at: 2025-05-26T13:56:02Z
 url: https://github.com/astral-sh/uv/issues/13644
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:34Z
 ```
 
 # no versions of psycopg3???
 
 ---
 
-_Issue opened by @MalikRumi on 2025-05-25 19:38_
+_@MalikRumi_
 
 ### Question
 

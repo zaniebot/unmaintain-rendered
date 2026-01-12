@@ -13,14 +13,14 @@ head: fix_output_format_help
 created_at: 2024-07-08T17:08:52Z
 updated_at: 2024-07-09T07:20:27Z
 url: https://github.com/astral-sh/ruff/pull/12248
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Update help and documentation for `--output-format` to reflect `"full"` default
 
 ---
 
-_Pull request opened by @DaniBodor on 2024-07-08 17:08_
+_@DaniBodor_
 
 fix #12247 
 

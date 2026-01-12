@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T18:40:58Z
 updated_at: 2024-02-22T22:00:14Z
 url: https://github.com/astral-sh/uv/issues/1774
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # No changelog after 0.1.3
 
 ---
 
-_Issue opened by @gaborbernat on 2024-02-20 18:40_
+_@gaborbernat_
 
 Seems there's no longer a changelog anywhere past 0.1.3. https://github.com/astral-sh/uv/releases/tag/0.1.3. It would be nice to have a place to easily see what changes are in new versions.
 

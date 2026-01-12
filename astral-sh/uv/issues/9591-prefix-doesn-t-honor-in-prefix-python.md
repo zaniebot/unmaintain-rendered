@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-03T01:41:44Z
 updated_at: 2024-12-04T02:07:36Z
 url: https://github.com/astral-sh/uv/issues/9591
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # `--prefix` doesn't honor in-prefix Python
 
 ---
 
-_Issue opened by @purajit on 2024-12-03 01:41_
+_@purajit_
 
 Currently, when `--prefix` is provided, `uv pip install` does not respect the in-prefix Python while installing binaries.
 

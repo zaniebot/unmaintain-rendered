@@ -13,14 +13,14 @@ head: feat/call-dunder-getattribute
 created_at: 2025-05-23T16:09:25Z
 updated_at: 2025-05-26T10:59:45Z
 url: https://github.com/astral-sh/ruff/pull/18280
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] use `__getattribute__` to lookup unknown members on a type
 
 ---
 
-_Pull request opened by @felixscherz on 2025-05-23 16:09_
+_@felixscherz_
 
 Hi, this is in regards to https://github.com/astral-sh/ty/issues/441.
 <!--

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-23T17:51:01Z
 updated_at: 2025-09-22T13:36:47Z
 url: https://github.com/astral-sh/uv/issues/15475
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # Allow `uv venv` to throw error instead of prompting
 
 ---
 
-_Issue opened by @notatallshaw on 2025-08-23 17:51_
+_@notatallshaw_
 
 ### Summary
 

@@ -12,14 +12,14 @@ head: read-config-from-venv
 created_at: 2024-12-16T13:38:36Z
 updated_at: 2025-04-14T08:00:32Z
 url: https://github.com/astral-sh/uv/pull/9935
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:03Z
 ```
 
 # Enable reading `uv.toml` from venv
 
 ---
 
-_Pull request opened by @JonneDatanen on 2024-12-16 13:38_
+_@JonneDatanen_
 
 Resolves: https://github.com/astral-sh/uv/issues/8107
 <!--

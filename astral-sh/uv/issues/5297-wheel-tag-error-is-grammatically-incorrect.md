@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-22T17:57:04Z
 updated_at: 2024-07-22T18:43:00Z
 url: https://github.com/astral-sh/uv/issues/5297
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Wheel tag error is grammatically incorrect
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-22 17:57_
+_@charliermarsh_
 
 See https://github.com/astral-sh/uv/pull/5296:
 

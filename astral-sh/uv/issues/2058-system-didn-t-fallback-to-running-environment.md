@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-28T22:02:59Z
 updated_at: 2024-05-22T16:34:26Z
 url: https://github.com/astral-sh/uv/issues/2058
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # `--system` didn't fallback to running environment when `uv` installed as python package.
 
 ---
 
-_Issue opened by @T-256 on 2024-02-28 22:02_
+_@T-256_
 
 1. create a venv and install `uv` in it.
 2. make sure you don't have python on the PATH.

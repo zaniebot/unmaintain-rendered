@@ -13,14 +13,14 @@ head: npy201
 created_at: 2023-09-28T20:58:14Z
 updated_at: 2023-11-03T19:09:06Z
 url: https://github.com/astral-sh/ruff/pull/7702
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Implement NumPy 2.0 migration rule
 
 ---
 
-_Pull request opened by @mtsokol on 2023-09-28 20:58_
+_@mtsokol_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-17T02:11:19Z
 updated_at: 2025-03-21T18:45:27Z
 url: https://github.com/astral-sh/ruff/issues/14395
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # No syntax error for `[(a := ...) for a in b]`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-11-17 02:11_
+_@InSyncWithFoo_
 
 Currently, Ruff accepts this as valid ([playground](https://play.ruff.rs/75f3f80d-2fee-4502-9141-1934f368ef04)):
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-17T16:12:35Z
 updated_at: 2025-03-17T16:36:41Z
 url: https://github.com/astral-sh/ruff/issues/16815
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # E402 ignores dunder variables between imports
 
 ---
 
-_Issue opened by @chaush-server on 2025-03-17 16:12_
+_@chaush-server_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-12T10:19:35Z
 updated_at: 2025-07-22T13:13:39Z
 url: https://github.com/astral-sh/uv/issues/13986
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:41Z
 ```
 
 # uv leaves partial .venv around and then refuses to remove it
 
 ---
 
-_Issue opened by @zsol on 2025-06-12 10:19_
+_@zsol_
 
 ### Summary
 

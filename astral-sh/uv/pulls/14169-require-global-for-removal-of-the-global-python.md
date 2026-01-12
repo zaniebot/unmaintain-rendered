@@ -13,14 +13,14 @@ head: zb/rm-global
 created_at: 2025-06-20T19:46:21Z
 updated_at: 2025-06-26T17:22:39Z
 url: https://github.com/astral-sh/uv/pull/14169
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:03Z
 ```
 
 # Require `--global` for removal of the global Python pin
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-20 19:46_
+_@zanieb_
 
 While reviewing https://github.com/astral-sh/uv/pull/14107, @oconnor663 pointed out a bug where we allow `uv python pin --rm` to delete the global pin without the `--global` flag. I think that shouldn't be allowed? I'm not 100% certain though.
 

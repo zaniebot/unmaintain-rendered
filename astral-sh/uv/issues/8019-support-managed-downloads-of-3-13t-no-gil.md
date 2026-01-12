@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-08T20:41:23Z
 updated_at: 2024-10-09T19:25:59Z
 url: https://github.com/astral-sh/uv/issues/8019
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Support managed downloads of 3.13t (no-gil / freethreaded)
 
 ---
 
-_Issue opened by @zanieb on 2024-10-08 20:41_
+_@zanieb_
 
 Right now, we only support a single build per CPython version. We need to add support for other build options to allow installing the [freethreaded builds](https://github.com/indygreg/python-build-standalone/releases/tag/20241008). This will require changes to our download metadata fetch and template scripts. We should probably aim support debug builds too.
 

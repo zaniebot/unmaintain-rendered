@@ -13,14 +13,14 @@ head: feature/add_wget_instructions
 created_at: 2024-10-28T04:56:20Z
 updated_at: 2024-11-13T17:51:31Z
 url: https://github.com/astral-sh/uv/pull/8630
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:24Z
 ```
 
 # Add wget instructions for systems without curl
 
 ---
 
-_Pull request opened by @joshmcorreia on 2024-10-28 04:56_
+_@joshmcorreia_
 
 ## Summary
 Adds wget instructions for linux installations that don't come with `curl`.

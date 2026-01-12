@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-03T09:44:16Z
 updated_at: 2024-12-03T15:33:20Z
 url: https://github.com/astral-sh/uv/issues/9601
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # uv python install --preview fails with two patch versions in the same minor version
 
 ---
 
-_Issue opened by @jooon on 2024-12-03 09:44_
+_@jooon_
 
 ```
 $ uv --version

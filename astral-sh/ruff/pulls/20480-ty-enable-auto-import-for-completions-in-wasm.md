@@ -14,14 +14,14 @@ head: ag/enable-auto-import-by-default
 created_at: 2025-09-19T12:08:10Z
 updated_at: 2025-09-25T14:19:52Z
 url: https://github.com/astral-sh/ruff/pull/20480
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:02Z
 ```
 
 # [ty] Enable auto-import for completions in WASM builds by default
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-09-19 12:08_
+_@BurntSushi_
 
 Now that imports are actually inserted, this should give us some
 valuable dog-fooding experience.

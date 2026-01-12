@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-09T03:23:53Z
 updated_at: 2025-05-18T21:28:51Z
 url: https://github.com/astral-sh/uv/issues/12770
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # Incompatible extra with the declared conflicts error when remove a package
 
 ---
 
-_Issue opened by @BaoNguyen6742 on 2025-04-09 03:23_
+_@BaoNguyen6742_
 
 ### Summary
 

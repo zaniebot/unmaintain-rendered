@@ -13,14 +13,14 @@ head: charlie/empty
 created_at: 2024-08-24T16:48:20Z
 updated_at: 2024-08-27T14:40:18Z
 url: https://github.com/astral-sh/uv/pull/6588
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:26Z
 ```
 
 # Improve messages for empty solves and installs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-24 16:48_
+_@charliermarsh_
 
 ## Summary
 

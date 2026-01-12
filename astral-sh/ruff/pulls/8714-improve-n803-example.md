@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-11-16T08:22:23Z
 updated_at: 2023-11-16T17:50:31Z
 url: https://github.com/astral-sh/ruff/pull/8714
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Improve N803 example
 
 ---
 
-_Pull request opened by @jonashaag on 2023-11-16 08:22_
+_@jonashaag_
 
 N803 is about argument names, not function names
 

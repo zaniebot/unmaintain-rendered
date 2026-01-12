@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-05T01:10:13Z
 updated_at: 2025-11-25T19:53:55Z
 url: https://github.com/astral-sh/uv/issues/15072
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # PYTHONPATH not unset in virtual environment
 
 ---
 
-_Issue opened by @libRh on 2025-08-05 01:10_
+_@libRh_
 
 ### Summary
 

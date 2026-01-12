@@ -13,14 +13,14 @@ head: amy/release-0.14.9
 created_at: 2025-12-11T19:39:49Z
 updated_at: 2025-12-11T21:17:54Z
 url: https://github.com/astral-sh/ruff/pull/21927
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # Prepare 0.14.9 release
 
 ---
 
-_Pull request opened by @amyreese on 2025-12-11 19:39_
+_@amyreese_
 
 - **Changelog and docs**
 - **metadata**

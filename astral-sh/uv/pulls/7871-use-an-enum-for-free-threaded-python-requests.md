@@ -13,14 +13,14 @@ head: zb/pybool
 created_at: 2024-10-02T16:07:49Z
 updated_at: 2024-10-02T18:10:47Z
 url: https://github.com/astral-sh/uv/pull/7871
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:03Z
 ```
 
 # Use an enum for free-threaded Python requests
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-02 16:07_
+_@zanieb_
 
 Follow-up to #7431 improving readability
 

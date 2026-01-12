@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-01T22:10:36Z
 updated_at: 2023-02-02T16:24:44Z
 url: https://github.com/astral-sh/ruff/issues/2456
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # PT009 changes `assertFalse()` into `assert … is False`
 
 ---
 
-_Issue opened by @spaceone on 2023-02-01 22:10_
+_@spaceone_
 
 ```sh
 $ cat foo.py

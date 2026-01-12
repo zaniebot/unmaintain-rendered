@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-02-20T02:46:40Z
 updated_at: 2022-01-11T18:28:33Z
 url: https://github.com/clap-rs/clap/issues/2354
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Allow end users to indicate that specific arguments may be ignored if not recognized
 
 ---
 
-_Issue opened by @wchargin on 2021-02-20 02:46_
+_@wchargin_
 
 [Closing comment](https://github.com/clap-rs/clap/issues/2354#issuecomment-992652202):
 > The proposed solution is fairly specialized but can be built with #1404 and `IgnoreErrors` (not seeing it marked as deprecated) might be a stop gap.

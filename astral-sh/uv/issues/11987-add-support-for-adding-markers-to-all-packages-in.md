@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-05T19:32:28Z
 updated_at: 2025-03-11T15:29:38Z
 url: https://github.com/astral-sh/uv/issues/11987
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:51Z
 ```
 
 # Add support for adding markers to all packages in `uv add`
 
 ---
 
-_Issue opened by @zanieb on 2025-03-05 19:32_
+_@zanieb_
 
 ### Summary
 

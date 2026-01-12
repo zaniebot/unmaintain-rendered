@@ -12,14 +12,14 @@ head: feat/DJ012
 created_at: 2023-03-22T02:18:54Z
 updated_at: 2023-03-22T03:38:11Z
 url: https://github.com/astral-sh/ruff/pull/3659
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # [`flake8-django`]: Implement rule DJ012
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-03-22 02:18_
+_@dhruvmanila_
 
 Checks for the order of Model's inner classes, methods and fields as per the Django Style Guide.
 

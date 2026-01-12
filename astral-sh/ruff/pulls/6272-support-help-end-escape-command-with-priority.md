@@ -13,14 +13,14 @@ head: dhruv/jupyter-help-magic
 created_at: 2023-08-02T12:30:56Z
 updated_at: 2023-08-07T15:31:04Z
 url: https://github.com/astral-sh/ruff/pull/6272
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Support help end escape command with priority
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-08-02 12:30_
+_@dhruvmanila_
 
 ## Summary
 

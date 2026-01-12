@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-23T20:23:32Z
 updated_at: 2025-01-24T01:57:12Z
 url: https://github.com/astral-sh/ruff/issues/15700
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Add lint check for using f-strings with logging methods
 
 ---
 
-_Issue opened by @ktbarrett on 2025-01-23 20:23_
+_@ktbarrett_
 
 ### Description
 

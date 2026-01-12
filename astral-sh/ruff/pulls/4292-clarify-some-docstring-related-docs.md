@@ -13,14 +13,14 @@ head: charlie/docstring-docs
 created_at: 2023-05-08T22:19:23Z
 updated_at: 2023-05-08T22:47:33Z
 url: https://github.com/astral-sh/ruff/pull/4292
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Clarify some docstring-related docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-08 22:19_
+_@charliermarsh_
 
 Closes #4105.
 

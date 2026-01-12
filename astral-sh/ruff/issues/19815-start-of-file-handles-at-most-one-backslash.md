@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-07T20:50:30Z
 updated_at: 2025-08-15T21:17:51Z
 url: https://github.com/astral-sh/ruff/issues/19815
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `start_of_file` handles at most one backslash, making I002 introduce a syntax error
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-07 20:50_
+_@dscorbett_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-11T02:16:21Z
 updated_at: 2025-06-09T12:35:47Z
 url: https://github.com/astral-sh/ruff/issues/12287
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # TRY004 applies when unrelated values are type-checked
 
 ---
 
-_Issue opened by @dscorbett on 2024-07-11 02:16_
+_@dscorbett_
 
 TRY004 assumes that if any exception is raised, subject to a type-checking `if` condition, the exception should be a `TypeError`. That is only true when an argument has the wrong type. If the exception happens for a different reason (e.g. invalid state) then `TypeError` isn’t necessarily appropriate (even if the invalid state is detected by checking the type of an instance variable).
 

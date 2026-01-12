@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-11T17:54:49Z
 updated_at: 2023-09-12T15:34:06Z
 url: https://github.com/astral-sh/ruff/issues/7276
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Docs build succeeds but is not published
 
 ---
 
-_Issue opened by @zanieb on 2023-09-11 17:54_
+_@zanieb_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

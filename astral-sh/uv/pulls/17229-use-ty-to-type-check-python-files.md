@@ -13,14 +13,14 @@ head: ty
 created_at: 2025-12-23T13:22:05Z
 updated_at: 2026-01-07T18:25:15Z
 url: https://github.com/astral-sh/uv/pull/17229
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:40Z
 ```
 
 # Use ty to type-check Python files
 
 ---
 
-_Pull request opened by @j178 on 2025-12-23 13:22_
+_@j178_
 
 I added mypy type‑checking in https://github.com/astral-sh/uv/pull/5332, so I think it's a good time to switch to ty now :)
 

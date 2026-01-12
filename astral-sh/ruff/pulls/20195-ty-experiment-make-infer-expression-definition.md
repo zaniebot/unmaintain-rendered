@@ -14,14 +14,14 @@ head: david/fix-1111
 created_at: 2025-09-01T14:48:09Z
 updated_at: 2025-09-03T11:19:06Z
 url: https://github.com/astral-sh/ruff/pull/20195
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [ty] Experiment: make `infer_{expression,definition}_types` non-queries
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-01 14:48_
+_@sharkdp_
 
 ## Summary
 

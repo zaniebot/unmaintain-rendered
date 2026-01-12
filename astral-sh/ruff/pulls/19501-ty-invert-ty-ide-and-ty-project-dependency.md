@@ -14,14 +14,14 @@ head: micha/invert-ty-ide-and-project-dependency
 created_at: 2025-07-23T07:15:28Z
 updated_at: 2025-07-23T07:44:47Z
 url: https://github.com/astral-sh/ruff/pull/19501
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Invert `ty_ide` and `ty_project` dependency
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-23 07:15_
+_@MichaReiser_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-19T12:40:29Z
 updated_at: 2024-03-04T01:46:16Z
 url: https://github.com/astral-sh/uv/issues/1689
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # `pyvenv.cfg` version-info doesn't match `virtualenv`'s
 
 ---
 
-_Issue opened by @akx on 2024-02-19 12:40_
+_@akx_
 
 I was playing around trying to make `pre-commit` use `uv venv` and `uv pip` (because why not!), and it ends up reporting
 

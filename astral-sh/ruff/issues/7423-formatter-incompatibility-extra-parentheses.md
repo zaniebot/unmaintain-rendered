@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-15T21:15:07Z
 updated_at: 2023-09-16T17:07:40Z
 url: https://github.com/astral-sh/ruff/issues/7423
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter incompatibility: extra parentheses around unary expression
 
 ---
 
-_Issue opened by @charliermarsh on 2023-09-15 21:15_
+_@charliermarsh_
 
 Given:
 

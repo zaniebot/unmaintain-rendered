@@ -13,14 +13,14 @@ head: alex/cast-todos
 created_at: 2025-04-03T11:34:25Z
 updated_at: 2025-04-03T14:00:02Z
 url: https://github.com/astral-sh/ruff/pull/17170
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Fix more [redundant-cast] false positives
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-03 11:34_
+_@AlexWaygood_
 
 Fixes #17164. Simply checking whether one type is gradually equivalent to another is too simplistic here: `Any` is gradually equivalent to `Todo`, but we should permit users to cast from `Todo` or `Unknown` to `Any` without complaining about it. This changes our logic so that we only complain about redundant casts if:
 - the two types are exactly equal (when normalized) OR they are equivalent (we'll still complain about `Any -> Any` casts, and about `Any | str | int` -> `str | int | Any` casts, since their normalized forms are exactly equal, even though the type is not fully static -- and therefore does not participate in equivalence relations)

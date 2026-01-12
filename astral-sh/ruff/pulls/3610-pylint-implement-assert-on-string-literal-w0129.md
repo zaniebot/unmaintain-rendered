@@ -13,14 +13,14 @@ head: pylint-assert-on-string-literal
 created_at: 2023-03-19T18:43:29Z
 updated_at: 2023-03-20T04:03:29Z
 url: https://github.com/astral-sh/ruff/pull/3610
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # [`pylint`]: Implement `assert-on-string-literal` (`W0129`)
 
 ---
 
-_Pull request opened by @latonis on 2023-03-19 18:43_
+_@latonis_
 
 Rule reference: https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/assert-on-string-literal.html
 

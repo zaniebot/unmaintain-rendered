@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-24T14:14:07Z
 updated_at: 2025-05-04T12:38:30Z
 url: https://github.com/astral-sh/uv/issues/13090
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # uv-build: add a config setting to control compression level
 
 ---
 
-_Issue opened by @mgorny on 2025-04-24 14:14_
+_@mgorny_
 
 ### Summary
 

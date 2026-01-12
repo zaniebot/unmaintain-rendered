@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-10T17:55:05Z
 updated_at: 2023-02-10T19:32:07Z
 url: https://github.com/astral-sh/ruff/issues/2723
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # F401: false positive when __all__ contains used names
 
 ---
 
-_Issue opened by @spaceone on 2023-02-10 17:55_
+_@spaceone_
 
 `foo/__init__.py`:
 ```python

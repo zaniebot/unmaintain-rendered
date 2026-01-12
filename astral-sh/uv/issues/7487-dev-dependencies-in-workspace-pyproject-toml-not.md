@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-18T08:36:09Z
 updated_at: 2025-10-30T14:37:53Z
 url: https://github.com/astral-sh/uv/issues/7487
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # dev-dependencies in workspace pyproject.toml not installed with `uv run`
 
 ---
 
-_Issue opened by @KilianMichiels on 2024-09-18 08:36_
+_@KilianMichiels_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

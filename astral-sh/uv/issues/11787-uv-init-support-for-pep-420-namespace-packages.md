@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T02:37:31Z
 updated_at: 2025-07-08T06:40:34Z
 url: https://github.com/astral-sh/uv/issues/11787
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # `uv init` support for PEP 420 namespace packages
 
 ---
 
-_Issue opened by @haarisr on 2025-02-26 02:37_
+_@haarisr_
 
 ### Summary
 

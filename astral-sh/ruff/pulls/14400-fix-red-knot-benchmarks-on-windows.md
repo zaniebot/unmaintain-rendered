@@ -13,14 +13,14 @@ head: micha/fix-benchmarks-on-winodws
 created_at: 2024-11-17T16:13:46Z
 updated_at: 2024-11-17T16:30:32Z
 url: https://github.com/astral-sh/ruff/pull/14400
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Fix Red Knot benchmarks on Windows
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-17 16:13_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: dhruv/list-unpacking
 created_at: 2025-06-03T09:42:00Z
 updated_at: 2025-06-03T13:48:01Z
 url: https://github.com/astral-sh/ruff/pull/18438
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Infer `list[T]` when unpacking non-tuple type
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-06-03 09:42_
+_@dhruvmanila_
 
 ## Summary
 

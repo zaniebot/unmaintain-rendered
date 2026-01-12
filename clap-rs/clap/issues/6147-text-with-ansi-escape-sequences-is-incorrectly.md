@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-10T23:29:19Z
 updated_at: 2025-10-13T16:10:54Z
 url: https://github.com/clap-rs/clap/issues/6147
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Text with ANSI escape sequences is incorrectly wrapped
 
 ---
 
-_Issue opened by @ongardie on 2025-10-10 23:29_
+_@ongardie_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: zb/dependency-bots
 created_at: 2024-08-19T23:04:27Z
 updated_at: 2024-08-28T12:41:26Z
 url: https://github.com/astral-sh/uv/pull/6236
-synced_at: 2026-01-10T12:53:33Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Add dependabot and renovate documentation page
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 23:04_
+_@zanieb_
 
 cc @mkniewallner
 

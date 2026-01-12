@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-04-03T00:16:49Z
 updated_at: 2022-04-30T11:41:27Z
 url: https://github.com/clap-rs/clap/issues/3606
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # When the root command has a required argument, it is not output to the subcommand help.
 
 ---
 
-_Issue opened by @mondy on 2022-04-03 00:16_
+_@mondy_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: alex/rooster-config
 created_at: 2025-10-15T11:51:07Z
 updated_at: 2025-10-15T12:25:57Z
 url: https://github.com/astral-sh/ty/pull/1360
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Rooster config: ignore PRs labelled `documentation` or `playground` when generating the changelog
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-15 11:51_
+_@AlexWaygood_
 
 We usually omit playground-related changes and docs changes from the ty changelog
 

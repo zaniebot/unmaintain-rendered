@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-26T00:18:22Z
 updated_at: 2024-09-03T19:29:35Z
 url: https://github.com/astral-sh/uv/issues/6635
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # `uv run foo.pyc` should run `python foo.pyc`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-26 00:18_
+_@charliermarsh_
 
 Just like `uv run foo.py` runs `python foo.py`.
 

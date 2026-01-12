@@ -12,14 +12,14 @@ head: charlie/SIM118
 created_at: 2023-06-08T16:56:52Z
 updated_at: 2023-06-08T17:29:45Z
 url: https://github.com/astral-sh/ruff/pull/4966
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Make SIM118 a suggested fix
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-08 16:56_
+_@charliermarsh_
 
 Closes #1994.
 

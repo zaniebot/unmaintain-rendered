@@ -12,14 +12,14 @@ head: feat/tc010-fix
 created_at: 2025-01-02T15:07:22Z
 updated_at: 2025-06-25T09:01:20Z
 url: https://github.com/astral-sh/ruff/pull/15222
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`flake8-type-checking`] Add a fix for `runtime-string-union` (`TC010`)
 
 ---
 
-_Pull request opened by @Daverball on 2025-01-02 15:07_
+_@Daverball_
 
 ## Summary
 

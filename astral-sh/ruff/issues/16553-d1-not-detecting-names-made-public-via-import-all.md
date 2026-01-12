@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-07T14:01:00Z
 updated_at: 2025-03-07T15:24:38Z
 url: https://github.com/astral-sh/ruff/issues/16553
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # D1** not detecting names made public via import/__all__ idiom
 
 ---
 
-_Issue opened by @alicederyn on 2025-03-07 14:01_
+_@alicederyn_
 
 ### Summary
 

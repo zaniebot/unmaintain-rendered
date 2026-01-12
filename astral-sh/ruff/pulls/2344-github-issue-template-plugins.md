@@ -11,14 +11,14 @@ head: gh-issue-template
 created_at: 2023-01-30T09:00:39Z
 updated_at: 2023-05-04T19:26:32Z
 url: https://github.com/astral-sh/ruff/pull/2344
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Github Issue template: Plugins
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-30 09:00_
+_@sbrugman_
 
 Proposal to leverage Github [Issue Templates](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/about-issue-and-pull-request-templates). Here I made an example for _plugin support_, but there are already a couple of other scenarios that we can cover in a structured way (rule requests, bugs/false positive/false negatives). The template is rendered into an easy-to-use [form](https://github.com/sbrugman/ruff/blob/gh-issue-template/.github/ISSUE_TEMPLATE/PLUGIN.yml).
 

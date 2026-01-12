@@ -13,14 +13,14 @@ head: renovate/rui314-setup-mold-digest
 created_at: 2025-06-23T00:32:02Z
 updated_at: 2025-06-23T06:06:35Z
 url: https://github.com/astral-sh/ruff/pull/18874
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # Update rui314/setup-mold digest to 85c79d0
 
 ---
 
-_Pull request opened by @renovate on 2025-06-23 00:32_
+_@renovate_
 
 This PR contains the following updates:
 

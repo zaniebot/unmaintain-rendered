@@ -14,14 +14,14 @@ head: charlie/tool-cli
 created_at: 2024-07-07T20:16:25Z
 updated_at: 2024-07-08T13:21:07Z
 url: https://github.com/astral-sh/uv/pull/4865
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:30Z
 ```
 
 # Add some decoration to tool CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-07 20:16_
+_@charliermarsh_
 
 Mostly small things. I added entrypoint counts and bolded the executable names.
 

@@ -13,14 +13,14 @@ head: charlie/v
 created_at: 2025-01-15T03:02:41Z
 updated_at: 2025-01-15T16:31:42Z
 url: https://github.com/astral-sh/uv/pull/10623
-synced_at: 2026-01-10T11:44:59Z
+synced_at: 2026-01-12T16:09:23Z
 ```
 
 # Make `version` an optional field on installable distribution type
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-15 03:02_
+_@charliermarsh_
 
 ## Summary
 

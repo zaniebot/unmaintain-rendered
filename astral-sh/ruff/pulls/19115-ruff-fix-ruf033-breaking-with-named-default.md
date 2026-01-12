@@ -14,14 +14,14 @@ head: fix/18950-ruf033-named-expression-as-default
 created_at: 2025-07-03T07:39:48Z
 updated_at: 2025-07-24T14:44:56Z
 url: https://github.com/astral-sh/ruff/pull/19115
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # [`ruff`] Fix `RUF033` breaking with named default expressions
 
 ---
 
-_Pull request opened by @robsdedude on 2025-07-03 07:39_
+_@robsdedude_
 
 ## Summary
 The generated fix for `RUF033` would cause a syntax error for named expressions as parameter defaults.

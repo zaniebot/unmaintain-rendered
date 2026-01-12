@@ -13,14 +13,14 @@ head: charlie/working-dir
 created_at: 2025-11-28T16:59:58Z
 updated_at: 2025-11-30T15:59:06Z
 url: https://github.com/astral-sh/uv/pull/16884
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:29Z
 ```
 
 # Use `UV_WORKING_DIR` for consistency
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-28 16:59_
+_@charliermarsh_
 
 ## Summary
 

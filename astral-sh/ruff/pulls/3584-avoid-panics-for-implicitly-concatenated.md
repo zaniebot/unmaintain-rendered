@@ -14,14 +14,14 @@ head: charlie/doc
 created_at: 2023-03-17T20:26:07Z
 updated_at: 2023-03-19T18:20:54Z
 url: https://github.com/astral-sh/ruff/pull/3584
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Avoid panics for implicitly-concatenated docstrings
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-17 20:26_
+_@charliermarsh_
 
 ## Summary
 

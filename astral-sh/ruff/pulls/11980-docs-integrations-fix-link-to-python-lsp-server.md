@@ -13,14 +13,14 @@ head: docs/fix_integrations_python_lsp_server_url
 created_at: 2024-06-22T09:50:31Z
 updated_at: 2024-06-22T12:17:50Z
 url: https://github.com/astral-sh/ruff/pull/11980
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # docs(integrations): fix link to `python-lsp-server`
 
 ---
 
-_Pull request opened by @relausen on 2024-06-22 09:50_
+_@relausen_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-11-19T14:28:59Z
 updated_at: 2025-11-19T16:13:40Z
 url: https://github.com/astral-sh/ruff/issues/21526
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Formatter: Multiline string in parentheses is formatted in one line when fitting line length (Black does not)
 
 ---
 
-_Issue opened by @KerberosMorphy on 2025-11-19 14:28_
+_@KerberosMorphy_
 
 ### Summary
 

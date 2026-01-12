@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T19:25:06Z
 updated_at: 2025-07-07T13:40:18Z
 url: https://github.com/astral-sh/ruff/issues/18995
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # DJ012  lint encourages breaking change
 
 ---
 
-_Issue opened by @DMunkei on 2025-06-27 19:25_
+_@DMunkei_
 
 ### Summary
 

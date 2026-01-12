@@ -13,14 +13,14 @@ head: charlie/update-check
 created_at: 2023-05-09T16:28:38Z
 updated_at: 2023-05-09T17:35:40Z
 url: https://github.com/astral-sh/ruff/pull/4313
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Remove deprecated `update-check` setting
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-09 16:28_
+_@charliermarsh_
 
 Breaking in that users with `update-check = false` in their configuration file should now remove it.
 

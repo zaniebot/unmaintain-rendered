@@ -12,14 +12,14 @@ head: backticks
 created_at: 2023-02-14T07:01:47Z
 updated_at: 2023-02-14T22:24:42Z
 url: https://github.com/astral-sh/ruff/pull/2889
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Switch some quotes to backticks in errors
 
 ---
 
-_Pull request opened by @andersk on 2023-02-14 07:01_
+_@andersk_
 
 Improves consistency with the style decision in #723, I think.
 

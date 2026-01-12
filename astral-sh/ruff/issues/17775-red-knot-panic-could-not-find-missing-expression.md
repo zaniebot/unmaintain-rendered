@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-01T18:39:35Z
 updated_at: 2025-05-02T10:11:49Z
 url: https://github.com/astral-sh/ruff/issues/17775
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [red-knot] Panic: Could not find missing expression ID
 
 ---
 
-_Issue opened by @sharkdp on 2025-05-01 18:39_
+_@sharkdp_
 
 A few ecosystem projects currently fail with
 ```

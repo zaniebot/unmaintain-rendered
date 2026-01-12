@@ -14,14 +14,14 @@ head: brent/plw3301
 created_at: 2025-06-25T13:19:18Z
 updated_at: 2025-06-25T13:29:25Z
 url: https://github.com/astral-sh/ruff/pull/18936
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [`pylint`] Allow fix with comments and document performance implications (`PLW3301`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-25 13:19_
+_@ntBre_
 
 Summary
 --

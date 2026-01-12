@@ -13,14 +13,14 @@ head: charlie/install
 created_at: 2023-12-17T19:01:43Z
 updated_at: 2023-12-18T08:52:34Z
 url: https://github.com/astral-sh/uv/pull/675
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:07Z
 ```
 
 # Add editable install support to `pip-install`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-17 19:01_
+_@charliermarsh_
 
 Per the title: adds support for `-e` installs to `puffin pip-install`. There were some challenges here around threading the editable installs to the right places. Namely, we want to build _once_, then reuse the editable installs from the resolution. At present, we were losing the `editable: true` flag on the `Dist` that came back through the resolution, so it required some changes to the resolver.
 

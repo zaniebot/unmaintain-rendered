@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-03T01:52:24Z
 updated_at: 2024-05-04T17:52:02Z
 url: https://github.com/astral-sh/ruff/issues/11258
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server` does not merge editor settings with fallback settings
 
 ---
 
-_Issue opened by @snowsignal on 2024-05-03 01:52_
+_@snowsignal_
 
 If no file-based configuration exists for a workspace, only the fallback settings are used, and they are not combined with editor settings. The expected behavior is that editor settings should still be merged with fallback settings.
 

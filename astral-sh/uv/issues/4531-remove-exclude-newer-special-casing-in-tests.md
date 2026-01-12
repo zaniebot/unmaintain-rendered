@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-25T21:08:30Z
 updated_at: 2024-06-25T23:45:37Z
 url: https://github.com/astral-sh/uv/issues/4531
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Remove `exclude_newer` special casing in tests 
 
 ---
 
-_Issue opened by @konstin on 2024-06-25 21:08_
+_@konstin_
 
 See https://github.com/astral-sh/uv/pull/4512#discussion_r1652801655
 

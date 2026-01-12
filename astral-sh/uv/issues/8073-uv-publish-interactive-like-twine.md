@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-10T07:24:46Z
 updated_at: 2024-10-15T08:00:44Z
 url: https://github.com/astral-sh/uv/issues/8073
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # `uv publish` interactive like twine?
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-10-10 07:24_
+_@hauntsaninja_
 
 I've been doing `uvx twine upload dist/*` instead of `uv publish` because twine gives you a nice prompt for token and you don't have to worry about leaking a credential into shell history or something. Maybe this is something `uv publish` could also do?
 

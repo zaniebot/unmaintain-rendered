@@ -14,14 +14,14 @@ head: charlie/prioritize-cap
 created_at: 2024-07-30T23:37:10Z
 updated_at: 2024-07-31T15:05:15Z
 url: https://github.com/astral-sh/uv/pull/5643
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:56Z
 ```
 
 # Prioritize forks based on upper bounds
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-30 23:37_
+_@charliermarsh_
 
 ## Summary
 

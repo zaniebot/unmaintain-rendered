@@ -14,14 +14,14 @@ head: ag/empty-lock-file
 created_at: 2025-06-16T14:50:51Z
 updated_at: 2025-06-17T15:50:07Z
 url: https://github.com/astral-sh/uv/pull/14076
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:01Z
 ```
 
 # Fix handling of changes to `requires-python`
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-06-16 14:50_
+_@BurntSushi_
 
 When using `uv lock --upgrade-package=python` after changing
 `requires-python`, it was possible to get into a state where the fork

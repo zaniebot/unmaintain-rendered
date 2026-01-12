@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-11T16:20:16Z
 updated_at: 2023-07-12T08:15:28Z
 url: https://github.com/astral-sh/ruff/issues/5691
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F601: Repeated tuple keys with different values are not detected
 
 ---
 
-_Issue opened by @MatthewHoadSWO on 2023-07-11 16:20_
+_@MatthewHoadSWO_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

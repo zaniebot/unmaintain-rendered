@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-10T10:01:28Z
 updated_at: 2025-11-10T15:51:53Z
 url: https://github.com/astral-sh/ruff/issues/21360
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # False positive: `invalid-syntax` alternative patterns bind different names
 
 ---
 
-_Issue opened by @BarrensZeppelin on 2025-11-10 10:01_
+_@BarrensZeppelin_
 
 ### Summary
 

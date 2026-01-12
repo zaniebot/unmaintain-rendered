@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-07T20:54:36Z
 updated_at: 2025-03-10T23:02:44Z
 url: https://github.com/astral-sh/ruff/issues/16560
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Partial unpacking in `return`, `yield`, and `for` before Python 3.9
 
 ---
 
-_Issue opened by @ntBre on 2025-03-07 20:54_
+_@ntBre_
 
 I made this a sub-issue of #6591 for easier discussion, but I ran into the fact that syntax like this:
 

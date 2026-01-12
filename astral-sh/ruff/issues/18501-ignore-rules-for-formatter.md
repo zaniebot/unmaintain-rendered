@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-06T15:54:44Z
 updated_at: 2025-06-11T07:17:01Z
 url: https://github.com/astral-sh/ruff/issues/18501
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Ignore rules for formatter
 
 ---
 
-_Issue opened by @dornech on 2025-06-06 15:54_
+_@dornech_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: konsti/version-or-url-ref
 created_at: 2024-04-24T20:41:38Z
 updated_at: 2024-05-06T18:15:56Z
 url: https://github.com/astral-sh/uv/pull/3254
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:31Z
 ```
 
 # Rename `distribution_types::VersionOrUrl` to `VersionOrUrlRef`
 
 ---
 
-_Pull request opened by @konstin on 2024-04-24 20:41_
+_@konstin_
 
 This is more consistent with the other `*Ref` types and reduces confusion with the real `VersionOrUrl` type.
 

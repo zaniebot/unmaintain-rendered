@@ -13,14 +13,14 @@ head: alex/simplify-benchmark-run-job
 created_at: 2026-01-02T18:09:29Z
 updated_at: 2026-01-02T18:17:54Z
 url: https://github.com/astral-sh/ruff/pull/22342
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # Skip checking out the PR branch for some benchmark CI jobs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-02 18:09_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

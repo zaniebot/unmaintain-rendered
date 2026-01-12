@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-08-19T15:27:50Z
 updated_at: 2022-11-29T03:56:46Z
 url: https://github.com/astral-sh/ruff/issues/14
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Enable hash lookups when running in watch mode
 
 ---
 
-_Issue opened by @charliermarsh on 2022-08-19 15:27_
+_@charliermarsh_
 
 See: https://docs.rs/cacache/latest/cacache/#lookup-by-hash
 

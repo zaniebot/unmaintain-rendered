@@ -11,14 +11,14 @@ head: charlie/docs-refresh
 created_at: 2023-06-22T00:48:45Z
 updated_at: 2023-06-22T15:47:20Z
 url: https://github.com/astral-sh/ruff/pull/5277
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Update docs to match updated logo and color palette
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-22 00:48_
+_@charliermarsh_
 
 <img width="1792" alt="Screen Shot 2023-06-21 at 8 48 24 PM" src="https://github.com/astral-sh/ruff/assets/1309177/efb19d3f-5e4a-455d-8dbd-5c8cebc01311">
 

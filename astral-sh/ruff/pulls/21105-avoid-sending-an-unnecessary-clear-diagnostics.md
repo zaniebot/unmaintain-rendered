@@ -13,14 +13,14 @@ head: capabilities-check-for-clear_diagnostics_for_document
 created_at: 2025-10-28T05:40:36Z
 updated_at: 2025-10-31T07:20:24Z
 url: https://github.com/astral-sh/ruff/pull/21105
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # Avoid sending an unnecessary "clear diagnostics" message for clients supporting pull diagnostics
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-10-28 05:40_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

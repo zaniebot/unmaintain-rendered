@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-30T01:54:28Z
 updated_at: 2021-08-30T04:00:02Z
 url: https://github.com/clap-rs/clap/issues/2746
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Broken example clap_derive/examples/keyvalue.rs
 
 ---
 
-_Issue opened by @svenstaro on 2021-08-30 01:54_
+_@svenstaro_
 
 ### Please complete the following tasks
 

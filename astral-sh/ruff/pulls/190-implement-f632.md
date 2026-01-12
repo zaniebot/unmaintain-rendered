@@ -12,14 +12,14 @@ head: charlie/F632
 created_at: 2022-09-14T22:21:56Z
 updated_at: 2022-09-14T22:22:36Z
 url: https://github.com/astral-sh/ruff/pull/190
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement F632
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-14 22:21_
+_@charliermarsh_
 
 _No description provided._
 

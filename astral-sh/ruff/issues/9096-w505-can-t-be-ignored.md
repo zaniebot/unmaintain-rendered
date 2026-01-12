@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-11T17:23:18Z
 updated_at: 2023-12-11T17:30:41Z
 url: https://github.com/astral-sh/ruff/issues/9096
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # `W505` can't be ignored
 
 ---
 
-_Issue opened by @tylerlaprade on 2023-12-11 17:23_
+_@tylerlaprade_
 
 Hi, unless I messed up the syntax, it seems that `W505` violations can't be ignored with `noqa` when `max-doc-length` is set.
 

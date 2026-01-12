@@ -13,14 +13,14 @@ head: refine-model-lifetimes
 created_at: 2024-03-04T08:00:25Z
 updated_at: 2024-03-04T08:21:14Z
 url: https://github.com/astral-sh/ruff/pull/10221
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Refine SemanticModel lifetime bounds
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-04 08:00_
+_@MichaReiser_
 
 
 ## Summary

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-17T19:42:53Z
 updated_at: 2025-03-17T20:14:18Z
 url: https://github.com/astral-sh/ruff/issues/16821
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # TC003 + pydantic.BaseModel
 
 ---
 
-_Issue opened by @stiangrim on 2025-03-17 19:42_
+_@stiangrim_
 
 ### Summary
 

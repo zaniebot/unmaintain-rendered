@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-07T00:50:51Z
 updated_at: 2024-09-12T16:56:42Z
 url: https://github.com/astral-sh/ruff/issues/7844
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # RUF200 does not recognize Hatch context formatting
 
 ---
 
-_Issue opened by @scott-8 on 2023-10-07 00:50_
+_@scott-8_
 
 When Ruff tries to validate URLs using Hatch's context formatting, it fails where it shouldn't.
 

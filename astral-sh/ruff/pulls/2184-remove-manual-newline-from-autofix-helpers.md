@@ -12,14 +12,14 @@ head: charlie/newline
 created_at: 2023-01-26T00:47:53Z
 updated_at: 2023-01-26T00:53:28Z
 url: https://github.com/astral-sh/ruff/pull/2184
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Remove manual newline from autofix helpers
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-26 00:47_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: fix-pth114-example
 created_at: 2024-02-08T17:38:35Z
 updated_at: 2024-02-08T18:09:28Z
 url: https://github.com/astral-sh/ruff/pull/9896
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Corrected Path symlink method name (PTH114)
 
 ---
 
-_Pull request opened by @trag1c on 2024-02-08 17:38_
+_@trag1c_
 
 ## Summary
 Corrects mentions of `Path.is_link` to `Path.is_symlink` (the former doesn't exist).

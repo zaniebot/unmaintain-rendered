@@ -13,14 +13,14 @@ head: zb/cache-test
 created_at: 2024-10-04T14:25:04Z
 updated_at: 2024-10-04T15:12:06Z
 url: https://github.com/astral-sh/uv/pull/7927
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Ignore `UV_CACHE_DIR` during tests
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-04 14:25_
+_@zanieb_
 
 Exploring an alternative to https://github.com/astral-sh/uv/pull/7895
 

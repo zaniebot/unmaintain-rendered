@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-09T16:05:42Z
 updated_at: 2025-06-09T16:10:08Z
 url: https://github.com/astral-sh/uv/issues/13920
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # `uv` can't install post-release packages.
 
 ---
 
-_Issue opened by @MilkClouds on 2025-06-09 16:05_
+_@MilkClouds_
 
 ### Question
 

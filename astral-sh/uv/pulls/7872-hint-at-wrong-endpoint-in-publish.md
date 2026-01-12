@@ -13,14 +13,14 @@ head: konsti/hint-at-upload-error
 created_at: 2024-10-02T16:30:40Z
 updated_at: 2024-10-08T19:16:03Z
 url: https://github.com/astral-sh/uv/pull/7872
-synced_at: 2026-01-10T12:53:58Z
+synced_at: 2026-01-12T16:08:03Z
 ```
 
 # Hint at wrong endpoint in publish
 
 ---
 
-_Pull request opened by @konstin on 2024-10-02 16:30_
+_@konstin_
 
 Improve hints when using the simple index URL instead of the upload URL in `uv publish`. This is the most common confusion when publishing, so we give it some extra care and put it more centrally in the CLI help.
 

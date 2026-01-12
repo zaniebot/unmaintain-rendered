@@ -13,14 +13,14 @@ head: charlie/c
 created_at: 2025-08-05T18:15:34Z
 updated_at: 2025-08-05T18:28:03Z
 url: https://github.com/astral-sh/uv/pull/15090
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:34Z
 ```
 
 # Take a build constraints reference in `BuildDispatch`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-05 18:15_
+_@charliermarsh_
 
 ## Summary
 

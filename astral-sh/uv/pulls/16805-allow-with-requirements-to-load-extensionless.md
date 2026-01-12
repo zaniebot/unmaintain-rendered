@@ -12,14 +12,14 @@ head: revert-16802-revert-16744-with-req-inline-metadata
 created_at: 2025-11-21T14:23:28Z
 updated_at: 2025-11-21T16:53:43Z
 url: https://github.com/astral-sh/uv/pull/16805
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:27Z
 ```
 
 # Allow `--with-requirements` to load extensionless inline-metadata scripts
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-21 14:23_
+_@charliermarsh_
 
 Reverts astral-sh/uv#16802
 

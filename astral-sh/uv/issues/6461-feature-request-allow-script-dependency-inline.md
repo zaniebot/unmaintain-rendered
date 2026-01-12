@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T20:11:56Z
 updated_at: 2024-08-22T21:39:15Z
 url: https://github.com/astral-sh/uv/issues/6461
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Feature request: Allow script dependency inline with file docstring
 
 ---
 
-_Issue opened by @aaronsteers on 2024-08-22 20:11_
+_@aaronsteers_
 
 I am thrilled about `uv` and have been testing it with custom scripts.
 

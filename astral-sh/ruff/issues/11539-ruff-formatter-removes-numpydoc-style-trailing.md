@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-24T23:24:25Z
 updated_at: 2024-05-28T14:53:17Z
 url: https://github.com/astral-sh/ruff/issues/11539
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Ruff formatter removes numpydoc style trailing blank line
 
 ---
 
-_Issue opened by @manoelpqueiroz on 2024-05-24 23:24_
+_@manoelpqueiroz_
 
 Hi guys, I've searched for the following terms before opening this issue:
 

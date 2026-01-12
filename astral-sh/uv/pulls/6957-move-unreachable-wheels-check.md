@@ -13,14 +13,14 @@ head: konsti/move-wheel-check
 created_at: 2024-09-03T07:39:04Z
 updated_at: 2024-09-03T07:48:55Z
 url: https://github.com/astral-sh/uv/pull/6957
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:36Z
 ```
 
 # Move unreachable wheels check
 
 ---
 
-_Pull request opened by @konstin on 2024-09-03 07:39_
+_@konstin_
 
 Prep for fixing #6512. No functional changes.
 

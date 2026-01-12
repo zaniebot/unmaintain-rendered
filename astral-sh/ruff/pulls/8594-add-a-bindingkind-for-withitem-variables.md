@@ -12,14 +12,14 @@ head: charlie/withitem
 created_at: 2023-11-10T02:07:35Z
 updated_at: 2023-11-10T03:44:50Z
 url: https://github.com/astral-sh/ruff/pull/8594
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Add a `BindingKind` for `WithItem` variables
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-10 02:07_
+_@charliermarsh_
 
 _No description provided._
 

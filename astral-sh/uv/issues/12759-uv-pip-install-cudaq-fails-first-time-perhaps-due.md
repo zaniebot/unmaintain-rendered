@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T19:47:01Z
 updated_at: 2025-11-19T16:57:56Z
 url: https://github.com/astral-sh/uv/issues/12759
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:12Z
 ```
 
 # `uv pip install cudaq` fails first time perhaps due to dynamic install_requires
 
 ---
 
-_Issue opened by @PhilReinhold on 2025-04-08 19:47_
+_@PhilReinhold_
 
 ### Summary
 

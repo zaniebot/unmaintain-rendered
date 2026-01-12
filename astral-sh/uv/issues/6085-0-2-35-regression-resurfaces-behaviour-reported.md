@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-14T14:44:27Z
 updated_at: 2024-08-20T20:06:18Z
 url: https://github.com/astral-sh/uv/issues/6085
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # 0.2.35 - regression. Resurfaces behaviour reported in #3675
 
 ---
 
-_Issue opened by @paulJordaan on 2024-08-14 14:44_
+_@paulJordaan_
 
 It seems like the behavior reported in [#3675](https://github.com/astral-sh/uv/issues/3675) has resurfaced after the 0.2.35 release.
 

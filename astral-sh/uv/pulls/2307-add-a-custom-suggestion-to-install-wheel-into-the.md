@@ -13,14 +13,14 @@ head: charlie/msg
 created_at: 2024-03-08T20:50:48Z
 updated_at: 2024-03-08T21:00:40Z
 url: https://github.com/astral-sh/uv/pull/2307
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:58Z
 ```
 
 # Add a custom suggestion to install wheel into the build environment
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-08 20:50_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/2306.
 

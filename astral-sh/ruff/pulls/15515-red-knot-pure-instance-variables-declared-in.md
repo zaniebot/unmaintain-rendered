@@ -13,14 +13,14 @@ head: david/pure-instance-variables
 created_at: 2025-01-15T21:48:28Z
 updated_at: 2025-01-17T18:00:27Z
 url: https://github.com/astral-sh/ruff/pull/15515
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [red-knot] Pure instance variables declared in class body
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-15 21:48_
+_@sharkdp_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: F402
 created_at: 2022-09-18T04:39:14Z
 updated_at: 2022-09-21T15:12:55Z
 url: https://github.com/astral-sh/ruff/pull/221
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement F402
 
 ---
 
-_Pull request opened by @harupy on 2022-09-18 04:39_
+_@harupy_
 
 #170
 

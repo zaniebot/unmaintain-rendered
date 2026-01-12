@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T15:07:44Z
 updated_at: 2025-08-26T13:49:10Z
 url: https://github.com/astral-sh/ruff/issues/18442
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # F841 and PLE0117 don’t understand `__class__` bindings
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-03 15:07_
+_@dscorbett_
 
 ### Summary
 

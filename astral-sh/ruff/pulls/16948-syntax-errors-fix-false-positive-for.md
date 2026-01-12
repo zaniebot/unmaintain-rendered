@@ -13,14 +13,14 @@ head: brent/star-args
 created_at: 2025-03-24T14:00:13Z
 updated_at: 2025-03-24T14:34:41Z
 url: https://github.com/astral-sh/ruff/pull/16948
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [syntax-errors] Fix false positive for parenthesized tuple index
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-24 14:00_
+_@ntBre_
 
 Summary
 --

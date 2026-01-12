@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T10:37:46Z
 updated_at: 2025-05-28T07:45:12Z
 url: https://github.com/astral-sh/ty/issues/79
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Support publish diagnostics
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 10:37_
+_@MichaReiser_
 
 Support publish diagnostics for clients not supporting pull diagnostics
 

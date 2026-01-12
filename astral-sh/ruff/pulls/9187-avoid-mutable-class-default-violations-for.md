@@ -13,14 +13,14 @@ head: charlie/ruf
 created_at: 2023-12-18T16:06:25Z
 updated_at: 2023-12-18T16:19:08Z
 url: https://github.com/astral-sh/ruff/pull/9187
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Avoid `mutable-class-default` violations for Pydantic subclasses
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-18 16:06_
+_@charliermarsh_
 
 Only applies to subclasses defined within the same file, as elsewhere.
 

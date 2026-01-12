@@ -13,14 +13,14 @@ head: micha/refactor-notebook-index
 created_at: 2025-11-07T16:26:20Z
 updated_at: 2025-11-11T11:13:50Z
 url: https://github.com/astral-sh/ruff/pull/21319
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # Reduce notebook memory footprint
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-07 16:26_
+_@MichaReiser_
 
 ## Summary
 

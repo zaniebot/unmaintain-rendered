@@ -13,14 +13,14 @@ head: main
 created_at: 2025-07-14T19:58:52Z
 updated_at: 2025-07-17T16:19:07Z
 url: https://github.com/astral-sh/ruff/pull/19338
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:37Z
 ```
 
 # (fix): properly handle empty comments on next physical line after line continuation
 
 ---
 
-_Pull request opened by @soundsonacid on 2025-07-14 19:58_
+_@soundsonacid_
 
 fixes #19326 
 

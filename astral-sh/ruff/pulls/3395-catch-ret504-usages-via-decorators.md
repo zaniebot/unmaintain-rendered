@@ -13,14 +13,14 @@ head: charlie/decorators
 created_at: 2023-03-08T00:31:45Z
 updated_at: 2023-03-08T00:38:03Z
 url: https://github.com/astral-sh/ruff/pull/3395
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Catch RET504 usages via decorators
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-08 00:31_
+_@charliermarsh_
 
 Closes #3394.
 

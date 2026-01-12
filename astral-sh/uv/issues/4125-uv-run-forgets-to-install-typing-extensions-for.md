@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-07T07:08:10Z
 updated_at: 2024-06-10T12:40:53Z
 url: https://github.com/astral-sh/uv/issues/4125
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # `uv run` forgets to install typing_extensions for pydantic
 
 ---
 
-_Issue opened by @konstin on 2024-06-07 07:08_
+_@konstin_
 
 ```toml
 [project]

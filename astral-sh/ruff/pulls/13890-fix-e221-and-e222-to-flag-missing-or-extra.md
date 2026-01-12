@@ -15,14 +15,14 @@ head: micha/fix-pycodestyle-eqeq
 created_at: 2024-10-23T12:45:51Z
 updated_at: 2024-10-23T13:02:31Z
 url: https://github.com/astral-sh/ruff/pull/13890
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Fix E221 and E222 to flag missing or extra whitespace around `==` operator
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-23 12:45_
+_@MichaReiser_
 
 ## Summary
 

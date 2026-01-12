@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-13T02:02:59Z
 updated_at: 2022-09-15T02:21:18Z
 url: https://github.com/astral-sh/ruff/issues/176
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # ruff uncondtionally ignores all files in folders starting with a dot
 
 ---
 
-_Issue opened by @Jackenmen on 2022-09-13 02:02_
+_@Jackenmen_
 
 Noticed it while looking through some of the ruff's code and I realized that this means that when I put scripts in a folder such as `.github/workflows/scripts`, ruff won't lint it unless I explicitly pass the `.github` folder to it (I verified this by checking the output of ruff with `-v` flag on a project where I have Python files in `.github` folder).
 

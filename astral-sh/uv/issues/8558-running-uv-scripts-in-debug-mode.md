@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-25T09:04:48Z
 updated_at: 2025-12-15T21:19:11Z
 url: https://github.com/astral-sh/uv/issues/8558
-synced_at: 2026-01-10T03:11:32Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # Running uv scripts in debug mode
 
 ---
 
-_Issue opened by @RubenVanEldik on 2024-10-25 09:04_
+_@RubenVanEldik_
 
 Hi all!
 

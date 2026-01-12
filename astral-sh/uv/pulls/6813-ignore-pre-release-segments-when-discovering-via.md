@@ -14,14 +14,14 @@ head: charlie/b
 created_at: 2024-08-29T14:22:41Z
 updated_at: 2024-08-29T16:45:31Z
 url: https://github.com/astral-sh/uv/pull/6813
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:32Z
 ```
 
 # Ignore pre-release segments when discovering via `requires-python`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-29 14:22_
+_@charliermarsh_
 
 ## Summary
 

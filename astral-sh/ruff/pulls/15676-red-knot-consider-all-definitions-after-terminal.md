@@ -13,14 +13,14 @@ head: dcreager/terminal-visibility
 created_at: 2025-01-22T21:51:57Z
 updated_at: 2025-05-07T15:22:57Z
 url: https://github.com/astral-sh/ruff/pull/15676
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Consider all definitions after terminal statements unreachable
 
 ---
 
-_Pull request opened by @dcreager on 2025-01-22 21:51_
+_@dcreager_
 
 `FlowSnapshot` now tracks a `reachable` bool, which indicates whether we have encountered a terminal statement on that control flow path.  When merging flow states together, we skip any that have been marked unreachable.  This ensures that bindings that can only be reached through unreachable paths are not considered visible.
 

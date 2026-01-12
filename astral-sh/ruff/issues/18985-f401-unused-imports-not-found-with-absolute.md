@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T14:03:39Z
 updated_at: 2025-06-27T16:00:14Z
 url: https://github.com/astral-sh/ruff/issues/18985
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # F401: unused imports not found with absolute imports from same namespace
 
 ---
 
-_Issue opened by @TimotheusBachinger on 2025-06-27 14:03_
+_@TimotheusBachinger_
 
 ### Question
 

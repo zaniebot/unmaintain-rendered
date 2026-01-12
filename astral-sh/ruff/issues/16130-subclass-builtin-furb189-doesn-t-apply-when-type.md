@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-13T00:18:21Z
 updated_at: 2025-02-14T19:21:28Z
 url: https://github.com/astral-sh/ruff/issues/16130
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # (🐞) `subclass-builtin` (`FURB189`) doesn't apply when type arguments are supplied
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-02-13 00:18_
+_@KotlinIsland_
 
 ### Description
 

@@ -14,14 +14,14 @@ head: brent/format-twice-diagnostic
 created_at: 2025-10-21T16:33:12Z
 updated_at: 2025-10-21T17:47:28Z
 url: https://github.com/astral-sh/ruff/pull/21021
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # Render a diagnostic for syntax errors introduced in formatter tests
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-21 16:33_
+_@ntBre_
 
 ## Summary
 

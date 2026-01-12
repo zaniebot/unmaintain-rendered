@@ -14,14 +14,14 @@ head: add-reformat-check
 created_at: 2023-05-31T13:36:04Z
 updated_at: 2023-05-31T15:36:17Z
 url: https://github.com/astral-sh/ruff/pull/4753
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Add reformat check
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-31 13:36_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

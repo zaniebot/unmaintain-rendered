@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-26T21:15:37Z
 updated_at: 2025-10-15T13:01:23Z
 url: https://github.com/astral-sh/uv/issues/9452
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # Before posting in the issue tracker
 
 ---
 
-_Issue opened by @zanieb on 2024-11-26 21:15_
+_@zanieb_
 
 👋 Thanks for engaging with uv! As maintainers, we must split our time between solving existing issues (e.g., by adding features and fixing bugs) and responding to new issues. We care a lot about responding to issues promptly. **Help us out by opening high quality issues, identifying related issues, and ensuring that your issue is not a duplicate.**
 

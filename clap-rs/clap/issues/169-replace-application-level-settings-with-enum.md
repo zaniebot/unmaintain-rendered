@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-07-29T22:16:06Z
 updated_at: 2018-08-02T03:29:41Z
 url: https://github.com/clap-rs/clap/issues/169
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Replace application level settings with enum variants
 
 ---
 
-_Issue opened by @kbknapp on 2015-07-29 22:16_
+_@kbknapp_
 
 Currently, there are several "Application level" options or settings, which are set with various methods and a `bool`.  I would favor using an `enum` instead.
 

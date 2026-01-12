@@ -13,14 +13,14 @@ head: fix-19422
 created_at: 2025-07-19T15:36:06Z
 updated_at: 2025-07-23T16:04:44Z
 url: https://github.com/astral-sh/ruff/pull/19432
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [`pep8-naming`] Fix `N802` false positives for `CGIHTTPRequestHandler` and `SimpleHTTPRequestHandler`
 
 ---
 
-_Pull request opened by @danparizher on 2025-07-19 15:36_
+_@danparizher_
 
 ## Summary
 

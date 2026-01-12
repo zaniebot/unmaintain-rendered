@@ -13,14 +13,14 @@ head: brent/syn-scope-context
 created_at: 2025-04-09T14:01:49Z
 updated_at: 2025-04-09T18:23:31Z
 url: https://github.com/astral-sh/ruff/pull/17314
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # Refactor semantic syntax error scope handling
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-09 14:01_
+_@ntBre_
 
 ## Summary
 

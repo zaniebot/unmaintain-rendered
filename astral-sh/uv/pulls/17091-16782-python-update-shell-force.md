@@ -11,14 +11,14 @@ head: 16782-python-update-shell-force
 created_at: 2025-12-11T19:32:06Z
 updated_at: 2026-01-07T10:01:19Z
 url: https://github.com/astral-sh/uv/pull/17091
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:36Z
 ```
 
 # 16782 python update shell force
 
 ---
 
-_Pull request opened by @F4RAN on 2025-12-11 19:32_
+_@F4RAN_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

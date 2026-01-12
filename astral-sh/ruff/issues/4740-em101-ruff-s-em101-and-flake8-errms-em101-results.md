@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-31T00:17:03Z
 updated_at: 2023-05-31T04:37:45Z
 url: https://github.com/astral-sh/ruff/issues/4740
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [EM101] Ruff's EM101 and flake8-errms' EM101 results are inconsistent when the string literal is an empty string
 
 ---
 
-_Issue opened by @FishAlchemist on 2023-05-31 00:17_
+_@FishAlchemist_
 
 Ruff's EM101 cannot detect EM101 when the string is empty, but flake8-errms can detect EM101
 ```

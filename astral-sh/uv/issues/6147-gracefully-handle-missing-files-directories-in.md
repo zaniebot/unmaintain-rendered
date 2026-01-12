@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-16T15:18:11Z
 updated_at: 2025-03-03T16:04:45Z
 url: https://github.com/astral-sh/uv/issues/6147
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # gracefully handle missing files/directories in cache storage
 
 ---
 
-_Issue opened by @paveldikov on 2024-08-16 15:18_
+_@paveldikov_
 
 Not sure if this is a common pattern, but we like to store the cache directory on `/var/tmp` as the usual home directory may be on a network share (and extremely slow I/O as a result).
 

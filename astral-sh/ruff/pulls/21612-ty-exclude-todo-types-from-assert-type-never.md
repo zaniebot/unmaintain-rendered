@@ -13,14 +13,14 @@ head: david/exclude-todo-types
 created_at: 2025-11-24T13:06:03Z
 updated_at: 2025-11-25T12:31:56Z
 url: https://github.com/astral-sh/ruff/pull/21612
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # [ty] Exclude `@Todo` types from `assert_{type,never}` checks
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-24 13:06_
+_@sharkdp_
 
 ## Summary
 

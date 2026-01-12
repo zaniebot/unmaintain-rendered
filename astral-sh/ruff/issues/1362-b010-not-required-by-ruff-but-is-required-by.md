@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-24T18:17:26Z
 updated_at: 2022-12-24T19:09:35Z
 url: https://github.com/astral-sh/ruff/issues/1362
-synced_at: 2026-01-10T12:05:27Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # B010 not required by ruff, but is required by flake8 bugbear.
 
 ---
 
-_Issue opened by @ghuls on 2022-12-24 18:17_
+_@ghuls_
 
 ```
 # If # noqa: B010 is not set.

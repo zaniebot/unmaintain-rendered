@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-06T18:43:23Z
 updated_at: 2026-01-09T15:28:53Z
 url: https://github.com/astral-sh/ty/issues/136
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # prefer more precise declared type over gradual inferred type, or vice versa
 
 ---
 
-_Issue opened by @carljm on 2025-04-06 18:43_
+_@carljm_
 
 In a case like this:
 

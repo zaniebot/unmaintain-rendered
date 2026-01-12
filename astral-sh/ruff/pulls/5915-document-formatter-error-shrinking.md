@@ -13,14 +13,14 @@ head: Don_t_minimize_files_that_don_t_match_in_the_first_place
 created_at: 2023-07-20T10:52:09Z
 updated_at: 2023-07-21T09:32:14Z
 url: https://github.com/astral-sh/ruff/pull/5915
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Document formatter error shrinking
 
 ---
 
-_Pull request opened by @konstin on 2023-07-20 10:52_
+_@konstin_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-02T06:21:40Z
 updated_at: 2025-04-02T06:50:15Z
 url: https://github.com/astral-sh/ruff/issues/17139
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PD010: Pivot on values that are not a DataFrame getting flagged as Pandas error
 
 ---
 
-_Issue opened by @Rebellenmepper on 2025-04-02 06:21_
+_@Rebellenmepper_
 
 ### Summary
 

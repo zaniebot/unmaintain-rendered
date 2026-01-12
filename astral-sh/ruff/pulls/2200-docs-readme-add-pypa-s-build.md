@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2023-01-26T17:01:58Z
 updated_at: 2023-01-26T17:18:16Z
 url: https://github.com/astral-sh/ruff/pull/2200
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # docs(readme): add pypa's build
 
 ---
 
-_Pull request opened by @henryiii on 2023-01-26 17:01_
+_@henryiii_
 
 If you'd like this (hopefully it's in the right place).
 

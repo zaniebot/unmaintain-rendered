@@ -14,14 +14,14 @@ head: micha/cache-workspace-diagnostics
 created_at: 2025-07-28T19:55:22Z
 updated_at: 2025-07-30T10:08:34Z
 url: https://github.com/astral-sh/ruff/pull/19605
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [ty] Implement diagnostic caching
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-28 19:55_
+_@MichaReiser_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: plw1514
 created_at: 2024-05-05T01:27:24Z
 updated_at: 2024-05-09T17:29:04Z
 url: https://github.com/astral-sh/ruff/pull/11288
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # [`pylint`] Detect `pathlib.Path.open` calls in `unspecified-encoding` (`PLW1514`) 
 
 ---
 
-_Pull request opened by @augustelalande on 2024-05-05 01:27_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

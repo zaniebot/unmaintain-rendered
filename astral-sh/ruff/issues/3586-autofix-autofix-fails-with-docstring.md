@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-17T21:05:26Z
 updated_at: 2023-03-18T18:48:54Z
 url: https://github.com/astral-sh/ruff/issues/3586
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Autofix] Autofix fails with docstring
 
 ---
 
-_Issue opened by @qarmin on 2023-03-17 21:05_
+_@qarmin_
 
 Ruff 1dd3cbd047beda01a7833e1b20e10e745757fe3e + PR #3584
 No config

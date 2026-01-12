@@ -14,14 +14,14 @@ head: alex/link-to-faq
 created_at: 2026-01-07T12:52:23Z
 updated_at: 2026-01-07T13:22:55Z
 url: https://github.com/astral-sh/ruff/pull/22437
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Link to `Callable` `__name__` FAQ directly from `unresolved-attribute` diagnostic
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-07 12:52_
+_@AlexWaygood_
 
 ## Summary
 

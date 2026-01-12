@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-07T15:12:14Z
 updated_at: 2024-02-08T02:50:26Z
 url: https://github.com/astral-sh/ruff/issues/9873
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # How could I disable autoremove unused import?
 
 ---
 
-_Issue opened by @ErnestDong on 2024-02-07 15:12_
+_@ErnestDong_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

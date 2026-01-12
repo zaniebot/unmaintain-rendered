@@ -12,14 +12,14 @@ head: charlie/nursery
 created_at: 2023-02-03T16:30:56Z
 updated_at: 2023-02-03T16:59:31Z
 url: https://github.com/astral-sh/ruff/pull/2548
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Fix a few nursery rule violations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-03 16:30_
+_@charliermarsh_
 
 I was originally going to enable `nursery` and disable a few rules, but there are legitimate false positives that break code, so just fixing selective cases for now since I did the work anyway.
 

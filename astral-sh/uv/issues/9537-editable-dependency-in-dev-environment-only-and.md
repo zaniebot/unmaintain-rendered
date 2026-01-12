@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-30T10:33:27Z
 updated_at: 2024-12-03T22:05:09Z
 url: https://github.com/astral-sh/uv/issues/9537
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:53Z
 ```
 
 # Editable dependency in dev environment only, and source the git version in packaging environment
 
 ---
 
-_Issue opened by @choucavalier on 2024-11-30 10:33_
+_@choucavalier_
 
 Hello! Thanks for the awesome work on uv. The amount of things you're getting right and the speed of your development team is inspiring!
 

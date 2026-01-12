@@ -13,14 +13,14 @@ head: charlie/sym
 created_at: 2023-10-31T03:47:43Z
 updated_at: 2023-10-31T12:22:53Z
 url: https://github.com/astral-sh/uv/pull/250
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:49Z
 ```
 
 # Resolve interpreter symlinks when creating virtual environments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-31 03:47_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/249.
 

@@ -14,14 +14,14 @@ head: logging-str-preformat
 created_at: 2025-08-16T18:59:49Z
 updated_at: 2025-09-19T20:43:44Z
 url: https://github.com/astral-sh/ruff/pull/19942
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [`ruff`] Add `logging-eager-conversion` (`RUF065`)
 
 ---
 
-_Pull request opened by @GDYendell on 2025-08-16 18:59_
+_@GDYendell_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

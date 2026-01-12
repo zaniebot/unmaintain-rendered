@@ -14,14 +14,14 @@ head: alex/unsafe-ruf052
 created_at: 2024-12-06T18:21:26Z
 updated_at: 2024-12-10T23:51:54Z
 url: https://github.com/astral-sh/ruff/pull/14824
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`ruff`] Mark autofix for `RUF052` as always unsafe
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-06 18:21_
+_@AlexWaygood_
 
 ## Summary
 

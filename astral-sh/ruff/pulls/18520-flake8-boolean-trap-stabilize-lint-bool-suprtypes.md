@@ -14,14 +14,14 @@ head: dylan/stabilize-boolean-trap-optional
 created_at: 2025-06-06T23:13:09Z
 updated_at: 2025-06-08T18:08:00Z
 url: https://github.com/astral-sh/ruff/pull/18520
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [`flake8-boolean-trap`] Stabilize lint `bool` suprtypes in `boolean-type-hint-positional-argument` (`FBT001`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-06-06 23:13_
+_@dylwil3_
 
 Feel free to complain about the rephrasing in the docs!
 

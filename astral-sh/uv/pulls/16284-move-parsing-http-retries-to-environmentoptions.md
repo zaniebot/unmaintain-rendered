@@ -13,14 +13,14 @@ head: move-http-retries-to-EnvironmentOptions
 created_at: 2025-10-13T15:17:02Z
 updated_at: 2025-10-21T09:14:37Z
 url: https://github.com/astral-sh/uv/pull/16284
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:12Z
 ```
 
 # Move parsing http retries to EnvironmentOptions
 
 ---
 
-_Pull request opened by @andrey-berenda on 2025-10-13 15:17_
+_@andrey-berenda_
 
 ## Summary
 - Move  parsing `UV_HTTP_RETRIES` to `EnvironmentOptions`

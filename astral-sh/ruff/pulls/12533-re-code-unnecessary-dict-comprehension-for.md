@@ -14,14 +14,14 @@ head: charlie/c420
 created_at: 2024-07-26T14:36:08Z
 updated_at: 2024-08-12T09:27:07Z
 url: https://github.com/astral-sh/ruff/pull/12533
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Re-code `unnecessary-dict-comprehension-for-iterable` (`RUF025`) as `C420`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-26 14:36_
+_@charliermarsh_
 
 ## Summary
 

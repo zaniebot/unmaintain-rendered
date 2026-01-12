@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T09:21:27Z
 updated_at: 2025-05-08T09:21:27Z
 url: https://github.com/astral-sh/uv/issues/13343
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:25Z
 ```
 
 # Option to specify individual overrides in CLI
 
 ---
 
-_Issue opened by @roaldarbol on 2025-05-08 09:21_
+_@roaldarbol_
 
 ### Summary
 

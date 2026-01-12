@@ -13,14 +13,14 @@ head: dhruv/empty-target
 created_at: 2024-12-23T10:19:27Z
 updated_at: 2024-12-23T10:30:37Z
 url: https://github.com/astral-sh/ruff/pull/15121
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Infer value expr for empty list / tuple target
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-12-23 10:19_
+_@dhruvmanila_
 
 ## Summary
 

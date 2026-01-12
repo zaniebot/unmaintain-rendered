@@ -13,14 +13,14 @@ head: main
 created_at: 2024-04-16T18:02:45Z
 updated_at: 2024-04-16T18:25:36Z
 url: https://github.com/astral-sh/uv/pull/3070
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:24Z
 ```
 
 # Skip HEAD requests for Pypicloud with Private S3
 
 ---
 
-_Pull request opened by @elbaro on 2024-04-16 18:02_
+_@elbaro_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

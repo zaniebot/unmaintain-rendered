@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-27T23:54:35Z
 updated_at: 2024-08-28T01:39:47Z
 url: https://github.com/astral-sh/uv/issues/6732
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # Workspace discovery includes package that isn't part of `members`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-27 23:54_
+_@charliermarsh_
 
 Reported on Discord, with a repo. Won't type up the full thing here, will just fix it.
 

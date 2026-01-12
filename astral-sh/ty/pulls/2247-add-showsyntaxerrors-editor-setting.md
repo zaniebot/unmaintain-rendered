@@ -13,14 +13,14 @@ head: show-syntax-errors
 created_at: 2025-12-28T14:02:44Z
 updated_at: 2025-12-29T12:32:48Z
 url: https://github.com/astral-sh/ty/pull/2247
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Add `showSyntaxErrors` editor setting
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-12-28 14:02_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to ty! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ head: sj/egg
 created_at: 2024-05-06T03:30:02Z
 updated_at: 2024-05-06T21:56:24Z
 url: https://github.com/astral-sh/uv/pull/3396
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:37Z
 ```
 
 # List and uninstall legacy editables
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-05-06 03:30_
+_@hauntsaninja_
 
 No worries if this isn't something uv wants to support! Note this PR is currently based on top of #3380 , so shouldn't be merged till that one is merged
 

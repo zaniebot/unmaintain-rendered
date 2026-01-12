@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-29T01:22:04Z
 updated_at: 2023-12-22T03:41:06Z
 url: https://github.com/astral-sh/ruff/issues/8890
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: `improved_async_statements_handling` preview style
 
 ---
 
-_Issue opened by @MichaReiser on 2023-11-29 01:22_
+_@MichaReiser_
 
 Implement Black's same as [`improved_async_statements_handling`](https://github.com/psf/black/pull/3609) as a preview style. This is the same as https://github.com/astral-sh/ruff/issues/8889 but for async context managers. Requires Py39+
 

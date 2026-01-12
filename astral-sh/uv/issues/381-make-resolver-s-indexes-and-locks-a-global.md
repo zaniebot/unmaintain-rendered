@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-09T15:04:19Z
 updated_at: 2024-01-16T05:38:44Z
 url: https://github.com/astral-sh/uv/issues/381
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Make resolver's indexes and locks a global package database
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-09 15:04_
+_@charliermarsh_
 
 The resolver tracks a lot of state in `Index` (and `Locks`). Ideally, we'd pass this state down to the build context when resolving for _build dependencies_ (and share the same locks). There's probably room to lift this out of the resolver and reframe as a shared package database.
 

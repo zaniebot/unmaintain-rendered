@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-12T12:54:27Z
 updated_at: 2025-08-12T16:55:10Z
 url: https://github.com/astral-sh/uv/issues/15238
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # `uv sync` removes necessary dependencies when two packages include the same module
 
 ---
 
-_Issue opened by @jaseemabid on 2025-08-12 12:54_
+_@jaseemabid_
 
 ### Bug Description
 

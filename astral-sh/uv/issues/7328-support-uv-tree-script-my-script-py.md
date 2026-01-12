@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-12T11:50:22Z
 updated_at: 2025-01-08T21:32:48Z
 url: https://github.com/astral-sh/uv/issues/7328
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Support `uv tree --script my_script.py`
 
 ---
 
-_Issue opened by @aivarannamaa on 2024-09-12 11:50_
+_@aivarannamaa_
 
 It would be nice if `uv tree` could extract information about dependencies also from scripts with inline metadata.
 

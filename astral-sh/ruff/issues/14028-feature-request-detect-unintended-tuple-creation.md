@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-31T23:11:22Z
 updated_at: 2024-11-12T08:13:00Z
 url: https://github.com/astral-sh/ruff/issues/14028
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Feature Request: Detect unintended tuple creation from trailing commas in boolean expressions
 
 ---
 
-_Issue opened by @l1n on 2024-10-31 23:11_
+_@l1n_
 
 While Ruff currently detects trailing commas that create unintended tuples in direct `if` statement conditions, it doesn't detect similar issues when the tuple is created in a variable assignment and then used in control flow. This can lead to subtle bugs where boolean expressions become truthy tuples instead of boolean values.
 

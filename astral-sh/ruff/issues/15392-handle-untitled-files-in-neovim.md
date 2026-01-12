@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-10T08:20:20Z
 updated_at: 2025-02-21T09:18:23Z
 url: https://github.com/astral-sh/ruff/issues/15392
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Handle "untitled" files in Neovim
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-01-10 08:20_
+_@dhruvmanila_
 
 Currently, the language server crashes with the following panic:
 

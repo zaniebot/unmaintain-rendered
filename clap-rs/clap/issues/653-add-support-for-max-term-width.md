@@ -12,14 +12,14 @@ assignees: []
 created_at: 2016-09-10T15:58:34Z
 updated_at: 2018-08-02T03:29:53Z
 url: https://github.com/clap-rs/clap/issues/653
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Add support for max term width
 
 ---
 
-_Issue opened by @kbknapp on 2016-09-10 15:58_
+_@kbknapp_
 
 Similar to the default, except that even when term size can be determined don't go above `max`
 

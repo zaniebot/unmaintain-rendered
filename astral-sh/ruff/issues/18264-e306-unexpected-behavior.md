@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-22T19:56:51Z
 updated_at: 2025-05-24T01:55:19Z
 url: https://github.com/astral-sh/ruff/issues/18264
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # E306: unexpected behavior
 
 ---
 
-_Issue opened by @mikelei8291 on 2025-05-22 19:56_
+_@mikelei8291_
 
 ### Summary
 

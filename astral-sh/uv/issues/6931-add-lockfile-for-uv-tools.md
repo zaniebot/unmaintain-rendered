@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-02T09:44:43Z
 updated_at: 2024-11-20T19:43:33Z
 url: https://github.com/astral-sh/uv/issues/6931
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Add "lockfile" for uv tools?
 
 ---
 
-_Issue opened by @baggiponte on 2024-09-02 09:44_
+_@baggiponte_
 
 Ciao! I could not find any mention of it, but I was wondering whether you would consider adding a `tools` section under `uv.receipt`, or another lockfile-like lib where uv is configured, to retain a list of tools installed.
 

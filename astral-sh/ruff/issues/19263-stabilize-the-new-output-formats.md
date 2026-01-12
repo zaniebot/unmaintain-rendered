@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-10T15:54:29Z
 updated_at: 2025-10-02T12:39:32Z
 url: https://github.com/astral-sh/ruff/issues/19263
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Stabilize the new output formats
 
 ---
 
-_Issue opened by @ntBre on 2025-07-10 15:54_
+_@ntBre_
 
 The new output formats built on the new diagnostic model are currently gated behind preview. We should stabilize them in the next minor release. See https://github.com/astral-sh/ruff/pull/19133 as one example.
 

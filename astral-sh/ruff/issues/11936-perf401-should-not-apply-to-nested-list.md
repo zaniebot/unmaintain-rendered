@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-19T09:16:19Z
 updated_at: 2024-06-23T16:32:55Z
 url: https://github.com/astral-sh/ruff/issues/11936
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # PERF401 should not apply to nested list comprehensions
 
 ---
 
-_Issue opened by @knyazer on 2024-06-19 09:16_
+_@knyazer_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -12,14 +12,14 @@ head: main
 created_at: 2024-08-26T09:03:57Z
 updated_at: 2024-08-29T03:19:55Z
 url: https://github.com/astral-sh/ruff/pull/13106
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # #12044 hardcoded_sql_expressions bug
 
 ---
 
-_Pull request opened by @DataEnggNerd on 2024-08-26 09:03_
+_@DataEnggNerd_
 
 ## Summary
 This PR tried to fix #12044 raised for identifying all patterns which will be classified as prone to sql injections. 

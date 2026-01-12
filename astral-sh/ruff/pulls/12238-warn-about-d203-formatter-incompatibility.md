@@ -13,14 +13,14 @@ head: warn-about-d203-formatter-incompatibility
 created_at: 2024-07-08T08:17:03Z
 updated_at: 2024-07-08T13:12:15Z
 url: https://github.com/astral-sh/ruff/pull/12238
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Warn about D203 formatter incompatibility
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-08 08:17_
+_@MichaReiser_
 
 ## Summary
 

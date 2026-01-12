@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-11T08:29:28Z
 updated_at: 2025-06-11T08:58:43Z
 url: https://github.com/astral-sh/uv/issues/13961
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:40Z
 ```
 
 # Using different index based on --extra flag
 
 ---
 
-_Issue opened by @4rrw on 2025-06-11 08:29_
+_@4rrw_
 
 ### Question
 

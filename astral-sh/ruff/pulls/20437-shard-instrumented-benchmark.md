@@ -13,14 +13,14 @@ head: micha/shard-instrumented
 created_at: 2025-09-16T16:28:08Z
 updated_at: 2025-09-19T08:25:06Z
 url: https://github.com/astral-sh/ruff/pull/20437
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # Shard instrumented benchmark
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-09-16 16:28_
+_@MichaReiser_
 
 Shard the instrumented benchmarks and only run the ruff/ty benchmarks when there were corresponding code changes.
 

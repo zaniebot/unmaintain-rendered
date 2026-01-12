@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-01-29T20:00:08Z
 updated_at: 2018-08-02T03:30:00Z
 url: https://github.com/clap-rs/clap/issues/828
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Final word in help text is not wrapped
 
 ---
 
-_Issue opened by @mgeisler on 2017-01-29 20:00_
+_@mgeisler_
 
 ### Affected Version of clap
 

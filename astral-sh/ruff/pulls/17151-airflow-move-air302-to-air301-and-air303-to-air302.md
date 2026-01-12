@@ -14,14 +14,14 @@ head: reorganize-AIR-rules
 created_at: 2025-04-02T13:13:36Z
 updated_at: 2025-04-02T17:31:59Z
 url: https://github.com/astral-sh/ruff/pull/17151
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [`airflow`] Move `AIR302` to `AIR301` and `AIR303` to `AIR302`
 
 ---
 
-_Pull request opened by @Lee-W on 2025-04-02 13:13_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

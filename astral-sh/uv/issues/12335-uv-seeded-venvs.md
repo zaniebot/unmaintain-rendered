@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-20T10:14:24Z
 updated_at: 2025-03-23T11:22:09Z
 url: https://github.com/astral-sh/uv/issues/12335
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # uv-seeded venvs
 
 ---
 
-_Issue opened by @orent on 2025-03-20 10:14_
+_@orent_
 
 ### Summary
 

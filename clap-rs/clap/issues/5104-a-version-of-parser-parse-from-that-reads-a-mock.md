@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-30T19:21:14Z
 updated_at: 2023-08-30T20:00:40Z
 url: https://github.com/clap-rs/clap/issues/5104
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # A version of `Parser::parse_from` that reads a mock of the environment, for use in testing
 
 ---
 
-_Issue opened by @cbeck88 on 2023-08-30 19:21_
+_@cbeck88_
 
 ### Please complete the following tasks
 

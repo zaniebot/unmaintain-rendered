@@ -12,14 +12,14 @@ head: WheelFilename-distribution-package-name
 created_at: 2023-11-01T16:38:42Z
 updated_at: 2023-11-02T11:15:28Z
 url: https://github.com/astral-sh/uv/pull/278
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:50Z
 ```
 
 # Wheel filename distribution package name
 
 ---
 
-_Pull request opened by @konstin on 2023-11-01 16:38_
+_@konstin_
 
 The normalized name abstractions were not consistently, this PR uses them where they were previously missing:
 * `WheelFilename::distribution`

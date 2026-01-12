@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-18T22:58:09Z
 updated_at: 2025-02-19T00:27:37Z
 url: https://github.com/astral-sh/uv/issues/11607
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # uv sync failing due to cuda dependencies on MAC when I specifically put them in a cuda group
 
 ---
 
-_Issue opened by @spkgyk on 2025-02-18 22:58_
+_@spkgyk_
 
 ### Summary
 

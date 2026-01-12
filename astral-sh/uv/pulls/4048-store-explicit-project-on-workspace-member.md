@@ -13,14 +13,14 @@ head: konsti/explicit-project-on-workspace-member
 created_at: 2024-06-05T14:25:38Z
 updated_at: 2024-06-05T16:48:20Z
 url: https://github.com/astral-sh/uv/pull/4048
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:00Z
 ```
 
 # Store explicit project on workspace member
 
 ---
 
-_Pull request opened by @konstin on 2024-06-05 14:25_
+_@konstin_
 
 We know that `[project]` must exist for each workspace member, so we can store it directly and avoid going through the `.and_then()` when we need to access it. This requires cloning the struct due to lack of self-referential structs. An alternative would taking the `Project` from `PyProjectToml` instead, but this could be confusing when passing the `PyProjectToml` around.
 

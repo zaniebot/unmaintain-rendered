@@ -13,14 +13,14 @@ head: charlie/setting
 created_at: 2024-07-16T02:39:14Z
 updated_at: 2024-07-16T02:46:22Z
 url: https://github.com/astral-sh/uv/pull/5091
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:38Z
 ```
 
 # Add `settings.md` to docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-16 02:39_
+_@charliermarsh_
 
 ## Summary
 

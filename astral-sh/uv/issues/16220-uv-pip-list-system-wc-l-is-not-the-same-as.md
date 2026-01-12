@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-10T07:35:09Z
 updated_at: 2025-10-15T13:23:54Z
 url: https://github.com/astral-sh/uv/issues/16220
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # `uv pip list --system | wc -l` is not the same as `python3 -m pip list | wc -l`, is this expected?
 
 ---
 
-_Issue opened by @pplmx on 2025-10-10 07:35_
+_@pplmx_
 
 ### Question
 

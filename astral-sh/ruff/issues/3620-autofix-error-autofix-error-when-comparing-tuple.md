@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-20T08:17:35Z
 updated_at: 2023-03-22T16:32:02Z
 url: https://github.com/astral-sh/ruff/issues/3620
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Autofix error] Autofix error when comparing tuple
 
 ---
 
-_Issue opened by @qarmin on 2023-03-20 08:17_
+_@qarmin_
 
 Ruff  a45753f462c7a53afd7f942ab3c6f9af3871bf1f
 

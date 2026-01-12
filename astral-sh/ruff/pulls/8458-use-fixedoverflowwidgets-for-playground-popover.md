@@ -13,14 +13,14 @@ head: charlie/overflow
 created_at: 2023-11-03T04:23:17Z
 updated_at: 2023-11-03T04:29:38Z
 url: https://github.com/astral-sh/ruff/pull/8458
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Use `fixedOverflowWidgets` for playground popover
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-03 04:23_
+_@charliermarsh_
 
 After some Googling...
 

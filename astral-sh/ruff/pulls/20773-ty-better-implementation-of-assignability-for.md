@@ -13,14 +13,14 @@ head: alex/gradual-intersections
 created_at: 2025-10-08T19:03:49Z
 updated_at: 2025-10-10T19:19:02Z
 url: https://github.com/astral-sh/ruff/pull/20773
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] Better implementation of assignability for intersections with negated gradual elements
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-08 19:03_
+_@AlexWaygood_
 
 Our implementation of assignability between a type `T` and another type `~U` is currently too strict. We currently only consider `T` assignable to `~U` if `Top[T]` is disjoint from `Top[U]`. That's correct for subtyping and redundancy, but not for assignability: for assignability, we should be more permissive, and allow `T` to be considered assignable to `~U` if `Bottom[T]` is disjoint from `Bottom[U]`.
 

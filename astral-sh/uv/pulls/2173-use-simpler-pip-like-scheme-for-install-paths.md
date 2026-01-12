@@ -13,14 +13,14 @@ head: charlie/scheme
 created_at: 2024-03-04T20:35:34Z
 updated_at: 2024-03-04T20:50:14Z
 url: https://github.com/astral-sh/uv/pull/2173
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # Use simpler pip-like `Scheme` for install paths
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-04 20:35_
+_@charliermarsh_
 
 ## Summary
 

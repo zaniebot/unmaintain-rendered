@@ -14,14 +14,14 @@ head: fix-21274
 created_at: 2025-11-05T06:02:55Z
 updated_at: 2025-11-08T00:05:44Z
 url: https://github.com/astral-sh/ruff/pull/21278
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [`refurb`] Auto-fix annotated assignments (`FURB101`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-05 06:02_
+_@danparizher_
 
 ## Summary
 

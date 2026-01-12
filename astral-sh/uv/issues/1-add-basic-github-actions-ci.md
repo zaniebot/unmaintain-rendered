@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-05T15:23:57Z
 updated_at: 2023-10-05T17:43:00Z
 url: https://github.com/astral-sh/uv/issues/1
-synced_at: 2026-01-10T05:49:12Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Add basic GitHub Actions CI
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-05 15:23_
+_@charliermarsh_
 
 Run tests, formatting, linting.
 

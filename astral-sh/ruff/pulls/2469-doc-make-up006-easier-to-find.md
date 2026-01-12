@@ -11,14 +11,14 @@ head: doc-up006
 created_at: 2023-02-02T05:00:17Z
 updated_at: 2023-02-02T13:01:41Z
 url: https://github.com/astral-sh/ruff/pull/2469
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # DOC: Make UP006 easier to find
 
 ---
 
-_Pull request opened by @MartinThoma on 2023-02-02 05:00_
+_@MartinThoma_
 
 This change makes it easier to understand what UP006 is about. It also makes it easier  to find the rule when you only know the effect, but not the PEP.
 

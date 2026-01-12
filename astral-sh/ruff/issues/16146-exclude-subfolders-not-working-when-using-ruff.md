@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-13T23:06:50Z
 updated_at: 2025-02-14T11:44:46Z
 url: https://github.com/astral-sh/ruff/issues/16146
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Exclude subfolders not working when using ruff format
 
 ---
 
-_Issue opened by @akshaybabloo on 2025-02-13 23:06_
+_@akshaybabloo_
 
 ### Description
 

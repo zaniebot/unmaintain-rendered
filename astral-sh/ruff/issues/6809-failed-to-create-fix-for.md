@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-23T10:16:35Z
 updated_at: 2023-10-01T08:24:46Z
 url: https://github.com/astral-sh/ruff/issues/6809
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Failed to create fix for UnnecessaryCollectionCall: Failed to extract expression from source
 
 ---
 
-_Issue opened by @qarmin on 2023-08-23 10:16_
+_@qarmin_
 
 Ruff 0.0.285 (latest changes from main branch)
 

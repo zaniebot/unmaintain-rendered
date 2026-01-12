@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-14T03:33:27Z
 updated_at: 2024-01-15T14:37:21Z
 url: https://github.com/astral-sh/ruff/issues/9508
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # No __prepare__ at is_known_dunder_method
 
 ---
 
-_Issue opened by @arnaud-ma on 2024-01-14 03:33_
+_@arnaud-ma_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

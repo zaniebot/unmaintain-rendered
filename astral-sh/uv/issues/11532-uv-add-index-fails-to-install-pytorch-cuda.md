@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-15T05:04:25Z
 updated_at: 2025-09-09T07:05:51Z
 url: https://github.com/astral-sh/uv/issues/11532
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # `uv add --index` fails to install PyTorch CUDA packages on Windows
 
 ---
 
-_Issue opened by @AbyssSkb on 2025-02-15 05:04_
+_@AbyssSkb_
 
 ### Question
 

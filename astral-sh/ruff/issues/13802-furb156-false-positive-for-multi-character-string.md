@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-17T20:27:37Z
 updated_at: 2024-11-09T20:31:28Z
 url: https://github.com/astral-sh/ruff/issues/13802
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # FURB156 false positive for multi-character string before `in`
 
 ---
 
-_Issue opened by @dscorbett on 2024-10-17 20:27_
+_@dscorbett_
 
 [`hardcoded-string-charset` (FURB156)](https://docs.astral.sh/ruff/rules/hardcoded-string-charset/) has a false positive with an incorrect fix. Given an expression of the form `<expression> in <string literal>`, the rule tries to replace the string literal with a variable from the `string` module, ignoring the order of the characters in the string literal. That is only valid when the left-hand-side expression is a string of length 1. If it is multiple characters, reordering the characters in the right-hand-side expression can change the value of the `in` operation.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-12T08:52:42Z
 updated_at: 2025-09-12T09:06:49Z
 url: https://github.com/astral-sh/uv/issues/15804
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Display dependency versions used by "uv run myscript.py"?
 
 ---
 
-_Issue opened by @jondo on 2025-09-12 08:52_
+_@jondo_
 
 ### Question
 

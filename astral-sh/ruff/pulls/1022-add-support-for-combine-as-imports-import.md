@@ -12,14 +12,14 @@ head: charlie/combine_as_imports
 created_at: 2022-12-04T04:11:45Z
 updated_at: 2022-12-04T05:11:49Z
 url: https://github.com/astral-sh/ruff/pull/1022
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add support for combine-as-imports import formatting
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-04 04:11_
+_@charliermarsh_
 
 See: https://github.com/charliermarsh/ruff/issues/705#issuecomment-1336303028.
 

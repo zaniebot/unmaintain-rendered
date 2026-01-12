@@ -14,14 +14,14 @@ head: parts-iter
 created_at: 2024-01-11T14:32:18Z
 updated_at: 2024-01-11T14:58:50Z
 url: https://github.com/astral-sh/ruff/pull/9469
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Avoid allocating during implicit concatenated string formatting
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-01-11 14:32_
+_@MichaReiser_
 
 ## Summary
 

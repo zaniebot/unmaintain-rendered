@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-23T17:50:04Z
 updated_at: 2023-03-23T17:54:20Z
 url: https://github.com/astral-sh/ruff/issues/3687
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # In `ruff` 0.0.258 the `pydocstyle` rules are being enabled and can't be disabled with `[tool.ruff.pydocstyle]` defined. 
 
 ---
 
-_Issue opened by @bgianfo on 2023-03-23 17:50_
+_@bgianfo_
 
 After upgrading we noticed that these D<XXX> rules (pydocstyle) are being enabled and suppressing them in the `ignore` section doesn't seem to take effect? 
 

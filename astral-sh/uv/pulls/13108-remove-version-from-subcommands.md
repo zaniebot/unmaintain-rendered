@@ -14,14 +14,14 @@ head: zb/version-flags
 created_at: 2025-04-25T16:19:28Z
 updated_at: 2025-04-28T15:43:32Z
 url: https://github.com/astral-sh/uv/pull/13108
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Remove `--version` from subcommands
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-25 16:19_
+_@zanieb_
 
 Supersedes https://github.com/astral-sh/uv/pull/12439 — does not use the Clap macro so we retain control over the messages
 Closes #12431 

@@ -13,14 +13,14 @@ head: david/type-aliases
 created_at: 2024-11-15T10:55:18Z
 updated_at: 2024-11-22T07:47:17Z
 url: https://github.com/astral-sh/ruff/pull/14357
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] PEP 695 type aliases
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-15 10:55_
+_@sharkdp_
 
 ## Summary
 

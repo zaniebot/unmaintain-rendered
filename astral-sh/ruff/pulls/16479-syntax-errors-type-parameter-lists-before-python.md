@@ -14,14 +14,14 @@ head: brent/syn-type-params
 created_at: 2025-03-03T19:11:10Z
 updated_at: 2025-03-05T13:24:49Z
 url: https://github.com/astral-sh/ruff/pull/16479
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [syntax-errors] Type parameter lists before Python 3.12
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-03 19:11_
+_@ntBre_
 
 Summary
 --

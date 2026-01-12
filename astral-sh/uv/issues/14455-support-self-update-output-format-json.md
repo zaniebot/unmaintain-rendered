@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-04T07:36:59Z
 updated_at: 2025-07-04T07:37:31Z
 url: https://github.com/astral-sh/uv/issues/14455
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Support `self update --output-format=json`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-07-04 07:36_
+_@InSyncWithFoo_
 
 (As suggested by @zanieb [on Discord](https://discord.com/channels/1039017663004942429/1207998321562619954/1390378487730409565). Part of #411.)
 

@@ -14,14 +14,14 @@ head: ag/fmt/rest
 created_at: 2023-12-05T00:11:01Z
 updated_at: 2023-12-05T23:34:34Z
 url: https://github.com/astral-sh/ruff/pull/9003
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # add support for formatting reStructuredText code snippets
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-12-05 00:11_
+_@BurntSushi_
 
 (This is not possible to actually use until https://github.com/astral-sh/ruff/pull/8854 is merged.)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-19T00:34:22Z
 updated_at: 2022-12-19T09:46:08Z
 url: https://github.com/astral-sh/ruff/issues/1284
-synced_at: 2026-01-10T12:05:25Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Lots of RUF100 false positive for noqa: E501
 
 ---
 
-_Issue opened by @LefterisJP on 2022-12-19 00:34_
+_@LefterisJP_
 
 I upgraded to `ruff==0.0.186` and started getting lots of `RUF100 Unused `noqa` directive for: E501` errors.
 

@@ -13,14 +13,14 @@ head: volkerh/doc-fix-guides-projects-add-git
 created_at: 2024-10-04T08:35:10Z
 updated_at: 2024-10-04T10:42:23Z
 url: https://github.com/astral-sh/uv/pull/7916
-synced_at: 2026-01-10T12:53:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Fix documentation (projects guide) regarding adding a git dependency
 
 ---
 
-_Pull request opened by @VolkerH on 2024-10-04 08:35_
+_@VolkerH_
 
 ## Summary
 

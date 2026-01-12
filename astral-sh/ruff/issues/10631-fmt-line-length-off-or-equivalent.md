@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-27T17:02:28Z
 updated_at: 2024-04-05T06:21:49Z
 url: https://github.com/astral-sh/ruff/issues/10631
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `fmt: line-length-off` (or equivalent)
 
 ---
 
-_Issue opened by @thejcannon on 2024-03-27 17:02_
+_@thejcannon_
 
 👋 Howdy folks!
 

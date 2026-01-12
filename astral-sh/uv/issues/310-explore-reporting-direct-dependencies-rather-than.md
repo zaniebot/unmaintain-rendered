@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-03T15:38:56Z
 updated_at: 2024-06-27T11:23:35Z
 url: https://github.com/astral-sh/uv/issues/310
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Explore reporting direct dependencies rather than "root depends on"
 
 ---
 
-_Issue opened by @zanieb on 2023-11-03 15:38_
+_@zanieb_
 
 Instead of saying "Because root depends on X, root is forbidden" (https://github.com/astral-sh/puffin/issues/309#issuecomment-1792659410) we should be able to specify that X is a direct requirement.
 

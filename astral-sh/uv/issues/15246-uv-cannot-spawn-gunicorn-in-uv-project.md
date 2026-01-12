@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-12T22:10:03Z
 updated_at: 2025-10-23T15:52:20Z
 url: https://github.com/astral-sh/uv/issues/15246
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # uv cannot spawn gunicorn in uv project
 
 ---
 
-_Issue opened by @CNOCTAVE on 2025-08-12 22:10_
+_@CNOCTAVE_
 
 ### Summary
 

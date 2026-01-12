@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-18T11:55:02Z
 updated_at: 2025-03-18T20:24:25Z
 url: https://github.com/astral-sh/uv/issues/11594
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # Allow using `requirements.in` to specify dependencies for `uv tool run` and `uv tool install` and show examples in the docs
 
 ---
 
-_Issue opened by @ShaiAvr on 2025-02-18 11:55_
+_@ShaiAvr_
 
 ### Summary
 

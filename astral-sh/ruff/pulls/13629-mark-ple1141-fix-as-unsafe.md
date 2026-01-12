@@ -14,14 +14,14 @@ head: zb/ple1141-unsafe
 created_at: 2024-10-04T15:36:28Z
 updated_at: 2024-10-04T19:23:14Z
 url: https://github.com/astral-sh/ruff/pull/13629
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Mark `PLE1141` fix as unsafe
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-04 15:36_
+_@zanieb_
 
 Closes https://github.com/astral-sh/ruff/issues/13343
 

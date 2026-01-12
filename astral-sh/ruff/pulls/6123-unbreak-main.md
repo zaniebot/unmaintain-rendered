@@ -12,14 +12,14 @@ head: unbreak_main
 created_at: 2023-07-27T11:23:43Z
 updated_at: 2023-07-27T11:52:48Z
 url: https://github.com/astral-sh/ruff/pull/6123
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Unbreak main
 
 ---
 
-_Pull request opened by @konstin on 2023-07-27 11:23_
+_@konstin_
 
 This fixes main breaking due to two merges.
 

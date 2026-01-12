@@ -14,14 +14,14 @@ head: alex/fewer-python-path-variants
 created_at: 2025-06-04T11:00:59Z
 updated_at: 2025-06-11T10:46:22Z
 url: https://github.com/astral-sh/ruff/pull/18457
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Fix `--python` argument for Windows, and improve error messages for bad `--python` arguments
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-04 11:00_
+_@AlexWaygood_
 
 ## Summary
 

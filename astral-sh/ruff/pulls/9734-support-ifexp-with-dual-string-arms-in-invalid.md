@@ -13,14 +13,14 @@ head: invalid-envvar-default
 created_at: 2024-01-31T12:43:00Z
 updated_at: 2024-02-03T01:09:28Z
 url: https://github.com/astral-sh/ruff/pull/9734
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Support `IfExp` with dual string arms in `invalid-envvar-default`
 
 ---
 
-_Pull request opened by @covracer on 2024-01-31 12:43_
+_@covracer_
 
 ## Summary
 

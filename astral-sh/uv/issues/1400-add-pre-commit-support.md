@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T00:15:31Z
 updated_at: 2024-03-22T21:37:12Z
 url: https://github.com/astral-sh/uv/issues/1400
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Add pre-commit support
 
 ---
 
-_Issue opened by @neumann-nico on 2024-02-16 00:15_
+_@neumann-nico_
 
 Thanks for the great tool, `uv pip compile` is blazing fast 🚀 
 I would like to suggest to add pre-commit support for `uv` to make it more useable.

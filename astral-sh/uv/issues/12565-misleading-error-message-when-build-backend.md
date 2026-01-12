@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-30T21:37:17Z
 updated_at: 2025-04-07T14:28:48Z
 url: https://github.com/astral-sh/uv/issues/12565
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:06Z
 ```
 
 # Misleading error message when build backend returns a non-compliant wheel filename
 
 ---
 
-_Issue opened by @jaraco on 2025-03-30 21:37_
+_@jaraco_
 
 ### Summary
 

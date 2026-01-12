@@ -14,14 +14,14 @@ head: alex/union-fast-path-still-vec
 created_at: 2026-01-10T15:30:40Z
 updated_at: 2026-01-10T18:52:53Z
 url: https://github.com/astral-sh/ruff/pull/22495
-synced_at: 2026-01-12T02:32:44Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # [ty] Generalize union-type subtyping fast path
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-10 15:30_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

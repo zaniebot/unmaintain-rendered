@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-19T21:15:29Z
 updated_at: 2024-06-04T18:08:39Z
 url: https://github.com/clap-rs/clap/issues/5260
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Unclear error message: "Found non-required positional argument with a lower index than ..."
 
 ---
 
-_Issue opened by @RalphDNB on 2023-12-19 21:15_
+_@RalphDNB_
 
 ### Please complete the following tasks
 

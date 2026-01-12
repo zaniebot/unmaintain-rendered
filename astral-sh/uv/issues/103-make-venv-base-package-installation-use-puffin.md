@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-16T07:16:03Z
 updated_at: 2023-11-30T01:56:13Z
 url: https://github.com/astral-sh/uv/issues/103
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Make venv base package installation use puffin-installer
 
 ---
 
-_Issue opened by @konstin on 2023-10-16 07:16_
+_@konstin_
 
 For pip, wheel and setuptools.
 

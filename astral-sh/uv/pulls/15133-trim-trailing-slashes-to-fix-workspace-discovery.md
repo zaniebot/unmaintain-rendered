@@ -14,14 +14,14 @@ head: konsti/trim-trailing-slashes
 created_at: 2025-08-07T12:24:00Z
 updated_at: 2025-10-07T20:59:13Z
 url: https://github.com/astral-sh/uv/pull/15133
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:35Z
 ```
 
 # Trim trailing slashes to fix workspace discovery
 
 ---
 
-_Pull request opened by @konstin on 2025-08-07 12:24_
+_@konstin_
 
 Previously, workspace discovery would miss a valid workspace root is the project path has a trailing slash. This would cause `uv build` to use the wrong target directory.
 

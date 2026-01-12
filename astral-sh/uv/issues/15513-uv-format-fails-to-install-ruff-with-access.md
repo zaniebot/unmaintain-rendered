@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-08-25T12:48:57Z
 updated_at: 2025-08-27T16:42:40Z
 url: https://github.com/astral-sh/uv/issues/15513
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # `uv format` fails to install ruff with access denied on Windows
 
 ---
 
-_Issue opened by @zanieb on 2025-08-25 12:48_
+_@zanieb_
 
 e.g.
 

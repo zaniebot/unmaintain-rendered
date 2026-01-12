@@ -13,14 +13,14 @@ head: charlie/noqa-none
 created_at: 2023-07-05T22:16:17Z
 updated_at: 2023-07-05T22:44:17Z
 url: https://github.com/astral-sh/ruff/pull/5543
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Remove `Directive::None` variant
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-05 22:16_
+_@charliermarsh_
 
 ## Summary
 

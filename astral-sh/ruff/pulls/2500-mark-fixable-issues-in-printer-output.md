@@ -12,14 +12,14 @@ head: charlie/star
 created_at: 2023-02-02T20:52:36Z
 updated_at: 2023-02-08T22:52:13Z
 url: https://github.com/astral-sh/ruff/pull/2500
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Mark fixable issues in printer output
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-02 20:52_
+_@charliermarsh_
 
 Here's an example:
 

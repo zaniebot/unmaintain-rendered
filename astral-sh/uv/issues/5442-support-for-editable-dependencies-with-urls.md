@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-25T14:01:08Z
 updated_at: 2025-02-19T00:02:14Z
 url: https://github.com/astral-sh/uv/issues/5442
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Support for editable dependencies with URLs
 
 ---
 
-_Issue opened by @krmax44 on 2024-07-25 14:01_
+_@krmax44_
 
 While uv supports dependencies from URLs (like `uv pip install git+https://github.com/pallets/flask.git`), they can't be installed with the `-e` flag:
 

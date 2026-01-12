@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-16T15:47:36Z
 updated_at: 2025-07-23T09:02:31Z
 url: https://github.com/astral-sh/uv/issues/8262
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # uv lock replacing all source registry URLs in uv.lock to the private registry
 
 ---
 
-_Issue opened by @mazulo on 2024-10-16 15:47_
+_@mazulo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

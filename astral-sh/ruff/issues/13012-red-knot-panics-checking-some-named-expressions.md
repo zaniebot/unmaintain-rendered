@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-20T15:17:13Z
 updated_at: 2024-08-22T14:59:14Z
 url: https://github.com/astral-sh/ruff/issues/13012
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Red knot panics checking some named expressions
 
 ---
 
-_Issue opened by @MichaReiser on 2024-08-20 15:17_
+_@MichaReiser_
 
 ```python
 match x:

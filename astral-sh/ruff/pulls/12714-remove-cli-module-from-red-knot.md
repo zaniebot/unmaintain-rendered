@@ -13,14 +13,14 @@ head: red-knot-remove-cli-module
 created_at: 2024-08-06T12:06:20Z
 updated_at: 2024-08-06T12:19:44Z
 url: https://github.com/astral-sh/ruff/pull/12714
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Remove 'cli' module from `red_knot`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-06 12:06_
+_@MichaReiser_
 
 ## Summary
 

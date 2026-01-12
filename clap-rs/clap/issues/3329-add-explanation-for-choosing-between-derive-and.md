@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-22T23:16:18Z
 updated_at: 2022-01-24T14:29:57Z
 url: https://github.com/clap-rs/clap/issues/3329
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Add explanation for choosing between Derive and Builder APIs
 
 ---
 
-_Issue opened by @allan2 on 2022-01-22 23:16_
+_@allan2_
 
 ### Please complete the following tasks
 

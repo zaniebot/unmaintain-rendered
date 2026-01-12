@@ -13,14 +13,14 @@ head: charlie/re
 created_at: 2024-04-27T23:19:08Z
 updated_at: 2024-04-28T00:36:33Z
 url: https://github.com/astral-sh/ruff/pull/11182
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # Add a `--release` build to CI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-27 23:19_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-01T21:06:23Z
 updated_at: 2024-03-02T13:49:31Z
 url: https://github.com/astral-sh/ruff/issues/10189
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Format selection
 
 ---
 
-_Issue opened by @eljeffeg on 2024-03-01 21:06_
+_@eljeffeg_
 
 Is there a way to preserve the `indent-style`, `line-ending`, and `quote-style` while ignoring the other black formatting?
 

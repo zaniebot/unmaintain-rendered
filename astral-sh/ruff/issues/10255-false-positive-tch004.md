@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-06T19:24:33Z
 updated_at: 2024-03-11T19:48:06Z
 url: https://github.com/astral-sh/ruff/issues/10255
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # False positive TCH004
 
 ---
 
-_Issue opened by @tlambert03 on 2024-03-06 19:24_
+_@tlambert03_
 
 I occasionally use the following pattern in an `__init__` when I want to publicly re-export a name (`"RiskyExport"`) from a sub-module (`.dangerous_submodule`), without greedily importing that submodule (for example, if it requires an additional module-level dependency that may or may not be installed)
 

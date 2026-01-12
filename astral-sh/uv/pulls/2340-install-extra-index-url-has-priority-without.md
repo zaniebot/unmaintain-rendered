@@ -13,14 +13,14 @@ head: konsti/install_extra_index_url_has_priority-2
 created_at: 2024-03-10T16:05:14Z
 updated_at: 2024-03-10T19:03:08Z
 url: https://github.com/astral-sh/uv/pull/2340
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:59Z
 ```
 
 # install_extra_index_url_has_priority without exclude newer
 
 ---
 
-_Pull request opened by @konstin on 2024-03-10 16:05_
+_@konstin_
 
 Manual synthesis of #2337 and #2339, i think one accidentally reverted the other?
 

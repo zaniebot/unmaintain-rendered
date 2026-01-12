@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-29T10:40:15Z
 updated_at: 2025-12-08T01:41:10Z
 url: https://github.com/astral-sh/ruff/issues/21693
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # ASYNC115 (async-zero-sleep): `anyio.lowlevel.checkpoint()` needs `import anyio.lowlevel`
 
 ---
 
-_Issue opened by @injust on 2025-11-29 10:40_
+_@injust_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: annotated_name_cannot_be_global
 created_at: 2025-10-14T16:57:22Z
 updated_at: 2025-12-17T13:39:47Z
 url: https://github.com/astral-sh/ruff/pull/20868
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [syntax-errors] Annotated name cannot be global
 
 ---
 
-_Pull request opened by @11happy on 2025-10-14 16:57_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-30T14:58:59Z
 updated_at: 2025-10-02T01:17:02Z
 url: https://github.com/astral-sh/uv/issues/16076
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:23Z
 ```
 
 # Index cache-control override malfunctions with username in URL
 
 ---
 
-_Issue opened by @nordewal on 2025-09-30 14:58_
+_@nordewal_
 
 ### Summary
 

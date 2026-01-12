@@ -12,14 +12,14 @@ head: clarify-UV_HTTP_TIMEOUT-format
 created_at: 2025-12-03T03:53:49Z
 updated_at: 2025-12-03T09:17:30Z
 url: https://github.com/astral-sh/uv/pull/16952
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:32Z
 ```
 
 # [Draft] Clarify duration environment variable format at parse time
 
 ---
 
-_Pull request opened by @anoop-rehman on 2025-12-03 03:53_
+_@anoop-rehman_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: negation-logic
 created_at: 2024-10-28T10:59:06Z
 updated_at: 2024-11-01T13:32:07Z
 url: https://github.com/astral-sh/ruff/pull/13962
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Distribute intersections on negation
 
 ---
 
-_Pull request opened by @rtpg on 2024-10-28 10:59_
+_@rtpg_
 
 ## Summary
 

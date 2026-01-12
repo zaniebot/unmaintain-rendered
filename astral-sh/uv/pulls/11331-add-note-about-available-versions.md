@@ -13,14 +13,14 @@ head: zb/python-install-versions
 created_at: 2025-02-07T20:58:27Z
 updated_at: 2025-02-07T22:10:07Z
 url: https://github.com/astral-sh/uv/pull/11331
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:47Z
 ```
 
 # Add note about available versions
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-07 20:58_
+_@zanieb_
 
 ref https://github.com/astral-sh/uv/issues/11243#issuecomment-2644104492
 

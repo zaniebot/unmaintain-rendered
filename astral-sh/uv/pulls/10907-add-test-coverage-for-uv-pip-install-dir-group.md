@@ -13,14 +13,14 @@ head: zb/group-dir
 created_at: 2025-01-23T17:23:52Z
 updated_at: 2025-01-23T17:43:40Z
 url: https://github.com/astral-sh/uv/pull/10907
-synced_at: 2026-01-10T11:45:17Z
+synced_at: 2026-01-12T16:09:34Z
 ```
 
 # Add test coverage for `uv pip install <dir> --group <name>`
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-23 17:23_
+_@zanieb_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: lilmonk/patch-doc-20570
 created_at: 2025-09-26T01:41:30Z
 updated_at: 2025-09-27T13:55:17Z
 url: https://github.com/astral-sh/ruff/pull/20587
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # Fixed documentation for try_consider_else
 
 ---
 
-_Pull request opened by @LilMonk on 2025-09-26 01:41_
+_@LilMonk_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

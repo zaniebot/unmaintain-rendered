@@ -13,14 +13,14 @@ head: dhruv/ipy-rename
 created_at: 2023-08-25T03:15:28Z
 updated_at: 2023-08-25T06:10:55Z
 url: https://github.com/astral-sh/ruff/pull/6862
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Rename Notebook related symbols
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-08-25 03:15_
+_@dhruvmanila_
 
 This PR renames the following symbols:
 

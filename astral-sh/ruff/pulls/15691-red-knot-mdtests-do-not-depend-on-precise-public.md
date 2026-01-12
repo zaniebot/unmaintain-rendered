@@ -13,14 +13,14 @@ head: david/mdtests-less-dependence-on-public-symbol-inference-specifics
 created_at: 2025-01-23T13:46:32Z
 updated_at: 2025-01-23T13:51:34Z
 url: https://github.com/astral-sh/ruff/pull/15691
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] MDTests: Do not depend on precise public-symbol type inference
 
 ---
 
-_Pull request opened by @sharkdp on 2025-01-23 13:46_
+_@sharkdp_
 
 ## Summary
 

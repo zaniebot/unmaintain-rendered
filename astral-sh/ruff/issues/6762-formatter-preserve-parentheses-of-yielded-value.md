@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-22T09:24:51Z
 updated_at: 2023-08-22T14:20:00Z
 url: https://github.com/astral-sh/ruff/issues/6762
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Preserve parentheses of yielded value
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-22 09:24_
+_@MichaReiser_
 
 Black seems (need confirmation) to preserve parentheses around the yielded value:
 

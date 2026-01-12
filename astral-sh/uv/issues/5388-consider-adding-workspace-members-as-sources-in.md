@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-24T00:43:51Z
 updated_at: 2024-11-04T20:10:47Z
 url: https://github.com/astral-sh/uv/issues/5388
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Consider adding workspace members as sources in `uv init`
 
 ---
 
-_Issue opened by @zanieb on 2024-07-24 00:43_
+_@zanieb_
 
 Initializing as workspace member adds it to the root package workspace members but does not add it as a dependency, e.g.:
 

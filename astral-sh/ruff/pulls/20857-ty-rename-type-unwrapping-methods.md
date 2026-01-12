@@ -14,14 +14,14 @@ head: david/rename-type-unwrapping-functions
 created_at: 2025-10-14T07:45:18Z
 updated_at: 2025-10-14T07:53:31Z
 url: https://github.com/astral-sh/ruff/pull/20857
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # [ty] Rename Type unwrapping methods
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-14 07:45_
+_@sharkdp_
 
 ## Summary
 

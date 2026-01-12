@@ -14,14 +14,14 @@ head: charlie/sym
 created_at: 2025-02-06T01:03:40Z
 updated_at: 2025-02-08T00:13:21Z
 url: https://github.com/astral-sh/uv/pull/11269
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:45Z
 ```
 
 # Use files instead of junctions on Windows
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-06 01:03_
+_@charliermarsh_
 
 ## Summary
 

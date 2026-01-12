@@ -13,14 +13,14 @@ head: charlie/o
 created_at: 2025-11-28T18:35:39Z
 updated_at: 2025-12-03T00:43:03Z
 url: https://github.com/astral-sh/uv/pull/16885
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:30Z
 ```
 
 # Add `UV_HIDE_BUILD_OUTPUT` to omit build logs
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-11-28 18:35_
+_@charliermarsh_
 
 ## Summary
 

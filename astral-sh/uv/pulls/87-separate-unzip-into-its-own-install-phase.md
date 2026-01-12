@@ -12,14 +12,14 @@ head: charlie/unzip
 created_at: 2023-10-11T15:02:59Z
 updated_at: 2023-10-11T15:18:25Z
 url: https://github.com/astral-sh/uv/pull/87
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:44Z
 ```
 
 # Separate unzip into its own install phase
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-11 15:02_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: fix/top-level-warning
 created_at: 2025-10-17T21:50:14Z
 updated_at: 2025-10-19T09:32:50Z
 url: https://github.com/astral-sh/uv/pull/16351
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:13Z
 ```
 
 # Fix typo in MissingTopLevel warning
 
 ---
 
-_Pull request opened by @Dahlgren on 2025-10-17 21:50_
+_@Dahlgren_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-23T11:33:21Z
 updated_at: 2025-01-23T11:33:21Z
 url: https://github.com/astral-sh/uv/issues/10893
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # Ability to use `python-dbg` as a python specifier
 
 ---
 
-_Issue opened by @adrinjalali on 2025-01-23 11:33_
+_@adrinjalali_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-05-16T21:06:14Z
 updated_at: 2020-05-18T10:16:00Z
 url: https://github.com/clap-rs/clap/issues/1933
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Suggestion: Could this project have a JSON schema for the YAML CLI options?
 
 ---
 
-_Issue opened by @strega-nil on 2020-05-16 21:06_
+_@strega-nil_
 
 ### Make sure you completed the following tasks
 

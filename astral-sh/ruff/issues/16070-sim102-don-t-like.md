@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-10T04:35:33Z
 updated_at: 2025-02-10T05:02:02Z
 url: https://github.com/astral-sh/ruff/issues/16070
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # SIM102 don't like :=
 
 ---
 
-_Issue opened by @xvlady on 2025-02-10 04:35_
+_@xvlady_
 
 ### Description
 

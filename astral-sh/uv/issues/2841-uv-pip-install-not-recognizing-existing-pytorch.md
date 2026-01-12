@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-05T21:36:40Z
 updated_at: 2024-05-07T22:29:42Z
 url: https://github.com/astral-sh/uv/issues/2841
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # `uv pip install` not recognizing existing Pytorch installed by `conda` in Pytorch docker image
 
 ---
 
-_Issue opened by @StellarStorm on 2024-04-05 21:36_
+_@StellarStorm_
 
 Good afternoon!
 I've just discovered `uv` and am finding it quite helpful - thanks for all the work on it!

@@ -13,14 +13,14 @@ head: redknot-simplify
 created_at: 2024-10-15T13:45:17Z
 updated_at: 2024-10-16T10:42:03Z
 url: https://github.com/astral-sh/ruff/pull/13762
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] Simplify some branches in `infer_subscript_expression`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-10-15 13:45_
+_@AlexWaygood_
 
 ## Summary
 

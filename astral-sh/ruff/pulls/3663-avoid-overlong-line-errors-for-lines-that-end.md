@@ -12,14 +12,14 @@ head: charlie/e501
 created_at: 2023-03-22T02:53:44Z
 updated_at: 2023-03-26T18:48:37Z
 url: https://github.com/astral-sh/ruff/pull/3663
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Avoid overlong-line errors for lines that end with URLs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-22 02:53_
+_@charliermarsh_
 
 ## Summary
 

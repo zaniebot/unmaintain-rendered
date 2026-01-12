@@ -14,14 +14,14 @@ head: charlie/wheel-variant-pip-list
 created_at: 2025-10-01T19:55:04Z
 updated_at: 2025-10-01T20:06:24Z
 url: https://github.com/astral-sh/uv/pull/16091
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:06Z
 ```
 
 # Show variants in `uv pip list`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-10-01 19:55_
+_@charliermarsh_
 
 ## Summary
 

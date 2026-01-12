@@ -12,14 +12,14 @@ head: charlie/rename
 created_at: 2023-02-13T15:00:36Z
 updated_at: 2023-02-13T15:30:06Z
 url: https://github.com/astral-sh/ruff/pull/2861
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Rename flake8-django rules to match convention
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-13 15:00_
+_@charliermarsh_
 
 _No description provided._
 

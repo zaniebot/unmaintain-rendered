@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-25T00:54:40Z
 updated_at: 2025-02-25T08:24:15Z
 url: https://github.com/astral-sh/ruff/issues/16359
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Combination of re-exported import and classvar of the same name results in F811
 
 ---
 
-_Issue opened by @thatch on 2025-02-25 00:54_
+_@thatch_
 
 ### Description
 

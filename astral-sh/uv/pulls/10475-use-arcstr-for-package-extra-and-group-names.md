@@ -13,14 +13,14 @@ head: charlie/pkg
 created_at: 2025-01-10T19:15:08Z
 updated_at: 2025-01-10T19:46:37Z
 url: https://github.com/astral-sh/uv/pull/10475
-synced_at: 2026-01-10T11:44:51Z
+synced_at: 2026-01-12T16:09:18Z
 ```
 
 # Use `arcstr` for package, extra, and group names
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-10 19:15_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-24T10:22:23Z
 updated_at: 2024-09-24T10:25:36Z
 url: https://github.com/astral-sh/ruff/issues/13495
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Flags rule PD011 but it is not correct
 
 ---
 
-_Issue opened by @santi-mir on 2024-09-24 10:22_
+_@santi-mir_
 
 * Rule PD011: https://docs.astral.sh/ruff/rules/pandas-use-of-dot-values/
 * Code does not use pandas

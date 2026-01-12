@@ -13,14 +13,14 @@ head: charlie/fast-build
 created_at: 2026-01-05T01:51:48Z
 updated_at: 2026-01-07T12:57:00Z
 url: https://github.com/astral-sh/ruff/pull/22382
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # Add a `fast-test` profile
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-05 01:51_
+_@charliermarsh_
 
 ## Summary
 

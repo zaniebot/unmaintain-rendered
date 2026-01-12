@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-18T12:02:19Z
 updated_at: 2025-02-18T15:32:56Z
 url: https://github.com/astral-sh/uv/issues/11595
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # Consider using the system SSL library, i.e., OpenSSL instead of `rusttls` / `ring`
 
 ---
 
-_Issue opened by @marco-cloudflare on 2025-02-18 12:02_
+_@marco-cloudflare_
 
 ### Summary
 

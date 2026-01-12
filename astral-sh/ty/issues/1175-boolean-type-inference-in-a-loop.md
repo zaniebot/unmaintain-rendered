@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-12T18:18:44Z
 updated_at: 2025-09-12T19:29:47Z
 url: https://github.com/astral-sh/ty/issues/1175
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Boolean type inference in a loop
 
 ---
 
-_Issue opened by @benmosher on 2025-09-12 18:18_
+_@benmosher_
 
 ### Summary
 

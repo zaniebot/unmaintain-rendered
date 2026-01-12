@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-15T21:00:04Z
 updated_at: 2024-10-11T19:00:47Z
 url: https://github.com/astral-sh/uv/issues/1339
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # `pip install --trusted-host` support
 
 ---
 
-_Issue opened by @stefanvanburen on 2024-02-15 21:00_
+_@stefanvanburen_
 
 `pip install` has the `trusted-host` flag:
 

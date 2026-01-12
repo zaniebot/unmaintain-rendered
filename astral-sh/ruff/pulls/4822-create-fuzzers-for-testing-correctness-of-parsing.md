@@ -13,14 +13,14 @@ head: main
 created_at: 2023-06-03T03:54:36Z
 updated_at: 2023-06-07T13:08:20Z
 url: https://github.com/astral-sh/ruff/pull/4822
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Create fuzzers for testing correctness of parsing, linting and fixing
 
 ---
 
-_Pull request opened by @addisoncrump on 2023-06-03 03:54_
+_@addisoncrump_
 
 ## Summary
 

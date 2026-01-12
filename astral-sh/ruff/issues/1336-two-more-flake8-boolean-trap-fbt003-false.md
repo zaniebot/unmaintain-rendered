@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-22T15:49:40Z
 updated_at: 2022-12-22T15:56:05Z
 url: https://github.com/astral-sh/ruff/issues/1336
-synced_at: 2026-01-10T12:05:26Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Two more flake8-boolean-trap FBT003 false positives
 
 ---
 
-_Issue opened by @rhkleijn on 2022-12-22 15:49_
+_@rhkleijn_
 
 I highly appreciate  your amazing work on ruff!
 

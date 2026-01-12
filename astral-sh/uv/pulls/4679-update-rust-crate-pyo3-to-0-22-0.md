@@ -12,14 +12,14 @@ head: renovate/pyo3
 created_at: 2024-07-01T01:31:00Z
 updated_at: 2024-07-01T01:46:19Z
 url: https://github.com/astral-sh/uv/pull/4679
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:23Z
 ```
 
 # Update Rust crate pyo3 to 0.22.0
 
 ---
 
-_Pull request opened by @renovate on 2024-07-01 01:31_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

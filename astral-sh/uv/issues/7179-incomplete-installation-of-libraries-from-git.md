@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-07T19:55:14Z
 updated_at: 2024-09-20T12:32:23Z
 url: https://github.com/astral-sh/uv/issues/7179
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Incomplete installation of libraries from git
 
 ---
 
-_Issue opened by @bheemaguli on 2024-09-07 19:55_
+_@bheemaguli_
 
 I have a remote git repository dependency and have been installing as
 `pip install -e git+https://repo@commithash#egg=foorepo` 

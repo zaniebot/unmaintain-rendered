@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-19T21:54:47Z
 updated_at: 2023-06-20T14:29:41Z
 url: https://github.com/clap-rs/clap/issues/4977
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Provide ability to 'opt into' case insensitive option/argument names
 
 ---
 
-_Issue opened by @jerrywrice on 2023-06-19 21:54_
+_@jerrywrice_
 
 ### Please complete the following tasks
 

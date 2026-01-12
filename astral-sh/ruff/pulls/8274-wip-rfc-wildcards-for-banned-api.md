@@ -12,14 +12,14 @@ head: banned-api-wildcard
 created_at: 2023-10-27T08:44:35Z
 updated_at: 2024-04-08T07:03:09Z
 url: https://github.com/astral-sh/ruff/pull/8274
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # WIP/RFC: Wildcards for `banned_api`
 
 ---
 
-_Pull request opened by @akx on 2023-10-27 08:44_
+_@akx_
 
 ## Summary
 

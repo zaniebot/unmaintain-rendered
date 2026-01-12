@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-26T09:21:14Z
 updated_at: 2025-09-27T12:33:48Z
 url: https://github.com/astral-sh/uv/issues/16037
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:22Z
 ```
 
 # Using uv with GraalPy causes some packages to fail to install
 
 ---
 
-_Issue opened by @AmaseCocoa on 2025-09-26 09:21_
+_@AmaseCocoa_
 
 ### Summary
 

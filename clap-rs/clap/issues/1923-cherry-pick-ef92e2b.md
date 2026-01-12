@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-05-12T08:52:33Z
 updated_at: 2020-10-10T09:26:15Z
 url: https://github.com/clap-rs/clap/issues/1923
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Cherry pick ef92e2b
 
 ---
 
-_Issue opened by @pksunkara on 2020-05-12 08:52_
+_@pksunkara_
 
 <!-- Issuehunt Badges -->
 [<img alt="Issuehunt badges" src="https://img.shields.io/badge/IssueHunt-%2410%20Rewarded-%237E24E3.svg" />](https://issuehunt.io/r/clap-rs/clap/issues/1923)

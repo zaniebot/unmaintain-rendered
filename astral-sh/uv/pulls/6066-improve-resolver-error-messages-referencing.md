@@ -14,14 +14,14 @@ head: zb/resolver-workspace-members
 created_at: 2024-08-13T20:36:20Z
 updated_at: 2024-08-14T19:48:34Z
 url: https://github.com/astral-sh/uv/pull/6066
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:11Z
 ```
 
 # Improve resolver error messages referencing workspace members
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-13 20:36_
+_@zanieb_
 
 _No description provided._
 

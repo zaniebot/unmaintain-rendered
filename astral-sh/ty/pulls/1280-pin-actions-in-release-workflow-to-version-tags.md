@@ -11,14 +11,14 @@ head: ty_pin_actions_to_version
 created_at: 2025-09-29T17:12:20Z
 updated_at: 2025-09-29T20:33:32Z
 url: https://github.com/astral-sh/ty/pull/1280
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Pin actions in release workflow to version tags
 
 ---
 
-_Pull request opened by @silamon on 2025-09-29 17:12_
+_@silamon_
 
 <!--
 Thank you for contributing to ty! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-29T22:52:45Z
 updated_at: 2024-07-31T16:08:54Z
 url: https://github.com/astral-sh/uv/issues/5578
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Requires-python conflicts inside a workspace
 
 ---
 
-_Issue opened by @bluss on 2024-07-29 22:52_
+_@bluss_
 
 Workspaces seem to require that all members use the same requires-python. Maybe this can be relaxed, or a dedicated error can explain it.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-31T10:17:44Z
 updated_at: 2025-02-07T10:11:52Z
 url: https://github.com/astral-sh/ruff/issues/15846
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Support for black formatting of function arguments
 
 ---
 
-_Issue opened by @fhg-isi on 2025-01-31 10:17_
+_@fhg-isi_
 
 ### Description
 

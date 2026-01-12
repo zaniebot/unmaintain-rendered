@@ -13,14 +13,14 @@ head: david/fix-14334
 created_at: 2024-11-14T12:43:33Z
 updated_at: 2024-11-14T14:39:52Z
 url: https://github.com/astral-sh/ruff/pull/14337
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Do not attach diagnostics to wrong file
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-14 12:43_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-08T13:29:05Z
 updated_at: 2024-08-09T05:08:06Z
 url: https://github.com/astral-sh/ruff/issues/12753
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # UP012 fix does not handle non-bytes escape sequences
 
 ---
 
-_Issue opened by @dscorbett on 2024-08-08 13:29_
+_@dscorbett_
 
 When converting string literals to bytes literals, UP012 does not handle escape sequences that are only recognized in string literals. It should convert them to literal characters or to recognized escape sequences.
 

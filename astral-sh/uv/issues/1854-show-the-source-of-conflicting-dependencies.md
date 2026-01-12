@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-22T04:20:07Z
 updated_at: 2024-08-02T22:13:32Z
 url: https://github.com/astral-sh/uv/issues/1854
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Show the source of conflicting dependencies
 
 ---
 
-_Issue opened by @zanieb on 2024-02-22 04:20_
+_@zanieb_
 
 When dependencies directly conflict, we should show which file we loaded them from.
 

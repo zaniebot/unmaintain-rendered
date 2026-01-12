@@ -13,14 +13,14 @@ head: alex/paramspec-declarations
 created_at: 2025-09-04T15:26:25Z
 updated_at: 2025-09-04T22:34:38Z
 url: https://github.com/astral-sh/ruff/pull/20239
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ty] Reduce false positives for `ParamSpec`s and `TypeVarTuple`s
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-04 15:26_
+_@AlexWaygood_
 
 ## Summary
 

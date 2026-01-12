@@ -13,14 +13,14 @@ head: ag/fix-git-author-info
 created_at: 2024-10-29T16:41:54Z
 updated_at: 2024-10-29T17:16:05Z
 url: https://github.com/astral-sh/uv/pull/8668
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:26Z
 ```
 
 # uv/tests: try harder to isolate tests from parent git repositories
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-10-29 16:41_
+_@BurntSushi_
 
 Previously, when tests were run in `~/.local/share/uv`, the behavior of
 some tests could be impacted by a git repository in `~` (as on my

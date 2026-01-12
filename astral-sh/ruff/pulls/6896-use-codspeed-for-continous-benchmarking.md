@@ -13,14 +13,14 @@ head: codspeed
 created_at: 2023-08-26T13:26:40Z
 updated_at: 2023-08-26T14:34:36Z
 url: https://github.com/astral-sh/ruff/pull/6896
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Use Codspeed for continous benchmarking
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-08-26 13:26_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

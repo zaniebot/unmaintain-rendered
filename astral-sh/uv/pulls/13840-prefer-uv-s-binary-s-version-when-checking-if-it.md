@@ -13,14 +13,14 @@ head: Gankra/force-version
 created_at: 2025-06-04T15:12:18Z
 updated_at: 2025-06-04T15:33:33Z
 url: https://github.com/astral-sh/uv/pull/13840
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:53Z
 ```
 
 # Prefer `uv`'s binary's version when checking if it's up to date
 
 ---
 
-_Pull request opened by @Gankra on 2025-06-04 15:12_
+_@Gankra_
 
 Fixes #13741
 

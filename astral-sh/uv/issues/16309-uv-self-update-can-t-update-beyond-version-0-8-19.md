@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-15T06:06:14Z
 updated_at: 2025-10-17T09:19:46Z
 url: https://github.com/astral-sh/uv/issues/16309
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # uv self update can't update beyond version 0.8.19
 
 ---
 
-_Issue opened by @UnaiSan on 2025-10-15 06:06_
+_@UnaiSan_
 
 ### Summary
 

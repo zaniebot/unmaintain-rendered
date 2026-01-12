@@ -13,14 +13,14 @@ head: charlie/tch
 created_at: 2023-03-06T16:37:16Z
 updated_at: 2023-03-06T20:03:37Z
 url: https://github.com/astral-sh/ruff/pull/3362
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Don't enforce typing-import rules in .pyi files
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-06 16:37_
+_@charliermarsh_
 
 `.pyi` files aren't executed at runtime, so moving imports into (or even out of) `TYPE_CHECKING` blocks is just noisy feedback.
 

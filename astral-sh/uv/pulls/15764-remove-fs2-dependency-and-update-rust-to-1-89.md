@@ -13,14 +13,14 @@ head: remove-fs2
 created_at: 2025-09-10T07:52:15Z
 updated_at: 2025-11-02T21:33:53Z
 url: https://github.com/astral-sh/uv/pull/15764
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:11:55Z
 ```
 
 # Remove fs2 dependency and update Rust to 1.89
 
 ---
 
-_Pull request opened by @ponchofiesta on 2025-09-10 07:52_
+_@ponchofiesta_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

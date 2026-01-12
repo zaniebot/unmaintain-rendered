@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-11T21:12:56Z
 updated_at: 2025-11-14T10:02:05Z
 url: https://github.com/astral-sh/uv/issues/16693
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # uv build does not warn or fail when license files do not exist
 
 ---
 
-_Issue opened by @N-Wouda on 2025-11-11 21:12_
+_@N-Wouda_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/packse
 created_at: 2024-11-04T02:11:55Z
 updated_at: 2024-11-04T21:17:45Z
 url: https://github.com/astral-sh/uv/pull/8795
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:30Z
 ```
 
 # Update Packse snapshots
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-04 02:11_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-05T14:54:45Z
 updated_at: 2022-12-05T14:55:44Z
 url: https://github.com/astral-sh/ruff/issues/1062
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [bug?] `F401` (unused import) false negative in try block
 
 ---
 
-_Issue opened by @smackesey on 2022-12-05 14:54_
+_@smackesey_
 
 Even though `JSONDecodeError` isn't used anywhere else, this does not trigger `F401`:
 

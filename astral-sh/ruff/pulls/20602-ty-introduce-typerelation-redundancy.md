@@ -15,14 +15,14 @@ head: alex/third-type-relation
 created_at: 2025-09-27T15:16:06Z
 updated_at: 2025-10-06T11:12:48Z
 url: https://github.com/astral-sh/ruff/pull/20602
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # [ty] Introduce `TypeRelation::Redundancy`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-27 15:16_
+_@AlexWaygood_
 
 ## Summary
 

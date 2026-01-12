@@ -11,14 +11,14 @@ head: add-no-clear-option
 created_at: 2025-08-24T17:06:11Z
 updated_at: 2025-09-11T22:52:38Z
 url: https://github.com/astral-sh/uv/pull/15485
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:46Z
 ```
 
 # Add no clear option for uv venv
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2025-08-24 17:06_
+_@Aditya-PS-05_
 
 closes #15475 
 

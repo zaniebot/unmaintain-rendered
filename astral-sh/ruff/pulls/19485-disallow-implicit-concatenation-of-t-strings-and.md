@@ -15,14 +15,14 @@ head: t-string-disallow-concat
 created_at: 2025-07-22T12:47:46Z
 updated_at: 2025-07-27T12:49:51Z
 url: https://github.com/astral-sh/ruff/pull/19485
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # Disallow implicit concatenation of t-strings and other string types
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-07-22 12:47_
+_@dylwil3_
 
 As of [this cpython PR](https://github.com/python/cpython/pull/135996), it is not allowed to concatenate t-strings with non-t-strings, implicitly or explicitly. Expressions such as `"foo" t"{bar}"` are now syntax errors.
 

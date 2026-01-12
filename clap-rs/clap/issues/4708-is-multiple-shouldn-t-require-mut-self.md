@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-02-14T04:06:27Z
 updated_at: 2023-02-17T04:24:40Z
 url: https://github.com/clap-rs/clap/issues/4708
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `is_multiple` shouldn't require `&mut self`
 
 ---
 
-_Issue opened by @klnusbaum on 2023-02-14 04:06_
+_@klnusbaum_
 
 ### Please complete the following tasks
 

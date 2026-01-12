@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-06T07:04:11Z
 updated_at: 2023-03-08T22:21:57Z
 url: https://github.com/astral-sh/ruff/issues/3356
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Provide additional recommended ruff rules that points at others
 
 ---
 
-_Issue opened by @qarmin on 2023-03-06 07:04_
+_@qarmin_
 
 Currently ruff support ~500 rules in ~50 categories.
 

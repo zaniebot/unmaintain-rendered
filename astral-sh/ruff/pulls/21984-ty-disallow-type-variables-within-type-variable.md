@@ -13,14 +13,14 @@ head: concrete-bound-and-constraints
 created_at: 2025-12-15T08:59:57Z
 updated_at: 2025-12-23T21:54:04Z
 url: https://github.com/astral-sh/ruff/pull/21984
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] disallow type variables within type variable bounds/constraints
 
 ---
 
-_Pull request opened by @mtshiba on 2025-12-15 08:59_
+_@mtshiba_
 
 ## Summary
 

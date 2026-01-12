@@ -14,14 +14,14 @@ head: fix-airflow302-replacment-paths
 created_at: 2025-03-20T17:17:49Z
 updated_at: 2025-03-24T12:28:16Z
 url: https://github.com/astral-sh/ruff/pull/16876
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # Update replacement paths for AIR302
 
 ---
 
-_Pull request opened by @ashb on 2025-03-20 17:17_
+_@ashb_
 
 I am one of the core developers of Airflow and working on the "airflow.sdk"
 package, and this updates the recommended replacments to the correct

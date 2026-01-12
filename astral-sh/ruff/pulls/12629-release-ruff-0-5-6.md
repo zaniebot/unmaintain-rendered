@@ -13,14 +13,14 @@ head: ruff-0.5.6
 created_at: 2024-08-02T13:48:57Z
 updated_at: 2024-08-02T15:37:29Z
 url: https://github.com/astral-sh/ruff/pull/12629
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Release Ruff 0.5.6
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-02 13:48_
+_@MichaReiser_
 
 _No description provided._
 

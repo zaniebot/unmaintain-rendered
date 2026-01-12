@@ -13,14 +13,14 @@ head: charlie/perf203
 created_at: 2023-07-28T04:46:25Z
 updated_at: 2023-07-28T05:11:46Z
 url: https://github.com/astral-sh/ruff/pull/6145
-synced_at: 2026-01-12T03:23:56Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Skip `PERF203` violations for multi-statement loops
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-28 04:46_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/5858.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-01T18:37:37Z
 updated_at: 2022-12-02T01:15:45Z
 url: https://github.com/astral-sh/ruff/issues/986
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # False-positive for D208 "Docstring is over-indented" for code sample at the end of module docstring
 
 ---
 
-_Issue opened by @tmke8 on 2022-12-01 18:37_
+_@tmke8_
 
 I don't know if this appears anywhere else, but I observed it in a module docstring.
 

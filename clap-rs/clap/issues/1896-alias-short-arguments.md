@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-05-02T20:17:00Z
 updated_at: 2020-05-11T16:37:18Z
 url: https://github.com/clap-rs/clap/issues/1896
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Alias short arguments
 
 ---
 
-_Issue opened by @connorskees on 2020-05-02 20:17_
+_@connorskees_
 
 ### Make sure you completed the following tasks
 

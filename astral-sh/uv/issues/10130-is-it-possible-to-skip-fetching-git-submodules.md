@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-23T23:53:47Z
 updated_at: 2025-04-19T18:11:57Z
 url: https://github.com/astral-sh/uv/issues/10130
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # Is it possible to skip fetching git submodules for some repositories?
 
 ---
 
-_Issue opened by @MrNaif2018 on 2024-12-23 23:53_
+_@MrNaif2018_
 
 When we have a dependency from a github repository, we have two options:
 `git+https://github.com/owner/repo@commit

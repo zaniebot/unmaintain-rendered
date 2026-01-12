@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-09T16:34:17Z
 updated_at: 2021-12-09T16:41:24Z
 url: https://github.com/clap-rs/clap/issues/3134
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # #[structopt(allow_hyphen_values = true]) compiles but does not work
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:34_
+_@epage_
 
 <a href="https://github.com/nstinus"><img src="https://avatars.githubusercontent.com/u/217075?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [nstinus](https://github.com/nstinus)**
 _Thursday Nov 04, 2021 at 21:35 GMT_

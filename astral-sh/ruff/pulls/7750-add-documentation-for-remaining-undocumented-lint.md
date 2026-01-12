@@ -13,14 +13,14 @@ head: main
 created_at: 2023-10-01T23:40:07Z
 updated_at: 2023-10-02T01:03:47Z
 url: https://github.com/astral-sh/ruff/pull/7750
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Add documentation for remaining undocumented lint rules
 
 ---
 
-_Pull request opened by @aspizu on 2023-10-01 23:40_
+_@aspizu_
 
 #2646
 

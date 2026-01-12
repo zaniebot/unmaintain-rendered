@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-17T14:20:09Z
 updated_at: 2024-11-03T18:05:41Z
 url: https://github.com/astral-sh/uv/issues/8288
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # Read timeout in publish integration test
 
 ---
 
-_Issue opened by @zanieb on 2024-10-17 14:20_
+_@zanieb_
 
 e.g. https://github.com/astral-sh/uv/actions/runs/11386806549/job/31680084192?pr=8269
 

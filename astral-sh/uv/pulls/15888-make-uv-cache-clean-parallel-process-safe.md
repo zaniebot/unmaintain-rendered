@@ -13,14 +13,14 @@ head: konsti/safe-cache-clean
 created_at: 2025-09-16T08:49:46Z
 updated_at: 2025-11-07T15:19:08Z
 url: https://github.com/astral-sh/uv/pull/15888
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:00Z
 ```
 
 # Make `uv cache clean` parallel process safe
 
 ---
 
-_Pull request opened by @konstin on 2025-09-16 08:49_
+_@konstin_
 
 Currently, `uv cache clean` and `uv cache prune` can cause crashes in other uv processes running in parallel by removing their in-use files.
 

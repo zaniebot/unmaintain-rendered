@@ -12,14 +12,14 @@ head: fix/21648-perf401-unpacking
 created_at: 2026-01-08T02:13:07Z
 updated_at: 2026-01-10T00:42:03Z
 url: https://github.com/astral-sh/ruff/pull/22450
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # perflint: support tuple unpacking in PERF401
 
 ---
 
-_Pull request opened by @Jkhall81 on 2026-01-08 02:13_
+_@Jkhall81_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-09T19:23:42Z
 updated_at: 2025-02-09T19:55:12Z
 url: https://github.com/astral-sh/uv/issues/11363
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # `uv sync --extra` and `uv sync --group` does not respect other groups and extras that are not supposed to be resolved
 
 ---
 
-_Issue opened by @validatedev on 2025-02-09 19:23_
+_@validatedev_
 
 ### Summary
 

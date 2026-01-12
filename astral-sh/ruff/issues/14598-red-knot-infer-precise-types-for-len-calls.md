@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-26T04:51:59Z
 updated_at: 2024-12-04T19:16:55Z
 url: https://github.com/astral-sh/ruff/issues/14598
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Infer precise types for `len()` calls
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-11-26 04:51_
+_@InSyncWithFoo_
 
 Sometimes, it is useful to know the precise length of a type:
 

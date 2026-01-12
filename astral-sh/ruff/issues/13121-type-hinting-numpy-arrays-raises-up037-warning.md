@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-27T11:50:31Z
 updated_at: 2025-07-09T23:54:24Z
 url: https://github.com/astral-sh/ruff/issues/13121
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Type hinting Numpy arrays raises UP037 warning
 
 ---
 
-_Issue opened by @MattTheCuber on 2024-08-27 11:50_
+_@MattTheCuber_
 
 Type hinting Numpy arrays raises the warning "Remove quotes from type annotation Ruff (UP037)". From our research, this seems to be the only way of type hinting that satisfies Pyright.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-25T15:26:28Z
 updated_at: 2025-02-26T08:59:36Z
 url: https://github.com/astral-sh/ruff/issues/16376
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Ruff unexpectedly moving third party packages to first party section
 
 ---
 
-_Issue opened by @tboddyspargo on 2025-02-25 15:26_
+_@tboddyspargo_
 
 # Summary
 

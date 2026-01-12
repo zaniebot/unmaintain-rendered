@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-13T14:16:12Z
 updated_at: 2023-01-26T17:59:28Z
 url: https://github.com/astral-sh/ruff/issues/1850
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Support flake8-logging-format ?
 
 ---
 
-_Issue opened by @neutrinoceros on 2023-01-13 14:16_
+_@neutrinoceros_
 
 Hi, thanks a lot for making ruff, I'm amazed by the quality and performances of this fantastic tool !
 

@@ -14,14 +14,14 @@ head: micha/server-panic
 created_at: 2025-05-20T06:17:00Z
 updated_at: 2025-05-26T12:09:08Z
 url: https://github.com/astral-sh/ruff/pull/18211
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # [ty] Abort process if worker thread panics
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-20 06:17_
+_@MichaReiser_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T03:40:56Z
 updated_at: 2025-01-24T04:53:40Z
 url: https://github.com/astral-sh/ruff/issues/15707
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # test_generate_json_schema failing as of 0.9.2
 
 ---
 
-_Issue opened by @WhyNotHugo on 2025-01-24 03:40_
+_@WhyNotHugo_
 
 ### Description
 

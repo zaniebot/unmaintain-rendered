@@ -12,14 +12,14 @@ head: cjm/splitcall
 created_at: 2024-12-10T19:49:14Z
 updated_at: 2024-12-10T20:03:31Z
 url: https://github.com/astral-sh/ruff/pull/14898
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] split call-outcome enums to their own submodule
 
 ---
 
-_Pull request opened by @carljm on 2024-12-10 19:49_
+_@carljm_
 
 ## Summary
 

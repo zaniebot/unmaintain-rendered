@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-01T06:33:33Z
 updated_at: 2025-03-02T01:18:12Z
 url: https://github.com/astral-sh/uv/issues/11879
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # How to install onnx-sim
 
 ---
 
-_Issue opened by @wz1114841863 on 2025-03-01 06:33_
+_@wz1114841863_
 
 ### Question
 

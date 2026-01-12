@@ -14,14 +14,14 @@ head: brent/new-diagnostic-suggestion
 created_at: 2025-07-21T14:11:54Z
 updated_at: 2025-07-22T16:48:38Z
 url: https://github.com/astral-sh/ruff/pull/19464
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # Move fix suggestion to subdiagnostic
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-21 14:11_
+_@ntBre_
 
 Summary
 --

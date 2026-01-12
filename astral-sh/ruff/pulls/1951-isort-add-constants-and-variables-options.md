@@ -12,14 +12,14 @@ head: isort-cont-var-options
 created_at: 2023-01-18T12:26:40Z
 updated_at: 2023-01-18T12:31:08Z
 url: https://github.com/astral-sh/ruff/pull/1951
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # [`isort`] Add `constants` and `variables` Options
 
 ---
 
-_Pull request opened by @saadmk11 on 2023-01-18 12:26_
+_@saadmk11_
 
 closes https://github.com/charliermarsh/ruff/issues/1819
 

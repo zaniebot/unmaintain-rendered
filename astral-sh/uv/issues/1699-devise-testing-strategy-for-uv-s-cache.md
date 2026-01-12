@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-19T15:53:01Z
 updated_at: 2024-02-19T16:30:17Z
 url: https://github.com/astral-sh/uv/issues/1699
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # devise testing strategy for uv's cache
 
 ---
 
-_Issue opened by @BurntSushi on 2024-02-19 15:53_
+_@BurntSushi_
 
 At present, we don't really have a good way of testing our cache specifically, other than as part of broader test. We should try to fix this because our caching logic isn't entirely trivial, and issues with it can be difficult to catch. For example, https://github.com/astral-sh/uv/issues/1571 / #1609 is an issue that occurred where `uv`'s internal data structures changed and this caused deserializing older cache data to fail. Catching a bug like this with tests is a little tricky, because it requires injecting intentionally invalid cache data, which isn't something our code really supports right now. The "simplest" path here is probably to just write a test that reaches into the cache directory and writes its own data based on knowledge of what we store there.
 

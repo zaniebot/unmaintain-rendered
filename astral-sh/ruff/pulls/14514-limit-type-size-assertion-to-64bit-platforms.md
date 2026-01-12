@@ -13,14 +13,14 @@ head: micha/fix-32-bit-buidl
 created_at: 2024-11-21T12:45:25Z
 updated_at: 2024-11-21T13:08:39Z
 url: https://github.com/astral-sh/ruff/pull/14514
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Limit type size assertion to 64bit platforms
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-21 12:45_
+_@MichaReiser_
 
 ## Summary
 

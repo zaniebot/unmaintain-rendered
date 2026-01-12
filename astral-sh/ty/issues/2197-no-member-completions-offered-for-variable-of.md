@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-24T03:26:57Z
 updated_at: 2026-01-07T15:15:38Z
 url: https://github.com/astral-sh/ty/issues/2197
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # No member completions offered for variable of type `T | Unknown`
 
 ---
 
-_Issue opened by @rodrigoscc on 2025-12-24 03:26_
+_@rodrigoscc_
 
 ### Summary
 

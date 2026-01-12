@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-02-12T16:26:14Z
 updated_at: 2022-02-13T02:43:52Z
 url: https://github.com/clap-rs/clap/issues/3459
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # value_of_t_or and value_of_t_or_else
 
 ---
 
-_Issue opened by @letheed on 2022-02-12 16:26_
+_@letheed_
 
 ### Please complete the following tasks
 

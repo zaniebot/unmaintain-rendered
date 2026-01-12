@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-14T10:04:09Z
 updated_at: 2025-06-12T17:07:33Z
 url: https://github.com/astral-sh/ty/issues/176
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Support file inclusion and exclusion
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 10:04_
+_@MichaReiser_
 
 * Add the `src.include` and `src.exclude` options (design TBD)
 * Add a `--include` and `--exclude` CLI argument (design TBD)

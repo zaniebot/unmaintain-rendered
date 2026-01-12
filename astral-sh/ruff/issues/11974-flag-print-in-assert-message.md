@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-21T18:21:04Z
 updated_at: 2024-06-23T17:30:41Z
 url: https://github.com/astral-sh/ruff/issues/11974
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # flag `print` in `assert` message
 
 ---
 
-_Issue opened by @janosh on 2024-06-21 18:21_
+_@janosh_
 
 i've come across code like this a few times, leading me to believe a lint rule to catch this makes sense
 

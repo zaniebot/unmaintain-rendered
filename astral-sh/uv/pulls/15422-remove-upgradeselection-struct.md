@@ -13,14 +13,14 @@ head: charlie/up
 created_at: 2025-08-21T16:59:07Z
 updated_at: 2025-08-21T18:35:08Z
 url: https://github.com/astral-sh/uv/pull/15422
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:44Z
 ```
 
 # Remove `UpgradeSelection` struct
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-21 16:59_
+_@charliermarsh_
 
 ## Summary
 

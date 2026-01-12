@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-16T08:34:52Z
 updated_at: 2023-08-16T09:41:52Z
 url: https://github.com/astral-sh/ruff/issues/6610
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # noqa: E501 is incorrectly parsed at the end of a docstring
 
 ---
 
-_Issue opened by @mscheltienne on 2023-08-16 08:34_
+_@mscheltienne_
 
 Hello, our CIs updated to a newer Ruff version and are now failing on an E501 error, marked with `noqa: E501`.
 

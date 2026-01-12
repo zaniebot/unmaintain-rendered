@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-11T04:00:39Z
 updated_at: 2022-09-11T14:44:07Z
 url: https://github.com/astral-sh/ruff/issues/151
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # E402: allow putting an import after conditional import
 
 ---
 
-_Issue opened by @Jackenmen on 2022-09-11 04:00_
+_@Jackenmen_
 
 Example reproduction code:
 ```py

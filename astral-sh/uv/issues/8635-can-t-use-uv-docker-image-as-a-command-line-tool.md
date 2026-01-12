@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-28T13:31:10Z
 updated_at: 2025-10-18T17:59:49Z
 url: https://github.com/astral-sh/uv/issues/8635
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # Can't use uv docker image as a command-line tool
 
 ---
 
-_Issue opened by @mjpieters on 2024-10-28 13:31_
+_@mjpieters_
 
 Given that the documentation suggests that you [_can_ use the docker container as a command-line tool](https://docs.astral.sh/uv/guides/integration/docker/#running-uv-in-a-container) I found it very surprising that you can't, in fact, use `uv` in this manner:
 

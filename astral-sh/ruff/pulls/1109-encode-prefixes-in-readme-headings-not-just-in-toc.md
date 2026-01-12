@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2022-12-06T16:11:24Z
 updated_at: 2022-12-07T14:35:40Z
 url: https://github.com/astral-sh/ruff/pull/1109
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Encode prefixes in README headings not just in TOC
 
 ---
 
-_Pull request opened by @phillipuniverse on 2022-12-06 16:11_
+_@phillipuniverse_
 
 I know this is not quite complete as I just realized the categories are auto-generated from `generate_rules_tables.rs`. Before I went and changed the generator to encode the prefix in the title, I wanted to see if this is something we wanted to do.
 

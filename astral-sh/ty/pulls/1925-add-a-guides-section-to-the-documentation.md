@@ -13,14 +13,14 @@ head: zb/guides
 created_at: 2025-12-16T13:23:42Z
 updated_at: 2025-12-16T14:05:04Z
 url: https://github.com/astral-sh/ty/pull/1925
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Add a "Guides" section to the documentation
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-16 13:23_
+_@zanieb_
 
 ... and move Installation, Type checking, and Editor integrations there.
 

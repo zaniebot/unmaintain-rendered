@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-05T22:22:28Z
 updated_at: 2025-05-30T00:36:03Z
 url: https://github.com/astral-sh/ty/issues/244
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # complete expression type inference
 
 ---
 
-_Issue opened by @carljm on 2024-08-05 22:22_
+_@carljm_
 
 - [x] number literal expression
 - [x] string literal expression

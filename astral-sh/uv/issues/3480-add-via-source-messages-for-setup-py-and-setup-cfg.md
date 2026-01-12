@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-09T04:37:52Z
 updated_at: 2024-05-09T13:30:42Z
 url: https://github.com/astral-sh/uv/issues/3480
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Add `# via` source messages for `setup.py` and `setup.cfg`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-09 04:37_
+_@charliermarsh_
 
 I think the way to do this is: make `RequirementsSpecification::source_trees` the full file (rather than the directory)... in `SourceTreeResolver`, add the source path to the requirements that are returned at the end.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-08T17:55:17Z
 updated_at: 2025-01-05T19:11:33Z
 url: https://github.com/astral-sh/ruff/issues/14840
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] `...` should be treated as a valid parameter default for any annotation in a stub file
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-12-08 17:55_
+_@AlexWaygood_
 
 The [typing spec](https://typing.readthedocs.io/en/latest/spec/distributing.html#value-expressions) states that in stub files:
 

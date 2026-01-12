@@ -14,14 +14,14 @@ head: brent/pep-701-f-string-fix
 created_at: 2025-10-14T16:33:54Z
 updated_at: 2025-10-15T13:23:18Z
 url: https://github.com/astral-sh/ruff/pull/20867
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:11Z
 ```
 
 # Fix syntax error false positives for escapes and quotes in f-strings
 
 ---
 
-_Pull request opened by @ntBre on 2025-10-14 16:33_
+_@ntBre_
 
 Summary
 --

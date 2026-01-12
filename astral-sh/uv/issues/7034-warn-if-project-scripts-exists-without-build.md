@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T16:52:20Z
 updated_at: 2024-09-16T15:50:43Z
 url: https://github.com/astral-sh/uv/issues/7034
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Warn if `project.scripts` exists without `build-system` declaration (or `package = true`)
 
 ---
 
-_Issue opened by @zanieb on 2024-09-04 16:52_
+_@zanieb_
 
 If the project declares scripts but no build system, we won't install them. We should warn if we encounter this case.
 

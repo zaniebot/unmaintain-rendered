@@ -13,14 +13,14 @@ head: konsti/metadata-resolution
 created_at: 2024-09-24T16:03:16Z
 updated_at: 2024-09-24T16:25:20Z
 url: https://github.com/astral-sh/uv/pull/7661
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Rename `MetadataResolver` to `ResolutionMetadata`
 
 ---
 
-_Pull request opened by @konstin on 2024-09-24 16:03_
+_@konstin_
 
 From @charliermarsh's review of #7656
 

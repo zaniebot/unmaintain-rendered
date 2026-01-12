@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-29T07:00:18Z
 updated_at: 2022-12-29T12:23:09Z
 url: https://github.com/astral-sh/ruff/issues/1435
-synced_at: 2026-01-10T12:05:28Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # F401 different noqa behavior from flake8
 
 ---
 
-_Issue opened by @TylerYep on 2022-12-29 07:00_
+_@TylerYep_
 
 I have the following code, which contains intentionally unused imports (used for bringing fixtures into pytest scope)
 

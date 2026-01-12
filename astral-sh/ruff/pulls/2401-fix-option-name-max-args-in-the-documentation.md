@@ -12,14 +12,14 @@ head: fix-max-args
 created_at: 2023-01-31T17:21:03Z
 updated_at: 2023-01-31T17:30:10Z
 url: https://github.com/astral-sh/ruff/pull/2401
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Fix option name "max-args" in the documentation
 
 ---
 
-_Pull request opened by @tmke8 on 2023-01-31 17:21_
+_@tmke8_
 
 _No description provided._
 

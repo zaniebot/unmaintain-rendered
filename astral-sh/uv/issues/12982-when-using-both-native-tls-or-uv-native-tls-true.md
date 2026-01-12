@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-19T13:06:50Z
 updated_at: 2025-04-19T13:06:50Z
 url: https://github.com/astral-sh/uv/issues/12982
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:16Z
 ```
 
 # When using both `--native-tls` or `UV_NATIVE_TLS=true` AND using `SSL_CERT_FILE=...`, which one should take preference?
 
 ---
 
-_Issue opened by @kdheepak on 2025-04-19 13:06_
+_@kdheepak_
 
 ### Question
 

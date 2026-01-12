@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-26T12:01:06Z
 updated_at: 2024-05-03T00:34:07Z
 url: https://github.com/astral-sh/ruff/issues/11163
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Panic when linting (VS Code extension)
 
 ---
 
-_Issue opened by @xremming on 2024-04-26 12:01_
+_@xremming_
 
 Ruff crashed when running using the VS Code plugin. Unfortunately the full error message was not printed. I also do not know what file was open or what it was trying to parse when the error happened. The error has also not happened again.
 

@@ -14,14 +14,14 @@ head: charlie/starred
 created_at: 2023-11-02T03:23:37Z
 updated_at: 2023-11-02T03:41:58Z
 url: https://github.com/astral-sh/ruff/pull/8434
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Avoid triggering `NamedTuple` rewrite with starred annotation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-02 03:23_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/ruff/issues/8402#issuecomment-1788787357
 

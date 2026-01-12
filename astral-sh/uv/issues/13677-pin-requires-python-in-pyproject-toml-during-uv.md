@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-27T12:13:25Z
 updated_at: 2025-05-27T12:13:25Z
 url: https://github.com/astral-sh/uv/issues/13677
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:34Z
 ```
 
 # pin requires-python in pyproject.toml, during uv init ?
 
 ---
 
-_Issue opened by @soliujing on 2025-05-27 12:13_
+_@soliujing_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/config-git
 created_at: 2024-10-10T17:09:16Z
 updated_at: 2024-10-10T17:16:19Z
 url: https://github.com/astral-sh/uv/pull/8101
-synced_at: 2026-01-10T12:54:02Z
+synced_at: 2026-01-12T16:08:09Z
 ```
 
 # Use `git config --get` for author information for improved backwards compatibility
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-10 17:09_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/pull/7756#issuecomment-2405577849
 

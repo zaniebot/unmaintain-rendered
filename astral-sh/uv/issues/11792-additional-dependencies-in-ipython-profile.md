@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T07:21:25Z
 updated_at: 2025-02-28T05:23:35Z
 url: https://github.com/astral-sh/uv/issues/11792
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # Additional dependencies in IPython profile
 
 ---
 
-_Issue opened by @hugolundin on 2025-02-26 07:21_
+_@hugolundin_
 
 ### Question
 

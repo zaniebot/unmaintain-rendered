@@ -13,14 +13,14 @@ head: konsti/delete-mac-version
 created_at: 2024-03-18T13:27:48Z
 updated_at: 2024-03-20T09:55:51Z
 url: https://github.com/astral-sh/uv/pull/2509
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:04Z
 ```
 
 # Use mac version from python for linehaul information
 
 ---
 
-_Pull request opened by @konstin on 2024-03-18 13:27_
+_@konstin_
 
 See https://github.com/astral-sh/uv/pull/2493#pullrequestreview-1942899151.
 

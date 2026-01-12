@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-27T14:36:54Z
 updated_at: 2025-05-28T14:15:04Z
 url: https://github.com/astral-sh/uv/issues/13681
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # Use alternative free-threaded Python for integration test
 
 ---
 
-_Issue opened by @zanieb on 2025-05-27 14:36_
+_@zanieb_
 
 i.e., instead of deadsnakes can we use GitHub's now?
 

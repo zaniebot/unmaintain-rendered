@@ -13,14 +13,14 @@ head: charlie/dunder
 created_at: 2023-10-16T16:41:49Z
 updated_at: 2023-10-16T18:19:46Z
 url: https://github.com/astral-sh/ruff/pull/7987
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Allow sunder names from `enum.Enum`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-16 16:41_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7971.
 

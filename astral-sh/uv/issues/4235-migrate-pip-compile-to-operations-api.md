@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-11T15:45:12Z
 updated_at: 2024-06-24T22:20:04Z
 url: https://github.com/astral-sh/uv/issues/4235
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Migrate `pip compile` to `operations` API
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-11 15:45_
+_@charliermarsh_
 
 The one wrinkle here is the use of the resolved requirements for populating the `sources` map.
 

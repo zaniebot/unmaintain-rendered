@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-12T12:44:28Z
 updated_at: 2024-04-26T17:19:06Z
 url: https://github.com/astral-sh/ruff/issues/10906
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `RUF100` error despite listed in `per-file-ignores` 
 
 ---
 
-_Issue opened by @pjonsson on 2024-04-12 12:44_
+_@pjonsson_
 
 Using Ruff 0.3.7, I tried to select the "RUF" category, and got a `RUF100` error. Adding the file to `per-file-ignores` in pyproject.toml seems to have no effect. The section works for other files/rules in the project, I'm even using it for `RUF005`.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-03-16T08:18:23Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/453
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # When showing help, If terminal width is too low, clap goes into an infinite loop
 
 ---
 
-_Issue opened by @crumblingstatue on 2016-03-16 08:18_
+_@crumblingstatue_
 
 If 01a_quick_example is invoked with the help subcommand on a terminal of width 34 or lower, clap goes into an infinite loop. It also keeps allocating memory.
 

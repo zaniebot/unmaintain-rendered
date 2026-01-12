@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-06T03:41:07Z
 updated_at: 2025-08-06T06:06:47Z
 url: https://github.com/astral-sh/uv/issues/15098
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # UV doesn't recognize torch in .venv
 
 ---
 
-_Issue opened by @xiaoheiyue on 2025-08-06 03:41_
+_@xiaoheiyue_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-12T00:28:20Z
 updated_at: 2024-10-12T07:23:05Z
 url: https://github.com/astral-sh/uv/issues/8136
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:20Z
 ```
 
 # The uv.lock doesn't record wheels when the requires-python is an exact version
 
 ---
 
-_Issue opened by @frostming on 2024-10-12 00:28_
+_@frostming_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -12,14 +12,14 @@ head: copy-fallback
 created_at: 2023-10-30T19:08:02Z
 updated_at: 2023-11-01T12:21:38Z
 url: https://github.com/astral-sh/uv/pull/237
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:49Z
 ```
 
 # Fallback to copy if hardlinking failed
 
 ---
 
-_Pull request opened by @konstin on 2023-10-30 19:08_
+_@konstin_
 
 _No description provided._
 

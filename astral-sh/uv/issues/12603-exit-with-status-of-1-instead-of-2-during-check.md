@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-01T17:17:52Z
 updated_at: 2025-07-14T20:46:05Z
 url: https://github.com/astral-sh/uv/issues/12603
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # Exit with status of 1 (instead of 2) during `--check` 
 
 ---
 
-_Issue opened by @zanieb on 2025-04-01 17:17_
+_@zanieb_
 
 _Originally posted by @zanieb in https://github.com/astral-sh/uv/pull/12342#discussion_r2006174400_
             

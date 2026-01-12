@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-03T01:12:41Z
 updated_at: 2025-07-03T12:30:01Z
 url: https://github.com/astral-sh/uv/issues/14433
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # `uv version --bump major` half-fails with incompatible conflicts
 
 ---
 
-_Issue opened by @oyarsa on 2025-07-03 01:12_
+_@oyarsa_
 
 ### Summary
 

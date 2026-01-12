@@ -12,14 +12,14 @@ head: ci-tests
 created_at: 2023-10-13T18:44:52Z
 updated_at: 2023-10-24T14:15:58Z
 url: https://github.com/zanieb/rooster/pull/2
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # Add testing to CI
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-13 18:44_
+_@zanieb_
 
 _No description provided._
 

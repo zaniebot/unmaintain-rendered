@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-11T01:22:14Z
 updated_at: 2025-07-12T12:00:12Z
 url: https://github.com/astral-sh/uv/issues/14553
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # On Windows systems, how to manually configure user-level configuration files（uv.toml）
 
 ---
 
-_Issue opened by @Aspirant-A on 2025-07-11 01:22_
+_@Aspirant-A_
 
 ### Question
 

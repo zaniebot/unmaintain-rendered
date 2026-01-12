@@ -11,14 +11,14 @@ head: manzt/more-flexible-exclude-newer
 created_at: 2024-10-25T03:12:28Z
 updated_at: 2024-11-13T19:44:48Z
 url: https://github.com/astral-sh/uv/pull/8553
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:22Z
 ```
 
 # Support dates for `exclude-newer` tool setting
 
 ---
 
-_Pull request opened by @manzt on 2024-10-25 03:12_
+_@manzt_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

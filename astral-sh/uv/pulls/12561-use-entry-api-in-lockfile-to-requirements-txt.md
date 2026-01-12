@@ -13,14 +13,14 @@ head: charlie/en
 created_at: 2025-03-30T18:41:52Z
 updated_at: 2025-03-30T18:49:37Z
 url: https://github.com/astral-sh/uv/pull/12561
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:19Z
 ```
 
 # Use `Entry` API in lockfile-to-requirements.txt construction
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-30 18:41_
+_@charliermarsh_
 
 _No description provided._
 

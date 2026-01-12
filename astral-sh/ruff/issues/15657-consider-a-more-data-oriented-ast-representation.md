@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-21T22:30:44Z
 updated_at: 2025-01-22T07:18:58Z
 url: https://github.com/astral-sh/ruff/issues/15657
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Consider a more data-oriented AST representation
 
 ---
 
-_Issue opened by @dcreager on 2025-01-21 22:30_
+_@dcreager_
 
 We spend a noticeable amount of time (in both Ruff and Red Knot) parsing, and a noticeable subset of _that_ is in `malloc`.  Our [current AST representation](https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_ast/src/nodes.rs) is just a straight tree of nodes, which can put a lot of pressure on the memory allocator and isn't very cache-friendly when we go to consume the AST later.
 

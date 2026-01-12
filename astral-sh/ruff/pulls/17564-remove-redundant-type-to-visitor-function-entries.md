@@ -13,14 +13,14 @@ head: generator-skip-visit
 created_at: 2025-04-22T19:49:27Z
 updated_at: 2025-04-23T07:42:00Z
 url: https://github.com/astral-sh/ruff/pull/17564
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Remove redundant `type_to_visitor_function` entries
 
 ---
 
-_Pull request opened by @Glyphack on 2025-04-22 19:49_
+_@Glyphack_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

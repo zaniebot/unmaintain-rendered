@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-09T12:53:25Z
 updated_at: 2026-01-09T13:01:59Z
 url: https://github.com/astral-sh/ty/issues/2414
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Incorrect invalid-assignment Error in Conditional with Never Function call and Type | None Variable
 
 ---
 
-_Issue opened by @jelle-it on 2026-01-09 12:53_
+_@jelle-it_
 
 ### Summary
 

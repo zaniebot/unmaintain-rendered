@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-08-30T19:05:50Z
 updated_at: 2018-08-02T03:29:43Z
 url: https://github.com/clap-rs/clap/issues/207
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Broken link on CONTRIBUTING.md
 
 ---
 
-_Issue opened by @sru on 2015-08-30 19:05_
+_@sru_
 
 `conventional` link is broken in CONTRIBUTING.md and README.md
 

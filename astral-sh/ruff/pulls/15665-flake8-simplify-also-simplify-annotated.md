@@ -13,14 +13,14 @@ head: SIM108
 created_at: 2025-01-22T00:11:02Z
 updated_at: 2025-01-22T18:59:10Z
 url: https://github.com/astral-sh/ruff/pull/15665
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`flake8-simplify`] Also simplify annotated assignments (`SIM108`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-22 00:11_
+_@InSyncWithFoo_
 
 ## Summary
 

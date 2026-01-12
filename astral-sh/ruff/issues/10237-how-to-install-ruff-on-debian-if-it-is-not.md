@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-05T13:47:01Z
 updated_at: 2024-03-29T20:28:38Z
 url: https://github.com/astral-sh/ruff/issues/10237
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # How to install ruff on debian if it is not packaged, and pip3 complains about "virtual environments"?
 
 ---
 
-_Issue opened by @ardabro on 2024-03-05 13:47_
+_@ardabro_
 
 Ruff is not packaged in Debian stable repo and I'm unable to install it without creating a virtual environment, which I don't want to do, because - I suppose - in such env, I'll lose access to all other system-wide packages I use.
 So: how can I use it in Debian?

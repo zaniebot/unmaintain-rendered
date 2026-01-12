@@ -12,14 +12,14 @@ head: F841-fix
 created_at: 2023-11-04T16:21:22Z
 updated_at: 2023-11-05T17:20:43Z
 url: https://github.com/astral-sh/ruff/pull/8489
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Fix `F841` false negative on assignment to multiple variables
 
 ---
 
-_Pull request opened by @tjkuson on 2023-11-04 16:21_
+_@tjkuson_
 
 ## Summary
 

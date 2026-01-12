@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-24T15:23:36Z
 updated_at: 2025-04-01T23:48:32Z
 url: https://github.com/astral-sh/ruff/issues/16953
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Implement subtyping/assignability between different callable objects
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-03-24 15:23_
+_@dhruvmanila_
 
 With https://github.com/astral-sh/ruff/pull/16804 completed, we have the necessary infrastructure to check subtype/assignability relationship between two callable objects. Currently, it only does the check for subtyping/assignability between two `GeneralCallableType` types, which effectively means `typing.Callable` annotation or lambdas, as those are the only things that construct the `GeneralCallableType`. (We do expose `knot_extensions.CallableTypeFromFunction` from `knot_extensions` which converts a `FunctionType` into a `GeneralCallableType` but that's mainly to help write tests for it.)
 

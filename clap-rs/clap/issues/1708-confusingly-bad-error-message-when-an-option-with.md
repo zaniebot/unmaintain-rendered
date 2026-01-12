@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-02-29T09:15:39Z
 updated_at: 2021-09-02T13:39:59Z
 url: https://github.com/clap-rs/clap/issues/1708
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Confusingly bad error message when an option with mutiple values is followed by a subcommand with it's own values
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-02-29 09:15_
+_@CreepySkeleton_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

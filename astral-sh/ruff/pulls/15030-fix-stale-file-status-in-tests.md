@@ -13,14 +13,14 @@ head: micha/fix-test-isolation
 created_at: 2024-12-17T08:27:50Z
 updated_at: 2024-12-17T11:45:39Z
 url: https://github.com/astral-sh/ruff/pull/15030
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Fix stale File status in tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-17 08:27_
+_@MichaReiser_
 
 ## Summary
 

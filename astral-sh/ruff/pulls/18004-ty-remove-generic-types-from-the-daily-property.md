@@ -15,14 +15,14 @@ head: alex/fix-property-test
 created_at: 2025-05-10T12:55:54Z
 updated_at: 2025-05-11T09:27:28Z
 url: https://github.com/astral-sh/ruff/pull/18004
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # [ty] Remove generic types from the daily property test run (for now)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-10 12:55_
+_@AlexWaygood_
 
 ## Summary
 

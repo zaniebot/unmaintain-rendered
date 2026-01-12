@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2026-01-09T19:21:17Z
 updated_at: 2026-01-09T19:53:33Z
 url: https://github.com/astral-sh/ruff/pull/22483
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # Add language: golang to actionlint pre-commit hook
 
 ---
 
-_Pull request opened by @mschoettle on 2026-01-09 19:21_
+_@mschoettle_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

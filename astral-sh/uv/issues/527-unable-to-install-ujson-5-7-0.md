@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-03T19:57:04Z
 updated_at: 2023-12-04T10:13:43Z
 url: https://github.com/astral-sh/uv/issues/527
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Unable to install `ujson==5.7.0`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-03 19:57_
+_@charliermarsh_
 
 ```text
 error: Failed to download distributions

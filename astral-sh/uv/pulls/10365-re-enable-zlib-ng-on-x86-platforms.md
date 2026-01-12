@@ -13,14 +13,14 @@ head: charlie/zlib-ng
 created_at: 2025-01-07T14:46:01Z
 updated_at: 2025-01-07T16:00:34Z
 url: https://github.com/astral-sh/uv/pull/10365
-synced_at: 2026-01-10T11:44:45Z
+synced_at: 2026-01-12T16:09:15Z
 ```
 
 # Re-enable `zlib-ng` on x86 platforms
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-07 14:46_
+_@charliermarsh_
 
 ## Summary
 

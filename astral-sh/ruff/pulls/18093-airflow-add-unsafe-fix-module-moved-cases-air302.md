@@ -14,14 +14,14 @@ head: improve-autofix-to-AIR302
 created_at: 2025-05-14T13:29:39Z
 updated_at: 2025-05-29T20:30:40Z
 url: https://github.com/astral-sh/ruff/pull/18093
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [`airflow`] Add unsafe fix module moved cases (`AIR302`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-05-14 13:29_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -14,14 +14,14 @@ head: alex/recursive-typevar-panic
 created_at: 2025-12-07T18:20:53Z
 updated_at: 2025-12-11T21:44:28Z
 url: https://github.com/astral-sh/ruff/pull/21834
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Fix stack overflows when attempting to do subtyping checks involving TypeVars with invalid recursive bounds or constraints
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-07 18:20_
+_@AlexWaygood_
 
 ## Summary
 

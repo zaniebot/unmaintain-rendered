@@ -13,14 +13,14 @@ head: david/add-typing-faq
 created_at: 2025-12-17T12:40:25Z
 updated_at: 2025-12-17T13:46:57Z
 url: https://github.com/astral-sh/ty/pull/2006
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Add typing FAQ
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-17 12:40_
+_@sharkdp_
 
 Rendered: https://shark.fish/ty-faq/reference/typing-faq/
 

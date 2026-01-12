@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-09T11:43:52Z
 updated_at: 2023-11-09T17:05:52Z
 url: https://github.com/astral-sh/ruff/issues/8581
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Rule suggestion: Use most specific public import
 
 ---
 
-_Issue opened by @chbndrhnns on 2023-11-09 11:43_
+_@chbndrhnns_
 
 I'd like to see ruff convert imports from private modules to imports from the parent package if the member is declared in `__all__`.
 

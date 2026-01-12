@@ -13,14 +13,14 @@ head: dhruv/dunder-all
 created_at: 2025-05-05T13:24:57Z
 updated_at: 2025-05-07T16:12:45Z
 url: https://github.com/astral-sh/ruff/pull/17856
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:07Z
 ```
 
 # [ty] Add support for `__all__`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-05-05 13:24_
+_@dhruvmanila_
 
 ## Summary
 

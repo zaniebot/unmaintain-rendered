@@ -13,14 +13,14 @@ head: charlie/furb
 created_at: 2024-01-16T20:20:59Z
 updated_at: 2024-01-16T20:34:28Z
 url: https://github.com/astral-sh/ruff/pull/9556
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`refurb`] Avoid bailing when `reimplemented-operator` is called on function
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-16 20:20_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9549.
 

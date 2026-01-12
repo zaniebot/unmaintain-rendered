@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-17T15:07:42Z
 updated_at: 2023-09-19T06:29:08Z
 url: https://github.com/astral-sh/ruff/issues/7463
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter instability: Long string
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-17 15:07_
+_@MichaReiser_
 
 ## Input
 

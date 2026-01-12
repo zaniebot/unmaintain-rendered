@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-13T20:41:24Z
 updated_at: 2025-08-13T20:41:24Z
 url: https://github.com/astral-sh/uv/issues/15258
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Pyodide warns about missing `msvcrt` for pyrepl
 
 ---
 
-_Issue opened by @zanieb on 2025-08-13 20:41_
+_@zanieb_
 
 ```
 ❯ uvx pyodide

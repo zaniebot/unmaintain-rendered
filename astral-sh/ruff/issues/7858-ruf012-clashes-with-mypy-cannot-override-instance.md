@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-09T08:03:49Z
 updated_at: 2024-02-25T22:05:26Z
 url: https://github.com/astral-sh/ruff/issues/7858
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # RUF012 clashes with mypy "Cannot override instance variable with class variable"
 
 ---
 
-_Issue opened by @ddorian on 2023-10-09 08:03_
+_@ddorian_
 
 This is how fields are subclassed in `marshmallow` project.
 

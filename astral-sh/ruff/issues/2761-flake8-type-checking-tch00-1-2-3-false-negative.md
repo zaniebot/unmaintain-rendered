@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-11T10:57:53Z
 updated_at: 2023-02-11T19:53:01Z
 url: https://github.com/astral-sh/ruff/issues/2761
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 #  `flake8-type-checking` TCH00{1,2,3}: False negative 
 
 ---
 
-_Issue opened by @MaksimZayats on 2023-02-11 10:57_
+_@MaksimZayats_
 
 Hi! First of all, thank you so much for the amazing project!
 

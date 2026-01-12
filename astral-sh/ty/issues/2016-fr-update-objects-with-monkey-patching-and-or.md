@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T15:02:45Z
 updated_at: 2025-12-17T18:43:19Z
 url: https://github.com/astral-sh/ty/issues/2016
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # FR: Update objects with monkey patching and/or setattr
 
 ---
 
-_Issue opened by @deanm0000 on 2025-12-17 15:02_
+_@deanm0000_
 
 ### Summary
 

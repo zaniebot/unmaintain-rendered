@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-17T16:05:51Z
 updated_at: 2023-11-10T18:48:56Z
 url: https://github.com/astral-sh/ruff/issues/8020
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # D400 should accept question mark as a sentence ender
 
 ---
 
-_Issue opened by @warsaw on 2023-10-17 16:05_
+_@warsaw_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

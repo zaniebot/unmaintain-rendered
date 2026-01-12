@@ -13,14 +13,14 @@ head: charlie/frozen
 created_at: 2024-11-01T19:32:44Z
 updated_at: 2024-11-02T02:48:56Z
 url: https://github.com/astral-sh/uv/pull/8760
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:29Z
 ```
 
 # Enable `--all-packages --frozen` in `uv sync` and `uv export`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-01 19:32_
+_@charliermarsh_
 
 ## Summary
 

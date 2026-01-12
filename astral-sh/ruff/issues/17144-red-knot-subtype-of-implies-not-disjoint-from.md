@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-02T09:36:33Z
 updated_at: 2025-04-02T22:08:14Z
 url: https://github.com/astral-sh/ruff/issues/17144
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] `subtype_of_implies_not_disjoint_from` property test is now flaky
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-04-02 09:36_
+_@AlexWaygood_
 
 I got this property test failure on a local PR branch:
 

@@ -12,14 +12,14 @@ head: feat/show-settings-path
 created_at: 2023-05-03T03:33:49Z
 updated_at: 2023-05-04T14:19:58Z
 url: https://github.com/astral-sh/ruff/pull/4199
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Show settings path in `--show-settings` output
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-05-03 03:33_
+_@dhruvmanila_
 
 ## Summary
 

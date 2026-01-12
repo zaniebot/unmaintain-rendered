@@ -14,14 +14,14 @@ head: normalize-verbatim-newlines
 created_at: 2023-06-04T14:44:33Z
 updated_at: 2023-06-05T19:45:25Z
 url: https://github.com/astral-sh/ruff/pull/4850
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Normalize newlines in `verbatim_text`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-04 14:44_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

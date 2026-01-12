@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-19T14:47:52Z
 updated_at: 2024-04-22T07:32:43Z
 url: https://github.com/astral-sh/uv/issues/3142
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:42Z
 ```
 
 # `pep508_rs` file path normalization issue on windows
 
 ---
 
-_Issue opened by @tdejager on 2024-04-19 14:47_
+_@tdejager_
 
 ## Intro
 

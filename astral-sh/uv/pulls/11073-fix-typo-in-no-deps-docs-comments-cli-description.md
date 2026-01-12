@@ -13,14 +13,14 @@ head: fix-no-deps-docs
 created_at: 2025-01-29T17:36:38Z
 updated_at: 2025-01-29T18:03:16Z
 url: https://github.com/astral-sh/uv/pull/11073
-synced_at: 2026-01-10T11:45:26Z
+synced_at: 2026-01-12T16:09:39Z
 ```
 
 # Fix typo in no-deps docs/comments/cli description
 
 ---
 
-_Pull request opened by @pocotiti on 2025-01-29 17:36_
+_@pocotiti_
 
 ## Summary
 Fixes a recurring typo.

@@ -15,14 +15,14 @@ head: gankra/inlay-followup
 created_at: 2025-11-20T16:24:32Z
 updated_at: 2025-11-20T18:00:23Z
 url: https://github.com/astral-sh/ruff/pull/21541
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # [ty] Add more TypeDetails to the display code
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-20 16:24_
+_@Gankra_
 
 As far as I know this change is largely non-functional, largely because of https://github.com/astral-sh/ty/issues/1601
 

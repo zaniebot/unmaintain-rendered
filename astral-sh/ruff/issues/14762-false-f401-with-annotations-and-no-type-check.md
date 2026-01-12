@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-04T01:17:18Z
 updated_at: 2024-12-04T01:19:43Z
 url: https://github.com/astral-sh/ruff/issues/14762
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # False F401 with annotations and `no_type_check`.
 
 ---
 
-_Issue opened by @coady on 2024-12-04 01:17_
+_@coady_
 
 Using v0.8.1.
 ```python

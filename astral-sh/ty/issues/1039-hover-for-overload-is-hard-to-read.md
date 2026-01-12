@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-18T09:39:44Z
 updated_at: 2025-08-18T10:20:01Z
 url: https://github.com/astral-sh/ty/issues/1039
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # hover for Overload is hard to read
 
 ---
 
-_Issue opened by @asukaminato0721 on 2025-08-18 09:39_
+_@asukaminato0721_
 
 ### Summary
 

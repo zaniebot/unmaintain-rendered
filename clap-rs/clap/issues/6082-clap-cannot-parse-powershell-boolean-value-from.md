@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-31T19:10:00Z
 updated_at: 2025-08-06T15:33:45Z
 url: https://github.com/clap-rs/clap/issues/6082
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Clap cannot parse PowerShell boolean value from environment variable
 
 ---
 
-_Issue opened by @h1-yena on 2025-07-31 19:10_
+_@h1-yena_
 
 ### Please complete the following tasks
 

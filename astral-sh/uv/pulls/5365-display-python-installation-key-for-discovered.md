@@ -13,14 +13,14 @@ head: zb/interpreter-key
 created_at: 2024-07-23T19:03:01Z
 updated_at: 2024-07-23T20:29:17Z
 url: https://github.com/astral-sh/uv/pull/5365
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:46Z
 ```
 
 # Display Python installation key for discovered interpreters
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-23 19:03_
+_@zanieb_
 
 > DEBUG Found `cpython-3.12.1-macos-aarch64-none` at `/Users/zb/Library/Application Support/uv/python/cpython-3.12.1-macos-aarch64-none/bin/python3` (managed installations)
 

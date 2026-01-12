@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-19T13:08:51Z
 updated_at: 2025-09-19T17:15:26Z
 url: https://github.com/astral-sh/uv/issues/15947
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # Support `uv.lock` and `pylock.toml` as constraints files
 
 ---
 
-_Issue opened by @konstin on 2025-09-19 13:08_
+_@konstin_
 
 Currently, we only support `requirements.txt`-format files as constraints in the `uv pip` interface. We can extend this support for `uv.lock` and `pylock.toml` files as constraints.
 

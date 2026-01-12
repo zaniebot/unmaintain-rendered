@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-07T09:33:27Z
 updated_at: 2025-04-03T11:15:30Z
 url: https://github.com/astral-sh/ruff/issues/10272
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `line-too-long` (`E501`) - conflicts with formatter
 
 ---
 
-_Issue opened by @DetachHead on 2024-03-07 09:33_
+_@DetachHead_
 
 # before
 ```py

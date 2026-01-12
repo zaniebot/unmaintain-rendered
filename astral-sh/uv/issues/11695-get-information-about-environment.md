@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T11:41:35Z
 updated_at: 2025-02-26T03:49:56Z
 url: https://github.com/astral-sh/uv/issues/11695
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # Get information about environment
 
 ---
 
-_Issue opened by @ri-ch on 2025-02-21 11:41_
+_@ri-ch_
 
 ### Question
 

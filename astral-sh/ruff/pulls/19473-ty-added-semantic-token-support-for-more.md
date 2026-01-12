@@ -14,14 +14,14 @@ head: semantic_tokens
 created_at: 2025-07-21T22:28:47Z
 updated_at: 2025-07-22T11:05:40Z
 url: https://github.com/astral-sh/ruff/pull/19473
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Added semantic token support for more identifiers
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-21 22:28_
+_@UnboundVariable_
 
 I noticed that the semantic token implementation was not handling identifiers in a few cases. This adds support for identifiers that appear in `except`, `case`, `nonlocal`, and `global` statements.
 

@@ -13,14 +13,14 @@ head: konsti/bump-windows-stack-size
 created_at: 2024-11-21T11:29:56Z
 updated_at: 2024-11-21T11:46:34Z
 url: https://github.com/astral-sh/uv/pull/9311
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:45Z
 ```
 
 # Increase UV_STACK_SIZE to 3MB
 
 ---
 
-_Pull request opened by @konstin on 2024-11-21 11:29_
+_@konstin_
 
 We're seeing CI failures on windows
 

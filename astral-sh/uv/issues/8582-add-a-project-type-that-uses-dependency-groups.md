@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-25T23:43:26Z
 updated_at: 2025-09-19T01:06:10Z
 url: https://github.com/astral-sh/uv/issues/8582
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # Add a project type that uses `[dependency-groups]` only and doesn't define a `[project]` table? Sync `dependency-groups.main` by default?
 
 ---
 
-_Issue opened by @matterhorn103 on 2024-10-25 23:43_
+_@matterhorn103_
 
 Amazing to see PEP-735 so fast! And cool of you to adopt it immediately for dev dependencies. You are doing great things 🙂 
 

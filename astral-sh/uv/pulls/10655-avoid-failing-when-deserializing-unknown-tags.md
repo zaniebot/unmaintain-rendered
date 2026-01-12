@@ -13,14 +13,14 @@ head: charlie/unknown
 created_at: 2025-01-15T22:19:59Z
 updated_at: 2025-01-15T23:03:30Z
 url: https://github.com/astral-sh/uv/pull/10655
-synced_at: 2026-01-10T11:45:02Z
+synced_at: 2026-01-12T16:09:25Z
 ```
 
 # Avoid failing when deserializing unknown tags
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-15 22:19_
+_@charliermarsh_
 
 ## Summary
 

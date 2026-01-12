@@ -13,14 +13,14 @@ head: bump-cc
 created_at: 2024-12-05T17:02:50Z
 updated_at: 2024-12-06T04:16:39Z
 url: https://github.com/astral-sh/ruff/pull/14794
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # deps: Update cc
 
 ---
 
-_Pull request opened by @ognevny on 2024-12-05 17:02_
+_@ognevny_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

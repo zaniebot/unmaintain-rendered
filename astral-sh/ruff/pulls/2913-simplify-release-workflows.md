@@ -13,14 +13,14 @@ head: simplify-release-action
 created_at: 2023-02-15T05:23:07Z
 updated_at: 2023-02-15T13:17:24Z
 url: https://github.com/astral-sh/ruff/pull/2913
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Simplify release workflows
 
 ---
 
-_Pull request opened by @messense on 2023-02-15 05:23_
+_@messense_
 
 * No need to build for PyPy since it only contains a binary so the platform tag is the same as CPython
 * Update `maturin-action` location

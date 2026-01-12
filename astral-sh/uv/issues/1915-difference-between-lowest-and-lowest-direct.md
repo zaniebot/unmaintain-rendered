@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-23T15:06:53Z
 updated_at: 2024-02-24T22:15:02Z
 url: https://github.com/astral-sh/uv/issues/1915
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Difference between `lowest` and `lowest-direct`?
 
 ---
 
-_Issue opened by @radoering on 2024-02-23 15:06_
+_@radoering_
 
 > However, uv's resolution strategy can be configured to prefer the lowest compatible version of each package (--resolution=lowest), or even the lowest compatible version of any direct dependencies (--resolution=lowest-direct)
 

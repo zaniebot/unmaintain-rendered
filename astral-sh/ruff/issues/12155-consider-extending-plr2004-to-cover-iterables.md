@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-02T18:29:19Z
 updated_at: 2024-07-03T06:32:18Z
 url: https://github.com/astral-sh/ruff/issues/12155
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Consider extending `PLR2004` to cover iterables with magic values
 
 ---
 
-_Issue opened by @kgleba on 2024-07-02 18:29_
+_@kgleba_
 
 Keywords: `PLR2004`, `magic-value-comparison`
 

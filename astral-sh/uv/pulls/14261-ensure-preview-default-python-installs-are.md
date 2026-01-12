@@ -14,14 +14,14 @@ head: jtfm/upgrade-default
 created_at: 2025-06-25T14:10:53Z
 updated_at: 2025-06-27T17:26:30Z
 url: https://github.com/astral-sh/uv/pull/14261
-synced_at: 2026-01-10T07:01:23Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # Ensure preview default Python installs are upgradeable
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-25 14:10_
+_@jtfmumm_
 
 Python `bin` installations installed with `uv python install --default --preview` (no version specified) were not being installed as upgradeable. Instead each link was pointed at the highest patch version for a minor version. This change ensures that these preview default installations are also treated as upgradeable.
 

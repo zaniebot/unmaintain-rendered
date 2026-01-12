@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-10-19T15:42:57Z
 updated_at: 2022-04-15T19:00:29Z
 url: https://github.com/clap-rs/clap/issues/2915
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # [modular] Pull out a clap_lex
 
 ---
 
-_Issue opened by @epage on 2021-10-19 15:42_
+_@epage_
 
 ### Please complete the following tasks
 

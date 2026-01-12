@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-05T10:36:42Z
 updated_at: 2023-02-10T02:00:41Z
 url: https://github.com/astral-sh/ruff/issues/2578
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # ruff --statistics could show fixable state
 
 ---
 
-_Issue opened by @spaceone on 2023-02-05 10:36_
+_@spaceone_
 
 ruff now shows fixable items:
 ```PIE790 [*] Unnecessary `pass` statement```

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T16:59:18Z
 updated_at: 2025-01-14T19:10:53Z
 url: https://github.com/astral-sh/uv/issues/10603
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # `uv venv --python` allow specifying universal (arm64 + Rosetta2) architecture on macOS
 
 ---
 
-_Issue opened by @danra on 2025-01-14 16:59_
+_@danra_
 
 I was only able to create a virtual environment with a universal Python this by specifying a path to one already installed on the system:
 

@@ -14,14 +14,14 @@ head: bugfix/furb-189-rule-not-applied-when-type-args-provided
 created_at: 2025-02-14T08:13:26Z
 updated_at: 2025-02-15T03:38:28Z
 url: https://github.com/astral-sh/ruff/pull/16155
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [refurb] Check for subclasses includes subscript expressions (FURB189)
 
 ---
 
-_Pull request opened by @vladNed on 2025-02-14 08:13_
+_@vladNed_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

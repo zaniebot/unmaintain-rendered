@@ -13,14 +13,14 @@ head: alex/cmpop
 created_at: 2024-09-01T01:51:07Z
 updated_at: 2024-09-01T02:04:52Z
 url: https://github.com/astral-sh/ruff/pull/13189
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Remove `pylint::helpers::CmpOpExt`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-09-01 01:51_
+_@AlexWaygood_
 
 `ruff_python_ast::nodes::CmpOp` implements `Display` these days, so there's no longer any need for this wrapper
 

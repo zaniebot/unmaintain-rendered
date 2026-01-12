@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-20T00:38:50Z
 updated_at: 2025-12-20T01:30:09Z
 url: https://github.com/astral-sh/uv/issues/17195
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:45Z
 ```
 
 # Unable to use uv commands after removing .whl file
 
 ---
 
-_Issue opened by @jprince14 on 2025-12-20 00:38_
+_@jprince14_
 
 ### Summary
 

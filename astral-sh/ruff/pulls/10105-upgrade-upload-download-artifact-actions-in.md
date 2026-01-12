@@ -13,14 +13,14 @@ head: release-upload-download-artifact
 created_at: 2024-02-23T20:26:29Z
 updated_at: 2024-02-26T07:23:11Z
 url: https://github.com/astral-sh/ruff/pull/10105
-synced_at: 2026-01-10T22:57:10Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Upgrade upload/download artifact actions in release workflow
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-23 20:26_
+_@MichaReiser_
 
 ## Summary
 

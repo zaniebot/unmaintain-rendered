@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T06:52:27Z
 updated_at: 2025-04-01T19:02:23Z
 url: https://github.com/astral-sh/uv/issues/12478
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # Support CUDA-specific indices beyond PyTorch
 
 ---
 
-_Issue opened by @heiner on 2025-03-26 06:52_
+_@heiner_
 
 ### Summary
 

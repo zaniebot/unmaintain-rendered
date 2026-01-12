@@ -11,14 +11,14 @@ head: charlie/space
 created_at: 2023-07-05T15:48:42Z
 updated_at: 2023-07-06T05:46:20Z
 url: https://github.com/astral-sh/ruff/pull/5532
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Accept noqa directives with missing hash space
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-05 15:48_
+_@charliermarsh_
 
 ## Summary
 

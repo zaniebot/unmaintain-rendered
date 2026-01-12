@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-27T16:59:01Z
 updated_at: 2025-02-17T08:23:14Z
 url: https://github.com/astral-sh/ruff/issues/14638
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Allow (formatter?) config to never introduce implicitly concatenated strings or just accept that a check run will complain about it
 
 ---
 
-_Issue opened by @jankatins on 2024-11-27 16:59_
+_@jankatins_
 
 I think implicitly concat'ed strings are pure evil since a time where I had to debug an accidentally added comma in a place where `+` would have been proper, which made a single string a tuple of two strings. I would like ruff to allow one to configure that "no explicit string concat, and not fix it such a way, ever" and not complain about such a config, but currently it does complain and IMO it complains for the wrong reasons and with the wrong solution: 
 

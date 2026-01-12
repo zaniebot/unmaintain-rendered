@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-24T12:48:52Z
 updated_at: 2025-12-26T08:41:31Z
 url: https://github.com/astral-sh/ty/issues/2204
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Enable more advanced inlay features in the playground
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-24 12:48_
+_@AlexWaygood_
 
 I've no idea if this is feasible, but it would be very cool if we could enable some of our more "advanced" inlay-hint features in the playground. For example, go-to definition on inlay hints doesn't currently work in the ty playground, and neither does "baking" of inlay hints.
 

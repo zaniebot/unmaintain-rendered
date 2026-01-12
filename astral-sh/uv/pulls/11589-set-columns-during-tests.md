@@ -13,14 +13,14 @@ head: ci-columns
 created_at: 2025-02-18T07:21:03Z
 updated_at: 2025-02-26T16:10:36Z
 url: https://github.com/astral-sh/uv/pull/11589
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:54Z
 ```
 
 # Set `COLUMNS` during tests 
 
 ---
 
-_Pull request opened by @mgorny on 2025-02-18 07:21_
+_@mgorny_
 
 ## Summary
 

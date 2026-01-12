@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-25T02:35:28Z
 updated_at: 2023-09-17T17:56:22Z
 url: https://github.com/astral-sh/ruff/issues/6861
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Ruff and Black disagree on spacing between slice indices
 
 ---
 
-_Issue opened by @danparizher on 2023-08-25 02:35_
+_@danparizher_
 
 When running `ruff . --fix` on this line of code, it deletes a space between `1` and `:`, which is inconsistent with the Black formatter.
 ```diff

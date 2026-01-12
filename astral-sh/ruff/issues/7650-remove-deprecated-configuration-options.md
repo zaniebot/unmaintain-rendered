@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-25T09:25:31Z
 updated_at: 2024-06-26T08:15:14Z
 url: https://github.com/astral-sh/ruff/issues/7650
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Remove deprecated configuration options
 
 ---
 
-_Issue opened by @MichaReiser on 2023-09-25 09:25_
+_@MichaReiser_
 
 Remove configuration options that are marked as deprecated.
 

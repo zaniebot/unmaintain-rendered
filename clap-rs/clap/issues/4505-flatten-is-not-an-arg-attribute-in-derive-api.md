@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-23T21:10:44Z
 updated_at: 2022-11-28T15:50:42Z
 url: https://github.com/clap-rs/clap/issues/4505
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `flatten` is not an `Arg` attribute in derive API
 
 ---
 
-_Issue opened by @emersonford on 2022-11-23 21:10_
+_@emersonford_
 
 ### Please complete the following tasks
 

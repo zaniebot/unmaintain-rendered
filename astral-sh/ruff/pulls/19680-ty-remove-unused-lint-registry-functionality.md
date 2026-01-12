@@ -13,14 +13,14 @@ head: david/remove-unused-lint-functions
 created_at: 2025-08-01T07:50:35Z
 updated_at: 2025-08-01T08:37:42Z
 url: https://github.com/astral-sh/ruff/pull/19680
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Remove unused lint registry functionality?
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-01 07:50_
+_@sharkdp_
 
 ## Summary
 

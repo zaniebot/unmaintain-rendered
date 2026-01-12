@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-04T14:49:20Z
 updated_at: 2025-03-04T15:07:07Z
 url: https://github.com/astral-sh/uv/issues/11949
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:50Z
 ```
 
 # UV updates one repository for each dependency
 
 ---
 
-_Issue opened by @Wintreist on 2025-03-04 14:49_
+_@Wintreist_
 
 ### Summary
 

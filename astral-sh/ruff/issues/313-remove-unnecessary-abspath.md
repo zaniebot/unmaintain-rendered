@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-10-03T22:22:24Z
 updated_at: 2022-10-07T02:49:07Z
 url: https://github.com/astral-sh/ruff/issues/313
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Remove unnecessary abspath
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-03 22:22_
+_@charliermarsh_
 
 Source: https://github.com/asottile/pyupgrade
 

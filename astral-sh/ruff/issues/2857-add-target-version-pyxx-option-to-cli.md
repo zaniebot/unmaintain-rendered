@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-13T14:45:51Z
 updated_at: 2023-05-06T12:49:23Z
 url: https://github.com/astral-sh/ruff/issues/2857
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Add `--target-version pyXX` option to CLI
 
 ---
 
-_Issue opened by @kdeldycke on 2023-02-13 14:45_
+_@kdeldycke_
 
 This is a feature request to add a `--target-version pyXX` to ruff.
 

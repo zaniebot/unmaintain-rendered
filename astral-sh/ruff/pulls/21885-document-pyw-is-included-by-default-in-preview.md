@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-12-10T04:07:11Z
 updated_at: 2025-12-10T16:52:45Z
 url: https://github.com/astral-sh/ruff/pull/21885
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # Document `*.pyw` is included by default in preview
 
 ---
 
-_Pull request opened by @Avasam on 2025-12-10 04:07_
+_@Avasam_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

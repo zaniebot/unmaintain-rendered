@@ -13,14 +13,14 @@ head: charlie/ustr
 created_at: 2024-07-21T22:15:56Z
 updated_at: 2024-09-23T23:30:47Z
 url: https://github.com/astral-sh/uv/pull/5265
-synced_at: 2026-01-10T12:53:31Z
+synced_at: 2026-01-12T16:06:43Z
 ```
 
 # Intern package, extra, and group names
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-21 22:15_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-16T15:01:56Z
 updated_at: 2025-05-16T16:23:17Z
 url: https://github.com/astral-sh/ty/issues/425
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Panic on recursive type alias definition
 
 ---
 
-_Issue opened by @Akuli on 2025-05-16 15:01_
+_@Akuli_
 
 ### Summary
 

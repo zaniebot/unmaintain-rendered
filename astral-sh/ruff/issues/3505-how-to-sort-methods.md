@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-14T09:38:53Z
 updated_at: 2023-03-14T10:06:36Z
 url: https://github.com/astral-sh/ruff/issues/3505
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # How to sort methods?
 
 ---
 
-_Issue opened by @Pedrexus on 2023-03-14 09:38_
+_@Pedrexus_
 
 Hello, 
 

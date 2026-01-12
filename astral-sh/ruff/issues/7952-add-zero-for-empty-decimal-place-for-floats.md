@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-10-13T16:43:46Z
 updated_at: 2023-10-16T07:39:30Z
 url: https://github.com/astral-sh/ruff/issues/7952
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Add zero for empty decimal place for floats
 
 ---
 
-_Issue opened by @konstin on 2023-10-13 16:43_
+_@konstin_
 
 Ours:
 ```python

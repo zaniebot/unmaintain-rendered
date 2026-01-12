@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-18T19:00:38Z
 updated_at: 2024-06-19T21:04:40Z
 url: https://github.com/clap-rs/clap/issues/5537
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # docs.rs failed to build clap_complete
 
 ---
 
-_Issue opened by @rucub100 on 2024-06-18 19:00_
+_@rucub100_
 
 ### Please complete the following tasks
 

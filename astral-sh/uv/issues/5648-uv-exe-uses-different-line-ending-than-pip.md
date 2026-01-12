@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-31T12:06:13Z
 updated_at: 2024-07-31T12:12:13Z
 url: https://github.com/astral-sh/uv/issues/5648
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # uv.exe uses different line ending than pip
 
 ---
 
-_Issue opened by @FrederikLauber on 2024-07-31 12:06_
+_@FrederikLauber_
 
 When freezing the installed packages with uv pip freeze and pip freeze, the resulting
 file either uses CRLF (uv) or LF (pip).

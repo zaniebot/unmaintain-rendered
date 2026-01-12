@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-16T14:07:24Z
 updated_at: 2024-01-18T13:37:27Z
 url: https://github.com/astral-sh/uv/issues/938
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Avoid breaking words when wrapping in all error messages
 
 ---
 
-_Issue opened by @zanieb on 2024-01-16 14:07_
+_@zanieb_
 
 https://github.com/astral-sh/puffin/blob/f63776b894d6a28971d87e085e48fe564ba27735/crates/puffin-cli/src/commands/pip_install.rs#L60-L65 needs to be used everywhere.
 

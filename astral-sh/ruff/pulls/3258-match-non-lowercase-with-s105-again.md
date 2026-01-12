@@ -12,14 +12,14 @@ head: fix/s105-non-lowercase
 created_at: 2023-02-27T20:41:26Z
 updated_at: 2023-02-28T07:25:03Z
 url: https://github.com/astral-sh/ruff/pull/3258
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Match non-lowercase with S105 again
 
 ---
 
-_Pull request opened by @scop on 2023-02-27 20:41_
+_@scop_
 
 Regression in cd9fbeb56042e1fa537626fca3e5e09ad8e6f54d / 0.0.253.
 

@@ -15,14 +15,14 @@ head: dhruv/register-unregister-capabilities
 created_at: 2025-08-08T06:17:56Z
 updated_at: 2025-08-08T08:43:38Z
 url: https://github.com/astral-sh/ruff/pull/19822
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # [ty] Send a single request for registrations/unregistrations
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-08-08 06:17_
+_@dhruvmanila_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-23T09:13:52Z
 updated_at: 2024-04-05T07:40:56Z
 url: https://github.com/astral-sh/ruff/issues/6806
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Kind request for pylint rule E0110
 
 ---
 
-_Issue opened by @shager on 2023-08-23 09:13_
+_@shager_
 
 Hello,
 

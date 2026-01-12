@@ -14,14 +14,14 @@ head: charlie/ann-assign
 created_at: 2023-02-08T18:53:45Z
 updated_at: 2023-02-08T18:59:26Z
 url: https://github.com/astral-sh/ruff/pull/2667
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Treat annotated assignments in class and module scopes as runtime
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-08 18:53_
+_@charliermarsh_
 
 Closes #2665.
 

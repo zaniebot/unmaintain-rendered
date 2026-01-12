@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T11:28:09Z
 updated_at: 2025-01-30T16:22:23Z
 url: https://github.com/astral-sh/uv/issues/11017
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # Unable to add packages from several private sources
 
 ---
 
-_Issue opened by @diskream on 2025-01-28 11:28_
+_@diskream_
 
 ### Summary
 

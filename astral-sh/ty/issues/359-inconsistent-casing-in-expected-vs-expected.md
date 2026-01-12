@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-13T15:19:56Z
 updated_at: 2025-05-14T06:27:16Z
 url: https://github.com/astral-sh/ty/issues/359
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Inconsistent casing in "Expected" vs. "expected"
 
 ---
 
-_Issue opened by @charliermarsh on 2025-05-13 15:19_
+_@charliermarsh_
 
 E.g., "Expected":
 

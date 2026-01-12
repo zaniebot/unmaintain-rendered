@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-04T13:55:37Z
 updated_at: 2025-04-04T14:33:00Z
 url: https://github.com/astral-sh/ruff/issues/17207
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # False positive in pattern attribute assignment: [syntax-errors] Multiple assignments in case pattern
 
 ---
 
-_Issue opened by @sasanjac on 2025-04-04 13:55_
+_@sasanjac_
 
 ### Summary
 

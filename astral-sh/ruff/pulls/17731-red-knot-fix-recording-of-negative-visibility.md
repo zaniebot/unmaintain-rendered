@@ -13,14 +13,14 @@ head: david/fix-negative-reachability-constraints
 created_at: 2025-04-30T07:15:40Z
 updated_at: 2025-04-30T13:43:19Z
 url: https://github.com/astral-sh/ruff/pull/17731
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:04Z
 ```
 
 # [red-knot] Fix recording of negative visibility constraints
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-30 07:15_
+_@sharkdp_
 
 ## Summary
 

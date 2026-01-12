@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-28T21:31:46Z
 updated_at: 2025-01-10T16:21:54Z
 url: https://github.com/clap-rs/clap/issues/3363
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Should we separate arguments by `help_heading` in `clap_man`?
 
 ---
 
-_Issue opened by @epage on 2022-01-28 21:31_
+_@epage_
 
 ### Please complete the following tasks
 

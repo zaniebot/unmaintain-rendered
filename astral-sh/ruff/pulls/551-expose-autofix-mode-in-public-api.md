@@ -12,14 +12,14 @@ head: charlie/fix
 created_at: 2022-11-02T13:42:38Z
 updated_at: 2022-11-02T13:44:47Z
 url: https://github.com/astral-sh/ruff/pull/551
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Expose autofix mode in public API
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-02 13:42_
+_@charliermarsh_
 
 Resolves #547.
 

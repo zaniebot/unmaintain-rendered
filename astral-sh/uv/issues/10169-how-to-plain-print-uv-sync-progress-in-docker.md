@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-26T10:07:35Z
 updated_at: 2025-04-22T18:46:39Z
 url: https://github.com/astral-sh/uv/issues/10169
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # how to plain print uv sync progress in docker
 
 ---
 
-_Issue opened by @YoniChechik on 2024-12-26 10:07_
+_@YoniChechik_
 
 I'm syncing uv inside Dockerfile and while building (with plain flag of docker compose), I cant see the progress of the uv installation untils it finishes. Is there any flag to enable plain print for uv?
 

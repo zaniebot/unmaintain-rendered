@@ -15,14 +15,14 @@ head: dhruv/fstring-parser-2
 created_at: 2023-09-07T05:30:39Z
 updated_at: 2023-09-14T02:16:10Z
 url: https://github.com/astral-sh/ruff/pull/7211
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Use narrow type for string parsing patterns
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-07 05:30_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: PLR1714-identical-members
 created_at: 2025-12-27T01:00:20Z
 updated_at: 2026-01-02T18:05:03Z
 url: https://github.com/astral-sh/ruff/pull/22220
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:44Z
 ```
 
 # [`pylint`] Ignore identical members (`PLR1714`)
 
 ---
 
-_Pull request opened by @njhearp on 2025-12-27 01:00_
+_@njhearp_
 
 ## Summary
 

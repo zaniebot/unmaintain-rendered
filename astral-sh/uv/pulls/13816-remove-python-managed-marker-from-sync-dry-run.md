@@ -13,14 +13,14 @@ head: zb/dry-run-managed
 created_at: 2025-06-03T14:16:13Z
 updated_at: 2025-06-03T16:08:11Z
 url: https://github.com/astral-sh/uv/pull/13816
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:53Z
 ```
 
 # Remove `python-managed` marker from `sync_dry_run` test
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-03 14:16_
+_@zanieb_
 
 Not sure why this is present, it does not seem to use a managed interpreter
 

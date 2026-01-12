@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-14T13:01:02Z
 updated_at: 2024-03-01T09:04:42Z
 url: https://github.com/astral-sh/ruff/issues/9984
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Colorize `format --diff` output
 
 ---
 
-_Issue opened by @MichaReiser on 2024-02-14 13:01_
+_@MichaReiser_
 
 ### Discussed in https://github.com/astral-sh/ruff/discussions/9983
 

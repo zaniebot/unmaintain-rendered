@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-25T11:27:50Z
 updated_at: 2025-03-07T21:03:29Z
 url: https://github.com/astral-sh/ruff/issues/16367
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Distinguish static-member lookup with and without instance variables
 
 ---
 
-_Issue opened by @sharkdp on 2025-02-25 11:27_
+_@sharkdp_
 
 ### Summary
 

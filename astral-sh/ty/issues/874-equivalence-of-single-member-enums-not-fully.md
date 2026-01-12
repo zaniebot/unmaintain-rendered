@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-22T18:15:03Z
 updated_at: 2025-09-23T20:01:52Z
 url: https://github.com/astral-sh/ty/issues/874
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Equivalence of single-member enums not fully implemented when deeply nested inside other types
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-07-22 18:15_
+_@AlexWaygood_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/resolver-workspace-member
 created_at: 2024-08-14T17:09:45Z
 updated_at: 2024-08-14T19:49:13Z
 url: https://github.com/astral-sh/uv/pull/6090
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:12Z
 ```
 
 # Collapse resolver incompatiblities for workspace members
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-14 17:09_
+_@zanieb_
 
 Part of https://github.com/astral-sh/uv/pull/6066
 

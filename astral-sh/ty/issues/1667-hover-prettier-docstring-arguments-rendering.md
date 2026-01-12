@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-28T14:32:41Z
 updated_at: 2025-11-28T15:08:32Z
 url: https://github.com/astral-sh/ty/issues/1667
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Hover: Prettier docstring arguments rendering
 
 ---
 
-_Issue opened by @hermeschen1116 on 2025-11-28 14:32_
+_@hermeschen1116_
 
 Currently, docstring in hover information is just plain text. I think it's better to have syntax highlight for readability. 
 

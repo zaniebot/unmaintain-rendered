@@ -13,14 +13,14 @@ head: charlie/floats
 created_at: 2023-02-23T18:54:20Z
 updated_at: 2023-02-23T19:02:24Z
 url: https://github.com/astral-sh/ruff/pull/3184
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Implement float literal formatting
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-23 18:54_
+_@charliermarsh_
 
 _No description provided._
 

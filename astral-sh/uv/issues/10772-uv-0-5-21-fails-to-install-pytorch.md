@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-20T07:32:17Z
 updated_at: 2025-01-20T17:23:09Z
 url: https://github.com/astral-sh/uv/issues/10772
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # uv 0.5.21 fails to install pytorch
 
 ---
 
-_Issue opened by @kasperipalkama on 2025-01-20 07:32_
+_@kasperipalkama_
 
 I have configured pytorch installation in pyproject toml in the following way:
 

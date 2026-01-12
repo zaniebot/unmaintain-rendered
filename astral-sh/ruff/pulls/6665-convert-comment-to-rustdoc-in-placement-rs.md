@@ -13,14 +13,14 @@ head: charlie/doc
 created_at: 2023-08-18T04:02:05Z
 updated_at: 2023-08-18T04:38:50Z
 url: https://github.com/astral-sh/ruff/pull/6665
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Convert comment to rustdoc in placement.rs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-18 04:02_
+_@charliermarsh_
 
 _No description provided._
 

@@ -12,14 +12,14 @@ head: yury/example-typo
 created_at: 2025-03-16T05:08:12Z
 updated_at: 2025-03-16T14:26:33Z
 url: https://github.com/astral-sh/uv/pull/12198
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:10Z
 ```
 
 # Fix 2 typos in MRE docs
 
 ---
 
-_Pull request opened by @yury-fedotov on 2025-03-16 05:08_
+_@yury-fedotov_
 
 2 fixes:
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-21T20:10:25Z
 updated_at: 2024-07-22T15:04:29Z
 url: https://github.com/clap-rs/clap/issues/5592
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Disable generating arguments after double hyphen for nushell
 
 ---
 
-_Issue opened by @ndtoan96 on 2024-07-21 20:10_
+_@ndtoan96_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: charlie/noqa-methods
 created_at: 2023-07-05T23:06:51Z
 updated_at: 2023-07-05T23:38:38Z
 url: https://github.com/astral-sh/ruff/pull/5546
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Move `Directive` fields behind accessor methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-05 23:06_
+_@charliermarsh_
 
 _No description provided._
 

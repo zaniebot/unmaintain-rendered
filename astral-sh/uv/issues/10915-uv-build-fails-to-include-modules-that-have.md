@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-23T21:46:02Z
 updated_at: 2025-01-25T22:58:41Z
 url: https://github.com/astral-sh/uv/issues/10915
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # uv build fails to include modules that have symlinks elsewhere in project
 
 ---
 
-_Issue opened by @tcjennings on 2025-01-23 21:46_
+_@tcjennings_
 
 ### Summary
 

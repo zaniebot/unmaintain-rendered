@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-11-18T11:33:24Z
 updated_at: 2021-11-18T21:03:24Z
 url: https://github.com/clap-rs/clap/issues/3036
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `app help subcommand` only shows short help, doesn't include long_about
 
 ---
 
-_Issue opened by @gibfahn on 2021-11-18 11:33_
+_@gibfahn_
 
 ### Please complete the following tasks
 

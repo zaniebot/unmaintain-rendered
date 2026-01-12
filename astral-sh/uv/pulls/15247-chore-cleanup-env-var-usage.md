@@ -14,14 +14,14 @@ head: envvars-usage-cleanup
 created_at: 2025-08-13T01:29:20Z
 updated_at: 2025-08-13T02:26:13Z
 url: https://github.com/astral-sh/uv/pull/15247
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:39Z
 ```
 
 # chore(🧹): cleanup env var usage
 
 ---
 
-_Pull request opened by @samypr100 on 2025-08-13 01:29_
+_@samypr100_
 
 ## Summary
 

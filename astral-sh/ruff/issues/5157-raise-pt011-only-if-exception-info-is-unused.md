@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-17T07:28:57Z
 updated_at: 2024-08-20T19:10:29Z
 url: https://github.com/astral-sh/ruff/issues/5157
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Raise PT011 only if exception info is unused
 
 ---
 
-_Issue opened by @janosh on 2023-06-17 07:28_
+_@janosh_
 
 Make a new variant of `PT011` ([`pytest-raises-too-broad`](https://beta.ruff.rs/docs/rules/#flake8-pytest-style-pt)) that only triggers if the context is unused.
 

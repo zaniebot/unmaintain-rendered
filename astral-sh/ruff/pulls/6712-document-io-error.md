@@ -13,14 +13,14 @@ head: document-io-error
 created_at: 2023-08-21T08:30:58Z
 updated_at: 2023-08-22T09:46:19Z
 url: https://github.com/astral-sh/ruff/pull/6712
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Document IO Error
 
 ---
 
-_Pull request opened by @konstin on 2023-08-21 08:30_
+_@konstin_
 
 `IOError` is special, it is not actually a lint but an error before linting. I'm not entirely sure how to document it since it does not match the general lint rule pattern (`Checks that the file can be read in its entirety.` is imho worse).
 

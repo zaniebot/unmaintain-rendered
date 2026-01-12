@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-28T00:59:33Z
 updated_at: 2024-08-28T02:28:07Z
 url: https://github.com/astral-sh/ruff/issues/13132
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Remove `if TYPE_CHECKING: pass`
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-08-28 00:59_
+_@hauntsaninja_
 
 You can get these as a result of F401 cleanup. It would be nice for the F401 fix to automatically do this (or potentially this could be its own rule)
 

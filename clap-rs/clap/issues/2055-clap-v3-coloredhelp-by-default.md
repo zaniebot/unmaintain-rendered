@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-08-09T15:17:29Z
 updated_at: 2020-11-05T02:38:56Z
 url: https://github.com/clap-rs/clap/issues/2055
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Clap v3 ColoredHelp by default
 
 ---
 
-_Issue opened by @pickfire on 2020-08-09 15:17_
+_@pickfire_
 
 ### Make sure you completed the following tasks
 

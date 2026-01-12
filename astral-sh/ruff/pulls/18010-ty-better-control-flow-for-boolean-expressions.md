@@ -13,14 +13,14 @@ head: tomer/better-if-bool-short-circuiting
 created_at: 2025-05-10T20:54:10Z
 updated_at: 2025-05-16T13:43:06Z
 url: https://github.com/astral-sh/ruff/pull/18010
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # [ty] Better control flow for boolean expressions that are inside if
 
 ---
 
-_Pull request opened by @TomerBin on 2025-05-10 20:54_
+_@TomerBin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

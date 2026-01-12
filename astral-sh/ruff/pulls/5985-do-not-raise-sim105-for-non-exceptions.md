@@ -13,14 +13,14 @@ head: sim105-no-exception
 created_at: 2023-07-22T15:56:36Z
 updated_at: 2023-07-22T20:09:48Z
 url: https://github.com/astral-sh/ruff/pull/5985
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Do not raise `SIM105` for non-exceptions
 
 ---
 
-_Pull request opened by @sbrugman on 2023-07-22 15:56_
+_@sbrugman_
 
 Closes https://github.com/astral-sh/ruff/issues/5977
 

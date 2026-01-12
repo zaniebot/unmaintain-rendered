@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-07-09T07:37:22Z
 updated_at: 2019-03-19T00:35:35Z
 url: https://github.com/clap-rs/clap/issues/1317
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Option to put a newline between version and about text
 
 ---
 
-_Issue opened by @blinry on 2018-07-09 07:37_
+_@blinry_
 
 My application has a multi-paragraph about text, and it looks silly to put it directly after the version line. I'd like an option to insert a newline between them.
 

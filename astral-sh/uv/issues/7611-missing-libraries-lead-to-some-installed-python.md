@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-21T07:16:41Z
 updated_at: 2024-09-21T07:16:41Z
 url: https://github.com/astral-sh/uv/issues/7611
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # Missing libraries lead to some installed Python versions listed as not installed
 
 ---
 
-_Issue opened by @bluthej on 2024-09-21 07:16_
+_@bluthej_
 
 ## Summary
 

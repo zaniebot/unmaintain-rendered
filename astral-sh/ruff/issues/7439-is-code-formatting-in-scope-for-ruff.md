@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-16T16:14:32Z
 updated_at: 2023-09-16T16:22:53Z
 url: https://github.com/astral-sh/ruff/issues/7439
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Is code formatting in scope for ruff?
 
 ---
 
-_Issue opened by @89465127 on 2023-09-16 16:14_
+_@89465127_
 
 In most of my projects, I use isort, autoflake, pyupgrade, and black. Love that I can potentially replace the first 3 with ruff. Ideally, I would like to replace all of these, including black, with just ruff.
 

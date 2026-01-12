@@ -13,14 +13,14 @@ head: konsti/build-backend-pep753
 created_at: 2024-10-03T15:51:10Z
 updated_at: 2024-11-05T14:13:41Z
 url: https://github.com/astral-sh/uv/pull/7901
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:04Z
 ```
 
 # Implement build backend metadata
 
 ---
 
-_Pull request opened by @konstin on 2024-10-03 15:51_
+_@konstin_
 
 Implements https://peps.python.org/pep-0753/#label-normalization
 

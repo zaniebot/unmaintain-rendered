@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-03T22:33:06Z
 updated_at: 2023-05-19T16:17:15Z
 url: https://github.com/astral-sh/ruff/issues/2558
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Ability to extend per-file-ignored
 
 ---
 
-_Issue opened by @Alphasite on 2023-02-03 22:33_
+_@Alphasite_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

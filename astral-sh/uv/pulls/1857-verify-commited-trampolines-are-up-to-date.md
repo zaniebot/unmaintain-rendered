@@ -13,14 +13,14 @@ head: verify-commited-trampoline
 created_at: 2024-02-22T06:47:28Z
 updated_at: 2024-02-22T13:40:27Z
 url: https://github.com/astral-sh/uv/pull/1857
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:45Z
 ```
 
 # Verify commited trampolines are up to date
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-22 06:47_
+_@MichaReiser_
 
 ## Summary
 

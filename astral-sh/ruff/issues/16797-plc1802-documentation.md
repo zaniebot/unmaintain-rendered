@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-17T10:48:08Z
 updated_at: 2025-03-23T14:40:59Z
 url: https://github.com/astral-sh/ruff/issues/16797
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PLC1802 documentation
 
 ---
 
-_Issue opened by @DaniBodor on 2025-03-17 10:48_
+_@DaniBodor_
 
 ### Summary
 

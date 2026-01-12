@@ -13,14 +13,14 @@ head: konsti/follop-up-13814
 created_at: 2025-06-04T14:52:31Z
 updated_at: 2025-06-04T15:02:27Z
 url: https://github.com/astral-sh/uv/pull/13839
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:53Z
 ```
 
 # Follow-up #13814, git+ssh test case
 
 ---
 
-_Pull request opened by @konstin on 2025-06-04 14:52_
+_@konstin_
 
 Follow-ups to review on #13814
 

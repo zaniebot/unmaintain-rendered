@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-23T17:19:00Z
 updated_at: 2023-08-25T19:26:53Z
 url: https://github.com/astral-sh/ruff/issues/6821
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Ignoring commented-out code with noqa: ERA001 may still trigger RUF100
 
 ---
 
-_Issue opened by @yigor on 2023-08-23 17:19_
+_@yigor_
 
 Looks like #1148 wasn't completely fixed:
 

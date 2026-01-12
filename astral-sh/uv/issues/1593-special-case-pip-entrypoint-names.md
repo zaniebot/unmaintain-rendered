@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-17T14:28:36Z
 updated_at: 2024-03-01T09:05:51Z
 url: https://github.com/astral-sh/uv/issues/1593
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Special case pip entrypoint names
 
 ---
 
-_Issue opened by @woutervh on 2024-02-17 14:28_
+_@woutervh_
 
 on Alma Linux 9.2,  using uv 0.1.3
 python3.x  all installed via pyenv

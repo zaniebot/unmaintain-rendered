@@ -12,14 +12,14 @@ head: charlie/revert
 created_at: 2023-03-27T21:01:12Z
 updated_at: 2023-03-27T21:32:57Z
 url: https://github.com/astral-sh/ruff/pull/3765
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Revert "Implement `flake8-i18n` (#3741)"
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-27 21:01_
+_@charliermarsh_
 
 Reverting #3741 while we figure out licensing questions.
 

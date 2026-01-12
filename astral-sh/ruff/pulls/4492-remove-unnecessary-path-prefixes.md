@@ -13,14 +13,14 @@ head: charlie/path-prefix
 created_at: 2023-05-18T13:50:01Z
 updated_at: 2023-05-18T14:25:02Z
 url: https://github.com/astral-sh/ruff/pull/4492
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Remove unnecessary path prefixes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-18 13:50_
+_@charliermarsh_
 
 Via PyCharm inspection, mostly.
 

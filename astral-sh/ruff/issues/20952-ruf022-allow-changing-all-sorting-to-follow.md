@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-17T22:24:22Z
 updated_at: 2025-10-20T14:16:01Z
 url: https://github.com/astral-sh/ruff/issues/20952
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF022: allow changing `__all__` sorting to follow definition order
 
 ---
 
-_Issue opened by @Jackenmen on 2025-10-17 22:24_
+_@Jackenmen_
 
 ### Summary
 

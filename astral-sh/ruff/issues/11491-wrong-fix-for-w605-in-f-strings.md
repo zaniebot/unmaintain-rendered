@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-22T07:27:31Z
 updated_at: 2024-12-04T13:02:10Z
 url: https://github.com/astral-sh/ruff/issues/11491
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Wrong fix for W605 in f-strings
 
 ---
 
-_Issue opened by @FreeHarry on 2024-05-22 07:27_
+_@FreeHarry_
 
 Python: 3.12.3
 Version: ruff 0.4.4

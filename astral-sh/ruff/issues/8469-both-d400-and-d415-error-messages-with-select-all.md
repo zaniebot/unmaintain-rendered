@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-03T12:56:55Z
 updated_at: 2023-11-03T16:56:43Z
 url: https://github.com/astral-sh/ruff/issues/8469
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Both D400 and D415 error messages with `--select ALL`
 
 ---
 
-_Issue opened by @DimitriPapadopoulos on 2023-11-03 12:56_
+_@DimitriPapadopoulos_
 
 When selecting ALL rules or just D400 and D415, D415 should take precedence over D400 (or the reverse?) so that ruff prints a single error message instead of two messages:
 * ```python

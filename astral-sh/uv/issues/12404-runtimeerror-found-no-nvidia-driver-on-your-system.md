@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-23T22:26:54Z
 updated_at: 2025-07-10T10:28:55Z
 url: https://github.com/astral-sh/uv/issues/12404
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # RuntimeError: Found no NVIDIA driver on your system
 
 ---
 
-_Issue opened by @aleenprd on 2025-03-23 22:26_
+_@aleenprd_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: feature/gh-20601
 created_at: 2025-09-29T17:48:47Z
 updated_at: 2025-09-30T21:11:35Z
 url: https://github.com/astral-sh/ruff/pull/20634
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # [`pyupgrade`] Prevent infinite loop with `I002` and `UP026`
 
 ---
 
-_Pull request opened by @IDrokin117 on 2025-09-29 17:48_
+_@IDrokin117_
 
 ## Summary
 Closes #20601

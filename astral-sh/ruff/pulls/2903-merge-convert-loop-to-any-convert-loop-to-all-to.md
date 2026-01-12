@@ -12,14 +12,14 @@ head: reimplemented-builtin
 created_at: 2023-02-14T22:20:24Z
 updated_at: 2023-02-16T17:21:18Z
 url: https://github.com/astral-sh/ruff/pull/2903
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Merge convert-loop-to-any & convert-loop-to-all to reimplemented-builtin
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-02-14 22:20_
+_@not-my-profile_
 
 Part of #2714.
 

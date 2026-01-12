@@ -12,14 +12,14 @@ head: registry-index-package-version
 created_at: 2023-12-04T14:21:08Z
 updated_at: 2023-12-04T19:32:34Z
 url: https://github.com/astral-sh/uv/pull/543
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:01Z
 ```
 
 # Use version in `RegistryIndex`
 
 ---
 
-_Pull request opened by @konstin on 2023-12-04 14:21_
+_@konstin_
 
 When building up the `RegistryIndex`, index by both package name and version to fix #537.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-20T11:59:52Z
 updated_at: 2025-10-20T12:26:04Z
 url: https://github.com/astral-sh/uv/issues/16374
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:30Z
 ```
 
 # `native-tls` doesn't work on MacOS 26.0.1
 
 ---
 
-_Issue opened by @kamransoomro84 on 2025-10-20 11:59_
+_@kamransoomro84_
 
 ### Summary
 

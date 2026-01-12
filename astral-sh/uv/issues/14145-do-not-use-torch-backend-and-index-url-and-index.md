@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-19T16:07:48Z
 updated_at: 2025-06-19T16:56:20Z
 url: https://github.com/astral-sh/uv/issues/14145
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # Do not use ``torch-backend`` and ``*index-url`` and ``*index`` simultaneously.
 
 ---
 
-_Issue opened by @FishAlchemist on 2025-06-19 16:07_
+_@FishAlchemist_
 
 ### Summary
 

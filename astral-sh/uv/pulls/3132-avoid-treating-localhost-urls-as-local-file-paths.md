@@ -13,14 +13,14 @@ head: charlie/localhost
 created_at: 2024-04-19T00:30:32Z
 updated_at: 2024-04-19T00:37:34Z
 url: https://github.com/astral-sh/uv/pull/3132
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:26Z
 ```
 
 # Avoid treating localhost URLs as local file paths
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-19 00:30_
+_@charliermarsh_
 
 ## Summary
 

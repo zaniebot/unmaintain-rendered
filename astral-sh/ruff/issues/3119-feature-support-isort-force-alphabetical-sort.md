@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-22T11:17:12Z
 updated_at: 2025-11-23T09:33:33Z
 url: https://github.com/astral-sh/ruff/issues/3119
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Feature: Support isort force_alphabetical_sort
 
 ---
 
-_Issue opened by @jensens on 2023-02-22 11:17_
+_@jensens_
 
 The isort module provides a way to sort alphabetically using `force_alphabetical_sort = true`, which is very handy in large projects. In Plone we use use this option - it's part of the style-guide. 
 

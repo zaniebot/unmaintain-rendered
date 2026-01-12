@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-29T14:48:00Z
 updated_at: 2025-11-02T18:38:10Z
 url: https://github.com/astral-sh/uv/issues/16496
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # Build resolutions need different hints
 
 ---
 
-_Issue opened by @zanieb on 2025-10-29 14:48_
+_@zanieb_
 
 When a build resolution fails, we don't go through our `NoSolutionError` hint generation. e.g., in a case like https://github.com/astral-sh/uv/issues/16494 we don't provide our pre-release hint.
 

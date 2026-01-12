@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-08T01:11:33Z
 updated_at: 2025-08-11T03:12:22Z
 url: https://github.com/astral-sh/ruff/issues/19817
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Rule request: Avoid mutable types for `dict.fromkeys.value`
 
 ---
 
-_Issue opened by @hunterhogan on 2025-08-08 01:11_
+_@hunterhogan_
 
 ### Summary
 

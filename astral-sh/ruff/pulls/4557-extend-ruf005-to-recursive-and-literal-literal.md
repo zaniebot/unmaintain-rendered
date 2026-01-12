@@ -12,14 +12,14 @@ head: fix-RUF005
 created_at: 2023-05-21T03:44:25Z
 updated_at: 2023-05-24T01:42:10Z
 url: https://github.com/astral-sh/ruff/pull/4557
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Extend `RUF005` to recursive and literal-literal concatenations
 
 ---
 
-_Pull request opened by @hoel-bagard on 2023-05-21 03:44_
+_@hoel-bagard_
 
 This attempts to fix https://github.com/charliermarsh/ruff/issues/3496.
 

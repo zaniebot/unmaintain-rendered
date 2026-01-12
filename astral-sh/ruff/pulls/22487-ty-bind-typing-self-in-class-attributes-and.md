@@ -12,14 +12,14 @@ head: charlie/self
 created_at: 2026-01-09T23:24:18Z
 updated_at: 2026-01-10T17:28:32Z
 url: https://github.com/astral-sh/ruff/pull/22487
-synced_at: 2026-01-12T02:32:44Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [ty] Bind `typing.Self` in class attributes and assignment
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-09 23:24_
+_@charliermarsh_
 
 ## Summary
 

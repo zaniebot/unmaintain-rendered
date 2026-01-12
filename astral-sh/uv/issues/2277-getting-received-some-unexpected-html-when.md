@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-07T14:12:59Z
 updated_at: 2024-03-08T20:31:29Z
 url: https://github.com/astral-sh/uv/issues/2277
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Getting "Received some unexpected HTML when working with" error installing from extra-index
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-07 14:12_
+_@charliermarsh_
 
 Originally reported by @korneevm.
 

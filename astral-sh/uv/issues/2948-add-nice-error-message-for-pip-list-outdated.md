@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-09T23:01:12Z
 updated_at: 2024-04-16T13:31:02Z
 url: https://github.com/astral-sh/uv/issues/2948
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Add nice error message for `pip list --outdated` 
 
 ---
 
-_Issue opened by @zanieb on 2024-04-09 23:01_
+_@zanieb_
 
 This flag is unsupported at this time (see #2150), we should add a dedicated message as in https://github.com/astral-sh/uv/pull/1139 to avoid confusion in the meantime.
 

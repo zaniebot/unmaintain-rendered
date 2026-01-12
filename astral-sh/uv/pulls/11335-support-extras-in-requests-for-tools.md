@@ -13,14 +13,14 @@ head: charlie/ex
 created_at: 2025-02-08T01:51:06Z
 updated_at: 2025-02-08T02:07:17Z
 url: https://github.com/astral-sh/uv/pull/11335
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:47Z
 ```
 
 # Support extras in `@` requests for tools
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-08 01:51_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: fix/18599-C420-prepend-padding
 created_at: 2025-06-10T19:55:33Z
 updated_at: 2025-06-30T19:00:35Z
 url: https://github.com/astral-sh/ruff/pull/18616
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # [`flake8-comprehensions`] Fix `C420` to prepend whitespace when needed
 
 ---
 
-_Pull request opened by @robsdedude on 2025-06-10 19:55_
+_@robsdedude_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

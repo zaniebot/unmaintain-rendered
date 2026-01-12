@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-02-11T01:03:54Z
 updated_at: 2022-02-11T23:08:53Z
 url: https://github.com/clap-rs/clap/issues/3443
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # add flatten prefix to allow same options to be reused.
 
 ---
 
-_Issue opened by @dan-da on 2022-02-11 01:03_
+_@dan-da_
 
 ### Please complete the following tasks
 

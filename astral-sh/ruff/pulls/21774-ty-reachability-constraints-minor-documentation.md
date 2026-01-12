@@ -14,14 +14,14 @@ head: david/reachability-constraints-docu-updates
 created_at: 2025-12-03T15:26:40Z
 updated_at: 2025-12-03T15:40:13Z
 url: https://github.com/astral-sh/ruff/pull/21774
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Reachability constraints: minor documentation fixes
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-03 15:26_
+_@sharkdp_
 
 _No description provided._
 

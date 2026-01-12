@@ -13,14 +13,14 @@ head: charlie/cache
 created_at: 2024-04-01T02:08:58Z
 updated_at: 2024-04-01T02:22:26Z
 url: https://github.com/astral-sh/uv/pull/2749
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:12Z
 ```
 
 # Remove `Cache` argument from `DistributionDatabase`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-01 02:08_
+_@charliermarsh_
 
 ## Summary
 

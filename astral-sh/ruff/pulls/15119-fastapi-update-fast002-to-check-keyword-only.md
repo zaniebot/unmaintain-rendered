@@ -14,14 +14,14 @@ head: FAST002-keyword-only
 created_at: 2024-12-23T08:07:13Z
 updated_at: 2024-12-23T11:42:03Z
 url: https://github.com/astral-sh/ruff/pull/15119
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`fastapi`] Update `FAST002` to check keyword-only arguments
 
 ---
 
-_Pull request opened by @harupy on 2024-12-23 08:07_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

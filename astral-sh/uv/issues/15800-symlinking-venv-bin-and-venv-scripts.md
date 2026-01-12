@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-12T02:27:05Z
 updated_at: 2025-11-09T14:29:40Z
 url: https://github.com/astral-sh/uv/issues/15800
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # Symlinking `.venv/bin` and `.venv/Scripts`
 
 ---
 
-_Issue opened by @Avasam on 2025-09-12 02:27_
+_@Avasam_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-31T12:16:53Z
 updated_at: 2025-01-14T18:58:37Z
 url: https://github.com/astral-sh/uv/issues/1204
-synced_at: 2026-01-10T04:27:57Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Optimize cold start with refresh by prefetching revalidation requests
 
 ---
 
-_Issue opened by @konstin on 2024-01-31 12:16_
+_@konstin_
 
 If the last request was >10min or when using `--refresh` or , we observe a slow start pattern: We make revalidation requests for direct dependencies first, and only when those succeed, we start scheduling more requests in parallel. Instead, we should assume that the transitive dependency remain the same and already start prefetching revalidation requests for them in the background.
 

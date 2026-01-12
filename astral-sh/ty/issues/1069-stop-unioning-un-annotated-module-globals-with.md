@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-20T22:01:07Z
 updated_at: 2025-10-01T14:40:33Z
 url: https://github.com/astral-sh/ty/issues/1069
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # stop unioning un-annotated module globals with Unknown
 
 ---
 
-_Issue opened by @carljm on 2025-08-20 22:01_
+_@carljm_
 
 Our reasons why we currently union with Unknown are described in https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md
 

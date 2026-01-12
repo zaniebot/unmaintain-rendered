@@ -13,14 +13,14 @@ head: charlie/dedupe
 created_at: 2023-02-15T16:53:57Z
 updated_at: 2023-02-15T17:08:36Z
 url: https://github.com/astral-sh/ruff/pull/2931
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Deduplicate files provided on the command-line
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-15 16:53_
+_@charliermarsh_
 
 Closes #2865.
 

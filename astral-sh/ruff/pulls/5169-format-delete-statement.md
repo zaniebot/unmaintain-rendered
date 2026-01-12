@@ -13,14 +13,14 @@ head: stmt-delete
 created_at: 2023-06-17T23:39:02Z
 updated_at: 2023-07-14T07:10:50Z
 url: https://github.com/astral-sh/ruff/pull/5169
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Format `delete` statement
 
 ---
 
-_Pull request opened by @cnpryer on 2023-06-17 23:39_
+_@cnpryer_
 
 ## Summary
 

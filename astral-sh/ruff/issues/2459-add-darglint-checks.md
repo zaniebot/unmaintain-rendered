@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-02T00:11:24Z
 updated_at: 2023-02-02T00:19:40Z
 url: https://github.com/astral-sh/ruff/issues/2459
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Add Darglint Checks
 
 ---
 
-_Issue opened by @rbebb on 2023-02-02 00:11_
+_@rbebb_
 
 It would be amazing if [darglint](https://github.com/terrencepreilly/darglint)’s checks/rules were added to ruff. darglint’s GitHub repo was archived at the end of last year and it’s also quite slow.
 

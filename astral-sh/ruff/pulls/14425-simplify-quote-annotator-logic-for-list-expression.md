@@ -13,14 +13,14 @@ head: dhruv/simplify-quote-annotation
 created_at: 2024-11-18T06:50:12Z
 updated_at: 2024-11-18T07:04:17Z
 url: https://github.com/astral-sh/ruff/pull/14425
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Simplify quote annotator logic for list expression
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-18 06:50_
+_@dhruvmanila_
 
 ## Summary
 

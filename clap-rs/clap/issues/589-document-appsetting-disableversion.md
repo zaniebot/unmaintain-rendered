@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-07-23T07:47:05Z
 updated_at: 2018-08-02T03:29:51Z
 url: https://github.com/clap-rs/clap/issues/589
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Document AppSetting::DisableVersion
 
 ---
 
-_Issue opened by @freshstrangemusic on 2016-07-23 07:47_
+_@freshstrangemusic_
 
 Currently, the `AppSetting::DisableVersion` setting is undocumented. From what I can tell, this setting is used to disable version flag on subcommand when the app (or super-command) uses `AppSettings::VersionlessSubcommands`.
 

@@ -14,14 +14,14 @@ head: konsti/rust-2024
 created_at: 2024-11-27T10:20:03Z
 updated_at: 2024-12-10T17:05:13Z
 url: https://github.com/astral-sh/uv/pull/9463
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:49Z
 ```
 
 # Migrate to edition 2024
 
 ---
 
-_Pull request opened by @konstin on 2024-11-27 10:20_
+_@konstin_
 
 Following https://blog.rust-lang.org/2024/11/27/Rust-2024-public-testing.html, i tried migrating uv to rust 2024.
 

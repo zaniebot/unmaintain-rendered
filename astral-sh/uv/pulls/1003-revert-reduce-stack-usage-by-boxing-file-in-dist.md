@@ -12,14 +12,14 @@ head: revert-947-konsti/reduce-stack-usage
 created_at: 2024-01-19T09:30:30Z
 updated_at: 2024-01-19T13:17:30Z
 url: https://github.com/astral-sh/uv/pull/1003
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:21Z
 ```
 
 # Revert "Reduce stack usage by boxing `File` in `Dist`, `CachePolicy` and large futures"
 
 ---
 
-_Pull request opened by @konstin on 2024-01-19 09:30_
+_@konstin_
 
 Reverts astral-sh/puffin#947
 

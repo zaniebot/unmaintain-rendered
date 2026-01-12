@@ -13,14 +13,14 @@ head: charlie/inline
 created_at: 2024-01-06T23:08:56Z
 updated_at: 2024-01-06T23:13:46Z
 url: https://github.com/astral-sh/uv/pull/822
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:13Z
 ```
 
 # Inline some format placeholders
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-06 23:08_
+_@charliermarsh_
 
 _No description provided._
 

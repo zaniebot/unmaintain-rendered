@@ -12,14 +12,14 @@ head: flake8-module-names
 created_at: 2023-02-13T12:51:11Z
 updated_at: 2023-02-20T10:12:35Z
 url: https://github.com/astral-sh/ruff/pull/2855
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Implement `flake8-module-naming`
 
 ---
 
-_Pull request opened by @sbrugman on 2023-02-13 12:51_
+_@sbrugman_
 
 - Implement N999 (following flake8-module-naming) in pep8_naming
 - Refactor pep8_naming: split rules.rs into file per rule

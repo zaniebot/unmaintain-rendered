@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-22T06:13:24Z
 updated_at: 2025-07-24T12:05:01Z
 url: https://github.com/astral-sh/ruff/issues/18248
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Feedback on E116 (preview rule)
 
 ---
 
-_Issue opened by @dimaqq on 2025-05-22 06:13_
+_@dimaqq_
 
 https://docs.astral.sh/ruff/rules/unexpected-indentation-comment/
 

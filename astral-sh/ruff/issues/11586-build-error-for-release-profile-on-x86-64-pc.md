@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-28T21:23:20Z
 updated_at: 2025-02-21T11:50:43Z
 url: https://github.com/astral-sh/ruff/issues/11586
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Build error for release profile on `x86_64-pc-windows-gnu`
 
 ---
 
-_Issue opened by @T-256 on 2024-05-28 21:23_
+_@T-256_
 
 Debug profile, built successfully, but release profile produces errors. here is log file:
 [err.log](https://github.com/astral-sh/ruff/files/15476110/err.log)

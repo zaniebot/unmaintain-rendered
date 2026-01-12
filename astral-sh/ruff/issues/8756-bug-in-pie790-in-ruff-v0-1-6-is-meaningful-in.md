@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-18T16:42:45Z
 updated_at: 2024-03-12T14:41:04Z
 url: https://github.com/astral-sh/ruff/issues/8756
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Bug in PIE790 in Ruff v0.1.6 (`...` is meaningful in protocol methods and should not be removed)
 
 ---
 
-_Issue opened by @kkom on 2023-11-18 16:42_
+_@kkom_
 
 Hey, I've got a regression in Ruff 0.1.6 to report.
 

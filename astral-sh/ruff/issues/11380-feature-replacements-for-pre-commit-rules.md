@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-12T15:59:59Z
 updated_at: 2024-07-17T06:33:52Z
 url: https://github.com/astral-sh/ruff/issues/11380
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Feature: Replacements for pre-commit rules
 
 ---
 
-_Issue opened by @glensc on 2024-05-12 15:59_
+_@glensc_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

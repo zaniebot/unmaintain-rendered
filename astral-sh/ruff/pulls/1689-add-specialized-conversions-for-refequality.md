@@ -12,14 +12,14 @@ head: charlie/deref
 created_at: 2023-01-06T13:05:13Z
 updated_at: 2023-01-06T15:02:18Z
 url: https://github.com/astral-sh/ruff/pull/1689
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add specialized conversions for RefEquality
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-06 13:05_
+_@charliermarsh_
 
 _No description provided._
 

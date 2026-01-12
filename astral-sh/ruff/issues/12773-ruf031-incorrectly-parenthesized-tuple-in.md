@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-09T05:36:34Z
 updated_at: 2024-08-09T05:53:49Z
 url: https://github.com/astral-sh/ruff/issues/12773
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `RUF031` (`incorrectly-parenthesized-tuple-in-subscript`) - false positive on types
 
 ---
 
-_Issue opened by @DetachHead on 2024-08-09 05:36_
+_@DetachHead_
 
 ```toml
 # ruff.toml

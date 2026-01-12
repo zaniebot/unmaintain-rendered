@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-09-12T10:29:52Z
 updated_at: 2024-10-24T14:32:57Z
 url: https://github.com/astral-sh/ruff/issues/167
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Enforce import from `__all__` (at least locally)
 
 ---
 
-_Issue opened by @samuelcolvin on 2022-09-12 10:29_
+_@samuelcolvin_
 
 I understand that ruff can't check imports are valid in a general way, but it would be great if ruff could check local (relative) imports only import things listed in `__all__` where `__all__` is defined.
 

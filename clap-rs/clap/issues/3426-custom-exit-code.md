@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-02-09T09:04:17Z
 updated_at: 2023-06-19T17:49:38Z
 url: https://github.com/clap-rs/clap/issues/3426
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Custom exit code
 
 ---
 
-_Issue opened by @tertsdiepraam on 2022-02-09 09:04_
+_@tertsdiepraam_
 
 ### Please complete the following tasks
 

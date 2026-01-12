@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-20T09:44:05Z
 updated_at: 2025-05-20T13:14:11Z
 url: https://github.com/astral-sh/ty/issues/458
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [panic] dependency graph cycle when querying value_type_(Id(6400)), set cycle_fn/cycle_initial to fixpoint iterate
 
 ---
 
-_Issue opened by @aslpavel on 2025-05-20 09:44_
+_@aslpavel_
 
 Panic as the result of running `uvx ty check ukanren.py`
 

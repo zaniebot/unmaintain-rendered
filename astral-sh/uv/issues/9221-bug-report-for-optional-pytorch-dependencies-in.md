@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-19T11:43:52Z
 updated_at: 2024-11-20T10:34:29Z
 url: https://github.com/astral-sh/uv/issues/9221
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # Bug Report for Optional PyTorch Dependencies in `pyproject.toml`
 
 ---
 
-_Issue opened by @orkhank on 2024-11-19 11:43_
+_@orkhank_
 
 #### Issue Description
 The example configuration for optional PyTorch dependencies introduced in #9210 is causing errors during execution. Specifically, `uv` does not recognize the `extra` key used for specifying sources, resulting in a TOML parse error.

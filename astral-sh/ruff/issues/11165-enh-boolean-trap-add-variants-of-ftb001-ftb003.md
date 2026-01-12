@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-26T14:08:44Z
 updated_at: 2024-04-30T08:41:34Z
 url: https://github.com/astral-sh/ruff/issues/11165
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # [ENH] Boolean-Trap: add variants of `FTB001`-`FTB003` for `None`.
 
 ---
 
-_Issue opened by @randolf-scholz on 2024-04-26 14:08_
+_@randolf-scholz_
 
 The same rationale behind the Boolean-Trap can be applied to `None` arguments, especially rule [FBT003](https://docs.astral.sh/ruff/rules/boolean-positional-value-in-call/)
 

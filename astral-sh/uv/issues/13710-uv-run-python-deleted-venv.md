@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T21:26:37Z
 updated_at: 2025-07-04T02:16:53Z
 url: https://github.com/astral-sh/uv/issues/13710
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # uv run python deleted .venv
 
 ---
 
-_Issue opened by @acscott on 2025-05-28 21:26_
+_@acscott_
 
 ### Summary
 

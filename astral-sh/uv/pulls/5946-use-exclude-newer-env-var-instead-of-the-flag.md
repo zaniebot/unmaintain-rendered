@@ -13,14 +13,14 @@ head: exclude-newer-env-var
 created_at: 2024-08-09T00:15:10Z
 updated_at: 2024-08-09T13:28:06Z
 url: https://github.com/astral-sh/uv/pull/5946
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:07Z
 ```
 
 # use exclude newer env var instead of the flag
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-08-09 00:15_
+_@ChannyClaus_
 
 ## Summary
 resolves https://github.com/astral-sh/uv/issues/5879

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-07T02:13:28Z
 updated_at: 2024-11-07T06:09:02Z
 url: https://github.com/astral-sh/ruff/issues/14145
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `bad-dunder-method-name` (`PLW3201`) - false positive on `__replace__` dunder
 
 ---
 
-_Issue opened by @DetachHead on 2024-11-07 02:13_
+_@DetachHead_
 
 ```py
 from copy import replace

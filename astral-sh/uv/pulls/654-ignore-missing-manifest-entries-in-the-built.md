@@ -13,14 +13,14 @@ head: charlie/cache-entry
 created_at: 2023-12-15T04:10:52Z
 updated_at: 2023-12-15T17:24:11Z
 url: https://github.com/astral-sh/uv/pull/654
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:06Z
 ```
 
 # Ignore missing manifest entries in the built wheel cache
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-15 04:10_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-01T16:39:59Z
 updated_at: 2022-11-05T19:59:20Z
 url: https://github.com/astral-sh/ruff/issues/532
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Move utility scripts out of `/examples`
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-01 16:39_
+_@charliermarsh_
 
 _No description provided._
 

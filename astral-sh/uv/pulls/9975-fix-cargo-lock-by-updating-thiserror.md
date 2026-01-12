@@ -13,14 +13,14 @@ head: zb/fix-lock
 created_at: 2024-12-17T16:53:21Z
 updated_at: 2024-12-17T16:53:46Z
 url: https://github.com/astral-sh/uv/pull/9975
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:04Z
 ```
 
 # Fix `Cargo.lock` by updating thiserror
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-17 16:53_
+_@zanieb_
 
 _No description provided._
 

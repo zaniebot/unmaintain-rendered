@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-24T13:49:11Z
 updated_at: 2025-11-12T17:03:23Z
 url: https://github.com/astral-sh/uv/issues/9395
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:49Z
 ```
 
 # `uv sync` with  `--prerelease` fails unexpectedly
 
 ---
 
-_Issue opened by @dariocurr on 2024-11-24 13:49_
+_@dariocurr_
 
 I’m working with the following setup:
 	1.	library A: currently in development with version `0.2.0.dev2`

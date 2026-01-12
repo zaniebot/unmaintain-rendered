@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-12T08:47:04Z
 updated_at: 2024-09-14T00:29:05Z
 url: https://github.com/astral-sh/uv/issues/7326
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Inconsistent error output when multiple PEP violations are present in pyproject.toml
 
 ---
 
-_Issue opened by @benjaminbauer on 2024-09-12 08:47_
+_@benjaminbauer_
 
 I am running `uv lock` (0.4.9, linux/arm) on a `uv init example` project where I added:
 

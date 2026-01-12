@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-24T18:43:19Z
 updated_at: 2023-08-21T08:25:45Z
 url: https://github.com/astral-sh/ruff/issues/3717
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Autofix error] Simple string cause autofix  error
 
 ---
 
-_Issue opened by @qarmin on 2023-03-24 18:43_
+_@qarmin_
 
 Ruff  1bac206995043d7d533338b7f8b7db37f37bf43b
 

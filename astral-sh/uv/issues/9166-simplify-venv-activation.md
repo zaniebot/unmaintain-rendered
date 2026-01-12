@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-16T15:51:31Z
 updated_at: 2024-11-18T01:15:50Z
 url: https://github.com/astral-sh/uv/issues/9166
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # simplify venv activation
 
 ---
 
-_Issue opened by @zkurtz on 2024-11-16 15:51_
+_@zkurtz_
 
 Feature request: `source .venv/bin/activate` takes too long to remember and type. Can this be as easy as `uv activate` or `uv start` for the default venv name?
 

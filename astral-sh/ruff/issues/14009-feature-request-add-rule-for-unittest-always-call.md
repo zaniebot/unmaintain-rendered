@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-31T01:04:29Z
 updated_at: 2025-01-13T23:32:42Z
 url: https://github.com/astral-sh/ruff/issues/14009
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Feature request: add rule for `unittest` - always call `super().<setUp|tearDown|setUpClass|tearDownClass>()`
 
 ---
 
-_Issue opened by @AdrianB-sovo on 2024-10-31 01:04_
+_@AdrianB-sovo_
 
 In my tests, I'd like to make sure that all my derived classes of `unittest.TestCase` call the corresponding `super()` method for the methods `setUp()`, `tearDown()`, `setUpClass()` and `tearDownClass()`.
 

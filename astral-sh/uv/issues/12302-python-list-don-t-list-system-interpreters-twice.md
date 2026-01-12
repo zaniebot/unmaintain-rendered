@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-18T22:49:29Z
 updated_at: 2025-04-03T16:13:08Z
 url: https://github.com/astral-sh/uv/issues/12302
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # python list: don't list system interpreters twice when directories are symlinked
 
 ---
 
-_Issue opened by @gotmax23 on 2025-03-18 22:49_
+_@gotmax23_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-05T18:00:28Z
 updated_at: 2025-12-22T12:53:49Z
 url: https://github.com/astral-sh/ty/issues/1781
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Server: renaming a property getter should also cause the setter and deleter to be renamed (if they're present)
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-05 18:00_
+_@AlexWaygood_
 
 ### Summary
 

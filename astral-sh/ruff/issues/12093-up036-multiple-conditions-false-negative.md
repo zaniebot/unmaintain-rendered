@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-28T14:18:59Z
 updated_at: 2025-03-04T10:19:45Z
 url: https://github.com/astral-sh/ruff/issues/12093
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # UP036 multiple conditions false negative
 
 ---
 
-_Issue opened by @gamer191 on 2024-06-28 14:18_
+_@gamer191_
 
 UP036 doesn't work if there are multiple conditions. For a file Test2.txt with the text:
 ```

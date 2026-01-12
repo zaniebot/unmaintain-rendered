@@ -13,14 +13,14 @@ head: konsti/better-retry-handling-2
 created_at: 2025-12-12T11:05:17Z
 updated_at: 2025-12-12T17:02:52Z
 url: https://github.com/astral-sh/uv/pull/17098
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:36Z
 ```
 
 # Avoid panics due to reads on failed requests
 
 ---
 
-_Pull request opened by @konstin on 2025-12-12 11:05_
+_@konstin_
 
 Fixes https://github.com/astral-sh/uv/issues/17090, specifically the panic, not the upstream bug.
 

@@ -13,14 +13,14 @@ head: pythonw-search
 created_at: 2024-06-19T00:46:16Z
 updated_at: 2024-06-23T15:12:34Z
 url: https://github.com/astral-sh/uv/pull/4409
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:12Z
 ```
 
 # feat: pythonw support on gui scripts
 
 ---
 
-_Pull request opened by @samypr100 on 2024-06-19 00:46_
+_@samypr100_
 
 ## Summary
 

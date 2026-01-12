@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-09-04T20:35:36Z
 updated_at: 2022-09-05T17:15:29Z
 url: https://github.com/astral-sh/ruff/issues/103
-synced_at: 2026-01-10T15:56:04Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Raise an error when a user attempts to lint a non-existent file
 
 ---
 
-_Issue opened by @charliermarsh on 2022-09-04 20:35_
+_@charliermarsh_
 
 `ruff foo/bar/non_existent_file.py` runs without issue (but should error).
 

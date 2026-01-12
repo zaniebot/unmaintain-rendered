@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T17:09:03Z
 updated_at: 2024-11-20T17:29:58Z
 url: https://github.com/astral-sh/uv/issues/9282
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # Add a progress bar for `uv tree --outdated`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-11-20 17:09_
+_@charliermarsh_
 
 _No description provided._
 

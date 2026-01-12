@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-03-16T03:11:40Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/451
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Wrap help at specified width regardless of term width
 
 ---
 
-_Issue opened by @kbknapp on 2016-03-16 03:11_
+_@kbknapp_
 
 As is mentioned in #450
 

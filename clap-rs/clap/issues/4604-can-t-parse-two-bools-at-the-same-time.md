@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-04T09:20:37Z
 updated_at: 2023-01-31T22:11:18Z
 url: https://github.com/clap-rs/clap/issues/4604
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Can't parse two bools at the same time
 
 ---
 
-_Issue opened by @ghost on 2023-01-04 09:20_
+_@ghost_
 
 ### Please complete the following tasks
 

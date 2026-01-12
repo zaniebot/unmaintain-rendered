@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-20T13:53:51Z
 updated_at: 2023-11-21T20:06:19Z
 url: https://github.com/astral-sh/ruff/issues/8787
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # False positive redefined-while-unused (F811) for function in __all__
 
 ---
 
-_Issue opened by @Tinche on 2023-11-20 13:53_
+_@Tinche_
 
 Howdy again.
 

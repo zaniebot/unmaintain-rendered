@@ -12,14 +12,14 @@ head: charlie/sync
 created_at: 2024-05-07T19:16:12Z
 updated_at: 2024-05-08T14:51:53Z
 url: https://github.com/astral-sh/uv/pull/3436
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:38Z
 ```
 
 # Add basic `uv sync` and `uv lock` commands
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-07 19:16_
+_@charliermarsh_
 
 ## Summary
 

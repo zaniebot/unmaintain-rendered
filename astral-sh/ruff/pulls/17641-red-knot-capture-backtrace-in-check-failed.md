@@ -13,14 +13,14 @@ head: micha/capture-backtrace
 created_at: 2025-04-26T10:14:05Z
 updated_at: 2025-04-29T16:59:00Z
 url: https://github.com/astral-sh/ruff/pull/17641
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Capture backtrace in "check-failed" diagnostic
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-26 10:14_
+_@MichaReiser_
 
 ## Summary
 

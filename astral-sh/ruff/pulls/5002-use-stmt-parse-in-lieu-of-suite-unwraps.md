@@ -13,14 +13,14 @@ head: charlie/unwrap
 created_at: 2023-06-10T04:21:03Z
 updated_at: 2023-06-10T05:11:25Z
 url: https://github.com/astral-sh/ruff/pull/5002
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Use `Stmt::parse` in lieu of `Suite` unwraps
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-10 04:21_
+_@charliermarsh_
 
 _No description provided._
 

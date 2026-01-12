@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-21T18:51:29Z
 updated_at: 2024-05-21T18:52:17Z
 url: https://github.com/astral-sh/uv/issues/3716
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Avoid reference to root when pinned requirements are incompatible
 
 ---
 
-_Issue opened by @zanieb on 2024-05-21 18:51_
+_@zanieb_
 
 See https://github.com/astral-sh/uv/pull/3711
 

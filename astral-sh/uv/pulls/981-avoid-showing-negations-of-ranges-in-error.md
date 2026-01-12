@@ -13,14 +13,14 @@ head: zb/negation-single
 created_at: 2024-01-18T23:50:13Z
 updated_at: 2024-01-19T17:07:16Z
 url: https://github.com/astral-sh/uv/pull/981
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:20Z
 ```
 
 # Avoid showing negations of ranges in error messages
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-18 23:50_
+_@zanieb_
 
 Closes https://github.com/astral-sh/puffin/issues/980
 

@@ -13,14 +13,14 @@ head: charlie/release
 created_at: 2024-01-18T05:10:24Z
 updated_at: 2024-01-18T20:44:12Z
 url: https://github.com/astral-sh/uv/pull/961
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:19Z
 ```
 
 # Add release workflow
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-18 05:10_
+_@charliermarsh_
 
 ## Summary
 

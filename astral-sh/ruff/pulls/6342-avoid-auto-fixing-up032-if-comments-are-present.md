@@ -14,14 +14,14 @@ head: UP032-comment-autofix
 created_at: 2023-08-04T14:08:05Z
 updated_at: 2023-08-04T15:59:59Z
 url: https://github.com/astral-sh/ruff/pull/6342
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Avoid auto-fixing UP032 if comments are present around format call arguments
 
 ---
 
-_Pull request opened by @harupy on 2023-08-04 14:08_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

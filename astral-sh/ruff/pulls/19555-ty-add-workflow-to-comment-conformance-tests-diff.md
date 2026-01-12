@@ -15,14 +15,14 @@ head: dhruv/conformance-tests-diff
 created_at: 2025-07-25T13:07:19Z
 updated_at: 2025-07-28T06:03:24Z
 url: https://github.com/astral-sh/ruff/pull/19555
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Add workflow to comment conformance tests diff
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-25 13:07_
+_@dhruvmanila_
 
 ## Summary
 

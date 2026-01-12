@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-01T02:08:47Z
 updated_at: 2025-09-01T07:30:09Z
 url: https://github.com/astral-sh/uv/issues/15614
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # Add a pyproject.toml config, which will be equivalent to the --all-extras command-line argument for uv sync
 
 ---
 
-_Issue opened by @pygarap on 2025-09-01 02:08_
+_@pygarap_
 
 ### Summary
 

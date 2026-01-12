@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-12T16:59:21Z
 updated_at: 2025-09-19T12:40:56Z
 url: https://github.com/astral-sh/uv/issues/15818
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # `native-auth` store is not read for domain during `uv -v sync`
 
 ---
 
-_Issue opened by @zanieb on 2025-09-12 16:59_
+_@zanieb_
 
 > The native store doesn't support "prefix" matches yet. I think we need to fix that before you example will work. Can you login to `www.reportlab.com` instead? (We do support domain-level matches)
 > 

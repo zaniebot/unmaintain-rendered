@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-14T13:31:07Z
 updated_at: 2023-08-16T07:11:36Z
 url: https://github.com/astral-sh/ruff/issues/6560
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Drops `/` separator in lambdas if it is the last parameter
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-14 13:31_
+_@MichaReiser_
 
 
 ```python

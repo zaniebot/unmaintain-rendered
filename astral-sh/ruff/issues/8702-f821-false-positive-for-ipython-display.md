@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-15T18:52:58Z
 updated_at: 2023-11-16T01:58:46Z
 url: https://github.com/astral-sh/ruff/issues/8702
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # F821 false positive for IPython display()
 
 ---
 
-_Issue opened by @guyrosin on 2023-11-15 18:52_
+_@guyrosin_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

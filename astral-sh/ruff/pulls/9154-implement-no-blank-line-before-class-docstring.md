@@ -14,14 +14,14 @@ head: dhruv/no-blank-line-docstring
 created_at: 2023-12-16T01:03:07Z
 updated_at: 2023-12-19T06:43:21Z
 url: https://github.com/astral-sh/ruff/pull/9154
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Implement `no_blank_line_before_class_docstring` preview style
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-12-16 01:03_
+_@dhruvmanila_
 
 ## Summary
 

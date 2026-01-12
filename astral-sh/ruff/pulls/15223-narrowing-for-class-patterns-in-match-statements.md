@@ -13,14 +13,14 @@ head: dcreager/class-match
 created_at: 2025-01-02T16:15:11Z
 updated_at: 2025-01-07T20:58:14Z
 url: https://github.com/astral-sh/ruff/pull/15223
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Narrowing for class patterns in match statements
 
 ---
 
-_Pull request opened by @dcreager on 2025-01-02 16:15_
+_@dcreager_
 
 We now support class patterns in a match statement, adding a narrowing constraint that within the body of that match arm, we can assume that the subject is an instance of that class.
 

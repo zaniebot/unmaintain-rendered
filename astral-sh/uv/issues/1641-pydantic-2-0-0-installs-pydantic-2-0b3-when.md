@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-18T11:54:52Z
 updated_at: 2024-03-09T11:45:46Z
 url: https://github.com/astral-sh/uv/issues/1641
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # pydantic<2.0.0 installs pydantic=2.0b3 when prereleases are allowed
 
 ---
 
-_Issue opened by @erdembanak on 2024-02-18 11:54_
+_@erdembanak_
 
 Using uv 0.1.3, when trying to install pydantic<2.0 with prerelease allow, uv installs pydantic==2.0b3. According to [pubgrub](https://pubgrub-rs-guide.netlify.app/limitations/prerelease_versions), 2.0b3 shouldn't be contained in the set:
 

@@ -12,14 +12,14 @@ head: charlie/sigterm
 created_at: 2024-08-28T02:48:53Z
 updated_at: 2024-11-12T02:47:30Z
 url: https://github.com/astral-sh/uv/pull/6738
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:07:30Z
 ```
 
 # Propagate SIGTERM to `uv run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-28 02:48_
+_@charliermarsh_
 
 ## Summary
 

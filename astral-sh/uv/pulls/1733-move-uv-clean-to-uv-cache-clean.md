@@ -13,14 +13,14 @@ head: charlie/cache-subcommand
 created_at: 2024-02-20T04:07:41Z
 updated_at: 2024-02-20T04:14:06Z
 url: https://github.com/astral-sh/uv/pull/1733
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:42Z
 ```
 
 # Move `uv clean` to `uv cache clean`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-20 04:07_
+_@charliermarsh_
 
 ## Summary
 

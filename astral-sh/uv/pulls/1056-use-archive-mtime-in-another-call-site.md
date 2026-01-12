@@ -13,14 +13,14 @@ head: charlie/arch
 created_at: 2024-01-23T04:38:25Z
 updated_at: 2024-01-23T04:51:19Z
 url: https://github.com/astral-sh/uv/pull/1056
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # Use `archive_mtime` in another call site
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-23 04:38_
+_@charliermarsh_
 
 _Not_ using this was an oversight.
 

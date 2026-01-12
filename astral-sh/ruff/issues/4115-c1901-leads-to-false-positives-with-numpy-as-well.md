@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-04-26T09:46:54Z
 updated_at: 2023-06-22T21:22:06Z
 url: https://github.com/astral-sh/ruff/issues/4115
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # C1901 leads to false positives with numpy (as well)
 
 ---
 
-_Issue opened by @mmarras on 2023-04-26 09:46_
+_@mmarras_
 
 Related to #3517: C1901 leads to false positives with numpy as well. 
 ```pyhton

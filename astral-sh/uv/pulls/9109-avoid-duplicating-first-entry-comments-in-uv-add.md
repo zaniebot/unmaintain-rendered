@@ -13,14 +13,14 @@ head: charlie/dupe
 created_at: 2024-11-14T01:52:43Z
 updated_at: 2024-11-14T02:14:00Z
 url: https://github.com/astral-sh/uv/pull/9109
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:39Z
 ```
 
 # Avoid duplicating first-entry comments in `uv add`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-14 01:52_
+_@charliermarsh_
 
 ## Summary
 

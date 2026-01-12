@@ -14,14 +14,14 @@ head: lambda-as-function
 created_at: 2025-06-02T14:55:24Z
 updated_at: 2025-06-11T10:50:59Z
 url: https://github.com/astral-sh/ruff/pull/18431
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # [ty] Treat lambda functions as instances of types.FunctionType
 
 ---
 
-_Pull request opened by @lipefree on 2025-06-02 14:55_
+_@lipefree_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

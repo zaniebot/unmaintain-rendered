@@ -13,14 +13,14 @@ head: drop_ecosystem_ci
 created_at: 2024-07-31T15:44:32Z
 updated_at: 2024-07-31T16:58:15Z
 url: https://github.com/astral-sh/ruff/pull/12596
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Remove `ecosystem_ci` flag from Ruff CLI
 
 ---
 
-_Pull request opened by @chriskrycho on 2024-07-31 15:44_
+_@chriskrycho_
 
 ## Summary
 

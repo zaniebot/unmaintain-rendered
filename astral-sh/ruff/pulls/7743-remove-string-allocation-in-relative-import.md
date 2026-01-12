@@ -14,14 +14,14 @@ head: charlie/dot
 created_at: 2023-10-01T18:05:35Z
 updated_at: 2023-10-01T18:15:44Z
 url: https://github.com/astral-sh/ruff/pull/7743
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Remove string allocation in relative import formatting
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-01 18:05_
+_@charliermarsh_
 
 _No description provided._
 

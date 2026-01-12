@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-23T03:32:59Z
 updated_at: 2024-05-23T05:00:06Z
 url: https://github.com/astral-sh/ruff/issues/11504
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [Question] Ruff server wraps line
 
 ---
 
-_Issue opened by @qmmp123 on 2024-05-23 03:32_
+_@qmmp123_
 
 I'm using neovim with nvim-lspconfig. Ruff server wraps the line when it exceeds 88 chars but in pyproject.toml I've set `line-length` to 120. What can I do to avoid wrapping line?
 cmd - ruff server --preview

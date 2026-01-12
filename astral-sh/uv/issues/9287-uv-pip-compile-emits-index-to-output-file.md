@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T18:25:05Z
 updated_at: 2024-11-20T19:10:33Z
 url: https://github.com/astral-sh/uv/issues/9287
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # uv pip compile emits index to output file
 
 ---
 
-_Issue opened by @a-shkarupin on 2024-11-20 18:25_
+_@a-shkarupin_
 
 I'm trying to install dependencies from a private repository.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-10T11:21:35Z
 updated_at: 2025-09-29T23:54:27Z
 url: https://github.com/astral-sh/uv/issues/8082
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # uv pip install failes for wheel URLs with placeholder
 
 ---
 
-_Issue opened by @mil-ad on 2024-10-10 11:21_
+_@mil-ad_
 
 I was following the `vllm` [nightly installation guide](https://docs.vllm.ai/en/latest/getting_started/installation.html#install-the-latest-code) where they have this one-liner for installing their nightly wheels:
 

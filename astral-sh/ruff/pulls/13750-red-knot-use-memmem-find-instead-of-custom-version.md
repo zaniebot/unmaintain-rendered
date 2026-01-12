@@ -13,14 +13,14 @@ head: david/infer-bytes-literal-comparisons-follow-up
 created_at: 2024-10-14T12:43:42Z
 updated_at: 2024-10-14T13:17:21Z
 url: https://github.com/astral-sh/ruff/pull/13750
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red knot] Use memmem::find instead of custom version
 
 ---
 
-_Pull request opened by @sharkdp on 2024-10-14 12:43_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

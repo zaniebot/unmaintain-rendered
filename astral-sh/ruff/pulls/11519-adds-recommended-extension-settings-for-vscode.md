@@ -13,14 +13,14 @@ head: evan-vscode-exts
 created_at: 2024-05-23T18:20:21Z
 updated_at: 2024-05-27T11:04:43Z
 url: https://github.com/astral-sh/ruff/pull/11519
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Adds recommended extension settings for vscode
 
 ---
 
-_Pull request opened by @ekohilas on 2024-05-23 18:20_
+_@ekohilas_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

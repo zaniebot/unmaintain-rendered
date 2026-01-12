@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-17T16:02:37Z
 updated_at: 2024-08-17T19:53:56Z
 url: https://github.com/astral-sh/uv/issues/6169
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # uv ignores `python_version` marker when conjoined with platform markers
 
 ---
 
-_Issue opened by @edgarrmondragon on 2024-08-17 16:02_
+_@edgarrmondragon_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

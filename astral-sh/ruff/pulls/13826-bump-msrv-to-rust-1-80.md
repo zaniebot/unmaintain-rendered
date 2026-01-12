@@ -13,14 +13,14 @@ head: micha/rust-1.80-msrv
 created_at: 2024-10-19T19:50:24Z
 updated_at: 2024-10-20T08:55:37Z
 url: https://github.com/astral-sh/ruff/pull/13826
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Bump MSRV to Rust 1.80
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-19 19:50_
+_@MichaReiser_
 
 ## Summary
 

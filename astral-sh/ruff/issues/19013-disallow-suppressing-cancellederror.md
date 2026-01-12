@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-28T17:33:51Z
 updated_at: 2025-07-28T15:17:47Z
 url: https://github.com/astral-sh/ruff/issues/19013
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Disallow suppressing CancelledError
 
 ---
 
-_Issue opened by @Dreamsorcerer on 2025-06-28 17:33_
+_@Dreamsorcerer_
 
 ### Summary
 

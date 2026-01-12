@@ -13,14 +13,14 @@ head: e241-e242
 created_at: 2023-07-26T12:55:40Z
 updated_at: 2023-07-27T19:21:07Z
 url: https://github.com/astral-sh/ruff/pull/6094
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Implement E241 and E242 (tab/multiple ws after commas)
 
 ---
 
-_Pull request opened by @akx on 2023-07-26 12:55_
+_@akx_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-11T09:05:52Z
 updated_at: 2024-06-12T09:24:57Z
 url: https://github.com/astral-sh/ruff/issues/11834
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # SIM117 false alert mixing `async with` and `with` statements
 
 ---
 
-_Issue opened by @rgeronimi on 2024-06-11 09:05_
+_@rgeronimi_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

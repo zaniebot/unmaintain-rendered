@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-09T15:09:39Z
 updated_at: 2025-07-09T15:22:31Z
 url: https://github.com/astral-sh/ty/issues/792
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Nullable parameter is incorrectly parsed in a lambda
 
 ---
 
-_Issue opened by @CorentinDeBoisset on 2025-07-09 15:09_
+_@CorentinDeBoisset_
 
 ### Summary
 

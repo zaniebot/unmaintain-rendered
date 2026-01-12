@@ -12,14 +12,14 @@ head: continue-in-finally-pylint
 created_at: 2023-03-15T16:37:22Z
 updated_at: 2023-03-17T03:03:03Z
 url: https://github.com/astral-sh/ruff/pull/3541
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # [`pylint`]: Implement `continue-in-finally` (`E0116`)
 
 ---
 
-_Pull request opened by @latonis on 2023-03-15 16:37_
+_@latonis_
 
 Rule reference: https://pycodequ.al/docs/pylint-messages/e0116-continue-in-finally.html
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-12T01:36:55Z
 updated_at: 2024-09-12T03:29:45Z
 url: https://github.com/astral-sh/uv/issues/7319
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # FR: Do not update PATH on `uv self update`.
 
 ---
 
-_Issue opened by @ilyagr on 2024-09-12 01:36_
+_@ilyagr_
 
 https://docs.astral.sh/uv/getting-started/installation/#upgrading-uv currently explains that `uv self update` will attempt to update the user's PATH unless the environment variable `INSTALLER_NO_MODIFY_PATH=1` is set.
 

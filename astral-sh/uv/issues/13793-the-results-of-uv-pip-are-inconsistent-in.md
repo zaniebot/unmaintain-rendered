@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-03T02:19:04Z
 updated_at: 2025-06-03T04:29:53Z
 url: https://github.com/astral-sh/uv/issues/13793
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # The results of uv pip are inconsistent in PowerShell and cmd
 
 ---
 
-_Issue opened by @RayLam2022 on 2025-06-03 02:19_
+_@RayLam2022_
 
 ### Question
 

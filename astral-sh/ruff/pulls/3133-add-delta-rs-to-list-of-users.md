@@ -12,14 +12,14 @@ head: add-delta-rs-to-users
 created_at: 2023-02-22T16:37:41Z
 updated_at: 2023-02-22T18:08:08Z
 url: https://github.com/astral-sh/ruff/pull/3133
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # add delta-rs to list of users
 
 ---
 
-_Pull request opened by @marijncv on 2023-02-22 16:37_
+_@marijncv_
 
 The [delta-rs](https://github.com/delta-io/delta-rs) project has adopted `ruff` since [this PR](https://github.com/delta-io/delta-rs/pull/1158).
 

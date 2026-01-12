@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-27T14:59:31Z
 updated_at: 2025-10-27T21:07:11Z
 url: https://github.com/astral-sh/ruff/issues/21098
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FURB142 fix should parenthesize generator expressions
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-27 14:59_
+_@dscorbett_
 
 ### Summary
 

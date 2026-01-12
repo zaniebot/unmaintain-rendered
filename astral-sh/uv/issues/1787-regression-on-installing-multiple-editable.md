@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T23:30:35Z
 updated_at: 2024-02-22T05:00:04Z
 url: https://github.com/astral-sh/uv/issues/1787
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Regression on installing multiple editable dependencies
 
 ---
 
-_Issue opened by @hsheth2 on 2024-02-20 23:30_
+_@hsheth2_
 
 Installing multiple editable versions causes a panic. This used to work with uv 0.1.5, and works with `pip`.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-03T19:13:45Z
 updated_at: 2025-06-30T16:07:03Z
 url: https://github.com/astral-sh/uv/issues/7906
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # OS error 396 when using OneDrive
 
 ---
 
-_Issue opened by @Pdsantos73 on 2024-10-03 19:13_
+_@Pdsantos73_
 
 Trying to install fastapi "uv add fastapi[standard]" is showing the following error:
 

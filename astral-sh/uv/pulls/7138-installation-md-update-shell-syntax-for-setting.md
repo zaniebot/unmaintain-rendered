@@ -13,14 +13,14 @@ head: patch-2
 created_at: 2024-09-06T21:35:17Z
 updated_at: 2024-09-07T15:23:17Z
 url: https://github.com/astral-sh/uv/pull/7138
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:42Z
 ```
 
 # installation.md: update shell syntax for setting env vars
 
 ---
 
-_Pull request opened by @ilyagr on 2024-09-06 21:35_
+_@ilyagr_
 
 I find this more readable; it also no longer requires bash (thought just replacing `bash` with `sh` would achieve that much).
 

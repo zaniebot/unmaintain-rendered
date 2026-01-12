@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-22T09:23:30Z
 updated_at: 2024-02-16T14:58:13Z
 url: https://github.com/astral-sh/ruff/issues/7594
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter: handle comments, quotes, and expressions inside f-strings
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-22 09:23_
+_@dhruvmanila_
 
 This issue is to kickoff a discussion around the formatting for f-strings. With [PEP 701], f-strings changes the behavior with what kind of syntax is allowed:
 

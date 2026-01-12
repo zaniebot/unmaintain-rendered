@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-16T13:54:43Z
 updated_at: 2024-09-18T06:26:07Z
 url: https://github.com/astral-sh/ruff/issues/13369
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Trailing parenthesized function return type comment becomes leading comment
 
 ---
 
-_Issue opened by @MichaReiser on 2024-09-16 13:54_
+_@MichaReiser_
 
 ```python
 def foo(

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-25T14:40:06Z
 updated_at: 2025-04-25T15:09:37Z
 url: https://github.com/astral-sh/ruff/issues/17629
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # B006: Suggest to use field() instead of None for default parameters
 
 ---
 
-_Issue opened by @C0rn3j on 2025-04-25 14:40_
+_@C0rn3j_
 
 ### Summary
 

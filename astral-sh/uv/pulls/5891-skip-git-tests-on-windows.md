@@ -13,14 +13,14 @@ head: zb/windows-git
 created_at: 2024-08-07T20:37:12Z
 updated_at: 2024-08-08T15:37:26Z
 url: https://github.com/astral-sh/uv/pull/5891
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:05Z
 ```
 
 # Skip git tests on Windows
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-07 20:37_
+_@zanieb_
 
 Might be pushing it on test coverage, but these are some of our slowest tests we might get a significant speedup here.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-14T14:51:28Z
 updated_at: 2024-10-24T14:33:03Z
 url: https://github.com/astral-sh/ruff/issues/11426
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Implement --allow-global-unused-variables from PyLint
 
 ---
 
-_Issue opened by @Mellowdv on 2024-05-14 14:51_
+_@Mellowdv_
 
 PyLint allows users to pass --allow-global-unused-variables=n(o) option to catch not only function scope unused variables, but also module scope variables. This would modify rule F841: Unused Variable.
 

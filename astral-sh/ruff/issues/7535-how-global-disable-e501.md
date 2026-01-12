@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-20T08:11:44Z
 updated_at: 2023-09-20T13:05:42Z
 url: https://github.com/astral-sh/ruff/issues/7535
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # How global disable E501?
 
 ---
 
-_Issue opened by @daeeros on 2023-09-20 08:11_
+_@daeeros_
 
 Hello, I am using the extension for Vs Code, how can I disable the E501 error completely? Not in a specific file but globally in all files.
 

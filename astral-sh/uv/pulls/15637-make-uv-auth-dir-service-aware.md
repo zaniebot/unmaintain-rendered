@@ -13,14 +13,14 @@ head: charlie/pyx-auth-dir
 created_at: 2025-09-02T18:55:06Z
 updated_at: 2025-09-03T02:49:19Z
 url: https://github.com/astral-sh/uv/pull/15637
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:52Z
 ```
 
 # Make `uv auth dir` service-aware
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-02 18:55_
+_@charliermarsh_
 
 ## Summary
 

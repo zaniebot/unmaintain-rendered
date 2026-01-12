@@ -13,14 +13,14 @@ head: ruf/wrong-class-body-content
 created_at: 2024-11-26T12:51:24Z
 updated_at: 2024-11-27T13:03:00Z
 url: https://github.com/astral-sh/ruff/pull/14607
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`ruff`] Implemented `wrong-class-body-content` (`RUF050`)
 
 ---
 
-_Pull request opened by @Lokejoke on 2024-11-26 12:51_
+_@Lokejoke_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

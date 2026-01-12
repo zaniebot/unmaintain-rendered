@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-24T18:28:26Z
 updated_at: 2025-02-25T16:26:10Z
 url: https://github.com/astral-sh/uv/issues/11752
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # How to use workspace with pyright
 
 ---
 
-_Issue opened by @insomnes on 2025-02-24 18:28_
+_@insomnes_
 
 ### Question
 

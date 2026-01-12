@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-23T14:42:53Z
 updated_at: 2024-11-26T02:56:16Z
 url: https://github.com/astral-sh/uv/issues/9383
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:48Z
 ```
 
 # Workspace packages are skipped in `uv sync --only-group [group]`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-11-23 14:42_
+_@charliermarsh_
 
 If the workspace package is _in_ `[group]`, it should still be installed.
 

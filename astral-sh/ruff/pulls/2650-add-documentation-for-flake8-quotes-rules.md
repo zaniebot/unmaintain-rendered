@@ -12,14 +12,14 @@ head: charlie/quotes
 created_at: 2023-02-08T02:13:26Z
 updated_at: 2023-02-08T02:20:26Z
 url: https://github.com/astral-sh/ruff/pull/2650
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Add documentation for flake8-quotes rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-08 02:13_
+_@charliermarsh_
 
 See: #2646.
 

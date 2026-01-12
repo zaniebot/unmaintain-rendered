@@ -13,14 +13,14 @@ head: fix-await-outside-async
 created_at: 2024-11-09T15:13:53Z
 updated_at: 2024-11-10T03:18:08Z
 url: https://github.com/astral-sh/ruff/pull/14225
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Fix `await-outside-async` to allow `await` at the top-level scope of a notebook
 
 ---
 
-_Pull request opened by @harupy on 2024-11-09 15:13_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

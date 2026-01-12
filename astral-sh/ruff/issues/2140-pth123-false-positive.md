@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-24T19:20:30Z
 updated_at: 2023-01-25T01:40:39Z
 url: https://github.com/astral-sh/ruff/issues/2140
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # PTH123 false positive
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-01-24 19:20_
+_@JonathanPlasse_
 
 Taken directly from this repository in the `script` folder.
 

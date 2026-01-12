@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-23T15:55:00Z
 updated_at: 2024-07-24T20:33:29Z
 url: https://github.com/astral-sh/uv/issues/5340
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Should `uv init` write an empty `dev-dependencies` section?
 
 ---
 
-_Issue opened by @zanieb on 2024-07-23 15:55_
+_@zanieb_
 
 It seems noisy, the user can add this with `uv add --dev foo`?
 

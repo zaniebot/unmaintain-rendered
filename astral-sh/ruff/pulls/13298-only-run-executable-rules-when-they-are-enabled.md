@@ -13,14 +13,14 @@ head: micha/only-run-executable-rules-when-enabled
 created_at: 2024-09-10T00:39:27Z
 updated_at: 2024-09-10T00:53:02Z
 url: https://github.com/astral-sh/ruff/pull/13298
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Only run executable rules when they are enabled
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-09-10 00:39_
+_@MichaReiser_
 
 ## Summary
 

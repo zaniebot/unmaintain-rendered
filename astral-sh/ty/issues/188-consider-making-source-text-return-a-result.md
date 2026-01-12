@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T17:07:28Z
 updated_at: 2025-07-09T10:38:05Z
 url: https://github.com/astral-sh/ty/issues/188
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Consider making `source_text` return a `Result`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-02-26 17:07_
+_@MichaReiser_
 
 We may want to LRU source texts in the future. This introduces the risk that re-reading the source text after the cached text was claimed may fail, in which case the text ranges may no longer be trusted. 
 

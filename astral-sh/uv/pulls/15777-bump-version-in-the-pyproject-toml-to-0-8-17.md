@@ -12,14 +12,14 @@ head: zb/pyproject
 created_at: 2025-09-10T21:20:27Z
 updated_at: 2025-09-10T21:21:34Z
 url: https://github.com/astral-sh/uv/pull/15777
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:56Z
 ```
 
 # Bump version in the `pyproject.toml` to 0.8.17
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-10 21:20_
+_@zanieb_
 
 See failure at https://github.com/astral-sh/uv/actions/runs/17626770657/job/50085595250
 

@@ -12,14 +12,14 @@ head: konstin/editable-installs-test-cases
 created_at: 2023-12-05T12:58:01Z
 updated_at: 2023-12-07T21:28:07Z
 url: https://github.com/astral-sh/uv/pull/565
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:02Z
 ```
 
 # Add test cases for editable installs
 
 ---
 
-_Pull request opened by @konstin on 2023-12-05 12:58_
+_@konstin_
 
 One test case with a mixed python/native module using maturin, one using pure python using poetry. I'm avoiding adding one using legacy setuptools.
 

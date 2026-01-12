@@ -12,14 +12,14 @@ head: rparens-skipping
 created_at: 2023-07-19T15:14:26Z
 updated_at: 2023-07-20T09:30:41Z
 url: https://github.com/astral-sh/ruff/pull/5885
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Formatter: Small RParen refactoring
 
 ---
 
-_Pull request opened by @konstin on 2023-07-19 15:14_
+_@konstin_
 
 ## Summary
 

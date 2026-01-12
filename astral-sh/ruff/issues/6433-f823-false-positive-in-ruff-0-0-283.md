@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-09T01:02:59Z
 updated_at: 2023-08-09T02:36:42Z
 url: https://github.com/astral-sh/ruff/issues/6433
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `F823` false positive in ruff 0.0.283
 
 ---
 
-_Issue opened by @harupy on 2023-08-09 01:02_
+_@harupy_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

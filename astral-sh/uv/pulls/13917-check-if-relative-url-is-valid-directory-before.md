@@ -13,14 +13,14 @@ head: jtfm/index-local-directory
 created_at: 2025-06-09T14:26:42Z
 updated_at: 2025-06-09T17:28:40Z
 url: https://github.com/astral-sh/uv/pull/13917
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:55Z
 ```
 
 # Check if relative URL is valid directory before treating as index
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-09 14:26_
+_@jtfmumm_
 
 As per #13874, passing a relative URL like `test` to `--index` for `uv add` causes unexpected behavior if the directory does not exist. The non-existent index is effectively ignored and uv falls back to PyPI. If a package is found there, the spurious index is then written to `pyproject.toml`. This doesn't happen for `--default-index` since resolution will fail without fallback to PyPI.
 

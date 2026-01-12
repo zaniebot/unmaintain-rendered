@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-15T18:24:27Z
 updated_at: 2023-11-27T03:11:57Z
 url: https://github.com/astral-sh/ruff/issues/8701
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [FEATURE] Only report errors with safe fixes
 
 ---
 
-_Issue opened by @alanhdu on 2023-11-15 18:24_
+_@alanhdu_
 
 Apologies if this is already possible somewhere, but I was wondering whether there was a way to configure Ruff to *only* report errors that it has *safe* fixes for. Ideally this could be done on a per-rule level.
 

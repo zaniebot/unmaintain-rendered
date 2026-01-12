@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-11T16:10:18Z
 updated_at: 2024-11-12T00:49:30Z
 url: https://github.com/astral-sh/uv/issues/9020
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # uv ignores incompatible requires-python
 
 ---
 
-_Issue opened by @zeevro on 2024-11-11 16:10_
+_@zeevro_
 
 uv 0.5.1
 `typing==3.7.4.3` has ```Requires-Python: >=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*```

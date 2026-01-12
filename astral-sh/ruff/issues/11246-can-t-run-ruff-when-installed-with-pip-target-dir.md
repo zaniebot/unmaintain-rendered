@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-02T11:45:23Z
 updated_at: 2024-08-15T11:27:18Z
 url: https://github.com/astral-sh/ruff/issues/11246
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Can't run ruff when installed with pip target dir option
 
 ---
 
-_Issue opened by @nunoh on 2024-05-02 11:45_
+_@nunoh_
 
 Can't run ruff when installed with pip [target dir option](https://pip.pypa.io/en/stable/cli/pip_install/#cmdoption-t) `pip install ruff -t lib`
 

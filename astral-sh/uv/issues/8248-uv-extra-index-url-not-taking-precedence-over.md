@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-16T10:36:49Z
 updated_at: 2024-10-16T15:52:27Z
 url: https://github.com/astral-sh/uv/issues/8248
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # UV_EXTRA_INDEX_URL not taking precedence over persistent configuration (pyproject.toml)
 
 ---
 
-_Issue opened by @AndreuCodina on 2024-10-16 10:36_
+_@AndreuCodina_
 
 The documentation (https://docs.astral.sh/uv/configuration/files/) says: "Settings provided via environment variables take precedence over persistent configuration, and settings provided via the command line take precedence over both".
 

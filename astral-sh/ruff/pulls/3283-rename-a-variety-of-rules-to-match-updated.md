@@ -12,14 +12,14 @@ head: charlie/rename-rules
 created_at: 2023-02-28T21:30:47Z
 updated_at: 2023-03-18T21:40:37Z
 url: https://github.com/astral-sh/ruff/pull/3283
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Rename a variety of rules to match updated conventions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-28 21:30_
+_@charliermarsh_
 
 See: #2902.
 

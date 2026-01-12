@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-17T23:43:34Z
 updated_at: 2024-08-18T18:50:47Z
 url: https://github.com/astral-sh/uv/issues/6177
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # `uv venv --preview` now requires `[project]` table
 
 ---
 
-_Issue opened by @branchv on 2024-08-17 23:43_
+_@branchv_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

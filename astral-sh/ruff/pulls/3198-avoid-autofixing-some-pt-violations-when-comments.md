@@ -12,14 +12,14 @@ head: charlie/assert
 created_at: 2023-02-24T03:44:49Z
 updated_at: 2023-02-24T03:48:43Z
 url: https://github.com/astral-sh/ruff/pull/3198
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Avoid autofixing some PT violations when comments are present
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-24 03:44_
+_@charliermarsh_
 
 Closes #3185.
 

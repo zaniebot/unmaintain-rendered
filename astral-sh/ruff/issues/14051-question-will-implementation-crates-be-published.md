@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-01T18:28:46Z
 updated_at: 2024-11-20T12:03:55Z
 url: https://github.com/astral-sh/ruff/issues/14051
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [Question] Will implementation crates be published to crates.io?
 
 ---
 
-_Issue opened by @tgeng on 2024-11-01 18:28_
+_@tgeng_
 
 Hey first thank you for creating this awesome tool!
 

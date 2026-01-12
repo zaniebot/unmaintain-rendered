@@ -12,14 +12,14 @@ head: charlie/target-size
 created_at: 2023-02-20T04:31:24Z
 updated_at: 2023-02-21T07:59:10Z
 url: https://github.com/astral-sh/ruff/pull/3049
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Increase expected size of FormatElement
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-20 04:31_
+_@charliermarsh_
 
 It looks like this is now `32usize` due to `StaticTextSlice`. We should revisit this.
 

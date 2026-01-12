@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-04T17:36:43Z
 updated_at: 2024-12-04T21:20:32Z
 url: https://github.com/astral-sh/uv/issues/9643
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:55Z
 ```
 
 # `uv export --output-file` doesn't create missing directories
 
 ---
 
-_Issue opened by @quantike on 2024-12-04 17:36_
+_@quantike_
 
 ## The Issue
 

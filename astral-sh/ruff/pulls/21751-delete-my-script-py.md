@@ -13,14 +13,14 @@ head: alex/whose-script-exactly
 created_at: 2025-12-02T14:43:50Z
 updated_at: 2025-12-02T15:11:32Z
 url: https://github.com/astral-sh/ruff/pull/21751
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # Delete `my-script.py`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-02 14:43_
+_@AlexWaygood_
 
 ## Summary
 

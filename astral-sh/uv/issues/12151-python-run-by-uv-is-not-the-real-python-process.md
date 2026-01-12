@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-13T12:55:43Z
 updated_at: 2025-10-19T15:59:35Z
 url: https://github.com/astral-sh/uv/issues/12151
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # python run by uv is not the real python process
 
 ---
 
-_Issue opened by @fabioz on 2025-03-13 12:55_
+_@fabioz_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-24T16:40:18Z
 updated_at: 2025-12-31T16:07:57Z
 url: https://github.com/astral-sh/ruff/issues/22178
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # TypeVar special handling doesn't recognize ** for ARG001
 
 ---
 
-_Issue opened by @henryiii on 2025-12-24 16:40_
+_@henryiii_
 
 ### Summary
 

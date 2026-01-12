@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-08-21T01:17:03Z
 updated_at: 2020-08-24T06:45:41Z
 url: https://github.com/clap-rs/clap/issues/2090
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # global_setting(AppSettings::DisableVersion) does not disable autocomplete for subcommands.
 
 ---
 
-_Issue opened by @newAM on 2020-08-21 01:17_
+_@newAM_
 
 ### Make sure you completed the following tasks
 

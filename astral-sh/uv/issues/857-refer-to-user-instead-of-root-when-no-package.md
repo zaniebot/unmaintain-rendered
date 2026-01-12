@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-09T18:53:55Z
 updated_at: 2024-01-19T17:17:43Z
 url: https://github.com/astral-sh/uv/issues/857
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Refer to user instead of "root" when no package name is available
 
 ---
 
-_Issue opened by @zanieb on 2024-01-09 18:53_
+_@zanieb_
 
 e.g. in https://github.com/astral-sh/puffin/blob/ee3a6431c75b932674cf350266b575f97a43e119/crates/puffin-cli/tests/pip_install_scenarios.rs#L1275
 

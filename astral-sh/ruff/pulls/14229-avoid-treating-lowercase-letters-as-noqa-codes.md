@@ -13,14 +13,14 @@ head: charlie/b
 created_at: 2024-11-09T17:38:40Z
 updated_at: 2024-11-15T10:53:46Z
 url: https://github.com/astral-sh/ruff/pull/14229
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Avoid treating lowercase letters as `# noqa` codes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-09 17:38_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/cache
 created_at: 2024-03-07T00:41:00Z
 updated_at: 2024-03-07T00:46:25Z
 url: https://github.com/astral-sh/uv/pull/2255
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:56Z
 ```
 
 # Cache wheel metadata in no-PEP 658 fallback
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-07 00:41_
+_@charliermarsh_
 
 ## Summary
 

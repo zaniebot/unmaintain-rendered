@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-18T11:34:33Z
 updated_at: 2025-09-17T07:18:37Z
 url: https://github.com/astral-sh/ruff/issues/19966
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Changed error formatting between 0.12.8.and 0.12.9
 
 ---
 
-_Issue opened by @MeggyCal on 2025-08-18 11:34_
+_@MeggyCal_
 
 ### Question
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-19T13:44:01Z
 updated_at: 2025-12-19T22:49:13Z
 url: https://github.com/astral-sh/uv/issues/16360
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # `Operation timed out` when trying to `uv python install` or `uv add` on work computer
 
 ---
 
-_Issue opened by @viseryon on 2025-10-19 13:44_
+_@viseryon_
 
 ### Summary
 

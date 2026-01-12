@@ -13,14 +13,14 @@ head: sync-python-releases
 created_at: 2024-10-16T19:21:01Z
 updated_at: 2024-10-16T19:35:40Z
 url: https://github.com/astral-sh/uv/pull/8268
-synced_at: 2026-01-10T12:54:06Z
+synced_at: 2026-01-12T16:08:14Z
 ```
 
 # Fix managed distributions of free-threaded Python on Windows
 
 ---
 
-_Pull request opened by @github-actions on 2024-10-16 19:21_
+_@github-actions_
 
 See upstream fix at https://github.com/indygreg/python-build-standalone/pull/368
 

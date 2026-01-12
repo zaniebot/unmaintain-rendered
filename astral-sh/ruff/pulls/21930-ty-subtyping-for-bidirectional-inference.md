@@ -14,14 +14,14 @@ head: ibraheem/bidi-subtyping2
 created_at: 2025-12-11T20:34:44Z
 updated_at: 2025-12-30T22:03:21Z
 url: https://github.com/astral-sh/ruff/pull/21930
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Subtyping for bidirectional inference
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-12-11 20:34_
+_@ibraheemdev_
 
 ## Summary
 

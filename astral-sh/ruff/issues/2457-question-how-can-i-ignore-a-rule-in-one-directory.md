@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-01T22:11:35Z
 updated_at: 2023-02-01T23:10:15Z
 url: https://github.com/astral-sh/ruff/issues/2457
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Question: How can I ignore a rule in one directory?
 
 ---
 
-_Issue opened by @MartinThoma on 2023-02-01 22:11_
+_@MartinThoma_
 
 Thanks for this awesome tool :pray: 
 

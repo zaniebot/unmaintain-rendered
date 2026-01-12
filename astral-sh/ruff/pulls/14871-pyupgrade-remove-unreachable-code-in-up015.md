@@ -13,14 +13,14 @@ head: UP015-unreachable
 created_at: 2024-12-09T13:43:53Z
 updated_at: 2024-12-09T14:57:45Z
 url: https://github.com/astral-sh/ruff/pull/14871
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`pyupgrade`] Remove unreachable code in `UP015` implementation
 
 ---
 
-_Pull request opened by @harupy on 2024-12-09 13:43_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

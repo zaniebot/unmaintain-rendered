@@ -14,14 +14,14 @@ head: zb/docs-intro
 created_at: 2024-08-06T18:29:49Z
 updated_at: 2024-08-06T20:02:01Z
 url: https://github.com/astral-sh/uv/pull/5824
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:02Z
 ```
 
 # Update documentation index
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-06 18:29_
+_@zanieb_
 
 _No description provided._
 

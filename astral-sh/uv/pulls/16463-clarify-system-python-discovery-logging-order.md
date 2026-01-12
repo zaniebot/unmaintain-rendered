@@ -13,14 +13,14 @@ head: discovery-logging-order
 created_at: 2025-10-27T03:17:55Z
 updated_at: 2025-10-28T12:18:13Z
 url: https://github.com/astral-sh/uv/pull/16463
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:16Z
 ```
 
 # Clarify system Python discovery logging order
 
 ---
 
-_Pull request opened by @terror on 2025-10-27 03:17_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/16453
 

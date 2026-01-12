@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-20T07:44:33Z
 updated_at: 2025-09-22T07:29:04Z
 url: https://github.com/astral-sh/ty/issues/1218
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `Protocol` not understood as an `ABCMeta`
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-20 07:44_
+_@KotlinIsland_
 
 ### Summary
 

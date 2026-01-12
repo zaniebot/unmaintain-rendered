@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-21T20:59:32Z
 updated_at: 2025-07-23T23:12:49Z
 url: https://github.com/astral-sh/ty/issues/118
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Not all class literals are singletons
 
 ---
 
-_Issue opened by @dcreager on 2025-04-21 20:59_
+_@dcreager_
 
 I'm not sure if what this might break (if anything), but we currently assume that all class literals are singletons.  Normally they are:
 

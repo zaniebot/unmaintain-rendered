@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-20T08:47:54Z
 updated_at: 2025-02-27T02:16:15Z
 url: https://github.com/astral-sh/ruff/issues/16267
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Avoid indexing the project if config preference is `editorOnly`
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-02-20 08:47_
+_@dhruvmanila_
 
 ### Description
 

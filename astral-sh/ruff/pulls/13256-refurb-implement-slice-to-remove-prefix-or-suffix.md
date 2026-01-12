@@ -14,14 +14,14 @@ head: remove-affix
 created_at: 2024-09-05T17:51:05Z
 updated_at: 2024-09-09T15:42:06Z
 url: https://github.com/astral-sh/ruff/pull/13256
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [refurb] Implement `slice-to-remove-prefix-or-suffix` (`FURB188`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-09-05 17:51_
+_@dylwil3_
 
 This PR implements `FURB188` which suggests the use of `removeprefix`/`removesuffix` in order to remove prefixes and suffixes from strings, rather than slicing the string conditionally upon the output of `startswith`/`endswith`.
 

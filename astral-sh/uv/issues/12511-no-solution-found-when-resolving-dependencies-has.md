@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-27T16:39:21Z
 updated_at: 2025-03-28T02:33:50Z
 url: https://github.com/astral-sh/uv/issues/12511
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # "No solution found when resolving dependencies" has extra requirements that are confusing
 
 ---
 
-_Issue opened by @notatallshaw on 2025-03-27 16:39_
+_@notatallshaw_
 
 ### Summary
 

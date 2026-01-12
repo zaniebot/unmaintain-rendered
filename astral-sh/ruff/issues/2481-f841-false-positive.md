@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-02T16:09:55Z
 updated_at: 2023-02-02T17:22:00Z
 url: https://github.com/astral-sh/ruff/issues/2481
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # F841 - False positive
 
 ---
 
-_Issue opened by @Mister7F on 2023-02-02 16:09_
+_@Mister7F_
 
 Found this issue while playing with ruff, the variable `exponential` is used
 

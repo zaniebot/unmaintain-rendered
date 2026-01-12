@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-29T06:10:40Z
 updated_at: 2025-04-30T19:38:06Z
 url: https://github.com/astral-sh/ruff/issues/17699
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `PTH*`: Incorrect suggestion to use `Pathlib` when using file descriptors
 
 ---
 
-_Issue opened by @MichaReiser on 2025-04-29 06:10_
+_@MichaReiser_
 
 Multiple pathlib rules recommend the use of `pathlib.Path` over their `os` equivalent even when they're used with a bytes string or directory descriptor which aren't supported by pathlib. 
 

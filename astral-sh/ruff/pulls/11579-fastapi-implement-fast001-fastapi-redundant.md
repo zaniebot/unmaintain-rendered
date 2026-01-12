@@ -14,14 +14,14 @@ head: fastapi-redundant-response-model
 created_at: 2024-05-28T07:20:50Z
 updated_at: 2024-07-30T04:35:48Z
 url: https://github.com/astral-sh/ruff/pull/11579
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [`fastapi`] Implement `FAST001` (`fastapi-redundant-response-model`) and `FAST002` (`fastapi-non-annotated-dependency`)
 
 ---
 
-_Pull request opened by @TomerBin on 2024-05-28 07:20_
+_@TomerBin_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

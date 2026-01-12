@@ -13,14 +13,14 @@ head: list-ws
 created_at: 2025-04-12T11:22:58Z
 updated_at: 2025-04-14T14:56:04Z
 url: https://github.com/astral-sh/uv/pull/12851
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:25Z
 ```
 
 # Collapse whitespace in python_list tests
 
 ---
 
-_Pull request opened by @mgorny on 2025-04-12 11:22_
+_@mgorny_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

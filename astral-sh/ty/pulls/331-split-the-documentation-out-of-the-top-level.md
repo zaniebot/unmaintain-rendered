@@ -13,14 +13,14 @@ head: zb/docs-split
 created_at: 2025-05-12T18:15:42Z
 updated_at: 2025-05-12T18:45:04Z
 url: https://github.com/astral-sh/ty/pull/331
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Split the documentation out of the top-level README
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-12 18:15_
+_@zanieb_
 
 Moves most of the documentation into a dedicated `docs/README` to make it easier to reach important content in the top-level readme like "getting involved".
 

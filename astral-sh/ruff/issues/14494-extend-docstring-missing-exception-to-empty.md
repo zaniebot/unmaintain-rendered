@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-20T16:35:07Z
 updated_at: 2025-01-21T13:40:58Z
 url: https://github.com/astral-sh/ruff/issues/14494
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Extend `docstring-missing-exception` to empty exception description (`DOC501`)
 
 ---
 
-_Issue opened by @sbrugman on 2024-11-20 16:35_
+_@sbrugman_
 
 The rule that checks missing documentation for parameters considers empty descriptions as undocumented (`undocumented-param`, DOC501).
 We have a similar rule for exceptions, which considers empty descriptions as documented (`docstring-missing-exception`, D417).

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-04T09:05:04Z
 updated_at: 2024-11-05T09:08:04Z
 url: https://github.com/astral-sh/uv/issues/8802
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # Transitive workspace dependencies with dynamic package versioning
 
 ---
 
-_Issue opened by @ajohnson5 on 2024-11-04 09:05_
+_@ajohnson5_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

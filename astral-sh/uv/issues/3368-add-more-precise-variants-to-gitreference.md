@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-04T02:58:58Z
 updated_at: 2024-05-04T21:13:12Z
 url: https://github.com/astral-sh/uv/issues/3368
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Add more precise variants to `GitReference`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-05-04 02:58_
+_@charliermarsh_
 
 See the TODO here: https://github.com/astral-sh/uv/pull/3365/files#diff-298630a1a080b66591bd9f62a94b25f4cfc6f95cd622d40b70534f02e469adf7R429. We should add variants for tag, branch, etc.
 

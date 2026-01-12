@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-10T11:43:47Z
 updated_at: 2025-12-15T15:29:51Z
 url: https://github.com/astral-sh/ruff/issues/8598
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # ruff formatter: one call per line for chained method calls
 
 ---
 
-_Issue opened by @MartinBernstorff on 2023-11-10 11:43_
+_@MartinBernstorff_
 
 This is something I miss _tremendously_ from the rust ecosystem. One example:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-13T00:11:00Z
 updated_at: 2025-04-10T21:01:17Z
 url: https://github.com/astral-sh/uv/issues/9856
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # (🐞) `uv remove` deletes comments
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-12-13 00:11_
+_@KotlinIsland_
 
 ```toml
 [project]

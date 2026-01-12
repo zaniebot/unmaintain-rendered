@@ -13,14 +13,14 @@ head: charlie/dupes
 created_at: 2024-02-23T02:15:17Z
 updated_at: 2024-02-23T19:14:53Z
 url: https://github.com/astral-sh/uv/pull/1893
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:47Z
 ```
 
 # Gracefully handle virtual environments with conflicting packages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-23 02:15_
+_@charliermarsh_
 
 ## Summary
 

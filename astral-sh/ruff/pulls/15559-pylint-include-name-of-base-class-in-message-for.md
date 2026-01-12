@@ -13,14 +13,14 @@ head: slots-followup
 created_at: 2025-01-17T22:10:20Z
 updated_at: 2025-01-20T06:41:20Z
 url: https://github.com/astral-sh/ruff/pull/15559
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`pylint`] Include name of base class in message for `redefined-slots-in-subclass` (`W0244`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-01-17 22:10_
+_@dylwil3_
 
 In the following situation:
 

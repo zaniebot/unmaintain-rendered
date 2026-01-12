@@ -13,14 +13,14 @@ head: cjm/no-def-none
 created_at: 2024-06-05T17:14:02Z
 updated_at: 2024-06-05T17:32:27Z
 url: https://github.com/astral-sh/ruff/pull/11758
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [red-knot] rename Definition::None to Definition::Unbound
 
 ---
 
-_Pull request opened by @carljm on 2024-06-05 17:14_
+_@carljm_
 
 ## Summary
 

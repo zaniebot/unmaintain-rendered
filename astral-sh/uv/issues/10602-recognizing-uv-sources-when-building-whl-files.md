@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-14T16:45:51Z
 updated_at: 2025-01-29T16:23:33Z
 url: https://github.com/astral-sh/uv/issues/10602
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # recognizing uv.sources when building .whl files
 
 ---
 
-_Issue opened by @VaasuDevanS on 2025-01-14 16:45_
+_@VaasuDevanS_
 
 I think `uv run --with` or `uv pip install` doesn't recognize `tool.uv.sources` in pyproject.toml file. I used the following commands to create and build a package.
 

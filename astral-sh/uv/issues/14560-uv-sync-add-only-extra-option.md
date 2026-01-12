@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-11T09:51:25Z
 updated_at: 2025-07-12T16:45:39Z
 url: https://github.com/astral-sh/uv/issues/14560
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # `uv sync`: add `--only-extra` option
 
 ---
 
-_Issue opened by @zzJinux on 2025-07-11 09:51_
+_@zzJinux_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: charlie/local
 created_at: 2024-03-13T20:58:42Z
 updated_at: 2024-03-18T12:16:00Z
 url: https://github.com/astral-sh/uv/pull/2430
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:02Z
 ```
 
 # Add support for PyTorch-style local version semantics
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-13 20:58_
+_@charliermarsh_
 
 ## Summary
 

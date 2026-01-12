@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-08T09:22:00Z
 updated_at: 2024-07-08T09:25:09Z
 url: https://github.com/astral-sh/ruff/issues/12240
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # False positive S113 for httpx.AsyncClient
 
 ---
 
-_Issue opened by @dybi on 2024-07-08 09:22_
+_@dybi_
 
 `S113` is reported by `ruff` for `httpx.AsyncClient()` (https://docs.astral.sh/ruff/rules/request-without-timeout/)
 whereas `httpx` works differntly than `requests` in this area and there is a finite default: https://github.com/encode/httpx/blob/db9072f998b53ff66d50778bf5edee8e2cc8ede1/httpx/_client.py#L1390

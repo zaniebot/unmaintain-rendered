@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-11T19:31:07Z
 updated_at: 2024-03-11T20:28:59Z
 url: https://github.com/astral-sh/uv/issues/2361
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Expose package metadata in a way that can be reused by other tools
 
 ---
 
-_Issue opened by @obi1kenobi on 2024-03-11 19:31_
+_@obi1kenobi_
 
 `uv` has done a lot of work to ensure it can read package metadata quickly and correctly: https://twitter.com/charliermarsh/status/1767251713134653641
 

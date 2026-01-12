@@ -13,14 +13,14 @@ head: dhruv/changelog
 created_at: 2025-02-24T09:06:34Z
 updated_at: 2025-02-24T09:10:16Z
 url: https://github.com/astral-sh/ruff/pull/16344
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Re-order changelog entries for 0.9.7
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-24 09:06_
+_@dhruvmanila_
 
 ## Summary
 

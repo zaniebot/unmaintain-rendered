@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-19T01:20:46Z
 updated_at: 2024-07-23T23:19:14Z
 url: https://github.com/astral-sh/ruff/issues/11020
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # [Panic] Unknow nvim error while working with python based project.
 
 ---
 
-_Issue opened by @HoneyBeaver506 on 2024-04-19 01:20_
+_@HoneyBeaver506_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

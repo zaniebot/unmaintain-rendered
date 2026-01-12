@@ -13,14 +13,14 @@ head: ag/fix-ssh-origin
 created_at: 2023-12-21T17:24:06Z
 updated_at: 2024-03-24T16:51:03Z
 url: https://github.com/zanieb/rooster/pull/10
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # fix owner/repo extraction for ssh origins
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-12-21 17:24_
+_@BurntSushi_
 
 We do some quick detection of the SSH origin, and if so, use slightly different logic to extract the owner and name of the remote.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T10:33:50Z
 updated_at: 2025-12-08T18:23:28Z
 url: https://github.com/astral-sh/ruff/issues/17197
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Don't trigger SLF001 on access to a class member from an instance of the class
 
 ---
 
-_Issue opened by @cbornet on 2025-04-04 10:33_
+_@cbornet_
 
 ### Summary
 

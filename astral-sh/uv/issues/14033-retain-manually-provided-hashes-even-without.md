@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-13T17:14:58Z
 updated_at: 2025-06-18T09:32:30Z
 url: https://github.com/astral-sh/uv/issues/14033
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # Retain manually provided hashes even without `--generate-hashes`
 
 ---
 
-_Issue opened by @keith on 2025-06-13 17:14_
+_@keith_
 
 ### Summary
 

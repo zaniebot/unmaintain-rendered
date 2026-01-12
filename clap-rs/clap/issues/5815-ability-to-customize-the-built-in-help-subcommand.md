@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-13T21:50:47Z
 updated_at: 2024-11-14T15:06:29Z
 url: https://github.com/clap-rs/clap/issues/5815
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Ability to customize the built-in `help` subcommand
 
 ---
 
-_Issue opened by @mr-briggs on 2024-11-13 21:50_
+_@mr-briggs_
 
 ### Please complete the following tasks
 

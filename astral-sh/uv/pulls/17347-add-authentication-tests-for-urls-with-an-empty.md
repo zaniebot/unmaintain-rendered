@@ -13,14 +13,14 @@ head: claude/add-test-issue-17343-VTct5
 created_at: 2026-01-07T16:16:42Z
 updated_at: 2026-01-08T13:41:22Z
 url: https://github.com/astral-sh/uv/pull/17347
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:44Z
 ```
 
 # Add authentication tests for URLs with an empty username
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-07 16:16_
+_@zanieb_
 
 Add test cases for https://github.com/astral-sh/uv/issues/17343 where you have an empty username and non-empty password
 

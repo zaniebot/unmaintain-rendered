@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-07T03:27:08Z
 updated_at: 2025-07-24T18:00:20Z
 url: https://github.com/astral-sh/ty/issues/94
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # ty: Fails to accept special forms as types
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-05-07 03:27_
+_@JelleZijlstra_
 
 ### Summary
 

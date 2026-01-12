@@ -12,14 +12,14 @@ head: zb/dockerhub-disable
 created_at: 2025-08-18T23:36:15Z
 updated_at: 2025-08-18T23:36:33Z
 url: https://github.com/astral-sh/uv/pull/15366
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:42Z
 ```
 
 # Skip DockerHub annotations too
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-18 23:36_
+_@zanieb_
 
 _No description provided._
 

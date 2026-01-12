@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-30T12:17:08Z
 updated_at: 2024-07-08T21:31:59Z
 url: https://github.com/astral-sh/uv/issues/3321
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # [Question] Are platform-agnostic lockfiles on the roadmap?
 
 ---
 
-_Issue opened by @Turakar on 2024-04-30 12:17_
+_@Turakar_
 
 The uv README discusses the fact that uv generates platform-specific lockfiles, while other tools like PDM and poetry generate platform-agnostic lockfiles. While uv is able to generate cross-platform lockfiles, the question remains: Does uv plan to at some point be able to create platform-agnostic lockfiles?
 

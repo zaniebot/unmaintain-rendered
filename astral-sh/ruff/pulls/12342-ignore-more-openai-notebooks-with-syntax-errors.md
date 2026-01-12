@@ -13,14 +13,14 @@ head: ecosystem-ignore-more-openai-notebooks
 created_at: 2024-07-16T07:48:22Z
 updated_at: 2024-07-16T08:32:01Z
 url: https://github.com/astral-sh/ruff/pull/12342
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Ignore more OpenAI notebooks with syntax errors in the ecosystem check
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-16 07:48_
+_@MichaReiser_
 
 ## Summary
 

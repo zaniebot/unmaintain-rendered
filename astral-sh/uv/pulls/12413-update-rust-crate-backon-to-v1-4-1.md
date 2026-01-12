@@ -13,14 +13,14 @@ head: renovate/backon-1.x-lockfile
 created_at: 2025-03-24T01:57:41Z
 updated_at: 2025-03-25T01:50:36Z
 url: https://github.com/astral-sh/uv/pull/12413
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:16Z
 ```
 
 # Update Rust crate backon to v1.4.1
 
 ---
 
-_Pull request opened by @renovate on 2025-03-24 01:57_
+_@renovate_
 
 This PR contains the following updates:
 

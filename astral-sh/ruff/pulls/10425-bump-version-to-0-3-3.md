@@ -13,14 +13,14 @@ head: zb/033
 created_at: 2024-03-15T17:02:43Z
 updated_at: 2024-03-15T17:53:08Z
 url: https://github.com/astral-sh/ruff/pull/10425
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Bump version to 0.3.3
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-15 17:02_
+_@zanieb_
 
 _No description provided._
 

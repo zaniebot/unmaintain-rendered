@@ -13,14 +13,14 @@ head: charlie/LOG007
 created_at: 2023-09-19T17:19:06Z
 updated_at: 2023-09-19T17:36:18Z
 url: https://github.com/astral-sh/ruff/pull/7524
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Ensure that LOG007 only triggers on `.exception()` calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-19 17:19_
+_@charliermarsh_
 
 ## Summary
 

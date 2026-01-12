@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-16T12:30:48Z
 updated_at: 2025-12-16T14:30:04Z
 url: https://github.com/astral-sh/ty/issues/1922
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Split error for empty function body into its own error code
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-16 12:30_
+_@AlexWaygood_
 
 Pyright allows functions to unsoundly have empty bodies even if they have a non-`None` return type, and mypy used to allow this too. As a result, we've seen several instances of users being confused by the fact that we do not allow this. For example:
 

@@ -14,14 +14,14 @@ head: dhruv/with-items-if-expr
 created_at: 2024-04-18T14:22:36Z
 updated_at: 2024-04-18T14:40:07Z
 url: https://github.com/astral-sh/ruff/pull/11010
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Consider `if` expression for parenthesized with items parsing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-18 14:22_
+_@dhruvmanila_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-15T18:46:19Z
 updated_at: 2025-03-17T08:18:46Z
 url: https://github.com/astral-sh/ruff/issues/16766
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # E262 separation of "too many" "not enough"
 
 ---
 
-_Issue opened by @beauxq on 2025-03-15 18:46_
+_@beauxq_
 
 ### Summary
 

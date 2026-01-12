@@ -13,14 +13,14 @@ head: red-knot-program-check
 created_at: 2024-04-25T16:31:05Z
 updated_at: 2024-04-27T12:15:49Z
 url: https://github.com/astral-sh/ruff/pull/11148
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:35Z
 ```
 
 # red-knot: Introduce `program.check`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-25 16:31_
+_@MichaReiser_
 
 This PR refactors the `main.rs` by:
 

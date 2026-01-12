@@ -13,14 +13,14 @@ head: dhruv/editor-settings
 created_at: 2025-05-13T04:38:27Z
 updated_at: 2025-05-13T09:19:15Z
 url: https://github.com/astral-sh/ty/pull/343
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add reference for editor settings
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-05-13 04:38_
+_@dhruvmanila_
 
 ## Summary
 

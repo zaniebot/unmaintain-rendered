@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-24T23:18:00Z
 updated_at: 2025-07-25T08:38:59Z
 url: https://github.com/astral-sh/ruff/issues/19543
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Should W605 flag certain byte string escapes?
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-07-24 23:18_
+_@MeGaGiGaGon_
 
 ### Question
 

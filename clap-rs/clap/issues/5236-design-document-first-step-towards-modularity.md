@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-12-01T14:12:51Z
 updated_at: 2023-12-01T14:12:52Z
 url: https://github.com/clap-rs/clap/issues/5236
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Design Document: First Step Towards Modularity
 
 ---
 
-_Issue opened by @epage on 2023-12-01 14:12_
+_@epage_
 
 This is more of a note dumping ground so I don't forget this in the lead up to 5.0.
 

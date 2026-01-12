@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-09-28T11:44:03Z
 updated_at: 2021-09-28T13:39:02Z
 url: https://github.com/clap-rs/clap/issues/2798
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Can I execute clap with parameters？
 
 ---
 
-_Issue opened by @jiashiwen on 2021-09-28 11:44_
+_@jiashiwen_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/2797
 

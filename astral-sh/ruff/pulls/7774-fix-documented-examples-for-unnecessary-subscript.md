@@ -13,14 +13,14 @@ head: charlie/C415
 created_at: 2023-10-03T04:10:12Z
 updated_at: 2023-10-03T04:25:08Z
 url: https://github.com/astral-sh/ruff/pull/7774
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Fix documented examples for `unnecessary-subscript-reversal`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-03 04:10_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: refactor-AIR301
 created_at: 2025-04-08T11:18:50Z
 updated_at: 2025-04-09T14:46:17Z
 url: https://github.com/astral-sh/ruff/pull/17293
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [`airflow`] Refactor `AIR301` logic and fix typos (`AIR301`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-04-08 11:18_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

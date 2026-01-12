@@ -14,14 +14,14 @@ head: alex/argument-types-debug
 created_at: 2025-12-01T12:13:31Z
 updated_at: 2025-12-01T12:25:51Z
 url: https://github.com/astral-sh/ruff/pull/21727
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] Show the user where the type variable was defined in `invalid-type-arguments` diagnostics
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-01 12:13_
+_@AlexWaygood_
 
 ## Summary
 

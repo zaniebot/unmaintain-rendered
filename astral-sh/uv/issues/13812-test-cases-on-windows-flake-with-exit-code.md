@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T14:02:22Z
 updated_at: 2025-06-16T16:46:31Z
 url: https://github.com/astral-sh/uv/issues/13812
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # Test cases on Windows flake with exit code `-1073741819`
 
 ---
 
-_Issue opened by @zanieb on 2025-06-03 14:02_
+_@zanieb_
 
 ```
         FAIL [   2.228s] uv::it sync::sync_group

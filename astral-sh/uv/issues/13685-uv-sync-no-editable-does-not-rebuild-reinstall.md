@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-27T17:17:29Z
 updated_at: 2025-05-27T17:48:21Z
 url: https://github.com/astral-sh/uv/issues/13685
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # uv sync --no-editable does not rebuild/reinstall the project after source is modified
 
 ---
 
-_Issue opened by @f3flight on 2025-05-27 17:17_
+_@f3flight_
 
 I ran into a problem where I need UV to install a package normally (not in editable mode), but also this env is part of a development workflow and if changes are made locally the expectation is that the installed package will get updated when `uv sync --no-editable` is executed again, however this doesn't happen. What's worse is that even if venv is wiped and created anew, uv will still install the old version of the built package from cache, it will not rebuild it.
 

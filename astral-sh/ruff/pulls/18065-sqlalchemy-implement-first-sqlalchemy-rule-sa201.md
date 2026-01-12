@@ -13,14 +13,14 @@ head: add-missing-mapped-type-annotation-rule
 created_at: 2025-05-13T09:01:18Z
 updated_at: 2025-05-15T16:34:28Z
 url: https://github.com/astral-sh/ruff/pull/18065
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [`sqlalchemy`] Implement first SQLAlchemy rule (`SA201`)
 
 ---
 
-_Pull request opened by @kreathon on 2025-05-13 09:01_
+_@kreathon_
 
 ## Summary
 

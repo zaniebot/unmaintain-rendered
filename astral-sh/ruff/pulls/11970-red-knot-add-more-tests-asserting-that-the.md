@@ -13,14 +13,14 @@ head: typeshed-validation
 created_at: 2024-06-21T14:48:15Z
 updated_at: 2024-06-21T17:08:56Z
 url: https://github.com/astral-sh/ruff/pull/11970
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [red-knot] Add more tests asserting that the VendoredFileSystem and the `VERSIONS` parser work with the vendored typeshed stubs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-21 14:48_
+_@AlexWaygood_
 
 - Assert that all modules found in the `vendor/typeshed` directory can be retrieved from the zipfile using the `VendoredFileSystem` struct.
 - Assert that all top-level modules found in `vendor/typeshed` are included in `VERSIONS`

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-11T20:36:49Z
 updated_at: 2025-11-11T20:37:05Z
 url: https://github.com/astral-sh/ty/issues/1526
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `import whatever.thispackage.a.b` in an `__init__.py` should introduce the submodule attribute `a`
 
 ---
 
-_Issue opened by @Gankra on 2025-11-11 20:36_
+_@Gankra_
 
 We do this for `from whatever.thispackage.a.b import c` but not the equivalent `import`.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-22T20:06:55Z
 updated_at: 2025-10-07T20:58:00Z
 url: https://github.com/astral-sh/ruff/issues/20519
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # RUF010 diagnostic is unhelpful for an interpolation with debug text
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-22 20:06_
+_@dscorbett_
 
 ### Summary
 

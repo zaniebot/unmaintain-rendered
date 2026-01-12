@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-08-23T09:41:34Z
 updated_at: 2024-08-23T10:59:45Z
 url: https://github.com/astral-sh/uv/pull/6502
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:23Z
 ```
 
 # docs: Incorrect workspace members keyword
 
 ---
 
-_Pull request opened by @aborgna-q on 2024-08-23 09:41_
+_@aborgna-q_
 
 ## Summary
 

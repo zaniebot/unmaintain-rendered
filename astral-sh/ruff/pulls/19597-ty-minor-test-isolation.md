@@ -15,14 +15,14 @@ head: david/separate-tests
 created_at: 2025-07-28T12:54:41Z
 updated_at: 2025-07-28T13:53:01Z
 url: https://github.com/astral-sh/ruff/pull/19597
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [ty] Minor: test isolation
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-28 12:54_
+_@sharkdp_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/min
 created_at: 2024-12-18T16:31:17Z
 updated_at: 2024-12-18T21:55:33Z
 url: https://github.com/astral-sh/uv/pull/10007
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:04Z
 ```
 
 # Prefer higher Python lower-bounds when forking
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-18 16:31_
+_@charliermarsh_
 
 ## Summary
 

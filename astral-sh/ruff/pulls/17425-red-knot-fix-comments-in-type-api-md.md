@@ -13,14 +13,14 @@ head: fix-mdtest-comments
 created_at: 2025-04-16T11:05:27Z
 updated_at: 2025-04-19T13:59:05Z
 url: https://github.com/astral-sh/ruff/pull/17425
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Fix comments in type_api.md
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-04-16 11:05_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

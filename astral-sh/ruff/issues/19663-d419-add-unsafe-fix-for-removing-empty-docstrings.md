@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-31T13:42:28Z
 updated_at: 2025-07-31T14:33:08Z
 url: https://github.com/astral-sh/ruff/issues/19663
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `D419`: Add unsafe fix for removing empty docstrings
 
 ---
 
-_Issue opened by @cometbeetle on 2025-07-31 13:42_
+_@cometbeetle_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-12T18:32:32Z
 updated_at: 2024-08-14T15:23:05Z
 url: https://github.com/astral-sh/ruff/issues/12849
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Rule request: enforce setting name=None when raising AttributeError/NameError with a custom error message on py310+
 
 ---
 
-_Issue opened by @arnaud-ma on 2024-08-12 18:32_
+_@arnaud-ma_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

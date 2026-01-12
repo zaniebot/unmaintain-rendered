@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-01T18:01:27Z
 updated_at: 2025-12-29T23:43:48Z
 url: https://github.com/astral-sh/ruff/issues/7742
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Extend `no-return-argument-annotation-in-stub` (`PYI050`) to all name annotations and non-stub files
 
 ---
 
-_Issue opened by @tjkuson on 2023-10-01 18:01_
+_@tjkuson_
 
 The given reason for preferring `typing.Never` to `typing.NoReturn` for argument type annotations is that the name is more explicit about the annotation's intent. 
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-05T08:05:58Z
 updated_at: 2025-09-26T20:08:19Z
 url: https://github.com/astral-sh/uv/issues/7073
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Unnecessary `VIRTUAL_ENV` warning displayed during `add --no-sync`
 
 ---
 
-_Issue opened by @RomainBrault on 2024-09-05 08:05_
+_@RomainBrault_
 
 Currently using `uv add --no-sync`  (as well as remove) emits the warning:
 

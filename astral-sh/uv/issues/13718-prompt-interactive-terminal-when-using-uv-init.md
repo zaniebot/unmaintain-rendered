@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-29T14:19:17Z
 updated_at: 2025-05-29T20:11:14Z
 url: https://github.com/astral-sh/uv/issues/13718
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # Prompt interactive terminal when using `uv init` without args
 
 ---
 
-_Issue opened by @tomaszbk on 2025-05-29 14:19_
+_@tomaszbk_
 
 ### Summary
 

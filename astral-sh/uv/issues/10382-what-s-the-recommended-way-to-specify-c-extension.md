@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-08T01:56:12Z
 updated_at: 2025-03-03T03:22:04Z
 url: https://github.com/astral-sh/uv/issues/10382
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # What's the recommended way to specify C-extension build?
 
 ---
 
-_Issue opened by @Guitaricet on 2025-01-08 01:56_
+_@Guitaricet_
 
 Hello! Love uv so far
 

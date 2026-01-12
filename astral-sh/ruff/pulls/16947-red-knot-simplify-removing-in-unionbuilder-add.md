@@ -13,14 +13,14 @@ head: latyshev/builder-simplify-remove
 created_at: 2025-03-24T11:33:09Z
 updated_at: 2025-06-10T20:46:18Z
 url: https://github.com/astral-sh/ruff/pull/16947
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [red-knot] simplify "removing" in UnionBuilder::add
 
 ---
 
-_Pull request opened by @alex-700 on 2025-03-24 11:33_
+_@alex-700_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -15,14 +15,14 @@ head: perf401_panic
 created_at: 2024-12-14T15:57:42Z
 updated_at: 2024-12-15T15:22:04Z
 url: https://github.com/astral-sh/ruff/pull/14971
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`perflint`] Fix panic in `perf401`
 
 ---
 
-_Pull request opened by @w0nder1ng on 2024-12-14 15:57_
+_@w0nder1ng_
 
 Fixes #14969.
 

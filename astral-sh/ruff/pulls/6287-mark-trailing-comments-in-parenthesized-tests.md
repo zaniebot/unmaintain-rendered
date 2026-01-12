@@ -13,14 +13,14 @@ head: charlie/trail
 created_at: 2023-08-02T20:15:46Z
 updated_at: 2023-08-03T21:06:18Z
 url: https://github.com/astral-sh/ruff/pull/6287
-synced_at: 2026-01-12T02:52:03Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Mark trailing comments in parenthesized tests
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-02 20:15_
+_@charliermarsh_
 
 ## Summary
 

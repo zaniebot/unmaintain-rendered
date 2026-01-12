@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-05T14:23:53Z
 updated_at: 2024-12-06T14:54:44Z
 url: https://github.com/astral-sh/ruff/issues/14790
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # RUF052 fix is unsafe when renaming function parameters
 
 ---
 
-_Issue opened by @dscorbett on 2024-12-05 14:23_
+_@dscorbett_
 
 The fix for [`used-dummy-variable` (RUF052)](https://docs.astral.sh/ruff/rules/used-dummy-variable/) in Ruff 0.8.2 can introduce errors when renaming a function parameter. It should be marked unsafe in that context unless the parameter is positional-only.
 

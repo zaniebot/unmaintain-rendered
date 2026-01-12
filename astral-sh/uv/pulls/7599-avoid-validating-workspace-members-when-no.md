@@ -13,14 +13,14 @@ head: charlie/b
 created_at: 2024-09-20T18:51:11Z
 updated_at: 2024-09-20T19:03:32Z
 url: https://github.com/astral-sh/uv/pull/7599
-synced_at: 2026-01-10T12:53:51Z
+synced_at: 2026-01-12T16:07:54Z
 ```
 
 # Avoid validating workspace members when `--no-sources` is provided
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-20 18:51_
+_@charliermarsh_
 
 ## Summary
 

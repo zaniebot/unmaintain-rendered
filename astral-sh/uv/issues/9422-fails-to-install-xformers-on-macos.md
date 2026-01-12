@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-25T17:02:40Z
 updated_at: 2025-01-07T19:41:14Z
 url: https://github.com/astral-sh/uv/issues/9422
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:50Z
 ```
 
 # Fails to install `xformers` on macOS
 
 ---
 
-_Issue opened by @gthb on 2024-11-25 17:02_
+_@gthb_
 
 Trying out `uv` for the first time, I tried to set up https://github.com/RUCKBReasoning/SpreadsheetBench according to the instructions in its README, just using `uv pip` instead of `pip`. That fails with a low-level OS error, unlikely to be by design.
 

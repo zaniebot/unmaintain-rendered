@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-11T01:30:38Z
 updated_at: 2025-10-11T01:30:56Z
 url: https://github.com/astral-sh/uv/issues/16247
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:27Z
 ```
 
 # Improve error message for `--frozen --package` with a non-workspace root
 
 ---
 
-_Issue opened by @charliermarsh on 2025-10-11 01:30_
+_@charliermarsh_
 
 Given this `pyproject.toml`:
 

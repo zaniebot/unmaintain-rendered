@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-11T13:24:28Z
 updated_at: 2024-11-11T19:02:38Z
 url: https://github.com/astral-sh/uv/issues/9016
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:40Z
 ```
 
 # `uv sync --locked --no-build --no-install-project` fails.
 
 ---
 
-_Issue opened by @heckad on 2024-11-11 13:24_
+_@heckad_
 
 If use `uv sync --locked --no-build --no-install-project` command that error will occurred
 ```

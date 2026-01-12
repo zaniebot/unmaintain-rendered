@@ -13,14 +13,14 @@ head: charlie/iadd
 created_at: 2024-10-30T02:27:49Z
 updated_at: 2024-11-01T13:31:33Z
 url: https://github.com/astral-sh/ruff/pull/13985
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Add remaining augmented assignment dunders
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-30 02:27_
+_@charliermarsh_
 
 ## Summary
 

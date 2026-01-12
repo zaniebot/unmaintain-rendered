@@ -13,14 +13,14 @@ head: charlie/p-1
 created_at: 2025-02-22T17:30:21Z
 updated_at: 2025-02-22T22:12:14Z
 url: https://github.com/astral-sh/uv/pull/11710
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:57Z
 ```
 
 # Remove TODO around atomic writes
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-22 17:30_
+_@charliermarsh_
 
 ## Summary
 

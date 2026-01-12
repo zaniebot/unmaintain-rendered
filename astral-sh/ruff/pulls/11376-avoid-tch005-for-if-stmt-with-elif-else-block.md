@@ -13,14 +13,14 @@ head: dhruv/tch005-fix
 created_at: 2024-05-12T09:19:46Z
 updated_at: 2024-05-13T00:22:26Z
 url: https://github.com/astral-sh/ruff/pull/11376
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Avoid `TCH005` for `if` stmt with `elif`/`else` block
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-12 09:19_
+_@dhruvmanila_
 
 ## Summary
 

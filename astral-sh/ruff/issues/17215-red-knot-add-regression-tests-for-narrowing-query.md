@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-05T05:27:26Z
 updated_at: 2025-04-15T14:27:56Z
 url: https://github.com/astral-sh/ruff/issues/17215
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] add regression tests for narrowing query panics
 
 ---
 
-_Issue opened by @carljm on 2025-04-05 05:27_
+_@carljm_
 
 Follow up to https://github.com/astral-sh/ruff/pull/17209
 

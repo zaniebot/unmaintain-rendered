@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-06-16T13:49:25Z
 updated_at: 2021-06-16T13:50:34Z
 url: https://github.com/clap-rs/clap/issues/2540
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Panic, `unwrap()` on a `None` value
 
 ---
 
-_Issue opened by @mazznoer on 2021-06-16 13:49_
+_@mazznoer_
 
 ### Please complete the following tasks
 

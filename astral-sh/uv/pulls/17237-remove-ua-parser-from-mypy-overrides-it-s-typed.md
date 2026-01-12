@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-12-25T11:14:45Z
 updated_at: 2025-12-30T10:14:48Z
 url: https://github.com/astral-sh/uv/pull/17237
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:40Z
 ```
 
 # Remove ua-parser from mypy overrides: it's typed
 
 ---
 
-_Pull request opened by @masklinn on 2025-12-25 11:14_
+_@masklinn_
 
 I'll be honest I don't entirely understand what this does so it might be necessary to move the package to some other location in the file, or to subset it, but the section is headlined "these modules do not yet have types available" and that's definitely not the case for ua-parser: the 1.0 API is fully typed, the "legacy" 0.x API (the `ua_parser.user_agent_parser` submodule specifically) is not.
 

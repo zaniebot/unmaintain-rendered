@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-03-27T10:29:59Z
 updated_at: 2025-03-27T19:50:28Z
 url: https://github.com/astral-sh/ruff/issues/17010
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [Panic] Server crashes when setting `exclude` in VS Code settings
 
 ---
 
-_Issue opened by @flying-sheep on 2025-03-27 10:29_
+_@flying-sheep_
 
 I tried to exclude this (literal, but weird-looking) path used by our template because Ruff complains about not being able to parse the templated pyproject.toml in there. But the Ruff server doesn’t like that exclude either, apparently.
 

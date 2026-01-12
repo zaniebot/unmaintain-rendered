@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-09T12:37:24Z
 updated_at: 2024-04-09T13:57:31Z
 url: https://github.com/astral-sh/ruff/issues/10848
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # SIM300 (Yoda conditions) incorrectly triggered by CAPITAL variable
 
 ---
 
-_Issue opened by @av223119 on 2024-04-09 12:37_
+_@av223119_
 
 The following code:
 

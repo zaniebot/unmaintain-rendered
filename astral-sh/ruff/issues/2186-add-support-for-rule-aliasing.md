@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T03:56:47Z
 updated_at: 2024-05-07T22:05:01Z
 url: https://github.com/astral-sh/ruff/issues/2186
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Add support for rule aliasing
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-26 03:56_
+_@charliermarsh_
 
 This is known thing we're working on and have mentioned in a bunch of other issues and PRs.
 

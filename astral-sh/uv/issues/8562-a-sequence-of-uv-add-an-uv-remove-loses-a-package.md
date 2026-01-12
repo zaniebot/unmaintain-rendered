@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-25T11:18:59Z
 updated_at: 2024-10-25T13:23:42Z
 url: https://github.com/astral-sh/uv/issues/8562
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # A sequence of uv add an uv remove loses a package's __init__.py
 
 ---
 
-_Issue opened by @mgedmin on 2024-10-25 11:18_
+_@mgedmin_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

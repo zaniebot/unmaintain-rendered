@@ -13,14 +13,14 @@ head: charlie/gh
 created_at: 2025-04-09T01:34:09Z
 updated_at: 2025-04-09T02:00:42Z
 url: https://github.com/astral-sh/uv/pull/12767
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:23Z
 ```
 
 # Avoid querying GitHub on repeated install invocations
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-09 01:34_
+_@charliermarsh_
 
 ## Summary
 

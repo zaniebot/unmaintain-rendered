@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-21T21:40:47Z
 updated_at: 2025-01-23T13:15:50Z
 url: https://github.com/astral-sh/uv/issues/10828
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # langchain version confusion with aiohttp started in uv 0.5.17
 
 ---
 
-_Issue opened by @kendallbailey on 2025-01-21 21:40_
+_@kendallbailey_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-10-28T02:06:03Z
 updated_at: 2021-01-12T19:28:28Z
 url: https://github.com/clap-rs/clap/issues/712
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Allow getting values from environmental args if not passed in via the command line
 
 ---
 
-_Issue opened by @kbknapp on 2016-10-28 02:06_
+_@kbknapp_
 
 Priority should be passed in manually, then env args, then default values.
 

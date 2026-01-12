@@ -14,14 +14,14 @@ head: david/typeddict-tests
 created_at: 2025-08-01T13:13:17Z
 updated_at: 2025-08-01T14:56:04Z
 url: https://github.com/astral-sh/ruff/pull/19686
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Initial test suite for `TypedDict`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-08-01 13:13_
+_@sharkdp_
 
 ## Summary
 

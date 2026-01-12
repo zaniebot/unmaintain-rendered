@@ -13,14 +13,14 @@ head: dhruv/avoid-indexing-multiple-times
 created_at: 2025-01-15T12:44:22Z
 updated_at: 2025-01-15T15:29:17Z
 url: https://github.com/astral-sh/ruff/pull/15495
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Avoid indexing the same workspace multiple times
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-15 12:44_
+_@dhruvmanila_
 
 ## Summary
 

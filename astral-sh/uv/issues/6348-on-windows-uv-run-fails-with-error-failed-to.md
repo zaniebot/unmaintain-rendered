@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T16:07:47Z
 updated_at: 2025-05-23T20:48:25Z
 url: https://github.com/astral-sh/uv/issues/6348
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # On Windows, `uv run` fails with "error: Failed to spawn: `python`"
 
 ---
 
-_Issue opened by @pfmoore on 2024-08-21 16:07_
+_@pfmoore_
 
 I just installed uv 0.3.0 using the installer script. This is on a Windows PC, with Python 3.8, 3.9, 3.10, 3.11 and 3.12 installed from the python.org installers. None of them have been added to `sys.path`, I use the `py` launcher (which by default selects the Python 3.12 installation). Apparently, I have the Windows Store version of Python 3.11 installed, but I never use it and it's not configured to be on my path by default (in "app execution aliases" I switched the "python.exe" and "python3.exe" aliases off).
 

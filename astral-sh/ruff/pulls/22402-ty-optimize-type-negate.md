@@ -14,14 +14,14 @@ head: alex/optimize-negate-2
 created_at: 2026-01-05T15:31:07Z
 updated_at: 2026-01-06T19:18:01Z
 url: https://github.com/astral-sh/ruff/pull/22402
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Optimize `Type::negate()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-05 15:31_
+_@AlexWaygood_
 
 ## Summary
 

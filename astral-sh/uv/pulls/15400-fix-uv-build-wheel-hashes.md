@@ -13,14 +13,14 @@ head: fix-hash
 created_at: 2025-08-21T05:06:08Z
 updated_at: 2025-08-21T08:54:27Z
 url: https://github.com/astral-sh/uv/pull/15400
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:43Z
 ```
 
 # Fix uv_build wheel hashes
 
 ---
 
-_Pull request opened by @anuraaga on 2025-08-21 05:06_
+_@anuraaga_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

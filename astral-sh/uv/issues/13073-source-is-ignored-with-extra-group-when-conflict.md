@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-23T19:27:24Z
 updated_at: 2025-11-14T17:56:36Z
 url: https://github.com/astral-sh/uv/issues/13073
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # Source is ignored with extra/group when conflict table is present
 
 ---
 
-_Issue opened by @watsonjj on 2025-04-23 19:27_
+_@watsonjj_
 
 ### Summary
 

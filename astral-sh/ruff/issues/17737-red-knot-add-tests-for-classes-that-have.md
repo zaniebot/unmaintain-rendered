@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-30T14:24:53Z
 updated_at: 2025-04-30T20:40:17Z
 url: https://github.com/astral-sh/ruff/issues/17737
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [red-knot] Add tests for classes that have incompatible `__new__` and `__init__` methods
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-04-30 14:24_
+_@AlexWaygood_
 
 It doesn't look like we yet have any test cases for classes where `__new__` and `__init__` are incompatible with each other. Construction of these classes always fails at runtime, but we should make sure we handle them correctly anyway. (It looks like we _do_ handle them correctly, but that doesn't mean we shouldn't add tests for it.)
 

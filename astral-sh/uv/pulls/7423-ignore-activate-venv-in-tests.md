@@ -13,14 +13,14 @@ head: konsti/remove-venv-from-tests
 created_at: 2024-09-16T11:21:41Z
 updated_at: 2024-09-16T11:28:15Z
 url: https://github.com/astral-sh/uv/pull/7423
-synced_at: 2026-01-10T12:53:47Z
+synced_at: 2026-01-12T16:07:49Z
 ```
 
 # Ignore activate venv in tests
 
 ---
 
-_Pull request opened by @konstin on 2024-09-16 11:21_
+_@konstin_
 
 Fix a regression in running tests from #6864 that would cause test failures due to added "does not match the project environment path `.venv` and will be ignored" warning when running the tests inside an active venv,
 

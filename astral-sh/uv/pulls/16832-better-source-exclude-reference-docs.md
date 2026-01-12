@@ -13,14 +13,14 @@ head: konsti/backend-source-exclude-docs
 created_at: 2025-11-24T13:33:55Z
 updated_at: 2025-12-09T21:17:19Z
 url: https://github.com/astral-sh/uv/pull/16832
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:28Z
 ```
 
 # Better source-exclude reference docs
 
 ---
 
-_Pull request opened by @konstin on 2025-11-24 13:33_
+_@konstin_
 
 Fixed https://github.com/astral-sh/uv/issues/16821
 

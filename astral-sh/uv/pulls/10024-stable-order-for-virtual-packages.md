@@ -13,14 +13,14 @@ head: konsti/pubgrub-priorities
 created_at: 2024-12-19T10:04:18Z
 updated_at: 2024-12-20T09:28:47Z
 url: https://github.com/astral-sh/uv/pull/10024
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:05Z
 ```
 
 # Stable order for virtual packages
 
 ---
 
-_Pull request opened by @konstin on 2024-12-19 10:04_
+_@konstin_
 
 uv gives priorities to packages by package name, not by virtual package (`PubGrubPackage`). pubgrub otoh when prioritizing order the virtual packages. When the order of virtual packages changes, uv changes its resolutions and error messages. This means uv was depending on implementation details of pubgrub's prioritization caching.
 

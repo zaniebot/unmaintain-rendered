@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-03T14:27:42Z
 updated_at: 2025-05-03T14:36:33Z
 url: https://github.com/astral-sh/ruff/issues/17815
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Global is marked as "used when not defined"
 
 ---
 
-_Issue opened by @charliermarsh on 2025-05-03 14:27_
+_@charliermarsh_
 
 ```python
 SINGLETON: int | None = None

@@ -13,14 +13,14 @@ head: alex/final-improvements
 created_at: 2025-01-03T18:14:37Z
 updated_at: 2025-01-03T19:04:03Z
 url: https://github.com/astral-sh/ruff/pull/15242
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Remove unneeded branch in `Type::is_equivalent_to()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-03 18:14_
+_@AlexWaygood_
 
 ## Summary
 

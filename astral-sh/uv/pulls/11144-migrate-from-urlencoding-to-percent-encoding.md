@@ -13,14 +13,14 @@ head: charlie/percent-encoding
 created_at: 2025-01-31T20:28:29Z
 updated_at: 2025-01-31T21:29:48Z
 url: https://github.com/astral-sh/uv/pull/11144
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:42Z
 ```
 
 # Migrate from `urlencoding` to `percent-encoding`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-31 20:28_
+_@charliermarsh_
 
 ## Summary
 

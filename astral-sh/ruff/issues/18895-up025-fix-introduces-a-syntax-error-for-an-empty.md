@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-23T13:30:30Z
 updated_at: 2025-07-01T13:34:09Z
 url: https://github.com/astral-sh/ruff/issues/18895
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # UP025 fix introduces a syntax error for an empty string followed by a `u`-prefixed string
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-23 13:30_
+_@dscorbett_
 
 ### Summary
 

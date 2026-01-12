@@ -13,14 +13,14 @@ head: alex/docstring-adder-pin
 created_at: 2026-01-03T20:17:54Z
 updated_at: 2026-01-03T20:21:46Z
 url: https://github.com/astral-sh/ruff/pull/22361
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:48Z
 ```
 
 # Bump docstring-adder pin
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-03 20:17_
+_@AlexWaygood_
 
 ## Summary
 

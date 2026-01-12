@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-31T10:55:59Z
 updated_at: 2025-08-15T07:09:30Z
 url: https://github.com/astral-sh/ty/issues/919
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Diagnostics for invalid `await` expressions
 
 ---
 
-_Issue opened by @sharkdp on 2025-07-31 10:55_
+_@sharkdp_
 
 We currently don't emit any errors in `await xyz` expressions if `xyz` is not awaitable. We should probably do something similar to what we do for iterators or context managers, where we emit helpful diagnostics if calls to respective dunder methods fail. For example:
 

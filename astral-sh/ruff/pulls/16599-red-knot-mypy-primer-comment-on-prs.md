@@ -14,14 +14,14 @@ head: david/mypy_primer-pr-comment
 created_at: 2025-03-10T13:17:00Z
 updated_at: 2025-03-10T14:26:54Z
 url: https://github.com/astral-sh/ruff/pull/16599
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] mypy_primer: comment on PRs
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-10 13:17_
+_@sharkdp_
 
 ## Summary
 

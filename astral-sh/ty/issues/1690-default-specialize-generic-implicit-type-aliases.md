@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-30T22:49:02Z
 updated_at: 2025-12-03T08:10:46Z
 url: https://github.com/astral-sh/ty/issues/1690
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Default-specialize generic implicit type aliases
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-11-30 22:49_
+_@hauntsaninja_
 
 ### Summary
 

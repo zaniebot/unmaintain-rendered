@@ -13,14 +13,14 @@ head: micha/upgrade-salsa-15-10
 created_at: 2024-10-15T06:49:30Z
 updated_at: 2024-10-15T11:20:35Z
 url: https://github.com/astral-sh/ruff/pull/13757
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Upgrade salsa
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-15 06:49_
+_@MichaReiser_
 
 This pulls in a MIRI fix and https://github.com/salsa-rs/salsa/pull/589 which allows us to look up interned structs by using a borrowed value (e.g. `StringLiteralType` can be resolved using a `&str` without having to allocate a `Box<str>` first.
 

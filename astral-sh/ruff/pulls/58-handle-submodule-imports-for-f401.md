@@ -12,14 +12,14 @@ head: charlie/submodule
 created_at: 2022-08-31T15:15:24Z
 updated_at: 2022-08-31T15:24:26Z
 url: https://github.com/astral-sh/ruff/pull/58
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Handle submodule imports for F401
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-08-31 15:15_
+_@charliermarsh_
 
 _No description provided._
 

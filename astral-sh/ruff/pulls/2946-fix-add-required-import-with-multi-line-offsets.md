@@ -13,14 +13,14 @@ head: charlie/required-import
 created_at: 2023-02-16T03:22:12Z
 updated_at: 2023-02-16T03:24:57Z
 url: https://github.com/astral-sh/ruff/pull/2946
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Fix add-required-import with multi-line offsets
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-16 03:22_
+_@charliermarsh_
 
 Closes #2944.
 

@@ -13,14 +13,14 @@ head: no_binary_compile
 created_at: 2024-06-13T04:01:47Z
 updated_at: 2024-06-13T13:59:03Z
 url: https://github.com/astral-sh/uv/pull/4301
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:08Z
 ```
 
 # Allow `--no-binary` with `uv pip compile`
 
 ---
 
-_Pull request opened by @brianmego on 2024-06-13 04:01_
+_@brianmego_
 
 ## Summary
 

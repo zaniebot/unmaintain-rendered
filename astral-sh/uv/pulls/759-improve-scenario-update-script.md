@@ -12,14 +12,14 @@ head: zb/scenarios-serious
 created_at: 2024-01-03T21:53:23Z
 updated_at: 2024-01-04T02:13:12Z
 url: https://github.com/astral-sh/uv/pull/759
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:10Z
 ```
 
 # Improve scenario update script
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-03 21:53_
+_@zanieb_
 
 Following #757, improves the script for generating scenario test cases with:
 

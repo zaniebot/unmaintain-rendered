@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-24T18:36:49Z
 updated_at: 2024-05-24T19:15:18Z
 url: https://github.com/astral-sh/uv/issues/3829
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # `--python` can't be used when `UV_SYSTEM_PYTHON=false`
 
 ---
 
-_Issue opened by @thejcannon on 2024-05-24 18:36_
+_@thejcannon_
 
 👋  I think this is a CLI quirk, but both of this errors for me:
 

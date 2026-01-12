@@ -13,14 +13,14 @@ head: charlie/parse
 created_at: 2023-08-22T16:58:30Z
 updated_at: 2023-08-31T15:21:31Z
 url: https://github.com/astral-sh/ruff/pull/6782
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fix `WithItem` ranges for parenthesized, non-`as` items
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-22 16:58_
+_@charliermarsh_
 
 ## Summary
 

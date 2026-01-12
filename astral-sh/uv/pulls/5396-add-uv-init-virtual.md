@@ -14,14 +14,14 @@ head: virtual
 created_at: 2024-07-24T04:30:19Z
 updated_at: 2024-07-25T03:33:40Z
 url: https://github.com/astral-sh/uv/pull/5396
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:47Z
 ```
 
 # Add `uv init --virtual`
 
 ---
 
-_Pull request opened by @j178 on 2024-07-24 04:30_
+_@j178_
 
 ## Summary
 

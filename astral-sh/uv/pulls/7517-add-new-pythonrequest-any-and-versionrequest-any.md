@@ -13,14 +13,14 @@ head: zb/python-request-any
 created_at: 2024-09-18T20:08:58Z
 updated_at: 2024-09-19T11:19:14Z
 url: https://github.com/astral-sh/uv/pull/7517
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:52Z
 ```
 
 # Add new `PythonRequest::Any` and `VersionRequest::Any` variants
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-18 20:08_
+_@zanieb_
 
 Follow-up to https://github.com/astral-sh/uv/pull/7514 and #7526 adding the `Any` variants again with slightly different semantics (i.e., they allow pre-releases)
 

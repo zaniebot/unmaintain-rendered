@@ -13,14 +13,14 @@ head: david/more-attribute-assignments
 created_at: 2025-02-06T21:52:30Z
 updated_at: 2025-02-07T11:19:41Z
 url: https://github.com/astral-sh/ruff/pull/16004
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] Unpacking and for loop assignments to attributes
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-06 21:52_
+_@sharkdp_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: include-code-and-message
 created_at: 2022-09-23T00:20:51Z
 updated_at: 2022-09-23T04:54:14Z
 url: https://github.com/astral-sh/ruff/pull/259
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Include error code and message in JSON output
 
 ---
 
-_Pull request opened by @harupy on 2022-09-23 00:20_
+_@harupy_
 
 Resolve #242.
 

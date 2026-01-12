@@ -14,14 +14,14 @@ head: return_in_async_generator
 created_at: 2025-11-02T09:35:28Z
 updated_at: 2025-12-03T21:54:00Z
 url: https://github.com/astral-sh/ruff/pull/21200
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # [`flake8-bugbear`] Catch `yield` expressions within other statements (`B901`)
 
 ---
 
-_Pull request opened by @11happy on 2025-11-02 09:35_
+_@11happy_
 
 ## Summary
 

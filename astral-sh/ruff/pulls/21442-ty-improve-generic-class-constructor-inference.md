@@ -14,14 +14,14 @@ head: ibraheem/generic-constructor-inference
 created_at: 2025-11-14T02:04:07Z
 updated_at: 2025-11-14T20:25:48Z
 url: https://github.com/astral-sh/ruff/pull/21442
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [ty] Improve generic class constructor inference
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-11-14 02:04_
+_@ibraheemdev_
 
 ## Summary
 

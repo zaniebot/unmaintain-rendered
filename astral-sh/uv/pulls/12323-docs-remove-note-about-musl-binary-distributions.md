@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-03-19T21:07:35Z
 updated_at: 2025-04-16T15:41:42Z
 url: https://github.com/astral-sh/uv/pull/12323
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:13Z
 ```
 
 # docs: Remove note about musl binary distributions
 
 ---
 
-_Pull request opened by @Wingysam on 2025-03-19 21:07_
+_@Wingysam_
 
 ## Summary
 

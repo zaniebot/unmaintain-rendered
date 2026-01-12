@@ -13,14 +13,14 @@ head: charlie/upper
 created_at: 2024-08-29T16:59:13Z
 updated_at: 2024-08-29T18:37:07Z
 url: https://github.com/astral-sh/uv/pull/6824
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:32Z
 ```
 
 # Respect the user's upper-bound in `requires-python`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-29 16:59_
+_@charliermarsh_
 
 ## Summary
 

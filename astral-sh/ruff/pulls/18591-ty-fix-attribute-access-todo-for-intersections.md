@@ -13,14 +13,14 @@ head: alex/intersection-todo
 created_at: 2025-06-09T13:07:10Z
 updated_at: 2025-06-17T21:48:54Z
 url: https://github.com/astral-sh/ruff/pull/18591
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # [ty] Fix attribute access TODO for intersections with negative contributions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-09 13:07_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

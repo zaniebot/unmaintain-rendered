@@ -13,14 +13,14 @@ head: init-normalize
 created_at: 2024-07-22T15:08:02Z
 updated_at: 2024-07-22T16:18:34Z
 url: https://github.com/astral-sh/uv/pull/5292
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:44Z
 ```
 
 # `uv init` normalize directory name
 
 ---
 
-_Pull request opened by @j178 on 2024-07-22 15:08_
+_@j178_
 
 ## Summary
 

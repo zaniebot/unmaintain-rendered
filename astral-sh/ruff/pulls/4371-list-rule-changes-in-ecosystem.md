@@ -12,14 +12,14 @@ head: list-rule-change-count
 created_at: 2023-05-11T11:14:15Z
 updated_at: 2023-05-11T14:46:44Z
 url: https://github.com/astral-sh/ruff/pull/4371
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # List rule changes in ecosystem
 
 ---
 
-_Pull request opened by @calumy on 2023-05-11 11:14_
+_@calumy_
 
 Currently, the ecosystem check lists all changes between two versions of ruff as a diff. This PR counts the changes for each rule so the impact of the change can be determined. 
 

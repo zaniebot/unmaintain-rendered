@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-01-07T12:38:04Z
 updated_at: 2023-12-30T12:51:18Z
 url: https://github.com/clap-rs/clap/issues/3267
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Please lower the MSRV
 
 ---
 
-_Issue opened by @djc on 2022-01-07 12:38_
+_@djc_
 
 Maintainer's notes
 

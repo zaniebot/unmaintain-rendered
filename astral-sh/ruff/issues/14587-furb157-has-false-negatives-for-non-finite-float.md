@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-25T16:47:41Z
 updated_at: 2024-12-03T00:13:21Z
 url: https://github.com/astral-sh/ruff/issues/14587
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # FURB157 has false negatives for non-finite float strings
 
 ---
 
-_Issue opened by @dscorbett on 2024-11-25 16:47_
+_@dscorbett_
 
 [`verbose-decimal-constructor` (FURB157)](https://docs.astral.sh/ruff/rules/verbose-decimal-constructor/) has false negatives in Ruff 0.8.0 for some non-finite float strings. It recognizes the following strings case-insensitively in expressions like `Decimal(float("inf"))`, but no others:
 

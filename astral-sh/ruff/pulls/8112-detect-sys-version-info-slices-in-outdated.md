@@ -13,14 +13,14 @@ head: charlie/slice
 created_at: 2023-10-21T23:00:28Z
 updated_at: 2023-10-21T23:15:39Z
 url: https://github.com/astral-sh/ruff/pull/8112
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Detect `sys.version_info` slices in `outdated-version-block`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-21 23:00_
+_@charliermarsh_
 
 ## Summary
 

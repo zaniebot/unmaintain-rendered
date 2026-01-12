@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-19T01:00:54Z
 updated_at: 2025-03-19T01:02:57Z
 url: https://github.com/astral-sh/uv/issues/12305
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # Allow setting default `uv init` settings in persistent configuration files
 
 ---
 
-_Issue opened by @zanieb on 2025-03-19 01:00_
+_@zanieb_
 
 ### Summary
 

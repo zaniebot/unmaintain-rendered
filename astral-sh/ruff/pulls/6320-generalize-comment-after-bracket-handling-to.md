@@ -13,14 +13,14 @@ head: charlie/list
 created_at: 2023-08-03T22:51:49Z
 updated_at: 2023-08-07T07:52:46Z
 url: https://github.com/astral-sh/ruff/pull/6320
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Generalize comment-after-bracket handling to lists, sets, etc.
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-03 22:51_
+_@charliermarsh_
 
 ## Summary
 

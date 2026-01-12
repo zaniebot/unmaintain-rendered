@@ -13,14 +13,14 @@ head: zb/patch-feature
 created_at: 2024-04-09T17:47:39Z
 updated_at: 2024-04-10T14:01:26Z
 url: https://github.com/astral-sh/uv/pull/2940
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:19Z
 ```
 
 # Add `python-patch` feature to isolate tests that require Python patch versions to match our suite
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-09 17:47_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/2165
 Follows https://github.com/astral-sh/uv/pull/2930

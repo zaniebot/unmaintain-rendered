@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-29T02:55:46Z
 updated_at: 2024-09-25T12:04:48Z
 url: https://github.com/clap-rs/clap/issues/5050
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Please support `flatten`ing an `Args` and mutating arguments before merging
 
 ---
 
-_Issue opened by @joshtriplett on 2023-07-29 02:55_
+_@joshtriplett_
 
 ### Please complete the following tasks
 

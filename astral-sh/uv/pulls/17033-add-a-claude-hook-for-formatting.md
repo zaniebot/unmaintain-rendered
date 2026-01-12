@@ -13,14 +13,14 @@ head: zb/claude-format
 created_at: 2025-12-08T15:49:26Z
 updated_at: 2025-12-08T16:57:18Z
 url: https://github.com/astral-sh/uv/pull/17033
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:34Z
 ```
 
 # Add a Claude hook for formatting
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-08 15:49_
+_@zanieb_
 
 Inspired by https://github.com/oven-sh/bun/blob/main/.claude/hooks/pre-bash-zig-build.js
 

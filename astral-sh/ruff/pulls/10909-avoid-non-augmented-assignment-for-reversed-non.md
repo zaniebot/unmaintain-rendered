@@ -13,14 +13,14 @@ head: charlie/comm
 created_at: 2024-04-12T13:51:28Z
 updated_at: 2024-04-12T14:04:58Z
 url: https://github.com/astral-sh/ruff/pull/10909
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Avoid `non-augmented-assignment` for reversed, non-commutative operators
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-12 13:51_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/10900.
 

@@ -12,14 +12,14 @@ head: bug/issue-13966
 created_at: 2025-06-22T19:52:45Z
 updated_at: 2025-09-07T15:12:18Z
 url: https://github.com/astral-sh/uv/pull/14200
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:05Z
 ```
 
 # Preserve non-inline comments when removing dependencies
 
 ---
 
-_Pull request opened by @christeefy on 2025-06-22 19:52_
+_@christeefy_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

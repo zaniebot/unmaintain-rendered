@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-03T03:29:40Z
 updated_at: 2024-07-03T04:50:36Z
 url: https://github.com/astral-sh/uv/issues/4755
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # no uvx.exe found on windows during installation
 
 ---
 
-_Issue opened by @njzjz on 2024-07-03 03:29_
+_@njzjz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-16T01:27:17Z
 updated_at: 2023-10-16T18:11:16Z
 url: https://github.com/astral-sh/ruff/issues/7971
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # PLW3201 flags _missing_ in Enum subclass
 
 ---
 
-_Issue opened by @mal on 2023-10-16 01:27_
+_@mal_
 
 `Enum` in Python has a few [supported sunder names](https://docs.python.org/3/library/enum.html#supported-sunder-names). Of them, `_missing_` and `_generate_next_value_` are explicitly called out as overridable but when doing so they get flagged as misspelled dunder methods.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-20T11:42:04Z
 updated_at: 2025-04-20T19:00:10Z
 url: https://github.com/astral-sh/uv/issues/12986
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # CLI docs papercut for `--verbose`
 
 ---
 
-_Issue opened by @edmorley on 2025-04-20 11:42_
+_@edmorley_
 
 Many of the uv CLI commands support a `--verbose` arg. 
 

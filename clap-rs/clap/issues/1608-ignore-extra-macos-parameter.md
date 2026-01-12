@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-12-18T11:32:32Z
 updated_at: 2021-12-09T20:24:30Z
 url: https://github.com/clap-rs/clap/issues/1608
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # ignore extra macos parameter
 
 ---
 
-_Issue opened by @sixcorners on 2019-12-18 11:32_
+_@sixcorners_
 
 When you start an app on macos it will sometimes pass a process serial number. This blows up apps that use clap.
 The place where it is getting passed for me is from the "App downloaded from the internet" dialog box. When you click open it will try to open the rust app but fail and do nothing. If you ignored a parameter that looks like this `-psn_0_5539144` on macos then this would be fixed for all apps using clap.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-24T12:15:39Z
 updated_at: 2024-07-08T01:49:38Z
 url: https://github.com/astral-sh/uv/issues/4469
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Does this project have a logo?
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-06-24 12:15_
+_@InSyncWithFoo_
 
 [Ruff](https://github.com/astral-sh/ruff/blob/cd2af3be73abd968b142cef3b8f279d47d578183/docs/assets/ruff-favicon.png) and [Rye](https://github.com/astral-sh/rye/blob/main/docs/static/favicon.svg) each has its own logo. What about uv?
 

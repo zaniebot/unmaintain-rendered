@@ -14,14 +14,14 @@ head: brent/remove-s320
 created_at: 2025-06-10T20:25:20Z
 updated_at: 2025-06-12T14:06:24Z
 url: https://github.com/astral-sh/ruff/pull/18617
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # [`flake8-bandit`] Remove `suspicious-xmle-tree-usage` (`S320`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-10 20:25_
+_@ntBre_
 
 Summary
 --

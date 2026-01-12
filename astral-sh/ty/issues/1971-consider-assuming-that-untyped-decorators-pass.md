@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-17T02:19:44Z
 updated_at: 2025-12-18T23:02:56Z
 url: https://github.com/astral-sh/ty/issues/1971
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Consider assuming that untyped decorators pass through the signature unchanged
 
 ---
 
-_Issue opened by @afonsotrepa on 2025-12-17 02:19_
+_@afonsotrepa_
 
 ### Summary
 

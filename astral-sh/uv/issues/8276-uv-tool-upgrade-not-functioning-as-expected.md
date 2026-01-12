@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-17T00:38:22Z
 updated_at: 2024-11-20T04:15:58Z
 url: https://github.com/astral-sh/uv/issues/8276
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # `uv tool upgrade` Not Functioning as Expected
 
 ---
 
-_Issue opened by @powercoconola on 2024-10-17 00:38_
+_@powercoconola_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

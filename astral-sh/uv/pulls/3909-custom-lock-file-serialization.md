@@ -12,14 +12,14 @@ head: lock-format
 created_at: 2024-05-29T15:28:18Z
 updated_at: 2024-05-30T19:08:30Z
 url: https://github.com/astral-sh/uv/pull/3909
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:55Z
 ```
 
 # Custom lock-file serialization
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-05-29 15:28_
+_@ibraheemdev_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

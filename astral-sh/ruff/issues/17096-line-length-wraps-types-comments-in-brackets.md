@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-31T16:10:07Z
 updated_at: 2025-03-31T16:42:53Z
 url: https://github.com/astral-sh/ruff/issues/17096
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # line length wraps types + comments in brackets
 
 ---
 
-_Issue opened by @hyperknot on 2025-03-31 16:10_
+_@hyperknot_
 
 ### Summary
 

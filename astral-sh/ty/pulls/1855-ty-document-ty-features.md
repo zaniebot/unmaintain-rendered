@@ -13,14 +13,14 @@ head: david/document-ty-features
 created_at: 2025-12-11T15:27:43Z
 updated_at: 2025-12-15T13:21:21Z
 url: https://github.com/astral-sh/ty/pull/1855
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # [ty] Document ty features
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-11 15:27_
+_@sharkdp_
 
 ## Summary
 

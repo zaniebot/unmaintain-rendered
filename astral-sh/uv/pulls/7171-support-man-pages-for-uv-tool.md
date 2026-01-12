@@ -12,14 +12,14 @@ head: tool-manpage
 created_at: 2024-09-07T17:02:50Z
 updated_at: 2025-04-14T08:00:32Z
 url: https://github.com/astral-sh/uv/pull/7171
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:07:43Z
 ```
 
 # Support man pages for `uv tool`
 
 ---
 
-_Pull request opened by @eth3lbert on 2024-09-07 17:02_
+_@eth3lbert_
 
 ## Summary
 

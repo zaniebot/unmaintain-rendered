@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T08:38:19Z
 updated_at: 2025-11-07T03:39:12Z
 url: https://github.com/astral-sh/uv/issues/11692
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # Generate appropriate .gitignore files when build-backend option is specified for init command
 
 ---
 
-_Issue opened by @hajifkd on 2025-02-21 08:38_
+_@hajifkd_
 
 ### Summary
 

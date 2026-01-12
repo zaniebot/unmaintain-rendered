@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-11-13T13:26:35Z
 updated_at: 2025-12-02T09:50:12Z
 url: https://github.com/astral-sh/uv/issues/411
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Add support for a JSON output format for machine readable output throughout uv
 
 ---
 
-_Issue opened by @konstin on 2023-11-13 13:26_
+_@konstin_
 
 Our main commands should have a json output format that can be in downstream applications such as auditing, dependabot-like application and our own testing.
 

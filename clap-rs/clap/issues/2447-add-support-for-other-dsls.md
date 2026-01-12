@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-04-20T15:12:31Z
 updated_at: 2021-04-20T15:21:34Z
 url: https://github.com/clap-rs/clap/issues/2447
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Add support for other DSLs
 
 ---
 
-_Issue opened by @throwaway1037 on 2021-04-20 15:12_
+_@throwaway1037_
 
 ### Please complete the following tasks
 

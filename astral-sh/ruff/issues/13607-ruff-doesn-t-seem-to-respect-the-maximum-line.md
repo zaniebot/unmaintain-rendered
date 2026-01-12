@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-02T13:32:06Z
 updated_at: 2024-10-03T13:41:03Z
 url: https://github.com/astral-sh/ruff/issues/13607
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Ruff doesn't seem to respect the maximum line length
 
 ---
 
-_Issue opened by @mbridon on 2024-10-02 13:32_
+_@mbridon_
 
 * List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
   e.g. "RUF001", "unused variable", "Jupyter notebook"

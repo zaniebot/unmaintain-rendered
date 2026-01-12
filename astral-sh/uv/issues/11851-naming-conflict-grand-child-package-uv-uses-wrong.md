@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-28T13:07:54Z
 updated_at: 2025-02-28T14:11:14Z
 url: https://github.com/astral-sh/uv/issues/11851
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # Naming conflict grand-child package - UV uses wrong index
 
 ---
 
-_Issue opened by @PedroMTQ on 2025-02-28 13:07_
+_@PedroMTQ_
 
 ### Summary
 

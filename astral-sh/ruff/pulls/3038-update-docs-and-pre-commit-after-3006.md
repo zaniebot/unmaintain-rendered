@@ -12,14 +12,14 @@ head: update-docs-and-pre-commit-after-3006
 created_at: 2023-02-19T18:20:16Z
 updated_at: 2023-02-19T19:24:08Z
 url: https://github.com/astral-sh/ruff/pull/3038
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Update docs and pre-commit after #3006
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-02-19 18:20_
+_@JonathanPlasse_
 
 - With #3006 we have to run `cargo run -p ruff_cli` instead of `cargo run`
 

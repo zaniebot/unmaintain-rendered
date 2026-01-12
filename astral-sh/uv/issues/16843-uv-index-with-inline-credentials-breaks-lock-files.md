@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-25T12:54:44Z
 updated_at: 2025-12-06T14:06:47Z
 url: https://github.com/astral-sh/uv/issues/16843
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # UV Index with inline credentials breaks lock files
 
 ---
 
-_Issue opened by @g0t00 on 2025-11-25 12:54_
+_@g0t00_
 
 ### Summary
 

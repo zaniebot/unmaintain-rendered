@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-08T20:05:16Z
 updated_at: 2025-08-08T20:07:32Z
 url: https://github.com/astral-sh/ruff/issues/19835
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # UP037 fix causes syntax error on string with newline escape and comment
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-08-08 20:05_
+_@MeGaGiGaGon_
 
 ### Summary
 

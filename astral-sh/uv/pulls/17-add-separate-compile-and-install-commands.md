@@ -12,14 +12,14 @@ head: charlie/resolve
 created_at: 2023-10-06T01:44:28Z
 updated_at: 2023-10-06T01:44:32Z
 url: https://github.com/astral-sh/uv/pull/17
-synced_at: 2026-01-10T15:56:16Z
+synced_at: 2026-01-12T16:03:42Z
 ```
 
 # Add separate compile and install commands
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-06 01:44_
+_@charliermarsh_
 
 Closes #9.
 

@@ -14,14 +14,14 @@ head: charlie/UP028
 created_at: 2023-09-03T21:10:10Z
 updated_at: 2023-09-03T21:32:53Z
 url: https://github.com/astral-sh/ruff/pull/7114
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Support parenthesized expressions in UP028
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-03 21:10_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7103.
 

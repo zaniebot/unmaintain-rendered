@@ -13,14 +13,14 @@ head: david/make-try_call-a-query-interned
 created_at: 2025-02-20T20:09:12Z
 updated_at: 2025-02-21T09:51:43Z
 url: https://github.com/astral-sh/ruff/pull/16289
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] make `try_call` a query (`salsa::interned`)
 
 ---
 
-_Pull request opened by @sharkdp on 2025-02-20 20:09_
+_@sharkdp_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

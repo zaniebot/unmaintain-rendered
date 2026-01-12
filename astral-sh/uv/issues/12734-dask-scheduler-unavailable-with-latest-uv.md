@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-08T04:41:38Z
 updated_at: 2025-04-09T01:59:43Z
 url: https://github.com/astral-sh/uv/issues/12734
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # dask scheduler unavailable with latest uv
 
 ---
 
-_Issue opened by @gavin74 on 2025-04-08 04:41_
+_@gavin74_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-08T13:22:23Z
 updated_at: 2025-01-08T14:32:19Z
 url: https://github.com/astral-sh/uv/issues/10392
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # `uv init --app` should create `main.py` instead of `hello.py`
 
 ---
 
-_Issue opened by @kdheepak on 2025-01-08 13:22_
+_@kdheepak_
 
 I've been using `uv init --app` a lot more recently because I've deploying a script using [panel](https://panel.holoviz.org/). I consistently rename `hello.py` to `main.py`. 
 

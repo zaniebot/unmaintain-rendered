@@ -12,14 +12,14 @@ head: feature/autfoxiPYI009
 created_at: 2023-05-22T15:46:53Z
 updated_at: 2023-05-23T08:12:41Z
 url: https://github.com/astral-sh/ruff/pull/4583
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Add autofix for PYI009
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-05-22 15:46_
+_@qdegraaf_
 
 Checked a recent autofix addition PR (https://github.com/charliermarsh/ruff/pull/4178/files#diff-6abdc1e4d11a89870a0a863b5132d8fa2f793889f56d1a1fa95fb0a0ce831486) for what I needed to change. 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-18T09:24:57Z
 updated_at: 2023-09-19T13:22:48Z
 url: https://github.com/astral-sh/ruff/issues/7486
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Documentation: add `--no-preview` to `--help`
 
 ---
 
-_Issue opened by @bersbersbers on 2023-09-18 09:24_
+_@bersbersbers_
 
 I like using `ruff` with `preview` rules, locally - so I have added `preview = true` to my `pyproject.toml`, and it seems to be picked up by VS Code, `pre-commit`, and manual command-line invocations of `ruff`. However, I think I would prefer new preview rules to break CI. I could pin the `ruff` version, but would like to avoid that ideally. Could the `--preview` command-line flag be made switchable, e.g., to allow `ruff --preview=false` on CI?
 

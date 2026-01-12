@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-14T04:56:03Z
 updated_at: 2024-11-14T05:06:00Z
 url: https://github.com/astral-sh/uv/issues/9114
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # Q: how to run `python -m build` with uvx?
 
 ---
 
-_Issue opened by @dimaqq on 2024-11-14 04:56_
+_@dimaqq_
 
 I just can't figure it out.
 

@@ -13,14 +13,14 @@ head: allowed-unused-imports-top-level-module
 created_at: 2025-08-27T15:54:56Z
 updated_at: 2025-08-28T13:09:45Z
 url: https://github.com/astral-sh/ruff/pull/20115
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [`pyflakes`] Fix `allowed-unused-imports` matching for top-level modules (`F401`)
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-08-27 15:54_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-08T12:27:38Z
 updated_at: 2025-07-08T14:35:52Z
 url: https://github.com/astral-sh/uv/issues/14505
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # `uv add` fails because of `requires-python`'s "default behavior"
 
 ---
 
-_Issue opened by @trya2l on 2025-07-08 12:27_
+_@trya2l_
 
 ### Question
 

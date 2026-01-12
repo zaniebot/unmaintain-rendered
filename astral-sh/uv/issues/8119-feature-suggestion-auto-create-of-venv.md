@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-11T04:21:36Z
 updated_at: 2024-10-14T14:31:32Z
 url: https://github.com/astral-sh/uv/issues/8119
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Feature suggestion: Auto create of venv
 
 ---
 
-_Issue opened by @rafaeljcd on 2024-10-11 04:21_
+_@rafaeljcd_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

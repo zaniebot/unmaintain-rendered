@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-25T16:00:55Z
 updated_at: 2021-12-27T20:37:24Z
 url: https://github.com/clap-rs/clap/issues/3218
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Windows outputs an error when showing usage
 
 ---
 
-_Issue opened by @sigmaSd on 2021-12-25 16:00_
+_@sigmaSd_
 
 Currently when clap shows the usage it exit with exit_code=2
 

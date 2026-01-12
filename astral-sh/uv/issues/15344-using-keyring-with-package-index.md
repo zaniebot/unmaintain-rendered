@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-18T08:47:22Z
 updated_at: 2025-08-18T13:54:56Z
 url: https://github.com/astral-sh/uv/issues/15344
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:08Z
 ```
 
 # Using keyring with package index
 
 ---
 
-_Issue opened by @DWhettam on 2025-08-18 08:47_
+_@DWhettam_
 
 ### Question
 

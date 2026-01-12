@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-23T06:34:35Z
 updated_at: 2025-05-24T15:05:39Z
 url: https://github.com/astral-sh/uv/issues/13612
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # uv init fails to create .git directory when git outputs is not in English
 
 ---
 
-_Issue opened by @guo-yong-zhi on 2025-05-23 06:34_
+_@guo-yong-zhi_
 
 ### Summary
 

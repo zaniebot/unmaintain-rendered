@@ -13,14 +13,14 @@ head: cjm/builtinfix
 created_at: 2024-08-15T00:15:48Z
 updated_at: 2024-08-15T21:09:31Z
 url: https://github.com/astral-sh/ruff/pull/12898
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [red-knot] fix lookups of possibly-shadowed builtins
 
 ---
 
-_Pull request opened by @carljm on 2024-08-15 00:15_
+_@carljm_
 
 If a builtin is conditionally shadowed by a global, we didn't correctly fall back to builtins for the not-defined-in-globals path (see added test for an example.)
 

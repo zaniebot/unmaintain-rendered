@@ -13,14 +13,14 @@ head: zb/base-client-requirements
 created_at: 2024-03-13T22:44:14Z
 updated_at: 2024-03-21T18:48:58Z
 url: https://github.com/astral-sh/uv/pull/2434
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:02Z
 ```
 
 # Respect HTTP client options when reading remote requirements files
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-13 22:44_
+_@zanieb_
 
 Uses the base client introduced in #2431 to restore use of our fully configured client when reading remote requirements files.
 

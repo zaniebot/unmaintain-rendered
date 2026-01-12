@@ -13,14 +13,14 @@ head: pyw-docs
 created_at: 2024-08-23T00:23:32Z
 updated_at: 2024-08-23T00:54:11Z
 url: https://github.com/astral-sh/uv/pull/6478
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:23Z
 ```
 
 # docs: add uv run docs for gui scripts
 
 ---
 
-_Pull request opened by @samypr100 on 2024-08-23 00:23_
+_@samypr100_
 
 ## Summary
 

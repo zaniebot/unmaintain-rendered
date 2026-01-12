@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-11T06:31:59Z
 updated_at: 2024-08-14T15:48:18Z
 url: https://github.com/astral-sh/ruff/issues/12799
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Ruff treats `pass` and `...` differently for 
 
 ---
 
-_Issue opened by @ssteinerx on 2024-08-11 06:31_
+_@ssteinerx_
 
 *Ruff version*: `ruff 0.5.7`
 

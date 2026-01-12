@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-07T19:08:29Z
 updated_at: 2023-10-24T19:23:20Z
 url: https://github.com/astral-sh/uv/issues/44
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Store and display "given name" for packages
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-07 19:08_
+_@charliermarsh_
 
 Right now, we use the normalized name everywhere. But if the user or package author writes `Jinja2`, we should show that instead.
 

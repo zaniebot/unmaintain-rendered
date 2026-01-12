@@ -13,14 +13,14 @@ head: zb/disable-xin-trampoline
 created_at: 2024-10-14T18:21:53Z
 updated_at: 2024-10-14T18:32:25Z
 url: https://github.com/astral-sh/uv/pull/8182
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:11Z
 ```
 
 # Disable `cargo xwin clippy` in trampoline job
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-14 18:21_
+_@zanieb_
 
 See https://github.com/rust-cross/cargo-xwin/issues/127
 

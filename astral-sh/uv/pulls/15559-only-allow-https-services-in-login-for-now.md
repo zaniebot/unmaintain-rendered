@@ -13,14 +13,14 @@ head: zb/uv-auth-iiiii
 created_at: 2025-08-27T18:32:30Z
 updated_at: 2025-08-28T15:46:11Z
 url: https://github.com/astral-sh/uv/pull/15559
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:49Z
 ```
 
 # Only allow HTTPS services in login for now
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-27 18:32_
+_@zanieb_
 
 _No description provided._
 

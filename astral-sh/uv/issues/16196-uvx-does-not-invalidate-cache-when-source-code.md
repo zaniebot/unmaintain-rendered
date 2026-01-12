@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-09T01:20:48Z
 updated_at: 2025-11-01T20:01:23Z
 url: https://github.com/astral-sh/uv/issues/16196
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # uvx does not invalidate cache when source code changes with --from flag
 
 ---
 
-_Issue opened by @oxysoft on 2025-10-09 01:20_
+_@oxysoft_
 
   uvx --from <local-path> aggressively caches installed packages and does NOT invalidate the cache when source files change, leading to developers running stale code even after making edits. This makes uvx completely unreliable for
   local development workflows.

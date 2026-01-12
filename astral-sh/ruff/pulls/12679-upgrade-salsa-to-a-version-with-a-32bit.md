@@ -13,14 +13,14 @@ head: upgrade-salsa-32bit-compatible
 created_at: 2024-08-05T06:42:18Z
 updated_at: 2024-08-05T07:02:28Z
 url: https://github.com/astral-sh/ruff/pull/12679
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Upgrade Salsa to a version with a 32bit compatible concurrent vec
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-05 06:42_
+_@MichaReiser_
 
 
 ## Summary

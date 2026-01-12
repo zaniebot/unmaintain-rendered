@@ -14,14 +14,14 @@ head: alex/union-diag
 created_at: 2025-10-23T10:56:30Z
 updated_at: 2025-10-27T08:26:07Z
 url: https://github.com/astral-sh/ruff/pull/21044
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [ty] Improve `invalid-argument-type` diagnostics where a union type was provided
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-23 10:56_
+_@AlexWaygood_
 
 Fixes https://github.com/astral-sh/ty/issues/1411
 

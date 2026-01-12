@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-18T17:34:13Z
 updated_at: 2024-10-18T18:11:53Z
 url: https://github.com/astral-sh/uv/issues/8341
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # specifying single-package indices with uv add --index
 
 ---
 
-_Issue opened by @itrase on 2024-10-18 17:34_
+_@itrase_
 
 The new --index functionality makes it possible to do this:
 `uv init`

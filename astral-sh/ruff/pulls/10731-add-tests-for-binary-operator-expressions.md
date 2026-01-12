@@ -14,14 +14,14 @@ head: dhruv/bin-op-expr
 created_at: 2024-04-02T03:50:43Z
 updated_at: 2024-04-06T05:51:14Z
 url: https://github.com/astral-sh/ruff/pull/10731
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Add tests for binary operator expressions
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-02 03:50_
+_@dhruvmanila_
 
 ## Summary
 

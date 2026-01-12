@@ -14,14 +14,14 @@ head: micha/assert-unwind-reporter
 created_at: 2025-07-30T12:43:18Z
 updated_at: 2025-07-30T12:47:01Z
 url: https://github.com/astral-sh/ruff/pull/19637
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [ty] Remove `AssertUnwindSafe` requirement from `ProgressReporter`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-30 12:43_
+_@MichaReiser_
 
 _No description provided._
 

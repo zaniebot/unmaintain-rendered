@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-23T12:04:45Z
 updated_at: 2025-04-24T16:18:01Z
 url: https://github.com/astral-sh/uv/issues/13067
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # Support relative file:// dependencies in pyproject.toml for uv sync
 
 ---
 
-_Issue opened by @drsshz on 2025-04-23 12:04_
+_@drsshz_
 
 
 **Description**:

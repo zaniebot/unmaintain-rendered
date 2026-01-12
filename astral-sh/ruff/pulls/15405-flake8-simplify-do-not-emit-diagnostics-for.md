@@ -13,14 +13,14 @@ head: SIM222
 created_at: 2025-01-10T16:57:16Z
 updated_at: 2025-01-17T12:52:26Z
 url: https://github.com/astral-sh/ruff/pull/15405
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`flake8-simplify`] Do not emit diagnostics for expressions inside string type annotations (`SIM222`, `SIM223`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-01-10 16:57_
+_@InSyncWithFoo_
 
 ## Summary
 

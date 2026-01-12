@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-14T09:25:44Z
 updated_at: 2026-01-12T12:06:49Z
 url: https://github.com/astral-sh/uv/issues/14037
-synced_at: 2026-01-12T13:00:04Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # Support Git scm-based versioning in `uv` build backend
 
 ---
 
-_Issue opened by @blueraft on 2025-06-14 09:25_
+_@blueraft_
 
 ### Summary
 

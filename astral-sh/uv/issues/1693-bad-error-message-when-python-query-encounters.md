@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-19T14:17:54Z
 updated_at: 2024-02-23T10:55:40Z
 url: https://github.com/astral-sh/uv/issues/1693
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Bad error message when python query encounters python 2
 
 ---
 
-_Issue opened by @fervand1 on 2024-02-19 14:17_
+_@fervand1_
 
 Steps to reproduce:
 * Install uv using command - irm https://astral.sh/uv/install.ps1 | iex

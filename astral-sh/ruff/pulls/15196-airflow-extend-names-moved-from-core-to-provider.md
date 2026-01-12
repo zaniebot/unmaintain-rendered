@@ -14,14 +14,14 @@ head: extend-AIR303
 created_at: 2024-12-30T06:23:10Z
 updated_at: 2025-01-02T04:45:00Z
 url: https://github.com/astral-sh/ruff/pull/15196
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [`airflow`] Extend names moved from core to provider (`AIR303`)
 
 ---
 
-_Pull request opened by @Lee-W on 2024-12-30 06:23_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

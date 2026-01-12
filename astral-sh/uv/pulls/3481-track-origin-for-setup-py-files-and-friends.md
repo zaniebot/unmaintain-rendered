@@ -13,14 +13,14 @@ head: charlie/setup
 created_at: 2024-05-09T05:05:31Z
 updated_at: 2024-05-09T13:30:42Z
 url: https://github.com/astral-sh/uv/pull/3481
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # Track origin for setup.py files and friends
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-09 05:05_
+_@charliermarsh_
 
 ## Summary
 

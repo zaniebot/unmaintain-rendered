@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-07-15T07:50:51Z
 updated_at: 2018-08-02T03:29:51Z
 url: https://github.com/clap-rs/clap/issues/582
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # External Subcommand names incorrect
 
 ---
 
-_Issue opened by @VoidStarKat on 2016-07-15 07:50_
+_@VoidStarKat_
 
 If you use `AllowExternalSubcommands`, the name of the external subcommand is _always_ `EXTERNAL_SUBCOMMAND` and there is no way to retrieve the actual name of the external subcommand, making the feature entirely useless. This bug is in the latest release 2.9.2.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T21:11:10Z
 updated_at: 2024-08-29T06:20:42Z
 url: https://github.com/astral-sh/uv/issues/5636
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Document when `--upgrade` should be used with `uv lock`
 
 ---
 
-_Issue opened by @zanieb on 2024-07-30 21:11_
+_@zanieb_
 
 I don't fully understand the nuance here.
 

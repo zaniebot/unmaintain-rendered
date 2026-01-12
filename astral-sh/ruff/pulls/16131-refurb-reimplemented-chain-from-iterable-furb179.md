@@ -13,14 +13,14 @@ head: FURB179
 created_at: 2025-02-13T06:44:19Z
 updated_at: 2025-02-26T14:44:57Z
 url: https://github.com/astral-sh/ruff/pull/16131
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`refurb`] Reimplemented `chain.from_iterable()` (`FURB179`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-13 06:44_
+_@InSyncWithFoo_
 
 ## Summary
 

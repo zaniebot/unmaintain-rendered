@@ -12,14 +12,14 @@ head: ty-typeddict-required
 created_at: 2025-08-11T15:46:07Z
 updated_at: 2025-08-19T10:42:45Z
 url: https://github.com/astral-sh/ruff/pull/19865
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] add `total`, `Required` & `NotRequired` support for `TypedDict`
 
 ---
 
-_Pull request opened by @PrettyWood on 2025-08-11 15:46_
+_@PrettyWood_
 
 ⚠️ To review after https://github.com/astral-sh/ruff/pull/19810
 (only the last 6 commits are for this PR)

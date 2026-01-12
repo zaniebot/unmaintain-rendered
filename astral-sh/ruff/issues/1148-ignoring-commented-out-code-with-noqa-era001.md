@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-08T21:53:33Z
 updated_at: 2022-12-09T04:10:37Z
 url: https://github.com/astral-sh/ruff/issues/1148
-synced_at: 2026-01-10T12:06:18Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Ignoring commented-out code with `noqa: ERA001` triggers `RUF100`
 
 ---
 
-_Issue opened by @edgarrmondragon on 2022-12-08 21:53_
+_@edgarrmondragon_
 
 ```python
 # commented.py

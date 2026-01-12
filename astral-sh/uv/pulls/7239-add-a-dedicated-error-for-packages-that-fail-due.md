@@ -13,14 +13,14 @@ head: charlie/versiomn
 created_at: 2024-09-10T01:37:30Z
 updated_at: 2024-09-12T02:41:43Z
 url: https://github.com/astral-sh/uv/pull/7239
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Add a dedicated error for packages that fail due to `distutils` deprecation
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-10 01:37_
+_@charliermarsh_
 
 ## Summary
 

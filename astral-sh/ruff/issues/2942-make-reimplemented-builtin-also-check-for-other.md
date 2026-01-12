@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-15T21:39:21Z
 updated_at: 2023-02-18T12:29:14Z
 url: https://github.com/astral-sh/ruff/issues/2942
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Make `reimplemented-builtin` also check for other builtins
 
 ---
 
-_Issue opened by @not-my-profile on 2023-02-15 21:39_
+_@not-my-profile_
 
 `reimplemented-builtin` currently only checks for `any` and `all`.
 

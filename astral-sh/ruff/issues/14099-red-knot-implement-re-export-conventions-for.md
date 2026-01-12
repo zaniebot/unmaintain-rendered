@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-05T00:12:48Z
 updated_at: 2025-02-14T09:47:53Z
 url: https://github.com/astral-sh/ruff/issues/14099
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] implement re-export conventions for imports
 
 ---
 
-_Issue opened by @carljm on 2024-11-05 00:12_
+_@carljm_
 
 See https://typing.readthedocs.io/en/latest/spec/distributing.html#import-conventions
 

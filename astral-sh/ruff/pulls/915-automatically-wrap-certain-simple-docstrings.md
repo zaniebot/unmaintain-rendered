@@ -11,14 +11,14 @@ head: ks/wrap-props
 created_at: 2022-11-26T18:15:00Z
 updated_at: 2022-12-11T15:24:01Z
 url: https://github.com/astral-sh/ruff/pull/915
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Automatically wrap certain simple docstrings
 
 ---
 
-_Pull request opened by @kurtbuilds on 2022-11-26 18:15_
+_@kurtbuilds_
 
 Automatic line length wrapping is a huge can of worms.
 

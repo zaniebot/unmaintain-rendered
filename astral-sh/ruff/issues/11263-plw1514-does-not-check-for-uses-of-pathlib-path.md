@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-03T13:58:18Z
 updated_at: 2024-05-09T12:36:22Z
 url: https://github.com/astral-sh/ruff/issues/11263
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `PLW1514` does not check for uses of `pathlib.Path.open()` without an explicit encoding argument.
 
 ---
 
-_Issue opened by @yuji38kwmt on 2024-05-03 13:58_
+_@yuji38kwmt_
 
 
 # Description

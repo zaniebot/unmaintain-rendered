@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-16T19:52:57Z
 updated_at: 2025-12-16T20:36:52Z
 url: https://github.com/astral-sh/ty/issues/1956
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Distribution `ty==0.0.1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
 
 ---
 
-_Issue opened by @Winipedia on 2025-12-16 19:52_
+_@Winipedia_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: reflink_on_linux
 created_at: 2024-09-22T14:48:20Z
 updated_at: 2024-09-22T17:40:52Z
 url: https://github.com/astral-sh/uv/pull/7620
-synced_at: 2026-01-10T12:53:51Z
+synced_at: 2026-01-12T16:07:55Z
 ```
 
 # Fix link-mode=clone on linux
 
 ---
 
-_Pull request opened by @aroig on 2024-09-22 14:48_
+_@aroig_
 
 - **Do not attempt to reflink directories on linux**
 - **Refactor clone_recursive**

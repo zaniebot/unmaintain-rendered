@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-04-26T11:38:08Z
 updated_at: 2020-02-01T14:24:47Z
 url: https://github.com/clap-rs/clap/issues/1458
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Bad help for arg with multiple occurrences but only 1 value per occurrence
 
 ---
 
-_Issue opened by @rvolgers on 2019-04-26 11:38_
+_@rvolgers_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

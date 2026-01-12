@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-20T20:42:19Z
 updated_at: 2025-12-16T16:24:47Z
 url: https://github.com/astral-sh/ruff/issues/11955
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # ruff with `--diff` exits 0 on errors with no diffs
 
 ---
 
-_Issue opened by @wyardley on 2024-06-20 20:42_
+_@wyardley_
 
 Using `--diff` flag with no possible changes seems to result in a 0 exit code and no message (or error), regardless of whether there are errors, formatting changes, and whether or not those are fixable. While these may not be intended to be used together (and while it is noted that `--diff` implies `--fix-only`, it wasn't immediately obvious that this behavior would happen since the docs mention reporting, but not exit status), I came across a situation where someone had used `--diff` and `--fix` together -- see https://github.com/python-semantic-release/python-semantic-release/pull/961 and https://github.com/python-semantic-release/python-semantic-release/pull/957
 

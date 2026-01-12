@@ -13,14 +13,14 @@ head: charlie/con
 created_at: 2024-11-29T19:17:54Z
 updated_at: 2024-11-29T19:25:44Z
 url: https://github.com/astral-sh/uv/pull/9529
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:51Z
 ```
 
 # Use constraints in trace rather than irrelevant requires-python
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-29 19:17_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: micha/knot-server-dead-code
 created_at: 2025-04-06T08:32:56Z
 updated_at: 2025-04-06T21:09:26Z
 url: https://github.com/astral-sh/ruff/pull/17229
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Remove global `dead_code` from red-knot-server
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-06 08:32_
+_@MichaReiser_
 
 ## Summary
 

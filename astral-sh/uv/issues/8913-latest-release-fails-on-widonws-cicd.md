@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-08T01:31:17Z
 updated_at: 2024-11-08T18:15:33Z
 url: https://github.com/astral-sh/uv/issues/8913
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # latest release fails on widonws CICD
 
 ---
 
-_Issue opened by @joamatab on 2024-11-08 01:31_
+_@joamatab_
 
 Amazing job on uv, tests run very fast now,
 

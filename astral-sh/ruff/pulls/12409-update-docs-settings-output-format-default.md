@@ -13,14 +13,14 @@ head: update-docs-output-format-default
 created_at: 2024-07-19T17:47:48Z
 updated_at: 2024-07-19T17:57:44Z
 url: https://github.com/astral-sh/ruff/pull/12409
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Update docs Settings output-format default
 
 ---
 
-_Pull request opened by @sashko1988 on 2024-07-19 17:47_
+_@sashko1988_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-15T14:44:14Z
 updated_at: 2025-03-10T11:09:41Z
 url: https://github.com/astral-sh/uv/issues/9151
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # Infer `.cmd` and `.ps1` extensions during `uv run`
 
 ---
 
-_Issue opened by @zanieb on 2024-11-15 14:44_
+_@zanieb_
 
 As discussed in https://github.com/astral-sh/uv/issues/8770
 

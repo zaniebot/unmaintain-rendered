@@ -14,14 +14,14 @@ head: lsp_mem_use
 created_at: 2025-09-14T18:20:13Z
 updated_at: 2025-09-20T11:35:53Z
 url: https://github.com/astral-sh/ruff/pull/20379
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:00Z
 ```
 
 # [ty] Add LSP debug information command
 
 ---
 
-_Pull request opened by @Guillaume-Fgt on 2025-09-14 18:20_
+_@Guillaume-Fgt_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

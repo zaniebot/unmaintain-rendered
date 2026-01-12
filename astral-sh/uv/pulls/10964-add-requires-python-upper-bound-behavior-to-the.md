@@ -13,14 +13,14 @@ head: charlie/req
 created_at: 2025-01-25T22:54:33Z
 updated_at: 2025-01-28T17:17:36Z
 url: https://github.com/astral-sh/uv/pull/10964
-synced_at: 2026-01-10T11:45:20Z
+synced_at: 2026-01-12T16:09:36Z
 ```
 
 # Add `Requires-Python` upper bound behavior to the docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-25 22:54_
+_@charliermarsh_
 
 ## Summary
 

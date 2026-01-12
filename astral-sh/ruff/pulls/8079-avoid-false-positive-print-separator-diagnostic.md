@@ -13,14 +13,14 @@ head: charlie/star
 created_at: 2023-10-19T22:11:04Z
 updated_at: 2023-10-19T22:43:03Z
 url: https://github.com/astral-sh/ruff/pull/8079
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Avoid false-positive print separator diagnostic with starred argument
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-19 22:11_
+_@charliermarsh_
 
 Given `print(*a_list_with_elements, sep="\n")`, we can't remove the separator (unlike in `print(a, sep="\n")`), since we don't know how many arguments were provided.
 

@@ -14,14 +14,14 @@ head: alex/rk-formatting
 created_at: 2025-02-24T14:41:12Z
 updated_at: 2025-02-24T14:44:50Z
 url: https://github.com/astral-sh/ruff/pull/16348
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Fixup some formatting in `infer.rs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-24 14:41_
+_@AlexWaygood_
 
 ## Summary
 

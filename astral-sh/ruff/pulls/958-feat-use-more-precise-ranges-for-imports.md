@@ -12,14 +12,14 @@ head: main
 created_at: 2022-11-29T04:02:42Z
 updated_at: 2022-11-30T00:37:11Z
 url: https://github.com/astral-sh/ruff/pull/958
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # feat: use more precise ranges for imports
 
 ---
 
-_Pull request opened by @relsunkaev on 2022-11-29 04:02_
+_@relsunkaev_
 
 Closes #946
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-30T14:27:25Z
 updated_at: 2023-08-04T09:59:57Z
 url: https://github.com/astral-sh/ruff/issues/6181
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter panic with empty attribute inner comment
 
 ---
 
-_Issue opened by @konstin on 2023-07-30 14:27_
+_@konstin_
 
 The following snippet causes the formatter to panic:
 

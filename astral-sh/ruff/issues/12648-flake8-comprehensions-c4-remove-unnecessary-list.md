@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-02T22:01:13Z
 updated_at: 2024-08-05T12:10:32Z
 url: https://github.com/astral-sh/ruff/issues/12648
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # flake8-comprehensions (C4) - Remove unnecessary list comprehensions in additional contexts that can take arbitrary iterables (C419)
 
 ---
 
-_Issue opened by @gandhis1 on 2024-08-02 22:01_
+_@gandhis1_
 
 The following code all creates unnecessary list comprehensions
 

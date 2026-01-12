@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-13T19:41:01Z
 updated_at: 2023-03-02T03:12:37Z
 url: https://github.com/astral-sh/ruff/issues/2867
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Options included via `ruff rule F841` (or equivalent) are unlinked
 
 ---
 
-_Issue opened by @charliermarsh on 2023-02-13 19:41_
+_@charliermarsh_
 
 Should we just make these direct links to the documentation rather than references?
 

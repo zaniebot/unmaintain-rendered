@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-03T14:59:22Z
 updated_at: 2025-11-07T17:17:46Z
 url: https://github.com/astral-sh/uv/issues/16115
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:24Z
 ```
 
 # Dependencies for irrelevant platform markers should be ignored during `uv sync`
 
 ---
 
-_Issue opened by @mmisiewicz on 2025-10-03 14:59_
+_@mmisiewicz_
 
 ### Summary
 

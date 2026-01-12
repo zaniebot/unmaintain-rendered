@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-30T20:48:31Z
 updated_at: 2024-02-23T21:34:06Z
 url: https://github.com/astral-sh/ruff/issues/9720
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # ruff format out of place?
 
 ---
 
-_Issue opened by @suo on 2024-01-30 20:48_
+_@suo_
 
 The default behavior of `ruff format` is to do an in-place rewrite of the provided files. If you pass source code in via stdin, ruff will output the formatted source to stdout.
 

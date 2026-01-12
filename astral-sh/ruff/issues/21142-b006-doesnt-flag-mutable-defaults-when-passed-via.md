@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-30T15:09:30Z
 updated_at: 2025-10-30T18:25:16Z
 url: https://github.com/astral-sh/ruff/issues/21142
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # B006 doesn’t flag mutable defaults when passed via a named constant
 
 ---
 
-_Issue opened by @yehiahesham on 2025-10-30 15:09_
+_@yehiahesham_
 
 Ruff’s B006 (mutable-argument-default) correctly flags obvious mutable defaults written inline (e.g., {}, [], set()), but it does not warn when the default is a reference to a module-level named constant that is a mutable object (e.g., a set). This yields a false negative and can lead to shared mutable state across calls/instances without any lint warning.
 

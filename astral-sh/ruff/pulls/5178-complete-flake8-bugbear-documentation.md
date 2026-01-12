@@ -13,14 +13,14 @@ head: bugbear-docs
 created_at: 2023-06-19T12:04:16Z
 updated_at: 2023-07-10T09:55:24Z
 url: https://github.com/astral-sh/ruff/pull/5178
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Complete `flake8-bugbear` documentation
 
 ---
 
-_Pull request opened by @tjkuson on 2023-06-19 12:04_
+_@tjkuson_
 
 ## Summary
 

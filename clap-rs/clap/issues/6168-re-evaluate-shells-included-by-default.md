@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-30T14:42:04Z
 updated_at: 2025-10-30T14:42:04Z
 url: https://github.com/clap-rs/clap/issues/6168
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Re-evaluate shells included by default
 
 ---
 
-_Issue opened by @epage on 2025-10-30 14:42_
+_@epage_
 
 When does it make sense for a shell to be included by default?
 

@@ -12,14 +12,14 @@ head: SyntaxError
 created_at: 2022-09-21T00:20:54Z
 updated_at: 2022-09-21T02:16:49Z
 url: https://github.com/astral-sh/ruff/pull/237
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Correctly display the location of parse errors
 
 ---
 
-_Pull request opened by @andersk on 2022-09-21 00:20_
+_@andersk_
 
 Before:
 

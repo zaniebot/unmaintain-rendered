@@ -13,14 +13,14 @@ head: zanie/release-preview
 created_at: 2023-09-11T18:38:57Z
 updated_at: 2023-09-11T23:07:48Z
 url: https://github.com/astral-sh/ruff/pull/7280
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add "Preview" section to auto-generated release notes
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-11 18:38_
+_@zanieb_
 
 _No description provided._
 

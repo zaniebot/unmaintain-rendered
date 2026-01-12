@@ -13,14 +13,14 @@ head: zb/available
 created_at: 2024-01-08T18:28:49Z
 updated_at: 2024-01-08T22:11:11Z
 url: https://github.com/astral-sh/uv/pull/838
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:13Z
 ```
 
 # Always pair package names with ranges in error messages
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-08 18:28_
+_@zanieb_
 
 Adjusts display of "no versions available" in error messages to be consistent with other package/range pairings i.e. we usually display "<package-name><range>".
 

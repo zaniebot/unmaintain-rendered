@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-10T00:19:36Z
 updated_at: 2026-01-12T08:16:56Z
 url: https://github.com/astral-sh/ty/issues/2431
-synced_at: 2026-01-12T08:52:44Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Passing a tuple of types to `**P` gets no error against error message
 
 ---
 
-_Issue opened by @hyperkai on 2026-01-10 00:19_
+_@hyperkai_
 
 ### Summary
 

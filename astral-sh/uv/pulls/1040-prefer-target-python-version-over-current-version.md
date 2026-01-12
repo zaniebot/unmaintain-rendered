@@ -12,14 +12,14 @@ head: zb/target-build-version
 created_at: 2024-01-22T18:14:53Z
 updated_at: 2024-01-24T17:35:35Z
 url: https://github.com/astral-sh/uv/pull/1040
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:22Z
 ```
 
 # Prefer target Python version over current version for builds
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-22 18:14_
+_@zanieb_
 
 Extends #1029 
 Closes https://github.com/astral-sh/puffin/issues/1038

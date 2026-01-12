@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-03T07:19:47Z
 updated_at: 2025-04-10T07:16:07Z
 url: https://github.com/astral-sh/uv/issues/12645
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Possible False Positive on Virustotal Win-64 v0.6.12?
 
 ---
 
-_Issue opened by @thisiswhereitype on 2025-04-03 07:19_
+_@thisiswhereitype_
 
 ### Question
 

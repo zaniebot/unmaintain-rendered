@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-31T20:07:55Z
 updated_at: 2023-11-01T13:27:52Z
 url: https://github.com/astral-sh/ruff/issues/8390
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # [SIM401] Produces false-positive when the `else` value is not constant
 
 ---
 
-_Issue opened by @sshishov on 2023-10-31 20:07_
+_@sshishov_
 
 The easy example to reproduce:
 

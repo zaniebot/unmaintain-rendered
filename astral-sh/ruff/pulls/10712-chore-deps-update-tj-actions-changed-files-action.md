@@ -13,14 +13,14 @@ head: renovate/tj-actions-changed-files-44.x
 created_at: 2024-04-01T12:29:07Z
 updated_at: 2024-04-01T13:19:29Z
 url: https://github.com/astral-sh/ruff/pull/10712
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # chore(deps): update tj-actions/changed-files action to v44
 
 ---
 
-_Pull request opened by @renovate on 2024-04-01 12:29_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

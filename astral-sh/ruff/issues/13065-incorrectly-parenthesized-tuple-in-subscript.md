@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-23T01:30:19Z
 updated_at: 2025-01-07T18:21:02Z
 url: https://github.com/astral-sh/ruff/issues/13065
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `incorrectly-parenthesized-tuple-in-subscript` (`RUF031`) - false positives with `parenthesize-tuple-in-subscript = true` on types outside of type annotations
 
 ---
 
-_Issue opened by @DetachHead on 2024-08-23 01:30_
+_@DetachHead_
 
 the fix for #12758 only fixed the issue for type annotations, but the generic syntax for types can appear outside of type annotations, eg:
 

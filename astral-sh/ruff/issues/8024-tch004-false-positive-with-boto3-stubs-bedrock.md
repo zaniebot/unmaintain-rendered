@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-17T20:42:44Z
 updated_at: 2023-10-18T04:32:23Z
 url: https://github.com/astral-sh/ruff/issues/8024
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # TCH004 false positive with boto3 stubs - bedrock-runtime
 
 ---
 
-_Issue opened by @sansmoraxz on 2023-10-17 20:42_
+_@sansmoraxz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

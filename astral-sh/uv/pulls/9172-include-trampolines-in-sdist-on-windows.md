@@ -14,14 +14,14 @@ head: zb/sd-tr
 created_at: 2024-11-17T15:58:31Z
 updated_at: 2024-11-18T01:47:26Z
 url: https://github.com/astral-sh/uv/pull/9172
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:41Z
 ```
 
 # Include trampolines in sdist on Windows
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-17 15:58_
+_@zanieb_
 
 Naive fix for
 

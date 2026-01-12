@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-24T12:38:27Z
 updated_at: 2024-05-26T17:57:34Z
 url: https://github.com/astral-sh/ruff/issues/11531
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `SLF001` shouldn't be raised when accessing enum `_sunder_` methods
 
 ---
 
-_Issue opened by @Bobronium on 2024-05-24 12:38_
+_@Bobronium_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

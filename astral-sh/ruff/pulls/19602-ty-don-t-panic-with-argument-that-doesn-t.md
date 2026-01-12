@@ -13,14 +13,14 @@ head: dcreager/fix-the-glitch
 created_at: 2025-07-28T14:37:40Z
 updated_at: 2025-07-28T16:09:56Z
 url: https://github.com/astral-sh/ruff/pull/19602
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:43Z
 ```
 
 # [ty] Don't panic with argument that doesn't actually implement Iterable
 
 ---
 
-_Pull request opened by @dcreager on 2025-07-28 14:37_
+_@dcreager_
 
 This eliminates the panic reported in https://github.com/astral-sh/ty/issues/909, though it doesn't address the underlying cause, which is that we aren't yet checking the types of the fields of a protocol when checking whether a class implements the protocol. And in particular, if a class explictly opts out of iteration via
 

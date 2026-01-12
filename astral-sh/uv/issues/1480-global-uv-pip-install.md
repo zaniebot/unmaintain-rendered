@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-16T11:56:27Z
 updated_at: 2024-02-16T12:02:20Z
 url: https://github.com/astral-sh/uv/issues/1480
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Global uv pip install ?
 
 ---
 
-_Issue opened by @vitalik on 2024-02-16 11:56_
+_@vitalik_
 
 does uv have some global install option (without venv) ?
 

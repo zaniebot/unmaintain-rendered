@@ -13,14 +13,14 @@ head: charlie/cli
 created_at: 2023-09-21T01:29:38Z
 updated_at: 2023-09-21T02:05:41Z
 url: https://github.com/astral-sh/ruff/pull/7560
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Enable tab completion for `ruff rule`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-21 01:29_
+_@charliermarsh_
 
 ## Summary
 

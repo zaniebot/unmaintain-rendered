@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-26T19:01:00Z
 updated_at: 2022-12-26T19:01:19Z
 url: https://github.com/astral-sh/ruff/issues/1386
-synced_at: 2026-01-10T12:05:27Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Enable users to select Ruff version via pre-built WASM packages
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-26 19:01_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: dependabot/cargo/ureq-2.9.6
 created_at: 2024-02-19T08:28:28Z
 updated_at: 2024-02-19T09:37:51Z
 url: https://github.com/astral-sh/ruff/pull/10047
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Bump ureq from 2.9.5 to 2.9.6
 
 ---
 
-_Pull request opened by @dependabot on 2024-02-19 08:28_
+_@dependabot_
 
 Bumps [ureq](https://github.com/algesten/ureq) from 2.9.5 to 2.9.6.
 <details>

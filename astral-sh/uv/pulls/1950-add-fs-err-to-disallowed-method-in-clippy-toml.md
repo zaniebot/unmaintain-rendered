@@ -13,14 +13,14 @@ head: feature/configure-clippy
 created_at: 2024-02-24T12:10:21Z
 updated_at: 2024-02-26T14:53:39Z
 url: https://github.com/astral-sh/uv/pull/1950
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:48Z
 ```
 
 # Add `fs_err` to `disallowed_method` in clippy.toml
 
 ---
 
-_Pull request opened by @yasufumy on 2024-02-24 12:10_
+_@yasufumy_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-28T23:30:32Z
 updated_at: 2022-10-29T22:23:25Z
 url: https://github.com/astral-sh/ruff/issues/500
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Use a single `SourceCodeLocator` for all check runners
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-28 23:30_
+_@charliermarsh_
 
 _No description provided._
 

@@ -14,14 +14,14 @@ head: konsti/distribution-to-package
 created_at: 2024-08-07T13:57:22Z
 updated_at: 2024-08-08T15:25:08Z
 url: https://github.com/astral-sh/uv/pull/5861
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:03Z
 ```
 
 # Rename `distribution` to `packages` in lockfile
 
 ---
 
-_Pull request opened by @konstin on 2024-08-07 13:57_
+_@konstin_
 
 Currently, the entry for a package+version+source table is called `distribution`. That is incorrect, the `sdist` and `wheel` fields inside of that table are distributions, the table itself is for a package. We also align ourselves closer with PEP 751.
 

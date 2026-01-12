@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-11-09T04:57:13Z
 updated_at: 2018-08-02T03:30:14Z
 url: https://github.com/clap-rs/clap/issues/1099
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # `rustc` gets sigkilled while compiling Clap in release mode
 
 ---
 
-_Issue opened by @omern1 on 2017-11-09 04:57_
+_@omern1_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

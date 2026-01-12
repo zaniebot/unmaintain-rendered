@@ -13,14 +13,14 @@ head: test-pypy-windows
 created_at: 2024-07-15T18:24:03Z
 updated_at: 2024-07-15T21:20:19Z
 url: https://github.com/astral-sh/uv/pull/5079
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:37Z
 ```
 
 # Add job to test PyPy venv creation on Windows
 
 ---
 
-_Pull request opened by @silvanocerza on 2024-07-15 18:24_
+_@silvanocerza_
 
 ## Summary
 

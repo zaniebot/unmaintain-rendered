@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-05T06:35:17Z
 updated_at: 2024-09-05T07:02:51Z
 url: https://github.com/astral-sh/uv/issues/7070
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Will uv replace rye?
 
 ---
 
-_Issue opened by @zen-xu on 2024-09-05 06:35_
+_@zen-xu_
 
 I found that there is a significant overlap between the features of uv and [rye](https://github.com/astral-sh/rye). Since you are maintaining both projects simultaneously, I wonder if rye will eventually be completely replaced by uv.
 

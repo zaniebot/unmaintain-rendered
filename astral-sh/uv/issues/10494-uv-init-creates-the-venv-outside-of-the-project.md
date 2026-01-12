@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-11T12:33:28Z
 updated_at: 2025-01-25T02:51:53Z
 url: https://github.com/astral-sh/uv/issues/10494
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # uv init creates the .venv outside of the project instead inside of the project folder.
 
 ---
 
-_Issue opened by @v3ss0n on 2025-01-11 12:33_
+_@v3ss0n_
 
 When you do `uv init` and install packages , it creates the project folder but venv is outside of project folder. It was doing as expected before. Is that a bug?
 

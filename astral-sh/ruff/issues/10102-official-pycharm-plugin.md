@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-23T17:15:34Z
 updated_at: 2025-12-04T00:16:38Z
 url: https://github.com/astral-sh/ruff/issues/10102
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Official PyCharm Plugin
 
 ---
 
-_Issue opened by @Pixel-Minions on 2024-02-23 17:15_
+_@Pixel-Minions_
 
 Hi,
 

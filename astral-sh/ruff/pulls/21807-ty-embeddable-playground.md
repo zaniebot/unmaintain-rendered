@@ -14,14 +14,14 @@ head: david/embeddable-ty-playground
 created_at: 2025-12-05T07:52:45Z
 updated_at: 2025-12-05T07:52:45Z
 url: https://github.com/astral-sh/ruff/pull/21807
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Embeddable playground
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-05 07:52_
+_@sharkdp_
 
 ## Summary
 

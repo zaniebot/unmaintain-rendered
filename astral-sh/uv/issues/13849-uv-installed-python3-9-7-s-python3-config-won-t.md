@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-04T19:39:22Z
 updated_at: 2025-06-12T16:44:06Z
 url: https://github.com/astral-sh/uv/issues/13849
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:38Z
 ```
 
 # uv installed python3.9.7's python3-config won't run
 
 ---
 
-_Issue opened by @krupan on 2025-06-04 19:39_
+_@krupan_
 
 ### Summary
 

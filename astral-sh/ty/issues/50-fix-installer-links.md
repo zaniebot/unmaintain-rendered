@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-06T00:39:01Z
 updated_at: 2025-05-06T16:31:54Z
 url: https://github.com/astral-sh/ty/issues/50
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Fix installer links
 
 ---
 
-_Issue opened by @zanieb on 2025-05-06 00:39_
+_@zanieb_
 
 See https://github.com/astral-sh/ty/releases/tag/0.0.0-alpha.3
 

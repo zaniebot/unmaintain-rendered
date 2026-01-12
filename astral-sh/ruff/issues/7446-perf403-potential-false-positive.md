@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-09-16T20:32:36Z
 updated_at: 2023-09-19T03:18:57Z
 url: https://github.com/astral-sh/ruff/issues/7446
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # PERF403 potential false positive
 
 ---
 
-_Issue opened by @LefterisJP on 2023-09-16 20:32_
+_@LefterisJP_
 
 I enabled `--preview` with version `0.0.290` and got an interesting hit for `PERF403`.
 

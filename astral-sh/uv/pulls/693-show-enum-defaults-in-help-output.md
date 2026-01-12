@@ -12,14 +12,14 @@ head: konsti/show-enum-default-in-help-output
 created_at: 2023-12-18T20:14:15Z
 updated_at: 2023-12-18T21:50:49Z
 url: https://github.com/astral-sh/uv/pull/693
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:07Z
 ```
 
 # Show enum defaults in `--help` output
 
 ---
 
-_Pull request opened by @konstin on 2023-12-18 20:14_
+_@konstin_
 
 With `Option<T>` and `.unwrap_or_default()` later, the default of `T` isn't shown in the help output.
 

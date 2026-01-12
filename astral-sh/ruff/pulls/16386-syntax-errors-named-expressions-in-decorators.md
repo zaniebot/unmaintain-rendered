@@ -14,14 +14,14 @@ head: brent/syntax-decorators-39
 created_at: 2025-02-26T00:46:02Z
 updated_at: 2025-03-05T17:13:42Z
 url: https://github.com/astral-sh/ruff/pull/16386
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [syntax-errors] Named expressions in decorators before Python 3.9
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-26 00:46_
+_@ntBre_
 
 Summary
 --

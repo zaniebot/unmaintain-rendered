@@ -12,14 +12,14 @@ head: steve-pie804
 created_at: 2023-01-15T04:25:26Z
 updated_at: 2023-01-23T02:32:45Z
 url: https://github.com/astral-sh/ruff/pull/1884
-synced_at: 2026-01-12T04:51:59Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add flake8-pie PIE804: no-unnecessary-dict-kwargs
 
 ---
 
-_Pull request opened by @sbdchd on 2023-01-15 04:25_
+_@sbdchd_
 
 Warn about things like `foo(**{"bar": True})` which is equivalent to `foo(bar=True)`
 

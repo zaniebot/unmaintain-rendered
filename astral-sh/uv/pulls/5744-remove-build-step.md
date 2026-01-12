@@ -12,14 +12,14 @@ head: ci-partition
 created_at: 2024-08-03T07:26:31Z
 updated_at: 2024-08-07T20:20:30Z
 url: https://github.com/astral-sh/uv/pull/5744
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:06:59Z
 ```
 
 # Remove build step
 
 ---
 
-_Pull request opened by @blueraft on 2024-08-03 07:26_
+_@blueraft_
 
 Not reusing the archive build improves test times through partitioning, though it does increase the billable time.
 

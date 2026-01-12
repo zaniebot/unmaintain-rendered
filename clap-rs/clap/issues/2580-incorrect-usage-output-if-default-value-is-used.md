@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-07-13T12:22:30Z
 updated_at: 2021-07-25T13:20:29Z
 url: https://github.com/clap-rs/clap/issues/2580
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Incorrect usage output if default_value is used
 
 ---
 
-_Issue opened by @fgsch on 2021-07-13 12:22_
+_@fgsch_
 
 ### Please complete the following tasks
 

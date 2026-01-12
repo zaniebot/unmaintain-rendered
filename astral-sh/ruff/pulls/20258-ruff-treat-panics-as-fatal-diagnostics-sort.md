@@ -14,14 +14,14 @@ head: amy/panic-diagnostics
 created_at: 2025-09-05T00:08:28Z
 updated_at: 2025-09-17T07:12:44Z
 url: https://github.com/astral-sh/ruff/pull/20258
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ruff] Treat panics as fatal diagnostics, sort panics last
 
 ---
 
-_Pull request opened by @amyreese on 2025-09-05 00:08_
+_@amyreese_
 
 - Convert panics to diagnostics with id `Panic`, severity `Fatal`, and the error as the diagnostic message, annotated with a `Span` with empty code block and no range.
 - Updates the post-linting message diagnostic handling to track the maximum severity seen, and then prints the "report a bug in ruff" message only if the max severity was `Fatal`

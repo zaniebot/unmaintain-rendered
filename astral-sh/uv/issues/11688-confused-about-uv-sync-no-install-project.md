@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T05:36:01Z
 updated_at: 2025-02-23T00:14:17Z
 url: https://github.com/astral-sh/uv/issues/11688
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # Confused about uv sync --no-install-project
 
 ---
 
-_Issue opened by @dimaqq on 2025-02-21 05:36_
+_@dimaqq_
 
 ### Question
 

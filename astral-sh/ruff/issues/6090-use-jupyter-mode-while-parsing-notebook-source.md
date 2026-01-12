@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-26T09:24:51Z
 updated_at: 2023-08-05T00:32:09Z
 url: https://github.com/astral-sh/ruff/issues/6090
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Use `Jupyter` mode while parsing Notebook source code
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-07-26 09:24_
+_@dhruvmanila_
 
 _No description provided._
 

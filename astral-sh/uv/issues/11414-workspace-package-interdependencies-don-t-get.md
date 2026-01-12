@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-11T05:40:07Z
 updated_at: 2025-02-11T08:40:07Z
 url: https://github.com/astral-sh/uv/issues/11414
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # Workspace package interdependencies don't get bundled in wheels/sdist
 
 ---
 
-_Issue opened by @yashgorana on 2025-02-11 05:40_
+_@yashgorana_
 
 ### Summary
 

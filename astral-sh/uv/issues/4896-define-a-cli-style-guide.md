@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-08T14:08:57Z
 updated_at: 2024-07-08T14:55:37Z
 url: https://github.com/astral-sh/uv/issues/4896
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Define a CLI style guide
 
 ---
 
-_Issue opened by @zanieb on 2024-07-08 14:08_
+_@zanieb_
 
 We should determine and document our preferred styling for CLI output so we can be consistent. 
 

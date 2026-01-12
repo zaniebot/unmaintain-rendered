@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T07:51:52Z
 updated_at: 2023-02-01T06:24:40Z
 url: https://github.com/astral-sh/ruff/issues/2382
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Union is upgraded to "|" pipe character even though target version is Python 3.9
 
 ---
 
-_Issue opened by @KelSolaar on 2023-01-31 07:51_
+_@KelSolaar_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

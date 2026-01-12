@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-29T15:28:04Z
 updated_at: 2026-01-07T10:04:57Z
 url: https://github.com/astral-sh/uv/issues/17252
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:47Z
 ```
 
 # How to use different index only for [dev] group?
 
 ---
 
-_Issue opened by @phistep on 2025-12-29 15:28_
+_@phistep_
 
 ### Question
 

@@ -12,14 +12,14 @@ head: dhruv/nested-quoted-annotations
 created_at: 2023-06-21T14:43:07Z
 updated_at: 2023-06-21T17:35:11Z
 url: https://github.com/astral-sh/ruff/pull/5254
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add support for nested quoted annotations in RUF013
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-06-21 14:43_
+_@dhruvmanila_
 
 ## Summary
 

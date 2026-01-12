@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-20T01:39:14Z
 updated_at: 2024-11-20T07:15:59Z
 url: https://github.com/astral-sh/ruff/issues/14472
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Redundant quotes are kept while `format`ting a string from multiple lines to one
 
 ---
 
-_Issue opened by @yury-fedotov on 2024-11-20 01:39_
+_@yury-fedotov_
 
 ## Description
 

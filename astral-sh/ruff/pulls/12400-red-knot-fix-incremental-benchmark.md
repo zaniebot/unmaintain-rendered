@@ -13,14 +13,14 @@ head: cjm/fix-incremental-bench
 created_at: 2024-07-19T00:34:04Z
 updated_at: 2024-07-19T15:32:40Z
 url: https://github.com/astral-sh/ruff/pull/12400
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] fix incremental benchmark
 
 ---
 
-_Pull request opened by @carljm on 2024-07-19 00:34_
+_@carljm_
 
 Was it intentional that we rewrite `foo.py` with the `BAR_CODE` in the incremental benchmark?
 

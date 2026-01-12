@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-14T10:26:00Z
 updated_at: 2025-06-27T14:33:15Z
 url: https://github.com/astral-sh/ty/issues/380
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [panic] Panic when inferring definition types using generics
 
 ---
 
-_Issue opened by @sarimak on 2025-05-14 10:26_
+_@sarimak_
 
 ```
 $ ty --version

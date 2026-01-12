@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-24T03:22:21Z
 updated_at: 2024-06-24T12:53:24Z
 url: https://github.com/astral-sh/uv/issues/4464
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Support output formats other than requirements.txt for uv pip compile
 
 ---
 
-_Issue opened by @frostming on 2024-06-24 03:22_
+_@frostming_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

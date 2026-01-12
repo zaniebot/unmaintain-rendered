@@ -13,14 +13,14 @@ head: charlie/fields
 created_at: 2025-12-23T16:12:04Z
 updated_at: 2025-12-23T21:44:45Z
 url: https://github.com/astral-sh/ruff/pull/22163
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Synthesize a `_fields` attribute for NamedTuples
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-12-23 16:12_
+_@charliermarsh_
 
 ## Summary
 

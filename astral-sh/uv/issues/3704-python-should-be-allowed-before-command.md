@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-05-21T17:00:07Z
 updated_at: 2025-07-24T21:01:46Z
 url: https://github.com/astral-sh/uv/issues/3704
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # `--python` should be allowed before command
 
 ---
 
-_Issue opened by @thejcannon on 2024-05-21 17:00_
+_@thejcannon_
 
 I'm writing some tests that ensure my funky build backend works for several build frontends (`uv` and `pip`).
 

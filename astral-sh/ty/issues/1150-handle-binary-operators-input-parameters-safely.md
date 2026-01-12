@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-08T06:07:07Z
 updated_at: 2026-01-09T02:48:16Z
 url: https://github.com/astral-sh/ty/issues/1150
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # handle binary operators input parameters safely and special-case `NotImplementedType` as a return type
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-08 06:07_
+_@KotlinIsland_
 
 ## summary
 

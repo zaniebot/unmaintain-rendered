@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-10-27T04:40:42Z
 updated_at: 2022-10-27T12:41:51Z
 url: https://github.com/clap-rs/clap/issues/4426
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Allow an argument to be both a positional and an option
 
 ---
 
-_Issue opened by @figsoda on 2022-10-27 04:40_
+_@figsoda_
 
 ### Please complete the following tasks
 

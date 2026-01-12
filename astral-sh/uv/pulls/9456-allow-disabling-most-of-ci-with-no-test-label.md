@@ -14,14 +14,14 @@ head: zb/ci-no-test
 created_at: 2024-11-26T22:52:13Z
 updated_at: 2024-11-26T23:16:10Z
 url: https://github.com/astral-sh/uv/pull/9456
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:49Z
 ```
 
 # Allow disabling (most of) CI with `no-test` label
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-26 22:52_
+_@zanieb_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: n80x-decorators-whitelist
 created_at: 2023-11-09T23:25:04Z
 updated_at: 2023-11-10T08:27:22Z
 url: https://github.com/astral-sh/ruff/pull/8592
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Support local and dynamic class- and static-method decorators
 
 ---
 
-_Pull request opened by @ThiefMaster on 2023-11-09 23:25_
+_@ThiefMaster_
 
 ## Summary
 

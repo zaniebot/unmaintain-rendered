@@ -12,14 +12,14 @@ head: source-build
 created_at: 2023-11-06T11:36:57Z
 updated_at: 2023-11-06T14:06:36Z
 url: https://github.com/astral-sh/uv/pull/328
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:52Z
 ```
 
 # Rename source distribution build to source build
 
 ---
 
-_Pull request opened by @konstin on 2023-11-06 11:36_
+_@konstin_
 
 This is less verbose and better reflects that we're building both source distributions and source trees passed into the function.
 

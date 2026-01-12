@@ -13,14 +13,14 @@ head: zb/int
 created_at: 2025-01-27T15:30:55Z
 updated_at: 2025-01-28T17:29:38Z
 url: https://github.com/astral-sh/uv/pull/10989
-synced_at: 2026-01-10T11:45:21Z
+synced_at: 2026-01-12T16:09:37Z
 ```
 
 # Forward SIGINT to children in `uv run` on second Ctrl-C
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-27 15:30_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/10952
 

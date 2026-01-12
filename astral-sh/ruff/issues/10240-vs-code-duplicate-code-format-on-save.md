@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-05T18:48:26Z
 updated_at: 2024-03-05T19:03:37Z
 url: https://github.com/astral-sh/ruff/issues/10240
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # VS Code duplicate code format on save
 
 ---
 
-_Issue opened by @james-berkheimer on 2024-03-05 18:48_
+_@james-berkheimer_
 
 When I save a file certain lines of code are duplicated.  It's usually only one line that gets duplicated and it is usually only if new code has been pasted into the file.  If I disable the Ruff extension this issue goes away.  This seems to be happening only when I paste in code into a file.
 

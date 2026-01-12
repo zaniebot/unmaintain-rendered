@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-18T18:10:18Z
 updated_at: 2025-10-24T10:16:03Z
 url: https://github.com/astral-sh/uv/issues/10008
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # Emit index urls in `uv export` same way as `uv pip compile --emit-index-url`
 
 ---
 
-_Issue opened by @Fogapod on 2024-12-18 18:10_
+_@Fogapod_
 
 I am exporting `uv.lock` to `requirements.txt` for bazel.
 I have `torch` index overrides which aren't exported and produce impossible to insall requirements file:

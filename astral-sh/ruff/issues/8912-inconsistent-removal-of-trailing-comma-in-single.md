@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-29T21:26:15Z
 updated_at: 2023-12-01T02:49:30Z
 url: https://github.com/astral-sh/ruff/issues/8912
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Inconsistent removal of trailing comma in single-argument functions
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-29 21:26_
+_@charliermarsh_
 
 See: https://play.ruff.rs/96810c27-3971-44af-8eb5-5b5ebae1668e. We remove the trailing comma in the first case, but not in the second, when the trailing comment is present.
 

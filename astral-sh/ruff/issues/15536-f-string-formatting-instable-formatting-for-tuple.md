@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-16T17:43:52Z
 updated_at: 2025-01-17T09:08:11Z
 url: https://github.com/astral-sh/ruff/issues/15536
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # F-string formatting: Instable formatting for tuple with trailing comma
 
 ---
 
-_Issue opened by @MichaReiser on 2025-01-16 17:43_
+_@MichaReiser_
 
 ```py
 print(f"{ {}, 1, }")

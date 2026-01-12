@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-16T19:19:11Z
 updated_at: 2025-11-09T03:06:53Z
 url: https://github.com/astral-sh/uv/issues/14670
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # `uv venv` sometimes overwrites symlink with a new directory
 
 ---
 
-_Issue opened by @YodaEmbedding on 2025-07-16 19:19_
+_@YodaEmbedding_
 
 ### Summary
 

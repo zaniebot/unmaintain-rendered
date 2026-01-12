@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-17T10:04:21Z
 updated_at: 2025-12-05T13:08:13Z
 url: https://github.com/astral-sh/ty/issues/836
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Panic `attempt to subtract with overflow` in `ruff_annotate_snippets/src/renderer/margin.rs`
 
 ---
 
-_Issue opened by @qarmin on 2025-07-17 10:04_
+_@qarmin_
 
 Quite similar to https://github.com/astral-sh/ty/issues/670
 

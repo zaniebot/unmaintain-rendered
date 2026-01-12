@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T10:55:10Z
 updated_at: 2025-12-31T16:37:53Z
 url: https://github.com/astral-sh/ty/issues/144
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Goto-type and hover-type for non-expression nodes (identifiers in statements)
 
 ---
 
-_Issue opened by @MichaReiser on 2025-04-01 10:55_
+_@MichaReiser_
 
 https://github.com/astral-sh/ruff/pull/16901 implemented basic goto type definition support. However, there are still a handful of nodes that have identifier children for which goto type definition doesn't work because the enclosing node isn't an expression or a definition. We should add support for goto type definition for those nodes as well. 
 

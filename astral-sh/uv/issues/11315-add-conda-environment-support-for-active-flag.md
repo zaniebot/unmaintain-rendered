@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-07T12:04:44Z
 updated_at: 2025-09-08T18:11:42Z
 url: https://github.com/astral-sh/uv/issues/11315
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:34Z
 ```
 
 # Add `conda` environment support for `--active` flag
 
 ---
 
-_Issue opened by @MilkClouds on 2025-02-07 12:04_
+_@MilkClouds_
 
 ### Summary
 

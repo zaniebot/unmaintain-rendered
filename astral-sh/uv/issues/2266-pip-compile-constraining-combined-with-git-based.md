@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-07T07:14:40Z
 updated_at: 2024-03-07T23:47:32Z
 url: https://github.com/astral-sh/uv/issues/2266
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # pip compile constraining combined with git based dependencies
 
 ---
 
-_Issue opened by @gwdekker on 2024-03-07 07:14_
+_@gwdekker_
 
 First things first: I have to say that I never felt so encouraged to file issues at an open source project - as it is obvious that the chance of getting it fixed and soon is orders of magnitude higher than anywhere else! 
 

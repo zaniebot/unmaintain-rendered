@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-23T16:20:34Z
 updated_at: 2025-07-23T17:22:03Z
 url: https://github.com/astral-sh/uv/issues/14850
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # uv build backend settings: inconsistent behaviour among Linux architectures
 
 ---
 
-_Issue opened by @benoit9126 on 2025-07-23 16:20_
+_@benoit9126_
 
 ### Summary
 

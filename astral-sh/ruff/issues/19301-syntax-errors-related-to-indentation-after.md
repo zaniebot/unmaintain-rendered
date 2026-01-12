@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-12T20:04:52Z
 updated_at: 2025-07-14T07:44:37Z
 url: https://github.com/astral-sh/ruff/issues/19301
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Syntax errors related to indentation after backslashes
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-12 20:04_
+_@dscorbett_
 
 ### Summary
 

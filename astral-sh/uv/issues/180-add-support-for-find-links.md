@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-25T04:12:04Z
 updated_at: 2024-01-15T03:06:44Z
 url: https://github.com/astral-sh/uv/issues/180
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Add support for `--find-links`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-25 04:12_
+_@charliermarsh_
 
 We should at least support this for local directories, I think. I doubt we need to support this for HTML pages?
 

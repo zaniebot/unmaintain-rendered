@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T21:06:39Z
 updated_at: 2025-02-23T23:59:53Z
 url: https://github.com/astral-sh/uv/issues/11679
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # Can't update packages to latest in pyproject.toml?
 
 ---
 
-_Issue opened by @wrouesnel on 2025-02-20 21:06_
+_@wrouesnel_
 
 ### Question
 

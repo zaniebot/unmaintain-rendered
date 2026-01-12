@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-29T04:46:31Z
 updated_at: 2025-08-28T21:01:01Z
 url: https://github.com/astral-sh/ruff/issues/12097
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # New check: B040, dropped exception after `.add_note()`
 
 ---
 
-_Issue opened by @Zac-HD on 2024-06-29 04:46_
+_@Zac-HD_
 
 https://github.com/PyCQA/flake8-bugbear/issues/474 / https://github.com/PyCQA/flake8-bugbear/pull/477
 

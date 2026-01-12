@@ -13,14 +13,14 @@ head: expose-find-uv-bin-with-types
 created_at: 2024-02-20T01:59:43Z
 updated_at: 2024-02-20T16:37:51Z
 url: https://github.com/astral-sh/uv/pull/1728
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:42Z
 ```
 
 # Expose find_uv_bin and declare typing support
 
 ---
 
-_Pull request opened by @gaborbernat on 2024-02-20 01:59_
+_@gaborbernat_
 
 Resolves https://github.com/astral-sh/uv/issues/1677
 

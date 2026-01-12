@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-18T00:50:27Z
 updated_at: 2025-09-18T07:10:08Z
 url: https://github.com/astral-sh/uv/issues/14699
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:01:54Z
 ```
 
 # `uv python install` fails to extract archive with "cannot decrypt peer's message"
 
 ---
 
-_Issue opened by @char3210 on 2025-07-18 00:50_
+_@char3210_
 
 ### Summary
 

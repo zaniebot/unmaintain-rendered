@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-26T10:12:56Z
 updated_at: 2024-03-26T10:21:29Z
 url: https://github.com/astral-sh/ruff/issues/10608
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # New rule to standardise style of aliased imports
 
 ---
 
-_Issue opened by @ngnpope on 2024-03-26 10:12_
+_@ngnpope_
 
 So, I've had a good look through all the available rules and found nothing that quite matches this.
 

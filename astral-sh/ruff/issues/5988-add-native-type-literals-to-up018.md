@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-22T21:08:40Z
 updated_at: 2023-07-24T01:39:44Z
 url: https://github.com/astral-sh/ruff/issues/5988
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add native type literals to `UP018`
 
 ---
 
-_Issue opened by @dosisod on 2023-07-22 21:08_
+_@dosisod_
 
 See https://github.com/astral-sh/ruff/issues/1348#issuecomment-1646520368.
 

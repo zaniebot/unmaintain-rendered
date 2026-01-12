@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-28T21:59:38Z
 updated_at: 2024-02-29T15:06:30Z
 url: https://github.com/astral-sh/uv/issues/2056
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # --system doesn't work on Windows on Python <3.12 in GitHub Actions
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-02-28 21:59_
+_@AlexWaygood_
 
 See https://github.com/AlexWaygood/typeshed-stats/pull/200 for a repro. It's possible this is a just-in-GitHub Actions thing.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-27T03:39:57Z
 updated_at: 2025-10-27T19:07:55Z
 url: https://github.com/astral-sh/uv/issues/16464
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # `ty` shows error on `func.__name__`
 
 ---
 
-_Issue opened by @mainaksamuel on 2025-10-27 03:39_
+_@mainaksamuel_
 
 ### Summary
 

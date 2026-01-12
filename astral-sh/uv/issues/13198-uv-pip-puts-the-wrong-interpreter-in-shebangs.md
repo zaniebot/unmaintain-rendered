@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-29T17:59:10Z
 updated_at: 2025-04-29T18:14:24Z
 url: https://github.com/astral-sh/uv/issues/13198
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # uv pip puts the wrong interpreter in shebangs installed under bin
 
 ---
 
-_Issue opened by @Alexndrrr on 2025-04-29 17:59_
+_@Alexndrrr_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-02T18:31:52Z
 updated_at: 2025-12-04T07:12:06Z
 url: https://github.com/astral-sh/ty/issues/1727
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `vim.diagnostic.setloclist`: Duplicate diagnostics shown after buffer save
 
 ---
 
-_Issue opened by @woniulol on 2025-12-02 18:31_
+_@woniulol_
 
 ### Summary
 

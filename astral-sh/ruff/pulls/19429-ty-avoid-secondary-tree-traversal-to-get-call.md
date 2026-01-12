@@ -14,14 +14,14 @@ head: micha/call-expr-goto-target
 created_at: 2025-07-19T13:35:26Z
 updated_at: 2025-07-19T16:21:29Z
 url: https://github.com/astral-sh/ruff/pull/19429
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [ty] Avoid secondary tree traversal to get call expression for keyword arguments
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-19 13:35_
+_@MichaReiser_
 
 ## Summary
 

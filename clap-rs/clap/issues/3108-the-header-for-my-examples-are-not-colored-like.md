@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-12-09T12:37:51Z
 updated_at: 2023-03-28T02:45:25Z
 url: https://github.com/clap-rs/clap/issues/3108
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # The header for my examples are not colored like the others
 
 ---
 
-_Issue opened by @epage on 2021-12-09 12:37_
+_@epage_
 
 ### Please complete the following tasks
 

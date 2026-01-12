@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T19:06:59Z
 updated_at: 2026-01-05T19:36:11Z
 url: https://github.com/astral-sh/ty/issues/2030
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Generics inference fails for @contextmanagers with TypeVars.
 
 ---
 
-_Issue opened by @amol-mandhane on 2025-12-17 19:06_
+_@amol-mandhane_
 
 ### Summary
 

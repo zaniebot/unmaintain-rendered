@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-27T07:20:59Z
 updated_at: 2025-08-19T20:34:40Z
 url: https://github.com/astral-sh/ty/issues/520
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `unresolved-import` for `google.cloud` packages when `types-protobuf` is installed
 
 ---
 
-_Issue opened by @galah92 on 2025-05-27 07:20_
+_@galah92_
 
 ### Summary
 

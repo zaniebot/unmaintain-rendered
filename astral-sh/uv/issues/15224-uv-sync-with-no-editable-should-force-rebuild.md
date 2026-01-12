@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-11T17:41:40Z
 updated_at: 2025-10-27T06:36:28Z
 url: https://github.com/astral-sh/uv/issues/15224
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # `uv sync` with `--no-editable` should force rebuild/install packages
 
 ---
 
-_Issue opened by @jackrosenthal on 2025-08-11 17:41_
+_@jackrosenthal_
 
 ### Summary
 

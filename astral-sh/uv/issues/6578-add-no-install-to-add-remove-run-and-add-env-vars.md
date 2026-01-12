@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-24T11:59:14Z
 updated_at: 2025-06-26T19:32:00Z
 url: https://github.com/astral-sh/uv/issues/6578
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Add `--no-install-*` to `add`/`remove`/`run` and add env vars
 
 ---
 
-_Issue opened by @mkniewallner on 2024-08-24 11:59_
+_@mkniewallner_
 
 Some options were added in https://github.com/astral-sh/uv/issues/4028 to avoid the installation of some packages, including the project itself. Taking `--no-install-project` as an example, it works great when running `uv sync --no-install-project`, but as soon as we want to run a script/entrypoint through `uv run` later on, we'll still end up installing the project at some point.
 

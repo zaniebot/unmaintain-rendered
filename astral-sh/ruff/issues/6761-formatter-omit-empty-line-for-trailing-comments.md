@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-22T09:21:50Z
 updated_at: 2023-08-31T20:55:07Z
 url: https://github.com/astral-sh/ruff/issues/6761
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Omit empty line for trailing comments before class/function
 
 ---
 
-_Issue opened by @MichaReiser on 2023-08-22 09:21_
+_@MichaReiser_
 
 Ruff separates trailing own line comments of a statement before a class or function definition with one or two empty lines. Black avoids adding additional empty lines. [Playground](https://play.ruff.rs/7ce5a691-e463-4d0f-aae5-938a66fe9750)
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-15T18:49:41Z
 updated_at: 2024-08-16T01:42:17Z
 url: https://github.com/astral-sh/uv/issues/6125
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # `python_version` and `python_full_version` should be simplified together
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-15 18:49_
+_@charliermarsh_
 
 _No description provided._
 

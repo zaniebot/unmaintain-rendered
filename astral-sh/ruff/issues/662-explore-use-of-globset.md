@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-11-08T21:23:29Z
 updated_at: 2022-11-25T03:32:51Z
 url: https://github.com/astral-sh/ruff/issues/662
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Explore use of globset
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-08 21:23_
+_@charliermarsh_
 
 Can [globset](https://docs.rs/globset/0.4.9/globset/) speed up our file-matching code?
 

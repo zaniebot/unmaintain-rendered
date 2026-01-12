@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-07-02T13:50:03Z
 updated_at: 2018-08-02T03:29:51Z
 url: https://github.com/clap-rs/clap/issues/563
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Bash tab-completion script doesn't include short version of `--help` and `--verbose`
 
 ---
 
-_Issue opened by @dzamlo on 2016-07-02 13:50_
+_@dzamlo_
 
 The script generated with `gen_completions` doesn't include the short version of the `--help` and `--verbose` arguments (`-h` and `-V` respectively).
 

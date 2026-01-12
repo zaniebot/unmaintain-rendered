@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-04-29T14:41:46Z
 updated_at: 2025-04-18T13:22:15Z
 url: https://github.com/astral-sh/uv/issues/3312
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # uv doesn't correctly checkout Git dependencies with Git LFS assets
 
 ---
 
-_Issue opened by @sydduckworth on 2024-04-29 14:41_
+_@sydduckworth_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

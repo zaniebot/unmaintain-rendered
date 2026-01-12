@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-25T17:09:51Z
 updated_at: 2025-02-11T19:39:34Z
 url: https://github.com/clap-rs/clap/issues/5860
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `ArgMathces::args_present` behaviour with `ArgAction::SetTrue`
 
 ---
 
-_Issue opened by @Vaider7 on 2024-12-25 17:09_
+_@Vaider7_
 
 ### Please complete the following tasks
 

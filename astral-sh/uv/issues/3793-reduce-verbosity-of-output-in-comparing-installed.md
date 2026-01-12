@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-23T14:04:26Z
 updated_at: 2024-05-23T15:08:02Z
 url: https://github.com/astral-sh/uv/issues/3793
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:45Z
 ```
 
 # Reduce verbosity of output in "Comparing installed with source" log
 
 ---
 
-_Issue opened by @zanieb on 2024-05-23 14:04_
+_@zanieb_
 
 From
 

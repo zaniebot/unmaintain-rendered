@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-13T17:52:04Z
 updated_at: 2024-08-15T15:50:02Z
 url: https://github.com/astral-sh/uv/issues/6064
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # uv 0.2.36 regression - `uv pip compile --universal` gives contradictory versions of same packages
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-08-13 17:52_
+_@notatallshaw-gts_
 
 uv 0.2.36 can give contradictory versions of the same package with the following command:
 ```

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-06T21:20:05Z
 updated_at: 2023-12-07T05:26:43Z
 url: https://github.com/astral-sh/uv/issues/582
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Repeated packages in `requirement.txt` leads to `pip-sync` hang
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-06 21:20_
+_@charliermarsh_
 
 Pretty sure we error on this in the resolver, but it looks like we don't handle it properly in the installer. Run `pip-sync` with the following, and it hangs:
 

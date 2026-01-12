@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-18T20:06:22Z
 updated_at: 2025-10-06T18:45:27Z
 url: https://github.com/astral-sh/uv/issues/15936
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # Failure in the Nannyml Monitoring Library Installation
 
 ---
 
-_Issue opened by @castillouparela on 2025-09-18 20:06_
+_@castillouparela_
 
 ### Summary
 

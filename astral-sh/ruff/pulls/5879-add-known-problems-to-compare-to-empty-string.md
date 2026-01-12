@@ -13,14 +13,14 @@ head: compare-to-str-known-problems
 created_at: 2023-07-19T10:34:19Z
 updated_at: 2023-07-20T11:10:17Z
 url: https://github.com/astral-sh/ruff/pull/5879
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add known problems to `compare-to-empty-string` documentation
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-19 10:34_
+_@tjkuson_
 
 ## Summary
 

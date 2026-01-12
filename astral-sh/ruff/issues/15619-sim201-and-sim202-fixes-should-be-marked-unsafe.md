@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-20T15:33:27Z
 updated_at: 2025-01-21T17:17:50Z
 url: https://github.com/astral-sh/ruff/issues/15619
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # SIM201 and SIM202 fixes should be marked unsafe
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-20 15:33_
+_@dscorbett_
 
 The fixes for [`negate-equal-op` (SIM201)](https://docs.astral.sh/ruff/rules/negate-equal-op/) and [`negate-not-equal-op` (SIM202)](https://docs.astral.sh/ruff/rules/negate-not-equal-op/) should generally be marked unsafe because `__eq__` and `__ne__` may return any type, not just `bool`. The fixes are still safe when the operands are of types whose `__eq__` and `__ne__` are known to return `bool`.
 

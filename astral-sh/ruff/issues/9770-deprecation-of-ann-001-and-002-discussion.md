@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-02T02:15:19Z
 updated_at: 2024-02-04T18:30:10Z
 url: https://github.com/astral-sh/ruff/issues/9770
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Deprecation of ANN 001 and 002 Discussion
 
 ---
 
-_Issue opened by @max-muoto on 2024-02-02 02:15_
+_@max-muoto_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

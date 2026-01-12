@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-17T05:10:04Z
 updated_at: 2025-05-17T11:15:59Z
 url: https://github.com/astral-sh/uv/issues/13503
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # Support PyInstaller binary packaging output to dist/ directory
 
 ---
 
-_Issue opened by @xaviergurram on 2025-05-17 05:10_
+_@xaviergurram_
 
 ### Summary
 

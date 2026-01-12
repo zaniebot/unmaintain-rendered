@@ -13,14 +13,14 @@ head: jtfm/with_cows
 created_at: 2025-06-27T16:01:54Z
 updated_at: 2025-06-27T17:54:54Z
 url: https://github.com/astral-sh/uv/pull/14319
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:09Z
 ```
 
 # Return `Cow` from `UrlString::with_` methods
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-27 16:01_
+_@jtfmumm_
 
 A minor performance improvement as a follow-up to #14245 (and an accompanying test).
 

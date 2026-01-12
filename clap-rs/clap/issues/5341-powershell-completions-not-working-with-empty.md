@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-02-06T11:22:42Z
 updated_at: 2025-01-27T15:22:41Z
 url: https://github.com/clap-rs/clap/issues/5341
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Powershell completions not working with empty help string.
 
 ---
 
-_Issue opened by @LucasLehmann on 2024-02-06 11:22_
+_@LucasLehmann_
 
 I came across a problem with the uutils coreutils package where the powershell completions didnt work, https://github.com/uutils/coreutils/issues/5933, and was directed here. I discovered this is because in the generated ps1 file the line [CompletionResuIt]::new('seq', 'seq', [CompletionResultType]::ParameterValue, '') exists, this line seems to cause the completions to fail and fall back on completing files, i also noticed this is not an issue and everything works as intended when adding something here, be it ' ' or anything else.
 I dont know how this and i have never used clap so i dont know what to do to try to replicate it. But i can duplicate the issue in for example rustups completion by replacing it an empty string in one of the completion elements.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-02T12:28:03Z
 updated_at: 2024-04-02T23:10:43Z
 url: https://github.com/astral-sh/uv/issues/2773
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # `pip compile` reads output file as input file
 
 ---
 
-_Issue opened by @bersbersbers on 2024-04-02 12:28_
+_@bersbersbers_
 
 The output of `uv pip compile` depends on if you redirect the output to a file, if that file already exists. Without, or without existing output file, `numpy==1.26.4`; with existing output file, `numpy==1.26.0`.
 

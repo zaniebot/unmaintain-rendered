@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-08T00:15:27Z
 updated_at: 2025-08-19T13:47:19Z
 url: https://github.com/astral-sh/ty/issues/257
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # `lint:unresolved-import` for some dependencies
 
 ---
 
-_Issue opened by @Secrus on 2025-05-08 00:15_
+_@Secrus_
 
 ### Summary
 

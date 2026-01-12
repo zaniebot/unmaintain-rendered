@@ -13,14 +13,14 @@ head: c419-no-async
 created_at: 2024-08-14T17:27:48Z
 updated_at: 2024-08-15T02:27:40Z
 url: https://github.com/astral-sh/ruff/pull/12895
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [flake8-comprehensions] Do not lint `async for` comprehensions in `unnecessary-comprehension-in-call (C419)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-08-14 17:27_
+_@dylwil3_
 
 List and set comprehensions using `async for` cannot be replaced with underlying generators; this PR modifies C419 to skip such comprehensions. 
 

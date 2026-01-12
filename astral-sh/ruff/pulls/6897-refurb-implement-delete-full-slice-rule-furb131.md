@@ -13,14 +13,14 @@ head: refurb/furb131
 created_at: 2023-08-26T13:42:59Z
 updated_at: 2023-08-29T10:29:14Z
 url: https://github.com/astral-sh/ruff/pull/6897
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # [refurb] Implement `delete-full-slice` rule (`FURB131`)
 
 ---
 
-_Pull request opened by @SavchenkoValeriy on 2023-08-26 13:42_
+_@SavchenkoValeriy_
 
 ## Summary
 

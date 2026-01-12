@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-07-18T16:59:07Z
 updated_at: 2021-02-23T18:02:28Z
 url: https://github.com/clap-rs/clap/issues/1002
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Provide a `default_values` method taking `&[&str]` to parallel `default_value`
 
 ---
 
-_Issue opened by @euclio on 2017-07-18 16:59_
+_@euclio_
 
 There should be a way to provide a default list of `&str` to be returned by `values_of` in matches if no argument is supplied.
 

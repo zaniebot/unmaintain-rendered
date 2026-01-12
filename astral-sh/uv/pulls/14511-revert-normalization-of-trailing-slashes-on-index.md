@@ -12,14 +12,14 @@ head: zb/revert-slash
 created_at: 2025-07-08T21:56:19Z
 updated_at: 2025-07-09T11:50:33Z
 url: https://github.com/astral-sh/uv/pull/14511
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:15Z
 ```
 
 # Revert normalization of trailing slashes on index URLs
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-08 21:56_
+_@zanieb_
 
 Reverts:
 

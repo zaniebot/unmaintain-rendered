@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-10T11:26:38Z
 updated_at: 2025-01-17T10:23:23Z
 url: https://github.com/astral-sh/uv/issues/9767
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:58Z
 ```
 
 # Unknown command: 'export_schema'
 
 ---
 
-_Issue opened by @MrMegaMango on 2024-12-10 11:26_
+_@MrMegaMango_
 
 $ uv run python manage.py export_schema graphql_api.schema:schema --path ../../packages/graphql/src/schema.graphql
 warning: No `requires-python` value found in the workspace. Defaulting to `>=3.11`.

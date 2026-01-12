@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-05T16:57:11Z
 updated_at: 2024-09-06T10:55:01Z
 url: https://github.com/astral-sh/ruff/issues/13255
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # F821 false positive when using ExceptionGroup
 
 ---
 
-_Issue opened by @iurii-skorniakov on 2024-09-05 16:57_
+_@iurii-skorniakov_
 
 version:  ruff 0.6.4, Python 3.11.6 
 command: `ruff check --isolated example.py`

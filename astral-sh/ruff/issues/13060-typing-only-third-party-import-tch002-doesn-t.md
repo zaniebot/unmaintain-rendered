@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-22T16:23:04Z
 updated_at: 2024-08-23T15:54:06Z
 url: https://github.com/astral-sh/ruff/issues/13060
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # typing-only-third-party-import (TCH002) doesn't catch compound imports
 
 ---
 
-_Issue opened by @korverdev on 2024-08-22 16:23_
+_@korverdev_
 
 When some of the imports from the same module are only used for type hinting, but not others, Ruff won't recommend any of the imports be moved to a type checking block when [TCH002](https://docs.astral.sh/ruff/rules/typing-only-third-party-import/) is enabled.
 

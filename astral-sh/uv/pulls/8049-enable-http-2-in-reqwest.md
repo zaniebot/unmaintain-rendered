@@ -13,14 +13,14 @@ head: konsti/http2
 created_at: 2024-10-09T15:41:07Z
 updated_at: 2024-10-09T16:58:26Z
 url: https://github.com/astral-sh/uv/pull/8049
-synced_at: 2026-01-10T12:54:01Z
+synced_at: 2026-01-12T16:08:08Z
 ```
 
 # Enable HTTP/2 in reqwest
 
 ---
 
-_Pull request opened by @konstin on 2024-10-09 15:41_
+_@konstin_
 
 We should support HTTP/2, a default feature of reqwest, which as it seems was disabled as an oversight. With our many and parallel requests, this should give us even a smaller perf improvement, or at least decrease the load on the server/CDN by multiplexing and smaller headers (see e.g. https://www.cloudflare.com/learning/performance/http2-vs-http1.1/)
 

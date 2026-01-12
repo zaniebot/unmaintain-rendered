@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-30T03:52:38Z
 updated_at: 2024-10-04T10:57:39Z
 url: https://github.com/astral-sh/uv/issues/7801
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Preserve case-insensitive sorts in `uv add`
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-09-30 03:52_
+_@KotlinIsland_
 
 i like to keep my dependencies alphabetically sorted, it would appreciate it if `uv` did the same
 

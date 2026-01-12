@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-03-14T21:33:28Z
 updated_at: 2018-08-02T03:30:04Z
 url: https://github.com/clap-rs/clap/issues/903
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Argument requiring equals does not print = in help
 
 ---
 
-_Issue opened by @TimBednarzyk on 2017-03-14 21:33_
+_@TimBednarzyk_
 
 ### Rust Version
 

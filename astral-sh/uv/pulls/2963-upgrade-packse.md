@@ -14,14 +14,14 @@ head: zb/upgrade-packse
 created_at: 2024-04-10T14:18:40Z
 updated_at: 2024-04-10T14:30:58Z
 url: https://github.com/astral-sh/uv/pull/2963
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:20Z
 ```
 
 # Upgrade packse
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-10 14:18_
+_@zanieb_
 
 Should improve test performance with https://github.com/astral-sh/packse/pull/169 thanks @konstin !
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-11T04:18:08Z
 updated_at: 2023-04-17T18:17:58Z
 url: https://github.com/astral-sh/ruff/issues/3929
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Real-time code changes cannot be detected in Docker. (--watch)
 
 ---
 
-_Issue opened by @ngnl0 on 2023-04-11 04:18_
+_@ngnl0_
 
 Summary: Ruff check <src.py> --watch not working under Docker 
 

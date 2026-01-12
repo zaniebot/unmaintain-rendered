@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-07T15:07:10Z
 updated_at: 2025-08-31T07:19:27Z
 url: https://github.com/astral-sh/ruff/issues/7847
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # B023 is emitted when closure is defined inside a loop and uses a variable from the same loop
 
 ---
 
-_Issue opened by @Guilherme-Vasconcelos on 2023-10-07 15:07_
+_@Guilherme-Vasconcelos_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-10T21:54:26Z
 updated_at: 2024-02-25T09:17:40Z
 url: https://github.com/astral-sh/ruff/issues/9926
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Discrepancy between `format` and `check` for a long string literal
 
 ---
 
-_Issue opened by @fjarri on 2024-02-10 21:54_
+_@fjarri_
 
 Ruff version: 0.2.1
 

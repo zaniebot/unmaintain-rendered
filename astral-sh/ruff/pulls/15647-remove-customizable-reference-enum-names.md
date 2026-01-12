@@ -13,14 +13,14 @@ head: dcreager/no-ref-type-override
 created_at: 2025-01-21T15:52:26Z
 updated_at: 2025-01-21T18:46:36Z
 url: https://github.com/astral-sh/ruff/pull/15647
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Remove customizable reference enum names
 
 ---
 
-_Pull request opened by @dcreager on 2025-01-21 15:52_
+_@dcreager_
 
 The AST generator creates a reference enum for each syntax group — an enum where each variant contains a reference to the relevant syntax node.  Previously you could customize the name of the reference enum for a group — primarily because there was an existing `ExpressionRef` type that wouldn't have lined up with the auto-derived name `ExprRef`.  This follow-up PR is a simple search/replace to switch over to the auto-derived name, so that we can remove this customization point.
 

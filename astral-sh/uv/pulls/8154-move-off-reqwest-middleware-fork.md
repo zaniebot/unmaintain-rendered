@@ -12,14 +12,14 @@ head: charlie/req
 created_at: 2024-10-12T21:25:59Z
 updated_at: 2024-10-28T01:10:32Z
 url: https://github.com/astral-sh/uv/pull/8154
-synced_at: 2026-01-10T12:54:03Z
+synced_at: 2026-01-12T16:08:11Z
 ```
 
 # Move off `reqwest-middleware` fork
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-12 21:25_
+_@charliermarsh_
 
 ## Summary
 

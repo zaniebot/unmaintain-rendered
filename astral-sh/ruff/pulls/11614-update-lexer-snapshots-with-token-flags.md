@@ -13,14 +13,14 @@ head: dhruv/lexer-tests
 created_at: 2024-05-30T08:27:08Z
 updated_at: 2024-05-30T16:09:14Z
 url: https://github.com/astral-sh/ruff/pull/11614
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Update lexer snapshots with token flags
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-30 08:27_
+_@dhruvmanila_
 
 ## Summary
 

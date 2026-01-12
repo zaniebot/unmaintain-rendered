@@ -13,14 +13,14 @@ head: improve-builtins-handling
 created_at: 2024-04-13T18:09:32Z
 updated_at: 2024-04-16T10:37:34Z
 url: https://github.com/astral-sh/ruff/pull/10919
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Improve handling of builtin symbols in linter rules
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-13 18:09_
+_@AlexWaygood_
 
 ## Summary
 

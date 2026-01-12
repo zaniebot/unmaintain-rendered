@@ -14,14 +14,14 @@ head: zb/system-drive
 created_at: 2024-11-25T23:19:09Z
 updated_at: 2024-11-28T00:32:40Z
 url: https://github.com/astral-sh/uv/pull/9432
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:48Z
 ```
 
 # Include explicit separator when constructing path to Windows global config file
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-25 23:19_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/9416
 

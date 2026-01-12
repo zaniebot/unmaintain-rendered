@@ -13,14 +13,14 @@ head: fix_invalid_first_argument
 created_at: 2024-03-03T18:58:58Z
 updated_at: 2024-03-04T09:42:58Z
 url: https://github.com/astral-sh/ruff/pull/10215
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # [`pep8_naming`] Add fixes `N804` and `N805`
 
 ---
 
-_Pull request opened by @GtrMo on 2024-03-03 18:58_
+_@GtrMo_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

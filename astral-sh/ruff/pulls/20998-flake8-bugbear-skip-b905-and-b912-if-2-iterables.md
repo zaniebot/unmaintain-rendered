@@ -13,14 +13,14 @@ head: zip-strict
 created_at: 2025-10-20T16:01:27Z
 updated_at: 2025-10-20T23:35:33Z
 url: https://github.com/astral-sh/ruff/pull/20998
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [`flake8-bugbear`] Skip `B905` and `B912` if <2 iterables and no starred arguments
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-10-20 16:01_
+_@dylwil3_
 
 Closes #20997
 

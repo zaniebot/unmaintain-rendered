@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-06-21T00:36:04Z
 updated_at: 2022-11-02T15:24:42Z
 url: https://github.com/clap-rs/clap/issues/3857
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Set default subcommand via Derive API
 
 ---
 
-_Issue opened by @dyc3 on 2022-06-21 00:36_
+_@dyc3_
 
 ### Please complete the following tasks
 

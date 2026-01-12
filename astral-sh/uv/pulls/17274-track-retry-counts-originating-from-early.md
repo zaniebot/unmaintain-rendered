@@ -13,14 +13,14 @@ head: tk/dont-drop-retries
 created_at: 2025-12-30T17:58:30Z
 updated_at: 2026-01-05T20:06:41Z
 url: https://github.com/astral-sh/uv/pull/17274
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:41Z
 ```
 
 # Track retry counts originating from early middleware errors
 
 ---
 
-_Pull request opened by @EliteTK on 2025-12-30 17:58_
+_@EliteTK_
 
 ## Summary
 

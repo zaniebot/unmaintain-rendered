@@ -14,14 +14,14 @@ head: gankra/notest
 created_at: 2025-12-05T18:42:46Z
 updated_at: 2025-12-12T21:07:36Z
 url: https://github.com/astral-sh/ruff/pull/21817
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:34Z
 ```
 
 # [ty] Improve resolution of absolute imports in tests
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-05 18:42_
+_@Gankra_
 
 By teaching desperate resolution to try every possible ancestor that doesn't have an `__init__.py(i)` when resolving absolute imports.
 

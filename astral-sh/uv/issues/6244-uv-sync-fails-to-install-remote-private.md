@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-20T05:10:28Z
 updated_at: 2024-10-08T21:54:18Z
 url: https://github.com/astral-sh/uv/issues/6244
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # uv sync fails to install remote private dependencies when poetry is involved
 
 ---
 
-_Issue opened by @Eyal-Shalev on 2024-08-20 05:10_
+_@Eyal-Shalev_
 
 UV Version: [current main - `6dc05a`](https://github.com/astral-sh/uv/tree/6dc05a3598d309d76f6b7b85e8497f44a8a54b0b)
 Platform: MacOS `14.3.1`

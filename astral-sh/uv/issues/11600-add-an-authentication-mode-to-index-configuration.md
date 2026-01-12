@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-18T15:25:29Z
 updated_at: 2025-03-10T17:24:26Z
 url: https://github.com/astral-sh/uv/issues/11600
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # Add an `authentication` mode to `[index]` configuration
 
 ---
 
-_Issue opened by @zanieb on 2025-02-18 15:25_
+_@zanieb_
 
 ### Summary
 

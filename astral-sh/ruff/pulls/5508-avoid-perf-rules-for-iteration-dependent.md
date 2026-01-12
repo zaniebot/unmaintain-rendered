@@ -13,14 +13,14 @@ head: charlie/perf
 created_at: 2023-07-04T18:12:16Z
 updated_at: 2023-07-04T18:43:56Z
 url: https://github.com/astral-sh/ruff/pull/5508
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Avoid PERF rules for iteration-dependent assignments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-04 18:12_
+_@charliermarsh_
 
 ## Summary
 

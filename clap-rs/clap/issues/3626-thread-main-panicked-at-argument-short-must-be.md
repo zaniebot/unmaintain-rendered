@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-04-11T22:56:59Z
 updated_at: 2022-04-18T17:25:34Z
 url: https://github.com/clap-rs/clap/issues/3626
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # thread 'main' panicked at 'Argument short must be unique  -f is already in use',
 
 ---
 
-_Issue opened by @Mustafif on 2022-04-11 22:56_
+_@Mustafif_
 
 ### Please complete the following tasks
 

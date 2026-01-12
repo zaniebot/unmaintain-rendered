@@ -12,14 +12,14 @@ head: charlie/external
 created_at: 2022-11-29T03:15:01Z
 updated_at: 2022-11-29T03:16:19Z
 url: https://github.com/astral-sh/ruff/pull/955
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Allow preservation of external check codes
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-29 03:15_
+_@charliermarsh_
 
 Users can now specify a field like:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-04-21T08:01:22Z
 updated_at: 2021-10-17T00:51:53Z
 url: https://github.com/clap-rs/clap/issues/1846
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Add IsExternalSubcommand setting
 
 ---
 
-_Issue opened by @pksunkara on 2020-04-21 08:01_
+_@pksunkara_
 
 We need to perfect the external subcommand story. Let's take an example of `cargo` and its plugin `cargo-sample`. We have support for building `cargo` but we don't have proper support for building `cargo-sample`.
 

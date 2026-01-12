@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T11:16:47Z
 updated_at: 2024-11-06T15:40:48Z
 url: https://github.com/astral-sh/uv/issues/8861
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # support for "uv config --list"
 
 ---
 
-_Issue opened by @woutervh on 2024-11-06 11:16_
+_@woutervh_
 
 Using uv 0.4.30
 

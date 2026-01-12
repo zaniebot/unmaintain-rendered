@@ -14,14 +14,14 @@ head: alex/parameterized-any
 created_at: 2024-12-12T11:45:46Z
 updated_at: 2024-12-12T11:52:21Z
 url: https://github.com/astral-sh/ruff/pull/14933
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] `Any` cannot be parameterized
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-12 11:45_
+_@AlexWaygood_
 
 ## Summary
 

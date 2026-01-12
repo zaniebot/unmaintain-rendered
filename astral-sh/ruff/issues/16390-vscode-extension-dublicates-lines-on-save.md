@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-26T11:03:22Z
 updated_at: 2025-03-03T19:52:12Z
 url: https://github.com/astral-sh/ruff/issues/16390
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # VsCode extension: Dublicates lines on save
 
 ---
 
-_Issue opened by @jzr-supove on 2025-02-26 11:03_
+_@jzr-supove_
 
 ### Summary
 

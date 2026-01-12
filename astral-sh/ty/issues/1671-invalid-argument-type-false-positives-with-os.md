@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-29T04:04:17Z
 updated_at: 2025-12-12T20:43:27Z
 url: https://github.com/astral-sh/ty/issues/1671
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # invalid-argument-type false positives with os.walk/fnmatch code
 
 ---
 
-_Issue opened by @correctmost on 2025-11-29 04:04_
+_@correctmost_
 
 ### Summary
 

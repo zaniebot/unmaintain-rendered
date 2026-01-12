@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-02-10T00:05:48Z
 updated_at: 2018-08-02T03:30:18Z
 url: https://github.com/clap-rs/clap/issues/1170
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Support for 'Called as'
 
 ---
 
-_Issue opened by @MggMuggins on 2018-02-10 00:05_
+_@MggMuggins_
 
 In some (mostly systems programming) situations, links are used to move a whole bunch of executables into one, and let that one figure out how it was called in order to determine it's behavior. I haven't done a ton of digging (so I don't know if there is support for this), but it would be really cool if clap supported this in some way. Feel free to close this, it's just a thought, really. Let me know if you want more detail.
 

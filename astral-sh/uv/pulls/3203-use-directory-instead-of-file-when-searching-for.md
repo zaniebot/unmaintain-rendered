@@ -14,14 +14,14 @@ head: bugfix
 created_at: 2024-04-23T08:06:01Z
 updated_at: 2024-04-23T18:36:42Z
 url: https://github.com/astral-sh/uv/pull/3203
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:29Z
 ```
 
 # Use directory instead of file when searching for uv.toml file
 
 ---
 
-_Pull request opened by @haarisr on 2024-04-23 08:06_
+_@haarisr_
 
 ## Summary
 

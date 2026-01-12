@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-07T15:14:07Z
 updated_at: 2022-12-16T07:43:57Z
 url: https://github.com/astral-sh/ruff/issues/1123
-synced_at: 2026-01-10T12:05:23Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # E501 error with strings that contains unicode
 
 ---
 
-_Issue opened by @keul on 2022-12-07 15:14_
+_@keul_
 
 Non sure if this an issue or a "by design" behaviour: I get a
 

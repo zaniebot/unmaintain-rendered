@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-31T16:10:22Z
 updated_at: 2025-08-31T16:47:46Z
 url: https://github.com/astral-sh/ty/issues/1108
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Are there any plans to support options like noImplicitAny or strict?
 
 ---
 
-_Issue opened by @phi-friday on 2025-08-31 16:10_
+_@phi-friday_
 
 ### Question
 

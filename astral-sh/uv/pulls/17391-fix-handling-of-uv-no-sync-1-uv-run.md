@@ -13,14 +13,14 @@ head: claude/validate-implementation-w4BPH
 created_at: 2026-01-09T20:54:07Z
 updated_at: 2026-01-09T21:37:21Z
 url: https://github.com/astral-sh/uv/pull/17391
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:45Z
 ```
 
 # Fix handling of `UV_NO_SYNC=1 uv run ...`
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-09 20:54_
+_@zanieb_
 
 Closes #17390 
 

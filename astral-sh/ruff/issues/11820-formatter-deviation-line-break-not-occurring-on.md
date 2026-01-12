@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-06-10T05:33:15Z
 updated_at: 2024-06-10T08:24:39Z
 url: https://github.com/astral-sh/ruff/issues/11820
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # formatter deviation: line break not occurring on assignments where LHS goes over line-length
 
 ---
 
-_Issue opened by @jonathan-hill-visasq on 2024-06-10 05:33_
+_@jonathan-hill-visasq_
 
 I'm seeing a case where black is expanding an assignment but ruff is not - even re-writing the black formatted result.
 

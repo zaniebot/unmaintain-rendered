@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-18T21:08:51Z
 updated_at: 2023-01-18T21:24:28Z
 url: https://github.com/astral-sh/ruff/issues/1973
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Automatically enable `--format=github` if the environment looks like GitHub Actions?
 
 ---
 
-_Issue opened by @woodruffw on 2023-01-18 21:08_
+_@woodruffw_
 
 Thanks again for maintaining `ruff`! I'm trying to roll it out to more projects at Trail of Bits, and it's been very satisfying to see the speedups we're getting/the additional things it can catch 🙂 
 

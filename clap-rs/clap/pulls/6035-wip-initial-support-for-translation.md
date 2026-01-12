@@ -12,14 +12,14 @@ head: i18n
 created_at: 2025-06-13T19:51:24Z
 updated_at: 2025-07-02T17:49:08Z
 url: https://github.com/clap-rs/clap/pull/6035
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 #  WIP: Initial support for translation
 
 ---
 
-_Pull request opened by @sylvestre on 2025-06-13 19:51_
+_@sylvestre_
 
  WIP: Initial support for translation. It uses fluent and can be enabled with the feature  "i18n"
 And incldues the French translation as poc.

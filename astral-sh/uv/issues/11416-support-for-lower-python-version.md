@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-11T09:37:00Z
 updated_at: 2025-03-17T11:14:19Z
 url: https://github.com/astral-sh/uv/issues/11416
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:36Z
 ```
 
 # Support for Lower Python version
 
 ---
 
-_Issue opened by @learnwithsomya on 2025-02-11 09:37_
+_@learnwithsomya_
 
 ### Question
 

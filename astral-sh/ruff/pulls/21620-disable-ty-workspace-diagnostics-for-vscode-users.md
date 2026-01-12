@@ -13,14 +13,14 @@ head: alex/ty-workspace-settings
 created_at: 2025-11-24T19:49:56Z
 updated_at: 2025-11-24T20:06:12Z
 url: https://github.com/astral-sh/ruff/pull/21620
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # Disable ty workspace diagnostics for VSCode users
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-24 19:49_
+_@AlexWaygood_
 
 ## Summary
 

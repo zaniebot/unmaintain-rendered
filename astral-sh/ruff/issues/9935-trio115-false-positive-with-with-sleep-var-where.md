@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-11T19:50:03Z
 updated_at: 2024-03-27T23:32:45Z
 url: https://github.com/astral-sh/ruff/issues/9935
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # TRIO115 false positive with with `sleep(var)` where `var` starts as `0`
 
 ---
 
-_Issue opened by @mikenerone on 2024-02-11 19:50_
+_@mikenerone_
 
 Ruff 0.2.1
 

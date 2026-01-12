@@ -13,14 +13,14 @@ head: charlie/wheel
 created_at: 2024-03-10T16:16:39Z
 updated_at: 2024-03-10T23:34:37Z
 url: https://github.com/astral-sh/uv/pull/2341
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:59Z
 ```
 
 # Remove `wheel` from default PEP 517 backend
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-10 16:16_
+_@charliermarsh_
 
 ## Summary
 
@@ -32,6 +32,14 @@ Closes https://github.com/astral-sh/uv/issues/2313.
 ---
 
 _Label `compatibility` added by @charliermarsh on 2024-03-10 16:16_
+
+---
+
+_@konstin approved on 2024-03-10 16:31_
+
+> Setuptools declares wheel as a wheel build dependency for PEP 517 builds already via a build hook
+
+That's neat
 
 ---
 

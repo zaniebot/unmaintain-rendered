@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T16:47:35Z
 updated_at: 2025-03-20T17:54:23Z
 url: https://github.com/astral-sh/uv/issues/12291
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # Support for `--user` installations in non-root container environments
 
 ---
 
-_Issue opened by @slmg on 2025-03-18 16:47_
+_@slmg_
 
 ### Summary
 

@@ -11,14 +11,14 @@ head: jzlotek/python-list-json
 created_at: 2025-01-09T22:03:12Z
 updated_at: 2025-01-14T17:04:14Z
 url: https://github.com/astral-sh/uv/pull/10448
-synced_at: 2026-01-10T11:44:49Z
+synced_at: 2026-01-12T16:09:18Z
 ```
 
 # feature(python list): added --format param to uv python list
 
 ---
 
-_Pull request opened by @jzlotek on 2025-01-09 22:03_
+_@jzlotek_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: charlie/egg
 created_at: 2024-12-10T01:15:41Z
 updated_at: 2024-12-10T02:24:44Z
 url: https://github.com/astral-sh/uv/pull/9760
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:58Z
 ```
 
 # Don't read metadata from stale `.egg-info` files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-10 01:15_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-09T07:33:07Z
 updated_at: 2025-10-27T13:11:27Z
 url: https://github.com/astral-sh/uv/issues/5951
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # What is the default Python version selection strategy for ``uvx``?
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-08-09 07:33_
+_@FishAlchemist_
 
 How does ``uvx`` determine which Python version to use when ``--python`` is not explicitly specified?
 I had a quick look through the document, but I couldn't find anything about it.

@@ -13,14 +13,14 @@ head: charlie/path
 created_at: 2024-03-01T17:58:09Z
 updated_at: 2024-03-01T18:12:50Z
 url: https://github.com/astral-sh/uv/pull/2117
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:52Z
 ```
 
 # Use `prefix` instead of `base_prefix` for environment root
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-01 17:58_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/2107.
 

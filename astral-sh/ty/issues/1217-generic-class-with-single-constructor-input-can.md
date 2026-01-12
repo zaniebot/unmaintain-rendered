@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-20T07:16:03Z
 updated_at: 2025-10-28T03:16:33Z
 url: https://github.com/astral-sh/ty/issues/1217
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # generic class with single constructor input can be inferred as a distributed union
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-20 07:16_
+_@KotlinIsland_
 
 ### Summary
 

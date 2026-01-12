@@ -12,14 +12,14 @@ head: applicability_logging
 created_at: 2023-06-15T19:43:32Z
 updated_at: 2023-06-15T21:08:47Z
 url: https://github.com/astral-sh/ruff/pull/5129
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add Applicability to flake8_logging_format fixes
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-15 19:43_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

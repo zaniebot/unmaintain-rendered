@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-09-23T16:44:21Z
 updated_at: 2025-09-23T17:08:10Z
 url: https://github.com/astral-sh/ruff/pull/20539
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # Update import path to ruff-wasm-web
 
 ---
 
-_Pull request opened by @ShikChen on 2025-09-23 16:44_
+_@ShikChen_
 
 ## Summary
 

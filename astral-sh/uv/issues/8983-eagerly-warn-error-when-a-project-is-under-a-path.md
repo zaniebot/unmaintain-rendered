@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-10T08:32:35Z
 updated_at: 2025-04-25T07:50:06Z
 url: https://github.com/astral-sh/uv/issues/8983
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # Eagerly warn/error when a project is under a path with `:` (because unix will cry when you put it on PATH)
 
 ---
 
-_Issue opened by @lemorage on 2024-11-10 08:32_
+_@lemorage_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: format_check_better_message
 created_at: 2023-12-16T00:13:03Z
 updated_at: 2023-12-18T09:00:34Z
 url: https://github.com/astral-sh/ruff/pull/9153
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Update format.rs to display correct message for already formatted files
 
 ---
 
-_Pull request opened by @VictorGob on 2023-12-16 00:13_
+_@VictorGob_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: renovate/assert_fs-1.x-lockfile
 created_at: 2025-05-05T02:16:04Z
 updated_at: 2025-05-05T09:37:21Z
 url: https://github.com/astral-sh/uv/pull/13293
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:38Z
 ```
 
 # Update Rust crate assert_fs to v1.1.3
 
 ---
 
-_Pull request opened by @renovate on 2025-05-05 02:16_
+_@renovate_
 
 This PR contains the following updates:
 

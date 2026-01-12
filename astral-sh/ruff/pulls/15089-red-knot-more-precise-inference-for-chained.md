@@ -13,14 +13,14 @@ head: rk-chained-booleans
 created_at: 2024-12-21T00:07:34Z
 updated_at: 2024-12-22T19:02:34Z
 url: https://github.com/astral-sh/ruff/pull/15089
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] More precise inference for chained boolean expressions
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-21 00:07_
+_@InSyncWithFoo_
 
 ## Summary
 

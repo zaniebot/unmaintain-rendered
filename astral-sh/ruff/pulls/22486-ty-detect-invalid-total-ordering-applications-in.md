@@ -13,14 +13,14 @@ head: charlie/to
 created_at: 2026-01-09T23:19:48Z
 updated_at: 2026-01-10T00:37:59Z
 url: https://github.com/astral-sh/ruff/pull/22486
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # [ty] Detect invalid `@total_ordering` applications in non-decorator contexts
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-09 23:19_
+_@charliermarsh_
 
 ## Summary
 

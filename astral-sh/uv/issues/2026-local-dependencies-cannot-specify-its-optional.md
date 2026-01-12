@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-27T22:20:12Z
 updated_at: 2024-02-28T02:16:04Z
 url: https://github.com/astral-sh/uv/issues/2026
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Local dependencies cannot specify its optional dependency
 
 ---
 
-_Issue opened by @Andrew-Chen-Wang on 2024-02-27 22:20_
+_@Andrew-Chen-Wang_
 
 (Feature request): I have a pyproject.toml specifying:
 

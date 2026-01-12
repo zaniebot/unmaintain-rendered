@@ -13,14 +13,14 @@ head: minor-fuzzer-fixes
 created_at: 2024-01-03T01:46:31Z
 updated_at: 2024-01-03T01:52:42Z
 url: https://github.com/astral-sh/ruff/pull/9375
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Minor fuzzer improvements
 
 ---
 
-_Pull request opened by @addisoncrump on 2024-01-03 01:46_
+_@addisoncrump_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

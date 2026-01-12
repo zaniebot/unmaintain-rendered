@@ -12,14 +12,14 @@ head: main
 created_at: 2022-09-15T17:38:56Z
 updated_at: 2022-09-15T20:04:07Z
 url: https://github.com/astral-sh/ruff/pull/205
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Update docs with --format flag
 
 ---
 
-_Pull request opened by @HallerPatrick on 2022-09-15 17:38_
+_@HallerPatrick_
 
 Just the readme update
 

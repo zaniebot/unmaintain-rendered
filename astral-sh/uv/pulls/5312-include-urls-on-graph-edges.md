@@ -13,14 +13,14 @@ head: charlie/edge
 created_at: 2024-07-22T21:12:29Z
 updated_at: 2024-07-22T22:41:04Z
 url: https://github.com/astral-sh/uv/pull/5312
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:45Z
 ```
 
 # Include URLs on graph edges
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-22 21:12_
+_@charliermarsh_
 
 ## Summary
 

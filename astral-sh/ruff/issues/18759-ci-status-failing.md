@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-18T15:12:13Z
 updated_at: 2025-06-19T09:39:26Z
 url: https://github.com/astral-sh/ruff/issues/18759
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # CI status- failing
 
 ---
 
-_Issue opened by @unnati-joshi on 2025-06-18 15:12_
+_@unnati-joshi_
 
 ### Summary
 

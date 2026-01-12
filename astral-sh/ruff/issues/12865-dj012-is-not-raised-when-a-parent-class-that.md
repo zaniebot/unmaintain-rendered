@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-13T15:59:43Z
 updated_at: 2025-10-07T17:00:38Z
 url: https://github.com/astral-sh/ruff/issues/12865
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # DJ012 is not raised when a parent class, that inherits from django.Model, is in a different file.
 
 ---
 
-_Issue opened by @HappyCthulhu on 2024-08-13 15:59_
+_@HappyCthulhu_
 
 ### Search keywords 
 "DJ012", "django Model"

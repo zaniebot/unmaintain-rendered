@@ -13,14 +13,14 @@ head: charlie/any
 created_at: 2024-05-23T19:54:23Z
 updated_at: 2024-05-23T20:58:23Z
 url: https://github.com/astral-sh/uv/pull/3801
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:51Z
 ```
 
 # Make `anyhow` a dev dependency in `pypi-types`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-23 19:54_
+_@charliermarsh_
 
 _No description provided._
 

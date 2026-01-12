@@ -12,14 +12,14 @@ head: 640-automatically-remove-redundant-open-modes
 created_at: 2022-11-21T00:09:33Z
 updated_at: 2022-11-21T21:06:56Z
 url: https://github.com/astral-sh/ruff/pull/843
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 #  Automatically remove redundant open modes #640
 
 ---
 
-_Pull request opened by @andribergs on 2022-11-21 00:09_
+_@andribergs_
 
 Working on #640. This PR should cover both the detection and fixing of redundant open modes.
 

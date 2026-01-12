@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-29T07:58:04Z
 updated_at: 2022-09-29T14:47:42Z
 url: https://github.com/clap-rs/clap/issues/4285
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Argument names must be unique, but 'version' is in use by more than one argument or group
 
 ---
 
-_Issue opened by @bonigarcia on 2022-09-29 07:58_
+_@bonigarcia_
 
 ### Please complete the following tasks
 

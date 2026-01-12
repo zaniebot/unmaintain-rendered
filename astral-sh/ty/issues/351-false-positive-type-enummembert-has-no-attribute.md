@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-13T09:53:30Z
 updated_at: 2025-09-23T20:02:04Z
 url: https://github.com/astral-sh/ty/issues/351
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # false positive: "Type _EnumMemberT has no attribute 'value'"
 
 ---
 
-_Issue opened by @colin-kerkhof on 2025-05-13 09:53_
+_@colin-kerkhof_
 
 ### Summary
 

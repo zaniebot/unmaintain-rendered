@@ -14,14 +14,14 @@ head: charlie/format
 created_at: 2023-09-27T20:18:37Z
 updated_at: 2023-09-29T17:28:50Z
 url: https://github.com/astral-sh/ruff/pull/7679
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Document next round of intentional formatter deviations
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-27 20:18_
+_@charliermarsh_
 
 ## Summary
 

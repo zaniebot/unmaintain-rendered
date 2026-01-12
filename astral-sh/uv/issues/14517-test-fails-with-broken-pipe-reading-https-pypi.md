@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-09T12:11:20Z
 updated_at: 2025-07-09T14:37:59Z
 url: https://github.com/astral-sh/uv/issues/14517
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # Test fails with broken pipe reading `https://pypi.org/simple/<package>`
 
 ---
 
-_Issue opened by @zanieb on 2025-07-09 12:11_
+_@zanieb_
 
 ```
 running 1 test

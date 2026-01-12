@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-12-09T16:16:21Z
 updated_at: 2021-12-09T16:40:54Z
 url: https://github.com/clap-rs/clap/issues/3125
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Stabilize `StructOptInternal` so `StructOpt` is available to be implemented manually
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:16_
+_@epage_
 
 <a href="https://github.com/nagisa"><img src="https://avatars.githubusercontent.com/u/679122?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [nagisa](https://github.com/nagisa)**
 _Monday Dec 30, 2019 at 16:38 GMT_

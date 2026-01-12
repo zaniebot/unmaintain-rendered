@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-02T14:00:11Z
 updated_at: 2025-03-07T17:11:28Z
 url: https://github.com/astral-sh/uv/issues/11892
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:49Z
 ```
 
 # Why Windows path looks like this?
 
 ---
 
-_Issue opened by @MaxITService on 2025-03-02 14:00_
+_@MaxITService_
 
 ### Question
 

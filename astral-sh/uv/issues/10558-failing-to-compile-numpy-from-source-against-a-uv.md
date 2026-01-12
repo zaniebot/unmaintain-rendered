@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-13T08:36:25Z
 updated_at: 2025-01-17T05:18:34Z
 url: https://github.com/astral-sh/uv/issues/10558
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # Failing to compile numpy from source against a uv-managed interpreter (`Cannot compile `Python.h`.`)
 
 ---
 
-_Issue opened by @neutrinoceros on 2025-01-13 08:36_
+_@neutrinoceros_
 
 I'm not able to build numpy from source against a uv-managed Python:
 

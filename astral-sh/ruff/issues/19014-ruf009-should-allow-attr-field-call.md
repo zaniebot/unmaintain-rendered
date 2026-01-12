@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-28T18:14:20Z
 updated_at: 2025-07-03T14:29:56Z
 url: https://github.com/astral-sh/ruff/issues/19014
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # RUF009 should allow attr.field(...) call
 
 ---
 
-_Issue opened by @ivanychev on 2025-06-28 18:14_
+_@ivanychev_
 
 ### Summary
 

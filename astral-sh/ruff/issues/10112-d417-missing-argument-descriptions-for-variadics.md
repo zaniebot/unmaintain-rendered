@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-24T15:50:01Z
 updated_at: 2024-12-31T11:16:57Z
 url: https://github.com/astral-sh/ruff/issues/10112
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [D417] Missing argument descriptions for variadics *args and **kwargs should be optional
 
 ---
 
-_Issue opened by @dfrtz on 2024-02-24 15:50_
+_@dfrtz_
 
 Related to https://github.com/astral-sh/ruff/issues/8605, I believe that if "ruff" is to be the successor to "pydocstyle" (per their announcement back in Nov), then the current behavior of ruff to flag variadics is not keeping parity with existing functionality. I know 8605 is closed as more or less "expected", however I do not believe this is true, and I will provide details on why I believe this needs to be revisited. Specifically, if using pydocstyle 6.3.0, the last released build (or earlier), it does not flag on variadic args `*args` or `**kwargs`, whereas 0.2.2 does. Example:
 

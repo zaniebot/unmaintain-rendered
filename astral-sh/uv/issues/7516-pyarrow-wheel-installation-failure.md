@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-18T19:45:08Z
 updated_at: 2025-09-22T04:21:50Z
 url: https://github.com/astral-sh/uv/issues/7516
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # Pyarrow wheel installation failure
 
 ---
 
-_Issue opened by @jimmy-marmalade on 2024-09-18 19:45_
+_@jimmy-marmalade_
 
 Hi, I'm on
 

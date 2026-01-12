@@ -12,14 +12,14 @@ head: fix-typeis-generic-narrowing
 created_at: 2025-12-01T20:41:00Z
 updated_at: 2025-12-05T02:10:23Z
 url: https://github.com/astral-sh/ruff/pull/21739
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] Fix TypeIs generic type narrowing with deferred materialization
 
 ---
 
-_Pull request opened by @suleymanozkeskin on 2025-12-01 20:41_
+_@suleymanozkeskin_
 
 Fixes https://github.com/astral-sh/ty/issues/1703
 

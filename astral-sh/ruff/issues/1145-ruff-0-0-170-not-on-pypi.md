@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-08T21:00:27Z
 updated_at: 2022-12-08T21:27:06Z
 url: https://github.com/astral-sh/ruff/issues/1145
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # ruff 0.0.170 not on pypi
 
 ---
 
-_Issue opened by @onerandomusername on 2022-12-08 21:00_
+_@onerandomusername_
 
 looks like a portion of the release workflow was ratelimited and as such, ruff 0.0.170 is not on pypi.
 

@@ -14,14 +14,14 @@ head: bug/13802-furb156-false-positive
 created_at: 2024-10-19T13:49:45Z
 updated_at: 2024-11-09T02:35:24Z
 url: https://github.com/astral-sh/ruff/pull/13820
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Fixing FURB156 false positive for multi-character string error
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2024-10-19 13:49_
+_@Aditya-PS-05_
 
 closes #13802 
 

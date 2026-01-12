@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-18T15:09:32Z
 updated_at: 2026-01-08T17:58:27Z
 url: https://github.com/astral-sh/ty/issues/2075
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Coroutine generics not inferable to CoroutineType
 
 ---
 
-_Issue opened by @LeoHxQin on 2025-12-18 15:09_
+_@LeoHxQin_
 
 ### Summary
 

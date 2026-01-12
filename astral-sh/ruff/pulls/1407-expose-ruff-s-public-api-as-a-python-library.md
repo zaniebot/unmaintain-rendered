@@ -12,14 +12,14 @@ head: python-library
 created_at: 2022-12-27T16:04:33Z
 updated_at: 2023-01-27T10:21:06Z
 url: https://github.com/astral-sh/ruff/pull/1407
-synced_at: 2026-01-12T04:51:59Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Expose Ruff's public API as a Python library
 
 ---
 
-_Pull request opened by @squiddy on 2022-12-27 16:04_
+_@squiddy_
 
 See https://github.com/charliermarsh/ruff/issues/659
 

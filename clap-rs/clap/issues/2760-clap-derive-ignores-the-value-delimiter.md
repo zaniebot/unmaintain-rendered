@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-09-09T10:30:50Z
 updated_at: 2021-09-18T23:55:39Z
 url: https://github.com/clap-rs/clap/issues/2760
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # clap_derive ignores the value_delimiter
 
 ---
 
-_Issue opened by @ufoscout on 2021-09-09 10:30_
+_@ufoscout_
 
 ### Please complete the following tasks
 

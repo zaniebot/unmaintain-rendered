@@ -13,14 +13,14 @@ head: zb/0510
 created_at: 2024-12-17T20:29:14Z
 updated_at: 2024-12-17T20:53:21Z
 url: https://github.com/astral-sh/uv/pull/9983
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:04Z
 ```
 
 # Bump version to 0.5.10
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-17 20:29_
+_@zanieb_
 
 _No description provided._
 

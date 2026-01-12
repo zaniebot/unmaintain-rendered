@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-15T14:32:47Z
 updated_at: 2023-05-15T15:31:12Z
 url: https://github.com/astral-sh/ruff/issues/4440
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # min/max flattening broken for iterables
 
 ---
 
-_Issue opened by @nijel on 2023-05-15 14:32_
+_@nijel_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

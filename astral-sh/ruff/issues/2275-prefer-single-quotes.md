@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-27T20:41:32Z
 updated_at: 2023-01-27T21:51:48Z
 url: https://github.com/astral-sh/ruff/issues/2275
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Prefer Single Quotes
 
 ---
 
-_Issue opened by @jackdesert on 2023-01-27 20:41_
+_@jackdesert_
 
 How do I get this message to prefer single quotes instead of double?
 

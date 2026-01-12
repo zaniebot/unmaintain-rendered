@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-23T09:30:59Z
 updated_at: 2024-07-24T20:03:24Z
 url: https://github.com/astral-sh/ruff/issues/12476
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # NPY201 triggers on code written to support both numpy 2 and legacy numpy
 
 ---
 
-_Issue opened by @jenshnielsen on 2024-07-23 09:30_
+_@jenshnielsen_
 
 Considder an example like this which is explicitly written to support both numpy 2 and legacy numpy
 ```

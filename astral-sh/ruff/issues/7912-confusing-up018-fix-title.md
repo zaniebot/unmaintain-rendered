@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-11T07:58:52Z
 updated_at: 2023-10-11T09:41:53Z
 url: https://github.com/astral-sh/ruff/issues/7912
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Confusing UP018 fix title
 
 ---
 
-_Issue opened by @konstin on 2023-10-11 07:58_
+_@konstin_
 
 ```python
 python_version = str("*")

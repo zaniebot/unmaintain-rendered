@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-21T22:54:16Z
 updated_at: 2024-02-22T02:13:34Z
 url: https://github.com/astral-sh/ruff/issues/10076
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Race condition between ruff and isort in VScode
 
 ---
 
-_Issue opened by @jazzlw on 2024-02-21 22:54_
+_@jazzlw_
 
 Not sure if this is the right place for this, sorry if not. 
 

@@ -13,14 +13,14 @@ head: zb/watch
 created_at: 2024-11-19T20:15:05Z
 updated_at: 2024-11-20T04:39:40Z
 url: https://github.com/astral-sh/uv/pull/9244
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:43Z
 ```
 
 # Watch for changes to the template file during documentation serve
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-19 20:15_
+_@zanieb_
 
 Fixes this really annoying behavior where the served documentation would not reflect changes to the mkdocs template file (where we store all of our actual configuration)
 

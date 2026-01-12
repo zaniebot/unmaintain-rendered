@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-14T06:31:15Z
 updated_at: 2025-05-21T07:28:34Z
 url: https://github.com/astral-sh/ty/issues/375
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # ty fails to find some namespace packages
 
 ---
 
-_Issue opened by @nojaf on 2025-05-14 06:31_
+_@nojaf_
 
 ### Summary
 

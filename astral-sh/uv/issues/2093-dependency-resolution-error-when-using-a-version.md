@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-29T18:29:44Z
 updated_at: 2024-04-01T21:31:52Z
 url: https://github.com/astral-sh/uv/issues/2093
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Dependency resolution error when using a version not yet on PyPI
 
 ---
 
-_Issue opened by @Andrew-S-Rosen on 2024-02-29 18:29_
+_@Andrew-S-Rosen_
 
 I have a Python package (`quacc`) that has a required dependency (`ase`). The most recent version of `ase` on PyPI is 3.22.1, but the `master` branch of `ase` is >3.22.1. Since the `quacc` package relies on features added since the last `ase` release, in the `dependencies` list in `pyproject.toml` of my `quacc` package, I have `ase>3.22.1` to ensure that users won't have a silent failure when installing the package if they have an out-of-date dependency. However, `uv` does not like this at all (even though `pip` is perfectly content).
 

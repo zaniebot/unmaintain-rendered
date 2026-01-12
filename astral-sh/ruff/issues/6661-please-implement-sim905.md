@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-17T20:46:05Z
 updated_at: 2025-03-11T12:32:26Z
 url: https://github.com/astral-sh/ruff/issues/6661
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Please implement SIM905
 
 ---
 
-_Issue opened by @nth10sd on 2023-08-17 20:46_
+_@nth10sd_
 
 `x = "abc bcd cde".split(" ")` will turn into `x = ["abc", "bcd", "cde"]`. This rule is called `Split string directly if only constants are used`, however, it is an experimental `SIM9` flake8-simplify rule and I'm not sure if it's applicable yet.
 

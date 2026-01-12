@@ -13,14 +13,14 @@ head: micha/known-class-avoid-module-lookup
 created_at: 2024-11-14T20:02:32Z
 updated_at: 2024-11-14T20:24:13Z
 url: https://github.com/astral-sh/ruff/pull/14343
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Avoid module lookup for known classes when possible
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-14 20:02_
+_@MichaReiser_
 
 ## Summary
 

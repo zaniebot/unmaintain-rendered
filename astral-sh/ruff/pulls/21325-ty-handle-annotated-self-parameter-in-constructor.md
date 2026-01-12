@@ -14,14 +14,14 @@ head: dcreager/pep-self
 created_at: 2025-11-07T19:17:33Z
 updated_at: 2025-11-11T00:46:52Z
 url: https://github.com/astral-sh/ruff/pull/21325
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # [ty] Handle annotated `self` parameter in constructor of non-invariant generic classes
 
 ---
 
-_Pull request opened by @dcreager on 2025-11-07 19:17_
+_@dcreager_
 
 This manifested as an error when inferring the type of a PEP-695 generic class via its constructor parameters:
 

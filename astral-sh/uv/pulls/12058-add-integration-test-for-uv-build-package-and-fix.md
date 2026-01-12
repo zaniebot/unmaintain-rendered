@@ -14,14 +14,14 @@ head: konsti/test-uv-build-package
 created_at: 2025-03-07T21:51:50Z
 updated_at: 2025-03-07T23:36:14Z
 url: https://github.com/astral-sh/uv/pull/12058
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:07Z
 ```
 
 # Add integration test for `uv_build` package and fix invocation
 
 ---
 
-_Pull request opened by @konstin on 2025-03-07 21:51_
+_@konstin_
 
 I somehow missed running an actual integration test of the PEP 517 API in CI and the python shim was using the old uv CLI interface still.
 

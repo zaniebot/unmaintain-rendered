@@ -13,14 +13,14 @@ head: ag/simplify-lifetimes
 created_at: 2025-04-02T16:30:19Z
 updated_at: 2025-04-02T16:47:03Z
 url: https://github.com/astral-sh/ruff/pull/17158
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # ruff_db: simplify lifetimes on `DiagnosticDisplay`
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-04-02 16:30_
+_@BurntSushi_
 
 I initially split the lifetime out into three distinct lifetimes on
 near-instinct because I moved the struct into the public API. But

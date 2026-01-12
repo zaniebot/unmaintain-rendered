@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-04T08:51:47Z
 updated_at: 2024-04-05T19:34:13Z
 url: https://github.com/astral-sh/ruff/issues/10773
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Unnecessary list and tuple for unpacking operator
 
 ---
 
-_Issue opened by @spaceby on 2024-04-04 08:51_
+_@spaceby_
 
 RUF005 leaves a similar code after autofix
 

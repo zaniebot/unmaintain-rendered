@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-27T03:45:12Z
 updated_at: 2025-12-14T19:35:38Z
 url: https://github.com/astral-sh/ty/issues/1651
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Emit diagnostic when a type variable with a default is followed by one without a default
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-11-27 03:45_
+_@dhruvmanila_
 
 ```python
 from typing import TypeVar, Generic

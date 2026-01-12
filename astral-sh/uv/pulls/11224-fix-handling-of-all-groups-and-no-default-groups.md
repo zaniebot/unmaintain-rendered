@@ -13,14 +13,14 @@ head: gankra/group-cleanup
 created_at: 2025-02-04T19:28:17Z
 updated_at: 2025-02-05T20:31:25Z
 url: https://github.com/astral-sh/uv/pull/11224
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:44Z
 ```
 
 # fix handling of `--all-groups` and `--no-default-groups` flags
 
 ---
 
-_Pull request opened by @Gankra on 2025-02-04 19:28_
+_@Gankra_
 
 This is a rewrite of the groups subsystem to have more clear semantics, and some adjustments to the CLI flag constraints. In doing so, the following bugs are fixed:
 

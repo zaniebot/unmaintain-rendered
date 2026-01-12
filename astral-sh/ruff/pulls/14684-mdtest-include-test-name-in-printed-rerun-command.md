@@ -14,14 +14,14 @@ head: mdtest-name
 created_at: 2024-11-29T18:45:38Z
 updated_at: 2024-11-30T11:05:23Z
 url: https://github.com/astral-sh/ruff/pull/14684
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # mdtest: include test name in printed rerun command
 
 ---
 
-_Pull request opened by @connorskees on 2024-11-29 18:45_
+_@connorskees_
 
 This change follows up to https://github.com/astral-sh/ruff/pull/14670 by adding a test name argument to the printed `cargo test` command that can be copied to rerun a specific failing test. 
 

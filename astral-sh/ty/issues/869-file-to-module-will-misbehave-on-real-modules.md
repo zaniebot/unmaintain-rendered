@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-22T12:49:04Z
 updated_at: 2025-09-25T01:15:36Z
 url: https://github.com/astral-sh/ty/issues/869
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `file_to_module` will misbehave on "real modules"
 
 ---
 
-_Issue opened by @Gankra on 2025-07-22 12:49_
+_@Gankra_
 
 In https://github.com/astral-sh/ruff/pull/19471 I am introducing the notion of a "real module" which is found by running resolution with stubs disallowed to provide more useful goto-definition results. A consequence of this is that it violates an invariant that file_to_module enforces: files and modules should be a bijection. Specifically if you pass a "real module" to file_to_module it will notice it's not the stub module and return None.
 

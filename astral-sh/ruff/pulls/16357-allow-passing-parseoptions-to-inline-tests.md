@@ -14,14 +14,14 @@ head: brent/parser-tests
 created_at: 2025-02-24T19:50:13Z
 updated_at: 2025-02-27T15:23:18Z
 url: https://github.com/astral-sh/ruff/pull/16357
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Allow passing `ParseOptions` to inline tests
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-24 19:50_
+_@ntBre_
 
 ## Summary
 

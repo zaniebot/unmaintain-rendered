@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-10-09T16:03:39Z
 updated_at: 2020-02-01T16:03:33Z
 url: https://github.com/clap-rs/clap/issues/1356
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Bug: Calling print_help after parsing causes a panic if global() is used.
 
 ---
 
-_Issue opened by @mikeswoods on 2018-10-09 16:03_
+_@mikeswoods_
 
 If `App::print_help()` ius called after parsing with `Arg::get_matches_from_safe_borrow` a panic occurs. This only happens if one of the arguments has  `global(true)` set.
 

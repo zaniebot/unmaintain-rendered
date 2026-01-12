@@ -13,14 +13,14 @@ head: conversion-flag
 created_at: 2023-05-16T14:32:46Z
 updated_at: 2023-05-16T16:40:50Z
 url: https://github.com/astral-sh/ruff/pull/4450
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Specialize ConversionFlag
 
 ---
 
-_Pull request opened by @youknowone on 2023-05-16 14:32_
+_@youknowone_
 
 _No description provided._
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-23T02:16:35Z
 updated_at: 2025-12-23T02:35:25Z
 url: https://github.com/astral-sh/ty/issues/2178
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # ty: assert membership doesn't narrow `str` to `Literal` for `TypedDict` key (minimal repro)
 
 ---
 
-_Issue opened by @dsfaccini on 2025-12-23 02:16_
+_@dsfaccini_
 
 ### Summary
 Minimal repro of `assert` not narrowing a `str` to a `Literal` before populating a `TypedDict`.

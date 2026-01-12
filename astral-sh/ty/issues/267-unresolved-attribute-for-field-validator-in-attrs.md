@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-08T11:02:31Z
 updated_at: 2025-11-14T14:56:52Z
 url: https://github.com/astral-sh/ty/issues/267
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # `unresolved-attribute` for `@<field>.validator` in `attrs` class
 
 ---
 
-_Issue opened by @my1e5 on 2025-05-08 11:02_
+_@my1e5_
 
 ### Summary
 

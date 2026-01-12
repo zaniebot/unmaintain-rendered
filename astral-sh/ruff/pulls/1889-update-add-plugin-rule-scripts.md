@@ -12,14 +12,14 @@ head: update-scripts
 created_at: 2023-01-15T08:18:52Z
 updated_at: 2023-01-15T23:13:55Z
 url: https://github.com/astral-sh/ruff/pull/1889
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Update add plugin/rule scripts
 
 ---
 
-_Pull request opened by @messense on 2023-01-15 08:18_
+_@messense_
 
 Adjusted some file locations and changed to use [`pathlib`](https://docs.python.org/3/library/pathlib.html) instead of `os.path`.
 

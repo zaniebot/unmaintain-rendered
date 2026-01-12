@@ -14,14 +14,14 @@ head: PLE1310-2
 created_at: 2025-02-06T01:43:40Z
 updated_at: 2025-02-10T16:12:57Z
 url: https://github.com/astral-sh/ruff/pull/15985
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`pylint`] Also report when the object isn't a literal (`PLE1310`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-06 01:43_
+_@InSyncWithFoo_
 
 ## Summary
 

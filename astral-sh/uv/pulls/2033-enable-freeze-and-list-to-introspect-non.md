@@ -13,14 +13,14 @@ head: charlie/freeze
 created_at: 2024-02-28T04:06:55Z
 updated_at: 2024-02-28T15:00:02Z
 url: https://github.com/astral-sh/uv/pull/2033
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:50Z
 ```
 
 # Enable `freeze` and `list` to introspect non-virtualenv Pythons
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-28 04:06_
+_@charliermarsh_
 
 ## Summary
 

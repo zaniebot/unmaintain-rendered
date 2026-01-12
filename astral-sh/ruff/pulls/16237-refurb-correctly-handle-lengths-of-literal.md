@@ -13,14 +13,14 @@ head: removeaffix-literal-len
 created_at: 2025-02-18T18:29:42Z
 updated_at: 2025-02-18T18:52:26Z
 url: https://github.com/astral-sh/ruff/pull/16237
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [`refurb`] Correctly handle lengths of literal strings in `slice-to-remove-prefix-or-suffix` (`FURB188`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-02-18 18:29_
+_@dylwil3_
 
 Fixes false negative when slice bound uses length of string literal.
 

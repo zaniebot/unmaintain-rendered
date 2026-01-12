@@ -13,14 +13,14 @@ head: charlie/lock-constraint
 created_at: 2025-05-04T15:39:57Z
 updated_at: 2025-05-04T16:56:35Z
 url: https://github.com/astral-sh/uv/pull/13283
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:37Z
 ```
 
 # Respect locked script preferences in `uv run --with`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-05-04 15:39_
+_@charliermarsh_
 
 ## Summary
 

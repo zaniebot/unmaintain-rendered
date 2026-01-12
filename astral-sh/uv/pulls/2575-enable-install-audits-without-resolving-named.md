@@ -13,14 +13,14 @@ head: charlie/bare-iv
 created_at: 2024-03-20T20:13:40Z
 updated_at: 2024-03-21T03:54:46Z
 url: https://github.com/astral-sh/uv/pull/2575
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:06Z
 ```
 
 # Enable install audits without resolving named requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-20 20:13_
+_@charliermarsh_
 
 ## Summary
 

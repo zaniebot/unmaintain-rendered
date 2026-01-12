@@ -13,14 +13,14 @@ head: charlie/inst
 created_at: 2024-04-03T15:17:35Z
 updated_at: 2024-04-03T15:23:27Z
 url: https://github.com/astral-sh/uv/pull/2811
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:14Z
 ```
 
 # Avoid unused extras check in `pip install` for source trees
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-03 15:17_
+_@charliermarsh_
 
 ## Summary
 

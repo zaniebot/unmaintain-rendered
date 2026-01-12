@@ -14,14 +14,14 @@ head: zb/stdin
 created_at: 2025-01-09T21:37:03Z
 updated_at: 2025-01-09T22:39:40Z
 url: https://github.com/astral-sh/uv/pull/10447
-synced_at: 2026-01-10T11:44:49Z
+synced_at: 2026-01-12T16:09:18Z
 ```
 
 # Allow reading `--with-requirements` from stdin in `uv add` and `uv run`
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-09 21:37_
+_@zanieb_
 
 For some reason this was banned when originally added (I did not see discussion about it). I think it's fine to allow. With `uv run`, there's a bit of nuance because we also allow the script to be read from stdin.
 

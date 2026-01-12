@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-01T21:19:56Z
 updated_at: 2024-07-18T15:00:02Z
 url: https://github.com/astral-sh/uv/issues/4709
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `uv sync` fails when interpreter is not named `python[3]`
 
 ---
 
-_Issue opened by @zanieb on 2024-07-01 21:19_
+_@zanieb_
 
 See discussion in https://github.com/astral-sh/uv/issues/4277
 

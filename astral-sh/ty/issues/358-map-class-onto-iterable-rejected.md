@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-13T14:47:33Z
 updated_at: 2025-05-28T20:43:08Z
 url: https://github.com/astral-sh/ty/issues/358
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `map` class onto iterable rejected
 
 ---
 
-_Issue opened by @acushner-rippling on 2025-05-13 14:47_
+_@acushner-rippling_
 
 ### Summary
 

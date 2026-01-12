@@ -12,14 +12,14 @@ head: replace-fs2-with-fs4
 created_at: 2025-09-09T14:25:06Z
 updated_at: 2025-09-10T07:53:21Z
 url: https://github.com/astral-sh/uv/pull/15752
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:55Z
 ```
 
 # Replace fs2 by fs4
 
 ---
 
-_Pull request opened by @ponchofiesta on 2025-09-09 14:25_
+_@ponchofiesta_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

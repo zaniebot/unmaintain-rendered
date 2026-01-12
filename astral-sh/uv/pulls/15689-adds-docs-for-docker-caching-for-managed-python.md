@@ -13,14 +13,14 @@ head: aokellermann/docker-cache-managed-python
 created_at: 2025-09-04T18:48:01Z
 updated_at: 2025-09-04T18:52:04Z
 url: https://github.com/astral-sh/uv/pull/15689
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # adds docs for docker caching for managed python
 
 ---
 
-_Pull request opened by @aokellermann on 2025-09-04 18:48_
+_@aokellermann_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

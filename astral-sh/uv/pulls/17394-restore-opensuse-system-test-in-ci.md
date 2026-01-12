@@ -12,14 +12,14 @@ head: claude/restore-issue-13811-shz5V
 created_at: 2026-01-09T21:53:54Z
 updated_at: 2026-01-09T21:54:12Z
 url: https://github.com/astral-sh/uv/pull/17394
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:45Z
 ```
 
 # Restore OpenSUSE system test in CI
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-09 21:53_
+_@zanieb_
 
 Re-enable the `system-test-opensuse` job that was disabled in #13818 due to CI flakes (see #13811).
 

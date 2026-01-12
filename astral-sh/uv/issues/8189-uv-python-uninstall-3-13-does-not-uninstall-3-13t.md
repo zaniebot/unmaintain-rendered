@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-14T21:55:04Z
 updated_at: 2024-10-15T12:05:20Z
 url: https://github.com/astral-sh/uv/issues/8189
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # `uv python uninstall 3.13` does not uninstall 3.13t
 
 ---
 
-_Issue opened by @charliermarsh on 2024-10-14 21:55_
+_@charliermarsh_
 
 Should it?
 

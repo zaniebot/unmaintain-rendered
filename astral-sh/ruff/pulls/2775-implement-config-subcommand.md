@@ -12,14 +12,14 @@ head: config-subcommand
 created_at: 2023-02-11T17:53:28Z
 updated_at: 2023-02-12T04:43:10Z
 url: https://github.com/astral-sh/ruff/pull/2775
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Implement `config` subcommand
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-02-11 17:53_
+_@not-my-profile_
 
 The synopsis is as follows.
 

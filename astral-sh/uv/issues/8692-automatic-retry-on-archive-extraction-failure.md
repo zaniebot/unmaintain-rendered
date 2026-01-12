@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-30T08:23:44Z
 updated_at: 2025-07-03T18:30:15Z
 url: https://github.com/astral-sh/uv/issues/8692
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:32Z
 ```
 
 # Automatic Retry on Archive Extraction Failure ("unexpected BufError")
 
 ---
 
-_Issue opened by @tinovyatkin on 2024-10-30 08:23_
+_@tinovyatkin_
 
 We are frequently encountering intermittent unzipping errors when using uv with AWS CodeArtifact, resulting in failed installations during uv pip install operations. These errors appear to stem from network issues, as re-running the installation command usually resolves the problem.
 

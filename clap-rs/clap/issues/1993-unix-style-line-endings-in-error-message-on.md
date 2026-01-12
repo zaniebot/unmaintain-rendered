@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-06-29T20:49:21Z
 updated_at: 2020-07-10T18:19:58Z
 url: https://github.com/clap-rs/clap/issues/1993
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Unix style line endings in error message on Windows
 
 ---
 
-_Issue opened by @davepacheco on 2020-06-29 20:49_
+_@davepacheco_
 
 ### Code
 

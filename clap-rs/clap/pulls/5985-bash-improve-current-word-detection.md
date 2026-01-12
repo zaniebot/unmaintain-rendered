@@ -12,14 +12,14 @@ head: bash-cur
 created_at: 2025-05-05T16:30:54Z
 updated_at: 2025-05-11T22:11:41Z
 url: https://github.com/clap-rs/clap/pull/5985
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # bash: improve current-word detection
 
 ---
 
-_Pull request opened by @mernen on 2025-05-05 16:30_
+_@mernen_
 
 Fixes #5979, along with a few other issues:
 

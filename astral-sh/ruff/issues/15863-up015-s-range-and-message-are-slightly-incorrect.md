@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-01T00:03:14Z
 updated_at: 2025-02-05T08:44:27Z
 url: https://github.com/astral-sh/ruff/issues/15863
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `UP015`'s range and message are slightly incorrect
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-02-01 00:03_
+_@InSyncWithFoo_
 
 Minimal reproducible example ([playground](https://play.ruff.rs/b66038dc-2266-4210-b181-6487d53a44f2)):
 

@@ -13,14 +13,14 @@ head: charlie/pep-585
 created_at: 2023-03-07T23:48:42Z
 updated_at: 2023-03-07T23:53:37Z
 url: https://github.com/astral-sh/ruff/pull/3392
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Remap ChainMap, Counter, and OrderedDict imports to collections
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-07 23:48_
+_@charliermarsh_
 
 `ChainMap` and `Counter` were erroneously mapped to `collections.abc` (instead of `collections`), and `OrderedDict` was missing entirely.
 

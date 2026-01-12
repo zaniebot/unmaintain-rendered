@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-16T11:25:54Z
 updated_at: 2025-10-17T13:04:49Z
 url: https://github.com/astral-sh/ruff/issues/20916
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [Typing] Rule enforcing type aliases in public interface must be public
 
 ---
 
-_Issue opened by @randolf-scholz on 2025-10-16 11:25_
+_@randolf-scholz_
 
 ### Summary
 

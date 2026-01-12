@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-01T18:43:28Z
 updated_at: 2024-09-10T01:44:37Z
 url: https://github.com/astral-sh/uv/issues/5703
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # No longer reinstalls editable paths
 
 ---
 
-_Issue opened by @Nomelas on 2024-08-01 18:43_
+_@Nomelas_
 
 Looks like starting with version 0.2.28 (0.2.27 works fine), local editable packages are no longer being rebuilt. This is problematic for entry_points as you need to reinstall the editable package in order for the entry script to be created.
 

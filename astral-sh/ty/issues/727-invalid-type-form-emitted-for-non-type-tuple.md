@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-30T07:59:27Z
 updated_at: 2025-11-18T16:10:34Z
 url: https://github.com/astral-sh/ty/issues/727
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `invalid-type-form` emitted for non-type tuple index expressions
 
 ---
 
-_Issue opened by @sharkdp on 2025-06-30 07:59_
+_@sharkdp_
 
 ty emits `invalid-type-form` for non-type expressions like the following that do not produce errors at runtime:
 ```py

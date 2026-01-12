@@ -11,14 +11,14 @@ head: latest-python
 created_at: 2025-06-05T20:13:09Z
 updated_at: 2025-06-13T11:43:01Z
 url: https://github.com/astral-sh/uv/pull/13873
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:54Z
 ```
 
 # Support python@latest for newest, stable, discoverable Python
 
 ---
 
-_Pull request opened by @maxmynter on 2025-06-05 20:13_
+_@maxmynter_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

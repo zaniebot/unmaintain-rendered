@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-10T09:19:46Z
 updated_at: 2024-05-10T13:20:50Z
 url: https://github.com/astral-sh/uv/issues/3503
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # uv ignores universal wheels
 
 ---
 
-_Issue opened by @RonnyPfannschmidt on 2024-05-10 09:19_
+_@RonnyPfannschmidt_
 
 while working on a pinning script for internal packages,
 i observed uv ignore any package using a universal wheel instead of a python3 only wheel

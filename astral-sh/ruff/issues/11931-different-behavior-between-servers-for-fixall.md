@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-19T01:50:47Z
 updated_at: 2024-07-04T04:07:18Z
 url: https://github.com/astral-sh/ruff/issues/11931
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Different behavior between servers for "fixAll" with syntax errors
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-06-19 01:50_
+_@dhruvmanila_
 
 The behavior between `ruff server` and `ruff-lsp` is different when a source action is applied in a file with syntax errors.
 

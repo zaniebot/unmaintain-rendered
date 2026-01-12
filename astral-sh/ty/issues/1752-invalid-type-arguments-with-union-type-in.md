@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-04T12:30:57Z
 updated_at: 2025-12-04T13:38:28Z
 url: https://github.com/astral-sh/ty/issues/1752
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `invalid-type-arguments` with `Union` type in `TypeAlias`
 
 ---
 
-_Issue opened by @cmp0xff on 2025-12-04 12:30_
+_@cmp0xff_
 
 ### Summary
 

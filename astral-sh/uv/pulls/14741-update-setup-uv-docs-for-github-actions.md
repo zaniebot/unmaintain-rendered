@@ -13,14 +13,14 @@ head: docs/fix-github-actions-python-uv-order
 created_at: 2025-07-18T20:51:42Z
 updated_at: 2025-07-21T20:46:34Z
 url: https://github.com/astral-sh/uv/pull/14741
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:22Z
 ```
 
 # Update `setup-uv` docs for Github Actions integration guide (re-order python and uv setup)
 
 ---
 
-_Pull request opened by @alichaudry on 2025-07-18 20:51_
+_@alichaudry_
 
 I updated the Github Actions integration guide to run Github's `setup-python` before Astral's `setup-uv`, as `setup-uv`'s `activate-environment: true` doesn't work with the original ordering. There is a discussion about this behavior in the `setup-uv` repo [here](https://github.com/astral-sh/setup-uv/issues/479).
 

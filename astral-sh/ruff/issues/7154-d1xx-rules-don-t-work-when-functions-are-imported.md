@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-05T13:15:55Z
 updated_at: 2024-10-24T14:32:59Z
 url: https://github.com/astral-sh/ruff/issues/7154
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # D1XX rules don't work when functions are imported into a public file
 
 ---
 
-_Issue opened by @AKuederle on 2023-09-05 13:15_
+_@AKuederle_
 
 The D1XX rules check if docstrings for public functions/classes exist. However, I think they are missing a common pattern of defining "public objects". Namely, defining them in "private" (aka leading underscore) files and then importing them into a top-level `__init__`.
 

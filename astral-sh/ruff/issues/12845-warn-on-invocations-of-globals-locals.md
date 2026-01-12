@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-12T12:40:53Z
 updated_at: 2024-08-19T08:16:39Z
 url: https://github.com/astral-sh/ruff/issues/12845
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # warn on invocations of `globals()` / `locals()`
 
 ---
 
-_Issue opened by @kiaradlf on 2024-08-12 12:40_
+_@kiaradlf_
 
 python has a number of introspection functions, among which [`globals()`](https://docs.python.org/3/library/functions.html#globals) and [`locals()`](https://docs.python.org/3/library/functions.html#locals).
 

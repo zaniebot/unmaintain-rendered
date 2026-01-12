@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-17T15:28:32Z
 updated_at: 2022-10-17T15:57:31Z
 url: https://github.com/astral-sh/ruff/issues/446
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Broken parity link in README
 
 ---
 
-_Issue opened by @jmg-duarte on 2022-10-17 15:28_
+_@jmg-duarte_
 
 The parity link in the README seems broken
 https://github.com/charliermarsh/ruff/blob/cf0d19836569791ba6384d94b26e0aee577cffd4/README.md?plain=1#L25

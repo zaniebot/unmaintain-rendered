@@ -14,14 +14,14 @@ head: david/enums
 created_at: 2025-07-11T13:20:59Z
 updated_at: 2025-07-14T11:18:19Z
 url: https://github.com/astral-sh/ruff/pull/19283
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:36Z
 ```
 
 # [ty] List all `enum` members
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-11 13:20_
+_@sharkdp_
 
 ## Summary
 

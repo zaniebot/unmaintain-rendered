@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-09T19:12:43Z
 updated_at: 2025-06-09T19:56:22Z
 url: https://github.com/astral-sh/uv/issues/13931
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:39Z
 ```
 
 # `pyproject.toml` config setting equivalent for `UV_PROJECT_ENVIRONMENT`
 
 ---
 
-_Issue opened by @zach-overflow on 2025-06-09 19:12_
+_@zach-overflow_
 
 ### Summary
 

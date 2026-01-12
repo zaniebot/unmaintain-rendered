@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-24T15:11:02Z
 updated_at: 2024-10-25T19:06:47Z
 url: https://github.com/astral-sh/uv/issues/8530
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # "uv build --all" command not working?
 
 ---
 
-_Issue opened by @lucas-labs on 2024-10-24 15:11_
+_@lucas-labs_
 
 I don't know if this is a bug or if I'm doing something wrong, but I can't get the `uv build --all` command to work.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-16T23:14:16Z
 updated_at: 2025-04-18T00:28:07Z
 url: https://github.com/astral-sh/ruff/issues/17437
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] support narrowing on an assignment expression in a predicate
 
 ---
 
-_Issue opened by @carljm on 2025-04-16 23:14_
+_@carljm_
 
 We narrow in the first case below but not the second ([playground](https://types.ruff.rs/67775f86-0718-4e6f-b7ec-5cc15de71aa9)):
 

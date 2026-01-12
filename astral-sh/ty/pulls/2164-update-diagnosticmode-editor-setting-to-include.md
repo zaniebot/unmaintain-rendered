@@ -13,14 +13,14 @@ head: diagnostic-mode-off
 created_at: 2025-12-22T16:07:12Z
 updated_at: 2025-12-22T16:23:42Z
 url: https://github.com/astral-sh/ty/pull/2164
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Update diagnosticMode editor setting to include `off` option
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-12-22 16:07_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to ty! To help us out with reviewing, please consider the following:

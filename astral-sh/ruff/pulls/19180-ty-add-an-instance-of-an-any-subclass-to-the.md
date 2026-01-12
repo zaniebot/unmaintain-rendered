@@ -14,14 +14,14 @@ head: alex/property-test-mock
 created_at: 2025-07-07T14:31:15Z
 updated_at: 2025-07-08T09:53:52Z
 url: https://github.com/astral-sh/ruff/pull/19180
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # [ty] Add an instance of an `Any` subclass to the property tests
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-07-07 14:31_
+_@AlexWaygood_
 
 ## Summary
 

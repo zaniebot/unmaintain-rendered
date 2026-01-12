@@ -14,14 +14,14 @@ head: david/mypy_primer-strip-ansi-codes
 created_at: 2025-03-10T14:48:36Z
 updated_at: 2025-03-10T16:33:50Z
 url: https://github.com/astral-sh/ruff/pull/16604
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] mypy_primer: strip ANSI codes
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-10 14:48_
+_@sharkdp_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-12T19:17:25Z
 updated_at: 2023-02-03T18:28:28Z
 url: https://github.com/astral-sh/ruff/issues/170
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Support remaining Flake8 rules
 
 ---
 
-_Issue opened by @charliermarsh on 2022-09-12 19:17_
+_@charliermarsh_
 
 # Summary
 

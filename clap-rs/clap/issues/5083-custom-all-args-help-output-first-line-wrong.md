@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-22T20:18:18Z
 updated_at: 2023-08-23T14:20:13Z
 url: https://github.com/clap-rs/clap/issues/5083
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # custom {all-args} help output - first line wrong indent
 
 ---
 
-_Issue opened by @onlythisnamewasfree on 2023-08-22 20:18_
+_@onlythisnamewasfree_
 
 ### Please complete the following tasks
 

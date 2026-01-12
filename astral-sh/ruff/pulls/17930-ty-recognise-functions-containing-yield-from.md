@@ -13,14 +13,14 @@ head: alex/yield-from
 created_at: 2025-05-07T22:24:52Z
 updated_at: 2025-05-07T22:29:46Z
 url: https://github.com/astral-sh/ruff/pull/17930
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:08Z
 ```
 
 # [ty] Recognise functions containing `yield from` expressions as being generator functions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-07 22:24_
+_@AlexWaygood_
 
 ## Summary
 

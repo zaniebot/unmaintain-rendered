@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-25T16:41:11Z
 updated_at: 2024-05-13T01:38:51Z
 url: https://github.com/astral-sh/ruff/issues/10573
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Improving "FA100 / future-rewritable-type-annotation" message
 
 ---
 
-_Issue opened by @Avasam on 2024-03-25 16:41_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

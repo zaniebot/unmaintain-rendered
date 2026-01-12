@@ -12,14 +12,14 @@ head: dhruv/compile
 created_at: 2024-05-30T06:36:27Z
 updated_at: 2024-05-30T11:19:22Z
 url: https://github.com/astral-sh/ruff/pull/11612
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Fix all compilation errors
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-30 06:36_
+_@dhruvmanila_
 
 ## Summary
 

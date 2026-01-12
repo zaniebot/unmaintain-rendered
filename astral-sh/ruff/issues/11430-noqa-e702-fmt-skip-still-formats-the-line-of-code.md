@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-15T07:21:13Z
 updated_at: 2026-01-10T15:00:48Z
 url: https://github.com/astral-sh/ruff/issues/11430
-synced_at: 2026-01-10T15:56:06Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `# noqa: E702 # fmt: skip` still formats the line of code
 
 ---
 
-_Issue opened by @ngoctnq on 2024-05-15 07:21_
+_@ngoctnq_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

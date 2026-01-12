@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-26T13:44:17Z
 updated_at: 2025-11-26T16:33:51Z
 url: https://github.com/astral-sh/uv/issues/16860
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # Regression in 0.9.12 with `uv pip install -r <(some command)`
 
 ---
 
-_Issue opened by @alex on 2025-11-26 13:44_
+_@alex_
 
 ### Summary
 

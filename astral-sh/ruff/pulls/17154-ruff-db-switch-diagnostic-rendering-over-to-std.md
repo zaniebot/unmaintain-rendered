@@ -13,14 +13,14 @@ head: ag/diagnostic-display
 created_at: 2025-04-02T14:41:47Z
 updated_at: 2025-04-02T16:06:30Z
 url: https://github.com/astral-sh/ruff/pull/17154
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # ruff_db: switch diagnostic rendering over to `std::fmt::Display`
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-04-02 14:41_
+_@BurntSushi_
 
 It was already using this approach internally, so this is "just" a
 matter of rejiggering the public API of `Diagnostic`.

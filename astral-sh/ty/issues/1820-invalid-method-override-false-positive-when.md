@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-09T06:36:10Z
 updated_at: 2025-12-15T05:34:30Z
 url: https://github.com/astral-sh/ty/issues/1820
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `invalid-method-override` false positive when overriding method that uses `Callable` with a paramspec
 
 ---
 
-_Issue opened by @DetachHead on 2025-12-09 06:36_
+_@DetachHead_
 
 ### Summary
 

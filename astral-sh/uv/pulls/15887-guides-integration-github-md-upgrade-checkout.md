@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-09-16T07:52:01Z
 updated_at: 2025-09-16T07:55:30Z
 url: https://github.com/astral-sh/uv/pull/15887
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:00Z
 ```
 
 # guides/integration/github.md: Upgrade checkout action to v5
 
 ---
 
-_Pull request opened by @cclauss on 2025-09-16 07:52_
+_@cclauss_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

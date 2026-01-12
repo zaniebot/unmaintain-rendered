@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-14T09:01:12Z
 updated_at: 2025-03-13T15:16:05Z
 url: https://github.com/astral-sh/ruff/issues/14333
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Panics on self-referential generic class definition
 
 ---
 
-_Issue opened by @sharkdp on 2024-11-14 09:01_
+_@sharkdp_
 
 Red knot currently panics when encountering this self-referential generic class definition from [`typeshed`](https://github.com/python/typeshed/blob/51d0f0194c27347ab7d0083bd7b11210a09fef75/stdlib/os/__init__.pyi#L798-L801):
 

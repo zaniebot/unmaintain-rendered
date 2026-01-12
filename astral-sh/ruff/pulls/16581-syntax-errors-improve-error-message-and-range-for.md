@@ -14,14 +14,14 @@ head: alex/syntax-error-msgs
 created_at: 2025-03-09T22:32:49Z
 updated_at: 2025-03-17T11:26:18Z
 url: https://github.com/astral-sh/ruff/pull/16581
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [syntax-errors] Improve error message and range for pre-PEP-614 decorator syntax errors
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-09 22:32_
+_@AlexWaygood_
 
 ## Summary
 

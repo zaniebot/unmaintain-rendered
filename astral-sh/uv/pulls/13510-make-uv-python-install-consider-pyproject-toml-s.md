@@ -11,14 +11,14 @@ head: python_install_with_project
 created_at: 2025-05-17T19:36:13Z
 updated_at: 2025-05-19T07:23:19Z
 url: https://github.com/astral-sh/uv/pull/13510
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:42Z
 ```
 
 # Make `uv python install` consider `pyproject.toml`'s `requires-python` field
 
 ---
 
-_Pull request opened by @guoci on 2025-05-17 19:36_
+_@guoci_
 
 
 

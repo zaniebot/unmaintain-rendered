@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-10-19T12:05:54Z
 updated_at: 2021-10-20T16:18:16Z
 url: https://github.com/clap-rs/clap/issues/2910
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Depending on `=clap 3.0.0-beta4` installs `clap_derive 3.0.0-beta5` and breaks builds
 
 ---
 
-_Issue opened by @Kobzol on 2021-10-19 12:05_
+_@Kobzol_
 
 ### Please complete the following tasks
 

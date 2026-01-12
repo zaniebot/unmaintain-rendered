@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-03T17:29:18Z
 updated_at: 2024-10-07T12:37:09Z
 url: https://github.com/astral-sh/ruff/issues/13614
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Should `S606` (`start-process-with-no-shell`) flag `os.exec*` functions?
 
 ---
 
-_Issue opened by @larkost on 2024-10-03 17:29_
+_@larkost_
 
 The [S606 linter](https://docs.astral.sh/ruff/rules/start-process-with-no-shell/) is incorrectly including including `os.execl` and family alongside the `os.spawn` family (and others like `os.popen*` and `os.system`). The [original recommendation](https://docs.python.org/3/library/subprocess.html#replacing-the-os-spawn-family) that this linter is actually trying to fix notes that the behavior of opening a new process is better handled by the members of the `subprocess` module, and that the older methods are now really obsolete.
 

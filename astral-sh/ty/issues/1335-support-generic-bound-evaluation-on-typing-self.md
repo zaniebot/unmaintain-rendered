@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-10T14:35:13Z
 updated_at: 2025-10-10T23:06:56Z
 url: https://github.com/astral-sh/ty/issues/1335
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # support `Generic` bound evaluation on `typing.Self`
 
 ---
 
-_Issue opened by @CoderJoshDK on 2025-10-10 14:35_
+_@CoderJoshDK_
 
 Given the following python code
 

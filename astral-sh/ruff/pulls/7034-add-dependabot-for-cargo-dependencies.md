@@ -13,14 +13,14 @@ head: dependabot
 created_at: 2023-08-31T20:24:09Z
 updated_at: 2023-09-01T14:47:41Z
 url: https://github.com/astral-sh/ruff/pull/7034
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add dependabot for `cargo` dependencies
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-31 20:24_
+_@zanieb_
 
 Ideally we shouldn't have to run `cargo update` manually — it requires us to remember to do so and groups all updates into a single pull request making it challenging to determine which upgrade introduces regressions e.g. #6964. Here we add daily checks for cargo dependency updates.
 

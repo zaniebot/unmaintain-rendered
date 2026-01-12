@@ -13,14 +13,14 @@ head: charlie/base-settings
 created_at: 2023-06-22T19:20:14Z
 updated_at: 2023-06-22T19:44:59Z
 url: https://github.com/astral-sh/ruff/pull/5312
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Support `pydantic.BaseSettings` in `mutable-class-default`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-22 19:20_
+_@charliermarsh_
 
 Closes #5308.
 

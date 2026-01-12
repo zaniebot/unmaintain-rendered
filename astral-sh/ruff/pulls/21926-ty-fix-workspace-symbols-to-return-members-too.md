@@ -15,14 +15,14 @@ head: micha/fix-workspace-symbols
 created_at: 2025-12-11T19:01:36Z
 updated_at: 2025-12-11T19:22:23Z
 url: https://github.com/astral-sh/ruff/pull/21926
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] Fix workspace symbols to return members too
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-11 19:01_
+_@MichaReiser_
 
 ## Summary
 

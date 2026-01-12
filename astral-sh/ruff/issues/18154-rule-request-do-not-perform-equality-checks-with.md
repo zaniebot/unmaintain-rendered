@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-17T16:34:40Z
 updated_at: 2025-05-18T16:13:48Z
 url: https://github.com/astral-sh/ruff/issues/18154
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [Rule-Request] Do not perform equality checks with floating point values.
 
 ---
 
-_Issue opened by @Anselmoo on 2025-05-17 16:34_
+_@Anselmoo_
 
 ### Summary
 

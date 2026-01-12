@@ -14,14 +14,14 @@ head: ag/import-submodule
 created_at: 2025-06-23T15:54:49Z
 updated_at: 2025-06-23T16:48:17Z
 url: https://github.com/astral-sh/ruff/pull/18898
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [ty] Include imported sub-modules as attributes on modules for completions
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-06-23 15:54_
+_@BurntSushi_
 
 This also adds a new `ModuleName::relative_to` public API to help with
 this.

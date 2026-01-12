@@ -14,14 +14,14 @@ head: konsti/dont-hint-at-exclude-version
 created_at: 2025-06-06T12:49:13Z
 updated_at: 2025-06-06T18:35:19Z
 url: https://github.com/astral-sh/uv/pull/13884
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:54Z
 ```
 
 # Don't hint at versions removed by excluded-newer
 
 ---
 
-_Pull request opened by @konstin on 2025-06-06 12:49_
+_@konstin_
 
 General small hint false positives that shows up as CI failure in our snapshots.
 

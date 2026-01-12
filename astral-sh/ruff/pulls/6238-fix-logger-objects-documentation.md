@@ -13,14 +13,14 @@ head: charlie/logger
 created_at: 2023-08-01T12:47:46Z
 updated_at: 2023-08-01T13:25:12Z
 url: https://github.com/astral-sh/ruff/pull/6238
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Fix `logger-objects` documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-01 12:47_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6234.
 

@@ -13,14 +13,14 @@ head: alex/known-module
 created_at: 2024-12-19T19:30:55Z
 updated_at: 2024-12-19T21:00:19Z
 url: https://github.com/astral-sh/ruff/pull/15071
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Rename and rework the `CoreStdlibModule` enum
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-19 19:30_
+_@AlexWaygood_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-12T17:17:26Z
 updated_at: 2025-02-21T15:46:19Z
 url: https://github.com/astral-sh/uv/issues/8148
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # uv refuses to resolve deps with dynamic SCM version, missing tags and cylic dependencies `A:dev -> B`, `B -> A`, hinting at name shadowing
 
 ---
 
-_Issue opened by @pawamoy on 2024-10-12 17:17_
+_@pawamoy_
 
 It happens in several of my projects now. Proper issue as a follow-up of #7329.
 

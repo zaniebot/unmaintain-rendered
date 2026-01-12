@@ -13,14 +13,14 @@ head: charlie/posonly
 created_at: 2023-08-04T18:19:34Z
 updated_at: 2023-08-04T18:59:29Z
 url: https://github.com/astral-sh/ruff/pull/6350
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Avoid panic with positional-only arguments in `PYI019`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-04 18:19_
+_@charliermarsh_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

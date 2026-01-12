@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-24T18:43:16Z
 updated_at: 2024-02-24T22:21:22Z
 url: https://github.com/astral-sh/uv/issues/1953
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # `ModuleNotFoundError` when using `uv pip install` in GitHub Actions
 
 ---
 
-_Issue opened by @kevinhu on 2024-02-24 18:43_
+_@kevinhu_
 
 Hi there! I'm using uv in a GitHub action but ran into `ModuleNotFoundError` when importing `click` and `tqdm`.
 

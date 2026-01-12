@@ -13,14 +13,14 @@ head: move-resolver-to-internals-section
 created_at: 2025-08-23T00:03:14Z
 updated_at: 2025-08-23T00:26:16Z
 url: https://github.com/astral-sh/uv/pull/15465
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:45Z
 ```
 
 # Move Resolver to new Internals section in the Reference
 
 ---
 
-_Pull request opened by @digiorgiu on 2025-08-23 00:03_
+_@digiorgiu_
 
 ## Summary
 

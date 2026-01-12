@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-10T03:20:49Z
 updated_at: 2025-09-25T13:32:01Z
 url: https://github.com/astral-sh/uv/issues/5992
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Markers under universal resolution could have more concise representation 
 
 ---
 
-_Issue opened by @notatallshaw on 2024-08-10 03:20_
+_@notatallshaw_
 
 uv 0.2.35
 

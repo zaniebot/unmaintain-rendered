@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-12-13T16:50:15Z
 updated_at: 2018-08-02T03:30:16Z
 url: https://github.com/clap-rs/clap/issues/1128
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Typo in readme file
 
 ---
 
-_Issue opened by @HiDefender on 2017-12-13 16:50_
+_@HiDefender_
 
 The readme file includes this line:
 

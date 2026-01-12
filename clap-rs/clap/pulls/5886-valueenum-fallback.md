@@ -12,14 +12,14 @@ head: value-enum-fallback
 created_at: 2025-01-20T01:24:00Z
 updated_at: 2025-04-16T12:19:34Z
 url: https://github.com/clap-rs/clap/pull/5886
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # ValueEnum fallback
 
 ---
 
-_Pull request opened by @ModProg on 2025-01-20 01:24_
+_@ModProg_
 
 <!--
 Thanks for helping out!

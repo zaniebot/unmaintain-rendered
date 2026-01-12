@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2024-10-01T07:35:57Z
 updated_at: 2024-10-01T11:05:05Z
 url: https://github.com/astral-sh/ruff/pull/13583
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Fix tiny typo in `_typos.toml`
 
 ---
 
-_Pull request opened by @tpgillam on 2024-10-01 07:35_
+_@tpgillam_
 
 I haven't seen `import panel as pd` anywhere at least!
 

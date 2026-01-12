@@ -13,14 +13,14 @@ head: ww/npm-no-scripts
 created_at: 2025-12-01T21:48:34Z
 updated_at: 2025-12-01T22:13:55Z
 url: https://github.com/astral-sh/ruff/pull/21742
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # Use `npm ci --ignore-scripts` everywhere
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-01 21:48_
+_@woodruffw_
 
 ## Summary
 

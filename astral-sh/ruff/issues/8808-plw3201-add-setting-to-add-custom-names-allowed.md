@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-21T15:31:10Z
 updated_at: 2023-11-21T16:09:49Z
 url: https://github.com/astral-sh/ruff/issues/8808
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # PLW3201: Add setting to add custom names allowed for dunders
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-11-21 15:31_
+_@ThiefMaster_
 
 For example, [SQLAlchemy uses](https://docs.sqlalchemy.org/en/20/orm/mapping_api.html#sqlalchemy.orm.DeclarativeBase.__table__) various names such as  `__tablename__` and `__table_args__`. Adding a noqa in tons of models would be extremely noisy.
 

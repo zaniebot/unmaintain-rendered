@@ -13,14 +13,14 @@ head: fix/fixTRIO115
 created_at: 2023-11-06T22:29:51Z
 updated_at: 2023-11-06T22:49:13Z
 url: https://github.com/astral-sh/ruff/pull/8532
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Avoid raising `TRIO115` violations for `trio.sleep(...)` calls with non-number values
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-11-06 22:29_
+_@qdegraaf_
 
 ## Summary
 

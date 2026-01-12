@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-21T11:44:33Z
 updated_at: 2025-05-21T17:08:15Z
 url: https://github.com/astral-sh/uv/issues/13571
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:32Z
 ```
 
 # `uv pip install --group` fails when used with a subfolder
 
 ---
 
-_Issue opened by @Artalus on 2025-05-21 11:44_
+_@Artalus_
 
 ### Summary
 

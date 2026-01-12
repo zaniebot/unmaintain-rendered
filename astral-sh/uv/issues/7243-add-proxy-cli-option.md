@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-10T06:38:52Z
 updated_at: 2024-10-21T21:50:00Z
 url: https://github.com/astral-sh/uv/issues/7243
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Add --proxy CLI option
 
 ---
 
-_Issue opened by @IvanciuVlad on 2024-09-10 06:38_
+_@IvanciuVlad_
 
 Platform: Windows 11
 uv version: 0.4.7

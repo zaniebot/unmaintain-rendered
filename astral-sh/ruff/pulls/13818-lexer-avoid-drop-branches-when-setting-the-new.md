@@ -13,14 +13,14 @@ head: micha/lexer-perf-drop
 created_at: 2024-10-19T11:06:20Z
 updated_at: 2024-10-19T18:52:39Z
 url: https://github.com/astral-sh/ruff/pull/13818
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Lexer: Avoid `drop` branches when setting the new token value
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-19 11:06_
+_@MichaReiser_
 
 ## Summary
 

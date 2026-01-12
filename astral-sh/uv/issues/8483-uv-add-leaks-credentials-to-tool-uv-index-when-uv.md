@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-23T01:19:03Z
 updated_at: 2025-01-06T15:19:36Z
 url: https://github.com/astral-sh/uv/issues/8483
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # `uv add` leaks credentials to `tool.uv.index` when `UV_DEFAULT_INDEX` is set
 
 ---
 
-_Issue opened by @kwaegel on 2024-10-23 01:19_
+_@kwaegel_
 
 I have a project that uses a private JFrog Artifactory repository to host internal packages, and as a proxy for PyPi. I just noticed that calling `uv add internal_package==specific_version` when overriding with `UV_DEFAULT_INDEX` will leak credentials into the `pyproject.toml` file, even if the lockfile isn't modified.
 

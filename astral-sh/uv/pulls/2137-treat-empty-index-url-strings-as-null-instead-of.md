@@ -13,14 +13,14 @@ head: fix/index-url-parser
 created_at: 2024-03-03T09:21:50Z
 updated_at: 2024-03-04T12:09:20Z
 url: https://github.com/astral-sh/uv/pull/2137
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # Treat empty index URL strings as null instead of erroring
 
 ---
 
-_Pull request opened by @yasufumy on 2024-03-03 09:21_
+_@yasufumy_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

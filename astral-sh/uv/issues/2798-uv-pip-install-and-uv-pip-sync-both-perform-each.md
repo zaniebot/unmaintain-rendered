@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-03T07:05:47Z
 updated_at: 2024-04-12T21:08:58Z
 url: https://github.com/astral-sh/uv/issues/2798
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # `uv pip install` and `uv pip sync` both perform each uninstall twice causing the second one to fail
 
 ---
 
-_Issue opened by @Daverball on 2024-04-03 07:05_
+_@Daverball_
 
 I'm running into some really strange behavior where running `uv pip install` causes each package to be uninstalled twice, causing a missing RECORD file error on the second uninstall. Considering I'm not passing `--reinstall` it shouldn't even do a single uninstall.
 

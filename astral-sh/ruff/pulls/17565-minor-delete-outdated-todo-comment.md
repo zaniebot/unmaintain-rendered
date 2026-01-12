@@ -13,14 +13,14 @@ head: brent/delete-todo
 created_at: 2025-04-22T20:19:31Z
 updated_at: 2025-04-22T20:25:53Z
 url: https://github.com/astral-sh/ruff/pull/17565
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [minor] Delete outdated TODO comment
 
 ---
 
-_Pull request opened by @ntBre on 2025-04-22 20:19_
+_@ntBre_
 
 Summary
 --

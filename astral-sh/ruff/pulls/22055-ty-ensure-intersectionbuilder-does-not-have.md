@@ -13,14 +13,14 @@ head: intersection-hash
 created_at: 2025-12-18T17:48:43Z
 updated_at: 2025-12-19T15:59:15Z
 url: https://github.com/astral-sh/ruff/pull/22055
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] ensure `IntersectionBuilder` does not have multiple identical `InnerIntersectionBuilder`s
 
 ---
 
-_Pull request opened by @mtshiba on 2025-12-18 17:48_
+_@mtshiba_
 
 ## Summary
 

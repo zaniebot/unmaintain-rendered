@@ -12,14 +12,14 @@ head: feat/tryceratops-try004
 created_at: 2023-01-21T18:33:34Z
 updated_at: 2023-01-21T19:59:00Z
 url: https://github.com/astral-sh/ruff/pull/2066
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # feat: implementation for TRY004
 
 ---
 
-_Pull request opened by @sbrugman on 2023-01-21 18:33_
+_@sbrugman_
 
 https://github.com/charliermarsh/ruff/issues/2056
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T15:25:56Z
 updated_at: 2025-01-28T09:04:11Z
 url: https://github.com/astral-sh/uv/issues/10988
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # Inconsistent lock file
 
 ---
 
-_Issue opened by @xixixao on 2025-01-27 15:25_
+_@xixixao_
 
 ### Summary
 

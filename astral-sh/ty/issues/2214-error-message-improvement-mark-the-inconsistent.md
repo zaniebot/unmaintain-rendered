@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-24T23:37:49Z
 updated_at: 2025-12-25T12:35:27Z
 url: https://github.com/astral-sh/ty/issues/2214
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # error message improvement: mark the inconsistent part of the overriding signature
 
 ---
 
-_Issue opened by @pjonsson on 2025-12-24 23:37_
+_@pjonsson_
 
 ### Summary
 

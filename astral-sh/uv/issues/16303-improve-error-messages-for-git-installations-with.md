@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-14T21:54:19Z
 updated_at: 2025-10-17T10:26:27Z
 url: https://github.com/astral-sh/uv/issues/16303
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:28Z
 ```
 
 # Improve error messages for git installations with `--from`
 
 ---
 
-_Issue opened by @m-aciek on 2025-10-14 21:54_
+_@m-aciek_
 
 ### Summary
 

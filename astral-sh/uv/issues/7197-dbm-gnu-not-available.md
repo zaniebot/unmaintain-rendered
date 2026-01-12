@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-08T19:41:11Z
 updated_at: 2025-07-17T12:28:11Z
 url: https://github.com/astral-sh/uv/issues/7197
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # `dbm.gnu` not available
 
 ---
 
-_Issue opened by @suomela on 2024-09-08 19:41_
+_@suomela_
 
 My system Python defaults to using `dbm.gnu` when I use the `dbm` module (macOS, Homebrew, installed `python@3.12` and `python-gdbm@3.12`.
 

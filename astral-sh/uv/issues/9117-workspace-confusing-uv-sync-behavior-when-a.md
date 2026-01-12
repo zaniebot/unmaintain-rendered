@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-14T12:11:05Z
 updated_at: 2024-11-14T12:11:05Z
 url: https://github.com/astral-sh/uv/issues/9117
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # workspace / confusing uv sync behavior when a package depended on is an application
 
 ---
 
-_Issue opened by @tnielens on 2024-11-14 12:11_
+_@tnielens_
 
 Repro:
 - create a uv workspace

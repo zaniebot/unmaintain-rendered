@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-01-03T20:34:38Z
 updated_at: 2018-08-02T03:29:59Z
 url: https://github.com/clap-rs/clap/issues/805
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Custom argument display groups
 
 ---
 
-_Issue opened by @RazrFalcon on 2017-01-03 20:34_
+_@RazrFalcon_
 
 Hello. I want to group options into categories, like [this](https://github.com/RazrFalcon/svgcleaner/blob/master/data/help.txt). See: Elements, Attributes, Paths, etc.
 

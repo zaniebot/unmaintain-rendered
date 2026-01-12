@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-30T21:12:58Z
 updated_at: 2025-09-01T15:10:06Z
 url: https://github.com/astral-sh/ruff/issues/20170
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Detect async test in unittest.TestCase
 
 ---
 
-_Issue opened by @WimYedema on 2025-08-30 21:12_
+_@WimYedema_
 
 ### Summary
 

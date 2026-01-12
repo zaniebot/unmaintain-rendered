@@ -12,14 +12,14 @@ head: main
 created_at: 2024-10-28T22:13:22Z
 updated_at: 2025-07-02T05:31:47Z
 url: https://github.com/astral-sh/uv/pull/8649
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:08:25Z
 ```
 
 # Update Windows trampolines for compatibility with Python 3.7 and earlier
 
 ---
 
-_Pull request opened by @nahco314 on 2024-10-28 22:13_
+_@nahco314_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

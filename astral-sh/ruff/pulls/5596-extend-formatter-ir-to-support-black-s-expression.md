@@ -13,14 +13,14 @@ head: conditional-group
 created_at: 2023-07-07T16:28:52Z
 updated_at: 2023-07-11T12:33:38Z
 url: https://github.com/astral-sh/ruff/pull/5596
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Extend formatter IR to support Black's expression formatting
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-07 16:28_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

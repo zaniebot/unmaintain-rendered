@@ -13,14 +13,14 @@ head: fix-run-permission-error
 created_at: 2025-08-02T06:59:51Z
 updated_at: 2025-08-02T12:03:37Z
 url: https://github.com/astral-sh/uv/pull/15026
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:32Z
 ```
 
 # Gracefully handle entrypoint permission errors
 
 ---
 
-_Pull request opened by @louiswpf on 2025-08-02 06:59_
+_@louiswpf_
 
 Gracefully handle entrypoint permission errors
 

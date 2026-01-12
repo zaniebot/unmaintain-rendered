@@ -13,14 +13,14 @@ head: charlie/furb
 created_at: 2023-12-08T16:48:32Z
 updated_at: 2023-12-08T17:42:19Z
 url: https://github.com/astral-sh/ruff/pull/9054
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Make `math-constant` rule more targeted
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-08 16:48_
+_@charliermarsh_
 
 ## Summary
 

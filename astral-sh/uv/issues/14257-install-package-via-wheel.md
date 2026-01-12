@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-25T10:25:16Z
 updated_at: 2025-07-08T19:19:55Z
 url: https://github.com/astral-sh/uv/issues/14257
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Install package via wheel
 
 ---
 
-_Issue opened by @GitRon on 2025-06-25 10:25_
+_@GitRon_
 
 ### Question
 

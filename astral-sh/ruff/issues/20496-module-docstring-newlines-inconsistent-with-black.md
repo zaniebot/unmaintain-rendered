@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-21T19:03:13Z
 updated_at: 2025-09-22T19:18:58Z
 url: https://github.com/astral-sh/ruff/issues/20496
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # module_docstring_newlines inconsistent with black
 
 ---
 
-_Issue opened by @Redoubts on 2025-09-21 19:03_
+_@Redoubts_
 
 ### Summary
 

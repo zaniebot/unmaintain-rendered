@@ -13,14 +13,14 @@ head: zb/mkdocs-github
 created_at: 2024-08-07T02:07:55Z
 updated_at: 2024-08-07T02:08:46Z
 url: https://github.com/astral-sh/uv/pull/5847
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:03Z
 ```
 
 # Fix GitHub cache integration link
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-07 02:07_
+_@zanieb_
 
 Unclear why mkdocs does not error on this 404
 

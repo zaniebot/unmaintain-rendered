@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-06T10:31:11Z
 updated_at: 2025-08-06T13:06:50Z
 url: https://github.com/astral-sh/uv/issues/15103
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # uv export doesn't heed UV_NO_EDITABLE
 
 ---
 
-_Issue opened by @jnns on 2025-08-06 10:31_
+_@jnns_
 
 ### Summary
 

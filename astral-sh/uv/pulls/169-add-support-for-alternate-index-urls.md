@@ -12,14 +12,14 @@ head: charlie/registry-url
 created_at: 2023-10-23T03:13:42Z
 updated_at: 2023-10-24T07:44:44Z
 url: https://github.com/astral-sh/uv/pull/169
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:47Z
 ```
 
 # Add support for alternate index URLs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-23 03:13_
+_@charliermarsh_
 
 As elsewhere, we just use the `pip` and `pip-compile` APIs. So we support `--index-url` to override PyPI, then `--extra-index-url` to add _additional_ indexes, and `--no-index` to avoid hitting the index at all.
 

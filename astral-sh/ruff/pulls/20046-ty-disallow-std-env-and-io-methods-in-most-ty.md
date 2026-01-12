@@ -14,14 +14,14 @@ head: micha/disallow-std-io-env-methods
 created_at: 2025-08-22T15:33:03Z
 updated_at: 2025-08-22T18:13:49Z
 url: https://github.com/astral-sh/ruff/pull/20046
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # [ty] Disallow std::env and io methods in most ty crates
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-08-22 15:33_
+_@MichaReiser_
 
 ## Summary
 

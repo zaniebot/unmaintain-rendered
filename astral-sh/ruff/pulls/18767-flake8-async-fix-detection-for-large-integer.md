@@ -13,14 +13,14 @@ head: fix/async116
 created_at: 2025-06-18T20:03:40Z
 updated_at: 2025-06-19T09:43:32Z
 url: https://github.com/astral-sh/ruff/pull/18767
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [flake8-async] fix detection for large integer sleep durations in `ASYNC116` rule
 
 ---
 
-_Pull request opened by @chirizxc on 2025-06-18 20:03_
+_@chirizxc_
 
 
 <!--

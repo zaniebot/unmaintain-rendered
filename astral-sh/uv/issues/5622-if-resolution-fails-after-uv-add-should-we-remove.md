@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-30T18:07:21Z
 updated_at: 2024-07-31T17:27:35Z
 url: https://github.com/astral-sh/uv/issues/5622
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # If resolution fails after `uv add`, should we remove the dependency?
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-30 18:07_
+_@charliermarsh_
 
 It's confusing because running `uv add` again with a different dependency will continue to fail.
 

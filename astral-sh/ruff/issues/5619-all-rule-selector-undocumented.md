@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-08T17:12:53Z
 updated_at: 2024-02-26T08:50:09Z
 url: https://github.com/astral-sh/ruff/issues/5619
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # "ALL" rule selector undocumented
 
 ---
 
-_Issue opened by @benjamin-kirkbride on 2023-07-08 17:12_
+_@benjamin-kirkbride_
 
 I looked for a while to figure out how to do this, and eventually found it in https://github.com/astral-sh/ruff/discussions/4237
 

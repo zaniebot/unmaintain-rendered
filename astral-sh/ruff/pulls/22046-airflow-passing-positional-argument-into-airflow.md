@@ -14,14 +14,14 @@ head: add-AIR303-function-signature-change
 created_at: 2025-12-18T02:53:19Z
 updated_at: 2025-12-30T16:39:09Z
 url: https://github.com/astral-sh/ruff/pull/22046
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [`airflow`] Passing positional argument into `airflow.lineage.hook.HookLineageCollector.create_asset` is not allowed (`AIR303`)
 
 ---
 
-_Pull request opened by @sjyangkevin on 2025-12-18 02:53_
+_@sjyangkevin_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

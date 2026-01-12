@@ -13,14 +13,14 @@ head: charlie/req
 created_at: 2025-07-21T21:57:18Z
 updated_at: 2025-07-21T22:15:04Z
 url: https://github.com/astral-sh/uv/pull/14801
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:25Z
 ```
 
 # Error on unknown fields in `dependency-metadata`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-21 21:57_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2021-08-16T23:02:46Z
 updated_at: 2021-08-18T09:06:22Z
 url: https://github.com/clap-rs/clap/issues/2705
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Pin clap_derive when making beta releases
 
 ---
 
-_Issue opened by @abonander on 2021-08-16 23:02_
+_@abonander_
 
 In `sqlx-cli` we were pinning the previous beta release of `clap` via the following:
 

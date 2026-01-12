@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-15T16:33:17Z
 updated_at: 2025-09-15T16:46:14Z
 url: https://github.com/astral-sh/uv/issues/15878
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # Set `UV_CACHE_DIR` for different drives
 
 ---
 
-_Issue opened by @5hayanB on 2025-09-15 16:33_
+_@5hayanB_
 
 ### Summary
 

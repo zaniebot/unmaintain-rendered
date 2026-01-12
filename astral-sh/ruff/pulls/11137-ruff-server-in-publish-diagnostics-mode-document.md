@@ -13,14 +13,14 @@ head: jane/server/clear-diagnostics-on-close
 created_at: 2024-04-25T01:51:35Z
 updated_at: 2024-04-25T02:38:55Z
 url: https://github.com/astral-sh/ruff/pull/11137
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # `ruff server`: In 'publish diagnostics' mode, document diagnostics are cleared properly when a file is closed
 
 ---
 
-_Pull request opened by @snowsignal on 2024-04-25 01:51_
+_@snowsignal_
 
 ## Summary
 

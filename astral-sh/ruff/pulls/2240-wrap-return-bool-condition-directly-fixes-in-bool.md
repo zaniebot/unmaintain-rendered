@@ -12,14 +12,14 @@ head: charlie/bool
 created_at: 2023-01-26T23:20:04Z
 updated_at: 2023-01-26T23:22:35Z
 url: https://github.com/astral-sh/ruff/pull/2240
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Wrap return-bool-condition-directly fixes in bool()
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-26 23:20_
+_@charliermarsh_
 
 Closes #2218.
 

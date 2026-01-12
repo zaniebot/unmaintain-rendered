@@ -12,14 +12,14 @@ head: charlie/combine-as-imports
 created_at: 2022-11-14T03:59:26Z
 updated_at: 2022-11-14T04:07:13Z
 url: https://github.com/astral-sh/ruff/pull/731
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Make `combine-as-imports` the default import sorting behavior
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-14 03:59_
+_@charliermarsh_
 
 It's hard to be 1:1 identical with isort, but this gets much closer.
 

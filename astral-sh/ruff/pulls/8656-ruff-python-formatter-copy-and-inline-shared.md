@@ -13,14 +13,14 @@ head: ag/fmt/inline-shared-traits
 created_at: 2023-11-13T16:56:44Z
 updated_at: 2023-11-13T17:16:05Z
 url: https://github.com/astral-sh/ruff/pull/8656
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # ruff_python_formatter: copy and inline shared traits
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-11-13 16:56_
+_@BurntSushi_
 
 It seems as though using `include!(...)` to avoid the source code copy breaks rust-analzer. Namely, it treats the included file as unlinked, and so any part of analysis (e.g., goto-definition) that needs that file to reason about the code ends up failing.
 

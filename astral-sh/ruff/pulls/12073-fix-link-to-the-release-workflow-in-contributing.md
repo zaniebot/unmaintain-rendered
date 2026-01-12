@@ -14,14 +14,14 @@ head: AlexWaygood-patch-1
 created_at: 2024-06-27T16:12:37Z
 updated_at: 2024-06-27T16:15:32Z
 url: https://github.com/astral-sh/ruff/pull/12073
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # fix link to the release workflow in `CONTRIBUTING.md`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-27 16:12_
+_@AlexWaygood_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

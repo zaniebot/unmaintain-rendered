@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T00:54:20Z
 updated_at: 2024-12-26T16:59:39Z
 url: https://github.com/astral-sh/uv/issues/8912
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:37Z
 ```
 
 # Corrupted `uv.lock` File Prevents Update with `uv lock` and `uv sync`
 
 ---
 
-_Issue opened by @kiasari on 2024-11-08 00:54_
+_@kiasari_
 
 uv 0.4.29
 `uv lock` and `uv sync` can't update `uv.lock` file if a corrupted `uv.lock` exists.

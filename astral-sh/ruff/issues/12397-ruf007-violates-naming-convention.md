@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-18T22:30:38Z
 updated_at: 2024-07-18T23:26:28Z
 url: https://github.com/astral-sh/ruff/issues/12397
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # RUF007 violates naming convention
 
 ---
 
-_Issue opened by @dylwil3 on 2024-07-18 22:30_
+_@dylwil3_
 
 [pairwise-over-zipped (RUF007)](https://docs.astral.sh/ruff/rules/pairwise-over-zipped/) appears to violate the [naming convention](https://github.com/astral-sh/ruff/blob/main/CONTRIBUTING.md#rule-naming-convention), unless I'm misunderstanding either the rule or the convention.
 

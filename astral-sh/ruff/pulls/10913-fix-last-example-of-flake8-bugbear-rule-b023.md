@@ -13,14 +13,14 @@ head: fix-example-docs-for-B023-function-uses-loop-variable
 created_at: 2024-04-12T19:59:44Z
 updated_at: 2024-04-12T20:12:42Z
 url: https://github.com/astral-sh/ruff/pull/10913
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Fix last example of flake8-bugbear rule `B023` "function uses loop variable"
 
 ---
 
-_Pull request opened by @hartwork on 2024-04-12 19:59_
+_@hartwork_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

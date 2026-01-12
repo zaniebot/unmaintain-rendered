@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-07T18:41:52Z
 updated_at: 2024-10-17T07:58:57Z
 url: https://github.com/astral-sh/uv/issues/7176
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Add `--upgrade-strategy`, i.e., support only upgrading transitive dependencies
 
 ---
 
-_Issue opened by @zanieb on 2024-09-07 18:41_
+_@zanieb_
 
 Originally mentioned at https://github.com/astral-sh/uv/issues/6781#issuecomment-2318265988
 

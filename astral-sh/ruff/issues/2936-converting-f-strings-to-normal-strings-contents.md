@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-15T20:18:40Z
 updated_at: 2023-02-17T19:27:03Z
 url: https://github.com/astral-sh/ruff/issues/2936
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # converting f-strings to normal strings, contents are not correctly preserved  f'{{test}}' == '{test}' != '{{test}}'
 
 ---
 
-_Issue opened by @OliverTED on 2023-02-15 20:18_
+_@OliverTED_
 
 The f-string f"{{test}}" without a variable, it is automatically converted to "{{test}}".  
 

@@ -13,14 +13,14 @@ head: konsti/uv-build-clear
 created_at: 2025-10-20T10:04:05Z
 updated_at: 2025-10-27T18:15:18Z
 url: https://github.com/astral-sh/uv/pull/16371
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:14Z
 ```
 
 # Add `--clear` to `uv build` to remove old build artifacts
 
 ---
 
-_Pull request opened by @konstin on 2025-10-20 10:04_
+_@konstin_
 
 Add `uv build --clear` that behaves like `rm -r ./dist && uv build` to clear artifacts from previous builds. This avoids accidentally publishing the wrong artifacts and removes accumulated old builds.
 

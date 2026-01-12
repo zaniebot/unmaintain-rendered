@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-14T14:13:51Z
 updated_at: 2025-12-10T17:27:27Z
 url: https://github.com/astral-sh/ruff/issues/21455
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # E203: format with ruff an flake8
 
 ---
 
-_Issue opened by @misery on 2025-11-14 14:13_
+_@misery_
 
 ### Summary
 

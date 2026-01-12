@@ -13,14 +13,14 @@ head: zb/workspace-default
 created_at: 2025-07-16T16:11:43Z
 updated_at: 2025-07-17T18:38:04Z
 url: https://github.com/astral-sh/uv/pull/14663
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:20Z
 ```
 
 # Build and install workspace members that are dependencies by default
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-16 16:11_
+_@zanieb_
 
 Regardless of the presence of a build system, as in https://github.com/astral-sh/uv/pull/14413
 

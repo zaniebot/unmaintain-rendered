@@ -13,14 +13,14 @@ head: zb/satisfied-log
 created_at: 2025-05-15T14:49:33Z
 updated_at: 2025-05-15T15:28:03Z
 url: https://github.com/astral-sh/uv/pull/13472
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:42Z
 ```
 
 # Log skip reasons during Python installation key interpreter match checks
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-15 14:49_
+_@zanieb_
 
 Investigating https://github.com/astral-sh/uv/issues/13471
 

@@ -13,14 +13,14 @@ head: zb/base-prefix-find
 created_at: 2025-06-21T11:47:54Z
 updated_at: 2025-08-07T18:40:59Z
 url: https://github.com/astral-sh/uv/pull/14181
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:04Z
 ```
 
 # Update `find_uv_bin` to locate uv in the base prefix
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-21 11:47_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/10194
 

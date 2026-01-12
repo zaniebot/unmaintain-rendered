@@ -12,14 +12,14 @@ head: fix-typos-in-comments
 created_at: 2025-09-29T02:21:12Z
 updated_at: 2025-09-29T06:56:24Z
 url: https://github.com/astral-sh/ruff/pull/20623
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # [`ruff`] Fix minor typos in doc comments
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-09-29 02:21_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

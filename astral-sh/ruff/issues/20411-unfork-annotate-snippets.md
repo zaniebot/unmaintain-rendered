@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-15T07:51:57Z
 updated_at: 2025-10-27T20:18:18Z
 url: https://github.com/astral-sh/ruff/issues/20411
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Unfork annotate-snippets
 
 ---
 
-_Issue opened by @MichaReiser on 2025-09-15 07:51_
+_@MichaReiser_
 
 The initial reason for forking annotate-snippets was that it didn't support [omitting a header](https://github.com/rust-lang/annotate-snippets-rs/issues/167). This seems to be supported with 0.12 or newer. 
 

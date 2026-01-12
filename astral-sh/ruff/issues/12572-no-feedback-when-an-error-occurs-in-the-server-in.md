@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-30T02:27:26Z
 updated_at: 2025-01-15T07:50:09Z
 url: https://github.com/astral-sh/ruff/issues/12572
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # No feedback when an error occurs in the server in certain cases
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-07-30 02:27_
+_@dhruvmanila_
 
 With the way the tracing system is set in the server, there's no feedback provided to the user if an error occurs in certain cases. This is the case because for every `tracing::error` expression, we also require to send a request to display the message like:
 

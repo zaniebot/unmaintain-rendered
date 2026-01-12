@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T15:08:32Z
 updated_at: 2025-01-27T15:17:40Z
 url: https://github.com/astral-sh/uv/issues/10987
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # `uv export` does not generate hashes for `--find-links`
 
 ---
 
-_Issue opened by @apaleyes on 2025-01-27 15:08_
+_@apaleyes_
 
 ### Summary
 

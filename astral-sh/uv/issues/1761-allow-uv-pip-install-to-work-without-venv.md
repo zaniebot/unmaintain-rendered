@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T15:28:10Z
 updated_at: 2024-02-20T16:13:41Z
 url: https://github.com/astral-sh/uv/issues/1761
-synced_at: 2026-01-10T01:57:03Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Allow uv pip install to work without venv?
 
 ---
 
-_Issue opened by @ion-elgreco on 2024-02-20 15:28_
+_@ion-elgreco_
 
 Would it be possible to allow uv pip install to work without a venv?
 

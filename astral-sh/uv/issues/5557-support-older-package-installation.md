@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-29T12:26:15Z
 updated_at: 2025-03-11T17:33:00Z
 url: https://github.com/astral-sh/uv/issues/5557
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Support older package installation
 
 ---
 
-_Issue opened by @mayuresh-quartic on 2024-07-29 12:26_
+_@mayuresh-quartic_
 
 uv version: 0.2.30
 

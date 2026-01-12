@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-16T13:23:03Z
 updated_at: 2024-09-23T04:57:58Z
 url: https://github.com/astral-sh/uv/issues/7425
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # About remove venv and conda env list
 
 ---
 
-_Issue opened by @WorkSync on 2024-09-16 13:23_
+_@WorkSync_
 
 Hello, I would like to ask if uv currently provides features for deleting virtual environments and viewing installed virtual environments, similar to the` conda env list` command in Anaconda. Thank you!
 

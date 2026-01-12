@@ -13,14 +13,14 @@ head: zb/site-packages-link
 created_at: 2024-04-03T14:31:42Z
 updated_at: 2024-04-12T13:52:50Z
 url: https://github.com/astral-sh/uv/pull/2806
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:14Z
 ```
 
 # Follow symbolic links in installed packages
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-03 14:31_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/2798
 

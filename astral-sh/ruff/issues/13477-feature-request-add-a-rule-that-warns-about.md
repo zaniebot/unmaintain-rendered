@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-23T06:36:56Z
 updated_at: 2024-09-23T08:54:12Z
 url: https://github.com/astral-sh/ruff/issues/13477
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [Feature Request] Add a rule that warns about assigning None
 
 ---
 
-_Issue opened by @serjflint on 2024-09-23 06:36_
+_@serjflint_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

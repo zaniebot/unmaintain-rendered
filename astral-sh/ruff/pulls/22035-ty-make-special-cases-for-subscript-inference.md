@@ -15,14 +15,14 @@ head: alex/subscript-alias
 created_at: 2025-12-17T19:06:47Z
 updated_at: 2025-12-17T19:38:29Z
 url: https://github.com/astral-sh/ruff/pull/22035
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:39Z
 ```
 
 # [ty] Make special cases for subscript inference exhaustive
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-17 19:06_
+_@AlexWaygood_
 
 ## Summary
 

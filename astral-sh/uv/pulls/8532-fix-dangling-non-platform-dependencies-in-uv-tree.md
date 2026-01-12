@@ -13,14 +13,14 @@ head: charlie/uni
 created_at: 2024-10-24T16:22:56Z
 updated_at: 2024-10-24T16:39:02Z
 url: https://github.com/astral-sh/uv/pull/8532
-synced_at: 2026-01-10T12:54:11Z
+synced_at: 2026-01-12T16:08:21Z
 ```
 
 # Fix dangling non-platform dependencies in `uv tree`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-24 16:22_
+_@charliermarsh_
 
 ## Summary
 

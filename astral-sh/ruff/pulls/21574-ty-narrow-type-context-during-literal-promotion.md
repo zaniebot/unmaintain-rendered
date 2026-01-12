@@ -13,14 +13,14 @@ head: ibraheem/constructor-literal-promotion-narrowing
 created_at: 2025-11-21T21:41:39Z
 updated_at: 2025-11-21T22:05:34Z
 url: https://github.com/astral-sh/ruff/pull/21574
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Narrow type context during literal promotion in generic class constructors
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-11-21 21:41_
+_@ibraheemdev_
 
 ## Summary
 

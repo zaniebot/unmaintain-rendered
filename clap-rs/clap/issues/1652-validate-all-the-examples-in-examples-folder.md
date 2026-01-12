@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-02-01T14:34:36Z
 updated_at: 2021-12-07T22:30:40Z
 url: https://github.com/clap-rs/clap/issues/1652
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Validate all the examples in examples/ folder, README.md, etc
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-02-01 14:34_
+_@CreepySkeleton_
 
 - [ ] `examples/`
 - [ ] `clap_derive/examples/`

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-05-07T15:53:05Z
 updated_at: 2018-08-02T03:30:06Z
 url: https://github.com/clap-rs/clap/issues/948
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Panic for std::os::unix::ffi::OsStrExt on windows
 
 ---
 
-_Issue opened by @Dragonrun1 on 2017-05-07 15:53_
+_@Dragonrun1_
 
 ### Rust Version
 

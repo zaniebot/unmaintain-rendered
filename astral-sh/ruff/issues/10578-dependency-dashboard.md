@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-25T17:34:22Z
 updated_at: 2026-01-12T14:00:23Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-12T15:03:25Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Dependency Dashboard
 
 ---
 
-_Issue opened by @renovate on 2024-03-25 17:34_
+_@renovate_
 
 This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/astral-sh/ruff).
 

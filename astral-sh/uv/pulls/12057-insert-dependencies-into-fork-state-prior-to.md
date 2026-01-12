@@ -14,14 +14,14 @@ head: charlie/index
 created_at: 2025-03-07T19:28:20Z
 updated_at: 2025-03-07T19:45:48Z
 url: https://github.com/astral-sh/uv/pull/12057
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:07Z
 ```
 
 # Insert dependencies into fork state prior to fetching metadata
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-07 19:28_
+_@charliermarsh_
 
 ## Summary
 

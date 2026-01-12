@@ -14,14 +14,14 @@ head: david/fix-680
 created_at: 2025-06-25T07:55:38Z
 updated_at: 2025-06-25T09:30:29Z
 url: https://github.com/astral-sh/ruff/pull/18934
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [ty] Type narrowing in comprehensions
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-25 07:55_
+_@sharkdp_
 
 ## Summary
 

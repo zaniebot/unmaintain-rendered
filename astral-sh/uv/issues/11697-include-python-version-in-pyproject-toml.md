@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-21T12:29:34Z
 updated_at: 2025-02-21T17:02:12Z
 url: https://github.com/astral-sh/uv/issues/11697
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # Include python-version in pyproject.toml
 
 ---
 
-_Issue opened by @tomaszbk on 2025-02-21 12:29_
+_@tomaszbk_
 
 ### Question
 

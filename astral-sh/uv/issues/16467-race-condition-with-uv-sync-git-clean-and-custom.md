@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-27T08:30:42Z
 updated_at: 2025-10-27T18:31:27Z
 url: https://github.com/astral-sh/uv/issues/16467
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # Race Condition with `uv sync` `git clean` and custom build steps (like setuptools-scm)
 
 ---
 
-_Issue opened by @schlamar on 2025-10-27 08:30_
+_@schlamar_
 
 ### Summary
 

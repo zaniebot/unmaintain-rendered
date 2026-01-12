@@ -13,14 +13,14 @@ head: fix-required-env-hint-example
 created_at: 2025-10-10T23:14:24Z
 updated_at: 2025-10-20T11:08:10Z
 url: https://github.com/astral-sh/uv/pull/16244
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:11Z
 ```
 
 # Add required environment marker example to hint
 
 ---
 
-_Pull request opened by @Prhmma on 2025-10-10 23:14_
+_@Prhmma_
 
 ## Summary
 fixes issue #15938 

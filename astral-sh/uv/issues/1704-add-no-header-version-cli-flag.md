@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-19T16:29:57Z
 updated_at: 2024-02-19T20:49:17Z
 url: https://github.com/astral-sh/uv/issues/1704
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Add --no-header-version CLI flag?
 
 ---
 
-_Issue opened by @mikeckennedy on 2024-02-19 16:29_
+_@mikeckennedy_
 
 Hi folks. Congrats on the big success of uv. I'm an instant fan.
 

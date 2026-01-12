@@ -12,14 +12,14 @@ head: deprecate-tool-uv-dev-deps
 created_at: 2025-08-23T11:19:01Z
 updated_at: 2025-09-12T15:08:10Z
 url: https://github.com/astral-sh/uv/pull/15469
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:45Z
 ```
 
 # Deprecate `tool.uv.dev-dependencies`
 
 ---
 
-_Pull request opened by @blueraft on 2025-08-23 11:19_
+_@blueraft_
 
 ## Summary
 

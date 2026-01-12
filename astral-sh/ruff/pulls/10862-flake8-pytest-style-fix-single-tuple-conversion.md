@@ -13,14 +13,14 @@ head: charlie/pt
 created_at: 2024-04-10T18:03:35Z
 updated_at: 2024-04-10T18:20:10Z
 url: https://github.com/astral-sh/ruff/pull/10862
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`flake8-pytest-style`] Fix single-tuple conversion in `pytest-parametrize-values-wrong-type`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-10 18:03_
+_@charliermarsh_
 
 ## Summary
 

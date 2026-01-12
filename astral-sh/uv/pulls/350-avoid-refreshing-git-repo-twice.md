@@ -12,14 +12,14 @@ head: charlie/hash
 created_at: 2023-11-07T02:49:05Z
 updated_at: 2023-11-07T02:52:16Z
 url: https://github.com/astral-sh/uv/pull/350
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:53Z
 ```
 
 # Avoid refreshing Git repo twice
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-07 02:49_
+_@charliermarsh_
 
 This was a bug in the Git code (that I wrote, not from Cargo) -- when we `precise` the reference, we should store the resolved commit.
 

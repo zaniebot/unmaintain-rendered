@@ -13,14 +13,14 @@ head: charlie/leg
 created_at: 2024-11-19T03:07:02Z
 updated_at: 2024-11-19T03:18:01Z
 url: https://github.com/astral-sh/uv/pull/9215
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:42Z
 ```
 
 # Only install the specified project with `--frozen --package` in legacy non-`[project]` workspaces
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-19 03:07_
+_@charliermarsh_
 
 ## Summary
 

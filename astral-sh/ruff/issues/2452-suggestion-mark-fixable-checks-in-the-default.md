@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-01T18:24:46Z
 updated_at: 2023-02-03T21:26:08Z
 url: https://github.com/astral-sh/ruff/issues/2452
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Suggestion: mark fixable checks in the default output?
 
 ---
 
-_Issue opened by @henryiii on 2023-02-01 18:24_
+_@henryiii_
 
 One thing IMO that would really be nice would be Ruby Rubocop's feature of marking changes that support autofix. For example, on the dummy Ruby file:
 

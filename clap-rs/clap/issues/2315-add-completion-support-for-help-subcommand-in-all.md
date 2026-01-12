@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-01-28T18:38:33Z
 updated_at: 2022-08-26T20:28:22Z
 url: https://github.com/clap-rs/clap/issues/2315
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Add completion support for `help` subcommand in all shells
 
 ---
 
-_Issue opened by @dkg on 2021-01-28 18:38_
+_@dkg_
 
 Maintainer's notes
 - Remember that you can do `cmd help sub1 sub2` which should be supported

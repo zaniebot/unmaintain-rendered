@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-05T13:35:47Z
 updated_at: 2025-02-07T20:31:08Z
 url: https://github.com/astral-sh/ruff/issues/15968
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # PLE1310 fails on `bytes.strip`
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-05 13:35_
+_@dscorbett_
 
 ### Description
 

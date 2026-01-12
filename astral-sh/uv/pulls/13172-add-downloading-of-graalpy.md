@@ -12,14 +12,14 @@ head: timfel/add-graalpy-downloading
 created_at: 2025-04-28T09:26:49Z
 updated_at: 2025-05-07T10:00:37Z
 url: https://github.com/astral-sh/uv/pull/13172
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:35Z
 ```
 
 # Add downloading of GraalPy
 
 ---
 
-_Pull request opened by @timfel on 2025-04-28 09:26_
+_@timfel_
 
 ## Summary
 

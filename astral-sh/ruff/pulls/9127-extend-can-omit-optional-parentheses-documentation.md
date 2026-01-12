@@ -13,14 +13,14 @@ head: 12-14-Extend_can_omit_optional_parentheses_documentation
 created_at: 2023-12-14T10:28:39Z
 updated_at: 2023-12-15T02:20:20Z
 url: https://github.com/astral-sh/ruff/pull/9127
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Extend `can_omit_optional_parentheses` documentation
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-14 10:28_
+_@MichaReiser_
 
 
 ## Summary

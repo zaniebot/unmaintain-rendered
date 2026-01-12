@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-22T15:47:02Z
 updated_at: 2025-11-14T14:35:45Z
 url: https://github.com/astral-sh/ty/issues/1410
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Hover for subscript when the argument is a Literal
 
 ---
 
-_Issue opened by @MichaReiser on 2025-10-22 15:47_
+_@MichaReiser_
 
 ```py
 arg = {

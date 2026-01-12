@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-05-09T14:38:34Z
 updated_at: 2022-10-05T21:52:41Z
 url: https://github.com/clap-rs/clap/issues/3706
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Allow to use `Option<T: Args>` with flatten
 
 ---
 
-_Issue opened by @Zagitta on 2022-05-09 14:38_
+_@Zagitta_
 
 ### Please complete the following tasks
 

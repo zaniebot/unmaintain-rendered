@@ -14,14 +14,14 @@ head: df-type-check-only
 created_at: 2025-10-16T04:02:53Z
 updated_at: 2025-10-28T13:51:16Z
 url: https://github.com/astral-sh/ruff/pull/20910
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:12Z
 ```
 
 # [ty] Consider `type_check_only` when ranking completions
 
 ---
 
-_Pull request opened by @decorator-factory on 2025-10-16 04:02_
+_@decorator-factory_
 
 ## Summary
 

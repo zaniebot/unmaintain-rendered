@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T19:38:54Z
 updated_at: 2025-08-21T14:48:15Z
 url: https://github.com/astral-sh/uv/issues/12447
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # Override build dependency and backend metadata, similiar to dependency-metadata
 
 ---
 
-_Issue opened by @notatallshaw on 2025-03-24 19:38_
+_@notatallshaw_
 
 ### Summary
 

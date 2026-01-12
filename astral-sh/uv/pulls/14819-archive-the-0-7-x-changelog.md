@@ -12,14 +12,14 @@ head: zb/07-archive
 created_at: 2025-07-22T16:25:43Z
 updated_at: 2025-07-22T19:10:17Z
 url: https://github.com/astral-sh/uv/pull/14819
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:26Z
 ```
 
 # Archive the 0.7.x changelog
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-22 16:25_
+_@zanieb_
 
 _No description provided._
 

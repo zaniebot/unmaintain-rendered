@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-22T19:31:34Z
 updated_at: 2025-12-23T21:33:56Z
 url: https://github.com/astral-sh/ty/issues/2170
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Synthesize a precise signature for `NamedTuple` `_replace` methods
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-22 19:31_
+_@AlexWaygood_
 
 The `._replace()` call here fails at runtime, because this particular `NamedTuple` only supports an `x` keyword argument being passed to its `_replace` method:
 

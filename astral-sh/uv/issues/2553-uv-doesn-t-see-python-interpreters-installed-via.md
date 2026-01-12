@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-19T22:11:52Z
 updated_at: 2024-04-02T02:57:58Z
 url: https://github.com/astral-sh/uv/issues/2553
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # `uv` doesn't see python interpreters installed via `pyenv`
 
 ---
 
-_Issue opened by @theelderbeever on 2024-03-19 22:11_
+_@theelderbeever_
 
 This isn't a huge deal since there is a simple workaround however, `uv` does not recognize python versions that have been installed via `pyenv`. It would be nice if this was seemless and didn't require activating the `pyenv shell` first.
 

@@ -12,14 +12,14 @@ head: charlie/gate
 created_at: 2023-03-03T22:08:51Z
 updated_at: 2023-03-03T22:24:41Z
 url: https://github.com/astral-sh/ruff/pull/3327
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Gate PEP604 isinstance rewrites behind Python 3.10+
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-03 22:08_
+_@charliermarsh_
 
 Closes #3326.
 

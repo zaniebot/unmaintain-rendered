@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-05T10:08:20Z
 updated_at: 2023-07-07T19:08:35Z
 url: https://github.com/clap-rs/clap/issues/4993
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Not working on nightly - proc-macro2 needs update | renovate not working?
 
 ---
 
-_Issue opened by @udondan on 2023-07-05 10:08_
+_@udondan_
 
 ### Please complete the following tasks
 

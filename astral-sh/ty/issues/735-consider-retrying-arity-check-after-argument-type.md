@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-01T04:44:38Z
 updated_at: 2025-09-12T08:40:09Z
 url: https://github.com/astral-sh/ty/issues/735
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Consider retrying arity check after argument type expansion
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-07-01 04:44_
+_@dhruvmanila_
 
 Ref: https://github.com/astral-sh/ruff/pull/18996/files#r2172952014
 

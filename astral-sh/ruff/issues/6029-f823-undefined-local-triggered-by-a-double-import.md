@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-24T13:15:31Z
 updated_at: 2023-07-24T14:42:50Z
 url: https://github.com/astral-sh/ruff/issues/6029
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F823 (undefined local) triggered by a double import
 
 ---
 
-_Issue opened by @ajkerrigan on 2023-07-24 13:15_
+_@ajkerrigan_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

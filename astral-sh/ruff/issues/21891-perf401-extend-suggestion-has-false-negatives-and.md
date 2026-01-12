@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-10T09:37:16Z
 updated_at: 2026-01-05T21:11:04Z
 url: https://github.com/astral-sh/ruff/issues/21891
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # PERF401 extend suggestion has false negatives and makes code slower
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-12-10 09:37_
+_@hauntsaninja_
 
 ### Summary
 

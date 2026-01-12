@@ -13,14 +13,14 @@ head: jtfm/url-proxy
 created_at: 2025-02-25T20:38:15Z
 updated_at: 2025-08-15T13:58:25Z
 url: https://github.com/astral-sh/uv/pull/11782
-synced_at: 2026-01-10T06:44:32Z
+synced_at: 2026-01-12T16:10:00Z
 ```
 
 # Support proxy index urls
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-02-25 20:38_
+_@jtfmumm_
 
 [This draft PR still has a couple of minor FIXMEs and a number of FIXMEs for documenting code. I also plan to add more tests] 
 

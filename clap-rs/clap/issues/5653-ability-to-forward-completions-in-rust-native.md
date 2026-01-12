@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-10T00:16:52Z
 updated_at: 2024-08-29T17:57:38Z
 url: https://github.com/clap-rs/clap/issues/5653
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Ability to forward completions in Rust native completions
 
 ---
 
-_Issue opened by @epage on 2024-08-10 00:16_
+_@epage_
 
 - `cargo run`
 - `cargo <plugin>`

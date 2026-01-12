@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-04T20:56:07Z
 updated_at: 2025-09-18T15:24:17Z
 url: https://github.com/astral-sh/ruff/issues/20255
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `single-item-membership-test` (FURB171) should be marked unsafe
 
 ---
 
-_Issue opened by @dscorbett on 2025-09-04 20:56_
+_@dscorbett_
 
 ### Summary
 

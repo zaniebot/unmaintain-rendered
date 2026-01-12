@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-14T18:55:50Z
 updated_at: 2025-02-03T21:35:54Z
 url: https://github.com/astral-sh/uv/issues/3587
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Add support for --relocatable
 
 ---
 
-_Issue opened by @yeswalrus on 2024-05-14 18:55_
+_@yeswalrus_
 
 `--relocatable` was an experimental feature in older versions of the `virtualenv` script. We have a few use cases where it would be helpful to be able to package up a venv and copy it to a different machine, and really the only part of the activate script that we have to change is the VIRTUAL_ENV environment variable.
 Would it be possible to revive this old flag & useful feature, and just have it replace the `activate` script's `VIRTUAL_ENV='<absolute path>'` with `VIRTUAL_ENV='$(realpath $(dirname $0)/..)'` or something like that?

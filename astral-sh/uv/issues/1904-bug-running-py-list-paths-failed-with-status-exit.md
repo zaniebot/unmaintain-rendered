@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-23T07:40:51Z
 updated_at: 2024-02-23T18:40:53Z
 url: https://github.com/astral-sh/uv/issues/1904
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # [BUG] Running `py --list-paths` failed with status exit code: 0
 
 ---
 
-_Issue opened by @arghhjayy on 2024-02-23 07:40_
+_@arghhjayy_
 
 Hello fellow devs,
 

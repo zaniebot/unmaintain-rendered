@@ -14,14 +14,14 @@ head: micha/update-expected-diagnostics
 created_at: 2025-11-04T03:13:35Z
 updated_at: 2025-11-04T03:35:39Z
 url: https://github.com/astral-sh/ruff/pull/21269
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:20Z
 ```
 
 # [ty] Update expected diagnostic count in benchmarks
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-04 03:13_
+_@MichaReiser_
 
 To unblock CI on main
 

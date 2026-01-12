@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-01T13:06:31Z
 updated_at: 2024-07-03T08:03:09Z
 url: https://github.com/astral-sh/ruff/issues/12138
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Line after line break in type signature is not indented as Ruff-example in known deviations page
 
 ---
 
-_Issue opened by @pjonsson on 2024-07-01 13:06_
+_@pjonsson_
 
 This resembles #11791, but that talks about assignments, the example below does not have any assignments in the relevant lines. It's also possible Ruff behaves as it should, and the formatted example on the known deviations page is outdated.
 

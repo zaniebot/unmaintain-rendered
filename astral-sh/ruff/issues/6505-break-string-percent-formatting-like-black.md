@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-11T15:27:43Z
 updated_at: 2023-08-24T07:29:07Z
 url: https://github.com/astral-sh/ruff/issues/6505
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Break string percent formatting like black
 
 ---
 
-_Issue opened by @konstin on 2023-08-11 15:27_
+_@konstin_
 
 black:
 ```python

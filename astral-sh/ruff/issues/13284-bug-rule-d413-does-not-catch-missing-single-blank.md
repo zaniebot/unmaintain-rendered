@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-08T17:01:14Z
 updated_at: 2025-10-07T15:10:57Z
 url: https://github.com/astral-sh/ruff/issues/13284
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # BUG: Rule `D413` does not catch missing single blank line or multiple blank lines at end of docstring
 
 ---
 
-_Issue opened by @user27182 on 2024-09-08 17:01_
+_@user27182_
 
 There is a bug with rule [`D413`](https://docs.astral.sh/ruff/rules/missing-blank-line-after-last-section/). With this rule, a single blank line is expected at the end of multiline docstrings.
 

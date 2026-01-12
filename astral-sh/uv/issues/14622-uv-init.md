@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-15T09:12:56Z
 updated_at: 2025-07-16T13:22:10Z
 url: https://github.com/astral-sh/uv/issues/14622
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # uv init
 
 ---
 
-_Issue opened by @Aspirant-A on 2025-07-15 09:12_
+_@Aspirant-A_
 
 ### Question
 

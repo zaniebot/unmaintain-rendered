@@ -13,14 +13,14 @@ head: renovate/indexmap-2.x-lockfile
 created_at: 2024-04-08T02:17:17Z
 updated_at: 2024-04-08T02:37:40Z
 url: https://github.com/astral-sh/uv/pull/2868
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:16Z
 ```
 
 # Update Rust crate indexmap to v2.2.6
 
 ---
 
-_Pull request opened by @renovate on 2024-04-08 02:17_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

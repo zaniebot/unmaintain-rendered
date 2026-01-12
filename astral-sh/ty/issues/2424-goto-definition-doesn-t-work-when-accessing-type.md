@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-09T19:52:28Z
 updated_at: 2026-01-09T19:52:28Z
 url: https://github.com/astral-sh/ty/issues/2424
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Goto-definition doesn't work when accessing `type` attributes on class objects
 
 ---
 
-_Issue opened by @AlexWaygood on 2026-01-09 19:52_
+_@AlexWaygood_
 
 For this snippet:
 

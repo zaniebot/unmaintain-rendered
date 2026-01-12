@@ -13,14 +13,14 @@ head: charlie/github
 created_at: 2025-01-20T01:38:40Z
 updated_at: 2025-01-20T14:39:07Z
 url: https://github.com/astral-sh/uv/pull/10768
-synced_at: 2026-01-10T11:45:09Z
+synced_at: 2026-01-12T16:09:28Z
 ```
 
 # Add a GitHub repository struct to `uv-git`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-20 01:38_
+_@charliermarsh_
 
 ## Summary
 

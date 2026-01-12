@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-11T15:39:18Z
 updated_at: 2024-03-12T07:38:45Z
 url: https://github.com/astral-sh/uv/issues/2359
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Infinite loop during dependency resolution
 
 ---
 
-_Issue opened by @david-pl on 2024-03-11 15:39_
+_@david-pl_
 
 Potentially related to #2358 (I removed a few more dependencies from the requirements.txt file).
 

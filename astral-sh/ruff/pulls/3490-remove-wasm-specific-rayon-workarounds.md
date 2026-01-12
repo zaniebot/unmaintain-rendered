@@ -12,14 +12,14 @@ head: charlie/rayon
 created_at: 2023-03-13T20:22:52Z
 updated_at: 2023-03-13T20:48:45Z
 url: https://github.com/astral-sh/ruff/pull/3490
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Remove Wasm-specific Rayon workarounds
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-13 20:22_
+_@charliermarsh_
 
 I believe Rayon added appropriate fallback behavior for non-thread-supporting environments in the most recent release (see https://github.com/rayon-rs/rayon/pull/1019), so this is no longer necessary.
 

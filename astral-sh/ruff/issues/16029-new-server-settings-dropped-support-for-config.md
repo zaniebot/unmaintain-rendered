@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-07T19:07:01Z
 updated_at: 2025-02-08T03:24:17Z
 url: https://github.com/astral-sh/ruff/issues/16029
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # New server settings dropped support for config overrides
 
 ---
 
-_Issue opened by @tylerlaprade on 2025-02-07 19:07_
+_@tylerlaprade_
 
 ### Description
 

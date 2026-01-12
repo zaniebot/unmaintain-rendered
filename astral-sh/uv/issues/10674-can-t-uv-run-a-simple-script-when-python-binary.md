@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-16T11:37:53Z
 updated_at: 2025-01-22T16:49:07Z
 url: https://github.com/astral-sh/uv/issues/10674
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:18Z
 ```
 
 # Can't `uv run` a simple script when Python binary is a symlink with uv 0.5.x
 
 ---
 
-_Issue opened by @gozdal on 2025-01-16 11:37_
+_@gozdal_
 
 I ran into a bug with Ubuntu 24, which has (by default) system-wide Python 3.12.
 Coincidently I have our own Python 3.12 installed, which is symlinked from `/usr/local/bin/python3.12`:

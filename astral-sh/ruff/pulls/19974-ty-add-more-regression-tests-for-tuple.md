@@ -14,14 +14,14 @@ head: alex/tuple-regression-tests
 created_at: 2025-08-18T17:26:00Z
 updated_at: 2025-08-18T17:30:07Z
 url: https://github.com/astral-sh/ruff/pull/19974
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] Add more regression tests for `tuple`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-18 17:26_
+_@AlexWaygood_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: elvish_ci
 created_at: 2025-01-07T01:14:58Z
 updated_at: 2025-05-31T13:50:49Z
 url: https://github.com/clap-rs/clap/pull/5870
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # chore(ci): Use dedicated action to install specified elvish version
 
 ---
 
-_Pull request opened by @tw4452852 on 2025-01-07 01:14_
+_@tw4452852_
 
 <!--
 Thanks for helping out!

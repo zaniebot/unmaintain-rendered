@@ -13,14 +13,14 @@ head: fix/b909-false-positive-return-mutation
 created_at: 2025-06-01T04:42:21Z
 updated_at: 2025-06-13T14:39:56Z
 url: https://github.com/astral-sh/ruff/pull/18408
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:18Z
 ```
 
 # Fix false positive in  for mutations in return statements (B909)
 
 ---
 
-_Pull request opened by @K-dash on 2025-06-01 04:42_
+_@K-dash_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

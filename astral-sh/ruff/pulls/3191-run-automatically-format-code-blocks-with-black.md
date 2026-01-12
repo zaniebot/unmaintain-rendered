@@ -12,14 +12,14 @@ head: mdformat
 created_at: 2023-02-23T20:28:50Z
 updated_at: 2023-02-27T15:19:19Z
 url: https://github.com/astral-sh/ruff/pull/3191
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Run automatically format code blocks with Black
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-02-23 20:28_
+_@JonathanPlasse_
 
 [mdformat](https://github.com/executablebooks/mdformat) is Python Markdown formatter.
 It catches some errors that `markdownlint` does not detect.

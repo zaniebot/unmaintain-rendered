@@ -14,14 +14,14 @@ head: PLE251
 created_at: 2025-02-13T06:49:37Z
 updated_at: 2025-02-24T09:02:07Z
 url: https://github.com/astral-sh/ruff/pull/16132
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`pylint`] Do not offer fix for raw strings (`PLE251`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-13 06:49_
+_@InSyncWithFoo_
 
 ## Summary
 

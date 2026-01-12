@@ -15,14 +15,14 @@ head: alex/unresolved-attribute-error-messages
 created_at: 2025-10-18T20:10:38Z
 updated_at: 2025-10-19T10:09:31Z
 url: https://github.com/astral-sh/ruff/pull/20963
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # [ty] Improve error messages for unresolved attribute diagnostics
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-10-18 20:10_
+_@AlexWaygood_
 
 ## Summary
 

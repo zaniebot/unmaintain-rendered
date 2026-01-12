@@ -13,14 +13,14 @@ head: charlie/shared-state
 created_at: 2025-01-29T02:56:08Z
 updated_at: 2025-01-29T03:27:33Z
 url: https://github.com/astral-sh/uv/pull/11051
-synced_at: 2026-01-10T11:45:26Z
+synced_at: 2026-01-12T16:09:39Z
 ```
 
 # Avoid sharing state between universal and non-universal resolves
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-29 02:56_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-17T01:30:21Z
 updated_at: 2025-07-28T14:21:31Z
 url: https://github.com/astral-sh/ruff/issues/17439
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Support B950 flake8-bugbear line too long warning
 
 ---
 
-_Issue opened by @daviewales on 2025-04-17 01:30_
+_@daviewales_
 
 ### Summary
 

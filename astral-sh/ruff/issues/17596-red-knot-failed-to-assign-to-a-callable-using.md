@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-04-23T22:22:28Z
 updated_at: 2025-04-24T16:12:00Z
 url: https://github.com/astral-sh/ruff/issues/17596
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [red-knot] Failed to assign to a callable using `Unpack`
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-04-23 22:22_
+_@dhruvmanila_
 
 ### Summary
 

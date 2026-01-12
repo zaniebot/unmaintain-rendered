@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-28T15:45:20Z
 updated_at: 2023-09-28T16:10:07Z
 url: https://github.com/clap-rs/clap/issues/5145
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Backwards compatibility broken? rustc 1.67.1 clap 4.1.4  (msrv increased without clap version changed)
 
 ---
 
-_Issue opened by @alparty on 2023-09-28 15:45_
+_@alparty_
 
 ### Please complete the following tasks
 

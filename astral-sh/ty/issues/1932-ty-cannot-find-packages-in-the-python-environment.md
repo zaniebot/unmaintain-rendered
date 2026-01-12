@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-16T14:01:40Z
 updated_at: 2025-12-16T15:38:54Z
 url: https://github.com/astral-sh/ty/issues/1932
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # ty cannot find packages in the python environment lib subfolder when l is lowercase
 
 ---
 
-_Issue opened by @martinResearch on 2025-12-16 14:01_
+_@martinResearch_
 
 ### Summary
 

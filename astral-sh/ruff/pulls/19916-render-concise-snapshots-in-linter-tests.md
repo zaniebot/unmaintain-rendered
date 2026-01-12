@@ -12,14 +12,14 @@ head: brent/concise-snapshots
 created_at: 2025-08-14T13:58:34Z
 updated_at: 2025-08-18T12:42:47Z
 url: https://github.com/astral-sh/ruff/pull/19916
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:50Z
 ```
 
 # Render concise snapshots in linter tests
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-14 13:58_
+_@ntBre_
 
 Summary
 --

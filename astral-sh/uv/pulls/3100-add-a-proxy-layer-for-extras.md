@@ -13,14 +13,14 @@ head: charlie/extras
 created_at: 2024-04-17T17:15:12Z
 updated_at: 2024-04-19T01:05:01Z
 url: https://github.com/astral-sh/uv/pull/3100
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:25Z
 ```
 
 # Add a proxy layer for extras
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-17 17:15_
+_@charliermarsh_
 
 Given requirements like:
 

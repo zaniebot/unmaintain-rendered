@@ -13,14 +13,14 @@ head: charlie/infer
 created_at: 2025-04-18T03:19:19Z
 updated_at: 2025-04-21T21:35:06Z
 url: https://github.com/astral-sh/uv/pull/12958
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:28Z
 ```
 
 # Infer output type in `uv export`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-18 03:19_
+_@charliermarsh_
 
 ## Summary
 

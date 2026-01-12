@@ -11,14 +11,14 @@ head: main
 created_at: 2023-03-30T17:48:01Z
 updated_at: 2023-04-03T03:37:01Z
 url: https://github.com/astral-sh/ruff/pull/3820
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # GH-Action
 
 ---
 
-_Pull request opened by @brucearctor on 2023-03-30 17:48_
+_@brucearctor_
 
 Accidentally closed:  https://github.com/charliermarsh/ruff/pull/3756 ( and didn't seem like I was able to re-open it )
 

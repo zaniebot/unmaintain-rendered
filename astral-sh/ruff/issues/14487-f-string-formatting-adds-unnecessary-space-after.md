@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-20T12:58:54Z
 updated_at: 2024-11-22T12:01:24Z
 url: https://github.com/astral-sh/ruff/issues/14487
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # F-string formatting adds unnecessary space after `**` operator
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-11-20 12:58_
+_@dhruvmanila_
 
 Consider the following source code:
 

@@ -12,14 +12,14 @@ head: charlie/push
 created_at: 2023-07-12T17:56:50Z
 updated_at: 2023-07-12T18:25:39Z
 url: https://github.com/astral-sh/ruff/pull/5718
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Run release testing on PR, not push
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-12 17:56_
+_@charliermarsh_
 
 ## Summary
 

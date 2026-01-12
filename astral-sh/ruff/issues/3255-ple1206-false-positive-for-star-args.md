@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-27T18:31:44Z
 updated_at: 2023-02-27T18:59:54Z
 url: https://github.com/astral-sh/ruff/issues/3255
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PLE1206: false-positive for star args
 
 ---
 
-_Issue opened by @spaceone on 2023-02-27 18:31_
+_@spaceone_
 
 ```python
 data = foo, bar, baz

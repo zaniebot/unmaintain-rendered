@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T18:18:58Z
 updated_at: 2025-12-19T14:29:43Z
 url: https://github.com/astral-sh/uv/issues/17180
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:45Z
 ```
 
 # `uv tool run` resolves environment differently depending on type of `--with` argument
 
 ---
 
-_Issue opened by @dlovell on 2025-12-18 18:18_
+_@dlovell_
 
 ### Summary
 

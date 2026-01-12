@@ -13,14 +13,14 @@ head: gankra/dococlock
 created_at: 2025-02-06T16:31:07Z
 updated_at: 2025-02-07T15:41:00Z
 url: https://github.com/astral-sh/uv/pull/11284
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:46Z
 ```
 
 # cleanup some dependency-group docs
 
 ---
 
-_Pull request opened by @Gankra on 2025-02-06 16:31_
+_@Gankra_
 
 Some additional details, more mentioning of related flags, and some minor rewordings to avoid misconceptions I had from the current docs.
 

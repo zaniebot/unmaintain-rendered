@@ -13,14 +13,14 @@ head: d102
 created_at: 2024-08-19T20:04:47Z
 updated_at: 2024-08-20T06:33:51Z
 url: https://github.com/astral-sh/ruff/pull/12996
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # pydocstyle: Add ignore setting to linter docs
 
 ---
 
-_Pull request opened by @lengau on 2024-08-19 20:04_
+_@lengau_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

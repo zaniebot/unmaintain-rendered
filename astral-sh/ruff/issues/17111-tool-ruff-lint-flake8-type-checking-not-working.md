@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T09:41:52Z
 updated_at: 2025-04-08T11:07:59Z
 url: https://github.com/astral-sh/ruff/issues/17111
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # tool.ruff.lint.flake8-type-checking not working
 
 ---
 
-_Issue opened by @chaush-server on 2025-04-01 09:41_
+_@chaush-server_
 
 ### Summary
 

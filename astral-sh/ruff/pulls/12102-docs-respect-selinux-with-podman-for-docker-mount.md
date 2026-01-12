@@ -13,14 +13,14 @@ head: podman_mount
 created_at: 2024-06-29T12:52:12Z
 updated_at: 2024-07-06T09:57:40Z
 url: https://github.com/astral-sh/ruff/pull/12102
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Docs: Respect SELinux with podman for docker mount
 
 ---
 
-_Pull request opened by @maximiliankolb on 2024-06-29 12:52_
+_@maximiliankolb_
 
 Tested on Fedora 40 with Podman 5.1.1 and ruff "0.5.0" and "latest". source: https://unix.stackexchange.com/q/651198
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-14T19:41:30Z
 updated_at: 2024-11-13T16:08:57Z
 url: https://github.com/astral-sh/uv/issues/8186
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:21Z
 ```
 
 # Make UV_PYTHON_INSTALL_MIRROR configurable in uv.toml
 
 ---
 
-_Issue opened by @Vynce on 2024-10-14 19:41_
+_@Vynce_
 
 Please consider making `UV_PYTHON_INSTALL_MIRROR` and `UV_PYPY_INSTALL_MIRROR` configurable in the user-scoped `uv.toml` config file. I think this is a separate use case from the similar `pyproject.toml` request in #8166.
 

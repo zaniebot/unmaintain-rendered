@@ -12,14 +12,14 @@ head: charlie/crate
 created_at: 2023-07-19T15:27:57Z
 updated_at: 2023-07-19T16:08:00Z
 url: https://github.com/astral-sh/ruff/pull/5886
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Rename `ruff_python_whitespace` to `ruff_python_trivia`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-19 15:27_
+_@charliermarsh_
 
 ## Summary
 

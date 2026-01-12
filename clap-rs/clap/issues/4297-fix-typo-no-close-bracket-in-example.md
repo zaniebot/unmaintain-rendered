@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-30T08:45:07Z
 updated_at: 2022-09-30T13:23:38Z
 url: https://github.com/clap-rs/clap/issues/4297
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Fix(Typo) no close bracket in example
 
 ---
 
-_Issue opened by @p4r4d0xb0x on 2022-09-30 08:45_
+_@p4r4d0xb0x_
 
 ### Please complete the following tasks
 

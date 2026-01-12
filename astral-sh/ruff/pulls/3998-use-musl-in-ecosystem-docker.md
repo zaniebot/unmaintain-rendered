@@ -12,14 +12,14 @@ head: use_musl_in_ecosystem_docker
 created_at: 2023-04-17T16:23:10Z
 updated_at: 2023-04-26T03:54:54Z
 url: https://github.com/astral-sh/ruff/pull/3998
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Use musl in ecosystem docker
 
 ---
 
-_Pull request opened by @konstin on 2023-04-17 16:23_
+_@konstin_
 
 This prevents errors when the host glibc is newer than the one in the docker container
 

@@ -13,14 +13,14 @@ head: dhruv/unpacked-tuple-assignment
 created_at: 2024-09-10T18:45:46Z
 updated_at: 2024-10-16T05:36:18Z
 url: https://github.com/astral-sh/ruff/pull/13316
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Infer target types for unpacked tuple assignment
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-09-10 18:45_
+_@dhruvmanila_
 
 ## Summary
 

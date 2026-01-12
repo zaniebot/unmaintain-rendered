@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-02T17:18:30Z
 updated_at: 2024-06-03T20:19:54Z
 url: https://github.com/astral-sh/ruff/issues/11248
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Workspace edits from `ruff server` commands occasionally fail in VS Code when operating on an yet-to-be-created file
 
 ---
 
-_Issue opened by @snowsignal on 2024-05-02 17:18_
+_@snowsignal_
 
 Steps to reproduce:
 

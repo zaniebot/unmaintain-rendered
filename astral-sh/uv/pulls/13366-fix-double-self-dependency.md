@@ -13,14 +13,14 @@ head: konsti/fix-self-dependency-twice
 created_at: 2025-05-09T16:32:08Z
 updated_at: 2025-05-13T03:03:45Z
 url: https://github.com/astral-sh/uv/pull/13366
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:40Z
 ```
 
 # Fix double self-dependency
 
 ---
 
-_Pull request opened by @konstin on 2025-05-09 16:32_
+_@konstin_
 
 The fix itself and its documentation live in pubgrub: https://github.com/astral-sh/pubgrub/pull/44
 

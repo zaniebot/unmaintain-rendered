@@ -13,14 +13,14 @@ head: charlie/PLR1714
 created_at: 2024-07-17T15:19:09Z
 updated_at: 2024-07-17T15:49:29Z
 url: https://github.com/astral-sh/ruff/pull/12368
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Avoid dropping extra boolean operations in `repeated-equality-comparison`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-17 15:19_
+_@charliermarsh_
 
 ## Summary
 

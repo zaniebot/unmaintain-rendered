@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-05T16:57:44Z
 updated_at: 2024-11-10T09:30:37Z
 url: https://github.com/astral-sh/ruff/issues/12693
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [Feature Request] User-Defined Deprecations?
 
 ---
 
-_Issue opened by @alanhdu on 2024-08-05 16:57_
+_@alanhdu_
 
 This is probably a big feature request (and apologies if it has already been asked about), but I am wondering whether there are plans for ruff to allow *user*-defined / config-defied lint rules?
 

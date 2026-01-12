@@ -13,14 +13,14 @@ head: zb/dedent-comment-block
 created_at: 2024-09-30T16:16:33Z
 updated_at: 2024-10-01T04:52:09Z
 url: https://github.com/astral-sh/ruff/pull/13572
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Update `dedent_to` to support blocks that are composed of comments
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-30 16:16_
+_@zanieb_
 
 While looking into https://github.com/astral-sh/ruff/issues/13545 I noticed that we return `None` here if you pass a block of comments. This is annoying because it causes `adjust_indentation` to fall back to LibCST which panics when it cannot find a statement.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-31T11:44:44Z
 updated_at: 2025-08-06T18:19:50Z
 url: https://github.com/astral-sh/ruff/issues/19660
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `*` unpacking should make PLC0207 fix unsafe
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-31 11:44_
+_@dscorbett_
 
 ### Summary
 

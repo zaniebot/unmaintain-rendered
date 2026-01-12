@@ -12,14 +12,14 @@ head: charlie/setup
 created_at: 2023-02-15T14:31:33Z
 updated_at: 2023-02-15T14:35:13Z
 url: https://github.com/astral-sh/ruff/pull/2922
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Remove `setup.py`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-15 14:31_
+_@charliermarsh_
 
 This only existed to power GitHub's dependency graph. It _should_ be unnecessary now that GitHub supports the [PEP 621 standard](https://github.blog/changelog/2023-02-13-dependency-graph-supports-the-python-pep-621-standard/).
 

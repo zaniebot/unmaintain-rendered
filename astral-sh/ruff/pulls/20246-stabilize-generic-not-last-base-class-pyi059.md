@@ -13,14 +13,14 @@ head: brent/pyi059
 created_at: 2025-09-04T18:11:09Z
 updated_at: 2025-09-04T23:06:05Z
 url: https://github.com/astral-sh/ruff/pull/20246
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # Stabilize `generic-not-last-base-class` (`PYI059`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-04 18:11_
+_@ntBre_
 
 Tests and docs look good
 

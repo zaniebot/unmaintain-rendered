@@ -14,14 +14,14 @@ head: autogenerate-type-param-nodes
 created_at: 2025-10-22T11:33:12Z
 updated_at: 2025-10-22T16:25:18Z
 url: https://github.com/astral-sh/ruff/pull/21028
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # [`ruff`] Autogenerate TypeParam nodes
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-10-22 11:33_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: charlie/t
 created_at: 2024-11-18T14:21:16Z
 updated_at: 2024-11-18T20:11:47Z
 url: https://github.com/astral-sh/uv/pull/9199
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:42Z
 ```
 
 # Remove separate test files in favor of same-file `mod tests`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-18 14:21_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: konsti/better-sort-explanation
 created_at: 2024-09-07T18:58:01Z
 updated_at: 2024-09-07T19:57:03Z
 url: https://github.com/astral-sh/uv/pull/7178
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:43Z
 ```
 
 # Clearer registry Python sort
 
 ---
 
-_Pull request opened by @konstin on 2024-09-07 18:58_
+_@konstin_
 
 Change the registry Python sorting implementation to be easier to follow, making it clearer what it does and that it is a total order. No functional changes.
 

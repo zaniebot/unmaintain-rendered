@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-14T20:36:05Z
 updated_at: 2023-06-06T01:36:57Z
 url: https://github.com/astral-sh/ruff/issues/3978
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Possible inconsistency with "D" rule parsing docstrings
 
 ---
 
-_Issue opened by @syntaxaire on 2023-04-14 20:36_
+_@syntaxaire_
 
 With ruff 0.0.261, using the "D" rule with  `--fix`, the following code:
 ```python

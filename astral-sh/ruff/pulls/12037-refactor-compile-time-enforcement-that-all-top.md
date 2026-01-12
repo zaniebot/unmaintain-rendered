@@ -13,14 +13,14 @@ head: top-level-lint-options-deprecation-check
 created_at: 2024-06-26T07:02:42Z
 updated_at: 2024-06-26T07:40:40Z
 url: https://github.com/astral-sh/ruff/pull/12037
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # refactor: Compile time enforcement that all top level lint options are checked for deprecation
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-26 07:02_
+_@MichaReiser_
 
 ## Summary
 Small refactor that uses Rust's destructuring to enforce that all top-level lint options are checked for deprecation. 

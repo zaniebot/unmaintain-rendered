@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-24T17:03:31Z
 updated_at: 2025-11-05T16:19:15Z
 url: https://github.com/astral-sh/uv/issues/8533
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # uv python find --system finds managed interpreters
 
 ---
 
-_Issue opened by @bluss on 2024-10-24 17:03_
+_@bluss_
 
 Try:
 

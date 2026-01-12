@@ -13,14 +13,14 @@ head: cjm/nounion
 created_at: 2025-12-10T23:43:37Z
 updated_at: 2025-12-11T17:53:46Z
 url: https://github.com/astral-sh/ruff/pull/21909
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] avoid unions of generic aliases of the same class in fixpoint
 
 ---
 
-_Pull request opened by @carljm on 2025-12-10 23:43_
+_@carljm_
 
 Partially addresses https://github.com/astral-sh/ty/issues/1732
 Fixes https://github.com/astral-sh/ty/issues/1800

@@ -13,14 +13,14 @@ head: charlie/re
 created_at: 2025-01-22T00:05:34Z
 updated_at: 2025-01-23T01:21:10Z
 url: https://github.com/astral-sh/uv/pull/10834
-synced_at: 2026-01-10T11:45:13Z
+synced_at: 2026-01-12T16:09:31Z
 ```
 
 # Add `--refresh` to `uv venv`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-22 00:05_
+_@charliermarsh_
 
 ## Summary
 

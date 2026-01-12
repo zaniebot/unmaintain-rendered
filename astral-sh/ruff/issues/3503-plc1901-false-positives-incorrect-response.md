@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-14T05:12:01Z
 updated_at: 2023-03-22T03:34:58Z
 url: https://github.com/astral-sh/ruff/issues/3503
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # PLC1901 false positives/incorrect response
 
 ---
 
-_Issue opened by @onerandomusername on 2023-03-14 05:12_
+_@onerandomusername_
 
 code:
 ```py

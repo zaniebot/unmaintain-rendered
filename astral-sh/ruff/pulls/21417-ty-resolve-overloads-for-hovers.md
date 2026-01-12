@@ -14,14 +14,14 @@ head: gankra/overloads
 created_at: 2025-11-13T01:21:57Z
 updated_at: 2025-11-20T17:45:05Z
 url: https://github.com/astral-sh/ruff/pull/21417
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] Resolve overloads for hovers
 
 ---
 
-_Pull request opened by @Gankra on 2025-11-13 01:21_
+_@Gankra_
 
 This is a very conservative minimal implementation of applying overloads to resolve a callable-type-being-called down to a single function signature on hover. If we ever encounter a situation where the answer doesn't simplify down to a single function call, we bail out to preserve prettier printing of non-raw-Signatures.
 

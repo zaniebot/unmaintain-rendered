@@ -14,14 +14,14 @@ head: charlie/base-exec
 created_at: 2024-10-22T23:16:52Z
 updated_at: 2024-12-10T20:42:15Z
 url: https://github.com/astral-sh/uv/pull/8481
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:20Z
 ```
 
 # Use base executable to set virtualenv Python path
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-22 23:16_
+_@charliermarsh_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-04T11:28:10Z
 updated_at: 2024-04-04T11:31:48Z
 url: https://github.com/astral-sh/ruff/issues/10774
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # N815: TypedDict Subclasses are not ignored
 
 ---
 
-_Issue opened by @Zer0x00 on 2024-04-04 11:28_
+_@Zer0x00_
 
 In https://github.com/astral-sh/ruff/pull/4066 a routine was implemented to ignore TypedDicts from N815 (mixed-case-variable-in-class-scope). But subclasses are not respected from the ignore rule for TypedDicts.
 

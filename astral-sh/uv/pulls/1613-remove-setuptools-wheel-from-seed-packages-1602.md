@@ -14,14 +14,14 @@ head: arjun/remove-setuptools-wheel-from-seed
 created_at: 2024-02-17T19:49:35Z
 updated_at: 2024-02-18T21:20:21Z
 url: https://github.com/astral-sh/uv/pull/1613
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:40Z
 ```
 
 # Remove setuptools & wheel from seed packages (#1602)
 
 ---
 
-_Pull request opened by @arjunnn on 2024-02-17 19:49_
+_@arjunnn_
 
 ## Summary
 Removed `wheel` and `setuptools` from seed packages list when creating a virtual environment

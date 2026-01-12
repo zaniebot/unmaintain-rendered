@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-27T10:32:58Z
 updated_at: 2025-01-02T17:43:16Z
 url: https://github.com/astral-sh/uv/issues/7735
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Issue with Installing Torch-TensorRT via `uv add` Command with External Repository Links
 
 ---
 
-_Issue opened by @ChenMoFeiJin on 2024-09-27 10:32_
+_@ChenMoFeiJin_
 
 ---
 **Platform:**  Ubuntu 20.04

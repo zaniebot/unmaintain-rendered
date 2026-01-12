@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-26T21:10:01Z
 updated_at: 2023-06-29T00:15:27Z
 url: https://github.com/astral-sh/ruff/issues/3752
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Explore use of `cargo nextest` for test running
 
 ---
 
-_Issue opened by @charliermarsh on 2023-03-26 21:10_
+_@charliermarsh_
 
 We should profile this to understand whether it's faster for our project.
 

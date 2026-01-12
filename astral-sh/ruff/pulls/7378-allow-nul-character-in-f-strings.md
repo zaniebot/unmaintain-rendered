@@ -14,14 +14,14 @@ head: dhruv/fstring-nul
 created_at: 2023-09-14T07:24:24Z
 updated_at: 2023-09-28T03:58:54Z
 url: https://github.com/astral-sh/ruff/pull/7378
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Allow `NUL` character in f-strings
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-14 07:24_
+_@dhruvmanila_
 
 ## Summary
 

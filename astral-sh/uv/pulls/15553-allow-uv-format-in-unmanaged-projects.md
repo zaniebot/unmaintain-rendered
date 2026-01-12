@@ -12,14 +12,14 @@ head: fix/format-project-not-discovered
 created_at: 2025-08-27T16:29:25Z
 updated_at: 2025-09-05T18:14:41Z
 url: https://github.com/astral-sh/uv/pull/15553
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:49Z
 ```
 
 # Allow `uv format` in unmanaged projects
 
 ---
 
-_Pull request opened by @jorgehermo9 on 2025-08-27 16:29_
+_@jorgehermo9_
 
 Closes #15550
 

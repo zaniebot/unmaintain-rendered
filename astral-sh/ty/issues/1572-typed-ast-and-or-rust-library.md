@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-15T19:58:01Z
 updated_at: 2025-11-24T08:18:36Z
 url: https://github.com/astral-sh/ty/issues/1572
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Typed AST and/or Rust library?
 
 ---
 
-_Issue opened by @samuelcolvin on 2025-11-15 19:58_
+_@samuelcolvin_
 
 (Apologies if this question has already been answered, I searched but couldn't find it.)
 

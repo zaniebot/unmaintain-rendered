@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-22T12:38:10Z
 updated_at: 2025-05-22T12:40:10Z
 url: https://github.com/astral-sh/ruff/issues/18253
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Rule BLE001 blind-except triggered even for logger.error
 
 ---
 
-_Issue opened by @wereii on 2025-05-22 12:38_
+_@wereii_
 
 ### Summary
 

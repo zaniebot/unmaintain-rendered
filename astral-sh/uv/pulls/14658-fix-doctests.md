@@ -13,14 +13,14 @@ head: konsti/fix-doctests
 created_at: 2025-07-16T14:23:39Z
 updated_at: 2025-07-16T14:56:33Z
 url: https://github.com/astral-sh/uv/pull/14658
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:20Z
 ```
 
 # Fix doctests
 
 ---
 
-_Pull request opened by @konstin on 2025-07-16 14:23_
+_@konstin_
 
 `cargo nextest run` doesn't run them, but `cargo insta test --test-runner nextest` does, which surfaced those failures.
 

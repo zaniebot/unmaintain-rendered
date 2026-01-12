@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-06T16:20:24Z
 updated_at: 2025-09-06T17:53:30Z
 url: https://github.com/astral-sh/ty/issues/1141
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Type of pathlib.Path("foo") / "bar" is unknown
 
 ---
 
-_Issue opened by @ibrokemypie on 2025-09-06 16:20_
+_@ibrokemypie_
 
 ### Summary
 

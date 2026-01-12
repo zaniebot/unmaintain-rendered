@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-25T15:07:05Z
 updated_at: 2024-12-02T18:18:29Z
 url: https://github.com/astral-sh/ruff/issues/14585
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # PLC0206 should not flag if dict is being written
 
 ---
 
-_Issue opened by @silverwind on 2024-11-25 15:07_
+_@silverwind_
 
 This code is flagged for [PLC0206](https://docs.astral.sh/ruff/rules/dict-index-missing-items/) with v0.8.0:
 

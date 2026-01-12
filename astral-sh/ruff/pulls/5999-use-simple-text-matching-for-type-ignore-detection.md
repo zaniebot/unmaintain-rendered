@@ -12,14 +12,14 @@ head: charlie/ignore
 created_at: 2023-07-23T01:25:01Z
 updated_at: 2023-07-23T02:08:28Z
 url: https://github.com/astral-sh/ruff/pull/5999
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Use simple text matching for `type: ignore` detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-23 01:25_
+_@charliermarsh_
 
 Closes #5980.
 

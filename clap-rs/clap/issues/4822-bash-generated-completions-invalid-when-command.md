@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-04-03T19:05:00Z
 updated_at: 2023-11-12T04:03:57Z
 url: https://github.com/clap-rs/clap/issues/4822
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # bash generated completions invalid when command name contains spaces
 
 ---
 
-_Issue opened by @mjpieters on 2023-04-03 19:05_
+_@mjpieters_
 
 ### Please complete the following tasks
 

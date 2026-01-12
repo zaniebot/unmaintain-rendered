@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-15T11:49:59Z
 updated_at: 2025-01-16T12:09:43Z
 url: https://github.com/astral-sh/uv/issues/10630
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # How to run `uv run pytest` so that each workspace member uses only it's own dependencies?
 
 ---
 
-_Issue opened by @justinas-kazanavicius on 2025-01-15 11:49_
+_@justinas-kazanavicius_
 
 When running `uv run pytest`, all tests are run against the current virtual environment, so running `uv sync --all-packages` is necessary for the tests not to fail due to missing dependencies. However, if one forgets to add a dependency to a workspace member, the tests might still pass even though they shouldn't. Ideally, before running tests the environment would be set up for each workspace member independently. E.g.
 

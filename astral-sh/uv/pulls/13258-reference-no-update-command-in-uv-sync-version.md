@@ -11,14 +11,14 @@ head: self-update-msg
 created_at: 2025-05-02T03:15:16Z
 updated_at: 2025-05-08T00:10:15Z
 url: https://github.com/astral-sh/uv/pull/13258
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:37Z
 ```
 
 # Reference no update command in `uv sync` version mismatch
 
 ---
 
-_Pull request opened by @maxmynter on 2025-05-02 03:15_
+_@maxmynter_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

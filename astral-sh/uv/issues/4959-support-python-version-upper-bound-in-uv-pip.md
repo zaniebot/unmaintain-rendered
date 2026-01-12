@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-10T09:59:21Z
 updated_at: 2024-09-14T00:31:15Z
 url: https://github.com/astral-sh/uv/issues/4959
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Support Python version upper bound in `uv pip compile --universal`
 
 ---
 
-_Issue opened by @Lordshinjo on 2024-07-10 09:59_
+_@Lordshinjo_
 
 Using uv 0.2.23, the following fails to resolve:
 ```

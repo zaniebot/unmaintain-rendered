@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T12:01:27Z
 updated_at: 2025-04-15T13:25:22Z
 url: https://github.com/astral-sh/ruff/issues/17391
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Support for `per-file-select` to simplify incremental rule adoption in monorepos
 
 ---
 
-_Issue opened by @mgaitan on 2025-04-14 12:01_
+_@mgaitan_
 
 We're currently running into a limitation related to `select` granularity. In our setup, we want to **enable all `B` (flake8-bugbear) rules only for a specific subdirectory**, e.g., `infrastructure/**/*.py`, while **keeping a small, curated subset of `B` rules for the rest of the codebase**.
 

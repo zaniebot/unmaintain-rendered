@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-15T08:22:35Z
 updated_at: 2024-08-23T13:39:23Z
 url: https://github.com/astral-sh/uv/issues/5065
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Add no-op `uv lock` and `uv sync` overhead to codspeed benchmarks
 
 ---
 
-_Issue opened by @konstin on 2024-07-15 08:22_
+_@konstin_
 
 We currently have some microbenchmarks and two resolver benchmarks. With the bluejay interface, most operations will involve no-op `uv lock` and `uv sync` operations when everything is already fresh. We should monitor their overhead with codspeed benchmarks.
 

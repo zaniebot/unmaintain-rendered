@@ -14,14 +14,14 @@ head: brent/eim
 created_at: 2025-12-22T17:46:55Z
 updated_at: 2025-12-30T16:32:12Z
 url: https://github.com/astral-sh/ruff/pull/22143
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # [`ruff`] Add `non-empty-init-module` (`RUF067`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-12-22 17:46_
+_@ntBre_
 
 Summary
 --

@@ -14,14 +14,14 @@ head: dhruv/merge-inline-tests
 created_at: 2024-04-06T05:25:35Z
 updated_at: 2024-04-06T05:51:20Z
 url: https://github.com/astral-sh/ruff/pull/10801
-synced_at: 2026-01-10T22:47:03Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Use `test_ok` for inline tests, merge test report
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-06 05:25_
+_@dhruvmanila_
 
 ## Summary
 

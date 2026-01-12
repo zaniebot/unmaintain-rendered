@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-09T18:17:23Z
 updated_at: 2025-12-09T18:28:38Z
 url: https://github.com/astral-sh/uv/issues/17051
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # uv suggests incorrect install command when Python downloads are set to manual and version request is a range
 
 ---
 
-_Issue opened by @cls-oi on 2025-12-09 18:17_
+_@cls-oi_
 
 ### Summary
 

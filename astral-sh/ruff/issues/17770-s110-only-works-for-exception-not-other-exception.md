@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-01T16:24:40Z
 updated_at: 2025-05-02T07:28:38Z
 url: https://github.com/astral-sh/ruff/issues/17770
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # `S110` only works for `Exception` not other exception types for multi-line `try` blocks
 
 ---
 
-_Issue opened by @shearer12345 on 2025-05-01 16:24_
+_@shearer12345_
 
 ### Summary
 

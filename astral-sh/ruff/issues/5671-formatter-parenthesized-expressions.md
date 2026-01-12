@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-11T06:34:13Z
 updated_at: 2023-07-11T12:07:41Z
 url: https://github.com/astral-sh/ruff/issues/5671
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: Parenthesized expressions
 
 ---
 
-_Issue opened by @MichaReiser on 2023-07-11 06:34_
+_@MichaReiser_
 
 _No description provided._
 

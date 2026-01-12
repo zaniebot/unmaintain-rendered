@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-15T13:22:34Z
 updated_at: 2024-09-15T13:22:34Z
 url: https://github.com/astral-sh/ruff/issues/13356
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Explore using a token tree
 
 ---
 
-_Issue opened by @MichaReiser on 2024-09-15 13:22_
+_@MichaReiser_
 
 The ruff parser creates a flat-list of tokens. This is a very efficient representation but it has the downside that many lint rules implement the same logic to identify parenthesized ranges. 
 

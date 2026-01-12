@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-08T15:34:32Z
 updated_at: 2024-03-08T19:53:50Z
 url: https://github.com/astral-sh/uv/issues/2302
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # A bit too strict pyproject.toml validation for uv 0.1.16
 
 ---
 
-_Issue opened by @potiuk on 2024-03-08 15:34_
+_@potiuk_
 
 ## Problem description
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-05-28T13:36:06Z
 updated_at: 2025-01-14T18:57:16Z
 url: https://github.com/astral-sh/uv/issues/3879
-synced_at: 2026-01-10T04:27:57Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Using build as tool fails while pipx suceeds
 
 ---
 
-_Issue opened by @konstin on 2024-05-28 13:36_
+_@konstin_
 
 When trying to build https://github.com/konstin/transformers/tree/konsti/repr-for-uv (4b33866235c546f4cd602c6e11efe3cc167b289b), `pipx run build --installer uv .` passes, while `uv tool run --from build python -m build --installer uv .` fails with:
 

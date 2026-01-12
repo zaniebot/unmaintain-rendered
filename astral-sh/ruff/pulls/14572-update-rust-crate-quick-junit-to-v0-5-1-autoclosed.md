@@ -13,14 +13,14 @@ head: renovate/quick-junit-0.x-lockfile
 created_at: 2024-11-25T01:35:27Z
 updated_at: 2024-11-25T07:39:36Z
 url: https://github.com/astral-sh/ruff/pull/14572
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Update Rust crate quick-junit to v0.5.1 - autoclosed
 
 ---
 
-_Pull request opened by @renovate on 2024-11-25 01:35_
+_@renovate_
 
 This PR contains the following updates:
 

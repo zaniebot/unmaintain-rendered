@@ -11,14 +11,14 @@ head: main
 created_at: 2025-05-14T17:20:04Z
 updated_at: 2025-05-17T11:48:36Z
 url: https://github.com/astral-sh/uv/pull/13458
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:41Z
 ```
 
 # fix #13456: Make VIRTUAL_ENV_PROMPT format consistent with venv/virtualenv
 
 ---
 
-_Pull request opened by @sandy-sachin7 on 2025-05-14 17:20_
+_@sandy-sachin7_
 
 Changes shell activation scripts to use raw VIRTUAL_ENV_PROMPT value without adding parentheses or trailing space. This makes uv's behavior match venv and virtualenv, providing a more consistent experience across tools.
 

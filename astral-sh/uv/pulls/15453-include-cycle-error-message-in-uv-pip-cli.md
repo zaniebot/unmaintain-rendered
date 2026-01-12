@@ -13,14 +13,14 @@ head: charlie/recurs
 created_at: 2025-08-22T14:08:02Z
 updated_at: 2025-08-22T14:30:35Z
 url: https://github.com/astral-sh/uv/pull/15453
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:45Z
 ```
 
 # Include cycle error message in `uv pip` CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-22 14:08_
+_@charliermarsh_
 
 ## Summary
 

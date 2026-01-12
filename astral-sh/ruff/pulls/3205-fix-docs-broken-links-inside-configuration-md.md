@@ -12,14 +12,14 @@ head: fix-docs
 created_at: 2023-02-24T11:48:46Z
 updated_at: 2023-02-24T22:10:45Z
 url: https://github.com/astral-sh/ruff/pull/3205
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # fix(docs): broken links inside Configuration.md
 
 ---
 
-_Pull request opened by @carlosmiei on 2023-02-24 11:48_
+_@carlosmiei_
 
 - Found some relative paths pointing to unexistent files, so decided to redirect them to the docs page. 
 - Not sure this is the right fix but it's better than nothing I guess :) 

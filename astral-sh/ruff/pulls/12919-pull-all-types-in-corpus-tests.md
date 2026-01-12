@@ -13,14 +13,14 @@ head: pull-all-types-in-corpus-test
 created_at: 2024-08-16T08:14:55Z
 updated_at: 2024-08-17T12:09:11Z
 url: https://github.com/astral-sh/ruff/pull/12919
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Pull all types in corpus tests
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-16 08:14_
+_@MichaReiser_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: fix-docstring-non-visible-whitespace-content
 created_at: 2024-06-05T07:52:50Z
 updated_at: 2024-06-05T15:55:15Z
 url: https://github.com/astral-sh/ruff/pull/11748
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Fix formatter instability for lines only consisting of zero-width characters
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-05 07:52_
+_@MichaReiser_
 
 ## Summary
 

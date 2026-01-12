@@ -12,14 +12,14 @@ head: charlie/alias
 created_at: 2023-05-20T16:26:12Z
 updated_at: 2023-05-20T16:57:25Z
 url: https://github.com/astral-sh/ruff/pull/4543
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Move submodule alias resolution into `Context`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-20 16:26_
+_@charliermarsh_
 
 _No description provided._
 

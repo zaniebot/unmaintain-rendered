@@ -13,14 +13,14 @@ head: refurb/furb140
 created_at: 2023-09-09T14:45:27Z
 updated_at: 2023-09-19T02:26:53Z
 url: https://github.com/astral-sh/ruff/pull/7253
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # [refurb] Implement `reimplemented-starmap` rule (`FURB140`)
 
 ---
 
-_Pull request opened by @SavchenkoValeriy on 2023-09-09 14:45_
+_@SavchenkoValeriy_
 
 ## Summary
 

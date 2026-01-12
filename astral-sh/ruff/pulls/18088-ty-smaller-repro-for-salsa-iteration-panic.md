@@ -13,14 +13,14 @@ head: micha/salsa-iteration-panic
 created_at: 2025-05-14T08:21:03Z
 updated_at: 2025-05-26T12:15:56Z
 url: https://github.com/astral-sh/ruff/pull/18088
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] Smaller repro for salsa iteration panic
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-14 08:21_
+_@MichaReiser_
 
 Smaller repro for the salsa iteration panic https://github.com/salsa-rs/salsa/issues/831
 

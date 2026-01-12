@@ -13,14 +13,14 @@ head: PYI026
 created_at: 2023-07-17T22:52:00Z
 updated_at: 2023-07-27T21:03:45Z
 url: https://github.com/astral-sh/ruff/pull/5844
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # [`flake8-pyi`] Implement PYI026
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-07-17 22:52_
+_@LaBatata101_
 
 ## Summary
 Checks for `typehint.TypeAlias` annotation in type aliases. See [original source](https://github.com/PyCQA/flake8-pyi/blob/main/pyi.py#L1085).

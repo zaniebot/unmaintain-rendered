@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-04T16:23:49Z
 updated_at: 2024-03-04T17:01:27Z
 url: https://github.com/astral-sh/uv/issues/2163
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # `uv pip compile` does not include extras in the generated files
 
 ---
 
-_Issue opened by @silv-io on 2024-03-04 16:23_
+_@silv-io_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

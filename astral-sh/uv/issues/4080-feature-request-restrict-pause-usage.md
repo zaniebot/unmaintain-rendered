@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-05T23:55:54Z
 updated_at: 2024-06-06T00:07:03Z
 url: https://github.com/astral-sh/uv/issues/4080
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # [FEATURE REQUEST] restrict pause usage
 
 ---
 
-_Issue opened by @Malix-Labs on 2024-06-05 23:55_
+_@Malix-Labs_
 
 ## Problem
 

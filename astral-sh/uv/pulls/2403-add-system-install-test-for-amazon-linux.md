@@ -13,14 +13,14 @@ head: zb/amazon
 created_at: 2024-03-13T03:03:00Z
 updated_at: 2024-03-13T15:05:56Z
 url: https://github.com/astral-sh/uv/pull/2403
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:01Z
 ```
 
 # Add system install test for Amazon Linux
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-13 03:03_
+_@zanieb_
 
 Supersedes https://github.com/astral-sh/uv/pull/1534
 

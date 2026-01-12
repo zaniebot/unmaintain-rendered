@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-10T15:38:49Z
 updated_at: 2025-12-11T10:35:19Z
 url: https://github.com/astral-sh/ruff/issues/21896
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Relexing logical tokens and unclosed interpolated strings
 
 ---
 
-_Issue opened by @MichaReiser on 2025-12-10 15:38_
+_@MichaReiser_
 
 Our logical-line error recovery doesn't work as expected for unclosed interpolated strings. I'm also not sure if it works as expected in other cases but more below.
 

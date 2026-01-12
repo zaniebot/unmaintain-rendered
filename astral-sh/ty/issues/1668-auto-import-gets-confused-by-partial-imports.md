@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-28T16:55:57Z
 updated_at: 2025-12-01T19:20:49Z
 url: https://github.com/astral-sh/ty/issues/1668
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # auto-import gets confused by partial imports
 
 ---
 
-_Issue opened by @Gankra on 2025-11-28 16:55_
+_@Gankra_
 
 ### Summary
 

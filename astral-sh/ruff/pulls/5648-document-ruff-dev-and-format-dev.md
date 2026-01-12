@@ -12,14 +12,14 @@ head: docs
 created_at: 2023-07-10T13:40:56Z
 updated_at: 2023-07-12T14:18:24Z
 url: https://github.com/astral-sh/ruff/pull/5648
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Document ruff_dev and format_dev
 
 ---
 
-_Pull request opened by @konstin on 2023-07-10 13:40_
+_@konstin_
 
 ## Summary
 

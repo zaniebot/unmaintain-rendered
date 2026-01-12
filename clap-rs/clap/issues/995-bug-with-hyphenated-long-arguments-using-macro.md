@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-07-05T19:12:38Z
 updated_at: 2018-08-02T03:30:08Z
 url: https://github.com/clap-rs/clap/issues/995
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Bug with hyphenated long arguments using macro 
 
 ---
 
-_Issue opened by @salpalvv on 2017-07-05 19:12_
+_@salpalvv_
 
 ### Rust Version
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-01T22:28:10Z
 updated_at: 2026-01-09T15:14:27Z
 url: https://github.com/astral-sh/ty/issues/2298
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Initial optimization pass at auto-import symbol extraction
 
 ---
 
-_Issue opened by @liketoeatcheese on 2026-01-01 22:28_
+_@liketoeatcheese_
 
 ### Summary
 

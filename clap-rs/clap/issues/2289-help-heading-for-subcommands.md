@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-01-06T14:30:14Z
 updated_at: 2022-01-11T18:45:07Z
 url: https://github.com/clap-rs/clap/issues/2289
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # `help_heading` for subcommands
 
 ---
 
-_Issue opened by @tailhook on 2021-01-06 14:30_
+_@tailhook_
 
 It would be nice to have `help_heading` equivalent for the subcommands. Currently there is `App::help_heading` but it does something different (default `help_heading` for next arguments).
 

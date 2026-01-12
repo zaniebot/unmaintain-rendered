@@ -13,14 +13,14 @@ head: charlie/perms
 created_at: 2024-01-28T00:10:42Z
 updated_at: 2024-01-28T00:22:45Z
 url: https://github.com/astral-sh/uv/pull/1151
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:28Z
 ```
 
 # Set permissions after streaming unzip
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-28 00:10_
+_@charliermarsh_
 
 ## Summary
 

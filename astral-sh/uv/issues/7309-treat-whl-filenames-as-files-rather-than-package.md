@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-11T20:39:59Z
 updated_at: 2024-09-13T16:01:26Z
 url: https://github.com/astral-sh/uv/issues/7309
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # Treat `.whl` filenames as files rather than package names
 
 ---
 
-_Issue opened by @senysenyseny16 on 2024-09-11 20:39_
+_@senysenyseny16_
 
 Unable to install package inside docker, in normal environment the same package installs without problems.
 

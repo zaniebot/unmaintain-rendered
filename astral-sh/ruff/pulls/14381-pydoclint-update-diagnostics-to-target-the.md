@@ -14,14 +14,14 @@ head: doc-diagnostsic-range
 created_at: 2024-11-16T17:46:13Z
 updated_at: 2024-11-16T18:49:01Z
 url: https://github.com/astral-sh/ruff/pull/14381
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`pydoclint`] Update diagnostics to target the docstring
 
 ---
 
-_Pull request opened by @tjkuson on 2024-11-16 17:46_
+_@tjkuson_
 
 ## Summary
 

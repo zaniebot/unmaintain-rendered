@@ -13,14 +13,14 @@ head: david/release-instructions-update-2
 created_at: 2025-10-16T18:06:05Z
 updated_at: 2025-10-16T18:10:27Z
 url: https://github.com/astral-sh/ty/pull/1372
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Minor adjustment to release instructions
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-16 18:06_
+_@sharkdp_
 
 ## Summary
 

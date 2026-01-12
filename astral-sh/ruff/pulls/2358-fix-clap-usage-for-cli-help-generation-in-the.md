@@ -12,14 +12,14 @@ head: fix-subcommand-help
 created_at: 2023-01-30T18:07:35Z
 updated_at: 2023-01-30T18:14:41Z
 url: https://github.com/astral-sh/ruff/pull/2358
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # fix: clap usage for CLI help generation in the README
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-30 18:07_
+_@not-my-profile_
 
 _No description provided._
 

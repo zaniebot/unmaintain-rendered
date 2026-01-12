@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-16T06:27:56Z
 updated_at: 2025-01-20T09:02:55Z
 url: https://github.com/astral-sh/ruff/issues/15522
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `flake8-bandit` rules does not check `eval` in callback position
 
 ---
 
-_Issue opened by @xvlady on 2025-01-16 06:27_
+_@xvlady_
 
 Demo code:
 ```

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-02T23:03:34Z
 updated_at: 2024-07-03T16:38:55Z
 url: https://github.com/astral-sh/uv/issues/4749
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Add a dedicated help menu for `uvx`
 
 ---
 
-_Issue opened by @zanieb on 2024-07-02 23:03_
+_@zanieb_
 
 Instead of displaying exact menu from `uv tool run`, we should refer to `uvx` and note that it's an alias of `uv tool run`.
 

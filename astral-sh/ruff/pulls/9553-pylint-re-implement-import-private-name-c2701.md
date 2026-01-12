@@ -14,14 +14,14 @@ head: fix-import-private-name
 created_at: 2024-01-16T18:06:34Z
 updated_at: 2024-01-16T21:02:42Z
 url: https://github.com/astral-sh/ruff/pull/9553
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`pylint`] (Re-)Implement `import-private-name` (`C2701`)
 
 ---
 
-_Pull request opened by @tjkuson on 2024-01-16 18:06_
+_@tjkuson_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-29T00:15:17Z
 updated_at: 2023-08-29T00:39:30Z
 url: https://github.com/clap-rs/clap/issues/5099
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Provide CLI arguments in config file
 
 ---
 
-_Issue opened by @SamuelMarks on 2023-08-29 00:15_
+_@SamuelMarks_
 
 ### Please complete the following tasks
 

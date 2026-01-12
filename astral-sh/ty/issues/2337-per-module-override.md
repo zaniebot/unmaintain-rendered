@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-05T09:37:31Z
 updated_at: 2026-01-05T09:49:32Z
 url: https://github.com/astral-sh/ty/issues/2337
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Per module override ?
 
 ---
 
-_Issue opened by @Pijukatel on 2026-01-05 09:37_
+_@Pijukatel_
 
 ### Question
 

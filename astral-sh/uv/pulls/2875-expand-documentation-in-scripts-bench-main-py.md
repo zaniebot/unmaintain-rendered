@@ -13,14 +13,14 @@ head: charlie/man
 created_at: 2024-04-08T02:30:20Z
 updated_at: 2024-04-08T04:43:43Z
 url: https://github.com/astral-sh/uv/pull/2875
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:16Z
 ```
 
 # Expand documentation in `scripts/bench/__main__.py`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-08 02:30_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/uv/issues/1318.
 

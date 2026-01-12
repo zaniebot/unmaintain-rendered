@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-18T14:32:20Z
 updated_at: 2024-10-19T13:26:02Z
 url: https://github.com/astral-sh/uv/issues/8330
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # `uv remove` should remove `tool.uv.sources` entries if it's the only reference
 
 ---
 
-_Issue opened by @zanieb on 2024-10-18 14:32_
+_@zanieb_
 
 e.g. as described in https://github.com/astral-sh/uv/issues/8328#issuecomment-2422598725
 

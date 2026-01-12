@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-05T21:53:40Z
 updated_at: 2024-05-22T16:34:26Z
 url: https://github.com/astral-sh/uv/issues/2222
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # uv installed on 3.9 version, but make venv on 3.7 version
 
 ---
 
-_Issue opened by @mephistiks on 2024-03-05 21:53_
+_@mephistiks_
 
 Input:
 ```sh 

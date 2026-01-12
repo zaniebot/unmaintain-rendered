@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-08-23T18:09:44Z
 updated_at: 2024-08-28T16:40:50Z
 url: https://github.com/astral-sh/uv/issues/6535
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # Support `uv tool install package@version` to match `uvx`
 
 ---
 
-_Issue opened by @zanieb on 2024-08-23 18:09_
+_@zanieb_
 
 Otherwise, going from `uvx` to `uv tool install` can be surprising. 
 

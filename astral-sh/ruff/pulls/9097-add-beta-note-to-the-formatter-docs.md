@@ -13,14 +13,14 @@ head: charlie/beta
 created_at: 2023-12-11T18:00:49Z
 updated_at: 2023-12-11T20:50:03Z
 url: https://github.com/astral-sh/ruff/pull/9097
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Add beta note to the formatter docs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-11 18:00_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9092.
 

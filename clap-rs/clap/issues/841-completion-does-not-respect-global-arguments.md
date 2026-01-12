@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-02-03T11:11:46Z
 updated_at: 2018-08-02T03:30:01Z
 url: https://github.com/clap-rs/clap/issues/841
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # completion does not respect global arguments
 
 ---
 
-_Issue opened by @laishulu on 2017-02-03 11:11_
+_@laishulu_
 
 ### Rust Version
 

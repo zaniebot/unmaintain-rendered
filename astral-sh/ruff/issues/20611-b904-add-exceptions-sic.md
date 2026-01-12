@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-28T19:04:26Z
 updated_at: 2025-09-29T20:53:58Z
 url: https://github.com/astral-sh/ruff/issues/20611
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # B904: add exceptions[sic]
 
 ---
 
-_Issue opened by @smurfix on 2025-09-28 19:04_
+_@smurfix_
 
 ### Summary
 

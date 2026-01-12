@@ -12,14 +12,14 @@ head: ag/all-members-fixups
 created_at: 2025-05-30T17:27:04Z
 updated_at: 2025-05-30T17:36:59Z
 url: https://github.com/astral-sh/ruff/pull/18388
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Minor tweaks to "list all members" docs and tests
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-05-30 17:27_
+_@BurntSushi_
 
 Ref https://github.com/astral-sh/ruff/pull/18251#pullrequestreview-2881810681
 

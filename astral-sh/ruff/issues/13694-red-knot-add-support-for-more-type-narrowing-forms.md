@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-09T19:30:27Z
 updated_at: 2025-04-02T00:15:45Z
 url: https://github.com/astral-sh/ruff/issues/13694
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] add support for more type narrowing forms
 
 ---
 
-_Issue opened by @carljm on 2024-10-09 19:30_
+_@carljm_
 
 - [x] x is not None
 - [x] #13715

@@ -14,14 +14,14 @@ head: charlie/symbols
 created_at: 2023-09-02T11:32:43Z
 updated_at: 2023-09-02T11:58:19Z
 url: https://github.com/astral-sh/ruff/pull/7063
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Avoid duplicate fixes for multi-import imports in RUF017
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-02 11:32_
+_@charliermarsh_
 
 If a user has `import collections, functools, operator`, and we try to import from `functools` and `operator`, we end up adding two identical synthetic edits to preserve that import statement. We need to dedupe them.
 

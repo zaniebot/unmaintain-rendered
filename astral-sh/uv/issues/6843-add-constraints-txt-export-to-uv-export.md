@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-30T00:19:23Z
 updated_at: 2024-08-31T17:04:46Z
 url: https://github.com/astral-sh/uv/issues/6843
-synced_at: 2026-01-10T01:57:15Z
+synced_at: 2026-01-12T15:59:08Z
 ```
 
 # Add `constraints.txt` export to `uv export`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-30 00:19_
+_@charliermarsh_
 
 Constraints files are a little different... Specifically, every requirement has to be named, so we can't write relative paths. (You also can't include extras, but we already don't do that.)
 

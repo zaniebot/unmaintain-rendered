@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-16T09:13:37Z
 updated_at: 2025-06-18T09:10:36Z
 url: https://github.com/astral-sh/ruff/issues/12343
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Enabling specific preview rules
 
 ---
 
-_Issue opened by @adrinjalali on 2024-07-16 09:13_
+_@adrinjalali_
 
 Our usecase https://github.com/scikit-learn/scikit-learn/pull/29477 is that we'd like to enable `CPY001`. Since it's a `preview` rule, one needs to enable preview mode.
 

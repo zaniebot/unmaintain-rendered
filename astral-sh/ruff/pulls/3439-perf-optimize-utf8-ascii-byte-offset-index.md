@@ -12,14 +12,14 @@ head: perf/byte-index
 created_at: 2023-03-10T13:39:36Z
 updated_at: 2023-03-11T12:12:12Z
 url: https://github.com/astral-sh/ruff/pull/3439
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # perf: Optimize UTF8/ASCII byte offset index
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-10 13:39_
+_@MichaReiser_
 
 This PR improves the memory consumption and performance of our line/column based `Location`s to byte offsets. The PR also introduces two new zero-cost wrappers so that the functionality can be implemented as methods rather than free floating functions. 
 

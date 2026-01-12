@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-09T23:37:33Z
 updated_at: 2025-12-09T23:39:49Z
 url: https://github.com/astral-sh/ty/issues/1830
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `unused-ignore-comment`:  ignoring `# type:ignore` comments that are intended for mypy
 
 ---
 
-_Issue opened by @jorenham on 2025-12-09 23:37_
+_@jorenham_
 
 scipy-stubs supports both mypy and ty. It uses `# type: ignore` comments for mypy, and `# ty:ignore` for ty. When I enable `unused-ignore-comment`, ty reports many unused `Unused blanket `type:ignore` directive`, even though those are specifically meant for mypy, and only for mypy.
 If I now turn on `unused-ignore-comment`, ty reports 95 "Unused blanket `type: ignore` directive", and all of them are needed for mypy.

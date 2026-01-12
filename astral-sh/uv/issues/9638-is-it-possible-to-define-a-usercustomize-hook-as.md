@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-04T13:32:17Z
 updated_at: 2025-08-14T11:53:56Z
 url: https://github.com/astral-sh/uv/issues/9638
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # is it possible to define a usercustomize hook as part of the uv project?
 
 ---
 
-_Issue opened by @ophiry on 2024-12-04 13:32_
+_@ophiry_
 
 I want to have a python startup hook (usercustomize.py, or some alternative) that runs whenever an interpreter is launched.
 

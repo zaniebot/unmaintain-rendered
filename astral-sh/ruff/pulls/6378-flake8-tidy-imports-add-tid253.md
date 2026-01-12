@@ -13,14 +13,14 @@ head: durumu/bannedmodulelevel
 created_at: 2023-08-06T21:42:08Z
 updated_at: 2023-08-12T19:09:44Z
 url: https://github.com/astral-sh/ruff/pull/6378
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # [`flake8-tidy-imports`] Add `TID253`
 
 ---
 
-_Pull request opened by @durumu on 2023-08-06 21:42_
+_@durumu_
 
 ## Summary
 

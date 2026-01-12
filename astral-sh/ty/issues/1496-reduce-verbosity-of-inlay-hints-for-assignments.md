@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T16:31:01Z
 updated_at: 2026-01-09T04:10:35Z
 url: https://github.com/astral-sh/ty/issues/1496
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Reduce verbosity of inlay hints for assignments that use unpacking
 
 ---
 
-_Issue opened by @smortezah on 2025-11-06 16:31_
+_@smortezah_
 
 ### Question
 

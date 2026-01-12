@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-17T10:46:09Z
 updated_at: 2025-09-19T14:35:45Z
 url: https://github.com/astral-sh/uv/issues/10707
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:19Z
 ```
 
 # zsh: command not found: compdef
 
 ---
 
-_Issue opened by @lukejanicke on 2025-01-17 10:46_
+_@lukejanicke_
 
 Fresh install of `uv` on macOS 15.2.
 

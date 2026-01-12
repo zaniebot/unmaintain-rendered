@@ -13,14 +13,14 @@ head: add-extra-traits-to-syn
 created_at: 2023-05-24T17:01:53Z
 updated_at: 2023-05-24T17:42:53Z
 url: https://github.com/astral-sh/ruff/pull/4643
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Testing Macros: Add `extra-traits` feature to syn
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-24 17:01_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

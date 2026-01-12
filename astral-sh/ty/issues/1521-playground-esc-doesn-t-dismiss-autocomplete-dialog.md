@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-11T14:48:09Z
 updated_at: 2025-11-12T07:54:16Z
 url: https://github.com/astral-sh/ty/issues/1521
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # playground: Esc doesn't dismiss autocomplete dialog
 
 ---
 
-_Issue opened by @zsol on 2025-11-11 14:48_
+_@zsol_
 
 ### Summary
 

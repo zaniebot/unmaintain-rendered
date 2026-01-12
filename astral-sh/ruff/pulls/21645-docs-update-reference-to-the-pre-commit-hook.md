@@ -13,14 +13,14 @@ head: docs-pre-commit-legacy-alias
 created_at: 2025-11-26T19:06:10Z
 updated_at: 2025-11-27T09:25:34Z
 url: https://github.com/astral-sh/ruff/pull/21645
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # docs: update reference to the pre-commit hook
 
 ---
 
-_Pull request opened by @JumboBear on 2025-11-26 19:06_
+_@JumboBear_
 
 ## Summary
 

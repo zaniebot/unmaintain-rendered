@@ -13,14 +13,14 @@ head: charlie/perms
 created_at: 2025-02-07T20:13:50Z
 updated_at: 2025-02-07T21:36:11Z
 url: https://github.com/astral-sh/uv/pull/11328
-synced_at: 2026-01-10T11:10:35Z
+synced_at: 2026-01-12T16:09:47Z
 ```
 
 # Set 777 permissions on locked files
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-07 20:13_
+_@charliermarsh_
 
 ## Summary
 

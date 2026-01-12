@@ -13,14 +13,14 @@ head: search-terms
 created_at: 2024-03-12T01:41:25Z
 updated_at: 2024-03-13T03:50:53Z
 url: https://github.com/astral-sh/ruff/pull/10352
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # (🎁) Add issue template search terms section
 
 ---
 
-_Pull request opened by @KotlinIsland on 2024-03-12 01:41_
+_@KotlinIsland_
 
 - resolves #10350
 

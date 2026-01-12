@@ -12,14 +12,14 @@ head: unambiguous-ascii-only
 created_at: 2023-03-30T13:52:37Z
 updated_at: 2023-03-31T17:03:02Z
 url: https://github.com/astral-sh/ruff/pull/3814
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Ambiguous unicode, only test unicode characters
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-30 13:52_
+_@MichaReiser_
 
 This PR adds a simple test if the character is a non-ascii character before looking the character up in the ambiguous characters table. 
 

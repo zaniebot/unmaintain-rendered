@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-04T09:14:59Z
 updated_at: 2023-01-26T04:49:25Z
 url: https://github.com/astral-sh/ruff/issues/579
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Feature request: support for flake8-annotations
 
 ---
 
-_Issue opened by @tekumara on 2022-11-04 09:14_
+_@tekumara_
 
 Support for flake8-annotations would be awesome! 🙏 
 

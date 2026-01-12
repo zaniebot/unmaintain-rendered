@@ -13,14 +13,14 @@ head: ibraheem/uv-add-workspace
 created_at: 2024-06-17T17:00:28Z
 updated_at: 2024-06-18T16:26:08Z
 url: https://github.com/astral-sh/uv/pull/4362
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:11Z
 ```
 
 # Add `--workspace` option to `uv add`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-06-17 17:00_
+_@ibraheemdev_
 
 ## Summary
 

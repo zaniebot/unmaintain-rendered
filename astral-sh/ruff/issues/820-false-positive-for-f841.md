@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-19T23:26:15Z
 updated_at: 2022-11-20T00:53:14Z
 url: https://github.com/astral-sh/ruff/issues/820
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # False positive for F841
 
 ---
 
-_Issue opened by @bryevdv on 2022-11-19 23:26_
+_@bryevdv_
 
 Today the latest version of ruff (0.0.128) started  complaining about this test code:
 ```python

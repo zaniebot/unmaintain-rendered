@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-22T17:43:23Z
 updated_at: 2025-12-22T17:52:15Z
 url: https://github.com/astral-sh/uv/issues/17217
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:46Z
 ```
 
 # `uv venv`: flag to disable activate/pydoc script generation
 
 ---
 
-_Issue opened by @paveldikov on 2025-12-22 17:43_
+_@paveldikov_
 
 ### Summary
 

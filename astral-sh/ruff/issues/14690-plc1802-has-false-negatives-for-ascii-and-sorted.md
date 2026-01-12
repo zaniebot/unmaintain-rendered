@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-30T15:57:02Z
 updated_at: 2024-11-30T20:10:32Z
 url: https://github.com/astral-sh/ruff/issues/14690
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # PLC1802 has false negatives for `ascii` and `sorted`
 
 ---
 
-_Issue opened by @dscorbett on 2024-11-30 15:57_
+_@dscorbett_
 
 [`len-test` (PLC1802)](https://docs.astral.sh/ruff/rules/len-test/) in Ruff 0.8.1 does not recognize the builtins [`ascii`](https://docs.python.org/3/library/functions.html#ascii) and [`sorted`](https://docs.python.org/3/library/functions.html#sorted) as returning sequences, leading to false negatives.
 

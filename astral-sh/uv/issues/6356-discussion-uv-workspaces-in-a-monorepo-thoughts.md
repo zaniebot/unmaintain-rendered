@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T16:48:32Z
 updated_at: 2025-07-08T06:02:30Z
 url: https://github.com/astral-sh/uv/issues/6356
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Discussion: uv workspaces in a monorepo - thoughts on change-only testing
 
 ---
 
-_Issue opened by @brendan-morin on 2024-08-21 16:48_
+_@brendan-morin_
 
 Hi team, the new release of `uv` looks great, really looking forward to diving into all the features and new docs.
 

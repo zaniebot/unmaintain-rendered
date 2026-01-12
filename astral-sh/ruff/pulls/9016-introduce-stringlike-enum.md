@@ -13,14 +13,14 @@ head: dhruv/string-like
 created_at: 2023-12-05T20:33:33Z
 updated_at: 2023-12-07T16:49:36Z
 url: https://github.com/astral-sh/ruff/pull/9016
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Introduce `StringLike` enum
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-12-05 20:33_
+_@dhruvmanila_
 
 ## Summary
 

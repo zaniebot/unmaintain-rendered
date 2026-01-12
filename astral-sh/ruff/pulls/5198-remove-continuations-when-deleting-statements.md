@@ -12,14 +12,14 @@ head: charlie/continuations
 created_at: 2023-06-20T01:43:19Z
 updated_at: 2023-06-20T02:25:39Z
 url: https://github.com/astral-sh/ruff/pull/5198
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Remove continuations when deleting statements
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-20 01:43_
+_@charliermarsh_
 
 ## Summary
 

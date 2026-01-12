@@ -12,14 +12,14 @@ head: charlie/fnv-hasher
 created_at: 2022-11-12T21:09:17Z
 updated_at: 2022-11-12T21:09:36Z
 url: https://github.com/astral-sh/ruff/pull/708
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Use FnvHasher for unordered maps and sets
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-12 21:09_
+_@charliermarsh_
 
 _No description provided._
 

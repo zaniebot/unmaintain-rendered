@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-11T17:35:01Z
 updated_at: 2024-04-11T18:16:14Z
 url: https://github.com/astral-sh/ruff/issues/10889
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PLR1730 min / max reversed detected / auto-fix
 
 ---
 
-_Issue opened by @ilius on 2024-04-11 17:35_
+_@ilius_
 
 <!--
 If you're filing a bug report, please consider including the following information:

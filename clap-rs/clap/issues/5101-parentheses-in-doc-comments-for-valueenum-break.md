@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-29T19:28:41Z
 updated_at: 2023-09-07T13:52:08Z
 url: https://github.com/clap-rs/clap/issues/5101
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Parentheses in doc comments for `ValueEnum` break generated fish completions
 
 ---
 
-_Issue opened by @cstyles on 2023-08-29 19:28_
+_@cstyles_
 
 ### Please complete the following tasks
 

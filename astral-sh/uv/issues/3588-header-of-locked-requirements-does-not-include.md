@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-14T19:10:57Z
 updated_at: 2024-07-14T14:03:28Z
 url: https://github.com/astral-sh/uv/issues/3588
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Header of locked requirements does not include Python version
 
 ---
 
-_Issue opened by @Rogdham on 2024-05-14 19:10_
+_@Rogdham_
 
 Hello, I noticed that `pip-tools` includes the Python version compiled against in the header, while `uv` does not:
 

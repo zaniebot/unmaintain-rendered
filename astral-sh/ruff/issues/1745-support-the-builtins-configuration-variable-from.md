@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-09T13:03:27Z
 updated_at: 2023-01-09T17:24:29Z
 url: https://github.com/astral-sh/ruff/issues/1745
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Support the builtins configuration variable from flake8
 
 ---
 
-_Issue opened by @kovidgoyal on 2023-01-09 13:03_
+_@kovidgoyal_
 
 It would be useful to me to support the builtins flake8 configuration variable. It allows telling flake8 that some names have been added to the python global namespace and so should not be reported as Undefined name errors.
 

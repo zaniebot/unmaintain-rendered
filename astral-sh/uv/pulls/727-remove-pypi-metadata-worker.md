@@ -13,14 +13,14 @@ head: charlie/worker
 created_at: 2023-12-25T14:13:03Z
 updated_at: 2023-12-25T14:18:00Z
 url: https://github.com/astral-sh/uv/pull/727
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Remove `pypi-metadata` worker
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-25 14:13_
+_@charliermarsh_
 
 We've stopped using this for now.
 

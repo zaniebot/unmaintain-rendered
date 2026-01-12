@@ -13,14 +13,14 @@ head: narrow-right-comparison-op
 created_at: 2026-01-11T23:56:30Z
 updated_at: 2026-01-12T11:46:39Z
 url: https://github.com/astral-sh/ruff/pull/22511
-synced_at: 2026-01-12T11:55:15Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # [ty] narrow right comparison op
 
 ---
 
-_Pull request opened by @drbh on 2026-01-11 23:56_
+_@drbh_
 
 ## Summary
 

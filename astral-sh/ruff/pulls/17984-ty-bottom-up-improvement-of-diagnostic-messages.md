@@ -14,14 +14,14 @@ head: ag/diag-call-union-redux
 created_at: 2025-05-09T14:13:35Z
 updated_at: 2025-05-09T17:41:04Z
 url: https://github.com/astral-sh/ruff/pull/17984
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # [ty] bottom-up improvement of diagnostic messages for union type function calls
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-05-09 14:13_
+_@BurntSushi_
 
 This PR is a redux of #17959. Namely, we still have the goal of
 improving diagnostics for incorrect function calls through union types,

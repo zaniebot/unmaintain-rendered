@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-16T01:55:12Z
 updated_at: 2024-02-28T08:53:18Z
 url: https://github.com/astral-sh/uv/issues/1408
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Warn if not in a virtual environment and `.venv` is present in the working directory
 
 ---
 
-_Issue opened by @zanieb on 2024-02-16 01:55_
+_@zanieb_
 
 e.g. to help guard against common mistakes
 

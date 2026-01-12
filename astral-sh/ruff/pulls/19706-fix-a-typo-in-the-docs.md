@@ -13,14 +13,14 @@ head: jscanvic-patch-1
 created_at: 2025-08-02T21:35:57Z
 updated_at: 2025-08-03T16:37:17Z
 url: https://github.com/astral-sh/ruff/pull/19706
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # Fix a typo in the docs
 
 ---
 
-_Pull request opened by @jscanvic on 2025-08-02 21:35_
+_@jscanvic_
 
 Thanks for the great tool!
 

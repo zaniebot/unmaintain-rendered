@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-24T09:36:26Z
 updated_at: 2025-09-24T20:13:25Z
 url: https://github.com/astral-sh/uv/issues/16012
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # UV does not download a python version to satisfy both .python-version and requires-python, even if only-managed is set
 
 ---
 
-_Issue opened by @Wesztman on 2025-09-24 09:36_
+_@Wesztman_
 
 ### Summary
 

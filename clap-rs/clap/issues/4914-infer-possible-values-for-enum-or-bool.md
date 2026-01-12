@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-18T12:26:57Z
 updated_at: 2023-05-18T13:09:09Z
 url: https://github.com/clap-rs/clap/issues/4914
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Infer possible values for enum or bool
 
 ---
 
-_Issue opened by @kik4444 on 2023-05-18 12:26_
+_@kik4444_
 
 ### Please complete the following tasks
 

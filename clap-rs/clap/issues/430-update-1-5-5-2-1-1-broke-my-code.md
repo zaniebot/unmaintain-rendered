@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-02-20T20:22:47Z
 updated_at: 2018-08-02T03:29:48Z
 url: https://github.com/clap-rs/clap/issues/430
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Update (1.5.5 -> 2.1.1) broke my code
 
 ---
 
-_Issue opened by @matthiasbeyer on 2016-02-20 20:22_
+_@matthiasbeyer_
 
 Nothing critical, though you might want to know:
 

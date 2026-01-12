@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-05T18:26:26Z
 updated_at: 2024-03-05T18:47:40Z
 url: https://github.com/astral-sh/uv/issues/2211
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Use of `-p python3` on Windows can resolve to Windows Store shim
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-05 18:26_
+_@charliermarsh_
 
 _No description provided._
 

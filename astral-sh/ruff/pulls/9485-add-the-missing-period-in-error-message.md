@@ -13,14 +13,14 @@ head: fix-double-period
 created_at: 2024-01-12T04:33:50Z
 updated_at: 2024-01-12T04:51:57Z
 url: https://github.com/astral-sh/ruff/pull/9485
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # (🐞) Add the missing period in error message
 
 ---
 
-_Pull request opened by @KotlinIsland on 2024-01-12 04:33_
+_@KotlinIsland_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

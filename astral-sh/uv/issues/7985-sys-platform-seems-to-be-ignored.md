@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-07T18:22:15Z
 updated_at: 2024-10-21T21:55:45Z
 url: https://github.com/astral-sh/uv/issues/7985
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # sys_platform seems to be ignored
 
 ---
 
-_Issue opened by @mikkelam on 2024-10-07 18:22_
+_@mikkelam_
 
 sys_platform seems to be ignored. I am on a macos ARM64. This package is only available for linux
 

@@ -12,14 +12,14 @@ head: charlie/simplify
 created_at: 2023-01-04T13:06:54Z
 updated_at: 2023-01-04T13:07:01Z
 url: https://github.com/astral-sh/ruff/pull/1630
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Implement `SIM220` and `SIM221`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-04 13:06_
+_@charliermarsh_
 
 _No description provided._
 

@@ -14,14 +14,14 @@ head: david/dataclass-final-fields
 created_at: 2025-07-08T11:26:42Z
 updated_at: 2025-07-08T12:34:26Z
 url: https://github.com/astral-sh/ruff/pull/19202
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [ty] Add tests for dataclass fields annotated with `Final`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-08 11:26_
+_@sharkdp_
 
 ## Summary
 

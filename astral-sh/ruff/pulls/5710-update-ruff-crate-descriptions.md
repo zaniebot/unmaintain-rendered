@@ -13,14 +13,14 @@ head: Document_ruff_crates
 created_at: 2023-07-12T13:33:11Z
 updated_at: 2023-07-16T02:56:13Z
 url: https://github.com/astral-sh/ruff/pull/5710
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Update ruff crate descriptions
 
 ---
 
-_Pull request opened by @konstin on 2023-07-12 13:33_
+_@konstin_
 
 ## Summary
 

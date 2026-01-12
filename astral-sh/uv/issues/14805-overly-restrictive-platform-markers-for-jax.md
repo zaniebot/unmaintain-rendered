@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-22T08:34:25Z
 updated_at: 2025-08-06T09:26:28Z
 url: https://github.com/astral-sh/uv/issues/14805
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:56Z
 ```
 
 # Overly restrictive platform markers for jax/jaxlib when torch is included from torch index with CPU vs GPU "--extra"
 
 ---
 
-_Issue opened by @mscheltienne on 2025-07-22 08:34_
+_@mscheltienne_
 
 ### Summary
 

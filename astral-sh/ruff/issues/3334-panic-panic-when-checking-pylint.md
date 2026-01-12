@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-04T10:22:37Z
 updated_at: 2023-03-04T17:14:34Z
 url: https://github.com/astral-sh/ruff/issues/3334
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Panic] Panic when checking pylint 
 
 ---
 
-_Issue opened by @qarmin on 2023-03-04 10:22_
+_@qarmin_
 
 Panic when testing pylint
 ```

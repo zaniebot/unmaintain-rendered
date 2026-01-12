@@ -14,14 +14,14 @@ head: ag/typeshed-import-resolution
 created_at: 2025-07-30T13:44:44Z
 updated_at: 2025-07-30T14:35:00Z
 url: https://github.com/astral-sh/ruff/pull/19638
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [ty] Update module resolution diagram to account for typeshed `VERSIONS` file
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-07-30 13:44_
+_@BurntSushi_
 
 This does unfortunately add a fair bit of complexity to the flow
 diagram.

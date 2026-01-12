@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-10T09:44:43Z
 updated_at: 2026-01-10T09:44:43Z
 url: https://github.com/astral-sh/ruff/issues/22489
-synced_at: 2026-01-10T12:06:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Extend if-with-same-arms (SIM114) or new rule for seperate if statements that return
 
 ---
 
-_Issue opened by @GideonBear on 2026-01-10 09:44_
+_@GideonBear_
 
 ### Summary
 

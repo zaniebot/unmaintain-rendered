@@ -12,14 +12,14 @@ head: proper-line-endings-in-source-generator
 created_at: 2022-12-30T21:07:17Z
 updated_at: 2022-12-31T13:02:56Z
 url: https://github.com/astral-sh/ruff/pull/1487
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Generate source code with detected line ending
 
 ---
 
-_Pull request opened by @squiddy on 2022-12-30 21:07_
+_@squiddy_
 
 Refs: #1477
 

@@ -12,14 +12,14 @@ head: charlie/pyi
 created_at: 2022-12-08T16:34:34Z
 updated_at: 2022-12-08T16:34:42Z
 url: https://github.com/astral-sh/ruff/pull/1142
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Use single newlines in .pyi import sorting
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-08 16:34_
+_@charliermarsh_
 
 Resolves https://github.com/charliermarsh/ruff/issues/1139.
 

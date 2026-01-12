@@ -12,14 +12,14 @@ head: pep-691
 created_at: 2023-11-15T18:53:09Z
 updated_at: 2023-11-16T18:03:46Z
 url: https://github.com/astral-sh/uv/pull/428
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:56Z
 ```
 
 # Improve PEP 691 compatibility
 
 ---
 
-_Pull request opened by @konstin on 2023-11-15 18:53_
+_@konstin_
 
 [PEP 691](https://peps.python.org/pep-0691/#project-detail) has slightly different, more relaxed rules around file metadata. These changes are now reflected in the `File` struct. This will make it easier to support alternative indices.
 

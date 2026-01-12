@@ -13,14 +13,14 @@ head: charlie/edit
 created_at: 2025-09-07T15:57:26Z
 updated_at: 2025-09-07T18:37:06Z
 url: https://github.com/astral-sh/uv/pull/15712
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:53Z
 ```
 
 # Allow `--editable` to override `editable = false` annotations
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-09-07 15:57_
+_@charliermarsh_
 
 ## Summary
 

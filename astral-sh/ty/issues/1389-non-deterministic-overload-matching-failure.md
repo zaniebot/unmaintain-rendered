@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T15:10:36Z
 updated_at: 2025-11-21T21:15:32Z
 url: https://github.com/astral-sh/ty/issues/1389
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Non-deterministic overload matching failure
 
 ---
 
-_Issue opened by @mtshiba on 2025-10-17 15:10_
+_@mtshiba_
 
 ### Summary
 

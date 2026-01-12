@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-25T08:07:50Z
 updated_at: 2024-04-25T15:23:04Z
 url: https://github.com/astral-sh/ruff/issues/11142
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Feature request: make `typing_modules` configurable
 
 ---
 
-_Issue opened by @bersbersbers on 2024-04-25 08:07_
+_@bersbersbers_
 
 The [`typeguard` package](https://github.com/agronholm/typeguard) enables run-time type checks. One of the drawbacks of run-time  type checks is that type annotations behind `if typing.TYPE_CHECKING` are not visible (https://typeguard.readthedocs.io/en/stable/userguide.html#notes-on-forward-reference-handling; compare also https://github.com/agronholm/typeguard/issues/456).
 

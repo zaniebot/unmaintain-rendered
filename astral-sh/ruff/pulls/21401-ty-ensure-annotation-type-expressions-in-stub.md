@@ -14,14 +14,14 @@ head: alex/tvar-bound-stubs2
 created_at: 2025-11-12T12:41:54Z
 updated_at: 2025-11-13T17:37:58Z
 url: https://github.com/astral-sh/ruff/pull/21401
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] Ensure annotation/type expressions in stub files are always deferred
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-12 12:41_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-08T09:28:17Z
 updated_at: 2024-03-09T14:13:36Z
 url: https://github.com/astral-sh/uv/issues/2299
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # Failed to add `paddle` dependency
 
 ---
 
-_Issue opened by @CrazyboyQCD on 2024-03-08 09:28_
+_@CrazyboyQCD_
 
 **OS**: Windows 11
 **Version**: 0.1.15

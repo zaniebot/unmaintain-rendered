@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-28T14:51:39Z
 updated_at: 2025-05-04T12:43:37Z
 url: https://github.com/astral-sh/uv/issues/13180
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # opencv functions do not work in uv scripts, but work fine in pip environment on same system
 
 ---
 
-_Issue opened by @Youjin1985 on 2025-04-28 14:51_
+_@Youjin1985_
 
 ### Summary
 

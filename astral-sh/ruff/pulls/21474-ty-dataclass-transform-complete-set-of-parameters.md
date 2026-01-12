@@ -14,14 +14,14 @@ head: david/dataclass-transform-remaining-flags
 created_at: 2025-11-15T17:33:54Z
 updated_at: 2025-11-16T09:46:46Z
 url: https://github.com/astral-sh/ruff/pull/21474
-synced_at: 2026-01-10T16:53:56Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [ty] Dataclass transform: complete set of parameters
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-15 17:33_
+_@sharkdp_
 
 ## Summary
 

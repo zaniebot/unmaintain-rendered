@@ -13,14 +13,14 @@ head: zb/dev-drive
 created_at: 2024-12-26T19:58:45Z
 updated_at: 2025-01-17T19:57:11Z
 url: https://github.com/astral-sh/uv/pull/10180
-synced_at: 2026-01-10T11:44:37Z
+synced_at: 2026-01-12T16:09:10Z
 ```
 
 # Use `D:` drive for Windows CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-26 19:58_
+_@zanieb_
 
 When using the standard Windows runners (as opposed to the _larger_ GitHub runners), an undocumented `D:` drive is available and performant. We can save some money on by using this on a standard runner instead of a larger runner with an ReFS drive. Switching to the `D:` drive was not acceptable for `cargo test` >25m runtime.
 

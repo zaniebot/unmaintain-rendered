@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-19T19:29:55Z
 updated_at: 2025-12-19T20:06:17Z
 url: https://github.com/astral-sh/ty/issues/2119
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # LSP: PublishDiagnostics missing for dependent files after changes in other files
 
 ---
 
-_Issue opened by @ficd0 on 2025-12-19 19:29_
+_@ficd0_
 
 ### Summary
 

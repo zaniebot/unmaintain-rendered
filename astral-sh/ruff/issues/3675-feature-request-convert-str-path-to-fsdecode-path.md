@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-03-22T22:55:48Z
 updated_at: 2023-07-10T01:29:07Z
 url: https://github.com/astral-sh/ruff/issues/3675
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Feature request: convert str(Path) to fsdecode(Path)
 
 ---
 
-_Issue opened by @m-aciek on 2023-03-22 22:55_
+_@m-aciek_
 
 I [learned today](https://discuss.python.org/t/make-pathlib-extensible/3428/79) that [os.fsdecode(Path)](https://docs.python.org/3/library/os.html#os.fsdecode) is preferred over str(Path) for [pathlib.Path](https://docs.python.org/3/library/pathlib.html) objects. Ruff could have a check for str(Path) usages.
 

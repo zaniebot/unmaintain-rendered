@@ -12,14 +12,14 @@ head: test-cleanup
 created_at: 2023-11-16T11:18:27Z
 updated_at: 2023-11-16T11:22:48Z
 url: https://github.com/astral-sh/uv/pull/433
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:56Z
 ```
 
 # Small test cleanup after #431
 
 ---
 
-_Pull request opened by @konstin on 2023-11-16 11:18_
+_@konstin_
 
 Remove unused filters after #431
 

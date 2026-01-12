@@ -13,14 +13,14 @@ head: fix-safety-section-duplicate_class_field_definition
 created_at: 2025-06-19T19:59:25Z
 updated_at: 2025-06-19T22:16:14Z
 url: https://github.com/astral-sh/ruff/pull/18802
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [`flake8-pie`] Add fix safety section to `PIE794`
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-19 19:59_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

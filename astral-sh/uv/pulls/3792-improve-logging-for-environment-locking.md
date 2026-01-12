@@ -13,14 +13,14 @@ head: zb/lock
 created_at: 2024-05-23T14:00:50Z
 updated_at: 2024-05-23T14:27:08Z
 url: https://github.com/astral-sh/uv/pull/3792
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:51Z
 ```
 
 # Improve logging for environment locking
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-23 14:00_
+_@zanieb_
 
 ```
 DEBUG Acquired lock for `.venv`

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T00:00:32Z
 updated_at: 2025-06-13T10:33:11Z
 url: https://github.com/astral-sh/uv/issues/12854
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # show cache usage
 
 ---
 
-_Issue opened by @dotysan on 2025-04-14 00:00_
+_@dotysan_
 
 I'm new here. So apologies if this is a dupe...
 

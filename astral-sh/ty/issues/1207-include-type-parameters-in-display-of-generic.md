@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-19T03:48:41Z
 updated_at: 2025-12-30T17:37:59Z
 url: https://github.com/astral-sh/ty/issues/1207
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # include type parameters in display of generic callables
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-19 03:48_
+_@KotlinIsland_
 
 ### Summary
 

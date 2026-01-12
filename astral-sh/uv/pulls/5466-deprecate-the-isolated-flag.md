@@ -13,14 +13,14 @@ head: charlie/deprecate-isolated
 created_at: 2024-07-26T00:15:26Z
 updated_at: 2024-07-30T22:40:39Z
 url: https://github.com/astral-sh/uv/pull/5466
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:50Z
 ```
 
 # Deprecate the `--isolated` flag
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-26 00:15_
+_@charliermarsh_
 
 ## Summary
 

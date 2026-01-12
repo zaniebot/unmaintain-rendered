@@ -12,14 +12,14 @@ head: pygrep-hooks-docs
 created_at: 2023-04-27T13:17:40Z
 updated_at: 2023-05-09T22:15:03Z
 url: https://github.com/astral-sh/ruff/pull/4131
-synced_at: 2026-01-12T03:56:38Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add pygrep-hooks documentation
 
 ---
 
-_Pull request opened by @tjkuson on 2023-04-27 13:17_
+_@tjkuson_
 
 Add documentation for the pygrep-hooks rules. Completes the ruleset.
 

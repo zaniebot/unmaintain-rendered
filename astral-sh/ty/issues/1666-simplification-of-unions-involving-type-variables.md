@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-28T14:13:15Z
 updated_at: 2025-12-10T21:50:57Z
 url: https://github.com/astral-sh/ty/issues/1666
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Simplification of unions involving type variables
 
 ---
 
-_Issue opened by @sharkdp on 2025-11-28 14:13_
+_@sharkdp_
 
 Consider the following example:
 ```py

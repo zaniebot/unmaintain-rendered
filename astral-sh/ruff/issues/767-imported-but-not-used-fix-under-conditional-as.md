@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-16T13:16:27Z
 updated_at: 2022-11-16T15:55:46Z
 url: https://github.com/astral-sh/ruff/issues/767
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Imported but not used fix under conditional as last import
 
 ---
 
-_Issue opened by @LefterisJP on 2022-11-16 13:16_
+_@LefterisJP_
 
 Hey I got a kind of an edge case to report but guess it may be fixable so thought why not make an issue.
 

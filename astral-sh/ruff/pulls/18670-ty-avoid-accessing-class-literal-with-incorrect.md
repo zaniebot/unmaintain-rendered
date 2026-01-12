@@ -14,14 +14,14 @@ head: ibraheem/infer-context-diagnostic-module
 created_at: 2025-06-13T21:41:17Z
 updated_at: 2025-06-14T05:02:58Z
 url: https://github.com/astral-sh/ruff/pull/18670
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [ty] Avoid accessing class literal with incorrect AST
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-06-13 21:41_
+_@ibraheemdev_
 
 ## Summary
 

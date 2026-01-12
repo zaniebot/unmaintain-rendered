@@ -13,14 +13,14 @@ head: zanie/docs-preview
 created_at: 2023-09-13T15:34:01Z
 updated_at: 2023-09-13T15:46:45Z
 url: https://github.com/astral-sh/ruff/pull/7341
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Display nursery rules as preview in documentation
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-13 15:34_
+_@zanieb_
 
 This is broken in the last release
 

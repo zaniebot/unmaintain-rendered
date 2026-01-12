@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-17T13:40:08Z
 updated_at: 2024-04-17T14:41:29Z
 url: https://github.com/astral-sh/ruff/issues/11000
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff --extend-select I` categorized local module as Known(ThirdParty) when it was set in src option.
 
 ---
 
-_Issue opened by @waketzheng on 2024-04-17 13:40_
+_@waketzheng_
 
 - ruff --version
 ruff 0.3.7

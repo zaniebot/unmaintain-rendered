@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-05T15:27:15Z
 updated_at: 2023-12-05T23:46:55Z
 url: https://github.com/astral-sh/ruff/issues/9008
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add ignore noqa support for doc lines
 
 ---
 
-_Issue opened by @amrit110 on 2023-12-05 15:27_
+_@amrit110_
 
 Hi, when I use ruff on docstring lines, and get errors such as `W505 Doc line too long`, adding a `# noqa: W505` at the end of the line doesn't seem to work. Could we please add support for that. I believe `flake8` supports it.
 

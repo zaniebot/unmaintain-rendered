@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-05T15:05:35Z
 updated_at: 2025-07-11T16:51:01Z
 url: https://github.com/astral-sh/ruff/issues/19154
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # DJ008 incorrectly reporting missing `__str__` method for abstract class with type annotations
 
 ---
 
-_Issue opened by @CarrotManMatt on 2025-07-05 15:05_
+_@CarrotManMatt_
 
 ### Summary
 

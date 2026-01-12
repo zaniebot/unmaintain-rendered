@@ -13,14 +13,14 @@ head: handle-arith-like-expr
 created_at: 2023-07-13T13:40:48Z
 updated_at: 2023-07-14T15:55:18Z
 url: https://github.com/astral-sh/ruff/pull/5738
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Cover Black's `is_aritmetic_like` formatting
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-07-13 13:40_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

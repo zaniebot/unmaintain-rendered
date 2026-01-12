@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-14T07:12:06Z
 updated_at: 2025-04-14T12:14:53Z
 url: https://github.com/astral-sh/uv/issues/12871
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # UV does not use the /etc/ssl/certs/ca-certificates.crt
 
 ---
 
-_Issue opened by @niruiyu on 2025-04-14 07:12_
+_@niruiyu_
 
 ### Summary
 

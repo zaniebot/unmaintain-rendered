@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-16T05:52:09Z
 updated_at: 2025-11-17T21:08:04Z
 url: https://github.com/astral-sh/uv/issues/16751
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # Build backend: `source-include` silently ignores directory without a glob pattern
 
 ---
 
-_Issue opened by @woodruffw on 2025-11-16 05:52_
+_@woodruffw_
 
 ### Summary
 

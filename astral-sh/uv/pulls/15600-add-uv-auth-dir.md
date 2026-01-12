@@ -13,14 +13,14 @@ head: charlie/auth-dir
 created_at: 2025-08-30T20:24:26Z
 updated_at: 2025-08-31T17:36:52Z
 url: https://github.com/astral-sh/uv/pull/15600
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:50Z
 ```
 
 # Add `uv auth dir`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-30 20:24_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/perms
 created_at: 2024-07-30T01:24:22Z
 updated_at: 2024-07-30T12:32:53Z
 url: https://github.com/astral-sh/uv/pull/5582
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:54Z
 ```
 
 # Avoid setting executable permissions on files we might not own
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-30 01:24_
+_@charliermarsh_
 
 ## Summary
 

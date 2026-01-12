@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-31T16:29:59Z
 updated_at: 2023-02-01T00:24:46Z
 url: https://github.com/astral-sh/ruff/issues/2400
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Q000 for multiline strings with different quotes
 
 ---
 
-_Issue opened by @samuelcolvin on 2023-01-31 16:29_
+_@samuelcolvin_
 
 code:
 

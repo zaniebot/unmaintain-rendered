@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-10T23:55:44Z
 updated_at: 2024-12-21T14:45:29Z
 url: https://github.com/astral-sh/ruff/issues/14903
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # RUF029 triggers on FastAPI routes when they're inner functions
 
 ---
 
-_Issue opened by @scy on 2024-12-10 23:55_
+_@scy_
 
 The following code triggers [`RUF029` (unused async)](https://docs.astral.sh/ruff/rules/unused-async/):
 

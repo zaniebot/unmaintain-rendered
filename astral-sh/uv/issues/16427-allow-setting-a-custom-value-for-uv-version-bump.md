@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-23T19:07:57Z
 updated_at: 2025-11-11T17:27:33Z
 url: https://github.com/astral-sh/uv/issues/16427
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # Allow setting a custom value for `uv version --bump`
 
 ---
 
-_Issue opened by @jvacek on 2025-10-23 19:07_
+_@jvacek_
 
 ### Summary
 

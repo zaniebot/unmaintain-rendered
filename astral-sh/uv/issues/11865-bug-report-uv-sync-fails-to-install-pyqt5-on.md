@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-28T21:02:59Z
 updated_at: 2025-08-21T17:29:16Z
 url: https://github.com/astral-sh/uv/issues/11865
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # Bug Report: uv sync Fails to Install PyQt5 on Windows
 
 ---
 
-_Issue opened by @emdezla on 2025-02-28 21:02_
+_@emdezla_
 
 ### Summary
 

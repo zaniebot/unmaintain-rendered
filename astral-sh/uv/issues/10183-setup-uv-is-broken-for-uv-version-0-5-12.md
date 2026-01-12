@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-26T22:56:16Z
 updated_at: 2024-12-27T16:39:48Z
 url: https://github.com/astral-sh/uv/issues/10183
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:07Z
 ```
 
 # setup-uv is broken for uv version 0.5.12
 
 ---
 
-_Issue opened by @ekzhu on 2024-12-26 22:56_
+_@ekzhu_
 
 See the failing CI build: https://github.com/microsoft/autogen/actions/runs/12508932257/job/34897740078
 

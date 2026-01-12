@@ -14,14 +14,14 @@ head: charlie/b013
 created_at: 2023-09-03T13:21:47Z
 updated_at: 2023-09-03T13:37:20Z
 url: https://github.com/astral-sh/ruff/pull/7080
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Supported starred exceptions in length-one tuple detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-03 13:21_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/7072.
 

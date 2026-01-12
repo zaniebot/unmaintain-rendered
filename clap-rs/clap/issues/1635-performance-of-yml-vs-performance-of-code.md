@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-01-17T10:10:52Z
 updated_at: 2020-01-17T16:12:08Z
 url: https://github.com/clap-rs/clap/issues/1635
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Performance of YML vs performance of code?
 
 ---
 
-_Issue opened by @dominikbraun on 2020-01-17 10:10_
+_@dominikbraun_
 
 This is just a quick question concerning the performance of parsing the CLI app structure:
 

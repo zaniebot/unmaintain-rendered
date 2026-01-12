@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-10T08:50:56Z
 updated_at: 2025-10-22T16:54:49Z
 url: https://github.com/astral-sh/uv/issues/11379
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # Slow resolution from Azure DevOps feed
 
 ---
 
-_Issue opened by @thomasaarholt on 2025-02-10 08:50_
+_@thomasaarholt_
 
 ### Summary
 

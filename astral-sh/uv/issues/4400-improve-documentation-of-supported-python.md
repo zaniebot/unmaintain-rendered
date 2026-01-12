@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-18T18:57:56Z
 updated_at: 2024-08-07T16:37:11Z
 url: https://github.com/astral-sh/uv/issues/4400
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Improve documentation of supported Python interpreter request formats
 
 ---
 
-_Issue opened by @zanieb on 2024-06-18 18:57_
+_@zanieb_
 
 As discussed in #4397, we support a bunch of formats but the documentation isn't clear / up to date.
 

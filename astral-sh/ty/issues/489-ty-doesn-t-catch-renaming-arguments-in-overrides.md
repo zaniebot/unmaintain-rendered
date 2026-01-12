@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-22T17:40:13Z
 updated_at: 2025-05-22T17:47:03Z
 url: https://github.com/astral-sh/ty/issues/489
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `ty` doesn't catch renaming arguments in overrides
 
 ---
 
-_Issue opened by @mathialo on 2025-05-22 17:40_
+_@mathialo_
 
 ### Summary
 

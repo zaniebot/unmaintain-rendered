@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-16T23:01:32Z
 updated_at: 2025-12-16T23:33:26Z
 url: https://github.com/astral-sh/ty/issues/1964
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Is it possible to shorten/truncate inlay type hints for unions (in Zed)?
 
 ---
 
-_Issue opened by @toddpocuca on 2025-12-16 23:01_
+_@toddpocuca_
 
 ### Question
 

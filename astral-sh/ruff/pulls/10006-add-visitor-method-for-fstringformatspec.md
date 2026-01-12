@@ -12,14 +12,14 @@ head: dhruv/visit-f-string-format-spec
 created_at: 2024-02-16T10:05:25Z
 updated_at: 2024-02-16T11:12:57Z
 url: https://github.com/astral-sh/ruff/pull/10006
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Add visitor method for `FStringFormatSpec`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-02-16 10:05_
+_@dhruvmanila_
 
 ## Summary
 

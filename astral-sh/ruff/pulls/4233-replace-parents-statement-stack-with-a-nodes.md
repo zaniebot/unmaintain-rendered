@@ -12,14 +12,14 @@ head: charlie/node-tree
 created_at: 2023-05-05T00:53:28Z
 updated_at: 2023-05-06T16:41:01Z
 url: https://github.com/astral-sh/ruff/pull/4233
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Replace `parents` statement stack with a `Nodes` abstraction
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-05 00:53_
+_@charliermarsh_
 
 ## Summary
 

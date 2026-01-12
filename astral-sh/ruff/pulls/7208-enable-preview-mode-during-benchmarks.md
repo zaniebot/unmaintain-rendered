@@ -13,14 +13,14 @@ head: zanie/preview-benchmark
 created_at: 2023-09-06T19:07:44Z
 updated_at: 2023-09-11T19:09:34Z
 url: https://github.com/astral-sh/ruff/pull/7208
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Enable preview mode during benchmarks
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-06 19:07_
+_@zanieb_
 
 Split out of https://github.com/astral-sh/ruff/pull/7195 so benchmark changes from enabling additional rules can be reviewed separately.
 

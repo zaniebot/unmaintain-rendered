@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-22T15:29:18Z
 updated_at: 2025-09-22T20:22:49Z
 url: https://github.com/astral-sh/uv/issues/15984
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # `uv tool install` with flash-attn + aug build deps fails while `uv run` succeeds
 
 ---
 
-_Issue opened by @yondonfu on 2025-09-22 15:29_
+_@yondonfu_
 
 ### Summary
 

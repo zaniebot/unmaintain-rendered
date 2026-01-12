@@ -15,14 +15,14 @@ head: unused-imports
 created_at: 2025-09-01T20:10:41Z
 updated_at: 2025-09-26T13:22:32Z
 url: https://github.com/astral-sh/ruff/pull/20200
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # [`pyflakes`] Handle some common submodule import situations for `unused-import` (`F401`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-09-01 20:10_
+_@dylwil3_
 
 # Summary
 

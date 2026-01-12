@@ -12,14 +12,14 @@ head: charlie/solver
 created_at: 2023-10-16T03:09:51Z
 updated_at: 2023-10-16T13:37:59Z
 url: https://github.com/astral-sh/uv/pull/100
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:45Z
 ```
 
 # Use `fs-err` in more crates
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-16 03:09_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/88.
 

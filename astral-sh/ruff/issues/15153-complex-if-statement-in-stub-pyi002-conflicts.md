@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-26T21:32:13Z
 updated_at: 2024-12-28T04:58:21Z
 url: https://github.com/astral-sh/ruff/issues/15153
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `complex-if-statement-in-stub (PYI002)` conflicts with `if-with-same-arms (SIM114)`
 
 ---
 
-_Issue opened by @Avasam on 2024-12-26 21:32_
+_@Avasam_
 
 In https://github.com/python/typeshed/pull/13309 I found that the following rules can be in conflict:
 - [complex-if-statement-in-stub (PYI002)](https://docs.astral.sh/ruff/rules/complex-if-statement-in-stub/#complex-if-statement-in-stub-pyi002)

@@ -13,14 +13,14 @@ head: invalid-envvar-default-pylint
 created_at: 2023-03-11T17:33:54Z
 updated_at: 2023-03-12T17:31:40Z
 url: https://github.com/astral-sh/ruff/pull/3449
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # pylint: W1508 invalid-envvar-default
 
 ---
 
-_Pull request opened by @latonis on 2023-03-11 17:33_
+_@latonis_
 
 Rule Reference: https://pylint.pycqa.org/en/latest/user_guide/messages/warning/invalid-envvar-default.html
 

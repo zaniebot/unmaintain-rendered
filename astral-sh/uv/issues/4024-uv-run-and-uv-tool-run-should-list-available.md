@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-04T21:50:08Z
 updated_at: 2024-10-08T19:34:51Z
 url: https://github.com/astral-sh/uv/issues/4024
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # `uv run` and `uv tool run` should list available scripts and executables
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-04 21:50_
+_@charliermarsh_
 
 Rye has this neat feature: https://rye.astral.sh/guide/commands/run/
 

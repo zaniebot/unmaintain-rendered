@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-12T09:43:14Z
 updated_at: 2023-09-19T06:39:00Z
 url: https://github.com/astral-sh/ruff/issues/7295
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Update `W605` to check in f-strings
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-12 09:43_
+_@dhruvmanila_
 
 `W605` checks for invalid escape sequences in a string.
 

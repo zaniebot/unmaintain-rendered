@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-18T13:42:37Z
 updated_at: 2025-12-03T08:15:19Z
 url: https://github.com/astral-sh/ruff/issues/21510
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Optimized version of `parenthesized_ranges`
 
 ---
 
-_Issue opened by @sharkdp on 2025-11-18 13:42_
+_@sharkdp_
 
 Rewrite (if possible) or provide alternatives to [`parenthesized_range`](https://github.com/astral-sh/ruff/blob/5ca9c15fc80070ff99f101af591a29cf1b1e11c2/crates/ruff_python_ast/src/parenthesize.rs#L60-L67) and [`parentheses_iterator`](https://github.com/astral-sh/ruff/blob/5ca9c15fc80070ff99f101af591a29cf1b1e11c2/crates/ruff_python_ast/src/parenthesize.rs#L14-L56) that take `&Tokens` as arguments instead of the `CommentRanges`, and don't use `SimpleTokenizer` or `BackwardsTokenizer` at all.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-04T17:57:43Z
 updated_at: 2025-08-04T19:38:23Z
 url: https://github.com/astral-sh/uv/issues/15063
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # error installing pypi package anndata2ri
 
 ---
 
-_Issue opened by @j-bac on 2025-08-04 17:57_
+_@j-bac_
 
 ### Summary
 

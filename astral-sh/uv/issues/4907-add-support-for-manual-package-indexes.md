@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-08T20:28:49Z
 updated_at: 2024-11-27T17:36:14Z
 url: https://github.com/astral-sh/uv/issues/4907
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # Add support for "manual" package indexes
 
 ---
 
-_Issue opened by @nblum-mdmi on 2024-07-08 20:28_
+_@nblum-mdmi_
 
 ## Overview
 I have a manual repository running in IIS on Windows server. Installing packages from the repository works fine with `pip` when specified as an `extra-index-url`, but when using `uv pip`, it seems to be unable to determine which versions are available, and thus does not fails to resolve.

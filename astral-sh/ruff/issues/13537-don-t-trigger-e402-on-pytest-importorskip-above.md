@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-27T13:51:11Z
 updated_at: 2024-11-20T03:08:16Z
 url: https://github.com/astral-sh/ruff/issues/13537
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Don't trigger E402 on `pytest.importorskip` above imports
 
 ---
 
-_Issue opened by @janosh on 2024-09-27 13:51_
+_@janosh_
 
 Similar to ignoring `sys.path` (https://github.com/astral-sh/ruff/issues/10059) and `os.environ` manipulations above imports, I propose adding another exception for the widely used [`pytest.importorskip`](https://docs.pytest.org/en/stable/reference/reference.html#pytest-importorskip).
 

@@ -14,14 +14,14 @@ head: fix/sim905-maxsplit-whitespace-count
 created_at: 2025-08-23T15:03:35Z
 updated_at: 2025-09-18T21:02:59Z
 url: https://github.com/astral-sh/ruff/pull/20056
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # [`flake8-simplify`] Fix incorrect fix for positive `maxsplit` without separator (`SIM905`)
 
 ---
 
-_Pull request opened by @RazerM on 2025-08-23 15:03_
+_@RazerM_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

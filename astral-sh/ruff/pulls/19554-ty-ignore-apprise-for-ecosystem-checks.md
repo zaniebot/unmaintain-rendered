@@ -14,14 +14,14 @@ head: david/skip-running-on-apprise
 created_at: 2025-07-25T11:42:10Z
 updated_at: 2025-07-25T20:49:33Z
 url: https://github.com/astral-sh/ruff/pull/19554
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Ignore 'apprise' for ecosystem checks
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-25 11:42_
+_@sharkdp_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-05T13:10:06Z
 updated_at: 2026-01-03T18:34:19Z
 url: https://github.com/astral-sh/ty/issues/938
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Support of Literal in autocomplete
 
 ---
 
-_Issue opened by @AKuederle on 2025-08-05 13:10_
+_@AKuederle_
 
 It would be great, if the code suggestions could cover `Literal` and suggest only possible values for e.g. function arguments.
 

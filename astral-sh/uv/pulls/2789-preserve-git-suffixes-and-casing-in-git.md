@@ -13,14 +13,14 @@ head: charlie/allowed-urls
 created_at: 2024-04-03T00:12:43Z
 updated_at: 2024-04-03T00:24:30Z
 url: https://github.com/astral-sh/uv/pull/2789
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:13Z
 ```
 
 # Preserve `.git` suffixes and casing in Git dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-03 00:12_
+_@charliermarsh_
 
 ## Summary
 

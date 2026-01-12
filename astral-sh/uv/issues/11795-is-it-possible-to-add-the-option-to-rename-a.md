@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-26T09:51:15Z
 updated_at: 2025-12-31T14:09:31Z
 url: https://github.com/astral-sh/uv/issues/11795
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # Is it possible to add the option to rename a project to UV?
 
 ---
 
-_Issue opened by @Wintreist on 2025-02-26 09:51_
+_@Wintreist_
 
 ### Summary
 

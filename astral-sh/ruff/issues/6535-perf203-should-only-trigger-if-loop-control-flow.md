@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-13T14:29:18Z
 updated_at: 2024-09-16T01:22:08Z
 url: https://github.com/astral-sh/ruff/issues/6535
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # PERF203 should only trigger if loop control flow isn't in the try block
 
 ---
 
-_Issue opened by @evanrittenhouse on 2023-08-13 14:29_
+_@evanrittenhouse_
 
 Copied from https://github.com/astral-sh/ruff/issues/4789#issuecomment-1635619940:
 

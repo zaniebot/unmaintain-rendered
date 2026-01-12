@@ -14,14 +14,14 @@ head: zb/docs-scripts
 created_at: 2024-08-20T13:50:33Z
 updated_at: 2024-08-20T14:08:16Z
 url: https://github.com/astral-sh/uv/pull/6251
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Add script support to feature highlights in index
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-20 13:50_
+_@zanieb_
 
 _No description provided._
 

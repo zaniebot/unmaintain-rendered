@@ -12,14 +12,14 @@ head: add-latent-calendar-and-conjugate
 created_at: 2024-01-07T19:39:15Z
 updated_at: 2024-01-14T07:07:28Z
 url: https://github.com/astral-sh/ruff/pull/9425
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # add `latent-calendar` and `conjugate-models` to users
 
 ---
 
-_Pull request opened by @williambdean on 2024-01-07 19:39_
+_@williambdean_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

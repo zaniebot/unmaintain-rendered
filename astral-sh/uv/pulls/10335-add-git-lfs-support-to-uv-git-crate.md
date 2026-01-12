@@ -12,14 +12,14 @@ head: git-lfs-support
 created_at: 2025-01-06T21:25:18Z
 updated_at: 2025-01-13T21:48:07Z
 url: https://github.com/astral-sh/uv/pull/10335
-synced_at: 2026-01-10T11:44:43Z
+synced_at: 2026-01-12T16:09:14Z
 ```
 
 # Add Git LFS support to `uv-git` crate
 
 ---
 
-_Pull request opened by @sydduckworth on 2025-01-06 21:25_
+_@sydduckworth_
 
 ## Summary
 

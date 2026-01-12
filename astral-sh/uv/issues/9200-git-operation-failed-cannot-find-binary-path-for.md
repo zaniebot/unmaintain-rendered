@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-18T15:14:47Z
 updated_at: 2024-11-18T17:41:23Z
 url: https://github.com/astral-sh/uv/issues/9200
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # Git operation failed cannot find binary path for git dependencies while doing `uv sync` in dockerfile
 
 ---
 
-_Issue opened by @fortminors on 2024-11-18 15:14_
+_@fortminors_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

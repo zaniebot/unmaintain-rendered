@@ -12,14 +12,14 @@ head: evanrittenhouse/perf203_loop_control_flow
 created_at: 2023-08-13T14:29:39Z
 updated_at: 2023-08-14T23:30:21Z
 url: https://github.com/astral-sh/ruff/pull/6536
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Ignore PERF203 if `try` contains loop control flow statements
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-08-13 14:29_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

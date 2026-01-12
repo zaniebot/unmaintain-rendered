@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-02-14T11:09:33Z
 updated_at: 2021-12-10T16:09:57Z
 url: https://github.com/clap-rs/clap/issues/1693
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Add argfile support
 
 ---
 
-_Issue opened by @XAMPPRocky on 2020-02-14 11:09_
+_@XAMPPRocky_
 
 Maintainer's notes:
 - Prior art:

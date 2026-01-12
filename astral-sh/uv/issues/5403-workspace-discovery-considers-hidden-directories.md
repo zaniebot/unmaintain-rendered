@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-24T11:37:47Z
 updated_at: 2024-07-24T16:21:35Z
 url: https://github.com/astral-sh/uv/issues/5403
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Workspace discovery considers hidden directories
 
 ---
 
-_Issue opened by @mjclarke94 on 2024-07-24 11:37_
+_@mjclarke94_
 
 I have a simple folder structure for a workspace:
 ```

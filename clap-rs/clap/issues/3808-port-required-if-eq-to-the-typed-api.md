@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-06-09T14:01:02Z
 updated_at: 2022-06-09T14:01:57Z
 url: https://github.com/clap-rs/clap/issues/3808
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Port `required_if_eq` to the typed API
 
 ---
 
-_Issue opened by @epage on 2022-06-09 14:01_
+_@epage_
 
 With #3732, we now have a typed API.  We should support typing in the rest of the API rather than relying on raw values.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-10-03T15:29:58Z
 updated_at: 2022-10-03T21:19:57Z
 url: https://github.com/astral-sh/ruff/issues/306
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement flake8-print
 
 ---
 
-_Issue opened by @charliermarsh on 2022-10-03 15:29_
+_@charliermarsh_
 
 See: https://pypi.org/project/flake8-print/
 

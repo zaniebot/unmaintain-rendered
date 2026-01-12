@@ -12,14 +12,14 @@ head: zanie/eco-errors
 created_at: 2023-11-06T14:49:35Z
 updated_at: 2023-11-06T15:35:09Z
 url: https://github.com/astral-sh/ruff/pull/8516
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Ensure ecosystem project errors are properly fenced
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-06 14:49_
+_@zanieb_
 
 Fixes bug where errors could be unfenced resulting in hidden remaining content
 

@@ -12,14 +12,14 @@ head: charlie/batch
 created_at: 2023-12-10T01:31:10Z
 updated_at: 2023-12-11T15:42:31Z
 url: https://github.com/astral-sh/uv/pull/605
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:04Z
 ```
 
 # Download, build, and install in a single pipeline phase
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-10 01:31_
+_@charliermarsh_
 
 ## Summary
 

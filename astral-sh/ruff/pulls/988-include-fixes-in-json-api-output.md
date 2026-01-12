@@ -12,14 +12,14 @@ head: charlie/vscode
 created_at: 2022-12-01T21:07:45Z
 updated_at: 2022-12-01T21:30:57Z
 url: https://github.com/astral-sh/ruff/pull/988
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Include fixes in JSON API output
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-01 21:07_
+_@charliermarsh_
 
 This will be used to power the VS Code extension.
 

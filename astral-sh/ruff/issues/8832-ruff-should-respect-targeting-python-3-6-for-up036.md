@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-24T14:52:10Z
 updated_at: 2024-08-18T05:00:50Z
 url: https://github.com/astral-sh/ruff/issues/8832
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # ruff should respect targeting Python 3.6 for UP036
 
 ---
 
-_Issue opened by @ktbarrett on 2023-11-24 14:52_
+_@ktbarrett_
 
 My project ([cocotb](https://github.com/cocotb/cocotb)) will continue to support Python 3.6 for the foreseeable future. However ruff doesn't seem to respect this. With the following in pyporject.toml:
 

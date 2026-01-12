@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-29T00:49:35Z
 updated_at: 2023-12-04T05:34:43Z
 url: https://github.com/astral-sh/ruff/issues/8887
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: `walrus_subscript` preview style
 
 ---
 
-_Issue opened by @MichaReiser on 2023-11-29 00:49_
+_@MichaReiser_
 
 Implement Black's [`walrus_subscript`](https://github.com/psf/black/pull/3823) preview style.
 

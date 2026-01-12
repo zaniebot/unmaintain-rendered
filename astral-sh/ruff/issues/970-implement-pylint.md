@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-30T04:52:53Z
 updated_at: 2025-12-01T20:28:22Z
 url: https://github.com/astral-sh/ruff/issues/970
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Implement Pylint
 
 ---
 
-_Issue opened by @charliermarsh on 2022-11-30 04:52_
+_@charliermarsh_
 
 This is the parent issue for tracking parity with Pylint. Below, we've enumerated all Pylint rules.
 

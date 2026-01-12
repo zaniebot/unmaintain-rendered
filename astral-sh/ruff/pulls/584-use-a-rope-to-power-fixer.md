@@ -12,14 +12,14 @@ head: charlie/fixer
 created_at: 2022-11-04T15:50:58Z
 updated_at: 2022-11-04T16:04:15Z
 url: https://github.com/astral-sh/ruff/pull/584
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Use a Rope to power fixer
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-04 15:50_
+_@charliermarsh_
 
 Resolves #577.
 

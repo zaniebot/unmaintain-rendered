@@ -13,14 +13,14 @@ head: zb/fix-flake
 created_at: 2024-01-26T20:20:59Z
 updated_at: 2024-01-26T22:01:01Z
 url: https://github.com/astral-sh/uv/pull/1138
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:27Z
 ```
 
 # Fix non-determinism in display of simplified ranges
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-26 20:20_
+_@zanieb_
 
 Closes #863 by sorting versions before passing to `simplify`. There is no real reason this should have any affect because it's already a `BTreeSet` which should return a sorted iterator. However, it seems to work? :'(
 

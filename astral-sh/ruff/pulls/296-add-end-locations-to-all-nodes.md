@@ -12,14 +12,14 @@ head: charlie/end-location
 created_at: 2022-10-02T01:54:07Z
 updated_at: 2022-10-02T16:49:49Z
 url: https://github.com/astral-sh/ruff/pull/296
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Add end locations to all nodes
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-02 01:54_
+_@charliermarsh_
 
 Relevant to #293.
 

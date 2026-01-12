@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-20T14:06:45Z
 updated_at: 2024-11-18T08:15:20Z
 url: https://github.com/astral-sh/ruff/issues/6704
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `F841` ignores redefinitions of local assignments
 
 ---
 
-_Issue opened by @mertcangokgoz on 2023-08-20 14:06_
+_@mertcangokgoz_
 
 While developing complex code in Django, I realised that F841 was not working properly.  
 

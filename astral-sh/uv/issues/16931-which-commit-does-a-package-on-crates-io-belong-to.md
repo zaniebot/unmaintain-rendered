@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T14:18:01Z
 updated_at: 2025-12-02T20:02:23Z
 url: https://github.com/astral-sh/uv/issues/16931
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # Which commit does a package on crates.io belong to?
 
 ---
 
-_Issue opened by @pavelzw on 2025-12-02 14:18_
+_@pavelzw_
 
 ### Question
 

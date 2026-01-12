@@ -13,14 +13,14 @@ head: charlie/ex-test
 created_at: 2024-04-17T21:05:57Z
 updated_at: 2024-04-19T00:47:28Z
 url: https://github.com/astral-sh/uv/pull/3107
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:25Z
 ```
 
 # Add test for avoiding irrelevant extras
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-17 21:05_
+_@charliermarsh_
 
 ## Summary
 

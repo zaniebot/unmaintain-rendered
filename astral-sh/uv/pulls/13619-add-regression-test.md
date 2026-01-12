@@ -12,14 +12,14 @@ head: gankra/regression
 created_at: 2025-05-23T15:06:29Z
 updated_at: 2025-05-23T16:26:21Z
 url: https://github.com/astral-sh/uv/pull/13619
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:46Z
 ```
 
 # add regression test
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-23 15:06_
+_@Gankra_
 
 _No description provided._
 

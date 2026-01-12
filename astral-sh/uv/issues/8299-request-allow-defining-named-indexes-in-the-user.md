@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-17T17:53:21Z
 updated_at: 2024-10-24T14:51:26Z
 url: https://github.com/astral-sh/uv/issues/8299
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:23Z
 ```
 
 # [Request] Allow defining named indexes in the user-level configuration file
 
 ---
 
-_Issue opened by @jonasdeyson on 2024-10-17 17:53_
+_@jonasdeyson_
 
 It would be nice to be able to define named private indexes (including the credentials) in the user-level configuration file, and use them in a project.
 

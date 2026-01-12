@@ -13,14 +13,14 @@ head: alex/semantic-index-memory
 created_at: 2025-09-28T15:21:23Z
 updated_at: 2025-10-02T06:54:33Z
 url: https://github.com/astral-sh/ruff/pull/20608
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # [ty] Consolidate fields on `SemanticIndex`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-28 15:21_
+_@AlexWaygood_
 
 ## Summary
 

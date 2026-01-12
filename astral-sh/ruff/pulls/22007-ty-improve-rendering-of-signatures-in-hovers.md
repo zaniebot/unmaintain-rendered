@@ -14,14 +14,14 @@ head: gankra/signature-blegh
 created_at: 2025-12-16T14:43:58Z
 updated_at: 2025-12-17T20:09:32Z
 url: https://github.com/astral-sh/ruff/pull/22007
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] improve rendering of signatures in hovers
 
 ---
 
-_Pull request opened by @Gankra on 2025-12-16 14:43_
+_@Gankra_
 
 This is the return of #21438 because we never found anything better and I think it would be good to have this for the beta.
 

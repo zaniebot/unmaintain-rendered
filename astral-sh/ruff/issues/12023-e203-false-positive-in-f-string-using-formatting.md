@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-25T06:55:10Z
 updated_at: 2024-06-25T09:30:32Z
 url: https://github.com/astral-sh/ruff/issues/12023
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # E203: false positive in f-string using formatting
 
 ---
 
-_Issue opened by @JaRoSchm on 2024-06-25 06:55_
+_@JaRoSchm_
 
 Hi,
 

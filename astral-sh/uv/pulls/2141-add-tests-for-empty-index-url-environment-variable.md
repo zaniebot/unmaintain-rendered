@@ -13,14 +13,14 @@ head: charlie/empty-test
 created_at: 2024-03-03T20:47:26Z
 updated_at: 2024-03-03T21:01:42Z
 url: https://github.com/astral-sh/uv/pull/2141
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # Add tests for empty index URL environment variable
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-03 20:47_
+_@charliermarsh_
 
 _No description provided._
 

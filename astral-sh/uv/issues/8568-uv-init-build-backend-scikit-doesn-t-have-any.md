@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-25T16:18:47Z
 updated_at: 2024-10-26T14:51:17Z
 url: https://github.com/astral-sh/uv/issues/8568
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:29Z
 ```
 
 # `uv init --build-backend scikit` doesn't have any affect, `--lib` is required
 
 ---
 
-_Issue opened by @zanieb on 2024-10-25 16:18_
+_@zanieb_
 
 Either we should error here, or `--lib` should be implied by selection of a build backend?
 

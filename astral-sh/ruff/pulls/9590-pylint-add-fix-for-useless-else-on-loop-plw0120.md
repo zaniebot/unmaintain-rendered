@@ -14,14 +14,14 @@ head: add-autofix-to-PLW0120
 created_at: 2024-01-20T07:11:59Z
 updated_at: 2024-01-21T16:48:33Z
 url: https://github.com/astral-sh/ruff/pull/9590
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`pylint`] Add fix for `useless-else-on-loop` (`PLW0120`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2024-01-20 07:11_
+_@diceroll123_
 
 ## Summary
 

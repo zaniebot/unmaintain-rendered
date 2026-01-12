@@ -13,14 +13,14 @@ head: charlie/compile
 created_at: 2024-01-12T04:26:12Z
 updated_at: 2024-01-12T17:44:20Z
 url: https://github.com/astral-sh/uv/pull/894
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:16Z
 ```
 
 # Add hashes to `pip-compile` output
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-12 04:26_
+_@charliermarsh_
 
 ## Summary
 

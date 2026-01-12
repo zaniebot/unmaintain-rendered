@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-13T14:41:27Z
 updated_at: 2025-05-14T18:20:19Z
 url: https://github.com/astral-sh/ruff/issues/18069
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # SIM905 fix breaks `"".split(maxsplit=0)` and similar expressions
 
 ---
 
-_Issue opened by @dscorbett on 2025-05-13 14:41_
+_@dscorbett_
 
 ### Summary
 

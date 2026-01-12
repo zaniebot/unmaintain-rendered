@@ -13,14 +13,14 @@ head: alex/chirpy-all-good
 created_at: 2025-05-09T13:24:53Z
 updated_at: 2025-05-10T22:09:10Z
 url: https://github.com/astral-sh/ruff/pull/17982
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # [ty] Display "All checks passed!" message in green
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-09 13:24_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/pyup
 created_at: 2023-08-21T15:42:21Z
 updated_at: 2023-08-21T17:04:14Z
 url: https://github.com/astral-sh/ruff/pull/6735
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Remove `remove_super_arguments`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-21 15:42_
+_@charliermarsh_
 
 Now that we have an `Arguments` node, we can use it directly to get the range.
 

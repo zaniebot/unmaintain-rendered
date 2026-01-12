@@ -13,14 +13,14 @@ head: zb/reduce-log-lock
 created_at: 2024-09-18T14:41:40Z
 updated_at: 2024-09-18T15:34:28Z
 url: https://github.com/astral-sh/uv/pull/7502
-synced_at: 2026-01-10T12:53:48Z
+synced_at: 2026-01-12T16:07:51Z
 ```
 
 # Do not use a user-facing warning for "Waiting to acquire lock..." message
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-18 14:41_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/7489
 

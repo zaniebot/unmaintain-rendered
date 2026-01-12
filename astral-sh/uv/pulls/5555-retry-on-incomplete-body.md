@@ -14,14 +14,14 @@ head: konsti/also-retry-unexpected-eof
 created_at: 2024-07-29T11:33:24Z
 updated_at: 2024-07-29T13:53:25Z
 url: https://github.com/astral-sh/uv/pull/5555
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:53Z
 ```
 
 # Retry on incomplete body
 
 ---
 
-_Pull request opened by @konstin on 2024-07-29 11:33_
+_@konstin_
 
 This is an attempt to add https://github.com/astral-sh/uv/issues/3514#issuecomment-2253562096 to retrying.
 

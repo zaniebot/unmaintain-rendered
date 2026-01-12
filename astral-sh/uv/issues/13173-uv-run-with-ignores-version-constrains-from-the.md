@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-28T09:37:35Z
 updated_at: 2025-05-04T23:24:58Z
 url: https://github.com/astral-sh/uv/issues/13173
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # `uv run --with .` ignores version constrains from the script when installing package dependencies
 
 ---
 
-_Issue opened by @Luthaf on 2025-04-28 09:37_
+_@Luthaf_
 
 ### Summary
 

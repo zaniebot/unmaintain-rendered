@@ -14,14 +14,14 @@ head: ET
 created_at: 2024-07-22T16:14:35Z
 updated_at: 2024-08-12T09:23:35Z
 url: https://github.com/astral-sh/ruff/pull/12455
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # add conventional xml.etree.ElementTree import alias
 
 ---
 
-_Pull request opened by @edhinard on 2024-07-22 16:14_
+_@edhinard_
 
 ## Summary
 

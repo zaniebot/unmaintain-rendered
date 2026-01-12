@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-02T06:19:01Z
 updated_at: 2023-09-02T11:58:19Z
 url: https://github.com/astral-sh/ruff/issues/7059
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Nursery rule panicked at 'assertion failed: start.raw <= end.raw', /home/rafal/test/ruff/crates/ruff_text_size/src/range.rs:48:9
 
 ---
 
-_Issue opened by @qarmin on 2023-09-02 06:19_
+_@qarmin_
 
 Ruff 0.0.287 (latest changes from main branch)
 

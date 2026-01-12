@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-12-06T20:53:05Z
 updated_at: 2024-02-14T16:30:07Z
 url: https://github.com/astral-sh/ruff/issues/9029
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter --preview add trailing comma
 
 ---
 
-_Issue opened by @hoxbro on 2023-12-06 20:53_
+_@hoxbro_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

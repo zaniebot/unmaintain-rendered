@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-13T11:13:50Z
 updated_at: 2025-11-16T11:41:43Z
 url: https://github.com/astral-sh/ruff/issues/21423
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # [E402] Add exception for warnings.filterwarnings() before imports
 
 ---
 
-_Issue opened by @tsvikas on 2025-11-13 11:13_
+_@tsvikas_
 
 E402 currently allows `sys.path` and `os.environ` modifications before imports. I'd like to propose adding `warnings.filterwarnings()` (and related warning module functions) to this exception list.
 

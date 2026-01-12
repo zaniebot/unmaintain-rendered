@@ -13,14 +13,14 @@ head: dhruv/string-annotation
 created_at: 2024-11-07T12:06:02Z
 updated_at: 2024-11-15T04:19:34Z
 url: https://github.com/astral-sh/ruff/pull/14151
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Add support for string annotations
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-11-07 12:06_
+_@dhruvmanila_
 
 ## Summary
 

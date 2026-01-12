@@ -14,14 +14,14 @@ head: fix-nproc
 created_at: 2025-04-16T08:09:31Z
 updated_at: 2025-04-17T22:03:55Z
 url: https://github.com/astral-sh/ruff/pull/17421
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Server: Use `min` instead of `max` to limit the number of threads
 
 ---
 
-_Pull request opened by @jnooree on 2025-04-16 08:09_
+_@jnooree_
 
 ## Summary
 

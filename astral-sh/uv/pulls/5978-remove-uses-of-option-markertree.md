@@ -13,14 +13,14 @@ head: ibraheem/marker-smart-constructors
 created_at: 2024-08-09T20:27:29Z
 updated_at: 2024-08-10T17:23:31Z
 url: https://github.com/astral-sh/uv/pull/5978
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:08Z
 ```
 
 # Remove uses of `Option<MarkerTree>`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-08-09 20:27_
+_@ibraheemdev_
 
 ## Summary
 

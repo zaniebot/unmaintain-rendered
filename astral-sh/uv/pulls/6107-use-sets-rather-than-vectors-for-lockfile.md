@@ -15,14 +15,14 @@ head: charlie/ord
 created_at: 2024-08-15T12:28:20Z
 updated_at: 2024-08-15T13:00:36Z
 url: https://github.com/astral-sh/uv/pull/6107
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:13Z
 ```
 
 # Use sets rather than vectors for lockfile requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-15 12:28_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-28T05:35:32Z
 updated_at: 2022-10-28T15:42:16Z
 url: https://github.com/clap-rs/clap/issues/4428
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Option to treat all arguments as positional
 
 ---
 
-_Issue opened by @ofek on 2022-10-28 05:35_
+_@ofek_
 
 ### Please complete the following tasks
 

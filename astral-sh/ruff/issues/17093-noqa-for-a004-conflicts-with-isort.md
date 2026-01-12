@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-31T12:36:19Z
 updated_at: 2025-07-29T17:04:24Z
 url: https://github.com/astral-sh/ruff/issues/17093
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # noqa for `A004`  conflicts with isort
 
 ---
 
-_Issue opened by @spaceone on 2025-03-31 12:36_
+_@spaceone_
 
 ### Summary
 

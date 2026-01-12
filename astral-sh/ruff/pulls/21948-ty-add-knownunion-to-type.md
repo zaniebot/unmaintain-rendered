@@ -14,14 +14,14 @@ head: alex/knownunion
 created_at: 2025-12-12T14:01:33Z
 updated_at: 2025-12-12T14:06:36Z
 url: https://github.com/astral-sh/ruff/pull/21948
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Add `KnownUnion::to_type()`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-12 14:01_
+_@AlexWaygood_
 
 ## Summary
 

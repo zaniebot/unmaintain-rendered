@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-05T19:18:51Z
 updated_at: 2024-09-06T01:40:52Z
 url: https://github.com/astral-sh/uv/issues/7096
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Prune unused source distributions from the cache
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-05 19:18_
+_@charliermarsh_
 
 If you look at the structure of the cache, we end up having multiple revisions here (the two directories in the rightmost pane):
 

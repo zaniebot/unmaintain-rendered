@@ -13,14 +13,14 @@ head: patch_loong64
 created_at: 2024-12-30T02:07:04Z
 updated_at: 2024-12-31T03:00:37Z
 url: https://github.com/astral-sh/uv/pull/10223
-synced_at: 2026-01-10T11:44:39Z
+synced_at: 2026-01-12T16:09:11Z
 ```
 
 # Add loongarch64 to supported Python platform tags
 
 ---
 
-_Pull request opened by @wojiushixiaobai on 2024-12-30 02:07_
+_@wojiushixiaobai_
 
 _No description provided._
 

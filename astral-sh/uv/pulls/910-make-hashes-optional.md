@@ -12,14 +12,14 @@ head: konsti/optional-hashes
 created_at: 2024-01-14T12:34:18Z
 updated_at: 2024-01-14T21:32:57Z
 url: https://github.com/astral-sh/uv/pull/910
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:17Z
 ```
 
 # Make hashes optional
 
 ---
 
-_Pull request opened by @konstin on 2024-01-14 12:34_
+_@konstin_
 
 There is no guarantee that indexes provide hashes at all or the sha256 we support specifically. [PEP 503](https://peps.python.org/pep-0503/#specification):
 

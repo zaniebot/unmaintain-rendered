@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-12-01T01:06:02Z
 updated_at: 2023-12-01T02:01:11Z
 url: https://github.com/clap-rs/clap/issues/5234
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `default_value_if` does not respect `global(true)`
 
 ---
 
-_Issue opened by @adamspofford-dfinity on 2023-12-01 01:06_
+_@adamspofford-dfinity_
 
 ### Please complete the following tasks
 

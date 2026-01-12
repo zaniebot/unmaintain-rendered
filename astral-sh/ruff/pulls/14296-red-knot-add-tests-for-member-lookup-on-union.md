@@ -13,14 +13,14 @@ head: david/member-lookup-on-unions
 created_at: 2024-11-12T12:49:19Z
 updated_at: 2024-11-12T13:12:00Z
 url: https://github.com/astral-sh/ruff/pull/14296
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Add tests for member lookup on union types
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-12 12:49_
+_@sharkdp_
 
 ## Summary
 

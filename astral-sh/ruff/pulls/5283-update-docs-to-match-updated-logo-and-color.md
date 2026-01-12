@@ -13,14 +13,14 @@ head: charlie/docs-refresh
 created_at: 2023-06-22T03:33:18Z
 updated_at: 2023-06-22T15:19:35Z
 url: https://github.com/astral-sh/ruff/pull/5283
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Update docs to match updated logo and color palette
 
 ---
 
-_Pull request opened by @trag1c on 2023-06-22 03:33_
+_@trag1c_
 
 ![8511](https://github.com/astral-sh/ruff/assets/77130613/862d151f-ff1d-4da8-9230-8dd32f41f197)
 

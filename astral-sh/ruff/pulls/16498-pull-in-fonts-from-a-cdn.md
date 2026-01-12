@@ -13,14 +13,14 @@ head: charlie/font
 created_at: 2025-03-04T14:19:13Z
 updated_at: 2025-03-04T14:36:38Z
 url: https://github.com/astral-sh/ruff/pull/16498
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Pull in fonts from a CDN
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-04 14:19_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-22T12:53:59Z
 updated_at: 2025-01-23T08:36:27Z
 url: https://github.com/astral-sh/uv/issues/10855
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:22Z
 ```
 
 # uv lock --locked reports 'uv.lock needs to be updated' when it doesn't (with workspace members that have multiple self-referential extras)
 
 ---
 
-_Issue opened by @palotasb on 2025-01-22 12:53_
+_@palotasb_
 
 ### Summary
 

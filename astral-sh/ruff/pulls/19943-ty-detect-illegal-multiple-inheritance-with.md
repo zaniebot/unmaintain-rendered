@@ -13,14 +13,14 @@ head: alex/namedtuple-multiple-inheritance
 created_at: 2025-08-16T19:01:32Z
 updated_at: 2025-08-18T12:03:02Z
 url: https://github.com/astral-sh/ruff/pull/19943
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:51Z
 ```
 
 # [ty] Detect illegal multiple inheritance with `NamedTuple`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-16 19:01_
+_@AlexWaygood_
 
 ## Summary
 

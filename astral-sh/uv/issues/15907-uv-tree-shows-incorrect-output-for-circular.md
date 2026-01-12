@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-17T11:51:22Z
 updated_at: 2025-10-27T02:01:02Z
 url: https://github.com/astral-sh/uv/issues/15907
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # uv tree shows incorrect output for circular dependency trees
 
 ---
 
-_Issue opened by @chaosct on 2025-09-17 11:51_
+_@chaosct_
 
 ### Summary
 

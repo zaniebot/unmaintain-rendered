@@ -13,14 +13,14 @@ head: fix/14105
 created_at: 2025-10-15T18:27:38Z
 updated_at: 2025-10-21T17:46:11Z
 url: https://github.com/astral-sh/uv/pull/16322
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:13Z
 ```
 
 # Running `uv lock --check` with outdated lockfile will print that `--check` was passed, instead of `--locked` 
 
 ---
 
-_Pull request opened by @cmnemoi on 2025-10-15 18:27_
+_@cmnemoi_
 
 Hello,
 

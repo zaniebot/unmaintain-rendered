@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-10-04T00:20:30Z
 updated_at: 2022-11-15T18:38:21Z
 url: https://github.com/astral-sh/ruff/issues/315
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Is "A003 class attribute `set` is shadowing a python builtin" too aggressive?
 
 ---
 
-_Issue opened by @amotl on 2022-10-04 00:20_
+_@amotl_
 
 Dear Charlie,
 

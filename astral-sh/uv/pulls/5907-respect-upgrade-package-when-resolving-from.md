@@ -14,14 +14,14 @@ head: charlie/up
 created_at: 2024-08-08T12:46:52Z
 updated_at: 2024-08-08T13:07:03Z
 url: https://github.com/astral-sh/uv/pull/5907
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:05Z
 ```
 
 # Respect `--upgrade-package` when resolving from lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-08 12:46_
+_@charliermarsh_
 
 ## Summary
 

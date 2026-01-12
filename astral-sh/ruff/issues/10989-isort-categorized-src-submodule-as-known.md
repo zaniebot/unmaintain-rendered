@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-17T07:12:38Z
 updated_at: 2024-04-17T19:18:36Z
 url: https://github.com/astral-sh/ruff/issues/10989
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # isort Categorized `src` submodule as Known(ThirdParty) (NoMatch) inside `src`
 
 ---
 
-_Issue opened by @serjflint on 2024-04-17 07:12_
+_@serjflint_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

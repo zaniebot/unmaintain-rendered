@@ -13,14 +13,14 @@ head: bump-rule-set-size
 created_at: 2024-04-16T08:43:40Z
 updated_at: 2024-04-16T12:20:47Z
 url: https://github.com/astral-sh/ruff/pull/10972
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Bump the size of `RuleSet`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-16 08:43_
+_@MichaReiser_
 
 ## Summary
 

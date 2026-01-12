@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-27T10:47:31Z
 updated_at: 2023-08-27T13:44:48Z
 url: https://github.com/astral-sh/ruff/issues/6913
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rule RUF001 causes autofix error
 
 ---
 
-_Issue opened by @qarmin on 2023-08-27 10:47_
+_@qarmin_
 
 Ruff 0.0.286 (latest changes from main branch)
 

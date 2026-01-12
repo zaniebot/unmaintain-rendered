@@ -13,14 +13,14 @@ head: feat/s608-improvements
 created_at: 2023-05-18T15:17:02Z
 updated_at: 2023-05-18T16:08:43Z
 url: https://github.com/astral-sh/ruff/pull/4499
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # [`flake8-bandit`] Improve SQL injection detection logic (`S608`)
 
 ---
 
-_Pull request opened by @scop on 2023-05-18 15:17_
+_@scop_
 
 See individual commits for details.
 

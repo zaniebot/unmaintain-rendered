@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-01-02T15:36:17Z
 updated_at: 2022-01-11T18:22:35Z
 url: https://github.com/clap-rs/clap/issues/3242
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Allow the name of PossibleValue derived by ArgEnum to be specified
 
 ---
 
-_Issue opened by @pwinckles on 2022-01-02 15:36_
+_@pwinckles_
 
 ### Please complete the following tasks
 

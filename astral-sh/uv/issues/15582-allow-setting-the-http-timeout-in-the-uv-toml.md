@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-29T16:23:03Z
 updated_at: 2025-09-12T14:28:08Z
 url: https://github.com/astral-sh/uv/issues/15582
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # Allow setting the `http-timeout` in the `uv.toml`
 
 ---
 
-_Issue opened by @coltonshipley on 2025-08-29 16:23_
+_@coltonshipley_
 
 ### Summary
 

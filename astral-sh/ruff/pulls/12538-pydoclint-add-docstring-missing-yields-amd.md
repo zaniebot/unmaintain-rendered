@@ -14,14 +14,14 @@ head: doc4xx
 created_at: 2024-07-27T04:54:47Z
 updated_at: 2024-08-02T17:08:55Z
 url: https://github.com/astral-sh/ruff/pull/12538
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [`pydoclint`] Add `docstring-missing-yields` amd `docstring-extraneous-yields` (`DOC402`, `DOC403`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-07-27 04:54_
+_@augustelalande_
 
 ## Summary
 

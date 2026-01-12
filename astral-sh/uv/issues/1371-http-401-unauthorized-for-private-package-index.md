@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-15T22:14:10Z
 updated_at: 2024-02-23T07:17:25Z
 url: https://github.com/astral-sh/uv/issues/1371
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # HTTP 401 Unauthorized for private package index
 
 ---
 
-_Issue opened by @exs-avianello on 2024-02-15 22:14_
+_@exs-avianello_
 
 Hello! Very excited for this project ❤️ 
 

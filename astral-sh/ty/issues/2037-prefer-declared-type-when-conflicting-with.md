@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-17T20:58:16Z
 updated_at: 2025-12-17T21:05:46Z
 url: https://github.com/astral-sh/ty/issues/2037
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Prefer declared type when conflicting with `Unknown` from an untyped lib
 
 ---
 
-_Issue opened by @NickCrews on 2025-12-17 20:58_
+_@NickCrews_
 
 ### Summary
 

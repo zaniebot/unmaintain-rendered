@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-12T18:15:55Z
 updated_at: 2024-12-02T02:17:32Z
 url: https://github.com/astral-sh/uv/issues/9068
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # UV 0.5.1 fails to build xgboost 
 
 ---
 
-_Issue opened by @blbuford on 2024-11-12 18:15_
+_@blbuford_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

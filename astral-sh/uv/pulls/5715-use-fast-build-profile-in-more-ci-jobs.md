@@ -13,14 +13,14 @@ head: zb/test-fast-build
 created_at: 2024-08-01T23:11:10Z
 updated_at: 2024-08-07T20:56:46Z
 url: https://github.com/astral-sh/uv/pull/5715
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:06:58Z
 ```
 
 # Use fast build profile in more CI jobs
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-01 23:11_
+_@zanieb_
 
 Part of https://github.com/astral-sh/uv/issues/5713
 

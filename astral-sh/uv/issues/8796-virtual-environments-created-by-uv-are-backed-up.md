@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-04T03:05:13Z
 updated_at: 2025-02-28T13:44:31Z
 url: https://github.com/astral-sh/uv/issues/8796
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # Virtual environments created by uv are backed up by Time Machine
 
 ---
 
-_Issue opened by @mikepqr on 2024-11-04 03:05_
+_@mikepqr_
 
 `uv` creates [`CACHEDIR.TAG`](https://bford.info/cachedir/) in `.venv`, indicating that backup tools need not make copies of this directory. Unfortunately, as far as I can tell, the builtin macOS backup tool Time Machine does not respect this file, meaning that the virtual environment is backed up incrementally.
 

@@ -14,14 +14,14 @@ head: alex/first-declaration
 created_at: 2025-12-02T23:50:45Z
 updated_at: 2025-12-03T13:56:30Z
 url: https://github.com/astral-sh/ruff/pull/21767
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:33Z
 ```
 
 # [ty] Improve `@override`, `@final` and Liskov checks in cases where there are multiple reachable definitions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-02 23:50_
+_@AlexWaygood_
 
 ## Summary
 

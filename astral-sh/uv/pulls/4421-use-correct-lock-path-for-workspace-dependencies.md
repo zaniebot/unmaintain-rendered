@@ -12,14 +12,14 @@ head: konsti/fix-workspace-path-lowering-edge-case
 created_at: 2024-06-20T10:57:47Z
 updated_at: 2024-06-20T13:28:48Z
 url: https://github.com/astral-sh/uv/pull/4421
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:13Z
 ```
 
 # Use correct lock path for workspace dependencies
 
 ---
 
-_Pull request opened by @konstin on 2024-06-20 10:57_
+_@konstin_
 
 Previously, distributions created through `Source::Workspace` would have the absolute path as lock path. This didn't cause any problems, since in `Urls` we would later overwrite those urls with the correct one created from being workspace members by path.
 

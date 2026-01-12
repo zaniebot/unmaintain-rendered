@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-13T16:46:11Z
 updated_at: 2024-01-19T16:45:30Z
 url: https://github.com/clap-rs/clap/issues/5255
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # clap_complete: subcommands are broken in bash if the binary name is not the same as the package name
 
 ---
 
-_Issue opened by @Serock3 on 2023-12-13 16:46_
+_@Serock3_
 
 ### Please complete the following tasks
 

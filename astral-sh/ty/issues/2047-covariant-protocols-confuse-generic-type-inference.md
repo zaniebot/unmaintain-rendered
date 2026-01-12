@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-18T01:51:15Z
 updated_at: 2025-12-18T09:48:51Z
 url: https://github.com/astral-sh/ty/issues/2047
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Covariant protocols confuse generic type inference
 
 ---
 
-_Issue opened by @refi64 on 2025-12-18 01:51_
+_@refi64_
 
 ### Summary
 

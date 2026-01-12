@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-03T05:49:56Z
 updated_at: 2023-06-20T02:22:34Z
 url: https://github.com/astral-sh/ruff/issues/4828
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # E703: Incorrect detection and replacement of semicolon
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-03 05:49_
+_@addisoncrump_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

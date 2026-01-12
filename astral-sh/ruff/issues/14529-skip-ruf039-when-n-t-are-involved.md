@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-22T13:26:53Z
 updated_at: 2024-11-22T15:52:07Z
 url: https://github.com/astral-sh/ruff/issues/14529
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Skip RUF039 when \n, \t, ... are involved
 
 ---
 
-_Issue opened by @alexprengere on 2024-11-22 13:26_
+_@alexprengere_
 
 The latest Ruff 039 rule is a bit noisy (see #14527 too), and I think there are false positives: running it on a private codebase, I had a lot of:
 

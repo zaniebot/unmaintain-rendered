@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-13T02:26:28Z
 updated_at: 2024-07-13T17:29:22Z
 url: https://github.com/astral-sh/uv/issues/5030
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # relative URLs in README show up as broken links on https://pypi.org/project/uv/
 
 ---
 
-_Issue opened by @ben-albrecht on 2024-07-13 02:26_
+_@ben-albrecht_
 
 Relative paths, such as the links to `PIP_COMPATIBILITY.md` show up as broken links on [PyPI page](https://pypi.org/project/uv/), e.g. https://pypi.org/project/uv/PIP_COMPATIBILITY.md/
 

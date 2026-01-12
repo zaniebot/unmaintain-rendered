@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-15T13:55:28Z
 updated_at: 2023-01-31T22:10:29Z
 url: https://github.com/clap-rs/clap/issues/4642
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Having a unique display name and an execution name for commands 
 
 ---
 
-_Issue opened by @xosxos on 2023-01-15 13:55_
+_@xosxos_
 
 ### Please complete the following tasks
 

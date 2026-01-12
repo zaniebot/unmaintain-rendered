@@ -13,14 +13,14 @@ head: charlie/keys
 created_at: 2024-03-01T20:34:47Z
 updated_at: 2024-03-03T17:32:06Z
 url: https://github.com/astral-sh/uv/pull/2120
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:52Z
 ```
 
 # Remove `base-prefix` and friends from `pyvenv.cfg`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-01 20:34_
+_@charliermarsh_
 
 ## Summary
 

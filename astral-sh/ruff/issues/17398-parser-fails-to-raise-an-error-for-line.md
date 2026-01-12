@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-14T20:31:31Z
 updated_at: 2025-04-15T15:56:13Z
 url: https://github.com/astral-sh/ruff/issues/17398
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Parser fails to raise an error for line continuation at EOF
 
 ---
 
-_Issue opened by @ntBre on 2025-04-14 20:31_
+_@ntBre_
 
 ### Summary
 

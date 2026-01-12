@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-25T20:44:10Z
 updated_at: 2025-04-28T12:15:46Z
 url: https://github.com/astral-sh/ruff/issues/17636
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Lint for Abstract Base Class (ABC) Methods Missing `@abstractmethod` Decorator
 
 ---
 
-_Issue opened by @d33bs on 2025-04-25 20:44_
+_@d33bs_
 
 ### Summary
 

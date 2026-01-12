@@ -13,14 +13,14 @@ head: konsti/implies-no-strip-markers
 created_at: 2024-07-16T19:11:40Z
 updated_at: 2024-07-17T15:54:23Z
 url: https://github.com/astral-sh/uv/pull/5121
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:39Z
 ```
 
 # Document that `--universal` implies `--no-strip-markers`
 
 ---
 
-_Pull request opened by @konstin on 2024-07-16 19:11_
+_@konstin_
 
 Prompted by https://github.com/python-trio/trio/pull/3032#discussion_r1679435422.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-18T12:00:16Z
 updated_at: 2024-02-25T23:17:57Z
 url: https://github.com/astral-sh/ruff/issues/10023
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # RUF027: false positive for gettext translation strings
 
 ---
 
-_Issue opened by @spaceone on 2024-02-18 12:00_
+_@spaceone_
 
 ```
 bar = 'something'

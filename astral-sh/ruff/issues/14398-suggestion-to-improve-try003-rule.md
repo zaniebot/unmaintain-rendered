@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-17T13:19:49Z
 updated_at: 2026-01-02T05:11:10Z
 url: https://github.com/astral-sh/ruff/issues/14398
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Suggestion to improve TRY003 rule
 
 ---
 
-_Issue opened by @Booplicate on 2024-11-17 13:19_
+_@Booplicate_
 
 ### Issue
 I want to propose to change how TRY003 works with some of the builtin exceptions. While I like how the rule applies to custom exceptions and "base" `Exception`, I think it's incorrect in the case of errors like `TypeError` and `ValueError`. It's a common pattern and is widely recommended to use those exceptions when type or value don't match the expectations.

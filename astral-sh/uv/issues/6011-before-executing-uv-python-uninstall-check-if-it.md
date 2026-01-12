@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-11T18:34:49Z
 updated_at: 2024-08-11T18:49:10Z
 url: https://github.com/astral-sh/uv/issues/6011
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Before executing ``uv python uninstall``, check if it is currently in use.
 
 ---
 
-_Issue opened by @FishAlchemist on 2024-08-11 18:34_
+_@FishAlchemist_
 
 **uv version:** uv 0.2.35 (e097f948c 2024-08-09)
 **OS:** Windows 11 x86-64

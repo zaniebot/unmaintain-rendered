@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-26T23:15:56Z
 updated_at: 2025-02-24T15:03:14Z
 url: https://github.com/astral-sh/uv/issues/6662
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # support installing uv to the project using a wrapper script
 
 ---
 
-_Issue opened by @DetachHead on 2024-08-26 23:15_
+_@DetachHead_
 
 re-raising https://github.com/astral-sh/rye/issues/944 here now that uv has many of rye's features:
 

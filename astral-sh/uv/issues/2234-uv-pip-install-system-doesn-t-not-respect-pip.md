@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-06T08:14:44Z
 updated_at: 2024-03-06T20:37:30Z
 url: https://github.com/astral-sh/uv/issues/2234
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # `uv pip install --system` doesn't not respect `PIP_BREAK_SYSTEM_PACKAGES`
 
 ---
 
-_Issue opened by @jfcherng on 2024-03-06 08:14_
+_@jfcherng_
 
 While `--system` has been added recently, as per [Externally Managed Environments](https://packaging.python.org/en/latest/specifications/externally-managed-environments/), if there is the `EXTERNALLY-MANAGED` marker file in the Python distribution, then packages won't be installed.
 

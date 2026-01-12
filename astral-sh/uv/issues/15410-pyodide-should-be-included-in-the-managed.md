@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T13:27:09Z
 updated_at: 2025-11-09T16:20:21Z
 url: https://github.com/astral-sh/uv/issues/15410
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # Pyodide should be included in the managed distributions documentation
 
 ---
 
-_Issue opened by @zanieb on 2025-08-21 13:27_
+_@zanieb_
 
 At `uv/concepts/python-versions/#managed-python-distributions`
 

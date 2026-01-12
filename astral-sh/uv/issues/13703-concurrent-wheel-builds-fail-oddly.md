@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T18:35:43Z
 updated_at: 2025-06-26T19:28:16Z
 url: https://github.com/astral-sh/uv/issues/13703
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # concurrent wheel builds fail oddly
 
 ---
 
-_Issue opened by @thatch on 2025-05-28 18:35_
+_@thatch_
 
 ### Summary
 

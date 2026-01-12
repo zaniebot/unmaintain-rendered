@@ -13,14 +13,14 @@ head: charlie/build-docs
 created_at: 2024-09-04T01:33:16Z
 updated_at: 2024-09-04T15:53:16Z
 url: https://github.com/astral-sh/uv/pull/6991
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:37Z
 ```
 
 # Add documentation for `uv build`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-04 01:33_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-09-07T20:57:48Z
 updated_at: 2022-02-09T16:26:41Z
 url: https://github.com/clap-rs/clap/issues/235
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Add ability to easily create interactive CLI
 
 ---
 
-_Issue opened by @kbknapp on 2015-09-07 20:57_
+_@kbknapp_
 
 As discussed in #228 this issue is to track progress and discuss implementation.
 

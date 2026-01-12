@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-29T19:43:01Z
 updated_at: 2024-04-10T19:51:27Z
 url: https://github.com/astral-sh/ruff/issues/10662
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # F811 Redefinition of unused `foo_fixture` and Pytest
 
 ---
 
-_Issue opened by @arrdem on 2024-03-29 19:43_
+_@arrdem_
 
 - **Ruff version:** 0.3.3
 - **Rule:** redefined-while-unused / F811

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-27T21:53:12Z
 updated_at: 2024-11-28T08:22:18Z
 url: https://github.com/astral-sh/ruff/issues/14644
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # C403 is wrong with async_generator
 
 ---
 
-_Issue opened by @dacevedo12 on 2024-11-27 21:53_
+_@dacevedo12_
 
 Given
 

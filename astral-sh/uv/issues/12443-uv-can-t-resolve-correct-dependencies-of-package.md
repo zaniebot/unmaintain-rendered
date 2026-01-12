@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T17:05:05Z
 updated_at: 2025-03-24T18:57:08Z
 url: https://github.com/astral-sh/uv/issues/12443
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # UV can't resolve correct dependencies of package, but pip can
 
 ---
 
-_Issue opened by @ethan-tonic on 2025-03-24 17:05_
+_@ethan-tonic_
 
 ### Summary
 

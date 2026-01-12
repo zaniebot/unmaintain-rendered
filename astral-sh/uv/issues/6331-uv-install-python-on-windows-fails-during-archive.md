@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-21T14:29:23Z
 updated_at: 2025-08-06T16:01:17Z
 url: https://github.com/astral-sh/uv/issues/6331
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # uv install python on Windows fails during archive extraction
 
 ---
 
-_Issue opened by @mrijken on 2024-08-21 14:29_
+_@mrijken_
 
 If I call `uv python install 3.12`  on W11 with uv 0.3.0, I get:
 

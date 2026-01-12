@@ -14,14 +14,14 @@ head: benches
 created_at: 2024-04-26T16:41:10Z
 updated_at: 2024-04-30T17:39:48Z
 url: https://github.com/astral-sh/uv/pull/3281
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:33Z
 ```
 
 # Run resolve/install benchmarks in ci
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-04-26 16:41_
+_@ibraheemdev_
 
 ## Summary
 

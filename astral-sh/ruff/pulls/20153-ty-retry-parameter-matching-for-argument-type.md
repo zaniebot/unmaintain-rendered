@@ -13,14 +13,14 @@ head: dhruv/retry-parameter-matching
 created_at: 2025-08-29T14:12:27Z
 updated_at: 2025-09-12T08:40:43Z
 url: https://github.com/astral-sh/ruff/pull/20153
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] Retry parameter matching for argument type expansion
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-08-29 14:12_
+_@dhruvmanila_
 
 ## Summary
 

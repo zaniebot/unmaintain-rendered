@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-09-11T17:04:38Z
 updated_at: 2021-11-12T06:52:26Z
 url: https://github.com/clap-rs/clap/issues/251
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Allow configuration from config files as well
 
 ---
 
-_Issue opened by @wackywendell on 2015-09-11 17:04_
+_@wackywendell_
 
 For example, imagine you have a program `foobar` that has many configuration options. You want them to be available on the command-line, but you also want to allow users to write a `.foobarrc` (perhaps in TOML format) so that they can pre-specify their choices. Or maybe there might be multiple configuration files, one in the home directory (`$HOME/.foobarrc`), one in the current directory (`./.foobarrc`), and maybe even one specified on the command-line.
 

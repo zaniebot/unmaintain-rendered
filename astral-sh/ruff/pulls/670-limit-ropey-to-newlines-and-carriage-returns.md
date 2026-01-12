@@ -12,14 +12,14 @@ head: charlie/ropey
 created_at: 2022-11-10T22:25:26Z
 updated_at: 2022-11-10T22:25:31Z
 url: https://github.com/astral-sh/ruff/pull/670
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Limit Ropey to newlines and carriage returns
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-10 22:25_
+_@charliermarsh_
 
 _No description provided._
 

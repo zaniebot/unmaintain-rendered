@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T16:49:49Z
 updated_at: 2025-07-18T01:27:56Z
 url: https://github.com/astral-sh/uv/issues/10940
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:24Z
 ```
 
 # Editable install incorrectly passes config settings to compiled dependencies
 
 ---
 
-_Issue opened by @cpburnz on 2025-01-24 16:49_
+_@cpburnz_
 
 ### Summary
 

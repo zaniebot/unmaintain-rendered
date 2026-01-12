@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-26T16:32:23Z
 updated_at: 2024-06-26T18:03:24Z
 url: https://github.com/astral-sh/uv/issues/4552
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # `uv add` should default to `--workspace` if the package is a workspace member
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-26 16:32_
+_@charliermarsh_
 
 This is how Cargo behaves and I think it's slightly unintuitive that you have to pass `--workspace`.
 

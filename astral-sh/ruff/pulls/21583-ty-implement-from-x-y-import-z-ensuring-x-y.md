@@ -14,14 +14,14 @@ head: alex/submodule-attr-last
 created_at: 2025-11-22T23:20:22Z
 updated_at: 2025-12-13T20:08:19Z
 url: https://github.com/astral-sh/ruff/pull/21583
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Implement `from x.y import z` ensuring `x.y` resolves in the current file
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-22 23:20_
+_@AlexWaygood_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: dcreager/defs-by-defs
 created_at: 2025-02-20T14:32:56Z
 updated_at: 2025-02-20T18:28:27Z
 url: https://github.com/astral-sh/ruff/pull/16277
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Separate `definitions_by_definition` into separate fields
 
 ---
 
-_Pull request opened by @dcreager on 2025-02-20 14:32_
+_@dcreager_
 
 A minor cleanup that breaks up a `HashMap` of an enum into separate `HashMap`s for each variant.  (These separate fields were already how this cache was being described in the big comment at the top of the file!)
 

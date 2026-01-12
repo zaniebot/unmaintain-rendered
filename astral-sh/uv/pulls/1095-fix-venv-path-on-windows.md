@@ -14,14 +14,14 @@ head: konsti/fix-venv-path-windows
 created_at: 2024-01-25T15:38:59Z
 updated_at: 2024-01-25T15:40:54Z
 url: https://github.com/astral-sh/uv/pull/1095
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:25Z
 ```
 
 # Fix venv PATH on windows
 
 ---
 
-_Pull request opened by @konstin on 2024-01-25 15:38_
+_@konstin_
 
 Windows uses `;` instead of `:` to separate `PATH` entries. This pull request switches from manually using `:` to the `std::env` functions. This fixes
 

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-02-18T11:49:01Z
 updated_at: 2024-12-10T20:42:11Z
 url: https://github.com/astral-sh/uv/issues/1640
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Virtual environments break on Homebrew upgrades due to using a `Cellar` link
 
 ---
 
-_Issue opened by @cjolowicz on 2024-02-18 11:49_
+_@cjolowicz_
 
 On Homebrew, virtual environments created by `uv venv` reference the Python installation under `Cellar` in their interpreter symlink and `pyvenv.cfg`, which has the full downstream version in its path. These virtual environments break when Homebrew upgrades the respective Python package to the next maintenance release. In recent versions of `venv` and `virtualenv`, this issue was resolved by using the stable link under `$(brew --prefix)/opt/python@3.x/` instead. For example, on Python 3.11 macOS aarch64 this would be the interpreter in `/opt/homebrew/opt/python@3.11/bin`.
 

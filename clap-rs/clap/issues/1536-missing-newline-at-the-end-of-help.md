@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-08-27T20:35:55Z
 updated_at: 2021-10-18T07:40:02Z
 url: https://github.com/clap-rs/clap/issues/1536
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Missing newline at the end of help
 
 ---
 
-_Issue opened by @mb64 on 2019-08-27 20:35_
+_@mb64_
 
 I have the following `main.rs`:
 

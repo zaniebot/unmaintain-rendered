@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-09T11:28:56Z
 updated_at: 2026-01-09T20:02:32Z
 url: https://github.com/astral-sh/ty/issues/2413
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Passing `'Hello'` and `None` to `int` parameter, ty gives no error
 
 ---
 
-_Issue opened by @hyperkai on 2026-01-09 11:28_
+_@hyperkai_
 
 ### Summary
 

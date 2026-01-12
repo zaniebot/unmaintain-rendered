@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-09T07:34:30Z
 updated_at: 2024-10-14T12:01:24Z
 url: https://github.com/astral-sh/ruff/issues/13687
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Compare expression inference - BytesLiteral
 
 ---
 
-_Issue opened by @MichaReiser on 2024-10-09 07:34_
+_@MichaReiser_
 
 Same as https://github.com/astral-sh/ruff/pull/13634 but for bytes literal.
 

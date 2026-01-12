@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-05-03T14:06:13Z
 updated_at: 2022-09-20T14:28:35Z
 url: https://github.com/clap-rs/clap/issues/3679
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Create a configurable command alias example
 
 ---
 
-_Issue opened by @epage on 2022-05-03 14:06_
+_@epage_
 
 ### Please complete the following tasks
 

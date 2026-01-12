@@ -13,14 +13,14 @@ head: ag/callable-ty-tweak
 created_at: 2025-02-20T13:08:20Z
 updated_at: 2025-02-20T13:19:02Z
 url: https://github.com/astral-sh/ruff/pull/16273
-synced_at: 2026-01-10T19:57:23Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # red_knot_python_semantic: avoid adding `callable_ty` to `CallBindingError`
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-02-20 13:08_
+_@BurntSushi_
 
 This is a small tweak to avoid adding the callable `Type` on the error
 value itself. Namely, it's always available regardless of the error, and

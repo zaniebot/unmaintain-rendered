@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-27T15:56:05Z
 updated_at: 2025-10-27T16:17:04Z
 url: https://github.com/astral-sh/uv/issues/16472
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # `uv pip` only works with system Python for package installation
 
 ---
 
-_Issue opened by @mrsarm on 2025-10-27 15:56_
+_@mrsarm_
 
 ### Summary
 

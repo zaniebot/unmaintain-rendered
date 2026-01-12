@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-18T18:36:03Z
 updated_at: 2024-06-18T19:01:47Z
 url: https://github.com/astral-sh/uv/issues/4397
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # uv toolchain python not in interpreter search path
 
 ---
 
-_Issue opened by @fynnsu on 2024-06-18 18:36_
+_@fynnsu_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

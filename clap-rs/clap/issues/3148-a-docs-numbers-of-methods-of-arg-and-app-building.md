@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-12-10T23:26:48Z
 updated_at: 2022-01-11T18:30:19Z
 url: https://github.com/clap-rs/clap/issues/3148
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # [A-docs] Numbers of methods of arg and app building in FAQ.md are wrong.
 
 ---
 
-_Issue opened by @vi on 2021-12-10 23:26_
+_@vi_
 
 ### Please complete the following tasks
 

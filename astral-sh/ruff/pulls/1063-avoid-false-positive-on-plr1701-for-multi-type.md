@@ -12,14 +12,14 @@ head: charlie/PLR1701
 created_at: 2022-12-05T15:06:30Z
 updated_at: 2022-12-05T15:07:06Z
 url: https://github.com/astral-sh/ruff/pull/1063
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Avoid false-positive on PLR1701 for multi-type isinstance calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-05 15:06_
+_@charliermarsh_
 
 Resolves #1060.
 

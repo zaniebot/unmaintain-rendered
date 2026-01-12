@@ -13,14 +13,14 @@ head: charlie/isort-docs
 created_at: 2023-10-26T17:05:36Z
 updated_at: 2023-10-26T17:19:18Z
 url: https://github.com/astral-sh/ruff/pull/8257
-synced_at: 2026-01-12T02:32:42Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Improve documentation around linter-formatter conflicts
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-26 17:05_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/8245.
 

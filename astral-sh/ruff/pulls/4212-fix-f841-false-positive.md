@@ -11,14 +11,14 @@ head: fix-f841-false-positive
 created_at: 2023-05-03T17:32:59Z
 updated_at: 2023-10-17T11:07:25Z
 url: https://github.com/astral-sh/ruff/pull/4212
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Fix F841 false positive
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-03 17:32_
+_@JonathanPlasse_
 
 - Close #4204
 

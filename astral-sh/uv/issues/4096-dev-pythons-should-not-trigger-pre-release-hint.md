@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-06T13:51:40Z
 updated_at: 2024-06-06T19:58:31Z
 url: https://github.com/astral-sh/uv/issues/4096
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Dev Pythons should not trigger pre-release hint
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-06 13:51_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/issues/4094#issue-2338297505
 

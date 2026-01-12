@@ -13,14 +13,14 @@ head: charlie/code
 created_at: 2024-09-04T03:29:10Z
 updated_at: 2024-09-04T13:33:29Z
 url: https://github.com/astral-sh/uv/pull/6994
-synced_at: 2026-01-10T12:53:37Z
+synced_at: 2026-01-12T16:07:37Z
 ```
 
 # Reflect exit code in `uv tool run` and `uv run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-04 03:29_
+_@charliermarsh_
 
 ## Summary
 

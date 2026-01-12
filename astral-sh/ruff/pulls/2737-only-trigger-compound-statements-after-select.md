@@ -12,14 +12,14 @@ head: charlie/e70
 created_at: 2023-02-10T20:03:10Z
 updated_at: 2023-02-10T20:21:08Z
 url: https://github.com/astral-sh/ruff/pull/2737
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # Only trigger compound statements after select keywords
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-10 20:03_
+_@charliermarsh_
 
 Closes #2722.
 

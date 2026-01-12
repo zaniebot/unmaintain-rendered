@@ -14,14 +14,14 @@ head: source-text-slice
 created_at: 2023-05-24T09:11:48Z
 updated_at: 2023-05-24T15:54:48Z
 url: https://github.com/astral-sh/ruff/pull/4622
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Introduce `SourceCodeSlice` to reduce the size of `FormatElement`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-24 09:11_
+_@MichaReiser_
 
 ## Summary
 

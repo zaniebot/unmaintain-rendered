@@ -14,14 +14,14 @@ head: micha/configuration-request
 created_at: 2025-06-27T13:26:31Z
 updated_at: 2025-07-02T09:01:44Z
 url: https://github.com/astral-sh/ruff/pull/18984
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] Request configuration from client
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-27 13:26_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-29T02:46:50Z
 updated_at: 2024-01-10T11:47:36Z
 url: https://github.com/astral-sh/ruff/issues/8896
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: `multiline_string_handling` preview style
 
 ---
 
-_Issue opened by @MichaReiser on 2023-11-29 02:46_
+_@MichaReiser_
 
 Implement Black's [`multiline_string_handling`](https://github.com/psf/black/pull/1879) as a preview style. 
 

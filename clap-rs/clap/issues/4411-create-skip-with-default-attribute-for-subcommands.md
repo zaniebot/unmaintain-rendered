@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-20T21:06:56Z
 updated_at: 2022-10-20T22:10:28Z
 url: https://github.com/clap-rs/clap/issues/4411
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # create skip_with_default attribute for Subcommands
 
 ---
 
-_Issue opened by @0xForerunner on 2022-10-20 21:06_
+_@0xForerunner_
 
 ### Please complete the following tasks
 

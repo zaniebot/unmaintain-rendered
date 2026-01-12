@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-17T19:41:10Z
 updated_at: 2024-09-18T19:28:56Z
 url: https://github.com/astral-sh/uv/issues/7479
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # uv >=4.8 cache error output
 
 ---
 
-_Issue opened by @pmbarrett314 on 2024-09-17 19:41_
+_@pmbarrett314_
 
 UV 4.8 and above is outputting an error that is breaking tests that expect specific console output when caching is enabled. 4.7 works fine.
 

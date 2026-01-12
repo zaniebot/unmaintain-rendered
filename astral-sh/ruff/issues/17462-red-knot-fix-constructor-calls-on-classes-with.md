@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-18T15:32:24Z
 updated_at: 2025-04-30T15:27:10Z
 url: https://github.com/astral-sh/ruff/issues/17462
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] fix constructor calls on classes with metaclasses
 
 ---
 
-_Issue opened by @carljm on 2025-04-18 15:32_
+_@carljm_
 
 The lookup logic for `__new__` added in #16512 is faulty. It adds "member lookup policies" to skip `object.__new__` and `type.__new__`, and then we effectively special-case handling of an implied `object.__new__` if no `__new__` is found in the lookup. But this logic doesn't work if there is a custom metaclass: we'll still find `__new__` on the custom metaclass (after not finding it on the class itself, since we skip `object.__new__`) and then we'll wrongly try to use the metaclass `__new__`:
 

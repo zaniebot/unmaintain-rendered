@@ -12,14 +12,14 @@ head: small-perf-documentation-tweaks
 created_at: 2023-06-23T15:01:15Z
 updated_at: 2023-06-23T16:11:43Z
 url: https://github.com/astral-sh/ruff/pull/5335
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Make small tweaks to the profiling documentation
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-23 15:01_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

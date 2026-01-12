@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-25T10:06:35Z
 updated_at: 2025-04-03T13:51:29Z
 url: https://github.com/astral-sh/uv/issues/12459
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # how to run setcap on uv provided python executable
 
 ---
 
-_Issue opened by @jsiverskog on 2025-03-25 10:06_
+_@jsiverskog_
 
 ### Question
 

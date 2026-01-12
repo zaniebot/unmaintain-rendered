@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-26T16:07:04Z
 updated_at: 2025-07-11T01:55:11Z
 url: https://github.com/astral-sh/uv/issues/14280
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Does `uv` respect github extras in setup.py?
 
 ---
 
-_Issue opened by @lucharo on 2025-06-26 16:07_
+_@lucharo_
 
 ### Question
 

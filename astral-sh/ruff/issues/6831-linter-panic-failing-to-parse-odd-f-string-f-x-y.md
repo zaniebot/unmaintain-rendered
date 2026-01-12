@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-23T23:23:00Z
 updated_at: 2023-09-29T02:55:41Z
 url: https://github.com/astral-sh/ruff/issues/6831
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # [Linter panic] failing to parse odd f-string `f"{x, y=}"`
 
 ---
 
-_Issue opened by @Zac-HD on 2023-08-23 23:23_
+_@Zac-HD_
 
 ```python
 x = 1

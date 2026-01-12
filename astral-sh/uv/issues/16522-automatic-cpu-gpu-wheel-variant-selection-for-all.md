@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-30T18:49:18Z
 updated_at: 2025-11-04T19:50:12Z
 url: https://github.com/astral-sh/uv/issues/16522
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # Automatic CPU/GPU wheel variant selection for all packages (not just PyTorch)
 
 ---
 
-_Issue opened by @muhammad-fiaz on 2025-10-30 18:49_
+_@muhammad-fiaz_
 
 I am requesting a feature that allows `uv` to automatically select the correct **CPU or GPU backend wheel variant** for packages that ship multiple prebuilt versions - not only for PyTorch, but also for ecosystem libraries like **`xformers`** and **`flash-attn`**.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-05T13:53:59Z
 updated_at: 2022-11-05T14:51:41Z
 url: https://github.com/astral-sh/ruff/issues/599
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Correctly detect noqa when used in method calls
 
 ---
 
-_Issue opened by @yabirgb on 2022-11-05 13:53_
+_@yabirgb_
 
 ### Problem
 

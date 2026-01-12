@@ -13,14 +13,14 @@ head: dhruv/parser-augmented-assign
 created_at: 2024-03-07T08:50:51Z
 updated_at: 2024-03-07T13:07:10Z
 url: https://github.com/astral-sh/ruff/pull/10269
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Assert the parser is at augmented assign token
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-07 08:50_
+_@dhruvmanila_
 
 ## Summary
 

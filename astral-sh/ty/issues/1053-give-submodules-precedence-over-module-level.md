@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-19T16:31:03Z
 updated_at: 2025-11-03T20:24:03Z
 url: https://github.com/astral-sh/ty/issues/1053
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Give submodules precedence over module-level `__getattr__`
 
 ---
 
-_Issue opened by @Avasam on 2025-08-19 16:31_
+_@Avasam_
 
 ### Summary
 

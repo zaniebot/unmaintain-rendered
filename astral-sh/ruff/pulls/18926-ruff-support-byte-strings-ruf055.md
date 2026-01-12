@@ -14,14 +14,14 @@ head: implement-18739
 created_at: 2025-06-24T22:26:42Z
 updated_at: 2025-07-20T22:01:13Z
 url: https://github.com/astral-sh/ruff/pull/18926
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # [`ruff`] Support byte strings (`RUF055`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-06-24 22:26_
+_@danparizher_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

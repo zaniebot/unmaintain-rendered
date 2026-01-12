@@ -13,14 +13,14 @@ head: charlie/empty
 created_at: 2024-10-26T17:07:29Z
 updated_at: 2024-10-26T17:29:08Z
 url: https://github.com/astral-sh/uv/pull/8598
-synced_at: 2026-01-10T12:54:13Z
+synced_at: 2026-01-12T16:08:23Z
 ```
 
 # Ignore empty groups when validating lock
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-26 17:07_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: issue-4707
 created_at: 2025-06-27T12:54:13Z
 updated_at: 2025-07-03T16:34:31Z
 url: https://github.com/clap-rs/clap/pull/6050
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # fix: Require validation not bypassed by mutually exclusive groups
 
 ---
 
-_Pull request opened by @12yanogden on 2025-06-27 12:54_
+_@12yanogden_
 
 <!--
 Thanks for helping out!

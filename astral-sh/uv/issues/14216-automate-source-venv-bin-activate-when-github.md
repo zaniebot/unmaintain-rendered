@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-23T14:48:26Z
 updated_at: 2025-06-27T15:45:49Z
 url: https://github.com/astral-sh/uv/issues/14216
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # Automate `source .venv/bin/activate` when github codesspaces starts
 
 ---
 
-_Issue opened by @oliverangelil on 2025-06-23 14:48_
+_@oliverangelil_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-26T14:18:34Z
 updated_at: 2025-05-28T07:22:45Z
 url: https://github.com/astral-sh/ruff/issues/18320
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Warn against `metaclass=type`
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-05-26 14:18_
+_@JelleZijlstra_
 
 ### Summary
 

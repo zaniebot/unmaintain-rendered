@@ -13,14 +13,14 @@ head: renovate/assert_cmd-2.x-lockfile
 created_at: 2025-04-21T02:00:25Z
 updated_at: 2025-04-21T02:20:14Z
 url: https://github.com/astral-sh/uv/pull/12997
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:29Z
 ```
 
 # Update Rust crate assert_cmd to v2.0.17
 
 ---
 
-_Pull request opened by @renovate on 2025-04-21 02:00_
+_@renovate_
 
 This PR contains the following updates:
 

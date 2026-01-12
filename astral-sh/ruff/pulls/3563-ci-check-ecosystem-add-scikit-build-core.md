@@ -12,14 +12,14 @@ head: patch-3
 created_at: 2023-03-16T21:30:28Z
 updated_at: 2023-03-16T23:46:45Z
 url: https://github.com/astral-sh/ruff/pull/3563
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # ci(check_ecosystem): add scikit-build-core
 
 ---
 
-_Pull request opened by @henryiii on 2023-03-16 21:30_
+_@henryiii_
 
 This one is a very modern and clean codebase with a lot of checking. I'm not biased at all, obviously. :)
 

@@ -12,14 +12,14 @@ head: dd/reuse-once-cell
 created_at: 2022-09-13T08:50:53Z
 updated_at: 2022-09-13T14:35:10Z
 url: https://github.com/astral-sh/ruff/pull/178
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # chore: Use `once_cell` instead of `lazy_static`
 
 ---
 
-_Pull request opened by @Stranger6667 on 2022-09-13 08:50_
+_@Stranger6667_
 
 `once_cell` crate matches the currently unstable `once_cell` feature & is a bit faster as far as I remember.
 

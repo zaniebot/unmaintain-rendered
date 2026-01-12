@@ -14,14 +14,14 @@ head: zb/review-feedback
 created_at: 2024-08-19T22:51:58Z
 updated_at: 2024-08-19T22:52:40Z
 url: https://github.com/astral-sh/uv/pull/6235
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Address feedback for Docker integration guide
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 22:51_
+_@zanieb_
 
 _No description provided._
 

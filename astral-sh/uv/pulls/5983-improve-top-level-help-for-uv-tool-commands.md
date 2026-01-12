@@ -15,14 +15,14 @@ head: zb/tool-cli-top-level
 created_at: 2024-08-09T22:57:19Z
 updated_at: 2024-08-12T17:35:51Z
 url: https://github.com/astral-sh/uv/pull/5983
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:08Z
 ```
 
 # Improve top-level help for `uv tool` commands
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-09 22:57_
+_@zanieb_
 
 More work needs to be done for all of the options
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-02T12:00:01Z
 updated_at: 2023-07-03T00:18:35Z
 url: https://github.com/astral-sh/ruff/issues/5462
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # B017: Not catching BaseException
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-07-02 12:00_
+_@saippuakauppias_
 
 Example:
 ```python

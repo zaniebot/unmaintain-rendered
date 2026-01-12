@@ -15,14 +15,14 @@ head: pyi034-strings
 created_at: 2024-08-17T14:11:53Z
 updated_at: 2024-09-02T13:49:24Z
 url: https://github.com/astral-sh/ruff/pull/12951
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [`flake8-pyi`] Teach various rules that annotations might be stringized
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-08-17 14:11_
+_@AlexWaygood_
 
 ## Summary
 

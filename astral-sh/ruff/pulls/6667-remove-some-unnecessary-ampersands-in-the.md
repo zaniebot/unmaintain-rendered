@@ -13,14 +13,14 @@ head: charlie/amper
 created_at: 2023-08-18T04:07:33Z
 updated_at: 2023-08-18T04:41:57Z
 url: https://github.com/astral-sh/ruff/pull/6667
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Remove some unnecessary ampersands in the formatter
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-18 04:07_
+_@charliermarsh_
 
 _No description provided._
 

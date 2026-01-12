@@ -13,14 +13,14 @@ head: sorting-stabilise
 created_at: 2024-11-19T18:31:07Z
 updated_at: 2024-11-20T07:34:22Z
 url: https://github.com/astral-sh/ruff/pull/14468
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [ruff-0.8] [`ruff`] Stabilise `unsorted-dunder-all` and `unsorted-dunder-slots`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-19 18:31_
+_@AlexWaygood_
 
 ## Summary
 

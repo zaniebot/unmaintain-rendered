@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-16T16:53:55Z
 updated_at: 2025-08-18T08:27:34Z
 url: https://github.com/astral-sh/ty/issues/1022
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # no narrowing after sys.exit
 
 ---
 
-_Issue opened by @andythomas on 2025-08-16 16:53_
+_@andythomas_
 
 ### Summary
 

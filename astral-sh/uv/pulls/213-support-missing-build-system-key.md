@@ -12,14 +12,14 @@ head: support-missing-build_system-key
 created_at: 2023-10-27T09:19:25Z
 updated_at: 2023-10-27T10:12:14Z
 url: https://github.com/astral-sh/uv/pull/213
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:48Z
 ```
 
 # Support missing `build_system` key
 
 ---
 
-_Pull request opened by @konstin on 2023-10-27 09:19_
+_@konstin_
 
 Reduces the number of failing projects out of the top 1000 pypi projects from 5 to 2.
 

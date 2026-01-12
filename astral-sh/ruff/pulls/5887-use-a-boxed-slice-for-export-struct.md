@@ -12,14 +12,14 @@ head: charlie/boxed
 created_at: 2023-07-19T15:31:29Z
 updated_at: 2023-07-19T16:06:56Z
 url: https://github.com/astral-sh/ruff/pull/5887
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Use a boxed slice for `Export` struct
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-19 15:31_
+_@charliermarsh_
 
 ## Summary
 

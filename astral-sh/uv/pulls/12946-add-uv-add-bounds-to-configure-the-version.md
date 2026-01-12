@@ -14,14 +14,14 @@ head: konsti/configurable-operator
 created_at: 2025-04-17T14:26:52Z
 updated_at: 2025-05-28T13:11:32Z
 url: https://github.com/astral-sh/uv/pull/12946
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:28Z
 ```
 
 # Add `uv add --bounds` to configure the version constraint
 
 ---
 
-_Pull request opened by @konstin on 2025-04-17 14:26_
+_@konstin_
 
 By default, uv uses only a lower bound in `uv add`, which avoids dependency conflicts due to upper bounds. With this PR, this cna be changed by setting a different bound kind. The bound kind can be configured in `uv.toml`, as a user preference, in `pyproject.toml`, as a project preference, or on the CLI, when adding a specific project.
 

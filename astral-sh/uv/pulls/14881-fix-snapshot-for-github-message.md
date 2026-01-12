@@ -13,14 +13,14 @@ head: zb/git-fix
 created_at: 2025-07-24T22:29:24Z
 updated_at: 2025-07-24T22:40:56Z
 url: https://github.com/astral-sh/uv/pull/14881
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:28Z
 ```
 
 # Fix snapshot for GitHub message
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-24 22:29_
+_@zanieb_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-14T07:46:54Z
 updated_at: 2023-09-16T20:25:22Z
 url: https://github.com/astral-sh/ruff/issues/7379
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `W191` isn't triggered inside multi-line f-string expression
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-14 07:46_
+_@dhruvmanila_
 
 Code snippet:
 

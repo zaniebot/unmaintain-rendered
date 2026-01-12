@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-11T11:06:23Z
 updated_at: 2025-11-25T12:20:34Z
 url: https://github.com/astral-sh/ty/issues/225
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Control flow modelling error in `try` ... `else`
 
 ---
 
-_Issue opened by @sharkdp on 2024-12-11 11:06_
+_@sharkdp_
 
 https://github.com/astral-sh/ty/issues/233 mentions a problem with `finally` suites, but it looks like we also don't model `try` … `else` control flow correctly in all cases.
 

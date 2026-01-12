@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-01T19:49:05Z
 updated_at: 2023-01-02T20:58:00Z
 url: https://github.com/astral-sh/ruff/issues/1536
-synced_at: 2026-01-10T12:05:30Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Adding Codespell
 
 ---
 
-_Issue opened by @colin99d on 2023-01-01 19:49_
+_@colin99d_
 
 It would be cool to add codespell to our CI. Let me know if you want this done. (Also its a fairly simple python linter, so we could add it to ruff itself eventually, but that is probably out of scope for now).
 

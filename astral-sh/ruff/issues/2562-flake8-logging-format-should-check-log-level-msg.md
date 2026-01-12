@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-04T00:59:12Z
 updated_at: 2023-03-25T15:55:55Z
 url: https://github.com/astral-sh/ruff/issues/2562
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # flake8-logging-format should check `.log(level, msg)` calls too
 
 ---
 
-_Issue opened by @andersk on 2023-02-04 00:59_
+_@andersk_
 
 ```python
 import logging

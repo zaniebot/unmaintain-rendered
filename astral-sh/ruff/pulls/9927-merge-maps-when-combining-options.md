@@ -14,14 +14,14 @@ head: charlie/merge
 created_at: 2024-02-11T03:28:34Z
 updated_at: 2024-06-26T08:11:59Z
 url: https://github.com/astral-sh/ruff/pull/9927
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Merge maps when combining options
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-11 03:28_
+_@charliermarsh_
 
 ## Summary
 

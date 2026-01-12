@@ -12,14 +12,14 @@ assignees: []
 created_at: 2016-09-16T21:27:00Z
 updated_at: 2018-08-02T03:29:54Z
 url: https://github.com/clap-rs/clap/issues/666
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Implicit `use_delimiter(true)` can be confusing
 
 ---
 
-_Issue opened by @kbknapp on 2016-09-16 21:27_
+_@kbknapp_
 
 After some testing, the new implicit `Arg::use_delimiter(true)` can be confusing to the point of thinking things are bugs. 
 

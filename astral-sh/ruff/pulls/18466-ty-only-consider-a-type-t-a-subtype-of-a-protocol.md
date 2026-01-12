@@ -14,14 +14,14 @@ head: alex/proto-subtyping-boundness
 created_at: 2025-06-04T17:41:58Z
 updated_at: 2025-06-04T19:39:21Z
 url: https://github.com/astral-sh/ruff/pull/18466
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:19Z
 ```
 
 # [ty] Only consider a type `T` a subtype of a protocol `P` if all of `P`'s members are fully bound on `T`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-04 17:41_
+_@AlexWaygood_
 
 ## Summary
 

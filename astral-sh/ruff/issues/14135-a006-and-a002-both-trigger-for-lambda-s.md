@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-06T14:51:06Z
 updated_at: 2024-11-07T05:34:10Z
 url: https://github.com/astral-sh/ruff/issues/14135
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # A006 and A002 both trigger for lambda's
 
 ---
 
-_Issue opened by @jaap3 on 2024-11-06 14:51_
+_@jaap3_
 
 This example triggers two violations (with preview enabled), is this intentional?
 

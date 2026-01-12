@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-18T04:38:19Z
 updated_at: 2025-12-18T12:45:42Z
 url: https://github.com/astral-sh/ty/issues/2051
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # docstrings and signatures in hovers should fallback to base classes
 
 ---
 
-_Issue opened by @KeepNoob on 2025-12-18 04:38_
+_@KeepNoob_
 
 ### Summary
 

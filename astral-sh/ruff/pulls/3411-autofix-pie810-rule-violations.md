@@ -13,14 +13,14 @@ head: pie810
 created_at: 2023-03-09T01:30:56Z
 updated_at: 2023-03-10T05:17:23Z
 url: https://github.com/astral-sh/ruff/pull/3411
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Autofix PIE810 rule violations
 
 ---
 
-_Pull request opened by @kyoto7250 on 2023-03-09 01:30_
+_@kyoto7250_
 
 close #3360 
 

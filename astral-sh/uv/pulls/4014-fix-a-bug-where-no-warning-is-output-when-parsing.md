@@ -13,14 +13,14 @@ head: fix-quiet-workspace-warning
 created_at: 2024-06-04T12:45:51Z
 updated_at: 2024-07-13T14:05:51Z
 url: https://github.com/astral-sh/uv/pull/4014
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:05:59Z
 ```
 
 # Fix a bug where no warning is output when parsing of workspace settings fails.
 
 ---
 
-_Pull request opened by @Di-Is on 2024-06-04 12:45_
+_@Di-Is_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: doc_sync_pytorch_install_index
 created_at: 2025-06-17T08:00:40Z
 updated_at: 2025-06-17T14:08:10Z
 url: https://github.com/astral-sh/uv/pull/14100
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:01Z
 ```
 
 # doc: Sync PyTorch integration index for CUDA and ROCm versions from PyTorch website.
 
 ---
 
-_Pull request opened by @FishAlchemist on 2025-06-17 08:00_
+_@FishAlchemist_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2020-10-01T17:38:42Z
 updated_at: 2020-10-01T17:46:19Z
 url: https://github.com/clap-rs/clap/issues/2147
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Be able to print help after argument parsing
 
 ---
 
-_Issue opened by @piegamesde on 2020-10-01 17:38_
+_@piegamesde_
 
 ### Make sure you completed the following tasks
 

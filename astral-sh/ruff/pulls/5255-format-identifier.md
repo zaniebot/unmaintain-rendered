@@ -13,14 +13,14 @@ head: format-identifier
 created_at: 2023-06-21T14:57:32Z
 updated_at: 2023-06-21T15:35:39Z
 url: https://github.com/astral-sh/ruff/pull/5255
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Format Identifier
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-21 14:57_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

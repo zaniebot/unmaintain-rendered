@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-02T21:06:48Z
 updated_at: 2025-06-13T12:44:01Z
 url: https://github.com/astral-sh/uv/issues/5737
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Allow setting virtual environment options in `pyproject.toml`
 
 ---
 
-_Issue opened by @chrisrodrigue on 2024-08-02 21:06_
+_@chrisrodrigue_
 
 When running `uv venv`, the user may specify the options `--system-site-packages` and `--relocatable`. These values persist in `.venv/pyenv.cfg` as shown:
 

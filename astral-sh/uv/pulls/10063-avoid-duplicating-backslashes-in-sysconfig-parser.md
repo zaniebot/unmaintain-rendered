@@ -13,14 +13,14 @@ head: charlie/backslash
 created_at: 2024-12-20T18:15:12Z
 updated_at: 2024-12-20T18:52:44Z
 url: https://github.com/astral-sh/uv/pull/10063
-synced_at: 2026-01-10T11:44:32Z
+synced_at: 2026-01-12T16:09:06Z
 ```
 
 # Avoid duplicating backslashes in sysconfig parser
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-20 18:15_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-11-02T15:48:35Z
 updated_at: 2020-11-06T20:50:07Z
 url: https://github.com/clap-rs/clap/issues/2198
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # 3.0.0 fails to compile on wasm32-unknown-unknown
 
 ---
 
-_Issue opened by @tamasfe on 2020-11-02 15:48_
+_@tamasfe_
 
 ### Make sure you completed the following tasks
 

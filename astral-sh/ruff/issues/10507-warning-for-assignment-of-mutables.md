@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-21T10:53:18Z
 updated_at: 2024-03-21T11:53:44Z
 url: https://github.com/astral-sh/ruff/issues/10507
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Warning for assignment of mutables
 
 ---
 
-_Issue opened by @hikaru-kajita on 2024-03-21 10:53_
+_@hikaru-kajita_
 
 ### Discussed in https://github.com/astral-sh/ruff/discussions/10408
 

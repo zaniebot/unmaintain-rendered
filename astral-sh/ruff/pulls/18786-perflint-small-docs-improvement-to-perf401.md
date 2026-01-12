@@ -13,14 +13,14 @@ head: PERF401-docs-cleanup
 created_at: 2025-06-19T07:28:09Z
 updated_at: 2025-06-20T21:50:52Z
 url: https://github.com/astral-sh/ruff/pull/18786
-synced_at: 2026-01-10T18:39:08Z
+synced_at: 2026-01-12T15:56:25Z
 ```
 
 # [Perflint] Small docs improvement to `PERF401`
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-19 07:28_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-11-21T07:14:10Z
 updated_at: 2023-11-21T11:41:04Z
 url: https://github.com/astral-sh/ruff/pull/8802
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Update Arch Linux package URL in installation.md
 
 ---
 
-_Pull request opened by @felixonmars on 2023-11-21 07:14_
+_@felixonmars_
 
 The old URL returns 404 now.
 

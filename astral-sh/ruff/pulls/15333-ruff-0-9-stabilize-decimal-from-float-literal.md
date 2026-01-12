@@ -13,14 +13,14 @@ head: dylan/stabilize-decimal
 created_at: 2025-01-07T22:29:31Z
 updated_at: 2025-01-08T07:39:30Z
 url: https://github.com/astral-sh/ruff/pull/15333
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [ruff-0.9] Stabilize `decimal-from-float-literal` (`RUF032`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-01-07 22:29_
+_@dylwil3_
 
 Stabilize `decimal-from-float-literal` (`RUF032`) for the Ruff 0.9 release.
 

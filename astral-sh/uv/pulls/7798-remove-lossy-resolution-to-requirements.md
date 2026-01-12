@@ -13,14 +13,14 @@ head: charlie/plan
 created_at: 2024-09-30T01:03:43Z
 updated_at: 2024-09-30T14:13:11Z
 url: https://github.com/astral-sh/uv/pull/7798
-synced_at: 2026-01-10T12:53:56Z
+synced_at: 2026-01-12T16:08:00Z
 ```
 
 # Remove lossy resolution-to-requirements conversion in install plan
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-30 01:03_
+_@charliermarsh_
 
 ## Summary
 

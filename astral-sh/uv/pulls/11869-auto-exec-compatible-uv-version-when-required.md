@@ -11,14 +11,14 @@ head: required-version-fix
 created_at: 2025-02-28T21:33:52Z
 updated_at: 2025-05-27T16:33:36Z
 url: https://github.com/astral-sh/uv/pull/11869
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:01Z
 ```
 
 # Auto-exec compatible uv version when required-version doesn't match
 
 ---
 
-_Pull request opened by @aarondobbing on 2025-02-28 21:33_
+_@aarondobbing_
 
  Implements #11065
 

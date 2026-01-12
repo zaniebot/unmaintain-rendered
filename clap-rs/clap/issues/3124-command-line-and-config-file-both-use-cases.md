@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-12-09T16:16:18Z
 updated_at: 2021-12-09T16:29:06Z
 url: https://github.com/clap-rs/clap/issues/3124
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Command-line and config file, both use-cases become possible with structopt?
 
 ---
 
-_Issue opened by @epage on 2021-12-09 16:16_
+_@epage_
 
 <a href="https://github.com/SamuelMarks"><img src="https://avatars.githubusercontent.com/u/807580?v=4" align="left" width="96" height="96" hspace="10"></img></a> **Issue by [SamuelMarks](https://github.com/SamuelMarks)**
 _Wednesday Jun 05, 2019 at 04:46 GMT_

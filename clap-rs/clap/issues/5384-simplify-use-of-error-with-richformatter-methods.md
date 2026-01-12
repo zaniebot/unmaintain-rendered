@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-02T03:22:51Z
 updated_at: 2024-03-12T22:57:17Z
 url: https://github.com/clap-rs/clap/issues/5384
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Simplify use of Error with RichFormatter (methods `print` and `exit`)
 
 ---
 
-_Issue opened by @vrurg on 2024-03-02 03:22_
+_@vrurg_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: patch-5
 created_at: 2025-06-30T17:28:55Z
 updated_at: 2025-06-30T21:22:00Z
 url: https://github.com/astral-sh/ruff/pull/19049
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:30Z
 ```
 
 # [`flake8-bandit`] Make `S604` and `S609` examples error out-of-the-box
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-30 17:28_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

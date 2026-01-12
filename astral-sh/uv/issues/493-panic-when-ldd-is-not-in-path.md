@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-23T09:48:42Z
 updated_at: 2023-11-28T05:55:06Z
 url: https://github.com/astral-sh/uv/issues/493
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Panic when ldd is not in path
 
 ---
 
-_Issue opened by @konstin on 2023-11-23 09:48_
+_@konstin_
 
 Granted, this one is exotic. Paths are for ubuntu 23.10.
 

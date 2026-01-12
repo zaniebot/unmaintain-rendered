@@ -13,14 +13,14 @@ head: split-comprehension-after-in
 created_at: 2024-08-15T16:32:40Z
 updated_at: 2024-08-15T16:44:36Z
 url: https://github.com/astral-sh/ruff/pull/12908
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Split over-long comprehensions after `in`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-15 16:32_
+_@MichaReiser_
 
 ## Summary
 

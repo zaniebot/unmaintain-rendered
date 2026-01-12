@@ -13,14 +13,14 @@ head: jtfm/disable-jfrog-test
 created_at: 2025-06-26T14:29:26Z
 updated_at: 2025-06-26T14:47:20Z
 url: https://github.com/astral-sh/uv/pull/14276
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:07Z
 ```
 
 # Temporarily disable Artifactory registry test
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-26 14:29_
+_@jtfmumm_
 
 I'm waiting on a response to get our subscription back up. Then I can re-enable this. But for now, this would cause failing CI tests.
 

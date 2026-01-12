@@ -14,14 +14,14 @@ head: charlie/dnf
 created_at: 2024-11-26T15:54:12Z
 updated_at: 2024-12-07T01:51:45Z
 url: https://github.com/astral-sh/uv/pull/9444
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:48Z
 ```
 
 # Encode mutually-incompatible pairs of markers
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-26 15:54_
+_@charliermarsh_
 
 ## Summary
 

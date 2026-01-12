@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-18T18:32:11Z
 updated_at: 2025-07-21T12:37:59Z
 url: https://github.com/astral-sh/ty/issues/854
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic]  not sure of cause
 
 ---
 
-_Issue opened by @justinvanwinkle on 2025-07-18 18:32_
+_@justinvanwinkle_
 
 ```
 error[panic]: Panicked at /root/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/fc00eba/src/function/fetch.rs:165:25 when checking `/home/jvanwinkle/pk/parkade-server/park/api/data_source_test_base.py`: `dependency graph cycle when querying PEP695TypeAliasType < 'db >::value_type_(Id(196401)), set cycle_fn/cycle_initial to fixpoint iterate.

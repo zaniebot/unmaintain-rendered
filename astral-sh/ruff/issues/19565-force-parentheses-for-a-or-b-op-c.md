@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-25T21:01:48Z
 updated_at: 2025-07-28T09:54:05Z
 url: https://github.com/astral-sh/ruff/issues/19565
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Force parentheses for `a or b <op> c`
 
 ---
 
-_Issue opened by @jonashaag on 2025-07-25 21:01_
+_@jonashaag_
 
 ### Summary
 

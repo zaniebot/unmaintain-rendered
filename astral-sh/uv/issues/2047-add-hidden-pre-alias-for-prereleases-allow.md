@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-28T17:50:37Z
 updated_at: 2024-02-28T19:03:07Z
 url: https://github.com/astral-sh/uv/issues/2047
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Add hidden `--pre` alias for `--prereleases=allow`
 
 ---
 
-_Issue opened by @zanieb on 2024-02-28 17:50_
+_@zanieb_
 
 Originally mentioned in https://github.com/astral-sh/uv/issues/2037
 

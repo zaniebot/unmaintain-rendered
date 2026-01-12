@@ -12,14 +12,14 @@ head: config_dir
 created_at: 2022-09-16T23:48:38Z
 updated_at: 2022-09-17T19:38:46Z
 url: https://github.com/astral-sh/ruff/pull/215
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Use a platform-appropriate location for user configuration
 
 ---
 
-_Pull request opened by @andersk on 2022-09-16 23:48_
+_@andersk_
 
 See https://docs.rs/dirs/4.0.0/dirs/fn.config_dir.html.
 

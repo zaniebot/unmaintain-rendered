@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-08T23:48:52Z
 updated_at: 2023-02-09T00:06:26Z
 url: https://github.com/astral-sh/ruff/issues/2672
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # D417 with numpy docstyle?
 
 ---
 
-_Issue opened by @tlambert03 on 2023-02-08 23:48_
+_@tlambert03_
 
 This is either a feature request, or just a general question.  you let me know :)
 

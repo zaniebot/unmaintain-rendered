@@ -13,14 +13,14 @@ head: charlie/empty
 created_at: 2025-03-06T17:33:50Z
 updated_at: 2025-03-06T17:44:22Z
 url: https://github.com/astral-sh/uv/pull/12010
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:05Z
 ```
 
 # Invalidate lockfile when empty dependency groups are added or removed
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-03-06 17:33_
+_@charliermarsh_
 
 ## Summary
 

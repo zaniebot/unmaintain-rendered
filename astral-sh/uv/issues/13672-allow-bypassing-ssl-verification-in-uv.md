@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-27T07:50:33Z
 updated_at: 2025-05-29T14:33:23Z
 url: https://github.com/astral-sh/uv/issues/13672
-synced_at: 2026-01-10T01:57:31Z
+synced_at: 2026-01-12T16:01:34Z
 ```
 
 # Allow bypassing SSL verification in uv installation script
 
 ---
 
-_Issue opened by @eegli on 2025-05-27 07:50_
+_@eegli_
 
 ### Summary
 

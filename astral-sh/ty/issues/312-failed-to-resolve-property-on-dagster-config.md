@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-10T17:08:33Z
 updated_at: 2025-05-15T15:14:57Z
 url: https://github.com/astral-sh/ty/issues/312
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Failed to resolve property on `dagster.Config`
 
 ---
 
-_Issue opened by @ion-elgreco on 2025-05-10 17:08_
+_@ion-elgreco_
 
 ### Summary
 

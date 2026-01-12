@@ -13,14 +13,14 @@ head: micha/fuzzer-upgrade-salsa
 created_at: 2024-12-17T16:55:41Z
 updated_at: 2024-12-17T17:04:59Z
 url: https://github.com/astral-sh/ruff/pull/15040
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Upgrade salsa in fuzzer script
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-17 16:55_
+_@MichaReiser_
 
 _No description provided._
 

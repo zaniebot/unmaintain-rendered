@@ -14,14 +14,14 @@ head: micha/playground-fix-escape
 created_at: 2025-11-12T07:14:47Z
 updated_at: 2025-11-12T07:54:16Z
 url: https://github.com/astral-sh/ruff/pull/21397
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:23Z
 ```
 
 # [ty] Fix Escape handler in playground
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-12 07:14_
+_@MichaReiser_
 
 ## Summary
 

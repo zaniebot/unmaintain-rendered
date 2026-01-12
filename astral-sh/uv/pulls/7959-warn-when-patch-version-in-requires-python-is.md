@@ -12,14 +12,14 @@ head: feat/warn-on-pin-py-ver
 created_at: 2024-10-07T06:35:01Z
 updated_at: 2024-10-16T04:21:26Z
 url: https://github.com/astral-sh/uv/pull/7959
-synced_at: 2026-01-10T12:54:00Z
+synced_at: 2026-01-12T16:08:06Z
 ```
 
 # Warn when patch version in `requires-python` is implicitly `0`
 
 ---
 
-_Pull request opened by @ianpaul10 on 2024-10-07 06:35_
+_@ianpaul10_
 
 When patch version isn't specified and a matching version is referenced, it will default patch to 0 which could be unclear/confusing. This PR warns the user of that default.
 

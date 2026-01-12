@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-10T07:27:32Z
 updated_at: 2025-12-18T07:22:08Z
 url: https://github.com/astral-sh/ty/issues/1834
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Server: Support TCP connections
 
 ---
 
-_Issue opened by @timelikeswind on 2025-12-10 07:27_
+_@timelikeswind_
 
 ### Question
 

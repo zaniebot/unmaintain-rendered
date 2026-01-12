@@ -14,14 +14,14 @@ head: doc201
 created_at: 2024-09-10T04:08:57Z
 updated_at: 2024-09-10T17:35:06Z
 url: https://github.com/astral-sh/ruff/pull/13300
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`pydoclint`] Ignore `DOC201` when function name is "__new__"
 
 ---
 
-_Pull request opened by @augustelalande on 2024-09-10 04:08_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

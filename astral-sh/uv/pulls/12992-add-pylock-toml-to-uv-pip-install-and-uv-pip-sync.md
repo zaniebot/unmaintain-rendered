@@ -13,14 +13,14 @@ head: charlie/pep-751-sync
 created_at: 2025-04-20T22:51:43Z
 updated_at: 2025-04-22T07:42:32Z
 url: https://github.com/astral-sh/uv/pull/12992
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:29Z
 ```
 
 # Add `pylock.toml` to `uv pip install` and `uv pip sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-20 22:51_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: ci-profile
 created_at: 2024-05-23T17:32:16Z
 updated_at: 2024-05-28T16:34:56Z
 url: https://github.com/astral-sh/uv/pull/3799
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:51Z
 ```
 
 # Faster CI builds
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-05-23 17:32_
+_@ibraheemdev_
 
 Let's see if this speeds anything up..
 

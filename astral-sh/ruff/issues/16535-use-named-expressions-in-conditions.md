@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-06T14:33:46Z
 updated_at: 2025-03-06T17:41:35Z
 url: https://github.com/astral-sh/ruff/issues/16535
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # use named expressions in conditions
 
 ---
 
-_Issue opened by @dorschw on 2025-03-06 14:33_
+_@dorschw_
 
 ### Summary
 

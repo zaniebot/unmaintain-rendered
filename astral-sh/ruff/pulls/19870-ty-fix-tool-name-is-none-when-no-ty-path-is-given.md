@@ -12,14 +12,14 @@ head: main
 created_at: 2025-08-11T21:17:49Z
 updated_at: 2025-08-11T21:33:13Z
 url: https://github.com/astral-sh/ruff/pull/19870
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:49Z
 ```
 
 # [ty] Fix tool name is None when no ty path is given in ty_benchmark
 
 ---
 
-_Pull request opened by @nguu0123 on 2025-08-11 21:17_
+_@nguu0123_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: zb/linux-larger-runner
 created_at: 2024-08-07T17:55:24Z
 updated_at: 2024-08-07T18:39:33Z
 url: https://github.com/astral-sh/uv/pull/5883
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:04Z
 ```
 
 # Use a larger runner for Linux test jobs
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-07 17:55_
+_@zanieb_
 
 From 8 to 16 cores, 32 to 64 GB RAM for a 2x per minute cost increase.
 

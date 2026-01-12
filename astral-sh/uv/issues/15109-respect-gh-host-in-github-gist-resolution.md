@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-06T14:23:23Z
 updated_at: 2025-08-21T17:37:12Z
 url: https://github.com/astral-sh/uv/issues/15109
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # Respect `GH_HOST` in GitHub Gist resolution
 
 ---
 
-_Issue opened by @zanieb on 2025-08-06 14:23_
+_@zanieb_
 
 Would also be nice if this would work with GitHub enterprise gists as well, maybe by environment variables like `gh` does (`GH_HOST`).
 

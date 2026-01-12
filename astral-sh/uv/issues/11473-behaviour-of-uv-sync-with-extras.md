@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-13T10:05:04Z
 updated_at: 2025-03-18T22:27:23Z
 url: https://github.com/astral-sh/uv/issues/11473
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # Behaviour of `uv sync` with extras?
 
 ---
 
-_Issue opened by @mschwoer on 2025-02-13 10:05_
+_@mschwoer_
 
 ### Question
 

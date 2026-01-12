@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-10-23T13:07:51Z
 updated_at: 2024-10-23T16:08:40Z
 url: https://github.com/astral-sh/uv/pull/8500
-synced_at: 2026-01-10T12:54:10Z
+synced_at: 2026-01-12T16:08:21Z
 ```
 
 # Improve error message for cache info serialization
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-23 13:07_
+_@charliermarsh_
 
 ## Summary
 

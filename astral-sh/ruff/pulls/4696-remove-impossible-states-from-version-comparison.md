@@ -12,14 +12,14 @@ head: charlie/block-metadata
 created_at: 2023-05-28T21:59:50Z
 updated_at: 2023-05-28T22:28:40Z
 url: https://github.com/astral-sh/ruff/pull/4696
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Remove impossible states from version-comparison representation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-28 21:59_
+_@charliermarsh_
 
 ## Summary
 

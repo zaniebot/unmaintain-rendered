@@ -13,14 +13,14 @@ head: konsti/build-backend-editables
 created_at: 2024-11-19T15:46:50Z
 updated_at: 2024-11-19T21:52:12Z
 url: https://github.com/astral-sh/uv/pull/9230
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:43Z
 ```
 
 # Build backend: Build editable 
 
 ---
 
-_Pull request opened by @konstin on 2024-11-19 15:46_
+_@konstin_
 
 Support for editable installs. This is a simple PEP 660 implementation.
 

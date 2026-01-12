@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-03T21:27:56Z
 updated_at: 2025-01-05T08:15:19Z
 url: https://github.com/astral-sh/ruff/issues/15244
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Unable to ignore UP006, UP035 after upgrade to 0.8.0 or later (python3.10)
 
 ---
 
-_Issue opened by @jhovell on 2025-01-03 21:27_
+_@jhovell_
 
 Bug not present in 0.7.4
 

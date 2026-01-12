@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-03T02:51:59Z
 updated_at: 2025-12-28T12:18:28Z
 url: https://github.com/astral-sh/ruff/issues/17162
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # `meta-class-abc-meta` (`FURB180`) - fix does not check whether the class already extends `ABC`
 
 ---
 
-_Issue opened by @DetachHead on 2025-04-03 02:51_
+_@DetachHead_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-28T19:42:12Z
 updated_at: 2025-02-28T20:49:23Z
 url: https://github.com/astral-sh/uv/issues/11864
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # while build in alpine:3.21 getting errro in uwsgi==2.0.24
 
 ---
 
-_Issue opened by @Anton6896 on 2025-02-28 19:42_
+_@Anton6896_
 
 ### Summary
 

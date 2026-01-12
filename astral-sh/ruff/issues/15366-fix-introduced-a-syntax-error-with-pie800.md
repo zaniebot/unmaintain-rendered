@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-09T04:45:45Z
 updated_at: 2025-01-10T14:52:33Z
 url: https://github.com/astral-sh/ruff/issues/15366
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Fix introduced a syntax error with PIE800
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-01-09 04:45_
+_@hauntsaninja_
 
 ```
 λ cat test.py

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-25T21:08:33Z
 updated_at: 2024-03-04T14:47:41Z
 url: https://github.com/astral-sh/uv/issues/1971
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # No internet error message is bad
 
 ---
 
-_Issue opened by @konstin on 2024-02-25 21:08_
+_@konstin_
 
 The error message when there is no internet connection is bad, both for `pip compile` and for `pip sync`:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-16T00:54:41Z
 updated_at: 2024-11-16T01:07:09Z
 url: https://github.com/astral-sh/ruff/issues/14374
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # unable to ban relative imports
 
 ---
 
-_Issue opened by @zkurtz on 2024-11-16 00:54_
+_@zkurtz_
 
 Here's an entire minimal repo dedicated to illustrating the issue: https://github.com/zkurtz/tmp_debug_ruff
 

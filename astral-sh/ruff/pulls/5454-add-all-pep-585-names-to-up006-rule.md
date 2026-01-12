@@ -13,14 +13,14 @@ head: more-UP006-detection
 created_at: 2023-06-30T13:15:14Z
 updated_at: 2025-01-04T01:03:41Z
 url: https://github.com/astral-sh/ruff/pull/5454
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add all PEP-585 names to UP006 rule
 
 ---
 
-_Pull request opened by @wookie184 on 2023-06-30 13:15_
+_@wookie184_
 
 Closes #3936 
 

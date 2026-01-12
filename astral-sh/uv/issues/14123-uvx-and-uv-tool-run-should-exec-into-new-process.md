@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-18T02:40:34Z
 updated_at: 2025-06-18T11:53:50Z
 url: https://github.com/astral-sh/uv/issues/14123
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # `uvx` and `uv tool run` should exec into new process
 
 ---
 
-_Issue opened by @iwinux on 2025-06-18 02:40_
+_@iwinux_
 
 ## Current Behavior
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-22T17:13:41Z
 updated_at: 2025-06-16T14:47:18Z
 url: https://github.com/astral-sh/ruff/issues/18257
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # custom-type-var-for-self (PYI019): misses types in quotes `cls: "type[_S]"`
 
 ---
 
-_Issue opened by @collinanderson on 2025-05-22 17:13_
+_@collinanderson_
 
 ### Summary
 

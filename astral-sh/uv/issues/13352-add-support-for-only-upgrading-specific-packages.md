@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-08T18:11:44Z
 updated_at: 2025-05-08T18:12:05Z
 url: https://github.com/astral-sh/uv/issues/13352
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:26Z
 ```
 
 # Add support for only upgrading specific packages, i.e., `--only-upgrade-package` or `--upgrade-mode strict`
 
 ---
 
-_Issue opened by @zanieb on 2025-05-08 18:11_
+_@zanieb_
 
 ### Summary
 

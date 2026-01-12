@@ -13,14 +13,14 @@ head: zb/fix-terms
 created_at: 2024-01-08T18:07:01Z
 updated_at: 2024-01-08T18:37:33Z
 url: https://github.com/astral-sh/uv/pull/836
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:13Z
 ```
 
 # Fix formatting of negated singleton versions in error messages
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-08 18:07_
+_@zanieb_
 
 Closes #805 
 Requires https://github.com/zanieb/pubgrub/pull/17

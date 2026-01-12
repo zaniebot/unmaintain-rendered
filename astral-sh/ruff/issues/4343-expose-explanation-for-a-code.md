@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-10T10:26:59Z
 updated_at: 2023-05-11T23:22:25Z
 url: https://github.com/astral-sh/ruff/issues/4343
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Expose explanation for a code
 
 ---
 
-_Issue opened by @jankatins on 2023-05-10 10:26_
+_@jankatins_
 
 In https://github.com/koxudaxi/ruff-pycharm-plugin/issues/147 we were discussing the possibility to annotate the `noqa: <code>` codes with the example text as it is on the website. Is there a way to get this information from ruff? E.g. something like `ruff explain <code>` would return the explanation for the code (in machine readable format, e.g. `--json`)?
 

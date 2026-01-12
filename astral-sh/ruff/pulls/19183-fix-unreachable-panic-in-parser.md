@@ -14,14 +14,14 @@ head: parse-bug
 created_at: 2025-07-07T14:54:36Z
 updated_at: 2025-07-20T22:12:32Z
 url: https://github.com/astral-sh/ruff/pull/19183
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:33Z
 ```
 
 # Fix `unreachable` panic in parser
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-07-07 14:54_
+_@dylwil3_
 
 Parsing the (invalid) expression `f"{\t"i}"` caused a panic because the `TStringMiddle` character was "unreachable" due the way the parser recovered from the line continuation (it ate the t-string start).
 

@@ -13,14 +13,14 @@ head: konsti/missing-space-before-semicolon
 created_at: 2024-02-20T11:21:48Z
 updated_at: 2024-02-20T16:38:37Z
 url: https://github.com/astral-sh/uv/pull/1746
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:42Z
 ```
 
 # Better error message for missing space before semicolon in requirements
 
 ---
 
-_Pull request opened by @konstin on 2024-02-20 11:21_
+_@konstin_
 
 PEP 508 requires a space between a URL and the semicolon separating it from the markers to disambiguate it from a url ending with a semicolon. This is easy to get wrong because the space is not required after a plain name of PEP 440 specifier. The new error message explicitly points out the missing space.
 

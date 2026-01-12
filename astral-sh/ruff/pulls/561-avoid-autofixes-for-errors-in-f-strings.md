@@ -12,14 +12,14 @@ head: charlie/f-string
 created_at: 2022-11-03T02:31:54Z
 updated_at: 2022-11-03T02:31:58Z
 url: https://github.com/astral-sh/ruff/pull/561
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Avoid autofixes for errors in f-strings
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-03 02:31_
+_@charliermarsh_
 
 _No description provided._
 

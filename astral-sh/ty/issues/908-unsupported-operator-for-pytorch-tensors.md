@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-28T08:28:34Z
 updated_at: 2025-10-14T12:27:54Z
 url: https://github.com/astral-sh/ty/issues/908
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # unsupported-operator for pytorch tensors
 
 ---
 
-_Issue opened by @PetterS on 2025-07-28 08:28_
+_@PetterS_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-06T11:39:37Z
 updated_at: 2024-09-08T22:33:36Z
 url: https://github.com/astral-sh/uv/issues/7123
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Behavior of `uv pip install` different from docs
 
 ---
 
-_Issue opened by @kdheepak on 2024-09-06 11:39_
+_@kdheepak_
 
 From the docs - https://docs.astral.sh/uv/pip/environments/#discovery-of-python-environments:
 

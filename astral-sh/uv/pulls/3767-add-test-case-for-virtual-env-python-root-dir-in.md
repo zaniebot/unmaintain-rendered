@@ -12,14 +12,14 @@ head: zb/debug-github
 created_at: 2024-05-22T20:04:42Z
 updated_at: 2024-05-22T21:30:12Z
 url: https://github.com/astral-sh/uv/pull/3767
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:50Z
 ```
 
 # Add test case for `VIRTUAL_ENV=${Python_ROOT_DIR}` in GH Actions
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-22 20:04_
+_@zanieb_
 
 Debugging https://github.com/astral-sh/uv/issues/3765
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-14T08:40:44Z
 updated_at: 2025-09-12T21:20:11Z
 url: https://github.com/astral-sh/ty/issues/377
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Protocol with __call__ method hides type errors
 
 ---
 
-_Issue opened by @ojii on 2025-05-14 08:40_
+_@ojii_
 
 ### Summary
 

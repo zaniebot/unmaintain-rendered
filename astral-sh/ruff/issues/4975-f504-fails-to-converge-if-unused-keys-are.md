@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-09T04:02:22Z
 updated_at: 2023-06-09T04:56:37Z
 url: https://github.com/astral-sh/ruff/issues/4975
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F504: Fails to converge if unused keys are concatenated string literals
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-09 04:02_
+_@addisoncrump_
 
 You can concatenate string literals like so: `'a' 'b'` => `'ab'`.
 

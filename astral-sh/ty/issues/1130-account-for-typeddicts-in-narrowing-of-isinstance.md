@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-04T23:11:13Z
 updated_at: 2026-01-09T02:33:37Z
 url: https://github.com/astral-sh/ty/issues/1130
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Account for TypedDicts in narrowing of `isinstance(..., dict)`
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-09-04 23:11_
+_@JelleZijlstra_
 
 ### Summary
 

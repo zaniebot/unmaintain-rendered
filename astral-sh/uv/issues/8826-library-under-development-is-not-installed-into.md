@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-05T08:25:54Z
 updated_at: 2024-11-05T19:29:27Z
 url: https://github.com/astral-sh/uv/issues/8826
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # Library under development is not installed into virtual environment in CI
 
 ---
 
-_Issue opened by @fleimgruber on 2024-11-05 08:25_
+_@fleimgruber_
 
 Using a CI setup such as
 

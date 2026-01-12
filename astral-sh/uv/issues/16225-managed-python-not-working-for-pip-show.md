@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-10T09:30:29Z
 updated_at: 2025-10-10T09:33:32Z
 url: https://github.com/astral-sh/uv/issues/16225
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:26Z
 ```
 
 # --managed-python not working for pip show
 
 ---
 
-_Issue opened by @NorthLake on 2025-10-10 09:30_
+_@NorthLake_
 
 ### Summary
 

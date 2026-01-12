@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-24T07:12:05Z
 updated_at: 2025-04-25T05:10:50Z
 url: https://github.com/astral-sh/uv/issues/13083
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # `uv add chromadb` doesn't install `chroma.exe` on windows
 
 ---
 
-_Issue opened by @eromoe on 2025-04-24 07:12_
+_@eromoe_
 
 ### Summary
 

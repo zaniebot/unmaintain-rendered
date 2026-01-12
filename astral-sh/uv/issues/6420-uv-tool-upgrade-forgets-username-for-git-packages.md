@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T10:58:09Z
 updated_at: 2024-08-22T23:21:44Z
 url: https://github.com/astral-sh/uv/issues/6420
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # uv tool upgrade forgets username for git packages
 
 ---
 
-_Issue opened by @mil-ad on 2024-08-22 10:58_
+_@mil-ad_
 
 I installed a package directly from a git repo using `uv tool install git+ssh://git@github.com/foo/bar.git`. This works fine but when I try to upgrade the package with `uv tool upgrade bar` it tries to use $USER instead of `git` username and fails to upgrade the package. Is this a known bug?
 

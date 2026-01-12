@@ -13,14 +13,14 @@ head: charlie/constant-literals
 created_at: 2023-02-22T22:34:17Z
 updated_at: 2023-02-22T22:37:23Z
 url: https://github.com/astral-sh/ruff/pull/3146
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Avoid suggesting 'is' for constant literals
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-22 22:34_
+_@charliermarsh_
 
 We stopped autofixing these at some point, but we actually shouldn't flag them at all.
 

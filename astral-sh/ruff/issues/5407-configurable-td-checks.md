@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-27T23:00:07Z
 updated_at: 2025-02-10T19:32:42Z
 url: https://github.com/astral-sh/ruff/issues/5407
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Configurable TD checks
 
 ---
 
-_Issue opened by @sirrus233 on 2023-06-27 23:00_
+_@sirrus233_
 
 It would be nice if the `flake8-todos (TD)` checks could be configured with the specific tag that triggers them. Right now they run against `TODO`, `FIXME`, and `XXX`. I would want to restrict that to run against `TODO` only, for example.
 

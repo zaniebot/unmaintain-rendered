@@ -12,14 +12,14 @@ head: charlie/quoted
 created_at: 2023-06-21T01:41:02Z
 updated_at: 2023-06-21T14:23:38Z
 url: https://github.com/astral-sh/ruff/pull/5235
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add support for top-level quoted annotations in RUF013
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-21 01:41_
+_@charliermarsh_
 
 ## Summary
 

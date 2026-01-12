@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-16T04:14:24Z
 updated_at: 2024-10-16T13:43:55Z
 url: https://github.com/astral-sh/uv/issues/8241
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # Non-deterministic snapshot in build test
 
 ---
 
-_Issue opened by @zanieb on 2024-10-16 04:14_
+_@zanieb_
 
 ```
 --- STDOUT:              uv::it build::tool_uv_sources ---

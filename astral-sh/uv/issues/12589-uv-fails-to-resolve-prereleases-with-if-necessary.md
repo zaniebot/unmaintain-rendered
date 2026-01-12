@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-31T16:49:23Z
 updated_at: 2025-07-15T23:23:49Z
 url: https://github.com/astral-sh/uv/issues/12589
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # uv fails to resolve prereleases with `if-necessary` flag when generating a new lock file
 
 ---
 
-_Issue opened by @bryanterichardson on 2025-03-31 16:49_
+_@bryanterichardson_
 
 ### Summary
 

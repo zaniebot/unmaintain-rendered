@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-05T12:10:46Z
 updated_at: 2023-02-17T01:59:02Z
 url: https://github.com/astral-sh/ruff/issues/1054
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [feature-request] File/block-scoped specific noqa directives
 
 ---
 
-_Issue opened by @smackesey on 2022-12-05 12:10_
+_@smackesey_
 
 Ruff's README says this about [ignoring errors](https://github.com/charliermarsh/ruff#ignoring-errors):
 

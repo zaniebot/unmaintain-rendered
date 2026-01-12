@@ -13,14 +13,14 @@ head: zb/rule-sup
 created_at: 2025-05-12T22:58:05Z
 updated_at: 2025-05-12T23:47:32Z
 url: https://github.com/astral-sh/ty/pull/337
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Edit the rule level and suppression comment sections
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-12 22:58_
+_@zanieb_
 
 _No description provided._
 

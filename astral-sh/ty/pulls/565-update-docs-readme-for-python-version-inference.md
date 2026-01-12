@@ -13,14 +13,14 @@ head: alex/pyversion-docs
 created_at: 2025-06-02T11:11:58Z
 updated_at: 2025-06-02T11:24:47Z
 url: https://github.com/astral-sh/ty/pull/565
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Update docs README for Python version inference from environment
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-02 11:11_
+_@AlexWaygood_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-18T23:56:54Z
 updated_at: 2025-01-09T22:57:39Z
 url: https://github.com/astral-sh/uv/issues/10013
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:04Z
 ```
 
 # `uv pip install --directory` not working when called with a Python subprocess
 
 ---
 
-_Issue opened by @djalan on 2024-12-18 23:56_
+_@djalan_
 
 Hello
 

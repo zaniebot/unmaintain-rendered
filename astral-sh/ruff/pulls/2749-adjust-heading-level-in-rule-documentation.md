@@ -12,14 +12,14 @@ head: rule-heading-levels
 created_at: 2023-02-10T22:21:00Z
 updated_at: 2023-02-11T08:21:07Z
 url: https://github.com/astral-sh/ruff/pull/2749
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Adjust heading level in rule documentation
 
 ---
 
-_Pull request opened by @ngnpope on 2023-02-10 22:21_
+_@ngnpope_
 
 Raise to second level heading instead of third level.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-03T15:23:11Z
 updated_at: 2024-09-05T09:31:23Z
 url: https://github.com/astral-sh/ruff/issues/13232
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Ruff toml with `extend` doesn't apply the rules
 
 ---
 
-_Issue opened by @rogier-stegeman on 2024-09-03 15:23_
+_@rogier-stegeman_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

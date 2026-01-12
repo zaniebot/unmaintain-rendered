@@ -12,14 +12,14 @@ head: charlie/poetry
 created_at: 2024-01-05T21:54:52Z
 updated_at: 2024-01-06T02:52:57Z
 url: https://github.com/astral-sh/uv/pull/803
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:12Z
 ```
 
 # Add Poetry support to `bench.py`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-05 21:54_
+_@charliermarsh_
 
 ## Summary
 

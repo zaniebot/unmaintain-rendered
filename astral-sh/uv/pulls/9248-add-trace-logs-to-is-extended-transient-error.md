@@ -13,14 +13,14 @@ head: zb/trace-is_extended_transient_error
 created_at: 2024-11-19T21:20:50Z
 updated_at: 2024-11-20T03:24:07Z
 url: https://github.com/astral-sh/uv/pull/9248
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:43Z
 ```
 
 # Add trace logs to `is_extended_transient_error`
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-19 21:20_
+_@zanieb_
 
 _No description provided._
 

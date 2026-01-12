@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-04T01:04:43Z
 updated_at: 2024-09-04T13:04:20Z
 url: https://github.com/astral-sh/uv/issues/6989
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # Feature Request: generate the conda environment yaml based on uv.lock
 
 ---
 
-_Issue opened by @shuowpro on 2024-09-04 01:04_
+_@shuowpro_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

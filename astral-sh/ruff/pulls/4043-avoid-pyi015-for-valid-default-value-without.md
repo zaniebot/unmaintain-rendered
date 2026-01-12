@@ -13,14 +13,14 @@ head: fix/PYI015/default-value-in-assign
 created_at: 2023-04-20T11:35:52Z
 updated_at: 2023-04-23T10:00:29Z
 url: https://github.com/astral-sh/ruff/pull/4043
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Avoid `PYI015` for valid default value without annotation
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-04-20 11:35_
+_@dhruvmanila_
 
 ## Summary
 

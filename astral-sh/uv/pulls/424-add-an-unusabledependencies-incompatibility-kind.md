@@ -12,14 +12,14 @@ head: zanie/new-incompatibility
 created_at: 2023-11-14T16:48:34Z
 updated_at: 2023-11-16T20:02:08Z
 url: https://github.com/astral-sh/uv/pull/424
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:56Z
 ```
 
 # Add an `UnusableDependencies` incompatibility kind and use for conflicting versions
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-14 16:48_
+_@zanieb_
 
 Addresses https://github.com/astral-sh/puffin/issues/309#issuecomment-1792648969
 

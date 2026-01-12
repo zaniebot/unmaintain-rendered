@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-17T15:31:11Z
 updated_at: 2025-05-18T13:02:36Z
 url: https://github.com/astral-sh/uv/issues/13508
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # installing a workspace with workspace dependency groups
 
 ---
 
-_Issue opened by @kapilt on 2025-05-17 15:31_
+_@kapilt_
 
 ### Question
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-21T22:26:25Z
 updated_at: 2023-02-21T22:28:04Z
 url: https://github.com/astral-sh/ruff/issues/3103
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Pattern matching throws false positive F821 when the value comes from the pattern
 
 ---
 
-_Issue opened by @Vegemash on 2023-02-21 22:26_
+_@Vegemash_
 
 Woo pattern matching! Thank you for supporting 99% of our codebase, here's some bugs :P
 

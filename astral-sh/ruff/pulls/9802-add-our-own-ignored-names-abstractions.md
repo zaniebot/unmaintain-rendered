@@ -13,14 +13,14 @@ head: charlie/ignore-names
 created_at: 2024-02-02T21:15:35Z
 updated_at: 2024-02-03T14:50:41Z
 url: https://github.com/astral-sh/ruff/pull/9802
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Add our own ignored-names abstractions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-02 21:15_
+_@charliermarsh_
 
 ## Summary
 

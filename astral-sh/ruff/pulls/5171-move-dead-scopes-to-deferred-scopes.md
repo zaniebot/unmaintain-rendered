@@ -12,14 +12,14 @@ head: charlie/deferred
 created_at: 2023-06-18T15:51:11Z
 updated_at: 2023-06-18T16:21:15Z
 url: https://github.com/astral-sh/ruff/pull/5171
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Move `dead_scopes` to `deferred.scopes`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-18 15:51_
+_@charliermarsh_
 
 ## Summary
 

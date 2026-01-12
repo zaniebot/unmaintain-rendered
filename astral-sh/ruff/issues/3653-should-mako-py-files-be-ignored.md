@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-21T17:02:20Z
 updated_at: 2023-03-21T23:17:05Z
 url: https://github.com/astral-sh/ruff/issues/3653
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Should .mako.py files be ignored?
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-03-21 17:02_
+_@JonathanPlasse_
 
 [Mozilla](https://github.com/mozilla/gecko-dev/blob/137075514eddc08c68ff652e9899da82e8043574/pyproject.toml#L71-L72) ignore mako files.
 

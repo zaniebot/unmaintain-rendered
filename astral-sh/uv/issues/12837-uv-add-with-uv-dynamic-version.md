@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-11T13:43:05Z
 updated_at: 2025-07-16T14:33:03Z
 url: https://github.com/astral-sh/uv/issues/12837
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:14Z
 ```
 
 # `uv add` with `uv-dynamic-version`?
 
 ---
 
-_Issue opened by @Ox54 on 2025-04-11 13:43_
+_@Ox54_
 
 ### Question
 

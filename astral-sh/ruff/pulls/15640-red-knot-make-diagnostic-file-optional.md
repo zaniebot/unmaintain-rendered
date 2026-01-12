@@ -14,14 +14,14 @@ head: micha/diagnostic-optional-file
 created_at: 2025-01-21T13:39:40Z
 updated_at: 2025-01-23T09:43:17Z
 url: https://github.com/astral-sh/ruff/pull/15640
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [red-knot] Make `Diagnostic::file` optional
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-21 13:39_
+_@MichaReiser_
 
 ## Summary
 

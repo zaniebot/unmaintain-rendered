@@ -13,14 +13,14 @@ head: charlie/fish
 created_at: 2024-04-02T19:39:58Z
 updated_at: 2024-04-02T19:50:50Z
 url: https://github.com/astral-sh/uv/pull/2781
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:13Z
 ```
 
 # Detect Fish via `FISH_VERSION`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-02 19:39_
+_@charliermarsh_
 
 ## Summary
 

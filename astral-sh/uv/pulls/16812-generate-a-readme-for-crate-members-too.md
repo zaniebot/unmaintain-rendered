@@ -13,14 +13,14 @@ head: zb/crate-readme-gen-2
 created_at: 2025-11-21T20:17:13Z
 updated_at: 2025-11-21T21:44:08Z
 url: https://github.com/astral-sh/uv/pull/16812
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:27Z
 ```
 
 # Generate a README for crate members too
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-21 20:17_
+_@zanieb_
 
 We skip members with existing READMEs for now.
 

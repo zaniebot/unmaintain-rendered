@@ -13,14 +13,14 @@ head: konsti/add-locks-on-installation-fixup-to-avoid-rages
 created_at: 2024-01-15T10:24:41Z
 updated_at: 2024-01-16T21:07:40Z
 url: https://github.com/astral-sh/uv/pull/929
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:18Z
 ```
 
 # Use tempfile to prevent install io race crashes
 
 ---
 
-_Pull request opened by @konstin on 2024-01-15 10:24_
+_@konstin_
 
 On ubuntu and python 3.10,
 

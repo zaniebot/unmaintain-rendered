@@ -12,14 +12,14 @@ assignees: []
 created_at: 2018-11-15T09:05:26Z
 updated_at: 2022-02-03T14:55:44Z
 url: https://github.com/clap-rs/clap/issues/1382
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # the --version flag concatenates subcommands
 
 ---
 
-_Issue opened by @Geal on 2018-11-15 09:05_
+_@Geal_
 
 Maintainer's notes
 - We hope #1334 will provide a way to resolve this.  This is being left open to ensure this use case isn't lost in case a minimum or full solution doesn't include this

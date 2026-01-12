@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-31T21:49:56Z
 updated_at: 2024-08-05T17:37:57Z
 url: https://github.com/astral-sh/ruff/issues/11654
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # [red-knot] support builtins scope, via resolving to typeshed builtins.pyi
 
 ---
 
-_Issue opened by @carljm on 2024-05-31 21:49_
+_@carljm_
 
 Requires integrating typeshed into the module resolver.
 

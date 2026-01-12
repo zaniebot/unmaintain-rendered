@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-06T00:16:45Z
 updated_at: 2025-08-18T22:07:58Z
 url: https://github.com/astral-sh/uv/issues/15096
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # Add a hint for virtual environments included in wheels
 
 ---
 
-_Issue opened by @zanieb on 2025-08-06 00:16_
+_@zanieb_
 
 We've seen several reports of this since we updated our behavior here, e.g.:
 

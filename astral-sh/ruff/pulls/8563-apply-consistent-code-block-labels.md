@@ -13,14 +13,14 @@ head: apply-consistent-code-block-labels
 created_at: 2023-11-08T14:35:36Z
 updated_at: 2023-11-09T08:56:25Z
 url: https://github.com/astral-sh/ruff/pull/8563
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Apply consistent code block labels
 
 ---
 
-_Pull request opened by @doolio on 2023-11-08 14:35_
+_@doolio_
 
 This ensures the python label is used for all python code blocks for consistency.
 

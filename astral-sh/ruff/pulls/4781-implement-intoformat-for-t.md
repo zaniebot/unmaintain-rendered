@@ -12,14 +12,14 @@ head: implement-into-format-for-reference
 created_at: 2023-06-01T09:58:25Z
 updated_at: 2023-06-01T10:32:44Z
 url: https://github.com/astral-sh/ruff/pull/4781
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Implement `IntoFormat` for `&T`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-01 09:58_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

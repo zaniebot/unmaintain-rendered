@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-14T00:09:03Z
 updated_at: 2025-10-16T07:50:34Z
 url: https://github.com/astral-sh/ty/issues/1349
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Incorrect type narrowing for literal patterns
 
 ---
 
-_Issue opened by @erictraut on 2025-10-14 00:09_
+_@erictraut_
 
 ### Summary
 

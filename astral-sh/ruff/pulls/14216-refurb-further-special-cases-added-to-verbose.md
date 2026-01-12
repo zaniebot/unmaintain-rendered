@@ -13,14 +13,14 @@ head: decimal-redux
 created_at: 2024-11-08T23:42:40Z
 updated_at: 2024-11-09T04:05:23Z
 url: https://github.com/astral-sh/ruff/pull/14216
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`refurb`] Further special cases added to `verbose-decimal-constructor (FURB157)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-11-08 23:42_
+_@dylwil3_
 
 This PR accounts for further subtleties in `Decimal` parsing:
 

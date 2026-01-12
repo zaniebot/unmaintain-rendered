@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-09T14:21:36Z
 updated_at: 2024-03-18T14:42:33Z
 url: https://github.com/astral-sh/uv/issues/846
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Use a single python process across all steps of building a source dist
 
 ---
 
-_Issue opened by @konstin on 2024-01-09 14:21_
+_@konstin_
 
 Starting python is slow (10ms on my machine), and importing a build backend is even slower. Instead, we should start a python interpreter once and keep reusing it. We avoid the startup cost and cached import are free.
 

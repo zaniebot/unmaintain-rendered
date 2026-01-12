@@ -14,14 +14,14 @@ head: micha/benchmark-assertion
 created_at: 2025-12-16T11:07:40Z
 updated_at: 2025-12-16T11:24:55Z
 url: https://github.com/astral-sh/ruff/pull/22003
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:38Z
 ```
 
 # [ty] Fix benchmark assertion
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-16 11:07_
+_@MichaReiser_
 
 The intention of the assertion is to catch cases where an edit didn't introduce any new diagnostics (or we failed to fetch them). However, simply asserting on the counts isn't sufficient because the assertion then also fails if the number of new and fixed diagnostics by an edit are equal.
 

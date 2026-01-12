@@ -13,14 +13,14 @@ head: feat/glob-literal-separator
 created_at: 2024-04-25T02:16:17Z
 updated_at: 2024-06-26T08:20:25Z
 url: https://github.com/astral-sh/ruff/pull/11139
-synced_at: 2026-01-10T21:55:59Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # feat: distinguish * and ** in globs
 
 ---
 
-_Pull request opened by @JP-Ellis on 2024-04-25 02:16_
+_@JP-Ellis_
 
 ## Summary
 

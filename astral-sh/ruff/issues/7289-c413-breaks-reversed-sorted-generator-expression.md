@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-12T09:11:20Z
 updated_at: 2023-09-13T19:40:46Z
 url: https://github.com/astral-sh/ruff/issues/7289
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `C413` breaks reversed(sorted(generator expression))
 
 ---
 
-_Issue opened by @vpoverennov on 2023-09-12 09:11_
+_@vpoverennov_
 
 C413 breaks reversed(sorted(generator expression))
 

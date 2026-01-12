@@ -12,14 +12,14 @@ head: feature/addPYI048
 created_at: 2023-05-24T20:38:31Z
 updated_at: 2023-05-26T18:56:30Z
 url: https://github.com/astral-sh/ruff/pull/4645
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Implement PYI048 for `flake8-pyi` plugin
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-05-24 20:38_
+_@qdegraaf_
 
 ## Summary
 Adds [PYI048](https://github.com/PyCQA/flake8-pyi/blob/ceab86d16b822d12abae1d8087850d0bc66d2f52/pyi.py#LL2107C7-L2107C7) rule to `flake8-pyi`.

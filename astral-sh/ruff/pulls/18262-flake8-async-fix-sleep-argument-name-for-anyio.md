@@ -14,14 +14,14 @@ head: fix/async115_and_async116_name_resolution
 created_at: 2025-05-22T19:01:07Z
 updated_at: 2025-05-26T09:53:18Z
 url: https://github.com/astral-sh/ruff/pull/18262
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [`flake8_async`] Fix sleep argument name for anyio (`ASYNC115`, `ASYNC116`)
 
 ---
 
-_Pull request opened by @Vasanth-96 on 2025-05-22 19:01_
+_@Vasanth-96_
 
 #18164
 <!--

@@ -13,14 +13,14 @@ head: charlie/venv
 created_at: 2024-03-01T05:29:58Z
 updated_at: 2024-03-01T15:52:49Z
 url: https://github.com/astral-sh/uv/pull/2102
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:52Z
 ```
 
 # Centralize virtualenv path construction
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-01 05:29_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: semantic-syntax-v3
 created_at: 2025-05-02T02:08:32Z
 updated_at: 2025-05-05T18:02:06Z
 url: https://github.com/astral-sh/ruff/pull/17785
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [semantic-syntax-tests] Add test fixtures for AwaitOutsideAsync
 
 ---
 
-_Pull request opened by @maxmynter on 2025-05-02 02:08_
+_@maxmynter_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

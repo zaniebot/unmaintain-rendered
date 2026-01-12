@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-27T18:24:56Z
 updated_at: 2025-04-27T20:09:06Z
 url: https://github.com/astral-sh/uv/issues/13137
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # When downloading packages in CI action UV doesn't print which version it resolved to download.
 
 ---
 
-_Issue opened by @CompRhys on 2025-04-27 18:24_
+_@CompRhys_
 
 ### Summary
 

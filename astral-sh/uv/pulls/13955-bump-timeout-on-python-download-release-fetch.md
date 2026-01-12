@@ -13,14 +13,14 @@ head: zb/bump-python
 created_at: 2025-06-10T21:40:40Z
 updated_at: 2025-06-10T21:54:43Z
 url: https://github.com/astral-sh/uv/pull/13955
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:56Z
 ```
 
 # Bump timeout on Python download release fetch
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-10 21:40_
+_@zanieb_
 
 Failing with a 504 at https://github.com/astral-sh/uv/actions/runs/15569590779
 

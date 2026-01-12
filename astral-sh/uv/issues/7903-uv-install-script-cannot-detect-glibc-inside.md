@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-03T17:29:35Z
 updated_at: 2024-10-04T08:58:54Z
 url: https://github.com/astral-sh/uv/issues/7903
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Uv install script cannot detect glibc inside WolfiOS base image.
 
 ---
 
-_Issue opened by @KhazAkar on 2024-10-03 17:29_
+_@KhazAkar_
 
 When trying to install uv inside container with cURL'd script, when using wolfi-base from chainguard, cannot detect glibc version.
 ```

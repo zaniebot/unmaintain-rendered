@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-13T09:13:00Z
 updated_at: 2025-12-14T09:21:56Z
 url: https://github.com/astral-sh/ty/issues/1875
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Non-rendered callout in documentation
 
 ---
 
-_Issue opened by @eggplants on 2025-12-13 09:13_
+_@eggplants_
 
 ### Summary
 

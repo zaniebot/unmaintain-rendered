@@ -13,14 +13,14 @@ head: charlie/del-tests
 created_at: 2023-06-07T01:27:45Z
 updated_at: 2023-06-07T01:59:49Z
 url: https://github.com/astral-sh/ruff/pull/4913
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add some more test coverage for `del` statements
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-07 01:27_
+_@charliermarsh_
 
 ## Summary
 

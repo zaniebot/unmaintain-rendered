@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-16T16:18:05Z
 updated_at: 2025-07-16T19:13:13Z
 url: https://github.com/astral-sh/uv/issues/14665
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:53Z
 ```
 
 # Unexpected behavior with `--index-strategy first-index` and missing package in primary index
 
 ---
 
-_Issue opened by @leoschleier on 2025-07-16 16:18_
+_@leoschleier_
 
 ### Summary
 

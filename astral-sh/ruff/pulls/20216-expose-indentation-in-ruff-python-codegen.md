@@ -13,14 +13,14 @@ head: expose-indent
 created_at: 2025-09-03T17:06:51Z
 updated_at: 2025-09-18T11:36:20Z
 url: https://github.com/astral-sh/ruff/pull/20216
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:56Z
 ```
 
 # Expose `Indentation` in `ruff_python_codegen`
 
 ---
 
-_Pull request opened by @ShaharNaveh on 2025-09-03 17:06_
+_@ShaharNaveh_
 
 ## Summary
 

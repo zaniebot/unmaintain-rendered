@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-10-16T19:09:54Z
 updated_at: 2024-02-01T19:35:08Z
 url: https://github.com/astral-sh/ruff/issues/7992
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Remove the "nursery" rule group
 
 ---
 
-_Issue opened by @zanieb on 2023-10-16 19:09_
+_@zanieb_
 
 `RuleGroup::Nursery` is currently included for backwards compatibility but should be removed in Ruff v0.2.0
 

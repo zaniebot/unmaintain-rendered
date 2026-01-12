@@ -13,14 +13,14 @@ head: zb/ci-partition
 created_at: 2024-08-01T23:05:40Z
 updated_at: 2024-10-01T22:13:52Z
 url: https://github.com/astral-sh/uv/pull/5714
-synced_at: 2026-01-10T12:53:32Z
+synced_at: 2026-01-12T16:06:58Z
 ```
 
 # Add nextest partitioning to CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-01 23:05_
+_@zanieb_
 
 Exploring #875 again now that we have slower CI.
 

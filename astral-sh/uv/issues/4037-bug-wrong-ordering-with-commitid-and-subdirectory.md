@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-05T03:17:49Z
 updated_at: 2024-06-05T03:53:24Z
 url: https://github.com/astral-sh/uv/issues/4037
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Bug: wrong ordering with `@commitID` and `#subdirectory` after `uv pip compile`
 
 ---
 
-_Issue opened by @jamesbraza on 2024-06-05 03:17_
+_@jamesbraza_
 
 We have a package installed from GitHub private repo in a `requirements.in`:
 

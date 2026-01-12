@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-01T12:02:20Z
 updated_at: 2022-09-01T13:13:20Z
 url: https://github.com/astral-sh/ruff/issues/69
-synced_at: 2026-01-10T15:56:04Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `Invalid syntax. Got unexpected token 'as'` on multiple `... as ...` inside a with statement
 
 ---
 
-_Issue opened by @Greesb on 2022-09-01 12:02_
+_@Greesb_
 
 Found this bug while testing ruff on my code, here is a simplified example to reproduce: 
 

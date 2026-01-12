@@ -12,14 +12,14 @@ head: add-license-v3
 created_at: 2025-01-03T16:34:45Z
 updated_at: 2025-07-09T17:50:35Z
 url: https://github.com/astral-sh/uv/pull/10292
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:09:13Z
 ```
 
 # Draft: Add `uv license` command
 
 ---
 
-_Pull request opened by @ryanleary on 2025-01-03 16:34_
+_@ryanleary_
 
 ## Summary
 

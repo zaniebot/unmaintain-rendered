@@ -13,14 +13,14 @@ head: gettext-docs
 created_at: 2023-07-16T21:43:18Z
 updated_at: 2023-07-17T09:39:17Z
 url: https://github.com/astral-sh/ruff/pull/5813
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add documentation to the `flake8-gettext` (`INT`) rules
 
 ---
 
-_Pull request opened by @tjkuson on 2023-07-16 21:43_
+_@tjkuson_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/test-trampoline
 created_at: 2024-10-28T19:13:22Z
 updated_at: 2024-10-28T19:53:24Z
 url: https://github.com/astral-sh/uv/pull/8643
-synced_at: 2026-01-10T12:54:14Z
+synced_at: 2026-01-12T16:08:25Z
 ```
 
 # Add note about trampoline tests on aarch64
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-28 19:13_
+_@zanieb_
 
 Similar to https://github.com/astral-sh/uv/pull/8642, not sure why this is incomplete.
 

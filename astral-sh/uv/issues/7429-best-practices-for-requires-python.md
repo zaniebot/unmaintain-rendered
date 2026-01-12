@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-16T14:26:24Z
 updated_at: 2025-07-25T18:04:49Z
 url: https://github.com/astral-sh/uv/issues/7429
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # Best practices for `requires-python` 
 
 ---
 
-_Issue opened by @TheRealBecks on 2024-09-16 14:26_
+_@TheRealBecks_
 
 I had some thoughts about version handling and documentation in #7352, but that was out of scope, so I created this issue.
 

@@ -13,14 +13,14 @@ head: tracking/735
 created_at: 2024-10-16T21:35:12Z
 updated_at: 2024-10-28T13:57:38Z
 url: https://github.com/astral-sh/uv/pull/8272
-synced_at: 2026-01-10T12:54:06Z
+synced_at: 2026-01-12T16:08:14Z
 ```
 
 # Support for PEP 735
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-16 21:35_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/8090
 Closes https://github.com/astral-sh/uv/issues/5632

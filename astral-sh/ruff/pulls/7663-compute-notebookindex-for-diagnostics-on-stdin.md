@@ -13,14 +13,14 @@ head: dhruv/notebook-index-stdin
 created_at: 2023-09-26T06:25:43Z
 updated_at: 2023-09-29T20:44:54Z
 url: https://github.com/astral-sh/ruff/pull/7663
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Compute `NotebookIndex` for `Diagnostics` on stdin
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-26 06:25_
+_@dhruvmanila_
 
 ## Summary
 

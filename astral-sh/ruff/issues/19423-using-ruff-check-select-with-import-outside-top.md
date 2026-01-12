@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T14:17:12Z
 updated_at: 2025-07-21T07:21:57Z
 url: https://github.com/astral-sh/ruff/issues/19423
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Using `ruff check --select` with `import-outside-top-level (PLC0415)` does not respect `flake8-tidy-imports.banned-module-level-imports`
 
 ---
 
-_Issue opened by @olivierdelree on 2025-07-18 14:17_
+_@olivierdelree_
 
 ### Summary
 

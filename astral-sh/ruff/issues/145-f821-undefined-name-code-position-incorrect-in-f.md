@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-10T20:08:52Z
 updated_at: 2023-02-03T18:28:28Z
 url: https://github.com/astral-sh/ruff/issues/145
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # `F821 Undefined name` code position incorrect in f-strings
 
 ---
 
-_Issue opened by @nikolaik on 2022-09-10 20:08_
+_@nikolaik_
 
 When trying to ignore F821 in some cases, like importing variables using star imports, I can't when the variable is used in an f-string. The line and column position seems to be off. Is that used to match the noqa comments?
 

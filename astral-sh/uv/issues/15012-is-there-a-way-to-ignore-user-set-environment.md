@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-01T09:14:36Z
 updated_at: 2025-08-03T22:42:04Z
 url: https://github.com/astral-sh/uv/issues/15012
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:02Z
 ```
 
 # Is there a way to ignore user set environment variables?
 
 ---
 
-_Issue opened by @jamesowers-cohere on 2025-08-01 09:14_
+_@jamesowers-cohere_
 
 ### Question
 

@@ -14,14 +14,14 @@ head: brent/diagnostic-rendering
 created_at: 2025-07-03T18:24:59Z
 updated_at: 2025-09-03T19:07:22Z
 url: https://github.com/astral-sh/ruff/pull/19129
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # Move Azure output format to the new diagnostic format
 
 ---
 
-_Pull request opened by @ntBre on 2025-07-03 18:24_
+_@ntBre_
 
 ## Summary
 

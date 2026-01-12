@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-20T17:58:39Z
 updated_at: 2023-04-23T06:04:17Z
 url: https://github.com/astral-sh/ruff/issues/4050
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # False B031 error when using generator from itertools.groupby in if/else block
 
 ---
 
-_Issue opened by @premdas26 on 2023-04-20 17:58_
+_@premdas26_
 
 After upgrading to v0.0.262, I'm getting a false B031 error for multiple uses of a generator from itertools.groupby:
 ```

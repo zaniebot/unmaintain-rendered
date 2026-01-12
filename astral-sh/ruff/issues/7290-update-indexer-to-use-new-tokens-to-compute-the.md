@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-12T09:42:44Z
 updated_at: 2023-09-19T06:26:03Z
 url: https://github.com/astral-sh/ruff/issues/7290
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Update `Indexer` to use new tokens to compute the ranges
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-12 09:42_
+_@dhruvmanila_
 
 The `Indexer` needs to be updated to use the new f-string tokens to compute the following ranges:
 1. F-string ranges

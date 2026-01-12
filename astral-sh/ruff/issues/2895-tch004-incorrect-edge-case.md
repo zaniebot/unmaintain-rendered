@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-14T16:27:49Z
 updated_at: 2023-02-14T16:43:50Z
 url: https://github.com/astral-sh/ruff/issues/2895
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # TCH004 incorrect edge case
 
 ---
 
-_Issue opened by @nstarman on 2023-02-14 16:27_
+_@nstarman_
 
 I found an incorrect detection of ``TCH004``. MWE:
 

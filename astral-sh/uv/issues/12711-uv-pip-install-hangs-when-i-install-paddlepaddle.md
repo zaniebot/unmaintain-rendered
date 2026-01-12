@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T09:09:26Z
 updated_at: 2025-07-23T08:23:22Z
 url: https://github.com/astral-sh/uv/issues/12711
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # uv pip install hangs when I install paddlepaddle
 
 ---
 
-_Issue opened by @HydrogenSulfate on 2025-04-07 09:09_
+_@HydrogenSulfate_
 
 ### Summary
 

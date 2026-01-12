@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-11T11:00:31Z
 updated_at: 2025-02-12T05:56:21Z
 url: https://github.com/astral-sh/ruff/issues/16095
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Refer to rules in settings documentation
 
 ---
 
-_Issue opened by @DaniBodor on 2025-02-11 11:00_
+_@DaniBodor_
 
 Not sure whether this should be part of #1773 and/or #1774, but figured it's maybe just about different enough to create a separate issue.
 

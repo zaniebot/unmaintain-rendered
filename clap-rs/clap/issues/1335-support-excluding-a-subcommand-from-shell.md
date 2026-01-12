@@ -13,14 +13,14 @@ assignees: []
 created_at: 2018-08-27T21:39:29Z
 updated_at: 2024-08-10T00:34:55Z
 url: https://github.com/clap-rs/clap/issues/1335
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Support excluding a subcommand from shell completion
 
 ---
 
-_Issue opened by @kpcyrd on 2018-08-27 21:39_
+_@kpcyrd_
 
 ### Feature Request Summary
 

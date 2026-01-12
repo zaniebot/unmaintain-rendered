@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-15T12:46:57Z
 updated_at: 2024-04-16T18:25:59Z
 url: https://github.com/astral-sh/ruff/issues/10954
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # repeat-until-convergence
 
 ---
 
-_Issue opened by @KDruzhkin on 2024-04-15 12:46_
+_@KDruzhkin_
 
 ## TL;DR
 

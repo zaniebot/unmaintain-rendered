@@ -14,14 +14,14 @@ head: konsti/add-bad-backtracking-test-cases
 created_at: 2024-10-14T09:08:46Z
 updated_at: 2024-10-14T20:54:08Z
 url: https://github.com/astral-sh/uv/pull/8171
-synced_at: 2026-01-10T12:54:04Z
+synced_at: 2026-01-12T16:08:11Z
 ```
 
 # Add bad backtracking test cases
 
 ---
 
-_Pull request opened by @konstin on 2024-10-14 09:08_
+_@konstin_
 
 A runnable test suite for https://github.com/astral-sh/uv/issues/8157
 

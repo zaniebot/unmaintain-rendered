@@ -13,14 +13,14 @@ head: dhruv/unused-fsring-error-type
 created_at: 2023-08-28T12:46:44Z
 updated_at: 2023-08-28T13:04:49Z
 url: https://github.com/astral-sh/ruff/pull/6941
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Remove unused f-string error type
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-08-28 12:46_
+_@dhruvmanila_
 
 _No description provided._
 

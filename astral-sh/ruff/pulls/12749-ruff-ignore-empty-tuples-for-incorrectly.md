@@ -12,14 +12,14 @@ head: ruf031-empty-tuple
 created_at: 2024-08-08T11:07:59Z
 updated_at: 2024-08-08T11:25:09Z
 url: https://github.com/astral-sh/ruff/pull/12749
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [ruff] Ignore empty tuples for `incorrectly-parenthesized-tuple-in-subscript (RUF031)`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-08-08 11:07_
+_@dylwil3_
 
 ## Summary
 

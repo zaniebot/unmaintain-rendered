@@ -13,14 +13,14 @@ head: cjm/bumpsalsa
 created_at: 2025-04-03T14:16:49Z
 updated_at: 2025-04-03T14:43:35Z
 url: https://github.com/astral-sh/ruff/pull/17176
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] bump Salsa version
 
 ---
 
-_Pull request opened by @carljm on 2025-04-03 14:16_
+_@carljm_
 
 Update to latest Salsa main branch, so as to get a baseline for measuring the perf effect of https://github.com/salsa-rs/salsa/pull/786 on red-knot in isolation from other recent changes in Salsa main branch.
 

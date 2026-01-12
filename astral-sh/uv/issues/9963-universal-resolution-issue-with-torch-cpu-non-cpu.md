@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-17T10:50:34Z
 updated_at: 2024-12-20T19:15:28Z
 url: https://github.com/astral-sh/uv/issues/9963
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # Universal resolution issue with torch cpu / non-cpu
 
 ---
 
-_Issue opened by @aachkar-samsara on 2024-12-17 10:50_
+_@aachkar-samsara_
 
 I am attempting to select a cpu build of torch for linux and the regular build of torch for darwin with the following minimal reproducer:
 

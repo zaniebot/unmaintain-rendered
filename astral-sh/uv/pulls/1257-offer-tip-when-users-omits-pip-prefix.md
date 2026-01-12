@@ -13,14 +13,14 @@ head: charlie/tip
 created_at: 2024-02-06T04:55:19Z
 updated_at: 2024-02-06T19:25:08Z
 url: https://github.com/astral-sh/uv/pull/1257
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:32Z
 ```
 
 # Offer tip when users omits pip prefix
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-06 04:55_
+_@charliermarsh_
 
 ## Summary
 

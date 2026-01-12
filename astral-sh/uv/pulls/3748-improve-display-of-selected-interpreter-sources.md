@@ -13,14 +13,14 @@ head: zb/source-selector
 created_at: 2024-05-22T17:44:56Z
 updated_at: 2024-05-22T19:00:29Z
 url: https://github.com/astral-sh/uv/pull/3748
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Improve display of selected interpreter sources
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-22 17:44_
+_@zanieb_
 
 e.g. this error message is not great
 

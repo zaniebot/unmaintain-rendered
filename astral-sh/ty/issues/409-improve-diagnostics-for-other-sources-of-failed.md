@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-15T15:45:47Z
 updated_at: 2025-11-14T14:45:30Z
 url: https://github.com/astral-sh/ty/issues/409
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # improve diagnostics for other sources of failed calls to overloaded routines
 
 ---
 
-_Issue opened by @BurntSushi on 2025-05-15 15:45_
+_@BurntSushi_
 
 This issue builds off of #274. The task here is to improve diagnostics for calls to overloaded routines that aren't "normal" function or method calls. In particular, https://github.com/astral-sh/ruff/pull/18122 improved diagnostics for function/method calls, but didn't cover any other cases.
 

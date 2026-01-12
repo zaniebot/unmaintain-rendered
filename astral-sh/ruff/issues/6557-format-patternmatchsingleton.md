@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-14T12:40:26Z
 updated_at: 2023-08-22T06:23:48Z
 url: https://github.com/astral-sh/ruff/issues/6557
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Format `PatternMatchSingleton`
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-08-14 12:40_
+_@dhruvmanila_
 
 This would be done in a similar manner as mentioned here (https://github.com/astral-sh/ruff/issues/6555#issuecomment-1677241864) except that this would be delegated to [`ExprConstant`](https://github.com/astral-sh/ruff/blob/b05574babd6224af99938a429d0b19ba3297513c/crates/ruff_python_formatter/src/expression/expr_constant.rs) formatting instead.
 

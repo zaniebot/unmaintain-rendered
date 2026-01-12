@@ -13,14 +13,14 @@ head: patch-3
 created_at: 2024-07-20T17:54:23Z
 updated_at: 2024-07-20T18:39:31Z
 url: https://github.com/astral-sh/uv/pull/5252
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:43Z
 ```
 
 # Fix link in CHANGELOG.md
 
 ---
 
-_Pull request opened by @hauntsaninja on 2024-07-20 17:54_
+_@hauntsaninja_
 
 _No description provided._
 

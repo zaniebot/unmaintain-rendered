@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-24T08:55:22Z
 updated_at: 2023-12-24T08:56:23Z
 url: https://github.com/clap-rs/clap/issues/5266
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 #     #[arg(env)] lacks documentation
 
 ---
 
-_Issue opened by @Niedzwiedzw on 2023-12-24 08:55_
+_@Niedzwiedzw_
 
 ### Please complete the following tasks
 

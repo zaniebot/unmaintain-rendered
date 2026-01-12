@@ -14,14 +14,14 @@ head: fix_starred_parameter_parsing
 created_at: 2024-03-07T23:57:31Z
 updated_at: 2024-03-08T23:57:53Z
 url: https://github.com/astral-sh/ruff/pull/10283
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Fix incorrect `Parameter` range  for `*args` and `**kwargs` 
 
 ---
 
-_Pull request opened by @GtrMo on 2024-03-07 23:57_
+_@GtrMo_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

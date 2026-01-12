@@ -14,14 +14,14 @@ head: alex/arviz-bad
 created_at: 2025-05-27T16:43:42Z
 updated_at: 2025-05-27T16:51:21Z
 url: https://github.com/astral-sh/ruff/pull/18336
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Move arviz off the list of selected primer projects
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-27 16:43_
+_@AlexWaygood_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-10T08:04:18Z
 updated_at: 2024-11-21T10:52:49Z
 url: https://github.com/astral-sh/uv/issues/4190
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Windows failure when installing with cache
 
 ---
 
-_Issue opened by @befelix on 2024-06-10 08:04_
+_@befelix_
 
 I get an error when running `python -m uv pip install --verbose 'antlr4-python3-runtime==4.9.3'` on an Windows CI server. The error does *not* occur when installing with the `--no-cache` flag. Nor is it reproducible on a local Windows machine. `pip` installs it without issues.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-07T15:30:21Z
 updated_at: 2023-11-28T06:18:11Z
 url: https://github.com/astral-sh/ruff/issues/8542
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Add OG unfurl image to docs
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-07 15:30_
+_@charliermarsh_
 
 Similar to what we have for the playground.
 

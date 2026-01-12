@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-27T03:27:30Z
 updated_at: 2025-04-28T02:05:18Z
 url: https://github.com/astral-sh/uv/issues/13124
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:20Z
 ```
 
 # uv sync venv diff for windows and linux
 
 ---
 
-_Issue opened by @paul-yangmy on 2025-04-27 03:27_
+_@paul-yangmy_
 
 ### Question
 

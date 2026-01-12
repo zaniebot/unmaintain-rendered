@@ -12,14 +12,14 @@ head: readme_pandas
 created_at: 2023-01-12T08:59:50Z
 updated_at: 2023-01-12T15:55:26Z
 url: https://github.com/astral-sh/ruff/pull/1811
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Add usage of ruff in pandas to README
 
 ---
 
-_Pull request opened by @BioGeek on 2023-01-12 08:59_
+_@BioGeek_
 
 pandas now uses ruff for linting, see https://github.com/pandas-dev/pandas/pull/50160
 

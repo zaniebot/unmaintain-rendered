@@ -13,14 +13,14 @@ head: fix-project-flag-help-text
 created_at: 2025-12-03T13:54:44Z
 updated_at: 2025-12-03T18:15:36Z
 url: https://github.com/astral-sh/uv/pull/16965
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:32Z
 ```
 
 # Clarify `--project` flag help text to indicate project discovery
 
 ---
 
-_Pull request opened by @nooscraft on 2025-12-03 13:54_
+_@nooscraft_
 
 Clarify `--project` flag help text to indicate project discovery
 

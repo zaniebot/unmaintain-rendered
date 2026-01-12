@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-01T20:10:24Z
 updated_at: 2025-08-06T06:21:18Z
 url: https://github.com/astral-sh/ruff/issues/19696
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # UP024 error message is confusing when `except` clause has multiple exceptions
 
 ---
 
-_Issue opened by @burrscurr on 2025-08-01 20:10_
+_@burrscurr_
 
 ### Summary
 

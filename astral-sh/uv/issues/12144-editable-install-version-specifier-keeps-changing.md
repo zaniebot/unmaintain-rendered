@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-13T00:45:45Z
 updated_at: 2025-03-14T01:34:15Z
 url: https://github.com/astral-sh/uv/issues/12144
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:56Z
 ```
 
 # editable install version specifier keeps changing + reinstalling?
 
 ---
 
-_Issue opened by @zplizzi on 2025-03-13 00:45_
+_@zplizzi_
 
 ### Summary
 

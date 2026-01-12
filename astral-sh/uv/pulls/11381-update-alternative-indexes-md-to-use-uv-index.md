@@ -13,14 +13,14 @@ head: valentinoli/update-alternative-indexes-guide
 created_at: 2025-02-10T11:43:04Z
 updated_at: 2025-02-11T14:19:21Z
 url: https://github.com/astral-sh/uv/pull/11381
-synced_at: 2026-01-10T11:10:37Z
+synced_at: 2026-01-12T16:09:49Z
 ```
 
 # Update alternative-indexes.md to use `UV_INDEX` instead of `UV_EXTRA_INDEX_URL`
 
 ---
 
-_Pull request opened by @valentinoli on 2025-02-10 11:43_
+_@valentinoli_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

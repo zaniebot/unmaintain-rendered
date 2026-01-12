@@ -11,14 +11,14 @@ head: lock_with_overrides_fs
 created_at: 2024-06-21T23:18:05Z
 updated_at: 2024-06-24T16:45:03Z
 url: https://github.com/astral-sh/uv/pull/4446
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:14Z
 ```
 
 # uv lock to use overrides from tool.uv (#4108)
 
 ---
 
-_Pull request opened by @idlsoft on 2024-06-21 23:18_
+_@idlsoft_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-09T05:14:16Z
 updated_at: 2025-03-10T11:26:38Z
 url: https://github.com/astral-sh/uv/issues/12073
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:54Z
 ```
 
 # Experimental build backend doesn't support a `project.scripts` with , in the name
 
 ---
 
-_Issue opened by @jennifgcrl on 2025-03-09 05:14_
+_@jennifgcrl_
 
 ### Summary
 

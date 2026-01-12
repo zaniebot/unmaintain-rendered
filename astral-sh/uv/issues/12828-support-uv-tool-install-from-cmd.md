@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-11T08:13:55Z
 updated_at: 2025-04-14T08:47:03Z
 url: https://github.com/astral-sh/uv/issues/12828
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # support `uv tool install --from=. cmd`
 
 ---
 
-_Issue opened by @tonnico on 2025-04-11 08:13_
+_@tonnico_
 
 ### Summary
 

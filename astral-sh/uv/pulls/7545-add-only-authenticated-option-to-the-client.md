@@ -13,14 +13,14 @@ head: konsti/only_authenticated
 created_at: 2024-09-19T11:52:11Z
 updated_at: 2024-09-21T14:09:16Z
 url: https://github.com/astral-sh/uv/pull/7545
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:53Z
 ```
 
 # Add `only_authenticated` option to the client
 
 ---
 
-_Pull request opened by @konstin on 2024-09-19 11:52_
+_@konstin_
 
 When sending an upload request, we use an HTTP formdata request, which can't be cloned (https://github.com/seanmonstar/reqwest/issues/2416, plus a limitation that formdata bodies are always internally streaming), but we also know that we need to always have credentials.
 

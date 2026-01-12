@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-01-19T01:00:15Z
 updated_at: 2025-01-19T12:28:12Z
 url: https://github.com/astral-sh/uv/issues/10745
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:20Z
 ```
 
 # How to define & build dependencies for `magic-pdf[full]` in pyproject.toml?
 
 ---
 
-_Issue opened by @hongbo-miao on 2025-01-19 01:00_
+_@hongbo-miao_
 
 # Background
 

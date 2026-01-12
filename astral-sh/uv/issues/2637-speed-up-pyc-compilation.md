@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-24T03:54:41Z
 updated_at: 2025-09-02T13:11:24Z
 url: https://github.com/astral-sh/uv/issues/2637
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Speed up pyc compilation
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-03-24 03:54_
+_@hauntsaninja_
 
 Thanks for implementing https://github.com/astral-sh/uv/issues/1788 , it's been great! 
 

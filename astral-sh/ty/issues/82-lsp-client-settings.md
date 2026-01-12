@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T10:27:01Z
 updated_at: 2025-08-07T14:03:23Z
 url: https://github.com/astral-sh/ty/issues/82
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # LSP client settings
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-14 10:27_
+_@MichaReiser_
 
 Similar to Ruff's LSP. Support setting some (or all) settings from within the LSP client. Allow setting LSP specific settings.
 

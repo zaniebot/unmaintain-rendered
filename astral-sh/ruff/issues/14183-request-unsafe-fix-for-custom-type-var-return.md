@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T00:48:42Z
 updated_at: 2025-01-28T21:33:59Z
 url: https://github.com/astral-sh/ruff/issues/14183
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Request: Unsafe fix for `custom-type-var-return-type`/`PYI019`
 
 ---
 
-_Issue opened by @Avasam on 2024-11-08 00:48_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

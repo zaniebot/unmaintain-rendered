@@ -13,14 +13,14 @@ head: cjm/checksigs
 created_at: 2024-12-30T08:22:39Z
 updated_at: 2025-03-15T03:04:46Z
 url: https://github.com/astral-sh/ruff/pull/15200
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] add call checking
 
 ---
 
-_Pull request opened by @carljm on 2024-12-30 08:22_
+_@carljm_
 
 ## Summary
 

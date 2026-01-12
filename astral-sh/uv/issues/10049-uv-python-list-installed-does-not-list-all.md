@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-20T07:18:58Z
 updated_at: 2025-09-04T04:39:07Z
 url: https://github.com/astral-sh/uv/issues/10049
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # `uv python list --installed` does not list all installed versions
 
 ---
 
-_Issue opened by @pythonweb2 on 2024-12-20 07:18_
+_@pythonweb2_
 
 I installed an older version of python, It's located in the `USER\AppData\Roaming\uv\python\cpython-3.8.10-windows-x86-none` directory in windows.
 

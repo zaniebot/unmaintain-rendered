@@ -11,14 +11,14 @@ head: gankra/revert-toolchain
 created_at: 2025-05-19T22:27:21Z
 updated_at: 2025-05-28T15:12:49Z
 url: https://github.com/astral-sh/uv/pull/13547
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:44Z
 ```
 
 # roll back toolchain bump
 
 ---
 
-_Pull request opened by @Gankra on 2025-05-19 22:27_
+_@Gankra_
 
 1.87 seems to be busted for s390x?
 

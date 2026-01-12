@@ -11,14 +11,14 @@ head: konstin/deduplicate
 created_at: 2023-11-20T09:02:12Z
 updated_at: 2023-11-28T16:27:22Z
 url: https://github.com/astral-sh/uv/pull/464
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:58Z
 ```
 
 # Start to move more basic tasks into puffin-dispatch
 
 ---
 
-_Pull request opened by @konstin on 2023-11-20 09:02_
+_@konstin_
 
 Cherry-picked 67dd5b321d9ae99c140ea35c807eb656a499cb83 from #460, avoiding the conflicts from de1d1223e0152d5ec285cf8ea70fdc1a47f86e5f (which should be on main now anyway)
 

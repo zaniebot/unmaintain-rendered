@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-23T07:49:18Z
 updated_at: 2024-11-13T15:06:22Z
 url: https://github.com/astral-sh/ruff/issues/13478
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Red Knot panics when analyzing black
 
 ---
 
-_Issue opened by @MichaReiser on 2024-09-23 07:49_
+_@MichaReiser_
 
 * [x] `tests/data/cases/pep_572_do_not_remove_parens.py`
 	<details><summary>Backtrace</summary>

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-23T09:51:51Z
 updated_at: 2024-10-23T09:52:15Z
 url: https://github.com/astral-sh/uv/issues/8495
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:27Z
 ```
 
 # `uv pip compile --upgrade-package [.. requirements.in -o requirements.txt
 
 ---
 
-_Issue opened by @jvacek on 2024-10-23 09:51_
+_@jvacek_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

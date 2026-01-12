@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-25T01:02:40Z
 updated_at: 2025-08-29T13:40:27Z
 url: https://github.com/astral-sh/ruff/issues/20060
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FAST003 false positive for parameters with spaces like `/{ x }`
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-25 01:02_
+_@dscorbett_
 
 ### Summary
 

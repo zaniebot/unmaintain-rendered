@@ -12,14 +12,14 @@ head: charlie/slf
 created_at: 2023-02-15T16:47:02Z
 updated_at: 2023-02-15T21:49:00Z
 url: https://github.com/astral-sh/ruff/pull/2929
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Allow private accesses on current class
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-15 16:47_
+_@charliermarsh_
 
 Closes #2893.
 

@@ -14,14 +14,14 @@ head: fix-callout-syntax
 created_at: 2025-12-13T16:46:22Z
 updated_at: 2025-12-14T09:33:32Z
 url: https://github.com/astral-sh/ruff/pull/21961
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [ty] Fix callout syntax in configuration mkdocs (#1875)
 
 ---
 
-_Pull request opened by @leandrobbraga on 2025-12-13 16:46_
+_@leandrobbraga_
 
 This is an alternative solution to https://github.com/astral-sh/ty/pull/1879 which does not add a new dependency.
 

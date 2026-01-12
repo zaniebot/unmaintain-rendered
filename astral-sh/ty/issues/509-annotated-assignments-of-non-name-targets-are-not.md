@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-25T15:03:54Z
 updated_at: 2025-08-15T01:50:31Z
 url: https://github.com/astral-sh/ty/issues/509
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Annotated assignments of non-name targets are not checked
 
 ---
 
-_Issue opened by @mtshiba on 2025-05-25 15:03_
+_@mtshiba_
 
 ### Summary
 

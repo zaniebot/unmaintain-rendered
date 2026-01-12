@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-01T23:15:02Z
 updated_at: 2024-02-23T21:32:22Z
 url: https://github.com/astral-sh/ruff/issues/9765
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Improve the format output with details about what needs to be formatted.
 
 ---
 
-_Issue opened by @vlkorsakov on 2024-02-01 23:15_
+_@vlkorsakov_
 
 Please provide a more detailed output, including the line number and a description of what I need to format as in flake8. I think you can update the output for use with the --check flag only.
 

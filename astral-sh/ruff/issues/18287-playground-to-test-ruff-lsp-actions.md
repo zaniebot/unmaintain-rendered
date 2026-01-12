@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-24T16:04:06Z
 updated_at: 2025-05-24T16:27:39Z
 url: https://github.com/astral-sh/ruff/issues/18287
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Playground to test ruff lsp actions?
 
 ---
 
-_Issue opened by @kaddkaka on 2025-05-24 16:04_
+_@kaddkaka_
 
 ### Question
 

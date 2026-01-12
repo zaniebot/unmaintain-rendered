@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-06T15:03:41Z
 updated_at: 2023-01-06T21:09:45Z
 url: https://github.com/astral-sh/ruff/issues/1693
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # GitHub Actions output is missing file names and line numbers
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-06 15:03_
+_@charliermarsh_
 
 See: https://github.com/pypa/hatch/pull/702#issuecomment-1373727049.
 

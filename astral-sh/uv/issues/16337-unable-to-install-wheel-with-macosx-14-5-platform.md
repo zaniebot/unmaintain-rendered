@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T06:10:11Z
 updated_at: 2025-10-17T15:24:14Z
 url: https://github.com/astral-sh/uv/issues/16337
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # Unable to install wheel with macosx_14_5 platform tag on macOS 15.6.1
 
 ---
 
-_Issue opened by @anuraaga on 2025-10-17 06:10_
+_@anuraaga_
 
 ### Summary
 

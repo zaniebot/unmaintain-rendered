@@ -13,14 +13,14 @@ head: dhruv/empty-type-params
 created_at: 2024-06-25T16:31:08Z
 updated_at: 2024-06-26T02:40:36Z
 url: https://github.com/astral-sh/ruff/pull/12030
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Add syntax error for empty type parameter list
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-25 16:31_
+_@dhruvmanila_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-05-02T22:34:32Z
 updated_at: 2021-04-06T08:46:51Z
 url: https://github.com/clap-rs/clap/issues/1898
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # generate_to ignores given argument and derives its own
 
 ---
 
-_Issue opened by @alerque on 2020-05-02 22:34_
+_@alerque_
 
 Trying to get shell completion generators working on my app (porting from StructOpt) I ran into trouble using the `generate_to()` function.
 

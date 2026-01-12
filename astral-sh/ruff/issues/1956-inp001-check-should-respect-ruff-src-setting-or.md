@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-18T14:08:56Z
 updated_at: 2023-02-04T00:20:28Z
 url: https://github.com/astral-sh/ruff/issues/1956
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # INP001 check should respect `ruff.src` setting or have it configured separately
 
 ---
 
-_Issue opened by @notypecheck on 2023-01-18 14:08_
+_@notypecheck_
 
 A lot of projects nest code under `src` directory by adding `src` to PYTHONPATH:
 ```

@@ -13,14 +13,14 @@ head: charlie/E721
 created_at: 2023-10-11T00:33:33Z
 updated_at: 2024-08-22T19:04:25Z
 url: https://github.com/astral-sh/ruff/pull/7905
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Allow `is` and `is` not for direct type comparisons
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-11 00:33_
+_@charliermarsh_
 
 ## Summary
 

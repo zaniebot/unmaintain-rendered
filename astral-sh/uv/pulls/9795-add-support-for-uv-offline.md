@@ -13,14 +13,14 @@ head: zb/offline-var
 created_at: 2024-12-11T00:46:38Z
 updated_at: 2024-12-11T15:33:00Z
 url: https://github.com/astral-sh/uv/pull/9795
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:59Z
 ```
 
 # Add support for `UV_OFFLINE`
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-11 00:46_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/9794
 

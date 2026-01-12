@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T17:15:48Z
 updated_at: 2024-11-26T14:51:34Z
 url: https://github.com/astral-sh/uv/issues/9283
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # Incorrect dependency version constraints, maybe due to wrong python verison
 
 ---
 
-_Issue opened by @tigersoldier on 2024-11-20 17:15_
+_@tigersoldier_
 
 gensim 3.8.3 should only [require numpy>=1.11.3 on Python 3.x](https://github.com/piskvorky/gensim/blob/e889fa3d45a406cabbc7e180fa9a8ee3f76ac6f0/setup.py#L335-L345). However uv is using the 2.x constraints (numpy <= 1.16.1)
 

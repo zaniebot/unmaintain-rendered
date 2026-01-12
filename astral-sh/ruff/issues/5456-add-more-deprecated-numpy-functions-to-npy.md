@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-01T12:49:42Z
 updated_at: 2023-07-03T00:50:16Z
 url: https://github.com/astral-sh/ruff/issues/5456
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Add more deprecated numpy functions to NPY
 
 ---
 
-_Issue opened by @hoxbro on 2023-07-01 12:49_
+_@hoxbro_
 
 With the release of Numpy 1.25, more functions have been deprecated; see [here](https://numpy.org/doc/stable/release/1.25.0-notes.html#deprecations).  The following deprecations have a direct replacement so it could be nice to add them to NPY.
 

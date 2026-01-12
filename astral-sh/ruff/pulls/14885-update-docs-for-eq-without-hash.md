@@ -13,14 +13,14 @@ head: fix-eq_without_hash
 created_at: 2024-12-10T01:14:37Z
 updated_at: 2024-12-20T08:37:02Z
 url: https://github.com/astral-sh/ruff/pull/14885
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Update docs for `eq-without-hash`
 
 ---
 
-_Pull request opened by @KotlinIsland on 2024-12-10 01:14_
+_@KotlinIsland_
 
 ## Summary
 

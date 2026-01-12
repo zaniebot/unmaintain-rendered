@@ -14,14 +14,14 @@ head: recursive-inference
 created_at: 2025-09-25T05:47:21Z
 updated_at: 2025-11-27T06:49:33Z
 url: https://github.com/astral-sh/ruff/pull/20566
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:05Z
 ```
 
 # [ty] handle recursive type inference properly
 
 ---
 
-_Pull request opened by @mtshiba on 2025-09-25 05:47_
+_@mtshiba_
 
 ## Summary
 

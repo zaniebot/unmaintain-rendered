@@ -13,14 +13,14 @@ assignees: []
 created_at: 2018-03-09T02:32:07Z
 updated_at: 2020-10-24T12:18:28Z
 url: https://github.com/clap-rs/clap/issues/1205
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # A required `ArgGroup` is satisfied by a default value
 
 ---
 
-_Issue opened by @eternaleye on 2018-03-09 02:32_
+_@eternaleye_
 
 ### Rust Version
 

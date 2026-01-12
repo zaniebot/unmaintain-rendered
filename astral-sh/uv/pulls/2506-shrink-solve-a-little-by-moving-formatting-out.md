@@ -13,14 +13,14 @@ head: konsti/solve
 created_at: 2024-03-18T12:15:05Z
 updated_at: 2024-03-18T12:27:25Z
 url: https://github.com/astral-sh/uv/pull/2506
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:04Z
 ```
 
 # Shrink `solve()` a little by moving formatting out
 
 ---
 
-_Pull request opened by @konstin on 2024-03-18 12:15_
+_@konstin_
 
 `solve()` is our main loop. Shrinking it down a little by moving formatting out makes it easier to follow.
 

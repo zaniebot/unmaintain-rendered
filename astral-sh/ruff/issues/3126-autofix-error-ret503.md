@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-22T14:17:17Z
 updated_at: 2023-02-22T19:36:16Z
 url: https://github.com/astral-sh/ruff/issues/3126
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Autofix error] RET503
 
 ---
 
-_Issue opened by @hofrob on 2023-02-22 14:17_
+_@hofrob_
 
 # versions
 

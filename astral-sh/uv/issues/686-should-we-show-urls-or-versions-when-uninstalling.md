@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-18T15:02:34Z
 updated_at: 2023-12-18T22:21:39Z
 url: https://github.com/astral-sh/uv/issues/686
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Should we show URLs or versions when uninstalling URL-based dependencies?
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-18 15:02_
+_@charliermarsh_
 
 Right now, when we uninstall a distribution that was installed via a URL, we show the version rather than the direct URL. Is this wrong?
 

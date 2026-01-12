@@ -12,14 +12,14 @@ head: options-aliases
 created_at: 2023-10-17T23:52:44Z
 updated_at: 2023-10-20T04:54:40Z
 url: https://github.com/astral-sh/ruff/pull/8031
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Options: Support `#[serde(alias = name)]`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-17 23:52_
+_@MichaReiser_
 
 ## Summary
 

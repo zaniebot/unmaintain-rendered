@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-04-29T15:40:36Z
 updated_at: 2022-05-04T13:39:00Z
 url: https://github.com/clap-rs/clap/issues/3665
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Duplicate output in USAGE message if called with conflict argument
 
 ---
 
-_Issue opened by @leolovenet on 2022-04-29 15:40_
+_@leolovenet_
 
 ### Please complete the following tasks
 

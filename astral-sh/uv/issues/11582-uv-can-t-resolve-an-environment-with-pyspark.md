@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-17T20:17:56Z
 updated_at: 2025-02-17T20:23:59Z
 url: https://github.com/astral-sh/uv/issues/11582
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # UV can't resolve an environment with pyspark
 
 ---
 
-_Issue opened by @oresttokovenko on 2025-02-17 20:17_
+_@oresttokovenko_
 
 ### Summary
 

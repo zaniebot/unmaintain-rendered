@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-18T13:01:03Z
 updated_at: 2025-02-18T19:54:26Z
 url: https://github.com/astral-sh/uv/issues/11596
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # Adding a new index to the `pyproject.toml` does not trigger any `uv.lock` update
 
 ---
 
-_Issue opened by @HenriBlacksmith on 2025-02-18 13:01_
+_@HenriBlacksmith_
 
 ## Summary
 

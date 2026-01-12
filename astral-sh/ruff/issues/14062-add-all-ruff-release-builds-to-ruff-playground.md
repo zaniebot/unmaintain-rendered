@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-03T17:42:41Z
 updated_at: 2024-11-04T03:02:32Z
 url: https://github.com/astral-sh/ruff/issues/14062
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Add all Ruff release builds to Ruff Playground, selectable by user
 
 ---
 
-_Issue opened by @diceroll123 on 2024-11-03 17:42_
+_@diceroll123_
 
 Would be neat if Ruff Playground had a dropdown selector to use older Ruff versions.
 

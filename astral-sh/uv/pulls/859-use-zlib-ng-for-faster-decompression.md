@@ -13,14 +13,14 @@ head: bojan/use-zlib-ng
 created_at: 2024-01-09T20:24:56Z
 updated_at: 2024-01-11T16:00:44Z
 url: https://github.com/astral-sh/uv/pull/859
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:14Z
 ```
 
 # Use zlib-ng for faster decompression
 
 ---
 
-_Pull request opened by @bojanserafimov on 2024-01-09 20:24_
+_@bojanserafimov_
 
 ty @BurntSushi for the suggestion
 

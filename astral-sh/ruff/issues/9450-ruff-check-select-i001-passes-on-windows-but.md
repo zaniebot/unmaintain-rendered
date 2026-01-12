@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-09T22:29:03Z
 updated_at: 2024-01-10T01:47:24Z
 url: https://github.com/astral-sh/ruff/issues/9450
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `ruff check --select=I001 .` passes on windows but fails on linux
 
 ---
 
-_Issue opened by @karthiknadig on 2024-01-09 22:29_
+_@karthiknadig_
 
 sample.py:
 ```python

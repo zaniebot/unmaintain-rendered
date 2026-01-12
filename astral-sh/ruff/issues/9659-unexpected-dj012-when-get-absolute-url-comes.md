@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-28T00:24:26Z
 updated_at: 2024-11-09T16:15:43Z
 url: https://github.com/astral-sh/ruff/issues/9659
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Unexpected DJ012 when get_absolute_url() comes after __repr__()
 
 ---
 
-_Issue opened by @jmichalicek on 2024-01-28 00:24_
+_@jmichalicek_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

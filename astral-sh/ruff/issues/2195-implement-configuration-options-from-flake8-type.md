@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T14:49:35Z
 updated_at: 2023-03-07T04:34:54Z
 url: https://github.com/astral-sh/ruff/issues/2195
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Implement configuration options from `flake8-type-checking`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-26 14:49_
+_@charliermarsh_
 
 - [x] `exempt-modules`
 - [x] `strict`

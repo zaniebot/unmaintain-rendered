@@ -13,14 +13,14 @@ head: fix-link-to-rules-docs
 created_at: 2025-05-14T09:12:12Z
 updated_at: 2025-05-14T17:23:56Z
 url: https://github.com/astral-sh/ty/pull/378
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # minor: fix link to rules docs
 
 ---
 
-_Pull request opened by @eruditmorina on 2025-05-14 09:12_
+_@eruditmorina_
 
 Hi there 👋 
 

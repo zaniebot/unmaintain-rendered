@@ -14,14 +14,14 @@ head: charlie/D413
 created_at: 2024-01-26T19:22:07Z
 updated_at: 2024-01-26T20:08:54Z
 url: https://github.com/astral-sh/ruff/pull/9654
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`pydocstyle`] Re-implement `last-line-after-section` (`D413`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-26 19:22_
+_@charliermarsh_
 
 ## Summary
 

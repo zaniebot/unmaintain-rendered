@@ -13,14 +13,14 @@ head: charlie/all-export
 created_at: 2024-11-01T02:19:20Z
 updated_at: 2024-11-02T02:25:31Z
 url: https://github.com/astral-sh/uv/pull/8742
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:28Z
 ```
 
 # Add support for `uv export --all-packages`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-01 02:19_
+_@charliermarsh_
 
 ## Summary
 

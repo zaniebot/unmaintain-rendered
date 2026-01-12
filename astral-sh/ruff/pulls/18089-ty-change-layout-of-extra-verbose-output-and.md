@@ -14,14 +14,14 @@ head: micha/logging
 created_at: 2025-05-14T08:42:52Z
 updated_at: 2025-05-15T07:58:01Z
 url: https://github.com/astral-sh/ruff/pull/18089
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] Change layout of extra verbose output and respect `--color` for verbose output
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-14 08:42_
+_@MichaReiser_
 
 ## Summary
 

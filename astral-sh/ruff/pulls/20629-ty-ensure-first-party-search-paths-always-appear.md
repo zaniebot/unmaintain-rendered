@@ -14,14 +14,14 @@ head: alex/first-party-search-path-ordering
 created_at: 2025-09-29T13:09:31Z
 updated_at: 2025-09-29T20:19:16Z
 url: https://github.com/astral-sh/ruff/pull/20629
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:06Z
 ```
 
 # [ty] Ensure first-party search paths always appear in a sensible order
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-09-29 13:09_
+_@AlexWaygood_
 
 This PR ensures that we always put `./src` before `.` in our list of first-party search paths. This better emulates the fact that at runtime, the module name of a file `src/foo.py` would almost certainly be `foo` rather than `src.foo`.
 

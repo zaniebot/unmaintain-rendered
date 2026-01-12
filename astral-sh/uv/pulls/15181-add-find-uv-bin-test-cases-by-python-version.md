@@ -13,14 +13,14 @@ head: zb/find-uv-bin-pyver
 created_at: 2025-08-08T23:36:36Z
 updated_at: 2025-08-08T23:37:01Z
 url: https://github.com/astral-sh/uv/pull/15181
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:37Z
 ```
 
 # Add `find_uv_bin` test cases by Python version
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-08 23:36_
+_@zanieb_
 
 Regression coverage for https://github.com/astral-sh/uv/issues/15176
 

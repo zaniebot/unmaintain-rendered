@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-04T00:08:10Z
 updated_at: 2024-01-04T03:57:32Z
 url: https://github.com/astral-sh/ruff/issues/7794
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # ISC001: Opportunity for more autofixes
 
 ---
 
-_Issue opened by @JelleZijlstra on 2023-10-04 00:08_
+_@JelleZijlstra_
 
 Rule ISC001 merges adjacent implicitly concatenated strings. It can't always be autofixed, but I noticed a few occasions where Ruff didn't autofix issues that I would have expected it to fix for me:
 

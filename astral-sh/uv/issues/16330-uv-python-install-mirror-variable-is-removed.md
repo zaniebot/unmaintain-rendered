@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-16T16:23:07Z
 updated_at: 2025-10-16T17:36:10Z
 url: https://github.com/astral-sh/uv/issues/16330
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:29Z
 ```
 
 # `UV_PYTHON_INSTALL_MIRROR` variable is removed after 0.9.0
 
 ---
 
-_Issue opened by @birnevogel11 on 2025-10-16 16:23_
+_@birnevogel11_
 
 ### Summary
 

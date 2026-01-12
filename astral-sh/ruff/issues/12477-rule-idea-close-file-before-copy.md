@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-23T14:58:29Z
 updated_at: 2024-07-24T21:22:57Z
 url: https://github.com/astral-sh/ruff/issues/12477
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Rule idea: close file before copy
 
 ---
 
-_Issue opened by @pjonsson on 2024-07-23 14:58_
+_@pjonsson_
 
 I recently came across the following (slightly simplified) pattern in two different code bases:
 ```python

@@ -12,14 +12,14 @@ head: useless-else-on-loop
 created_at: 2022-12-04T12:29:44Z
 updated_at: 2022-12-04T14:22:04Z
 url: https://github.com/astral-sh/ruff/pull/1031
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Implement useless-else-on-loop
 
 ---
 
-_Pull request opened by @harupy on 2022-12-04 12:29_
+_@harupy_
 
 #970
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T01:57:24Z
 updated_at: 2025-02-06T05:12:01Z
 url: https://github.com/astral-sh/uv/issues/11012
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # PyTorch ecosystem: identical packages with different names + differing package versions with same name
 
 ---
 
-_Issue opened by @tmm1 on 2025-01-28 01:57_
+_@tmm1_
 
 ### Question
 

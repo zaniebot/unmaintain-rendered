@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T10:27:30Z
 updated_at: 2025-01-28T14:31:21Z
 url: https://github.com/astral-sh/uv/issues/11016
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # `interpreter_request_from_str` fails in subdirectory
 
 ---
 
-_Issue opened by @konstin on 2025-01-28 10:27_
+_@konstin_
 
 In my terminal (ubuntu 24.04), `interpreter_request_from_str` fails when run in a subdirectory:
 

@@ -12,14 +12,14 @@ head: konsti/add-compare_release-fast-path
 created_at: 2024-01-05T18:21:37Z
 updated_at: 2024-01-05T20:14:12Z
 url: https://github.com/astral-sh/uv/pull/799
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:12Z
 ```
 
 # Add compare_release fast path
 
 ---
 
-_Pull request opened by @konstin on 2024-01-05 18:21_
+_@konstin_
 
 Looking at the profile for tf-models-nightly after #789, `compare_release` is the single biggest item. Adding a fast path, we avoid paying the cost for padding releases with 0s when they are the same length, resulting in a 16% for this pathological case. Note that this mainly happens because tf-models-nightly is almost all large dev releases that hit the slow path.
 

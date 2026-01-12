@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-01T15:16:50Z
 updated_at: 2023-11-30T01:57:10Z
 url: https://github.com/astral-sh/uv/issues/274
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Worker: Uncaught TypeError: This WritableStream has been closed.
 
 ---
 
-_Issue opened by @konstin on 2023-11-01 15:16_
+_@konstin_
 
 The worker prints a lot of errors in the form of
 ```

@@ -14,14 +14,14 @@ head: pyi036-overloads
 created_at: 2024-04-20T13:55:09Z
 updated_at: 2024-04-24T15:55:08Z
 url: https://github.com/astral-sh/ruff/pull/11057
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [`flake8-pyi`] Allow overloaded `__exit__` and `__aexit__` definitions (`PYI036`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-20 13:55_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: assign-in-assert
 created_at: 2023-10-09T05:39:17Z
 updated_at: 2023-10-10T00:43:28Z
 url: https://github.com/astral-sh/ruff/pull/7856
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # New rule: Prevent assignment expressions in assert statements
 
 ---
 
-_Pull request opened by @harupy on 2023-10-09 05:39_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

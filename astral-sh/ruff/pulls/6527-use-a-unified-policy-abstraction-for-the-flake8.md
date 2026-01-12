@@ -13,14 +13,14 @@ head: charlie/tidy
 created_at: 2023-08-12T19:52:42Z
 updated_at: 2023-08-12T20:32:10Z
 url: https://github.com/astral-sh/ruff/pull/6527
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Use a unified policy abstraction for the `flake8-tidy-imports` rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-12 19:52_
+_@charliermarsh_
 
 ## Summary
 

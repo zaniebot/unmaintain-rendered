@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-30T23:09:56Z
 updated_at: 2024-11-15T10:35:34Z
 url: https://github.com/astral-sh/ruff/issues/12115
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Multiplication of list containing mutable elements
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-06-30 23:09_
+_@hauntsaninja_
 
 This would catch bugs like:
 ```

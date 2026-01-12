@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-03T14:46:46Z
 updated_at: 2025-11-03T16:59:27Z
 url: https://github.com/astral-sh/uv/issues/16580
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Centralize common python deps to save storage
 
 ---
 
-_Issue opened by @user1823 on 2025-11-03 14:46_
+_@user1823_
 
 ### Summary
 

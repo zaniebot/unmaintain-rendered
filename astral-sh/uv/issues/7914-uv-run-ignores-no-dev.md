@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-04T07:41:25Z
 updated_at: 2025-05-21T07:48:35Z
 url: https://github.com/astral-sh/uv/issues/7914
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # uv run ignores --no-dev
 
 ---
 
-_Issue opened by @Yura52 on 2024-10-04 07:41_
+_@Yura52_
 
 I have `jupyterlab` as a _dev_ dependency and I expect that `uv run --no-dev jupyter-lab` will fail, but it successfully runs JupyterLab.
 

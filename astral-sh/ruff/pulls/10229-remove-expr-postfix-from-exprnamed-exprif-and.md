@@ -13,14 +13,14 @@ head: rename-expr-nodes
 created_at: 2024-03-04T11:16:55Z
 updated_at: 2024-03-04T11:55:13Z
 url: https://github.com/astral-sh/ruff/pull/10229
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Remove `Expr` postfix from `ExprNamed`, `ExprIf`, and `ExprGenerator`
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-04 11:16_
+_@MichaReiser_
 
 The expression types in our AST are called `ExprYield`, `ExprAwait`, `ExprStringLiteral` etc, except `ExprNamedExpr`, `ExprIfExpr` and `ExprGenratorExpr`. This seems to align with [Python AST's naming](https://docs.python.org/3/library/ast.html) but feels inconsistent and excessive. 
 

@@ -14,14 +14,14 @@ head: alex/explicit-override
 created_at: 2025-11-25T12:57:44Z
 updated_at: 2025-11-25T18:42:42Z
 url: https://github.com/astral-sh/ruff/pull/21627
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:29Z
 ```
 
 # [ty] Implement `typing.override`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-25 12:57_
+_@AlexWaygood_
 
 ## Summary
 

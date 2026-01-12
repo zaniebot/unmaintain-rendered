@@ -13,14 +13,14 @@ head: charlie/dep-groups
 created_at: 2025-07-20T14:45:23Z
 updated_at: 2025-07-20T18:02:24Z
 url: https://github.com/astral-sh/uv/pull/14753
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:23Z
 ```
 
 # Support `extras` and `dependency_groups` markers in PEP 508 grammar
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-20 14:45_
+_@charliermarsh_
 
 ## Summary
 

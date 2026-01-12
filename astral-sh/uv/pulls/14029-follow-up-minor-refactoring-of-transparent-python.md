@@ -13,14 +13,14 @@ head: jtfm/review-transparent-python-upgrade
 created_at: 2025-06-13T15:12:47Z
 updated_at: 2025-06-13T17:05:39Z
 url: https://github.com/astral-sh/uv/pull/14029
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:58Z
 ```
 
 # Follow-up minor refactoring of transparent Python upgrade code
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-13 15:12_
+_@jtfmumm_
 
 This PR:
 * renames `PythonMinorVersionLink::symlink_exists()` to `..::exists`

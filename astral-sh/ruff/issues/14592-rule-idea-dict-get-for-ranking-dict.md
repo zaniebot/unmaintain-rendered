@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-25T19:04:59Z
 updated_at: 2024-11-26T08:17:44Z
 url: https://github.com/astral-sh/ruff/issues/14592
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Rule idea: dict get for ranking dict
 
 ---
 
-_Issue opened by @entorb on 2024-11-25 19:04_
+_@entorb_
 
 Do you think a rule for improving code of ranking-dict increment would be worth implementing?
 

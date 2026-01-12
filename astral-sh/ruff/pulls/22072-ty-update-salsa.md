@@ -14,14 +14,14 @@ head: micha/update-salsa
 created_at: 2025-12-19T09:28:36Z
 updated_at: 2025-12-22T17:19:10Z
 url: https://github.com/astral-sh/ruff/pull/22072
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:40Z
 ```
 
 # [ty] Update salsa
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-19 09:28_
+_@MichaReiser_
 
 ## Summary
 

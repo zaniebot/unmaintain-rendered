@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-29T16:02:23Z
 updated_at: 2025-09-29T17:37:10Z
 url: https://github.com/astral-sh/ty/issues/1279
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] error[panic]: too many iterations
 
 ---
 
-_Issue opened by @jasminemoore-verses on 2025-09-29 16:02_
+_@jasminemoore-verses_
 
 Error:
 ```shell

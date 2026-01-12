@@ -12,14 +12,14 @@ head: charlie/configuration-iii
 created_at: 2022-12-12T15:27:55Z
 updated_at: 2022-12-12T15:28:01Z
 url: https://github.com/astral-sh/ruff/pull/1210
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Use `--config` everywhere if provided
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-12 15:27_
+_@charliermarsh_
 
 _No description provided._
 

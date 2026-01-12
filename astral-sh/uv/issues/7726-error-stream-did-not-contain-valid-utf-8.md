@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-26T20:02:40Z
 updated_at: 2024-09-28T12:38:43Z
 url: https://github.com/astral-sh/uv/issues/7726
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # [Error]stream did not contain valid UTF-8
 
 ---
 
-_Issue opened by @sdbds on 2024-09-26 20:02_
+_@sdbds_
 
 command: uv pip install hdbscan==0.8.38.post1
 platform:windows

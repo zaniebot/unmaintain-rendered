@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-06T12:37:17Z
 updated_at: 2025-01-27T18:41:05Z
 url: https://github.com/astral-sh/ruff/issues/14132
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [Fix error]: Ruff UP007 fix introduces syntax error with nested string type annotations
 
 ---
 
-_Issue opened by @Paillat-dev on 2024-11-06 12:37_
+_@Paillat-dev_
 
 When running Ruff's auto-fix for UP007 (non-pep604-annotation), it introduces a syntax error when handling nested quotes in type annotations. The specific case occurs when using string literals for forward references that contain quotes within quotes.
 

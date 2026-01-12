@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-10T14:27:19Z
 updated_at: 2024-01-04T03:59:12Z
 url: https://github.com/astral-sh/ruff/issues/6480
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # per-file-ignores have inconsistent behavior in symlinked directories
 
 ---
 
-_Issue opened by @derlin on 2023-08-10 14:27_
+_@derlin_
 
 I am trying to ignore the `S101` rule in tests. I have a base `ruff.toml` which is used in `pyproject.toml`.
 

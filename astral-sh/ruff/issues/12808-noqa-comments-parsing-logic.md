@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-11T22:57:41Z
 updated_at: 2024-11-02T20:25:01Z
 url: https://github.com/astral-sh/ruff/issues/12808
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `noqa` comments parsing logic
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-08-11 22:57_
+_@InSyncWithFoo_
 
 Currently these are all valid `noqa` comments:
 

@@ -13,14 +13,14 @@ head: konsti/dont-uv-dev
 created_at: 2024-08-29T18:27:59Z
 updated_at: 2024-08-29T19:44:14Z
 url: https://github.com/astral-sh/uv/pull/6827
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:32Z
 ```
 
 # Don't build uv-dev by default
 
 ---
 
-_Pull request opened by @konstin on 2024-08-29 18:27_
+_@konstin_
 
 Most times we compile with `cargo build`, we don't actually need `uv-dev`. By making `uv-dev` dependent on a new `dev` feature, it doesn't get built by default anymore, but only when passing `--features dev`.
 

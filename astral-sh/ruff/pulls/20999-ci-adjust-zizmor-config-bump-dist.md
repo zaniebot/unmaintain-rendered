@@ -13,14 +13,14 @@ head: ww/more-ci-cleanup
 created_at: 2025-10-20T16:33:23Z
 updated_at: 2025-10-22T21:48:19Z
 url: https://github.com/astral-sh/ruff/pull/20999
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:14Z
 ```
 
 # ci: adjust zizmor config, bump dist
 
 ---
 
-_Pull request opened by @woodruffw on 2025-10-20 16:33_
+_@woodruffw_
 
 ## Summary
 

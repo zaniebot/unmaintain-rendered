@@ -11,14 +11,14 @@ head: renovate/configure
 created_at: 2024-03-25T19:06:19Z
 updated_at: 2024-03-25T19:27:57Z
 url: https://github.com/astral-sh/uv/pull/2654
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:09Z
 ```
 
 # Configure Renovate
 
 ---
 
-_Pull request opened by @renovate on 2024-03-25 19:06_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

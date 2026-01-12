@@ -13,14 +13,14 @@ head: bounded-method-subtype
 created_at: 2025-03-31T23:23:23Z
 updated_at: 2025-04-01T23:49:15Z
 url: https://github.com/astral-sh/ruff/pull/17105
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Add callable subtyping for callable instances and bound methods
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-03-31 23:23_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

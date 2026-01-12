@@ -13,14 +13,14 @@ head: charlie/args
 created_at: 2023-08-09T20:29:36Z
 updated_at: 2023-08-09T21:03:14Z
 url: https://github.com/astral-sh/ruff/pull/6456
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Improve counting of message arguments when msg is provided as a keyword
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-09 20:29_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6454.
 

@@ -13,14 +13,14 @@ head: konsti/refactor-pip-install-and-sync-tests
 created_at: 2024-01-31T20:18:11Z
 updated_at: 2024-02-02T17:01:39Z
 url: https://github.com/astral-sh/uv/pull/1213
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:30Z
 ```
 
 # Refactor pip install and sync tests
 
 ---
 
-_Pull request opened by @konstin on 2024-01-31 20:18_
+_@konstin_
 
 Mostly a mechanical refactor to use the `puffin_snapshot!` and `TestContext` infrastructure in the pip install and pip sync tests, in preparation for adding programmatic windows testing filters.
 

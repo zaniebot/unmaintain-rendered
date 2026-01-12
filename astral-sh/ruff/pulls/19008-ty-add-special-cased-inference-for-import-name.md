@@ -13,14 +13,14 @@ head: ty-dunder-import
 created_at: 2025-06-28T05:30:30Z
 updated_at: 2025-06-29T17:52:04Z
 url: https://github.com/astral-sh/ruff/pull/19008
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] Add special-cased inference for `__import__(name)` and `importlib.import_module(name)`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-06-28 05:30_
+_@InSyncWithFoo_
 
 ## Summary
 

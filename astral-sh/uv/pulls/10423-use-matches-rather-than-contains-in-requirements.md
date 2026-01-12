@@ -13,14 +13,14 @@ head: charlie/x
 created_at: 2025-01-09T02:19:38Z
 updated_at: 2025-01-09T08:14:48Z
 url: https://github.com/astral-sh/uv/pull/10423
-synced_at: 2026-01-10T11:44:48Z
+synced_at: 2026-01-12T16:09:17Z
 ```
 
 # Use `matches` rather than `contains` in `requirements.txt` parsing
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-09 02:19_
+_@charliermarsh_
 
 _No description provided._
 

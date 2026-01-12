@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-10T09:51:05Z
 updated_at: 2025-11-10T18:31:49Z
 url: https://github.com/astral-sh/uv/issues/16662
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:35Z
 ```
 
 # better describe 403 error on console
 
 ---
 
-_Issue opened by @gpongelli on 2025-11-10 09:51_
+_@gpongelli_
 
 ### Summary
 

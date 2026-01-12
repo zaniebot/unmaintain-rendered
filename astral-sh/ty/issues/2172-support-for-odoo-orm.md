@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-22T21:30:52Z
 updated_at: 2025-12-23T00:43:57Z
 url: https://github.com/astral-sh/ty/issues/2172
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Support for Odoo ORM
 
 ---
 
-_Issue opened by @merlinz01 on 2025-12-22 21:30_
+_@merlinz01_
 
 ### Question
 

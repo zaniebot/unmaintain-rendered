@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-04T17:12:50Z
 updated_at: 2025-09-24T15:39:32Z
 url: https://github.com/astral-sh/ruff/issues/13246
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Include `.pyw` files by default
 
 ---
 
-_Issue opened by @charliermarsh on 2024-09-04 17:12_
+_@charliermarsh_
 
 Random but I was looking back at https://github.com/astral-sh/ruff/pull/3914 and now that I have more familiarity from my time in uv, I think `.pyw` should just be included by default? They're Python files, just intended to run with a GUI etc.
 

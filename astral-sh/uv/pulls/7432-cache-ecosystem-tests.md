@@ -13,14 +13,14 @@ head: konsti/cache-ecosystem-checks
 created_at: 2024-09-16T16:19:51Z
 updated_at: 2024-09-18T09:31:01Z
 url: https://github.com/astral-sh/uv/pull/7432
-synced_at: 2026-01-10T12:53:47Z
+synced_at: 2026-01-12T16:07:49Z
 ```
 
 # Cache ecosystem tests
 
 ---
 
-_Pull request opened by @konstin on 2024-09-16 16:19_
+_@konstin_
 
 Use a cache in `target` for ecosystem checks. I had frequent timeouts with the transformers test, which this fixes. Locally, the transformers test alone goes from 15s to 2s on my machine.
 

@@ -13,14 +13,14 @@ head: brent/per-file-target-version
 created_at: 2025-02-19T15:08:31Z
 updated_at: 2025-02-24T13:47:17Z
 url: https://github.com/astral-sh/ruff/pull/16257
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Add `per-file-target-version` option
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-19 15:08_
+_@ntBre_
 
 ## Summary
 

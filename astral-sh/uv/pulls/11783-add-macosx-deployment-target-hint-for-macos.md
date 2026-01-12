@@ -12,14 +12,14 @@ head: issue-10699
 created_at: 2025-02-25T22:57:31Z
 updated_at: 2025-11-28T18:54:23Z
 url: https://github.com/astral-sh/uv/pull/11783
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:10:00Z
 ```
 
 # Add MACOSX_DEPLOYMENT_TARGET hint for macos platform wheels
 
 ---
 
-_Pull request opened by @dcarrier on 2025-02-25 22:57_
+_@dcarrier_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

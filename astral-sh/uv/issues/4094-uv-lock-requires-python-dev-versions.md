@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-06T13:40:58Z
 updated_at: 2024-06-06T14:18:14Z
 url: https://github.com/astral-sh/uv/issues/4094
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # uv lock requires python dev versions
 
 ---
 
-_Issue opened by @blueraft on 2024-06-06 13:40_
+_@blueraft_
 
 I encountered an issue with the  [elasticsearch 7.17.1](https://pypi.org/project/elasticsearch/7.17.1/) while trying to use python>=3.9. The relevant requirement for elasticsearch is:
 

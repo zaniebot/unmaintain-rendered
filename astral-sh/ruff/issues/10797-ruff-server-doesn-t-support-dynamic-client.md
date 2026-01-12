@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-05T23:26:17Z
 updated_at: 2024-06-17T16:31:28Z
 url: https://github.com/astral-sh/ruff/issues/10797
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `ruff server` doesn't support dynamic client settings in workspaces
 
 ---
 
-_Issue opened by @snowsignal on 2024-04-05 23:26_
+_@snowsignal_
 
 This is a tracking issue for supporting dynamic client settings in workspaces.
 

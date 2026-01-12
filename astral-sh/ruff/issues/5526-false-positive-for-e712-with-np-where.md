@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-05T06:17:48Z
 updated_at: 2023-07-05T13:34:09Z
 url: https://github.com/astral-sh/ruff/issues/5526
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # False Positive for E712 with np.where
 
 ---
 
-_Issue opened by @franneck94 on 2023-07-05 06:17_
+_@franneck94_
 
 Hi,
 

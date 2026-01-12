@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-20T16:45:09Z
 updated_at: 2025-11-20T18:08:23Z
 url: https://github.com/astral-sh/ruff/issues/21542
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # F821 when use textually precedes assignment
 
 ---
 
-_Issue opened by @eltoder on 2025-11-20 16:45_
+_@eltoder_
 
 ### Summary
 

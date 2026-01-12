@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-10T13:51:59Z
 updated_at: 2023-11-11T00:15:30Z
 url: https://github.com/astral-sh/ruff/issues/8599
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # UP007 adds parentheses when using --fix --unsafe-fixes and the Union has more than two types
 
 ---
 
-_Issue opened by @Lassii- on 2023-11-10 13:51_
+_@Lassii-_
 
 Ruff seems to add unnecessary parentheses when automatically fixing UP007 related errors.
 

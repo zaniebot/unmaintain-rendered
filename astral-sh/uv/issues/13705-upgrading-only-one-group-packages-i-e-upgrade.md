@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-28T19:43:28Z
 updated_at: 2025-12-19T19:20:08Z
 url: https://github.com/astral-sh/uv/issues/13705
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:35Z
 ```
 
 # Upgrading only one group packages, i.e., `--upgrade-group`
 
 ---
 
-_Issue opened by @hovnatan on 2025-05-28 19:43_
+_@hovnatan_
 
 ### Question
 

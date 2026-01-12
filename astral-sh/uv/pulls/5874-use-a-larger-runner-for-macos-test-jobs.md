@@ -13,14 +13,14 @@ head: zb/macos-larger-runner
 created_at: 2024-08-07T16:47:35Z
 updated_at: 2024-08-07T17:32:10Z
 url: https://github.com/astral-sh/uv/pull/5874
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:04Z
 ```
 
 # Use a larger runner for macOS test jobs
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-07 16:47_
+_@zanieb_
 
 From 3 to 6 (+8 GPU) cores, 7 to 14 GB ram.
 

@@ -13,14 +13,14 @@ head: ag/fmt/move-docstring
 created_at: 2023-11-27T17:35:41Z
 updated_at: 2023-11-27T18:32:27Z
 url: https://github.com/astral-sh/ruff/pull/8861
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # ruff_python_formatter: move docstring handling to a submodule
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-11-27 17:35_
+_@BurntSushi_
 
 This turns `string` into a parent module with a `docstring` sub-module. I arranged things this way because there are parts of the `string` module that the `docstring` module wants to know about (such as a `NormalizedString`). The alternative I think would be to make `docstring` a sibling module and expose more of `string`'s internals.
 

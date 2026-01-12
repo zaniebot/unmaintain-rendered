@@ -14,14 +14,14 @@ head: brent/syn-except-star
 created_at: 2025-02-28T22:08:21Z
 updated_at: 2025-03-03T13:35:11Z
 url: https://github.com/astral-sh/ruff/pull/16446
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [syntax-errors] `except*` before Python 3.11
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-28 22:08_
+_@ntBre_
 
 Summary
 --

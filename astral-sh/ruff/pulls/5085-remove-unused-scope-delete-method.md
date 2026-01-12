@@ -13,14 +13,14 @@ head: charlie/delete
 created_at: 2023-06-14T14:08:15Z
 updated_at: 2023-06-14T14:40:50Z
 url: https://github.com/astral-sh/ruff/pull/5085
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Remove unused `Scope#delete` method
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-14 14:08_
+_@charliermarsh_
 
 ## Summary
 

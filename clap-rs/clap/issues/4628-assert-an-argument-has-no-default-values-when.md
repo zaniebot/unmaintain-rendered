@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-11T12:35:20Z
 updated_at: 2023-01-11T13:46:19Z
 url: https://github.com/clap-rs/clap/issues/4628
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Assert an argument has no default values when `contains_id` or `try_contains_id` is called
 
 ---
 
-_Issue opened by @rhysd on 2023-01-11 12:35_
+_@rhysd_
 
 ### Please complete the following tasks
 

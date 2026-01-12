@@ -13,14 +13,14 @@ head: renovate/tokio-tracing-monorepo
 created_at: 2024-12-02T00:12:47Z
 updated_at: 2024-12-02T01:07:01Z
 url: https://github.com/astral-sh/uv/pull/9566
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:52Z
 ```
 
 # Update tokio-tracing monorepo
 
 ---
 
-_Pull request opened by @renovate on 2024-12-02 00:12_
+_@renovate_
 
 This PR contains the following updates:
 

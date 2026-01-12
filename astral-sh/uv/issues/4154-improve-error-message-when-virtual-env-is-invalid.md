@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-08T00:56:37Z
 updated_at: 2024-10-07T17:57:19Z
 url: https://github.com/astral-sh/uv/issues/4154
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Improve error message when `VIRTUAL_ENV` is invalid
 
 ---
 
-_Issue opened by @zanieb on 2024-06-08 00:56_
+_@zanieb_
 
 ```
 ❯ VIRTUAL_ENV=/dev/null uv pip install anyio

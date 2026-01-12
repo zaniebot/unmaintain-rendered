@@ -13,14 +13,14 @@ assignees: []
 created_at: 2025-11-05T09:54:01Z
 updated_at: 2025-12-30T13:46:10Z
 url: https://github.com/clap-rs/clap/issues/6178
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Completion of FilePath adds space in zsh
 
 ---
 
-_Issue opened by @windsource on 2025-11-05 09:54_
+_@windsource_
 
 ### Please complete the following tasks
 

@@ -13,14 +13,14 @@ head: konsti/astral-tokio-tar-0.5.3
 created_at: 2025-08-19T13:51:00Z
 updated_at: 2025-08-19T15:49:02Z
 url: https://github.com/astral-sh/uv/pull/15382
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:43Z
 ```
 
 # Update astral-tokio-tar to v0.5.3
 
 ---
 
-_Pull request opened by @konstin on 2025-08-19 13:51_
+_@konstin_
 
 This is not actually an update, we're just updating the commit tag to a crates.io release for https://github.com/astral-sh/uv/pull/15202#issuecomment-3200209608
 

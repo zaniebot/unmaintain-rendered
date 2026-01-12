@@ -14,14 +14,14 @@ head: jane/server/remove-preview-requirement
 created_at: 2024-06-26T18:44:52Z
 updated_at: 2024-07-05T05:57:15Z
 url: https://github.com/astral-sh/ruff/pull/12053
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Remove `--preview` as a required argument for `ruff server`
 
 ---
 
-_Pull request opened by @snowsignal on 2024-06-26 18:44_
+_@snowsignal_
 
 ## Summary
 

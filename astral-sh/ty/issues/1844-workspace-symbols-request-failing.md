@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-10T18:30:48Z
 updated_at: 2025-12-31T15:41:25Z
 url: https://github.com/astral-sh/ty/issues/1844
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # workspace symbols request failing
 
 ---
 
-_Issue opened by @insane-dreamer on 2025-12-10 18:30_
+_@insane-dreamer_
 
 ### Summary
 

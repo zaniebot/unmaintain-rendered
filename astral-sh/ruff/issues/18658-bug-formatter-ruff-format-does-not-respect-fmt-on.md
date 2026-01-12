@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-06-13T09:06:17Z
 updated_at: 2025-06-13T13:35:47Z
 url: https://github.com/astral-sh/ruff/issues/18658
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [BUG][Formatter] `ruff format` does not respect `# fmt: {on,off,skip}` in `.pyi` stub files
 
 ---
 
-_Issue opened by @XuehaiPan on 2025-06-13 09:06_
+_@XuehaiPan_
 
 ### Summary
 

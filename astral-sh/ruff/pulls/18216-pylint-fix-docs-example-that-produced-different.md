@@ -13,14 +13,14 @@ head: fix-global-statement-docs
 created_at: 2025-05-20T09:35:23Z
 updated_at: 2025-05-22T05:55:37Z
 url: https://github.com/astral-sh/ruff/pull/18216
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:14Z
 ```
 
 # [`pylint`] Fix docs example that produced different output (`PLW0603`)
 
 ---
 
-_Pull request opened by @twentyone212121 on 2025-05-20 09:35_
+_@twentyone212121_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

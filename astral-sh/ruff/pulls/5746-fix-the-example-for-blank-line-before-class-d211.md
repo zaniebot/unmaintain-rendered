@@ -13,14 +13,14 @@ head: sky/fix-d11-example
 created_at: 2023-07-13T17:34:23Z
 updated_at: 2023-07-13T18:11:29Z
 url: https://github.com/astral-sh/ruff/pull/5746
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Fix the example for blank-line-before-class (D211)
 
 ---
 
-_Pull request opened by @skykasko on 2023-07-13 17:34_
+_@skykasko_
 
 The example for [D211](https://beta.ruff.rs/docs/rules/blank-line-before-class/) is currently identical to the example for [D203](https://beta.ruff.rs/docs/rules/one-blank-line-before-class/). It should be the opposite, with the incorrect case having a blank line before the class docstring and the correct case having no blank line.
 

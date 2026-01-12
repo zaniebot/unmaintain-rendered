@@ -13,14 +13,14 @@ head: star-starmap
 created_at: 2023-10-02T21:58:57Z
 updated_at: 2023-10-03T08:44:47Z
 url: https://github.com/astral-sh/ruff/pull/7768
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Extend `reimplemented-starmap` (`FURB140`) to catch calls with a single and starred argument
 
 ---
 
-_Pull request opened by @tjkuson on 2023-10-02 21:58_
+_@tjkuson_
 
 ## Summary
 

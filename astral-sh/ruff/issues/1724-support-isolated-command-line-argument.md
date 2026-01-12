@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-07T22:54:00Z
 updated_at: 2023-01-07T23:43:59Z
 url: https://github.com/astral-sh/ruff/issues/1724
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Support `--isolated` command-line argument
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-07 22:54_
+_@charliermarsh_
 
 This exists in Flake8, and is helpful for bug reporting as it means the command is self-contained.
 

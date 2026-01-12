@@ -14,14 +14,14 @@ head: feat/detect-custom-exception-in-useless_expression_statement
 created_at: 2025-11-11T15:23:32Z
 updated_at: 2025-12-10T07:42:18Z
 url: https://github.com/astral-sh/ruff/pull/21382
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # [`pylint`] Detect subclasses of builtin exceptions (`PLW0133`)
 
 ---
 
-_Pull request opened by @LoicRiegel on 2025-11-11 15:23_
+_@LoicRiegel_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

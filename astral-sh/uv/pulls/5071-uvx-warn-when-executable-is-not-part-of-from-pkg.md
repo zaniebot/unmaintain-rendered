@@ -12,14 +12,14 @@ head: uvx-warn-outside-from
 created_at: 2024-07-15T13:44:43Z
 updated_at: 2024-07-15T19:27:10Z
 url: https://github.com/astral-sh/uv/pull/5071
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:37Z
 ```
 
 # `uvx` warn when executable is not part of `--from PKG`
 
 ---
 
-_Pull request opened by @blueraft on 2024-07-15 13:44_
+_@blueraft_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: abi3-wheels
 created_at: 2022-08-30T03:40:43Z
 updated_at: 2023-01-28T02:46:52Z
 url: https://github.com/astral-sh/ruff/pull/45
-synced_at: 2026-01-12T04:51:59Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Build ABI3 wheels and expand supported platforms
 
 ---
 
-_Pull request opened by @adriangb on 2022-08-30 03:40_
+_@adriangb_
 
 _No description provided._
 

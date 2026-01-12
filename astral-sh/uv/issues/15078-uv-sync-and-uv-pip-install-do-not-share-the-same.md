@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-05T08:22:57Z
 updated_at: 2025-08-05T15:10:04Z
 url: https://github.com/astral-sh/uv/issues/15078
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:03Z
 ```
 
 # uv sync and uv pip install do not share the same behaviour when working with extras
 
 ---
 
-_Issue opened by @lilian-delouvy on 2025-08-05 08:22_
+_@lilian-delouvy_
 
 ### Summary
 

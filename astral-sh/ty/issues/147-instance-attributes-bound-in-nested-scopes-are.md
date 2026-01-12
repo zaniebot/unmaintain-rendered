@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-27T04:39:56Z
 updated_at: 2025-11-11T23:19:38Z
 url: https://github.com/astral-sh/ty/issues/147
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # instance attributes bound in nested scopes are reported as unresolved
 
 ---
 
-_Issue opened by @mtshiba on 2025-03-27 04:39_
+_@mtshiba_
 
 ### Summary
 

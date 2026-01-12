@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-23T11:49:09Z
 updated_at: 2024-11-20T12:01:41Z
 url: https://github.com/astral-sh/ruff/issues/13887
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [flake8-django] DJ001 is not raised for fields which has unique=True
 
 ---
 
-_Issue opened by @kiddten on 2024-10-23 11:49_
+_@kiddten_
 
 ```
 class Product(models.Model):

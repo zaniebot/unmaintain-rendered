@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-14T16:42:01Z
 updated_at: 2024-06-21T15:48:32Z
 url: https://github.com/astral-sh/ruff/issues/11878
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Lack of a --force-include setting to gradually introduce ruff into matured codebase
 
 ---
 
-_Issue opened by @cam-laf on 2024-06-14 16:42_
+_@cam-laf_
 
 I want to gradually introduce files under checking for ruff check. I'm using pre-commit with ruff. I work on a large repository (in the thousdands of python files) and I cannot reasonably include ` # noqa` at the top of each of those files. What I want is to have the `include` setting be the single source of truth of which files would be run under ruff. Since ruff's pre-commit passes all files changed in a commit to ruff, it means that the include setting is ignored. Although ruff's pre-commit uses `--force-exclude`, I'd have to `exclude` _every_ single path that I'm not currently wanting to check. I want to be able to "opt-in" by file to using ruff. Honestly I think that the lack of this feature probably prevents many matured python codebases from using ruff. The only option that I've come up with is creating my own pre-commit script which would pass my own include list to `ruff`. Is there any better way to do what I want here?
 

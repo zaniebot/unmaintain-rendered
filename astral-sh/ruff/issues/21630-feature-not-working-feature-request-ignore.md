@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-25T17:49:03Z
 updated_at: 2025-12-05T19:29:35Z
 url: https://github.com/astral-sh/ruff/issues/21630
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Feature not working (Feature request: Ignore specific rule on per file basis via in-file comment #2446)
 
 ---
 
-_Issue opened by @red8888 on 2025-11-25 17:49_
+_@red8888_
 
 ### Summary
 

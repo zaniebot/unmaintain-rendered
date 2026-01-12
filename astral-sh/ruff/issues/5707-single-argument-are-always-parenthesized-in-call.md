@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-12T11:28:20Z
 updated_at: 2023-07-12T16:21:30Z
 url: https://github.com/astral-sh/ruff/issues/5707
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Single argument are always parenthesized in call expressions
 
 ---
 
-_Issue opened by @MichaReiser on 2023-07-12 11:28_
+_@MichaReiser_
 
 ```python
 # Input

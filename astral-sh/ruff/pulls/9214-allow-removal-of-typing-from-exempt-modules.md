@@ -13,14 +13,14 @@ head: charlie/move
 created_at: 2023-12-20T15:49:09Z
 updated_at: 2023-12-20T16:03:03Z
 url: https://github.com/astral-sh/ruff/pull/9214
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Allow removal of `typing` from `exempt-modules`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-20 15:49_
+_@charliermarsh_
 
 ## Summary
 

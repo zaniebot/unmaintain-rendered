@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-22T15:47:47Z
 updated_at: 2025-10-31T01:16:05Z
 url: https://github.com/astral-sh/uv/issues/16411
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # `python -m venv` does not work with uv-managed Python installations
 
 ---
 
-_Issue opened by @notable-equivalent on 2025-10-22 15:47_
+_@notable-equivalent_
 
 ### Summary
 

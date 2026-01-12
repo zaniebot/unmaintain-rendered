@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-08T20:00:15Z
 updated_at: 2024-10-04T20:59:20Z
 url: https://github.com/astral-sh/uv/issues/3471
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # netrc authentication seems to fail for index_url specified in requirements.txt.
 
 ---
 
-_Issue opened by @likesum on 2024-05-08 20:00_
+_@likesum_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

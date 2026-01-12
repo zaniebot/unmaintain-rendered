@@ -13,14 +13,14 @@ head: feat/autofixPLW1514
 created_at: 2023-11-30T18:38:59Z
 updated_at: 2023-12-01T18:31:06Z
 url: https://github.com/astral-sh/ruff/pull/8928
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # [`pylint`] Add `add_argument` utility and autofix for `PLW1514`
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-11-30 18:38_
+_@qdegraaf_
 
 ## Summary
 

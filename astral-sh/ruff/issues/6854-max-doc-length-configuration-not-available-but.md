@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-24T16:58:24Z
 updated_at: 2023-08-26T14:37:10Z
 url: https://github.com/astral-sh/ruff/issues/6854
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # max-doc-length configuration not available but documented
 
 ---
 
-_Issue opened by @amrit110 on 2023-08-24 16:58_
+_@amrit110_
 
 Hi, it seems like the [max-doc-length](https://beta.ruff.rs/docs/settings/#pycodestyle-max-doc-length) option is not available as of v0.0.285. I get the error:
 

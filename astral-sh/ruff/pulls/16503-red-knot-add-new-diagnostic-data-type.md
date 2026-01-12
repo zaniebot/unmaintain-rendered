@@ -14,14 +14,14 @@ head: ag/new-diag-type
 created_at: 2025-03-04T17:50:25Z
 updated_at: 2025-03-05T13:23:04Z
 url: https://github.com/astral-sh/ruff/pull/16503
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Add new `Diagnostic` data type
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-03-04 17:50_
+_@BurntSushi_
 
 This also moves most (but not all) of the existing diagnostic
 infrastructure into an `old` submodule, and renames the types to

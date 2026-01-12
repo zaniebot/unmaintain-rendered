@@ -13,14 +13,14 @@ head: 20240729-0822
 created_at: 2024-07-29T06:24:39Z
 updated_at: 2024-07-30T11:45:49Z
 url: https://github.com/astral-sh/ruff/pull/12563
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [`flake8-return`] Exempt cached properties and other property-like decorators from explicit return rule (`RET501`)
 
 ---
 
-_Pull request opened by @epenet on 2024-07-29 06:24_
+_@epenet_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ head: zb/revert-auth
 created_at: 2024-04-19T00:24:33Z
 updated_at: 2024-04-22T18:14:50Z
 url: https://github.com/astral-sh/uv/pull/3131
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:26Z
 ```
 
 # Revert "Rewrite `uv-auth` (#2976)"
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-19 00:24_
+_@zanieb_
 
 This reverts commit c0efeeddf6d738991d8f3149168ce57c52073f4e.
 

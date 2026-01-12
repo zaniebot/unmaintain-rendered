@@ -14,14 +14,14 @@ head: david/dataclass_transform-params-for-metaclass-models
 created_at: 2025-10-09T08:24:53Z
 updated_at: 2025-10-09T13:24:23Z
 url: https://github.com/astral-sh/ruff/pull/20780
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] Respect `dataclass_transform` parameters for metaclass-based models
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-09 08:24_
+_@sharkdp_
 
 ## Summary
 

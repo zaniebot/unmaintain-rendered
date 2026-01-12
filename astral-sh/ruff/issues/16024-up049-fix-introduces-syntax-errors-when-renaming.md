@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-07T15:57:31Z
 updated_at: 2025-02-08T15:44:05Z
 url: https://github.com/astral-sh/ruff/issues/16024
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # UP049 fix introduces syntax errors when renaming type parameters and behaves inconsistently in `typing.cast`
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-07 15:57_
+_@dscorbett_
 
 ### Description
 

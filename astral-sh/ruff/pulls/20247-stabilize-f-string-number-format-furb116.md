@@ -13,14 +13,14 @@ head: brent/furb116
 created_at: 2025-09-04T18:26:35Z
 updated_at: 2025-09-05T14:25:57Z
 url: https://github.com/astral-sh/ruff/pull/20247
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # Stabilize `f-string-number-format` (`FURB116`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-04 18:26_
+_@ntBre_
 
 Tests and docs look good
 

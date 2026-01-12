@@ -13,14 +13,14 @@ head: konsti/log-debug-error
 created_at: 2025-07-04T09:26:00Z
 updated_at: 2025-07-31T17:13:12Z
 url: https://github.com/astral-sh/uv/pull/14458
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:13Z
 ```
 
 # Log the debug error trace
 
 ---
 
-_Pull request opened by @konstin on 2025-07-04 09:26_
+_@konstin_
 
 For #14425. We can see the error without `error(transparent)` applied by looking at the debug representation.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2017-02-18T20:43:17Z
 updated_at: 2019-11-03T19:17:39Z
 url: https://github.com/clap-rs/clap/issues/861
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Custom errors format
 
 ---
 
-_Issue opened by @RazrFalcon on 2017-02-18 20:43_
+_@RazrFalcon_
 
 Is there a way to print errors without the `error:` prefix?
 

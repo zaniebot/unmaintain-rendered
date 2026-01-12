@@ -13,14 +13,14 @@ head: main
 created_at: 2024-04-15T12:14:27Z
 updated_at: 2024-04-15T13:06:51Z
 url: https://github.com/astral-sh/ruff/pull/10952
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # chore: remove repetitive words
 
 ---
 
-_Pull request opened by @StevenMia on 2024-04-15 12:14_
+_@StevenMia_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

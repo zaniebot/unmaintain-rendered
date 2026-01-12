@@ -13,14 +13,14 @@ head: charlie/period
 created_at: 2023-09-30T22:59:10Z
 updated_at: 2023-09-30T23:13:40Z
 url: https://github.com/astral-sh/ruff/pull/7725
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Add consistent period in options documentation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-30 22:59_
+_@charliermarsh_
 
 _No description provided._
 

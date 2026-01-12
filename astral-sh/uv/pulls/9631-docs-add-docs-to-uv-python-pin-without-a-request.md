@@ -13,14 +13,14 @@ head: patch-3
 created_at: 2024-12-04T07:21:27Z
 updated_at: 2024-12-04T18:27:49Z
 url: https://github.com/astral-sh/uv/pull/9631
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:54Z
 ```
 
 # docs: add docs to `uv python pin` without a REQUEST argument
 
 ---
 
-_Pull request opened by @nonZero on 2024-12-04 07:21_
+_@nonZero_
 
 _No description provided._
 

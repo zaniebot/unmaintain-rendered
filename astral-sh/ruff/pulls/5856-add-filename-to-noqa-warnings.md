@@ -12,14 +12,14 @@ head: issue-5855
 created_at: 2023-07-18T06:47:29Z
 updated_at: 2023-07-18T16:44:24Z
 url: https://github.com/astral-sh/ruff/pull/5856
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Add filename to `noqa` warnings
 
 ---
 
-_Pull request opened by @sobolevn on 2023-07-18 06:47_
+_@sobolevn_
 
 ## Summary
 

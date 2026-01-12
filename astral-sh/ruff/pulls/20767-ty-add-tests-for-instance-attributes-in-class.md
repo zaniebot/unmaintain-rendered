@@ -14,14 +14,14 @@ head: david/add-instance-attribute-inheritance-tests
 created_at: 2025-10-08T14:11:57Z
 updated_at: 2025-10-08T15:46:49Z
 url: https://github.com/astral-sh/ruff/pull/20767
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:09Z
 ```
 
 # [ty] Add tests for instance attributes in class hierarchies
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-08 14:11_
+_@sharkdp_
 
 ## Summary
 

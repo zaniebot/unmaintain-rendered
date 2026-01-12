@@ -13,14 +13,14 @@ head: konsti/pin-pypi-publish-action-commit
 created_at: 2025-08-18T14:14:39Z
 updated_at: 2025-09-05T13:11:41Z
 url: https://github.com/astral-sh/uv/pull/15350
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:42Z
 ```
 
 # Update pypa/gh-action-pypi-publish to version with pinned hashes
 
 ---
 
-_Pull request opened by @konstin on 2025-08-18 14:14_
+_@konstin_
 
 Use a version of the GitHub Action that uses a pinned hash, to fix the publish test.
 

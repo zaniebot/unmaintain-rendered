@@ -13,14 +13,14 @@ head: ag/emit-marker-expression
 created_at: 2024-03-25T16:07:57Z
 updated_at: 2024-03-27T15:59:47Z
 url: https://github.com/astral-sh/uv/pull/2651
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:09Z
 ```
 
 # uv: add hidden --emit-marker-expression flag
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-03-25 16:07_
+_@BurntSushi_
 
 This PR adds a new flag, `--emit-marker-expression`, to `uv pip
 compile`. The flag is hidden and not considered part of the stable API.

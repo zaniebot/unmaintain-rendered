@@ -13,14 +13,14 @@ head: pyi-013
 created_at: 2023-05-19T04:24:36Z
 updated_at: 2023-05-19T15:57:31Z
 url: https://github.com/astral-sh/ruff/pull/4517
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # [`flake8-pyi`] Implement `PYI013`
 
 ---
 
-_Pull request opened by @density on 2023-05-19 04:24_
+_@density_
 
 Adds support for Y013 from `flake8-pyi`: Non-empty class body must not contain ...
 

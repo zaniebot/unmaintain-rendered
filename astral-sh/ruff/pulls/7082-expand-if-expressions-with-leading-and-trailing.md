@@ -12,14 +12,14 @@ head: charlie/if-exp
 created_at: 2023-09-03T15:30:52Z
 updated_at: 2023-09-04T08:40:02Z
 url: https://github.com/astral-sh/ruff/pull/7082
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Expand if-expressions with leading and trailing comments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-03 15:30_
+_@charliermarsh_
 
 ## Summary
 

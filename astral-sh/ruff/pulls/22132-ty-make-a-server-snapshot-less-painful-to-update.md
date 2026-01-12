@@ -14,14 +14,14 @@ head: alex/server-snapshot
 created_at: 2025-12-21T20:47:16Z
 updated_at: 2025-12-22T12:18:20Z
 url: https://github.com/astral-sh/ruff/pull/22132
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # [ty] Make a server snapshot less painful to update
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-21 20:47_
+_@AlexWaygood_
 
 ## Summary
 

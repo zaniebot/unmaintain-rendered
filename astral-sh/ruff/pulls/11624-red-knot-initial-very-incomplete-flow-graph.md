@@ -13,14 +13,14 @@ head: cfg
 created_at: 2024-05-31T03:21:51Z
 updated_at: 2024-05-31T23:56:38Z
 url: https://github.com/astral-sh/ruff/pull/11624
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [red-knot] initial (very incomplete) flow graph
 
 ---
 
-_Pull request opened by @carljm on 2024-05-31 03:21_
+_@carljm_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

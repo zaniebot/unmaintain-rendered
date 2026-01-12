@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-29T03:08:23Z
 updated_at: 2025-10-29T17:54:00Z
 url: https://github.com/astral-sh/ruff/issues/21119
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Update stdlibs with 3.15
 
 ---
 
-_Issue opened by @amyreese on 2025-10-29 03:08_
+_@amyreese_
 
 Not sure when we normally do this, but at some point we'll need to update the known stdlib list, and I just pushed a `stdlibs` release earlier today with a list of modules from 3.15.0a1.
 

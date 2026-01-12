@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-21T12:49:09Z
 updated_at: 2025-09-03T09:03:12Z
 url: https://github.com/astral-sh/uv/issues/9314
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # how can I upgrade current python version with uv
 
 ---
 
-_Issue opened by @zffocussss on 2024-11-21 12:49_
+_@zffocussss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

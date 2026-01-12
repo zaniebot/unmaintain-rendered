@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-19T16:58:17Z
 updated_at: 2024-09-19T17:03:55Z
 url: https://github.com/astral-sh/uv/issues/7554
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # `--extra-index-url` causes `uv` unable finding `numpy>=1.23,<1.24`
 
 ---
 
-_Issue opened by @zhou13 on 2024-09-19 16:58_
+_@zhou13_
 
 To reproduce
 ```bash

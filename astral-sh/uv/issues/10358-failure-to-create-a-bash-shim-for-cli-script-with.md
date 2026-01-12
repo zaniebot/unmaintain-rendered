@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-07T12:29:06Z
 updated_at: 2025-01-08T11:21:23Z
 url: https://github.com/astral-sh/uv/issues/10358
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # Failure to create a bash shim for CLI script with pyenv
 
 ---
 
-_Issue opened by @lczyk on 2025-01-07 12:29_
+_@lczyk_
 
 I'm using pyenv and pyenv-virtualenv for python management on macOS. I've noticed that `uv pip install` does not trigger a proper creation of a bash shim. To demonstrate I will use django which installs a client script called `django-admin`, and python 3.12.3. I've tried it with other packages with cli scripts and other python versions, and the result is the same. 
 

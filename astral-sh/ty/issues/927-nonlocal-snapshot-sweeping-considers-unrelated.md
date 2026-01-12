@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-01T16:32:39Z
 updated_at: 2026-01-10T18:01:40Z
 url: https://github.com/astral-sh/ty/issues/927
-synced_at: 2026-01-12T02:26:11Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # nonlocal snapshot sweeping considers unrelated scopes, sweeps too much
 
 ---
 
-_Issue opened by @oconnor663 on 2025-08-01 16:32_
+_@oconnor663_
 
 As of https://github.com/astral-sh/ruff/pull/19321 we use "lazy snapshots" to track when a variable in an enclosing scope is never re-bound, which lets us infer a narrower type in nested functions. For example (working as intended):
 

@@ -11,14 +11,14 @@ head: patch-1
 created_at: 2025-12-20T23:53:08Z
 updated_at: 2025-12-21T21:21:30Z
 url: https://github.com/astral-sh/uv/pull/17200
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:39Z
 ```
 
 # Remove .gitignore from project file list
 
 ---
 
-_Pull request opened by @bensgilbert on 2025-12-20 23:53_
+_@bensgilbert_
 
 Removed .gitignore from the list of created files.
 

@@ -14,14 +14,14 @@ head: docs/stricter-validation-options
 created_at: 2024-08-14T23:47:15Z
 updated_at: 2024-08-15T00:36:07Z
 url: https://github.com/astral-sh/uv/pull/6096
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:12Z
 ```
 
 # docs: use stricter validation options
 
 ---
 
-_Pull request opened by @mkniewallner on 2024-08-14 23:47_
+_@mkniewallner_
 
 ## Summary
 

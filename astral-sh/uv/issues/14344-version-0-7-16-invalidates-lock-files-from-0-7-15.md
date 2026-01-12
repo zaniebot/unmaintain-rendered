@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-29T06:11:05Z
 updated_at: 2025-06-29T19:28:39Z
 url: https://github.com/astral-sh/uv/issues/14344
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:47Z
 ```
 
 # Version 0.7.16 invalidates lock files from <=0.7.15 due to an added trailing slash
 
 ---
 
-_Issue opened by @midopa on 2025-06-29 06:11_
+_@midopa_
 
 ### Summary
 

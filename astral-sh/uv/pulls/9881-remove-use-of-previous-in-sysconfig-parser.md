@@ -14,14 +14,14 @@ head: charlie/prev
 created_at: 2024-12-13T20:10:38Z
 updated_at: 2024-12-13T20:21:38Z
 url: https://github.com/astral-sh/uv/pull/9881
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:01Z
 ```
 
 # Remove use of `.previous()` in sysconfig parser
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-13 20:10_
+_@charliermarsh_
 
 ## Summary
 

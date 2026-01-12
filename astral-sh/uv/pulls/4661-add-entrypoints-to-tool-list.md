@@ -12,14 +12,14 @@ head: add-entrypoints-to-tool-list
 created_at: 2024-06-30T17:35:54Z
 updated_at: 2024-07-03T04:54:19Z
 url: https://github.com/astral-sh/uv/pull/4661
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:22Z
 ```
 
 # Add entrypoints to tool list
 
 ---
 
-_Pull request opened by @moreaupascal56 on 2024-06-30 17:35_
+_@moreaupascal56_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

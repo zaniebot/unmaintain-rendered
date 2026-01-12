@@ -11,14 +11,14 @@ head: fix-PTH123
 created_at: 2025-05-01T13:37:34Z
 updated_at: 2025-05-01T14:44:11Z
 url: https://github.com/astral-sh/ruff/pull/17767
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [`flake8-use-pathlib`] Don't handle bytes strings in `PTH123`
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-05-01 13:37_
+_@LaBatata101_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

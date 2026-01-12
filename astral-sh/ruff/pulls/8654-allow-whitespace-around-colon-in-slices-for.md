@@ -13,14 +13,14 @@ head: charlie/E203
 created_at: 2023-11-13T15:50:51Z
 updated_at: 2023-11-27T07:18:12Z
 url: https://github.com/astral-sh/ruff/pull/8654
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Allow whitespace around colon in slices for `whitespace-before-punctuation` (`E203`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-13 15:50_
+_@charliermarsh_
 
 ## Summary
 

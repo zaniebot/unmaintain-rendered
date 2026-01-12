@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-23T07:46:50Z
 updated_at: 2025-01-16T15:00:35Z
 url: https://github.com/astral-sh/uv/issues/10119
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # `uv` sometimes can't handle PyTorch nightly's cuda dependencies correctly.
 
 ---
 
-_Issue opened by @YouJiacheng on 2024-12-23 07:46_
+_@YouJiacheng_
 
 my pyproject.toml
 ```toml

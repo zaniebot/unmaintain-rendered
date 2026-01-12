@@ -13,14 +13,14 @@ head: charlie/q
 created_at: 2024-04-10T14:13:24Z
 updated_at: 2024-04-10T14:25:30Z
 url: https://github.com/astral-sh/uv/pull/2961
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:20Z
 ```
 
 # Strip query string when parsing filename from HTML index
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-10 14:13_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/dec
 created_at: 2023-06-12T19:04:10Z
 updated_at: 2023-06-12T19:38:03Z
 url: https://github.com/astral-sh/ruff/pull/5034
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Handle decorators in class-parenthesis-modifying rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-12 19:04_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-21T01:07:44Z
 updated_at: 2023-12-13T05:33:41Z
 url: https://github.com/astral-sh/ruff/issues/2046
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Add SARIF output support
 
 ---
 
-_Issue opened by @jawnsy on 2023-01-21 01:07_
+_@jawnsy_
 
 I did a cursory search of the code and didn't find anything related, so I believe this is a feature request. The only reference to "SARIF" that I found was a comment from a few weeks ago: https://github.com/charliermarsh/ruff/issues/1546#issuecomment-1371799394
 

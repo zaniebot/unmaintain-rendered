@@ -13,14 +13,14 @@ head: zb/upgrade-impl
 created_at: 2025-10-23T14:57:22Z
 updated_at: 2025-10-23T15:48:35Z
 url: https://github.com/astral-sh/uv/pull/16420
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:14Z
 ```
 
 # Check for matching Python implementation during `uv python upgrade`
 
 ---
 
-_Pull request opened by @zanieb on 2025-10-23 14:57_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/16416
 

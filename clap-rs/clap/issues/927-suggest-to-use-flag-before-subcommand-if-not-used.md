@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-04-10T11:34:09Z
 updated_at: 2018-08-02T03:30:05Z
 url: https://github.com/clap-rs/clap/issues/927
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Suggest to use flag before subcommand if not used correctly
 
 ---
 
-_Issue opened by @torkleyy on 2017-04-10 11:34_
+_@torkleyy_
 
 Suggesting to use the flag *before* the subcommand would make the application a bit more user-friendly.
 

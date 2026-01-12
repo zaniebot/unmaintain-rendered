@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-10-31T13:44:44Z
 updated_at: 2020-08-15T17:45:12Z
 url: https://github.com/clap-rs/clap/issues/721
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Is there a way to generate completions without consuming the App struct?
 
 ---
 
-_Issue opened by @matthiasbeyer on 2016-10-31 13:44_
+_@matthiasbeyer_
 
 The following case cannot be implemented (without using `App::clone()`) with clap, or am I missing something?
 

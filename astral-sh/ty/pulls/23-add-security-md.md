@@ -12,14 +12,14 @@ head: security
 created_at: 2025-05-05T13:18:22Z
 updated_at: 2025-07-08T10:38:42Z
 url: https://github.com/astral-sh/ty/pull/23
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Add SECURITY.md
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-05 13:18_
+_@MichaReiser_
 
 Copied from Ruff
 

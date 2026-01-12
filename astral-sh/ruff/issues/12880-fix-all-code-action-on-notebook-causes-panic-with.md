@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-14T06:33:10Z
 updated_at: 2024-08-16T14:20:13Z
 url: https://github.com/astral-sh/ruff/issues/12880
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # "Fix all" code action on notebook causes panic with multi-byte character
 
 ---
 
-_Issue opened by @sato1214syun on 2024-08-14 06:33_
+_@sato1214syun_
 
 * List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
   keywords: panic, Q000

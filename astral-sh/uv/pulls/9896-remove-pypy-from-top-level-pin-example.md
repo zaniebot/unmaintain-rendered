@@ -13,14 +13,14 @@ head: zb/fix-examples
 created_at: 2024-12-14T15:28:56Z
 updated_at: 2024-12-14T18:00:14Z
 url: https://github.com/astral-sh/uv/pull/9896
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:01Z
 ```
 
 # Remove `pypy` from top-level pin example
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-14 15:28_
+_@zanieb_
 
 _No description provided._
 

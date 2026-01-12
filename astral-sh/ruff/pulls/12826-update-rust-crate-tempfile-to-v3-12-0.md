@@ -13,14 +13,14 @@ head: renovate/tempfile-3.x-lockfile
 created_at: 2024-08-12T02:02:38Z
 updated_at: 2024-08-12T02:27:45Z
 url: https://github.com/astral-sh/ruff/pull/12826
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Update Rust crate tempfile to v3.12.0
 
 ---
 
-_Pull request opened by @renovate on 2024-08-12 02:02_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

@@ -12,14 +12,14 @@ head: charlie/names
 created_at: 2023-08-01T17:57:51Z
 updated_at: 2023-08-01T18:32:18Z
 url: https://github.com/astral-sh/ruff/pull/6255
-synced_at: 2026-01-12T02:58:30Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Rename `Parameter#arg` and `ParameterWithDefault#def` fields
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-01 17:57_
+_@charliermarsh_
 
 ## Summary
 

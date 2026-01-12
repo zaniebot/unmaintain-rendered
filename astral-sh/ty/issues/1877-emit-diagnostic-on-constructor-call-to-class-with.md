@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-13T13:00:59Z
 updated_at: 2025-12-22T14:08:12Z
 url: https://github.com/astral-sh/ty/issues/1877
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Emit diagnostic on constructor call to class with abstract methods
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-13 13:00_
+_@AlexWaygood_
 
 ```py
 from abc import abstractmethod

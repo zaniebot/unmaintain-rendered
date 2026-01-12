@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-28T19:52:47Z
 updated_at: 2025-07-26T06:36:43Z
 url: https://github.com/astral-sh/ruff/issues/15167
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Request: Option to only apply `superfluous-else-*` on multi-statement blocks (`RET505`, `RET506`, `RET507`, `RET508`)
 
 ---
 
-_Issue opened by @Avasam on 2024-12-28 19:52_
+_@Avasam_
 
 I'm really into if-guards, and `superfluous-else-*` rules help enable that pattern.
 ```py

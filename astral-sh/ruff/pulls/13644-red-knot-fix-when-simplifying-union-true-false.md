@@ -13,14 +13,14 @@ head: fix/#13642-bool-union-should-be-simplified-to-instance
 created_at: 2024-10-05T17:10:49Z
 updated_at: 2024-10-07T08:43:25Z
 url: https://github.com/astral-sh/ruff/pull/13644
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] fix: when simplifying union, True & False -> instance(bool)
 
 ---
 
-_Pull request opened by @Slyces on 2024-10-05 17:10_
+_@Slyces_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

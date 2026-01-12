@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-18T15:57:27Z
 updated_at: 2025-07-22T13:32:46Z
 url: https://github.com/astral-sh/uv/issues/14730
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:55Z
 ```
 
 # Add a hint to use `uv self version` if `uv version` cannot find a project
 
 ---
 
-_Issue opened by @zanieb on 2025-07-18 15:57_
+_@zanieb_
 
 Instead of just
 

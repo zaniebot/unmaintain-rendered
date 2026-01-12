@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-15T11:05:08Z
 updated_at: 2025-02-15T16:33:21Z
 url: https://github.com/astral-sh/uv/issues/11534
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # Make uv tool upgrade --all tolerant to deleted Python versions
 
 ---
 
-_Issue opened by @owenlamont on 2025-02-15 11:05_
+_@owenlamont_
 
 ### Summary
 

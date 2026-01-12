@@ -14,14 +14,14 @@ head: konsti/log-tried-versions
 created_at: 2024-04-17T08:58:40Z
 updated_at: 2024-04-17T09:08:22Z
 url: https://github.com/astral-sh/uv/pull/3090
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:25Z
 ```
 
 # Log versions tried from batch prefetch
 
 ---
 
-_Pull request opened by @konstin on 2024-04-17 08:58_
+_@konstin_
 
 This is required for evaluating #3087.
 

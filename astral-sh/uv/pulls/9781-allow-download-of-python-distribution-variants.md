@@ -13,14 +13,14 @@ head: zb/arch-variant
 created_at: 2024-12-10T18:26:13Z
 updated_at: 2024-12-10T20:27:00Z
 url: https://github.com/astral-sh/uv/pull/9781
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:58Z
 ```
 
 # Allow download of Python distribution variants with newer CPU instruction sets
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-10 18:26_
+_@zanieb_
 
 Supersedes https://github.com/astral-sh/uv/pull/8517 with an alternative approach of making all the variants available instead of replacing the x86_64 (v1) variant with x86_64_v2.
 

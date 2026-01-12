@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-18T11:39:59Z
 updated_at: 2024-10-21T09:26:20Z
 url: https://github.com/astral-sh/uv/issues/8324
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # Authentication error to Google Artifactory with custom index and env variables
 
 ---
 
-_Issue opened by @harteros on 2024-10-18 11:39_
+_@harteros_
 
 Hi team, thanks for all your hard work, uv is amazing!
 

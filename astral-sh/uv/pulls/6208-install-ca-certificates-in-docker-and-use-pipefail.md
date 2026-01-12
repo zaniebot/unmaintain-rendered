@@ -14,14 +14,14 @@ head: konsti/install-recommends
 created_at: 2024-08-19T14:45:59Z
 updated_at: 2024-08-19T17:14:25Z
 url: https://github.com/astral-sh/uv/pull/6208
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:16Z
 ```
 
 # Install `ca-certificates` in docker and use pipefail
 
 ---
 
-_Pull request opened by @konstin on 2024-08-19 14:45_
+_@konstin_
 
 A dockerfile using `ubuntu` instead of `python` as base image currently silently fails to install.
 

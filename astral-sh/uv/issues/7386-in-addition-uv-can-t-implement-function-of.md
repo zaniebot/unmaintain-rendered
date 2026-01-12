@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-14T04:51:02Z
 updated_at: 2024-09-14T12:29:06Z
 url: https://github.com/astral-sh/uv/issues/7386
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # In  addition ,  uv can't  implement function of    running  script  commands  ,just  like    pdm run script  or  npm run script 
 
 ---
 
-_Issue opened by @Super1Windcloud on 2024-09-14 04:51_
+_@Super1Windcloud_
 
 In  addition ,  uv can't  implement function of    running  script  commands  ,just  like    pdm run script  or  npm run script 
 

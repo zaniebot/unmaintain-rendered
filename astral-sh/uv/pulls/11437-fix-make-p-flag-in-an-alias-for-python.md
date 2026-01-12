@@ -13,14 +13,14 @@ head: fix/pip-compile-python-flag
 created_at: 2025-02-12T06:44:51Z
 updated_at: 2025-02-13T18:52:32Z
 url: https://github.com/astral-sh/uv/pull/11437
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:50Z
 ```
 
 # fix: make -p flag in  an alias for --python
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2025-02-12 06:44_
+_@Aditya-PS-05_
 
 closes #11285 
 

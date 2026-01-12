@@ -13,14 +13,14 @@ head: patch-5
 created_at: 2025-07-02T22:16:07Z
 updated_at: 2025-07-03T15:54:03Z
 url: https://github.com/astral-sh/ruff/pull/19106
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [`flake8-quotes`] Make example error out-of-the-box (`Q003`)
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-07-02 22:16_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: update_schemars
 created_at: 2025-05-28T05:28:24Z
 updated_at: 2025-06-24T19:43:32Z
 url: https://github.com/astral-sh/uv/pull/13693
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:48Z
 ```
 
 # Update schemars 1.0.0
 
 ---
 
-_Pull request opened by @ya7010 on 2025-05-28 05:28_
+_@ya7010_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

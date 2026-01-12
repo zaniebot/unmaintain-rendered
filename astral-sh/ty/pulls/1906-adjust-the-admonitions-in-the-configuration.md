@@ -13,14 +13,14 @@ head: zb/docs-admo-config
 created_at: 2025-12-15T20:56:40Z
 updated_at: 2025-12-15T21:24:47Z
 url: https://github.com/astral-sh/ty/pull/1906
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Adjust the admonitions in the configuration concept page
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-15 20:56_
+_@zanieb_
 
 _No description provided._
 

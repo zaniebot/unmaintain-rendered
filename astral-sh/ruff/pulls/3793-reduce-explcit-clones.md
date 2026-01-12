@@ -12,14 +12,14 @@ head: reduce-clones
 created_at: 2023-03-29T10:02:25Z
 updated_at: 2023-03-29T13:15:16Z
 url: https://github.com/astral-sh/ruff/pull/3793
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Reduce explcit clones
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-03-29 10:02_
+_@MichaReiser_
 
 This PR removes some explicit `clone` in the code base by:
 

@@ -13,14 +13,14 @@ head: zb/install-python-win
 created_at: 2025-01-15T22:37:23Z
 updated_at: 2025-01-21T15:17:53Z
 url: https://github.com/astral-sh/uv/pull/10657
-synced_at: 2026-01-10T11:45:03Z
+synced_at: 2026-01-12T16:09:25Z
 ```
 
 # Install Python via uv in Windows CI
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-15 22:37_
+_@zanieb_
 
 Python 3.8 is a GHA cache miss now, so it is actually like 30-45s. uv may be faster
 

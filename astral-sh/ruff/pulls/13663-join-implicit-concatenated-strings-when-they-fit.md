@@ -14,14 +14,14 @@ head: micha/format-implicit-concatenated-strings
 created_at: 2024-10-07T14:47:37Z
 updated_at: 2024-10-24T09:52:25Z
 url: https://github.com/astral-sh/ruff/pull/13663
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Join implicit concatenated strings when they fit on a line
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-10-07 14:47_
+_@MichaReiser_
 
 ## Summary
 

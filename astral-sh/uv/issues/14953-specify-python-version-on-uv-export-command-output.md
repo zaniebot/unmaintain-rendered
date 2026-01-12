@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-29T13:10:28Z
 updated_at: 2025-07-30T16:10:52Z
 url: https://github.com/astral-sh/uv/issues/14953
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:02:00Z
 ```
 
 # specify python version on uv export command output
 
 ---
 
-_Issue opened by @Vitalii-Kh95 on 2025-07-29 13:10_
+_@Vitalii-Kh95_
 
 ### Question
 

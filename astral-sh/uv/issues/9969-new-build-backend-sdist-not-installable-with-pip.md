@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-17T12:43:57Z
 updated_at: 2024-12-18T19:14:10Z
 url: https://github.com/astral-sh/uv/issues/9969
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:03Z
 ```
 
 # new build backend - sdist not installable with pip?
 
 ---
 
-_Issue opened by @davidszotten on 2024-12-17 12:43_
+_@davidszotten_
 
 Hi,
 

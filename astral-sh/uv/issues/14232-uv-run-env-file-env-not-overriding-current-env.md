@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-24T08:36:14Z
 updated_at: 2025-06-24T15:50:46Z
 url: https://github.com/astral-sh/uv/issues/14232
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:45Z
 ```
 
 # `uv run --env-file=.env` not overriding current env
 
 ---
 
-_Issue opened by @Hellzed on 2025-06-24 08:36_
+_@Hellzed_
 
 ### Question
 

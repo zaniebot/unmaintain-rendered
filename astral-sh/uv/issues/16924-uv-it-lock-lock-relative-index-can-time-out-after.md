@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T09:56:48Z
 updated_at: 2025-12-02T09:56:57Z
 url: https://github.com/astral-sh/uv/issues/16924
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # `uv::it lock::lock_relative_index` can time out after 60s on Linux
 
 ---
 
-_Issue opened by @zanieb on 2025-12-02 09:56_
+_@zanieb_
 
 
 ```

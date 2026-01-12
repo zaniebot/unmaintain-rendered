@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-12T15:00:29Z
 updated_at: 2024-04-18T04:37:01Z
 url: https://github.com/astral-sh/ruff/issues/10911
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `PLR6104` has false positive for non-commutative additions
 
 ---
 
-_Issue opened by @charliermarsh on 2024-04-12 15:00_
+_@charliermarsh_
 
 @charliermarsh Is this fixed for:
 ```python

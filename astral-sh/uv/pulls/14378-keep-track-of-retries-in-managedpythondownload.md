@@ -13,14 +13,14 @@ head: jack/track_retries
 created_at: 2025-06-30T21:54:34Z
 updated_at: 2025-07-03T22:12:47Z
 url: https://github.com/astral-sh/uv/pull/14378
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:11Z
 ```
 
 # Keep track of retries in `ManagedPythonDownload::fetch_with_retry`
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-06-30 21:54_
+_@oconnor663_
 
 If/when we see https://github.com/astral-sh/uv/issues/14171 again, this should clarify whether our retry logic was skipped (i.e. a transient error wasn't correctly identified as transient), or whether we exhausted our retries. Previously, if you ran a local example fileserver as in https://github.com/astral-sh/uv/issues/14171#issuecomment-3014580701 and then you tried to install Python from it, you'd get:
 

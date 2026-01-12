@@ -12,14 +12,14 @@ head: support_light_theme
 created_at: 2022-11-21T15:09:50Z
 updated_at: 2022-11-21T15:18:27Z
 url: https://github.com/astral-sh/ruff/pull/854
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Make it visible under light theme
 
 ---
 
-_Pull request opened by @kemingy on 2022-11-21 15:09_
+_@kemingy_
 
 Signed-off-by: Keming <kemingy94@gmail.com>
 

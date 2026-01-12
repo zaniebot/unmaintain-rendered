@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-17T01:17:56Z
 updated_at: 2023-06-19T04:19:43Z
 url: https://github.com/astral-sh/ruff/issues/5154
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # E703: semicolon followed by ellipsis causes syntax error
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-17 01:17_
+_@addisoncrump_
 
 This one is fairly straightforward, and potentially indicates other issues with E703.
 

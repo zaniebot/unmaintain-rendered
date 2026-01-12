@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-24T15:48:42Z
 updated_at: 2025-02-24T18:53:17Z
 url: https://github.com/astral-sh/uv/issues/11745
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # uv tool list should include the version specifiers for each tool
 
 ---
 
-_Issue opened by @chazmo03 on 2025-02-24 15:48_
+_@chazmo03_
 
 ### Summary
 

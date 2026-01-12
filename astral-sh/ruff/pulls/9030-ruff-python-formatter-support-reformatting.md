@@ -14,14 +14,14 @@ head: ag/fmt/markdown
 created_at: 2023-12-06T22:32:28Z
 updated_at: 2023-12-07T21:57:05Z
 url: https://github.com/astral-sh/ruff/pull/9030
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # ruff_python_formatter: support reformatting Markdown code blocks
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-12-06 22:32_
+_@BurntSushi_
 
 (This is not possible to actually use until https://github.com/astral-sh/ruff/pull/8854 is merged.)
 

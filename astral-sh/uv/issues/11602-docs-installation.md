@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-02-18T16:28:00Z
 updated_at: 2025-02-18T16:28:00Z
 url: https://github.com/astral-sh/uv/issues/11602
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # Docs - Installation
 
 ---
 
-_Issue opened by @nirnejak on 2025-02-18 16:28_
+_@nirnejak_
 
 Homebrew installation should probably be the first option.
 

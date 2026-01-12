@@ -12,14 +12,14 @@ head: jack/sources_warning
 created_at: 2025-06-16T14:59:18Z
 updated_at: 2025-06-16T14:59:18Z
 url: https://github.com/astral-sh/uv/pull/14077
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:01Z
 ```
 
 # WIP unused sources warning
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-06-16 14:59_
+_@oconnor663_
 
 https://github.com/astral-sh/uv/issues/13829
 

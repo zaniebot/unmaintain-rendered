@@ -14,14 +14,14 @@ head: feature/add-symlink-capability
 created_at: 2024-07-19T01:41:08Z
 updated_at: 2024-07-19T12:41:18Z
 url: https://github.com/astral-sh/uv/pull/5208
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:42Z
 ```
 
 # Support  `--link-mode=symlink`
 
 ---
 
-_Pull request opened by @danielenricocahall on 2024-07-19 01:41_
+_@danielenricocahall_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-24T14:23:19Z
 updated_at: 2024-06-24T15:29:17Z
 url: https://github.com/astral-sh/uv/issues/4474
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Tagged commit for 0.2.14 does not match artifacts
 
 ---
 
-_Issue opened by @zanieb on 2024-06-24 14:23_
+_@zanieb_
 
 I'm not sure if there's anything we can do here (now that it's happened), but our release tooling tagged https://github.com/astral-sh/uv/commit/f07308823e877690a00141441b07fd0f7dfe9805 instead of https://github.com/astral-sh/uv/commit/e0ad649c7449b7f54c0053e409ac6e7bf18a6f68 during the re-run of the failed 0.2.14 release.
 

@@ -12,14 +12,14 @@ head: charlie/tokenizer
 created_at: 2023-08-14T16:14:24Z
 updated_at: 2023-08-16T13:09:20Z
 url: https://github.com/astral-sh/ruff/pull/6563
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add support for multi-character operator tokens to `SimpleTokenizer`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-14 16:14_
+_@charliermarsh_
 
 ## Summary
 

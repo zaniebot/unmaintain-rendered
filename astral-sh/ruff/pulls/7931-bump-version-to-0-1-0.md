@@ -12,14 +12,14 @@ head: release/010
 created_at: 2023-10-12T19:22:30Z
 updated_at: 2023-10-16T18:06:50Z
 url: https://github.com/astral-sh/ruff/pull/7931
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Bump version to 0.1.0
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-12 19:22_
+_@zanieb_
 
 [Rendered changelog](https://github.com/astral-sh/ruff/blob/release/010/CHANGELOG.md)
 

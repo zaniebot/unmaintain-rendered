@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-12-10T12:01:25Z
 updated_at: 2023-12-20T17:07:43Z
 url: https://github.com/astral-sh/ruff/issues/9079
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Rules FA102, TCH002 cause panic
 
 ---
 
-_Issue opened by @qarmin on 2023-12-10 12:01_
+_@qarmin_
 
 
 Ruff 0.1.7 (latest changes from main branch)

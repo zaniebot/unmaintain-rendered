@@ -13,14 +13,14 @@ head: konsti/dont-warn-for-more-bound-source
 created_at: 2024-12-04T17:55:19Z
 updated_at: 2024-12-05T09:09:40Z
 url: https://github.com/astral-sh/uv/pull/9644
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:55Z
 ```
 
 # Include more sources to avoid lowest bound warning
 
 ---
 
-_Pull request opened by @konstin on 2024-12-04 17:55_
+_@konstin_
 
 In https://github.com/astral-sh/uv/issues/8155#issuecomment-2508969900, resolution lowest was complaining about missing lower bounds for a pacakge, even though the package had a URL, too:
 

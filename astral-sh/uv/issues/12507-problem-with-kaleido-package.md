@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-27T07:42:55Z
 updated_at: 2025-04-14T08:57:50Z
 url: https://github.com/astral-sh/uv/issues/12507
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # problem with kaleido package
 
 ---
 
-_Issue opened by @alireza-hariri on 2025-03-27 07:42_
+_@alireza-hariri_
 
 ### Summary
 

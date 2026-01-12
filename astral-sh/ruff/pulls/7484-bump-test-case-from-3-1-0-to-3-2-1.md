@@ -13,14 +13,14 @@ head: dependabot/cargo/test-case-3.2.1
 created_at: 2023-09-18T08:44:18Z
 updated_at: 2023-09-18T09:31:42Z
 url: https://github.com/astral-sh/ruff/pull/7484
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Bump test-case from 3.1.0 to 3.2.1
 
 ---
 
-_Pull request opened by @dependabot on 2023-09-18 08:44_
+_@dependabot_
 
 Bumps [test-case](https://github.com/frondeus/test-case) from 3.1.0 to 3.2.1.
 <details>

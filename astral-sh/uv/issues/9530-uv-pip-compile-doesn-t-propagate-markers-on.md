@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-29T19:26:52Z
 updated_at: 2024-11-30T03:40:24Z
 url: https://github.com/astral-sh/uv/issues/9530
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:52Z
 ```
 
 # `uv pip compile` doesn't propagate markers on recursive self-extras
 
 ---
 
-_Issue opened by @charliermarsh on 2024-11-29 19:26_
+_@charliermarsh_
 
 E.g., given:
 ```toml

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-07T13:48:36Z
 updated_at: 2025-05-07T16:08:07Z
 url: https://github.com/astral-sh/ruff/issues/17918
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # UP032 should throw errors when the replacement is a string
 
 ---
 
-_Issue opened by @jbrunton96 on 2025-05-07 13:48_
+_@jbrunton96_
 
 ### Summary
 

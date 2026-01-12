@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-12-05T14:21:33Z
 updated_at: 2022-12-05T21:12:13Z
 url: https://github.com/astral-sh/ruff/issues/1061
-synced_at: 2026-01-10T12:06:15Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # [feature-request] Consider tweaking top-line summary for clarity
 
 ---
 
-_Issue opened by @smackesey on 2022-12-05 14:21_
+_@smackesey_
 
 There have been a couple times I've had to do a double take reading the top-line error summary when running `ruff --fix`. First I'd run `ruff` without `--fix`:
 

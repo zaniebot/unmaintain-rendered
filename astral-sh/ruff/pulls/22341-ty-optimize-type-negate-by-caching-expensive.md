@@ -14,14 +14,14 @@ head: alex/optimize-negate
 created_at: 2026-01-02T17:54:34Z
 updated_at: 2026-01-06T19:22:29Z
 url: https://github.com/astral-sh/ruff/pull/22341
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Optimize `Type::negate()` by caching expensive invocations of the `IntersectionBuilder`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-02 17:54_
+_@AlexWaygood_
 
 ## Summary
 

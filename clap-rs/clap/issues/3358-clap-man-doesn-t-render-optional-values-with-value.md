@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-01-28T21:20:04Z
 updated_at: 2025-07-29T00:36:01Z
 url: https://github.com/clap-rs/clap/issues/3358
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `clap_man` doesn't render optional values with `[=<VALUE>]`
 
 ---
 
-_Issue opened by @epage on 2022-01-28 21:20_
+_@epage_
 
 ### Please complete the following tasks
 

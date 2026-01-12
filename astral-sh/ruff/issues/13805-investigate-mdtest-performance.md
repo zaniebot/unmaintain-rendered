@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-18T07:30:47Z
 updated_at: 2024-10-21T19:06:42Z
 url: https://github.com/astral-sh/ruff/issues/13805
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Investigate mdtest performance
 
 ---
 
-_Issue opened by @MichaReiser on 2024-10-18 07:30_
+_@MichaReiser_
 
 I haven't done any profiling but I'm surprised that the fastest tests take 0.15s to run and the slowest is close to 2s! 
 

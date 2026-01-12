@@ -13,14 +13,14 @@ head: conflicting-declaration-attribute
 created_at: 2025-06-26T08:09:10Z
 updated_at: 2025-10-29T15:05:27Z
 url: https://github.com/astral-sh/ruff/pull/18953
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [ty] Diagnostic for conflicting declared attribute types
 
 ---
 
-_Pull request opened by @lipefree on 2025-06-26 08:09_
+_@lipefree_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

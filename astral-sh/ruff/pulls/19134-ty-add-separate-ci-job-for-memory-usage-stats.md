@@ -14,14 +14,14 @@ head: ibraheem/mypy-primer-determinism
 created_at: 2025-07-03T23:44:39Z
 updated_at: 2025-07-07T16:22:00Z
 url: https://github.com/astral-sh/ruff/pull/19134
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # [ty] Add separate CI job for memory usage stats
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-07-03 23:44_
+_@ibraheemdev_
 
 ## Summary
 

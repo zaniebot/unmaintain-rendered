@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-09-21T14:24:07Z
 updated_at: 2018-08-02T03:29:44Z
 url: https://github.com/clap-rs/clap/issues/262
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Clap panics on argument in invalid unicode
 
 ---
 
-_Issue opened by @remram44 on 2015-09-21 14:24_
+_@remram44_
 
 I can understand your library not being designed to handle arguments that are not valid unicode (which are possible on UNIX, and can be valid filenames, but heh), however having your library panic the calling thread is not cool. Please consider using Result instead of crashing.
 

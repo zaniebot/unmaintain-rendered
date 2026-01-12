@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-31T13:50:01Z
 updated_at: 2025-08-31T14:17:24Z
 url: https://github.com/astral-sh/uv/issues/15607
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # uv trying to symlink on exfat drive
 
 ---
 
-_Issue opened by @joshafeinberg on 2025-08-31 13:50_
+_@joshafeinberg_
 
 ### Summary
 

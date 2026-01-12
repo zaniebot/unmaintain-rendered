@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-23T12:32:11Z
 updated_at: 2025-04-28T07:31:18Z
 url: https://github.com/astral-sh/ruff/issues/17582
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Duplicate E712 diagnostics
 
 ---
 
-_Issue opened by @whiskeyboy9 on 2025-04-23 12:32_
+_@whiskeyboy9_
 
 ## Duplicate diagnostics for RUF001 in VS Code
 

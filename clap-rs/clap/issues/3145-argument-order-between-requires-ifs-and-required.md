@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-12-10T20:25:26Z
 updated_at: 2021-12-10T20:27:40Z
 url: https://github.com/clap-rs/clap/issues/3145
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Argument order between requires_ifs and required_ifs is different
 
 ---
 
-_Issue opened by @epage on 2021-12-10 20:25_
+_@epage_
 
 ### Please complete the following tasks
 

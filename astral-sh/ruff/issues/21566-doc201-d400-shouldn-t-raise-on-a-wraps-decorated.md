@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-21T17:55:18Z
 updated_at: 2025-12-10T17:23:53Z
 url: https://github.com/astral-sh/ruff/issues/21566
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # DOC201 / D400 shouldn't raise on a `@wraps()`-decorated function
 
 ---
 
-_Issue opened by @tigerhawkvok on 2025-11-21 17:55_
+_@tigerhawkvok_
 
 ### Summary
 

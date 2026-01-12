@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-05T20:31:23Z
 updated_at: 2024-07-07T04:47:45Z
 url: https://github.com/astral-sh/ruff/issues/12210
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # S113 - Rule Doesn't Take `httpx` Default Timeout into Account
 
 ---
 
-_Issue opened by @fullerzz on 2024-07-05 20:31_
+_@fullerzz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

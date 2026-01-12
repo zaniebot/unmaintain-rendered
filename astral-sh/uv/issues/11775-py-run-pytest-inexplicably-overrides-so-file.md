@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-25T09:32:02Z
 updated_at: 2025-02-27T12:56:48Z
 url: https://github.com/astral-sh/uv/issues/11775
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # `py run pytest` inexplicably overrides `.so` file
 
 ---
 
-_Issue opened by @nschloe on 2025-02-25 09:32_
+_@nschloe_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-03T22:52:15Z
 updated_at: 2025-04-07T15:25:58Z
 url: https://github.com/astral-sh/uv/issues/12661
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Changing a package name with sync --frozen reports the wrong error
 
 ---
 
-_Issue opened by @Halkcyon on 2025-04-03 22:52_
+_@Halkcyon_
 
 ### Summary
 

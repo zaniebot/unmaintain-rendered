@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-18T15:09:37Z
 updated_at: 2023-01-18T16:23:13Z
 url: https://github.com/astral-sh/ruff/issues/1958
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # UP003 incorrectly formats attribute ``.type``
 
 ---
 
-_Issue opened by @nstarman on 2023-01-18 15:09_
+_@nstarman_
 
 In Astropy, [this line](https://github.com/astropy/astropy/blob/66b4a198e92ce506c738e32faed6675b34e1c599/astropy/time/utils.py#L194)  (shown below) incorrectly trips UP003. I suspect that ruff is not checking whether ``type`` is an attribute/method.
 

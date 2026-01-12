@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T21:07:33Z
 updated_at: 2023-01-26T21:24:23Z
 url: https://github.com/astral-sh/ruff/issues/2224
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # UP014 introduces E999 IndentationError: expected an indented block
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 21:07_
+_@spaceone_
 
 ```
 $ cat foo.py

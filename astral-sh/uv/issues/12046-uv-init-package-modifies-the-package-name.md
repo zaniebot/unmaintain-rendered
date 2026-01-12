@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T14:53:14Z
 updated_at: 2025-03-15T00:59:52Z
 url: https://github.com/astral-sh/uv/issues/12046
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:53Z
 ```
 
 # "uv init --package" modifies the package name
 
 ---
 
-_Issue opened by @fconil on 2025-03-07 14:53_
+_@fconil_
 
 ### Summary
 

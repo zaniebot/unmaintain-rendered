@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-23T05:19:06Z
 updated_at: 2023-03-26T14:51:13Z
 url: https://github.com/astral-sh/ruff/issues/3676
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Autofix Error] noqa Removed
 
 ---
 
-_Issue opened by @JacobCoffee on 2023-03-23 05:19_
+_@JacobCoffee_
 
               When adding TRY rules in ruff configuration for napari project, then I add # noqa TRY301
 

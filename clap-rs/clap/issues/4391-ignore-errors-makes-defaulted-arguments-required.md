@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-10-14T20:48:19Z
 updated_at: 2025-05-07T14:22:40Z
 url: https://github.com/clap-rs/clap/issues/4391
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `ignore_errors` makes defaulted arguments required when using the derive API
 
 ---
 
-_Issue opened by @NicholasLYang on 2022-10-14 20:48_
+_@NicholasLYang_
 
 ### Please complete the following tasks
 

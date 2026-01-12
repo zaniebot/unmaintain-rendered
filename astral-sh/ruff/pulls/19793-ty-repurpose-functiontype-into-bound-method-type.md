@@ -13,14 +13,14 @@ head: into-callable-option
 created_at: 2025-08-06T20:48:42Z
 updated_at: 2025-11-06T11:48:13Z
 url: https://github.com/astral-sh/ruff/pull/19793
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] Repurpose `FunctionType.into_bound_method_type` to return `BoundMethodType`
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-08-06 20:48_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

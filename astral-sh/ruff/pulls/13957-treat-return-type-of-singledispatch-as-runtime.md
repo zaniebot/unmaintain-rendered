@@ -13,14 +13,14 @@ head: dhruv/tch003-return-type
 created_at: 2024-10-28T05:12:26Z
 updated_at: 2024-10-29T00:33:30Z
 url: https://github.com/astral-sh/ruff/pull/13957
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Treat return type of `singledispatch` as runtime-required
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-10-28 05:12_
+_@dhruvmanila_
 
 ## Summary
 

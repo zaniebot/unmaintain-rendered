@@ -14,14 +14,14 @@ head: dhruv/keywords-argument
 created_at: 2025-09-16T06:02:20Z
 updated_at: 2025-09-19T05:09:33Z
 url: https://github.com/astral-sh/ruff/pull/20430
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:01Z
 ```
 
 # [ty] Add support for `**kwargs`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-09-16 06:02_
+_@dhruvmanila_
 
 ## Summary
 

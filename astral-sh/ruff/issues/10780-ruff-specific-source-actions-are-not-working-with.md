@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-04T22:34:35Z
 updated_at: 2024-04-16T18:21:10Z
 url: https://github.com/astral-sh/ruff/issues/10780
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Ruff-specific source actions are not working with `ruff server`
 
 ---
 
-_Issue opened by @snowsignal on 2024-04-04 22:34_
+_@snowsignal_
 
 VS Code configuration like the following will work as expected:
 ```json

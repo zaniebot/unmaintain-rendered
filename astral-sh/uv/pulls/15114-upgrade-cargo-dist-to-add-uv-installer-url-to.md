@@ -13,14 +13,14 @@ head: charlie/dists
 created_at: 2025-08-06T18:48:44Z
 updated_at: 2025-08-06T20:23:36Z
 url: https://github.com/astral-sh/uv/pull/15114
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:35Z
 ```
 
 # Upgrade `cargo-dist` to add `UV_INSTALLER_URL` to PowerShell installer
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-06 18:48_
+_@charliermarsh_
 
 ## Summary
 

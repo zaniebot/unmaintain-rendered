@@ -13,14 +13,14 @@ head: zb/http-err
 created_at: 2025-09-10T13:19:44Z
 updated_at: 2025-09-14T01:57:42Z
 url: https://github.com/astral-sh/uv/pull/15768
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:55Z
 ```
 
 # Improve error message for HTTP validation in auth services
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-10 13:19_
+_@zanieb_
 
 Follows https://github.com/astral-sh/uv/pull/15755
 

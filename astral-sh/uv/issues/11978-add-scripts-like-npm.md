@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-05T15:08:42Z
 updated_at: 2025-03-05T15:24:06Z
 url: https://github.com/astral-sh/uv/issues/11978
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:51Z
 ```
 
 # Add scripts like npm
 
 ---
 
-_Issue opened by @rtyt3000 on 2025-03-05 15:08_
+_@rtyt3000_
 
 ### Summary
 

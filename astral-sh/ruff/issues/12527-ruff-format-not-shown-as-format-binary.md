@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-26T12:15:15Z
 updated_at: 2024-07-26T12:51:02Z
 url: https://github.com/astral-sh/ruff/issues/12527
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # ruff_format not shown as format binary
 
 ---
 
-_Issue opened by @ic-768 on 2024-07-26 12:15_
+_@ic-768_
 
 I use neovim and was trying to setup ruff as a formatter. I was not able to get it to work, as I thought that simply using `ruff` as my formatter would be enough, when in fact I had to use `ruff_format`.
 

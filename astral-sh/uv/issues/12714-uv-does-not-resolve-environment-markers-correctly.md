@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-07T13:26:01Z
 updated_at: 2025-04-07T14:13:34Z
 url: https://github.com/astral-sh/uv/issues/12714
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:11Z
 ```
 
 # UV does not resolve environment markers correctly
 
 ---
 
-_Issue opened by @Vdaleke on 2025-04-07 13:26_
+_@Vdaleke_
 
 ### Summary
 

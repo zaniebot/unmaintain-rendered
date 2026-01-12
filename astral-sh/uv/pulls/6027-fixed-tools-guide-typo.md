@@ -14,14 +14,14 @@ head: typo/tools_guide
 created_at: 2024-08-12T08:16:23Z
 updated_at: 2024-08-12T12:12:50Z
 url: https://github.com/astral-sh/uv/pull/6027
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:09Z
 ```
 
 # Fixed tools guide typo
 
 ---
 
-_Pull request opened by @TheoBabilon on 2024-08-12 08:16_
+_@TheoBabilon_
 
 Noticed this tiny typo when reading the tools guide documentation
 

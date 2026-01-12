@@ -13,14 +13,14 @@ head: micha/union-builder-from-elements
 created_at: 2025-02-17T17:38:26Z
 updated_at: 2025-05-03T17:47:45Z
 url: https://github.com/astral-sh/ruff/pull/16218
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Avoid creating `UnionBuilder`s unnecessarily
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-17 17:38_
+_@MichaReiser_
 
 ## Summary
 `UnionBuilder::from_elements` is called very frequently. Let's see if short-circuiting in the case where `elements` is zero or one elements

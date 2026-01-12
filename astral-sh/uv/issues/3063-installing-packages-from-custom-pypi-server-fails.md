@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-16T15:11:52Z
 updated_at: 2025-11-08T19:28:24Z
 url: https://github.com/astral-sh/uv/issues/3063
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Installing packages from custom pypi server fails on 0.1.32
 
 ---
 
-_Issue opened by @bnaul on 2024-04-16 15:11_
+_@bnaul_
 
 Highly likely that the root issue is on our end but figured it's still worth an issue since others might be facing the same issue soon: upon upgrading to `uv==0.1.32`, our docker builds started failing with
 ```

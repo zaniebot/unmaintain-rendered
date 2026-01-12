@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-04T11:09:35Z
 updated_at: 2025-01-04T11:13:51Z
 url: https://github.com/astral-sh/ruff/issues/15251
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Revisit adding all PEP585 names to UP006
 
 ---
 
-_Issue opened by @MichaReiser on 2025-01-04 11:09_
+_@MichaReiser_
 
 https://github.com/astral-sh/ruff/pull/5454 added all PEP-585 names to UP006 but this caused multiple issues which is why I decided to revert it in https://github.com/astral-sh/ruff/pull/15250
 

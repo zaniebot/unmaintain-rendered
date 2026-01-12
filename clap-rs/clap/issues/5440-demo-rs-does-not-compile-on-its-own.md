@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-03T03:34:19Z
 updated_at: 2024-04-03T21:52:51Z
 url: https://github.com/clap-rs/clap/issues/5440
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `demo.rs` does not compile on its own
 
 ---
 
-_Issue opened by @DeflateAwning on 2024-04-03 03:34_
+_@DeflateAwning_
 
 ### Please complete the following tasks
 

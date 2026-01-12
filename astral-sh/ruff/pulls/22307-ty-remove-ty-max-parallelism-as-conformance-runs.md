@@ -14,14 +14,14 @@ head: remove-ty-max-parallelism
 created_at: 2025-12-30T19:30:07Z
 updated_at: 2025-12-30T19:42:59Z
 url: https://github.com/astral-sh/ruff/pull/22307
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:46Z
 ```
 
 # [ty] Remove `TY_MAX_PARALLELISM` as conformance runs no longer panic
 
 ---
 
-_Pull request opened by @sinon on 2025-12-30 19:30_
+_@sinon_
 
 ## Summary
 

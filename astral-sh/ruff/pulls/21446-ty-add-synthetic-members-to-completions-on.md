@@ -14,14 +14,14 @@ head: david/fix-1542
 created_at: 2025-11-14T08:57:35Z
 updated_at: 2025-11-14T10:31:22Z
 url: https://github.com/astral-sh/ruff/pull/21446
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [ty] Add synthetic members to completions on dataclasses
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-14 08:57_
+_@sharkdp_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-04T19:40:33Z
 updated_at: 2025-07-07T16:25:02Z
 url: https://github.com/astral-sh/uv/issues/14462
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # Threadpool initialization fails during basic builds on HPC cluster unless low `concurrent-builds` limit set
 
 ---
 
-_Issue opened by @eah13 on 2025-07-04 19:40_
+_@eah13_
 
 ### Summary
 

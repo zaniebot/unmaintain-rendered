@@ -12,14 +12,14 @@ head: zb/download-prepare
 created_at: 2024-06-18T18:15:18Z
 updated_at: 2024-06-18T18:38:19Z
 url: https://github.com/astral-sh/uv/pull/4394
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:12Z
 ```
 
 # Use "Prepared" instead of "Downloaded" in logs
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-18 18:15_
+_@zanieb_
 
 We download, build, and unzip packages in this stage. The current name is very misleading.
 

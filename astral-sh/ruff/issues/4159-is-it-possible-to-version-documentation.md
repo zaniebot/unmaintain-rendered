@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-30T10:54:29Z
 updated_at: 2024-01-14T03:21:43Z
 url: https://github.com/astral-sh/ruff/issues/4159
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Is it possible to version documentation?
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-04-30 10:54_
+_@JonathanPlasse_
 
 https://pypi.org/project/mike/
 > **mike** is a Python utility to easily deploy multiple versions of your [MkDocs](http://www.mkdocs.org/)-powered docs to a Git branch, suitable for deploying to Github via `gh-pages`. To see an example of this in action, take a look at the documentation for [bfg9000](https://jimporter.github.io/bfg9000).

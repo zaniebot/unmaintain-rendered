@@ -12,14 +12,14 @@ head: delete-unused-file
 created_at: 2024-01-04T11:27:56Z
 updated_at: 2024-01-04T11:32:13Z
 url: https://github.com/astral-sh/uv/pull/772
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:11Z
 ```
 
 # Delete unused file
 
 ---
 
-_Pull request opened by @konstin on 2024-01-04 11:27_
+_@konstin_
 
 This is a duplicate that's not used anymore, probably a refactoring artifact.
 

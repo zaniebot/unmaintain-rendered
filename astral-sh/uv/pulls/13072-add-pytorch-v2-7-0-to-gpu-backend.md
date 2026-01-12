@@ -13,14 +13,14 @@ head: charlie/torch
 created_at: 2025-04-23T18:55:33Z
 updated_at: 2025-04-23T20:59:42Z
 url: https://github.com/astral-sh/uv/pull/13072
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Add PyTorch v2.7.0 to GPU backend
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-04-23 18:55_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T19:49:18Z
 updated_at: 2025-08-21T19:52:40Z
 url: https://github.com/astral-sh/uv/issues/15429
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:10Z
 ```
 
 # python-platfrom is not used when resolving pylock.toml
 
 ---
 
-_Issue opened by @ZzEeKkAa on 2025-08-21 19:49_
+_@ZzEeKkAa_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-13T15:54:51Z
 updated_at: 2024-02-13T16:02:11Z
 url: https://github.com/astral-sh/ruff/issues/9975
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # `pip install .` from src is failing
 
 ---
 
-_Issue opened by @Skylion007 on 2024-02-13 15:54_
+_@Skylion007_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

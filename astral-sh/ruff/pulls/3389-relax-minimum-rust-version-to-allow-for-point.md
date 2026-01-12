@@ -12,14 +12,14 @@ head: relax-rust-version
 created_at: 2023-03-07T17:49:23Z
 updated_at: 2023-03-07T19:04:32Z
 url: https://github.com/astral-sh/ruff/pull/3389
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Relax minimum rust version to allow for point releases
 
 ---
 
-_Pull request opened by @orf on 2023-03-07 17:49_
+_@orf_
 
 I don't think we really want _exactly_ 1.67.0, because this builds fine with 1.67.1?
 

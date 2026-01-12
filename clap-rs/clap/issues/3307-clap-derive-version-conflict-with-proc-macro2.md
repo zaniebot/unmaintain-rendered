@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-18T03:45:25Z
 updated_at: 2022-12-21T01:21:29Z
 url: https://github.com/clap-rs/clap/issues/3307
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # [clap_derive] version conflict with `proc-macro2`
 
 ---
 
-_Issue opened by @hasezoey on 2022-01-18 03:45_
+_@hasezoey_
 
 ### Please complete the following tasks
 

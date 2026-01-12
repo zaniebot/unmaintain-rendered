@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-19T14:53:23Z
 updated_at: 2025-05-20T17:25:09Z
 url: https://github.com/astral-sh/uv/issues/13539
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:31Z
 ```
 
 # Error and mix-up when using `uv init --bare`
 
 ---
 
-_Issue opened by @dennemeyer-lpe on 2025-05-19 14:53_
+_@dennemeyer-lpe_
 
 ### Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2017-03-21T10:07:49Z
 updated_at: 2018-08-02T03:30:04Z
 url: https://github.com/clap-rs/clap/issues/911
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Doc feature flag to document all features
 
 ---
 
-_Issue opened by @SuperFluffy on 2017-03-21 10:07_
+_@SuperFluffy_
 
 When writing the doc string in #910 I noticed that while I reference `App::from_yaml`, it is not contained in the resulting documentation. Only when passing invoking `cargo doc --feature yaml` will cargo also build the documentation for that method.
 

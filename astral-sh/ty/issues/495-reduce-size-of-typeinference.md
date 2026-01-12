@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-23T13:03:00Z
 updated_at: 2025-07-22T09:36:38Z
 url: https://github.com/astral-sh/ty/issues/495
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Reduce size of `TypeInference`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-23 13:03_
+_@MichaReiser_
 
 ty creates a lot of `TypeInference` instances and it is a very large struct. It creates an instance for every:
 

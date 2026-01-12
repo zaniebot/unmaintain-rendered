@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-08-20T01:59:32Z
 updated_at: 2024-09-01T01:03:40Z
 url: https://github.com/astral-sh/ruff/issues/13001
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # DOC403 behaviour with yielding none
 
 ---
 
-_Issue opened by @jonyscathe on 2024-08-20 01:59_
+_@jonyscathe_
 
 * List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
   "DOC403 ", "numpydoc", "yields"

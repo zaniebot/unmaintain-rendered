@@ -12,14 +12,14 @@ head: uv_add_pyproject_toml_indentation
 created_at: 2024-07-15T14:57:37Z
 updated_at: 2024-07-15T23:13:23Z
 url: https://github.com/astral-sh/uv/pull/5075
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:37Z
 ```
 
 # Rework reformatting in PyProjectTomlMut to respect original indentation
 
 ---
 
-_Pull request opened by @flyaroundme on 2024-07-15 14:57_
+_@flyaroundme_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: 3859_flake8_fixme
 created_at: 2023-05-27T15:40:47Z
 updated_at: 2023-06-15T21:14:08Z
 url: https://github.com/astral-sh/ruff/pull/4681
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Implement `flake8_fixme` and refactor `TodoDirective`
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-05-27 15:40_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

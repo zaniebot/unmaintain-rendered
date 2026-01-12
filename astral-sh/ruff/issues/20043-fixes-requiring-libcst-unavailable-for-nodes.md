@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-22T14:12:31Z
 updated_at: 2025-09-11T19:49:10Z
 url: https://github.com/astral-sh/ruff/issues/20043
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Fixes requiring LibCST unavailable for nodes containing t-strings
 
 ---
 
-_Issue opened by @dylwil3 on 2025-08-22 14:12_
+_@dylwil3_
 
 Until https://github.com/Instagram/LibCST/issues/1343 is resolved, all fixes that use `libcst` to generate a fix will not work on any expression or statement containing a t-string.
 

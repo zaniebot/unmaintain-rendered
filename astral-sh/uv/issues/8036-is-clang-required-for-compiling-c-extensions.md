@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-09T07:18:29Z
 updated_at: 2025-04-02T14:27:06Z
 url: https://github.com/astral-sh/uv/issues/8036
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:19Z
 ```
 
 # Is `clang` required for compiling C extensions?
 
 ---
 
-_Issue opened by @cbrnr on 2024-10-09 07:18_
+_@cbrnr_
 
 I wanted to `uv pip install -e .` a local package which contains a C extension, but I received an `error: command 'clang' failed: No such file or directory`. Is this something that `uv` requires, or is it some upstream package (`setuptools` maybe)? I'm asking because I already have a C compiler installed (`cc` -> `gcc`), so maybe this can be changed with an environment variable? Also, installing the package with the OG `pip` seems to use `gcc`.
 

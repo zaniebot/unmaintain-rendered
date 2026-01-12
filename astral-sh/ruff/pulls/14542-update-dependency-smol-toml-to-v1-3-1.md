@@ -13,14 +13,14 @@ head: renovate/npm-smol-toml-vulnerability
 created_at: 2024-11-22T21:11:17Z
 updated_at: 2024-11-22T21:16:06Z
 url: https://github.com/astral-sh/ruff/pull/14542
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Update dependency smol-toml to v1.3.1
 
 ---
 
-_Pull request opened by @renovate on 2024-11-22 21:11_
+_@renovate_
 
 This PR contains the following updates:
 

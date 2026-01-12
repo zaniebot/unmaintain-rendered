@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-23T10:58:27Z
 updated_at: 2024-10-23T16:14:59Z
 url: https://github.com/astral-sh/uv/issues/8496
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # regression in uv 0.4.25's TOML comment handling during uv add
 
 ---
 
-_Issue opened by @RazerM on 2024-10-23 10:58_
+_@RazerM_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

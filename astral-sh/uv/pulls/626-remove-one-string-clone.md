@@ -12,14 +12,14 @@ head: charlie/into
 created_at: 2023-12-12T20:52:07Z
 updated_at: 2023-12-12T20:56:17Z
 url: https://github.com/astral-sh/uv/pull/626
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:04Z
 ```
 
 # Remove one string clone
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-12 20:52_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-27T10:15:04Z
 updated_at: 2024-10-03T10:48:11Z
 url: https://github.com/astral-sh/uv/issues/7734
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # uv pip install - Azure packages from upstreamSources are never found
 
 ---
 
-_Issue opened by @ErichMarx on 2024-09-27 10:15_
+_@ErichMarx_
 
 Hi,
 I don't think I can reproduce the error here, but here's the issue:

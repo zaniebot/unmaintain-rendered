@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-18T19:34:17Z
 updated_at: 2025-01-24T19:25:48Z
 url: https://github.com/astral-sh/ruff/issues/15572
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # False positive PLE0302 with special methods as properties.
 
 ---
 
-_Issue opened by @mikeshardmind on 2025-01-18 19:34_
+_@mikeshardmind_
 
 Example code that works at runtime and which type checkers do understand
 

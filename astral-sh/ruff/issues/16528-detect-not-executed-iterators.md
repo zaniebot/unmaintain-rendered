@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-06T07:19:27Z
 updated_at: 2025-03-06T07:23:31Z
 url: https://github.com/astral-sh/ruff/issues/16528
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Detect not executed iterators
 
 ---
 
-_Issue opened by @prauscher on 2025-03-06 07:19_
+_@prauscher_
 
 ### Summary
 

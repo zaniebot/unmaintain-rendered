@@ -13,14 +13,14 @@ head: charlie/workspace-vi
 created_at: 2024-04-16T00:52:01Z
 updated_at: 2024-04-17T18:16:11Z
 url: https://github.com/astral-sh/uv/pull/3050
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:23Z
 ```
 
 # Add negation flags to the CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-16 00:52_
+_@charliermarsh_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/hashes
 created_at: 2024-03-19T01:54:17Z
 updated_at: 2024-03-19T02:23:17Z
 url: https://github.com/astral-sh/uv/pull/2534
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:05Z
 ```
 
 # Add SHA384 and SHA512 hash algorithms
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-19 01:54_
+_@charliermarsh_
 
 Closes #2533.
 

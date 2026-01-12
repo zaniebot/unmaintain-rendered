@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-18T07:47:44Z
 updated_at: 2024-02-20T00:08:27Z
 url: https://github.com/astral-sh/uv/issues/1630
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Add warning when `poetry` dependencies found instead of PEP 621 dependencies
 
 ---
 
-_Issue opened by @zanieb on 2024-02-18 07:47_
+_@zanieb_
 
 This results in an empty lock file and has caused some confusion:
 

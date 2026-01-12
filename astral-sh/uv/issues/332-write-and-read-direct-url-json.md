@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-06T13:47:52Z
 updated_at: 2023-11-07T14:11:29Z
 url: https://github.com/astral-sh/uv/issues/332
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Write and read `direct_url.json`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-11-06 13:47_
+_@charliermarsh_
 
 _No description provided._
 

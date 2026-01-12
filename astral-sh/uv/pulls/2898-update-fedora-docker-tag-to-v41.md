@@ -13,14 +13,14 @@ head: renovate/fedora-41.x
 created_at: 2024-04-08T04:32:50Z
 updated_at: 2024-04-08T04:41:49Z
 url: https://github.com/astral-sh/uv/pull/2898
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:17Z
 ```
 
 # Update fedora Docker tag to v41
 
 ---
 
-_Pull request opened by @renovate on 2024-04-08 04:32_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

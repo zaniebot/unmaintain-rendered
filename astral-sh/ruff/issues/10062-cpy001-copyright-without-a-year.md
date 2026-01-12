@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-20T12:47:59Z
 updated_at: 2024-05-04T21:19:22Z
 url: https://github.com/astral-sh/ruff/issues/10062
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # CPY001: copyright without a year
 
 ---
 
-_Issue opened by @nijel on 2024-02-20 12:47_
+_@nijel_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-08T01:54:07Z
 updated_at: 2025-06-09T12:01:26Z
 url: https://github.com/astral-sh/ty/issues/609
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # support multiple values for `python-platform`
 
 ---
 
-_Issue opened by @DetachHead on 2025-06-08 01:54_
+_@DetachHead_
 
 it's very common for projects to target multiple python versions, but it seems that the [`python-platform`](https://github.com/astral-sh/ty/blob/main/docs/reference/configuration.md#python-platform) setting only supports targeting one platform.
 

@@ -13,14 +13,14 @@ head: zb/system-fix-ii
 created_at: 2025-08-04T14:34:06Z
 updated_at: 2025-08-05T00:54:04Z
 url: https://github.com/astral-sh/uv/pull/15061
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:33Z
 ```
 
 # Prefer system Python installations over managed ones when `--system` is used
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-04 14:34_
+_@zanieb_
 
 This fixes a regression from 0.8.0 from https://github.com/astral-sh/uv/pull/7934 and follows https://github.com/astral-sh/uv/pull/15059
 

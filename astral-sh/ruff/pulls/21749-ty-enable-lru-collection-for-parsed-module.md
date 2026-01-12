@@ -13,14 +13,14 @@ head: micha/lru-parsed-semantic
 created_at: 2025-12-02T07:45:14Z
 updated_at: 2025-12-03T11:16:21Z
 url: https://github.com/astral-sh/ruff/pull/21749
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # [ty] Enable LRU collection for parsed module
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-02 07:45_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-13T16:53:13Z
 updated_at: 2024-03-19T08:51:33Z
 url: https://github.com/astral-sh/ruff/issues/10389
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `extend-select` docs are slighty misleading
 
 ---
 
-_Issue opened by @johnthagen on 2024-03-13 16:53_
+_@johnthagen_
 
 The [`extend-select` docs say](https://docs.astral.sh/ruff/settings/#lint_extend-select):
 

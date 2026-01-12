@@ -14,14 +14,14 @@ head: konsti/support-more-python-specs
 created_at: 2024-01-22T18:14:52Z
 updated_at: 2024-01-23T15:35:08Z
 url: https://github.com/astral-sh/uv/pull/1039
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:22Z
 ```
 
 # Support more formats in `puffin venv`, incl. windows support
 
 ---
 
-_Pull request opened by @konstin on 2024-01-22 18:14_
+_@konstin_
 
 Mirroring `virtualenv -p` and driven by the lack of `pythonx.y` in `PATH` on windows, this PR adds `-p x.y` support to `puffin venv` (first commit).
 

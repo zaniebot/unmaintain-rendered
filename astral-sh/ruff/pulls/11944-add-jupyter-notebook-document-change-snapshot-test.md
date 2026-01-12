@@ -14,14 +14,14 @@ head: jane/server/snapshots/jupyter-notebook
 created_at: 2024-06-20T01:37:59Z
 updated_at: 2024-06-21T05:39:07Z
 url: https://github.com/astral-sh/ruff/pull/11944
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Add Jupyter Notebook document change snapshot test
 
 ---
 
-_Pull request opened by @snowsignal on 2024-06-20 01:37_
+_@snowsignal_
 
 ## Summary
 

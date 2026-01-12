@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T08:44:39Z
 updated_at: 2025-10-27T10:43:42Z
 url: https://github.com/astral-sh/uv/issues/12263
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # Can UV be used as a Python version management tool at the system layer?
 
 ---
 
-_Issue opened by @lushi516 on 2025-03-18 08:44_
+_@lushi516_
 
 ### Question
 

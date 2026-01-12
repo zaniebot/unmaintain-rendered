@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-22T21:52:21Z
 updated_at: 2025-09-23T11:25:14Z
 url: https://github.com/astral-sh/uv/issues/15997
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # `--locked` should only fail if the lockfile actually changes
 
 ---
 
-_Issue opened by @charliermarsh on 2025-09-22 21:52_
+_@charliermarsh_
 
 In https://github.com/astral-sh/uv/pull/15994 (for example), the lockfile doesn't actually change at all, but `--locked` fails. We need to make the lockfiles comparable.
 

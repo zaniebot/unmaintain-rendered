@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-17T22:29:23Z
 updated_at: 2023-05-18T13:05:29Z
 url: https://github.com/astral-sh/ruff/issues/4484
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Expected for noqa to be ignored for multi-line string variable?
 
 ---
 
-_Issue opened by @fennerm on 2023-05-17 22:29_
+_@fennerm_
 
 (ruff=v0.0.267).
 

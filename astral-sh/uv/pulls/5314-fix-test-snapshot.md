@@ -13,14 +13,14 @@ head: zb/workspace-isolated-fixup
 created_at: 2024-07-22T21:22:05Z
 updated_at: 2024-07-22T21:32:18Z
 url: https://github.com/astral-sh/uv/pull/5314
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:45Z
 ```
 
 # Fix test snapshot
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-22 21:22_
+_@zanieb_
 
 Fixes failure on `main` from merge conflict
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-17T20:45:13Z
 updated_at: 2024-04-09T22:18:25Z
 url: https://github.com/astral-sh/ruff/issues/4479
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Request: adding dlint
 
 ---
 
-_Issue opened by @AbdealiLoKo on 2023-05-17 20:45_
+_@AbdealiLoKo_
 
 I use dlint in my project.
 Supporting the rules from dlint - https://github.com/dlint-py/dlint would be great

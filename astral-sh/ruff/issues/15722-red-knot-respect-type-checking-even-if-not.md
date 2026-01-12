@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T16:04:02Z
 updated_at: 2025-03-04T15:58:31Z
 url: https://github.com/astral-sh/ruff/issues/15722
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] respect `TYPE_CHECKING` even if not imported from `typing`
 
 ---
 
-_Issue opened by @carljm on 2025-01-24 16:04_
+_@carljm_
 
 ### Description
 

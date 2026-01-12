@@ -14,14 +14,14 @@ head: jane/server/no-duplicate-code-actions
 created_at: 2024-05-24T06:51:08Z
 updated_at: 2024-05-24T07:30:27Z
 url: https://github.com/astral-sh/ruff/pull/11526
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # `ruff server`: An empty code action filter no longer returns notebook source actions
 
 ---
 
-_Pull request opened by @snowsignal on 2024-05-24 06:51_
+_@snowsignal_
 
 ## Summary
 

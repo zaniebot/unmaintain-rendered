@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-14T15:37:02Z
 updated_at: 2025-03-25T16:03:47Z
 url: https://github.com/astral-sh/uv/issues/7395
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # `.lock` created in the wrong place on NixOS
 
 ---
 
-_Issue opened by @akaihola on 2024-09-14 15:37_
+_@akaihola_
 
 On NixOS, installing packages in a virtualenv fails with `Read-only file system` if
 - **either** virtualenv was created using `uv venv`,

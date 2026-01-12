@@ -13,14 +13,14 @@ head: fuzzing-script-improvements
 created_at: 2024-04-21T14:47:00Z
 updated_at: 2024-04-22T06:47:05Z
 url: https://github.com/astral-sh/ruff/pull/11071
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Improvements to the `fuzz-parser` script
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-21 14:47_
+_@AlexWaygood_
 
 ## Summary
 

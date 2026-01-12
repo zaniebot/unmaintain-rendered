@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-10T18:08:21Z
 updated_at: 2025-04-10T18:15:39Z
 url: https://github.com/astral-sh/uv/issues/12817
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # Difference in behavior between mac and linux
 
 ---
 
-_Issue opened by @natemcintosh on 2025-04-10 18:08_
+_@natemcintosh_
 
 ### Summary
 

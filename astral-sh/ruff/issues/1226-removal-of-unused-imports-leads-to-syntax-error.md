@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-13T03:46:24Z
 updated_at: 2022-12-16T03:17:33Z
 url: https://github.com/astral-sh/ruff/issues/1226
-synced_at: 2026-01-10T12:05:23Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Removal of unused imports leads to syntax error
 
 ---
 
-_Issue opened by @squiddy on 2022-12-13 03:46_
+_@squiddy_
 
 See #1206 
 

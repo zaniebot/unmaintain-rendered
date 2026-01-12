@@ -13,14 +13,14 @@ head: charlie/include
 created_at: 2025-02-20T22:18:05Z
 updated_at: 2025-02-20T22:27:20Z
 url: https://github.com/astral-sh/uv/pull/11681
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:56Z
 ```
 
 # Include uppercase platforms for Windows wheels
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-20 22:18_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-03T09:21:51Z
 updated_at: 2023-08-03T17:03:27Z
 url: https://github.com/astral-sh/ruff/issues/6301
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Conda install of ruff still at version 0.280
 
 ---
 
-_Issue opened by @vigneshmanick on 2023-08-03 09:21_
+_@vigneshmanick_
 
 Hello,
 

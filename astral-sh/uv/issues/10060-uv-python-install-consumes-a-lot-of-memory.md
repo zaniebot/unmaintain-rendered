@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-20T15:38:22Z
 updated_at: 2024-12-20T18:52:44Z
 url: https://github.com/astral-sh/uv/issues/10060
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # uv python install consumes a lot of memory
 
 ---
 
-_Issue opened by @jooon on 2024-12-20 15:38_
+_@jooon_
 
 While investigating #10057 and rerunning the uv python install command to get a shorter test case I noticed uv became slower and slower the more I used it. It seems to read and rewrite a _sysconfigdata__linux_x86_64-linux-gnu.py file which keeps getting bigger and bigger for every run.
 

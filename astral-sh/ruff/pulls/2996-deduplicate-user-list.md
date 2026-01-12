@@ -12,14 +12,14 @@ head: charliermarsh-patch-1
 created_at: 2023-02-17T20:00:52Z
 updated_at: 2023-02-17T20:07:44Z
 url: https://github.com/astral-sh/ruff/pull/2996
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Deduplicate user list
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-17 20:00_
+_@charliermarsh_
 
 Oof, I must've copy-pasted this twice by accident.
 

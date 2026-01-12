@@ -13,14 +13,14 @@ head: brent/0.10-c420
 created_at: 2025-03-11T13:35:56Z
 updated_at: 2025-03-11T14:59:15Z
 url: https://github.com/astral-sh/ruff/pull/16624
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`flake8-comprehensions`] Stabilize `unnecessary-dict-comprehension-for-iterable` (`C420`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-11 13:35_
+_@ntBre_
 
 ## Summary
 

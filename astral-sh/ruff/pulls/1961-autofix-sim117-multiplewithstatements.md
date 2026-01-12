@@ -12,14 +12,14 @@ head: autofix-sim117
 created_at: 2023-01-18T15:45:09Z
 updated_at: 2023-01-18T16:15:22Z
 url: https://github.com/astral-sh/ruff/pull/1961
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Autofix SIM117 (MultipleWithStatements)
 
 ---
 
-_Pull request opened by @andersk on 2023-01-18 15:45_
+_@andersk_
 
 This is slightly buggy due to Instagram/LibCST#855; it will complain `[ERROR] Failed to fix nested with: Failed to extract CST from source` when trying to fix nested parenthesized `with` statements lacking trailing commas. But presumably people who write parenthesized `with` statements already knew that they don’t need to nest them.
 

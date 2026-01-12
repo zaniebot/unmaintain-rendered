@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-07T00:14:03Z
 updated_at: 2025-06-07T14:12:58Z
 url: https://github.com/astral-sh/ty/issues/598
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # "Too many positional arguments" for pydantic dataclass constructor
 
 ---
 
-_Issue opened by @Ryang20718 on 2025-06-07 00:14_
+_@Ryang20718_
 
 ### Summary
 

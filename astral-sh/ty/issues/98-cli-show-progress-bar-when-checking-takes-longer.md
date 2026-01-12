@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-04T11:02:11Z
 updated_at: 2025-05-09T17:32:28Z
 url: https://github.com/astral-sh/ty/issues/98
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # cli: Show progress bar when checking takes longer
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-04 11:02_
+_@MichaReiser_
 
 Checking larger projects can take multiple seconds. We should show a progress bar after some amount of time. 
 

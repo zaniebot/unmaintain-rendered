@@ -12,14 +12,14 @@ head: update-dependencies
 created_at: 2023-05-12T10:04:43Z
 updated_at: 2023-05-13T13:16:24Z
 url: https://github.com/astral-sh/ruff/pull/4389
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Upgrade dependencies
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-12 10:04_
+_@MichaReiser_
 
 Only patch and minor changes.
 

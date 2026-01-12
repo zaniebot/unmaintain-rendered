@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-19T19:22:00Z
 updated_at: 2024-04-23T18:07:53Z
 url: https://github.com/astral-sh/uv/issues/2551
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # "Stray quotes" fixup can lead to invalid markers
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-19 19:22_
+_@charliermarsh_
 
 The "stray quotes" fixup will remove quotes from markers, e.g., `numpy (>=1.19) ; python_version >= "3.7"` gets rewritten as `numpy (>=1.19) ; python_version >= 3.7`.
 

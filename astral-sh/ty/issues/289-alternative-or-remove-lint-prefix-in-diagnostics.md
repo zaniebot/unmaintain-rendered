@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-09T11:06:31Z
 updated_at: 2025-05-10T13:03:10Z
 url: https://github.com/astral-sh/ty/issues/289
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Alternative or remove `lint` prefix in diagnostics
 
 ---
 
-_Issue opened by @MichaReiser on 2025-05-09 11:06_
+_@MichaReiser_
 
 I find the `lint::` prefix in front of every rule diagnostic very noisy. It's also somewhat confusing that it is `lint` but we use `rules` in the configuration.
 

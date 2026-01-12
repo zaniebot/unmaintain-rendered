@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-07-06T09:01:25Z
 updated_at: 2021-07-06T11:10:41Z
 url: https://github.com/clap-rs/clap/issues/2570
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Prompting in Clap
 
 ---
 
-_Issue opened by @jakobneufeld on 2021-07-06 09:01_
+_@jakobneufeld_
 
 ### Please complete the following tasks
 

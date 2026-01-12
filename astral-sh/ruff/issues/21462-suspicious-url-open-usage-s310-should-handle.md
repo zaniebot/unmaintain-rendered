@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-14T21:31:58Z
 updated_at: 2025-11-26T09:21:52Z
 url: https://github.com/astral-sh/ruff/issues/21462
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # suspicious-url-open-usage (S310) should handle string literal
 
 ---
 
-_Issue opened by @rajeee on 2025-11-14 21:31_
+_@rajeee_
 
 ### Summary
 

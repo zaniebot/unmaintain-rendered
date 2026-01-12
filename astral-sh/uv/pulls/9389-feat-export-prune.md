@@ -13,14 +13,14 @@ head: export-prune
 created_at: 2024-11-23T21:49:42Z
 updated_at: 2024-11-24T02:15:51Z
 url: https://github.com/astral-sh/uv/pull/9389
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:47Z
 ```
 
 # feat: export --prune
 
 ---
 
-_Pull request opened by @dead10ck on 2024-11-23 21:49_
+_@dead10ck_
 
 ## Summary
 

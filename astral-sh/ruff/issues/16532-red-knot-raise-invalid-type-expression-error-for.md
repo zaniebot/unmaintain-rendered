@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-06T12:01:37Z
 updated_at: 2025-03-17T11:56:18Z
 url: https://github.com/astral-sh/ruff/issues/16532
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Raise "invalid type expression" error for literal types
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-03-06 12:01_
+_@dhruvmanila_
 
 The task is to raise a `invalid-type-form` error that states "Invalid type expression" for the following three literal types:
 

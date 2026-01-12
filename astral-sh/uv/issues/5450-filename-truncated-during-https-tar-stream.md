@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-25T15:44:21Z
 updated_at: 2025-02-18T16:32:20Z
 url: https://github.com/astral-sh/uv/issues/5450
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Filename truncated during https tar stream
 
 ---
 
-_Issue opened by @WH-2099 on 2024-07-25 15:44_
+_@WH-2099_
 
 When a specific https `index-url` is used, a specific filename is **truncated**.
 

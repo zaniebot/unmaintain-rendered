@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-04T20:46:26Z
 updated_at: 2026-01-05T13:44:53Z
 url: https://github.com/astral-sh/uv/issues/4022
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Discarding upper-bounds on `Requires-Python`
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-04 20:46_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/pull/4021#discussion_r1626581939
 

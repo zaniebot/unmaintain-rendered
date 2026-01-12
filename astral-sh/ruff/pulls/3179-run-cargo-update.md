@@ -12,14 +12,14 @@ head: charlie/update
 created_at: 2023-02-23T16:58:29Z
 updated_at: 2023-02-23T17:09:37Z
 url: https://github.com/astral-sh/ruff/pull/3179
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Run `cargo update`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-23 16:58_
+_@charliermarsh_
 
 This also includes a bump to LibCST to pull in a bugfix.
 

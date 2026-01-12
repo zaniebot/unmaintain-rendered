@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-15T14:52:05Z
 updated_at: 2023-07-15T16:35:24Z
 url: https://github.com/astral-sh/ruff/issues/5778
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: `DictComp` (depends on `ListComp`)
 
 ---
 
-_Issue opened by @MichaReiser on 2023-07-15 14:52_
+_@MichaReiser_
 
 _No description provided._
 

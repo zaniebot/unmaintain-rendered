@@ -13,14 +13,14 @@ head: dcreager/grouped-nodes
 created_at: 2025-01-21T15:38:44Z
 updated_at: 2025-01-21T18:37:20Z
 url: https://github.com/astral-sh/ruff/pull/15646
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Separate grouped and ungrouped nodes more clearly in AST generator
 
 ---
 
-_Pull request opened by @dcreager on 2025-01-21 15:38_
+_@dcreager_
 
 This is a minor cleanup to the AST generation script to make a clearer separation between nodes that do appear in a group enum, and those that don't.  There are some types and methods that we create for every syntax node, and others that refer to the group that the syntax node belongs to, and which therefore don't make sense for ungrouped nodes. This new separation makes it clearer which category each definition is in, since you're either inside of a `for group in ast.groups` loop, or a `for node in ast.all_nodes` loop.
 

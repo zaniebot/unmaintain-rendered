@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-08-27T12:36:27Z
 updated_at: 2022-09-28T16:15:53Z
 url: https://github.com/clap-rs/clap/issues/4133
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # clap::Error to colored string
 
 ---
 
-_Issue opened by @sigoden on 2022-08-27 12:36_
+_@sigoden_
 
 ### Please complete the following tasks
 

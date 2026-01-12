@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-24T22:55:45Z
 updated_at: 2025-12-31T15:36:58Z
 url: https://github.com/astral-sh/ty/issues/1625
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Inlay hint insert follow ups
 
 ---
 
-_Issue opened by @MatthewMckee4 on 2025-11-24 22:55_
+_@MatthewMckee4_
 
 Think it's useful to have an issue for the rest of the work that needs done for inlay hint edits.
 

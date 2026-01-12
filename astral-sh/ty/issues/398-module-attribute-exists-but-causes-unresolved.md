@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-05-15T01:48:03Z
 updated_at: 2025-05-19T19:17:36Z
 url: https://github.com/astral-sh/ty/issues/398
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # module attribute exists but causes unresolved-attribute
 
 ---
 
-_Issue opened by @c-ludo-driva on 2025-05-15 01:48_
+_@c-ludo-driva_
 
 ### Summary
 

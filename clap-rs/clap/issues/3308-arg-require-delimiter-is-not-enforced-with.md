@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-01-18T11:48:54Z
 updated_at: 2022-01-19T15:16:38Z
 url: https://github.com/clap-rs/clap/issues/3308
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # `Arg::require_delimiter` is not enforced with positional arguments
 
 ---
 
-_Issue opened by @cyqsimon on 2022-01-18 11:48_
+_@cyqsimon_
 
 ### Please complete the following tasks
 

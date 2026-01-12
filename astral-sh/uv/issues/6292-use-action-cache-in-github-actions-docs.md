@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T00:54:42Z
 updated_at: 2024-09-05T00:30:21Z
 url: https://github.com/astral-sh/uv/issues/6292
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Use action/cache in GitHub Actions docs
 
 ---
 
-_Issue opened by @simonw on 2024-08-21 00:54_
+_@simonw_
 
 These docs currently suggest: https://docs.astral.sh/uv/guides/integration/github/
 ```yaml

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-09T10:51:05Z
 updated_at: 2024-02-10T23:53:44Z
 url: https://github.com/astral-sh/ruff/issues/9908
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # RUF027 false positive with reserved keywords, how to handle?
 
 ---
 
-_Issue opened by @sshishov on 2024-02-09 10:51_
+_@sshishov_
 
 Hi,
 

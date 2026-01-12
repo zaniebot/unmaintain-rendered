@@ -12,14 +12,14 @@ head: charlie/ruf015
 created_at: 2023-07-14T23:37:51Z
 updated_at: 2023-07-21T00:08:09Z
 url: https://github.com/astral-sh/ruff/pull/5767
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Expand `RUF015` to include all expression types
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-14 23:37_
+_@charliermarsh_
 
 ## Summary
 

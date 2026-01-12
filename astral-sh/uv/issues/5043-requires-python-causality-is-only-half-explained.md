@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-14T14:05:12Z
 updated_at: 2024-07-14T14:58:00Z
 url: https://github.com/astral-sh/uv/issues/5043
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:53Z
 ```
 
 # Requires-python causality is only half-explained when an extra is involved
 
 ---
 
-_Issue opened by @konstin on 2024-07-14 14:05_
+_@konstin_
 
 When specifying the dependency on colabfold directly, we get a logical trace that explains to us that colabfold 1.5.5 only support python 3.9 to 3.11, while we are on 3.12:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-19T23:50:05Z
 updated_at: 2025-03-20T00:28:09Z
 url: https://github.com/astral-sh/uv/issues/12325
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:01:00Z
 ```
 
 # uv doesn't respect workspace dependences when defined as extras
 
 ---
 
-_Issue opened by @szaher on 2025-03-19 23:50_
+_@szaher_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-07T09:33:16Z
 updated_at: 2024-07-07T17:09:12Z
 url: https://github.com/astral-sh/uv/issues/4854
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # `uv lock` should tell you whether the lockfile changed
 
 ---
 
-_Issue opened by @konstin on 2024-07-07 09:33_
+_@konstin_
 
 Currently, alternating between `uv lock --exclude-newer 2024-07-01 --upgrade`, `uv lock --exclude-newer 2024-07-02 --upgrade` and `uv lock --exclude-newer 2024-08-01 --upgrade` with a `transformers` requirement produces the same output each, even though the first produce use the same lockfile while the last one changes it. We should indicate whether the resolution changed.
 

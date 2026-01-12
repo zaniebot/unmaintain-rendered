@@ -12,14 +12,14 @@ head: renovate/schemars-0.x
 created_at: 2025-06-02T02:00:15Z
 updated_at: 2025-06-02T07:36:39Z
 url: https://github.com/astral-sh/uv/pull/13775
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:51Z
 ```
 
 # Update Rust crate schemars to 0.9.0
 
 ---
 
-_Pull request opened by @renovate on 2025-06-02 02:00_
+_@renovate_
 
 This PR contains the following updates:
 

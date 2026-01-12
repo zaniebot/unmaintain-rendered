@@ -13,14 +13,14 @@ head: brent/plc1802-0.10
 created_at: 2025-03-11T14:01:54Z
 updated_at: 2025-03-11T15:30:45Z
 url: https://github.com/astral-sh/ruff/pull/16626
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`pylint`] Stabilize `len-test` (`PLC1802`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-11 14:01_
+_@ntBre_
 
 Summary
 --

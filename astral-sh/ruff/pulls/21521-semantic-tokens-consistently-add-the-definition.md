@@ -14,14 +14,14 @@ head: semantic_tokens_definitions
 created_at: 2025-11-19T11:15:43Z
 updated_at: 2025-11-19T11:45:39Z
 url: https://github.com/astral-sh/ruff/pull/21521
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:26Z
 ```
 
 # Semantic tokens: consistently add the `DEFINITION` modifier
 
 ---
 
-_Pull request opened by @lucach on 2025-11-19 11:15_
+_@lucach_
 
 ## Summary
 

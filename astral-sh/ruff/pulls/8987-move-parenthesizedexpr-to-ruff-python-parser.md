@@ -13,14 +13,14 @@ head: move-parenthesized-expression
 created_at: 2023-12-04T05:14:30Z
 updated_at: 2023-12-04T05:38:25Z
 url: https://github.com/astral-sh/ruff/pull/8987
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Move `ParenthesizedExpr` to `ruff_python_parser`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-12-04 05:14_
+_@MichaReiser_
 
 ## Summary
 

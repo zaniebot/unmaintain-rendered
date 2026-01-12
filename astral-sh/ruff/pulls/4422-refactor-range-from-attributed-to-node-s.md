@@ -13,14 +13,14 @@ head: refactor-range-on-node
 created_at: 2023-05-13T21:19:57Z
 updated_at: 2023-05-16T06:56:38Z
 url: https://github.com/astral-sh/ruff/pull/4422
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Refactor range from `Attributed` to `Node`s
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-13 21:19_
+_@MichaReiser_
 
 Updates RustPython to https://github.com/RustPython/Parser/pull/22
 

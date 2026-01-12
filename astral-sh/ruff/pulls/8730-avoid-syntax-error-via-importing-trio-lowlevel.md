@@ -13,14 +13,14 @@ head: charlie/trio-lowlevel
 created_at: 2023-11-17T01:03:18Z
 updated_at: 2023-11-17T01:15:05Z
 url: https://github.com/astral-sh/ruff/pull/8730
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Avoid syntax error via importing trio.lowlevel
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-17 01:03_
+_@charliermarsh_
 
 We ended up with a syntax error here via `from trio import lowlevel.checkpoint`. The new solution avoids that error, but does miss cases like:
 

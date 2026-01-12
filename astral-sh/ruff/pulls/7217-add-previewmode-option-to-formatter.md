@@ -15,14 +15,14 @@ head: add-preview-flag-to-formatter
 created_at: 2023-09-07T11:08:58Z
 updated_at: 2023-09-21T10:38:46Z
 url: https://github.com/astral-sh/ruff/pull/7217
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add PreviewMode option to formatter
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-07 11:08_
+_@MichaReiser_
 
 
 ## Summary

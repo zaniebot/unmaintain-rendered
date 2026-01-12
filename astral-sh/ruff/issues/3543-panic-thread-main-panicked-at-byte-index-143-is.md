@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-15T17:07:01Z
 updated_at: 2023-03-19T18:16:52Z
 url: https://github.com/astral-sh/ruff/issues/3543
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # [Panic] thread 'main' panicked at 'byte index 143 is not a char boundary; when scanning file
 
 ---
 
-_Issue opened by @qarmin on 2023-03-15 17:07_
+_@qarmin_
 
 Ruff 0.0.255
 

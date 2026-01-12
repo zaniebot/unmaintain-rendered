@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-09T10:53:07Z
 updated_at: 2024-12-12T22:13:21Z
 url: https://github.com/astral-sh/uv/issues/9737
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:57Z
 ```
 
 # Migration command/guide?
 
 ---
 
-_Issue opened by @samuelcolvin on 2024-12-09 10:53_
+_@samuelcolvin_
 
 Is there any command or migration guide for converting an existing project to using uv?
 

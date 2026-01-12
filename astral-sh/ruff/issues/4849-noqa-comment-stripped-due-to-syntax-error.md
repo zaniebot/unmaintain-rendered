@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-04T14:32:56Z
 updated_at: 2023-06-05T17:32:08Z
 url: https://github.com/astral-sh/ruff/issues/4849
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `noqa` comment stripped due to syntax error elsewhere in file
 
 ---
 
-_Issue opened by @stinodego on 2023-06-04 14:32_
+_@stinodego_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

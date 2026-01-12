@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-29T20:35:18Z
 updated_at: 2023-11-12T22:47:12Z
 url: https://github.com/astral-sh/ruff/issues/4710
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # docs: feature-request: add aliases for short codes and add new format mode
 
 ---
 
-_Issue opened by @saippuakauppias on 2023-05-29 20:35_
+_@saippuakauppias_
 
 It would be great if for every rule that has a page in the documentation you could go to it not only by its full name (`unused-import`: https://beta.ruff.rs/docs/rules/unused-import/ ) but also by its short code (`F401`: https://beta.ruff.rs/docs/rules/F401/). 
 This would make it easier to find best practice examples for this bug.

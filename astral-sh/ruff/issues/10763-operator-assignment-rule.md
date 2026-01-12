@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-03T20:38:16Z
 updated_at: 2024-04-03T23:50:13Z
 url: https://github.com/astral-sh/ruff/issues/10763
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Operator Assignment Rule
 
 ---
 
-_Issue opened by @IamRezaMousavi on 2024-04-03 20:38_
+_@IamRezaMousavi_
 
 Ruff (or other python linters) don't has any rule like [operator-assignment](https://eslint.org/docs/latest/rules/operator-assignment) rule in eslint:
 

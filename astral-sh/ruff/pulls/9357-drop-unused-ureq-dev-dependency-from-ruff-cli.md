@@ -13,14 +13,14 @@ head: main
 created_at: 2024-01-02T13:20:34Z
 updated_at: 2024-01-02T13:37:16Z
 url: https://github.com/astral-sh/ruff/pull/9357
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Drop unused "ureq" dev-dependency from ruff_cli
 
 ---
 
-_Pull request opened by @decathorpe on 2024-01-02 13:20_
+_@decathorpe_
 
 ## Summary
 

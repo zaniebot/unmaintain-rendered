@@ -13,14 +13,14 @@ head: charlie/parens
 created_at: 2023-09-14T00:21:06Z
 updated_at: 2023-09-14T09:05:39Z
 url: https://github.com/astral-sh/ruff/pull/7373
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Avoid re-parenthesizing call chains whose inner values are parenthesized
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-14 00:21_
+_@charliermarsh_
 
 ## Summary
 

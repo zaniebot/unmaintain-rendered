@@ -14,14 +14,14 @@ head: brent/rename-old-diagnostic
 created_at: 2025-05-28T17:12:54Z
 updated_at: 2025-05-29T19:04:34Z
 url: https://github.com/astral-sh/ruff/pull/18355
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # Rename `ruff_linter::Diagnostic` to `OldDiagnostic`
 
 ---
 
-_Pull request opened by @ntBre on 2025-05-28 17:12_
+_@ntBre_
 
 Summary
 --

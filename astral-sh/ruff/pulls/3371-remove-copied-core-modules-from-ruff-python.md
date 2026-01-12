@@ -12,14 +12,14 @@ head: charlie/ruff_python_ast_formatter
 created_at: 2023-03-06T23:13:49Z
 updated_at: 2023-03-08T19:03:43Z
 url: https://github.com/astral-sh/ruff/pull/3371
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Remove copied `core` modules from `ruff_python_formatter`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-06 23:13_
+_@charliermarsh_
 
 ## Summary
 

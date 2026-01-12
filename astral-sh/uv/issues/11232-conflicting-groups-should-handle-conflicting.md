@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T04:18:57Z
 updated_at: 2025-03-08T18:21:26Z
 url: https://github.com/astral-sh/uv/issues/11232
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:31Z
 ```
 
 # Conflicting groups should handle conflicting inclusions automatically
 
 ---
 
-_Issue opened by @zanieb on 2025-02-05 04:18_
+_@zanieb_
 
 ### Summary
 

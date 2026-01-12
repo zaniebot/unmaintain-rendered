@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-18T13:34:25Z
 updated_at: 2024-11-18T14:43:22Z
 url: https://github.com/astral-sh/uv/issues/9194
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # `uv add textract` fails with parse error on requires
 
 ---
 
-_Issue opened by @DRMacIver on 2024-11-18 13:34_
+_@DRMacIver_
 
 Running `uv add textract==1.6.4` on uv version `0.3.2` (on OSX if relevant) produces the following error:
 

@@ -13,14 +13,14 @@ head: add-PLW0604
 created_at: 2023-10-19T03:04:09Z
 updated_at: 2023-10-19T04:54:28Z
 url: https://github.com/astral-sh/ruff/pull/8058
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # [pylint] - implement `global-at-module-level` (`W0604`)
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-10-19 03:04_
+_@diceroll123_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/arch-mode
 created_at: 2025-05-28T14:04:21Z
 updated_at: 2025-05-29T21:57:23Z
 url: https://github.com/astral-sh/uv/pull/13701
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:49Z
 ```
 
 # Add an `ArchMode` to filter displayed architectures in `uv python list`
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-28 14:04_
+_@zanieb_
 
 I'm trying to unblock 
 

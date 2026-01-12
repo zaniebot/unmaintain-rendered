@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-19T20:57:58Z
 updated_at: 2025-03-17T18:45:38Z
 url: https://github.com/astral-sh/uv/issues/11640
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:42Z
 ```
 
 # uv ignore proxy exceptions on Windows
 
 ---
 
-_Issue opened by @Fizcko on 2025-02-19 20:57_
+_@Fizcko_
 
 ### Summary
 

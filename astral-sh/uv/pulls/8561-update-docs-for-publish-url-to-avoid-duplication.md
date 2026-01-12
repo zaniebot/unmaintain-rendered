@@ -12,14 +12,14 @@ head: docs/publish-url-sentence-dupe
 created_at: 2024-10-25T10:08:38Z
 updated_at: 2024-10-25T13:55:33Z
 url: https://github.com/astral-sh/uv/pull/8561
-synced_at: 2026-01-10T12:54:12Z
+synced_at: 2026-01-12T16:08:22Z
 ```
 
 # Update docs for `--publish-url` to avoid duplication.
 
 ---
 
-_Pull request opened by @nathanjmcdougall on 2024-10-25 10:08_
+_@nathanjmcdougall_
 
 ## Summary
 

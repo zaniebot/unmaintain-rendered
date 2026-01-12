@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-05T15:46:18Z
 updated_at: 2026-01-05T21:07:00Z
 url: https://github.com/astral-sh/ty/issues/2347
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `ty` missing `unresolved-attribute` on classes that inherit from `sqlalchemy.DeclarativeBase`
 
 ---
 
-_Issue opened by @rodda-kyusu on 2026-01-05 15:46_
+_@rodda-kyusu_
 
 ### Summary
 

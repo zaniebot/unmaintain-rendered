@@ -11,14 +11,14 @@ assignees: []
 created_at: 2018-06-13T06:59:07Z
 updated_at: 2020-04-12T08:53:30Z
 url: https://github.com/clap-rs/clap/issues/1297
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # clap_app!: allow app names and subcommands with hyphens
 
 ---
 
-_Issue opened by @g2p on 2018-06-13 06:59_
+_@g2p_
 
 At the moment dashes cannot be used with the macro.
 

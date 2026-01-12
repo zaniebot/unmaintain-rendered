@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-19T20:28:25Z
 updated_at: 2023-11-19T23:44:00Z
 url: https://github.com/astral-sh/ruff/issues/8770
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # TRY400 triggers multiple times in case of nested try..except blocks
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-11-19 20:28_
+_@ThiefMaster_
 
 ```python
 try:

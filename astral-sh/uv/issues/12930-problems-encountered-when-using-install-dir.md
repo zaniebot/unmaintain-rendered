@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-17T03:00:35Z
 updated_at: 2025-04-17T12:53:00Z
 url: https://github.com/astral-sh/uv/issues/12930
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # Problems encountered when using `--install-dir`.
 
 ---
 
-_Issue opened by @pansy1110 on 2025-04-17 03:00_
+_@pansy1110_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T18:33:06Z
 updated_at: 2024-11-08T18:52:12Z
 url: https://github.com/astral-sh/uv/issues/8952
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:38Z
 ```
 
 # Undestanding uv run and isolation
 
 ---
 
-_Issue opened by @Levelleor on 2024-11-08 18:33_
+_@Levelleor_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

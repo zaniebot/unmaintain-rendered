@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-05T18:50:12Z
 updated_at: 2024-02-05T19:36:18Z
 url: https://github.com/astral-sh/ruff/issues/9840
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # ruff (via PIE790) incorrectly removes ellipses from Protocols with generics
 
 ---
 
-_Issue opened by @Julian on 2024-02-05 18:50_
+_@Julian_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

@@ -13,14 +13,14 @@ head: fix-fstring-interpolation-escaping
 created_at: 2025-06-23T05:53:33Z
 updated_at: 2025-06-25T15:49:14Z
 url: https://github.com/astral-sh/ruff/pull/18882
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:27Z
 ```
 
 # Fix f-string interpolation escaping
 
 ---
 
-_Pull request opened by @MeGaGiGaGon on 2025-06-23 05:53_
+_@MeGaGiGaGon_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

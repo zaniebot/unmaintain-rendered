@@ -13,14 +13,14 @@ head: cjm/imports-are-declarations
 created_at: 2024-09-18T21:48:19Z
 updated_at: 2024-09-19T06:04:58Z
 url: https://github.com/astral-sh/ruff/pull/13398
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] consider imports to be declarations
 
 ---
 
-_Pull request opened by @carljm on 2024-09-18 21:48_
+_@carljm_
 
 I noticed that this pattern sometimes occurs in typeshed:
 ```

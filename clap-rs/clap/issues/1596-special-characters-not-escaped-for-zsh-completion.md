@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-11-09T18:56:45Z
 updated_at: 2021-12-09T20:21:00Z
 url: https://github.com/clap-rs/clap/issues/1596
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Special characters not escaped for zsh completion script
 
 ---
 
-_Issue opened by @iyzana on 2019-11-09 18:56_
+_@iyzana_
 
 <!--
 Please use the following template to assist with creating an issue and to ensure a speedy resolution. If an area is not applicable, feel free to delete the area or mark with `N/A`

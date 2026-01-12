@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-08-14T11:11:32Z
 updated_at: 2025-08-14T13:10:24Z
 url: https://github.com/astral-sh/ty/issues/985
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Consider unifying the `types` and `tuple_inner` field in `Specialization`
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-08-14 11:11_
+_@AlexWaygood_
 
 Currently the `Specialization` struct in `tuple.rs` looks like this:
 

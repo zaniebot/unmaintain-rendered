@@ -12,14 +12,14 @@ head: expr-dict-comp
 created_at: 2023-07-15T02:57:52Z
 updated_at: 2023-07-15T16:41:34Z
 url: https://github.com/astral-sh/ruff/pull/5771
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Format `DictComp` expression
 
 ---
 
-_Pull request opened by @cnpryer on 2023-07-15 02:57_
+_@cnpryer_
 
 ## Summary
 

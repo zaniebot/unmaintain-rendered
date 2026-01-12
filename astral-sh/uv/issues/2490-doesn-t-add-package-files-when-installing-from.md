@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-03-16T17:46:28Z
 updated_at: 2024-03-22T19:36:08Z
 url: https://github.com/astral-sh/uv/issues/2490
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:38Z
 ```
 
 # Doesn't add package files when installing from sdist on PyPy
 
 ---
 
-_Issue opened by @edgarrmondragon on 2024-03-16 17:46_
+_@edgarrmondragon_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

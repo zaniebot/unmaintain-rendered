@@ -13,14 +13,14 @@ head: charlie/editable
 created_at: 2024-02-17T20:11:33Z
 updated_at: 2024-02-17T20:20:24Z
 url: https://github.com/astral-sh/uv/pull/1614
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:40Z
 ```
 
 # Allow URL requirements in editable installs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-17 20:11_
+_@charliermarsh_
 
 ## Summary
 

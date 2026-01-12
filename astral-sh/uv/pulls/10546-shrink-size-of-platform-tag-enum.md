@@ -13,14 +13,14 @@ head: charlie/shrink-tags
 created_at: 2025-01-12T20:44:14Z
 updated_at: 2025-01-14T03:14:00Z
 url: https://github.com/astral-sh/uv/pull/10546
-synced_at: 2026-01-10T11:44:57Z
+synced_at: 2026-01-12T16:09:22Z
 ```
 
 # Shrink size of platform tag enum
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-12 20:44_
+_@charliermarsh_
 
 
 ## Summary

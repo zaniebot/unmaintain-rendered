@@ -12,14 +12,14 @@ head: charlie/cache-roots
 created_at: 2023-06-21T02:34:08Z
 updated_at: 2023-06-21T17:52:01Z
 url: https://github.com/astral-sh/ruff/pull/5237
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Initialize caches for packages and standalone files
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-21 02:34_
+_@charliermarsh_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/str
 created_at: 2024-02-02T20:26:27Z
 updated_at: 2024-02-03T14:47:20Z
 url: https://github.com/astral-sh/ruff/pull/9798
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Slight speed-up for lowercase and uppercase identifier checks
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-02 20:26_
+_@charliermarsh_
 
 It turns out that for ASCII identifiers, this is nearly 2x faster:
 

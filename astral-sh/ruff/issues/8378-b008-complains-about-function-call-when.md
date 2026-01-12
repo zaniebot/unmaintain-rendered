@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-31T13:09:24Z
 updated_at: 2023-11-07T04:53:47Z
 url: https://github.com/astral-sh/ruff/issues/8378
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # B008 complains about function call when constructing a default parameter value as a exception
 
 ---
 
-_Issue opened by @RonnyPfannschmidt on 2023-10-31 13:09_
+_@RonnyPfannschmidt_
 
 https://play.ruff.rs/54edf8a4-4c2f-4c0e-a5d8-b7b4afa7a19e
 

@@ -13,14 +13,14 @@ head: zb/bump-release
 created_at: 2024-04-02T22:52:39Z
 updated_at: 2024-04-03T17:20:23Z
 url: https://github.com/astral-sh/uv/pull/2787
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:13Z
 ```
 
 # Move `bump.sh` to `scripts/release.sh`
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-02 22:52_
+_@zanieb_
 
 I find this more discoverable and since we're putting files in the top-level `scripts/` folder now this seems okay.
 

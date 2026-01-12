@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-16T02:10:10Z
 updated_at: 2023-10-24T19:32:59Z
 url: https://github.com/astral-sh/uv/issues/98
-synced_at: 2026-01-10T01:57:00Z
+synced_at: 2026-01-12T15:58:21Z
 ```
 
 # Improve efficiency of PubGrub prototype
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-16 02:10_
+_@charliermarsh_
 
 Can we make it as efficient as the naive solver? (In other words, using PubGrub should be zero cost.)
 

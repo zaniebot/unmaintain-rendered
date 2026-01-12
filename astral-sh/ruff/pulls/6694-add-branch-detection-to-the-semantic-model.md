@@ -13,14 +13,14 @@ head: charlie/flow-node
 created_at: 2023-08-19T19:15:56Z
 updated_at: 2023-08-21T14:51:13Z
 url: https://github.com/astral-sh/ruff/pull/6694
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add branch detection to the semantic model
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-19 19:15_
+_@charliermarsh_
 
 ## Summary
 

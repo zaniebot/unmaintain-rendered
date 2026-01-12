@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-01T11:31:13Z
 updated_at: 2025-11-12T22:58:38Z
 url: https://github.com/astral-sh/uv/issues/15618
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:13Z
 ```
 
 # uv publish: create attestations
 
 ---
 
-_Issue opened by @alex on 2025-09-01 11:31_
+_@alex_
 
 ### Summary
 

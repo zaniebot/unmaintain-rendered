@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-29T14:14:28Z
 updated_at: 2025-01-29T16:18:15Z
 url: https://github.com/astral-sh/uv/issues/11062
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:27Z
 ```
 
 # `uv tree --invert --no-dev` complains while `uv tree --invert --no-group dev` works
 
 ---
 
-_Issue opened by @vasiliy-poverennov-doordash on 2025-01-29 14:14_
+_@vasiliy-poverennov-doordash_
 
 ### Summary
 

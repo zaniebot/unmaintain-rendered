@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-09-23T10:08:18Z
 updated_at: 2018-08-02T03:29:54Z
 url: https://github.com/clap-rs/clap/issues/669
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Ability to alias arguments
 
 ---
 
-_Issue opened by @andreastt on 2016-09-23 10:08_
+_@andreastt_
 
 It is possible to provide (hidden) aliases for subcommands currently, but not for regular arguments. When you have a program that needs to rename an argument it would be useful to have the ability to provide hidden aliases for it.
 

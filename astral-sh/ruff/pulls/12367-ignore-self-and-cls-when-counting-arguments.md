@@ -13,14 +13,14 @@ head: charlie/self-cls
 created_at: 2024-07-17T14:33:28Z
 updated_at: 2024-07-17T16:37:10Z
 url: https://github.com/astral-sh/ruff/pull/12367
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Ignore self and cls when counting arguments
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-17 14:33_
+_@charliermarsh_
 
 ## Summary
 

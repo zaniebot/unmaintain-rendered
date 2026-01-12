@@ -11,14 +11,14 @@ assignees: []
 created_at: 2020-03-31T12:47:53Z
 updated_at: 2021-12-08T00:41:29Z
 url: https://github.com/clap-rs/clap/issues/1772
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # clap_derive: Vec/Option<Vec> behavior is inconsistent with other types
 
 ---
 
-_Issue opened by @CreepySkeleton on 2020-03-31 12:47_
+_@CreepySkeleton_
 
 This is actually a summary of https://github.com/TeXitoi/structopt/issues/364
 

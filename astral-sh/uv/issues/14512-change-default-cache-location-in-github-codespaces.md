@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-08T22:42:55Z
 updated_at: 2025-07-08T22:43:09Z
 url: https://github.com/astral-sh/uv/issues/14512
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # Change default cache location in GitHub Codespaces
 
 ---
 
-_Issue opened by @zanieb on 2025-07-08 22:42_
+_@zanieb_
 
 ### Summary
 

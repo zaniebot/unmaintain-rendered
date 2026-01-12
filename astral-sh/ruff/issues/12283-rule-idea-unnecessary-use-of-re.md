@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-10T21:22:04Z
 updated_at: 2024-12-02T17:29:49Z
 url: https://github.com/astral-sh/ruff/issues/12283
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Rule idea: Unnecessary use of `re`
 
 ---
 
-_Issue opened by @JelleZijlstra on 2024-07-10 21:22_
+_@JelleZijlstra_
 
 I recently saw someone write `re.sub('\\\$', '', s)` when they could have just written `s.replace('$', '')`. Similarly, `re.match("abc", s)` could be replaced with `s.startswith("abc")`, `re.search("abc", s)` could be replaced with `"abc" in s`, `re.fullmatch("abc", s)` could be replaced with `s == "abc"`, `re.split("abc", s)` could be replaced with `s.split("abc")`.
 

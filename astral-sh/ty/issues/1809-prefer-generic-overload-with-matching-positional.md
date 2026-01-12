@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-08T15:30:50Z
 updated_at: 2025-12-09T14:59:36Z
 url: https://github.com/astral-sh/ty/issues/1809
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Prefer generic overload with matching positional-only parameters over `*args: Any` overload
 
 ---
 
-_Issue opened by @sharkdp on 2025-12-08 15:30_
+_@sharkdp_
 
 Consider the following example, and notice how we currently infer `Unknown` for the call to `f(1, 2)`. This only happens if the `(*args: Any) -> tuple[Any, ...]` overload is also present, so I assume that the `Unknown` is caused by the fact that we can't eliminate all but one overload in the first stage of overload matching here, and then need to consider two overloads during typevar solving:
 

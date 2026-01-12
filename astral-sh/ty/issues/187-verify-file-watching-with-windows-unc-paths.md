@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-03T14:42:08Z
 updated_at: 2025-05-19T07:10:42Z
 url: https://github.com/astral-sh/ty/issues/187
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Verify file watching with windows UNC paths
 
 ---
 
-_Issue opened by @MichaReiser on 2025-03-03 14:42_
+_@MichaReiser_
 
 Windows knows two representations for file paths: 
 

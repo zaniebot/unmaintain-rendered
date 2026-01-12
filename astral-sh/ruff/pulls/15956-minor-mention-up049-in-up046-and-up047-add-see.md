@@ -13,14 +13,14 @@ head: brent/pep695-see-also
 created_at: 2025-02-05T02:41:07Z
 updated_at: 2025-02-05T13:34:50Z
 url: https://github.com/astral-sh/ruff/pull/15956
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [minor] Mention UP049 in UP046 and UP047, add `See also` section to UP040
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-05 02:41_
+_@ntBre_
 
 ## Summary
 

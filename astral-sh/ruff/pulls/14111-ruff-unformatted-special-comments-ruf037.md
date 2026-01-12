@@ -14,14 +14,14 @@ head: RUF102
 created_at: 2024-11-05T16:23:10Z
 updated_at: 2024-12-19T16:41:15Z
 url: https://github.com/astral-sh/ruff/pull/14111
-synced_at: 2026-01-10T20:42:26Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [`ruff`] Unformatted special comments (`RUF037`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-05 16:23_
+_@InSyncWithFoo_
 
 ## Summary
 

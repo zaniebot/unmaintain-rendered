@@ -14,14 +14,14 @@ head: zb/document-add-remove
 created_at: 2024-08-16T21:32:28Z
 updated_at: 2024-08-16T23:16:43Z
 url: https://github.com/astral-sh/uv/pull/6163
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:15Z
 ```
 
 # Document `uv add` and `uv remove` behavior with markers
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-16 21:32_
+_@zanieb_
 
 _No description provided._
 

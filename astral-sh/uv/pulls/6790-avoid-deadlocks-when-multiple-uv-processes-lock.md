@@ -13,14 +13,14 @@ head: zb/lock-file-async
 created_at: 2024-08-29T04:20:05Z
 updated_at: 2024-08-29T16:16:17Z
 url: https://github.com/astral-sh/uv/pull/6790
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:32Z
 ```
 
 # Avoid deadlocks when multiple uv processes lock resources
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-29 04:20_
+_@zanieb_
 
 This is achieved by updating the `LockedFile::acquire` API to be async — as in some cases we were attempting to acquire the lock synchronously, i.e., without yielding, which blocked the runtime. 
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-09-29T00:36:38Z
 updated_at: 2022-09-29T00:55:42Z
 url: https://github.com/clap-rs/clap/issues/4282
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Combining short flags (with subcommand short flag) produces errors
 
 ---
 
-_Issue opened by @ttytm on 2022-09-29 00:36_
+_@ttytm_
 
 ### Please complete the following tasks
 

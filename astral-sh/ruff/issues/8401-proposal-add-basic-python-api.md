@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-01T09:48:14Z
 updated_at: 2023-11-02T02:09:16Z
 url: https://github.com/astral-sh/ruff/issues/8401
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Proposal: Add basic Python API
 
 ---
 
-_Issue opened by @sam-bristow on 2023-11-01 09:48_
+_@sam-bristow_
 
 Is the ruff team open to exposing a minimal Python API for interacting with the checker and formatter?
 

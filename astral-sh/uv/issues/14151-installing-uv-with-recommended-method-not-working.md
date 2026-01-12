@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-20T13:10:08Z
 updated_at: 2025-06-22T14:56:19Z
 url: https://github.com/astral-sh/uv/issues/14151
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:44Z
 ```
 
 # Installing uv with recommended method not working
 
 ---
 
-_Issue opened by @gdurif on 2025-06-20 13:10_
+_@gdurif_
 
 ### Summary
 

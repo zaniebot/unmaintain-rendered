@@ -14,14 +14,14 @@ head: improve-variable-binding-suggestions
 created_at: 2025-11-22T12:22:51Z
 updated_at: 2025-11-25T14:09:38Z
 url: https://github.com/astral-sh/ruff/pull/21576
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Fix edge cases for autocomplete suppressions in variable bindings
 
 ---
 
-_Pull request opened by @RasmusNygren on 2025-11-22 12:22_
+_@RasmusNygren_
 
 ## Summary
 This handles a few edge cases related to https://github.com/astral-sh/ty/issues/1563  that was not fully handled in https://github.com/astral-sh/ruff/pull/21549

@@ -13,14 +13,14 @@ head: fix-search-path-tests-on-mac
 created_at: 2024-07-25T06:06:44Z
 updated_at: 2024-08-02T16:02:42Z
 url: https://github.com/astral-sh/ruff/pull/12503
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Fix the search path tests on MacOS
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-25 06:06_
+_@MichaReiser_
 
 ## Summary
 

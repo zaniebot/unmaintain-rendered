@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-28T10:36:35Z
 updated_at: 2024-08-29T10:09:09Z
 url: https://github.com/astral-sh/uv/issues/6743
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # `extra-index-url` config parameter works like the `index-url`
 
 ---
 
-_Issue opened by @frague59 on 2024-08-28 10:36_
+_@frague59_
 
 # `pyproject.toml`
 

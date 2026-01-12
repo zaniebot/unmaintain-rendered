@@ -13,14 +13,14 @@ head: filter-out-invalid-files
 created_at: 2024-01-04T13:16:32Z
 updated_at: 2024-01-09T02:46:29Z
 url: https://github.com/astral-sh/uv/pull/775
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:11Z
 ```
 
 # Filter out files with invalid requires python specifiers
 
 ---
 
-_Pull request opened by @konstin on 2024-01-04 13:16_
+_@konstin_
 
 Instead of trying to fixup _all_ the invalid version specifiers on pypi and elsewhere, this filters out distributions with invalid `requires-python` version specifiers that even `LenientVersionSpecifiers` couldn't parse, as opposed to failing entirely, which we currently do.
 

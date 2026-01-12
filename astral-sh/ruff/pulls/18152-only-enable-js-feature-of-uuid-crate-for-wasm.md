@@ -13,14 +13,14 @@ head: fix_ruff_wasm_js_feature
 created_at: 2025-05-17T15:29:30Z
 updated_at: 2025-05-26T13:39:05Z
 url: https://github.com/astral-sh/ruff/pull/18152
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # Only enable `js` feature of `uuid` crate for wasm crates
 
 ---
 
-_Pull request opened by @dsherret on 2025-05-17 15:29_
+_@dsherret_
 
 ## Summary
 

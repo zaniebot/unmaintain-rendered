@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-29T09:56:31Z
 updated_at: 2023-01-29T21:11:10Z
 url: https://github.com/astral-sh/ruff/issues/2322
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # How do you plan on keeping up with new rules/fixes in core ?
 
 ---
 
-_Issue opened by @Crocmagnon on 2023-01-29 09:56_
+_@Crocmagnon_
 
 This is more a general question rather than a feature request/bug report:
 

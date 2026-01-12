@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-09-09T15:00:54Z
 updated_at: 2019-09-24T15:20:35Z
 url: https://github.com/clap-rs/clap/issues/1544
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # What branch to contribute (document contributing process)?
 
 ---
 
-_Issue opened by @CreepySkeleton on 2019-09-09 15:00_
+_@CreepySkeleton_
 
 I'm not sure whether it's a proper place to ask, sorry for any inconvenience.
 

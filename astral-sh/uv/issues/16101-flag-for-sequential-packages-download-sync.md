@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-02T10:38:12Z
 updated_at: 2025-10-02T11:19:43Z
 url: https://github.com/astral-sh/uv/issues/16101
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:23Z
 ```
 
 # Flag for sequential packages download/sync
 
 ---
 
-_Issue opened by @Khaled-Fawry on 2025-10-02 10:38_
+_@Khaled-Fawry_
 
 ### Summary
 

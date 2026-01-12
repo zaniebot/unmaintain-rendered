@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-09-28T18:32:13Z
 updated_at: 2024-09-28T21:28:48Z
 url: https://github.com/astral-sh/uv/issues/7763
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # Support for selection of specific versions per user / sync
 
 ---
 
-_Issue opened by @relativityhd on 2024-09-28 18:32_
+_@relativityhd_
 
 First: I love `uv`, thank you very much for working on such a nice piece of software!
 

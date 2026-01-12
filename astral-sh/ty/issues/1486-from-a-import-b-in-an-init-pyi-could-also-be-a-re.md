@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-05T17:23:45Z
 updated_at: 2025-11-11T20:09:05Z
 url: https://github.com/astral-sh/ty/issues/1486
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # `from .a import b` in an `__init__.pyi` could also be a re-export of `b`
 
 ---
 
-_Issue opened by @Gankra on 2025-11-05 17:23_
+_@Gankra_
 
 This is a followup to https://github.com/astral-sh/ruff/pull/21173 and pertains to behaviours described in [imports/nonstandard_conventions.md](https://github.com/astral-sh/ruff/blob/main/crates/ty_python_semantic/resources/mdtest/import/nonstandard_conventions.md)
 

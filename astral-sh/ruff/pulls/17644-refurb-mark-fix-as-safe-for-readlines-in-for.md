@@ -14,14 +14,14 @@ head: furb-129-safe
 created_at: 2025-04-26T15:22:35Z
 updated_at: 2025-04-28T14:39:55Z
 url: https://github.com/astral-sh/ruff/pull/17644
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`refurb`] Mark fix as safe for `readlines-in-for` (`FURB129`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-04-26 15:22_
+_@dylwil3_
 
 This PR promotes the fix applicability of [readlines-in-for (FURB129)](https://docs.astral.sh/ruff/rules/readlines-in-for/#readlines-in-for-furb129) to always safe.
 

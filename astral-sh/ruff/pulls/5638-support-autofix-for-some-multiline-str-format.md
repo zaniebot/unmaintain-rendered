@@ -13,14 +13,14 @@ head: support-multiline-format-call
 created_at: 2023-07-10T09:51:20Z
 updated_at: 2023-07-10T13:53:32Z
 url: https://github.com/astral-sh/ruff/pull/5638
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Support autofix for some multiline `str.format` calls
 
 ---
 
-_Pull request opened by @harupy on 2023-07-10 09:51_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

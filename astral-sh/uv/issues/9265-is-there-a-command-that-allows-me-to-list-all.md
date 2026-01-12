@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T06:06:39Z
 updated_at: 2024-11-22T03:14:41Z
 url: https://github.com/astral-sh/uv/issues/9265
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # Is there a command that allows me to list all installed packages from my existing project into the dependencies section of pyproject.toml?
 
 ---
 
-_Issue opened by @nonesubham on 2024-11-20 06:06_
+_@nonesubham_
 
 _No description provided._
 

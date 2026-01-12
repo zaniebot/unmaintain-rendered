@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T08:12:38Z
 updated_at: 2025-06-23T07:27:21Z
 url: https://github.com/astral-sh/ruff/issues/18606
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [Infinite loop]
 
 ---
 
-_Issue opened by @marcelatpwc on 2025-06-10 08:12_
+_@marcelatpwc_
 
 ruff 0.11.13, rule code F401
 

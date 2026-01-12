@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-11T14:11:39Z
 updated_at: 2024-08-11T15:06:09Z
 url: https://github.com/astral-sh/uv/issues/6006
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Feature request: Implement `pip download`
 
 ---
 
-_Issue opened by @zeevro on 2024-08-11 14:11_
+_@zeevro_
 
 I would like to be able to download the resolved wheels/sdists without installing them.
 

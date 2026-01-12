@@ -14,14 +14,14 @@ head: alex/all-members
 created_at: 2025-11-29T16:34:39Z
 updated_at: 2025-12-02T14:45:26Z
 url: https://github.com/astral-sh/ruff/pull/21695
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] Move `all_members`, and related types/routines, out of `ide_support.rs`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-29 16:34_
+_@AlexWaygood_
 
 ## Summary
 

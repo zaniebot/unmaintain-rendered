@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-11T11:17:54Z
 updated_at: 2025-09-11T13:01:42Z
 url: https://github.com/astral-sh/ruff/issues/20346
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # pydocstring extra-arguments lint rule
 
 ---
 
-_Issue opened by @blackmad-cradle on 2025-09-11 11:17_
+_@blackmad-cradle_
 
 ### Summary
 

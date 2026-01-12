@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-10-26T13:35:11Z
 updated_at: 2018-08-02T03:29:55Z
 url: https://github.com/clap-rs/clap/issues/707
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # yaml example confusing
 
 ---
 
-_Issue opened by @mvaude on 2016-10-26 13:35_
+_@mvaude_
 
 I am reading the examples to see how I will use this crate to create some rust CLI binaries.
 In the `17_yaml.rs` , it is matching the possible values from the attribute `mode` with `fast` and `slow`.

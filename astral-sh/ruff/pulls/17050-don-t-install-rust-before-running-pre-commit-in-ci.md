@@ -13,14 +13,14 @@ head: alex/precommit-faster
 created_at: 2025-03-28T20:51:17Z
 updated_at: 2025-03-28T21:00:16Z
 url: https://github.com/astral-sh/ruff/pull/17050
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Don't install Rust before running pre-commit in CI
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-03-28 20:51_
+_@AlexWaygood_
 
 Following https://github.com/astral-sh/ruff/commit/29573daef5a7587b7903095a8c6be03739cb1ccb, it doesn't look to me like any of the pre-commit hooks run in CI here are Rust-based:
 

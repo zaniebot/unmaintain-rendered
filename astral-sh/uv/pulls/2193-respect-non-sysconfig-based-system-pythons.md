@@ -14,14 +14,14 @@ head: charlie/sysconfig-paths
 created_at: 2024-03-05T02:04:06Z
 updated_at: 2024-03-05T21:23:36Z
 url: https://github.com/astral-sh/uv/pull/2193
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:54Z
 ```
 
 # Respect non-`sysconfig`-based system Pythons
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-05 02:04_
+_@charliermarsh_
 
 ## Summary
 

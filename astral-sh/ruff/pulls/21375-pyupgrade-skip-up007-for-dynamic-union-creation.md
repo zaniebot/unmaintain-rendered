@@ -11,14 +11,14 @@ head: fix-21347
 created_at: 2025-11-11T04:47:49Z
 updated_at: 2025-11-11T22:32:09Z
 url: https://github.com/astral-sh/ruff/pull/21375
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:22Z
 ```
 
 # [`pyupgrade`] Skip UP007 for dynamic Union creation (`UP007`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-11 04:47_
+_@danparizher_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: w191
 created_at: 2023-02-27T09:31:07Z
 updated_at: 2023-02-27T15:36:04Z
 url: https://github.com/astral-sh/ruff/pull/3249
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # feat(W191): add indentation_contains_tabs
 
 ---
 
-_Pull request opened by @carlosmiei on 2023-02-27 09:31_
+_@carlosmiei_
 
 - add https://www.flake8rules.com/rules/W191.html
 

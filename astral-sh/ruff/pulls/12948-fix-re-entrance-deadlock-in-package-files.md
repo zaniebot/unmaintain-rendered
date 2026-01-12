@@ -13,14 +13,14 @@ head: package-files-reentrence-deadlock
 created_at: 2024-08-17T12:42:00Z
 updated_at: 2024-08-20T07:00:25Z
 url: https://github.com/astral-sh/ruff/pull/12948
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Fix re-entrance deadlock in Package::files
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-17 12:42_
+_@MichaReiser_
 
 ## Summary
 

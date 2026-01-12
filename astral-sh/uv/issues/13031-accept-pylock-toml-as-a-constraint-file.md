@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-21T23:11:23Z
 updated_at: 2025-06-06T14:18:18Z
 url: https://github.com/astral-sh/uv/issues/13031
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # Accept `pylock.toml` as a constraint file
 
 ---
 
-_Issue opened by @charliermarsh on 2025-04-21 23:11_
+_@charliermarsh_
 
 E.g., `uv pip install flask -c pylock.toml`.
 

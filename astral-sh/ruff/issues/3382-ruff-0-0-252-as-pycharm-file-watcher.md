@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-07T11:29:24Z
 updated_at: 2023-03-10T02:56:42Z
 url: https://github.com/astral-sh/ruff/issues/3382
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # ruff `>=0.0.252` as pycharm File Watcher
 
 ---
 
-_Issue opened by @FieryDruid on 2023-03-07 11:29_
+_@FieryDruid_
 
 I tried to set up ruff launch in File Watcher. This worked fine on ruff versions prior to `0.0.252` (found out by iterating through versions), but in versions `>=0.0.252` when running File Watcher, my IDE highlights errors momentarily instead of permanently displaying them. On versions `<=0.0.251`, everything works correctly, when a file is changed, the File Watcher is launched, the IDE highlights errors and the highlighting does not disappear until the error is fixed
 

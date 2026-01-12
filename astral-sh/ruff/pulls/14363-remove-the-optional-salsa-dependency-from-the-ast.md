@@ -13,14 +13,14 @@ head: micha/parser-remove-optional-salsa-dependency
 created_at: 2024-11-15T16:40:50Z
 updated_at: 2024-11-15T17:00:36Z
 url: https://github.com/astral-sh/ruff/pull/14363
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Remove the optional salsa dependency from the AST crate
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-15 16:40_
+_@MichaReiser_
 
 
 ## Summary

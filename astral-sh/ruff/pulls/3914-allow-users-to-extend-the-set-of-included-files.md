@@ -12,14 +12,14 @@ head: charlie/include
 created_at: 2023-04-08T04:14:44Z
 updated_at: 2023-04-12T03:39:45Z
 url: https://github.com/astral-sh/ruff/pull/3914
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Allow users to extend the set of included files via `include`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-08 04:14_
+_@charliermarsh_
 
 ## Summary
 

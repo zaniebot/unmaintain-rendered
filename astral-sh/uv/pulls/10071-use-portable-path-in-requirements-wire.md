@@ -13,14 +13,14 @@ head: charlie/s
 created_at: 2024-12-21T03:30:38Z
 updated_at: 2024-12-21T04:10:26Z
 url: https://github.com/astral-sh/uv/pull/10071
-synced_at: 2026-01-10T11:44:33Z
+synced_at: 2026-01-12T16:09:06Z
 ```
 
 # Use portable path in requirements wire
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-21 03:30_
+_@charliermarsh_
 
 _No description provided._
 

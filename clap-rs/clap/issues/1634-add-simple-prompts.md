@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-01-10T20:18:11Z
 updated_at: 2023-12-19T06:41:16Z
 url: https://github.com/clap-rs/clap/issues/1634
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Add simple prompts
 
 ---
 
-_Issue opened by @mayabyte on 2020-01-10 20:18_
+_@mayabyte_
 
 Maintainer's notes
 - Blocked on #4793 and the general move to https://github.com/clap-rs/clap/discussions/2832

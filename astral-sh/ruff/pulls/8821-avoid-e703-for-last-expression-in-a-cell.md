@@ -13,14 +13,14 @@ head: dhruv/notebook-e703
 created_at: 2023-11-22T17:19:32Z
 updated_at: 2023-11-23T13:40:59Z
 url: https://github.com/astral-sh/ruff/pull/8821
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Avoid `E703` for last expression in a cell
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-11-22 17:19_
+_@dhruvmanila_
 
 ## Summary
 

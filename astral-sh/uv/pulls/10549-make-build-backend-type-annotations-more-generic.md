@@ -12,14 +12,14 @@ head: more-typing
 created_at: 2025-01-13T00:26:44Z
 updated_at: 2025-01-13T18:39:05Z
 url: https://github.com/astral-sh/uv/pull/10549
-synced_at: 2026-01-10T11:44:57Z
+synced_at: 2026-01-12T16:09:22Z
 ```
 
 # Make build backend type annotations more generic
 
 ---
 
-_Pull request opened by @cthoyt on 2025-01-13 00:26_
+_@cthoyt_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

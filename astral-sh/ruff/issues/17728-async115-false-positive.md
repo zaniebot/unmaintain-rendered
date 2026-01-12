@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-30T03:58:42Z
 updated_at: 2025-05-01T21:37:10Z
 url: https://github.com/astral-sh/ruff/issues/17728
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ASYNC115 False Positive
 
 ---
 
-_Issue opened by @rmorshea-atom-computing on 2025-04-30 03:58_
+_@rmorshea-atom-computing_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-23T08:58:34Z
 updated_at: 2025-04-25T01:41:53Z
 url: https://github.com/astral-sh/uv/issues/13064
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # `uv add` adds `[[tool.uv.index]]` entry when `UV_INDEX` is set
 
 ---
 
-_Issue opened by @sebastian-cradle on 2025-04-23 08:58_
+_@sebastian-cradle_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: dcreager/inferrable
 created_at: 2025-08-06T15:47:32Z
 updated_at: 2025-08-16T22:25:05Z
 url: https://github.com/astral-sh/ruff/pull/19786
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # [ty] Track when type variables are inferable or not
 
 ---
 
-_Pull request opened by @dcreager on 2025-08-06 15:47_
+_@dcreager_
 
 `Type::TypeVar` now distinguishes whether the typevar in question is inferable or not.
 

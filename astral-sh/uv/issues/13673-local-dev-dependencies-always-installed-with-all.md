@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-27T08:38:54Z
 updated_at: 2025-05-27T12:43:08Z
 url: https://github.com/astral-sh/uv/issues/13673
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:34Z
 ```
 
 # Local dev dependencies always installed with --all-packages
 
 ---
 
-_Issue opened by @Knut-Boost on 2025-05-27 08:38_
+_@Knut-Boost_
 
 ### Summary
 

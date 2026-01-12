@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-26T20:27:48Z
 updated_at: 2023-03-26T20:34:10Z
 url: https://github.com/astral-sh/ruff/issues/3749
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Error messages when running Ruff on fixtures
 
 ---
 
-_Issue opened by @JonathanPlasse on 2023-03-26 20:27_
+_@JonathanPlasse_
 
 When running `` I get these messages.
 ```console

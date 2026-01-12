@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-28T19:10:09Z
 updated_at: 2025-03-25T01:15:13Z
 url: https://github.com/astral-sh/ruff/issues/2310
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # D417 Argument descriptions only required if there is an "Args" section
 
 ---
 
-_Issue opened by @jackdesert on 2023-01-28 19:10_
+_@jackdesert_
 
 Expected the code snippet below to show D417. That is, expected it to tell me that the "name" argument does not have a description in the docstring. If I change the word "Parameters" to "Args", then it will raise D417 as desired. Not sure if this is expected behavior, but it has been challenging to figure out. 
 

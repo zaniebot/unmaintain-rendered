@@ -13,14 +13,14 @@ head: micha/line-character-column
 created_at: 2025-04-23T17:24:50Z
 updated_at: 2025-04-27T10:30:55Z
 url: https://github.com/astral-sh/ruff/pull/17587
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Split `SourceLocation` into `LineColumn` and `SourceLocation`
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-23 17:24_
+_@MichaReiser_
 
 ## Summary
 

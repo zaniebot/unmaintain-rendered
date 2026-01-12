@@ -13,14 +13,14 @@ head: pyi010-docs
 created_at: 2023-09-19T14:43:32Z
 updated_at: 2023-09-29T10:12:06Z
 url: https://github.com/astral-sh/ruff/pull/7519
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Add documentation to `non-empty-stub-body`
 
 ---
 
-_Pull request opened by @tjkuson on 2023-09-19 14:43_
+_@tjkuson_
 
 ## Summary
 

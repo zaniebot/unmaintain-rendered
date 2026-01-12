@@ -14,14 +14,14 @@ head: charlie/w
 created_at: 2025-07-07T20:56:26Z
 updated_at: 2025-07-09T17:46:22Z
 url: https://github.com/astral-sh/uv/pull/14496
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:15Z
 ```
 
 # Add `--workspace` flag to `uv add`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-07 20:56_
+_@charliermarsh_
 
 ## Summary
 

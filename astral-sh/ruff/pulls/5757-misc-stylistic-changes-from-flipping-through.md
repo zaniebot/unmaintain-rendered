@@ -12,14 +12,14 @@ head: charlie/misc
 created_at: 2023-07-14T05:13:02Z
 updated_at: 2023-07-14T05:50:55Z
 url: https://github.com/astral-sh/ruff/pull/5757
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Misc. stylistic changes from flipping through rules late at night
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-14 05:13_
+_@charliermarsh_
 
 ## Summary
 

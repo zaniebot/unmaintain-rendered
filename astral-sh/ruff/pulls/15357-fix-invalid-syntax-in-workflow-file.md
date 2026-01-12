@@ -13,14 +13,14 @@ head: AlexWaygood-patch-1
 created_at: 2025-01-08T15:29:38Z
 updated_at: 2025-01-08T15:34:34Z
 url: https://github.com/astral-sh/ruff/pull/15357
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # fix invalid syntax in workflow file
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-08 15:29_
+_@AlexWaygood_
 
 re-reading https://github.com/astral-sh/ruff/pull/15300, it had a typo in it
 

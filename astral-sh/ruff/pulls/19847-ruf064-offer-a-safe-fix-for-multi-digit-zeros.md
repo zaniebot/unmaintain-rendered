@@ -12,14 +12,14 @@ head: fix/non-octal-permissions-multi-digit-zero
 created_at: 2025-08-10T19:57:23Z
 updated_at: 2025-08-10T22:26:27Z
 url: https://github.com/astral-sh/ruff/pull/19847
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # RUF064: offer a safe fix for multi-digit zeros
 
 ---
 
-_Pull request opened by @RazerM on 2025-08-10 19:57_
+_@RazerM_
 
 Fixes #19010
 

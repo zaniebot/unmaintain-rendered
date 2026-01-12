@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2024-08-22T04:58:11Z
 updated_at: 2024-08-23T14:24:48Z
 url: https://github.com/astral-sh/uv/pull/6409
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:21Z
 ```
 
 # docs: fix tip markup in python-versions.md
 
 ---
 
-_Pull request opened by @hynek on 2024-08-22 04:58_
+_@hynek_
 
 ## Summary
 

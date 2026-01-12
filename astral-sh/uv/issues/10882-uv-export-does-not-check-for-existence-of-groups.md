@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-23T02:46:31Z
 updated_at: 2025-02-14T15:54:29Z
 url: https://github.com/astral-sh/uv/issues/10882
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # uv export does not check for existence of groups when used with --frozen
 
 ---
 
-_Issue opened by @gazpachoking on 2025-01-23 02:46_
+_@gazpachoking_
 
 ### Summary
 

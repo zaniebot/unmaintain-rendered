@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-14T03:22:16Z
 updated_at: 2024-11-14T06:05:44Z
 url: https://github.com/astral-sh/uv/issues/9111
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:42Z
 ```
 
 # `pip list` in activated venv differs from `uv pip list`
 
 ---
 
-_Issue opened by @nataziel on 2024-11-14 03:22_
+_@nataziel_
 
 This may be working as intended but is extremely confusing.
 

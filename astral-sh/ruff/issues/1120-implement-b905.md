@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-07T14:25:34Z
 updated_at: 2022-12-07T15:01:26Z
 url: https://github.com/astral-sh/ruff/issues/1120
-synced_at: 2026-01-10T12:06:17Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Implement B905
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-07 14:25_
+_@charliermarsh_
 
 See: https://github.com/charliermarsh/ruff/issues/389#issuecomment-1340676474.
 

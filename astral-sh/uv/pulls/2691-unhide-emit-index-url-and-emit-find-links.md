@@ -13,14 +13,14 @@ head: charlie/unhide
 created_at: 2024-03-27T14:48:51Z
 updated_at: 2024-03-29T13:41:28Z
 url: https://github.com/astral-sh/uv/pull/2691
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:10Z
 ```
 
 # Unhide `--emit-index-url` and `--emit-find-links`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-27 14:48_
+_@charliermarsh_
 
 ## Summary
 

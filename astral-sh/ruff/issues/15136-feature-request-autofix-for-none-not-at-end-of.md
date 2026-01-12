@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-24T19:05:53Z
 updated_at: 2025-10-30T17:04:37Z
 url: https://github.com/astral-sh/ruff/issues/15136
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Feature request: Autofix for `none-not-at-end-of-union (RUF036)`
 
 ---
 
-_Issue opened by @Avasam on 2024-12-24 19:05_
+_@Avasam_
 
 I tried out `RUF036` (in preview) today in typeshed and it found 140 errors. That would take a long time to fix manually, and I imagine an autofix for this rule should be doable.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-31T05:57:02Z
 updated_at: 2025-07-31T11:49:42Z
 url: https://github.com/astral-sh/uv/issues/14986
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:01Z
 ```
 
 # Need a mirror for github
 
 ---
 
-_Issue opened by @fengzhao on 2025-07-31 05:57_
+_@fengzhao_
 
 ### Summary
 

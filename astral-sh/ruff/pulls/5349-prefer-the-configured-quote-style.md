@@ -13,14 +13,14 @@ head: prefer-configured-quote-style
 created_at: 2023-06-24T06:52:13Z
 updated_at: 2023-06-26T12:43:14Z
 url: https://github.com/astral-sh/ruff/pull/5349
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Prefer the configured quote style
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-24 06:52_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

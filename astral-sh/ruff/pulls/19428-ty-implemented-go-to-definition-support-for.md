@@ -14,14 +14,14 @@ head: goto_declaration_modules
 created_at: 2025-07-19T01:27:39Z
 updated_at: 2025-07-19T18:22:14Z
 url: https://github.com/astral-sh/ruff/pull/19428
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:39Z
 ```
 
 # [ty] Implemented "go to definition" support for import statements
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-19 01:27_
+_@UnboundVariable_
 
 This PR extends the "go to declaration" and "go to definition" functionality to support import statements — both standard imports and "from" import forms.
 

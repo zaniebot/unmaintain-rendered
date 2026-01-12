@@ -14,14 +14,14 @@ head: cjm/subscript-no-standalone
 created_at: 2025-10-09T22:59:23Z
 updated_at: 2025-10-09T23:17:32Z
 url: https://github.com/astral-sh/ruff/pull/20795
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] avoid standalone expressions for simple subscript targets
 
 ---
 
-_Pull request opened by @carljm on 2025-10-09 22:59_
+_@carljm_
 
 ## Summary
 

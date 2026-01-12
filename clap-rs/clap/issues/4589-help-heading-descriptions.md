@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-12-30T17:09:26Z
 updated_at: 2024-08-07T09:00:56Z
 url: https://github.com/clap-rs/clap/issues/4589
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Help heading descriptions
 
 ---
 
-_Issue opened by @IgnisDa on 2022-12-30 17:09_
+_@IgnisDa_
 
 ### Discussed in https://github.com/clap-rs/clap/discussions/4588
 

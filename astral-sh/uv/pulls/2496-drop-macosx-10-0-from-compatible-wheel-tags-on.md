@@ -13,14 +13,14 @@ head: zb/macos-platform-tags-fix
 created_at: 2024-03-17T16:12:24Z
 updated_at: 2024-03-18T14:52:55Z
 url: https://github.com/astral-sh/uv/pull/2496
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:04Z
 ```
 
 # Drop `macosx_10_0` from compatible wheel tags on `aarch64`
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-17 16:12_
+_@zanieb_
 
 Following #2489 this is the last remaining difference from Python 3.12's packaging module.
 

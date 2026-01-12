@@ -13,14 +13,14 @@ head: charlie/dep-groups
 created_at: 2024-10-25T18:44:38Z
 updated_at: 2024-10-25T18:57:08Z
 url: https://github.com/astral-sh/uv/pull/8574
-synced_at: 2026-01-10T12:54:12Z
+synced_at: 2026-01-12T16:08:23Z
 ```
 
 # Allow `[dependency-groups]` in non-`[project]` projects
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-25 18:44_
+_@charliermarsh_
 
 ## Summary
 

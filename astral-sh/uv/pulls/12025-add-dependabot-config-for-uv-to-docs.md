@@ -12,14 +12,14 @@ head: docs/dependabot
 created_at: 2025-03-06T22:09:11Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/12025
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:06Z
 ```
 
 # Add dependabot config for uv to docs
 
 ---
 
-_Pull request opened by @grepme on 2025-03-06 22:09_
+_@grepme_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

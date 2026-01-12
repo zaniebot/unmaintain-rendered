@@ -13,14 +13,14 @@ head: globfilter-fs-err-3
 created_at: 2024-11-20T03:48:27Z
 updated_at: 2024-11-20T03:59:37Z
 url: https://github.com/astral-sh/uv/pull/9262
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:44Z
 ```
 
 # In uv-globfilter, use the workspace fs-err in dev-dependencies
 
 ---
 
-_Pull request opened by @musicinmybrain on 2024-11-20 03:48_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

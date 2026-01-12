@@ -13,14 +13,14 @@ head: zb/contrib-release
 created_at: 2023-12-21T18:14:42Z
 updated_at: 2023-12-21T18:25:19Z
 url: https://github.com/astral-sh/ruff/pull/9232
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Clarify release workflow steps in CONTRIB guide
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-21 18:14_
+_@zanieb_
 
 We always recommend providing the SHA and since https://github.com/astral-sh/ruff/pull/7279 it does not need to be the latest commit on `main`.
 

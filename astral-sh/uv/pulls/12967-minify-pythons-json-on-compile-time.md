@@ -12,14 +12,14 @@ head: uv-python-minify-at-build-time
 created_at: 2025-04-18T13:09:58Z
 updated_at: 2025-07-14T15:47:49Z
 url: https://github.com/astral-sh/uv/pull/12967
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:10:29Z
 ```
 
 # minify pythons json on compile time
 
 ---
 
-_Pull request opened by @MeitarR on 2025-04-18 13:09_
+_@MeitarR_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: type_parameter_default_order
 created_at: 2025-11-27T09:40:42Z
 updated_at: 2025-12-03T06:31:31Z
 url: https://github.com/astral-sh/ruff/pull/21657
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [syntax-error] Default type parameter followed by non-default type parameter
 
 ---
 
-_Pull request opened by @11happy on 2025-11-27 09:40_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

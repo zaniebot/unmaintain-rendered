@@ -12,14 +12,14 @@ head: charlie/cfg
 created_at: 2023-02-05T17:11:07Z
 updated_at: 2023-02-05T17:26:24Z
 url: https://github.com/astral-sh/ruff/pull/2583
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Propagate attribute-like macros in define_rule_mapping
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-05 17:11_
+_@charliermarsh_
 
 This enables us to feature-flag rules, like:
 

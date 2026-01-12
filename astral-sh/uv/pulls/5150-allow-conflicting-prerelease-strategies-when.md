@@ -13,14 +13,14 @@ head: ibraheem/fork-prereleases
 created_at: 2024-07-17T17:01:59Z
 updated_at: 2024-07-23T15:57:17Z
 url: https://github.com/astral-sh/uv/pull/5150
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:40Z
 ```
 
 # Allow conflicting prerelease strategies when forking
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-07-17 17:01_
+_@ibraheemdev_
 
 ## Summary
 

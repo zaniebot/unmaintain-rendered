@@ -12,14 +12,14 @@ head: charlie/scipy
 created_at: 2023-01-30T20:34:15Z
 updated_at: 2023-01-30T20:34:21Z
 url: https://github.com/astral-sh/ruff/pull/2363
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Add SciPy and meson-python
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-30 20:34_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: charlie/pytest
 created_at: 2023-08-14T20:59:51Z
 updated_at: 2023-08-14T21:35:52Z
 url: https://github.com/astral-sh/ruff/pull/6572
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add deprecated unittest assertions to PT009
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-14 20:59_
+_@charliermarsh_
 
 ## Summary
 

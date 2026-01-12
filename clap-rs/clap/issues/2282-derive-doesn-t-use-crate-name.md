@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-01-01T04:00:14Z
 updated_at: 2021-01-02T14:27:56Z
 url: https://github.com/clap-rs/clap/issues/2282
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Derive doesn't use crate name
 
 ---
 
-_Issue opened by @kotovalexarian on 2021-01-01 04:00_
+_@kotovalexarian_
 
 By `derive`ing `Clap`, the `about`, `author` and `version` options can be automatically extracted from crate's `Cargo.toml`, but this doesn't work for `name`, so I have to specify it manually:
 

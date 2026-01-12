@@ -11,14 +11,14 @@ head: one-indexed-u32
 created_at: 2023-05-08T18:49:18Z
 updated_at: 2023-05-12T07:07:08Z
 url: https://github.com/astral-sh/ruff/pull/4288
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # u32-backed OneIndexed
 
 ---
 
-_Pull request opened by @youknowone on 2023-05-08 18:49_
+_@youknowone_
 
 I tried to minimize diagnostic side code changes.
 

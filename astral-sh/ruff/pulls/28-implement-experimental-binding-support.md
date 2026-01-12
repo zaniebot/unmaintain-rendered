@@ -12,14 +12,14 @@ head: charlie/binding
 created_at: 2022-08-27T22:00:24Z
 updated_at: 2022-08-27T22:16:19Z
 url: https://github.com/astral-sh/ruff/pull/28
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement experimental binding support
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-08-27 22:00_
+_@charliermarsh_
 
 _No description provided._
 

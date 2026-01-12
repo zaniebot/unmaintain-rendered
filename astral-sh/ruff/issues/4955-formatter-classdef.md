@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-08T11:03:22Z
 updated_at: 2023-06-22T09:09:45Z
 url: https://github.com/astral-sh/ruff/issues/4955
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Formatter: `ClassDef`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-06-08 11:03_
+_@MichaReiser_
 
 _No description provided._
 

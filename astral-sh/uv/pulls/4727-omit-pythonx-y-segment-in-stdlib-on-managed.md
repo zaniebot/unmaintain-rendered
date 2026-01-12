@@ -14,14 +14,14 @@ head: charlie/w
 created_at: 2024-07-02T12:36:39Z
 updated_at: 2024-07-02T13:21:20Z
 url: https://github.com/astral-sh/uv/pull/4727
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:25Z
 ```
 
 # Omit pythonX.Y segment in stdlib on managed Windows
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-02 12:36_
+_@charliermarsh_
 
 ## Summary
 

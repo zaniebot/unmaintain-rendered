@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T06:37:28Z
 updated_at: 2025-06-03T07:47:03Z
 url: https://github.com/astral-sh/ty/issues/571
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # `ty check` sync packages with `uv.lock`
 
 ---
 
-_Issue opened by @dkang-quora on 2025-06-03 06:37_
+_@dkang-quora_
 
 ### Summary
 

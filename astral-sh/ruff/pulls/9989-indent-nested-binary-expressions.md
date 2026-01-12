@@ -12,14 +12,14 @@ head: preview-binary-formatting
 created_at: 2024-02-14T17:54:46Z
 updated_at: 2024-04-08T07:03:51Z
 url: https://github.com/astral-sh/ruff/pull/9989
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Indent nested binary expressions
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-14 17:54_
+_@MichaReiser_
 
 ## Summary
 

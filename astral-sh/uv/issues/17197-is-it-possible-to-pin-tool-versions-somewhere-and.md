@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-20T09:01:39Z
 updated_at: 2025-12-20T12:05:35Z
 url: https://github.com/astral-sh/uv/issues/17197
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:45Z
 ```
 
 # Is it possible to pin tool versions somewhere and install them later?
 
 ---
 
-_Issue opened by @Andrej730 on 2025-12-20 09:01_
+_@Andrej730_
 
 ### Question
 

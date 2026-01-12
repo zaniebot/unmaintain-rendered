@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-19T20:27:58Z
 updated_at: 2023-11-28T18:54:34Z
 url: https://github.com/astral-sh/ruff/issues/8075
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Determine how to convey the availablity of preview-only fixes
 
 ---
 
-_Issue opened by @zanieb on 2023-10-19 20:27_
+_@zanieb_
 
 We intend for some fixes to only be available in preview, e.g. #8073 and https://github.com/astral-sh/ruff/pull/7934 but then rules will be displayed as fixable in the documentation without indication that it is only fixable with preview enabled. We worry this will be confusing.
 

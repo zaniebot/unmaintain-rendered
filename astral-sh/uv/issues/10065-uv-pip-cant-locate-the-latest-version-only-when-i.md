@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-20T20:21:10Z
 updated_at: 2024-12-20T21:26:40Z
 url: https://github.com/astral-sh/uv/issues/10065
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # uv pip cant locate the latest version. Only when I tell it `uv pip install <package> --upgrade` does it find the latest version.
 
 ---
 
-_Issue opened by @freddyaboulton on 2024-12-20 20:21_
+_@freddyaboulton_
 
 Hi!
 

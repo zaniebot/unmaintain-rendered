@@ -13,14 +13,14 @@ head: david/issubclass-narrowing
 created_at: 2024-11-06T10:35:58Z
 updated_at: 2024-11-07T13:56:02Z
 url: https://github.com/astral-sh/ruff/pull/14128
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # [red-knot] Add narrowing for `issubclass` checks
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-06 10:35_
+_@sharkdp_
 
 ## Summary
 

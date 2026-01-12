@@ -12,14 +12,14 @@ head: readme-missing-backticks
 created_at: 2023-01-28T05:25:44Z
 updated_at: 2023-01-28T14:22:47Z
 url: https://github.com/astral-sh/ruff/pull/2291
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # add missing backticks to flake8 plugin urls in `README`
 
 ---
 
-_Pull request opened by @the-matt-morris on 2023-01-28 05:25_
+_@the-matt-morris_
 
 closes #2290 
 

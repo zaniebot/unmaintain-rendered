@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-02T22:18:29Z
 updated_at: 2024-02-05T13:29:25Z
 url: https://github.com/astral-sh/ruff/issues/9804
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Do not collapse multiline docstrings
 
 ---
 
-_Issue opened by @Glyphack on 2024-02-02 22:18_
+_@Glyphack_
 
 This issue was brought up [in the review](https://github.com/astral-sh/ruff/pull/9725#discussion_r1475596423).
 

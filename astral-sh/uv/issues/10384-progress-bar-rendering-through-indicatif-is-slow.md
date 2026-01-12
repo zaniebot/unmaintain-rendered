@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-08T09:08:27Z
 updated_at: 2025-01-09T10:15:52Z
 url: https://github.com/astral-sh/uv/issues/10384
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # Progress bar rendering through indicatif is slow
 
 ---
 
-_Issue opened by @konstin on 2025-01-08 09:08_
+_@konstin_
 
 Currently, the uv resolver thread spends a considerable amount of time in `on_progress` -> `indicatif::style::ProgressStyle::format_state`. We should limit rendering progress bar updates to at most 1/60s, ideally directly in indicatif.
 

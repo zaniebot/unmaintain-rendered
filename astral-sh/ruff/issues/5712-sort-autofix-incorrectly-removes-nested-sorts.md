@@ -13,14 +13,14 @@ assignees: []
 created_at: 2023-07-12T13:49:58Z
 updated_at: 2023-07-14T13:43:48Z
 url: https://github.com/astral-sh/ruff/issues/5712
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # sort autofix incorrectly removes nested sorts
 
 ---
 
-_Issue opened by @BorisOrca on 2023-07-12 13:49_
+_@BorisOrca_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

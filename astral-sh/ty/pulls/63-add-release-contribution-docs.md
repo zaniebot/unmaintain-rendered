@@ -13,14 +13,14 @@ head: zb/contrib-release
 created_at: 2025-05-06T14:40:24Z
 updated_at: 2025-07-08T10:38:07Z
 url: https://github.com/astral-sh/ty/pull/63
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add release contribution docs
 
 ---
 
-_Pull request opened by @zanieb on 2025-05-06 14:40_
+_@zanieb_
 
 Mostly cribbed from uv.
 

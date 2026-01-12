@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-04T09:59:32Z
 updated_at: 2024-11-04T11:22:44Z
 url: https://github.com/astral-sh/ruff/issues/14088
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # UP044 fix fails on 0.7.2: "Fix introduced a syntax error."
 
 ---
 
-_Issue opened by @chbndrhnns on 2024-11-04 09:59_
+_@chbndrhnns_
 
 `ruff` suggested to create an issue for this scenario where `UP044` seems not to work.
 

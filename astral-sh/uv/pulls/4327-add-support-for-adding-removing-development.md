@@ -13,14 +13,14 @@ head: ibraheem/uv-add-dev
 created_at: 2024-06-14T14:00:08Z
 updated_at: 2024-06-14T19:17:31Z
 url: https://github.com/astral-sh/uv/pull/4327
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:09Z
 ```
 
 # Add support for adding/removing development dependencies
 
 ---
 
-_Pull request opened by @ibraheemdev on 2024-06-14 14:00_
+_@ibraheemdev_
 
 ## Summary
 

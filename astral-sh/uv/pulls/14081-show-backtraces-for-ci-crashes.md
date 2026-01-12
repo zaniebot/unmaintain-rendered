@@ -13,14 +13,14 @@ head: konsti/show-backtraces-for-crashes
 created_at: 2025-06-16T16:34:18Z
 updated_at: 2025-06-17T08:44:03Z
 url: https://github.com/astral-sh/uv/pull/14081
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:01Z
 ```
 
 # Show backtraces for CI crashes
 
 ---
 
-_Pull request opened by @konstin on 2025-06-16 16:34_
+_@konstin_
 
 I only just realized that we can get backtraces for crashes with `RUST_BACKTRACE: 1`, even non-panics (https://github.com/astral-sh/uv/pull/14079). This is much better than trying to analyze crash dumps.
 

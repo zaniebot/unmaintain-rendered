@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-14T21:24:41Z
 updated_at: 2026-01-12T01:40:20Z
 url: https://github.com/astral-sh/ty/issues/1566
-synced_at: 2026-01-12T02:26:11Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Consider unsafely narrowing non-literal type to literal based on equality check
 
 ---
 
-_Issue opened by @alexmacnorthstar on 2025-11-14 21:24_
+_@alexmacnorthstar_
 
 ### Summary
 

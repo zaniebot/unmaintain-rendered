@@ -13,14 +13,14 @@ head: charlie/share
 created_at: 2024-01-12T20:07:37Z
 updated_at: 2024-01-12T20:09:20Z
 url: https://github.com/astral-sh/uv/pull/903
-synced_at: 2026-01-10T15:39:02Z
+synced_at: 2026-01-12T16:04:16Z
 ```
 
 # Remove `ResolutionGraph#requirements`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-12 20:07_
+_@charliermarsh_
 
 _No description provided._
 

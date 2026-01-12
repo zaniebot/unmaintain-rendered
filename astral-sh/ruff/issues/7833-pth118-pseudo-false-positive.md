@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-06T07:53:55Z
 updated_at: 2023-10-09T12:04:37Z
 url: https://github.com/astral-sh/ruff/issues/7833
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # PTH118: pseudo false positive
 
 ---
 
-_Issue opened by @rassie on 2023-10-06 07:53_
+_@rassie_
 
 (this is an extremely minor issue, feel free to ignore / close / etc.)
 

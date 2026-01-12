@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-12-20T10:54:15Z
 updated_at: 2025-12-30T01:10:06Z
 url: https://github.com/clap-rs/clap/issues/6200
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Parsing two var args separated by `--`
 
 ---
 
-_Issue opened by @mkovaxx on 2025-12-20 10:54_
+_@mkovaxx_
 
 ### Please complete the following tasks
 

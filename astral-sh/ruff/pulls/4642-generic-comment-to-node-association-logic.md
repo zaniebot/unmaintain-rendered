@@ -14,14 +14,14 @@ head: comments-extraction
 created_at: 2023-05-24T16:40:17Z
 updated_at: 2023-05-31T09:40:55Z
 url: https://github.com/astral-sh/ruff/pull/4642
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Generic "comment to node" association logic
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-24 16:40_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

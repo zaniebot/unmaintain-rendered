@@ -14,14 +14,14 @@ head: fix-21465
 created_at: 2025-11-16T17:40:27Z
 updated_at: 2025-11-24T06:01:32Z
 url: https://github.com/astral-sh/ruff/pull/21480
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:25Z
 ```
 
 # [`parser`] Fix panic when parsing IPython escape command expressions
 
 ---
 
-_Pull request opened by @danparizher on 2025-11-16 17:40_
+_@danparizher_
 
 ## Summary
 

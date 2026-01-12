@@ -15,14 +15,14 @@ head: micha/fix-decorator-completion
 created_at: 2025-12-24T16:15:36Z
 updated_at: 2025-12-25T15:05:48Z
 url: https://github.com/astral-sh/ruff/pull/22177
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:43Z
 ```
 
 # [ty] Fix completion in decorators with missing declaration
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-24 16:15_
+_@MichaReiser_
 
 ## Summary
 

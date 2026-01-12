@@ -13,14 +13,14 @@ head: alex/eco
 created_at: 2024-07-07T22:18:39Z
 updated_at: 2024-07-07T22:37:29Z
 url: https://github.com/astral-sh/ruff/pull/12225
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [Ecosystem checks] `trio` has changed its default branch name to `main`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-07 22:18_
+_@AlexWaygood_
 
 Fixes CI errors seen in https://github.com/astral-sh/ruff/pull/12224#issuecomment-2212594024
 

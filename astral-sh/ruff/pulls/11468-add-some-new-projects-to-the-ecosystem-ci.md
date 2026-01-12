@@ -13,14 +13,14 @@ head: charlie/eco
 created_at: 2024-05-19T03:37:46Z
 updated_at: 2024-05-19T13:08:39Z
 url: https://github.com/astral-sh/ruff/pull/11468
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Add some new projects to the ecosystem CI
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-19 03:37_
+_@charliermarsh_
 
 _No description provided._
 

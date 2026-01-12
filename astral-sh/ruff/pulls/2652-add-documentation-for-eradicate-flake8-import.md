@@ -13,14 +13,14 @@ head: charlie/docs
 created_at: 2023-02-08T02:43:50Z
 updated_at: 2023-02-10T22:59:07Z
 url: https://github.com/astral-sh/ruff/pull/2652
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # Add documentation for eradicate, flake8-import-conventions, and flake8-no-pep420
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-08 02:43_
+_@charliermarsh_
 
 See: #2646.
 

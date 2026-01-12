@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-21T03:32:31Z
 updated_at: 2025-04-23T14:25:40Z
 url: https://github.com/astral-sh/uv/issues/13013
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:17Z
 ```
 
 # How to use `uv add` to install libraries without installing my project
 
 ---
 
-_Issue opened by @Quang-elec44 on 2025-04-21 03:32_
+_@Quang-elec44_
 
 ### Question
 

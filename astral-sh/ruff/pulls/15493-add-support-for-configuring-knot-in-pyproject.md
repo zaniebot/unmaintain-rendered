@@ -13,14 +13,14 @@ head: micha/knot-configuration
 created_at: 2025-01-15T10:55:55Z
 updated_at: 2025-01-17T08:42:36Z
 url: https://github.com/astral-sh/ruff/pull/15493
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Add support for configuring knot in `pyproject.toml` files
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-15 10:55_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-03T01:53:07Z
 updated_at: 2025-02-07T10:13:02Z
 url: https://github.com/astral-sh/ruff/issues/15901
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [ruff server] bug: LSP server crashes on initialization message
 
 ---
 
-_Issue opened by @peske on 2025-02-03 01:53_
+_@peske_
 
 ### Description
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-14T11:27:29Z
 updated_at: 2025-05-31T17:30:56Z
 url: https://github.com/astral-sh/ruff/issues/9982
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Ruff using 50-100gb Ram
 
 ---
 
-_Issue opened by @tomhamiltonstubber on 2024-02-14 11:27_
+_@tomhamiltonstubber_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

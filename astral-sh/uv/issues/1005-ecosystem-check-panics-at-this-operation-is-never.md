@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-19T09:43:03Z
 updated_at: 2024-01-22T16:22:05Z
 url: https://github.com/astral-sh/uv/issues/1005
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Ecosystem check panics at "This operation is never cancelled" at pywin32
 
 ---
 
-_Issue opened by @konstin on 2024-01-19 09:43_
+_@konstin_
 
 The ecosystem checks reliably panic for me with
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-09T05:57:49Z
 updated_at: 2024-08-09T16:28:01Z
 url: https://github.com/astral-sh/uv/issues/5950
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Activation prompt with invalid path on Windows Git Bash
 
 ---
 
-_Issue opened by @BenediktMaag on 2024-08-09 05:57_
+_@BenediktMaag_
 
 Windows 11, uv 0.2.34 (c681c5a33 2024-08-07)
 

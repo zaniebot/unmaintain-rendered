@@ -13,14 +13,14 @@ head: konsti/discard-invalid-fork-markers
 created_at: 2025-01-16T14:43:16Z
 updated_at: 2025-03-13T14:49:39Z
 url: https://github.com/astral-sh/uv/pull/10682
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:26Z
 ```
 
 # Discard insufficient fork markers
 
 ---
 
-_Pull request opened by @konstin on 2025-01-16 14:43_
+_@konstin_
 
 In #10669, a pyproject.toml with requires-python but no environment had a lockfile covering only a subset of the requires-python space:
 

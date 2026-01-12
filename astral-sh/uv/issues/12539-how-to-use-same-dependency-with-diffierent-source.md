@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-28T23:58:02Z
 updated_at: 2025-03-29T19:59:42Z
 url: https://github.com/astral-sh/uv/issues/12539
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:05Z
 ```
 
 # how to use same dependency with diffierent source in diffierent group(or extra)
 
 ---
 
-_Issue opened by @ryomahan on 2025-03-28 23:58_
+_@ryomahan_
 
 ### Question
 

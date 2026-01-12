@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-12T16:54:33Z
 updated_at: 2023-01-13T17:56:44Z
 url: https://github.com/astral-sh/ruff/issues/1821
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # C405 fixer causes E231
 
 ---
 
-_Issue opened by @spaceone on 2023-01-12 16:54_
+_@spaceone_
 
 foo.py:
 `SKIP = set(('interfaces/restart/auto',))`

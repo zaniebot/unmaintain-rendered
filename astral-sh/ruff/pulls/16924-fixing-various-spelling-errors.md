@@ -13,14 +13,14 @@ head: fix_spelling
 created_at: 2025-03-23T00:46:02Z
 updated_at: 2025-03-23T14:44:50Z
 url: https://github.com/astral-sh/ruff/pull/16924
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # Fixing various spelling errors
 
 ---
 
-_Pull request opened by @john-science on 2025-03-23 00:46_
+_@john-science_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

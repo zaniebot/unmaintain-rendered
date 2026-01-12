@@ -13,14 +13,14 @@ head: charlie/call
 created_at: 2023-08-23T21:28:26Z
 updated_at: 2023-08-25T04:32:50Z
 url: https://github.com/astral-sh/ruff/pull/6826
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Fix formatting of comments between function and arguments
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-23 21:28_
+_@charliermarsh_
 
 ## Summary
 

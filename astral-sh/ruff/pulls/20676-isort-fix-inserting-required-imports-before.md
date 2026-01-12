@@ -15,14 +15,14 @@ head: fix-20674
 created_at: 2025-10-02T00:00:03Z
 updated_at: 2025-10-06T13:44:30Z
 url: https://github.com/astral-sh/ruff/pull/20676
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [`isort`] Fix inserting required imports before future imports (`I002`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-02 00:00_
+_@danparizher_
 
 ## Summary
 

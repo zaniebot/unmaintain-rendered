@@ -13,14 +13,14 @@ head: doc-error
 created_at: 2023-12-06T02:16:11Z
 updated_at: 2023-12-07T05:01:56Z
 url: https://github.com/astral-sh/ruff/pull/9018
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Fix documentation snafu that recommended invalid settings
 
 ---
 
-_Pull request opened by @eli-schwartz on 2023-12-06 02:16_
+_@eli-schwartz_
 
 The include/exclude settings return a configuration parsing error when placed under the "lint" section. They have always been expected at the top level (no `.ruff.toml` section).
 

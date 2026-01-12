@@ -14,14 +14,14 @@ head: isort-known-local-folder
 created_at: 2023-02-08T13:31:34Z
 updated_at: 2023-02-10T18:15:34Z
 url: https://github.com/astral-sh/ruff/pull/2657
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:09Z
 ```
 
 # feat(isort): Implement known-local-folder
 
 ---
 
-_Pull request opened by @spaceone on 2023-02-08 13:31_
+_@spaceone_
 
 sub item of #2419 
 

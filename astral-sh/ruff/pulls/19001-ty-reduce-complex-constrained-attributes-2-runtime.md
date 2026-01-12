@@ -15,14 +15,14 @@ head: david/reduce-runtime-of-benchmark
 created_at: 2025-06-27T21:02:41Z
 updated_at: 2025-06-27T21:22:33Z
 url: https://github.com/astral-sh/ruff/pull/19001
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] Reduce 'complex_constrained_attributes_2' runtime
 
 ---
 
-_Pull request opened by @sharkdp on 2025-06-27 21:02_
+_@sharkdp_
 
 Re: https://github.com/astral-sh/ruff/pull/18979#issuecomment-3012541095
 

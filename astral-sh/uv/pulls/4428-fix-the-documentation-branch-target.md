@@ -13,14 +13,14 @@ head: zb/publish
 created_at: 2024-06-20T17:25:42Z
 updated_at: 2024-06-20T17:35:57Z
 url: https://github.com/astral-sh/uv/pull/4428
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:13Z
 ```
 
 # Fix the documentation branch target
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-20 17:25_
+_@zanieb_
 
 Doh.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-10T04:28:09Z
 updated_at: 2025-01-10T07:15:43Z
 url: https://github.com/astral-sh/ruff/issues/15390
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # new rule - empty module
 
 ---
 
-_Issue opened by @DetachHead on 2025-01-10 04:28_
+_@DetachHead_
 
 sometimes i'll create a new python file intending to move something to it, then i forget about it and eventually accidentally commit it as an empty file. it would be nice if there was a rule to report modules that should be deleted because they are empty.
 

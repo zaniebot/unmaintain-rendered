@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-07T10:24:54Z
 updated_at: 2025-03-17T16:55:57Z
 url: https://github.com/astral-sh/uv/issues/10354
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:11Z
 ```
 
 # Caching uv pip install in Gitlab CI
 
 ---
 
-_Issue opened by @ticapix on 2025-01-07 10:24_
+_@ticapix_
 
 Hello,
 

@@ -13,14 +13,14 @@ head: charlie/timestamp
 created_at: 2023-12-09T04:40:09Z
 updated_at: 2023-12-09T04:46:03Z
 url: https://github.com/astral-sh/uv/pull/600
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:03Z
 ```
 
 # Fix incorrect unknown size marker in traces
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-09 04:40_
+_@charliermarsh_
 
 It said `(unknown size)` for _all_ disk-based wheels.
 

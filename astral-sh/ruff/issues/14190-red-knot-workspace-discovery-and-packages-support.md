@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T07:59:46Z
 updated_at: 2025-01-15T09:45:18Z
 url: https://github.com/astral-sh/ruff/issues/14190
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Workspace discovery and packages support
 
 ---
 
-_Issue opened by @MichaReiser on 2024-11-08 07:59_
+_@MichaReiser_
 
 _No description provided._
 

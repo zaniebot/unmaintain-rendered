@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-04-26T21:21:55Z
 updated_at: 2025-04-26T21:23:35Z
 url: https://github.com/astral-sh/ruff/issues/17649
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Linter and formatter conflicts with docstrings
 
 ---
 
-_Issue opened by @Frakko on 2025-04-26 21:21_
+_@Frakko_
 
 ### Summary
 

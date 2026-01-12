@@ -13,14 +13,14 @@ head: micha/file-level-type-ignore
 created_at: 2024-12-20T12:59:32Z
 updated_at: 2024-12-23T10:01:14Z
 url: https://github.com/astral-sh/ruff/pull/15081
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Support file-level `type: ignore` comments
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-20 12:59_
+_@MichaReiser_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-09T08:24:58Z
 updated_at: 2025-12-24T13:04:04Z
 url: https://github.com/astral-sh/ty/issues/1822
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Promote literals in unannotated module globals
 
 ---
 
-_Issue opened by @JanFontanet on 2025-12-09 08:24_
+_@JanFontanet_
 
 ### Summary
 

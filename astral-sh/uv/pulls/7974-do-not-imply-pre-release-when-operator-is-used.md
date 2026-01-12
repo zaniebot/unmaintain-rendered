@@ -14,14 +14,14 @@ head: fix_ne_pre
 created_at: 2024-10-07T15:08:21Z
 updated_at: 2024-10-21T18:27:23Z
 url: https://github.com/astral-sh/uv/pull/7974
-synced_at: 2026-01-10T12:54:00Z
+synced_at: 2026-01-12T16:08:06Z
 ```
 
 # do not imply pre-release when `!=` operator is used
 
 ---
 
-_Pull request opened by @Czaki on 2024-10-07 15:08_
+_@Czaki_
 
 ## Summary
 

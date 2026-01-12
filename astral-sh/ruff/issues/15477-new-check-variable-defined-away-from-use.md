@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-14T19:10:54Z
 updated_at: 2025-01-29T18:17:13Z
 url: https://github.com/astral-sh/ruff/issues/15477
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # New check: variable defined away from use
 
 ---
 
-_Issue opened by @nickdrozd on 2025-01-14 19:10_
+_@nickdrozd_
 
 Sometimes a variable is defined away from its first use. If an early return comes between the definition and the use, then the definition is wasteful.
 

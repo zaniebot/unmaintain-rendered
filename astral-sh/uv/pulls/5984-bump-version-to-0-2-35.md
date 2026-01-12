@@ -13,14 +13,14 @@ head: zb/0235
 created_at: 2024-08-09T23:03:31Z
 updated_at: 2024-08-10T00:21:54Z
 url: https://github.com/astral-sh/uv/pull/5984
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:08Z
 ```
 
 # Bump version to 0.2.35
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-09 23:03_
+_@zanieb_
 
 Includes a new patch to workaround a regression from #5904, see #5986
 

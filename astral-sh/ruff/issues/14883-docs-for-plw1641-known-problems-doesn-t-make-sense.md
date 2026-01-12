@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-09T23:34:48Z
 updated_at: 2024-12-20T08:33:17Z
 url: https://github.com/astral-sh/ruff/issues/14883
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # (📚) docs for `PLW1641` `known problems` doesn't make sense
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-12-09 23:34_
+_@KotlinIsland_
 
 ```
 # Known problems

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-28T13:15:50Z
 updated_at: 2025-08-05T10:54:38Z
 url: https://github.com/astral-sh/uv/issues/14940
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:59Z
 ```
 
 # uv doesn't install build dependencies in `no-build-isolation` mode for current project
 
 ---
 
-_Issue opened by @tudoroancea on 2025-07-28 13:15_
+_@tudoroancea_
 
 ### Question
 

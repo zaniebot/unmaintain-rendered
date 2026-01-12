@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-17T03:42:10Z
 updated_at: 2023-08-20T12:57:26Z
 url: https://github.com/astral-sh/ruff/issues/6638
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `PERF102` is not detected in generators or comprehensions
 
 ---
 
-_Issue opened by @dosisod on 2023-08-17 03:42_
+_@dosisod_
 
 `PERF102` is not detected in generators or comprehensions, only in `for` loops:
 

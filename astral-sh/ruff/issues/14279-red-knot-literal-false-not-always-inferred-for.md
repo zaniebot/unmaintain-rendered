@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-11-11T13:41:12Z
 updated_at: 2024-11-20T01:32:44Z
 url: https://github.com/astral-sh/ruff/issues/14279
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] `Literal[False]` not always inferred for comparisons between tuple types with disjunct literal elements
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-11-11 13:41_
+_@AlexWaygood_
 
 red-knot infers the following types for the following comparisons:
 

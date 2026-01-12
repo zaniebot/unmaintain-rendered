@@ -14,14 +14,14 @@ head: test_with_custom_install_dir
 created_at: 2024-12-20T06:52:03Z
 updated_at: 2025-03-03T03:58:55Z
 url: https://github.com/astral-sh/uv/pull/10048
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:09:06Z
 ```
 
 # Test with custom install dir
 
 ---
 
-_Pull request opened by @1hakusai1 on 2024-12-20 06:52_
+_@1hakusai1_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: zb/novel-features
 created_at: 2024-02-08T18:22:10Z
 updated_at: 2024-02-15T21:56:06Z
 url: https://github.com/astral-sh/uv/pull/1265
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:32Z
 ```
 
 # Shorten the novel features highlight in README
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-08 18:22_
+_@zanieb_
 
 _No description provided._
 

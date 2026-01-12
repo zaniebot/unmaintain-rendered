@@ -15,14 +15,14 @@ head: ag/fix-subtraction
 created_at: 2025-11-21T19:05:36Z
 updated_at: 2025-11-21T21:34:42Z
 url: https://github.com/astral-sh/ruff/pull/21570
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Fix subtraction overflow bug
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-11-21 19:05_
+_@BurntSushi_
 
 PR #21549 introduced a subtle overflow bug that seemed impossible, but
 can empirically happen. This PR fixes it by saturating to zero.

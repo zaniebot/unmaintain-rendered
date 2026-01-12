@@ -13,14 +13,14 @@ head: refactor-package-roots
 created_at: 2024-03-24T09:05:12Z
 updated_at: 2024-03-24T14:35:24Z
 url: https://github.com/astral-sh/ruff/pull/10543
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Refactor `package_roots` for readability.
 
 ---
 
-_Pull request opened by @dizzy57 on 2024-03-24 09:05_
+_@dizzy57_
 
 ## Summary
 Replaced explicit `match` with a call to `hash_map::Entry::or_insert_with` to reduce code nesting.

@@ -13,14 +13,14 @@ head: dependabot/cargo/reflink-copy-0.1.15
 created_at: 2024-03-11T21:28:51Z
 updated_at: 2024-03-11T21:47:45Z
 url: https://github.com/astral-sh/uv/pull/2364
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:04:59Z
 ```
 
 # Bump reflink-copy from 0.1.14 to 0.1.15
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-11 21:28_
+_@dependabot_
 
 Bumps [reflink-copy](https://github.com/cargo-bins/reflink-copy) from 0.1.14 to 0.1.15.
 <details>

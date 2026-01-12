@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-18T05:37:46Z
 updated_at: 2024-01-31T21:45:25Z
 url: https://github.com/astral-sh/ruff/issues/8037
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # W291: ruff --fix removes trailing whitespace in multiline string
 
 ---
 
-_Issue opened by @Jasha10 on 2023-10-18 05:37_
+_@Jasha10_
 
 When `W291` ([trailing-whitespace](https://docs.astral.sh/ruff/rules/trailing-whitespace/)) is enabled, ruff warns about trailing whitespace in multiline strings.
 When `--fix` is passed, ruff modifies the multiline string. This could result in a behavior change of the python code.

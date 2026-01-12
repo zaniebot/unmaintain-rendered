@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-03T10:18:55Z
 updated_at: 2024-12-03T10:22:12Z
 url: https://github.com/astral-sh/ruff/issues/14751
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `blank-line-with-whitespace` (`W293`) - newlines in example codeblocks are broken
 
 ---
 
-_Issue opened by @DetachHead on 2024-12-03 10:18_
+_@DetachHead_
 
 https://docs.astral.sh/ruff/rules/blank-line-with-whitespace/
 

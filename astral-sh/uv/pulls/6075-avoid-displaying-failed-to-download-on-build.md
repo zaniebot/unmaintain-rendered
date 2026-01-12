@@ -13,14 +13,14 @@ head: zb/build-err-download
 created_at: 2024-08-14T00:04:55Z
 updated_at: 2024-08-14T22:27:56Z
 url: https://github.com/astral-sh/uv/pull/6075
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:11Z
 ```
 
 # Avoid displaying "failed to download" on build failures for local source distributions
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-14 00:04_
+_@zanieb_
 
 Especially with workspace members (e.g., [this new test case](https://github.com/astral-sh/uv/pull/6073/files#diff-273076013b4f5a8139defd5dcd24f5d1eb91c0266dceb4448fdeddceb79f7738R1377-R1379)), I find it very confusing that we say we failed to download these distributions.
 

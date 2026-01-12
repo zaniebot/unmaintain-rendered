@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-09-06T14:40:40Z
 updated_at: 2020-09-08T17:54:27Z
 url: https://github.com/clap-rs/clap/issues/2125
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Excess whitespace in help when using default and possible values
 
 ---
 
-_Issue opened by @ghost on 2020-09-06 14:40_
+_@ghost_
 
 ### Make sure you completed the following tasks
 

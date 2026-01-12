@@ -12,14 +12,14 @@ head: charlie/commands
 created_at: 2022-12-12T15:22:31Z
 updated_at: 2022-12-12T15:22:48Z
 url: https://github.com/astral-sh/ruff/pull/1209
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Move more commands into commands.rs
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-12 15:22_
+_@charliermarsh_
 
 _No description provided._
 

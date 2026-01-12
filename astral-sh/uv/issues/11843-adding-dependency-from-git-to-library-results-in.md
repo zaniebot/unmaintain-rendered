@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T23:22:23Z
 updated_at: 2025-05-14T20:14:15Z
 url: https://github.com/astral-sh/uv/issues/11843
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # Adding dependency from git to library results in error when installing with pip
 
 ---
 
-_Issue opened by @yalap13 on 2025-02-27 23:22_
+_@yalap13_
 
 ### Question
 

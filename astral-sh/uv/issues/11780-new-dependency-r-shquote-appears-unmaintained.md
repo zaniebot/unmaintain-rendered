@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-25T18:37:19Z
 updated_at: 2025-02-26T21:47:25Z
 url: https://github.com/astral-sh/uv/issues/11780
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # New dependency r-shquote appears unmaintained
 
 ---
 
-_Issue opened by @musicinmybrain on 2025-02-25 18:37_
+_@musicinmybrain_
 
 ### Summary
 

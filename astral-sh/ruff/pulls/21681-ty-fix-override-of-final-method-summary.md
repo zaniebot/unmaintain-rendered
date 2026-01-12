@@ -14,14 +14,14 @@ head: final-method-override-summary
 created_at: 2025-11-28T16:12:54Z
 updated_at: 2025-12-27T00:21:15Z
 url: https://github.com/astral-sh/ruff/pull/21681
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] Fix override of final method summary
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-11-28 16:12_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-16T14:43:57Z
 updated_at: 2025-06-17T05:46:15Z
 url: https://github.com/astral-sh/ruff/issues/18712
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PLE0241 fix should be unsafe
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-16 14:43_
+_@dscorbett_
 
 ### Summary
 

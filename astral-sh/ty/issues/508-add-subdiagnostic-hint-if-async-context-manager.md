@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-25T11:47:07Z
 updated_at: 2025-05-26T19:34:48Z
 url: https://github.com/astral-sh/ty/issues/508
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Add subdiagnostic hint if async context manager is used in non-async `with` statement
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-05-25 11:47_
+_@AlexWaygood_
 
 CPython just added a really nice hint to its diagnostic message if you use an async context manager in a non-async `with` statement:
 

@@ -14,14 +14,14 @@ head: konsti/windows-only-windows
 created_at: 2025-09-08T16:05:33Z
 updated_at: 2025-09-09T15:17:46Z
 url: https://github.com/astral-sh/uv/pull/15737
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:54Z
 ```
 
 # Use the `windows` crate facade consistently
 
 ---
 
-_Pull request opened by @konstin on 2025-09-08 16:05_
+_@konstin_
 
 The initial motivation for this change was that we were using both the `windows`, the `window_sys` and the `windows_core` crate in various places. These crates have slightly unconventional versioning scheme where there is a large workspace with the same version in general, but only some crates get breaking releases when a new breaking release happens, the others stay on the previous breaking version. The `windows` crate is a shim for all three of them, with a single version. This simplifies handling the versions.
 

@@ -14,14 +14,14 @@ head: ibraheem/progress-bar
 created_at: 2025-05-08T20:09:22Z
 updated_at: 2025-05-09T17:32:29Z
 url: https://github.com/astral-sh/ruff/pull/17965
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # Add progress bar for `ty check`
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-05-08 20:09_
+_@ibraheemdev_
 
 ## Summary
 

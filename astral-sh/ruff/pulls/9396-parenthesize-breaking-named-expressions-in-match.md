@@ -14,14 +14,14 @@ head: charlie/parens
 created_at: 2024-01-05T00:38:51Z
 updated_at: 2024-01-08T14:51:54Z
 url: https://github.com/astral-sh/ruff/pull/9396
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Parenthesize breaking named expressions in match guards
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-05 00:38_
+_@charliermarsh_
 
 ## Summary
 

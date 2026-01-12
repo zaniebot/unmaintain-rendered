@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-28T08:47:53Z
 updated_at: 2025-10-28T08:50:14Z
 url: https://github.com/astral-sh/uv/issues/16476
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # Uv tool install from git+https fails to find dependency on pypi
 
 ---
 
-_Issue opened by @arvid-norlander on 2025-10-28 08:47_
+_@arvid-norlander_
 
 ### Summary
 

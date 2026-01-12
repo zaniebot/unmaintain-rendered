@@ -13,14 +13,14 @@ head: refactor-AIR303
 created_at: 2025-01-02T12:42:53Z
 updated_at: 2025-01-23T08:50:11Z
 url: https://github.com/astral-sh/ruff/pull/15220
-synced_at: 2026-01-10T20:05:43Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # refactor(AIR303): move duplicate qualified_name.to_string() to Diagnostic argument
 
 ---
 
-_Pull request opened by @Lee-W on 2025-01-02 12:42_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

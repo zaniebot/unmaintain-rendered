@@ -14,14 +14,14 @@ head: zb/config-versions
 created_at: 2024-08-19T19:18:18Z
 updated_at: 2024-08-19T19:22:59Z
 url: https://github.com/astral-sh/uv/pull/6226
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Link to persistent configuration options in Python versions document
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 19:18_
+_@zanieb_
 
 _No description provided._
 

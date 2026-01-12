@@ -13,14 +13,14 @@ head: fix-15722-type-checking
 created_at: 2025-03-03T04:14:01Z
 updated_at: 2025-03-04T16:16:58Z
 url: https://github.com/astral-sh/ruff/pull/16468
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] respect `TYPE_CHECKING` even if not imported from typing
 
 ---
 
-_Pull request opened by @mtshiba on 2025-03-03 04:14_
+_@mtshiba_
 
 ## Summary
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-03-27T20:00:42Z
 updated_at: 2023-08-23T15:52:01Z
 url: https://github.com/astral-sh/ruff/issues/3762
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Support an allowlist of function calls in argument defaults for B008
 
 ---
 
-_Issue opened by @rouge8 on 2023-03-27 20:00_
+_@rouge8_
 
 It would be great if B008 supported an allowlist of function calls, similar to `extend-immutable-calls` for B006. We do a lot of this in our code which as far as I know has no subtle bugs:
 

@@ -13,14 +13,14 @@ head: konsti/pylock-toml-for-packse
 created_at: 2025-09-11T18:48:43Z
 updated_at: 2025-09-16T13:25:13Z
 url: https://github.com/astral-sh/uv/pull/15796
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:56Z
 ```
 
 # packse: Use our own rendering exclusively, and use pylock.toml
 
 ---
 
-_Pull request opened by @konstin on 2025-09-11 18:48_
+_@konstin_
 
 This PR contains two changes: The companion PR to https://github.com/astral-sh/packse/pull/277, which moderately simplifies the uv side, and switching to pylock.toml for packse as dogfooding. These changes can be applied independent from each other.
 

@@ -13,14 +13,14 @@ head: ups/resolver-dependency-cycle
 created_at: 2024-09-18T15:29:48Z
 updated_at: 2024-09-20T18:07:34Z
 url: https://github.com/astral-sh/uv/pull/7505
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:52Z
 ```
 
 # Provide resolution hints in case of possible local name conflicts
 
 ---
 
-_Pull request opened by @lucab on 2024-09-18 15:29_
+_@lucab_
 
 This enhances the hints generator in the resolver with some heuristic to detect and warn in case of failures due to version mismatches on a local package. Those may be the symptom of name conflict/shadowing with a transitive dependency.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-03-03T18:20:48Z
 updated_at: 2022-03-03T19:03:19Z
 url: https://github.com/clap-rs/clap/issues/3530
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # command! macro is missing
 
 ---
 
-_Issue opened by @IoT-master on 2022-03-03 18:20_
+_@IoT-master_
 
 ### Please complete the following tasks
 

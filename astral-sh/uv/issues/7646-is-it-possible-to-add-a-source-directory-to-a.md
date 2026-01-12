@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-23T17:09:24Z
 updated_at: 2025-04-12T14:21:50Z
 url: https://github.com/astral-sh/uv/issues/7646
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # is it possible to add a source directory to a project?
 
 ---
 
-_Issue opened by @ophiry on 2024-09-23 17:09_
+_@ophiry_
 
 I want to add either the projects source directory - expecting it to be added to sys.path of the venv
 

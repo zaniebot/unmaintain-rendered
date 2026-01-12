@@ -14,14 +14,14 @@ head: konstin/fix-gh9080
 created_at: 2023-12-15T10:52:23Z
 updated_at: 2023-12-15T17:02:16Z
 url: https://github.com/astral-sh/ruff/pull/9147
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Fix panic in D208 with multibyte indent
 
 ---
 
-_Pull request opened by @konstin on 2023-12-15 10:52_
+_@konstin_
 
 Fix #9080
 

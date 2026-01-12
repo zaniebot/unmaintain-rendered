@@ -14,14 +14,14 @@ head: charlie/min-warn
 created_at: 2024-06-11T15:41:29Z
 updated_at: 2024-06-11T18:50:06Z
 url: https://github.com/astral-sh/uv/pull/4234
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:06Z
 ```
 
 # Warn when 'requires-python' does not include a lower bound
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-11 15:41_
+_@charliermarsh_
 
 ## Summary
 

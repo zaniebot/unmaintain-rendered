@@ -13,14 +13,14 @@ head: docs2024/pytorch-guide
 created_at: 2024-08-23T14:54:28Z
 updated_at: 2024-11-19T01:02:55Z
 url: https://github.com/astral-sh/uv/pull/6523
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:07:24Z
 ```
 
 # docs: Add PyTorch installation guide
 
 ---
 
-_Pull request opened by @baggiponte on 2024-08-23 14:54_
+_@baggiponte_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

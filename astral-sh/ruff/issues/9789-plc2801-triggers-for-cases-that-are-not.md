@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-02T16:13:28Z
 updated_at: 2024-05-24T17:27:04Z
 url: https://github.com/astral-sh/ruff/issues/9789
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # PLC2801 triggers for cases that are not necessarily errors
 
 ---
 
-_Issue opened by @ThiefMaster on 2024-02-02 16:13_
+_@ThiefMaster_
 
 Is PLC2801 really supposed to trigger in this case, and suggest using a `get` method that does not exist? I can of course easily silence the rule, but just in case it's overzealous here I'm opening this issue.
 

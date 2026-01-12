@@ -13,14 +13,14 @@ head: alex/lazy-to-instance
 created_at: 2025-08-06T10:56:25Z
 updated_at: 2025-08-06T11:26:27Z
 url: https://github.com/astral-sh/ruff/pull/19781
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] Improve subscript narrowing for "safe mutable classes"
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-06 10:56_
+_@AlexWaygood_
 
 ## Summary
 

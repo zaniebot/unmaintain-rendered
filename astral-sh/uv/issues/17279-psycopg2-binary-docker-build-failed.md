@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-31T12:54:11Z
 updated_at: 2026-01-01T07:06:03Z
 url: https://github.com/astral-sh/uv/issues/17279
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # psycopg2-binary docker build failed
 
 ---
 
-_Issue opened by @blossomsg on 2025-12-31 12:54_
+_@blossomsg_
 
 ### Summary
 

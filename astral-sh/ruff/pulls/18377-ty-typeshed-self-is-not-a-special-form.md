@@ -14,14 +14,14 @@ head: cjm/fix-self
 created_at: 2025-05-29T23:36:29Z
 updated_at: 2025-05-30T06:35:04Z
 url: https://github.com/astral-sh/ruff/pull/18377
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] _typeshed.Self is not a special form
 
 ---
 
-_Pull request opened by @carljm on 2025-05-29 23:36_
+_@carljm_
 
 ## Summary
 

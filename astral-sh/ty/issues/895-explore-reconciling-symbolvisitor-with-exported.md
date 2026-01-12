@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-25T20:16:31Z
 updated_at: 2025-12-04T20:27:49Z
 url: https://github.com/astral-sh/ty/issues/895
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Explore reconciling `SymbolVisitor` with `exported_symbols`
 
 ---
 
-_Issue opened by @UnboundVariable on 2025-07-25 20:16_
+_@UnboundVariable_
 
 [PR #19521](https://github.com/astral-sh/ruff/pull/19521) implements a new `SymbolVisitor` that collects symbols for the "workspace symbols" and "document symbols" language server features. The same visitor mechanism is designed to be usable by a future auto-import feature as well.
 

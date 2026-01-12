@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-22T03:06:05Z
 updated_at: 2023-09-28T06:40:21Z
 url: https://github.com/astral-sh/ruff/issues/6750
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: inconsistency for parenthesized `with` with trailing comment
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-08-22 03:06_
+_@dhruvmanila_
 
 Given:
 ```python

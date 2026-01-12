@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-04T14:33:45Z
 updated_at: 2024-08-05T07:49:05Z
 url: https://github.com/astral-sh/ruff/issues/12662
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `cargo test` for 0.5.6 fails on s390x, riscv5 and ppc64le
 
 ---
 
-_Issue opened by @WhyNotHugo on 2024-08-04 14:33_
+_@WhyNotHugo_
 
 ```
    Compiling codspeed v2.6.0

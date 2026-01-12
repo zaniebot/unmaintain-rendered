@@ -12,14 +12,14 @@ head: publish-with-content-length-issue-11862
 created_at: 2025-03-11T10:45:43Z
 updated_at: 2025-03-11T14:54:31Z
 url: https://github.com/astral-sh/uv/pull/12111
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:08Z
 ```
 
 # publish with sized stream to comply with WSGI pypi server constraints.
 
 ---
 
-_Pull request opened by @jmrouet on 2025-03-11 10:45_
+_@jmrouet_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

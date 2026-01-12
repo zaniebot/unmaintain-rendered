@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-06T08:45:18Z
 updated_at: 2023-09-21T01:28:13Z
 url: https://github.com/astral-sh/ruff/issues/4897
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # F601: Duplicated keys with different parenthesisation fixed incorrectly
 
 ---
 
-_Issue opened by @addisoncrump on 2023-06-06 08:45_
+_@addisoncrump_
 
 This is a case which I believe is potentially indicative of other bugs with the F601 fix.
 

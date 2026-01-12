@@ -13,14 +13,14 @@ head: konsti/hint-different-environments
 created_at: 2025-05-14T16:13:52Z
 updated_at: 2025-06-06T14:17:53Z
 url: https://github.com/astral-sh/uv/pull/13455
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:41Z
 ```
 
 # Hint at `tool.uv.environments` on resolution error
 
 ---
 
-_Pull request opened by @konstin on 2025-05-14 16:13_
+_@konstin_
 
 Users are not (yet) properly familiar with the concept of universal resolution and its implication that we need to resolve for all possible platforms and Python versions. Some projects only target a specific platform or Python version, and users experience resolution errors due to failures for other platforms. Indicated by the number of questions we get about it, `tool.uv.environments` for restricting environments is not well discoverable.
 

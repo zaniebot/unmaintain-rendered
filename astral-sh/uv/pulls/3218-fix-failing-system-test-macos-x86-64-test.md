@@ -13,14 +13,14 @@ head: charlie/w
 created_at: 2024-04-23T18:18:04Z
 updated_at: 2024-04-23T18:37:27Z
 url: https://github.com/astral-sh/uv/pull/3218
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:30Z
 ```
 
 # Fix failing `system-test-macos-x86_64` test
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-23 18:18_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-19T13:46:22Z
 updated_at: 2024-10-15T02:31:58Z
 url: https://github.com/astral-sh/uv/issues/7549
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:14Z
 ```
 
 # `uv pip install` failed on Windows: `stream did not contain valid UTF-8`
 
 ---
 
-_Issue opened by @jfcherng on 2024-09-19 13:46_
+_@jfcherng_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

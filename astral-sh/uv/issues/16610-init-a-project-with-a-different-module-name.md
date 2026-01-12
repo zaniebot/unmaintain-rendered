@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-06T10:46:32Z
 updated_at: 2025-12-19T13:13:06Z
 url: https://github.com/astral-sh/uv/issues/16610
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Init a project with a different module name
 
 ---
 
-_Issue opened by @vepain on 2025-11-06 10:46_
+_@vepain_
 
 ### Summary
 

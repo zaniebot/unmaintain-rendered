@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-04T19:04:01Z
 updated_at: 2025-04-07T14:17:17Z
 url: https://github.com/astral-sh/uv/issues/12679
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # Dockerhub mirror of images
 
 ---
 
-_Issue opened by @shughes-uk on 2025-04-04 19:04_
+_@shughes-uk_
 
 ### Summary
 

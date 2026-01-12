@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-12T15:19:11Z
 updated_at: 2024-06-12T21:09:23Z
 url: https://github.com/clap-rs/clap/issues/5529
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # command! macro doesn't get inherited properties from workspace
 
 ---
 
-_Issue opened by @tylerjw on 2024-06-12 15:19_
+_@tylerjw_
 
 ### Please complete the following tasks
 

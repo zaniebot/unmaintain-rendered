@@ -12,14 +12,14 @@ head: update-to-the-new-rule-architecture
 created_at: 2023-05-22T22:14:36Z
 updated_at: 2023-05-24T16:16:47Z
 url: https://github.com/astral-sh/ruff/pull/4589
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Update to the new rule architecture
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-22 22:14_
+_@JonathanPlasse_
 
 The scripts `add_rule.py` only work correctly when we use the following rule architecture when there is a rules folder that contains a file for each rule. Like this adding a rule consist of adding an entry in mod.rs and a new rule file and some other changes.
 Without this change `add_rule.py` will create the files like in the new architecture but it will not compile as it requires changing manually the generated files.

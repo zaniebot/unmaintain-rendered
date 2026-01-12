@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-28T08:25:56Z
 updated_at: 2024-04-04T03:55:11Z
 url: https://github.com/astral-sh/uv/issues/2037
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Error while installing pytorch with uv
 
 ---
 
-_Issue opened by @Tanmaypatil123 on 2024-02-28 08:25_
+_@Tanmaypatil123_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with UV.

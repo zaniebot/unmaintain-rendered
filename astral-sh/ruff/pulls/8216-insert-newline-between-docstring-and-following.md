@@ -13,14 +13,14 @@ head: insert-newline-between-docstring-and-comment
 created_at: 2023-10-25T13:44:10Z
 updated_at: 2023-10-31T11:07:24Z
 url: https://github.com/astral-sh/ruff/pull/8216
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Insert newline between docstring and following own line comment
 
 ---
 
-_Pull request opened by @konstin on 2023-10-25 13:44_
+_@konstin_
 
 **Summary** Previously, own line comment following after a docstring followed by newline(s) before the first content statement were treated as trailing on the docstring and we didn't insert a newline after the docstring as black would.
 

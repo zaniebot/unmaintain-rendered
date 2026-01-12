@@ -13,14 +13,14 @@ head: fix-safety-section-post-init-defaults
 created_at: 2025-05-01T07:24:58Z
 updated_at: 2025-05-11T16:15:16Z
 url: https://github.com/astral-sh/ruff/pull/17760
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [`ruff`] add fix safety section (`RUF033`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-05-01 07:24_
+_@VascoSch92_
 
 The PR add the fix safety section for rule `RUF033` (https://github.com/astral-sh/ruff/issues/15584 ).
 

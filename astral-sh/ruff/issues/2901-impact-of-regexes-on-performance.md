@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-14T21:01:08Z
 updated_at: 2023-02-17T12:52:18Z
 url: https://github.com/astral-sh/ruff/issues/2901
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # impact of regexes on performance?
 
 ---
 
-_Issue opened by @BurntSushi on 2023-02-14 21:01_
+_@BurntSushi_
 
 Hi! I'm the author of the regex crate you're using, and I noticed that you're using _a lot_ of regexes in your tool. Do you have a rough idea of how much impact they have on the perf of ruff? If they are a bottleneck I do wonder if there is some room for improvement. For example, I noticed that Unicode mode appears to be enabled for most/all regexes. Do you know if this is strictly required? Just as one example, I see this regex is using Unicode word boundaries:
 

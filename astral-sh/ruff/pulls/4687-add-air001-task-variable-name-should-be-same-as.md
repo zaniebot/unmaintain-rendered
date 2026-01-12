@@ -13,14 +13,14 @@ head: air001-task-name-aligned
 created_at: 2023-05-27T20:03:38Z
 updated_at: 2023-05-29T18:54:08Z
 url: https://github.com/astral-sh/ruff/pull/4687
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Add AIR001: task variable name should be same as task_id arg
 
 ---
 
-_Pull request opened by @jlaneve on 2023-05-27 20:03_
+_@jlaneve_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

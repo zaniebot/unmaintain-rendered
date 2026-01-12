@@ -14,14 +14,14 @@ head: format-binary-expression
 created_at: 2023-06-05T09:27:40Z
 updated_at: 2023-06-07T10:45:49Z
 url: https://github.com/astral-sh/ruff/pull/4862
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Format binary expressions
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-05 09:27_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

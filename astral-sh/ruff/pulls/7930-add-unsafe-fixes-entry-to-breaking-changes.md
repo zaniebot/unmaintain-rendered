@@ -12,14 +12,14 @@ head: zanie/brekaing-unsafe
 created_at: 2023-10-12T18:05:11Z
 updated_at: 2023-10-12T22:35:40Z
 url: https://github.com/astral-sh/ruff/pull/7930
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add unsafe fixes entry to breaking changes
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-12 18:05_
+_@zanieb_
 
 _No description provided._
 

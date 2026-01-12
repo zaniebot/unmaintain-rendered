@@ -13,14 +13,14 @@ head: renovate/codspeedhq-action-4.x
 created_at: 2025-10-06T02:08:42Z
 updated_at: 2025-10-06T06:00:13Z
 url: https://github.com/astral-sh/ruff/pull/20711
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # Update CodSpeedHQ/action action to v4.1.0
 
 ---
 
-_Pull request opened by @renovate on 2025-10-06 02:08_
+_@renovate_
 
 > [!NOTE]
 > Mend has cancelled [the proposed renaming](https://redirect.github.com/renovatebot/renovate/discussions/37842) of the Renovate GitHub app being renamed to `mend[bot]`.

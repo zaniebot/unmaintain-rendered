@@ -14,14 +14,14 @@ head: alex/readonly-property-diag
 created_at: 2025-08-29T12:21:14Z
 updated_at: 2025-08-29T13:23:13Z
 url: https://github.com/astral-sh/ruff/pull/20150
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] Better error message for attempting to assign to a read-only property
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-29 12:21_
+_@AlexWaygood_
 
 ## Summary
 

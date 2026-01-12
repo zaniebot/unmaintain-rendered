@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-06-13T10:10:33Z
 updated_at: 2023-06-13T13:04:44Z
 url: https://github.com/astral-sh/ruff/issues/5046
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Ignoring a specific pylint rule does not work
 
 ---
 
-_Issue opened by @shager on 2023-06-13 10:10_
+_@shager_
 
 Hello,
 

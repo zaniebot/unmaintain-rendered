@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-07T15:32:48Z
 updated_at: 2024-03-02T13:44:07Z
 url: https://github.com/astral-sh/ruff/issues/9875
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # fmt: off doesn't work in `parametrized` decorator
 
 ---
 
-_Issue opened by @mdczaplicki on 2024-02-07 15:32_
+_@mdczaplicki_
 
 I have a test that is heavily parametrized. Like this:
 

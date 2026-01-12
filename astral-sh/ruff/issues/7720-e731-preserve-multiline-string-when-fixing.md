@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-30T03:48:58Z
 updated_at: 2024-12-23T09:29:47Z
 url: https://github.com/astral-sh/ruff/issues/7720
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # E731: Preserve multiline string when fixing.
 
 ---
 
-_Issue opened by @DerBiasto on 2023-09-30 03:48_
+_@DerBiasto_
 
 If I have this statement assigning a lambda, which returns a multiline string, to a variable:
 

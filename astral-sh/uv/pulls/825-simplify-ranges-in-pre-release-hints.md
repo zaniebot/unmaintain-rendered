@@ -13,14 +13,14 @@ head: charlie/simplift
 created_at: 2024-01-07T02:32:22Z
 updated_at: 2024-01-07T17:40:23Z
 url: https://github.com/astral-sh/uv/pull/825
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:13Z
 ```
 
 # Simplify ranges in pre-release hints
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-07 02:32_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/puffin/issues/807.
 

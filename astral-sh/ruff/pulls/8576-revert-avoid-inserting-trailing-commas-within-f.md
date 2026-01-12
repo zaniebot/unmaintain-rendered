@@ -12,14 +12,14 @@ head: revert-8574-charlie/com
 created_at: 2023-11-09T04:52:26Z
 updated_at: 2023-11-09T05:11:51Z
 url: https://github.com/astral-sh/ruff/pull/8576
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Revert "Avoid inserting trailing commas within f-strings"
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-09 04:52_
+_@charliermarsh_
 
 Reverts astral-sh/ruff#8574. This caused a bunch of ecosystem changes -- needs more work.
 

@@ -13,14 +13,14 @@ head: renovate/reqsign-0.x-lockfile
 created_at: 2025-11-17T01:12:33Z
 updated_at: 2025-11-21T01:59:50Z
 url: https://github.com/astral-sh/uv/pull/16755
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:25Z
 ```
 
 # Update Rust crate reqsign to v0.18.1
 
 ---
 
-_Pull request opened by @renovate on 2025-11-17 01:12_
+_@renovate_
 
 This PR contains the following updates:
 

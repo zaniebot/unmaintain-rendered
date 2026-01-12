@@ -14,14 +14,14 @@ head: charlie/total-ord
 created_at: 2026-01-10T16:12:54Z
 updated_at: 2026-01-10T19:35:59Z
 url: https://github.com/astral-sh/ruff/pull/22496
-synced_at: 2026-01-12T02:32:44Z
+synced_at: 2026-01-12T15:57:51Z
 ```
 
 # [ty] Preserve argument signature in `@total_ordering`
 
 ---
 
-_Pull request opened by @charliermarsh on 2026-01-10 16:12_
+_@charliermarsh_
 
 ## Summary
 

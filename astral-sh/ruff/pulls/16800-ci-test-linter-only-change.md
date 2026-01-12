@@ -14,14 +14,14 @@ head: micha/test-linter-change
 created_at: 2025-03-17T11:20:15Z
 updated_at: 2025-05-03T17:46:49Z
 url: https://github.com/astral-sh/ruff/pull/16800
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # [ci] Test linter-only change
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-17 11:20_
+_@MichaReiser_
 
 Tests the changes in https://github.com/astral-sh/ruff/pull/16796 by making a linter only change. 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-23T00:08:45Z
 updated_at: 2024-01-24T00:16:09Z
 url: https://github.com/astral-sh/uv/issues/1054
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Wheel download code should respect caching headers
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-23 00:08_
+_@charliermarsh_
 
 Right now, we always redownload (or, in reality, never redownload, since we assume wheels are up-to-date in the cache). But URL routes in `get_or_build_wheel` should probably respect caching headers?
 

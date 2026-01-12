@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-01T14:39:37Z
 updated_at: 2025-12-03T22:12:38Z
 url: https://github.com/astral-sh/ty/issues/1708
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Log a warning message if we can detect that ty Python version doesn't match active environment Python version
 
 ---
 
-_Issue opened by @alex on 2025-12-01 14:39_
+_@alex_
 
 ### Summary
 

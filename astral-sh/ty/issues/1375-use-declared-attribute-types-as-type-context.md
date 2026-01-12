@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-17T03:20:39Z
 updated_at: 2025-10-31T16:41:15Z
 url: https://github.com/astral-sh/ty/issues/1375
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Use declared attribute types as type context
 
 ---
 
-_Issue opened by @ibraheemdev on 2025-10-17 03:20_
+_@ibraheemdev_
 
 I believe this is the last source of type context we are missing, e.g.,
 ```py

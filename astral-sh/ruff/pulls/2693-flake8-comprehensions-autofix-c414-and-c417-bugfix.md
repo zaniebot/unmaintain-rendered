@@ -13,14 +13,14 @@ head: c414-c417-autofix
 created_at: 2023-02-09T19:09:06Z
 updated_at: 2023-02-12T05:20:43Z
 url: https://github.com/astral-sh/ruff/pull/2693
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # [`flake8-comprehensions`] autofix C414 and C417 + bugfix
 
 ---
 
-_Pull request opened by @sbrugman on 2023-02-09 19:09_
+_@sbrugman_
 
 Closes https://github.com/charliermarsh/ruff/issues/2262 and closes https://github.com/charliermarsh/ruff/issues/2423
 

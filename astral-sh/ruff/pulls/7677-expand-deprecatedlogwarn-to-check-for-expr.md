@@ -12,14 +12,14 @@ head: fix/pgh002
 created_at: 2023-09-27T14:08:53Z
 updated_at: 2023-09-27T15:38:52Z
 url: https://github.com/astral-sh/ruff/pull/7677
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Expand `DeprecatedLogWarn` to check for `Expr::Atrribute` calls 
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-09-27 14:08_
+_@qdegraaf_
 
 ## Summary
 

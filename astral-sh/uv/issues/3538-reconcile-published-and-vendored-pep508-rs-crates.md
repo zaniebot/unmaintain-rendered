@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-13T08:06:02Z
 updated_at: 2025-06-24T20:53:57Z
 url: https://github.com/astral-sh/uv/issues/3538
-synced_at: 2026-01-10T03:32:44Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Reconcile published and vendored pep508_rs crates
 
 ---
 
-_Issue opened by @konstin on 2024-05-13 08:06_
+_@konstin_
 
 There are two versions of the `pep508_rs` crate: The crates.io published one from https://github.com/konstin/pep508_rs, and the vendored one at https://github.com/astral-sh/uv/tree/main/crates/pep508-rs. We added the non-PEP 508 features `VerbatimUrl`, `UnnamedRequirement` and `RequirementOrigin` to the vendored version. We also partially added them to the published version. 
 

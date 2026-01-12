@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-26T23:03:38Z
 updated_at: 2024-08-30T20:40:29Z
 url: https://github.com/astral-sh/uv/issues/2679
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Support for platform independent lockfile and SHA-pinning
 
 ---
 
-_Issue opened by @DetachHead on 2024-03-26 23:03_
+_@DetachHead_
 
 re-raising https://github.com/astral-sh/rye/issues/881
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-23T09:23:17Z
 updated_at: 2024-02-23T19:47:59Z
 url: https://github.com/astral-sh/uv/issues/1906
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Unable to install `pynacl==1.4.0`
 
 ---
 
-_Issue opened by @srxavi on 2024-02-23 09:23_
+_@srxavi_
 
 When executing `uv pip install pynacl==1.4.0` i get the following ouptut:
 

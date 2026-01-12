@@ -13,14 +13,14 @@ head: charlie/intersection
 created_at: 2025-07-30T14:48:50Z
 updated_at: 2025-07-30T15:12:24Z
 url: https://github.com/astral-sh/uv/pull/14976
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:31Z
 ```
 
 # Perform wheel lockfile filtering based on platform and OS intersection
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-07-30 14:48_
+_@charliermarsh_
 
 ## Summary
 

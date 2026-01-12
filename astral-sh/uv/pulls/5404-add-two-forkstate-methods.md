@@ -13,14 +13,14 @@ head: konsti/fork-state-methods
 created_at: 2024-07-24T12:01:53Z
 updated_at: 2024-07-24T12:09:34Z
 url: https://github.com/astral-sh/uv/pull/5404
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:48Z
 ```
 
 # Add two `ForkState` methods
 
 ---
 
-_Pull request opened by @konstin on 2024-07-24 12:01_
+_@konstin_
 
 Small refactoring split out of the instability work. No functional changes.
 

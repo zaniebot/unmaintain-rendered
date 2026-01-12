@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-07-24T17:53:27Z
 updated_at: 2021-12-10T21:59:12Z
 url: https://github.com/clap-rs/clap/issues/2033
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Expand template macros found in Rust comments [feature request]
 
 ---
 
-_Issue opened by @sjackman on 2020-07-24 17:53_
+_@sjackman_
 
 ### Make sure you completed the following tasks
 

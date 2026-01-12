@@ -15,14 +15,14 @@ head: pth's-fixes
 created_at: 2025-08-28T21:18:38Z
 updated_at: 2025-09-18T14:26:49Z
 url: https://github.com/astral-sh/ruff/pull/20143
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [`flake8-use-pathlib`] Fix `PTH101`, `PTH104`, `PTH105`, `PTH121` fixes
 
 ---
 
-_Pull request opened by @chirizxc on 2025-08-28 21:18_
+_@chirizxc_
 
 ## Summary
 Fixes https://github.com/astral-sh/ruff/issues/20134

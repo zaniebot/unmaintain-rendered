@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-01T08:08:02Z
 updated_at: 2023-09-22T04:13:15Z
 url: https://github.com/astral-sh/ruff/issues/6232
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # requires-python being set as * makes ruff fail
 
 ---
 
-_Issue opened by @a666 on 2023-08-01 08:08_
+_@a666_
 
 Given:
 ```toml

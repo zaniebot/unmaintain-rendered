@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-06T23:34:32Z
 updated_at: 2026-01-09T22:16:20Z
 url: https://github.com/astral-sh/ty/issues/770
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Intersection between Protocol and almost overlapping class is simplified incorrectly
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-07-06 23:34_
+_@JelleZijlstra_
 
 ### Summary
 

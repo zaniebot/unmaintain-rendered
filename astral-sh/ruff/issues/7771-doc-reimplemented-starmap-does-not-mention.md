@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-03T03:08:59Z
 updated_at: 2023-10-07T13:27:03Z
 url: https://github.com/astral-sh/ruff/issues/7771
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # [Doc] `reimplemented-starmap` does not mention performance
 
 ---
 
-_Issue opened by @Avasam on 2023-10-03 03:08_
+_@Avasam_
 
 https://github.com/dosisod/refurb/blob/master/docs/checks.md#furb140-use-starmap mentions performance.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-04T17:06:37Z
 updated_at: 2024-03-04T17:08:24Z
 url: https://github.com/astral-sh/uv/issues/2164
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # uv does not install newly added dependencies to `pyproject.toml`
 
 ---
 
-_Issue opened by @duarteocarmo on 2024-03-04 17:06_
+_@duarteocarmo_
 
 
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

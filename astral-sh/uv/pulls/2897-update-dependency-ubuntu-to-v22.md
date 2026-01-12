@@ -13,14 +13,14 @@ head: renovate/ubuntu-22.x
 created_at: 2024-04-08T04:32:09Z
 updated_at: 2024-04-08T04:41:23Z
 url: https://github.com/astral-sh/uv/pull/2897
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:17Z
 ```
 
 # Update dependency ubuntu to v22
 
 ---
 
-_Pull request opened by @renovate on 2024-04-08 04:32_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

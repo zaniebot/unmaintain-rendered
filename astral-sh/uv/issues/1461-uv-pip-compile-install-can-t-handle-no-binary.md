@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T09:29:49Z
 updated_at: 2024-03-27T01:12:31Z
 url: https://github.com/astral-sh/uv/issues/1461
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # `uv pip compile|install` can't handle `--no-binary lxml` option in requirements file
 
 ---
 
-_Issue opened by @sergei-maertens on 2024-02-16 09:29_
+_@sergei-maertens_
 
 This obviously works on pip + pip-tools which we use.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-21T15:14:10Z
 updated_at: 2025-10-03T12:19:05Z
 url: https://github.com/astral-sh/ty/issues/1227
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # How to disable auto completion overload
 
 ---
 
-_Issue opened by @klonuo on 2025-09-21 15:14_
+_@klonuo_
 
 ### Question
 

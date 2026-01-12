@@ -12,14 +12,14 @@ head: zb/fix-sub-union
 created_at: 2025-12-19T14:56:54Z
 updated_at: 2025-12-27T13:54:23Z
 url: https://github.com/astral-sh/ruff/pull/22085
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Fix bug in union builder optimization
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-19 14:56_
+_@zanieb_
 
 Just poking around...
 

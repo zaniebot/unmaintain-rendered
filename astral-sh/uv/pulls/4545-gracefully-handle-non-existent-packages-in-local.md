@@ -13,14 +13,14 @@ head: charlie/err
 created_at: 2024-06-26T12:41:32Z
 updated_at: 2024-06-26T12:54:40Z
 url: https://github.com/astral-sh/uv/pull/4545
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:18Z
 ```
 
 # Gracefully handle non-existent packages in local indexes
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-26 12:41_
+_@charliermarsh_
 
 ## Summary
 

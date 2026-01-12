@@ -12,14 +12,14 @@ head: mawildoer/issue-11632
 created_at: 2025-11-25T23:14:58Z
 updated_at: 2025-11-25T23:18:08Z
 url: https://github.com/astral-sh/uv/pull/16853
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:28Z
 ```
 
 # Issue 11632 - Add sources override
 
 ---
 
-_Pull request opened by @mawildoer on 2025-11-25 23:14_
+_@mawildoer_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-01-25T06:22:49Z
 updated_at: 2022-01-25T13:21:14Z
 url: https://github.com/clap-rs/clap/issues/3337
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Args in same group conflict 
 
 ---
 
-_Issue opened by @nissaofthesea on 2022-01-25 06:22_
+_@nissaofthesea_
 
 ### Please complete the following tasks
 

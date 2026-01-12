@@ -13,14 +13,14 @@ head: red-knot-snapshotting
 created_at: 2024-04-27T06:48:06Z
 updated_at: 2024-04-30T16:08:37Z
 url: https://github.com/astral-sh/ruff/pull/11172
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:36Z
 ```
 
 # [red-knot] Add "cheap" `program.snapshot` 
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-27 06:48_
+_@MichaReiser_
 
 ## Summary
 

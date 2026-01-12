@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-30T14:24:16Z
 updated_at: 2026-01-05T20:06:40Z
 url: https://github.com/astral-sh/uv/issues/17266
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:48Z
 ```
 
 # 0.9.20: DNS failures take ~4x longer due to nested retries
 
 ---
 
-_Issue opened by @shayonj on 2025-12-30 14:24_
+_@shayonj_
 
 ## Summary
 

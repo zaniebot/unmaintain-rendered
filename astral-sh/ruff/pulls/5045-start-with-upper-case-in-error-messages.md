@@ -12,14 +12,14 @@ head: thomas/upper-case-error-messages
 created_at: 2023-06-13T08:27:47Z
 updated_at: 2023-06-13T11:14:47Z
 url: https://github.com/astral-sh/ruff/pull/5045
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Start with Upper case in error messages
 
 ---
 
-_Pull request opened by @Thomasdezeeuw on 2023-06-13 08:27_
+_@Thomasdezeeuw_
 
 ## Summary
 

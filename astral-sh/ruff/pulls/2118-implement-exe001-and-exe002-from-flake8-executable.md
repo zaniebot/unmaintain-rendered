@@ -12,14 +12,14 @@ head: feat/exe001-exe002
 created_at: 2023-01-24T05:25:35Z
 updated_at: 2023-02-22T03:53:53Z
 url: https://github.com/astral-sh/ruff/pull/2118
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Implement `EXE001` and `EXE002` from `flake8-executable`
 
 ---
 
-_Pull request opened by @edgarrmondragon on 2023-01-24 05:25_
+_@edgarrmondragon_
 
 https://github.com/charliermarsh/ruff/issues/2024
 

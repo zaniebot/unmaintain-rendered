@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-28T20:32:14Z
 updated_at: 2025-01-30T22:25:12Z
 url: https://github.com/astral-sh/uv/issues/11039
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:26Z
 ```
 
 # Consider changing the default behaviour of `python-preference`
 
 ---
 
-_Issue opened by @wzyboy on 2025-01-28 20:32_
+_@wzyboy_
 
 ### Summary
 

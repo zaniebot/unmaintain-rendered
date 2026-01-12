@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-02T11:22:35Z
 updated_at: 2024-10-03T10:05:06Z
 url: https://github.com/astral-sh/ruff/issues/13603
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # B017 false-negative with multiple context managers
 
 ---
 
-_Issue opened by @samueljsb on 2024-10-02 11:22_
+_@samueljsb_
 
 ```console
 $ cat t.py

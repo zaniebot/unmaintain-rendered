@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-05-01T20:16:20Z
 updated_at: 2018-08-02T03:29:39Z
 url: https://github.com/clap-rs/clap/issues/95
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Implement Suggestions
 
 ---
 
-_Issue opened by @kbknapp on 2015-05-01 20:16_
+_@kbknapp_
 
 This will be implemented via `feature` as it will incur an additional dep.
 

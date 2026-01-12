@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-09-19T21:13:31Z
 updated_at: 2024-09-19T21:34:12Z
 url: https://github.com/clap-rs/clap/issues/5736
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Derive parser: FromStr implemention with Err=Box<dyn Error> causes inscrutible compiler error
 
 ---
 
-_Issue opened by @Sciencentistguy on 2024-09-19 21:13_
+_@Sciencentistguy_
 
 ### Please complete the following tasks
 

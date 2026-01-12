@@ -11,14 +11,14 @@ head: remove-import-pytest
 created_at: 2023-08-13T06:46:56Z
 updated_at: 2023-08-14T03:11:38Z
 url: https://github.com/astral-sh/ruff/pull/6532
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Remove `import pytest` in `flake8-pytest-style` docs for consistency
 
 ---
 
-_Pull request opened by @harupy on 2023-08-13 06:46_
+_@harupy_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

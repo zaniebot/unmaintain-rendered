@@ -13,14 +13,14 @@ head: license-files-error
 created_at: 2025-11-12T02:09:51Z
 updated_at: 2025-11-14T10:02:04Z
 url: https://github.com/astral-sh/uv/pull/16697
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:23Z
 ```
 
 # Error when a `project.license-files` glob matches nothing
 
 ---
 
-_Pull request opened by @terror on 2025-11-12 02:09_
+_@terror_
 
 Resolves https://github.com/astral-sh/uv/issues/16693
 

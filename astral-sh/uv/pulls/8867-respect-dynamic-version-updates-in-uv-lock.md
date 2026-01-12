@@ -13,14 +13,14 @@ head: charlie/dyn
 created_at: 2024-11-06T16:31:12Z
 updated_at: 2024-11-13T06:38:35Z
 url: https://github.com/astral-sh/uv/pull/8867
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:32Z
 ```
 
 # Respect dynamic version updates in `uv lock`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-06 16:31_
+_@charliermarsh_
 
 ## Summary
 

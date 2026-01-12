@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-23T13:21:03Z
 updated_at: 2026-01-04T19:07:08Z
 url: https://github.com/astral-sh/uv/issues/17228
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:46Z
 ```
 
 # Enforce uv version in pyproject.toml
 
 ---
 
-_Issue opened by @yshiftanlightricks on 2025-12-23 13:21_
+_@yshiftanlightricks_
 
 ### Summary
 

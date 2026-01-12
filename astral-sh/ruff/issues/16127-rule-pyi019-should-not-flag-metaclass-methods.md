@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-12T21:54:16Z
 updated_at: 2025-02-13T18:44:12Z
 url: https://github.com/astral-sh/ruff/issues/16127
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Rule `PYI019` should not flag metaclass methods
 
 ---
 
-_Issue opened by @Geo5 on 2025-02-12 21:54_
+_@Geo5_
 
 ### Description
 

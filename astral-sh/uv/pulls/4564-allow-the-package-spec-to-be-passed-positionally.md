@@ -14,14 +14,14 @@ head: zb/tool-install-name
 created_at: 2024-06-26T19:12:20Z
 updated_at: 2024-06-27T12:35:02Z
 url: https://github.com/astral-sh/uv/pull/4564
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:18Z
 ```
 
 # Allow the package spec to be passed positionally in `uv tool install`
 
 ---
 
-_Pull request opened by @zanieb on 2024-06-26 19:12_
+_@zanieb_
 
 Moves `--from` to a hidden argument — we allow it still but we validate that it is compatible with whatever is passed to `uv tool install <package>`. The positional package can now be a full specification, allowing things like `uv tool install black==24.2.0`.
 

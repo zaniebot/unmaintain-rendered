@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-17T07:58:29Z
 updated_at: 2023-07-19T01:18:22Z
 url: https://github.com/astral-sh/ruff/issues/5824
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Skip cookiecutter directories by default
 
 ---
 
-_Issue opened by @konstin on 2023-07-17 07:58_
+_@konstin_
 
 [cookiecutter](https://github.com/cookiecutter/cookiecutter) is popular way to create projects or modules from templates. Some repositories include cookiecutter templates in subdirectories. The files in those template are often not valid python since they contain jinja2 template tags, e.g. `from transformers import {{cookiecutter.camelcase_modelname}}Tokenizer` or `{% if cookiecutter.has_slow_class == "True" and  cookiecutter.has_fast_class == "True" -%}`.
 

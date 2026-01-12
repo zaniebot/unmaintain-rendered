@@ -13,14 +13,14 @@ head: dhruv/remove-is-current-postfix
 created_at: 2024-04-10T04:17:52Z
 updated_at: 2024-04-10T04:36:33Z
 url: https://github.com/astral-sh/ruff/pull/10855
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # Remove `is_current_token_postfix`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-04-10 04:17_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: docker-semver
 created_at: 2024-08-28T00:08:06Z
 updated_at: 2024-08-28T13:53:33Z
 url: https://github.com/astral-sh/uv/pull/6734
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:30Z
 ```
 
 # feat: publish tag without patch version
 
 ---
 
-_Pull request opened by @samypr100 on 2024-08-28 00:08_
+_@samypr100_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: name-box-str
 created_at: 2024-06-29T09:41:40Z
 updated_at: 2024-08-12T07:52:56Z
 url: https://github.com/astral-sh/ruff/pull/12100
-synced_at: 2026-01-10T21:38:31Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Use `Box<str>` for `Identifier
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-29 09:41_
+_@MichaReiser_
 
 - **Use `smol_str` for Identifier**
 - **Use boxed string for name**

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-13T21:21:42Z
 updated_at: 2025-01-13T21:47:07Z
 url: https://github.com/astral-sh/uv/issues/10579
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # After modifying installed package, `uv pip install` re-installs the modified one
 
 ---
 
-_Issue opened by @bersbersbers on 2025-01-13 21:21_
+_@bersbersbers_
 
 I am unsure if this reproduces cleanly, but is not the first time I have experiences this. In short, I patched `_pytest\config\__init__.py` within my active `.venv` folder. In fact, I added a line `if any("::" in arg for arg in args):` which does not belong there.
 

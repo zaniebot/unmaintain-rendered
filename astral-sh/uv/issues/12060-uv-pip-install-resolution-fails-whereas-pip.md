@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-07T23:25:51Z
 updated_at: 2026-01-06T18:28:58Z
 url: https://github.com/astral-sh/uv/issues/12060
-synced_at: 2026-01-10T03:11:33Z
+synced_at: 2026-01-12T16:00:54Z
 ```
 
 # `uv pip install` resolution fails whereas `pip install` has no issues
 
 ---
 
-_Issue opened by @seakros on 2025-03-07 23:25_
+_@seakros_
 
 ### Summary
 

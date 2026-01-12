@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-10T20:31:18Z
 updated_at: 2023-04-10T20:55:40Z
 url: https://github.com/clap-rs/clap/issues/4830
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # better compile time validation of value_parser types
 
 ---
 
-_Issue opened by @rbtcollins on 2023-04-10 20:31_
+_@rbtcollins_
 
 ### Please complete the following tasks
 

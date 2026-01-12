@@ -13,14 +13,14 @@ head: pyc-ext
 created_at: 2024-08-30T19:48:43Z
 updated_at: 2024-08-30T23:45:24Z
 url: https://github.com/astral-sh/uv/pull/6886
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:34Z
 ```
 
 # Adding support for `.pyc`  files in `uv run`
 
 ---
 
-_Pull request opened by @vss96 on 2024-08-30 19:48_
+_@vss96_
 
 ## Summary
 - The change relates to #6635 is to include compiled python files (.pyc) in the uv run command.

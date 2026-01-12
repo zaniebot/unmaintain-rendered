@@ -12,14 +12,14 @@ head: refactor_magic_trailing_comma
 created_at: 2023-06-23T16:40:08Z
 updated_at: 2023-06-23T17:16:05Z
 url: https://github.com/astral-sh/ruff/pull/5339
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Refactor magic trailing comma
 
 ---
 
-_Pull request opened by @konstin on 2023-06-23 16:40_
+_@konstin_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-09T09:33:07Z
 updated_at: 2024-11-10T13:56:36Z
 url: https://github.com/astral-sh/uv/issues/8965
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:39Z
 ```
 
 # UV Environment Management Tool Confuses Package Paths Across Environments
 
 ---
 
-_Issue opened by @jo-pillar on 2024-11-09 09:33_
+_@jo-pillar_
 
 **Description**
 

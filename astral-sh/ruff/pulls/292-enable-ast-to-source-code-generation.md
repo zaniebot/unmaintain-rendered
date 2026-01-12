@@ -12,14 +12,14 @@ head: charlie/fmt
 created_at: 2022-09-30T15:27:53Z
 updated_at: 2022-10-04T20:27:58Z
 url: https://github.com/astral-sh/ruff/pull/292
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Enable AST-to-source code generation
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-30 15:27_
+_@charliermarsh_
 
 Resolves #100.
 

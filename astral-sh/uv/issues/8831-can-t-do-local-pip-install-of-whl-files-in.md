@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-05T16:28:07Z
 updated_at: 2024-11-05T21:07:08Z
 url: https://github.com/astral-sh/uv/issues/8831
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # can't do local pip install of whl files in requirements.txt when sys_platform is used 
 
 ---
 
-_Issue opened by @hsnoil on 2024-11-05 16:28_
+_@hsnoil_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

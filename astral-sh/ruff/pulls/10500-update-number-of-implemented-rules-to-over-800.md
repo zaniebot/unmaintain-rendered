@@ -13,14 +13,14 @@ head: over-800
 created_at: 2024-03-21T02:31:17Z
 updated_at: 2024-03-21T02:40:43Z
 url: https://github.com/astral-sh/ruff/pull/10500
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Update number of implemented rules to "over 800"
 
 ---
 
-_Pull request opened by @augustelalande on 2024-03-21 02:31_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

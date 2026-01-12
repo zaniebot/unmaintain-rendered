@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-27T10:59:17Z
 updated_at: 2025-03-27T19:56:33Z
 url: https://github.com/astral-sh/ruff/issues/17011
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Rule Request: Do not return NotImplemented from regular methods/functions
 
 ---
 
-_Issue opened by @aardjon on 2025-03-27 10:59_
+_@aardjon_
 
 ### Summary
 

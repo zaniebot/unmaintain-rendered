@@ -13,14 +13,14 @@ head: alex/from-import-submodule-attributes
 created_at: 2025-11-22T15:32:18Z
 updated_at: 2025-11-22T15:37:58Z
 url: https://github.com/astral-sh/ruff/pull/21579
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Add `from` imports to `imported_modules` *if* the module being imported is not relative to the current module
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-22 15:32_
+_@AlexWaygood_
 
 ## Summary
 

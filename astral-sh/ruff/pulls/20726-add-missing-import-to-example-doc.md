@@ -11,14 +11,14 @@ head: docs-missing-import
 created_at: 2025-10-06T19:15:58Z
 updated_at: 2025-10-07T16:08:58Z
 url: https://github.com/astral-sh/ruff/pull/20726
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # Add missing import to example doc
 
 ---
 
-_Pull request opened by @ShaharNaveh on 2025-10-06 19:15_
+_@ShaharNaveh_
 
 Feel free to close this PR if you think it's noise
 

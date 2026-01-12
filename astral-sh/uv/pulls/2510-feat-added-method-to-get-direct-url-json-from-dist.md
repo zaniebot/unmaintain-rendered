@@ -11,14 +11,14 @@ head: feat/add-direct-url-json
 created_at: 2024-03-18T13:39:06Z
 updated_at: 2024-03-21T13:37:34Z
 url: https://github.com/astral-sh/uv/pull/2510
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:05Z
 ```
 
 # feat: added method to get direct url json from dist
 
 ---
 
-_Pull request opened by @tdejager on 2024-03-18 13:39_
+_@tdejager_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: micha/fix-watch
 created_at: 2024-12-06T08:34:46Z
 updated_at: 2024-12-06T08:52:15Z
 url: https://github.com/astral-sh/ruff/pull/14809
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # Fix infinite watch loop by ignoring 'uninteresting' watch events
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-12-06 08:34_
+_@MichaReiser_
 
 ## Summary
 Fixes https://github.com/astral-sh/ruff/issues/14807

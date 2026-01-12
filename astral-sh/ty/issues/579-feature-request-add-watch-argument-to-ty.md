@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-03T21:45:13Z
 updated_at: 2025-06-03T22:28:08Z
 url: https://github.com/astral-sh/ty/issues/579
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Feature request: Add `--watch` argument to ty
 
 ---
 
-_Issue opened by @Kroppeb on 2025-06-03 21:45_
+_@Kroppeb_
 
 Having a `--watch` argument to `ty check` that would refresh the results whenever a file is updated would be nice.
 

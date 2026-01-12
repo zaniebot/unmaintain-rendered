@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-14T09:51:51Z
 updated_at: 2024-09-14T19:15:13Z
 url: https://github.com/astral-sh/uv/issues/7389
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # uv pip install: warn when different packages install the same toplevel module
 
 ---
 
-_Issue opened by @woutervh on 2024-09-14 09:51_
+_@woutervh_
 
 ### Problem
 

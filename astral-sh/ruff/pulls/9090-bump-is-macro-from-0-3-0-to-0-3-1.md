@@ -13,14 +13,14 @@ head: dependabot/cargo/is-macro-0.3.1
 created_at: 2023-12-11T08:44:56Z
 updated_at: 2023-12-11T09:01:13Z
 url: https://github.com/astral-sh/ruff/pull/9090
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Bump is-macro from 0.3.0 to 0.3.1
 
 ---
 
-_Pull request opened by @dependabot on 2023-12-11 08:44_
+_@dependabot_
 
 Bumps [is-macro](https://github.com/kdy1/is-macro) from 0.3.0 to 0.3.1.
 <details>

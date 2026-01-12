@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-09T18:28:32Z
 updated_at: 2024-04-09T21:01:57Z
 url: https://github.com/astral-sh/uv/issues/2941
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # potential breaking change / bug in `uv==0.1.30`
 
 ---
 
-_Issue opened by @zzstoatzz on 2024-04-09 18:28_
+_@zzstoatzz_
 
 the following GHA step
 ```

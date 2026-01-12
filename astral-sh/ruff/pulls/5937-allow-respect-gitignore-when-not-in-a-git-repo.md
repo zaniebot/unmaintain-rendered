@@ -12,14 +12,14 @@ head: dhruv/allow-non-git
 created_at: 2023-07-21T02:17:27Z
 updated_at: 2023-07-21T02:50:21Z
 url: https://github.com/astral-sh/ruff/pull/5937
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:20Z
 ```
 
 # Allow `respect_gitignore` when not in a git repo
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-07-21 02:17_
+_@dhruvmanila_
 
 ## Summary
 

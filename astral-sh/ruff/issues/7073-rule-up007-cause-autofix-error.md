@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-03T09:25:48Z
 updated_at: 2023-09-03T13:23:37Z
 url: https://github.com/astral-sh/ruff/issues/7073
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rule UP007 cause autofix error
 
 ---
 
-_Issue opened by @qarmin on 2023-09-03 09:25_
+_@qarmin_
 
 Ruff 0.0.287 (latest changes from main branch)
 

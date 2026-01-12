@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-03T13:57:28Z
 updated_at: 2025-12-03T20:42:22Z
 url: https://github.com/astral-sh/ty/issues/1744
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Perplexing "Object of type `typing.Any` has no attribute"
 
 ---
 
-_Issue opened by @alex on 2025-12-03 13:57_
+_@alex_
 
 ### Summary
 

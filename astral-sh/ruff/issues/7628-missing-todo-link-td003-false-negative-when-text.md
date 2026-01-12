@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-24T11:39:47Z
 updated_at: 2023-09-24T14:18:00Z
 url: https://github.com/astral-sh/ruff/issues/7628
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `missing-todo-link` (`TD003`) - false negative when text preceeding "TODO"
 
 ---
 
-_Issue opened by @DetachHead on 2023-09-24 11:39_
+_@DetachHead_
 
 ```py
 # asdf TODO: no error here

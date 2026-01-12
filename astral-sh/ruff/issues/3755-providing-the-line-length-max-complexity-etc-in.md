@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-26T23:30:12Z
 updated_at: 2023-05-02T21:59:38Z
 url: https://github.com/astral-sh/ruff/issues/3755
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Providing the line length, max-complexity, etc in --statistics
 
 ---
 
-_Issue opened by @cclauss on 2023-03-26 23:30_
+_@cclauss_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

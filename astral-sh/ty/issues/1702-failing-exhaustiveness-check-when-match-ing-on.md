@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-01T11:37:11Z
 updated_at: 2025-12-02T07:16:44Z
 url: https://github.com/astral-sh/ty/issues/1702
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Failing exhaustiveness check when `match`ing on generic classes
 
 ---
 
-_Issue opened by @sharkdp on 2025-12-01 11:37_
+_@sharkdp_
 
 > This issue still persists when matching against classes that use generics: 
 > 

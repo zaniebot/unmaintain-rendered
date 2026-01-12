@@ -14,14 +14,14 @@ head: micha/add-ty-ignore
 created_at: 2025-11-23T16:17:13Z
 updated_at: 2025-11-29T14:53:17Z
 url: https://github.com/astral-sh/ruff/pull/21595
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:28Z
 ```
 
 # [ty] Add code action to ignore diagnostic on the current line
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-23 16:17_
+_@MichaReiser_
 
 ## Summary
 

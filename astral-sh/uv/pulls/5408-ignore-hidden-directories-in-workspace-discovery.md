@@ -14,14 +14,14 @@ head: charlie/hidden
 created_at: 2024-07-24T14:24:48Z
 updated_at: 2024-07-24T16:21:35Z
 url: https://github.com/astral-sh/uv/pull/5408
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:48Z
 ```
 
 # Ignore hidden directories in workspace discovery
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-24 14:24_
+_@charliermarsh_
 
 ## Summary
 

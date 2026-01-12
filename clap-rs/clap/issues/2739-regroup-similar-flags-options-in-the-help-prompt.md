@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-08-26T12:49:50Z
 updated_at: 2022-08-25T21:57:36Z
 url: https://github.com/clap-rs/clap/issues/2739
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Regroup "similar" flags/options in the help prompt
 
 ---
 
-_Issue opened by @PandH4cker on 2021-08-26 12:49_
+_@PandH4cker_
 
 ### Please complete the following tasks
 

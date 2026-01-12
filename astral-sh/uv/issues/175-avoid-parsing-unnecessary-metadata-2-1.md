@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-24T01:14:43Z
 updated_at: 2023-11-22T13:25:37Z
 url: https://github.com/astral-sh/uv/issues/175
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Avoid parsing unnecessary Metadata 2.1
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-24 01:14_
+_@charliermarsh_
 
 If you just remove all the fields that we don't need from the `Metadata21` struct, it cuts the cached resolution time by like ~30%. This is a free and trivial optimization we can do whenever we're ready.
 

@@ -14,14 +14,14 @@ head: pyi-063
 created_at: 2024-06-02T23:20:31Z
 updated_at: 2024-06-05T23:18:26Z
 url: https://github.com/astral-sh/ruff/pull/11699
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [`flake8-pyi`] Implement `PYI063`
 
 ---
 
-_Pull request opened by @tusharsadhwani on 2024-06-02 23:20_
+_@tusharsadhwani_
 
 ## Summary
 Implements `Y063` from `flake8-pyi`.

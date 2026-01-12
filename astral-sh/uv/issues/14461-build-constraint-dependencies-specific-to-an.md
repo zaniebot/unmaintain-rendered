@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-04T15:33:56Z
 updated_at: 2025-07-07T17:01:06Z
 url: https://github.com/astral-sh/uv/issues/14461
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # build-constraint-dependencies specific to an individual dependency
 
 ---
 
-_Issue opened by @callegar on 2025-07-04 15:33_
+_@callegar_
 
 ### Summary
 

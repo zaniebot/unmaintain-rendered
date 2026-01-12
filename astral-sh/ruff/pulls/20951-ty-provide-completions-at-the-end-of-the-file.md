@@ -14,14 +14,14 @@ head: david/fix-1392
 created_at: 2025-10-17T20:34:01Z
 updated_at: 2025-10-20T12:55:53Z
 url: https://github.com/astral-sh/ruff/pull/20951
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # [ty] Provide completions at the end of the file
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-17 20:34_
+_@sharkdp_
 
 ## Summary
 

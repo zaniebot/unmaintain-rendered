@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-08T14:09:25Z
 updated_at: 2026-01-09T22:41:50Z
 url: https://github.com/astral-sh/ty/issues/223
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Document public parts of ty_extensions API
 
 ---
 
-_Issue opened by @sharkdp on 2025-01-08 14:09_
+_@sharkdp_
 
 Quoting some comments that were spread over multiple threads in [this PR](https://github.com/astral-sh/ruff/pull/15103):
 

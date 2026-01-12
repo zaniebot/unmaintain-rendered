@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-11T10:25:43Z
 updated_at: 2022-01-12T04:38:52Z
 url: https://github.com/clap-rs/clap/issues/3279
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # support multiple completers in Zsh
 
 ---
 
-_Issue opened by @FranklinYu on 2022-01-11 10:25_
+_@FranklinYu_
 
 ### Please complete the following tasks
 

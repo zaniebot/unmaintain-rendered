@@ -13,14 +13,14 @@ head: zb/silence-prettier
 created_at: 2025-12-30T15:32:56Z
 updated_at: 2025-12-30T15:47:01Z
 url: https://github.com/astral-sh/uv/pull/17271
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:41Z
 ```
 
 # Silence prettier logs during crate readme generation
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-30 15:32_
+_@zanieb_
 
 These were interleaved in stderr and are just noise.
 

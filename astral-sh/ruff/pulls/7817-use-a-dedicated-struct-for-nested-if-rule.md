@@ -13,14 +13,14 @@ head: charlie/elif
 created_at: 2023-10-04T17:54:40Z
 updated_at: 2023-10-04T18:25:29Z
 url: https://github.com/astral-sh/ruff/pull/7817
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Use a dedicated struct for "nested if" rule
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-04 17:54_
+_@charliermarsh_
 
 Internal refactor -- finding this rule hard to understand.
 

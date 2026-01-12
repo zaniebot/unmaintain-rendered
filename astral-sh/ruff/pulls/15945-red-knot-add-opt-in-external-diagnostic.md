@@ -13,14 +13,14 @@ head: ag/diagnostic-tests
 created_at: 2025-02-04T19:59:18Z
 updated_at: 2025-02-05T18:08:10Z
 url: https://github.com/astral-sh/ruff/pull/15945
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [red-knot] add opt-in external diagnostic snapshotting to mdtest
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-02-04 19:59_
+_@BurntSushi_
 
 This PR makes it possible to opt into diagnostic snappshotting
 in mdtests. To opt in, add `snapshot-diagnostic` to the info string

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-06-18T04:55:28Z
 updated_at: 2021-07-21T23:31:07Z
 url: https://github.com/clap-rs/clap/issues/2550
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # bash completion filename is different then others
 
 ---
 
-_Issue opened by @XyLyXyRR on 2021-06-18 04:55_
+_@XyLyXyRR_
 
 ### Please complete the following tasks
 

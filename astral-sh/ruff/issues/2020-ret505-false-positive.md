@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-20T10:22:04Z
 updated_at: 2023-01-20T11:05:41Z
 url: https://github.com/astral-sh/ruff/issues/2020
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # RET505 false positive
 
 ---
 
-_Issue opened by @Kludex on 2023-01-20 10:22_
+_@Kludex_
 
 # Description
 

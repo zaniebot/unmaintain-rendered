@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T18:29:08Z
 updated_at: 2025-01-09T00:34:05Z
 url: https://github.com/astral-sh/ruff/issues/14208
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Either support metaclasses that are not subclasses of `type`, or emit a diagnostic when encountering them
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-11-08 18:29_
+_@AlexWaygood_
 
 Believe it or not, Python accepts arbitrary callables as metaclasses in `class` statements -- and those callables don't have to return instances of `type`. As long as the callable accepts the same arguments as `type.__new__`, it's an acceptable metaclass; the binding created by the class statement is set to whatever calling the metaclass returns:
 

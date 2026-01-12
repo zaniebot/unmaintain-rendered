@@ -13,14 +13,14 @@ head: box-type-params
 created_at: 2024-04-19T22:45:05Z
 updated_at: 2024-04-19T23:02:18Z
 url: https://github.com/astral-sh/ruff/pull/11051
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Reduce size of Stmt from 144 to 120 bytes
 
 ---
 
-_Pull request opened by @carljm on 2024-04-19 22:45_
+_@carljm_
 
 ## Summary
 

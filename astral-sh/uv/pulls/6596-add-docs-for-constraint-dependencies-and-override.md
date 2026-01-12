@@ -13,14 +13,14 @@ head: add-docs-constraint-dependency
 created_at: 2024-08-25T08:19:01Z
 updated_at: 2024-08-26T23:40:06Z
 url: https://github.com/astral-sh/uv/pull/6596
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:26Z
 ```
 
 # Add docs for `constraint-dependencies` and `override-dependencies`
 
 ---
 
-_Pull request opened by @Di-Is on 2024-08-25 08:19_
+_@Di-Is_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-29T20:22:28Z
 updated_at: 2024-06-29T22:33:03Z
 url: https://github.com/clap-rs/clap/issues/5559
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # add toml support, like env support
 
 ---
 
-_Issue opened by @RaphaelDarley on 2024-06-29 20:22_
+_@RaphaelDarley_
 
 ### Please complete the following tasks
 

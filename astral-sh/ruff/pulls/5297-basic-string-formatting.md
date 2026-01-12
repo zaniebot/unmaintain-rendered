@@ -14,14 +14,14 @@ head: format-string
 created_at: 2023-06-22T12:20:31Z
 updated_at: 2023-06-23T08:05:13Z
 url: https://github.com/astral-sh/ruff/pull/5297
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Basic string formatting
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-22 12:20_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

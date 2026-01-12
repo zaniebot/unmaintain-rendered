@@ -12,14 +12,14 @@ head: add-diagnostic-fix-from-edit
 created_at: 2023-05-08T10:20:45Z
 updated_at: 2023-05-08T10:50:34Z
 url: https://github.com/astral-sh/ruff/pull/4275
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Remove `Fix::from(Edit)` and add deprecated replacement methods to `Diagnostic`s
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-08 10:20_
+_@MichaReiser_
 
 Follow up to #4198 that removes `impl From<Edit> for Fix`  and instead, adds new methods on `Diagnostic` that allow passing an `Edit`. This approach has the benefit that we can deprecate the old API and nudge people towards using `set_fix`, `with_fix`, and `try_set_fix` together with `Fix::unspecified` (or other variants in the future). This should prevent introducing new calls to the old APIs and we can now replace the calle-sites one by one.
 

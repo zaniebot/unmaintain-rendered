@@ -13,14 +13,14 @@ head: dhruv/symbol-api
 created_at: 2025-02-14T03:40:51Z
 updated_at: 2025-02-17T12:15:42Z
 url: https://github.com/astral-sh/ruff/pull/16152
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # red-knot: move symbol lookups in `symbol.rs`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-02-14 03:40_
+_@dhruvmanila_
 
 ## Summary
 

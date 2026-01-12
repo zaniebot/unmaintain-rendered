@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-11T00:46:12Z
 updated_at: 2022-11-11T17:38:02Z
 url: https://github.com/astral-sh/ruff/issues/674
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Should respect isort:skip comments
 
 ---
 
-_Issue opened by @andersk on 2022-11-11 00:46_
+_@andersk_
 
 `ruff` currently respects `noqa: I001` comments to prevent sorting certain imports. For improved isort compatibility, it should also respect `isort:skip` and `isort:skip_file` comments ([documentation](https://pycqa.github.io/isort/#skip-processing-of-imports-outside-of-configuration)).
 

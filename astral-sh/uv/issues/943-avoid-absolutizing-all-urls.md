@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-16T19:16:08Z
 updated_at: 2024-01-17T14:15:23Z
 url: https://github.com/astral-sh/uv/issues/943
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Avoid absolutizing all URLs
 
 ---
 
-_Issue opened by @charliermarsh on 2024-01-16 19:16_
+_@charliermarsh_
 
 We're seeing a regression from https://github.com/astral-sh/puffin/commit/a99e5e00f22b18ea3194c076e173da14bf481c00.
 

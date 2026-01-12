@@ -12,14 +12,14 @@ head: charlie/resolve-reference
 created_at: 2023-05-18T20:48:59Z
 updated_at: 2023-05-20T03:13:35Z
 url: https://github.com/astral-sh/ruff/pull/4510
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Move reference-resolution into Context
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-18 20:48_
+_@charliermarsh_
 
 ## Summary
 

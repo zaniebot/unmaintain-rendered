@@ -13,14 +13,14 @@ head: bool-true-false
 created_at: 2024-08-31T03:42:03Z
 updated_at: 2024-09-02T07:56:35Z
 url: https://github.com/astral-sh/ruff/pull/13178
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] `Literal[True,False]` normalized to `builtins.bool`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-08-31 03:42_
+_@dylwil3_
 
 The `UnionBuilder` builds `builtins.bool` when handed `Literal[True]` and `Literal[False]`.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-01-18T15:10:54Z
 updated_at: 2025-01-20T17:00:40Z
 url: https://github.com/astral-sh/ruff/issues/15570
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # PLR1702: Visually noisy diagnostic ranges
 
 ---
 
-_Issue opened by @beauxq on 2025-01-18 15:10_
+_@beauxq_
 
 If a function has nested blocks to violate PLR1702, almost the entire function is marked for it, including lines that are not violations.
 

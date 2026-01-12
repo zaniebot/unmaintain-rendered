@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-17T03:52:34Z
 updated_at: 2024-07-17T14:48:05Z
 url: https://github.com/astral-sh/uv/issues/5139
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # `uv tool run` always picks up older python `3.8` over `3.12`
 
 ---
 
-_Issue opened by @j178 on 2024-07-17 03:52_
+_@j178_
 
 ```sh
 $ uv python install 3.8 3.12

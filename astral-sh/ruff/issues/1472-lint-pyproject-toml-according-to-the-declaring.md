@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-30T10:49:51Z
 updated_at: 2023-06-02T03:01:38Z
 url: https://github.com/astral-sh/ruff/issues/1472
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Lint `pyproject.toml` according to the 'Declaring project metadata' spec
 
 ---
 
-_Issue opened by @not-my-profile on 2022-12-30 10:49_
+_@not-my-profile_
 
 [Declaring project metadata](https://packaging.python.org/en/latest/specifications/declaring-project-metadata/) (based on [PEP 621](https://peps.python.org/pep-0621/)) defines how metadata in `pyproject.toml` should be defined. Unless I am missing something there doesn't appear to be an existing lint plugin we could model this after, which would make this a RUF check.
 

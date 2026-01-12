@@ -13,14 +13,14 @@ head: charlie/async-req
 created_at: 2024-03-06T05:35:46Z
 updated_at: 2024-03-06T05:49:11Z
 url: https://github.com/astral-sh/uv/pull/2229
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:56Z
 ```
 
 # Make `Client` optional in `requirements-txt`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-06 05:35_
+_@charliermarsh_
 
 _No description provided._
 

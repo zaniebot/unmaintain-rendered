@@ -13,14 +13,14 @@ head: dhruv/whitespace
 created_at: 2024-06-12T05:55:39Z
 updated_at: 2024-06-12T06:15:08Z
 url: https://github.com/astral-sh/ruff/pull/11844
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Use the existing `ruff_python_trivia::is_python_whitespace` function
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-12 05:55_
+_@dhruvmanila_
 
 ## Summary
 

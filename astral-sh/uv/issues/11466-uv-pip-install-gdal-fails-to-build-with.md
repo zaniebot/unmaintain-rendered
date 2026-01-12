@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-12T23:44:02Z
 updated_at: 2025-07-13T23:18:59Z
 url: https://github.com/astral-sh/uv/issues/11466
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # `uv pip install gdal` fails to build, with workaround (Windows)
 
 ---
 
-_Issue opened by @maphew on 2025-02-12 23:44_
+_@maphew_
 
 ### Summary
 

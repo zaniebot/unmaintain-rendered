@@ -14,14 +14,14 @@ head: david/mypy_primer-debug-build
 created_at: 2025-03-28T13:06:38Z
 updated_at: 2025-03-28T13:17:49Z
 url: https://github.com/astral-sh/ruff/pull/17036
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] mypy_primer: use debug builds of red_knot
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-28 13:06_
+_@sharkdp_
 
 ## Summary
 

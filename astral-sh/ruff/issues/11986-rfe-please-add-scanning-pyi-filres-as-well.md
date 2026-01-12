@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-23T10:15:39Z
 updated_at: 2025-07-14T20:44:32Z
 url: https://github.com/astral-sh/ruff/issues/11986
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # RFE: please add scanning .pyi filres as well
 
 ---
 
-_Issue opened by @wuch-g2v on 2024-06-23 10:15_
+_@wuch-g2v_
 
 Looks like currently if ruff is executed with directory as param it scans only .py files.
 It would be good to add to scan .pyi as well (I'm not sure about .pyx and other).

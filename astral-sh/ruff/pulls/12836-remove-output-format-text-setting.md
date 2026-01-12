@@ -14,14 +14,14 @@ head: remove-output-format-text
 created_at: 2024-08-12T09:19:36Z
 updated_at: 2024-10-08T11:47:15Z
 url: https://github.com/astral-sh/ruff/pull/12836
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Remove `output-format=text` setting
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-08-12 09:19_
+_@MichaReiser_
 
 ## Summary
 

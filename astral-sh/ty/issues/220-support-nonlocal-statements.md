@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-09T18:57:48Z
 updated_at: 2025-07-11T16:45:22Z
 url: https://github.com/astral-sh/ty/issues/220
-synced_at: 2026-01-10T02:07:35Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # support nonlocal statements
 
 ---
 
-_Issue opened by @carljm on 2025-01-09 18:57_
+_@carljm_
 
 _No description provided._
 

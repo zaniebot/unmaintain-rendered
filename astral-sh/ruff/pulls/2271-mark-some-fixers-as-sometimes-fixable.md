@@ -12,14 +12,14 @@ head: sometimes
 created_at: 2023-01-27T17:51:56Z
 updated_at: 2023-01-27T23:23:33Z
 url: https://github.com/astral-sh/ruff/pull/2271
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # mark some fixers as sometimes-fixable
 
 ---
 
-_Pull request opened by @spaceone on 2023-01-27 17:51_
+_@spaceone_
 
 A lot of fixers tell they are `always` fixable while they are only sometimes fixable.
 

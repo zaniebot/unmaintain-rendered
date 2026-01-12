@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-17T14:41:16Z
 updated_at: 2025-01-17T14:56:11Z
 url: https://github.com/astral-sh/ruff/issues/15552
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # `TC001`, `TC002`, `TC003` - documentation mentions import cycles which is misleading
 
 ---
 
-_Issue opened by @DetachHead on 2025-01-17 14:41_
+_@DetachHead_
 
 the documentation for these three rules all mention import cycles:
 

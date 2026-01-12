@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-13T12:39:12Z
 updated_at: 2025-04-22T08:51:58Z
 url: https://github.com/astral-sh/ruff/issues/17374
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # ERA001 for decorators
 
 ---
 
-_Issue opened by @amotl on 2025-04-13 12:39_
+_@amotl_
 
 ### Question
 

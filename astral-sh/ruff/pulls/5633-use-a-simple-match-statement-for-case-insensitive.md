@@ -14,14 +14,14 @@ head: charlie/matches
 created_at: 2023-07-10T02:03:20Z
 updated_at: 2023-07-10T02:41:38Z
 url: https://github.com/astral-sh/ruff/pull/5633
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Use a simple match statement for case-insensitive noqa lookup
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-10 02:03_
+_@charliermarsh_
 
 ## Summary
 

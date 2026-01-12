@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-18T06:57:37Z
 updated_at: 2025-01-30T16:39:07Z
 url: https://github.com/astral-sh/uv/issues/1626
-synced_at: 2026-01-10T03:50:29Z
+synced_at: 2026-01-12T15:58:30Z
 ```
 
 # Keep editable "." install when locking and syncing
 
 ---
 
-_Issue opened by @PetterS on 2024-02-18 06:57_
+_@PetterS_
 
 I saw a few other issues tagged with **question**, so I thought it could be OK so a ask one like this.
 

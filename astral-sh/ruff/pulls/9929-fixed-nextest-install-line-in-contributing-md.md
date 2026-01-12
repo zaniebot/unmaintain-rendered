@@ -13,14 +13,14 @@ head: update_nextest_contrib
 created_at: 2024-02-11T12:12:51Z
 updated_at: 2024-02-11T15:22:18Z
 url: https://github.com/astral-sh/ruff/pull/9929
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Fixed nextest install line in CONTRIBUTING.md
 
 ---
 
-_Pull request opened by @owenlamont on 2024-02-11 12:12_
+_@owenlamont_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: pyi_042
 created_at: 2023-05-03T20:55:07Z
 updated_at: 2023-05-04T20:17:27Z
 url: https://github.com/astral-sh/ruff/pull/4214
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # [`flake8-pyi`] Implement `PYI042` and `PYI043`
 
 ---
 
-_Pull request opened by @arya-k on 2023-05-03 20:55_
+_@arya-k_
 
 PYI042 Type alias names should use CamelCase rather than snake_case
 PYI043 Do not use names ending in "T" for private type aliases. (The "T" suffix implies that an object is a TypeVar.)

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-16T09:39:52Z
 updated_at: 2024-12-12T01:33:16Z
 url: https://github.com/astral-sh/uv/issues/8247
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # Docs: Mention that `.python-version` is obsolete if `project.requires-python` is present in `pyproject.toml`?
 
 ---
 
-_Issue opened by @jnussbaum on 2024-10-16 09:39_
+_@jnussbaum_
 
 First a big thumbs up for the great work you're doing with ruff and uv! We have adopted both in our company, and we're overwhelmed!
 

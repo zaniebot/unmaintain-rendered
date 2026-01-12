@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-07-19T18:36:18Z
 updated_at: 2023-07-24T09:09:51Z
 url: https://github.com/astral-sh/ruff/issues/5891
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Unstable formatting with end-of-line dangling empty dict comment
 
 ---
 
-_Issue opened by @konstin on 2023-07-19 18:36_
+_@konstin_
 
 The following snippet causes unstable formatting:
 ```python

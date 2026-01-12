@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-12T22:28:11Z
 updated_at: 2023-02-12T22:45:41Z
 url: https://github.com/astral-sh/ruff/issues/2830
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # No error when checking for INP001, but `--add-noqa` adds directive
 
 ---
 
-_Issue opened by @hofrob on 2023-02-12 22:28_
+_@hofrob_
 
 Python package:
 

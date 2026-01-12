@@ -13,14 +13,14 @@ head: charlie/acc
 created_at: 2023-12-23T12:33:41Z
 updated_at: 2023-12-23T12:51:32Z
 url: https://github.com/astral-sh/ruff/pull/9259
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Remove unnecessary rule enabled check
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-23 12:33_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T04:14:42Z
 updated_at: 2025-01-29T03:27:30Z
 url: https://github.com/astral-sh/uv/issues/10977
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # universal resolution occasionally doesn't work with `no-build-package` when the package is a transient dependency of a dependency included in both `dependency-groups` and `build-system.requires`
 
 ---
 
-_Issue opened by @DetachHead on 2025-01-27 04:14_
+_@DetachHead_
 
 ### Summary
 

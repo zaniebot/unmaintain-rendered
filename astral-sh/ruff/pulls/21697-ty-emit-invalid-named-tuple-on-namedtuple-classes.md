@@ -13,14 +13,14 @@ head: alex/private-namedtuple-field
 created_at: 2025-11-29T18:07:23Z
 updated_at: 2025-12-01T11:36:03Z
 url: https://github.com/astral-sh/ruff/pull/21697
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] Emit `invalid-named-tuple` on namedtuple classes that have field names starting with underscores
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-11-29 18:07_
+_@AlexWaygood_
 
 ## Summary
 

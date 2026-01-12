@@ -13,14 +13,14 @@ head: renovate/react-resizable-panels-2.x-lockfile
 created_at: 2024-04-15T16:29:06Z
 updated_at: 2024-04-15T17:30:10Z
 url: https://github.com/astral-sh/ruff/pull/10956
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # fix(deps): update dependency react-resizable-panels to v2.0.17
 
 ---
 
-_Pull request opened by @renovate on 2024-04-15 16:29_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

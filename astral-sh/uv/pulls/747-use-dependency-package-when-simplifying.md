@@ -13,14 +13,14 @@ head: charlie/dep
 created_at: 2024-01-03T01:36:39Z
 updated_at: 2024-01-03T02:26:58Z
 url: https://github.com/astral-sh/uv/pull/747
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:10Z
 ```
 
 # Use dependency package when simplifying dependency set
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-03 01:36_
+_@charliermarsh_
 
 This manifested itself here: https://github.com/astral-sh/puffin/pull/745/files#r1439912440.
 

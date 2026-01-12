@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-11T00:42:19Z
 updated_at: 2025-11-11T00:44:56Z
 url: https://github.com/astral-sh/ty/issues/1519
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # add a diagnostic for NewTypes with TypeVars in their base type
 
 ---
 
-_Issue opened by @oconnor663 on 2025-11-11 00:42_
+_@oconnor663_
 
 TODO from: https://github.com/astral-sh/ruff/pull/21157#pullrequestreview-3445518919
 

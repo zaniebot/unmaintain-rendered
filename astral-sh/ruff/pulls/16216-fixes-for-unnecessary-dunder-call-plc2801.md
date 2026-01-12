@@ -13,14 +13,14 @@ head: fix-plc2801
 created_at: 2025-02-17T16:02:15Z
 updated_at: 2025-03-09T14:17:10Z
 url: https://github.com/astral-sh/ruff/pull/16216
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Fixes for unnecessary-dunder-call (PLC2801)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-02-17 16:02_
+_@VascoSch92_
 
 The PR addresses issue #16053 
 

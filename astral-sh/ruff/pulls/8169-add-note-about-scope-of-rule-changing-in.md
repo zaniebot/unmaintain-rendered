@@ -13,14 +13,14 @@ head: zanie/versioning-scope
 created_at: 2023-10-24T15:19:35Z
 updated_at: 2023-10-24T16:38:33Z
 url: https://github.com/astral-sh/ruff/pull/8169
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add note about scope of rule changing in versioning policy
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-24 15:19_
+_@zanieb_
 
 Per some previous discussion, the policy is not clear about what happens if the behavior is similar but the _scope_ in which a rule is applied changes.
 

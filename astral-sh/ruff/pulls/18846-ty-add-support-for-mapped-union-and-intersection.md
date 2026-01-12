@@ -14,14 +14,14 @@ head: feature/mapped-union-intersection-loads
 created_at: 2025-06-21T03:53:22Z
 updated_at: 2025-06-23T16:38:02Z
 url: https://github.com/astral-sh/ruff/pull/18846
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [ty] add support for mapped union and intersection subscript loads
 
 ---
 
-_Pull request opened by @suneettipirneni on 2025-06-21 03:53_
+_@suneettipirneni_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

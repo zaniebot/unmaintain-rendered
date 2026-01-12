@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-11T16:34:51Z
 updated_at: 2025-04-25T00:19:46Z
 url: https://github.com/astral-sh/uv/issues/12117
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # uv build packages for torch cpu and gpu
 
 ---
 
-_Issue opened by @anmolnagi-fugro on 2025-03-11 16:34_
+_@anmolnagi-fugro_
 
 ### Question
 

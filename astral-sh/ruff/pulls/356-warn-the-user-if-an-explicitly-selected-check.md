@@ -12,14 +12,14 @@ head: charlie/warn
 created_at: 2022-10-07T21:33:10Z
 updated_at: 2022-10-07T21:41:41Z
 url: https://github.com/astral-sh/ruff/pull/356
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Warn the user if an explicitly selected check code is ignored
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-07 21:33_
+_@charliermarsh_
 
 Resolves #355.
 

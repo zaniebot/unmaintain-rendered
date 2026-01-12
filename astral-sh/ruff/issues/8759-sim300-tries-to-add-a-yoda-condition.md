@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-18T22:39:57Z
 updated_at: 2023-11-18T23:05:21Z
 url: https://github.com/astral-sh/ruff/issues/8759
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # SIM300 tries to add a Yoda condition...
 
 ---
 
-_Issue opened by @ThiefMaster on 2023-11-18 22:39_
+_@ThiefMaster_
 
 ```python
 class DummyHandler(RequestHandler):

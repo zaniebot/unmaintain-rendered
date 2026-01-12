@@ -14,14 +14,14 @@ head: noqa-parsing
 created_at: 2025-03-03T21:31:39Z
 updated_at: 2025-03-11T19:50:32Z
 url: https://github.com/astral-sh/ruff/pull/16483
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Make noqa parsing consistent and more robust
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-03-03 21:31_
+_@dylwil3_
 
 # Summary
 The goal of this PR is to address various issues around parsing suppression comments by

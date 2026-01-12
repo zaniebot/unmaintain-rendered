@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-22T19:18:06Z
 updated_at: 2023-06-22T20:11:39Z
 url: https://github.com/astral-sh/ruff/issues/5311
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Performance graph is missing dark-mode variant in documentation
 
 ---
 
-_Issue opened by @charliermarsh on 2023-06-22 19:18_
+_@charliermarsh_
 
 This seemed to work in dev:
 

@@ -15,14 +15,14 @@ head: micha/typing-self-function-scope
 created_at: 2025-10-11T16:07:22Z
 updated_at: 2025-11-16T11:47:05Z
 url: https://github.com/astral-sh/ruff/pull/20812
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:10Z
 ```
 
 # [ty] Infer type of self as typing.Self in method body (with updated salsa, micha playground)
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-10-11 16:07_
+_@MichaReiser_
 
 This is https://github.com/astral-sh/ruff/pull/18473 but my own version where I play with an updated Salsa version.
 

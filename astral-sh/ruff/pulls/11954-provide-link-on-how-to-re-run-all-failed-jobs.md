@@ -14,14 +14,14 @@ head: dhruv/contributing
 created_at: 2024-06-20T17:46:55Z
 updated_at: 2024-06-20T17:49:43Z
 url: https://github.com/astral-sh/ruff/pull/11954
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Provide link on how to re-run all failed jobs
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-20 17:46_
+_@dhruvmanila_
 
 _No description provided._
 

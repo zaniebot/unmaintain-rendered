@@ -13,14 +13,14 @@ head: zb/version-request-default
 created_at: 2024-09-19T00:29:38Z
 updated_at: 2024-09-19T11:05:11Z
 url: https://github.com/astral-sh/uv/pull/7526
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:52Z
 ```
 
 # Rename `VersionRequest::Any` -> `VersionRequest::Default`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-19 00:29_
+_@zanieb_
 
 As in https://github.com/astral-sh/uv/pull/7514
 

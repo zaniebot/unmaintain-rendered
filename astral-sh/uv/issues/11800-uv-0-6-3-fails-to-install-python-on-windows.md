@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-26T15:20:33Z
 updated_at: 2025-04-13T11:16:41Z
 url: https://github.com/astral-sh/uv/issues/11800
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:46Z
 ```
 
 # uv 0.6.3 fails to install python on Windows Server 2016
 
 ---
 
-_Issue opened by @StephenBrown2 on 2025-02-26 15:20_
+_@StephenBrown2_
 
 ### Summary
 

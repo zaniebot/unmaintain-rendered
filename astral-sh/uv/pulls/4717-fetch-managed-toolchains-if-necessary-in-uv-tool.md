@@ -14,14 +14,14 @@ head: zb/fetch
 created_at: 2024-07-02T02:08:02Z
 updated_at: 2024-07-02T02:27:44Z
 url: https://github.com/astral-sh/uv/pull/4717
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:24Z
 ```
 
 # Fetch managed toolchains if necessary in `uv tool install` and `uv tool run`
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-02 02:08_
+_@zanieb_
 
 Hey we should download toolchains here if we need to, right!?
 

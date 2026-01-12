@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-11T22:11:49Z
 updated_at: 2022-01-11T22:23:51Z
 url: https://github.com/clap-rs/clap/issues/3283
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # multiple args not working with clap derive on Vec<Foo> type
 
 ---
 
-_Issue opened by @tdudz on 2022-01-11 22:11_
+_@tdudz_
 
 ### Please complete the following tasks
 

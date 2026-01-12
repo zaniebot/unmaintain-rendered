@@ -13,14 +13,14 @@ head: charlie/await
 created_at: 2023-06-14T22:05:41Z
 updated_at: 2023-06-14T22:35:55Z
 url: https://github.com/astral-sh/ruff/pull/5103
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Remove manual `await` detection
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-14 22:05_
+_@charliermarsh_
 
 We can just use `any_over_expr` instead.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-21T14:13:00Z
 updated_at: 2024-07-31T13:54:18Z
 url: https://github.com/astral-sh/uv/issues/5258
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # Expose more fine-grained control for `uv sync` command
 
 ---
 
-_Issue opened by @Vigilans on 2024-07-21 14:13_
+_@Vigilans_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

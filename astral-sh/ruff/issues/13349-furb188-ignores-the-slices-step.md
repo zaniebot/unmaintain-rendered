@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-14T00:28:46Z
 updated_at: 2024-09-19T16:47:19Z
 url: https://github.com/astral-sh/ruff/issues/13349
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # FURB188 ignores the slice’s step
 
 ---
 
-_Issue opened by @dscorbett on 2024-09-14 00:28_
+_@dscorbett_
 
 [FURB188](https://docs.astral.sh/ruff/rules/slice-to-remove-prefix-or-suffix/) can apply to any slice regardless of the slice’s step. FURB188 should only apply if the step is omitted, `None`, `1`, or `True`.
 

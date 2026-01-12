@@ -13,14 +13,14 @@ head: annotate-index
 created_at: 2024-04-09T04:14:44Z
 updated_at: 2024-04-10T16:05:59Z
 url: https://github.com/astral-sh/uv/pull/2926
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:19Z
 ```
 
 # Implement `--emit-index-annotation` to annotate source index for each package
 
 ---
 
-_Pull request opened by @ChannyClaus on 2024-04-09 04:14_
+_@ChannyClaus_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-02T18:50:37Z
 updated_at: 2023-11-02T17:01:26Z
 url: https://github.com/astral-sh/ruff/issues/7067
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter collapses overlong assignment's parenthesized value
 
 ---
 
-_Issue opened by @cnpryer on 2023-09-02 18:50_
+_@cnpryer_
 
 Closest report I could find is #6271
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-10-04T00:20:24Z
 updated_at: 2025-10-04T07:22:14Z
 url: https://github.com/astral-sh/ty/issues/1304
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Ty does not work with uvx --with
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-10-04 00:20_
+_@MeGaGiGaGon_
 
 ### Summary
 

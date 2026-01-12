@@ -13,14 +13,14 @@ head: dhruv/conversion-flag-loc
 created_at: 2023-10-04T11:30:41Z
 updated_at: 2023-10-05T12:16:15Z
 url: https://github.com/astral-sh/ruff/pull/7809
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Report precise location for invalid conversion flag
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-10-04 11:30_
+_@dhruvmanila_
 
 ## Summary
 

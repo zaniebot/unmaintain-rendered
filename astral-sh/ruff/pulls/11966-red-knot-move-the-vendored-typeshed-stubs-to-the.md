@@ -13,14 +13,14 @@ head: move-vendored-typeshed
 created_at: 2024-06-21T13:32:36Z
 updated_at: 2024-07-01T10:29:42Z
 url: https://github.com/astral-sh/ruff/pull/11966
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # [red-knot] Move the vendored typeshed stubs to the module resolver crate
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-21 13:32_
+_@AlexWaygood_
 
 ## Summary
 

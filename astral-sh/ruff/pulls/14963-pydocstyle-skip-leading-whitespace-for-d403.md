@@ -13,14 +13,14 @@ head: docstring-capitalize
 created_at: 2024-12-13T22:19:02Z
 updated_at: 2024-12-16T15:09:28Z
 url: https://github.com/astral-sh/ruff/pull/14963
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`pydocstyle`] Skip leading whitespace for `D403`
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-12-13 22:19_
+_@dylwil3_
 
 This PR introduces three changes to `D403`, which has to do with capitalizing the first word in a docstring.
 

@@ -13,14 +13,14 @@ head: zb/contents-read
 created_at: 2025-11-20T22:30:09Z
 updated_at: 2025-11-20T22:38:21Z
 url: https://github.com/astral-sh/uv/pull/16797
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:27Z
 ```
 
 # Add read permissions to `publish-crates` job
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-20 22:30_
+_@zanieb_
 
 _No description provided._
 

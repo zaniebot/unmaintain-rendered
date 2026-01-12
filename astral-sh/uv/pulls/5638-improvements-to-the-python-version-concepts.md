@@ -14,14 +14,14 @@ head: zb/docs-python-version-feedback
 created_at: 2024-07-30T22:02:23Z
 updated_at: 2024-07-31T13:40:53Z
 url: https://github.com/astral-sh/uv/pull/5638
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:55Z
 ```
 
 # Improvements to the Python version concepts documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-30 22:02_
+_@zanieb_
 
 Depends on https://github.com/astral-sh/uv/pull/5637
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-15T15:36:45Z
 updated_at: 2025-05-10T20:48:35Z
 url: https://github.com/astral-sh/uv/issues/12899
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # uv venv produced env inside docker container does not allow to access python executables if passing this env in distributed manner
 
 ---
 
-_Issue opened by @axonstan on 2025-04-15 15:36_
+_@axonstan_
 
 _No description provided._
 

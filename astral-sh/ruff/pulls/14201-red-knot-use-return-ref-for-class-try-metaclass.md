@@ -12,14 +12,14 @@ head: alex/avoid-metaclass-clone
 created_at: 2024-11-08T12:36:46Z
 updated_at: 2024-11-08T12:55:24Z
 url: https://github.com/astral-sh/ruff/pull/14201
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Use `return_ref` for `Class::try_metaclass`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-08 12:36_
+_@AlexWaygood_
 
 ## Summary
 

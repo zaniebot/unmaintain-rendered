@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-28T20:39:34Z
 updated_at: 2025-07-20T05:26:48Z
 url: https://github.com/astral-sh/uv/issues/4635
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Doing `uv pip` into certain python environment (xonsh shell case)
 
 ---
 
-_Issue opened by @anki-code on 2024-06-28 20:39_
+_@anki-code_
 
 Hello! Thank you for this fast and awesome thing!
 

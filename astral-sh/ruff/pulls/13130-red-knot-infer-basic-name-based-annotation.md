@@ -13,14 +13,14 @@ head: rk-basic-annotation-expressions
 created_at: 2024-08-27T23:18:53Z
 updated_at: 2024-09-03T14:25:09Z
 url: https://github.com/astral-sh/ruff/pull/13130
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] infer basic (name-based) annotation expressions
 
 ---
 
-_Pull request opened by @chriskrycho on 2024-08-27 23:18_
+_@chriskrycho_
 
 ## Summary
 

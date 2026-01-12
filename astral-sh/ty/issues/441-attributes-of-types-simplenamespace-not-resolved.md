@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-18T14:11:44Z
 updated_at: 2025-05-26T10:59:46Z
 url: https://github.com/astral-sh/ty/issues/441
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Attributes of types.SimpleNamespace not resolved
 
 ---
 
-_Issue opened by @squingo44 on 2025-05-18 14:11_
+_@squingo44_
 
 ### Summary
 

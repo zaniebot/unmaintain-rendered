@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-04T19:04:28Z
 updated_at: 2025-09-23T16:08:52Z
 url: https://github.com/astral-sh/uv/issues/3375
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Use `uv` on Dockerfile
 
 ---
 
-_Issue opened by @brunolnetto on 2024-05-04 19:04_
+_@brunolnetto_
 
 Can we use `uv` on a Dockerfile? I tried using as follows, but got this error: `0.258 error: failed to canonicalize path /code/.venv/bin/python 258   Caused by: No such file or directory (os error 2)`
 

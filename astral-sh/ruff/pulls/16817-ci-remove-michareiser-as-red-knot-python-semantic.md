@@ -13,14 +13,14 @@ head: micha/code-owner-semantic
 created_at: 2025-03-17T16:52:35Z
 updated_at: 2025-03-17T16:56:34Z
 url: https://github.com/astral-sh/ruff/pull/16817
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:58Z
 ```
 
 # [ci] Remove MichaReiser as `red_knot_python_semantic` code owner
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-17 16:52_
+_@MichaReiser_
 
 _No description provided._
 

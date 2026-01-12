@@ -8,50 +8,120 @@ labels:
   - enhancement
 assignees: []
 created_at: 2026-01-12T13:43:52Z
-updated_at: 2026-01-12T13:44:43Z
+updated_at: 2026-01-12T16:13:05Z
 url: https://github.com/astral-sh/uv/issues/17416
-synced_at: 2026-01-12T14:04:12Z
+synced_at: 2026-01-12T16:13:59Z
 ```
 
 # Exclude the project from `no-build` by default
 
 ---
 
-_Issue opened by @NMertsch on 2026-01-12 13:43_
+_@NMertsch_
 
 ### Summary
 
-Currently, package projects (`uv init --package`) automatically are added to `uv.lock` as editable. This makes sense.
-But it also means that `no-build = true` applies to them, and not just to dependencies.
-
 I'd like to have the following:
-1. External dependencies are not build, unless explicitly allowed with `no-binary-package`
-2. My project is built
+1. External dependencies are not built, unless explicitly allowed with `no-binary-package` (basically: I want to install wheels, not sdists)
+2. `uv sync` can create/update the venv
+3. `uv build` can package my package (e.g. for `uv publish`)
 
-Point 1 is achieved with `no-build = true`. I think it is reasonable to expect point 2 without additional configuration.
+However, that's not possible with packages (`uv init --package`):
+1. `no-build = true` correctly prevents sdist installs, but then
+2. `uv sync` only works after also configuring `no-binary-package = ["my-package"]`
+3. `uv build` [only works with the `uv_build` backend](https://github.com/astral-sh/uv/issues/17416#issuecomment-3739349716). I have to remove `no-build = true` to make it work with other backends.
+
+I think points 2 and 3 should work out of the box.
 
 ### How to reproduce
 ```bash
 # create new package
-uv init --package my-project
-cd my-project
+uv init --package --build-backend setuptools my-package
+cd my-package
 
 # set `no-build = true`
 echo '[tool.uv]' >> pyproject.toml
 echo 'no-build = true' >> pyproject.toml
 
 # interact with the package
-uv sync  # error: Distribution `my-project==0.1.1 @ editable+.` can't be installed because it is marked as `--no-build` but has no binary distribution
+uv sync  # error: Distribution `my-package==0.1.0 @ editable+.` can't be installed because it is marked as `--no-build` but has no binary distribution
 
 # explicitly allow uv to build my own package
-echo 'no-binary-package' = ["my-project"] >> pyproject.toml
+echo 'no-binary-package = ["my-package"]' >> pyproject.toml
 
 # interact with the package
 uv sync  # works
+
+# build the package
+uv build  # Failed to build, Building source distributions is disabled
 ```
 
 ---
 
 _Label `enhancement` added by @NMertsch on 2026-01-12 13:43_
+
+---
+
+_Comment by @zanieb on 2026-01-12 15:09_
+
+Can you explain (3)? Why does setuptools fail?
+
+---
+
+_Comment by @NMertsch on 2026-01-12 15:56_
+
+> Can you explain (3)? Why does setuptools fail?
+
+I don't think setuptools fails. To me, "Building source distributions is disabled" implies that uv didn't invoke setuptools at all due to `no-build = true`.
+
+But when running `uv init --package my-package` (without `--build-backend setuptools`), `uv build` works just fine.
+
+---
+
+_Comment by @zanieb on 2026-01-12 15:58_
+
+I'm confused that you said
+
+> uv build doesn't work at all for setuptools projects
+
+---
+
+_Comment by @zanieb on 2026-01-12 15:59_
+
+You're saying it works for the `uv_build` backend but not any other ones?
+
+---
+
+_Comment by @NMertsch on 2026-01-12 16:00_
+
+Sorry for the confusion. What I meant was:
+* `uv build` with backend `setuptools` works, unless `no-build = true`.
+* `uv build` with backend `uv_build` works, independently of `no-build = true`.
+
+I didn't test other backends. Give me a few minutes to try them all.
+
+---
+
+_Comment by @NMertsch on 2026-01-12 16:11_
+
+I now tried steps from the original post on all supported build backends. Results:
+
+* uv: works
+* hatch: error
+* flit: error
+* pdm: error
+* poetry: error
+* maturin: skipped (no rust toolchain installed)
+* scikit: error
+
+The error always looks the same:
+
+```text
+Building source distribution...
+  × Failed to build `C:\Users\...\my-package`
+  ╰─▶ Building source distributions is disabled
+```
+
+(Updated the original post: setuptools -> all backends besides uv_build)
 
 ---

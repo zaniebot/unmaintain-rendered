@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-11-10T02:19:56Z
 updated_at: 2020-08-11T11:39:31Z
 url: https://github.com/clap-rs/clap/issues/1597
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Allow changing SUBCOMMAND placeholder in usage
 
 ---
 
-_Issue opened by @clarfonthey on 2019-11-10 02:19_
+_@clarfonthey_
 
 <!-- Issuehunt Badges -->
 [<img alt="Issuehunt badges" src="https://img.shields.io/badge/IssueHunt-%240%20Funded-%2300A156.svg" />](https://issuehunt.io/r/clap-rs/clap/issues/1597)

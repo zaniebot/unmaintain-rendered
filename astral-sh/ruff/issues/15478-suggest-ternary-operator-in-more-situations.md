@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-14T20:32:04Z
 updated_at: 2025-01-15T15:06:09Z
 url: https://github.com/astral-sh/ruff/issues/15478
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Suggest ternary operator in more situations
 
 ---
 
-_Issue opened by @nickdrozd on 2025-01-14 20:32_
+_@nickdrozd_
 
 Rule `SIM108` suggests using assignment expressions (ternary operator) instead of if/else blocks. Very good. But it is only raised for assignment. Assignment expressions are great in other situations too. For example, function calls and returns:
 

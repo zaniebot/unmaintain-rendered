@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-29T11:58:00Z
 updated_at: 2024-06-27T11:29:19Z
 url: https://github.com/astral-sh/uv/issues/1165
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Write a "pip tools for newbies" guide
 
 ---
 
-_Issue opened by @konstin on 2024-01-29 11:58_
+_@konstin_
 
 We should add some explanations what a virtualenv is, why you need it (and why not to install in any of the global envs) and how to activate it (or why you sometimes don't need to), what those `.in` and `.txt` files are and how to use them, why there's no pip in our virtualenvs, etc.
 

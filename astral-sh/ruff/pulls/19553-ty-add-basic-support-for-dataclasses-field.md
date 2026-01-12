@@ -14,14 +14,14 @@ head: david/dataclasses-field
 created_at: 2025-07-25T08:27:56Z
 updated_at: 2025-07-25T12:56:06Z
 url: https://github.com/astral-sh/ruff/pull/19553
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # [ty] Add basic support for `dataclasses.field`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-25 08:27_
+_@sharkdp_
 
 ## Summary
 

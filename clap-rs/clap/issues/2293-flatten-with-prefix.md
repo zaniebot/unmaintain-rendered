@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-01-15T15:12:20Z
 updated_at: 2022-01-11T18:28:52Z
 url: https://github.com/clap-rs/clap/issues/2293
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Flatten with prefix
 
 ---
 
-_Issue opened by @stevefan1999-personal on 2021-01-15 15:12_
+_@stevefan1999-personal_
 
 ### Make sure you completed the following tasks
 

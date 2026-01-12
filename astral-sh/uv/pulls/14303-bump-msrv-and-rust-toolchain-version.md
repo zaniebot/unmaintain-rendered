@@ -13,14 +13,14 @@ head: charlie/msrv
 created_at: 2025-06-27T02:26:16Z
 updated_at: 2025-06-27T14:27:46Z
 url: https://github.com/astral-sh/uv/pull/14303
-synced_at: 2026-01-10T07:01:23Z
+synced_at: 2026-01-12T16:11:08Z
 ```
 
 # Bump MSRV and `rust-toolchain` version
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-06-27 02:26_
+_@charliermarsh_
 
 ## Summary
 

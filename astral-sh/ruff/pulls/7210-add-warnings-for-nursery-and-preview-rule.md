@@ -13,14 +13,14 @@ head: zanie/rule-warning
 created_at: 2023-09-06T21:08:40Z
 updated_at: 2023-09-13T20:30:00Z
 url: https://github.com/astral-sh/ruff/pull/7210
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add warnings for nursery and preview rule selection
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-06 21:08_
+_@zanieb_
 
 ## Summary
 

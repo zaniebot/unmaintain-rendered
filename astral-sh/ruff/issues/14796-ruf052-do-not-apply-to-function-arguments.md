@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-05T21:07:26Z
 updated_at: 2024-12-06T14:54:44Z
 url: https://github.com/astral-sh/ruff/issues/14796
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # RUF052: do not apply to function arguments?
 
 ---
 
-_Issue opened by @inducer on 2024-12-05 21:07_
+_@inducer_
 
 I feel that the connotation of a leading underscore is quite different between local variables and function arguments. I agree with the premise of the rule that an underscored local variable is an unused dummy thing. But an underscored function arguments to me is an internal thing, comparable to an underscored method in a class, not to be considered part of the public interface. As such, I would prefer if the rule could separate function argument names from other local variables.
 

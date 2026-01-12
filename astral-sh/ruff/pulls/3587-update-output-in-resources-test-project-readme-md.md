@@ -12,14 +12,14 @@ head: charlie/update
 created_at: 2023-03-17T21:46:01Z
 updated_at: 2023-03-17T22:09:55Z
 url: https://github.com/astral-sh/ruff/pull/3587
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Update output in `resources/test/project/README.md`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-17 21:46_
+_@charliermarsh_
 
 These are some "manual" tests we run to validate inclusion and CLI behavior. The outputs are just a little stale (but still "correct").
 

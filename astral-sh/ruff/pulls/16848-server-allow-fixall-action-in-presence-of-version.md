@@ -14,14 +14,14 @@ head: codeaction-syntax-errors
 created_at: 2025-03-19T15:09:59Z
 updated_at: 2025-03-20T10:09:14Z
 url: https://github.com/astral-sh/ruff/pull/16848
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # Server: Allow `FixAll` action in presence of version-specific syntax errors
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-03-19 15:09_
+_@dylwil3_
 
 The single flag `has_syntax_error` on `LinterResult` is replaced with two (private) flags: `has_valid_syntax` and `has_no_unsupported_syntax_errors`, which record whether there are `ParseError`s or `UnsupportedSyntaxError`s, respectively. Only the former is used to prevent a `FixAll` action.
 

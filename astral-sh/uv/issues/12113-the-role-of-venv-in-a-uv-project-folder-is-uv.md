@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-11T12:02:38Z
 updated_at: 2025-03-14T00:33:17Z
 url: https://github.com/astral-sh/uv/issues/12113
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # The role of venv in a uv project folder: (Is  "uv venv --python <version>" or "source .venv/bin/activated" needed?)
 
 ---
 
-_Issue opened by @zhyeong on 2025-03-11 12:02_
+_@zhyeong_
 
 ### Question
 

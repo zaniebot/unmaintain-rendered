@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-22T08:51:54Z
 updated_at: 2025-05-07T13:51:14Z
 url: https://github.com/astral-sh/ruff/issues/17541
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # [red-knot] Detect overloads decorated with `@dataclass_transform`
 
 ---
 
-_Issue opened by @sharkdp on 2025-04-22 08:51_
+_@sharkdp_
 
 We currently do not properly detect when an overload of a function is decorated with `@dataclass_transform`. See the [existing test here](https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/dataclass_transform.md#applying-dataclass_transform-to-an-overload). The goal of this ticket is to resolve the TODOs in this test.
 

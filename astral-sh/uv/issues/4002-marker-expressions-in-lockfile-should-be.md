@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-03T23:28:17Z
 updated_at: 2024-06-07T20:14:25Z
 url: https://github.com/astral-sh/uv/issues/4002
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Marker expressions in lockfile should be simplified
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-03 23:28_
+_@charliermarsh_
 
 Not certain on this but in https://github.com/astral-sh/uv/pull/3998, the test I added yields an entry in the lockfile like:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-15T18:13:51Z
 updated_at: 2025-05-02T21:53:54Z
 url: https://github.com/astral-sh/ruff/issues/7414
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter: wrap comments (`E501`)
 
 ---
 
-_Issue opened by @kdeldycke on 2023-09-15 18:13_
+_@kdeldycke_
 
 Playing with the beta formatter, I was curious why it did not wrap long comments.
 

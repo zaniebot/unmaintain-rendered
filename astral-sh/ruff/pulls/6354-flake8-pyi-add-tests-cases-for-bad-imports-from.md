@@ -12,14 +12,14 @@ head: PYI022-update
 created_at: 2023-08-04T22:25:53Z
 updated_at: 2023-12-01T23:46:46Z
 url: https://github.com/astral-sh/ruff/pull/6354
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # [`flake8-pyi`] Add tests cases for bad imports from PYI027 to PYI022 (UP035)
 
 ---
 
-_Pull request opened by @LaBatata101 on 2023-08-04 22:25_
+_@LaBatata101_
 
 ## Summary
 As of version [23.1.0](https://github.com/PyCQA/flake8-pyi/blob/2a86db8271dc500247a8a69419536240334731cf/CHANGELOG.md?plain=1#L158-L160), `flake8-pyi` remove the rule `Y027`.

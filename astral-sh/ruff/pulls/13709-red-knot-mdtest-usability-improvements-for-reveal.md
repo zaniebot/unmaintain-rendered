@@ -13,14 +13,14 @@ head: cjm/mdtest-undefined-reveal
 created_at: 2024-10-10T23:39:17Z
 updated_at: 2024-10-11T00:33:55Z
 url: https://github.com/astral-sh/ruff/pull/13709
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # [red-knot] mdtest usability improvements for reveal_type
 
 ---
 
-_Pull request opened by @carljm on 2024-10-10 23:39_
+_@carljm_
 
 ## Summary
 

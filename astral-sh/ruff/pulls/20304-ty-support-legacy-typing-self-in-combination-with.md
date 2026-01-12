@@ -13,14 +13,14 @@ head: david/fix-1131
 created_at: 2025-09-08T11:54:59Z
 updated_at: 2025-09-08T17:56:52Z
 url: https://github.com/astral-sh/ruff/pull/20304
-synced_at: 2026-01-10T17:46:22Z
+synced_at: 2026-01-12T15:56:58Z
 ```
 
 # [ty] Support "legacy" `typing.Self` in combination with PEP 695 generic contexts
 
 ---
 
-_Pull request opened by @sharkdp on 2025-09-08 11:54_
+_@sharkdp_
 
 ## Summary
 

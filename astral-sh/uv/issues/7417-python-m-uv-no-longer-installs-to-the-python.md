@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-16T01:55:12Z
 updated_at: 2024-09-17T03:51:51Z
 url: https://github.com/astral-sh/uv/issues/7417
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:13Z
 ```
 
 # python -m uv no longer installs to the python specified (if prerelease)
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-09-16 01:55_
+_@hauntsaninja_
 
 I think this is from https://github.com/astral-sh/uv/pull/7300 cc @zanieb 
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-10-10T16:00:45Z
 updated_at: 2024-10-10T16:11:46Z
 url: https://github.com/clap-rs/clap/issues/5773
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Support deriving `Parser` on struct with lifetime and automatically parse `Cow<'_, T>` into `Cow::Owned` 
 
 ---
 
-_Issue opened by @jeertmans on 2024-10-10 16:00_
+_@jeertmans_
 
 ### Please complete the following tasks
 

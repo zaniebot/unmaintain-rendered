@@ -13,14 +13,14 @@ head: charlie/versioned-url
 created_at: 2023-12-18T17:43:51Z
 updated_at: 2023-12-18T22:21:39Z
 url: https://github.com/astral-sh/uv/pull/690
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:07Z
 ```
 
 # Show URLs and version together for installed, URL-based dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-18 17:43_
+_@charliermarsh_
 
 The snapshot test changes will give you a sense for the impact of the change and the output formatting.
 

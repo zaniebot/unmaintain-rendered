@@ -12,14 +12,14 @@ head: charlie/tests
 created_at: 2022-10-28T22:58:33Z
 updated_at: 2022-10-28T22:58:47Z
 url: https://github.com/astral-sh/ruff/pull/498
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Add tests for resolve_codes
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-28 22:58_
+_@charliermarsh_
 
 _No description provided._
 

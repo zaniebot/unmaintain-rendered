@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-04-29T03:34:57Z
 updated_at: 2020-02-01T10:16:04Z
 url: https://github.com/clap-rs/clap/issues/84
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Implement multiple subcommands at once
 
 ---
 
-_Issue opened by @kbknapp on 2015-04-29 03:34_
+_@kbknapp_
 
 Currently only one sub-command may be used per match. For example:
 Assume `myapp` has two subcommands `one` and `two`, and each of those has `subone` and `subtwo` respectively. 

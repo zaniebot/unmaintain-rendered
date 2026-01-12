@@ -14,14 +14,14 @@ head: dhruv/disable-language-services
 created_at: 2025-05-20T19:10:25Z
 updated_at: 2025-06-17T08:20:47Z
 url: https://github.com/astral-sh/ruff/pull/18230
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:15Z
 ```
 
 # [ty] Add `python.ty.disableLanguageServices` config
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-05-20 19:10_
+_@dhruvmanila_
 
 ## Summary
 

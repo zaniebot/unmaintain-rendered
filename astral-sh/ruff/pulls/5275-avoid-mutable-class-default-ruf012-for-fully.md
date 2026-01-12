@@ -12,14 +12,14 @@ head: charlie/typing-only
 created_at: 2023-06-22T00:24:38Z
 updated_at: 2024-01-26T19:34:47Z
 url: https://github.com/astral-sh/ruff/pull/5275
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Avoid `mutable-class-default` (`RUF012`) for fully untyped classes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-22 00:24_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-04T05:52:50Z
 updated_at: 2024-10-01T13:32:32Z
 url: https://github.com/astral-sh/ruff/issues/11729
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Display syntax errors in a separate window
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-06-04 05:52_
+_@dhruvmanila_
 
 Currently, the playground displays the AST and tokens even if it contains syntax errors. It would be useful to have a separate window to display all the syntax errors in a pretty format like the one used in parser snapshots. For example:
 

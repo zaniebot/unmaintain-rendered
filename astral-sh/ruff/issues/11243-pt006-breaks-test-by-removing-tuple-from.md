@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-02T08:46:24Z
 updated_at: 2024-12-09T08:58:53Z
 url: https://github.com/astral-sh/ruff/issues/11243
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # PT006 breaks test by removing tuple from parametrize
 
 ---
 
-_Issue opened by @Pebin on 2024-05-02 08:46_
+_@Pebin_
 
 PT006 breaks test, removes tuple just from argnames but not from argvalues
 

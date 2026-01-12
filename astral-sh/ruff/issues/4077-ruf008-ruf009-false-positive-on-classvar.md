@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-24T13:45:01Z
 updated_at: 2023-04-24T23:58:32Z
 url: https://github.com/astral-sh/ruff/issues/4077
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # RUF008/RUF009 False positive on ClassVar
 
 ---
 
-_Issue opened by @mishamsk on 2023-04-24 13:45_
+_@mishamsk_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

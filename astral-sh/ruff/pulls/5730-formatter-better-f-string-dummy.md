@@ -13,14 +13,14 @@ head: Formatter_Better_f-string_dummy
 created_at: 2023-07-13T09:18:00Z
 updated_at: 2023-07-13T09:44:33Z
 url: https://github.com/astral-sh/ruff/pull/5730
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Formatter: Better f-string dummy
 
 ---
 
-_Pull request opened by @konstin on 2023-07-13 09:18_
+_@konstin_
 
 ## Summary
 

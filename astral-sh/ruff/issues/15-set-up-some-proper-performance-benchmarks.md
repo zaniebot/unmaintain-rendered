@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-08-19T15:32:50Z
 updated_at: 2022-08-24T13:16:57Z
 url: https://github.com/astral-sh/ruff/issues/15
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Set up some proper performance benchmarks
 
 ---
 
-_Issue opened by @charliermarsh on 2022-08-19 15:32_
+_@charliermarsh_
 
 _No description provided._
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-11T13:43:23Z
 updated_at: 2025-11-30T15:14:50Z
 url: https://github.com/astral-sh/uv/issues/15790
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:17Z
 ```
 
 # `--project` with name in `uv init` doesn't work as expect
 
 ---
 
-_Issue opened by @konstin on 2025-09-11 13:43_
+_@konstin_
 
 Currently, `uv init --project bar foo` ignores the `bar`.
 

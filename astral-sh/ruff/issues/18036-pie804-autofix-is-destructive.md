@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-12T10:13:03Z
 updated_at: 2025-05-12T15:17:00Z
 url: https://github.com/astral-sh/ruff/issues/18036
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PIE804 autofix is destructive
 
 ---
 
-_Issue opened by @tpgillam on 2025-05-12 10:13_
+_@tpgillam_
 
 Tested with ruff 0.11.8
 

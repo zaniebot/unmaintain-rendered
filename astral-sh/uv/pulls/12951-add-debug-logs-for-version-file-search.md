@@ -13,14 +13,14 @@ head: zb/verison-file-debug
 created_at: 2025-04-17T20:42:08Z
 updated_at: 2025-04-18T16:31:53Z
 url: https://github.com/astral-sh/uv/pull/12951
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:28Z
 ```
 
 # Add debug logs for version file search
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-17 20:42_
+_@zanieb_
 
 _No description provided._
 

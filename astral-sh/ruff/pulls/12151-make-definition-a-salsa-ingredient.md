@@ -13,14 +13,14 @@ head: make-definition-an-ingredient
 created_at: 2024-07-02T13:18:56Z
 updated_at: 2024-07-05T22:22:49Z
 url: https://github.com/astral-sh/ruff/pull/12151
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Make `Definition` a salsa-ingredient
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-07-02 13:18_
+_@MichaReiser_
 
 ## Summary
 This PR largely replaces https://github.com/astral-sh/ruff/pull/11971 and is a first step towards definition-level type inference. 

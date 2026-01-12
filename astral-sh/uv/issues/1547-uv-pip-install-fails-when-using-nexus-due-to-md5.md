@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T22:39:28Z
 updated_at: 2024-02-17T00:25:18Z
 url: https://github.com/astral-sh/uv/issues/1547
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # uv pip install fails when using Nexus due to md5 hash
 
 ---
 
-_Issue opened by @kendallbailey on 2024-02-16 22:39_
+_@kendallbailey_
 
 Attempted to install a package through a Nexus pypi proxy.
 

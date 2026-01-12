@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-22T23:40:30Z
 updated_at: 2024-05-13T05:45:33Z
 url: https://github.com/astral-sh/ruff/issues/10087
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # ruff / isort doesn't detect all duplicate imports
 
 ---
 
-_Issue opened by @CharlesPerrotMinot on 2024-02-22 23:40_
+_@CharlesPerrotMinot_
 
 Hi,
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-14T12:57:32Z
 updated_at: 2025-11-27T15:06:39Z
 url: https://github.com/astral-sh/ty/issues/1552
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Add LSP code action for inserting missing import statements
 
 ---
 
-_Issue opened by @BurntSushi on 2025-11-14 12:57_
+_@BurntSushi_
 
 Here's a demonstration of this working in VS Code with pylance as the LSP server:
 

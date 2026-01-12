@@ -13,14 +13,14 @@ head: feature/tid254-relative-sibling-imports
 created_at: 2025-03-15T23:32:24Z
 updated_at: 2025-03-16T13:17:51Z
 url: https://github.com/astral-sh/ruff/pull/16772
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:57Z
 ```
 
 # [`flake8-tidy-imports`] Implement `relative-sibling-imports` (`TID254`)
 
 ---
 
-_Pull request opened by @noirbizarre on 2025-03-15 23:32_
+_@noirbizarre_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

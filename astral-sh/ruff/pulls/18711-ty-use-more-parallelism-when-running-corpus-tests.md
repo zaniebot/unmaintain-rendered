@@ -14,14 +14,14 @@ head: alex/split-corpus-tests-more
 created_at: 2025-06-16T14:39:24Z
 updated_at: 2025-06-16T17:38:56Z
 url: https://github.com/astral-sh/ruff/pull/18711
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:24Z
 ```
 
 # [ty] Use more parallelism when running corpus tests
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-16 14:39_
+_@AlexWaygood_
 
 ## Summary
 

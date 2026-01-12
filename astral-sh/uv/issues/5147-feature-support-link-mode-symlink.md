@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-07-17T15:43:52Z
 updated_at: 2025-09-19T19:33:20Z
 url: https://github.com/astral-sh/uv/issues/5147
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # feature: support `--link-mode=symlink`
 
 ---
 
-_Issue opened by @hutch3232 on 2024-07-17 15:43_
+_@hutch3232_
 
 Currently `--link-mode` supports `copy`, `hardlink`, and `clone`. I have my `UV_CACHE_DIR` set to a mounted drive which prevents hardlinks and cloning ("invalid cross-device link"). Symlinks would work, however. This could really increase performance for my situation, rather than copying over a bunch of files. When I work in R, I use `renv` which uses symlinks to a central cache successfully in the proposed way: https://github.com/rstudio/renv.
 

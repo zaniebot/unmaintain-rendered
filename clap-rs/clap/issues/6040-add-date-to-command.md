@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-22T19:11:55Z
 updated_at: 2025-06-22T19:55:21Z
 url: https://github.com/clap-rs/clap/issues/6040
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Add date to Command
 
 ---
 
-_Issue opened by @dcampbell24 on 2025-06-22 19:11_
+_@dcampbell24_
 
 ### Please complete the following tasks
 

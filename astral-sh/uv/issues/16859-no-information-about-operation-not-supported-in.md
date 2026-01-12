@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-26T12:10:59Z
 updated_at: 2025-12-15T14:05:07Z
 url: https://github.com/astral-sh/uv/issues/16859
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:39Z
 ```
 
 # No information about "operation not supported" in `uv init` on macos with `--cache-dir`
 
 ---
 
-_Issue opened by @byron-hawkins on 2025-11-26 12:10_
+_@byron-hawkins_
 
 ### Summary
 

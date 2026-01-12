@@ -13,14 +13,14 @@ head: jtfm/bogus-redirect-hang
 created_at: 2025-04-24T12:59:26Z
 updated_at: 2025-04-24T13:18:03Z
 url: https://github.com/astral-sh/uv/pull/13088
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Check for mismatched package and distribution names on resolver thread
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-04-24 12:59_
+_@jtfmumm_
 
 This PR restores the `bogus_redirect` test that was non-deterministically hanging (reverting #13076). 
 

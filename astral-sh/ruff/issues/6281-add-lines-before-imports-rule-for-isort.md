@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-02T17:45:43Z
 updated_at: 2023-08-14T20:22:23Z
 url: https://github.com/astral-sh/ruff/issues/6281
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Add 'lines-before-imports' rule for isort
 
 ---
 
-_Issue opened by @buriev on 2023-08-02 17:45_
+_@buriev_
 
 Files can have a different number of blank lines between the docstring and the import. I think that this rule would have a place in the ruff
 

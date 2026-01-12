@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T11:34:12Z
 updated_at: 2025-11-18T16:10:24Z
 url: https://github.com/astral-sh/ty/issues/234
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Improve test coverage for edge cases involving `--typeshed`
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-10-31 11:34_
+_@AlexWaygood_
 
 red-knot allows users to specify a custom typeshed using `--typeshed`, but we currently have poor test coverage for cases where a custom typeshed means that builtin or stdlib symbols aren't available to us as a result of this. We should improve our coverage here -- for example, what happens to our binary arithmetic logic if we're in a world where there's no `builtins.int` symbol available to us? (I have no idea.)
 

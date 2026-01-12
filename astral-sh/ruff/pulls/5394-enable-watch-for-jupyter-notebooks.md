@@ -12,14 +12,14 @@ head: charlie/jupyter
 created_at: 2023-06-27T16:15:24Z
 updated_at: 2023-06-27T16:53:48Z
 url: https://github.com/astral-sh/ruff/pull/5394
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Enable --watch for Jupyter notebooks
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-27 16:15_
+_@charliermarsh_
 
 ## Summary
 

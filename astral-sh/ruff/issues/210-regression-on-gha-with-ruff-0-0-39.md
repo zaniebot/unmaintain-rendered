@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-09-16T08:38:51Z
 updated_at: 2022-09-16T09:22:59Z
 url: https://github.com/astral-sh/ruff/issues/210
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Regression on GHA with ruff==0.0.39
 
 ---
 
-_Issue opened by @amotl on 2022-09-16 08:38_
+_@amotl_
 
 Dear Charlie,
 

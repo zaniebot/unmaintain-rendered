@@ -14,14 +14,14 @@ head: brent/fix-ruf009
 created_at: 2025-06-28T23:16:26Z
 updated_at: 2025-07-03T14:29:57Z
 url: https://github.com/astral-sh/ruff/pull/19021
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [`ruff`] Allow more `field` calls from `attrs` (`RUF009`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-28 23:16_
+_@ntBre_
 
 Summary
 --

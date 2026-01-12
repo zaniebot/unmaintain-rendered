@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-11T12:06:00Z
 updated_at: 2024-03-25T00:38:32Z
 url: https://github.com/astral-sh/ruff/issues/10337
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # B031 false positive in loop with continue/break/return
 
 ---
 
-_Issue opened by @MikkelSchubert on 2024-03-11 12:06_
+_@MikkelSchubert_
 
 ```python
 from __future__ import annotations

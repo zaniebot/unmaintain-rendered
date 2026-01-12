@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-29T10:45:50Z
 updated_at: 2024-08-29T21:24:00Z
 url: https://github.com/astral-sh/uv/issues/6802
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # False positive in warning: uv does not recognize "~" in $PATH
 
 ---
 
-_Issue opened by @paravoid on 2024-08-29 10:45_
+_@paravoid_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

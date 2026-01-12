@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-08T00:31:29Z
 updated_at: 2023-03-08T00:38:03Z
 url: https://github.com/astral-sh/ruff/issues/3394
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # RET504 false positive via decorator
 
 ---
 
-_Issue opened by @charliermarsh on 2023-03-08 00:31_
+_@charliermarsh_
 
 Here's an interesting case where variable is assigned to, referenced, and then returned:
 https://github.com/KyleKing/pytest_cache_assert/blob/47d0b538528a9c9cdbc182d2b276462a2aa0fd4d/tests/test_flask.py#L20

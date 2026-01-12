@@ -12,14 +12,14 @@ head: FStringMissingPlaceholders-fixable
 created_at: 2023-01-03T03:40:21Z
 updated_at: 2023-01-03T03:41:41Z
 url: https://github.com/astral-sh/ruff/pull/1582
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Mark `FStringMissingPlaceholders` as fixable
 
 ---
 
-_Pull request opened by @harupy on 2023-01-03 03:40_
+_@harupy_
 
 Follow-up for #1577
 

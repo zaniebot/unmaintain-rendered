@@ -14,14 +14,14 @@ head: micha/include-exclude
 created_at: 2025-06-06T14:20:29Z
 updated_at: 2025-06-12T17:08:13Z
 url: https://github.com/astral-sh/ruff/pull/18498
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [ty] File inclusion and exclusion
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-06-06 14:20_
+_@MichaReiser_
 
 ## Summary
 

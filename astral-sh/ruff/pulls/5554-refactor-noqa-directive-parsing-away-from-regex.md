@@ -14,14 +14,14 @@ head: charlie/noqa-parser
 created_at: 2023-07-06T05:45:06Z
 updated_at: 2023-07-23T23:25:52Z
 url: https://github.com/astral-sh/ruff/pull/5554
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Refactor `noqa` directive parsing away from regex-based implementation
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-07-06 05:45_
+_@charliermarsh_
 
 ## Summary
 

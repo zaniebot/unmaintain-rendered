@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-06T10:09:24Z
 updated_at: 2022-09-06T14:08:06Z
 url: https://github.com/clap-rs/clap/issues/4183
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Adding a version after calling `print_help` does not update for another `print_help`
 
 ---
 
-_Issue opened by @ModProg on 2022-09-06 10:09_
+_@ModProg_
 
 ### Please complete the following tasks
 

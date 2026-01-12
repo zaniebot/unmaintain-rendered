@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-01T03:44:35Z
 updated_at: 2024-04-01T03:46:41Z
 url: https://github.com/astral-sh/uv/issues/2751
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Support for pip install --target argument
 
 ---
 
-_Issue opened by @mpderbec on 2024-04-01 03:44_
+_@mpderbec_
 
 We have some specific tooling that uses the `-t` flag in `pip install` to direct where we want pip to put the packages. (We aren't using virtual environments.)
 

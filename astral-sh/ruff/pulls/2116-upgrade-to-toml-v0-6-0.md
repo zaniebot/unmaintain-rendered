@@ -12,14 +12,14 @@ head: charlie/toml
 created_at: 2023-01-24T00:17:35Z
 updated_at: 2023-01-24T00:22:43Z
 url: https://github.com/astral-sh/ruff/pull/2116
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Upgrade to toml v0.6.0
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-24 00:17_
+_@charliermarsh_
 
 Closes #1894.
 

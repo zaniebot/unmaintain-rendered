@@ -13,14 +13,14 @@ head: zb/ecosystem-counts
 created_at: 2023-12-16T03:46:14Z
 updated_at: 2023-12-16T06:14:18Z
 url: https://github.com/astral-sh/ruff/pull/9158
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Fix ecosystem format line changed counts
 
 ---
 
-_Pull request opened by @zanieb on 2023-12-16 03:46_
+_@zanieb_
 
 We were erroneously including patch headers so for each _file_ changed we could include an extra added and removed line e.g. we counted the diff in the following as +4 -4 instead of +3 -3.
 

@@ -12,14 +12,14 @@ head: mbern/8061/td003-support-vscode-github-syntax
 created_at: 2024-01-23T18:10:52Z
 updated_at: 2025-01-16T07:26:49Z
 url: https://github.com/astral-sh/ruff/pull/9627
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # [`flake8-todo`] - Align `TD003` with the VSCode Github PR extension
 
 ---
 
-_Pull request opened by @MartinBernstorff on 2024-01-23 18:10_
+_@MartinBernstorff_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

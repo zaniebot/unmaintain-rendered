@@ -13,14 +13,14 @@ head: dhruv/flatten-options
 created_at: 2025-01-11T06:05:48Z
 updated_at: 2025-01-11T16:38:23Z
 url: https://github.com/astral-sh/ruff/pull/15414
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Remove `flatten` to improve deserialization error messages
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-01-11 06:05_
+_@dhruvmanila_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-08T18:12:33Z
 updated_at: 2023-06-12T15:18:05Z
 url: https://github.com/astral-sh/ruff/issues/4970
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Conviguation via Cargo.toml (`[package.metadata.ruff]`)
 
 ---
 
-_Issue opened by @tgross35 on 2023-06-08 18:12_
+_@tgross35_
 
 Just a simple request - would it be possible to check `Cargo.toml` for rust configuration? This would be really cool for Rust projects that have a couple python scripts.
 

@@ -14,14 +14,14 @@ head: autofix-AIR302-check-class-attribute
 created_at: 2025-03-26T08:17:35Z
 updated_at: 2025-04-02T15:21:47Z
 url: https://github.com/astral-sh/ruff/pull/16977
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:55:59Z
 ```
 
 # [`airflow`] Add autofix for `AIR302` attribute checks
 
 ---
 
-_Pull request opened by @Lee-W on 2025-03-26 08:17_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

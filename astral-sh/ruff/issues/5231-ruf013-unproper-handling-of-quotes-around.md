@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-20T23:47:21Z
 updated_at: 2023-06-21T14:23:39Z
 url: https://github.com/astral-sh/ruff/issues/5231
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # RUF013: unproper handling of quotes around annotations
 
 ---
 
-_Issue opened by @Alexerson on 2023-06-20 23:47_
+_@Alexerson_
 
 The new rule RUF013 doesn’t properly handle string annotations.
 

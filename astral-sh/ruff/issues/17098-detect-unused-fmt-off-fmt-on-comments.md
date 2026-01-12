@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-31T17:02:39Z
 updated_at: 2025-04-01T15:36:54Z
 url: https://github.com/astral-sh/ruff/issues/17098
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Detect unused `# fmt: off` & `# fmt: on` comments
 
 ---
 
-_Issue opened by @jack-mcivor on 2025-03-31 17:02_
+_@jack-mcivor_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-21T03:01:39Z
 updated_at: 2024-12-28T16:59:08Z
 url: https://github.com/astral-sh/uv/issues/10070
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # Add an option to not create the activate* scripts in venvs
 
 ---
 
-_Issue opened by @gdamjan on 2024-12-21 03:01_
+_@gdamjan_
 
 Reason: appeal to authority :D
 https://x.com/charliermarsh/status/1837538829579796751

@@ -12,14 +12,14 @@ head: jtfm/git-keyring-integration
 created_at: 2025-08-22T15:33:20Z
 updated_at: 2025-08-22T18:39:21Z
 url: https://github.com/astral-sh/uv/pull/15456
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:45Z
 ```
 
 # Add keyring integration for git credentials
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-08-22 15:33_
+_@jtfmumm_
 
 This PR adds native keyring integration for persisting and fetching git credentials. On successful authentication for a git repo, credentials are persisted to the system keyring if `keyring-provider = "native"`. Future invocations will be able to find these credentials even in the absence of a git credential helper (though you must currently still provide a username on future invocations, see https://github.com/astral-sh/uv/issues/10866). 
 

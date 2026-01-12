@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-12T17:57:50Z
 updated_at: 2024-12-13T01:25:24Z
 url: https://github.com/astral-sh/uv/issues/9847
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # UX: hard to tell which python uv will use
 
 ---
 
-_Issue opened by @hwine on 2024-12-12 17:57_
+_@hwine_
 
 TBH, I'm not sure if this is a bug, or a subtle part of the python selection process, but I'm never sure _which_ python `uv` will use.
 

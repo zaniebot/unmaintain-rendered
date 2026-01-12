@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-02-15T19:45:34Z
 updated_at: 2024-06-27T14:36:17Z
 url: https://github.com/astral-sh/uv/issues/1329
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:26Z
 ```
 
 # Add hint that seed packages are being installed during `uv venv --seed`
 
 ---
 
-_Issue opened by @zanieb on 2024-02-15 19:45_
+_@zanieb_
 
 ```
 ❯ uv venv --seed

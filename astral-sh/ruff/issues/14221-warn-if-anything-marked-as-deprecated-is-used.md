@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-09T07:09:46Z
 updated_at: 2025-05-28T09:38:15Z
 url: https://github.com/astral-sh/ruff/issues/14221
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Warn if anything marked as deprecated is used
 
 ---
 
-_Issue opened by @mamekoro on 2024-11-09 07:09_
+_@mamekoro_
 
 Python 3.13 introduced a decorator called [`@warnings.deprecated`](https://docs.python.org/3/library/warnings.html#warnings.deprecated) that marks classes, functions and methods as deprecated. For older versions of Python, [`@deprecated.deprecated`](https://pypi.org/project/Deprecated/) is available as an alternative.
 

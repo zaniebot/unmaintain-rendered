@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-15T13:44:15Z
 updated_at: 2025-08-04T11:45:39Z
 url: https://github.com/astral-sh/ty/issues/827
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Feature request: clear the terminal when --watch is used.
 
 ---
 
-_Issue opened by @borissmidt on 2025-07-15 13:44_
+_@borissmidt_
 
 Because `ty --watch` keeps on appending to the current terminal it can be a bit confusing to read its output.
 Its also hard to find the start of the output of the latest run.

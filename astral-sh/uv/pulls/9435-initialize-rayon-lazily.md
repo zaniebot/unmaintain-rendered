@@ -13,14 +13,14 @@ head: konsti/lazy-rayon
 created_at: 2024-11-26T09:03:04Z
 updated_at: 2024-11-26T15:34:17Z
 url: https://github.com/astral-sh/uv/pull/9435
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:48Z
 ```
 
 # Initialize rayon lazily
 
 ---
 
-_Pull request opened by @konstin on 2024-11-26 09:03_
+_@konstin_
 
 When performing a noop sync, we don't need the rayon threadpool, yet we pay for its initialization:
 

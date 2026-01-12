@@ -12,14 +12,14 @@ head: charlie/consider
 created_at: 2022-12-08T01:10:09Z
 updated_at: 2022-12-08T01:10:38Z
 url: https://github.com/astral-sh/ruff/pull/1135
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Remove 'consider' language from check messages
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-08 01:10_
+_@charliermarsh_
 
 Resolves #1134.
 

@@ -12,14 +12,14 @@ head: charlie/isolated
 created_at: 2023-03-10T23:11:53Z
 updated_at: 2023-03-11T00:03:53Z
 url: https://github.com/astral-sh/ruff/pull/3445
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Run ecosystem CI checks without --isolated
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-10 23:11_
+_@charliermarsh_
 
 Using `--isolated` runs the risk that we _avoid_ respecting certain code paths. For example, if a project (like Airflow) uses namespace packages, we'll no longer respect those settings, and we run the risk of introducing regressions for namespace packages.
 

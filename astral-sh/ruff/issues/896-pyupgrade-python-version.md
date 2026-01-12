@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-23T15:53:51Z
 updated_at: 2022-11-23T16:46:48Z
 url: https://github.com/astral-sh/ruff/issues/896
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # pyupgrade Python Version
 
 ---
 
-_Issue opened by @gitpushdashf on 2022-11-23 15:53_
+_@gitpushdashf_
 
 This is awesome!
 

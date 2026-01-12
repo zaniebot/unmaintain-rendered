@@ -13,14 +13,14 @@ head: renovate/async-trait-0.x-lockfile
 created_at: 2024-04-01T02:03:27Z
 updated_at: 2024-04-01T02:13:24Z
 url: https://github.com/astral-sh/uv/pull/2747
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:12Z
 ```
 
 # Update Rust crate async-trait to v0.1.79
 
 ---
 
-_Pull request opened by @renovate on 2024-04-01 02:03_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

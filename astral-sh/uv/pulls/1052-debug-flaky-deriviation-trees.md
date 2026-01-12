@@ -12,14 +12,14 @@ head: zb/debug-tree
 created_at: 2024-01-22T22:35:24Z
 updated_at: 2024-01-29T15:37:43Z
 url: https://github.com/astral-sh/uv/pull/1052
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:23Z
 ```
 
 # DEBUG: Flaky deriviation trees
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-22 22:35_
+_@zanieb_
 
 _No description provided._
 

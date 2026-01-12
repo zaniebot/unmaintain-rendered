@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-04T03:14:03Z
 updated_at: 2025-06-04T19:42:37Z
 url: https://github.com/astral-sh/uv/issues/13829
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:37Z
 ```
 
 # `[tool.uv.sources]` should warn if it has no effect on any platform
 
 ---
 
-_Issue opened by @oconnor663 on 2025-06-04 03:14_
+_@oconnor663_
 
 ### Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-26T10:55:48Z
 updated_at: 2024-08-19T16:53:53Z
 url: https://github.com/astral-sh/uv/issues/5474
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:56Z
 ```
 
 # Installed package versions depend upon argument order in uv pip install
 
 ---
 
-_Issue opened by @larsevj on 2024-07-26 10:55_
+_@larsevj_
 
 Hi, I noticed when installing a package that the versions installed using `uv pip install` depends upon the order of the packages given to uv whereas when using pip the versions installed are consistent. For instance running
 `uv pip install importlib_metadata pysnyk` produces the following environment:

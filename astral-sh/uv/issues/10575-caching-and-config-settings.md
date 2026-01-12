@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-13T19:10:16Z
 updated_at: 2025-01-13T21:02:02Z
 url: https://github.com/astral-sh/uv/issues/10575
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:16Z
 ```
 
 # Caching and --config-settings
 
 ---
 
-_Issue opened by @suomela on 2025-01-13 19:10_
+_@suomela_
 
 I am here using `leanblueprint` as a random example of a tool I can run like `uvx leanblueprint`, which also depends on a package (`pygraphviz`) that requires magic command line switches to compile correctly.
 

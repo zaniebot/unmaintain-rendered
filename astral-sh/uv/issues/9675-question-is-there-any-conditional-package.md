@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-12-06T11:50:25Z
 updated_at: 2024-12-06T11:58:29Z
 url: https://github.com/astral-sh/uv/issues/9675
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # [Question]Is there any conditional package dependency setting when dev vs build
 
 ---
 
-_Issue opened by @hawksung1 on 2024-12-06 11:50_
+_@hawksung1_
 
 I have two packages in my project. However, they need to be deployed separately during actual deployment.
 I am using them as shown below for debugging during development.

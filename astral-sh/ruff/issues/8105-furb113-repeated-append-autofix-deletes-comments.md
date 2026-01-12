@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-21T14:41:02Z
 updated_at: 2023-11-09T03:10:12Z
 url: https://github.com/astral-sh/ruff/issues/8105
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `FURB113` (repeated-append) autofix deletes comments
 
 ---
 
-_Issue opened by @tdulcet on 2023-10-21 14:41_
+_@tdulcet_
 
 * A minimal code snippet that reproduces the bug.
 ```py

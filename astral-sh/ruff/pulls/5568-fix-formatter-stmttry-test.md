@@ -12,14 +12,14 @@ head: fix_try_test
 created_at: 2023-07-06T18:16:29Z
 updated_at: 2023-07-06T18:42:27Z
 url: https://github.com/astral-sh/ruff/pull/5568
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix formatter `StmtTry` test
 
 ---
 
-_Pull request opened by @konstin on 2023-07-06 18:16_
+_@konstin_
 
 For some reason this didn't turn up on CI before
 

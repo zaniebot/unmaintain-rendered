@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-11T09:00:54Z
 updated_at: 2022-12-11T22:13:11Z
 url: https://github.com/astral-sh/ruff/issues/1193
-synced_at: 2026-01-10T12:06:18Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # I001 conflicts with isort on blank lines between import and comment before function
 
 ---
 
-_Issue opened by @andersk on 2022-12-11 09:00_
+_@andersk_
 
 As of ee994e8c074def26af7a9c3b43cf3e24e0238e89 (#1078), when an import is followed by a comment and then a function, Ruff `I001` wants two blank lines between the import and the comment, but isort wants one.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-16T09:40:40Z
 updated_at: 2024-11-18T01:57:55Z
 url: https://github.com/astral-sh/uv/issues/9164
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # Turn `--verify-hashes` on by default
 
 ---
 
-_Issue opened by @hauntsaninja on 2024-11-16 09:40_
+_@hauntsaninja_
 
 This would technically be a breaking change, so might need to wait for uv 0.6 (although "I have a hash but I expect it to not be checked" seems pretty niche). It's surprising to me that hashes are ignored by default and it's bad to have security related surprises
 

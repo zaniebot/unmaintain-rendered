@@ -14,14 +14,14 @@ head: fmt-skip-suite
 created_at: 2025-12-20T21:44:08Z
 updated_at: 2026-01-11T21:46:27Z
 url: https://github.com/astral-sh/ruff/pull/22119
-synced_at: 2026-01-12T02:12:03Z
+synced_at: 2026-01-12T15:57:42Z
 ```
 
 # Respect `fmt: skip` for multiple statements on same logical line
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-12-20 21:44_
+_@dylwil3_
 
 This PR adjusts the logic for skipping formatting so that a `fmt: skip` can affect multiple statements if they lie on the same line.
 

@@ -11,14 +11,14 @@ head: main
 created_at: 2025-03-06T19:09:40Z
 updated_at: 2025-03-10T05:52:45Z
 url: https://github.com/astral-sh/uv/pull/12017
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:06Z
 ```
 
 # Add a link to the Concepts > Build systems page to 'uv init --build-backend` documentation (#11502)
 
 ---
 
-_Pull request opened by @dd-ssc on 2025-03-06 19:09_
+_@dd-ssc_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

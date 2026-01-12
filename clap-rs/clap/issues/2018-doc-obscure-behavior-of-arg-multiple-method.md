@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-07-15T23:05:43Z
 updated_at: 2021-01-30T22:11:54Z
 url: https://github.com/clap-rs/clap/issues/2018
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # [Doc] Obscure behavior of Arg.multiple method
 
 ---
 
-_Issue opened by @marcospb19 on 2020-07-15 23:05_
+_@marcospb19_
 
 I'm trying to learn how to use Clap but I'm having a **very hard time** with the documentation, here I will try to explain my struggle only for the sake of improvement.
 

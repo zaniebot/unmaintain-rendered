@@ -13,14 +13,14 @@ head: charlie/non-local
 created_at: 2023-02-26T05:02:14Z
 updated_at: 2023-02-26T05:05:58Z
 url: https://github.com/astral-sh/ruff/pull/3233
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Implement basic rendering of remaining AST nodes
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-26 05:02_
+_@charliermarsh_
 
 Includes `StmtKind::Match`, `Pattern`, etc.
 

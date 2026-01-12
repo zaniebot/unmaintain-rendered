@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-01T10:58:46Z
 updated_at: 2025-10-02T08:04:02Z
 url: https://github.com/astral-sh/uv/issues/16083
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:23Z
 ```
 
 # .netrc parsing fails when there are commented lines
 
 ---
 
-_Issue opened by @iluetkeb on 2025-10-01 10:58_
+_@iluetkeb_
 
 ### Summary
 

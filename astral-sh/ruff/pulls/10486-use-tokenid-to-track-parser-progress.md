@@ -13,14 +13,14 @@ head: dhruv/token-id
 created_at: 2024-03-20T09:06:37Z
 updated_at: 2024-03-20T12:09:17Z
 url: https://github.com/astral-sh/ruff/pull/10486
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Use `TokenId` to track parser progress
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-20 09:06_
+_@dhruvmanila_
 
 ## Summary
 

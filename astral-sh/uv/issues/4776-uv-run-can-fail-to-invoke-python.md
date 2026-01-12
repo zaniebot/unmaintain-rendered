@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-03T15:11:03Z
 updated_at: 2024-07-06T19:22:20Z
 url: https://github.com/astral-sh/uv/issues/4776
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # `uv run` can fail to invoke `python`
 
 ---
 
-_Issue opened by @zanieb on 2024-07-03 15:11_
+_@zanieb_
 
 ```
 ❯ uv run --isolated -v crates/uv-python/fetch-download-metadata.py

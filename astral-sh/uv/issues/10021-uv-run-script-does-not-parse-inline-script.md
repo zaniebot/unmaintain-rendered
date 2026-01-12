@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-19T09:07:46Z
 updated_at: 2024-12-19T18:09:10Z
 url: https://github.com/astral-sh/uv/issues/10021
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:05Z
 ```
 
 # `uv run --script -` does not parse inline script metadata
 
 ---
 
-_Issue opened by @BarrensZeppelin on 2024-12-19 09:07_
+_@BarrensZeppelin_
 
 I would expect that adding the `--script` flag didn't disable reading of inline script metadata from stdin, but it seems to be the case.
 

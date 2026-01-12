@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-16T12:07:32Z
 updated_at: 2023-05-17T21:35:44Z
 url: https://github.com/clap-rs/clap/issues/4911
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # panics with error incomprehensible to `#[derive(..)]` user
 
 ---
 
-_Issue opened by @rukai on 2023-05-16 12:07_
+_@rukai_
 
 ### Please complete the following tasks
 

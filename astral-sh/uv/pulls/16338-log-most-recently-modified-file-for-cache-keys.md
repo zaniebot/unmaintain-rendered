@@ -13,14 +13,14 @@ head: konsti/log-last-modified-timestamp
 created_at: 2025-10-17T08:59:35Z
 updated_at: 2025-11-02T18:52:09Z
 url: https://github.com/astral-sh/uv/pull/16338
-synced_at: 2026-01-10T06:28:12Z
+synced_at: 2026-01-12T16:12:13Z
 ```
 
 # Log most recently modified file for cache-keys
 
 ---
 
-_Pull request opened by @konstin on 2025-10-17 08:59_
+_@konstin_
 
 For https://github.com/astral-sh/uv/issues/16336. We previously weren't telling the user which file is responsible for rebuilding.
 

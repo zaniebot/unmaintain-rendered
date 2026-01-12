@@ -13,14 +13,14 @@ head: dependabot/github_actions/cloudflare/wrangler-action-3.3.2
 created_at: 2023-10-30T08:48:35Z
 updated_at: 2023-10-30T09:08:56Z
 url: https://github.com/astral-sh/ruff/pull/8348
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Bump cloudflare/wrangler-action from 3.3.1 to 3.3.2
 
 ---
 
-_Pull request opened by @dependabot on 2023-10-30 08:48_
+_@dependabot_
 
 Bumps [cloudflare/wrangler-action](https://github.com/cloudflare/wrangler-action) from 3.3.1 to 3.3.2.
 <details>

@@ -13,14 +13,14 @@ head: alex/flake8-builtins-stubs
 created_at: 2025-01-08T12:54:19Z
 updated_at: 2025-01-08T13:00:43Z
 url: https://github.com/astral-sh/ruff/pull/15350
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # [`flake8-builtins`] Disapply `A005` to stub files
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-01-08 12:54_
+_@AlexWaygood_
 
 ## Summary
 

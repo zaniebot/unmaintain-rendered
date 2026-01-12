@@ -13,14 +13,14 @@ head: ag/fix-linehaul-test-on-archlinux
 created_at: 2024-03-25T13:36:27Z
 updated_at: 2024-03-25T14:41:19Z
 url: https://github.com/astral-sh/uv/pull/2647
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:09Z
 ```
 
 # uv-client: fix linehaul test
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-03-25 13:36_
+_@BurntSushi_
 
 This test was introduced in 42973cd9cb098e59f75e287d72a425af8a614e91. It
 looks like it compares some values against some platform specific code

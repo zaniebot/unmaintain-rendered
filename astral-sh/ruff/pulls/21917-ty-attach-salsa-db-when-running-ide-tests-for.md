@@ -14,14 +14,14 @@ head: micha/salsa-debugging-ide-tests
 created_at: 2025-12-11T15:05:51Z
 updated_at: 2025-12-11T18:03:54Z
 url: https://github.com/astral-sh/ruff/pull/21917
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:36Z
 ```
 
 # [ty] Attach salsa db when running ide tests for easier debugging
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-12-11 15:05_
+_@MichaReiser_
 
 ## Summary
 

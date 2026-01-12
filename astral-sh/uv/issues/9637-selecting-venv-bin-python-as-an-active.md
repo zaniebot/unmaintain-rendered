@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-04T13:18:49Z
 updated_at: 2025-12-07T19:11:05Z
 url: https://github.com/astral-sh/uv/issues/9637
-synced_at: 2026-01-10T03:11:32Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # Selecting .venv/bin/python as an active interpreter in VSCode doesn't enable IDE features
 
 ---
 
-_Issue opened by @oulianov on 2024-12-04 13:18_
+_@oulianov_
 
 **Maintainer edit: Please set `python.usePythonEnvironmentsExtension: true` and check if the problem persists.** See https://github.com/astral-sh/uv/issues/9637#issuecomment-3197523231 for more detail.
 

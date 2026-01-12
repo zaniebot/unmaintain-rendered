@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T12:16:43Z
 updated_at: 2025-03-20T09:06:05Z
 url: https://github.com/astral-sh/uv/issues/12277
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # Unable to Install PyQt5 on Ubuntu 24.04 ARM64 with uv
 
 ---
 
-_Issue opened by @nimaxin on 2025-03-18 12:16_
+_@nimaxin_
 
 ### Question
 

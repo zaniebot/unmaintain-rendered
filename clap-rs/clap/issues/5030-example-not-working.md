@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-20T22:23:11Z
 updated_at: 2023-07-21T00:20:57Z
 url: https://github.com/clap-rs/clap/issues/5030
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Example Not Working 
 
 ---
 
-_Issue opened by @JiveyGuy on 2023-07-20 22:23_
+_@JiveyGuy_
 
 ### Please complete the following tasks
 

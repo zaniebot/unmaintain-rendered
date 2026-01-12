@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-26T20:38:14Z
 updated_at: 2024-08-26T20:38:57Z
 url: https://github.com/astral-sh/uv/issues/6658
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Warn on invalid script target module names
 
 ---
 
-_Issue opened by @zanieb on 2024-08-26 20:38_
+_@zanieb_
 
 e.g. in an new `uv init` project
 

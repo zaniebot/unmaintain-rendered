@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-23T23:44:05Z
 updated_at: 2024-12-11T17:41:40Z
 url: https://github.com/astral-sh/uv/issues/6563
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:05Z
 ```
 
 # `uv add` and `uv lock` fail on corporate network
 
 ---
 
-_Issue opened by @maxfirman on 2024-08-23 23:44_
+_@maxfirman_
 
 I'm running into some problems trying to use `uv add` and `uv lock` commands on a machine running behind a corporate proxy.
 

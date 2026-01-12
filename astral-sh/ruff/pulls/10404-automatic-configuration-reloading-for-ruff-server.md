@@ -13,14 +13,14 @@ head: jane/server/configuration/reload
 created_at: 2024-03-14T02:47:04Z
 updated_at: 2024-03-21T20:22:20Z
 url: https://github.com/astral-sh/ruff/pull/10404
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Automatic configuration reloading for `ruff server`
 
 ---
 
-_Pull request opened by @snowsignal on 2024-03-14 02:47_
+_@snowsignal_
 
 ## Summary
 

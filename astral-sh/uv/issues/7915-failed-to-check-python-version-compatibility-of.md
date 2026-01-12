@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-04T08:07:26Z
 updated_at: 2024-10-06T14:19:49Z
 url: https://github.com/astral-sh/uv/issues/7915
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # Failed to check python version compatibility of the package when installing or locking
 
 ---
 
-_Issue opened by @vtannguyen on 2024-10-04 08:07_
+_@vtannguyen_
 
 UV seems to not check the python version compatibility when installing new package using `uv pip install` or `uv add` or locking package using `uv pip compile` or `uv lock`. The bug found in uv latest version `0.4.18`. The platform I'm using is fedora  version 40
 

@@ -14,14 +14,14 @@ head: charlie/win
 created_at: 2024-03-04T19:33:34Z
 updated_at: 2024-03-04T21:49:18Z
 url: https://github.com/astral-sh/uv/pull/2171
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:53Z
 ```
 
 # Run Windows against Python 3.13
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-03-04 19:33_
+_@charliermarsh_
 
 ## Summary
 

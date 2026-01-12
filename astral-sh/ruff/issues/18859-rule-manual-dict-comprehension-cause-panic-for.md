@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-22T13:29:04Z
 updated_at: 2025-06-25T08:44:34Z
 url: https://github.com/astral-sh/ruff/issues/18859
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Rule `manual_dict_comprehension` cause panic `for-loop target binding must exist` (probably PERF403 - debug assert)
 
 ---
 
-_Issue opened by @qarmin on 2025-06-22 13:29_
+_@qarmin_
 
 ### Summary
 

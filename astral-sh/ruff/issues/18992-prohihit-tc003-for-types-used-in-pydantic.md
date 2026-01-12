@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T18:16:02Z
 updated_at: 2025-07-07T12:48:04Z
 url: https://github.com/astral-sh/ruff/issues/18992
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Prohihit TC003 for types used in Pydantic
 
 ---
 
-_Issue opened by @jensenbox on 2025-06-27 18:16_
+_@jensenbox_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: gankra/ungate-logins
 created_at: 2025-06-23T17:17:22Z
 updated_at: 2025-06-23T17:30:51Z
 url: https://github.com/astral-sh/uv/pull/14222
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:05Z
 ```
 
 # Don't block docker logins on it being a pull-request
 
 ---
 
-_Pull request opened by @Gankra on 2025-06-23 17:17_
+_@Gankra_
 
 _No description provided._
 

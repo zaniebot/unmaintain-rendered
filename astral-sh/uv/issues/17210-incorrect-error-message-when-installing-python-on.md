@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-21T21:46:34Z
 updated_at: 2025-12-22T00:49:06Z
 url: https://github.com/astral-sh/uv/issues/17210
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:46Z
 ```
 
 # Incorrect error message when installing Python on armv7l
 
 ---
 
-_Issue opened by @zanieb on 2025-12-21 21:46_
+_@zanieb_
 
 > Looks like the [latest release in `astral-sh/python-build-standalone`](https://github.com/astral-sh/python-build-standalone/releases/tag/20250828) includes "dynamically linked aarch64 musl builds"! 🥳
 > 

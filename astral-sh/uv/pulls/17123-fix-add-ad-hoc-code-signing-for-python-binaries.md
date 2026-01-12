@@ -11,14 +11,14 @@ head: fix/macos-python-codesign
 created_at: 2025-12-13T10:22:39Z
 updated_at: 2025-12-13T16:39:29Z
 url: https://github.com/astral-sh/uv/pull/17123
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # fix: add ad-hoc code signing for Python binaries on macOS
 
 ---
 
-_Pull request opened by @majiayu000 on 2025-12-13 10:22_
+_@majiayu000_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-10T01:27:37Z
 updated_at: 2025-01-10T02:09:49Z
 url: https://github.com/astral-sh/ruff/issues/15388
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Allow function parameters on multiple lines
 
 ---
 
-_Issue opened by @kurt-rhee on 2025-01-10 01:27_
+_@kurt-rhee_
 
 `if __name__ == "__main__":
     commission_inverter(

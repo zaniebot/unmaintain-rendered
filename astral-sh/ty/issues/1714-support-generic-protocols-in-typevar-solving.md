@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-01T23:45:54Z
 updated_at: 2025-12-28T01:56:27Z
 url: https://github.com/astral-sh/ty/issues/1714
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # support generic protocols in typevar solving
 
 ---
 
-_Issue opened by @carljm on 2025-12-01 23:45_
+_@carljm_
 
 _No description provided._
 

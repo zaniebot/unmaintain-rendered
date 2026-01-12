@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-22T10:19:42Z
 updated_at: 2023-08-25T17:42:58Z
 url: https://github.com/astral-sh/ruff/issues/6767
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Spurious PLE1300 error with 0.0.285
 
 ---
 
-_Issue opened by @DimitriPapadopoulos on 2023-08-22 10:19_
+_@DimitriPapadopoulos_
 
 Follow-up of https://github.com/astral-sh/ruff/issues/6442
 

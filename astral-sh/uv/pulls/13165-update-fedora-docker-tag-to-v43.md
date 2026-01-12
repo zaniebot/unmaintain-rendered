@@ -13,14 +13,14 @@ head: renovate/fedora-43.x
 created_at: 2025-04-28T02:46:35Z
 updated_at: 2025-05-13T12:47:50Z
 url: https://github.com/astral-sh/uv/pull/13165
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:34Z
 ```
 
 # Update fedora Docker tag to v43
 
 ---
 
-_Pull request opened by @renovate on 2025-04-28 02:46_
+_@renovate_
 
 This PR contains the following updates:
 

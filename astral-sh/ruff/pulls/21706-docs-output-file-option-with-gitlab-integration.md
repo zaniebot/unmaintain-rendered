@@ -13,14 +13,14 @@ head: docs/gitlab-output-file
 created_at: 2025-11-30T22:10:19Z
 updated_at: 2025-12-01T10:07:25Z
 url: https://github.com/astral-sh/ruff/pull/21706
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # docs: Output file option with GitLab integration
 
 ---
 
-_Pull request opened by @kieran-ryan on 2025-11-30 22:10_
+_@kieran-ryan_
 
 ## Summary
 

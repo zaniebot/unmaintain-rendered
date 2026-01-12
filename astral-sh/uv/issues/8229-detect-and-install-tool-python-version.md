@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-15T21:56:54Z
 updated_at: 2024-10-16T18:42:46Z
 url: https://github.com/astral-sh/uv/issues/8229
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # Detect and install tool python version
 
 ---
 
-_Issue opened by @Tobi-De on 2024-10-15 21:56_
+_@Tobi-De_
 
 This isn’t an issue, but since there’s no discussions tab, I’ll post it here.
 

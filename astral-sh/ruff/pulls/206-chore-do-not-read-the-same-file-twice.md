@@ -12,14 +12,14 @@ head: dd/read-once
 created_at: 2022-09-15T18:20:46Z
 updated_at: 2022-09-15T20:14:17Z
 url: https://github.com/astral-sh/ruff/pull/206
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # chore: Do not read the same file twice
 
 ---
 
-_Pull request opened by @Stranger6667 on 2022-09-15 18:20_
+_@Stranger6667_
 
 I noticed that `ruff` reads the same file twice if there is no cache. This PR passes `contents` to `check_path`
 

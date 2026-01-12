@@ -14,14 +14,14 @@ head: dcreager/better-constraint-copies
 created_at: 2025-02-20T14:22:11Z
 updated_at: 2025-02-21T14:16:29Z
 url: https://github.com/astral-sh/ruff/pull/16276
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Better handling of visibility constraint copies
 
 ---
 
-_Pull request opened by @dcreager on 2025-02-20 14:22_
+_@dcreager_
 
 Two related changes.  For context:
 

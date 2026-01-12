@@ -12,14 +12,14 @@ head: charlie/cli
 created_at: 2023-11-02T17:25:14Z
 updated_at: 2023-11-02T17:40:31Z
 url: https://github.com/astral-sh/uv/pull/294
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:51Z
 ```
 
 # Always fetch via the Git CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-02 17:25_
+_@charliermarsh_
 
 Not sold on this, but I'm curious if it passes CI.
 

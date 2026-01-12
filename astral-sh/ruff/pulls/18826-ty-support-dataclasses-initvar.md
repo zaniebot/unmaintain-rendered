@@ -13,14 +13,14 @@ head: ty-dataclasses-initvar
 created_at: 2025-06-20T17:05:57Z
 updated_at: 2025-07-24T11:21:48Z
 url: https://github.com/astral-sh/ruff/pull/18826
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [ty] Support `dataclasses.InitVar`
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-06-20 17:05_
+_@InSyncWithFoo_
 
 ## Summary
 

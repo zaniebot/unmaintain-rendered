@@ -12,14 +12,14 @@ head: fix/pt006-implicit-str-concat
 created_at: 2023-04-13T07:20:37Z
 updated_at: 2023-04-14T01:16:17Z
 url: https://github.com/astral-sh/ruff/pull/3955
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Check for parenthesis in implicit str concat in `PT006`
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-04-13 07:20_
+_@dhruvmanila_
 
 ## Summary
 

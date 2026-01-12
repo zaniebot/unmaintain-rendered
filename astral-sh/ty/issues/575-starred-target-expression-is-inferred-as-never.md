@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-03T13:45:34Z
 updated_at: 2025-11-14T14:34:50Z
 url: https://github.com/astral-sh/ty/issues/575
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Starred target expression is inferred as `Never`
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-06-03 13:45_
+_@dhruvmanila_
 
 Random thing I noticed while playing around with this branch locally just now: do you know why `Never` is given as the inlay type on the playground here? (This is a local deploy of the ty playground on your branch)
 

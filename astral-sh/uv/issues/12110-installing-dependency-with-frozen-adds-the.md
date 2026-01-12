@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-11T10:26:04Z
 updated_at: 2025-03-14T12:07:48Z
 url: https://github.com/astral-sh/uv/issues/12110
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # Installing dependency with `--frozen` adds the dependency with no minimum version
 
 ---
 
-_Issue opened by @egeres on 2025-03-11 10:26_
+_@egeres_
 
 ### Question
 

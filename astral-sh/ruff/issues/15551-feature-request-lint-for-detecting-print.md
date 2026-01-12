@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-17T14:06:50Z
 updated_at: 2025-01-17T14:30:48Z
 url: https://github.com/astral-sh/ruff/issues/15551
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Feature request - lint for detecting print statements
 
 ---
 
-_Issue opened by @brass75 on 2025-01-17 14:06_
+_@brass75_
 
 The projects I tend to write (as many) do not use `print` in production code however we do sometimes use them in debugging. It would be great if there was a lint we could turn on to detect forgotten `print` statements.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-31T12:09:49Z
 updated_at: 2025-11-18T16:10:24Z
 url: https://github.com/astral-sh/ty/issues/233
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Properly model control flow through `finally` suites
 
 ---
 
-_Issue opened by @AlexWaygood on 2024-10-31 12:09_
+_@AlexWaygood_
 
 `finally` suites in `try`/`except` blocks have very complex control flow, which we don't yet model, and need to.
 

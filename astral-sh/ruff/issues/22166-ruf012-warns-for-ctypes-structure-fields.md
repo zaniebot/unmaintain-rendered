@@ -8,16 +8,16 @@ labels:
   - rule
 assignees: []
 created_at: 2025-12-23T22:35:08Z
-updated_at: 2026-01-10T22:41:13Z
+updated_at: 2026-01-12T15:48:42Z
 url: https://github.com/astral-sh/ruff/issues/22166
-synced_at: 2026-01-11T00:46:06Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # RUF012 warns for ctypes Structure._fields_
 
 ---
 
-_Issue opened by @behrmann on 2025-12-23 22:35_
+_@behrmann_
 
 ### Summary
 
@@ -61,5 +61,15 @@ I only found this lint while looking through additional lints to add. For now I'
 _Comment by @caiquejjx on 2026-01-10 22:41_
 
 @ntBre I'd like to work in adding the exception if it's desired
+
+---
+
+_Comment by @ntBre on 2026-01-12 15:48_
+
+Go for it! I'll assign you for now, but don't feel any pressure :)
+
+---
+
+_Assigned to @caiquejjx by @ntBre on 2026-01-12 15:48_
 
 ---

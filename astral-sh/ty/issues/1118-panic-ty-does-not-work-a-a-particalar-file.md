@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-03T08:44:50Z
 updated_at: 2025-09-03T14:57:59Z
 url: https://github.com/astral-sh/ty/issues/1118
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # [panic] ty does not work a a particalar file
 
 ---
 
-_Issue opened by @sehHeiden on 2025-09-03 08:44_
+_@sehHeiden_
 
 I start ty with:
 

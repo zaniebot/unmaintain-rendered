@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-09-06T16:00:22Z
 updated_at: 2018-08-02T03:29:43Z
 url: https://github.com/clap-rs/clap/issues/230
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Try out the new rustfmt on codebase
 
 ---
 
-_Issue opened by @kbknapp on 2015-09-06 16:00_
+_@kbknapp_
 
 [rustfmt](https://github.com/nrc/rustfmt) was run against the codebase a long time ago...but I think it's time to try again! Also thanks to #228 
 

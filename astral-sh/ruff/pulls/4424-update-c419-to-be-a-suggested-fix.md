@@ -12,14 +12,14 @@ head: fix/4320
 created_at: 2023-05-14T01:33:38Z
 updated_at: 2023-05-15T08:30:40Z
 url: https://github.com/astral-sh/ruff/pull/4424
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Update C419 to be a suggested fix
 
 ---
 
-_Pull request opened by @zanieb on 2023-05-14 01:33_
+_@zanieb_
 
 Per discussion in https://github.com/charliermarsh/ruff/issues/4320
 Part of https://github.com/charliermarsh/ruff/issues/4184

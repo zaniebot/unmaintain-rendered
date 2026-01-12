@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-03T21:00:44Z
 updated_at: 2025-12-04T08:11:42Z
 url: https://github.com/astral-sh/ty/issues/1748
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Crash on hover of stringified unknown type hint
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-12-03 21:00_
+_@MeGaGiGaGon_
 
 ### Summary
 

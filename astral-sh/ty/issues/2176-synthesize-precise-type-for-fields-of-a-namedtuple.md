@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-23T01:43:49Z
 updated_at: 2025-12-23T21:44:54Z
 url: https://github.com/astral-sh/ty/issues/2176
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Synthesize precise type for `_fields` of a NamedTuple
 
 ---
 
-_Issue opened by @carljm on 2025-12-23 01:43_
+_@carljm_
 
 > Mypy also appears to synthesize a precise type for the `_fields` attribute ([also public](https://docs.python.org/3/library/collections.html#collections.somenamedtuple._fields)). Or at least, more precise than what we infer right now:
 > 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-16T07:34:49Z
 updated_at: 2025-12-08T12:17:53Z
 url: https://github.com/astral-sh/uv/issues/13485
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # Make UV_GIT_LFS active by default on some url
 
 ---
 
-_Issue opened by @gsemet on 2025-05-16 07:34_
+_@gsemet_
 
 ### Summary
 

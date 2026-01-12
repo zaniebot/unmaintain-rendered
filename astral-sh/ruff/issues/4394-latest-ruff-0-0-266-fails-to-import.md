@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-12T18:21:46Z
 updated_at: 2023-05-12T21:18:21Z
 url: https://github.com/astral-sh/ruff/issues/4394
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Latest ruff 0.0.266 fails to import
 
 ---
 
-_Issue opened by @jaraco on 2023-05-12 18:21_
+_@jaraco_
 
 I was working on jaraco/jaraco.packaging#11 when suddenly the tests started failing with `ModuleNotFoundError`. I traced it to the recent 0.0.266 release:
 

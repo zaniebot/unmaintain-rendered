@@ -14,14 +14,14 @@ head: zb/fix-packse-docs
 created_at: 2024-03-13T23:14:45Z
 updated_at: 2024-03-14T00:33:43Z
 url: https://github.com/astral-sh/uv/pull/2437
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:02Z
 ```
 
 # Update packse development documentation to include `--no-hash` flag
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-13 23:14_
+_@zanieb_
 
 _No description provided._
 

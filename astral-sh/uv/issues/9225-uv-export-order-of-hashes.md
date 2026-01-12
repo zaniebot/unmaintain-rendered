@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-19T13:16:03Z
 updated_at: 2024-11-19T20:14:22Z
 url: https://github.com/astral-sh/uv/issues/9225
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # `uv export` order of hashes
 
 ---
 
-_Issue opened by @czechnology on 2024-11-19 13:16_
+_@czechnology_
 
 Suppose you have some dependencies in `pyproject.toml`, e.g.
 ```

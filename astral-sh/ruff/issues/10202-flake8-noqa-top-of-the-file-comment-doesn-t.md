@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-02T18:13:47Z
 updated_at: 2024-03-03T00:20:37Z
 url: https://github.com/astral-sh/ruff/issues/10202
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `# flake8: noqa` top-of-the-file comment doesn't respect `external` config
 
 ---
 
-_Issue opened by @Avasam on 2024-03-02 18:13_
+_@Avasam_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

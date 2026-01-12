@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-26T06:29:48Z
 updated_at: 2026-01-06T18:38:24Z
 url: https://github.com/astral-sh/uv/issues/17238
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:47Z
 ```
 
 # Sharing cache across different laptops
 
 ---
 
-_Issue opened by @lanbaoshen on 2025-12-26 06:29_
+_@lanbaoshen_
 
 ### Question
 

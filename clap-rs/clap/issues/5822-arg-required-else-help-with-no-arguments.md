@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-18T08:00:17Z
 updated_at: 2024-11-18T16:17:06Z
 url: https://github.com/clap-rs/clap/issues/5822
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # `arg_required_else_help` with no arguments.
 
 ---
 
-_Issue opened by @Leandros on 2024-11-18 08:00_
+_@Leandros_
 
 ### Please complete the following tasks
 

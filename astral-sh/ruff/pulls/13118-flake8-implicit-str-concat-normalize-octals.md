@@ -14,14 +14,14 @@ head: octal-escape
 created_at: 2024-08-26T22:16:47Z
 updated_at: 2024-08-27T18:02:32Z
 url: https://github.com/astral-sh/ruff/pull/13118
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`flake8-implicit-str-concat`] Normalize octals before merging concatenated strings in `single-line-implicit-string-concatenation` (`ISC001`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-08-26 22:16_
+_@dylwil3_
 
 This PR pads the last octal (if there is one) to three digits before concatenating strings in the fix for `ISC001`.
 

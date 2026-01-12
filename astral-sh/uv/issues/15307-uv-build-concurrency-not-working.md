@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-15T13:23:09Z
 updated_at: 2025-08-17T10:50:58Z
 url: https://github.com/astral-sh/uv/issues/15307
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # UV_BUILD_CONCURRENCY not working
 
 ---
 
-_Issue opened by @mo22 on 2025-08-15 13:23_
+_@mo22_
 
 ### Summary
 

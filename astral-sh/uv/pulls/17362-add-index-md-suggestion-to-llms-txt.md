@@ -13,14 +13,14 @@ head: claude/fix-dependencies-routing-1YK6J
 created_at: 2026-01-08T16:14:12Z
 updated_at: 2026-01-08T16:57:38Z
 url: https://github.com/astral-sh/uv/pull/17362
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:44Z
 ```
 
 # Add `index.md` suggestion to `llms.txt`
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-08 16:14_
+_@zanieb_
 
 I noticed that Claude did not request the `index.md` files when pointed to `llms.txt`
 

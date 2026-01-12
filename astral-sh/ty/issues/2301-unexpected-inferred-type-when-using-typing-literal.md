@@ -12,14 +12,14 @@ assignees: []
 created_at: 2026-01-02T10:31:15Z
 updated_at: 2026-01-05T08:29:52Z
 url: https://github.com/astral-sh/ty/issues/2301
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Unexpected inferred type when using `typing.Literal`
 
 ---
 
-_Issue opened by @jeertmans on 2026-01-02 10:31_
+_@jeertmans_
 
 ### Summary
 

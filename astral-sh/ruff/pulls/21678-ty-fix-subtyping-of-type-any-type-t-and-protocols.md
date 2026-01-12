@@ -14,14 +14,14 @@ head: david/numpy-workaround
 created_at: 2025-11-28T14:19:34Z
 updated_at: 2025-11-28T15:56:24Z
 url: https://github.com/astral-sh/ruff/pull/21678
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:30Z
 ```
 
 # [ty] Fix subtyping of `type[Any]` / `type[T]` and protocols
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-28 14:19_
+_@sharkdp_
 
 ## Summary
 

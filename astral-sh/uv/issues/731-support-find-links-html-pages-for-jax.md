@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-12-26T13:17:24Z
 updated_at: 2023-12-26T14:56:35Z
 url: https://github.com/astral-sh/uv/issues/731
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Support `--find-links` html pages for jax
 
 ---
 
-_Issue opened by @konstin on 2023-12-26 13:17_
+_@konstin_
 
 The [jax CUDA installation](https://jax.readthedocs.io/en/latest/installation.html#pip-installation-gpu-cuda-installed-via-pip-easier) says:
 

@@ -12,14 +12,14 @@ head: plr2004
 created_at: 2023-01-12T18:48:18Z
 updated_at: 2023-01-18T06:07:55Z
 url: https://github.com/astral-sh/ruff/pull/1828
-synced_at: 2026-01-12T05:25:13Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Implement `PLR2004` (`MagicValueComparison`)
 
 ---
 
-_Pull request opened by @max0x53 on 2023-01-12 18:48_
+_@max0x53_
 
 This PR adds [Pylint `R2004`](https://pylint.pycqa.org/en/latest/user_guide/messages/refactor/magic-value-comparison.html#magic-value-comparison-r2004)
 

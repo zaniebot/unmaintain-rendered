@@ -14,14 +14,14 @@ head: charlie/key-in
 created_at: 2023-11-06T20:14:52Z
 updated_at: 2023-11-06T21:14:30Z
 url: https://github.com/astral-sh/ruff/pull/8525
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Make `SIM118` fix as safe when the expression is a known dictionary 
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-06 20:14_
+_@charliermarsh_
 
 ## Summary
 

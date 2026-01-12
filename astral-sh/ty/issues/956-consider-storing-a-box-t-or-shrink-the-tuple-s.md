@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-08T11:28:08Z
 updated_at: 2025-08-12T11:51:17Z
 url: https://github.com/astral-sh/ty/issues/956
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Consider storing a `Box<[T]>` or shrink the tuple's inner `Vec'`s before wrapping them as `Type`
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-08 11:28_
+_@MichaReiser_
 
 Both `FixedLengthTupleType` and `VariableLengthTupleType` contain `Vec<T>` fields that we don't shrink before constructing a `TupleTypeSpec` (to my knowledge). This can result in increased memory usage because of the unused elements in those vecs.
 

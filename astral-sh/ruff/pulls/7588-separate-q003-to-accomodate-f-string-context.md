@@ -14,14 +14,14 @@ head: dhruv/issue-7297
 created_at: 2023-09-22T05:14:22Z
 updated_at: 2023-09-28T03:58:59Z
 url: https://github.com/astral-sh/ruff/pull/7588
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Separate `Q003` to accomodate f-string context
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-22 05:14_
+_@dhruvmanila_
 
 ## Summary
 

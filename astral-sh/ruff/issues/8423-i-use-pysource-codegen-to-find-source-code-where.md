@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-11-01T21:48:51Z
 updated_at: 2024-01-29T14:06:02Z
 url: https://github.com/astral-sh/ruff/issues/8423
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # I use pysource-codegen to find source code where black and ruff differ in the formatting
 
 ---
 
-_Issue opened by @15r10nk on 2023-11-01 21:48_
+_@15r10nk_
 
 
 hi, I wrote [pysource-codegen](https://github.com/15r10nk/pysource-codegen) which can be used to generate random python code and I thought that it could be a good idea to use it to compare ruff with black to find source code which gets formatted differently.

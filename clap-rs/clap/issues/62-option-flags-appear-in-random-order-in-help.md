@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-04-05T06:33:52Z
 updated_at: 2015-06-18T16:36:24Z
 url: https://github.com/clap-rs/clap/issues/62
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Option flags appear in random order in --help
 
 ---
 
-_Issue opened by @ghost on 2015-04-05 06:33_
+_@ghost_
 
 Windows 7 64 bit
 Rust 1.0.0-beta 64 bit (9854143cb)

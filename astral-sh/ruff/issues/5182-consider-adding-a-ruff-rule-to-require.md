@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-06-19T14:47:23Z
 updated_at: 2024-04-08T23:40:11Z
 url: https://github.com/astral-sh/ruff/issues/5182
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Consider adding a ruff rule to require explanations for noqa directives
 
 ---
 
-_Issue opened by @ashanbrown on 2023-06-19 14:47_
+_@ashanbrown_
 
 A rule that requires `noqa` directives to provide an explanation would encourage more readable code.  Often when looking at such a directive, it's hard to know why the author has made the choice to ignore a rule and such a rule would minimize those cases.  This could be implemented by checking for an additional comment following the directive, so that noqa directives would always look like:
 

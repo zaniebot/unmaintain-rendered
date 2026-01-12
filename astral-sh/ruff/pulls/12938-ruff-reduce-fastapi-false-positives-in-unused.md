@@ -12,14 +12,14 @@ head: tomer/fix-RUF029-for-fastapi
 created_at: 2024-08-16T16:28:16Z
 updated_at: 2024-08-17T14:34:50Z
 url: https://github.com/astral-sh/ruff/pull/12938
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # [`ruff`] Reduce FastAPI false positives in `unused-async` (`RUF029`)
 
 ---
 
-_Pull request opened by @TomerBin on 2024-08-16 16:28_
+_@TomerBin_
 
 ## Summary
 

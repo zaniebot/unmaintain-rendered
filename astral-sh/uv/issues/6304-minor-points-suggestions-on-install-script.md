@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-21T07:27:42Z
 updated_at: 2024-10-27T22:36:01Z
 url: https://github.com/astral-sh/uv/issues/6304
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:02Z
 ```
 
 # Minor Points/Suggestions on Install Script
 
 ---
 
-_Issue opened by @stevenwalton on 2024-08-21 07:27_
+_@stevenwalton_
 
 I've noticed a few little things in the install script that might be worth editing and could make it easier to maintain.
 

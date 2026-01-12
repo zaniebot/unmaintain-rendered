@@ -13,14 +13,14 @@ head: charlie/show
 created_at: 2023-02-03T14:40:54Z
 updated_at: 2023-02-03T14:41:12Z
 url: https://github.com/astral-sh/ruff/pull/2543
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Exit upon showing files with `--show-files`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-03 14:40_
+_@charliermarsh_
 
 This may've been lost in a refactor.
 

@@ -13,14 +13,14 @@ head: zb/fastapi-guide
 created_at: 2024-08-30T03:18:19Z
 updated_at: 2024-08-30T03:22:39Z
 url: https://github.com/astral-sh/uv/pull/6851
-synced_at: 2026-01-10T12:53:35Z
+synced_at: 2026-01-12T16:07:33Z
 ```
 
 # Drop old content from the FastAPI guide
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-30 03:18_
+_@zanieb_
 
 _No description provided._
 

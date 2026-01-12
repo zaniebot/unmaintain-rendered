@@ -12,14 +12,14 @@ head: applicability_pyflakes
 created_at: 2023-06-21T13:15:07Z
 updated_at: 2023-06-21T17:34:03Z
 url: https://github.com/astral-sh/ruff/pull/5253
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add Applicability to pyflakes
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-21 13:15_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

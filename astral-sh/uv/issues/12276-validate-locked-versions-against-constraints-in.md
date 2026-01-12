@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-18T12:15:25Z
 updated_at: 2025-03-18T15:32:29Z
 url: https://github.com/astral-sh/uv/issues/12276
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # Validate locked versions against constraints in lock file
 
 ---
 
-_Issue opened by @rg936672 on 2025-03-18 12:15_
+_@rg936672_
 
 ### Summary
 

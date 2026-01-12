@@ -12,14 +12,14 @@ head: ruf/in-compare-with-single-item-container
 created_at: 2024-11-26T13:27:40Z
 updated_at: 2024-11-26T17:34:20Z
 url: https://github.com/astral-sh/ruff/pull/14610
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`ruff`] Implemented `in-compare-with-single-item-container` (`RUF051`)
 
 ---
 
-_Pull request opened by @Lokejoke on 2024-11-26 13:27_
+_@Lokejoke_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

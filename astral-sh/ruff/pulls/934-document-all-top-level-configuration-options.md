@@ -12,14 +12,14 @@ head: charlie/opts
 created_at: 2022-11-28T04:13:58Z
 updated_at: 2022-11-28T04:50:25Z
 url: https://github.com/astral-sh/ruff/pull/934
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Document all top-level configuration options
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-11-28 04:13_
+_@charliermarsh_
 
 Closes #593.
 

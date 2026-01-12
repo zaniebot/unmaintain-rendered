@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-02T16:38:17Z
 updated_at: 2024-08-02T19:17:50Z
 url: https://github.com/astral-sh/uv/issues/5730
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # uv fails to find PyPy executable on Windows with Python 3.8
 
 ---
 
-_Issue opened by @charliermarsh on 2024-08-02 16:38_
+_@charliermarsh_
 
 From @henryiii on [Discord](https://discord.com/channels/1039017663004942429/1207998321562619954/1268968678528127029):
 

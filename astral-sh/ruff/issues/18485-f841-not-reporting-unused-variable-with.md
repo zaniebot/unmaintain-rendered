@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-05T20:26:05Z
 updated_at: 2025-06-05T21:39:08Z
 url: https://github.com/astral-sh/ruff/issues/18485
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # F841 - not reporting unused variable with redeclaration
 
 ---
 
-_Issue opened by @Morkunas on 2025-06-05 20:26_
+_@Morkunas_
 
 ### Summary
 

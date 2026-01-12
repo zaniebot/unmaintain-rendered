@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-22T11:22:01Z
 updated_at: 2025-12-11T16:32:54Z
 url: https://github.com/astral-sh/uv/issues/16408
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:31Z
 ```
 
 # Support `--compile-bytecode` in `uv python install`
 
 ---
 
-_Issue opened by @konstin on 2025-10-22 11:22_
+_@konstin_
 
 We should add an `--compile-bytecode` option to `uv python install` that bytecode compiles the standard library.
 

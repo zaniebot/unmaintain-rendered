@@ -13,14 +13,14 @@ head: charlie/d
 created_at: 2024-09-08T18:04:06Z
 updated_at: 2024-09-09T13:43:58Z
 url: https://github.com/astral-sh/uv/pull/7195
-synced_at: 2026-01-10T12:53:42Z
+synced_at: 2026-01-12T16:07:44Z
 ```
 
 # Avoid iteration for singleton selections
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-08 18:04_
+_@charliermarsh_
 
 ## Summary
 

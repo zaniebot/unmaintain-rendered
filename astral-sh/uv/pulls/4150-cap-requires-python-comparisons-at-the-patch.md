@@ -13,14 +13,14 @@ head: charlie/star
 created_at: 2024-06-07T22:25:26Z
 updated_at: 2024-06-10T13:21:07Z
 url: https://github.com/astral-sh/uv/pull/4150
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:03Z
 ```
 
 # Cap `Requires-Python` comparisons at the patch version
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-07 22:25_
+_@charliermarsh_
 
 ## Summary
 

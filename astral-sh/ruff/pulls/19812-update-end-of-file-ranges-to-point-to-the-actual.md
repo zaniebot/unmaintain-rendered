@@ -14,14 +14,14 @@ head: brent/ruff-eof-ranges
 created_at: 2025-08-07T17:29:08Z
 updated_at: 2025-08-08T12:17:02Z
 url: https://github.com/astral-sh/ruff/pull/19812
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:47Z
 ```
 
 # Update end-of-file ranges to point to the actual last line
 
 ---
 
-_Pull request opened by @ntBre on 2025-08-07 17:29_
+_@ntBre_
 
 ## Summary
 

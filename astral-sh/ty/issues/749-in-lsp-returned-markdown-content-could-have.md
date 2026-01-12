@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-01T22:28:37Z
 updated_at: 2025-07-03T05:20:35Z
 url: https://github.com/astral-sh/ty/issues/749
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # In LSP returned markdown content could have `python` language identifier
 
 ---
 
-_Issue opened by @klonuo on 2025-07-01 22:28_
+_@klonuo_
 
 Hi,
 

@@ -12,14 +12,14 @@ head: charlie/hash
 created_at: 2023-11-02T04:44:10Z
 updated_at: 2023-11-02T04:48:15Z
 url: https://github.com/astral-sh/uv/pull/289
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:51Z
 ```
 
 # Use `puffin_cache::digest` in another site
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-02 04:44_
+_@charliermarsh_
 
 _No description provided._
 

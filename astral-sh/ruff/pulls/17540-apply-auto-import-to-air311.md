@@ -12,14 +12,14 @@ head: apply-auto-import-to-AIR311
 created_at: 2025-04-22T08:19:01Z
 updated_at: 2025-04-23T02:44:14Z
 url: https://github.com/astral-sh/ruff/pull/17540
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # Apply auto import to air311
 
 ---
 
-_Pull request opened by @Lee-W on 2025-04-22 08:19_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

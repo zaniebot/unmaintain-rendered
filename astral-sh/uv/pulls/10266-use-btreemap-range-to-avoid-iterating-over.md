@@ -13,14 +13,14 @@ head: charlie/r
 created_at: 2025-01-02T01:09:44Z
 updated_at: 2025-01-02T01:21:37Z
 url: https://github.com/astral-sh/uv/pull/10266
-synced_at: 2026-01-10T11:44:39Z
+synced_at: 2026-01-12T16:09:12Z
 ```
 
 # Use `BTreeMap::range` to avoid iterating over unnecessary versions
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-02 01:09_
+_@charliermarsh_
 
 ## Summary
 

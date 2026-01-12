@@ -13,14 +13,14 @@ head: zb/url-trace
 created_at: 2024-02-16T15:09:34Z
 updated_at: 2024-02-16T15:13:17Z
 url: https://github.com/astral-sh/uv/pull/1498
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:38Z
 ```
 
 # Use string display instead of debug for url parse trace
 
 ---
 
-_Pull request opened by @zanieb on 2024-02-16 15:09_
+_@zanieb_
 
 e.g. 
 

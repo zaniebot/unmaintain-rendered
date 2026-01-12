@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-31T17:35:16Z
 updated_at: 2024-10-31T19:19:01Z
 url: https://github.com/astral-sh/uv/issues/8731
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:33Z
 ```
 
 # File paths of ZIP contents are not sanitized
 
 ---
 
-_Issue opened by @SLeitgeb on 2024-10-31 17:35_
+_@SLeitgeb_
 
 All files from a package WHL are extracted to the path resolved from the current directory. The ZIP file path is not sanitized first (as suggested in the [async_zip](https://docs.rs/async_zip/latest/async_zip/struct.ZipEntry.html#method.filename) package), which could lead to directory traversal attacks, e.g. by a malicious package.
 

@@ -13,14 +13,14 @@ head: alex/except-handlers
 created_at: 2024-12-08T17:08:55Z
 updated_at: 2024-12-09T22:50:00Z
 url: https://github.com/astral-sh/ruff/pull/14838
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Improve type inference for except handlers
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-08 17:08_
+_@AlexWaygood_
 
 ## Summary
 

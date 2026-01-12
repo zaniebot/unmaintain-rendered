@@ -12,14 +12,14 @@ head: charlie/qualname
 created_at: 2023-05-18T21:41:45Z
 updated_at: 2023-05-20T03:25:00Z
 url: https://github.com/astral-sh/ruff/pull/4512
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Improve handling of `__qualname__`, `__module__`, and `__class__`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-18 21:41_
+_@charliermarsh_
 
 ## Summary
 

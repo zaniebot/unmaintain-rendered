@@ -14,14 +14,14 @@ head: PYI021
 created_at: 2024-11-07T11:00:18Z
 updated_at: 2024-11-07T20:18:02Z
 url: https://github.com/astral-sh/ruff/pull/14150
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [`flake8-pyi`] Add autofix for `docstring-in-stub` (`PYI021`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-11-07 11:00_
+_@InSyncWithFoo_
 
 ## Summary
 

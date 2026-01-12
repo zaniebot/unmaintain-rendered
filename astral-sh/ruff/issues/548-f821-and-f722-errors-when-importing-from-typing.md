@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-02T11:05:29Z
 updated_at: 2022-11-02T13:25:46Z
 url: https://github.com/astral-sh/ruff/issues/548
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # F821 and F722 errors when importing from typing_extensions in version 0.0.94
 
 ---
 
-_Issue opened by @StefanBRas on 2022-11-02 11:05_
+_@StefanBRas_
 
 Importing from `typing_extensions` instead of `typing` gives some errors with ruff version 0.0.94
 

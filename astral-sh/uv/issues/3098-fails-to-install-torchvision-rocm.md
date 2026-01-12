@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-17T16:56:14Z
 updated_at: 2024-04-17T19:22:40Z
 url: https://github.com/astral-sh/uv/issues/3098
-synced_at: 2026-01-10T01:57:07Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Fails to install torchvision (ROCm)
 
 ---
 
-_Issue opened by @kaanyalova on 2024-04-17 16:56_
+_@kaanyalova_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

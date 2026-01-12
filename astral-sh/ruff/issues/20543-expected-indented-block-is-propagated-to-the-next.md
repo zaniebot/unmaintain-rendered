@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-09-23T17:50:28Z
 updated_at: 2025-10-22T07:34:50Z
 url: https://github.com/astral-sh/ruff/issues/20543
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # "Expected indented block" is propagated to the next cell
 
 ---
 
-_Issue opened by @turbotimon on 2025-09-23 17:50_
+_@turbotimon_
 
 The "Expected indented block" error is propagated to the next cell. Since cells contain completed parts of code, this error should not propagate:
 

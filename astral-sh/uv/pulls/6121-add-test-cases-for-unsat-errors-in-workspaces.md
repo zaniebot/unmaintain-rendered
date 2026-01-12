@@ -14,14 +14,14 @@ head: zb/workspace-optional-dep-test
 created_at: 2024-08-15T16:55:02Z
 updated_at: 2024-08-15T17:02:04Z
 url: https://github.com/astral-sh/uv/pull/6121
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:13Z
 ```
 
 # Add test cases for unsat errors in workspaces with extras and development dependencies
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-15 16:55_
+_@zanieb_
 
 Adds more test coverage!
 

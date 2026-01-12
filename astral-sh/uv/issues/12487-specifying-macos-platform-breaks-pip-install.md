@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-26T14:16:15Z
 updated_at: 2025-03-28T11:49:46Z
 url: https://github.com/astral-sh/uv/issues/12487
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:04Z
 ```
 
 # Specifying macOS platform breaks pip install
 
 ---
 
-_Issue opened by @itymchyshyn-sc on 2025-03-26 14:16_
+_@itymchyshyn-sc_
 
 ### Summary
 

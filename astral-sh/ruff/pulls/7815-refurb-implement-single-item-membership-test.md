@@ -13,14 +13,14 @@ head: single-in
 created_at: 2023-10-04T15:52:23Z
 updated_at: 2023-10-08T19:41:50Z
 url: https://github.com/astral-sh/ruff/pull/7815
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # [`refurb`] Implement `single-item-membership-test` (`FURB171`)
 
 ---
 
-_Pull request opened by @tjkuson on 2023-10-04 15:52_
+_@tjkuson_
 
 ## Summary
 

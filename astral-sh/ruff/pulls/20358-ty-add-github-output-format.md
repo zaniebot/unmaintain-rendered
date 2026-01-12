@@ -14,14 +14,14 @@ head: brent/ty-github
 created_at: 2025-09-11T21:51:19Z
 updated_at: 2025-09-17T13:50:27Z
 url: https://github.com/astral-sh/ruff/pull/20358
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:00Z
 ```
 
 # [ty] Add GitHub output format
 
 ---
 
-_Pull request opened by @ntBre on 2025-09-11 21:51_
+_@ntBre_
 
 ## Summary
 

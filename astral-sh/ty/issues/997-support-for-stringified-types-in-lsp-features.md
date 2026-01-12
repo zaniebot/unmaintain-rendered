@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T06:24:25Z
 updated_at: 2025-08-15T15:46:32Z
 url: https://github.com/astral-sh/ty/issues/997
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Support for stringified types in LSP features
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-15 06:24_
+_@MichaReiser_
 
 The LSP currently doesn't support any operations on stringified types. This includes:
 

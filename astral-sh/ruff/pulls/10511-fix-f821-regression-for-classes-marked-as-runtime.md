@@ -13,14 +13,14 @@ head: pydantic-f821
 created_at: 2024-03-21T16:04:37Z
 updated_at: 2024-03-21T16:59:28Z
 url: https://github.com/astral-sh/ruff/pull/10511
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Fix F821 regression for classes marked as runtime-required
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-03-21 16:04_
+_@AlexWaygood_
 
 Fixes #10451. This is basically a revert of 704fefc, but includes a more principled fix for the issue that that PR was trying to fix (#10362)
 

@@ -12,14 +12,14 @@ head: charlie/binding-kind
 created_at: 2023-06-02T21:53:32Z
 updated_at: 2023-06-03T19:34:40Z
 url: https://github.com/astral-sh/ruff/pull/4819
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Move `Binding` initialization into `SemanticModel`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-02 21:53_
+_@charliermarsh_
 
 ## Summary
 

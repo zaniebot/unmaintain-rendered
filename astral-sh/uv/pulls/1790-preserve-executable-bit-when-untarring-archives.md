@@ -13,14 +13,14 @@ head: charlie/tar
 created_at: 2024-02-21T01:26:42Z
 updated_at: 2024-02-21T14:18:45Z
 url: https://github.com/astral-sh/uv/pull/1790
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:44Z
 ```
 
 # Preserve executable bit when untarring archives
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-21 01:26_
+_@charliermarsh_
 
 ## Summary
 

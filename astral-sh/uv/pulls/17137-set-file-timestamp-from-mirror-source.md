@@ -11,14 +11,14 @@ head: feat/timestamp-files-in-mirror
 created_at: 2025-12-15T22:09:38Z
 updated_at: 2025-12-16T18:20:34Z
 url: https://github.com/astral-sh/uv/pull/17137
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:37Z
 ```
 
 # Set file timestamp from mirror source
 
 ---
 
-_Pull request opened by @keestux on 2025-12-15 22:09_
+_@keestux_
 
 The create-python-mirror.py script will now set the timestamp of the downloaded files.
 

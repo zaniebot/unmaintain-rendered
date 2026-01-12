@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-22T02:55:07Z
 updated_at: 2025-02-26T10:10:05Z
 url: https://github.com/astral-sh/uv/issues/11704
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:44Z
 ```
 
 # `Did you mean [...]?` + `ctr-c` => `thread 'main2' panicked`
 
 ---
 
-_Issue opened by @TApplencourt on 2025-02-22 02:55_
+_@TApplencourt_
 
 ### Summary
 

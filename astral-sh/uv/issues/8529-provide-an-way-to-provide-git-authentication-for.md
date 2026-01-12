@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-24T14:39:10Z
 updated_at: 2025-04-15T20:27:24Z
 url: https://github.com/astral-sh/uv/issues/8529
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:28Z
 ```
 
 # Provide an way to provide Git authentication for `tool.uv.sources`
 
 ---
 
-_Issue opened by @zanieb on 2024-10-24 14:39_
+_@zanieb_
 
 Right now, the credentials either need to be pre-populated in the git credential helper, or hard-coded into the `pyproject.toml`. We should provide a better way to do this.
 

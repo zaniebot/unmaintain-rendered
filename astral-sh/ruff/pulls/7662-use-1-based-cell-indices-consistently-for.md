@@ -13,14 +13,14 @@ head: dhruv/consistent-cell-indices
 created_at: 2023-09-26T06:25:37Z
 updated_at: 2023-09-26T14:14:02Z
 url: https://github.com/astral-sh/ruff/pull/7662
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # Use 1-based cell indices consistently for Notebooks
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-09-26 06:25_
+_@dhruvmanila_
 
 ## Summary
 

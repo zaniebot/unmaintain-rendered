@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-07T00:12:50Z
 updated_at: 2023-07-07T04:21:46Z
 url: https://github.com/astral-sh/ruff/issues/5574
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `FA100` and `FA102` do not trigger with function annotations
 
 ---
 
-_Issue opened by @aazuspan on 2023-07-07 00:12_
+_@aazuspan_
 
 I'm migrating a project to `ruff` (huge fan so far, thanks maintainers!), and getting inconsistent behavior from the `flake8-future-annotations` rules, [FA100](https://beta.ruff.rs/docs/rules/future-rewritable-type-annotation/#future-rewritable-type-annotation-fa100) and [FA102](https://beta.ruff.rs/docs/rules/future-required-type-annotation/#future-required-type-annotation-fa102). They trigger as expected for variable type annotations but do not trigger for function parameter or return type annotations.
 

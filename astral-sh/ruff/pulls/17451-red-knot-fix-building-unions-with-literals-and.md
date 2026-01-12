@@ -13,14 +13,14 @@ head: cjm/unionfix
 created_at: 2025-04-17T17:32:21Z
 updated_at: 2025-04-19T17:06:23Z
 url: https://github.com/astral-sh/ruff/pull/17451
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] fix building unions with literals and AlwaysTruthy/AlwaysFalsy
 
 ---
 
-_Pull request opened by @carljm on 2025-04-17 17:32_
+_@carljm_
 
 In #17403 I added a comment asserting that all same-kind literal types share all the same super-types. This is true, with two notable exceptions: the types `AlwaysTruthy` and `AlwaysFalsy`. These two types are super-types of some literal types within a given kind and not others: `Literal[0]`, `Literal[""]`, and `Literal[b""]` inhabit `AlwaysFalsy`, while other literals inhabit `AlwaysTruthy`.
 

@@ -13,14 +13,14 @@ head: cjm/annassign-no-rhs
 created_at: 2024-09-04T19:27:13Z
 updated_at: 2024-09-05T15:55:02Z
 url: https://github.com/astral-sh/ruff/pull/13247
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] AnnAssign with no RHS is not a Definition
 
 ---
 
-_Pull request opened by @carljm on 2024-09-04 19:27_
+_@carljm_
 
 My plan for handling declared types is to introduce a `Declaration` in addition to `Definition`. A `Declaration` is an annotation of a name with a type; a `Definition` is an actual runtime assignment of a value to a name. A few things (an annotated function parameter, an annotated-assignment with an RHS) are both a `Definition` and a `Declaration`.
 

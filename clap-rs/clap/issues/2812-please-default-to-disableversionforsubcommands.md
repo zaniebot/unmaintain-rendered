@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-10-04T21:46:25Z
 updated_at: 2021-10-11T09:25:59Z
 url: https://github.com/clap-rs/clap/issues/2812
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Please default to DisableVersionForSubcommands
 
 ---
 
-_Issue opened by @joshtriplett on 2021-10-04 21:46_
+_@joshtriplett_
 
 ### Please complete the following tasks
 

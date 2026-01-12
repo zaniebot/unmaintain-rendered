@@ -12,14 +12,14 @@ head: charlie/stars
 created_at: 2023-04-03T22:50:35Z
 updated_at: 2023-04-03T23:37:05Z
 url: https://github.com/astral-sh/ruff/pull/3871
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Allow starred arguments in B030
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-03 22:50_
+_@charliermarsh_
 
 Closes #3869.
 

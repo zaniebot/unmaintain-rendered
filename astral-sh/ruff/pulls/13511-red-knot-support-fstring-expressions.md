@@ -13,14 +13,14 @@ head: feat/support-fstring-expressions
 created_at: 2024-09-25T11:46:04Z
 updated_at: 2024-09-27T18:20:18Z
 url: https://github.com/astral-sh/ruff/pull/13511
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [red-knot] support fstring expressions
 
 ---
 
-_Pull request opened by @Slyces on 2024-09-25 11:46_
+_@Slyces_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

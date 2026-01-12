@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-22T06:08:49Z
 updated_at: 2025-10-30T18:21:43Z
 url: https://github.com/clap-rs/clap/issues/6158
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # doc(include_str = "file.md") not generating help when using derive
 
 ---
 
-_Issue opened by @robko23 on 2025-10-22 06:08_
+_@robko23_
 
 ### Please complete the following tasks
 

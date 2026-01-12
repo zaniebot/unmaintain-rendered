@@ -13,14 +13,14 @@ head: renovate/reflink-copy-0.x-lockfile
 created_at: 2025-03-24T02:15:51Z
 updated_at: 2025-03-24T13:18:38Z
 url: https://github.com/astral-sh/uv/pull/12418
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:16Z
 ```
 
 # Update Rust crate reflink-copy to v0.1.26
 
 ---
 
-_Pull request opened by @renovate on 2025-03-24 02:15_
+_@renovate_
 
 This PR contains the following updates:
 

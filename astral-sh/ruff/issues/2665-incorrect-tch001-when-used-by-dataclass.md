@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-08T18:10:51Z
 updated_at: 2023-02-08T21:03:18Z
 url: https://github.com/astral-sh/ruff/issues/2665
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Incorrect TCH001 when used by dataclass
 
 ---
 
-_Issue opened by @nstarman on 2023-02-08 18:10_
+_@nstarman_
 
 In the following example ruff flags ``Bar`` for TCH001, but python requires `Bar` to be run-time accessible.
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-08T21:42:03Z
 updated_at: 2024-11-04T12:31:39Z
 url: https://github.com/astral-sh/uv/issues/5939
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:00Z
 ```
 
 # Add test coverage for `uv python` using proxy to serve dummy distributions
 
 ---
 
-_Issue opened by @zanieb on 2024-08-08 21:42_
+_@zanieb_
 
 Actually installing distributions is too expensive for unit tests, but now that we have #5719 we can host dummy distributions (i.e. only with necessary stub files) in a proxy and write unit tests for `uv python install` and friends.
 

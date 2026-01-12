@@ -12,14 +12,14 @@ head: trampoline-2024-format
 created_at: 2025-05-18T23:55:07Z
 updated_at: 2025-08-04T03:27:00Z
 url: https://github.com/astral-sh/uv/pull/13519
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:10:43Z
 ```
 
 # fix: format uv-trampoline for 2024 edition
 
 ---
 
-_Pull request opened by @samypr100 on 2025-05-18 23:55_
+_@samypr100_
 
 ## Summary
 

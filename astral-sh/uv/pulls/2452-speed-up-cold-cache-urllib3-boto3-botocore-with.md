@@ -13,14 +13,14 @@ head: konsti/fast-boto3
 created_at: 2024-03-14T11:01:17Z
 updated_at: 2024-04-08T14:28:58Z
 url: https://github.com/astral-sh/uv/pull/2452
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:03Z
 ```
 
 # Speed up cold cache urllib3/boto3/botocore with batched prefetching
 
 ---
 
-_Pull request opened by @konstin on 2024-03-14 11:01_
+_@konstin_
 
 With pubgrub being fast for complex ranges, we can now compute the next n candidates without taking a performance hit. This speeds up cold cache `urllib3<1.25.4` `boto3` from maybe 40s - 50s to ~2s. See docstrings for details on the heuristics.
 

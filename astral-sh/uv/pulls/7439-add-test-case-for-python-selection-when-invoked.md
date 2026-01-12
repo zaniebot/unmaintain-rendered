@@ -13,14 +13,14 @@ head: zb/test-parent-system
 created_at: 2024-09-16T20:00:57Z
 updated_at: 2024-09-16T20:42:07Z
 url: https://github.com/astral-sh/uv/pull/7439
-synced_at: 2026-01-10T12:53:47Z
+synced_at: 2026-01-12T16:07:49Z
 ```
 
 # Add test case for Python selection when invoked with `python -m uv --system`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-16 20:00_
+_@zanieb_
 
 _No description provided._
 

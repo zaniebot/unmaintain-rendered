@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-28T04:23:23Z
 updated_at: 2025-07-28T13:17:45Z
 url: https://github.com/astral-sh/uv/issues/14931
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:59Z
 ```
 
 # uv python installation failed
 
 ---
 
-_Issue opened by @huni1023 on 2025-07-28 04:23_
+_@huni1023_
 
 ### Summary
 

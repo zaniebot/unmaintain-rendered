@@ -13,14 +13,14 @@ head: zb/python-find-display
 created_at: 2024-08-23T14:51:04Z
 updated_at: 2024-08-23T15:39:24Z
 url: https://github.com/astral-sh/uv/pull/6522
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:24Z
 ```
 
 # Always display absolute paths in `uv python find`
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-23 14:51_
+_@zanieb_
 
 _No description provided._
 

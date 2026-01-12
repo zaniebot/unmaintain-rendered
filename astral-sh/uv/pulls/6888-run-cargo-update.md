@@ -13,14 +13,14 @@ head: charlie/up
 created_at: 2024-08-30T20:33:47Z
 updated_at: 2024-08-30T20:42:05Z
 url: https://github.com/astral-sh/uv/pull/6888
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:34Z
 ```
 
 # Run `cargo update`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-30 20:33_
+_@charliermarsh_
 
 _No description provided._
 

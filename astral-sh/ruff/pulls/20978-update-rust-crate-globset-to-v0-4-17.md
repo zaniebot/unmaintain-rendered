@@ -13,14 +13,14 @@ head: renovate/globset-0.x-lockfile
 created_at: 2025-10-20T01:15:37Z
 updated_at: 2025-10-20T06:35:34Z
 url: https://github.com/astral-sh/ruff/pull/20978
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:13Z
 ```
 
 # Update Rust crate globset to v0.4.17
 
 ---
 
-_Pull request opened by @renovate on 2025-10-20 01:15_
+_@renovate_
 
 This PR contains the following updates:
 

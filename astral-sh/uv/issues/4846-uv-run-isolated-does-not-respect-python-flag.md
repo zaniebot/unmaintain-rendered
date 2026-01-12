@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-06T12:27:40Z
 updated_at: 2024-07-06T19:22:20Z
 url: https://github.com/astral-sh/uv/issues/4846
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # `uv run --isolated` does not respect `--python` flag
 
 ---
 
-_Issue opened by @j178 on 2024-07-06 12:27_
+_@j178_
 
 ```sh
 $ python -V

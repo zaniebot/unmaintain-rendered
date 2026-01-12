@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-24T13:12:36Z
 updated_at: 2023-01-05T14:00:46Z
 url: https://github.com/clap-rs/clap/issues/4507
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Derive API: `#[arg(num_args = <...>)]` on `Vec<T>` has no effect
 
 ---
 
-_Issue opened by @cyqsimon on 2022-11-24 13:12_
+_@cyqsimon_
 
 ### Please complete the following tasks
 

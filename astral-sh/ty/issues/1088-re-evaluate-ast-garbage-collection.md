@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-22T09:37:12Z
 updated_at: 2025-08-22T09:37:12Z
 url: https://github.com/astral-sh/ty/issues/1088
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Re-evaluate AST garbage collection
 
 ---
 
-_Issue opened by @MichaReiser on 2025-08-22 09:37_
+_@MichaReiser_
 
 We collect AST nodes of first-party files when checking the entire project to reduce peak memory usage. 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-17T11:50:26Z
 updated_at: 2026-01-10T00:27:58Z
 url: https://github.com/astral-sh/ty/issues/2000
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Don't emit Liskov violations w.r.t. grandparent class if the violation cannot be fixed without breaking Liskov w.r.t. the parent class
 
 ---
 
-_Issue opened by @t-moe on 2025-12-17 11:50_
+_@t-moe_
 
 ### Question
 

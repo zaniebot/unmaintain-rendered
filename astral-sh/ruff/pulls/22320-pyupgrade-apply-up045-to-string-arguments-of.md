@@ -12,14 +12,14 @@ head: brent/up045
 created_at: 2025-12-31T22:41:05Z
 updated_at: 2026-01-05T10:28:32Z
 url: https://github.com/astral-sh/ruff/pull/22320
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [`pyupgrade`] Apply `UP045` to string arguments of `typing.cast`
 
 ---
 
-_Pull request opened by @ntBre on 2025-12-31 22:41_
+_@ntBre_
 
 ## Summary
 

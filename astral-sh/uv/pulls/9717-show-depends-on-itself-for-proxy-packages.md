@@ -13,14 +13,14 @@ head: charlie/self-hint
 created_at: 2024-12-08T13:36:55Z
 updated_at: 2024-12-10T14:48:28Z
 url: https://github.com/astral-sh/uv/pull/9717
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:57Z
 ```
 
 # Show 'depends on itself' for proxy packages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-08 13:36_
+_@charliermarsh_
 
 _No description provided._
 

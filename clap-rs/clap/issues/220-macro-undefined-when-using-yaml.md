@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-09-03T22:30:44Z
 updated_at: 2020-04-11T15:48:49Z
 url: https://github.com/clap-rs/clap/issues/220
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Macro undefined when using YAML
 
 ---
 
-_Issue opened by @milgner on 2015-09-03 22:30_
+_@milgner_
 
 `Cargo.toml`:
 

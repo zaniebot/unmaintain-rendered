@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-06T17:40:13Z
 updated_at: 2024-10-21T21:43:20Z
 url: https://github.com/astral-sh/uv/issues/7132
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:10Z
 ```
 
 # Document/explain what the "hatchling" build-system is about
 
 ---
 
-_Issue opened by @gdamjan on 2024-09-06 17:40_
+_@gdamjan_
 
 `uv init` adds the hatchling build system to pyproject.toml.
 

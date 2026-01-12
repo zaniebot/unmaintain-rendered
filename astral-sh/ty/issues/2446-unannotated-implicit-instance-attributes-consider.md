@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-11T14:03:28Z
 updated_at: 2026-01-11T14:03:41Z
 url: https://github.com/astral-sh/ty/issues/2446
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Unannotated implicit instance attributes: consider prioritising the inferred type in constructor methods over the inferred type in other methods
 
 ---
 
-_Issue opened by @AlexWaygood on 2026-01-11 14:03_
+_@AlexWaygood_
 
 Currently, if an instance attribute is not annotated in a class's body or in any of its methods, ty infers the type of that attribute as the union of all assignments to that attribute inside the class. Assignments in constructor methods are treated identically to assignments in other methods. For example:
 

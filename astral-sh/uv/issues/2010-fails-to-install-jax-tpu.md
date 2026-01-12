@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-27T10:49:24Z
 updated_at: 2024-07-01T14:43:39Z
 url: https://github.com/astral-sh/uv/issues/2010
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Fails to install JAX TPU
 
 ---
 
-_Issue opened by @sayakpaul on 2024-02-27 10:49_
+_@sayakpaul_
 
 ```
 python3 -m uv pip install --no-cache-dir \

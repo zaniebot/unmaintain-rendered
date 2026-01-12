@@ -14,14 +14,14 @@ head: ww/bump
 created_at: 2025-12-09T16:38:00Z
 updated_at: 2025-12-09T17:08:28Z
 url: https://github.com/astral-sh/uv/pull/17048
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:35Z
 ```
 
 # Bump ambient-id to 0.0.7
 
 ---
 
-_Pull request opened by @woodruffw on 2025-12-09 16:38_
+_@woodruffw_
 
 ## Summary 
 

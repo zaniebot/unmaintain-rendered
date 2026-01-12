@@ -14,14 +14,14 @@ head: zb/github-actions-cache
 created_at: 2024-07-31T16:34:02Z
 updated_at: 2024-07-31T16:38:57Z
 url: https://github.com/astral-sh/uv/pull/5663
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:56Z
 ```
 
 # Add documentation for caching the uv cache in GHA
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-31 16:34_
+_@zanieb_
 
 Related to https://github.com/astral-sh/uv/issues/5409
 

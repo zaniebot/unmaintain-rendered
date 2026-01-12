@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-28T20:31:31Z
 updated_at: 2024-04-12T19:50:14Z
 url: https://github.com/astral-sh/uv/issues/2052
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Improve error message layout for wheel-build failures
 
 ---
 
-_Issue opened by @charliermarsh on 2024-02-28 20:31_
+_@charliermarsh_
 
 I find pip's error messages here much cleaner:
 

@@ -14,14 +14,14 @@ head: cjm/noshadowtypes
 created_at: 2025-07-03T17:44:43Z
 updated_at: 2025-07-04T10:37:02Z
 url: https://github.com/astral-sh/ruff/pull/19128
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:32Z
 ```
 
 # [ty] don't allow first-party code to shadow stdlib types module
 
 ---
 
-_Pull request opened by @carljm on 2025-07-03 17:44_
+_@carljm_
 
 ## Summary
 

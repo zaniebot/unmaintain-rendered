@@ -11,14 +11,14 @@ head: S324
 created_at: 2025-03-09T20:19:05Z
 updated_at: 2025-09-25T08:28:26Z
 url: https://github.com/astral-sh/ruff/pull/16580
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [flake8-bandit] Update insecure hash functions (S324)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-03-09 20:19_
+_@VascoSch92_
 
 This PR solves issue #16572 
 

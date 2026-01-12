@@ -13,14 +13,14 @@ head: add-neovim-start-docs
 created_at: 2025-05-17T19:41:47Z
 updated_at: 2025-08-16T06:27:38Z
 url: https://github.com/astral-sh/ty/pull/436
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add setup guide for using language server in Neovim
 
 ---
 
-_Pull request opened by @fabridamicelli on 2025-05-17 19:41_
+_@fabridamicelli_
 
 <!--
 Thank you for contributing to ty! To help us out with reviewing, please consider the following:

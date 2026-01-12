@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T21:36:13Z
 updated_at: 2025-10-06T16:39:17Z
 url: https://github.com/astral-sh/ty/issues/1016
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # make it an error to explicitly call `__init__` on an existing object
 
 ---
 
-_Issue opened by @carljm on 2025-08-15 21:36_
+_@carljm_
 
 This is unsafe because Liskov is not enforced on `__init__` methods. It also makes the exclusion of `__init__` from variance-inference unsafe.
 

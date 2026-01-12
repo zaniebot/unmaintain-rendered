@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-28T13:42:39Z
 updated_at: 2025-12-19T18:28:56Z
 url: https://github.com/astral-sh/ruff/issues/21677
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # false positive syntax errors when using syntax for newer python version in `.pyi` files
 
 ---
 
-_Issue opened by @DetachHead on 2025-11-28 13:42_
+_@DetachHead_
 
 ### Summary
 

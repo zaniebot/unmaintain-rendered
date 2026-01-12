@@ -12,14 +12,14 @@ head: sync-python-releases
 created_at: 2025-07-09T00:29:15Z
 updated_at: 2025-07-09T02:12:23Z
 url: https://github.com/astral-sh/uv/pull/14514
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:15Z
 ```
 
 # Sync latest Python releases
 
 ---
 
-_Pull request opened by @github-actions on 2025-07-09 00:29_
+_@github-actions_
 
 Automated update for Python releases.
 

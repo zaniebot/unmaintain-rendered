@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-10T14:01:31Z
 updated_at: 2025-04-10T14:11:13Z
 url: https://github.com/astral-sh/uv/issues/12808
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # How can my company host python distributions?
 
 ---
 
-_Issue opened by @s-banach on 2025-04-10 14:01_
+_@s-banach_
 
 ### Question
 

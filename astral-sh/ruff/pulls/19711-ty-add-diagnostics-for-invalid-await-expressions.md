@@ -13,14 +13,14 @@ head: feat/await-diagnostics
 created_at: 2025-08-03T13:18:40Z
 updated_at: 2025-08-14T21:38:33Z
 url: https://github.com/astral-sh/ruff/pull/19711
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Add diagnostics for invalid `await` expressions
 
 ---
 
-_Pull request opened by @theammir on 2025-08-03 13:18_
+_@theammir_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

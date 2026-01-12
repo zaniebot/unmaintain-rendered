@@ -13,14 +13,14 @@ head: display-generic-function-signature
 created_at: 2025-07-24T23:54:49Z
 updated_at: 2025-11-06T11:48:11Z
 url: https://github.com/astral-sh/ruff/pull/19544
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:56:42Z
 ```
 
 # Display generic function signature properly
 
 ---
 
-_Pull request opened by @MatthewMckee4 on 2025-07-24 23:54_
+_@MatthewMckee4_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

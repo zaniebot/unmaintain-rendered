@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-14T14:05:37Z
 updated_at: 2024-01-23T15:47:30Z
 url: https://github.com/astral-sh/ruff/issues/9514
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # Conda forge release failed (versions v0.1.13 and v0.1.12)
 
 ---
 
-_Issue opened by @vigneshmanick on 2024-01-14 14:05_
+_@vigneshmanick_
 
 Hello,
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-03T02:00:20Z
 updated_at: 2024-06-03T02:01:10Z
 url: https://github.com/astral-sh/uv/issues/3978
-synced_at: 2026-01-10T01:57:08Z
+synced_at: 2026-01-12T15:58:47Z
 ```
 
 # Write out full PEP 508 requirements for relative paths and editables
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-03 02:00_
+_@charliermarsh_
 
 In `pip compile`, we take special care to write out editables and relative paths as unnamed URLs. But uv supports PEP 508 requirements for editables, and allows relative URLs too. Should we just write them out in full form? The output `requirements.txt` won't work with pip, since pip does not yet support PEP 508 for editables, so we'd need to have a `--pip-compat` flag or similar to allow that behavior.
 

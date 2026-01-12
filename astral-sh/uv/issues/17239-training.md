@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-26T09:25:54Z
 updated_at: 2025-12-26T09:45:10Z
 url: https://github.com/astral-sh/uv/issues/17239
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:47Z
 ```
 
 # Training
 
 ---
 
-_Issue opened by @tonydacus123-png on 2025-12-26 09:25_
+_@tonydacus123-png_
 
 ### Summary
 

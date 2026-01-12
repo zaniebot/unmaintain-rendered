@@ -13,14 +13,14 @@ head: dhruv/notebook-cache
 created_at: 2023-08-25T06:15:19Z
 updated_at: 2023-09-12T12:59:05Z
 url: https://github.com/astral-sh/ruff/pull/6863
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add `NotebookIndex` to the cache
 
 ---
 
-_Pull request opened by @dhruvmanila on 2023-08-25 06:15_
+_@dhruvmanila_
 
 ## Summary
 

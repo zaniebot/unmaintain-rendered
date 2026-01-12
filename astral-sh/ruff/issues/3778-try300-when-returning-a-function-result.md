@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-03-28T17:15:59Z
 updated_at: 2023-03-28T23:52:06Z
 url: https://github.com/astral-sh/ruff/issues/3778
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # TRY300 when returning a function result
 
 ---
 
-_Issue opened by @Apakottur on 2023-03-28 17:15_
+_@Apakottur_
 
 Thank you for this awesome project!
 

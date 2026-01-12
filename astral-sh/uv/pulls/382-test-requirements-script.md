@@ -12,14 +12,14 @@ head: test-requirements-script
 created_at: 2023-11-09T16:46:37Z
 updated_at: 2023-11-19T08:50:51Z
 url: https://github.com/astral-sh/uv/pull/382
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:55Z
 ```
 
 # Test requirements script
 
 ---
 
-_Pull request opened by @konstin on 2023-11-09 16:46_
+_@konstin_
 
 This script can compare different requirements between pip(-compile) and puffin across python versions, with debug and release builds.
 

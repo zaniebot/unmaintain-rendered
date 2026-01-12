@@ -13,14 +13,14 @@ head: konsti/move-requirement-to-pypi-types
 created_at: 2024-05-29T14:37:56Z
 updated_at: 2024-05-31T13:44:22Z
 url: https://github.com/astral-sh/uv/pull/3904
-synced_at: 2026-01-10T13:59:34Z
+synced_at: 2026-01-12T16:05:55Z
 ```
 
 # Add support for `tool.uv` into distribution building
 
 ---
 
-_Pull request opened by @konstin on 2024-05-29 14:37_
+_@konstin_
 
 With the change, we remove the special casing of workspace dependencies and resolve `tool.uv` for all git and directory distributions. This gives us support for non-editable workspace dependencies and path dependencies in other workspaces. It removes a lot of special casing around workspaces. These changes are the groundwork for supporting `tool.uv` with dynamic metadata.
 

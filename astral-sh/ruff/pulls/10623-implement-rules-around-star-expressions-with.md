@@ -13,14 +13,14 @@ head: dhruv/star-expression-list
 created_at: 2024-03-27T08:39:37Z
 updated_at: 2024-03-29T07:48:17Z
 url: https://github.com/astral-sh/ruff/pull/10623
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Implement rules around star expressions with different precedence
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-03-27 08:39_
+_@dhruvmanila_
 
 ## Summary
 

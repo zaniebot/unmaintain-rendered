@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-12T15:24:30Z
 updated_at: 2024-11-12T18:17:05Z
 url: https://github.com/astral-sh/uv/issues/9060
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:41Z
 ```
 
 # `uv add` git dependency using ssh protocol
 
 ---
 
-_Issue opened by @theelderbeever on 2024-11-12 15:24_
+_@theelderbeever_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

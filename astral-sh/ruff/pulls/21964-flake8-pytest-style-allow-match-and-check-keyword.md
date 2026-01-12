@@ -13,14 +13,14 @@ head: pt010-allow-match-check-kwargs
 created_at: 2025-12-13T18:49:49Z
 updated_at: 2025-12-18T15:42:06Z
 url: https://github.com/astral-sh/ruff/pull/21964
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:37Z
 ```
 
 # [`flake8-pytest-style`] Allow `match` and `check` keyword arguments without an expected exception type (`PT010`)
 
 ---
 
-_Pull request opened by @mahiro72 on 2025-12-13 18:49_
+_@mahiro72_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

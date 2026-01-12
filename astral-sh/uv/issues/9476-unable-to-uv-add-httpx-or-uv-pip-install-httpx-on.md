@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-27T15:44:20Z
 updated_at: 2024-12-16T20:28:34Z
 url: https://github.com/astral-sh/uv/issues/9476
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # unable to uv add httpx or uv pip install httpx on windows
 
 ---
 
-_Issue opened by @zkurtz on 2024-11-27 15:44_
+_@zkurtz_
 
 I always get an error like `.venv\...\Scripts\httpx.exe: Access is denied. (os error 5)`. The obvious solution is to run as admin, but in my corporate environment this would require involving IT.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-12T12:20:38Z
 updated_at: 2025-12-01T20:02:59Z
 url: https://github.com/astral-sh/uv/issues/16704
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # Better support for extra package indexes
 
 ---
 
-_Issue opened by @simenhu on 2025-11-12 12:20_
+_@simenhu_
 
 ### Summary
 

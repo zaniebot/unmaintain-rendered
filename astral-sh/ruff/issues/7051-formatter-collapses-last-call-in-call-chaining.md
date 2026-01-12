@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-01T20:07:51Z
 updated_at: 2023-11-02T17:01:48Z
 url: https://github.com/astral-sh/ruff/issues/7051
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter collapses last call in call chaining
 
 ---
 
-_Issue opened by @cnpryer on 2023-09-01 20:07_
+_@cnpryer_
 
 I prefer the change, but reporting since it's a diff in a from-`black` migration.
 

@@ -12,14 +12,14 @@ head: charlie/arm
 created_at: 2024-11-20T02:21:24Z
 updated_at: 2025-02-14T19:48:39Z
 url: https://github.com/astral-sh/uv/pull/9260
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:43Z
 ```
 
 # Add ARM Windows
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-20 02:21_
+_@charliermarsh_
 
 _No description provided._
 

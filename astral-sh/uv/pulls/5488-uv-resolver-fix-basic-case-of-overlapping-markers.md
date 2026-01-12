@@ -12,14 +12,14 @@ head: ag/overlapping-markers-basic
 created_at: 2024-07-26T18:43:30Z
 updated_at: 2024-08-23T15:32:15Z
 url: https://github.com/astral-sh/uv/pull/5488
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:06:51Z
 ```
 
 # uv-resolver: fix basic case of overlapping markers
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-07-26 18:43_
+_@BurntSushi_
 
 Consider the following packse scenario:
 

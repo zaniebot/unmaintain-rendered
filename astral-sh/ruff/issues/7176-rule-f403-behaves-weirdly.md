@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-09-06T02:27:12Z
 updated_at: 2023-09-06T02:36:18Z
 url: https://github.com/astral-sh/ruff/issues/7176
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rule F403 behaves weirdly
 
 ---
 
-_Issue opened by @Saransh-cpp on 2023-09-06 02:27_
+_@Saransh-cpp_
 
 Taking the example from ruff's [docs](https://beta.ruff.rs/docs/rules/undefined-local-with-import-star/) -
 

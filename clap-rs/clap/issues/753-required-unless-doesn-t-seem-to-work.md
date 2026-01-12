@@ -11,14 +11,14 @@ assignees: []
 created_at: 2016-11-18T15:26:49Z
 updated_at: 2018-08-02T03:29:57Z
 url: https://github.com/clap-rs/clap/issues/753
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # required_unless() doesn't seem to work
 
 ---
 
-_Issue opened by @bestouff on 2016-11-18 15:26_
+_@bestouff_
 
 ### Rust Version
 1.13.0

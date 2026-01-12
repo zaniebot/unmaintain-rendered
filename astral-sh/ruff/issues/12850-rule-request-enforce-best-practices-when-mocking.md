@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-12T19:15:05Z
 updated_at: 2024-08-13T08:50:04Z
 url: https://github.com/astral-sh/ruff/issues/12850
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Rule request: enforce best practices when mocking
 
 ---
 
-_Issue opened by @mgaitan on 2024-08-12 19:15_
+_@mgaitan_
 
 I'd like to propose the integration of `flake8-patch` like rule/s  into `ruff` to help enforce best practices when mocking in Python tests.
 

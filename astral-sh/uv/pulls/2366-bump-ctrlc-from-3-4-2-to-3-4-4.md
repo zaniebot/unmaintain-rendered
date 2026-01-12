@@ -13,14 +13,14 @@ head: dependabot/cargo/ctrlc-3.4.4
 created_at: 2024-03-11T21:32:24Z
 updated_at: 2024-03-11T21:42:05Z
 url: https://github.com/astral-sh/uv/pull/2366
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:00Z
 ```
 
 # Bump ctrlc from 3.4.2 to 3.4.4
 
 ---
 
-_Pull request opened by @dependabot on 2024-03-11 21:32_
+_@dependabot_
 
 Bumps [ctrlc](https://github.com/Detegr/rust-ctrlc) from 3.4.2 to 3.4.4.
 <details>

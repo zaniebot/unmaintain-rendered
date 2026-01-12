@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T23:44:56Z
 updated_at: 2025-01-01T01:11:00Z
 url: https://github.com/astral-sh/uv/issues/9923
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # uv.lock does not stay synced with pyproject.toml requirements
 
 ---
 
-_Issue opened by @zackees on 2024-12-15 23:44_
+_@zackees_
 
 Hi there, I'm using `uv` for a large open source library https://github.com/fastled/fastled
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-08T22:10:49Z
 updated_at: 2024-09-02T18:32:54Z
 url: https://github.com/astral-sh/ruff/issues/12767
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Ruff `DOC502` preview false positive with `requests.Response.raise_for_status()`
 
 ---
 
-_Issue opened by @jamesbraza on 2024-08-08 22:10_
+_@jamesbraza_
 
 With `ruff==0.5.7` and turning on the preview rule [`DOC502`/`docstring-extraneous-exception`](https://docs.astral.sh/ruff/rules/docstring-extraneous-exception/) (made as part of https://github.com/astral-sh/ruff/issues/12434), I think perhaps `requests.Response.raise_for_status()` is a special case where we should not alert DOC502 for `HTTPError`:
 

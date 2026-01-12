@@ -14,14 +14,14 @@ head: ag/auto-import-include-global-imports
 created_at: 2025-10-28T18:10:44Z
 updated_at: 2025-12-04T18:21:29Z
 url: https://github.com/astral-sh/ruff/pull/21112
-synced_at: 2026-01-10T16:48:01Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [ty] Make auto import completions include global imports from other modules in suggestions
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-10-28 18:10_
+_@BurntSushi_
 
 Previously, our special auto-import code for discovering symbols in
 other files quickly (without running ty on them) didn't take imports

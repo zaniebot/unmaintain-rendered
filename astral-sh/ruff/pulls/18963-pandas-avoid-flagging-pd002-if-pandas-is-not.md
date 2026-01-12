@@ -13,14 +13,14 @@ head: 6432_pandas_on_non_pandas_fix
 created_at: 2025-06-26T15:13:09Z
 updated_at: 2025-06-27T10:31:38Z
 url: https://github.com/astral-sh/ruff/pull/18963
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [`pandas`] Avoid flagging `PD002` if `pandas` is not imported
 
 ---
 
-_Pull request opened by @jordyjwilliams on 2025-06-26 15:13_
+_@jordyjwilliams_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

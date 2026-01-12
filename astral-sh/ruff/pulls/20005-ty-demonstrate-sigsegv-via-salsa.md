@@ -14,14 +14,14 @@ head: ag/salsa-ub
 created_at: 2025-08-20T14:47:16Z
 updated_at: 2025-08-20T16:18:14Z
 url: https://github.com/astral-sh/ruff/pull/20005
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] Demonstrate SIGSEGV via salsa
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-08-20 14:47_
+_@BurntSushi_
 
 This is a demonstration of what I believe must imply unsoundness
 somewhere inside of Salsa. That is, I don't use any `unsafe`, but I get

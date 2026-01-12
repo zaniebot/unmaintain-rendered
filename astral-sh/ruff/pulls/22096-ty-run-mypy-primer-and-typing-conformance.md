@@ -14,14 +14,14 @@ head: alex/less-mypy-primer
 created_at: 2025-12-19T18:43:25Z
 updated_at: 2025-12-19T19:31:22Z
 url: https://github.com/astral-sh/ruff/pull/22096
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Run mypy_primer and typing-conformance workflows on fewer PRs
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-19 18:43_
+_@AlexWaygood_
 
 ## Summary
 

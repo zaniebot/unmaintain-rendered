@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-07T09:10:30Z
 updated_at: 2025-11-07T19:02:41Z
 url: https://github.com/astral-sh/ruff/issues/21313
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Rules D201 and D202 have a confusing name
 
 ---
 
-_Issue opened by @Wim-De-Clercq on 2025-11-07 09:10_
+_@Wim-De-Clercq_
 
 ### Summary
 

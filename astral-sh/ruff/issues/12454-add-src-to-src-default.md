@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-22T14:41:22Z
 updated_at: 2024-08-14T16:08:53Z
 url: https://github.com/astral-sh/ruff/issues/12454
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Add `"src"` to `src` default
 
 ---
 
-_Issue opened by @charliermarsh on 2024-07-22 14:41_
+_@charliermarsh_
 
 We've received a few issues about this, and it's a common source of confusion. Rye actually defaults to this layout, so it's odd that we don't respect it in Ruff.
 

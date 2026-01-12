@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-04T15:47:22Z
 updated_at: 2024-03-06T08:16:40Z
 url: https://github.com/astral-sh/uv/issues/2159
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # Can't find public pypi package when using extra-index-url
 
 ---
 
-_Issue opened by @albertferras-vrf on 2024-03-04 15:47_
+_@albertferras-vrf_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

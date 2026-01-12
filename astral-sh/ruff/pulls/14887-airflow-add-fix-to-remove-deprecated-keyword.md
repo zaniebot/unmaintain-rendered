@@ -14,14 +14,14 @@ head: air302-fixes
 created_at: 2024-12-10T06:13:35Z
 updated_at: 2024-12-10T14:21:35Z
 url: https://github.com/astral-sh/ruff/pull/14887
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [`airflow`] Add fix to remove deprecated keyword arguments (`AIR302`)
 
 ---
 
-_Pull request opened by @tirkarthi on 2024-12-10 06:13_
+_@tirkarthi_
 
 ## Summary
 

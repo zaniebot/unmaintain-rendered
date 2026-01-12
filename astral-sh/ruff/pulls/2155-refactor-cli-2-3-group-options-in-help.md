@@ -12,14 +12,14 @@ head: refactor-cli
 created_at: 2023-01-25T14:13:35Z
 updated_at: 2023-01-26T19:19:07Z
 url: https://github.com/astral-sh/ruff/pull/2155
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # refactor CLI (2/3): Group options in `--help`
 
 ---
 
-_Pull request opened by @not-my-profile on 2023-01-25 14:13_
+_@not-my-profile_
 
 This is the followup PR for #2145.
 

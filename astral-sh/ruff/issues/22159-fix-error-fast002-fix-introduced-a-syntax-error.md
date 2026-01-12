@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-23T10:55:27Z
 updated_at: 2026-01-05T10:14:19Z
 url: https://github.com/astral-sh/ruff/issues/22159
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # [Fix error, FAST002] "Fix introduced a syntax error. Reverting all changes"
 
 ---
 
-_Issue opened by @tuttle on 2025-12-23 10:55_
+_@tuttle_
 
 **Rule:** FAST002 FastAPI dependency without `Annotated`
 

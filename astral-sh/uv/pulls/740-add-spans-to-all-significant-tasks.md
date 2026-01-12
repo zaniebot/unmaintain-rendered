@@ -13,14 +13,14 @@ head: konsti/spans-spans-spans
 created_at: 2023-12-31T12:14:04Z
 updated_at: 2024-01-02T16:17:04Z
 url: https://github.com/astral-sh/uv/pull/740
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:09Z
 ```
 
 # Add spans to all significant tasks
 
 ---
 
-_Pull request opened by @konstin on 2023-12-31 12:14_
+_@konstin_
 
 I've tried to investigate puffin's performance wrt to builds and parallelism in general, but found the previous instrumentation to granular. I've tried to add spans to every function that either needs noticeable io or cpu resources without creating duplication. This also fixes some wrong tracing usage on async functions (https://docs.rs/tracing/latest/tracing/struct.Span.html#in-asynchronous-code) and some spans that weren't actually entered.
 

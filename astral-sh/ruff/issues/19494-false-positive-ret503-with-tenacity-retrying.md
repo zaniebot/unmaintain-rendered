@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-22T18:51:44Z
 updated_at: 2025-07-24T10:05:29Z
 url: https://github.com/astral-sh/ruff/issues/19494
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # False positive `RET503` with `tenacity.Retrying`
 
 ---
 
-_Issue opened by @jamesbraza on 2025-07-22 18:51_
+_@jamesbraza_
 
 ### Summary
 

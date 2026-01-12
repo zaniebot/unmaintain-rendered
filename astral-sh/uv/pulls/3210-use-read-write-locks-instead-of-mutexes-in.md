@@ -13,14 +13,14 @@ head: zb/locks
 created_at: 2024-04-23T14:41:02Z
 updated_at: 2024-04-24T15:17:18Z
 url: https://github.com/astral-sh/uv/pull/3210
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:29Z
 ```
 
 # Use read-write locks instead of mutexes in authentication handling
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-23 14:41_
+_@zanieb_
 
 - Use `RwLock` for `KeyringProvider` cache
 - Use `RwLock` for `CredentialsCache`

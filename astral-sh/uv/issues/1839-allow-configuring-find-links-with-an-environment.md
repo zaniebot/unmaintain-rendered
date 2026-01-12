@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-21T22:37:43Z
 updated_at: 2024-12-20T15:35:58Z
 url: https://github.com/astral-sh/uv/issues/1839
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:32Z
 ```
 
 # Allow configuring FIND_LINKS with an environment variable
 
 ---
 
-_Issue opened by @alexandre-fabra on 2024-02-21 22:37_
+_@alexandre-fabra_
 
 I would like to be able to configure the `find-links` URL with an environment variable similar to how `PIP_FIND_LINKS` works.
 

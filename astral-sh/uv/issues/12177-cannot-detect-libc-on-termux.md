@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-14T20:31:46Z
 updated_at: 2025-04-15T06:11:39Z
 url: https://github.com/astral-sh/uv/issues/12177
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:57Z
 ```
 
 # Cannot detect libc on termux
 
 ---
 
-_Issue opened by @Disonantemus on 2025-03-14 20:31_
+_@Disonantemus_
 
 System: Termux (updated)
 

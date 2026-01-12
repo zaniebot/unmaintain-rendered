@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-16T20:05:53Z
 updated_at: 2022-11-17T06:51:46Z
 url: https://github.com/astral-sh/ruff/issues/778
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # pyupgrade typing rewrites should not rewrite runtime types
 
 ---
 
-_Issue opened by @JonathanPlasse on 2022-11-16 20:05_
+_@JonathanPlasse_
 
 This
 ```python

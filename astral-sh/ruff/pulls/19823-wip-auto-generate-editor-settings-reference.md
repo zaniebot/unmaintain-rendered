@@ -12,14 +12,14 @@ head: dhruv/server-generate-settings-docs
 created_at: 2025-08-08T06:57:45Z
 updated_at: 2025-08-08T06:57:53Z
 url: https://github.com/astral-sh/ruff/pull/19823
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # WIP: Auto-generate editor settings reference
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-08-08 06:57_
+_@dhruvmanila_
 
 ## Summary
 

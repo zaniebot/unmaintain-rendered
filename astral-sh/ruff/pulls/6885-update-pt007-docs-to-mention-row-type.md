@@ -13,14 +13,14 @@ head: charlie/param-docs
 created_at: 2023-08-25T22:07:01Z
 updated_at: 2023-08-25T22:40:24Z
 url: https://github.com/astral-sh/ruff/pull/6885
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Update PT007 docs to mention row-type
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-25 22:07_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6859.
 

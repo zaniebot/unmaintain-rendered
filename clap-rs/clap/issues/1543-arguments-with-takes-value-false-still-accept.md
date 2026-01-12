@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-09-04T20:57:00Z
 updated_at: 2022-03-21T16:34:51Z
 url: https://github.com/clap-rs/clap/issues/1543
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Arguments with takes_value(false) still accept "compact"-style arguments
 
 ---
 
-_Issue opened by @sfackler on 2019-09-04 20:57_
+_@sfackler_
 
 # Rust Version
 

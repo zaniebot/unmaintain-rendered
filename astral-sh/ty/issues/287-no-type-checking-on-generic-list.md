@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-09T02:58:11Z
 updated_at: 2025-05-29T23:58:58Z
 url: https://github.com/astral-sh/ty/issues/287
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # No type checking on generic list
 
 ---
 
-_Issue opened by @ultrageopro on 2025-05-09 02:58_
+_@ultrageopro_
 
 ### Summary
 

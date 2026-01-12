@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-04T20:55:02Z
 updated_at: 2025-05-19T07:10:14Z
 url: https://github.com/astral-sh/ty/issues/208
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # make it easier to avoid accidental cross-module direct AST usage
 
 ---
 
-_Issue opened by @carljm on 2025-02-04 20:55_
+_@carljm_
 
 ### Description
 

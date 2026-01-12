@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-08T17:33:11Z
 updated_at: 2025-10-07T16:24:06Z
 url: https://github.com/astral-sh/uv/issues/15739
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:16Z
 ```
 
 # `uv run` discards free-threaded (3.13t) environments and recreates non-free-threaded ones
 
 ---
 
-_Issue opened by @Ravencentric on 2025-09-08 17:33_
+_@Ravencentric_
 
 I’ve been working on adding free-threaded support to my libraries. Like most libraries, mine support a wide range of Python versions (e.g., `requires-python = ">=3.10"`).
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-08-21T02:31:16Z
 updated_at: 2020-04-12T10:09:28Z
 url: https://github.com/clap-rs/clap/issues/1034
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Support for default value in args_from_usage?
 
 ---
 
-_Issue opened by @netvl on 2017-08-21 02:31_
+_@netvl_
 
 Right now I have the following thing in many of my projects:
 ```rust

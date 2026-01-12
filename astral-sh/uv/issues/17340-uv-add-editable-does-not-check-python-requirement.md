@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-06T22:00:37Z
 updated_at: 2026-01-06T22:32:27Z
 url: https://github.com/astral-sh/uv/issues/17340
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # `uv add --editable` does not check python requirement
 
 ---
 
-_Issue opened by @rzuckerm on 2026-01-06 22:00_
+_@rzuckerm_
 
 ### Summary
 

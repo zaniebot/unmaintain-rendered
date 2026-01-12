@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-03-26T16:52:58Z
 updated_at: 2022-03-28T20:20:36Z
 url: https://github.com/clap-rs/clap/issues/3579
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Separate section for Positional Arguments in generated manpages
 
 ---
 
-_Issue opened by @ducaale on 2022-03-26 16:52_
+_@ducaale_
 
 ### Please complete the following tasks
 

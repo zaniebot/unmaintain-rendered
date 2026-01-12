@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-12T10:28:39Z
 updated_at: 2025-05-14T07:29:47Z
 url: https://github.com/astral-sh/uv/issues/13404
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # git+https://dependency information is lost when using uv build with hatchling
 
 ---
 
-_Issue opened by @soof-golan on 2025-05-12 10:28_
+_@soof-golan_
 
 ### Summary
 

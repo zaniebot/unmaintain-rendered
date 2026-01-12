@@ -13,14 +13,14 @@ head: remove-unneeded-lifetime-bounds
 created_at: 2024-03-03T18:05:05Z
 updated_at: 2024-03-03T18:23:40Z
 url: https://github.com/astral-sh/ruff/pull/10213
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Remove unneeded lifetime bounds
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-03 18:05_
+_@MichaReiser_
 
 ## Summary
 

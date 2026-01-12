@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-12T09:20:09Z
 updated_at: 2026-01-08T18:31:06Z
 url: https://github.com/astral-sh/ty/issues/972
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Support for dataclass_transform converters
 
 ---
 
-_Issue opened by @AdrianSosic on 2025-08-12 09:20_
+_@AdrianSosic_
 
 ### Summary
 

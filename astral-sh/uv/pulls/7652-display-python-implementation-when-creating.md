@@ -13,14 +13,14 @@ head: zb/venv-impl
 created_at: 2024-09-24T00:17:22Z
 updated_at: 2024-09-24T16:45:54Z
 url: https://github.com/astral-sh/uv/pull/7652
-synced_at: 2026-01-10T12:53:52Z
+synced_at: 2026-01-12T16:07:56Z
 ```
 
 # Display Python implementation when creating environments
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-24 00:17_
+_@zanieb_
 
 e.g.
 

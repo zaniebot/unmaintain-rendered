@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-26T14:23:35Z
 updated_at: 2023-02-03T18:24:05Z
 url: https://github.com/astral-sh/ruff/issues/2194
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # RUF100 without selecting the specific error codes
 
 ---
 
-_Issue opened by @spaceone on 2023-01-26 14:23_
+_@spaceone_
 
 `RUF100`  removes `noqa` comments if the lines doesn't have the underlying issue.
 

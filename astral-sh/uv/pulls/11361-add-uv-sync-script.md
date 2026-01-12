@@ -14,14 +14,14 @@ head: charlie/sync-dir
 created_at: 2025-02-09T19:14:24Z
 updated_at: 2025-02-12T16:02:19Z
 url: https://github.com/astral-sh/uv/pull/11361
-synced_at: 2026-01-10T11:10:36Z
+synced_at: 2026-01-12T16:09:48Z
 ```
 
 # Add `uv sync --script`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-02-09 19:14_
+_@charliermarsh_
 
 ## Summary
 

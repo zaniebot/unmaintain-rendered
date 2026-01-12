@@ -13,14 +13,14 @@ head: charlie/empty
 created_at: 2023-12-04T04:47:53Z
 updated_at: 2023-12-04T08:54:20Z
 url: https://github.com/astral-sh/uv/pull/536
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:01Z
 ```
 
 # Ignore empty `VIRTUAL_ENV` variables
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-12-04 04:47_
+_@charliermarsh_
 
 I'm not sure how my interpreter gets into this state, but it's certainly wrong to respect these.
 

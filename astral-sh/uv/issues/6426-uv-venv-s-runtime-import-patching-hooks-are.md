@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T12:07:40Z
 updated_at: 2025-02-13T22:51:03Z
 url: https://github.com/astral-sh/uv/issues/6426
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # `uv venv`'s runtime import patching hooks are unexpected
 
 ---
 
-_Issue opened by @edmorley on 2024-08-22 12:07_
+_@edmorley_
 
 Hi
 

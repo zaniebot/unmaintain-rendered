@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-04T13:19:27Z
 updated_at: 2025-02-11T03:15:48Z
 url: https://github.com/astral-sh/uv/issues/11216
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:31Z
 ```
 
 # uv pip install http://PATH/package.whl
 
 ---
 
-_Issue opened by @yemi18 on 2025-02-04 13:19_
+_@yemi18_
 
 ### Summary
 

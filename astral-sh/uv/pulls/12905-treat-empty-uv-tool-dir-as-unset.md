@@ -13,14 +13,14 @@ head: zb/tool-dir-parse
 created_at: 2025-04-15T20:44:48Z
 updated_at: 2025-04-17T16:36:07Z
 url: https://github.com/astral-sh/uv/pull/12905
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:26Z
 ```
 
 # Treat empty `UV_TOOL_DIR` as unset
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-15 20:44_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/8608
 

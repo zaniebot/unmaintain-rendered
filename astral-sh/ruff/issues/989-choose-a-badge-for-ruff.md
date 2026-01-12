@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-01T23:25:30Z
 updated_at: 2023-01-06T05:33:08Z
 url: https://github.com/astral-sh/ruff/issues/989
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Choose a badge for Ruff
 
 ---
 
-_Issue opened by @ofek on 2022-12-01 23:25_
+_@ofek_
 
 Like https://hatch.pypa.io/dev/next-steps/#community
 

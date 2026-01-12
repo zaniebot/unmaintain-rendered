@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-01T14:59:04Z
 updated_at: 2025-07-02T15:18:33Z
 url: https://github.com/astral-sh/uv/issues/14397
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # Missing dependency with `uv pip compile` when constraints include `python_full_version`
 
 ---
 
-_Issue opened by @adamsol on 2025-07-01 14:59_
+_@adamsol_
 
 ### Question
 

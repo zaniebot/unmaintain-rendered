@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T06:46:05Z
 updated_at: 2024-02-22T05:01:31Z
 url: https://github.com/astral-sh/uv/issues/1444
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Add copy fallback for reflink-based linker
 
 ---
 
-_Issue opened by @charliermarsh on 2024-02-16 06:46_
+_@charliermarsh_
 
 See: https://twitter.com/mpr0010/status/1758299951254388875.
 

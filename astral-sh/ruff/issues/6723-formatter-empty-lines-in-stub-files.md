@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-21T09:57:24Z
 updated_at: 2023-09-11T08:04:02Z
 url: https://github.com/astral-sh/ruff/issues/6723
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Formatter: Empty lines in stub files
 
 ---
 
-_Issue opened by @konstin on 2023-08-21 09:57_
+_@konstin_
 
 When formatting typeshed (`cargo run --bin ruff_dev -- format-dev --write typeshed`), there is still a big diff with black wrt to empty lines.
 

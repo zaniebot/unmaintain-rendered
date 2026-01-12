@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-10-12T22:58:07Z
 updated_at: 2024-10-13T14:19:30Z
 url: https://github.com/astral-sh/ruff/issues/13726
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # RUF200 does not detect invalid license field
 
 ---
 
-_Issue opened by @marcocaccin on 2024-10-12 22:58_
+_@marcocaccin_
 
 `RUF200` should detect invalid contents of a `pyproject.toml` file, but the `license` field does not seem to be validated correctly.
 

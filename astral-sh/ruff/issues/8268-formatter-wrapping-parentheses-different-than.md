@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-27T02:20:29Z
 updated_at: 2023-10-30T00:47:36Z
 url: https://github.com/astral-sh/ruff/issues/8268
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Formatter: Wrapping Parentheses Different than Black
 
 ---
 
-_Issue opened by @juftin on 2023-10-27 02:20_
+_@juftin_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: alex/tgard-narrow
 created_at: 2026-01-02T21:59:41Z
 updated_at: 2026-01-02T22:43:03Z
 url: https://github.com/astral-sh/ruff/pull/22348
-synced_at: 2026-01-10T16:36:19Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Use "typeguard constraints" for two kinds of tuple narrowing
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-02 21:59_
+_@AlexWaygood_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: add-ci-filter
 created_at: 2022-11-18T09:49:39Z
 updated_at: 2022-12-01T17:15:30Z
 url: https://github.com/astral-sh/ruff/pull/803
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add CI filter on rust and python files
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2022-11-18 09:49_
+_@JonathanPlasse_
 
 This avoids running the CI for nothing when the files checked (Python and Rust) are unchanged.
 Maybe there are more `paths` to add, like `Cargo.toml`.

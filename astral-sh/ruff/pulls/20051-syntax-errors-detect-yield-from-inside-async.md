@@ -13,14 +13,14 @@ head: yield_from_in_async
 created_at: 2025-08-22T19:39:45Z
 updated_at: 2025-09-03T14:13:06Z
 url: https://github.com/astral-sh/ruff/pull/20051
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:53Z
 ```
 
 # [syntax-errors] Detect `yield from` inside async function
 
 ---
 
-_Pull request opened by @11happy on 2025-08-22 19:39_
+_@11happy_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

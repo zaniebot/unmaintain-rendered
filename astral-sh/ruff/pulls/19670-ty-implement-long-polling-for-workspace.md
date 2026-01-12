@@ -14,14 +14,14 @@ head: micha/long-polling
 created_at: 2025-07-31T19:10:26Z
 updated_at: 2025-08-04T10:33:05Z
 url: https://github.com/astral-sh/ruff/pull/19670
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:44Z
 ```
 
 # [ty] Implement long-polling for workspace diagnsotics
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-07-31 19:10_
+_@MichaReiser_
 
 ## Summary
 

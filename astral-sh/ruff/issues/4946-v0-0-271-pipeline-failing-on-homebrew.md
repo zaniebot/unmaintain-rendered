@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-06-07T23:21:42Z
 updated_at: 2023-06-14T22:18:33Z
 url: https://github.com/astral-sh/ruff/issues/4946
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # v0.0.271 pipeline failing on homebrew
 
 ---
 
-_Issue opened by @ColemanDunn on 2023-06-07 23:21_
+_@ColemanDunn_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

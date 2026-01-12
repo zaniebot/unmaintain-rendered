@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-14T17:44:35Z
 updated_at: 2025-01-14T18:17:27Z
 url: https://github.com/astral-sh/uv/issues/10606
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # Resolution hints don't appear for packages with markers
 
 ---
 
-_Issue opened by @charliermarsh on 2025-01-14 17:44_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/uv/issues/10604#issuecomment-2590642824.
 

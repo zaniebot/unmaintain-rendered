@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-14T21:24:50Z
 updated_at: 2025-01-16T16:15:19Z
 url: https://github.com/astral-sh/ruff/issues/12897
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # [Infinite loop] Package-relative import issue with module `__all__` when using F401 and F822 with the preview option
 
 ---
 
-_Issue opened by @AA-Turner on 2024-08-14 21:24_
+_@AA-Turner_
 
 This took a while to minimise, hopefully it is indicative of a real issue!
 

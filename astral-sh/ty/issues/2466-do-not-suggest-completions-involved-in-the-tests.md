@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-12T14:09:25Z
 updated_at: 2026-01-12T14:09:58Z
 url: https://github.com/astral-sh/ty/issues/2466
-synced_at: 2026-01-12T15:03:21Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Do not suggest completions involved in the tests for non-first party code
 
 ---
 
-_Issue opened by @BurntSushi on 2026-01-12 14:09_
+_@BurntSushi_
 
 I have a project with these dependencies:
 

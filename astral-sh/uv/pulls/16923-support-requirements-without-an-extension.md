@@ -12,14 +12,14 @@ head: zb/charlie-ext
 created_at: 2025-12-02T09:39:38Z
 updated_at: 2025-12-02T11:02:25Z
 url: https://github.com/astral-sh/uv/pull/16923
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:31Z
 ```
 
 # Support requirements without an extension
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-02 09:39_
+_@zanieb_
 
 Duplicate of #16889 since I merged it without realizing it was stacked.
 

@@ -13,14 +13,14 @@ head: claude/add-llms-txt-setup-ZXvWS
 created_at: 2026-01-08T18:58:50Z
 updated_at: 2026-01-09T15:56:41Z
 url: https://github.com/astral-sh/ruff/pull/22463
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:50Z
 ```
 
 # Add llms.txt support for documentation
 
 ---
 
-_Pull request opened by @zanieb on 2026-01-08 18:58_
+_@zanieb_
 
 Matching uv.
 

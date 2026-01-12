@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-03-10T09:24:26Z
 updated_at: 2019-09-26T12:50:18Z
 url: https://github.com/clap-rs/clap/issues/1425
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # textwrap v0.11
 
 ---
 
-_Issue opened by @igor-raits on 2019-03-10 09:24_
+_@igor-raits_
 
 We (in Fedora) would love to see clap moving to 0.11 of textwrap since it would reduce maintenance.
 

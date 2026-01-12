@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-27T10:06:00Z
 updated_at: 2024-08-27T14:24:56Z
 url: https://github.com/astral-sh/uv/issues/6682
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Build pyproject-build.exe not provided
 
 ---
 
-_Issue opened by @lambda-science on 2024-08-27 10:06_
+_@lambda-science_
 
 From the docs: https://docs.astral.sh/uv/guides/publish/#building-your-package
 Build your package with the official build frontend:

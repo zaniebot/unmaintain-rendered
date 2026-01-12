@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-06T18:46:31Z
 updated_at: 2024-03-09T03:24:56Z
 url: https://github.com/astral-sh/uv/issues/2248
-synced_at: 2026-01-10T01:57:05Z
+synced_at: 2026-01-12T15:58:36Z
 ```
 
 # uv could operate on the venv it's installed in
 
 ---
 
-_Issue opened by @dhduvall on 2024-03-06 18:46_
+_@dhduvall_
 
 I wasn't able to find this request except as mentioned in https://github.com/astral-sh/uv/issues/1422#issuecomment-1949877288 — that when `uv` is installed in a venv, running it should by default operate on the venv it's installed in.
 

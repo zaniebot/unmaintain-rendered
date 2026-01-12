@@ -13,14 +13,14 @@ head: micha/pipe-errors
 created_at: 2025-02-24T19:17:59Z
 updated_at: 2025-02-25T07:42:55Z
 url: https://github.com/astral-sh/ruff/pull/16354
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Handle pipe-errors gracefully
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-24 19:17_
+_@MichaReiser_
 
 ## Summary
 

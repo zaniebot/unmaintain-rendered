@@ -12,14 +12,14 @@ head: renovate/pubgrub
 created_at: 2025-10-02T08:52:57Z
 updated_at: 2025-10-16T20:59:00Z
 url: https://github.com/astral-sh/uv/pull/16100
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:06Z
 ```
 
 # Update pubgrub to 1447cf0
 
 ---
 
-_Pull request opened by @renovate on 2025-10-02 08:52_
+_@renovate_
 
 This PR contains the following updates:
 

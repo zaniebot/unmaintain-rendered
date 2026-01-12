@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-25T05:35:36Z
 updated_at: 2025-04-25T12:49:14Z
 url: https://github.com/astral-sh/uv/issues/13099
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:19Z
 ```
 
 # uvcorn is not getting installed using uv pip
 
 ---
 
-_Issue opened by @nimxch on 2025-04-25 05:35_
+_@nimxch_
 
 ### Summary
 

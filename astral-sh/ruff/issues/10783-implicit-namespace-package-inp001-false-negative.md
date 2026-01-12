@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-05T00:05:01Z
 updated_at: 2024-11-18T00:26:42Z
 url: https://github.com/astral-sh/ruff/issues/10783
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `implicit-namespace-package` (`INP001`) - false negative when package contains no source files but contains nested packages
 
 ---
 
-_Issue opened by @DetachHead on 2024-04-05 00:05_
+_@DetachHead_
 
 if i have the following folder structure:
 ```

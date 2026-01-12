@@ -14,14 +14,14 @@ head: david/extend-final-tests
 created_at: 2025-07-22T07:04:22Z
 updated_at: 2025-07-22T10:06:49Z
 url: https://github.com/astral-sh/ruff/pull/19476
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Extend `Final` test suite
 
 ---
 
-_Pull request opened by @sharkdp on 2025-07-22 07:04_
+_@sharkdp_
 
 ## Summary
 

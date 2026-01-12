@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-13T12:43:20Z
 updated_at: 2024-03-13T14:30:54Z
 url: https://github.com/astral-sh/uv/issues/2409
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Prefer system TLS cert store by default
 
 ---
 
-_Issue opened by @DragoonAethis on 2024-03-13 12:43_
+_@DragoonAethis_
 
 This is a follow-up on #2362 where bundled root cert stores became the default.
 

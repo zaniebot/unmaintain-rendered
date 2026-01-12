@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-05T22:18:20Z
 updated_at: 2024-01-08T18:33:03Z
 url: https://github.com/astral-sh/uv/issues/805
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Fix display of negated versions
 
 ---
 
-_Issue opened by @zanieb on 2024-01-05 22:18_
+_@zanieb_
 
 We should not display `Not ( <version specifier> )` to users e.g. in the following test case
 

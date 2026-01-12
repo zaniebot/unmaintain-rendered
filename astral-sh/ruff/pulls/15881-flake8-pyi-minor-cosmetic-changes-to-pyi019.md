@@ -13,14 +13,14 @@ head: alex/pyi019-nits
 created_at: 2025-02-02T19:14:35Z
 updated_at: 2025-02-02T19:22:30Z
 url: https://github.com/astral-sh/ruff/pull/15881
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`flake8-pyi`] Minor cosmetic changes to `PYI019`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-02 19:14_
+_@AlexWaygood_
 
 ## Summary
 

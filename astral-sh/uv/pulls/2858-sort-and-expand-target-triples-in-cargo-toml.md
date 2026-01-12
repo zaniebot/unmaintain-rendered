@@ -13,14 +13,14 @@ head: charlie/targets
 created_at: 2024-04-07T03:17:09Z
 updated_at: 2024-04-07T03:25:55Z
 url: https://github.com/astral-sh/uv/pull/2858
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:16Z
 ```
 
 # Sort and expand target triples in Cargo.toml
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-07 03:17_
+_@charliermarsh_
 
 ## Summary
 

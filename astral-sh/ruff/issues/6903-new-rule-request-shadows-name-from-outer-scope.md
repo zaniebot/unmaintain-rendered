@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-26T19:46:56Z
 updated_at: 2024-11-19T06:26:38Z
 url: https://github.com/astral-sh/ruff/issues/6903
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # New rule request: Shadows name from outer scope 
 
 ---
 
-_Issue opened by @Garrett-R on 2023-08-26 19:46_
+_@Garrett-R_
 
 What about catching this code smell:
 ```python

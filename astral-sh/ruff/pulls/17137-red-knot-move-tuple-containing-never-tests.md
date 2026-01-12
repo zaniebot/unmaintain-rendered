@@ -14,14 +14,14 @@ head: dhruv/move-test
 created_at: 2025-04-02T02:35:00Z
 updated_at: 2025-04-02T14:27:02Z
 url: https://github.com/astral-sh/ruff/pull/17137
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Move tuple containing `Never` tests
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-04-02 02:35_
+_@dhruvmanila_
 
 Refer https://github.com/astral-sh/ruff/pull/17094#discussion_r2023682840
 

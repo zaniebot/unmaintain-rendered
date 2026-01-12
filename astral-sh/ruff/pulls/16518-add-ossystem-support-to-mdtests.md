@@ -13,14 +13,14 @@ head: micha/mdtest-os-system
 created_at: 2025-03-05T12:57:24Z
 updated_at: 2025-03-06T15:22:16Z
 url: https://github.com/astral-sh/ruff/pull/16518
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # Add `OsSystem` support to mdtests
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-05 12:57_
+_@MichaReiser_
 
 ## Summary
 

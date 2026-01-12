@@ -12,14 +12,14 @@ head: release/0714
 created_at: 2025-06-23T15:49:54Z
 updated_at: 2025-06-23T18:03:35Z
 url: https://github.com/astral-sh/uv/pull/14218
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:05Z
 ```
 
 # Bump version to 0.7.14
 
 ---
 
-_Pull request opened by @Gankra on 2025-06-23 15:49_
+_@Gankra_
 
 _No description provided._
 

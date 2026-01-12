@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-29T10:40:50Z
 updated_at: 2025-01-06T15:42:30Z
 url: https://github.com/astral-sh/uv/issues/7778
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # In case VIRTUAL_ENV is different from .venv UV_PROJECT_ENVIRONMENT should be created automatically
 
 ---
 
-_Issue opened by @avoutsas67 on 2024-09-29 10:40_
+_@avoutsas67_
 
 Hi all, 
 

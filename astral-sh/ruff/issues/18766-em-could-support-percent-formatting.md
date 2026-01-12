@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-18T18:48:11Z
 updated_at: 2025-06-18T20:46:25Z
 url: https://github.com/astral-sh/ruff/issues/18766
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # EM could support percent formatting
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-06-18 18:48_
+_@MeGaGiGaGon_
 
 ### Summary
 

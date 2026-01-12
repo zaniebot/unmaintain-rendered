@@ -14,14 +14,14 @@ head: feat/add-no-groups-flag
 created_at: 2025-01-14T23:29:24Z
 updated_at: 2025-01-21T23:07:19Z
 url: https://github.com/astral-sh/uv/pull/10618
-synced_at: 2026-01-10T11:44:59Z
+synced_at: 2026-01-12T16:09:23Z
 ```
 
 # feat: add `--no-default-groups` flag
 
 ---
 
-_Pull request opened by @mkniewallner on 2025-01-14 23:29_
+_@mkniewallner_
 
 ## Summary
 

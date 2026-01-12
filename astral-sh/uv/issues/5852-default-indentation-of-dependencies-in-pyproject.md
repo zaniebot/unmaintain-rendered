@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-07T12:28:12Z
 updated_at: 2025-09-04T13:02:12Z
 url: https://github.com/astral-sh/uv/issues/5852
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:59Z
 ```
 
 # Default indentation of dependencies in `pyproject.toml`
 
 ---
 
-_Issue opened by @my1e5 on 2024-08-07 12:28_
+_@my1e5_
 
 While it is not explicitly stated, the PyPA guide to the `pyproject.toml` file uses two spaces for the default indentation of TOML arrays - see https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#dependencies-and-requirements. uv is currently using four spaces. 
 

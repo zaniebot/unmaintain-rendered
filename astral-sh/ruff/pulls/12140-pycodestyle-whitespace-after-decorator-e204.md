@@ -14,14 +14,14 @@ head: whitespace-after-decorator
 created_at: 2024-07-01T13:44:52Z
 updated_at: 2024-07-04T23:31:04Z
 url: https://github.com/astral-sh/ruff/pull/12140
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`pycodestyle`] Whitespace after decorator (`E204`)
 
 ---
 
-_Pull request opened by @jkauerl on 2024-07-01 13:44_
+_@jkauerl_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: konsti/no-pyo3
 created_at: 2024-10-22T12:10:19Z
 updated_at: 2024-10-22T12:17:29Z
 url: https://github.com/astral-sh/uv/pull/8447
-synced_at: 2026-01-10T12:54:09Z
+synced_at: 2026-01-12T16:08:19Z
 ```
 
 # Don't build the maturin test
 
 ---
 
-_Pull request opened by @konstin on 2024-10-22 12:10_
+_@konstin_
 
 Building pyo3 is slow, and we don't implement a maturin cffi template (not enough usage), so we just skip the building pyo3 stage in the maturin template tests.
 

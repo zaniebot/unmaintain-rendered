@@ -13,14 +13,14 @@ head: main
 created_at: 2023-02-10T09:15:33Z
 updated_at: 2023-02-10T21:15:16Z
 url: https://github.com/astral-sh/ruff/pull/2716
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # pylint:  E0100 yield-in-init
 
 ---
 
-_Pull request opened by @tomecki on 2023-02-10 09:15_
+_@tomecki_
 
 Rule ref:
 https://pylint.pycqa.org/en/latest/user_guide/messages/error/init-is-generator.html

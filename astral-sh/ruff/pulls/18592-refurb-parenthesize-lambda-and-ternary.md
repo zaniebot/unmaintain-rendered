@@ -14,14 +14,14 @@ head: brent/fix-furb1
 created_at: 2025-06-09T13:52:35Z
 updated_at: 2025-06-09T20:07:36Z
 url: https://github.com/astral-sh/ruff/pull/18592
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # [`refurb`] Parenthesize lambda and ternary expressions in iter (`FURB122`, `FURB142`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-09 13:52_
+_@ntBre_
 
 Summary
 --

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-16T07:58:09Z
 updated_at: 2024-02-23T08:24:35Z
 url: https://github.com/astral-sh/uv/issues/1449
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Authentication when downloading package from private registry using `oauth2accesstoken` fails with 401 Unauthorized
 
 ---
 
-_Issue opened by @fellhorn on 2024-02-16 07:58_
+_@fellhorn_
 
 Thanks a lot for this project, happy to see the so much progress in the python packaging ecosystem!
 

@@ -14,14 +14,14 @@ head: charlie/find-links
 created_at: 2024-08-12T01:12:51Z
 updated_at: 2024-08-12T02:02:41Z
 url: https://github.com/astral-sh/uv/pull/6016
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:09Z
 ```
 
 # Treat local indexes as registry sources in lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-12 01:12_
+_@charliermarsh_
 
 ## Summary
 

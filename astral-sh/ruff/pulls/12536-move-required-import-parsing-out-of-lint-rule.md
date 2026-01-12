@@ -13,14 +13,14 @@ head: charlie/required-imports
 created_at: 2024-07-26T16:43:01Z
 updated_at: 2024-07-26T17:35:48Z
 url: https://github.com/astral-sh/ruff/pull/12536
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Move required import parsing out of lint rule
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-26 16:43_
+_@charliermarsh_
 
 ## Summary
 

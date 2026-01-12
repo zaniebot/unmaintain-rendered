@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-09-21T02:30:00Z
 updated_at: 2023-10-05T05:12:56Z
 url: https://github.com/astral-sh/ruff/issues/7561
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Support NoQA directive inside f-strings
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-09-21 02:30_
+_@dhruvmanila_
 
 Currently, the NoQA directives are detected and added on the last line of a multi-line string / f-string. With PEP 701, we can add comments inside f-strings, so we should support NoQA directives inside f-strings.
 

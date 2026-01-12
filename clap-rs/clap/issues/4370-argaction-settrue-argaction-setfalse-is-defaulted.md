@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-10-11T14:23:08Z
 updated_at: 2022-10-11T16:10:34Z
 url: https://github.com/clap-rs/clap/issues/4370
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # `ArgAction::SetTrue / ArgAction::SetFalse is defaulted` panic appearing only in `--release` for a seemingly valid input
 
 ---
 
-_Issue opened by @yoav-lavi on 2022-10-11 14:23_
+_@yoav-lavi_
 
 ### Please complete the following tasks
 

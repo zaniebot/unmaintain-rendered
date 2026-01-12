@@ -13,14 +13,14 @@ head: zanie/rule-preview
 created_at: 2023-09-06T15:16:34Z
 updated_at: 2023-09-11T18:35:54Z
 url: https://github.com/astral-sh/ruff/pull/7195
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Update rule selection to respect preview mode
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-06 15:16_
+_@zanieb_
 
 ## Summary
 

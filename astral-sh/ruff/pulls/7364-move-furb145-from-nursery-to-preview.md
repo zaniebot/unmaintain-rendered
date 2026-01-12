@@ -13,14 +13,14 @@ head: zanie/furb145
 created_at: 2023-09-13T19:26:51Z
 updated_at: 2023-09-13T19:54:30Z
 url: https://github.com/astral-sh/ruff/pull/7364
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Move `FURB145` from nursery to preview
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-13 19:26_
+_@zanieb_
 
 Moves the new rule from nursery to preview for the upcoming release.
 

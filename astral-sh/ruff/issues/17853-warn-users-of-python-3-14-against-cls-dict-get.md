@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-05T11:37:22Z
 updated_at: 2025-06-20T13:32:41Z
 url: https://github.com/astral-sh/ruff/issues/17853
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Warn users of Python 3.14+ against `cls.__dict__.get("__annotations__", {})`
 
 ---
 
-_Issue opened by @dylwil3 on 2025-05-05 11:37_
+_@dylwil3_
 
 ### Summary
 

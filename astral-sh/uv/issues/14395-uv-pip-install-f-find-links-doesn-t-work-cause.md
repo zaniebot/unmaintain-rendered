@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-01T14:38:30Z
 updated_at: 2025-07-08T02:13:13Z
 url: https://github.com/astral-sh/uv/issues/14395
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # uv pip install -f(--find-links) doesn't work, cause 'error decoding response body.'
 
 ---
 
-_Issue opened by @hpx502766238 on 2025-07-01 14:38_
+_@hpx502766238_
 
 ### Summary
 

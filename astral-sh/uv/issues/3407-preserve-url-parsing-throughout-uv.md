@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-06T14:13:30Z
 updated_at: 2024-07-09T11:27:58Z
 url: https://github.com/astral-sh/uv/issues/3407
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:43Z
 ```
 
 # Preserve url parsing throughout uv
 
 ---
 
-_Issue opened by @konstin on 2024-05-06 14:13_
+_@konstin_
 
 Currently, we have a rich `Requirement` type, storing both the url component and the verbatim input.  We than lose this parsed information through `Urls`, `to_pubgrub` and `PubGrubPackage` storing only a single `VerbatimUrl`. We eventually parse this url again in `ResolutionGraph::from_state` -> `Dist::from_url` again, but then store only the `VerbatimUrl` on the `Dist` again. When using the `Dist`, we parse the url again.
 

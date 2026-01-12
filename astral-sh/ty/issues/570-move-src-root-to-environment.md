@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-02T19:53:01Z
 updated_at: 2025-06-24T12:50:35Z
 url: https://github.com/astral-sh/ty/issues/570
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Move src.root to environment
 
 ---
 
-_Issue opened by @MichaReiser on 2025-06-02 19:53_
+_@MichaReiser_
 
 The src.root setting configures the first party search path. It doesn't configure which files are checked. It, therefore, is a better fit for the environment section, similar to how pyright structures the option.
 

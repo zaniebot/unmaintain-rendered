@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-23T16:05:30Z
 updated_at: 2025-05-25T11:09:03Z
 url: https://github.com/astral-sh/ty/issues/499
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # CLI docs: autogeneration truncates some option descriptions
 
 ---
 
-_Issue opened by @brainwane on 2025-05-23 16:05_
+_@brainwane_
 
 ### Summary
 

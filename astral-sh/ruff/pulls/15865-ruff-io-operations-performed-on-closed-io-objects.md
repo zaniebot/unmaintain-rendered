@@ -13,14 +13,14 @@ head: RUF061
 created_at: 2025-02-01T01:18:18Z
 updated_at: 2025-04-28T07:13:00Z
 url: https://github.com/astral-sh/ruff/pull/15865
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # [`ruff`] IO operations performed on closed IO objects (`RUF050`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-01 01:18_
+_@InSyncWithFoo_
 
 ## Summary
 

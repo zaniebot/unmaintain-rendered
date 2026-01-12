@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-24T16:58:29Z
 updated_at: 2023-02-28T17:21:30Z
 url: https://github.com/astral-sh/ruff/issues/3207
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Failed to parse: Got unexpected unicode
 
 ---
 
-_Issue opened by @rouge8 on 2023-02-24 16:58_
+_@rouge8_
 
 I'm getting an error parsing a few of our files like `error: Failed to parse t.py: Got unexpected unicode at line 1 column 4`.
 

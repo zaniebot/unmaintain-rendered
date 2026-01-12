@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-17T10:48:14Z
 updated_at: 2023-09-18T17:27:07Z
 url: https://github.com/astral-sh/ruff/issues/7453
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Change Ruff Rules url to include the rule-id
 
 ---
 
-_Issue opened by @Crissal1995 on 2023-09-17 10:48_
+_@Crissal1995_
 
 Hi,
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-10-14T21:12:15Z
 updated_at: 2025-02-19T05:05:55Z
 url: https://github.com/clap-rs/clap/issues/4392
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Ignore errors disables help flag
 
 ---
 
-_Issue opened by @NicholasLYang on 2022-10-14 21:12_
+_@NicholasLYang_
 
 ### Please complete the following tasks
 

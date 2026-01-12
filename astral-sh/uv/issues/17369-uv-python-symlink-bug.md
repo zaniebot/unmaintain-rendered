@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-08T22:52:00Z
 updated_at: 2026-01-09T16:14:50Z
 url: https://github.com/astral-sh/uv/issues/17369
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T16:02:49Z
 ```
 
 # uv Python symlink bug
 
 ---
 
-_Issue opened by @devinbarry on 2026-01-08 22:52_
+_@devinbarry_
 
 ### Summary
 

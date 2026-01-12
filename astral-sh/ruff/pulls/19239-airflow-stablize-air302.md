@@ -13,14 +13,14 @@ head: codeman/17749
 created_at: 2025-07-09T17:07:54Z
 updated_at: 2025-09-05T14:10:32Z
 url: https://github.com/astral-sh/ruff/pull/19239
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [airflow] stablize AIR302
 
 ---
 
-_Pull request opened by @CodeMan62 on 2025-07-09 17:07_
+_@CodeMan62_
 
 ## Summary
 

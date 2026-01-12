@@ -13,14 +13,14 @@ head: alex/more-try-iterate
 created_at: 2025-08-21T13:38:28Z
 updated_at: 2025-08-22T18:33:10Z
 url: https://github.com/astral-sh/ruff/pull/20023
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:52Z
 ```
 
 # [ty] Add precise iteration and unpacking inference for string literals and bytes literals
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-21 13:38_
+_@AlexWaygood_
 
 ## Summary
 

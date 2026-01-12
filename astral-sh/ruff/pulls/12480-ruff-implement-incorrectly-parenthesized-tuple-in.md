@@ -15,14 +15,14 @@ head: getitem-with-parens-tuple
 created_at: 2024-07-23T17:33:00Z
 updated_at: 2024-08-08T14:57:49Z
 url: https://github.com/astral-sh/ruff/pull/12480
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [ruff] Implement `incorrectly-parenthesized-tuple-in-subscript` (`RUF031`)
 
 ---
 
-_Pull request opened by @dylwil3 on 2024-07-23 17:33_
+_@dylwil3_
 
 ## Summary
 

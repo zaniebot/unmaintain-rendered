@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-12T14:48:00Z
 updated_at: 2025-01-22T17:16:50Z
 url: https://github.com/astral-sh/uv/issues/3014
-synced_at: 2026-01-10T04:27:57Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Direct reference metadata compatibility
 
 ---
 
-_Issue opened by @ofek on 2024-04-12 14:48_
+_@ofek_
 
 I'm in the process of adding support for UV in Hatch and I noticed that the test suite is failing because of a difference in how UV writes `direct_url.json` vs pip, specifically the `requested_revision` field. The reason this is read is to determine whether dependencies are in sync.
 

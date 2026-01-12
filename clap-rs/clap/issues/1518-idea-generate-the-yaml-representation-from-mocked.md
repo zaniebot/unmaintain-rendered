@@ -10,14 +10,14 @@ assignees: []
 created_at: 2019-07-07T20:26:41Z
 updated_at: 2020-02-06T19:37:26Z
 url: https://github.com/clap-rs/clap/issues/1518
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # idea: generate the yaml representation from mocked CLI usage
 
 ---
 
-_Issue opened by @nilslice on 2019-07-07 20:26_
+_@nilslice_
 
 Hi - great work on `clap`! I am starting a CLI-related project and upon seeing `clap`'s support for a YAML-based representation, I thought maybe my project could be a PR to `clap` instead.. apologies for using a GitHub issue for this, but I figured others who use `clap` might also be interested. 
 

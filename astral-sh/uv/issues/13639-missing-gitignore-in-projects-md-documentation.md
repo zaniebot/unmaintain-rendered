@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-24T16:27:49Z
 updated_at: 2025-06-05T06:19:39Z
 url: https://github.com/astral-sh/uv/issues/13639
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:33Z
 ```
 
 # Missing .gitignore in projects.md documentation
 
 ---
 
-_Issue opened by @AbhiUpadhye on 2025-05-24 16:27_
+_@AbhiUpadhye_
 
 ### Question
 

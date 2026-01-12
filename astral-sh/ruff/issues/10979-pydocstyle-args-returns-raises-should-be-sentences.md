@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-04-16T16:36:19Z
 updated_at: 2024-08-25T12:27:44Z
 url: https://github.com/astral-sh/ruff/issues/10979
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # pydocstyle: args/returns/raises should be sentences
 
 ---
 
-_Issue opened by @adamjstewart on 2024-04-16 16:36_
+_@adamjstewart_
 
 ### Feature Request
 

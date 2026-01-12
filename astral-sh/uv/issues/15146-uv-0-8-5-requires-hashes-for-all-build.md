@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T19:17:43Z
 updated_at: 2025-08-07T21:43:25Z
 url: https://github.com/astral-sh/uv/issues/15146
-synced_at: 2026-01-10T03:32:46Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # uv 0.8.5 requires hashes for all build dependencies, while uv 0.8.4 does not
 
 ---
 
-_Issue opened by @hauntsaninja on 2025-08-07 19:17_
+_@hauntsaninja_
 
 ### Summary
 

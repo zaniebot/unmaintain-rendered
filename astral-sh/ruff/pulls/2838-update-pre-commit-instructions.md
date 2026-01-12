@@ -13,14 +13,14 @@ head: charlie/pre
 created_at: 2023-02-13T00:03:25Z
 updated_at: 2023-02-13T00:06:41Z
 url: https://github.com/astral-sh/ruff/pull/2838
-synced_at: 2026-01-12T04:52:01Z
+synced_at: 2026-01-12T15:55:11Z
 ```
 
 # Update pre-commit instructions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-13 00:03_
+_@charliermarsh_
 
 _No description provided._
 

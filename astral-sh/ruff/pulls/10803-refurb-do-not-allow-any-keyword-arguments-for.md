@@ -13,14 +13,14 @@ head: read-whole-file-minor-bug
 created_at: 2024-04-06T16:33:33Z
 updated_at: 2024-04-22T18:01:54Z
 url: https://github.com/astral-sh/ruff/pull/10803
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [`refurb`] Do not allow any keyword arguments for `read-whole-file` in `rb` mode (`FURB101`)
 
 ---
 
-_Pull request opened by @augustelalande on 2024-04-06 16:33_
+_@augustelalande_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

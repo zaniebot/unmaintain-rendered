@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-23T10:59:01Z
 updated_at: 2024-10-28T19:25:30Z
 url: https://github.com/astral-sh/uv/issues/7636
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:15Z
 ```
 
 # implement uv pip config
 
 ---
 
-_Issue opened by @woutervh on 2024-09-23 10:59_
+_@woutervh_
 
 I've been searching in the uv docs and issue-tracker, but I did not find my answer.
 Apologies if I overlooked something.

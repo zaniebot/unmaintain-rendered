@@ -14,14 +14,14 @@ head: nested-literals-unions
 created_at: 2024-11-27T18:06:09Z
 updated_at: 2024-11-28T18:08:34Z
 url: https://github.com/astral-sh/ruff/pull/14641
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [`flake8-pyi`, `ruff`] Fix traversal of nested literals and unions (`PYI016`, `PYI051`, `PYI055`, `PYI062`, `RUF041`)
 
 ---
 
-_Pull request opened by @sbrugman on 2024-11-27 18:06_
+_@sbrugman_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

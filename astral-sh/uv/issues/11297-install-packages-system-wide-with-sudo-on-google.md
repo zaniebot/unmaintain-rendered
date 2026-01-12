@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-06T21:02:13Z
 updated_at: 2025-02-13T20:13:58Z
 url: https://github.com/astral-sh/uv/issues/11297
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:33Z
 ```
 
 # Install packages system wide with sudo on Google Cloud Compute Engine
 
 ---
 
-_Issue opened by @Noobzik on 2025-02-06 21:02_
+_@Noobzik_
 
 ### Question
 

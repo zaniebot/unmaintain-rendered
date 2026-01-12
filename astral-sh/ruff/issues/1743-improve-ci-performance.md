@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-01-09T08:08:01Z
 updated_at: 2023-01-13T19:21:12Z
 url: https://github.com/astral-sh/ruff/issues/1743
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Improve CI performance
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-09 08:08_
+_@charliermarsh_
 
 A few ideas (all of which should be benchmarked prior to committing):
 

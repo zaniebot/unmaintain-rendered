@@ -13,14 +13,14 @@ head: alex/subtype-of-exhaustive
 created_at: 2024-12-11T20:25:28Z
 updated_at: 2024-12-13T19:34:49Z
 url: https://github.com/astral-sh/ruff/pull/14924
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Make `is_subtype_of` exhaustive
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-12-11 20:25_
+_@AlexWaygood_
 
 ## Summary
 

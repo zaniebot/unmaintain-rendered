@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-17T11:52:31Z
 updated_at: 2025-05-18T21:24:35Z
 url: https://github.com/astral-sh/uv/issues/13506
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:30Z
 ```
 
 # constraint-dependencies setting ignores environment markers
 
 ---
 
-_Issue opened by @espdev on 2025-05-17 11:52_
+_@espdev_
 
 ### Summary
 

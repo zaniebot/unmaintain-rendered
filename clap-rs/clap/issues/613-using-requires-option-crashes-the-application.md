@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-08-01T19:24:08Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/613
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Using `requires` option crashes the application
 
 ---
 
-_Issue opened by @workanator on 2016-08-01 19:24_
+_@workanator_
 
 Hello,
 

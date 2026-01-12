@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-10T15:35:04Z
 updated_at: 2025-07-22T07:12:48Z
 url: https://github.com/astral-sh/uv/issues/14543
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:51Z
 ```
 
 # Integration UV with Databricks Notebooks and Projects
 
 ---
 
-_Issue opened by @castillouparela on 2025-07-10 15:35_
+_@castillouparela_
 
 ### Question
 

@@ -14,14 +14,14 @@ head: alex/optimize-intersections-single-neg
 created_at: 2026-01-02T19:10:06Z
 updated_at: 2026-01-05T15:27:29Z
 url: https://github.com/astral-sh/ruff/pull/22344
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Optimize `IntersectionType` for the common case of a single negated element
 
 ---
 
-_Pull request opened by @AlexWaygood on 2026-01-02 19:10_
+_@AlexWaygood_
 
 ## Summary
 

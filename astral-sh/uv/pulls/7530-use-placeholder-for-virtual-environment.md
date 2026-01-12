@@ -13,14 +13,14 @@ head: zb/bin-filter
 created_at: 2024-09-19T02:11:46Z
 updated_at: 2024-09-19T10:56:47Z
 url: https://github.com/astral-sh/uv/pull/7530
-synced_at: 2026-01-10T12:53:49Z
+synced_at: 2026-01-12T16:07:52Z
 ```
 
 # Use placeholder for virtual environment activation bin filter
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-19 02:11_
+_@zanieb_
 
 I think it's best practice to use a placeholder when we transform something, and #7522 is having snapshot issues because this filter conflicts with `with_filtered_virtualenv_bin`
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-15T08:33:46Z
 updated_at: 2024-11-17T17:04:59Z
 url: https://github.com/astral-sh/ruff/issues/14354
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # [red-knot] Understand `typing.Optional` special form in annotations
 
 ---
 
-_Issue opened by @Glyphack on 2024-11-15 08:33_
+_@Glyphack_
 
 (created it to claim the task)
 Part of #14172.

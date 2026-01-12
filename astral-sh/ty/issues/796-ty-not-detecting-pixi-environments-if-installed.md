@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-10T13:28:48Z
 updated_at: 2025-10-07T10:29:35Z
 url: https://github.com/astral-sh/ty/issues/796
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `ty` not detecting `pixi` environments if installed by `pixi global`
 
 ---
 
-_Issue opened by @JaRoSchm on 2025-07-10 13:28_
+_@JaRoSchm_
 
 ### Summary
 

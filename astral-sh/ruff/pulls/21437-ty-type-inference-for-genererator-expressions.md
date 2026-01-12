@@ -14,14 +14,14 @@ head: david/generator-expression-inference
 created_at: 2025-11-13T21:26:27Z
 updated_at: 2025-11-14T13:04:13Z
 url: https://github.com/astral-sh/ruff/pull/21437
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:24Z
 ```
 
 # [ty] Type inference for genererator expressions
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-13 21:26_
+_@sharkdp_
 
 ## Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-08-29T13:05:41Z
 updated_at: 2024-08-30T03:28:45Z
 url: https://github.com/astral-sh/ruff/issues/13151
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # `ruff check --fix ` failed to fix the E402 error.
 
 ---
 
-_Issue opened by @hongyi-zhao on 2024-08-29 13:05_
+_@hongyi-zhao_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

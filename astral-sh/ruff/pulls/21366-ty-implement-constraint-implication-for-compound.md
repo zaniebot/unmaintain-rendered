@@ -15,14 +15,14 @@ head: dcreager/deep-comparison
 created_at: 2025-11-10T17:20:58Z
 updated_at: 2025-11-14T23:43:02Z
 url: https://github.com/astral-sh/ruff/pull/21366
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # [ty] Implement constraint implication for compound types
 
 ---
 
-_Pull request opened by @dcreager on 2025-11-10 17:20_
+_@dcreager_
 
 This PR updates the constraint implication type relationship to work on compound types as well. (A compound type is a non-atomic type, like `list[T]`.)
 

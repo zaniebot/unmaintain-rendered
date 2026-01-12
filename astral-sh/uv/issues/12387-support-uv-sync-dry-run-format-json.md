@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-22T04:21:45Z
 updated_at: 2025-07-24T09:13:26Z
 url: https://github.com/astral-sh/uv/issues/12387
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # Support `uv sync [--dry-run] --format=json`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2025-03-22 04:21_
+_@InSyncWithFoo_
 
 (Opened as per the suggestion [here](https://github.com/astral-sh/uv/pull/11891#issuecomment-2742034566). Part of #411 and #3199.)
 

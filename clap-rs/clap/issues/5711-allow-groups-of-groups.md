@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-30T20:30:23Z
 updated_at: 2024-09-04T23:38:47Z
 url: https://github.com/clap-rs/clap/issues/5711
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Allow groups of groups
 
 ---
 
-_Issue opened by @epage on 2024-08-30 20:30_
+_@epage_
 
 A blocker for #4697 which is important for #3123 and #2621 is the ability to have a group own another group.
 

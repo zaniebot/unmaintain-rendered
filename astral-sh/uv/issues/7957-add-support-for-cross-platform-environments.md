@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-07T03:56:32Z
 updated_at: 2025-06-02T19:09:08Z
 url: https://github.com/astral-sh/uv/issues/7957
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # Add support for cross-platform environments
 
 ---
 
-_Issue opened by @freakboy3742 on 2024-10-07 03:56_
+_@freakboy3742_
 
 Python 3.13 added iOS and Android as Tier 3 supported platforms for CPython. It would be desirable to be able to use uv to develop apps for these environments.
 

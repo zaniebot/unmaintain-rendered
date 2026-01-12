@@ -13,14 +13,14 @@ head: charlie/run
 created_at: 2024-06-30T00:02:01Z
 updated_at: 2024-06-30T14:40:40Z
 url: https://github.com/astral-sh/uv/pull/4657
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:22Z
 ```
 
 # Add a command abstraction to `uv run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-30 00:02_
+_@charliermarsh_
 
 ## Summary
 

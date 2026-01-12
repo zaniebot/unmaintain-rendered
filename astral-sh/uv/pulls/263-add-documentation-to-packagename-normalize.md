@@ -12,14 +12,14 @@ head: zanie/doc-package-name
 created_at: 2023-10-31T19:56:34Z
 updated_at: 2023-10-31T20:24:09Z
 url: https://github.com/astral-sh/uv/pull/263
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:50Z
 ```
 
 # Add documentation to `PackageName::normalize`
 
 ---
 
-_Pull request opened by @zanieb on 2023-10-31 19:56_
+_@zanieb_
 
 _No description provided._
 

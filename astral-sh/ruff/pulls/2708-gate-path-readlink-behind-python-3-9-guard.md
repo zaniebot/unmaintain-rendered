@@ -12,14 +12,14 @@ head: charlie/pathlib
 created_at: 2023-02-10T03:33:09Z
 updated_at: 2023-02-10T03:57:33Z
 url: https://github.com/astral-sh/ruff/pull/2708
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # Gate `Path.readlink()` behind Python 3.9+ guard
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-10 03:33_
+_@charliermarsh_
 
 Closes #2706.
 

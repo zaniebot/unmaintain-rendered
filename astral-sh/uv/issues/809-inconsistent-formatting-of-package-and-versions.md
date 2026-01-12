@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-05T22:47:19Z
 updated_at: 2024-07-09T14:26:54Z
 url: https://github.com/astral-sh/uv/issues/809
-synced_at: 2026-01-10T01:57:01Z
+synced_at: 2026-01-12T15:58:24Z
 ```
 
 # Inconsistent formatting of package and versions in error messages
 
 ---
 
-_Issue opened by @zanieb on 2024-01-05 22:47_
+_@zanieb_
 
 we use backticks in the unusable dependencies incompatibility message
 

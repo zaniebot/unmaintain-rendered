@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-07T13:36:54Z
 updated_at: 2025-05-15T13:02:22Z
 url: https://github.com/astral-sh/ty/issues/92
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Invalid argument to `fields` from `dataclasses`
 
 ---
 
-_Issue opened by @my1e5 on 2025-05-07 13:36_
+_@my1e5_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: ruff.UP031
 created_at: 2024-04-19T00:23:09Z
 updated_at: 2024-05-09T21:32:03Z
 url: https://github.com/astral-sh/ruff/pull/11019
-synced_at: 2026-01-10T22:05:26Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [UP031] When encountering `"%s" % var` offer unsafe fix
 
 ---
 
-_Pull request opened by @plredmond on 2024-04-19 00:23_
+_@plredmond_
 
 Resolves #10187
 

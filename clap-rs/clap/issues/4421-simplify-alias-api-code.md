@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-10-24T13:22:08Z
 updated_at: 2022-10-24T13:22:08Z
 url: https://github.com/clap-rs/clap/issues/4421
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Simplify Alias API / code
 
 ---
 
-_Issue opened by @epage on 2022-10-24 13:22_
+_@epage_
 
 Currently, we have visible and non visible aliases along with singular and multiple methods.
 

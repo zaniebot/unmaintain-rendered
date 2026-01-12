@@ -13,14 +13,14 @@ head: charlie/ranged
 created_at: 2023-08-27T18:45:49Z
 updated_at: 2023-08-27T19:03:22Z
 url: https://github.com/astral-sh/ruff/pull/6921
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Implement `Ranged` on more structs
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-27 18:45_
+_@charliermarsh_
 
 Now that it's in `ruff_text_size`, we can use it in a few places that we couldn't before.
 

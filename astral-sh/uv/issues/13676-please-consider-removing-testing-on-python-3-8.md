@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-27T12:08:04Z
 updated_at: 2025-06-02T09:10:53Z
 url: https://github.com/astral-sh/uv/issues/13676
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:34Z
 ```
 
 # Please consider removing testing on Python 3.8
 
 ---
 
-_Issue opened by @mgorny on 2025-05-27 12:08_
+_@mgorny_
 
 I'm sorry for making so many requests.
 

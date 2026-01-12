@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-02-12T00:43:47Z
 updated_at: 2018-08-02T03:30:01Z
 url: https://github.com/clap-rs/clap/issues/849
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # No default_value_os for reliably specifying filesystem paths as default arguments
 
 ---
 
-_Issue opened by @ssokolow on 2017-02-12 00:43_
+_@ssokolow_
 
 ### Affected Version of clap
 

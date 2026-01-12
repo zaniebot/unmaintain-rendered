@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-12-21T22:12:07Z
 updated_at: 2024-12-21T23:48:03Z
 url: https://github.com/astral-sh/uv/issues/10085
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T16:00:06Z
 ```
 
 # uv add fails for torch on intel macs but uv pip works
 
 ---
 
-_Issue opened by @lumira-admin on 2024-12-21 22:12_
+_@lumira-admin_
 
 Hi Team,
 

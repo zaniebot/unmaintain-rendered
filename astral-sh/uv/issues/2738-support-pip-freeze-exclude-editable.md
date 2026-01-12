@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-30T17:34:59Z
 updated_at: 2024-03-31T17:59:31Z
 url: https://github.com/astral-sh/uv/issues/2738
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Support `pip freeze --exclude-editable`
 
 ---
 
-_Issue opened by @charlesnicholson on 2024-03-30 17:34_
+_@charlesnicholson_
 
 `pip freeze --exclude-editable` emits a requirements file that contains all packages installed in the venv, without the editable installs. This can be handy when shipping a bunch of wheels as a deployment, where the editable-installed source packages in the venv get wheeled and shipped with the frozen requirements file. That way you can ship the first-party wheels with a frozen manifest of all third-party wheels at the time the first-party wheels were created, and the venv can be deterministically recreated.
 

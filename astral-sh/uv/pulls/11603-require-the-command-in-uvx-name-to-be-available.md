@@ -13,14 +13,14 @@ head: zb/tool-run-check
 created_at: 2025-02-18T19:29:25Z
 updated_at: 2025-04-18T21:57:34Z
 url: https://github.com/astral-sh/uv/pull/11603
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:54Z
 ```
 
 # Require the command in `uvx <name>` to be available in the Python environment
 
 ---
 
-_Pull request opened by @zanieb on 2025-02-18 19:29_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/7804
 

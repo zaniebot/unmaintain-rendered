@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-16T19:17:37Z
 updated_at: 2025-06-19T21:47:23Z
 url: https://github.com/astral-sh/uv/issues/14085
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:42Z
 ```
 
 # `uv init --script` doesn't respect an existing shebang
 
 ---
 
-_Issue opened by @oconnor663 on 2025-06-16 19:17_
+_@oconnor663_
 
 ### Summary
 

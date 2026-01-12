@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T09:48:42Z
 updated_at: 2025-12-02T10:01:12Z
 url: https://github.com/astral-sh/uv/issues/8206
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # uvx and uv tool not respecting python version in packaged app
 
 ---
 
-_Issue opened by @my1e5 on 2024-10-15 09:48_
+_@my1e5_
 
 Now that Python 3.13 has been released I'm seeing this behaviour and wondered if I was doing something wrong. 
 

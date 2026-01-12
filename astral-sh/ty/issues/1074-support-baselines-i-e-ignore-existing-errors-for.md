@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-21T05:15:35Z
 updated_at: 2025-11-18T16:10:36Z
 url: https://github.com/astral-sh/ty/issues/1074
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Support baselines, i.e., ignore existing errors for incremental adoption
 
 ---
 
-_Issue opened by @larroy on 2025-08-21 05:15_
+_@larroy_
 
 ### Question
 

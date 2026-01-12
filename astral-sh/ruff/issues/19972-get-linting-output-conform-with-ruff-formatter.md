@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-18T15:40:11Z
 updated_at: 2025-09-30T07:16:38Z
 url: https://github.com/astral-sh/ruff/issues/19972
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Get linting output conform with ruff formatter
 
 ---
 
-_Issue opened by @jkrauth on 2025-08-18 15:40_
+_@jkrauth_
 
 ### Question
 

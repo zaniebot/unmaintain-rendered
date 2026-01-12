@@ -13,14 +13,14 @@ head: charlie/p
 created_at: 2025-01-10T19:23:44Z
 updated_at: 2025-01-10T20:12:24Z
 url: https://github.com/astral-sh/uv/pull/10476
-synced_at: 2026-01-10T11:44:51Z
+synced_at: 2026-01-12T16:09:18Z
 ```
 
 # Avoid allocating for names in the PEP 508 parser
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-10 19:23_
+_@charliermarsh_
 
 ## Summary
 

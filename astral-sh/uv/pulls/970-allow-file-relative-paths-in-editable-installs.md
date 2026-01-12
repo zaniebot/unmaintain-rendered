@@ -13,14 +13,14 @@ head: charlie/file
 created_at: 2024-01-18T21:07:54Z
 updated_at: 2024-01-18T21:15:43Z
 url: https://github.com/astral-sh/uv/pull/970
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:20Z
 ```
 
 # Allow file:-relative paths in editable installs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-18 21:07_
+_@charliermarsh_
 
 Supports editable install via (e.g.) `puffin pip install -e  file:.`, which pip seems to support.
 

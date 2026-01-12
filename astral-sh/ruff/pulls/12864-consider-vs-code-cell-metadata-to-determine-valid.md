@@ -13,14 +13,14 @@ head: dhruv/vscode-language-id
 created_at: 2024-08-13T15:53:19Z
 updated_at: 2024-08-13T16:45:42Z
 url: https://github.com/astral-sh/ruff/pull/12864
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Consider VS Code cell metadata to determine valid code cells
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-13 15:53_
+_@dhruvmanila_
 
 ## Summary
 

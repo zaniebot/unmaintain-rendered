@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-14T20:11:28Z
 updated_at: 2023-09-28T07:35:02Z
 url: https://github.com/astral-sh/ruff/issues/7394
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Big pack of formatted files that have different output than black
 
 ---
 
-_Issue opened by @qarmin on 2023-09-14 20:11_
+_@qarmin_
 
 Ruff 0.0.289
 

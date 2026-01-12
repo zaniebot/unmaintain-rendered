@@ -1,0 +1,1032 @@
+```yaml
+number: 972
+title: rg can not ignore files in .git/logs
+type: issue
+state: closed
+author: wsdjeg
+labels:
+  - invalid
+  - question
+assignees: []
+created_at: 2018-07-06T14:31:32Z
+updated_at: 2018-07-07T00:04:02Z
+url: https://github.com/BurntSushi/ripgrep/issues/972
+synced_at: 2026-01-12T16:13:22Z
+```
+
+# rg can not ignore files in .git/logs
+
+---
+
+_@wsdjeg_
+
+#### What version of ripgrep are you using?
+
+```
+ripgrep 0.8.1
+-SIMD -AVX
+```
+
+#### How did you install ripgrep?
+
+I am using pacman which is the default package manager in archlinux.
+
+#### What operating system are you using ripgrep on?
+
+```
+Linux archlinux 4.17.3-1-ARCH #1 SMP PREEMPT Tue Jun 26 04:42:36 UTC 2018 x86_64 GNU/Linux
+```
+
+#### Describe your question, feature request, or bug.
+
+I think it is a bug, rg can not ignore file in `.git/logs/`.
+
+#### If this is a bug, what are the steps to reproduce the behavior?
+
+the command I am using is:
+
+```
+rg --hidden --no-heading --color=never --with-filename --line-number --debug --column -e wsdjeg | head -3000
+```
+
+#### If this is a bug, what is the actual behavior?
+
+<details><summary> rg command output </summary>
+
+```
+docs/_posts/2018-01-23-grep-on-the-fly-in-spacevim.md:15:106:This ia a built-in plugin in SpaceVim, and we also separated a plugin : [FlyGrep.vim](https://github.com/wsdjeg/FlyGrep.vim)
+docs/cn/development.md:210:26:" Author: Shidong Wang < wsdjeg at 163.com >
+docs/_posts/2018-01-01-SpaceVim-Newsletter-Never-lost-never-give-up.md:95:74:Thank you contributors, sponsors, bug-reporters, supporters. Thank you [@wsdjeg](https://github.com/wsdjeg) for the awesome project and thank you [@syl20bnr](https://github.com/syl20bnr) for your foundational work.
+docs/_posts/2018-6-18-SpaceVim-release-v0.8.0.md:46:88:UI, If you need vim-plug like install UI, you can use [dein-ui.vim](https://github.com/wsdjeg/dein-ui.vim).
+autoload/SpaceVim/health.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/custom.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/autocmds.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/mapping.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/plugins.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/logger.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/commands.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/default.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/util.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+.git/logs/HEAD:1:83:0000000000000000000000000000000000000000 8c3e51583a47270937d9729622f70e4e9e46b845 wsdjeg <wsdjeg@outlook.com> 1528684362 +0800	clone: from git@github.com:wsdjeg/SpaceVim.git
+.git/logs/HEAD:2:83:8c3e51583a47270937d9729622f70e4e9e46b845 355f09c82344eed8954865df526f1216251bb2e3 wsdjeg <wsdjeg@outlook.com> 1528686195 +0800	checkout: moving from master to upstream/master
+.git/logs/HEAD:3:83:355f09c82344eed8954865df526f1216251bb2e3 355f09c82344eed8954865df526f1216251bb2e3 wsdjeg <wsdjeg@outlook.com> 1528686250 +0800	checkout: moving from 355f09c82344eed8954865df526f1216251bb2e3 to docs
+.git/logs/HEAD:4:83:355f09c82344eed8954865df526f1216251bb2e3 67d998618e1258279bee2095928c6481889708d9 wsdjeg <wsdjeg@outlook.com> 1528892447 +0800	checkout: moving from docs to upstream/master
+.git/logs/HEAD:5:83:67d998618e1258279bee2095928c6481889708d9 67d998618e1258279bee2095928c6481889708d9 wsdjeg <wsdjeg@outlook.com> 1528892455 +0800	checkout: moving from 67d998618e1258279bee2095928c6481889708d9 to icons
+.git/logs/HEAD:6:83:67d998618e1258279bee2095928c6481889708d9 e8dde59255e9ce554eb261bb25f52317a8b077a3 wsdjeg <wsdjeg@outlook.com> 1528893295 +0800	commit: Fix update
+.git/logs/HEAD:7:83:e8dde59255e9ce554eb261bb25f52317a8b077a3 839b475bfc69144d801a9af6134e1c290ef74a14 wsdjeg <wsdjeg@outlook.com> 1528893812 +0800	checkout: moving from icons to upstream/master
+.git/logs/HEAD:8:83:839b475bfc69144d801a9af6134e1c290ef74a14 839b475bfc69144d801a9af6134e1c290ef74a14 wsdjeg <wsdjeg@outlook.com> 1528893821 +0800	checkout: moving from 839b475bfc69144d801a9af6134e1c290ef74a14 to easymotion
+.git/logs/HEAD:9:83:839b475bfc69144d801a9af6134e1c290ef74a14 0e827f8e2a3552370f38eadd7bb56abf0e9faf99 wsdjeg <wsdjeg@outlook.com> 1528894085 +0800	commit: Update key binding of easymotion
+.git/logs/HEAD:10:83:0e827f8e2a3552370f38eadd7bb56abf0e9faf99 eb40d9310a27b094d73118f3716d02a8203ffda5 wsdjeg <wsdjeg@outlook.com> 1528895011 +0800	checkout: moving from easymotion to upstream/master
+.git/logs/HEAD:11:83:eb40d9310a27b094d73118f3716d02a8203ffda5 eb40d9310a27b094d73118f3716d02a8203ffda5 wsdjeg <wsdjeg@outlook.com> 1528895024 +0800	checkout: moving from eb40d9310a27b094d73118f3716d02a8203ffda5 to buffer_state
+.git/logs/HEAD:12:83:eb40d9310a27b094d73118f3716d02a8203ffda5 27ff38fc22af3b75bec7a934eedec0deec5ad9fb wsdjeg <wsdjeg@outlook.com> 1528895059 +0800	commit: Fix buffer state
+.git/logs/HEAD:13:83:27ff38fc22af3b75bec7a934eedec0deec5ad9fb 34a773769f352a769e5520549dd49b77260a0593 wsdjeg <wsdjeg@outlook.com> 1528896581 +0800	checkout: moving from buffer_state to upstream/master
+.git/logs/HEAD:14:83:34a773769f352a769e5520549dd49b77260a0593 34a773769f352a769e5520549dd49b77260a0593 wsdjeg <wsdjeg@outlook.com> 1528896585 +0800	checkout: moving from 34a773769f352a769e5520549dd49b77260a0593 to oldvim
+.git/logs/HEAD:15:83:34a773769f352a769e5520549dd49b77260a0593 2366f3716917ef8d614acf9858acf923efe52ed1 wsdjeg <wsdjeg@outlook.com> 1528979157 +0800	commit: Add support of tag name
+.git/logs/HEAD:16:83:2366f3716917ef8d614acf9858acf923efe52ed1 d1164e3e4e47ef24f0e591cdba1345e0dc9ca8bf wsdjeg <wsdjeg@outlook.com> 1528980016 +0800	commit: Update statusline
+.git/logs/HEAD:17:83:d1164e3e4e47ef24f0e591cdba1345e0dc9ca8bf f92403b8fe07ed0223c003ad2f74c24d225222c3 wsdjeg <wsdjeg@outlook.com> 1528980197 +0800	commit: Change statuslien file name color
+.git/logs/HEAD:18:83:f92403b8fe07ed0223c003ad2f74c24d225222c3 82bb0fe0e517a8496335cc9ee08cb76bef5ac0d6 wsdjeg <wsdjeg@outlook.com> 1528981014 +0800	checkout: moving from oldvim to upstream/master
+.git/logs/HEAD:19:83:82bb0fe0e517a8496335cc9ee08cb76bef5ac0d6 82bb0fe0e517a8496335cc9ee08cb76bef5ac0d6 wsdjeg <wsdjeg@outlook.com> 1528981020 +0800	checkout: moving from 82bb0fe0e517a8496335cc9ee08cb76bef5ac0d6 to help
+.git/logs/HEAD:20:83:82bb0fe0e517a8496335cc9ee08cb76bef5ac0d6 50556eb7458990fcc7946c897888472a8a73a13c wsdjeg <wsdjeg@outlook.com> 1528981363 +0800	checkout: moving from help to 0.6.0
+.git/logs/HEAD:21:83:50556eb7458990fcc7946c897888472a8a73a13c 82bb0fe0e517a8496335cc9ee08cb76bef5ac0d6 wsdjeg <wsdjeg@outlook.com> 1528981510 +0800	checkout: moving from 50556eb7458990fcc7946c897888472a8a73a13c to upstream/master
+.git/logs/HEAD:22:83:82bb0fe0e517a8496335cc9ee08cb76bef5ac0d6 82bb0fe0e517a8496335cc9ee08cb76bef5ac0d6 wsdjeg <wsdjeg@outlook.com> 1528981519 +0800	checkout: moving from 82bb0fe0e517a8496335cc9ee08cb76bef5ac0d6 to help
+.git/logs/HEAD:23:83:82bb0fe0e517a8496335cc9ee08cb76bef5ac0d6 9a3b59c818dfe491251299207434c9384777da0d wsdjeg <wsdjeg@outlook.com> 1529066471 +0800	commit: Update help file
+.git/logs/HEAD:24:83:9a3b59c818dfe491251299207434c9384777da0d 7dcd9b9e8776a64802755771ac50e614aefd1e24 wsdjeg <wsdjeg@outlook.com> 1529067688 +0800	commit: Update faq for why using toml
+.git/logs/HEAD:25:83:7dcd9b9e8776a64802755771ac50e614aefd1e24 c1b5958622657b1f993491c268379f764627b733 wsdjeg <wsdjeg@outlook.com> 1529068739 +0800	commit: Update help file
+.git/logs/HEAD:26:83:c1b5958622657b1f993491c268379f764627b733 11bfa73fc4e598c71a4d9009e245cf6f1aa20636 wsdjeg <wsdjeg@outlook.com> 1529236796 +0800	checkout: moving from help to upstream/master
+.git/logs/HEAD:27:83:11bfa73fc4e598c71a4d9009e245cf6f1aa20636 11bfa73fc4e598c71a4d9009e245cf6f1aa20636 wsdjeg <wsdjeg@outlook.com> 1529236803 +0800	checkout: moving from 11bfa73fc4e598c71a4d9009e245cf6f1aa20636 to release
+.git/logs/HEAD:28:83:11bfa73fc4e598c71a4d9009e245cf6f1aa20636 6db3cedf508247eab9f349817e686c2b24508ce3 wsdjeg <wsdjeg@outlook.com> 1529237133 +0800	commit: Add release note
+.git/logs/HEAD:29:83:6db3cedf508247eab9f349817e686c2b24508ce3 713db36659c129d478ef0f48cc822707f5097692 wsdjeg <wsdjeg@outlook.com> 1529237772 +0800	commit: Improve release script
+.git/logs/HEAD:30:83:713db36659c129d478ef0f48cc822707f5097692 e4e9ab54f559444311150ac5834a04bba2872e72 wsdjeg <wsdjeg@outlook.com> 1529238126 +0800	commit: Add release note
+.git/logs/HEAD:31:83:e4e9ab54f559444311150ac5834a04bba2872e72 8388169aba0e846e08c419da518f76366c87bede wsdjeg <wsdjeg@outlook.com> 1529242251 +0800	commit: Add release note
+.git/logs/HEAD:32:83:8388169aba0e846e08c419da518f76366c87bede bf9a873ac28cd9d03683daba4cb1227584d845d1 wsdjeg <wsdjeg@outlook.com> 1529244244 +0800	commit: Add release note
+.git/logs/HEAD:33:83:bf9a873ac28cd9d03683daba4cb1227584d845d1 a3114b6f82086974a09a3196dbb891ee3ce13b15 wsdjeg <wsdjeg@outlook.com> 1529299314 +0800	commit: Update version
+.git/logs/HEAD:34:83:a3114b6f82086974a09a3196dbb891ee3ce13b15 e793ec54e109978e58abeca66d492cae9f355ff5 wsdjeg <wsdjeg@outlook.com> 1529300083 +0800	commit: Update version
+.git/logs/HEAD:35:83:e793ec54e109978e58abeca66d492cae9f355ff5 c5327572a5d42074bbcd076229800fae00b9d6cd wsdjeg <wsdjeg@outlook.com> 1529300252 +0800	commit: Update version
+.git/logs/HEAD:36:83:c5327572a5d42074bbcd076229800fae00b9d6cd 438912f1e18537e3bceb0dc47590721a1491620b wsdjeg <wsdjeg@outlook.com> 1529300570 +0800	commit: Update wiki
+.git/logs/HEAD:37:83:438912f1e18537e3bceb0dc47590721a1491620b b464470dacba3501428ba98b1515ae369fa3556c wsdjeg <wsdjeg@outlook.com> 1529300942 +0800	commit: Update release script
+.git/logs/HEAD:38:83:b464470dacba3501428ba98b1515ae369fa3556c 2539d9d9313744e89af6217bc836f2f46615a661 wsdjeg <wsdjeg@outlook.com> 1529301144 +0800	commit: Update file name
+.git/logs/HEAD:39:83:2539d9d9313744e89af6217bc836f2f46615a661 7a91d3bc2f726c5666e9d233ba7d396f9af23cfe wsdjeg <wsdjeg@outlook.com> 1529304114 +0800	checkout: moving from release to upstream/master
+.git/logs/HEAD:40:83:7a91d3bc2f726c5666e9d233ba7d396f9af23cfe 7a91d3bc2f726c5666e9d233ba7d396f9af23cfe wsdjeg <wsdjeg@outlook.com> 1529304136 +0800	checkout: moving from 7a91d3bc2f726c5666e9d233ba7d396f9af23cfe to new_version
+.git/logs/HEAD:41:83:7a91d3bc2f726c5666e9d233ba7d396f9af23cfe e5fba409148ba5b89b1993f5723554a35cfd636b wsdjeg <wsdjeg@outlook.com> 1529304404 +0800	commit: New version 0.9.0-dev
+.git/logs/HEAD:42:83:e5fba409148ba5b89b1993f5723554a35cfd636b 1b48bb8e0b461ee41b28d6128f61e020d13c44b1 wsdjeg <wsdjeg@outlook.com> 1529307122 +0800	commit: Update release script
+.git/logs/HEAD:43:83:1b48bb8e0b461ee41b28d6128f61e020d13c44b1 2f00ef833f23af1d606f58190ba5d98595a91c00 wsdjeg <wsdjeg@outlook.com> 1529307764 +0800	commit: Update release script
+.git/logs/HEAD:44:83:2f00ef833f23af1d606f58190ba5d98595a91c00 e76540e0fcccce2fcbc9f439c2498611a2b05d22 wsdjeg <wsdjeg@outlook.com> 1529307949 +0800	checkout: moving from new_version to upstream/master
+.git/logs/HEAD:45:83:e76540e0fcccce2fcbc9f439c2498611a2b05d22 e76540e0fcccce2fcbc9f439c2498611a2b05d22 wsdjeg <wsdjeg@outlook.com> 1529307964 +0800	checkout: moving from e76540e0fcccce2fcbc9f439c2498611a2b05d22 to spacevim_option
+.git/logs/HEAD:46:83:e76540e0fcccce2fcbc9f439c2498611a2b05d22 43f339bf657e7ce5251501d59be02d8fc1b2581d wsdjeg <wsdjeg@outlook.com> 1529308611 +0800	commit: Change SpaceVim option name
+.git/logs/HEAD:47:83:43f339bf657e7ce5251501d59be02d8fc1b2581d d6d076dc5ac728a939b7282178156bc8193cd8c5 wsdjeg <wsdjeg@outlook.com> 1529308794 +0800	commit: Update wiki
+.git/logs/HEAD:48:83:d6d076dc5ac728a939b7282178156bc8193cd8c5 3a86b88705554b47c391a8cccd876ec86d36ec03 wsdjeg <wsdjeg@outlook.com> 1529309017 +0800	commit: Add pr link
+.git/logs/HEAD:49:83:3a86b88705554b47c391a8cccd876ec86d36ec03 db524ed2221c0fef4fc087b1146a91404b99f28e wsdjeg <wsdjeg@outlook.com> 1529324278 +0800	checkout: moving from spacevim_option to upstream/master
+.git/logs/HEAD:50:83:db524ed2221c0fef4fc087b1146a91404b99f28e 5bccbf7e41a2fb1e0328f378e1136d9759877552 wsdjeg <wsdjeg@outlook.com> 1529324303 +0800	checkout: moving from db524ed2221c0fef4fc087b1146a91404b99f28e to develop
+.git/logs/HEAD:51:83:5bccbf7e41a2fb1e0328f378e1136d9759877552 6139512a9955b4434cabf3d3d31e71e8ae8dfe34 wsdjeg <wsdjeg@outlook.com> 1529326276 +0800	commit: Update floobit layer
+.git/logs/HEAD:52:83:6139512a9955b4434cabf3d3d31e71e8ae8dfe34 39d1323b1008827a5548b10e30de2157e5df7851 wsdjeg <wsdjeg@outlook.com> 1529327396 +0800	checkout: moving from develop to color_material
+.git/logs/HEAD:53:83:39d1323b1008827a5548b10e30de2157e5df7851 7f0723e93e764403fa6eaf89740e01a53643a794 wsdjeg <wsdjeg@outlook.com> 1529327689 +0800	rebase -i (start): checkout upstream/master
+.git/logs/HEAD:54:83:7f0723e93e764403fa6eaf89740e01a53643a794 3ffc88c246dd6f0e52e3127a668060574fc3dda5 wsdjeg <wsdjeg@outlook.com> 1529327689 +0800	rebase -i (pick): Update colorscheme.vim
+.git/logs/HEAD:55:83:3ffc88c246dd6f0e52e3127a668060574fc3dda5 3ffc88c246dd6f0e52e3127a668060574fc3dda5 wsdjeg <wsdjeg@outlook.com> 1529327689 +0800	rebase -i (finish): returning to refs/heads/color_material
+.git/logs/HEAD:56:83:3ffc88c246dd6f0e52e3127a668060574fc3dda5 4d8a3ef4c80cc583e6ecc56eb7d987c5357bdd46 wsdjeg <wsdjeg@outlook.com> 1529328883 +0800	commit: Update material theme
+.git/logs/HEAD:57:83:4d8a3ef4c80cc583e6ecc56eb7d987c5357bdd46 4e3b900540413b19bd817e15980e65129fad8f87 wsdjeg <wsdjeg@outlook.com> 1529329387 +0800	commit: Update material theme
+.git/logs/HEAD:58:83:4e3b900540413b19bd817e15980e65129fad8f87 eb189f08d8cbe039dcdc5872a360ffe70e627015 wsdjeg <wsdjeg@outlook.com> 1529412894 +0800	commit: Update material theme
+.git/logs/HEAD:59:83:eb189f08d8cbe039dcdc5872a360ffe70e627015 d88e92626a8f34bd8676d279542edc4f856377c0 wsdjeg <wsdjeg@outlook.com> 1529413248 +0800	checkout: moving from color_material to upstream/master
+.git/logs/HEAD:60:83:d88e92626a8f34bd8676d279542edc4f856377c0 d88e92626a8f34bd8676d279542edc4f856377c0 wsdjeg <wsdjeg@outlook.com> 1529413464 +0800	checkout: moving from d88e92626a8f34bd8676d279542edc4f856377c0 to apis
+.git/logs/HEAD:61:83:d88e92626a8f34bd8676d279542edc4f856377c0 d88e92626a8f34bd8676d279542edc4f856377c0 wsdjeg <wsdjeg@outlook.com> 1529413950 +0800	checkout: moving from apis to faq
+.git/logs/HEAD:62:83:d88e92626a8f34bd8676d279542edc4f856377c0 b19ff53cee5c0d4bb04bdd3a79540839c898dc73 wsdjeg <wsdjeg@outlook.com> 1529414374 +0800	commit: Update faq
+.git/logs/HEAD:63:83:b19ff53cee5c0d4bb04bdd3a79540839c898dc73 d88e92626a8f34bd8676d279542edc4f856377c0 wsdjeg <wsdjeg@outlook.com> 1529414951 +0800	checkout: moving from faq to upstream/master
+.git/logs/HEAD:64:83:d88e92626a8f34bd8676d279542edc4f856377c0 d88e92626a8f34bd8676d279542edc4f856377c0 wsdjeg <wsdjeg@outlook.com> 1529414962 +0800	checkout: moving from d88e92626a8f34bd8676d279542edc4f856377c0 to apis
+.git/logs/HEAD:65:83:d88e92626a8f34bd8676d279542edc4f856377c0 7501b241757289f65fcadca2374718cd617d3c89 wsdjeg <wsdjeg@outlook.com> 1529415333 +0800	commit: Add test for toml api
+.git/logs/HEAD:66:83:7501b241757289f65fcadca2374718cd617d3c89 4c1cb40ea2dcb10439febfe1707f3deb882137cd wsdjeg <wsdjeg@outlook.com> 1529416871 +0800	commit: Fix type in test
+.git/logs/HEAD:67:83:4c1cb40ea2dcb10439febfe1707f3deb882137cd 3421fad36147af838789c6bed1d642971aae4a0f wsdjeg <wsdjeg@outlook.com> 1529417300 +0800	commit: Add test for number api
+.git/logs/HEAD:68:83:3421fad36147af838789c6bed1d642971aae4a0f b848d806136a2b56169596eb75f7ab7347b10e95 wsdjeg <wsdjeg@outlook.com> 1529494516 +0800	commit: Add test for file api
+.git/logs/HEAD:69:83:b848d806136a2b56169596eb75f7ab7347b10e95 89b7ac9f0c50d2c9b47ab7b5ae59d3346102383f wsdjeg <wsdjeg@outlook.com> 1529495112 +0800	commit: Add test for vim#highlight api
+.git/logs/HEAD:70:83:89b7ac9f0c50d2c9b47ab7b5ae59d3346102383f b17632f4afe9c14f02d2ae83dbb8ccee73d95d0c wsdjeg <wsdjeg@outlook.com> 1529495876 +0800	rebase -i (start): checkout upstream/master
+.git/logs/HEAD:71:83:b17632f4afe9c14f02d2ae83dbb8ccee73d95d0c 2020f97405d6da71a407560eda8ddc10dc29c57c wsdjeg <wsdjeg@outlook.com> 1529495876 +0800	rebase -i (pick): Add test for toml api
+.git/logs/HEAD:72:83:2020f97405d6da71a407560eda8ddc10dc29c57c 7bd7a8f0610c4d4f2ef6d0ba6ef7555c9efdba0f wsdjeg <wsdjeg@outlook.com> 1529495876 +0800	rebase -i (pick): Fix type in test
+.git/logs/HEAD:73:83:7bd7a8f0610c4d4f2ef6d0ba6ef7555c9efdba0f af2b49bac22b060253c4f8d5ae8319b3a70887ab wsdjeg <wsdjeg@outlook.com> 1529495876 +0800	rebase -i (pick): Add test for number api
+.git/logs/HEAD:74:83:af2b49bac22b060253c4f8d5ae8319b3a70887ab 507b715217b718b86ec956447c4b31f1ed5b6759 wsdjeg <wsdjeg@outlook.com> 1529495876 +0800	rebase -i (pick): Add test for file api
+.git/logs/HEAD:75:83:507b715217b718b86ec956447c4b31f1ed5b6759 4bc388f9bbcf608ce34b0808cfd91ae70e65ecde wsdjeg <wsdjeg@outlook.com> 1529495876 +0800	rebase -i (pick): Add test for vim#highlight api
+.git/logs/HEAD:76:83:4bc388f9bbcf608ce34b0808cfd91ae70e65ecde 4bc388f9bbcf608ce34b0808cfd91ae70e65ecde wsdjeg <wsdjeg@outlook.com> 1529495876 +0800	rebase -i (finish): returning to refs/heads/apis
+.git/logs/HEAD:77:83:4bc388f9bbcf608ce34b0808cfd91ae70e65ecde d4bc0550a2c48145cf45a8fb0600d3de465898a7 wsdjeg <wsdjeg@outlook.com> 1529496334 +0800	commit: Add test for icon api
+.git/logs/HEAD:78:83:d4bc0550a2c48145cf45a8fb0600d3de465898a7 7b7fe954c713aac19a22d94de2962cd5430d4673 wsdjeg <wsdjeg@outlook.com> 1529496616 +0800	commit: Enable guicolors
+.git/logs/HEAD:79:83:7b7fe954c713aac19a22d94de2962cd5430d4673 749338af45a234c9630653e82452f3a8dc1789c8 wsdjeg <wsdjeg@outlook.com> 1529497165 +0800	commit: Fix file api test
+.git/logs/HEAD:80:83:749338af45a234c9630653e82452f3a8dc1789c8 f95cf7f60589b854e8912c1451b48178e00b5961 wsdjeg <wsdjeg@outlook.com> 1529497801 +0800	commit: Fix file api test in appveyor
+.git/logs/HEAD:81:83:f95cf7f60589b854e8912c1451b48178e00b5961 464e9d595709704d1989e7e3e3fdf81e00a75e9b wsdjeg <wsdjeg@outlook.com> 1529498556 +0800	checkout: moving from apis to upstream/master
+.git/logs/HEAD:82:83:464e9d595709704d1989e7e3e3fdf81e00a75e9b 464e9d595709704d1989e7e3e3fdf81e00a75e9b wsdjeg <wsdjeg@outlook.com> 1529498572 +0800	checkout: moving from 464e9d595709704d1989e7e3e3fdf81e00a75e9b to pull_request_template
+.git/logs/HEAD:83:83:464e9d595709704d1989e7e3e3fdf81e00a75e9b de460cf5afe104a1a0bd132b8a2d842aba7dc40f wsdjeg <wsdjeg@outlook.com> 1529498983 +0800	commit: Improve pull request template
+.git/logs/HEAD:84:83:de460cf5afe104a1a0bd132b8a2d842aba7dc40f 67153b668d4a910d159fb0563e90f0ce90899c7d wsdjeg <wsdjeg@outlook.com> 1529500955 +0800	commit: Improve pull request template
+.git/logs/HEAD:85:83:67153b668d4a910d159fb0563e90f0ce90899c7d 24ef35cbf4e91f0bfd74a41ab762579d60365058 wsdjeg <wsdjeg@outlook.com> 1529501257 +0800	commit: Update follow head page
+.git/logs/HEAD:86:83:24ef35cbf4e91f0bfd74a41ab762579d60365058 d9324f8c30fed3a8bda5c220757be54abcb7d29d wsdjeg <wsdjeg@outlook.com> 1529583997 +0800	checkout: moving from pull_request_template to upstream/master
+.git/logs/HEAD:87:83:d9324f8c30fed3a8bda5c220757be54abcb7d29d d9324f8c30fed3a8bda5c220757be54abcb7d29d wsdjeg <wsdjeg@outlook.com> 1529584003 +0800	checkout: moving from d9324f8c30fed3a8bda5c220757be54abcb7d29d to layer_doc
+.git/logs/HEAD:88:83:d9324f8c30fed3a8bda5c220757be54abcb7d29d d9324f8c30fed3a8bda5c220757be54abcb7d29d wsdjeg <wsdjeg@outlook.com> 1529584079 +0800	checkout: moving from layer_doc to flygrep
+.git/logs/HEAD:89:83:d9324f8c30fed3a8bda5c220757be54abcb7d29d d9324f8c30fed3a8bda5c220757be54abcb7d29d wsdjeg <wsdjeg@outlook.com> 1529584188 +0800	checkout: moving from flygrep to layer_doc
+.git/logs/HEAD:90:83:d9324f8c30fed3a8bda5c220757be54abcb7d29d 120ba6020d05b615c6353027517a8319745270bf wsdjeg <wsdjeg@outlook.com> 1529584521 +0800	commit: Update layer doc
+.git/logs/HEAD:91:83:120ba6020d05b615c6353027517a8319745270bf 06318bf45726e1c57bc58093cceb1a7498ef2df9 wsdjeg <wsdjeg@outlook.com> 1529585347 +0800	commit: Update layer doc
+.git/logs/HEAD:92:83:06318bf45726e1c57bc58093cceb1a7498ef2df9 f8dbb1f1c626155c6efeb8830ba2be45062eded1 wsdjeg <wsdjeg@outlook.com> 1529586734 +0800	commit: Update layer doc
+.git/logs/HEAD:93:83:f8dbb1f1c626155c6efeb8830ba2be45062eded1 b01f2740c12989443f9b858ee54d33c42d172e7d wsdjeg <wsdjeg@outlook.com> 1529588082 +0800	commit: Update layer doc
+.git/logs/HEAD:94:83:b01f2740c12989443f9b858ee54d33c42d172e7d e78b86dd93e4af631880d545e9424d5dd6c2c56a wsdjeg <wsdjeg@outlook.com> 1529589478 +0800	commit: Update layer doc
+.git/logs/HEAD:95:83:e78b86dd93e4af631880d545e9424d5dd6c2c56a af1ea407f7e550d1aab46c3e05c789970c4751a9 wsdjeg <wsdjeg@outlook.com> 1529668471 +0800	commit: Update layer doc
+.git/logs/HEAD:96:83:af1ea407f7e550d1aab46c3e05c789970c4751a9 78829b452bee519863ab5f2fa75b0b34173d67f5 wsdjeg <wsdjeg@outlook.com> 1529668697 +0800	commit: Update layer doc
+.git/logs/HEAD:97:83:78829b452bee519863ab5f2fa75b0b34173d67f5 f3756bd85530ef4233e706f73b79648bb8ed5726 wsdjeg <wsdjeg@outlook.com> 1529669852 +0800	commit: Update layer doc
+.git/logs/HEAD:98:83:f3756bd85530ef4233e706f73b79648bb8ed5726 94405f6e1ebaa4d03f04aaf51c7ca70f44ce880b wsdjeg <wsdjeg@outlook.com> 1529669925 +0800	commit: Update layer doc
+.git/logs/HEAD:99:83:94405f6e1ebaa4d03f04aaf51c7ca70f44ce880b 605564f3e9ed687465f5dde9709a3c95f5e17eab wsdjeg <wsdjeg@outlook.com> 1529671029 +0800	commit: Update layer doc
+.git/logs/HEAD:100:83:605564f3e9ed687465f5dde9709a3c95f5e17eab fe7c190167786bd4a0078a3c21ef130915c66898 wsdjeg <wsdjeg@outlook.com> 1529673943 +0800	commit: Update layer doc
+.git/logs/HEAD:101:83:fe7c190167786bd4a0078a3c21ef130915c66898 77d52cced951a2279d941c56f72dc07a72194cb0 wsdjeg <wsdjeg@outlook.com> 1529676731 +0800	commit: Update layer doc
+.git/logs/HEAD:102:83:77d52cced951a2279d941c56f72dc07a72194cb0 6429291b3e047eb94e25792c263f7566910a7e8e wsdjeg <wsdjeg@outlook.com> 1529716994 +0800	commit: TS elixir layer doc
+.git/logs/HEAD:103:83:6429291b3e047eb94e25792c263f7566910a7e8e db81c607b554461a6469ae1c4178279ab7781647 wsdjeg <wsdjeg@outlook.com> 1529717917 +0800	commit: TS go layer doc
+.git/logs/HEAD:104:83:db81c607b554461a6469ae1c4178279ab7781647 403b3205f7737b2d78389332c5d01043720fc1ab wsdjeg <wsdjeg@outlook.com> 1529719153 +0800	commit: TS haskell layer doc
+.git/logs/HEAD:105:83:403b3205f7737b2d78389332c5d01043720fc1ab f1ba6c34f0c470b78ef70a5597e97e314aea2658 wsdjeg <wsdjeg@outlook.com> 1529719831 +0800	commit: TS html layer doc
+.git/logs/HEAD:106:83:f1ba6c34f0c470b78ef70a5597e97e314aea2658 2023ba571267d2894a7d1e9a7836f66b7981e68f wsdjeg <wsdjeg@outlook.com> 1529721156 +0800	commit: TS html layer doc
+.git/logs/HEAD:107:83:2023ba571267d2894a7d1e9a7836f66b7981e68f 7a3745644310ed8f02af6ffe124c986671e75ce4 wsdjeg <wsdjeg@outlook.com> 1529722771 +0800	commit: TS vim layer doc
+.git/logs/HEAD:108:83:7a3745644310ed8f02af6ffe124c986671e75ce4 7059f157a94c47bd80822f6c35489d43b0c9630e wsdjeg <wsdjeg@outlook.com> 1529725068 +0800	commit: TS typescript layer doc
+.git/logs/HEAD:109:83:7059f157a94c47bd80822f6c35489d43b0c9630e 4c03683d3df68f8e04dd1da489d4a54bfb527870 wsdjeg <wsdjeg@outlook.com> 1529731228 +0800	commit: TS markdown layer doc
+.git/logs/HEAD:110:83:4c03683d3df68f8e04dd1da489d4a54bfb527870 4e7825733742cc8caccb57c22a72e6c038626386 wsdjeg <wsdjeg@outlook.com> 1529731671 +0800	commit: TS lua layer doc
+.git/logs/HEAD:111:83:4e7825733742cc8caccb57c22a72e6c038626386 d01fa0ca09dcb9f2a74364f6ea6f550642f67a3d wsdjeg <wsdjeg@outlook.com> 1529732596 +0800	commit: TS js layer doc
+.git/logs/HEAD:112:83:d01fa0ca09dcb9f2a74364f6ea6f550642f67a3d 8c9fedb6d407abc546d3430eea46294fdac11b78 wsdjeg <wsdjeg@outlook.com> 1529733247 +0800	commit: TS ruby layer doc
+.git/logs/HEAD:113:83:8c9fedb6d407abc546d3430eea46294fdac11b78 5ab21563b56858769b0618ca52e62404cbb2209d wsdjeg <wsdjeg@outlook.com> 1529734140 +0800	commit: TS java layer doc
+.git/logs/HEAD:114:83:5ab21563b56858769b0618ca52e62404cbb2209d 653ba241fbaa17e40820d1e145b4d09744e377a9 wsdjeg <wsdjeg@outlook.com> 1529735037 +0800	commit: TS py layer doc
+.git/logs/HEAD:115:83:653ba241fbaa17e40820d1e145b4d09744e377a9 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529757620 +0800	checkout: moving from layer_doc to upstream/master
+.git/logs/HEAD:116:83:3787b35c64030c06d27b7d698da5a5acc8c42003 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529757628 +0800	checkout: moving from 3787b35c64030c06d27b7d698da5a5acc8c42003 to lsp_typescript
+.git/logs/HEAD:117:83:3787b35c64030c06d27b7d698da5a5acc8c42003 19503b77d42fa46942d29ea8a5edd8c879778770 wsdjeg <wsdjeg@outlook.com> 1529758543 +0800	commit: Improve lang#typescript layer
+.git/logs/HEAD:118:83:19503b77d42fa46942d29ea8a5edd8c879778770 17d6a8da6942a5ba71da96bc6418b3ac1eee9c92 wsdjeg <wsdjeg@outlook.com> 1529760104 +0800	commit: Improve lang#typescript layer
+.git/logs/HEAD:119:83:17d6a8da6942a5ba71da96bc6418b3ac1eee9c92 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529762721 +0800	checkout: moving from lsp_typescript to upstream/master
+.git/logs/HEAD:120:83:3787b35c64030c06d27b7d698da5a5acc8c42003 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529762728 +0800	checkout: moving from 3787b35c64030c06d27b7d698da5a5acc8c42003 to lsp
+.git/logs/HEAD:121:83:3787b35c64030c06d27b7d698da5a5acc8c42003 17d6a8da6942a5ba71da96bc6418b3ac1eee9c92 wsdjeg <wsdjeg@outlook.com> 1529763517 +0800	checkout: moving from lsp to lsp_typescript
+.git/logs/HEAD:122:83:17d6a8da6942a5ba71da96bc6418b3ac1eee9c92 61efcfaee8ab5346d9be5bb3917ab3d9378b7ff9 wsdjeg <wsdjeg@outlook.com> 1529763981 +0800	commit: Use next branch of lsc
+.git/logs/HEAD:123:83:61efcfaee8ab5346d9be5bb3917ab3d9378b7ff9 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529768895 +0800	checkout: moving from lsp_typescript to upstream/master
+.git/logs/HEAD:124:83:3787b35c64030c06d27b7d698da5a5acc8c42003 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529768901 +0800	checkout: moving from 3787b35c64030c06d27b7d698da5a5acc8c42003 to go
+.git/logs/HEAD:125:83:3787b35c64030c06d27b7d698da5a5acc8c42003 9a9ea45deb5edb1c921b44da4940685df3d18743 wsdjeg <wsdjeg@outlook.com> 1529768991 +0800	commit: Delelet go autocmd
+.git/logs/HEAD:126:83:9a9ea45deb5edb1c921b44da4940685df3d18743 61efcfaee8ab5346d9be5bb3917ab3d9378b7ff9 wsdjeg <wsdjeg@outlook.com> 1529809669 +0800	checkout: moving from go to lsp_typescript
+.git/logs/HEAD:127:83:61efcfaee8ab5346d9be5bb3917ab3d9378b7ff9 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529846374 +0800	checkout: moving from lsp_typescript to upstream/master
+.git/logs/HEAD:128:83:3787b35c64030c06d27b7d698da5a5acc8c42003 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529846391 +0800	checkout: moving from 3787b35c64030c06d27b7d698da5a5acc8c42003 to meetup
+.git/logs/HEAD:129:83:3787b35c64030c06d27b7d698da5a5acc8c42003 d446bc3dfe07495ec3b37c17216f5ceb9da1c7a5 wsdjeg <wsdjeg@outlook.com> 1529846977 +0800	commit: Add post about first meetup
+.git/logs/HEAD:130:83:d446bc3dfe07495ec3b37c17216f5ceb9da1c7a5 1f8ea1aeb15ec6400f8c511eee6fd3220b50451c wsdjeg <wsdjeg@outlook.com> 1529848206 +0800	commit: Add post about first meetup
+.git/logs/HEAD:131:83:1f8ea1aeb15ec6400f8c511eee6fd3220b50451c 4bc9d791b3edf283caccfb53758be62b32b751b7 wsdjeg <wsdjeg@outlook.com> 1529848539 +0800	commit: Add post about first meetup
+.git/logs/HEAD:132:83:4bc9d791b3edf283caccfb53758be62b32b751b7 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529927418 +0800	checkout: moving from meetup to upstream/master
+.git/logs/HEAD:133:83:3787b35c64030c06d27b7d698da5a5acc8c42003 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529927426 +0800	checkout: moving from 3787b35c64030c06d27b7d698da5a5acc8c42003 to tabman
+.git/logs/HEAD:134:83:3787b35c64030c06d27b7d698da5a5acc8c42003 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529931503 +0800	checkout: moving from tabman to hidecursor
+.git/logs/HEAD:135:83:3787b35c64030c06d27b7d698da5a5acc8c42003 9a9ea45deb5edb1c921b44da4940685df3d18743 wsdjeg <wsdjeg@outlook.com> 1530017653 +0800	checkout: moving from hidecursor to go
+.git/logs/HEAD:136:83:9a9ea45deb5edb1c921b44da4940685df3d18743 be5d100215d0451a45d04a44554e17aa953812d8 wsdjeg <wsdjeg@outlook.com> 1530017742 +0800	commit: Update follow head page
+.git/logs/HEAD:137:83:be5d100215d0451a45d04a44554e17aa953812d8 61efcfaee8ab5346d9be5bb3917ab3d9378b7ff9 wsdjeg <wsdjeg@outlook.com> 1530018913 +0800	checkout: moving from go to lsp_typescript
+.git/logs/HEAD:138:83:61efcfaee8ab5346d9be5bb3917ab3d9378b7ff9 1dad7004debde64ab3687e97fba801ec9967877e wsdjeg <wsdjeg@outlook.com> 1530019241 +0800	commit: Update wiki
+.git/logs/HEAD:139:83:1dad7004debde64ab3687e97fba801ec9967877e 9d9ad29a4bf422c7e8e3a80a0cf22e0a56f8f939 wsdjeg <wsdjeg@outlook.com> 1530020519 +0800	checkout: moving from lsp_typescript to upstream/master
+.git/logs/HEAD:140:83:9d9ad29a4bf422c7e8e3a80a0cf22e0a56f8f939 9d9ad29a4bf422c7e8e3a80a0cf22e0a56f8f939 wsdjeg <wsdjeg@outlook.com> 1530020526 +0800	checkout: moving from 9d9ad29a4bf422c7e8e3a80a0cf22e0a56f8f939 to plugin_manager
+.git/logs/HEAD:141:83:9d9ad29a4bf422c7e8e3a80a0cf22e0a56f8f939 241c3b8ff5c15b7cb17c3ebdacfd4c9c2abcadc8 wsdjeg <wsdjeg@outlook.com> 1530021091 +0800	commit: Check term_start
+.git/logs/HEAD:142:83:241c3b8ff5c15b7cb17c3ebdacfd4c9c2abcadc8 79e9df6f3b6e96d23ce996c6780f1400bf8884d3 wsdjeg <wsdjeg@outlook.com> 1530021594 +0800	commit: Check term_start
+.git/logs/HEAD:143:83:79e9df6f3b6e96d23ce996c6780f1400bf8884d3 adfffa448963db513a94fae4bf6358308cdcaca0 wsdjeg <wsdjeg@outlook.com> 1530103672 +0800	checkout: moving from plugin_manager to upstream/master
+.git/logs/HEAD:144:83:adfffa448963db513a94fae4bf6358308cdcaca0 adfffa448963db513a94fae4bf6358308cdcaca0 wsdjeg <wsdjeg@outlook.com> 1530103677 +0800	checkout: moving from adfffa448963db513a94fae4bf6358308cdcaca0 to resume
+.git/logs/HEAD:145:83:adfffa448963db513a94fae4bf6358308cdcaca0 9da1f425567f1ed6977ff3196aecd569dd6901ba wsdjeg <wsdjeg@outlook.com> 1530104058 +0800	commit: Fix resume key bindings
+.git/logs/HEAD:146:83:9da1f425567f1ed6977ff3196aecd569dd6901ba adfffa448963db513a94fae4bf6358308cdcaca0 wsdjeg <wsdjeg@outlook.com> 1530104102 +0800	checkout: moving from resume to upstream/master
+.git/logs/HEAD:147:83:adfffa448963db513a94fae4bf6358308cdcaca0 adfffa448963db513a94fae4bf6358308cdcaca0 wsdjeg <wsdjeg@outlook.com> 1530104109 +0800	checkout: moving from adfffa448963db513a94fae4bf6358308cdcaca0 to wiki
+.git/logs/HEAD:148:83:adfffa448963db513a94fae4bf6358308cdcaca0 f1f9a3671a086f2a0bad65e5761e60424caf50bc wsdjeg <wsdjeg@outlook.com> 1530104423 +0800	commit: Wiki: Update following HEAD
+.git/logs/HEAD:149:83:f1f9a3671a086f2a0bad65e5761e60424caf50bc 9da1f425567f1ed6977ff3196aecd569dd6901ba wsdjeg <wsdjeg@outlook.com> 1530104560 +0800	checkout: moving from wiki to resume
+.git/logs/HEAD:150:83:9da1f425567f1ed6977ff3196aecd569dd6901ba c37ebdd29303b9a9f2039ba5a8b5923ab152a090 wsdjeg <wsdjeg@outlook.com> 1530104630 +0800	commit: Update following HEAD
+.git/logs/HEAD:151:83:c37ebdd29303b9a9f2039ba5a8b5923ab152a090 f1f9a3671a086f2a0bad65e5761e60424caf50bc wsdjeg <wsdjeg@outlook.com> 1530104691 +0800	checkout: moving from resume to wiki
+.git/logs/HEAD:152:83:f1f9a3671a086f2a0bad65e5761e60424caf50bc 652b7100992a88b2f0cb1408545544fece2c912e wsdjeg <wsdjeg@outlook.com> 1530104707 +0800	rebase -i (start): checkout upstream/master
+.git/logs/HEAD:153:83:652b7100992a88b2f0cb1408545544fece2c912e 5e1b3f7632f7ffaa35a80067fc8cad49dd55171e wsdjeg <wsdjeg@outlook.com> 1530104754 +0800	commit: Fix conflicts
+.git/logs/HEAD:154:83:5e1b3f7632f7ffaa35a80067fc8cad49dd55171e 5e1b3f7632f7ffaa35a80067fc8cad49dd55171e wsdjeg <wsdjeg@outlook.com> 1530104775 +0800	checkout: moving from 5e1b3f7632f7ffaa35a80067fc8cad49dd55171e to wiki2
+.git/logs/HEAD:155:83:5e1b3f7632f7ffaa35a80067fc8cad49dd55171e f1f9a3671a086f2a0bad65e5761e60424caf50bc wsdjeg <wsdjeg@outlook.com> 1530104779 +0800	checkout: moving from wiki2 to wiki
+.git/logs/HEAD:156:83:f1f9a3671a086f2a0bad65e5761e60424caf50bc 24101894f22c9423691d408b480d8070fe117205 wsdjeg <wsdjeg@outlook.com> 1530104807 +0800	commit (merge): Fix conflicts
+.git/logs/HEAD:157:83:24101894f22c9423691d408b480d8070fe117205 66d9dcfaa73a3dc357ce1b023811ff3b1ec4d581 wsdjeg <wsdjeg@outlook.com> 1530105133 +0800	checkout: moving from wiki to upstream/master
+.git/logs/HEAD:158:83:66d9dcfaa73a3dc357ce1b023811ff3b1ec4d581 66d9dcfaa73a3dc357ce1b023811ff3b1ec4d581 wsdjeg <wsdjeg@outlook.com> 1530105139 +0800	checkout: moving from 66d9dcfaa73a3dc357ce1b023811ff3b1ec4d581 to tabmanager
+.git/logs/HEAD:159:83:66d9dcfaa73a3dc357ce1b023811ff3b1ec4d581 408d73db87813fdce903755b90a0f981eef92cbe wsdjeg <wsdjeg@outlook.com> 1530105792 +0800	commit: Improve the tabmanager
+.git/logs/HEAD:160:83:408d73db87813fdce903755b90a0f981eef92cbe b6bd028219b210a240885c79995c6e6d3b0304d4 wsdjeg <wsdjeg@outlook.com> 1530106560 +0800	commit: Improve the tabmanager
+.git/logs/HEAD:161:83:b6bd028219b210a240885c79995c6e6d3b0304d4 21e650610c961b4a41be832ee763d35a5ffbda26 wsdjeg <wsdjeg@outlook.com> 1530107427 +0800	commit: Shou tabname in tab line
+.git/logs/HEAD:162:83:21e650610c961b4a41be832ee763d35a5ffbda26 7bfb5fc423277ebde8e9b1e5299af1fd89c2395d wsdjeg <wsdjeg@outlook.com> 1530108245 +0800	commit: Improve the tabmanager
+.git/logs/HEAD:163:83:7bfb5fc423277ebde8e9b1e5299af1fd89c2395d 5d86f3bb92b8f15789629d715f91fbba5e4943fe wsdjeg <wsdjeg@outlook.com> 1530248032 +0800	commit: Fix tab man
+.git/logs/HEAD:164:83:5d86f3bb92b8f15789629d715f91fbba5e4943fe 51d46d0fef076578d4f1c5d87b0d475eb70e4712 wsdjeg <wsdjeg@outlook.com> 1530249862 +0800	commit: Update documentation of tab manager
+.git/logs/HEAD:165:83:51d46d0fef076578d4f1c5d87b0d475eb70e4712 487317e0c204bd49ea2f8aba3482030e78d5d319 wsdjeg <wsdjeg@outlook.com> 1530250380 +0800	commit: Add new key binding n for create named tab
+.git/logs/HEAD:166:83:487317e0c204bd49ea2f8aba3482030e78d5d319 70bc11980172198342f4bcb22da84b3b96b228a4 wsdjeg <wsdjeg@outlook.com> 1530251355 +0800	commit: Change the behavior of <M-Left> and <M-Right>
+.git/logs/HEAD:167:83:70bc11980172198342f4bcb22da84b3b96b228a4 b8fec7d191451e28bd8282d6675b442105d123f6 wsdjeg <wsdjeg@outlook.com> 1530252222 +0800	commit: Add x key bindings
+.git/logs/HEAD:168:83:b8fec7d191451e28bd8282d6675b442105d123f6 a22dcbd7e5521005f75c5d50a86bf6b4d5d81cad wsdjeg <wsdjeg@outlook.com> 1530252754 +0800	commit: Fix x key bindings
+.git/logs/HEAD:169:83:a22dcbd7e5521005f75c5d50a86bf6b4d5d81cad 82c2e68f60daf249adcdabaf010823c89ab7977e wsdjeg <wsdjeg@outlook.com> 1530253840 +0800	commit: Update documentation of tab manager
+.git/logs/HEAD:170:83:82c2e68f60daf249adcdabaf010823c89ab7977e 22de0d76743c2511b9a77edca7d7253a878442c8 wsdjeg <wsdjeg@outlook.com> 1530258763 +0800	commit: Add yy key bindings
+.git/logs/HEAD:171:83:22de0d76743c2511b9a77edca7d7253a878442c8 395a6190c6d2d07a67ebd75f202f92ebb5e84ec6 wsdjeg <wsdjeg@outlook.com> 1530329496 +0800	commit: Only winsize
+.git/logs/HEAD:172:83:395a6190c6d2d07a67ebd75f202f92ebb5e84ec6 12eba5369f1cff3f92a97162f0172f50bbe4bc87 wsdjeg <wsdjeg@outlook.com> 1530330203 +0800	commit: Copy tab status
+.git/logs/HEAD:173:83:12eba5369f1cff3f92a97162f0172f50bbe4bc87 e353399824a78e999ff97e14adab99b8e4b20433 wsdjeg <wsdjeg@outlook.com> 1530339866 +0800	commit: Better open command
+.git/logs/HEAD:174:83:e353399824a78e999ff97e14adab99b8e4b20433 e1905cf5fffb6d4bcc69f05a0db2e162c313527c wsdjeg <wsdjeg@outlook.com> 1530340063 +0800	commit: Ignore SpaceVimTabManager in smart close
+.git/logs/HEAD:175:83:e1905cf5fffb6d4bcc69f05a0db2e162c313527c 2ae436f2f2e8a80c1406d854816cce480092f83e wsdjeg <wsdjeg@outlook.com> 1530340155 +0800	commit: Disable spell check when edit commit message
+.git/logs/HEAD:176:83:2ae436f2f2e8a80c1406d854816cce480092f83e c111c5944fcb63d6420bf1353924a9a3fa705eb2 wsdjeg <wsdjeg@outlook.com> 1530340742 +0800	commit: Fix vimfiler statusline
+.git/logs/HEAD:177:83:c111c5944fcb63d6420bf1353924a9a3fa705eb2 6e122d0c94ebe2baaa963fb384089f2b29a393bd wsdjeg <wsdjeg@outlook.com> 1530342766 +0800	commit: Move tab forward and backward
+.git/logs/HEAD:178:83:6e122d0c94ebe2baaa963fb384089f2b29a393bd 18b9abd9814835d95984bf1ed49f7d6439eddc2b wsdjeg <wsdjeg@outlook.com> 1530344373 +0800	commit: Remember cursor pos
+.git/logs/HEAD:179:83:18b9abd9814835d95984bf1ed49f7d6439eddc2b 4e177f9f2b5393614d11418193f4646f88e25e9b wsdjeg <wsdjeg@outlook.com> 1530346709 +0800	commit: Improve key binding for create new tab
+.git/logs/HEAD:180:83:4e177f9f2b5393614d11418193f4646f88e25e9b b5fba2475def0468b2b0494aa796e8e24a53ec58 wsdjeg <wsdjeg@outlook.com> 1530347039 +0800	commit: Move cursor when rename a tab
+.git/logs/HEAD:181:83:b5fba2475def0468b2b0494aa796e8e24a53ec58 60ded1b4aa77c7cef653691b78b5bef9db99f696 wsdjeg <wsdjeg@outlook.com> 1530347441 +0800	commit: Sort tab index
+.git/logs/HEAD:182:83:60ded1b4aa77c7cef653691b78b5bef9db99f696 89e9e9ea825a1a30a46bcad00f94163d0c269648 wsdjeg <wsdjeg@outlook.com> 1530353190 +0800	commit: Update documentation of tab manager
+.git/logs/HEAD:183:83:89e9e9ea825a1a30a46bcad00f94163d0c269648 b81aedaff2d9ee7260d27fe7381502534a32712b wsdjeg <wsdjeg@outlook.com> 1530355469 +0800	commit: Highlight current tab
+.git/logs/HEAD:184:83:b81aedaff2d9ee7260d27fe7381502534a32712b 7994b0346e58288eecb34e9587148ccb09a676b7 wsdjeg <wsdjeg@outlook.com> 1530355692 +0800	commit: Fix tab toggle
+.git/logs/HEAD:185:83:7994b0346e58288eecb34e9587148ccb09a676b7 09abc4b353172dd2509e5e71916bea67eae1266f wsdjeg <wsdjeg@outlook.com> 1530356117 +0800	commit: Fix tab toggle
+.git/logs/HEAD:186:83:09abc4b353172dd2509e5e71916bea67eae1266f cfa99ef4d46803d28d10026accb0b18220a9dd05 wsdjeg <wsdjeg@outlook.com> 1530356464 +0800	commit: Fix tab toggle
+.git/logs/HEAD:187:83:cfa99ef4d46803d28d10026accb0b18220a9dd05 940591160af57a9c0f59d046e941332c9b36dc12 wsdjeg <wsdjeg@outlook.com> 1530371072 +0800	commit: Fix tab toggle
+.git/logs/HEAD:188:83:940591160af57a9c0f59d046e941332c9b36dc12 75a77d1b08b3149fadb556d0d5cec8997f2e9ed6 wsdjeg <wsdjeg@outlook.com> 1530372352 +0800	commit: Update content when enter tabman buffer
+.git/logs/HEAD:189:83:75a77d1b08b3149fadb556d0d5cec8997f2e9ed6 ea044cc89b27445b0037c30d1ea17df73e35c03c wsdjeg <wsdjeg@outlook.com> 1530372982 +0800	commit: Update content when switch tab
+.git/logs/HEAD:190:83:ea044cc89b27445b0037c30d1ea17df73e35c03c ec3cd8634cba3c023519f0fec9be7c2d56fdaded wsdjeg <wsdjeg@outlook.com> 1530375255 +0800	commit: Fix winwidth
+.git/logs/HEAD:191:83:ec3cd8634cba3c023519f0fec9be7c2d56fdaded 6a7b6e2db53e8d96797a56c9294fe95bbe392997 wsdjeg <wsdjeg@outlook.com> 1530376272 +0800	commit: Fix move tab
+.git/logs/HEAD:192:83:6a7b6e2db53e8d96797a56c9294fe95bbe392997 a607f9eda62a3a07bad8992bf6d60ee0cc386834 wsdjeg <wsdjeg@outlook.com> 1530423721 +0800	commit: Show winid of each tab
+.git/logs/HEAD:193:83:a607f9eda62a3a07bad8992bf6d60ee0cc386834 e3aec5d9380b2fce096353658802223504bafe22 wsdjeg <wsdjeg@outlook.com> 1530424014 +0800	commit: Fix jump
+.git/logs/HEAD:194:83:e3aec5d9380b2fce096353658802223504bafe22 1a3f2e55c8acaffcaefe6a929aa47fa96fc68de8 wsdjeg <wsdjeg@outlook.com> 1530424491 +0800	commit: Highlight winid && silent update
+.git/logs/HEAD:195:83:1a3f2e55c8acaffcaefe6a929aa47fa96fc68de8 61739b287c616f909d759e6f029c949980d9e1f8 wsdjeg <wsdjeg@outlook.com> 1530447043 +0800	commit: Fix copy tab
+.git/logs/HEAD:196:83:61739b287c616f909d759e6f029c949980d9e1f8 c8d4a7ad05579ed1501253c8d679348fcc2499f8 wsdjeg <wsdjeg@outlook.com> 1530447555 +0800	commit: List terminal windows
+.git/logs/HEAD:197:83:c8d4a7ad05579ed1501253c8d679348fcc2499f8 5fb71375dffcc618965e97d0affb1075764aa133 wsdjeg <wsdjeg@outlook.com> 1530448031 +0800	commit: Fix neovim support
+.git/logs/HEAD:198:83:5fb71375dffcc618965e97d0affb1075764aa133 e58fd0b13335705709bccc5536a070ecc138ceff wsdjeg <wsdjeg@outlook.com> 1530448840 +0800	commit: Copy name and status for tab
+.git/logs/HEAD:199:83:e58fd0b13335705709bccc5536a070ecc138ceff 6741e371a28b7cb273f06882563726005096f9ea wsdjeg <wsdjeg@outlook.com> 1530450426 +0800	commit: Update follow HEAD page
+.git/logs/HEAD:200:83:6741e371a28b7cb273f06882563726005096f9ea 66d9dcfaa73a3dc357ce1b023811ff3b1ec4d581 wsdjeg <wsdjeg@outlook.com> 1530454573 +0800	checkout: moving from tabmanager to upstream/master
+.git/logs/HEAD:201:83:66d9dcfaa73a3dc357ce1b023811ff3b1ec4d581 8c3e51583a47270937d9729622f70e4e9e46b845 wsdjeg <wsdjeg@outlook.com> 1530454579 +0800	checkout: moving from 66d9dcfaa73a3dc357ce1b023811ff3b1ec4d581 to master
+.git/logs/HEAD:202:83:8c3e51583a47270937d9729622f70e4e9e46b845 66d9dcfaa73a3dc357ce1b023811ff3b1ec4d581 wsdjeg <wsdjeg@outlook.com> 1530454584 +0800	merge upstream/master: Fast-forward
+.git/logs/HEAD:203:83:66d9dcfaa73a3dc357ce1b023811ff3b1ec4d581 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530533238 +0800	checkout: moving from master to upstream/master
+.git/logs/HEAD:204:83:894995f7dcfbf7ae821c439930d1609248c8630b 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530533245 +0800	checkout: moving from 894995f7dcfbf7ae821c439930d1609248c8630b to readme
+.git/logs/HEAD:205:83:894995f7dcfbf7ae821c439930d1609248c8630b 4bc9d791b3edf283caccfb53758be62b32b751b7 wsdjeg <wsdjeg@outlook.com> 1530533415 +0800	checkout: moving from readme to meetup
+.git/logs/HEAD:206:83:4bc9d791b3edf283caccfb53758be62b32b751b7 eba54cdf6246ca9e8032106224256eb2fc86371b wsdjeg <wsdjeg@outlook.com> 1530533426 +0800	pull: Fast-forward
+.git/logs/HEAD:207:83:eba54cdf6246ca9e8032106224256eb2fc86371b 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530533549 +0800	rebase -i (start): checkout upstream/master
+.git/logs/HEAD:208:83:894995f7dcfbf7ae821c439930d1609248c8630b eba52e767faa56d91388eca3a895cc4909e8f264 wsdjeg <wsdjeg@outlook.com> 1530533550 +0800	rebase -i (pick): Add post about first meetup
+.git/logs/HEAD:209:83:eba52e767faa56d91388eca3a895cc4909e8f264 3111be0f8c1257f9d747449469ea9255bd778e86 wsdjeg <wsdjeg@outlook.com> 1530533550 +0800	rebase -i (fixup): # This is a combination of 2 commits.
+.git/logs/HEAD:210:83:3111be0f8c1257f9d747449469ea9255bd778e86 1477525392c0310f1296fd4c2c1f4303f71de078 wsdjeg <wsdjeg@outlook.com> 1530533550 +0800	rebase -i (fixup): # This is a combination of 3 commits.
+.git/logs/HEAD:211:83:1477525392c0310f1296fd4c2c1f4303f71de078 babd2f932c76af2d4df54db880dd7360e1887971 wsdjeg <wsdjeg@outlook.com> 1530533550 +0800	rebase -i (fixup): Add post about first meetup
+.git/logs/HEAD:212:83:babd2f932c76af2d4df54db880dd7360e1887971 babd2f932c76af2d4df54db880dd7360e1887971 wsdjeg <wsdjeg@outlook.com> 1530533550 +0800	rebase -i (finish): returning to refs/heads/meetup
+.git/logs/HEAD:213:83:babd2f932c76af2d4df54db880dd7360e1887971 97577bb76bc0bd19dea8a1e309d8f0bb1563a5a9 wsdjeg <wsdjeg@outlook.com> 1530534488 +0800	commit: Update meetup post
+.git/logs/HEAD:214:83:97577bb76bc0bd19dea8a1e309d8f0bb1563a5a9 d5ad640bbb9f72ff1865493e749693f9094a675b wsdjeg <wsdjeg@outlook.com> 1530534820 +0800	commit: Update meetup post
+.git/logs/HEAD:215:83:d5ad640bbb9f72ff1865493e749693f9094a675b 8fce23617ac7a3a50e76e541d75776c6c202e47e wsdjeg <wsdjeg@outlook.com> 1530534960 +0800	commit: Update meetup post
+.git/logs/HEAD:216:83:8fce23617ac7a3a50e76e541d75776c6c202e47e 3dfa388b78b25df65a1138fb1dd7d52743de474a wsdjeg <wsdjeg@outlook.com> 1530535557 +0800	commit: Update meetup post
+.git/logs/HEAD:217:83:3dfa388b78b25df65a1138fb1dd7d52743de474a 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530535573 +0800	checkout: moving from meetup to upstream/master
+.git/logs/HEAD:218:83:894995f7dcfbf7ae821c439930d1609248c8630b 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530535584 +0800	checkout: moving from 894995f7dcfbf7ae821c439930d1609248c8630b to apidoc
+.git/logs/HEAD:219:83:894995f7dcfbf7ae821c439930d1609248c8630b bea74d9cc82bba92209ae30eecfa6ea6065fc974 wsdjeg <wsdjeg@outlook.com> 1530536208 +0800	commit: Add doc for apis
+.git/logs/HEAD:220:83:bea74d9cc82bba92209ae30eecfa6ea6065fc974 3dfa388b78b25df65a1138fb1dd7d52743de474a wsdjeg <wsdjeg@outlook.com> 1530536320 +0800	checkout: moving from apidoc to meetup
+.git/logs/HEAD:221:83:3dfa388b78b25df65a1138fb1dd7d52743de474a 87ac4e9de2563df3e7c3a6cce19d54c4fe1fc8be wsdjeg <wsdjeg@outlook.com> 1530536538 +0800	commit: Update meetup post
+.git/logs/HEAD:222:83:87ac4e9de2563df3e7c3a6cce19d54c4fe1fc8be 9ed184b0bda8517f3383a29cf751944763b52bfe wsdjeg <wsdjeg@outlook.com> 1530536759 +0800	commit: Update meetup post
+.git/logs/HEAD:223:83:9ed184b0bda8517f3383a29cf751944763b52bfe 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530536829 +0800	checkout: moving from meetup to upstream/master
+.git/logs/HEAD:224:83:894995f7dcfbf7ae821c439930d1609248c8630b 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530536846 +0800	checkout: moving from 894995f7dcfbf7ae821c439930d1609248c8630b to flygrep
+.git/logs/HEAD:225:83:894995f7dcfbf7ae821c439930d1609248c8630b e986f5bf0087023ca8a6b65c3ec9b5fd4ceda79f wsdjeg <wsdjeg@outlook.com> 1530536894 +0800	commit: Improve flygrep
+.git/logs/HEAD:226:83:e986f5bf0087023ca8a6b65c3ec9b5fd4ceda79f 2f0d1e3b7070c4682f58ad94d289b5ffa77669e4 wsdjeg <wsdjeg@outlook.com> 1530537179 +0800	merge ssfdust/master: Merge made by the 'recursive' strategy.
+.git/logs/HEAD:227:83:2f0d1e3b7070c4682f58ad94d289b5ffa77669e4 9ed184b0bda8517f3383a29cf751944763b52bfe wsdjeg <wsdjeg@outlook.com> 1530537379 +0800	checkout: moving from flygrep to meetup
+.git/logs/HEAD:228:83:9ed184b0bda8517f3383a29cf751944763b52bfe 7646fb4707555c0569d29ca2a80bd740c662ef13 wsdjeg <wsdjeg@outlook.com> 1530537589 +0800	commit: Update meetup post
+.git/logs/HEAD:229:83:7646fb4707555c0569d29ca2a80bd740c662ef13 4813844a4dbedcf3d51477bf535b19d53e0103c3 wsdjeg <wsdjeg@outlook.com> 1530537906 +0800	commit: Update meetup post
+.git/logs/HEAD:230:83:4813844a4dbedcf3d51477bf535b19d53e0103c3 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530620818 +0800	checkout: moving from meetup to upstream/master
+.git/logs/HEAD:231:83:894995f7dcfbf7ae821c439930d1609248c8630b 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530620824 +0800	checkout: moving from 894995f7dcfbf7ae821c439930d1609248c8630b to tabline
+.git/logs/HEAD:232:83:894995f7dcfbf7ae821c439930d1609248c8630b 01a5d8670b2b1a218e21e7a30828afef2abb648e wsdjeg <wsdjeg@outlook.com> 1530621371 +0800	commit: Support mouse click in vim8 tabline
+.git/logs/HEAD:233:83:01a5d8670b2b1a218e21e7a30828afef2abb648e 01a5d8670b2b1a218e21e7a30828afef2abb648e wsdjeg <wsdjeg@outlook.com> 1530621434 +0800	checkout: moving from tabline to tabline2
+.git/logs/HEAD:234:83:01a5d8670b2b1a218e21e7a30828afef2abb648e 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530623266 +0800	checkout: moving from tabline2 to upstream/master
+.git/logs/HEAD:235:83:894995f7dcfbf7ae821c439930d1609248c8630b 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530623274 +0800	checkout: moving from 894995f7dcfbf7ae821c439930d1609248c8630b to nerdtree
+.git/logs/HEAD:236:83:894995f7dcfbf7ae821c439930d1609248c8630b 490c042f847cd10e989f16716ae5bc7f7afb47ba wsdjeg <wsdjeg@outlook.com> 1530623316 +0800	merge nikolaussucher/master: Fast-forward
+.git/logs/HEAD:237:83:490c042f847cd10e989f16716ae5bc7f7afb47ba 11fc529add0a65e46bdae38320db768d8848dcb6 wsdjeg <wsdjeg@outlook.com> 1530623657 +0800	commit: Improve nerdtree support
+.git/logs/HEAD:238:83:11fc529add0a65e46bdae38320db768d8848dcb6 582811a7579aaec222f774f89d3dd7186f9b078b wsdjeg <wsdjeg@outlook.com> 1530623844 +0800	commit: Update follow HEAD page
+.git/logs/HEAD:239:83:582811a7579aaec222f774f89d3dd7186f9b078b 94cc3083588ca147800324ab737c69578b3925df wsdjeg <wsdjeg@outlook.com> 1530626644 +0800	checkout: moving from nerdtree to upstream/master
+.git/logs/HEAD:240:83:94cc3083588ca147800324ab737c69578b3925df 94cc3083588ca147800324ab737c69578b3925df wsdjeg <wsdjeg@outlook.com> 1530626648 +0800	checkout: moving from 94cc3083588ca147800324ab737c69578b3925df to gitment
+.git/logs/HEAD:241:83:94cc3083588ca147800324ab737c69578b3925df e57d0a3ede10ac28eb77b9ff7b096c396c97114e wsdjeg <wsdjeg@outlook.com> 1530626983 +0800	commit: Use gitment
+.git/logs/HEAD:242:83:e57d0a3ede10ac28eb77b9ff7b096c396c97114e 94cc3083588ca147800324ab737c69578b3925df wsdjeg <wsdjeg@outlook.com> 1530661186 +0800	checkout: moving from gitment to upstream/master
+.git/logs/HEAD:243:83:94cc3083588ca147800324ab737c69578b3925df e47fefdf8868b620f92fdbedd146ea586059640b wsdjeg <wsdjeg@outlook.com> 1530661198 +0800	checkout: moving from 94cc3083588ca147800324ab737c69578b3925df to upstream/master
+.git/logs/HEAD:244:83:e47fefdf8868b620f92fdbedd146ea586059640b e47fefdf8868b620f92fdbedd146ea586059640b wsdjeg <wsdjeg@outlook.com> 1530661204 +0800	checkout: moving from e47fefdf8868b620f92fdbedd146ea586059640b to gitment2
+.git/logs/HEAD:245:83:e47fefdf8868b620f92fdbedd146ea586059640b daded146c10b5100761238ea344a38ae8a0f6c2a wsdjeg <wsdjeg@outlook.com> 1530661504 +0800	commit: Use gitment
+.git/logs/HEAD:246:83:daded146c10b5100761238ea344a38ae8a0f6c2a 2466bbf57060dad87781a8835c1b376bce58b3ff wsdjeg <wsdjeg@outlook.com> 1530663415 +0800	commit: Use gitment
+.git/logs/HEAD:247:83:2466bbf57060dad87781a8835c1b376bce58b3ff fa769727f8ec44370a570964e69f2be4b5d1c439 wsdjeg <wsdjeg@outlook.com> 1530663435 +0800	rebase -i (start): checkout upstream/master
+.git/logs/HEAD:248:83:fa769727f8ec44370a570964e69f2be4b5d1c439 f676d9209cc2175f62b4a1839e9932b4595263d8 wsdjeg <wsdjeg@outlook.com> 1530663435 +0800	rebase -i (pick): Use gitment
+.git/logs/HEAD:249:83:f676d9209cc2175f62b4a1839e9932b4595263d8 f676d9209cc2175f62b4a1839e9932b4595263d8 wsdjeg <wsdjeg@outlook.com> 1530663435 +0800	rebase -i (finish): returning to refs/heads/gitment2
+.git/logs/HEAD:250:83:f676d9209cc2175f62b4a1839e9932b4595263d8 e2c08636d52e8b2dd4212bc9b5835ca9fa5fb721 wsdjeg <wsdjeg@outlook.com> 1530663632 +0800	checkout: moving from gitment2 to upstream/master
+.git/logs/HEAD:251:83:e2c08636d52e8b2dd4212bc9b5835ca9fa5fb721 e2c08636d52e8b2dd4212bc9b5835ca9fa5fb721 wsdjeg <wsdjeg@outlook.com> 1530663653 +0800	checkout: moving from e2c08636d52e8b2dd4212bc9b5835ca9fa5fb721 to wiki3
+.git/logs/HEAD:252:83:e2c08636d52e8b2dd4212bc9b5835ca9fa5fb721 58d67dc400e3460a42300dbf0578be3f56db51f0 wsdjeg <wsdjeg@outlook.com> 1530663836 +0800	commit: Update wiki for gitment
+.git/logs/HEAD:253:83:58d67dc400e3460a42300dbf0578be3f56db51f0 61e7e28ea01e2c66516e2b87503957628c53a793 wsdjeg <wsdjeg@outlook.com> 1530664059 +0800	checkout: moving from wiki3 to upstream/master
+.git/logs/HEAD:254:83:61e7e28ea01e2c66516e2b87503957628c53a793 61e7e28ea01e2c66516e2b87503957628c53a793 wsdjeg <wsdjeg@outlook.com> 1530664085 +0800	checkout: moving from 61e7e28ea01e2c66516e2b87503957628c53a793 to gitment
+.git/logs/HEAD:255:83:61e7e28ea01e2c66516e2b87503957628c53a793 169a17c3c3207f259e167b181b2e7a27752ee482 wsdjeg <wsdjeg@outlook.com> 1530664776 +0800	commit: Use gitment
+.git/logs/HEAD:256:83:169a17c3c3207f259e167b181b2e7a27752ee482 07f8cacb13c2de308c3fe4e47332a6841232059f wsdjeg <wsdjeg@outlook.com> 1530711978 +0800	checkout: moving from gitment to upstream/master
+.git/logs/HEAD:257:83:07f8cacb13c2de308c3fe4e47332a6841232059f 4813844a4dbedcf3d51477bf535b19d53e0103c3 wsdjeg <wsdjeg@outlook.com> 1530711995 +0800	checkout: moving from 07f8cacb13c2de308c3fe4e47332a6841232059f to meetup
+.git/logs/HEAD:258:83:4813844a4dbedcf3d51477bf535b19d53e0103c3 07f8cacb13c2de308c3fe4e47332a6841232059f wsdjeg <wsdjeg@outlook.com> 1530712052 +0800	rebase -i (start): checkout upstream/master
+.git/logs/HEAD:259:83:07f8cacb13c2de308c3fe4e47332a6841232059f 5693f03295200b6c98943e3aff9b7c9cf2e4c2e8 wsdjeg <wsdjeg@outlook.com> 1530712052 +0800	rebase -i (pick): Add post about first meetup
+.git/logs/HEAD:260:83:5693f03295200b6c98943e3aff9b7c9cf2e4c2e8 08c94e53fee0af6dcf06875eca991b22b527b38a wsdjeg <wsdjeg@outlook.com> 1530712052 +0800	rebase -i (fixup): # This is a combination of 2 commits.
+.git/logs/HEAD:261:83:08c94e53fee0af6dcf06875eca991b22b527b38a 040832a222654ddaa0ee25eab08c17e0689767d9 wsdjeg <wsdjeg@outlook.com> 1530712052 +0800	rebase -i (fixup): # This is a combination of 3 commits.
+.git/logs/HEAD:262:83:040832a222654ddaa0ee25eab08c17e0689767d9 6c0e15e2c32c9c62021c9b4fdbd637ecee07d59e wsdjeg <wsdjeg@outlook.com> 1530712052 +0800	rebase -i (fixup): # This is a combination of 4 commits.
+.git/logs/HEAD:263:83:6c0e15e2c32c9c62021c9b4fdbd637ecee07d59e 982a2256fceae56123347a8bd3b98dce1d976d80 wsdjeg <wsdjeg@outlook.com> 1530712052 +0800	rebase -i (fixup): # This is a combination of 5 commits.
+.git/logs/HEAD:264:83:982a2256fceae56123347a8bd3b98dce1d976d80 f73c4eb3e801340646b129e1495099480b1cd000 wsdjeg <wsdjeg@outlook.com> 1530712052 +0800	rebase -i (fixup): # This is a combination of 6 commits.
+.git/logs/HEAD:265:83:f73c4eb3e801340646b129e1495099480b1cd000 5f88e9ddc30172eb323a9850d100142ae3f9e47e wsdjeg <wsdjeg@outlook.com> 1530712053 +0800	rebase -i (fixup): # This is a combination of 7 commits.
+.git/logs/HEAD:266:83:5f88e9ddc30172eb323a9850d100142ae3f9e47e 3199d0b4bc9829766fbe427235b9bf52fc585fc9 wsdjeg <wsdjeg@outlook.com> 1530712053 +0800	rebase -i (fixup): # This is a combination of 8 commits.
+.git/logs/HEAD:267:83:3199d0b4bc9829766fbe427235b9bf52fc585fc9 2b793ad1742d8ceee14b07ec7fd1ecf973f4439b wsdjeg <wsdjeg@outlook.com> 1530712053 +0800	rebase -i (fixup): Add post about first meetup
+.git/logs/HEAD:268:83:2b793ad1742d8ceee14b07ec7fd1ecf973f4439b 2b793ad1742d8ceee14b07ec7fd1ecf973f4439b wsdjeg <wsdjeg@outlook.com> 1530712053 +0800	rebase -i (finish): returning to refs/heads/meetup
+.git/logs/HEAD:269:83:2b793ad1742d8ceee14b07ec7fd1ecf973f4439b c1c6dfe9dba51f5b538ea76e4deea160de138462 wsdjeg <wsdjeg@outlook.com> 1530713312 +0800	commit: Add comment ids
+.git/logs/HEAD:270:83:c1c6dfe9dba51f5b538ea76e4deea160de138462 2f0d1e3b7070c4682f58ad94d289b5ffa77669e4 wsdjeg <wsdjeg@outlook.com> 1530761128 +0800	checkout: moving from meetup to flygrep
+.git/logs/HEAD:271:83:2f0d1e3b7070c4682f58ad94d289b5ffa77669e4 bea74d9cc82bba92209ae30eecfa6ea6065fc974 wsdjeg <wsdjeg@outlook.com> 1530761417 +0800	checkout: moving from flygrep to apidoc
+.git/logs/HEAD:272:83:bea74d9cc82bba92209ae30eecfa6ea6065fc974 8537d305686c51703c1831b3aac5ce77934ef720 wsdjeg <wsdjeg@outlook.com> 1530762358 +0800	commit: Add logger API doc
+.git/logs/HEAD:273:83:8537d305686c51703c1831b3aac5ce77934ef720 2f0d1e3b7070c4682f58ad94d289b5ffa77669e4 wsdjeg <wsdjeg@outlook.com> 1530762821 +0800	checkout: moving from apidoc to flygrep
+.git/logs/HEAD:274:83:2f0d1e3b7070c4682f58ad94d289b5ffa77669e4 260dcb56052e719aae53e8321fa47077451260d0 wsdjeg <wsdjeg@outlook.com> 1530763498 +0800	commit: Improve logger
+.git/logs/HEAD:275:83:260dcb56052e719aae53e8321fa47077451260d0 60d45efd92ae7abee0ed4d0d3f85196faeba5001 wsdjeg <wsdjeg@outlook.com> 1530763909 +0800	commit: Fix cmd
+.git/logs/HEAD:276:83:60d45efd92ae7abee0ed4d0d3f85196faeba5001 35ff4cf95874d352df7aec70ebae8ef73f6cbfa3 wsdjeg <wsdjeg@outlook.com> 1530765986 +0800	commit: Fix flygrep statusline
+.git/logs/HEAD:277:83:35ff4cf95874d352df7aec70ebae8ef73f6cbfa3 cac5681a2c63493871d58ac9c0954c98d4630b73 wsdjeg <wsdjeg@outlook.com> 1530766167 +0800	commit: Fix flygrep statusline number
+.git/logs/HEAD:278:83:cac5681a2c63493871d58ac9c0954c98d4630b73 07f8cacb13c2de308c3fe4e47332a6841232059f wsdjeg <wsdjeg@outlook.com> 1530771718 +0800	checkout: moving from flygrep to upstream/master
+.git/logs/HEAD:279:83:07f8cacb13c2de308c3fe4e47332a6841232059f 07f8cacb13c2de308c3fe4e47332a6841232059f wsdjeg <wsdjeg@outlook.com> 1530771724 +0800	checkout: moving from 07f8cacb13c2de308c3fe4e47332a6841232059f to statusline
+.git/logs/HEAD:280:83:07f8cacb13c2de308c3fe4e47332a6841232059f f088e5f18bb3816ec8a13391985fb780ebc18bd6 wsdjeg <wsdjeg@outlook.com> 1530772351 +0800	checkout: moving from statusline to 0.7.0
+.git/logs/HEAD:281:83:f088e5f18bb3816ec8a13391985fb780ebc18bd6 07f8cacb13c2de308c3fe4e47332a6841232059f wsdjeg <wsdjeg@outlook.com> 1530772486 +0800	checkout: moving from f088e5f18bb3816ec8a13391985fb780ebc18bd6 to statusline
+.git/logs/HEAD:282:83:07f8cacb13c2de308c3fe4e47332a6841232059f 256ded0e8f67c34b6feb14b5033194977934d791 wsdjeg <wsdjeg@outlook.com> 1530773042 +0800	commit: Fix inactive statusline
+.git/logs/HEAD:283:83:256ded0e8f67c34b6feb14b5033194977934d791 13f747fd095d92a1200e28c21d2484a53ac33c68 wsdjeg <wsdjeg@outlook.com> 1530773337 +0800	commit: Fix inactive statusline
+.git/logs/HEAD:284:83:13f747fd095d92a1200e28c21d2484a53ac33c68 cac5681a2c63493871d58ac9c0954c98d4630b73 wsdjeg <wsdjeg@outlook.com> 1530773706 +0800	checkout: moving from statusline to flygrep
+.git/logs/HEAD:285:83:cac5681a2c63493871d58ac9c0954c98d4630b73 13f747fd095d92a1200e28c21d2484a53ac33c68 wsdjeg <wsdjeg@outlook.com> 1530774396 +0800	checkout: moving from flygrep to statusline
+.git/logs/HEAD:286:83:13f747fd095d92a1200e28c21d2484a53ac33c68 c1c6dfe9dba51f5b538ea76e4deea160de138462 wsdjeg <wsdjeg@outlook.com> 1530776078 +0800	checkout: moving from statusline to meetup
+.git/logs/HEAD:287:83:c1c6dfe9dba51f5b538ea76e4deea160de138462 15726b522bd2e113ec91b5109bc0b312f0767e72 wsdjeg <wsdjeg@outlook.com> 1530777711 +0800	commit: update secret
+.git/logs/HEAD:288:83:15726b522bd2e113ec91b5109bc0b312f0767e72 95ba0d337d3ee5f836c3174d35c709d02c29cbe9 wsdjeg <wsdjeg@outlook.com> 1530778024 +0800	commit: Update follow HEAD page
+.git/logs/HEAD:289:83:95ba0d337d3ee5f836c3174d35c709d02c29cbe9 93accdaef0cdccb4101cf5128ee526a4ef9785b8 wsdjeg <wsdjeg@outlook.com> 1530778169 +0800	checkout: moving from meetup to upstream/master
+.git/logs/HEAD:290:83:93accdaef0cdccb4101cf5128ee526a4ef9785b8 93accdaef0cdccb4101cf5128ee526a4ef9785b8 wsdjeg <wsdjeg@outlook.com> 1530778177 +0800	checkout: moving from 93accdaef0cdccb4101cf5128ee526a4ef9785b8 to commentsid
+.git/logs/HEAD:291:83:93accdaef0cdccb4101cf5128ee526a4ef9785b8 e32ddb13ff47fd7c4e34c61b23a7a5ec4e5e0684 wsdjeg <wsdjeg@outlook.com> 1530778344 +0800	commit: update id
+.git/logs/HEAD:292:83:e32ddb13ff47fd7c4e34c61b23a7a5ec4e5e0684 823c7e20edfdf028e47482a3f6d183c9cdf9c889 wsdjeg <wsdjeg@outlook.com> 1530779213 +0800	checkout: moving from commentsid to upstream/master
+.git/logs/HEAD:293:83:823c7e20edfdf028e47482a3f6d183c9cdf9c889 823c7e20edfdf028e47482a3f6d183c9cdf9c889 wsdjeg <wsdjeg@outlook.com> 1530779221 +0800	checkout: moving from 823c7e20edfdf028e47482a3f6d183c9cdf9c889 to fixcomentid
+.git/logs/HEAD:294:83:823c7e20edfdf028e47482a3f6d183c9cdf9c889 636e3894da28af530588cb568325def3b7411bcd wsdjeg <wsdjeg@outlook.com> 1530779236 +0800	commit: update id
+.git/logs/HEAD:295:83:636e3894da28af530588cb568325def3b7411bcd f176e60bd2e82ec0ac9122744abe03a74767890b wsdjeg <wsdjeg@outlook.com> 1530797361 +0800	checkout: moving from fixcomentid to upstream/master
+.git/logs/HEAD:296:83:f176e60bd2e82ec0ac9122744abe03a74767890b f176e60bd2e82ec0ac9122744abe03a74767890b wsdjeg <wsdjeg@outlook.com> 1530797370 +0800	checkout: moving from f176e60bd2e82ec0ac9122744abe03a74767890b to time
+.git/logs/HEAD:297:83:f176e60bd2e82ec0ac9122744abe03a74767890b 5d59d5e731454cce9197766879c92136723b744a wsdjeg <wsdjeg@outlook.com> 1530797682 +0800	commit: Update time and location
+.git/logs/HEAD:298:83:5d59d5e731454cce9197766879c92136723b744a cac5681a2c63493871d58ac9c0954c98d4630b73 wsdjeg <wsdjeg@outlook.com> 1530881428 +0800	checkout: moving from time to flygrep
+.git/logs/HEAD:299:83:cac5681a2c63493871d58ac9c0954c98d4630b73 8224a1c07ef5eddb73c1fb5f9fbf5dce7c2b3602 wsdjeg <wsdjeg@outlook.com> 1530881978 +0800	commit: Improve rg support
+.git/logs/HEAD:300:83:8224a1c07ef5eddb73c1fb5f9fbf5dce7c2b3602 3b713c3620460a42128fce574ae2dd5089f5ffe0 wsdjeg <wsdjeg@outlook.com> 1530884025 +0800	commit: Fix ag support
+.git/logs/HEAD:301:83:3b713c3620460a42128fce574ae2dd5089f5ffe0 f5311c1d173fd3a927e577a5a6abee9595e6dc03 wsdjeg <wsdjeg@outlook.com> 1530884187 +0800	commit: Fix ag support
+autoload/SpaceVim/layers.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/options.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/server.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/api.vim:4:30:" Author:      Shidong Wang <wsdjeg@outlook.com>
+autoload/SpaceVim/issue.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/vimfiler/columns/filetypeicon.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/leaderf/colorscheme/spacevim.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/transient_state.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/logger.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/time.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/password.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/messletters.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/cmdlinemenu.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/system.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/prompt.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/color.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/file.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/health/clipboard.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/health/lua.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/health/environment.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/health/python.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/mapping/leader.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/mapping/search.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/mapping/gd.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/plugins/pmd.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/plugins/pmd.vim:56:9:" /home/wsdjeg/sources/Mysql.vim/libs/mysqlvim/src/main/java/com/wsdjeg/mysqlvim/MysqlVi.java:18:^IDocument empty method body
+autoload/SpaceVim/mapping/g.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/VersionControl.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/floobits.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/tmux.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/plugins/iedit.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/plugins/repl.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/plugins/runner.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/mapping/space.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/org.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/mapping/tab.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/chinese.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/plugins/gitcommit.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/mapping/frequency.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lsp.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/plugins/highlight.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/mapping/z.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/sudo.vim:6:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/mapping/enter.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/plugins/flygrep.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/layers/format.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/layers/github.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/layers/github.vim:36:13:        \ ['wsdjeg/GitHub-api.vim', {'merged' : 0}],
+autoload/SpaceVim/mapping/guide.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/plugins/windowsmanager.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/plugins/quickfix.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/incsearch.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/plugins/searcher.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/colorscheme.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/plugins/manager.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/layers/leaderf.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/plugins/projectmanager.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/layers/games.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/games.vim:11:25:    call add(plugins, ['wsdjeg/vim2048', {'merged' : 0}])
+autoload/SpaceVim/plugins/tabmanager.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/cscope.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/plugins/help.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/plugins/bashcomplete.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/unite.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/unite.vim:19:13:        \ ['wsdjeg/unite-radio.vim', {'loadconf' : 1, 'merged' : 0}],
+autoload/SpaceVim/layers/vim.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/edit.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/chat.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/chat.vim:21:40:    let g:chatting_server_lib = '/home/wsdjeg/SpaceVim/Chatting-server/target/Chatting-1.0-SNAPSHOT.jar'
+autoload/SpaceVim/layers/core.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/operator.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/debug.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/indentmove.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/checkers.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/checkers.vim:25:25:    call add(plugins, ['wsdjeg/syntastic', {'on_event': 'WinEnter', 'loadconf' : 1, 'merged' : 0}])
+autoload/SpaceVim/layers/ctrlp.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/ui.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/mail.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/vimfiler/columns/gitstatus.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/japanese.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/fzf.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/autocomplete.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/shell.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/tools.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/tools.vim:17:23:  call add(plugins, ['wsdjeg/vim-cheat',                 { 'on_cmd' : 'Cheat'}])
+autoload/SpaceVim/layers/tools.vim:18:23:  call add(plugins, ['wsdjeg/Mysql.vim',                 { 'on_cmd' : 'SQLGetConnection'}])
+autoload/SpaceVim/layers/tools.vim:19:23:  call add(plugins, ['wsdjeg/SourceCounter.vim',         { 'on_cmd' : 'SourceCounter'}])
+autoload/SpaceVim/layers/exprfold.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/tags.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/denite.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+.SpaceVim.d/autoload/SpaceVim/dev/roadmap.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+.SpaceVim.d/autoload/SpaceVim/dev/releases.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+.SpaceVim.d/autoload/SpaceVim/dev/Achievements.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+.SpaceVim.d/autoload/SpaceVim/dev/layers.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+.SpaceVim.d/autoload/SpaceVim/dev/layers.vim:67:44:  call remove(layers, index(layers, '/home/wsdjeg/.SpaceVim/docs/layers/index.md'))
+.SpaceVim.d/autoload/SpaceVim/dev/layers.vim:88:44:  call remove(layers, index(layers, '/home/wsdjeg/.SpaceVim/docs/cn/layers/index.md'))
+.SpaceVim.d/autoload/SpaceVim/dev/z.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/git.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+.git/logs/refs/heads/lsp_typescript:1:83:0000000000000000000000000000000000000000 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529757628 +0800	branch: Created from HEAD
+.git/logs/refs/heads/lsp_typescript:2:83:3787b35c64030c06d27b7d698da5a5acc8c42003 19503b77d42fa46942d29ea8a5edd8c879778770 wsdjeg <wsdjeg@outlook.com> 1529758543 +0800	commit: Improve lang#typescript layer
+.git/logs/refs/heads/lsp_typescript:3:83:19503b77d42fa46942d29ea8a5edd8c879778770 17d6a8da6942a5ba71da96bc6418b3ac1eee9c92 wsdjeg <wsdjeg@outlook.com> 1529760104 +0800	commit: Improve lang#typescript layer
+.git/logs/refs/heads/lsp_typescript:4:83:17d6a8da6942a5ba71da96bc6418b3ac1eee9c92 61efcfaee8ab5346d9be5bb3917ab3d9378b7ff9 wsdjeg <wsdjeg@outlook.com> 1529763981 +0800	commit: Use next branch of lsc
+.git/logs/refs/heads/lsp_typescript:5:83:61efcfaee8ab5346d9be5bb3917ab3d9378b7ff9 1dad7004debde64ab3687e97fba801ec9967877e wsdjeg <wsdjeg@outlook.com> 1530019241 +0800	commit: Update wiki
+.git/logs/refs/heads/wiki:1:83:0000000000000000000000000000000000000000 adfffa448963db513a94fae4bf6358308cdcaca0 wsdjeg <wsdjeg@outlook.com> 1530104109 +0800	branch: Created from HEAD
+.git/logs/refs/heads/wiki:2:83:adfffa448963db513a94fae4bf6358308cdcaca0 f1f9a3671a086f2a0bad65e5761e60424caf50bc wsdjeg <wsdjeg@outlook.com> 1530104423 +0800	commit: Wiki: Update following HEAD
+.git/logs/refs/heads/wiki:3:83:f1f9a3671a086f2a0bad65e5761e60424caf50bc 24101894f22c9423691d408b480d8070fe117205 wsdjeg <wsdjeg@outlook.com> 1530104807 +0800	commit (merge): Fix conflicts
+.git/logs/refs/heads/icons:1:83:0000000000000000000000000000000000000000 67d998618e1258279bee2095928c6481889708d9 wsdjeg <wsdjeg@outlook.com> 1528892455 +0800	branch: Created from HEAD
+.git/logs/refs/heads/icons:2:83:67d998618e1258279bee2095928c6481889708d9 e8dde59255e9ce554eb261bb25f52317a8b077a3 wsdjeg <wsdjeg@outlook.com> 1528893295 +0800	commit: Fix update
+.git/logs/refs/heads/statusline:1:83:0000000000000000000000000000000000000000 07f8cacb13c2de308c3fe4e47332a6841232059f wsdjeg <wsdjeg@outlook.com> 1530771724 +0800	branch: Created from HEAD
+.git/logs/refs/heads/statusline:2:83:07f8cacb13c2de308c3fe4e47332a6841232059f 256ded0e8f67c34b6feb14b5033194977934d791 wsdjeg <wsdjeg@outlook.com> 1530773042 +0800	commit: Fix inactive statusline
+.git/logs/refs/heads/statusline:3:83:256ded0e8f67c34b6feb14b5033194977934d791 13f747fd095d92a1200e28c21d2484a53ac33c68 wsdjeg <wsdjeg@outlook.com> 1530773337 +0800	commit: Fix inactive statusline
+.git/logs/refs/heads/nerdtree:1:83:0000000000000000000000000000000000000000 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530623274 +0800	branch: Created from HEAD
+.git/logs/refs/heads/nerdtree:2:83:894995f7dcfbf7ae821c439930d1609248c8630b 490c042f847cd10e989f16716ae5bc7f7afb47ba wsdjeg <wsdjeg@outlook.com> 1530623316 +0800	merge nikolaussucher/master: Fast-forward
+.git/logs/refs/heads/nerdtree:3:83:490c042f847cd10e989f16716ae5bc7f7afb47ba 11fc529add0a65e46bdae38320db768d8848dcb6 wsdjeg <wsdjeg@outlook.com> 1530623657 +0800	commit: Improve nerdtree support
+.git/logs/refs/heads/nerdtree:4:83:11fc529add0a65e46bdae38320db768d8848dcb6 582811a7579aaec222f774f89d3dd7186f9b078b wsdjeg <wsdjeg@outlook.com> 1530623844 +0800	commit: Update follow HEAD page
+.git/logs/refs/heads/apidoc:1:83:0000000000000000000000000000000000000000 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530535584 +0800	branch: Created from HEAD
+.git/logs/refs/heads/apidoc:2:83:894995f7dcfbf7ae821c439930d1609248c8630b bea74d9cc82bba92209ae30eecfa6ea6065fc974 wsdjeg <wsdjeg@outlook.com> 1530536208 +0800	commit: Add doc for apis
+.git/logs/refs/heads/apidoc:3:83:bea74d9cc82bba92209ae30eecfa6ea6065fc974 8537d305686c51703c1831b3aac5ce77934ef720 wsdjeg <wsdjeg@outlook.com> 1530762358 +0800	commit: Add logger API doc
+.git/logs/refs/heads/docs:1:83:0000000000000000000000000000000000000000 355f09c82344eed8954865df526f1216251bb2e3 wsdjeg <wsdjeg@outlook.com> 1528686250 +0800	branch: Created from HEAD
+.git/logs/refs/heads/time:1:83:0000000000000000000000000000000000000000 f176e60bd2e82ec0ac9122744abe03a74767890b wsdjeg <wsdjeg@outlook.com> 1530797370 +0800	branch: Created from HEAD
+.git/logs/refs/heads/time:2:83:f176e60bd2e82ec0ac9122744abe03a74767890b 5d59d5e731454cce9197766879c92136723b744a wsdjeg <wsdjeg@outlook.com> 1530797682 +0800	commit: Update time and location
+.git/logs/refs/heads/master:1:83:0000000000000000000000000000000000000000 8c3e51583a47270937d9729622f70e4e9e46b845 wsdjeg <wsdjeg@outlook.com> 1528684362 +0800	clone: from git@github.com:wsdjeg/SpaceVim.git
+.git/logs/refs/heads/master:2:83:8c3e51583a47270937d9729622f70e4e9e46b845 66d9dcfaa73a3dc357ce1b023811ff3b1ec4d581 wsdjeg <wsdjeg@outlook.com> 1530454584 +0800	merge upstream/master: Fast-forward
+.git/logs/refs/heads/resume:1:83:0000000000000000000000000000000000000000 adfffa448963db513a94fae4bf6358308cdcaca0 wsdjeg <wsdjeg@outlook.com> 1530103677 +0800	branch: Created from HEAD
+.git/logs/refs/heads/resume:2:83:adfffa448963db513a94fae4bf6358308cdcaca0 9da1f425567f1ed6977ff3196aecd569dd6901ba wsdjeg <wsdjeg@outlook.com> 1530104058 +0800	commit: Fix resume key bindings
+.git/logs/refs/heads/resume:3:83:9da1f425567f1ed6977ff3196aecd569dd6901ba c37ebdd29303b9a9f2039ba5a8b5923ab152a090 wsdjeg <wsdjeg@outlook.com> 1530104630 +0800	commit: Update following HEAD
+.git/logs/refs/heads/lsp:1:83:0000000000000000000000000000000000000000 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529762728 +0800	branch: Created from HEAD
+.git/logs/refs/heads/pull_request_template:1:83:0000000000000000000000000000000000000000 464e9d595709704d1989e7e3e3fdf81e00a75e9b wsdjeg <wsdjeg@outlook.com> 1529498572 +0800	branch: Created from HEAD
+.git/logs/refs/heads/pull_request_template:2:83:464e9d595709704d1989e7e3e3fdf81e00a75e9b de460cf5afe104a1a0bd132b8a2d842aba7dc40f wsdjeg <wsdjeg@outlook.com> 1529498983 +0800	commit: Improve pull request template
+.git/logs/refs/heads/pull_request_template:3:83:de460cf5afe104a1a0bd132b8a2d842aba7dc40f 67153b668d4a910d159fb0563e90f0ce90899c7d wsdjeg <wsdjeg@outlook.com> 1529500955 +0800	commit: Improve pull request template
+.git/logs/refs/heads/pull_request_template:4:83:67153b668d4a910d159fb0563e90f0ce90899c7d 24ef35cbf4e91f0bfd74a41ab762579d60365058 wsdjeg <wsdjeg@outlook.com> 1529501257 +0800	commit: Update follow head page
+.git/logs/refs/heads/flygrep:1:83:0000000000000000000000000000000000000000 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530536846 +0800	branch: Created from HEAD
+.git/logs/refs/heads/flygrep:2:83:894995f7dcfbf7ae821c439930d1609248c8630b e986f5bf0087023ca8a6b65c3ec9b5fd4ceda79f wsdjeg <wsdjeg@outlook.com> 1530536894 +0800	commit: Improve flygrep
+.git/logs/refs/heads/flygrep:3:83:e986f5bf0087023ca8a6b65c3ec9b5fd4ceda79f 2f0d1e3b7070c4682f58ad94d289b5ffa77669e4 wsdjeg <wsdjeg@outlook.com> 1530537179 +0800	merge ssfdust/master: Merge made by the 'recursive' strategy.
+.git/logs/refs/heads/flygrep:4:83:2f0d1e3b7070c4682f58ad94d289b5ffa77669e4 260dcb56052e719aae53e8321fa47077451260d0 wsdjeg <wsdjeg@outlook.com> 1530763498 +0800	commit: Improve logger
+.git/logs/refs/heads/flygrep:5:83:260dcb56052e719aae53e8321fa47077451260d0 60d45efd92ae7abee0ed4d0d3f85196faeba5001 wsdjeg <wsdjeg@outlook.com> 1530763909 +0800	commit: Fix cmd
+.git/logs/refs/heads/flygrep:6:83:60d45efd92ae7abee0ed4d0d3f85196faeba5001 35ff4cf95874d352df7aec70ebae8ef73f6cbfa3 wsdjeg <wsdjeg@outlook.com> 1530765986 +0800	commit: Fix flygrep statusline
+.git/logs/refs/heads/flygrep:7:83:35ff4cf95874d352df7aec70ebae8ef73f6cbfa3 cac5681a2c63493871d58ac9c0954c98d4630b73 wsdjeg <wsdjeg@outlook.com> 1530766167 +0800	commit: Fix flygrep statusline number
+.git/logs/refs/heads/flygrep:8:83:cac5681a2c63493871d58ac9c0954c98d4630b73 8224a1c07ef5eddb73c1fb5f9fbf5dce7c2b3602 wsdjeg <wsdjeg@outlook.com> 1530881978 +0800	commit: Improve rg support
+.git/logs/refs/heads/flygrep:9:83:8224a1c07ef5eddb73c1fb5f9fbf5dce7c2b3602 3b713c3620460a42128fce574ae2dd5089f5ffe0 wsdjeg <wsdjeg@outlook.com> 1530884025 +0800	commit: Fix ag support
+.git/logs/refs/heads/flygrep:10:83:3b713c3620460a42128fce574ae2dd5089f5ffe0 f5311c1d173fd3a927e577a5a6abee9595e6dc03 wsdjeg <wsdjeg@outlook.com> 1530884187 +0800	commit: Fix ag support
+.git/logs/refs/heads/faq:1:83:0000000000000000000000000000000000000000 d88e92626a8f34bd8676d279542edc4f856377c0 wsdjeg <wsdjeg@outlook.com> 1529413950 +0800	branch: Created from HEAD
+.git/logs/refs/heads/faq:2:83:d88e92626a8f34bd8676d279542edc4f856377c0 b19ff53cee5c0d4bb04bdd3a79540839c898dc73 wsdjeg <wsdjeg@outlook.com> 1529414374 +0800	commit: Update faq
+.git/logs/refs/heads/go:1:83:0000000000000000000000000000000000000000 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529768901 +0800	branch: Created from HEAD
+.git/logs/refs/heads/go:2:83:3787b35c64030c06d27b7d698da5a5acc8c42003 9a9ea45deb5edb1c921b44da4940685df3d18743 wsdjeg <wsdjeg@outlook.com> 1529768991 +0800	commit: Delelet go autocmd
+.git/logs/refs/heads/go:3:83:9a9ea45deb5edb1c921b44da4940685df3d18743 be5d100215d0451a45d04a44554e17aa953812d8 wsdjeg <wsdjeg@outlook.com> 1530017742 +0800	commit: Update follow head page
+.git/logs/refs/heads/help:1:83:0000000000000000000000000000000000000000 82bb0fe0e517a8496335cc9ee08cb76bef5ac0d6 wsdjeg <wsdjeg@outlook.com> 1528981020 +0800	branch: Created from HEAD
+.git/logs/refs/heads/help:2:83:82bb0fe0e517a8496335cc9ee08cb76bef5ac0d6 9a3b59c818dfe491251299207434c9384777da0d wsdjeg <wsdjeg@outlook.com> 1529066471 +0800	commit: Update help file
+.git/logs/refs/heads/help:3:83:9a3b59c818dfe491251299207434c9384777da0d 7dcd9b9e8776a64802755771ac50e614aefd1e24 wsdjeg <wsdjeg@outlook.com> 1529067688 +0800	commit: Update faq for why using toml
+.git/logs/refs/heads/help:4:83:7dcd9b9e8776a64802755771ac50e614aefd1e24 c1b5958622657b1f993491c268379f764627b733 wsdjeg <wsdjeg@outlook.com> 1529068739 +0800	commit: Update help file
+.git/logs/refs/heads/layer_doc:1:83:0000000000000000000000000000000000000000 d9324f8c30fed3a8bda5c220757be54abcb7d29d wsdjeg <wsdjeg@outlook.com> 1529584003 +0800	branch: Created from HEAD
+.git/logs/refs/heads/layer_doc:2:83:d9324f8c30fed3a8bda5c220757be54abcb7d29d 120ba6020d05b615c6353027517a8319745270bf wsdjeg <wsdjeg@outlook.com> 1529584521 +0800	commit: Update layer doc
+.git/logs/refs/heads/layer_doc:3:83:120ba6020d05b615c6353027517a8319745270bf 06318bf45726e1c57bc58093cceb1a7498ef2df9 wsdjeg <wsdjeg@outlook.com> 1529585347 +0800	commit: Update layer doc
+.git/logs/refs/heads/layer_doc:4:83:06318bf45726e1c57bc58093cceb1a7498ef2df9 f8dbb1f1c626155c6efeb8830ba2be45062eded1 wsdjeg <wsdjeg@outlook.com> 1529586734 +0800	commit: Update layer doc
+.git/logs/refs/heads/layer_doc:5:83:f8dbb1f1c626155c6efeb8830ba2be45062eded1 b01f2740c12989443f9b858ee54d33c42d172e7d wsdjeg <wsdjeg@outlook.com> 1529588082 +0800	commit: Update layer doc
+.git/logs/refs/heads/layer_doc:6:83:b01f2740c12989443f9b858ee54d33c42d172e7d e78b86dd93e4af631880d545e9424d5dd6c2c56a wsdjeg <wsdjeg@outlook.com> 1529589478 +0800	commit: Update layer doc
+.git/logs/refs/heads/layer_doc:7:83:e78b86dd93e4af631880d545e9424d5dd6c2c56a af1ea407f7e550d1aab46c3e05c789970c4751a9 wsdjeg <wsdjeg@outlook.com> 1529668471 +0800	commit: Update layer doc
+.git/logs/refs/heads/layer_doc:8:83:af1ea407f7e550d1aab46c3e05c789970c4751a9 78829b452bee519863ab5f2fa75b0b34173d67f5 wsdjeg <wsdjeg@outlook.com> 1529668697 +0800	commit: Update layer doc
+.git/logs/refs/heads/layer_doc:9:83:78829b452bee519863ab5f2fa75b0b34173d67f5 f3756bd85530ef4233e706f73b79648bb8ed5726 wsdjeg <wsdjeg@outlook.com> 1529669852 +0800	commit: Update layer doc
+.git/logs/refs/heads/layer_doc:10:83:f3756bd85530ef4233e706f73b79648bb8ed5726 94405f6e1ebaa4d03f04aaf51c7ca70f44ce880b wsdjeg <wsdjeg@outlook.com> 1529669925 +0800	commit: Update layer doc
+.git/logs/refs/heads/layer_doc:11:83:94405f6e1ebaa4d03f04aaf51c7ca70f44ce880b 605564f3e9ed687465f5dde9709a3c95f5e17eab wsdjeg <wsdjeg@outlook.com> 1529671029 +0800	commit: Update layer doc
+.git/logs/refs/heads/layer_doc:12:83:605564f3e9ed687465f5dde9709a3c95f5e17eab fe7c190167786bd4a0078a3c21ef130915c66898 wsdjeg <wsdjeg@outlook.com> 1529673943 +0800	commit: Update layer doc
+.git/logs/refs/heads/layer_doc:13:83:fe7c190167786bd4a0078a3c21ef130915c66898 77d52cced951a2279d941c56f72dc07a72194cb0 wsdjeg <wsdjeg@outlook.com> 1529676731 +0800	commit: Update layer doc
+.git/logs/refs/heads/layer_doc:14:83:77d52cced951a2279d941c56f72dc07a72194cb0 6429291b3e047eb94e25792c263f7566910a7e8e wsdjeg <wsdjeg@outlook.com> 1529716994 +0800	commit: TS elixir layer doc
+.git/logs/refs/heads/layer_doc:15:83:6429291b3e047eb94e25792c263f7566910a7e8e db81c607b554461a6469ae1c4178279ab7781647 wsdjeg <wsdjeg@outlook.com> 1529717917 +0800	commit: TS go layer doc
+.git/logs/refs/heads/layer_doc:16:83:db81c607b554461a6469ae1c4178279ab7781647 403b3205f7737b2d78389332c5d01043720fc1ab wsdjeg <wsdjeg@outlook.com> 1529719153 +0800	commit: TS haskell layer doc
+.git/logs/refs/heads/layer_doc:17:83:403b3205f7737b2d78389332c5d01043720fc1ab f1ba6c34f0c470b78ef70a5597e97e314aea2658 wsdjeg <wsdjeg@outlook.com> 1529719831 +0800	commit: TS html layer doc
+.git/logs/refs/heads/layer_doc:18:83:f1ba6c34f0c470b78ef70a5597e97e314aea2658 2023ba571267d2894a7d1e9a7836f66b7981e68f wsdjeg <wsdjeg@outlook.com> 1529721156 +0800	commit: TS html layer doc
+.git/logs/refs/heads/layer_doc:19:83:2023ba571267d2894a7d1e9a7836f66b7981e68f 7a3745644310ed8f02af6ffe124c986671e75ce4 wsdjeg <wsdjeg@outlook.com> 1529722771 +0800	commit: TS vim layer doc
+.git/logs/refs/heads/layer_doc:20:83:7a3745644310ed8f02af6ffe124c986671e75ce4 7059f157a94c47bd80822f6c35489d43b0c9630e wsdjeg <wsdjeg@outlook.com> 1529725068 +0800	commit: TS typescript layer doc
+.git/logs/refs/heads/layer_doc:21:83:7059f157a94c47bd80822f6c35489d43b0c9630e 4c03683d3df68f8e04dd1da489d4a54bfb527870 wsdjeg <wsdjeg@outlook.com> 1529731228 +0800	commit: TS markdown layer doc
+.git/logs/refs/heads/layer_doc:22:83:4c03683d3df68f8e04dd1da489d4a54bfb527870 4e7825733742cc8caccb57c22a72e6c038626386 wsdjeg <wsdjeg@outlook.com> 1529731671 +0800	commit: TS lua layer doc
+.git/logs/refs/heads/layer_doc:23:83:4e7825733742cc8caccb57c22a72e6c038626386 d01fa0ca09dcb9f2a74364f6ea6f550642f67a3d wsdjeg <wsdjeg@outlook.com> 1529732596 +0800	commit: TS js layer doc
+.git/logs/refs/heads/layer_doc:24:83:d01fa0ca09dcb9f2a74364f6ea6f550642f67a3d 8c9fedb6d407abc546d3430eea46294fdac11b78 wsdjeg <wsdjeg@outlook.com> 1529733247 +0800	commit: TS ruby layer doc
+.git/logs/refs/heads/layer_doc:25:83:8c9fedb6d407abc546d3430eea46294fdac11b78 5ab21563b56858769b0618ca52e62404cbb2209d wsdjeg <wsdjeg@outlook.com> 1529734140 +0800	commit: TS java layer doc
+.git/logs/refs/heads/layer_doc:26:83:5ab21563b56858769b0618ca52e62404cbb2209d 653ba241fbaa17e40820d1e145b4d09744e377a9 wsdjeg <wsdjeg@outlook.com> 1529735037 +0800	commit: TS py layer doc
+.git/logs/refs/heads/release:1:83:0000000000000000000000000000000000000000 11bfa73fc4e598c71a4d9009e245cf6f1aa20636 wsdjeg <wsdjeg@outlook.com> 1529236803 +0800	branch: Created from HEAD
+.git/logs/refs/heads/release:2:83:11bfa73fc4e598c71a4d9009e245cf6f1aa20636 6db3cedf508247eab9f349817e686c2b24508ce3 wsdjeg <wsdjeg@outlook.com> 1529237133 +0800	commit: Add release note
+.git/logs/refs/heads/release:3:83:6db3cedf508247eab9f349817e686c2b24508ce3 713db36659c129d478ef0f48cc822707f5097692 wsdjeg <wsdjeg@outlook.com> 1529237772 +0800	commit: Improve release script
+.git/logs/refs/heads/release:4:83:713db36659c129d478ef0f48cc822707f5097692 e4e9ab54f559444311150ac5834a04bba2872e72 wsdjeg <wsdjeg@outlook.com> 1529238126 +0800	commit: Add release note
+.git/logs/refs/heads/release:5:83:e4e9ab54f559444311150ac5834a04bba2872e72 8388169aba0e846e08c419da518f76366c87bede wsdjeg <wsdjeg@outlook.com> 1529242251 +0800	commit: Add release note
+.git/logs/refs/heads/release:6:83:8388169aba0e846e08c419da518f76366c87bede bf9a873ac28cd9d03683daba4cb1227584d845d1 wsdjeg <wsdjeg@outlook.com> 1529244244 +0800	commit: Add release note
+.git/logs/refs/heads/release:7:83:bf9a873ac28cd9d03683daba4cb1227584d845d1 a3114b6f82086974a09a3196dbb891ee3ce13b15 wsdjeg <wsdjeg@outlook.com> 1529299314 +0800	commit: Update version
+.git/logs/refs/heads/release:8:83:a3114b6f82086974a09a3196dbb891ee3ce13b15 e793ec54e109978e58abeca66d492cae9f355ff5 wsdjeg <wsdjeg@outlook.com> 1529300083 +0800	commit: Update version
+.git/logs/refs/heads/release:9:83:e793ec54e109978e58abeca66d492cae9f355ff5 c5327572a5d42074bbcd076229800fae00b9d6cd wsdjeg <wsdjeg@outlook.com> 1529300252 +0800	commit: Update version
+.git/logs/refs/heads/release:10:83:c5327572a5d42074bbcd076229800fae00b9d6cd 438912f1e18537e3bceb0dc47590721a1491620b wsdjeg <wsdjeg@outlook.com> 1529300570 +0800	commit: Update wiki
+.git/logs/refs/heads/release:11:83:438912f1e18537e3bceb0dc47590721a1491620b b464470dacba3501428ba98b1515ae369fa3556c wsdjeg <wsdjeg@outlook.com> 1529300942 +0800	commit: Update release script
+.git/logs/refs/heads/release:12:83:b464470dacba3501428ba98b1515ae369fa3556c 2539d9d9313744e89af6217bc836f2f46615a661 wsdjeg <wsdjeg@outlook.com> 1529301144 +0800	commit: Update file name
+.git/logs/refs/heads/color_material:1:83:0000000000000000000000000000000000000000 39d1323b1008827a5548b10e30de2157e5df7851 wsdjeg <wsdjeg@outlook.com> 1529327396 +0800	branch: Created from refs/remotes/origin/color_material
+.git/logs/refs/heads/color_material:2:83:39d1323b1008827a5548b10e30de2157e5df7851 3ffc88c246dd6f0e52e3127a668060574fc3dda5 wsdjeg <wsdjeg@outlook.com> 1529327689 +0800	rebase -i (finish): refs/heads/color_material onto 7f0723e93e764403fa6eaf89740e01a53643a794
+.git/logs/refs/heads/color_material:3:83:3ffc88c246dd6f0e52e3127a668060574fc3dda5 4d8a3ef4c80cc583e6ecc56eb7d987c5357bdd46 wsdjeg <wsdjeg@outlook.com> 1529328883 +0800	commit: Update material theme
+.git/logs/refs/heads/color_material:4:83:4d8a3ef4c80cc583e6ecc56eb7d987c5357bdd46 4e3b900540413b19bd817e15980e65129fad8f87 wsdjeg <wsdjeg@outlook.com> 1529329387 +0800	commit: Update material theme
+.git/logs/refs/heads/color_material:5:83:4e3b900540413b19bd817e15980e65129fad8f87 eb189f08d8cbe039dcdc5872a360ffe70e627015 wsdjeg <wsdjeg@outlook.com> 1529412894 +0800	commit: Update material theme
+.git/logs/refs/heads/fixcomentid:1:83:0000000000000000000000000000000000000000 823c7e20edfdf028e47482a3f6d183c9cdf9c889 wsdjeg <wsdjeg@outlook.com> 1530779221 +0800	branch: Created from HEAD
+.git/logs/refs/heads/fixcomentid:2:83:823c7e20edfdf028e47482a3f6d183c9cdf9c889 636e3894da28af530588cb568325def3b7411bcd wsdjeg <wsdjeg@outlook.com> 1530779236 +0800	commit: update id
+.git/logs/refs/heads/tabline:1:83:0000000000000000000000000000000000000000 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530620824 +0800	branch: Created from HEAD
+.git/logs/refs/heads/tabline:2:83:894995f7dcfbf7ae821c439930d1609248c8630b 01a5d8670b2b1a218e21e7a30828afef2abb648e wsdjeg <wsdjeg@outlook.com> 1530621371 +0800	commit: Support mouse click in vim8 tabline
+.git/logs/refs/heads/hidecursor:1:83:0000000000000000000000000000000000000000 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529931503 +0800	branch: Created from HEAD
+.git/logs/refs/heads/meetup:1:83:0000000000000000000000000000000000000000 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529846391 +0800	branch: Created from HEAD
+.git/logs/refs/heads/meetup:2:83:3787b35c64030c06d27b7d698da5a5acc8c42003 d446bc3dfe07495ec3b37c17216f5ceb9da1c7a5 wsdjeg <wsdjeg@outlook.com> 1529846977 +0800	commit: Add post about first meetup
+.git/logs/refs/heads/meetup:3:83:d446bc3dfe07495ec3b37c17216f5ceb9da1c7a5 1f8ea1aeb15ec6400f8c511eee6fd3220b50451c wsdjeg <wsdjeg@outlook.com> 1529848206 +0800	commit: Add post about first meetup
+.git/logs/refs/heads/meetup:4:83:1f8ea1aeb15ec6400f8c511eee6fd3220b50451c 4bc9d791b3edf283caccfb53758be62b32b751b7 wsdjeg <wsdjeg@outlook.com> 1529848539 +0800	commit: Add post about first meetup
+.git/logs/refs/heads/meetup:5:83:4bc9d791b3edf283caccfb53758be62b32b751b7 eba54cdf6246ca9e8032106224256eb2fc86371b wsdjeg <wsdjeg@outlook.com> 1530533426 +0800	pull: Fast-forward
+.git/logs/refs/heads/meetup:6:83:eba54cdf6246ca9e8032106224256eb2fc86371b babd2f932c76af2d4df54db880dd7360e1887971 wsdjeg <wsdjeg@outlook.com> 1530533550 +0800	rebase -i (finish): refs/heads/meetup onto 894995f7dcfbf7ae821c439930d1609248c8630b
+.git/logs/refs/heads/meetup:7:83:babd2f932c76af2d4df54db880dd7360e1887971 97577bb76bc0bd19dea8a1e309d8f0bb1563a5a9 wsdjeg <wsdjeg@outlook.com> 1530534488 +0800	commit: Update meetup post
+.git/logs/refs/heads/meetup:8:83:97577bb76bc0bd19dea8a1e309d8f0bb1563a5a9 d5ad640bbb9f72ff1865493e749693f9094a675b wsdjeg <wsdjeg@outlook.com> 1530534820 +0800	commit: Update meetup post
+.git/logs/refs/heads/meetup:9:83:d5ad640bbb9f72ff1865493e749693f9094a675b 8fce23617ac7a3a50e76e541d75776c6c202e47e wsdjeg <wsdjeg@outlook.com> 1530534960 +0800	commit: Update meetup post
+.git/logs/refs/heads/meetup:10:83:8fce23617ac7a3a50e76e541d75776c6c202e47e 3dfa388b78b25df65a1138fb1dd7d52743de474a wsdjeg <wsdjeg@outlook.com> 1530535557 +0800	commit: Update meetup post
+.git/logs/refs/heads/meetup:11:83:3dfa388b78b25df65a1138fb1dd7d52743de474a 87ac4e9de2563df3e7c3a6cce19d54c4fe1fc8be wsdjeg <wsdjeg@outlook.com> 1530536538 +0800	commit: Update meetup post
+.git/logs/refs/heads/meetup:12:83:87ac4e9de2563df3e7c3a6cce19d54c4fe1fc8be 9ed184b0bda8517f3383a29cf751944763b52bfe wsdjeg <wsdjeg@outlook.com> 1530536759 +0800	commit: Update meetup post
+.git/logs/refs/heads/meetup:13:83:9ed184b0bda8517f3383a29cf751944763b52bfe 7646fb4707555c0569d29ca2a80bd740c662ef13 wsdjeg <wsdjeg@outlook.com> 1530537589 +0800	commit: Update meetup post
+.git/logs/refs/heads/meetup:14:83:7646fb4707555c0569d29ca2a80bd740c662ef13 4813844a4dbedcf3d51477bf535b19d53e0103c3 wsdjeg <wsdjeg@outlook.com> 1530537906 +0800	commit: Update meetup post
+.git/logs/refs/heads/meetup:15:83:4813844a4dbedcf3d51477bf535b19d53e0103c3 2b793ad1742d8ceee14b07ec7fd1ecf973f4439b wsdjeg <wsdjeg@outlook.com> 1530712053 +0800	rebase -i (finish): refs/heads/meetup onto 07f8cacb13c2de308c3fe4e47332a6841232059f
+.git/logs/refs/heads/meetup:16:83:2b793ad1742d8ceee14b07ec7fd1ecf973f4439b c1c6dfe9dba51f5b538ea76e4deea160de138462 wsdjeg <wsdjeg@outlook.com> 1530713312 +0800	commit: Add comment ids
+.git/logs/refs/heads/meetup:17:83:c1c6dfe9dba51f5b538ea76e4deea160de138462 15726b522bd2e113ec91b5109bc0b312f0767e72 wsdjeg <wsdjeg@outlook.com> 1530777711 +0800	commit: update secret
+.git/logs/refs/heads/meetup:18:83:15726b522bd2e113ec91b5109bc0b312f0767e72 95ba0d337d3ee5f836c3174d35c709d02c29cbe9 wsdjeg <wsdjeg@outlook.com> 1530778024 +0800	commit: Update follow HEAD page
+.SpaceVim.d/autoload/SpaceVim/dev/api.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+.git/logs/refs/heads/develop:1:83:0000000000000000000000000000000000000000 5bccbf7e41a2fb1e0328f378e1136d9759877552 wsdjeg <wsdjeg@outlook.com> 1529324303 +0800	branch: Created from refs/remotes/origin/develop
+.git/logs/refs/heads/develop:2:83:5bccbf7e41a2fb1e0328f378e1136d9759877552 6139512a9955b4434cabf3d3d31e71e8ae8dfe34 wsdjeg <wsdjeg@outlook.com> 1529326276 +0800	commit: Update floobit layer
+.git/logs/refs/heads/wiki2:1:83:0000000000000000000000000000000000000000 5e1b3f7632f7ffaa35a80067fc8cad49dd55171e wsdjeg <wsdjeg@outlook.com> 1530104775 +0800	branch: Created from HEAD
+.git/logs/refs/heads/plugin_manager:1:83:0000000000000000000000000000000000000000 9d9ad29a4bf422c7e8e3a80a0cf22e0a56f8f939 wsdjeg <wsdjeg@outlook.com> 1530020526 +0800	branch: Created from HEAD
+.git/logs/refs/heads/plugin_manager:2:83:9d9ad29a4bf422c7e8e3a80a0cf22e0a56f8f939 241c3b8ff5c15b7cb17c3ebdacfd4c9c2abcadc8 wsdjeg <wsdjeg@outlook.com> 1530021091 +0800	commit: Check term_start
+.git/logs/refs/heads/plugin_manager:3:83:241c3b8ff5c15b7cb17c3ebdacfd4c9c2abcadc8 79e9df6f3b6e96d23ce996c6780f1400bf8884d3 wsdjeg <wsdjeg@outlook.com> 1530021594 +0800	commit: Check term_start
+.git/logs/refs/heads/tabmanager:1:83:0000000000000000000000000000000000000000 66d9dcfaa73a3dc357ce1b023811ff3b1ec4d581 wsdjeg <wsdjeg@outlook.com> 1530105139 +0800	branch: Created from HEAD
+.git/logs/refs/heads/tabmanager:2:83:66d9dcfaa73a3dc357ce1b023811ff3b1ec4d581 408d73db87813fdce903755b90a0f981eef92cbe wsdjeg <wsdjeg@outlook.com> 1530105792 +0800	commit: Improve the tabmanager
+.git/logs/refs/heads/tabmanager:3:83:408d73db87813fdce903755b90a0f981eef92cbe b6bd028219b210a240885c79995c6e6d3b0304d4 wsdjeg <wsdjeg@outlook.com> 1530106560 +0800	commit: Improve the tabmanager
+.git/logs/refs/heads/tabmanager:4:83:b6bd028219b210a240885c79995c6e6d3b0304d4 21e650610c961b4a41be832ee763d35a5ffbda26 wsdjeg <wsdjeg@outlook.com> 1530107427 +0800	commit: Shou tabname in tab line
+.git/logs/refs/heads/tabmanager:5:83:21e650610c961b4a41be832ee763d35a5ffbda26 7bfb5fc423277ebde8e9b1e5299af1fd89c2395d wsdjeg <wsdjeg@outlook.com> 1530108245 +0800	commit: Improve the tabmanager
+.git/logs/refs/heads/tabmanager:6:83:7bfb5fc423277ebde8e9b1e5299af1fd89c2395d 5d86f3bb92b8f15789629d715f91fbba5e4943fe wsdjeg <wsdjeg@outlook.com> 1530248032 +0800	commit: Fix tab man
+.git/logs/refs/heads/tabmanager:7:83:5d86f3bb92b8f15789629d715f91fbba5e4943fe 51d46d0fef076578d4f1c5d87b0d475eb70e4712 wsdjeg <wsdjeg@outlook.com> 1530249862 +0800	commit: Update documentation of tab manager
+.git/logs/refs/heads/tabmanager:8:83:51d46d0fef076578d4f1c5d87b0d475eb70e4712 487317e0c204bd49ea2f8aba3482030e78d5d319 wsdjeg <wsdjeg@outlook.com> 1530250380 +0800	commit: Add new key binding n for create named tab
+.git/logs/refs/heads/tabmanager:9:83:487317e0c204bd49ea2f8aba3482030e78d5d319 70bc11980172198342f4bcb22da84b3b96b228a4 wsdjeg <wsdjeg@outlook.com> 1530251355 +0800	commit: Change the behavior of <M-Left> and <M-Right>
+.git/logs/refs/heads/tabmanager:10:83:70bc11980172198342f4bcb22da84b3b96b228a4 b8fec7d191451e28bd8282d6675b442105d123f6 wsdjeg <wsdjeg@outlook.com> 1530252222 +0800	commit: Add x key bindings
+.git/logs/refs/heads/tabmanager:11:83:b8fec7d191451e28bd8282d6675b442105d123f6 a22dcbd7e5521005f75c5d50a86bf6b4d5d81cad wsdjeg <wsdjeg@outlook.com> 1530252754 +0800	commit: Fix x key bindings
+.git/logs/refs/heads/tabmanager:12:83:a22dcbd7e5521005f75c5d50a86bf6b4d5d81cad 82c2e68f60daf249adcdabaf010823c89ab7977e wsdjeg <wsdjeg@outlook.com> 1530253840 +0800	commit: Update documentation of tab manager
+.git/logs/refs/heads/tabmanager:13:83:82c2e68f60daf249adcdabaf010823c89ab7977e 22de0d76743c2511b9a77edca7d7253a878442c8 wsdjeg <wsdjeg@outlook.com> 1530258763 +0800	commit: Add yy key bindings
+.git/logs/refs/heads/tabmanager:14:83:22de0d76743c2511b9a77edca7d7253a878442c8 395a6190c6d2d07a67ebd75f202f92ebb5e84ec6 wsdjeg <wsdjeg@outlook.com> 1530329496 +0800	commit: Only winsize
+.git/logs/refs/heads/tabmanager:15:83:395a6190c6d2d07a67ebd75f202f92ebb5e84ec6 12eba5369f1cff3f92a97162f0172f50bbe4bc87 wsdjeg <wsdjeg@outlook.com> 1530330203 +0800	commit: Copy tab status
+.git/logs/refs/heads/tabmanager:16:83:12eba5369f1cff3f92a97162f0172f50bbe4bc87 e353399824a78e999ff97e14adab99b8e4b20433 wsdjeg <wsdjeg@outlook.com> 1530339866 +0800	commit: Better open command
+.git/logs/refs/heads/tabmanager:17:83:e353399824a78e999ff97e14adab99b8e4b20433 e1905cf5fffb6d4bcc69f05a0db2e162c313527c wsdjeg <wsdjeg@outlook.com> 1530340063 +0800	commit: Ignore SpaceVimTabManager in smart close
+.git/logs/refs/heads/tabmanager:18:83:e1905cf5fffb6d4bcc69f05a0db2e162c313527c 2ae436f2f2e8a80c1406d854816cce480092f83e wsdjeg <wsdjeg@outlook.com> 1530340155 +0800	commit: Disable spell check when edit commit message
+.git/logs/refs/heads/tabmanager:19:83:2ae436f2f2e8a80c1406d854816cce480092f83e c111c5944fcb63d6420bf1353924a9a3fa705eb2 wsdjeg <wsdjeg@outlook.com> 1530340742 +0800	commit: Fix vimfiler statusline
+.git/logs/refs/heads/tabmanager:20:83:c111c5944fcb63d6420bf1353924a9a3fa705eb2 6e122d0c94ebe2baaa963fb384089f2b29a393bd wsdjeg <wsdjeg@outlook.com> 1530342766 +0800	commit: Move tab forward and backward
+.git/logs/refs/heads/tabmanager:21:83:6e122d0c94ebe2baaa963fb384089f2b29a393bd 18b9abd9814835d95984bf1ed49f7d6439eddc2b wsdjeg <wsdjeg@outlook.com> 1530344373 +0800	commit: Remember cursor pos
+.git/logs/refs/heads/tabmanager:22:83:18b9abd9814835d95984bf1ed49f7d6439eddc2b 4e177f9f2b5393614d11418193f4646f88e25e9b wsdjeg <wsdjeg@outlook.com> 1530346709 +0800	commit: Improve key binding for create new tab
+.git/logs/refs/heads/tabmanager:23:83:4e177f9f2b5393614d11418193f4646f88e25e9b b5fba2475def0468b2b0494aa796e8e24a53ec58 wsdjeg <wsdjeg@outlook.com> 1530347039 +0800	commit: Move cursor when rename a tab
+.git/logs/refs/heads/tabmanager:24:83:b5fba2475def0468b2b0494aa796e8e24a53ec58 60ded1b4aa77c7cef653691b78b5bef9db99f696 wsdjeg <wsdjeg@outlook.com> 1530347441 +0800	commit: Sort tab index
+.git/logs/refs/heads/tabmanager:25:83:60ded1b4aa77c7cef653691b78b5bef9db99f696 89e9e9ea825a1a30a46bcad00f94163d0c269648 wsdjeg <wsdjeg@outlook.com> 1530353190 +0800	commit: Update documentation of tab manager
+.git/logs/refs/heads/tabmanager:26:83:89e9e9ea825a1a30a46bcad00f94163d0c269648 b81aedaff2d9ee7260d27fe7381502534a32712b wsdjeg <wsdjeg@outlook.com> 1530355469 +0800	commit: Highlight current tab
+.git/logs/refs/heads/tabmanager:27:83:b81aedaff2d9ee7260d27fe7381502534a32712b 7994b0346e58288eecb34e9587148ccb09a676b7 wsdjeg <wsdjeg@outlook.com> 1530355692 +0800	commit: Fix tab toggle
+.git/logs/refs/heads/tabmanager:28:83:7994b0346e58288eecb34e9587148ccb09a676b7 09abc4b353172dd2509e5e71916bea67eae1266f wsdjeg <wsdjeg@outlook.com> 1530356117 +0800	commit: Fix tab toggle
+.git/logs/refs/heads/tabmanager:29:83:09abc4b353172dd2509e5e71916bea67eae1266f cfa99ef4d46803d28d10026accb0b18220a9dd05 wsdjeg <wsdjeg@outlook.com> 1530356464 +0800	commit: Fix tab toggle
+.git/logs/refs/heads/tabmanager:30:83:cfa99ef4d46803d28d10026accb0b18220a9dd05 940591160af57a9c0f59d046e941332c9b36dc12 wsdjeg <wsdjeg@outlook.com> 1530371072 +0800	commit: Fix tab toggle
+.git/logs/refs/heads/tabmanager:31:83:940591160af57a9c0f59d046e941332c9b36dc12 75a77d1b08b3149fadb556d0d5cec8997f2e9ed6 wsdjeg <wsdjeg@outlook.com> 1530372352 +0800	commit: Update content when enter tabman buffer
+.git/logs/refs/heads/tabmanager:32:83:75a77d1b08b3149fadb556d0d5cec8997f2e9ed6 ea044cc89b27445b0037c30d1ea17df73e35c03c wsdjeg <wsdjeg@outlook.com> 1530372982 +0800	commit: Update content when switch tab
+.git/logs/refs/heads/tabmanager:33:83:ea044cc89b27445b0037c30d1ea17df73e35c03c ec3cd8634cba3c023519f0fec9be7c2d56fdaded wsdjeg <wsdjeg@outlook.com> 1530375255 +0800	commit: Fix winwidth
+.git/logs/refs/heads/tabmanager:34:83:ec3cd8634cba3c023519f0fec9be7c2d56fdaded 6a7b6e2db53e8d96797a56c9294fe95bbe392997 wsdjeg <wsdjeg@outlook.com> 1530376272 +0800	commit: Fix move tab
+.git/logs/refs/heads/tabmanager:35:83:6a7b6e2db53e8d96797a56c9294fe95bbe392997 a607f9eda62a3a07bad8992bf6d60ee0cc386834 wsdjeg <wsdjeg@outlook.com> 1530423721 +0800	commit: Show winid of each tab
+.git/logs/refs/heads/tabmanager:36:83:a607f9eda62a3a07bad8992bf6d60ee0cc386834 e3aec5d9380b2fce096353658802223504bafe22 wsdjeg <wsdjeg@outlook.com> 1530424014 +0800	commit: Fix jump
+.git/logs/refs/heads/tabmanager:37:83:e3aec5d9380b2fce096353658802223504bafe22 1a3f2e55c8acaffcaefe6a929aa47fa96fc68de8 wsdjeg <wsdjeg@outlook.com> 1530424491 +0800	commit: Highlight winid && silent update
+.git/logs/refs/heads/tabmanager:38:83:1a3f2e55c8acaffcaefe6a929aa47fa96fc68de8 61739b287c616f909d759e6f029c949980d9e1f8 wsdjeg <wsdjeg@outlook.com> 1530447043 +0800	commit: Fix copy tab
+.git/logs/refs/heads/tabmanager:39:83:61739b287c616f909d759e6f029c949980d9e1f8 c8d4a7ad05579ed1501253c8d679348fcc2499f8 wsdjeg <wsdjeg@outlook.com> 1530447555 +0800	commit: List terminal windows
+.git/logs/refs/heads/tabmanager:40:83:c8d4a7ad05579ed1501253c8d679348fcc2499f8 5fb71375dffcc618965e97d0affb1075764aa133 wsdjeg <wsdjeg@outlook.com> 1530448031 +0800	commit: Fix neovim support
+.git/logs/refs/heads/tabmanager:41:83:5fb71375dffcc618965e97d0affb1075764aa133 e58fd0b13335705709bccc5536a070ecc138ceff wsdjeg <wsdjeg@outlook.com> 1530448840 +0800	commit: Copy name and status for tab
+.git/logs/refs/heads/tabmanager:42:83:e58fd0b13335705709bccc5536a070ecc138ceff 6741e371a28b7cb273f06882563726005096f9ea wsdjeg <wsdjeg@outlook.com> 1530450426 +0800	commit: Update follow HEAD page
+.git/logs/refs/heads/tabman:1:83:0000000000000000000000000000000000000000 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529927426 +0800	branch: Created from HEAD
+.git/logs/refs/heads/commentsid:1:83:0000000000000000000000000000000000000000 93accdaef0cdccb4101cf5128ee526a4ef9785b8 wsdjeg <wsdjeg@outlook.com> 1530778177 +0800	branch: Created from HEAD
+.git/logs/refs/heads/commentsid:2:83:93accdaef0cdccb4101cf5128ee526a4ef9785b8 e32ddb13ff47fd7c4e34c61b23a7a5ec4e5e0684 wsdjeg <wsdjeg@outlook.com> 1530778344 +0800	commit: update id
+.git/logs/refs/heads/gitment:1:83:0000000000000000000000000000000000000000 61e7e28ea01e2c66516e2b87503957628c53a793 wsdjeg <wsdjeg@outlook.com> 1530664085 +0800	branch: Created from HEAD
+.git/logs/refs/heads/gitment:2:83:61e7e28ea01e2c66516e2b87503957628c53a793 169a17c3c3207f259e167b181b2e7a27752ee482 wsdjeg <wsdjeg@outlook.com> 1530664776 +0800	commit: Use gitment
+.git/logs/refs/heads/oldvim:1:83:0000000000000000000000000000000000000000 34a773769f352a769e5520549dd49b77260a0593 wsdjeg <wsdjeg@outlook.com> 1528896585 +0800	branch: Created from HEAD
+.git/logs/refs/heads/oldvim:2:83:34a773769f352a769e5520549dd49b77260a0593 2366f3716917ef8d614acf9858acf923efe52ed1 wsdjeg <wsdjeg@outlook.com> 1528979157 +0800	commit: Add support of tag name
+.git/logs/refs/heads/oldvim:3:83:2366f3716917ef8d614acf9858acf923efe52ed1 d1164e3e4e47ef24f0e591cdba1345e0dc9ca8bf wsdjeg <wsdjeg@outlook.com> 1528980016 +0800	commit: Update statusline
+.git/logs/refs/heads/oldvim:4:83:d1164e3e4e47ef24f0e591cdba1345e0dc9ca8bf f92403b8fe07ed0223c003ad2f74c24d225222c3 wsdjeg <wsdjeg@outlook.com> 1528980197 +0800	commit: Change statuslien file name color
+.git/logs/refs/heads/buffer_state:1:83:0000000000000000000000000000000000000000 eb40d9310a27b094d73118f3716d02a8203ffda5 wsdjeg <wsdjeg@outlook.com> 1528895024 +0800	branch: Created from HEAD
+.git/logs/refs/heads/buffer_state:2:83:eb40d9310a27b094d73118f3716d02a8203ffda5 27ff38fc22af3b75bec7a934eedec0deec5ad9fb wsdjeg <wsdjeg@outlook.com> 1528895059 +0800	commit: Fix buffer state
+.git/logs/refs/heads/wiki3:1:83:0000000000000000000000000000000000000000 e2c08636d52e8b2dd4212bc9b5835ca9fa5fb721 wsdjeg <wsdjeg@outlook.com> 1530663653 +0800	branch: Created from HEAD
+.git/logs/refs/heads/wiki3:2:83:e2c08636d52e8b2dd4212bc9b5835ca9fa5fb721 58d67dc400e3460a42300dbf0578be3f56db51f0 wsdjeg <wsdjeg@outlook.com> 1530663836 +0800	commit: Update wiki for gitment
+.git/logs/refs/heads/spacevim_option:1:83:0000000000000000000000000000000000000000 e76540e0fcccce2fcbc9f439c2498611a2b05d22 wsdjeg <wsdjeg@outlook.com> 1529307964 +0800	branch: Created from HEAD
+.git/logs/refs/heads/spacevim_option:2:83:e76540e0fcccce2fcbc9f439c2498611a2b05d22 43f339bf657e7ce5251501d59be02d8fc1b2581d wsdjeg <wsdjeg@outlook.com> 1529308611 +0800	commit: Change SpaceVim option name
+.git/logs/refs/heads/spacevim_option:3:83:43f339bf657e7ce5251501d59be02d8fc1b2581d d6d076dc5ac728a939b7282178156bc8193cd8c5 wsdjeg <wsdjeg@outlook.com> 1529308794 +0800	commit: Update wiki
+.git/logs/refs/heads/spacevim_option:4:83:d6d076dc5ac728a939b7282178156bc8193cd8c5 3a86b88705554b47c391a8cccd876ec86d36ec03 wsdjeg <wsdjeg@outlook.com> 1529309017 +0800	commit: Add pr link
+.git/logs/refs/heads/new_version:1:83:0000000000000000000000000000000000000000 7a91d3bc2f726c5666e9d233ba7d396f9af23cfe wsdjeg <wsdjeg@outlook.com> 1529304136 +0800	branch: Created from HEAD
+.git/logs/refs/heads/new_version:2:83:7a91d3bc2f726c5666e9d233ba7d396f9af23cfe e5fba409148ba5b89b1993f5723554a35cfd636b wsdjeg <wsdjeg@outlook.com> 1529304404 +0800	commit: New version 0.9.0-dev
+.git/logs/refs/heads/new_version:3:83:e5fba409148ba5b89b1993f5723554a35cfd636b 1b48bb8e0b461ee41b28d6128f61e020d13c44b1 wsdjeg <wsdjeg@outlook.com> 1529307122 +0800	commit: Update release script
+.git/logs/refs/heads/new_version:4:83:1b48bb8e0b461ee41b28d6128f61e020d13c44b1 2f00ef833f23af1d606f58190ba5d98595a91c00 wsdjeg <wsdjeg@outlook.com> 1529307764 +0800	commit: Update release script
+.git/logs/refs/heads/readme:1:83:0000000000000000000000000000000000000000 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530533245 +0800	branch: Created from HEAD
+.git/logs/refs/heads/apis:1:83:0000000000000000000000000000000000000000 d88e92626a8f34bd8676d279542edc4f856377c0 wsdjeg <wsdjeg@outlook.com> 1529413464 +0800	branch: Created from HEAD
+.git/logs/refs/heads/apis:2:83:d88e92626a8f34bd8676d279542edc4f856377c0 7501b241757289f65fcadca2374718cd617d3c89 wsdjeg <wsdjeg@outlook.com> 1529415333 +0800	commit: Add test for toml api
+.git/logs/refs/heads/apis:3:83:7501b241757289f65fcadca2374718cd617d3c89 4c1cb40ea2dcb10439febfe1707f3deb882137cd wsdjeg <wsdjeg@outlook.com> 1529416871 +0800	commit: Fix type in test
+.git/logs/refs/heads/apis:4:83:4c1cb40ea2dcb10439febfe1707f3deb882137cd 3421fad36147af838789c6bed1d642971aae4a0f wsdjeg <wsdjeg@outlook.com> 1529417300 +0800	commit: Add test for number api
+.git/logs/refs/heads/apis:5:83:3421fad36147af838789c6bed1d642971aae4a0f b848d806136a2b56169596eb75f7ab7347b10e95 wsdjeg <wsdjeg@outlook.com> 1529494516 +0800	commit: Add test for file api
+.git/logs/refs/heads/apis:6:83:b848d806136a2b56169596eb75f7ab7347b10e95 89b7ac9f0c50d2c9b47ab7b5ae59d3346102383f wsdjeg <wsdjeg@outlook.com> 1529495112 +0800	commit: Add test for vim#highlight api
+.git/logs/refs/heads/apis:7:83:89b7ac9f0c50d2c9b47ab7b5ae59d3346102383f 4bc388f9bbcf608ce34b0808cfd91ae70e65ecde wsdjeg <wsdjeg@outlook.com> 1529495876 +0800	rebase -i (finish): refs/heads/apis onto b17632f4afe9c14f02d2ae83dbb8ccee73d95d0c
+.git/logs/refs/heads/apis:8:83:4bc388f9bbcf608ce34b0808cfd91ae70e65ecde d4bc0550a2c48145cf45a8fb0600d3de465898a7 wsdjeg <wsdjeg@outlook.com> 1529496334 +0800	commit: Add test for icon api
+.git/logs/refs/heads/apis:9:83:d4bc0550a2c48145cf45a8fb0600d3de465898a7 7b7fe954c713aac19a22d94de2962cd5430d4673 wsdjeg <wsdjeg@outlook.com> 1529496616 +0800	commit: Enable guicolors
+.git/logs/refs/heads/apis:10:83:7b7fe954c713aac19a22d94de2962cd5430d4673 749338af45a234c9630653e82452f3a8dc1789c8 wsdjeg <wsdjeg@outlook.com> 1529497165 +0800	commit: Fix file api test
+.git/logs/refs/heads/apis:11:83:749338af45a234c9630653e82452f3a8dc1789c8 f95cf7f60589b854e8912c1451b48178e00b5961 wsdjeg <wsdjeg@outlook.com> 1529497801 +0800	commit: Fix file api test in appveyor
+autoload/SpaceVim/api/unicode/box.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+.git/logs/refs/heads/tabline2:1:83:0000000000000000000000000000000000000000 01a5d8670b2b1a218e21e7a30828afef2abb648e wsdjeg <wsdjeg@outlook.com> 1530621434 +0800	branch: Created from HEAD
+autoload/SpaceVim/api/data/dict.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/data/list.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/data/json.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/data/base64.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/data/string.vim:5:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/data/number.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/vim/key.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/vim/sid.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/unicode/icon.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/vim/message.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/vim/statusline.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/vim/mapping.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/vim/command.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/vim/signatures.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/vim/highlight.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/vim/buffer.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/vim/tab.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/bash/complete.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/vim/compatible.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/web/xml.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+.git/logs/refs/heads/easymotion:1:83:0000000000000000000000000000000000000000 839b475bfc69144d801a9af6134e1c290ef74a14 wsdjeg <wsdjeg@outlook.com> 1528893821 +0800	branch: Created from HEAD
+.git/logs/refs/heads/easymotion:2:83:839b475bfc69144d801a9af6134e1c290ef74a14 0e827f8e2a3552370f38eadd7bb56abf0e9faf99 wsdjeg <wsdjeg@outlook.com> 1528894085 +0800	commit: Update key binding of easymotion
+autoload/SpaceVim/mapping/guide/theme.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/kotlin.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/tmux.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/pony.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/sh.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/html.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/rust.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/web/html.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/javascript.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/java.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/java.vim:84:13:        \ ['wsdjeg/vim-dict',                        { 'on_ft' : 'java'}],
+autoload/SpaceVim/layers/lang/java.vim:85:13:        \ ['wsdjeg/java_getset.vim',                 { 'on_ft' : 'java', 'loadconf' : 1}],
+autoload/SpaceVim/layers/lang/java.vim:86:13:        \ ['wsdjeg/JavaUnit.vim',                    { 'on_ft' : 'java'}],
+autoload/SpaceVim/layers/lang/ruby.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/lua.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/swig.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/c.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/c.vim:67:27:      call add(plugins, ['wsdjeg/asyncomplete-clang.vim', {'merged' : 0, 'loadconf' : 1}])
+autoload/SpaceVim/layers/lang/ocaml.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/scala.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/toml.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/dart.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/json.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/python.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/vim.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/go.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/ps1.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/r.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/r.vim:11:23:  call add(plugins, ['wsdjeg/Nvim-R', {'merged' : 0}])
+autoload/SpaceVim/layers/lang/clojure.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/api/web/http.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/puppet.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/markdown.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/solidity.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/lisp.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/typescript.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/elixir.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/crystal.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/haskell.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/lang/php.vim:4:26:" Author: Shidong Wang < wsdjeg at 163.com >
+autoload/SpaceVim/layers/core/statusline.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/core/banner.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/core/tabline.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/layers/tools/screensaver.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+.git/logs/refs/remotes/ssfdust/master:1:83:0000000000000000000000000000000000000000 293d6104844d4a089931406abf1a62daa035be0c wsdjeg <wsdjeg@outlook.com> 1530537174 +0800	fetch ssfdust: storing head
+.git/logs/refs/remotes/nikolaussucher/master:1:83:0000000000000000000000000000000000000000 490c042f847cd10e989f16716ae5bc7f7afb47ba wsdjeg <wsdjeg@outlook.com> 1530623308 +0800	fetch nikolaussucher: storing head
+autoload/SpaceVim/layers/lang/perl.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+.git/logs/refs/remotes/origin/lsp_typescript:1:83:0000000000000000000000000000000000000000 19503b77d42fa46942d29ea8a5edd8c879778770 wsdjeg <wsdjeg@outlook.com> 1529758564 +0800	update by push
+.git/logs/refs/remotes/origin/lsp_typescript:2:83:19503b77d42fa46942d29ea8a5edd8c879778770 17d6a8da6942a5ba71da96bc6418b3ac1eee9c92 wsdjeg <wsdjeg@outlook.com> 1529760126 +0800	update by push
+.git/logs/refs/remotes/origin/lsp_typescript:3:83:17d6a8da6942a5ba71da96bc6418b3ac1eee9c92 61efcfaee8ab5346d9be5bb3917ab3d9378b7ff9 wsdjeg <wsdjeg@outlook.com> 1529763993 +0800	update by push
+.git/logs/refs/remotes/origin/lsp_typescript:4:83:61efcfaee8ab5346d9be5bb3917ab3d9378b7ff9 1dad7004debde64ab3687e97fba801ec9967877e wsdjeg <wsdjeg@outlook.com> 1530019253 +0800	update by push
+.git/logs/refs/remotes/origin/wiki:1:83:0000000000000000000000000000000000000000 f1f9a3671a086f2a0bad65e5761e60424caf50bc wsdjeg <wsdjeg@outlook.com> 1530104442 +0800	update by push
+.git/logs/refs/remotes/origin/wiki:2:83:f1f9a3671a086f2a0bad65e5761e60424caf50bc 24101894f22c9423691d408b480d8070fe117205 wsdjeg <wsdjeg@outlook.com> 1530104833 +0800	update by push
+.git/logs/refs/remotes/origin/icons:1:83:0000000000000000000000000000000000000000 e8dde59255e9ce554eb261bb25f52317a8b077a3 wsdjeg <wsdjeg@outlook.com> 1528893312 +0800	update by push
+.git/logs/refs/remotes/upstream/master:1:83:0000000000000000000000000000000000000000 355f09c82344eed8954865df526f1216251bb2e3 wsdjeg <wsdjeg@outlook.com> 1528686181 +0800	fetch upstream: storing head
+.git/logs/refs/remotes/upstream/master:2:83:355f09c82344eed8954865df526f1216251bb2e3 67d998618e1258279bee2095928c6481889708d9 wsdjeg <wsdjeg@outlook.com> 1528892249 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:3:83:67d998618e1258279bee2095928c6481889708d9 839b475bfc69144d801a9af6134e1c290ef74a14 wsdjeg <wsdjeg@outlook.com> 1528893809 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:4:83:839b475bfc69144d801a9af6134e1c290ef74a14 eb40d9310a27b094d73118f3716d02a8203ffda5 wsdjeg <wsdjeg@outlook.com> 1528894868 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:5:83:eb40d9310a27b094d73118f3716d02a8203ffda5 34a773769f352a769e5520549dd49b77260a0593 wsdjeg <wsdjeg@outlook.com> 1528895214 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:6:83:34a773769f352a769e5520549dd49b77260a0593 82bb0fe0e517a8496335cc9ee08cb76bef5ac0d6 wsdjeg <wsdjeg@outlook.com> 1528980809 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:7:83:82bb0fe0e517a8496335cc9ee08cb76bef5ac0d6 11bfa73fc4e598c71a4d9009e245cf6f1aa20636 wsdjeg <wsdjeg@outlook.com> 1529236790 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:8:83:11bfa73fc4e598c71a4d9009e245cf6f1aa20636 7a91d3bc2f726c5666e9d233ba7d396f9af23cfe wsdjeg <wsdjeg@outlook.com> 1529304105 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:9:83:7a91d3bc2f726c5666e9d233ba7d396f9af23cfe e76540e0fcccce2fcbc9f439c2498611a2b05d22 wsdjeg <wsdjeg@outlook.com> 1529307946 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:10:83:e76540e0fcccce2fcbc9f439c2498611a2b05d22 db524ed2221c0fef4fc087b1146a91404b99f28e wsdjeg <wsdjeg@outlook.com> 1529324272 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:11:83:db524ed2221c0fef4fc087b1146a91404b99f28e 7f0723e93e764403fa6eaf89740e01a53643a794 wsdjeg <wsdjeg@outlook.com> 1529327573 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:12:83:7f0723e93e764403fa6eaf89740e01a53643a794 d88e92626a8f34bd8676d279542edc4f856377c0 wsdjeg <wsdjeg@outlook.com> 1529413048 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:13:83:d88e92626a8f34bd8676d279542edc4f856377c0 b17632f4afe9c14f02d2ae83dbb8ccee73d95d0c wsdjeg <wsdjeg@outlook.com> 1529495866 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:14:83:b17632f4afe9c14f02d2ae83dbb8ccee73d95d0c 464e9d595709704d1989e7e3e3fdf81e00a75e9b wsdjeg <wsdjeg@outlook.com> 1529498204 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:15:83:464e9d595709704d1989e7e3e3fdf81e00a75e9b d9324f8c30fed3a8bda5c220757be54abcb7d29d wsdjeg <wsdjeg@outlook.com> 1529583991 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:16:83:d9324f8c30fed3a8bda5c220757be54abcb7d29d 3787b35c64030c06d27b7d698da5a5acc8c42003 wsdjeg <wsdjeg@outlook.com> 1529757587 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:17:83:3787b35c64030c06d27b7d698da5a5acc8c42003 2e6aac03df0b426103a8a94c05371f8aca082f55 wsdjeg <wsdjeg@outlook.com> 1530018871 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:18:83:2e6aac03df0b426103a8a94c05371f8aca082f55 9d9ad29a4bf422c7e8e3a80a0cf22e0a56f8f939 wsdjeg <wsdjeg@outlook.com> 1530019355 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:19:83:9d9ad29a4bf422c7e8e3a80a0cf22e0a56f8f939 adfffa448963db513a94fae4bf6358308cdcaca0 wsdjeg <wsdjeg@outlook.com> 1530103658 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:20:83:adfffa448963db513a94fae4bf6358308cdcaca0 652b7100992a88b2f0cb1408545544fece2c912e wsdjeg <wsdjeg@outlook.com> 1530104699 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:21:83:652b7100992a88b2f0cb1408545544fece2c912e 66d9dcfaa73a3dc357ce1b023811ff3b1ec4d581 wsdjeg <wsdjeg@outlook.com> 1530105128 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:22:83:66d9dcfaa73a3dc357ce1b023811ff3b1ec4d581 894995f7dcfbf7ae821c439930d1609248c8630b wsdjeg <wsdjeg@outlook.com> 1530533110 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:23:83:894995f7dcfbf7ae821c439930d1609248c8630b 94cc3083588ca147800324ab737c69578b3925df wsdjeg <wsdjeg@outlook.com> 1530626632 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:24:83:94cc3083588ca147800324ab737c69578b3925df e47fefdf8868b620f92fdbedd146ea586059640b wsdjeg <wsdjeg@outlook.com> 1530661196 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:25:83:e47fefdf8868b620f92fdbedd146ea586059640b fa769727f8ec44370a570964e69f2be4b5d1c439 wsdjeg <wsdjeg@outlook.com> 1530663426 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:26:83:fa769727f8ec44370a570964e69f2be4b5d1c439 e2c08636d52e8b2dd4212bc9b5835ca9fa5fb721 wsdjeg <wsdjeg@outlook.com> 1530663628 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:27:83:e2c08636d52e8b2dd4212bc9b5835ca9fa5fb721 61e7e28ea01e2c66516e2b87503957628c53a793 wsdjeg <wsdjeg@outlook.com> 1530664055 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:28:83:61e7e28ea01e2c66516e2b87503957628c53a793 07f8cacb13c2de308c3fe4e47332a6841232059f wsdjeg <wsdjeg@outlook.com> 1530711876 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:29:83:07f8cacb13c2de308c3fe4e47332a6841232059f 93accdaef0cdccb4101cf5128ee526a4ef9785b8 wsdjeg <wsdjeg@outlook.com> 1530778147 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:30:83:93accdaef0cdccb4101cf5128ee526a4ef9785b8 823c7e20edfdf028e47482a3f6d183c9cdf9c889 wsdjeg <wsdjeg@outlook.com> 1530779209 +0800	fetch upstream: fast-forward
+.git/logs/refs/remotes/upstream/master:31:83:823c7e20edfdf028e47482a3f6d183c9cdf9c889 f176e60bd2e82ec0ac9122744abe03a74767890b wsdjeg <wsdjeg@outlook.com> 1530797357 +0800	fetch upstream: fast-forward
+autoload/SpaceVim/layers/lang/xml.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+.git/logs/refs/remotes/origin/nerdtree:1:83:0000000000000000000000000000000000000000 11fc529add0a65e46bdae38320db768d8848dcb6 wsdjeg <wsdjeg@outlook.com> 1530623672 +0800	update by push
+.git/logs/refs/remotes/origin/nerdtree:2:83:11fc529add0a65e46bdae38320db768d8848dcb6 582811a7579aaec222f774f89d3dd7186f9b078b wsdjeg <wsdjeg@outlook.com> 1530623862 +0800	update by push
+.git/logs/refs/remotes/origin/statusline:1:83:0000000000000000000000000000000000000000 256ded0e8f67c34b6feb14b5033194977934d791 wsdjeg <wsdjeg@outlook.com> 1530773058 +0800	update by push
+.git/logs/refs/remotes/origin/statusline:2:83:256ded0e8f67c34b6feb14b5033194977934d791 13f747fd095d92a1200e28c21d2484a53ac33c68 wsdjeg <wsdjeg@outlook.com> 1530773352 +0800	update by push
+.git/logs/refs/remotes/origin/time:1:83:0000000000000000000000000000000000000000 5d59d5e731454cce9197766879c92136723b744a wsdjeg <wsdjeg@outlook.com> 1530797701 +0800	update by push
+autoload/airline/extensions/tabline/formatters/spacevim.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+.git/logs/refs/remotes/origin/resume:1:83:0000000000000000000000000000000000000000 9da1f425567f1ed6977ff3196aecd569dd6901ba wsdjeg <wsdjeg@outlook.com> 1530104093 +0800	update by push
+.git/logs/refs/remotes/origin/resume:2:83:9da1f425567f1ed6977ff3196aecd569dd6901ba c37ebdd29303b9a9f2039ba5a8b5923ab152a090 wsdjeg <wsdjeg@outlook.com> 1530104643 +0800	update by push
+.git/logs/refs/remotes/origin/flygrep:1:83:0000000000000000000000000000000000000000 e986f5bf0087023ca8a6b65c3ec9b5fd4ceda79f wsdjeg <wsdjeg@outlook.com> 1530536907 +0800	update by push
+.git/logs/refs/remotes/origin/flygrep:2:83:e986f5bf0087023ca8a6b65c3ec9b5fd4ceda79f 2f0d1e3b7070c4682f58ad94d289b5ffa77669e4 wsdjeg <wsdjeg@outlook.com> 1530537204 +0800	update by push
+.git/logs/refs/remotes/origin/flygrep:3:83:2f0d1e3b7070c4682f58ad94d289b5ffa77669e4 260dcb56052e719aae53e8321fa47077451260d0 wsdjeg <wsdjeg@outlook.com> 1530763513 +0800	update by push
+.git/logs/refs/remotes/origin/flygrep:4:83:260dcb56052e719aae53e8321fa47077451260d0 60d45efd92ae7abee0ed4d0d3f85196faeba5001 wsdjeg <wsdjeg@outlook.com> 1530763933 +0800	update by push
+.git/logs/refs/remotes/origin/flygrep:5:83:60d45efd92ae7abee0ed4d0d3f85196faeba5001 35ff4cf95874d352df7aec70ebae8ef73f6cbfa3 wsdjeg <wsdjeg@outlook.com> 1530766000 +0800	update by push
+.git/logs/refs/remotes/origin/flygrep:6:83:35ff4cf95874d352df7aec70ebae8ef73f6cbfa3 cac5681a2c63493871d58ac9c0954c98d4630b73 wsdjeg <wsdjeg@outlook.com> 1530766182 +0800	update by push
+.git/logs/refs/remotes/origin/flygrep:7:83:cac5681a2c63493871d58ac9c0954c98d4630b73 8224a1c07ef5eddb73c1fb5f9fbf5dce7c2b3602 wsdjeg <wsdjeg@outlook.com> 1530881991 +0800	update by push
+.git/logs/refs/remotes/origin/flygrep:8:83:8224a1c07ef5eddb73c1fb5f9fbf5dce7c2b3602 3b713c3620460a42128fce574ae2dd5089f5ffe0 wsdjeg <wsdjeg@outlook.com> 1530884042 +0800	update by push
+.git/logs/refs/remotes/origin/flygrep:9:83:3b713c3620460a42128fce574ae2dd5089f5ffe0 f5311c1d173fd3a927e577a5a6abee9595e6dc03 wsdjeg <wsdjeg@outlook.com> 1530884199 +0800	update by push
+.git/logs/refs/remotes/origin/pull_request_template:1:83:0000000000000000000000000000000000000000 de460cf5afe104a1a0bd132b8a2d842aba7dc40f wsdjeg <wsdjeg@outlook.com> 1529499005 +0800	update by push
+.git/logs/refs/remotes/origin/pull_request_template:2:83:de460cf5afe104a1a0bd132b8a2d842aba7dc40f 67153b668d4a910d159fb0563e90f0ce90899c7d wsdjeg <wsdjeg@outlook.com> 1529500966 +0800	update by push
+.git/logs/refs/remotes/origin/pull_request_template:3:83:67153b668d4a910d159fb0563e90f0ce90899c7d 24ef35cbf4e91f0bfd74a41ab762579d60365058 wsdjeg <wsdjeg@outlook.com> 1529501268 +0800	update by push
+.git/logs/refs/remotes/origin/faq:1:83:0000000000000000000000000000000000000000 b19ff53cee5c0d4bb04bdd3a79540839c898dc73 wsdjeg <wsdjeg@outlook.com> 1529414403 +0800	update by push
+.git/logs/refs/remotes/origin/go:1:83:0000000000000000000000000000000000000000 9a9ea45deb5edb1c921b44da4940685df3d18743 wsdjeg <wsdjeg@outlook.com> 1529769005 +0800	update by push
+.git/logs/refs/remotes/origin/go:2:83:9a9ea45deb5edb1c921b44da4940685df3d18743 be5d100215d0451a45d04a44554e17aa953812d8 wsdjeg <wsdjeg@outlook.com> 1530017758 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:1:83:0000000000000000000000000000000000000000 120ba6020d05b615c6353027517a8319745270bf wsdjeg <wsdjeg@outlook.com> 1529584553 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:2:83:120ba6020d05b615c6353027517a8319745270bf 06318bf45726e1c57bc58093cceb1a7498ef2df9 wsdjeg <wsdjeg@outlook.com> 1529585357 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:3:83:06318bf45726e1c57bc58093cceb1a7498ef2df9 f8dbb1f1c626155c6efeb8830ba2be45062eded1 wsdjeg <wsdjeg@outlook.com> 1529586745 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:4:83:f8dbb1f1c626155c6efeb8830ba2be45062eded1 b01f2740c12989443f9b858ee54d33c42d172e7d wsdjeg <wsdjeg@outlook.com> 1529588099 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:5:83:b01f2740c12989443f9b858ee54d33c42d172e7d e78b86dd93e4af631880d545e9424d5dd6c2c56a wsdjeg <wsdjeg@outlook.com> 1529589492 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:6:83:e78b86dd93e4af631880d545e9424d5dd6c2c56a af1ea407f7e550d1aab46c3e05c789970c4751a9 wsdjeg <wsdjeg@outlook.com> 1529668483 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:7:83:af1ea407f7e550d1aab46c3e05c789970c4751a9 f3756bd85530ef4233e706f73b79648bb8ed5726 wsdjeg <wsdjeg@outlook.com> 1529669869 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:8:83:f3756bd85530ef4233e706f73b79648bb8ed5726 94405f6e1ebaa4d03f04aaf51c7ca70f44ce880b wsdjeg <wsdjeg@outlook.com> 1529669939 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:9:83:94405f6e1ebaa4d03f04aaf51c7ca70f44ce880b 605564f3e9ed687465f5dde9709a3c95f5e17eab wsdjeg <wsdjeg@outlook.com> 1529671045 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:10:83:605564f3e9ed687465f5dde9709a3c95f5e17eab fe7c190167786bd4a0078a3c21ef130915c66898 wsdjeg <wsdjeg@outlook.com> 1529673958 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:11:83:fe7c190167786bd4a0078a3c21ef130915c66898 77d52cced951a2279d941c56f72dc07a72194cb0 wsdjeg <wsdjeg@outlook.com> 1529676747 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:12:83:77d52cced951a2279d941c56f72dc07a72194cb0 6429291b3e047eb94e25792c263f7566910a7e8e wsdjeg <wsdjeg@outlook.com> 1529717008 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:13:83:6429291b3e047eb94e25792c263f7566910a7e8e db81c607b554461a6469ae1c4178279ab7781647 wsdjeg <wsdjeg@outlook.com> 1529717931 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:14:83:db81c607b554461a6469ae1c4178279ab7781647 403b3205f7737b2d78389332c5d01043720fc1ab wsdjeg <wsdjeg@outlook.com> 1529719165 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:15:83:403b3205f7737b2d78389332c5d01043720fc1ab f1ba6c34f0c470b78ef70a5597e97e314aea2658 wsdjeg <wsdjeg@outlook.com> 1529719843 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:16:83:f1ba6c34f0c470b78ef70a5597e97e314aea2658 2023ba571267d2894a7d1e9a7836f66b7981e68f wsdjeg <wsdjeg@outlook.com> 1529721167 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:17:83:2023ba571267d2894a7d1e9a7836f66b7981e68f 7a3745644310ed8f02af6ffe124c986671e75ce4 wsdjeg <wsdjeg@outlook.com> 1529722783 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:18:83:7a3745644310ed8f02af6ffe124c986671e75ce4 7059f157a94c47bd80822f6c35489d43b0c9630e wsdjeg <wsdjeg@outlook.com> 1529725083 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:19:83:7059f157a94c47bd80822f6c35489d43b0c9630e 8c9fedb6d407abc546d3430eea46294fdac11b78 wsdjeg <wsdjeg@outlook.com> 1529733410 +0800	update by push
+.git/logs/refs/remotes/origin/layer_doc:20:83:8c9fedb6d407abc546d3430eea46294fdac11b78 653ba241fbaa17e40820d1e145b4d09744e377a9 wsdjeg <wsdjeg@outlook.com> 1529735318 +0800	update by push
+.git/logs/refs/remotes/origin/help:1:83:0000000000000000000000000000000000000000 9a3b59c818dfe491251299207434c9384777da0d wsdjeg <wsdjeg@outlook.com> 1529066654 +0800	update by push
+.git/logs/refs/remotes/origin/help:2:83:9a3b59c818dfe491251299207434c9384777da0d 7dcd9b9e8776a64802755771ac50e614aefd1e24 wsdjeg <wsdjeg@outlook.com> 1529067716 +0800	update by push
+.git/logs/refs/remotes/origin/help:3:83:7dcd9b9e8776a64802755771ac50e614aefd1e24 c1b5958622657b1f993491c268379f764627b733 wsdjeg <wsdjeg@outlook.com> 1529068754 +0800	update by push
+.git/logs/refs/remotes/origin/release:1:83:0000000000000000000000000000000000000000 6db3cedf508247eab9f349817e686c2b24508ce3 wsdjeg <wsdjeg@outlook.com> 1529237153 +0800	update by push
+.git/logs/refs/remotes/origin/release:2:83:6db3cedf508247eab9f349817e686c2b24508ce3 713db36659c129d478ef0f48cc822707f5097692 wsdjeg <wsdjeg@outlook.com> 1529237783 +0800	update by push
+.git/logs/refs/remotes/origin/release:3:83:713db36659c129d478ef0f48cc822707f5097692 e4e9ab54f559444311150ac5834a04bba2872e72 wsdjeg <wsdjeg@outlook.com> 1529238143 +0800	update by push
+.git/logs/refs/remotes/origin/release:4:83:e4e9ab54f559444311150ac5834a04bba2872e72 8388169aba0e846e08c419da518f76366c87bede wsdjeg <wsdjeg@outlook.com> 1529242266 +0800	update by push
+.git/logs/refs/remotes/origin/release:5:83:8388169aba0e846e08c419da518f76366c87bede bf9a873ac28cd9d03683daba4cb1227584d845d1 wsdjeg <wsdjeg@outlook.com> 1529244386 +0800	update by push
+.git/logs/refs/remotes/origin/release:6:83:bf9a873ac28cd9d03683daba4cb1227584d845d1 a3114b6f82086974a09a3196dbb891ee3ce13b15 wsdjeg <wsdjeg@outlook.com> 1529299327 +0800	update by push
+.git/logs/refs/remotes/origin/release:7:83:a3114b6f82086974a09a3196dbb891ee3ce13b15 e793ec54e109978e58abeca66d492cae9f355ff5 wsdjeg <wsdjeg@outlook.com> 1529300095 +0800	update by push
+.git/logs/refs/remotes/origin/release:8:83:e793ec54e109978e58abeca66d492cae9f355ff5 c5327572a5d42074bbcd076229800fae00b9d6cd wsdjeg <wsdjeg@outlook.com> 1529300264 +0800	update by push
+.git/logs/refs/remotes/origin/release:9:83:c5327572a5d42074bbcd076229800fae00b9d6cd 438912f1e18537e3bceb0dc47590721a1491620b wsdjeg <wsdjeg@outlook.com> 1529300583 +0800	update by push
+.git/logs/refs/remotes/origin/release:10:83:438912f1e18537e3bceb0dc47590721a1491620b b464470dacba3501428ba98b1515ae369fa3556c wsdjeg <wsdjeg@outlook.com> 1529300963 +0800	update by push
+.git/logs/refs/remotes/origin/release:11:83:b464470dacba3501428ba98b1515ae369fa3556c 2539d9d9313744e89af6217bc836f2f46615a661 wsdjeg <wsdjeg@outlook.com> 1529301156 +0800	update by push
+.git/logs/refs/remotes/origin/HEAD:1:83:0000000000000000000000000000000000000000 8c3e51583a47270937d9729622f70e4e9e46b845 wsdjeg <wsdjeg@outlook.com> 1528684362 +0800	clone: from git@github.com:wsdjeg/SpaceVim.git
+.git/logs/refs/remotes/origin/color_material:1:83:0000000000000000000000000000000000000000 39d1323b1008827a5548b10e30de2157e5df7851 wsdjeg <wsdjeg@outlook.com> 1528977984 +0800	fetch --quiet: storing head
+.git/logs/refs/remotes/origin/color_material:2:83:39d1323b1008827a5548b10e30de2157e5df7851 3ffc88c246dd6f0e52e3127a668060574fc3dda5 wsdjeg <wsdjeg@outlook.com> 1529327798 +0800	update by push
+.git/logs/refs/remotes/origin/color_material:3:83:3ffc88c246dd6f0e52e3127a668060574fc3dda5 4d8a3ef4c80cc583e6ecc56eb7d987c5357bdd46 wsdjeg <wsdjeg@outlook.com> 1529328895 +0800	update by push
+.git/logs/refs/remotes/origin/color_material:4:83:4d8a3ef4c80cc583e6ecc56eb7d987c5357bdd46 4e3b900540413b19bd817e15980e65129fad8f87 wsdjeg <wsdjeg@outlook.com> 1529329400 +0800	update by push
+.git/logs/refs/remotes/origin/color_material:5:83:4e3b900540413b19bd817e15980e65129fad8f87 eb189f08d8cbe039dcdc5872a360ffe70e627015 wsdjeg <wsdjeg@outlook.com> 1529412909 +0800	update by push
+.git/logs/refs/remotes/origin/easymotion:1:83:0000000000000000000000000000000000000000 0e827f8e2a3552370f38eadd7bb56abf0e9faf99 wsdjeg <wsdjeg@outlook.com> 1528894102 +0800	update by push
+.git/logs/refs/remotes/origin/fixcomentid:1:83:0000000000000000000000000000000000000000 636e3894da28af530588cb568325def3b7411bcd wsdjeg <wsdjeg@outlook.com> 1530779261 +0800	update by push
+.git/logs/refs/remotes/origin/develop:1:83:5bccbf7e41a2fb1e0328f378e1136d9759877552 6139512a9955b4434cabf3d3d31e71e8ae8dfe34 wsdjeg <wsdjeg@outlook.com> 1529326286 +0800	update by push
+.git/logs/refs/remotes/origin/plugin_manager:1:83:0000000000000000000000000000000000000000 241c3b8ff5c15b7cb17c3ebdacfd4c9c2abcadc8 wsdjeg <wsdjeg@outlook.com> 1530021109 +0800	update by push
+.git/logs/refs/remotes/origin/plugin_manager:2:83:241c3b8ff5c15b7cb17c3ebdacfd4c9c2abcadc8 79e9df6f3b6e96d23ce996c6780f1400bf8884d3 wsdjeg <wsdjeg@outlook.com> 1530021606 +0800	update by push
+.git/logs/refs/remotes/origin/gitment:1:83:0000000000000000000000000000000000000000 e57d0a3ede10ac28eb77b9ff7b096c396c97114e wsdjeg <wsdjeg@outlook.com> 1530627006 +0800	update by push
+.git/logs/refs/remotes/origin/gitment:2:83:e57d0a3ede10ac28eb77b9ff7b096c396c97114e 61e7e28ea01e2c66516e2b87503957628c53a793 wsdjeg <wsdjeg@outlook.com> 1530664099 +0800	update by push
+.git/logs/refs/remotes/origin/gitment:3:83:61e7e28ea01e2c66516e2b87503957628c53a793 169a17c3c3207f259e167b181b2e7a27752ee482 wsdjeg <wsdjeg@outlook.com> 1530664786 +0800	update by push
+.git/logs/refs/remotes/origin/meetup:1:83:0000000000000000000000000000000000000000 d446bc3dfe07495ec3b37c17216f5ceb9da1c7a5 wsdjeg <wsdjeg@outlook.com> 1529846993 +0800	update by push
+.git/logs/refs/remotes/origin/meetup:2:83:d446bc3dfe07495ec3b37c17216f5ceb9da1c7a5 4bc9d791b3edf283caccfb53758be62b32b751b7 wsdjeg <wsdjeg@outlook.com> 1529848556 +0800	update by push
+.git/logs/refs/remotes/origin/meetup:3:83:4bc9d791b3edf283caccfb53758be62b32b751b7 eba54cdf6246ca9e8032106224256eb2fc86371b wsdjeg <wsdjeg@outlook.com> 1530532714 +0800	fetch --quiet: fast-forward
+.git/logs/refs/remotes/origin/meetup:4:83:eba54cdf6246ca9e8032106224256eb2fc86371b babd2f932c76af2d4df54db880dd7360e1887971 wsdjeg <wsdjeg@outlook.com> 1530533562 +0800	update by push
+.git/logs/refs/remotes/origin/meetup:5:83:babd2f932c76af2d4df54db880dd7360e1887971 97577bb76bc0bd19dea8a1e309d8f0bb1563a5a9 wsdjeg <wsdjeg@outlook.com> 1530534499 +0800	update by push
+.git/logs/refs/remotes/origin/meetup:6:83:97577bb76bc0bd19dea8a1e309d8f0bb1563a5a9 d5ad640bbb9f72ff1865493e749693f9094a675b wsdjeg <wsdjeg@outlook.com> 1530534830 +0800	update by push
+.git/logs/refs/remotes/origin/meetup:7:83:d5ad640bbb9f72ff1865493e749693f9094a675b 8fce23617ac7a3a50e76e541d75776c6c202e47e wsdjeg <wsdjeg@outlook.com> 1530534974 +0800	update by push
+.git/logs/refs/remotes/origin/meetup:8:83:8fce23617ac7a3a50e76e541d75776c6c202e47e 3dfa388b78b25df65a1138fb1dd7d52743de474a wsdjeg <wsdjeg@outlook.com> 1530535567 +0800	update by push
+.git/logs/refs/remotes/origin/meetup:9:83:3dfa388b78b25df65a1138fb1dd7d52743de474a 87ac4e9de2563df3e7c3a6cce19d54c4fe1fc8be wsdjeg <wsdjeg@outlook.com> 1530536553 +0800	update by push
+.git/logs/refs/remotes/origin/meetup:10:83:87ac4e9de2563df3e7c3a6cce19d54c4fe1fc8be 9ed184b0bda8517f3383a29cf751944763b52bfe wsdjeg <wsdjeg@outlook.com> 1530536778 +0800	update by push
+.git/logs/refs/remotes/origin/meetup:11:83:9ed184b0bda8517f3383a29cf751944763b52bfe 7646fb4707555c0569d29ca2a80bd740c662ef13 wsdjeg <wsdjeg@outlook.com> 1530537603 +0800	update by push
+.git/logs/refs/remotes/origin/meetup:12:83:7646fb4707555c0569d29ca2a80bd740c662ef13 4813844a4dbedcf3d51477bf535b19d53e0103c3 wsdjeg <wsdjeg@outlook.com> 1530537918 +0800	update by push
+.git/logs/refs/remotes/origin/meetup:13:83:4813844a4dbedcf3d51477bf535b19d53e0103c3 2b793ad1742d8ceee14b07ec7fd1ecf973f4439b wsdjeg <wsdjeg@outlook.com> 1530712070 +0800	update by push
+.git/logs/refs/remotes/origin/meetup:14:83:2b793ad1742d8ceee14b07ec7fd1ecf973f4439b c1c6dfe9dba51f5b538ea76e4deea160de138462 wsdjeg <wsdjeg@outlook.com> 1530713327 +0800	update by push
+.git/logs/refs/remotes/origin/meetup:15:83:c1c6dfe9dba51f5b538ea76e4deea160de138462 15726b522bd2e113ec91b5109bc0b312f0767e72 wsdjeg <wsdjeg@outlook.com> 1530777724 +0800	update by push
+.git/logs/refs/remotes/origin/meetup:16:83:15726b522bd2e113ec91b5109bc0b312f0767e72 95ba0d337d3ee5f836c3174d35c709d02c29cbe9 wsdjeg <wsdjeg@outlook.com> 1530778040 +0800	update by push
+.git/logs/refs/remotes/origin/commentsid:1:83:0000000000000000000000000000000000000000 e32ddb13ff47fd7c4e34c61b23a7a5ec4e5e0684 wsdjeg <wsdjeg@outlook.com> 1530778361 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:1:83:0000000000000000000000000000000000000000 408d73db87813fdce903755b90a0f981eef92cbe wsdjeg <wsdjeg@outlook.com> 1530105814 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:2:83:408d73db87813fdce903755b90a0f981eef92cbe b6bd028219b210a240885c79995c6e6d3b0304d4 wsdjeg <wsdjeg@outlook.com> 1530106660 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:3:83:b6bd028219b210a240885c79995c6e6d3b0304d4 21e650610c961b4a41be832ee763d35a5ffbda26 wsdjeg <wsdjeg@outlook.com> 1530107454 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:4:83:21e650610c961b4a41be832ee763d35a5ffbda26 7bfb5fc423277ebde8e9b1e5299af1fd89c2395d wsdjeg <wsdjeg@outlook.com> 1530108257 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:5:83:7bfb5fc423277ebde8e9b1e5299af1fd89c2395d 5d86f3bb92b8f15789629d715f91fbba5e4943fe wsdjeg <wsdjeg@outlook.com> 1530248975 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:6:83:5d86f3bb92b8f15789629d715f91fbba5e4943fe 51d46d0fef076578d4f1c5d87b0d475eb70e4712 wsdjeg <wsdjeg@outlook.com> 1530249874 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:7:83:51d46d0fef076578d4f1c5d87b0d475eb70e4712 487317e0c204bd49ea2f8aba3482030e78d5d319 wsdjeg <wsdjeg@outlook.com> 1530250388 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:8:83:487317e0c204bd49ea2f8aba3482030e78d5d319 70bc11980172198342f4bcb22da84b3b96b228a4 wsdjeg <wsdjeg@outlook.com> 1530251390 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:9:83:70bc11980172198342f4bcb22da84b3b96b228a4 b8fec7d191451e28bd8282d6675b442105d123f6 wsdjeg <wsdjeg@outlook.com> 1530252231 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:10:83:b8fec7d191451e28bd8282d6675b442105d123f6 a22dcbd7e5521005f75c5d50a86bf6b4d5d81cad wsdjeg <wsdjeg@outlook.com> 1530252762 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:11:83:a22dcbd7e5521005f75c5d50a86bf6b4d5d81cad 82c2e68f60daf249adcdabaf010823c89ab7977e wsdjeg <wsdjeg@outlook.com> 1530253849 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:12:83:82c2e68f60daf249adcdabaf010823c89ab7977e 22de0d76743c2511b9a77edca7d7253a878442c8 wsdjeg <wsdjeg@outlook.com> 1530258772 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:13:83:22de0d76743c2511b9a77edca7d7253a878442c8 395a6190c6d2d07a67ebd75f202f92ebb5e84ec6 wsdjeg <wsdjeg@outlook.com> 1530329507 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:14:83:395a6190c6d2d07a67ebd75f202f92ebb5e84ec6 12eba5369f1cff3f92a97162f0172f50bbe4bc87 wsdjeg <wsdjeg@outlook.com> 1530330216 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:15:83:12eba5369f1cff3f92a97162f0172f50bbe4bc87 2ae436f2f2e8a80c1406d854816cce480092f83e wsdjeg <wsdjeg@outlook.com> 1530340183 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:16:83:2ae436f2f2e8a80c1406d854816cce480092f83e c111c5944fcb63d6420bf1353924a9a3fa705eb2 wsdjeg <wsdjeg@outlook.com> 1530340765 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:17:83:c111c5944fcb63d6420bf1353924a9a3fa705eb2 6e122d0c94ebe2baaa963fb384089f2b29a393bd wsdjeg <wsdjeg@outlook.com> 1530342804 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:18:83:6e122d0c94ebe2baaa963fb384089f2b29a393bd 18b9abd9814835d95984bf1ed49f7d6439eddc2b wsdjeg <wsdjeg@outlook.com> 1530344403 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:19:83:18b9abd9814835d95984bf1ed49f7d6439eddc2b 4e177f9f2b5393614d11418193f4646f88e25e9b wsdjeg <wsdjeg@outlook.com> 1530346718 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:20:83:4e177f9f2b5393614d11418193f4646f88e25e9b b5fba2475def0468b2b0494aa796e8e24a53ec58 wsdjeg <wsdjeg@outlook.com> 1530347049 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:21:83:b5fba2475def0468b2b0494aa796e8e24a53ec58 60ded1b4aa77c7cef653691b78b5bef9db99f696 wsdjeg <wsdjeg@outlook.com> 1530347471 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:22:83:60ded1b4aa77c7cef653691b78b5bef9db99f696 89e9e9ea825a1a30a46bcad00f94163d0c269648 wsdjeg <wsdjeg@outlook.com> 1530353203 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:23:83:89e9e9ea825a1a30a46bcad00f94163d0c269648 b81aedaff2d9ee7260d27fe7381502534a32712b wsdjeg <wsdjeg@outlook.com> 1530355490 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:24:83:b81aedaff2d9ee7260d27fe7381502534a32712b 7994b0346e58288eecb34e9587148ccb09a676b7 wsdjeg <wsdjeg@outlook.com> 1530355711 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:25:83:7994b0346e58288eecb34e9587148ccb09a676b7 09abc4b353172dd2509e5e71916bea67eae1266f wsdjeg <wsdjeg@outlook.com> 1530356131 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:26:83:09abc4b353172dd2509e5e71916bea67eae1266f cfa99ef4d46803d28d10026accb0b18220a9dd05 wsdjeg <wsdjeg@outlook.com> 1530356481 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:27:83:cfa99ef4d46803d28d10026accb0b18220a9dd05 940591160af57a9c0f59d046e941332c9b36dc12 wsdjeg <wsdjeg@outlook.com> 1530371086 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:28:83:940591160af57a9c0f59d046e941332c9b36dc12 75a77d1b08b3149fadb556d0d5cec8997f2e9ed6 wsdjeg <wsdjeg@outlook.com> 1530372364 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:29:83:75a77d1b08b3149fadb556d0d5cec8997f2e9ed6 ea044cc89b27445b0037c30d1ea17df73e35c03c wsdjeg <wsdjeg@outlook.com> 1530372993 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:30:83:ea044cc89b27445b0037c30d1ea17df73e35c03c ec3cd8634cba3c023519f0fec9be7c2d56fdaded wsdjeg <wsdjeg@outlook.com> 1530375273 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:31:83:ec3cd8634cba3c023519f0fec9be7c2d56fdaded 6a7b6e2db53e8d96797a56c9294fe95bbe392997 wsdjeg <wsdjeg@outlook.com> 1530376280 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:32:83:6a7b6e2db53e8d96797a56c9294fe95bbe392997 1a3f2e55c8acaffcaefe6a929aa47fa96fc68de8 wsdjeg <wsdjeg@outlook.com> 1530445870 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:33:83:1a3f2e55c8acaffcaefe6a929aa47fa96fc68de8 61739b287c616f909d759e6f029c949980d9e1f8 wsdjeg <wsdjeg@outlook.com> 1530447059 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:34:83:61739b287c616f909d759e6f029c949980d9e1f8 c8d4a7ad05579ed1501253c8d679348fcc2499f8 wsdjeg <wsdjeg@outlook.com> 1530447571 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:35:83:c8d4a7ad05579ed1501253c8d679348fcc2499f8 5fb71375dffcc618965e97d0affb1075764aa133 wsdjeg <wsdjeg@outlook.com> 1530448041 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:36:83:5fb71375dffcc618965e97d0affb1075764aa133 e58fd0b13335705709bccc5536a070ecc138ceff wsdjeg <wsdjeg@outlook.com> 1530448854 +0800	update by push
+.git/logs/refs/remotes/origin/tabmanager:37:83:e58fd0b13335705709bccc5536a070ecc138ceff 6741e371a28b7cb273f06882563726005096f9ea wsdjeg <wsdjeg@outlook.com> 1530450438 +0800	update by push
+.git/logs/refs/remotes/origin/oldvim:1:83:0000000000000000000000000000000000000000 d1164e3e4e47ef24f0e591cdba1345e0dc9ca8bf wsdjeg <wsdjeg@outlook.com> 1528980032 +0800	update by push
+.git/logs/refs/remotes/origin/oldvim:2:83:d1164e3e4e47ef24f0e591cdba1345e0dc9ca8bf f92403b8fe07ed0223c003ad2f74c24d225222c3 wsdjeg <wsdjeg@outlook.com> 1528980211 +0800	update by push
+.git/logs/refs/remotes/origin/apidoc:1:83:0000000000000000000000000000000000000000 bea74d9cc82bba92209ae30eecfa6ea6065fc974 wsdjeg <wsdjeg@outlook.com> 1530536222 +0800	update by push
+.git/logs/refs/remotes/origin/apidoc:2:83:bea74d9cc82bba92209ae30eecfa6ea6065fc974 8537d305686c51703c1831b3aac5ce77934ef720 wsdjeg <wsdjeg@outlook.com> 1530762383 +0800	update by push
+.git/logs/refs/remotes/origin/buffer_state:1:83:0000000000000000000000000000000000000000 27ff38fc22af3b75bec7a934eedec0deec5ad9fb wsdjeg <wsdjeg@outlook.com> 1528895086 +0800	update by push
+.git/logs/refs/remotes/origin/new_version:1:83:0000000000000000000000000000000000000000 e5fba409148ba5b89b1993f5723554a35cfd636b wsdjeg <wsdjeg@outlook.com> 1529304423 +0800	update by push
+.git/logs/refs/remotes/origin/new_version:2:83:e5fba409148ba5b89b1993f5723554a35cfd636b 1b48bb8e0b461ee41b28d6128f61e020d13c44b1 wsdjeg <wsdjeg@outlook.com> 1529307133 +0800	update by push
+.git/logs/refs/remotes/origin/new_version:3:83:1b48bb8e0b461ee41b28d6128f61e020d13c44b1 2f00ef833f23af1d606f58190ba5d98595a91c00 wsdjeg <wsdjeg@outlook.com> 1529307775 +0800	update by push
+.git/logs/refs/remotes/origin/wiki3:1:83:0000000000000000000000000000000000000000 58d67dc400e3460a42300dbf0578be3f56db51f0 wsdjeg <wsdjeg@outlook.com> 1530663850 +0800	update by push
+.git/logs/refs/remotes/origin/apis:1:83:0000000000000000000000000000000000000000 7501b241757289f65fcadca2374718cd617d3c89 wsdjeg <wsdjeg@outlook.com> 1529415352 +0800	update by push
+.git/logs/refs/remotes/origin/apis:2:83:7501b241757289f65fcadca2374718cd617d3c89 4c1cb40ea2dcb10439febfe1707f3deb882137cd wsdjeg <wsdjeg@outlook.com> 1529416883 +0800	update by push
+.git/logs/refs/remotes/origin/apis:3:83:4c1cb40ea2dcb10439febfe1707f3deb882137cd 3421fad36147af838789c6bed1d642971aae4a0f wsdjeg <wsdjeg@outlook.com> 1529417313 +0800	update by push
+.git/logs/refs/remotes/origin/apis:4:83:3421fad36147af838789c6bed1d642971aae4a0f b848d806136a2b56169596eb75f7ab7347b10e95 wsdjeg <wsdjeg@outlook.com> 1529494530 +0800	update by push
+.git/logs/refs/remotes/origin/apis:5:83:b848d806136a2b56169596eb75f7ab7347b10e95 89b7ac9f0c50d2c9b47ab7b5ae59d3346102383f wsdjeg <wsdjeg@outlook.com> 1529495122 +0800	update by push
+.git/logs/refs/remotes/origin/apis:6:83:89b7ac9f0c50d2c9b47ab7b5ae59d3346102383f c01fe763d6f7423fdf71237d98d888cbf964e2e2 wsdjeg <wsdjeg@outlook.com> 1529495865 +0800	fetch --quiet: fast-forward
+.git/logs/refs/remotes/origin/apis:7:83:c01fe763d6f7423fdf71237d98d888cbf964e2e2 4bc388f9bbcf608ce34b0808cfd91ae70e65ecde wsdjeg <wsdjeg@outlook.com> 1529495889 +0800	update by push
+.git/logs/refs/remotes/origin/apis:8:83:4bc388f9bbcf608ce34b0808cfd91ae70e65ecde d4bc0550a2c48145cf45a8fb0600d3de465898a7 wsdjeg <wsdjeg@outlook.com> 1529496346 +0800	update by push
+.git/logs/refs/remotes/origin/apis:9:83:d4bc0550a2c48145cf45a8fb0600d3de465898a7 7b7fe954c713aac19a22d94de2962cd5430d4673 wsdjeg <wsdjeg@outlook.com> 1529496896 +0800	update by push
+.git/logs/refs/remotes/origin/apis:10:83:7b7fe954c713aac19a22d94de2962cd5430d4673 749338af45a234c9630653e82452f3a8dc1789c8 wsdjeg <wsdjeg@outlook.com> 1529497175 +0800	update by push
+.git/logs/refs/remotes/origin/apis:11:83:749338af45a234c9630653e82452f3a8dc1789c8 f95cf7f60589b854e8912c1451b48178e00b5961 wsdjeg <wsdjeg@outlook.com> 1529497811 +0800	update by push
+.git/logs/refs/remotes/origin/tabline2:1:83:0000000000000000000000000000000000000000 01a5d8670b2b1a218e21e7a30828afef2abb648e wsdjeg <wsdjeg@outlook.com> 1530621445 +0800	update by push
+autoload/SpaceVim/mapping/guide/theme/one.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+.git/logs/refs/remotes/origin/spacevim_option:1:83:0000000000000000000000000000000000000000 d6d076dc5ac728a939b7282178156bc8193cd8c5 wsdjeg <wsdjeg@outlook.com> 1529308815 +0800	update by push
+.git/logs/refs/remotes/origin/spacevim_option:2:83:d6d076dc5ac728a939b7282178156bc8193cd8c5 3a86b88705554b47c391a8cccd876ec86d36ec03 wsdjeg <wsdjeg@outlook.com> 1529309027 +0800	update by push
+autoload/SpaceVim/mapping/guide/theme/material.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/mapping/guide/theme/molokai.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/mapping/guide/theme/nord.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/mapping/guide/theme/onedark.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/mapping/guide/theme/gruvbox.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/mapping/guide/theme/NeoSolarized.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/mapping/guide/theme/hybrid.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+.git/logs/refs/remotes/origin/gitment2:1:83:0000000000000000000000000000000000000000 daded146c10b5100761238ea344a38ae8a0f6c2a wsdjeg <wsdjeg@outlook.com> 1530661521 +0800	update by push
+.git/logs/refs/remotes/origin/gitment2:2:83:daded146c10b5100761238ea344a38ae8a0f6c2a f676d9209cc2175f62b4a1839e9932b4595263d8 wsdjeg <wsdjeg@outlook.com> 1530663460 +0800	update by push
+autoload/SpaceVim/mapping/guide/theme/solarized.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+autoload/SpaceVim/mapping/guide/theme/jellybeans.vim:4:26:" Author: Wang Shidong < wsdjeg at 163.com >
+
+```
+
+</details>
+
+#### If this is a bug, what is the expected behavior?
+
+all files in .git should be ignored.
+
+
+---
+
+_Label `question` added by @BurntSushi on 2018-07-06 14:47_
+
+---
+
+_Comment by @BurntSushi on 2018-07-06 14:47_
+
+Please explain _why_ you expect files in `.git` to be ignored when you're _specifically_ requesting that they *not* be ignored by using the `--hidden` flag.
+
+You also didn't include the debug output, which means you're not actually showing the results of the command you provided.
+
+---
+
+_Comment by @wsdjeg on 2018-07-06 22:05_
+
+`--hidden` option does not mean include hidden files? such as .foo   .vimrc in a git repo? in git repo, files in .git directory should be ignored I think.
+
+---
+
+_Comment by @BurntSushi on 2018-07-06 22:21_
+
+@wsdjeg Could you please read the documentation?
+
+```
+        --hidden
+            Search hidden files and directories. By default, hidden files and directories
+            are skipped. Note that if a hidden file or a directory is whitelisted in an
+            ignore file, then it will be searched even if this flag isn't provided.
+            This flag can be disabled with --no-hidden.
+```
+
+If you want more granular rules then use an `.ignore` or the `-g/--glob` flag.
+
+---
+
+_Closed by @BurntSushi on 2018-07-06 22:21_
+
+---
+
+_Label `invalid` added by @BurntSushi on 2018-07-06 22:21_
+
+---
+
+_Comment by @wsdjeg on 2018-07-06 22:30_
+
+Does that means rg do not care about if current directory is in a git repo?
+
+---
+
+_Comment by @BurntSushi on 2018-07-06 22:37_
+
+That question has a trivial answer ("yes ripgrep cares if the current directory is in a git repo"), so I don't understand what you're hoping to learn by it.
+
+ripgrep ignores hidden directories and files by default. This includes `.vimrc` and `.git`. When you pass the `--hidden` flag, you are **explicitly disabling** this automatic filtering based on whether a file/directory is hidden or not. Therefore, ripgrep searches `.git`. If you want to search *some* hidden files/directories but not others, then you need to specify explicit ignore rules using `.ignore` and/or `-g/--glob`.
+
+Please be more respectful of my time and give the GUIDE a careful read: https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md
+
+---
+
+_Comment by @wsdjeg on 2018-07-06 23:38_
+
+@BurntSushi Hi I am sorry to take your time, I am just very confused about this option. what I hope is just include hidden files which are added in a git repo. such as `.vimrc` in a dotfiles repo, but I do not want to include files in `.git/` and any other directorys which are ignored by `.gitignore`.  
+
+this issue can be closed, I will read more about the differences between ag and rg, I am using ag in the paste, and it works well for me, but ag do not has `-e` option, so I hope I can switch to rg.
+
+---
+
+_Comment by @BurntSushi on 2018-07-06 23:48_
+
+@wsdjeg I've told you repeatedly how to solve your problem. Use an `.ignore` file or a glob with `-g/--glob`. e.g., `rg --hidden -g '!.git'`.
+
+The `--hidden` flag will _not_ override your `.gitignore`.
+
+`ag` literally behaves exactly the same as ripgrep in this case.
+
+---
+
+_Comment by @wsdjeg on 2018-07-07 00:04_
+
+Thanks, my issue has been solved. 
+
+---

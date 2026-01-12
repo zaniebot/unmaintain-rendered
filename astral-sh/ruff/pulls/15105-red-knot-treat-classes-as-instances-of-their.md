@@ -13,14 +13,14 @@ head: rk-class-truthiness
 created_at: 2024-12-23T00:18:32Z
 updated_at: 2024-12-23T04:44:24Z
 url: https://github.com/astral-sh/ruff/pull/15105
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # [red-knot] Treat classes as instances of their respective metaclasses in boolean tests
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2024-12-23 00:18_
+_@InSyncWithFoo_
 
 ## Summary
 

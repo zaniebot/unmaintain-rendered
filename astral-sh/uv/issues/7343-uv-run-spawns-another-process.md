@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-12T20:28:45Z
 updated_at: 2024-09-13T07:27:37Z
 url: https://github.com/astral-sh/uv/issues/7343
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # `uv run` spawns another process.
 
 ---
 
-_Issue opened by @pkucmus on 2024-09-12 20:28_
+_@pkucmus_
 
 In the documentation `uv run hello.py` is used as an example (or the main way) on how to run a project. This assigns the PID 1 to uv and whatever uv spawns is another process - this is problematic when using Docker and need to send signals to your application, like [sending `SIGHUP`, `SIGTTIN`, `SIGTTOU` to your container to inform Uvicorn](https://www.uvicorn.org/deployment/#built-in) to do something. Docker will only send the signals to the process sunning under PID 1 ([here](https://www.kaggle.com/code/residentmario/best-practices-for-propagating-signals-on-docker) it's explained better then I ever could).
 

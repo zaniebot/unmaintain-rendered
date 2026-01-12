@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-12T23:39:05Z
 updated_at: 2023-09-13T17:21:13Z
 url: https://github.com/astral-sh/ruff/issues/7324
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # `deprecated-import` (`UP035`) - no error when importing types from `typing_extensions` that have always been in `typing`
 
 ---
 
-_Issue opened by @DetachHead on 2023-09-12 23:39_
+_@DetachHead_
 
 `typing_extensions` has a bunch of re-exported types that have alays been in `typing`:
 ```py

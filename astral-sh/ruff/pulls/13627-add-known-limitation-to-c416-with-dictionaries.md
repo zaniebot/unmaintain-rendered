@@ -13,14 +13,14 @@ head: zb/c416-unsafe
 created_at: 2024-10-04T15:29:40Z
 updated_at: 2024-10-07T16:30:08Z
 url: https://github.com/astral-sh/ruff/pull/13627
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:45Z
 ```
 
 # Add known limitation to `C416` with dictionaries
 
 ---
 
-_Pull request opened by @zanieb on 2024-10-04 15:29_
+_@zanieb_
 
 Part of https://github.com/astral-sh/ruff/issues/13625
 

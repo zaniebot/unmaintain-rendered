@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-11-22T08:38:59Z
 updated_at: 2023-12-04T02:29:02Z
 url: https://github.com/astral-sh/uv/issues/484
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:23Z
 ```
 
 # Deduplicate .dist-info/METADATA reading code 
 
 ---
 
-_Issue opened by @konstin on 2023-11-22 08:38_
+_@konstin_
 
 We have multiple implementations of reading the `.dist-info/METADATA` from wheels, some sync, some async, we should deduplicate them, likely to one async version.
 

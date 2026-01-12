@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-07T14:52:45Z
 updated_at: 2025-01-15T03:35:18Z
 url: https://github.com/astral-sh/uv/issues/10367
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:12Z
 ```
 
 # Drop UV_STACK_SIZE in favour of RUST_MIN_STACK
 
 ---
 
-_Issue opened by @Gankra on 2025-01-07 14:52_
+_@Gankra_
 
 [RUST_MIN_STACK](https://doc.rust-lang.org/std/thread/#stack-size) is fairly obscure and barely documented but it does exist specifically to do exactly what UV_STACK_SIZE does (it would affect *all* non-main threads and not just tokio threads, but the fact that we only resize tokio threads is not really intentional so much as Convenient).
 

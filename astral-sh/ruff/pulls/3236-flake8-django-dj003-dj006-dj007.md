@@ -13,14 +13,14 @@ head: flake8-django
 created_at: 2023-02-26T10:08:46Z
 updated_at: 2023-03-22T12:06:46Z
 url: https://github.com/astral-sh/ruff/pull/3236
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # [flake8-django] DJ003, DJ006, DJ007
 
 ---
 
-_Pull request opened by @lkh42t on 2023-02-26 10:08_
+_@lkh42t_
 
 Implements [flake8-django](https://github.com/rocioar/flake8-django) rules:
 - DJ03

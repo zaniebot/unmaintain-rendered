@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-03T20:09:46Z
 updated_at: 2025-11-18T16:10:20Z
 url: https://github.com/astral-sh/ty/issues/138
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # Typevar should specialize to a single type across different statements
 
 ---
 
-_Issue opened by @dcreager on 2025-04-03 20:09_
+_@dcreager_
 
 A typevar should specialize to a single type each time its generic class or function is specialized. We're already considering that, and have a (currently failing) mdtest for this example:
 

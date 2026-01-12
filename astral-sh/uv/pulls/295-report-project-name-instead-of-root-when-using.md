@@ -12,14 +12,14 @@ head: zanie/root-name
 created_at: 2023-11-02T17:28:46Z
 updated_at: 2023-11-03T15:22:12Z
 url: https://github.com/astral-sh/uv/pull/295
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:51Z
 ```
 
 # Report project name instead of `root` when using `pyproject.toml` files
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-02 17:28_
+_@zanieb_
 
 Part of https://github.com/astral-sh/puffin/issues/214
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-21T17:18:11Z
 updated_at: 2024-08-22T01:00:23Z
 url: https://github.com/astral-sh/uv/issues/6358
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # uv run not respecting extra index preferences in cargo build vs pip install in a conda env
 
 ---
 
-_Issue opened by @abazabaaa on 2024-08-21 17:18_
+_@abazabaaa_
 
 Hi,
 

@@ -13,14 +13,14 @@ head: flake8-bandit
 created_at: 2023-11-13T10:48:08Z
 updated_at: 2023-11-20T13:45:17Z
 url: https://github.com/astral-sh/ruff/pull/8651
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # [`flake8-bandit`] Implement `django-raw-sql` (`S611`)
 
 ---
 
-_Pull request opened by @ischaojie on 2023-11-13 10:48_
+_@ischaojie_
 
 See: https://github.com/astral-sh/ruff/issues/1646.
 

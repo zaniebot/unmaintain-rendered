@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-11T09:26:50Z
 updated_at: 2025-03-11T09:40:34Z
 url: https://github.com/astral-sh/uv/issues/12109
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # Cross-system migration [ubuntu-->centos7], can't activate the virtual environment problem
 
 ---
 
-_Issue opened by @software-defetc-prediction-research on 2025-03-11 09:26_
+_@software-defetc-prediction-research_
 
 ### Question
 

@@ -13,14 +13,14 @@ head: charlie/best-hash
 created_at: 2024-07-17T20:12:56Z
 updated_at: 2024-07-17T20:38:34Z
 url: https://github.com/astral-sh/uv/pull/5167
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:40Z
 ```
 
 # Use the strongest hash in the lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-17 20:12_
+_@charliermarsh_
 
 ## Summary
 

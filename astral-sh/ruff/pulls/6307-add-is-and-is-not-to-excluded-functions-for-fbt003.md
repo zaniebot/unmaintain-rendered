@@ -12,14 +12,14 @@ head: FBT003/allow-is
 created_at: 2023-08-03T15:27:52Z
 updated_at: 2023-08-03T16:00:06Z
 url: https://github.com/astral-sh/ruff/pull/6307
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add `is_` and `is_not` to excluded functions for `FBT003`
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-03 15:27_
+_@zanieb_
 
 These methods are commonly used in SQLAlchemy.
 

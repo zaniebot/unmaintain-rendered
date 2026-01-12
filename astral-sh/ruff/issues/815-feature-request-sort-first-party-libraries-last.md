@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-19T08:34:44Z
 updated_at: 2022-11-20T00:16:27Z
 url: https://github.com/astral-sh/ruff/issues/815
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Feature request: sort first-party libraries last
 
 ---
 
-_Issue opened by @tekumara on 2022-11-19 08:34_
+_@tekumara_
 
 Ruff currently sorts imports without distinction between first-party and third-party libraries.
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-10-24T19:15:06Z
 updated_at: 2018-10-24T19:37:50Z
 url: https://github.com/clap-rs/clap/issues/1366
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Set default value if possible_values array has length of 1
 
 ---
 
-_Issue opened by @yaahc on 2018-10-24 19:15_
+_@yaahc_
 
 This may be possible already, but I haven't been able to figure out how. The use case I have is some runtime possible_values population, in this case, hostnames, that I want to select from. If there's exactly one host I would like to be able to leave off the argument requesting it and have clap default to the one possible value, but if there are more than one possible values there's no concept of a default anymore, and I would like it to require the argument.
 

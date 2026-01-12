@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-27T02:33:32Z
 updated_at: 2024-05-27T03:47:33Z
 url: https://github.com/astral-sh/uv/issues/3854
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:46Z
 ```
 
 # Architecture not supported: arm
 
 ---
 
-_Issue opened by @bulletmark on 2024-05-27 02:33_
+_@bulletmark_
 
 
 Using last uv version 1 works fine on my Raspberry Pi (running Arch):

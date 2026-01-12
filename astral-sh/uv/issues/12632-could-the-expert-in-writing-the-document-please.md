@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-02T17:06:52Z
 updated_at: 2025-04-02T17:53:24Z
 url: https://github.com/astral-sh/uv/issues/12632
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # Could the expert in writing the document please make it clear and direct
 
 ---
 
-_Issue opened by @mogoyu on 2025-04-02 17:06_
+_@mogoyu_
 
 ### Summary
 

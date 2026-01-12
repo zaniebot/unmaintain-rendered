@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-23T16:28:08Z
 updated_at: 2025-05-13T15:22:33Z
 url: https://github.com/astral-sh/uv/issues/11726
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:45Z
 ```
 
 # Kaleido package and sentencepiece dependency installation failed; Outdated flair package being installed
 
 ---
 
-_Issue opened by @hasan-rakibul on 2025-02-23 16:28_
+_@hasan-rakibul_
 
 ### Summary
 

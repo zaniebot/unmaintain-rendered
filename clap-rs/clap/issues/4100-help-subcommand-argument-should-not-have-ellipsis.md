@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-08-20T18:58:24Z
 updated_at: 2023-04-03T14:44:27Z
 url: https://github.com/clap-rs/clap/issues/4100
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Help subcommand argument should not have ellipsis
 
 ---
 
-_Issue opened by @patrick-gu on 2022-08-20 18:58_
+_@patrick-gu_
 
 ### Please complete the following tasks
 

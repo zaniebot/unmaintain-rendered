@@ -13,14 +13,14 @@ head: david/never-is-callable
 created_at: 2025-03-06T13:13:06Z
 updated_at: 2025-03-06T15:59:20Z
 url: https://github.com/astral-sh/ruff/pull/16533
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [red-knot] Never is callable and iterable. Arbitrary attributes can be accessed.
 
 ---
 
-_Pull request opened by @sharkdp on 2025-03-06 13:13_
+_@sharkdp_
 
 ## Summary
 

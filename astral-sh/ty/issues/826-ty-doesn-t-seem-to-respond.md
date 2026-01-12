@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-15T13:36:14Z
 updated_at: 2025-07-15T17:15:20Z
 url: https://github.com/astral-sh/ty/issues/826
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # ty doesn't seem to respond
 
 ---
 
-_Issue opened by @uriahf on 2025-07-15 13:36_
+_@uriahf_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: zb/perf-sec
 created_at: 2024-03-13T23:11:34Z
 updated_at: 2024-03-14T00:33:35Z
 url: https://github.com/astral-sh/uv/pull/2436
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:02Z
 ```
 
 # Add a performance section to the CHANGELOG
 
 ---
 
-_Pull request opened by @zanieb on 2024-03-13 23:11_
+_@zanieb_
 
 _No description provided._
 

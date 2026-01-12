@@ -12,14 +12,14 @@ head: typo-editables
 created_at: 2023-12-13T13:19:34Z
 updated_at: 2023-12-13T13:24:30Z
 url: https://github.com/astral-sh/uv/pull/637
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:05Z
 ```
 
 # Typo: editable -> editables
 
 ---
 
-_Pull request opened by @konstin on 2023-12-13 13:19_
+_@konstin_
 
 Split out to minimize the diff in #587
 

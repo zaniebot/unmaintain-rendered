@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-27T10:08:09Z
 updated_at: 2023-01-27T23:35:37Z
 url: https://github.com/astral-sh/ruff/issues/2245
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # Question: Motivation for using nightly Rust
 
 ---
 
-_Issue opened by @MichaReiser on 2023-01-27 10:08_
+_@MichaReiser_
 
 I've started contributing to ruff and was surprised why the clippy and rustfmt jobs failed on my PR, but they both passed locally. I then studied the CI logs and noticed that the CI uses the Rust nightly channels for clippy and formatting. I should have known to use the nightly channel because the CONTRIBUTING.md that states clearly the use of the nightly channel for linting and formatting. Nevertheless, having to use the nightly channels made it harder for me to contribute because I had to figure out how to update my outdated nightly channel installation, and I also didn't know which version to install (nightly is a moving target). 
 

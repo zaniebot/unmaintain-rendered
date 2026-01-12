@@ -13,14 +13,14 @@ head: code-action-resolve-quick-fix-noop
 created_at: 2024-07-22T19:18:33Z
 updated_at: 2024-07-23T05:00:03Z
 url: https://github.com/astral-sh/ruff/pull/12462
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Do not bail code action resolution when a quick fix is requested
 
 ---
 
-_Pull request opened by @osiewicz on 2024-07-22 19:18_
+_@osiewicz_
 
 ## Summary
 

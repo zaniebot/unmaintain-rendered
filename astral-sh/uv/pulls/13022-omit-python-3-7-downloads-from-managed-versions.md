@@ -13,14 +13,14 @@ head: zb/37-down
 created_at: 2025-04-21T19:56:20Z
 updated_at: 2025-05-03T14:23:41Z
 url: https://github.com/astral-sh/uv/pull/13022
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:31Z
 ```
 
 # Omit Python 3.7 downloads from managed versions
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-21 19:56_
+_@zanieb_
 
 Removes Python 3.7 installation support.
 

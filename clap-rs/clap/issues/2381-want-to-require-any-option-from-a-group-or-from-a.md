@@ -9,14 +9,14 @@ assignees: []
 created_at: 2021-03-04T20:44:39Z
 updated_at: 2021-03-05T11:48:38Z
 url: https://github.com/clap-rs/clap/issues/2381
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Want to require any option from a group, or from a list
 
 ---
 
-_Issue opened by @carycodes on 2021-03-04 20:44_
+_@carycodes_
 
 ### Please complete the following tasks
 

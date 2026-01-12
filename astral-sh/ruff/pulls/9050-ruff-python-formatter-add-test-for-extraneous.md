@@ -15,14 +15,14 @@ head: ag/fmt/markdown-additional-info-string
 created_at: 2023-12-07T21:56:38Z
 updated_at: 2023-12-08T00:52:16Z
 url: https://github.com/astral-sh/ruff/pull/9050
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # ruff_python_formatter: add test for extraneous info string text
 
 ---
 
-_Pull request opened by @BurntSushi on 2023-12-07 21:56_
+_@BurntSushi_
 
 @ofek asked [about this][ref]. I did specifically add support for it, but neglected to add a test. This PR adds a test.
 

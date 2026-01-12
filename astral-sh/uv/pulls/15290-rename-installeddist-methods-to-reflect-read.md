@@ -13,14 +13,14 @@ head: charlie/read
 created_at: 2025-08-14T20:40:36Z
 updated_at: 2025-08-14T21:39:42Z
 url: https://github.com/astral-sh/uv/pull/15290
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:40Z
 ```
 
 # Rename `InstalledDist` methods to reflect read operation
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-08-14 20:40_
+_@charliermarsh_
 
 ## Summary
 

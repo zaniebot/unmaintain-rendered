@@ -14,14 +14,14 @@ head: bat-activation-script
 created_at: 2024-02-16T18:40:00Z
 updated_at: 2024-02-18T11:04:51Z
 url: https://github.com/astral-sh/uv/pull/1523
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:38Z
 ```
 
 # Add CMD support
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-16 18:40_
+_@MichaReiser_
 
 ## Sumamry
 

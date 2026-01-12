@@ -13,14 +13,14 @@ head: konsti/add-basic-windows-ci
 created_at: 2024-01-24T17:38:09Z
 updated_at: 2024-01-25T08:38:18Z
 url: https://github.com/astral-sh/uv/pull/1080
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:24Z
 ```
 
 # Add basic windows CI (clippy only)
 
 ---
 
-_Pull request opened by @konstin on 2024-01-24 17:38_
+_@konstin_
 
 Add basic windows (clippy only), until cargo test passes and we can merge it with the cargo-test job above.
 

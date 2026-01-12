@@ -14,14 +14,14 @@ head: charlie/priority
 created_at: 2024-04-24T01:22:41Z
 updated_at: 2024-04-24T11:51:57Z
 url: https://github.com/astral-sh/uv/pull/3230
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:30Z
 ```
 
 # Unroll self-dependencies via extras
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-24 01:22_
+_@charliermarsh_
 
 ## Summary
 

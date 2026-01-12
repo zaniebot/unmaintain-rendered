@@ -14,14 +14,14 @@ head: update-AIR301
 created_at: 2025-05-05T11:27:37Z
 updated_at: 2025-05-05T13:31:58Z
 url: https://github.com/astral-sh/ruff/pull/17852
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:06Z
 ```
 
 # [`airflow`] Remove `airflow.utils.dag_parsing_context.get_parsing_context` (`AIR301`)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-05-05 11:27_
+_@Lee-W_
 
 
 <!--

@@ -12,14 +12,14 @@ head: roy/implement_ty_new
 created_at: 2025-08-28T00:54:48Z
 updated_at: 2025-10-21T07:23:42Z
 url: https://github.com/astral-sh/ruff/pull/20123
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:56:55Z
 ```
 
 # [ty] Implement support for respecting return type of __new__ 
 
 ---
 
-_Pull request opened by @rowillia on 2025-08-28 00:54_
+_@rowillia_
 
 (Reopening https://github.com/astral-sh/ruff/pull/18125 - sorry for ghost on it last time 😢, but I addressed @carljm 's very helpful feedback!)
 

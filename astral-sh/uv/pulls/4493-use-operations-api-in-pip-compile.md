@@ -13,14 +13,14 @@ head: charlie/compile-op
 created_at: 2024-06-24T22:09:53Z
 updated_at: 2024-06-24T22:20:04Z
 url: https://github.com/astral-sh/uv/pull/4493
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:15Z
 ```
 
 # Use operations API in `pip compile`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-24 22:09_
+_@charliermarsh_
 
 ## Summary
 

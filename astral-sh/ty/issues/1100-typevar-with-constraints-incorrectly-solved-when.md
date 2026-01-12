@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-27T11:31:34Z
 updated_at: 2025-11-13T07:36:32Z
 url: https://github.com/astral-sh/ty/issues/1100
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # TypeVar with constraints incorrectly solved when `Unknown` argument is passed in
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-08-27 11:31_
+_@AlexWaygood_
 
 ### Summary
 

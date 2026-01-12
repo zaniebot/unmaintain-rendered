@@ -13,14 +13,14 @@ assignees: []
 created_at: 2021-10-04T18:52:30Z
 updated_at: 2022-07-22T21:18:53Z
 url: https://github.com/clap-rs/clap/issues/2808
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Builder and `clap_derive` should be WYSIWYG
 
 ---
 
-_Issue opened by @epage on 2021-10-04 18:52_
+_@epage_
 
 ### Rust Version
 

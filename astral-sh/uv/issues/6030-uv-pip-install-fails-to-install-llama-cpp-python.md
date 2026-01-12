@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-12T09:29:28Z
 updated_at: 2024-08-13T14:28:09Z
 url: https://github.com/astral-sh/uv/issues/6030
-synced_at: 2026-01-10T01:57:13Z
+synced_at: 2026-01-12T15:59:01Z
 ```
 
 # `uv pip install` fails to install `llama-cpp-python`
 
 ---
 
-_Issue opened by @alonsosilvaallende on 2024-08-12 09:29_
+_@alonsosilvaallende_
 
 Thank you very much for this package. I'm encountering the following issue. In an emptly virtual environment, when I run
 ```console

@@ -14,14 +14,14 @@ head: pytest-parentheses-style-options-default
 created_at: 2024-09-09T13:59:37Z
 updated_at: 2024-10-08T17:01:23Z
 url: https://github.com/astral-sh/ruff/pull/13292
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [`flake8-pytest-style`] Fix defaults when `lint.flake8-pytest-style` config section is empty (`PT001`, `PT023`)
 
 ---
 
-_Pull request opened by @dizzy57 on 2024-09-09 13:59_
+_@dizzy57_
 
 ## Summary
 

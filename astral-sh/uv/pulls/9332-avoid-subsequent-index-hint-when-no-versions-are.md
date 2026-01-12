@@ -13,14 +13,14 @@ head: zb/index-hint
 created_at: 2024-11-21T17:38:47Z
 updated_at: 2025-03-14T01:09:10Z
 url: https://github.com/astral-sh/uv/pull/9332
-synced_at: 2026-01-10T11:10:34Z
+synced_at: 2026-01-12T16:08:45Z
 ```
 
 # Avoid subsequent index hint when no versions are available on the first index
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-21 17:38_
+_@zanieb_
 
 As reported in https://github.com/astral-sh/uv/issues/9331, this hint is misleading.
 

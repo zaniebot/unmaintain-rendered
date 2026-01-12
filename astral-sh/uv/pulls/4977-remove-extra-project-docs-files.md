@@ -13,14 +13,14 @@ head: zb/docs-project-rm
 created_at: 2024-07-10T21:44:23Z
 updated_at: 2024-07-10T22:38:15Z
 url: https://github.com/astral-sh/uv/pull/4977
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:33Z
 ```
 
 # Remove extra "project" docs files
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-10 21:44_
+_@zanieb_
 
 _No description provided._
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-03-22T23:57:26Z
 updated_at: 2024-03-23T00:13:41Z
 url: https://github.com/astral-sh/uv/issues/2630
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Should uv pip compile --prerelease=if-necessary-or-explicit work for explicit dependencies of dependencies?
 
 ---
 
-_Issue opened by @VerdantFox on 2024-03-22 23:57_
+_@VerdantFox_
 
 uv version: 0.1.24
 Platform: WSL on Windows 11

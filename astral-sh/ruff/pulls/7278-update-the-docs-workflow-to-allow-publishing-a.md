@@ -14,14 +14,14 @@ head: zanie/docs-ref
 created_at: 2023-09-11T18:21:44Z
 updated_at: 2023-09-11T19:12:17Z
 url: https://github.com/astral-sh/ruff/pull/7278
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Update the `docs` workflow to allow publishing a specific ref
 
 ---
 
-_Pull request opened by @zanieb on 2023-09-11 18:21_
+_@zanieb_
 
 Related https://github.com/astral-sh/ruff/issues/7276
 

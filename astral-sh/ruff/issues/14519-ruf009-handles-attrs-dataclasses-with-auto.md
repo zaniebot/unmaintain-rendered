@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-22T03:15:26Z
 updated_at: 2024-11-24T02:46:39Z
 url: https://github.com/astral-sh/ruff/issues/14519
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `RUF009` handles `attrs` dataclasses with `auto_attribs = False` incorrectly
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-11-22 03:15_
+_@InSyncWithFoo_
 
 From #14327:
 

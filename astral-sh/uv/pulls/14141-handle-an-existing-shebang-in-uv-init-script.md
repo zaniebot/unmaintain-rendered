@@ -13,14 +13,14 @@ head: jack/script_init_shebang
 created_at: 2025-06-18T22:24:21Z
 updated_at: 2025-06-19T21:47:24Z
 url: https://github.com/astral-sh/uv/pull/14141
-synced_at: 2026-01-10T11:10:43Z
+synced_at: 2026-01-12T16:11:03Z
 ```
 
 # handle an existing shebang in `uv init --script`
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-06-18 22:24_
+_@oconnor663_
 
 Closes https://github.com/astral-sh/uv/issues/14085.
 

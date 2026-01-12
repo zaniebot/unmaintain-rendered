@@ -12,14 +12,14 @@ head: main
 created_at: 2024-08-28T08:20:25Z
 updated_at: 2024-08-29T01:21:32Z
 url: https://github.com/astral-sh/uv/pull/6740
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:30Z
 ```
 
 # Avoid showing duplicate paths in `uv python list`
 
 ---
 
-_Pull request opened by @leaf-soba on 2024-08-28 08:20_
+_@leaf-soba_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

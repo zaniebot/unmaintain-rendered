@@ -11,14 +11,14 @@ head: unexplained-noqa
 created_at: 2023-06-20T22:31:40Z
 updated_at: 2023-07-10T09:55:16Z
 url: https://github.com/astral-sh/ruff/pull/5227
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add `unexplained-noqa` rule
 
 ---
 
-_Pull request opened by @tjkuson on 2023-06-20 22:31_
+_@tjkuson_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-04T14:06:06Z
 updated_at: 2025-02-05T09:16:56Z
 url: https://github.com/astral-sh/ruff/issues/15936
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # FURB122 fix fails on unparenthesized tuple
 
 ---
 
-_Issue opened by @dscorbett on 2025-02-04 14:06_
+_@dscorbett_
 
 ### Description
 

@@ -14,14 +14,14 @@ head: charlie/eq
 created_at: 2025-01-25T02:46:14Z
 updated_at: 2025-01-25T02:55:53Z
 url: https://github.com/astral-sh/uv/pull/10954
-synced_at: 2026-01-10T11:45:20Z
+synced_at: 2026-01-12T16:09:36Z
 ```
 
 # Allow optional `=` for editables in `requirements.txt`
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-25 02:46_
+_@charliermarsh_
 
 ## Summary
 

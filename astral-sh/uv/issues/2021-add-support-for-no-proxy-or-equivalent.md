@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-27T16:51:55Z
 updated_at: 2024-02-28T15:25:43Z
 url: https://github.com/astral-sh/uv/issues/2021
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # Add support for NO_PROXY or equivalent
 
 ---
 
-_Issue opened by @rth on 2024-02-27 16:51_
+_@rth_
 
 A few more edge cases in enterprise environments, where some package indexes might need to go though a proxy while other don't. 
 In pip this is handled [through the vendored requests package](https://github.com/pypa/pip/blob/0ad4c94be74cc24874c6feb5bb3c2152c398a18e/src/pip/_vendor/requests/sessions.py#L306) which allows,

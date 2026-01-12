@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-07T06:54:00Z
 updated_at: 2025-05-07T22:13:31Z
 url: https://github.com/astral-sh/uv/issues/13323
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:25Z
 ```
 
 # Global cache for all users on a machine like `/uv`
 
 ---
 
-_Issue opened by @Ruhrozz on 2025-05-07 06:54_
+_@Ruhrozz_
 
 ### Summary
 

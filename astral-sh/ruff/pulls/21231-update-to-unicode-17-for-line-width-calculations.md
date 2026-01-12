@@ -12,14 +12,14 @@ head: renovate/unicode-width-0.x-lockfile
 created_at: 2025-11-03T02:17:46Z
 updated_at: 2025-11-03T15:55:52Z
 url: https://github.com/astral-sh/ruff/pull/21231
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:19Z
 ```
 
 # Update to unicode 17 for line-width calculations
 
 ---
 
-_Pull request opened by @renovate on 2025-11-03 02:17_
+_@renovate_
 
 This PR contains the following updates:
 

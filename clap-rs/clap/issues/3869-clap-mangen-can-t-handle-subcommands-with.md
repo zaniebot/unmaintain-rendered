@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-06-25T20:37:38Z
 updated_at: 2022-07-11T20:12:05Z
 url: https://github.com/clap-rs/clap/issues/3869
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # clap_mangen can't handle subcommands with arguments that conflict with global opts
 
 ---
 
-_Issue opened by @sunshowers on 2022-06-25 20:37_
+_@sunshowers_
 
 ### Please complete the following tasks
 

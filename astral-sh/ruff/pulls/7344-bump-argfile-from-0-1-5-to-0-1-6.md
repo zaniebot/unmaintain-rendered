@@ -13,14 +13,14 @@ head: dependabot/cargo/argfile-0.1.6
 created_at: 2023-09-13T15:56:49Z
 updated_at: 2023-09-13T16:50:03Z
 url: https://github.com/astral-sh/ruff/pull/7344
-synced_at: 2026-01-12T02:45:39Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Bump argfile from 0.1.5 to 0.1.6
 
 ---
 
-_Pull request opened by @dependabot on 2023-09-13 15:56_
+_@dependabot_
 
 Bumps [argfile](https://github.com/rust-cli/argfile) from 0.1.5 to 0.1.6.
 <details>

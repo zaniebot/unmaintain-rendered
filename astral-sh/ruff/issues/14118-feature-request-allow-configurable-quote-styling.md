@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-11-05T22:46:30Z
 updated_at: 2025-12-31T16:32:55Z
 url: https://github.com/astral-sh/ruff/issues/14118
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Feature request: Allow Configurable Quote Styling for f-Strings in Python 3.12+
 
 ---
 
-_Issue opened by @matthewlloyd on 2024-11-05 22:46_
+_@matthewlloyd_
 
 I would like to request an option in Ruff formatter to configure quote styling for f-strings in Python 3.12 and later - specifically, the ability to maintain consistent use of double quotes throughout f-strings, even when nesting quotes.
 

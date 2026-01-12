@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-10T18:43:51Z
 updated_at: 2025-09-05T21:59:59Z
 url: https://github.com/astral-sh/uv/issues/12103
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:55Z
 ```
 
 # Is there a way to list the extras on a package that is not yet installed?
 
 ---
 
-_Issue opened by @Apreche on 2025-03-10 18:43_
+_@Apreche_
 
 ### Question
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-19T09:33:40Z
 updated_at: 2025-09-19T12:54:46Z
 url: https://github.com/astral-sh/uv/issues/15944
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:20Z
 ```
 
 # `uv build` fails to build local project when invoked by pex
 
 ---
 
-_Issue opened by @matthieucx on 2025-09-19 09:33_
+_@matthieucx_
 
 ### Summary
 

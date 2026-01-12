@@ -13,14 +13,14 @@ head: zb/docker-format
 created_at: 2024-09-04T13:24:16Z
 updated_at: 2024-09-04T13:47:58Z
 url: https://github.com/astral-sh/uv/pull/7017
-synced_at: 2026-01-10T12:53:38Z
+synced_at: 2026-01-12T16:07:38Z
 ```
 
 # Fix available Docker image rendering and shorten list
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-04 13:24_
+_@zanieb_
 
 _No description provided._
 

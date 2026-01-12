@@ -14,14 +14,14 @@ head: charlie/pkg
 created_at: 2024-12-27T00:35:15Z
 updated_at: 2024-12-27T00:50:42Z
 url: https://github.com/astral-sh/uv/pull/10189
-synced_at: 2026-01-10T11:44:38Z
+synced_at: 2026-01-12T16:09:10Z
 ```
 
 # Patch pkgconfig files after Python install
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-27 00:35_
+_@charliermarsh_
 
 ## Summary
 

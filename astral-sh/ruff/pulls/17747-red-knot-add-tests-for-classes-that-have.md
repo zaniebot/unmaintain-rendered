@@ -14,14 +14,14 @@ head: redknot-tests
 created_at: 2025-04-30T20:16:46Z
 updated_at: 2025-04-30T20:54:41Z
 url: https://github.com/astral-sh/ruff/pull/17747
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [red-knot] Add tests for classes that have incompatible `__new__` and `__init__` methods
 
 ---
 
-_Pull request opened by @LaBatata101 on 2025-04-30 20:16_
+_@LaBatata101_
 
 
 

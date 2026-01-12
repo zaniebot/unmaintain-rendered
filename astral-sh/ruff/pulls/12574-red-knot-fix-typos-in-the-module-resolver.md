@@ -13,14 +13,14 @@ head: typos
 created_at: 2024-07-30T09:18:30Z
 updated_at: 2024-08-02T15:20:05Z
 url: https://github.com/astral-sh/ruff/pull/12574
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] Fix typos in the module resolver
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-07-30 09:18_
+_@AlexWaygood_
 
 One added in https://github.com/astral-sh/ruff/commit/e52be0951aad5483a0e453dded78627fc74e7e2a, the other in https://github.com/astral-sh/ruff/commit/a2286c8e47ec1ac84467f7db10e773589faff9f9
 

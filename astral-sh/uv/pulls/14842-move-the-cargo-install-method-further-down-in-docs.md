@@ -13,14 +13,14 @@ head: zb/cargo-doc
 created_at: 2025-07-23T12:08:15Z
 updated_at: 2025-07-23T12:11:18Z
 url: https://github.com/astral-sh/uv/pull/14842
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:26Z
 ```
 
 # Move the "Cargo" install method further down in docs
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-23 12:08_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/14835
 

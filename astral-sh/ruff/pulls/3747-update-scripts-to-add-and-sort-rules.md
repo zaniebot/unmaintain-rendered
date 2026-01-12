@@ -11,14 +11,14 @@ head: sort-rules
 created_at: 2023-03-26T20:03:13Z
 updated_at: 2023-10-17T11:07:07Z
 url: https://github.com/astral-sh/ruff/pull/3747
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Update scripts to add and sort rules
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-26 20:03_
+_@JonathanPlasse_
 
 The aim of this PR is to reintroduce the use of `add_rule.py` and `add_plugin.py` in `CONTRIBUTING.md`.
 This PR also fixes the sorting of rules, this means that all new code will be sorted correctly.

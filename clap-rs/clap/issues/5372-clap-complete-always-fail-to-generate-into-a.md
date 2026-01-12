@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-23T02:21:52Z
 updated_at: 2024-03-11T23:10:19Z
 url: https://github.com/clap-rs/clap/issues/5372
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # clap_complete: always fail to generate into a tempfile
 
 ---
 
-_Issue opened by @poliorcetics on 2024-02-23 02:21_
+_@poliorcetics_
 
 ### Please complete the following tasks
 

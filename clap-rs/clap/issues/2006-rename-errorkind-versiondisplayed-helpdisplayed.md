@@ -13,14 +13,14 @@ assignees: []
 created_at: 2020-07-10T15:41:51Z
 updated_at: 2020-07-26T07:58:22Z
 url: https://github.com/clap-rs/clap/issues/2006
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # Rename ErrorKind::{VersionDisplayed, HelpDisplayed} to present tense
 
 ---
 
-_Issue opened by @davidMcneil on 2020-07-10 15:41_
+_@davidMcneil_
 
 Using clap version `2.33.1`. See the following program:
 

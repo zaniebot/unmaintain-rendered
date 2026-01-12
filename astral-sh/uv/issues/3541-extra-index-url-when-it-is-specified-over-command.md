@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-13T10:50:17Z
 updated_at: 2024-05-21T17:30:33Z
 url: https://github.com/astral-sh/uv/issues/3541
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Extra index url when it is specified over command line and uv.toml
 
 ---
 
-_Issue opened by @jmspereira on 2024-05-13 10:50_
+_@jmspereira_
 
 Hey everyone,
 

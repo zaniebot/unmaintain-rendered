@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-25T03:27:07Z
 updated_at: 2026-01-08T18:39:05Z
 url: https://github.com/astral-sh/ty/issues/1250
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # widen `Literal` types in invariant/covariant positions of generic function calls
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-25 03:27_
+_@KotlinIsland_
 
 ### Summary
 

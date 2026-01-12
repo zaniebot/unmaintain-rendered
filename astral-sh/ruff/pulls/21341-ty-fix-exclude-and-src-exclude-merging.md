@@ -15,14 +15,14 @@ head: micha/ranged-value-combine
 created_at: 2025-11-08T15:55:19Z
 updated_at: 2025-11-10T11:52:46Z
 url: https://github.com/astral-sh/ruff/pull/21341
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # [ty] Fix `--exclude` and `src.exclude` merging
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-11-08 15:55_
+_@MichaReiser_
 
 ## Summary
 

@@ -11,14 +11,14 @@ head: assignment-from-none
 created_at: 2025-10-06T14:47:28Z
 updated_at: 2025-10-06T14:50:44Z
 url: https://github.com/astral-sh/ruff/pull/20722
-synced_at: 2026-01-10T17:34:34Z
+synced_at: 2026-01-12T15:57:08Z
 ```
 
 # feat: support pylint rule assignment-from-none
 
 ---
 
-_Pull request opened by @fatelei on 2025-10-06 14:47_
+_@fatelei_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: Fix_Neovim_link
 created_at: 2024-07-19T19:49:19Z
 updated_at: 2024-07-19T20:26:59Z
 url: https://github.com/astral-sh/ruff/pull/12410
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Fix the Github link error for Neovim in the setup for editors in the docs.
 
 ---
 
-_Pull request opened by @FishAlchemist on 2024-07-19 19:49_
+_@FishAlchemist_
 
 ## Summary
 

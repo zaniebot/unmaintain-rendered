@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-10T08:16:00Z
 updated_at: 2024-09-11T19:31:01Z
 url: https://github.com/astral-sh/uv/issues/7246
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:11Z
 ```
 
 # Support directories in `uv.tool.cache-keys`
 
 ---
 
-_Issue opened by @vivienm on 2024-09-10 08:16_
+_@vivienm_
 
 I work on projects using both Python and Rust. I'd like to make uv rebuild the project when the Rust code is modified, typically when any `*.rs` file in the `src` directory is modified.
 

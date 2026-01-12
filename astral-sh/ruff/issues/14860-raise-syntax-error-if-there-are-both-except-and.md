@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-12-09T05:50:56Z
 updated_at: 2024-12-10T23:50:56Z
 url: https://github.com/astral-sh/ruff/issues/14860
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Raise syntax error if there are both `except` and `except*` in the same `try` block
 
 ---
 
-_Issue opened by @dhruvmanila on 2024-12-09 05:50_
+_@dhruvmanila_
 
 The task is to fix this TODO:
 

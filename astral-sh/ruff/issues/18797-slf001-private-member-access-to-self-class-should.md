@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-19T17:42:56Z
 updated_at: 2025-06-20T16:07:44Z
 url: https://github.com/astral-sh/ruff/issues/18797
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # SLF001 (private member access) to self-class should work with type narrowing
 
 ---
 
-_Issue opened by @sliedes on 2025-06-19 17:42_
+_@sliedes_
 
 ### Summary
 

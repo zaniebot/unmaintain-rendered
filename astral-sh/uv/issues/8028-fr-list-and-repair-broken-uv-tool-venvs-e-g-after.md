@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-09T00:48:52Z
 updated_at: 2024-10-09T08:44:15Z
 url: https://github.com/astral-sh/uv/issues/8028
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # FR: List and repair broken `uv tool` venvs (e.g. after a python upgrade).
 
 ---
 
-_Issue opened by @ilyagr on 2024-10-09 00:48_
+_@ilyagr_
 
 In the transcript below, I upgrade from Python 3.12.6 to 3.12.7 and all my `uv tool install`-ed tools break because the symlinks to python are broken. The problem is that `uv` can't handle these broken environments very well.
 

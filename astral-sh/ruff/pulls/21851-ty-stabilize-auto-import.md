@@ -14,14 +14,14 @@ head: ag/stabilize-auto-import
 created_at: 2025-12-08T18:06:41Z
 updated_at: 2025-12-09T14:40:40Z
 url: https://github.com/astral-sh/ruff/pull/21851
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] Stabilize auto-import
 
 ---
 
-_Pull request opened by @BurntSushi on 2025-12-08 18:06_
+_@BurntSushi_
 
 While still under development, it's far enough along now that we think
 it's worth enabling it by default. This should also help give us

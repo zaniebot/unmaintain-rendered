@@ -13,14 +13,14 @@ head: charlie/args
 created_at: 2023-04-18T03:16:39Z
 updated_at: 2023-04-18T03:51:03Z
 url: https://github.com/astral-sh/ruff/pull/4004
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Ignore argument assignments when enforcing `RET504`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-18 03:16_
+_@charliermarsh_
 
 ## Summary
 

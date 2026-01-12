@@ -13,14 +13,14 @@ head: charlie/git-url
 created_at: 2024-05-19T03:59:38Z
 updated_at: 2024-05-21T09:07:42Z
 url: https://github.com/astral-sh/uv/pull/3656
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:46Z
 ```
 
 # Track parsed Git URL components in `GitSourceUrl`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-19 03:59_
+_@charliermarsh_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: charlie/NPY001
 created_at: 2023-09-06T12:14:25Z
 updated_at: 2023-09-06T12:30:40Z
 url: https://github.com/astral-sh/ruff/pull/7187
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Avoid attempting to fix NPY001 with overridden builtins
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-06 12:14_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/6952.
 

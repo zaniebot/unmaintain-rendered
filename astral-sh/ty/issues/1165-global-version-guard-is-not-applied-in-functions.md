@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-10T16:13:53Z
 updated_at: 2026-01-08T18:34:43Z
 url: https://github.com/astral-sh/ty/issues/1165
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Global version guard is not applied in functions
 
 ---
 
-_Issue opened by @hynek on 2025-09-10 16:13_
+_@hynek_
 
 ### Summary
 

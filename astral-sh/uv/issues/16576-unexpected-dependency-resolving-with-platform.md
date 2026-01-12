@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-11-03T10:48:13Z
 updated_at: 2025-11-05T14:48:09Z
 url: https://github.com/astral-sh/uv/issues/16576
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:33Z
 ```
 
 # Unexpected dependency resolving with `platform_machine` and `--python-platform`
 
 ---
 
-_Issue opened by @schlamar on 2025-11-03 10:48_
+_@schlamar_
 
 ### Summary
 

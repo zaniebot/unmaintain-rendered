@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-15T16:58:41Z
 updated_at: 2025-10-14T12:33:49Z
 url: https://github.com/astral-sh/ty/issues/828
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Show the rule status in the documentation
 
 ---
 
-_Issue opened by @MichaReiser on 2025-07-15 16:58_
+_@MichaReiser_
 
 Show when a rule was added, stabilized, or removed in the documentation. 
 

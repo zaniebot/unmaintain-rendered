@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-02-05T14:18:09Z
 updated_at: 2023-02-05T23:46:09Z
 url: https://github.com/astral-sh/ruff/issues/2582
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Make TCH005 (empty type checking block) autofixable
 
 ---
 
-_Issue opened by @LefterisJP on 2023-02-05 14:18_
+_@LefterisJP_
 
 ruff version: `0.0.237`
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2026-01-02T22:37:38Z
 updated_at: 2026-01-09T07:49:42Z
 url: https://github.com/astral-sh/ty/issues/2310
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # VS Code Extension regularly crashes
 
 ---
 
-_Issue opened by @npaolini2634 on 2026-01-02 22:37_
+_@npaolini2634_
 
 ### Summary
 

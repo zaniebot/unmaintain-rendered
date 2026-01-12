@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-15T14:27:58Z
 updated_at: 2025-02-18T17:45:59Z
 url: https://github.com/astral-sh/uv/issues/11536
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:39Z
 ```
 
 # Add documentation for Python version requests in `uv tool install`
 
 ---
 
-_Issue opened by @nick-voisin on 2025-02-15 14:27_
+_@nick-voisin_
 
 ### Summary
 

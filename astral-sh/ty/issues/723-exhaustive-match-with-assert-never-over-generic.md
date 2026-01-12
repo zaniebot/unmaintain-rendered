@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-06-28T21:13:41Z
 updated_at: 2025-06-30T07:37:44Z
 url: https://github.com/astral-sh/ty/issues/723
-synced_at: 2026-01-10T02:07:36Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Exhaustive match with `assert_never()` over generic types does not work
 
 ---
 
-_Issue opened by @cam-matsui on 2025-06-28 21:13_
+_@cam-matsui_
 
 ### Summary
 

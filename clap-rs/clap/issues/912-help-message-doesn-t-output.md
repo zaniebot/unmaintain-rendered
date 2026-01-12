@@ -13,14 +13,14 @@ assignees: []
 created_at: 2017-03-21T18:50:25Z
 updated_at: 2018-08-02T03:30:04Z
 url: https://github.com/clap-rs/clap/issues/912
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Help message doesn't output 
 
 ---
 
-_Issue opened by @kirillbobyrev on 2017-03-21 18:50_
+_@kirillbobyrev_
 
 If YAML is used running `program --help` would produce
 

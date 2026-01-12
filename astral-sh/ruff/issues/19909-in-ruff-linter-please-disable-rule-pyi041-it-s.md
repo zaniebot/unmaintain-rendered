@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-14T07:51:06Z
 updated_at: 2025-08-15T02:59:21Z
 url: https://github.com/astral-sh/ruff/issues/19909
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # In Ruff linter, please disable rule PYI041: it's for type checking, linting it is a logical fallacy
 
 ---
 
-_Issue opened by @hunterhogan on 2025-08-14 07:51_
+_@hunterhogan_
 
 ### Summary
 

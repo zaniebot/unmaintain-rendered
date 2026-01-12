@@ -13,14 +13,14 @@ head: charlie/globs
 created_at: 2024-09-20T01:50:45Z
 updated_at: 2024-09-20T02:33:33Z
 url: https://github.com/astral-sh/ruff/pull/13413
-synced_at: 2026-01-10T21:30:32Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # Cache glob resolutions in import graph
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-20 01:50_
+_@charliermarsh_
 
 ## Summary
 

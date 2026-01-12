@@ -13,14 +13,14 @@ head: charlie/stub
 created_at: 2023-06-16T03:43:03Z
 updated_at: 2023-06-16T04:09:18Z
 url: https://github.com/astral-sh/ruff/pull/5139
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Skip `DJ008` enforcement in stub files
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-16 03:43_
+_@charliermarsh_
 
 Closes #5138.
 

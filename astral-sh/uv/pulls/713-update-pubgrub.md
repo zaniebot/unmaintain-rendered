@@ -12,14 +12,14 @@ head: konsti/update-pubgrub
 created_at: 2023-12-20T13:39:58Z
 updated_at: 2023-12-20T22:57:00Z
 url: https://github.com/astral-sh/uv/pull/713
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:08Z
 ```
 
 # Update pubgrub
 
 ---
 
-_Pull request opened by @konstin on 2023-12-20 13:39_
+_@konstin_
 
 Easier than i expected: We simply never construct the pubgrub error variants since we have our own main loop. The `unreachable!()`s can be removed when never is stabilized
 

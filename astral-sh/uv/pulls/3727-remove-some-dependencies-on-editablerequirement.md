@@ -13,14 +13,14 @@ head: charlie/local
 created_at: 2024-05-21T23:28:22Z
 updated_at: 2024-05-21T23:36:54Z
 url: https://github.com/astral-sh/uv/pull/3727
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Remove some dependencies on `EditableRequirement`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-21 23:28_
+_@charliermarsh_
 
 ## Summary
 

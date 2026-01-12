@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-02T07:18:32Z
 updated_at: 2024-07-05T22:09:31Z
 url: https://github.com/astral-sh/uv/issues/4723
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # Cannot install editable if written as absolute path
 
 ---
 
-_Issue opened by @yajo on 2024-07-02 07:18_
+_@yajo_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

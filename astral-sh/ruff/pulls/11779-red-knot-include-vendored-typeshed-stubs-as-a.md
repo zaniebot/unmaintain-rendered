@@ -13,14 +13,14 @@ head: zip-typeshed
 created_at: 2024-06-06T19:31:57Z
 updated_at: 2024-06-07T15:16:19Z
 url: https://github.com/astral-sh/ruff/pull/11779
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # [red-knot] Include vendored typeshed stubs as a zipfile in the Ruff binary
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-06 19:31_
+_@AlexWaygood_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: charlie/detect
 created_at: 2022-12-27T22:36:30Z
 updated_at: 2022-12-28T00:45:51Z
 url: https://github.com/astral-sh/ruff/pull/1413
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Automatically detect and respect indentation and quotation code style
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-27 22:36_
+_@charliermarsh_
 
 Resolves #454.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-11T17:51:35Z
 updated_at: 2025-02-18T15:45:46Z
 url: https://github.com/astral-sh/uv/issues/4241
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Avoid discovering managed toolchains when mutating environment with `--system` flag
 
 ---
 
-_Issue opened by @zanieb on 2024-06-11 17:51_
+_@zanieb_
 
 Currently, `uv pip install --system` could write to a managed toolchain.
 

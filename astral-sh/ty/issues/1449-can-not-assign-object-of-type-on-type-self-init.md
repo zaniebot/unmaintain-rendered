@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-28T00:35:17Z
 updated_at: 2025-11-03T18:27:45Z
 url: https://github.com/astral-sh/ty/issues/1449
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Can not assign object of type ... on type `Self@__init__` with custom `__setattr__` method
 
 ---
 
-_Issue opened by @karlicoss on 2025-10-28 00:35_
+_@karlicoss_
 
 ### Summary
 

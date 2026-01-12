@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-27T21:49:40Z
 updated_at: 2025-12-29T19:57:35Z
 url: https://github.com/astral-sh/ty/issues/2240
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Treat Callable as having "__name__" attribute
 
 ---
 
-_Issue opened by @dchevell on 2025-12-27 21:49_
+_@dchevell_
 
 ### Summary
 

@@ -14,14 +14,14 @@ assignees: []
 created_at: 2019-05-04T22:54:36Z
 updated_at: 2020-08-17T21:46:03Z
 url: https://github.com/clap-rs/clap/issues/1464
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Error message for conflicted args outputs conflicting USAGE
 
 ---
 
-_Issue opened by @jojva on 2019-05-04 22:54_
+_@jojva_
 
 ### Rust Version
 

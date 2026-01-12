@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-19T02:23:35Z
 updated_at: 2026-01-12T09:19:25Z
 url: https://github.com/astral-sh/ty/issues/2098
-synced_at: 2026-01-12T09:56:37Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # error on invalid usage for variance of a legacy typevar
 
 ---
 
-_Issue opened by @carljm on 2025-12-19 02:23_
+_@carljm_
 
 E.g. if a typevar that claims to be covariant is used in contravariant position, or vice versa.
 

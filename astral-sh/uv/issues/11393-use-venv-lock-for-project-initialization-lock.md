@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-10T17:40:17Z
 updated_at: 2025-03-16T09:32:33Z
 url: https://github.com/astral-sh/uv/issues/11393
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:35Z
 ```
 
 # Use `.venv/lock` for project initialization lock
 
 ---
 
-_Issue opened by @charliermarsh on 2025-02-10 17:40_
+_@charliermarsh_
 
 Right now, we put these in `/tmp`. But ideally they'd be co-located with the project target, so that they work across containers (in some cases) and avoid polluting `/tmp`. We already create a lock here in `uv pip install` and other commands, so maybe we can reuse that file.
 

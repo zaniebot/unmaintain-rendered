@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-26T17:30:44Z
 updated_at: 2024-07-07T20:21:07Z
 url: https://github.com/astral-sh/uv/issues/2672
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:39Z
 ```
 
 # Flaky test `compile_invalid_pyc_invalidation_mode`
 
 ---
 
-_Issue opened by @zanieb on 2024-03-26 17:30_
+_@zanieb_
 
 I see this relatively frequently on macOS
 

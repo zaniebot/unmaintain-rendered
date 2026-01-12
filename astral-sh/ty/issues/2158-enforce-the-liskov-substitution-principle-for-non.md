@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-22T13:54:58Z
 updated_at: 2025-12-22T14:07:37Z
 url: https://github.com/astral-sh/ty/issues/2158
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Enforce the Liskov Substitution Principle for non-methods
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-12-22 13:54_
+_@AlexWaygood_
 
 We have implemented a basic version of the Liskov Substitution Principle to cover cases where methods are incompatibly overridden in subclasses. We also need to implement separate diagnostics to cover properties incompatibly overridden in subclasses, and mutable attributes incompatibly overridden in subclasses.
 

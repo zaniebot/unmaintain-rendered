@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-10-26T13:58:15Z
 updated_at: 2023-10-29T18:42:27Z
 url: https://github.com/astral-sh/uv/issues/204
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Make the resolver deterministic
 
 ---
 
-_Issue opened by @charliermarsh on 2023-10-26 13:58_
+_@charliermarsh_
 
 _No description provided._
 

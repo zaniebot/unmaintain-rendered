@@ -13,14 +13,14 @@ head: zb/fix-terms
 created_at: 2024-12-12T23:49:18Z
 updated_at: 2024-12-13T06:02:36Z
 url: https://github.com/astral-sh/uv/pull/9855
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:00Z
 ```
 
 # Fix bug in terms when collapsing unavailable versions in resolver errors
 
 ---
 
-_Pull request opened by @zanieb on 2024-12-12 23:49_
+_@zanieb_
 
 _No description provided._
 

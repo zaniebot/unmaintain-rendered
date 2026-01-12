@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-07-25T17:25:56Z
 updated_at: 2025-07-31T11:55:50Z
 url: https://github.com/astral-sh/uv/issues/14900
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:59Z
 ```
 
 # constraint dependencies are ignored for workspace members.
 
 ---
 
-_Issue opened by @matthewshober on 2025-07-25 17:25_
+_@matthewshober_
 
 ### Summary
 

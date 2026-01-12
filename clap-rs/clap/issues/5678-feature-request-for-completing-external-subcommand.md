@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-16T08:09:54Z
 updated_at: 2024-08-16T10:00:02Z
 url: https://github.com/clap-rs/clap/issues/5678
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Feature request for completing external subcommand
 
 ---
 
-_Issue opened by @shannmu on 2024-08-16 08:09_
+_@shannmu_
 
 ### Please complete the following tasks
 

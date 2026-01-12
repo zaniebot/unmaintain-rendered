@@ -13,14 +13,14 @@ head: add-rust-classifier
 created_at: 2026-01-09T20:27:39Z
 updated_at: 2026-01-09T20:42:27Z
 url: https://github.com/astral-sh/uv/pull/17389
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:45Z
 ```
 
 # Add Rust language classifier
 
 ---
 
-_Pull request opened by @mkniewallner on 2026-01-09 20:27_
+_@mkniewallner_
 
 ## Summary
 

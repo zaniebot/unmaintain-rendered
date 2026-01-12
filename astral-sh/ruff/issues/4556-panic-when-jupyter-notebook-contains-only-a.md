@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-21T02:24:11Z
 updated_at: 2023-06-12T14:14:18Z
 url: https://github.com/astral-sh/ruff/issues/4556
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Panic when Jupyter notebook contains only a single empty code cell
 
 ---
 
-_Issue opened by @dhruvmanila on 2023-05-21 02:24_
+_@dhruvmanila_
 
 Jupyter notebook content (1 empty code cell):
 ```python

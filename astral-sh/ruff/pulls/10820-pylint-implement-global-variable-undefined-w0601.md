@@ -13,14 +13,14 @@ head: add-W0601
 created_at: 2024-04-07T19:20:10Z
 updated_at: 2025-04-28T07:02:25Z
 url: https://github.com/astral-sh/ruff/pull/10820
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:55:33Z
 ```
 
 # [pylint] Implement global-variable-undefined (W0601)
 
 ---
 
-_Pull request opened by @tibor-reiss on 2024-04-07 19:20_
+_@tibor-reiss_
 
 Add pylint rule global-variable-undefined (W0601)
 

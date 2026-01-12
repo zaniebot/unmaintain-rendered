@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-21T18:28:54Z
 updated_at: 2025-08-21T18:42:21Z
 url: https://github.com/astral-sh/ruff/issues/20029
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # missing whl for 0.12.10
 
 ---
 
-_Issue opened by @D1-3105 on 2025-08-21 18:28_
+_@D1-3105_
 
 ### Summary
 

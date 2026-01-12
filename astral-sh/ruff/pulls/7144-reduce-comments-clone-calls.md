@@ -14,14 +14,14 @@ head: fewer-comments-clone
 created_at: 2023-09-05T08:30:51Z
 updated_at: 2023-09-05T09:32:57Z
 url: https://github.com/astral-sh/ruff/pull/7144
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Reduce `comments.clone` calls
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-05 08:30_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

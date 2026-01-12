@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-20T16:40:08Z
 updated_at: 2025-07-11T02:31:40Z
 url: https://github.com/astral-sh/uv/issues/12344
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:01Z
 ```
 
 # Git installs over ssh don't seem to work
 
 ---
 
-_Issue opened by @Kroppeb on 2025-03-20 16:40_
+_@Kroppeb_
 
 ### Summary
 

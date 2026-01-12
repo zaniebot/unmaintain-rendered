@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-01T13:41:32Z
 updated_at: 2024-10-04T11:32:05Z
 url: https://github.com/astral-sh/uv/issues/7841
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:17Z
 ```
 
 # empty UV_PYTHON is used as if it's set
 
 ---
 
-_Issue opened by @bluss on 2024-10-01 13:41_
+_@bluss_
 
 I noticed the following:
 

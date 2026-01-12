@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-01-26T15:36:39Z
 updated_at: 2016-01-28T14:00:28Z
 url: https://github.com/clap-rs/clap/issues/392
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Update windows build for v2
 
 ---
 
-_Issue opened by @kbknapp on 2016-01-26 15:36_
+_@kbknapp_
 
 AppVeyor is failing, should be an easy fix
 

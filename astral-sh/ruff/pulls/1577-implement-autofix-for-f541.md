@@ -12,14 +12,14 @@ head: autofix-F541
 created_at: 2023-01-03T01:51:37Z
 updated_at: 2023-01-03T03:28:33Z
 url: https://github.com/astral-sh/ruff/pull/1577
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Implement autofix for F541
 
 ---
 
-_Pull request opened by @harupy on 2023-01-03 01:51_
+_@harupy_
 
 Resolves #1125 
 

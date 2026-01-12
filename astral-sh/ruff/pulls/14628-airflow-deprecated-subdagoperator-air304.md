@@ -13,14 +13,14 @@ head: deprecated-subdag-operator
 created_at: 2024-11-27T08:14:28Z
 updated_at: 2024-12-10T15:47:58Z
 url: https://github.com/astral-sh/ruff/pull/14628
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # [airflow] deprecated subdagoperator (AIR304)
 
 ---
 
-_Pull request opened by @abhishekbhakat on 2024-11-27 08:14_
+_@abhishekbhakat_
 
 Summary
 Airflow 3.0 deprecates the SubDagOperator in favor of TaskGroups. SubDagOperator has been known to cause deadlocks and performance issues, and will be removed in Airflow 3.0. This rule detects usage of SubDagOperator to help users migrate their DAGs to the more reliable TaskGroup pattern.

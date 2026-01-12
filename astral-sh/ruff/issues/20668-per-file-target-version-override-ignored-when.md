@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-01T12:38:13Z
 updated_at: 2025-10-01T13:53:10Z
 url: https://github.com/astral-sh/ruff/issues/20668
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # `per-file-target-version` override ignored when combined with a broader pattern
 
 ---
 
-_Issue opened by @mgaitan on 2025-10-01 12:38_
+_@mgaitan_
 
 ### Summary
 

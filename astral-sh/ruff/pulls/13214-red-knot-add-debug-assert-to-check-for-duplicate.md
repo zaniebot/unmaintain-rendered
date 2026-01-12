@@ -13,14 +13,14 @@ head: dhruv/assert-duplicate-definitions
 created_at: 2024-09-02T12:46:26Z
 updated_at: 2024-09-04T06:02:50Z
 url: https://github.com/astral-sh/ruff/pull/13214
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] Add debug assert to check for duplicate definitions
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-09-02 12:46_
+_@dhruvmanila_
 
 ## Summary
 

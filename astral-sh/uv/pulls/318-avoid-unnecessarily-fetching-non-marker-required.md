@@ -12,14 +12,14 @@ head: charlie/visit
 created_at: 2023-11-04T17:00:55Z
 updated_at: 2023-11-04T17:03:44Z
 url: https://github.com/astral-sh/uv/pull/318
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:52Z
 ```
 
 # Avoid unnecessarily fetching non-marker-required first-party dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-04 17:00_
+_@charliermarsh_
 
 E.g., given:
 

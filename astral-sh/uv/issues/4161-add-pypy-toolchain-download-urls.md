@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-08T14:22:45Z
 updated_at: 2024-07-28T00:43:30Z
 url: https://github.com/astral-sh/uv/issues/4161
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # Add PyPy toolchain download URLs
 
 ---
 
-_Issue opened by @zanieb on 2024-06-08 14:22_
+_@zanieb_
 
 See `crates/uv-toolchain/template-download-metadata.py` and Rye's PyPy download URLs
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T11:55:05Z
 updated_at: 2025-08-22T14:59:07Z
 url: https://github.com/astral-sh/uv/issues/15131
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:04Z
 ```
 
 # config file ~/.config/uv/uv.toml seems not to be used with `uvx`
 
 ---
 
-_Issue opened by @svaningelgem on 2025-08-07 11:55_
+_@svaningelgem_
 
 ### Question
 

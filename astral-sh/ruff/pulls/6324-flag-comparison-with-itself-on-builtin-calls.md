@@ -13,14 +13,14 @@ head: charlie/builtins
 created_at: 2023-08-04T01:39:27Z
 updated_at: 2023-08-04T14:11:08Z
 url: https://github.com/astral-sh/ruff/pull/6324
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Flag `comparison-with-itself` on builtin calls
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-04 01:39_
+_@charliermarsh_
 
 ## Summary
 

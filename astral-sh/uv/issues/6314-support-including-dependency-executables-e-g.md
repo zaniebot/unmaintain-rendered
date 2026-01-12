@@ -12,14 +12,14 @@ assignees: []
 created_at: 2024-08-21T09:59:44Z
 updated_at: 2025-09-11T19:15:38Z
 url: https://github.com/astral-sh/uv/issues/6314
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:03Z
 ```
 
 # Support including dependency executables (e.g., `--include-deps`) in `uv tool install`
 
 ---
 
-_Issue opened by @hynek on 2024-08-21 09:59_
+_@hynek_
 
 hi, congrats on 0.3.0!
 

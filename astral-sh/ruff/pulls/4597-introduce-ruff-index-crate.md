@@ -13,14 +13,14 @@ head: ruff-idx
 created_at: 2023-05-23T11:15:48Z
 updated_at: 2023-05-23T15:40:36Z
 url: https://github.com/astral-sh/ruff/pull/4597
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Introduce `ruff_index` crate
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-05-23 11:15_
+_@MichaReiser_
 
 We have multiple places where we use a custom `Id` to index into a Vector. I now plan to add one new index and thought it might be good to reduce the necessary boilerplate. 
 

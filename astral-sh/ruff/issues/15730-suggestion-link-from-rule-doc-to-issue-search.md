@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-24T19:49:41Z
 updated_at: 2025-01-24T20:02:54Z
 url: https://github.com/astral-sh/ruff/issues/15730
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Suggestion: Link from rule doc to issue search
 
 ---
 
-_Issue opened by @JelleZijlstra on 2025-01-24 19:49_
+_@JelleZijlstra_
 
 ### Description
 

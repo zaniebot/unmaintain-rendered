@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-09-15T20:11:39Z
 updated_at: 2024-10-03T23:06:11Z
 url: https://github.com/astral-sh/ruff/issues/7418
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # False positive for PERF401 when using assignment expression
 
 ---
 
-_Issue opened by @mounirmesselmeni on 2023-09-15 20:11_
+_@mounirmesselmeni_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

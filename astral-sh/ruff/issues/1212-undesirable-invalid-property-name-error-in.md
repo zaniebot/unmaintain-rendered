@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-12-12T15:58:37Z
 updated_at: 2023-02-22T23:05:26Z
 url: https://github.com/astral-sh/ruff/issues/1212
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Undesirable invalid property name error in convert_typed_dict_functional_to_class
 
 ---
 
-_Issue opened by @martinlehoux on 2022-12-12 15:58_
+_@martinlehoux_
 
 Just adding a reminder, I'll try to get to it soon
 

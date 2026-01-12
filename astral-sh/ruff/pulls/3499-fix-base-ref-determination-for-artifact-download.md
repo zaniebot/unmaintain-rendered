@@ -12,14 +12,14 @@ head: fix-ecosystem-base-ref
 created_at: 2023-03-14T01:28:44Z
 updated_at: 2023-03-14T11:41:20Z
 url: https://github.com/astral-sh/ruff/pull/3499
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Fix base ref determination for artifact download in ecosystem CI check
 
 ---
 
-_Pull request opened by @sciyoshi on 2023-03-14 01:28_
+_@sciyoshi_
 
 Not sure how I missed this. Fixes charliermarsh/ruff#3458
 

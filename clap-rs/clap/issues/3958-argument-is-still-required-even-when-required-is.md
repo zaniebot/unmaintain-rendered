@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-07-19T21:44:11Z
 updated_at: 2022-07-19T21:52:04Z
 url: https://github.com/clap-rs/clap/issues/3958
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Argument is still required even when required is set to false in derive macro.
 
 ---
 
-_Issue opened by @Atsukoro1 on 2022-07-19 21:44_
+_@Atsukoro1_
 
 ### Please complete the following tasks
 

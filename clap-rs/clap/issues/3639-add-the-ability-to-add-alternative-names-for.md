@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-04-18T08:51:37Z
 updated_at: 2022-04-18T12:35:10Z
 url: https://github.com/clap-rs/clap/issues/3639
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Add the ability to add alternative names for subcommand variants with `#[clap]` attribute
 
 ---
 
-_Issue opened by @mitchmindtree on 2022-04-18 08:51_
+_@mitchmindtree_
 
 ### Please complete the following tasks
 

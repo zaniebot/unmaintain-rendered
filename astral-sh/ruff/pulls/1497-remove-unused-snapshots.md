@@ -12,14 +12,14 @@ head: remove-unused-snapshots
 created_at: 2022-12-31T05:16:09Z
 updated_at: 2023-01-01T04:57:07Z
 url: https://github.com/astral-sh/ruff/pull/1497
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Remove unused snapshots
 
 ---
 
-_Pull request opened by @harupy on 2022-12-31 05:16_
+_@harupy_
 
 How I found unused snapshots:
 

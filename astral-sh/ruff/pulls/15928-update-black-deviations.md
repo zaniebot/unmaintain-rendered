@@ -13,14 +13,14 @@ head: micha/update-black-deviations-2025
 created_at: 2025-02-04T11:30:21Z
 updated_at: 2025-02-04T14:04:25Z
 url: https://github.com/astral-sh/ruff/pull/15928
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Update black deviations
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-04 11:30_
+_@MichaReiser_
 
 ## Summary
 

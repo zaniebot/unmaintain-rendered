@@ -13,14 +13,14 @@ head: charlie/life
 created_at: 2024-09-09T01:51:22Z
 updated_at: 2024-09-09T13:31:14Z
 url: https://github.com/astral-sh/uv/pull/7210
-synced_at: 2026-01-10T12:53:42Z
+synced_at: 2026-01-12T16:07:44Z
 ```
 
 # Avoid distribution clones in `requirements.txt` graph
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-09 01:51_
+_@charliermarsh_
 
 _No description provided._
 

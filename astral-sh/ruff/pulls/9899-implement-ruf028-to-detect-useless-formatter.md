@@ -14,14 +14,14 @@ head: jane/formatter/useless-noqa
 created_at: 2024-02-08T19:25:00Z
 updated_at: 2024-02-28T19:33:14Z
 url: https://github.com/astral-sh/ruff/pull/9899
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Implement RUF028 to detect useless formatter suppression comments
 
 ---
 
-_Pull request opened by @snowsignal on 2024-02-08 19:25_
+_@snowsignal_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

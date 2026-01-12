@@ -12,14 +12,14 @@ head: charlie/relative-banned-api-ii
 created_at: 2023-04-19T17:58:42Z
 updated_at: 2023-04-19T18:43:05Z
 url: https://github.com/astral-sh/ruff/pull/4025
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Support relative imports in `banned-api` enforcement
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-04-19 17:58_
+_@charliermarsh_
 
 Closes #4013.
 

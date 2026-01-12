@@ -13,14 +13,14 @@ head: feature/custom-command-header
 created_at: 2024-03-19T22:23:17Z
 updated_at: 2024-03-21T09:23:27Z
 url: https://github.com/astral-sh/uv/pull/2554
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:06Z
 ```
 
 # Add UV_CUSTOM_COMPILE_COMMAND support to uv pip compile
 
 ---
 
-_Pull request opened by @BakerNet on 2024-03-19 22:23_
+_@BakerNet_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

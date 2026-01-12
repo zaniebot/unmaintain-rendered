@@ -12,14 +12,14 @@ assignees: []
 created_at: 2026-01-11T13:41:14Z
 updated_at: 2026-01-12T14:20:34Z
 url: https://github.com/astral-sh/ty/issues/2445
-synced_at: 2026-01-12T15:03:21Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # `types.ModuleType` attributes in the global namespace can have a different type rendered in the autocomplete tooltip to the one ty infers
 
 ---
 
-_Issue opened by @AlexWaygood on 2026-01-11 13:41_
+_@AlexWaygood_
 
 ### Summary
 

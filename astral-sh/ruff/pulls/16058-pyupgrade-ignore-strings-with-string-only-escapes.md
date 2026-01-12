@@ -13,14 +13,14 @@ head: UP012
 created_at: 2025-02-10T00:20:45Z
 updated_at: 2025-11-06T08:37:53Z
 url: https://github.com/astral-sh/ruff/pull/16058
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # [`pyupgrade`] Ignore strings with string-only escapes (`UP012`)
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-02-10 00:20_
+_@InSyncWithFoo_
 
 ## Summary
 

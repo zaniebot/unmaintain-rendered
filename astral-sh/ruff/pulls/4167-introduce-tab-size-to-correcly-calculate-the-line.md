@@ -12,14 +12,14 @@ head: fix-e501-with-tabulation
 created_at: 2023-05-01T06:14:52Z
 updated_at: 2023-05-24T08:25:35Z
 url: https://github.com/astral-sh/ruff/pull/4167
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Introduce `tab-size` to correcly calculate the line length with tabulations
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-01 06:14_
+_@JonathanPlasse_
 
 - Close #4016 
 

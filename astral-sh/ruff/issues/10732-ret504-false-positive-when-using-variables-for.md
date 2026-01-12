@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-02T04:19:53Z
 updated_at: 2024-04-02T20:18:07Z
 url: https://github.com/astral-sh/ruff/issues/10732
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # RET504 "false positive" when using variables for typing
 
 ---
 
-_Issue opened by @autinerd on 2024-04-02 04:19_
+_@autinerd_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

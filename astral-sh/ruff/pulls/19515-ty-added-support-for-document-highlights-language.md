@@ -14,14 +14,14 @@ head: doc_highlight
 created_at: 2025-07-23T19:45:37Z
 updated_at: 2025-07-24T20:06:29Z
 url: https://github.com/astral-sh/ruff/pull/19515
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:41Z
 ```
 
 # [ty] Added support for "document highlights" language server feature.
 
 ---
 
-_Pull request opened by @UnboundVariable on 2025-07-23 19:45_
+_@UnboundVariable_
 
 This PR adds support for the "document highlights" language server feature.
 

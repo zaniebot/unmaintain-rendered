@@ -14,14 +14,14 @@ head: charlie/target
 created_at: 2024-04-25T00:16:38Z
 updated_at: 2024-08-02T17:33:09Z
 url: https://github.com/astral-sh/uv/pull/3257
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:05:31Z
 ```
 
 # Add `--target` support to `sync` and `install`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-25 00:16_
+_@charliermarsh_
 
 ## Summary
 

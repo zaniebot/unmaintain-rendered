@@ -13,14 +13,14 @@ head: cjm/no-panic
 created_at: 2024-07-25T02:18:10Z
 updated_at: 2024-07-26T00:38:11Z
 url: https://github.com/astral-sh/ruff/pull/12499
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # [red-knot] handle all syntax without panic
 
 ---
 
-_Pull request opened by @carljm on 2024-07-25 02:18_
+_@carljm_
 
 Extend red-knot type inference to cover all syntax, so that inferring types for a scope gives all expressions a type. This means we can run the red-knot semantic lint on all Python code without panics. It also means we can infer types for `builtins.pyi` without panics.
 

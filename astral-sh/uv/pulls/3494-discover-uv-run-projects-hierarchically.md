@@ -14,14 +14,14 @@ head: charlie/project-name
 created_at: 2024-05-09T19:02:47Z
 updated_at: 2024-05-09T20:13:06Z
 url: https://github.com/astral-sh/uv/pull/3494
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # Discover `uv run` projects hierarchically
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-09 19:02_
+_@charliermarsh_
 
 ## Summary
 

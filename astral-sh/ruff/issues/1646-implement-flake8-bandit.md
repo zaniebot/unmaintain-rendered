@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-05T00:09:24Z
 updated_at: 2024-08-01T00:16:23Z
 url: https://github.com/astral-sh/ruff/issues/1646
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Implement `flake8-bandit`
 
 ---
 
-_Issue opened by @charliermarsh on 2023-01-05 00:09_
+_@charliermarsh_
 
 - [x] `S101`: [`assert_used`](https://bandit.readthedocs.io/en/latest/plugins/b101_assert_used.html)
 - [x] `S102`: [`exec_used`](https://bandit.readthedocs.io/en/latest/plugins/b102_exec_used.html)

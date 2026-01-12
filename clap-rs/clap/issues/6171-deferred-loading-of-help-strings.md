@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-01T01:02:25Z
 updated_at: 2025-11-10T15:00:47Z
 url: https://github.com/clap-rs/clap/issues/6171
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Deferred loading of help strings
 
 ---
 
-_Issue opened by @andreacorbellini on 2025-11-01 01:02_
+_@andreacorbellini_
 
 ### Please complete the following tasks
 

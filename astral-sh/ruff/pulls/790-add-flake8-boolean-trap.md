@@ -12,14 +12,14 @@ head: main
 created_at: 2022-11-17T16:28:51Z
 updated_at: 2022-11-18T17:30:08Z
 url: https://github.com/astral-sh/ruff/pull/790
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # Add flake8-boolean-trap
 
 ---
 
-_Pull request opened by @pwoolvett on 2022-11-17 16:28_
+_@pwoolvett_
 
 Disclaimer: I have no rust experience whatsoever.
 

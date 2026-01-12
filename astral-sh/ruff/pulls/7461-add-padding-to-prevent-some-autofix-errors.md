@@ -13,14 +13,14 @@ head: charlie/pad
 created_at: 2023-09-17T15:05:07Z
 updated_at: 2023-09-17T15:20:46Z
 url: https://github.com/astral-sh/ruff/pull/7461
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Add padding to prevent some autofix errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-09-17 15:05_
+_@charliermarsh_
 
 ## Summary
 

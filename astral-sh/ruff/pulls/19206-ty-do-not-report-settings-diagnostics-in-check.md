@@ -14,14 +14,14 @@ head: gankra/error-scope
 created_at: 2025-07-08T13:51:06Z
 updated_at: 2025-07-08T14:18:34Z
 url: https://github.com/astral-sh/ruff/pull/19206
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:34Z
 ```
 
 # [ty] Do not report settings diagnostics in `check_file`
 
 ---
 
-_Pull request opened by @Gankra on 2025-07-08 13:51_
+_@Gankra_
 
 This is the trivial first part of https://github.com/astral-sh/ty/issues/613
 

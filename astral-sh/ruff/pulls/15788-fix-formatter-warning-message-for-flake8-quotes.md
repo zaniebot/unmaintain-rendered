@@ -13,14 +13,14 @@ head: feature/docstring_quotes_message
 created_at: 2025-01-28T16:17:25Z
 updated_at: 2025-01-29T11:00:28Z
 url: https://github.com/astral-sh/ruff/pull/15788
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:52Z
 ```
 
 # Fix formatter warning message for `flake8-quotes` option
 
 ---
 
-_Pull request opened by @marekhanus on 2025-01-28 16:17_
+_@marekhanus_
 
 ## Summary
 

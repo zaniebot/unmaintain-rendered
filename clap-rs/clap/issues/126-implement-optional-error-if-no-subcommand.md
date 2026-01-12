@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-05-17T21:09:41Z
 updated_at: 2015-05-17T22:23:57Z
 url: https://github.com/clap-rs/clap/issues/126
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Implement optional "error if no subcommand"
 
 ---
 
-_Issue opened by @kbknapp on 2015-05-17 21:09_
+_@kbknapp_
 
 Allow applications and subcommands to define that an error should be raised if no subcommand is used.
 

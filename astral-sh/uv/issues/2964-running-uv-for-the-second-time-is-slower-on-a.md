@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-10T14:25:17Z
 updated_at: 2024-04-16T08:15:08Z
 url: https://github.com/astral-sh/uv/issues/2964
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # Running uv for the second time is slower on a mounted docker volume
 
 ---
 
-_Issue opened by @jaap3 on 2024-04-10 14:25_
+_@jaap3_
 
 I'm looking into replacing `pip` with `uv` in our development setup. We develop our projects in `docker` containers and one thing we do is (re)install all requirements when the container is (re)started. I noticed that in some cases `pip` was faster than `uv`, so I did some testing.
 

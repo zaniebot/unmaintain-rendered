@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-07-07T07:45:04Z
 updated_at: 2022-07-14T14:39:22Z
 url: https://github.com/clap-rs/clap/issues/3900
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # get_arg_conflicts_with panics if arg conflicts with group.
 
 ---
 
-_Issue opened by @tmccombs on 2022-07-07 07:45_
+_@tmccombs_
 
 ### Please complete the following tasks
 

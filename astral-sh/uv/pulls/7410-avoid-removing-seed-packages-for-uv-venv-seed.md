@@ -13,14 +13,14 @@ head: charlie/seed
 created_at: 2024-09-15T17:22:10Z
 updated_at: 2024-09-15T22:27:53Z
 url: https://github.com/astral-sh/uv/pull/7410
-synced_at: 2026-01-10T12:53:46Z
+synced_at: 2026-01-12T16:07:48Z
 ```
 
 # Avoid removing seed packages for `uv venv --seed` environments
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-15 17:22_
+_@charliermarsh_
 
 ## Summary
 

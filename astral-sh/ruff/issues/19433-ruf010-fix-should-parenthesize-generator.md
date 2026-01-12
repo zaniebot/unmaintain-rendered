@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-19T21:31:34Z
 updated_at: 2025-07-30T15:02:32Z
 url: https://github.com/astral-sh/ruff/issues/19433
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # RUF010 fix should parenthesize generator expressions
 
 ---
 
-_Issue opened by @dscorbett on 2025-07-19 21:31_
+_@dscorbett_
 
 ### Summary
 

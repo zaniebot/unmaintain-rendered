@@ -12,14 +12,14 @@ head: system-jemalloc
 created_at: 2025-11-02T01:49:05Z
 updated_at: 2025-12-10T17:36:03Z
 url: https://github.com/astral-sh/ruff/pull/21197
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:18Z
 ```
 
 # Use system jemalloc
 
 ---
 
-_Pull request opened by @WhyNotHugo on 2025-11-02 01:49_
+_@WhyNotHugo_
 
 The version compiled by tikv_jemallocator by default assumes 16K pages, and doesn't work on systems which have 64K pages.
 

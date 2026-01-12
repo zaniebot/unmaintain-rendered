@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-10-09T03:28:18Z
 updated_at: 2025-02-20T15:08:05Z
 url: https://github.com/astral-sh/uv/issues/8032
-synced_at: 2026-01-10T03:50:30Z
+synced_at: 2026-01-12T15:59:18Z
 ```
 
 # .lock file causes conflict when installing python into a shared directory
 
 ---
 
-_Issue opened by @kwaegel on 2024-10-09 03:28_
+_@kwaegel_
 
 I'm having trouble getting installing Python builds (and tools) into a directory shared by multiple users, due to a single-user owned `.lock` file created in `UV_PYTHON_INSTALL_DIR`. I'm not sure if what I am attempting is reasonable or not, but at the moment I can't tell if this is a bug or intended behaviour.
 

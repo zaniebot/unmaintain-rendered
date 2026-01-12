@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-17T06:48:06Z
 updated_at: 2025-04-17T12:53:46Z
 url: https://github.com/astral-sh/uv/issues/12936
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:15Z
 ```
 
 # Index pinning does not work for indirect dependencies
 
 ---
 
-_Issue opened by @mzoll on 2025-04-17 06:48_
+_@mzoll_
 
 ### Summary
 

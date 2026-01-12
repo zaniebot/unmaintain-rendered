@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-24T06:32:14Z
 updated_at: 2024-08-20T19:10:01Z
 url: https://github.com/astral-sh/ruff/issues/6840
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Idea for new Rule: Check pytest.raises Exception Info for broad Exceptions
 
 ---
 
-_Issue opened by @Cielquan on 2023-08-24 06:32_
+_@Cielquan_
 
 ### Where we are
 

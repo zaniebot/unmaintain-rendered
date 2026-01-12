@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-10T19:03:22Z
 updated_at: 2025-04-11T18:34:02Z
 url: https://github.com/astral-sh/uv/issues/12822
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # python pin says it updated .python-version but didn't
 
 ---
 
-_Issue opened by @avilaton on 2025-04-10 19:03_
+_@avilaton_
 
 ### Summary
 

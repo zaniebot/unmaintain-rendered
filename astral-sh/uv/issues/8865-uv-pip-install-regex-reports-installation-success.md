@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-06T16:08:19Z
 updated_at: 2024-11-07T20:23:28Z
 url: https://github.com/astral-sh/uv/issues/8865
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:36Z
 ```
 
 # `uv pip install regex` reports installation success but library cannot be imported (pip works)
 
 ---
 
-_Issue opened by @ssbarnea on 2024-11-06 16:08_
+_@ssbarnea_
 
 Apparently MacOS specific issues:
 

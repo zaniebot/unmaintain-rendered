@@ -12,14 +12,14 @@ head: fix-tempdir-rename
 created_at: 2023-10-12T18:40:03Z
 updated_at: 2023-10-12T18:47:40Z
 url: https://github.com/astral-sh/uv/pull/94
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:45Z
 ```
 
 # Fix tempdir rename
 
 ---
 
-_Pull request opened by @konstin on 2023-10-12 18:40_
+_@konstin_
 
 This fixes two bugs on linux:
 

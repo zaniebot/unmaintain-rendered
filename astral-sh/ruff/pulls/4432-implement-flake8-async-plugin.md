@@ -13,14 +13,14 @@ head: feature/4246-implement-flake8-async
 created_at: 2023-05-14T17:23:33Z
 updated_at: 2023-05-15T21:38:43Z
 url: https://github.com/astral-sh/ruff/pull/4432
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Implement flake8-async plugin
 
 ---
 
-_Pull request opened by @qdegraaf on 2023-05-14 17:23_
+_@qdegraaf_
 
 ### Summary
 

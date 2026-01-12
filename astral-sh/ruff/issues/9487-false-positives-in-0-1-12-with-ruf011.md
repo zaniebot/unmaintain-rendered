@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-12T07:00:42Z
 updated_at: 2024-01-12T19:33:46Z
 url: https://github.com/astral-sh/ruff/issues/9487
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # False positives in 0.1.12 with RUF011
 
 ---
 
-_Issue opened by @pablogamboa on 2024-01-12 07:00_
+_@pablogamboa_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

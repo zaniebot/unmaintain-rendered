@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-17T19:58:28Z
 updated_at: 2024-05-17T21:49:17Z
 url: https://github.com/astral-sh/ruff/issues/11460
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # W191 documentation example makes no sense
 
 ---
 
-_Issue opened by @njzjz on 2024-05-17 19:58_
+_@njzjz_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

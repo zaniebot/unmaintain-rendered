@@ -15,14 +15,14 @@ head: dhruv/server-target-logging
 created_at: 2025-07-02T04:46:36Z
 updated_at: 2025-07-02T04:50:13Z
 url: https://github.com/astral-sh/ruff/pull/19084
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:31Z
 ```
 
 # [ty] Log target names at trace level
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-07-02 04:46_
+_@dhruvmanila_
 
 Follow-up to https://github.com/astral-sh/ruff/pull/19083, also log the target names like `ty_python_semantic::module_resolver::resolver` in `2025-07-02 10:12:20.188697000 DEBUG ty_python_semantic::module_resolver::resolver: Adding first-party search path '/Users/dhruv/playground/ty_server'` at trace level.
 

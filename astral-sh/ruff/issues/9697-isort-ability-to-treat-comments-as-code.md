@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-01-30T05:43:59Z
 updated_at: 2024-09-02T15:18:07Z
 url: https://github.com/astral-sh/ruff/issues/9697
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # isort ability to treat comments as code
 
 ---
 
-_Issue opened by @yasirroni on 2024-01-30 05:43_
+_@yasirroni_
 
 isort support ability to treat comments as code https://github.com/pycqa/isort/issues/1357. It is very useful in `.py` files generated from `.ipynb` that each section of import separated by comment `# %%`
 

@@ -14,14 +14,14 @@ head: charlie/build-warn
 created_at: 2024-10-24T18:01:58Z
 updated_at: 2024-10-25T19:06:48Z
 url: https://github.com/astral-sh/uv/pull/8537
-synced_at: 2026-01-10T12:54:11Z
+synced_at: 2026-01-12T16:08:21Z
 ```
 
 # Add error message when `uv build` is used with non-packaged projects
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-24 18:01_
+_@charliermarsh_
 
 ## Summary
 

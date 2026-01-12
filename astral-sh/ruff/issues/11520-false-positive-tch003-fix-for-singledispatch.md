@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-05-23T19:13:52Z
 updated_at: 2024-05-24T08:27:41Z
 url: https://github.com/astral-sh/ruff/issues/11520
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # False positive TCH003 fix for singledispatch functions with type annotations.
 
 ---
 
-_Issue opened by @wence- on 2024-05-23 19:13_
+_@wence-_
 
 Consider:
 

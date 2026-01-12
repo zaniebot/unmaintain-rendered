@@ -13,14 +13,14 @@ head: zb/remove-uvx
 created_at: 2025-12-16T13:35:59Z
 updated_at: 2025-12-16T13:39:16Z
 url: https://github.com/astral-sh/ty/pull/1928
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Remove stale `uvx` reference in type checking guide
 
 ---
 
-_Pull request opened by @zanieb on 2025-12-16 13:35_
+_@zanieb_
 
 _No description provided._
 

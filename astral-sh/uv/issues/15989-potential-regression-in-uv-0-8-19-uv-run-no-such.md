@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-22T18:53:05Z
 updated_at: 2025-09-22T23:47:48Z
 url: https://github.com/astral-sh/uv/issues/15989
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:21Z
 ```
 
 # Potential Regression in uv 0.8.19 - uv run - No such file or directory error
 
 ---
 
-_Issue opened by @jaredmarks-allspring on 2025-09-22 18:53_
+_@jaredmarks-allspring_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/uninstall
 created_at: 2024-07-09T18:02:25Z
 updated_at: 2024-07-09T18:15:17Z
 url: https://github.com/astral-sh/uv/pull/4932
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:32Z
 ```
 
 # Enable `--all` to uninstall all managed Pythons
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-09 18:02_
+_@charliermarsh_
 
 ## Summary
 

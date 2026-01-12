@@ -12,14 +12,14 @@ head: charlie/into
 created_at: 2023-03-07T00:46:33Z
 updated_at: 2023-03-08T18:50:22Z
 url: https://github.com/astral-sh/ruff/pull/3377
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Implement `From<Located>` for `Range`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-07 00:46_
+_@charliermarsh_
 
 ## Summary
 

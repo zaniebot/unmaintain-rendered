@@ -13,14 +13,14 @@ head: charlie/format-cli
 created_at: 2023-08-27T19:47:49Z
 updated_at: 2023-08-27T20:02:50Z
 url: https://github.com/astral-sh/ruff/pull/6924
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Collect result in format CLI
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-27 19:47_
+_@charliermarsh_
 
 _No description provided._
 

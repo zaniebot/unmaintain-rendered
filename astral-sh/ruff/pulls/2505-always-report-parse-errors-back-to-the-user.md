@@ -12,14 +12,14 @@ head: charlie/syntax
 created_at: 2023-02-03T00:02:28Z
 updated_at: 2023-02-09T23:22:58Z
 url: https://github.com/astral-sh/ruff/pull/2505
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:08Z
 ```
 
 # Always report parse errors back to the user
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-03 00:02_
+_@charliermarsh_
 
 # Summary
 

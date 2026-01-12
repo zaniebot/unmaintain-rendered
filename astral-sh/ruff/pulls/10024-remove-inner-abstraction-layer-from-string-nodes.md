@@ -13,14 +13,14 @@ head: dhruv/remove-string-inner-abstraction
 created_at: 2024-02-18T12:10:11Z
 updated_at: 2024-03-23T17:30:47Z
 url: https://github.com/astral-sh/ruff/pull/10024
-synced_at: 2026-01-10T22:47:01Z
+synced_at: 2026-01-12T15:55:31Z
 ```
 
 # Remove inner abstraction layer from string nodes
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-02-18 12:10_
+_@dhruvmanila_
 
 ## Summary
 

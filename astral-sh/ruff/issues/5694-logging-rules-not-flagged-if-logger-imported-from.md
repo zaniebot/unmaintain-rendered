@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-11T19:25:59Z
 updated_at: 2023-07-24T04:38:21Z
 url: https://github.com/astral-sh/ruff/issues/5694
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Logging rules not flagged if logger imported from another module
 
 ---
 
-_Issue opened by @petermattia on 2023-07-11 19:25_
+_@petermattia_
 
 I'm observing that logging rules aren't flagged if a logger is imported from another module.
 

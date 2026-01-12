@@ -15,14 +15,14 @@ head: pip-show-files
 created_at: 2024-10-19T18:58:01Z
 updated_at: 2024-10-23T06:57:13Z
 url: https://github.com/astral-sh/uv/pull/8369
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:17Z
 ```
 
 # Add `uv pip show --files`
 
 ---
 
-_Pull request opened by @j178 on 2024-10-19 18:58_
+_@j178_
 
 ## Summary
 

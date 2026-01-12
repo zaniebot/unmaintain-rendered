@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-14T15:27:28Z
 updated_at: 2025-09-17T14:30:44Z
 url: https://github.com/astral-sh/uv/issues/15840
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:18Z
 ```
 
 # Uninterpreted color codes in some error messages
 
 ---
 
-_Issue opened by @fleetingbytes on 2025-09-14 15:27_
+_@fleetingbytes_
 
 ### Summary
 

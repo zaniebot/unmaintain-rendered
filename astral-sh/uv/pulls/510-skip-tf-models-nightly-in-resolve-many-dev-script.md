@@ -12,14 +12,14 @@ head: skip-tf-models-nightly-in-resolve-many-for-now
 created_at: 2023-11-28T18:22:05Z
 updated_at: 2023-11-28T18:25:34Z
 url: https://github.com/astral-sh/uv/pull/510
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:00Z
 ```
 
 # Skip tf-models-nightly in resolve-many dev script for now
 
 ---
 
-_Pull request opened by @konstin on 2023-11-28 18:22_
+_@konstin_
 
 `tf-models-nightly` has pathologic backtracking behaviour, skip it for now so we can benchmark the rest.
 

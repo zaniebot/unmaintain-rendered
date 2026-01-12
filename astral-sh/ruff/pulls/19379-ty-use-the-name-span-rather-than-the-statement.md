@@ -14,14 +14,14 @@ head: jack/warning_name_span
 created_at: 2025-07-16T00:14:39Z
 updated_at: 2025-07-16T15:35:19Z
 url: https://github.com/astral-sh/ruff/pull/19379
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:38Z
 ```
 
 # [ty] use the name span rather than the statement span for unresolved `global` lints
 
 ---
 
-_Pull request opened by @oconnor663 on 2025-07-16 00:14_
+_@oconnor663_
 
 This is a follow-up to https://github.com/astral-sh/ruff/pull/19344 that improves the error formatting slightly. For example with this program:
 

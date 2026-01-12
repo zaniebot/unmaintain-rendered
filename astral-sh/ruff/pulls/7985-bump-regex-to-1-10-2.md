@@ -13,14 +13,14 @@ head: charlie/regex
 created_at: 2023-10-16T16:22:44Z
 updated_at: 2023-10-16T17:03:05Z
 url: https://github.com/astral-sh/ruff/pull/7985
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Bump regex to 1.10.2
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-16 16:22_
+_@charliermarsh_
 
 Recreating https://github.com/astral-sh/ruff/pull/7980 with regex's latest fix.
 

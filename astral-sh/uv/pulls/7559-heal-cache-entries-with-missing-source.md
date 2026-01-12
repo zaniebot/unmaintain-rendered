@@ -14,14 +14,14 @@ head: charlie/cache-safety
 created_at: 2024-09-19T19:26:38Z
 updated_at: 2024-09-19T20:31:56Z
 url: https://github.com/astral-sh/uv/pull/7559
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:53Z
 ```
 
 # Heal cache entries with missing source distributions
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-19 19:26_
+_@charliermarsh_
 
 ## Summary
 

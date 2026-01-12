@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-02T16:07:45Z
 updated_at: 2025-04-02T16:14:32Z
 url: https://github.com/astral-sh/uv/issues/12629
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:08Z
 ```
 
 # Support multiple requires-python versions for dev versus deployment
 
 ---
 
-_Issue opened by @dpranke on 2025-04-02 16:07_
+_@dpranke_
 
 ### Summary
 

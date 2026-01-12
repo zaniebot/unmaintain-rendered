@@ -13,14 +13,14 @@ head: charlie/precise
 created_at: 2023-11-24T18:14:38Z
 updated_at: 2023-11-25T23:29:43Z
 url: https://github.com/astral-sh/uv/pull/499
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:03:59Z
 ```
 
 # Perform a single Git fetch when building source distributions
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-11-24 18:14_
+_@charliermarsh_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-21T17:59:49Z
 updated_at: 2025-11-06T02:28:23Z
 url: https://github.com/astral-sh/uv/issues/16396
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:30Z
 ```
 
 # uv sync includes packages from excluded dependency group when using `--no-group`/`--only-group`
 
 ---
 
-_Issue opened by @jiito on 2025-10-21 17:59_
+_@jiito_
 
 ### Summary
 

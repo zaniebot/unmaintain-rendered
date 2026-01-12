@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-04-09T15:21:50Z
 updated_at: 2024-04-09T23:01:27Z
 url: https://github.com/astral-sh/uv/issues/2935
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # fallback for unrecognized commands
 
 ---
 
-_Issue opened by @kb- on 2024-04-09 15:21_
+_@kb-_
 
 Some commands such as `uv pip list --outdated` are still unsupported  
 For a better drop-in replacement, it would be great to fall back to pip (and print an info message)

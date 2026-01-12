@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-27T19:52:07Z
 updated_at: 2024-06-07T04:03:17Z
 url: https://github.com/astral-sh/ruff/issues/10147
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # File pattern syntax differs between exclude and per-file-ignores
 
 ---
 
-_Issue opened by @neelmraman on 2024-02-27 19:52_
+_@neelmraman_
 
 Hi, thanks for the work on this great project! One thing I found kind of surprising (and that doesn't seem to be explicitly mentioned in the docs anywhere) is that `exclude`/`extend-exclude` and `per-file-ignores`/`extend-per-file-ignores` seem to use a different syntax for specifying file patterns. 
 

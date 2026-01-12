@@ -13,14 +13,14 @@ head: dependabot/cargo/quick-junit-0.3.5
 created_at: 2023-11-13T08:08:01Z
 updated_at: 2023-11-13T14:38:33Z
 url: https://github.com/astral-sh/ruff/pull/8645
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # Bump quick-junit from 0.3.3 to 0.3.5
 
 ---
 
-_Pull request opened by @dependabot on 2023-11-13 08:08_
+_@dependabot_
 
 [//]: # (dependabot-start)
 ⚠️  **Dependabot is rebasing this PR** ⚠️ 

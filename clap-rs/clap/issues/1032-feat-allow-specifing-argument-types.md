@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-08-18T20:50:17Z
 updated_at: 2018-08-02T03:30:10Z
 url: https://github.com/clap-rs/clap/issues/1032
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # feat: Allow specifing argument types
 
 ---
 
-_Issue opened by @Binero on 2017-08-18 20:50_
+_@Binero_
 
 It would be useful if one could specify the type of an argument, something like so:
 

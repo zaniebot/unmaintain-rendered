@@ -11,14 +11,14 @@ assignees: []
 created_at: 2019-11-11T02:22:56Z
 updated_at: 2020-09-29T08:24:00Z
 url: https://github.com/clap-rs/clap/issues/1598
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Allow hyphen-less options
 
 ---
 
-_Issue opened by @clarfonthey on 2019-11-11 02:22_
+_@clarfonthey_
 
 (This is specifically for clap v2, but I assume that it also applies to v3.)
 

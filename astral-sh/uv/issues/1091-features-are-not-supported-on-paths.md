@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-01-25T09:33:52Z
 updated_at: 2024-01-26T12:07:53Z
 url: https://github.com/astral-sh/uv/issues/1091
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:25Z
 ```
 
 # Features are not supported on paths
 
 ---
 
-_Issue opened by @MichaReiser on 2024-01-25 09:33_
+_@MichaReiser_
 
 I followed [black's contributor instructions](https://black.readthedocs.io/en/latest/contributing/the_basics.html#technicalities) but used puffin instead of pip. 
 

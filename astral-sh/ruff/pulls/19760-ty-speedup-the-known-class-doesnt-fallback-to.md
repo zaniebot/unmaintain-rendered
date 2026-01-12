@@ -14,14 +14,14 @@ head: alex/speedup-test
 created_at: 2025-08-05T11:51:42Z
 updated_at: 2025-08-05T11:55:52Z
 url: https://github.com/astral-sh/ruff/pull/19760
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:46Z
 ```
 
 # [ty] Speedup the `known_class_doesnt_fallback_to_unknown_unexpectedly_on_low_python_version` test
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-05 11:51_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: best-fitting-mode
 created_at: 2023-06-19T15:52:42Z
 updated_at: 2023-06-20T16:16:04Z
 url: https://github.com/astral-sh/ruff/pull/5184
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add BestFittingMode
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-19 15:52_
+_@MichaReiser_
 
 ## Summary
 Black supports for layouts when it comes to breaking binary expressions:

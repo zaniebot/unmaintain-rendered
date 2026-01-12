@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-01T01:40:52Z
 updated_at: 2025-03-01T02:56:23Z
 url: https://github.com/astral-sh/uv/issues/11872
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:48Z
 ```
 
 # Following destructions at https://block.github.io/goose/docs/tutorials/custom-extensions I get a build fail at https://block.github.io/goose/docs/tutorials/custom-extensions#step-4-test-your-mcp-server
 
 ---
 
-_Issue opened by @Bazmundi on 2025-03-01 01:40_
+_@Bazmundi_
 
 ```
 (goose) asterion@MonstaPC:~/AI/goose/mcp-wiki$ uv sync

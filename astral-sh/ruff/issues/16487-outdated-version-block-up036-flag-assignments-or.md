@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-04T00:23:51Z
 updated_at: 2025-03-04T11:37:02Z
 url: https://github.com/astral-sh/ruff/issues/16487
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # outdated-version-block (UP036): Flag assignments (or any outdated `sys.version_info`)
 
 ---
 
-_Issue opened by @Avasam on 2025-03-04 00:23_
+_@Avasam_
 
 ### Summary
 

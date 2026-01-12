@@ -13,14 +13,14 @@ head: dcreager/recurse-into-generics
 created_at: 2025-05-12T18:39:29Z
 updated_at: 2025-05-13T01:53:14Z
 url: https://github.com/astral-sh/ruff/pull/18052
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] Induct into instances and subclasses when finding and applying generics
 
 ---
 
-_Pull request opened by @dcreager on 2025-05-12 18:39_
+_@dcreager_
 
 We were not inducting into instance types and subclass-of types when looking for legacy typevars, nor when apply specializations.
 

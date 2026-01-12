@@ -13,14 +13,14 @@ head: dhruv/fallback
 created_at: 2024-07-17T12:51:31Z
 updated_at: 2024-07-18T03:46:47Z
 url: https://github.com/astral-sh/ruff/pull/12362
-synced_at: 2026-01-10T21:47:02Z
+synced_at: 2026-01-12T15:55:41Z
 ```
 
 # Use fallback settings when indexing the project
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-07-17 12:51_
+_@dhruvmanila_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/unnamed
 created_at: 2024-05-24T13:47:57Z
 updated_at: 2024-05-24T14:01:39Z
 url: https://github.com/astral-sh/uv/pull/3821
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:52Z
 ```
 
 # Always include package names for Git and HTTPS dependencies
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-24 13:47_
+_@charliermarsh_
 
 ## Summary
 

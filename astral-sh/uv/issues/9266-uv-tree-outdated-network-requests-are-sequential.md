@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T08:52:12Z
 updated_at: 2024-11-20T16:45:16Z
 url: https://github.com/astral-sh/uv/issues/9266
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # `uv tree --outdated` network requests are sequential
 
 ---
 
-_Issue opened by @konstin on 2024-11-20 08:52_
+_@konstin_
 
 `uv tree --outdated` runs network requests sequentially, thereby being really slow. For example, project below has 120 packages, but takes 2.4s to resolve on a warm cache.
 

@@ -13,14 +13,14 @@ head: zb/pyodide-docs
 created_at: 2025-09-20T15:43:45Z
 updated_at: 2025-09-20T18:11:46Z
 url: https://github.com/astral-sh/uv/pull/15962
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:02Z
 ```
 
 # Document pyodide support
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-20 15:43_
+_@zanieb_
 
 _No description provided._
 

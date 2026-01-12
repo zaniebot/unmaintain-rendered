@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-05-16T18:49:50Z
 updated_at: 2025-05-17T19:04:25Z
 url: https://github.com/astral-sh/ty/issues/428
-synced_at: 2026-01-10T02:34:09Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Descriptor / `__get__` not respected
 
 ---
 
-_Issue opened by @kreathon on 2025-05-16 18:49_
+_@kreathon_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-02T18:12:00Z
 updated_at: 2025-02-16T08:12:34Z
 url: https://github.com/astral-sh/ruff/issues/15225
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # New rule: For a specified function/method sourced from a specified module, make a specified non-required argument mandatory as a keyword argument.
 
 ---
 
-_Issue opened by @andyscho on 2025-01-02 18:12_
+_@andyscho_
 
 # Rule
 

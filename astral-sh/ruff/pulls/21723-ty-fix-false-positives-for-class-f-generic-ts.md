@@ -13,14 +13,14 @@ head: alex/generic-todo
 created_at: 2025-12-01T11:03:02Z
 updated_at: 2025-12-01T13:24:09Z
 url: https://github.com/astral-sh/ruff/pull/21723
-synced_at: 2026-01-10T16:48:02Z
+synced_at: 2026-01-12T15:57:31Z
 ```
 
 # [ty] Fix false positives for `class F(Generic[*Ts]): ...`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-12-01 11:03_
+_@AlexWaygood_
 
 ## Summary
 

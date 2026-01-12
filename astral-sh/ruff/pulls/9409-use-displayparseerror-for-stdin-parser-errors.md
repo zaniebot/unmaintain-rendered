@@ -13,14 +13,14 @@ head: charlie/err
 created_at: 2024-01-06T15:16:37Z
 updated_at: 2024-01-06T15:36:00Z
 url: https://github.com/astral-sh/ruff/pull/9409
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Use `DisplayParseError` for stdin parser errors
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-06 15:16_
+_@charliermarsh_
 
 Just looks like an oversight in refactoring.
 

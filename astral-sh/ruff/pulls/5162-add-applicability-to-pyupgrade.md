@@ -12,14 +12,14 @@ head: applicability_pyupgrade
 created_at: 2023-06-17T15:53:37Z
 updated_at: 2023-06-17T21:59:29Z
 url: https://github.com/astral-sh/ruff/pull/5162
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Add Applicability to pyupgrade
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-17 15:53_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

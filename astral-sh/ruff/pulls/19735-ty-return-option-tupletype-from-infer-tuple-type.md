@@ -13,14 +13,14 @@ head: alex/tuple-todos
 created_at: 2025-08-04T09:27:32Z
 updated_at: 2025-08-04T12:48:22Z
 url: https://github.com/astral-sh/ruff/pull/19735
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:45Z
 ```
 
 # [ty] Return `Option<TupleType>` from `infer_tuple_type_expression`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-08-04 09:27_
+_@AlexWaygood_
 
 ## Summary
 

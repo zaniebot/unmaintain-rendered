@@ -10,14 +10,14 @@ assignees: []
 created_at: 2015-09-22T15:38:09Z
 updated_at: 2018-08-02T03:29:45Z
 url: https://github.com/clap-rs/clap/issues/267
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Add documentation for YAML args.
 
 ---
 
-_Issue opened by @XAMPPRocky on 2015-09-22 15:38_
+_@XAMPPRocky_
 
 I can't really find anything about how to do certain commands using YAML.
 

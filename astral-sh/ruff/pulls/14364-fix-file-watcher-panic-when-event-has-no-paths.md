@@ -13,14 +13,14 @@ head: micha/fix-watcher-panic-no-paths
 created_at: 2024-11-15T16:51:05Z
 updated_at: 2024-11-16T07:36:59Z
 url: https://github.com/astral-sh/ruff/pull/14364
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Fix file watcher panic when event has no paths
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-15 16:51_
+_@MichaReiser_
 
 ## Summary
 

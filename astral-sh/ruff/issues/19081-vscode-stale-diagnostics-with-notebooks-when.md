@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-01T23:34:55Z
 updated_at: 2025-07-08T05:52:49Z
 url: https://github.com/astral-sh/ruff/issues/19081
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # VSCode: Stale diagnostics with notebooks when switching cell language
 
 ---
 
-_Issue opened by @sbdchd on 2025-07-01 23:34_
+_@sbdchd_
 
 ### Summary
 

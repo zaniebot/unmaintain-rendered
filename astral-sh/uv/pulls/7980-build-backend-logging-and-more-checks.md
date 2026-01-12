@@ -13,14 +13,14 @@ head: build-backend8-logging-and-checks
 created_at: 2024-10-07T18:00:23Z
 updated_at: 2024-10-08T15:25:41Z
 url: https://github.com/astral-sh/uv/pull/7980
-synced_at: 2026-01-10T12:54:00Z
+synced_at: 2026-01-12T16:08:06Z
 ```
 
 # Build backend: Logging and more checks
 
 ---
 
-_Pull request opened by @konstin on 2024-10-07 18:00_
+_@konstin_
 
 Add better logging and a missed check.
 

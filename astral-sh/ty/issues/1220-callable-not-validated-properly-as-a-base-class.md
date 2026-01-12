@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-09-20T15:11:50Z
 updated_at: 2026-01-09T20:39:48Z
 url: https://github.com/astral-sh/ty/issues/1220
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `Callable` not validated properly as a base class
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-20 15:11_
+_@KotlinIsland_
 
 ### Summary
 

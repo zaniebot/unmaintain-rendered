@@ -14,14 +14,14 @@ head: recursive-check-in-ruf060
 created_at: 2025-05-09T08:23:22Z
 updated_at: 2025-05-15T20:24:16Z
 url: https://github.com/astral-sh/ruff/pull/17976
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:09Z
 ```
 
 # Implement a recursive check for RUF060
 
 ---
 
-_Pull request opened by @naslundx on 2025-05-09 08:23_
+_@naslundx_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

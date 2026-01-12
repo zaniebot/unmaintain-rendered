@@ -13,14 +13,14 @@ head: charlie/mac
 created_at: 2024-05-08T19:30:05Z
 updated_at: 2024-05-08T19:54:41Z
 url: https://github.com/astral-sh/uv/pull/3469
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:40Z
 ```
 
 # Use last non-EOL version for `--python-platform` macOS
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-08 19:30_
+_@charliermarsh_
 
 ## Summary
 

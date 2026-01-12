@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-10-01T08:25:50Z
 updated_at: 2025-10-01T16:18:15Z
 url: https://github.com/astral-sh/ty/issues/1292
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Cannot unwrap generic type from coroutine
 
 ---
 
-_Issue opened by @janmeier on 2025-10-01 08:25_
+_@janmeier_
 
 ### Summary
 

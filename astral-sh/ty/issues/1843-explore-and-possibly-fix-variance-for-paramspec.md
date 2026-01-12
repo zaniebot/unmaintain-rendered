@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T16:22:28Z
 updated_at: 2025-12-10T16:22:49Z
 url: https://github.com/astral-sh/ty/issues/1843
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Explore and possibly fix variance for `ParamSpec`
 
 ---
 
-_Issue opened by @sharkdp on 2025-12-10 16:22_
+_@sharkdp_
 
 See the discussion here: https://github.com/astral-sh/ruff/pull/21883#discussion_r2607247451
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-14T20:45:13Z
 updated_at: 2023-03-15T02:50:36Z
 url: https://github.com/clap-rs/clap/issues/4761
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # `default_value_factory`
 
 ---
 
-_Issue opened by @Jasha10 on 2023-03-14 20:45_
+_@Jasha10_
 
 ### Please complete the following tasks
 

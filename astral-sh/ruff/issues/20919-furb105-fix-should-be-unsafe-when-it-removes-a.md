@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-16T12:55:47Z
 updated_at: 2025-10-17T20:20:16Z
 url: https://github.com/astral-sh/ruff/issues/20919
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # FURB105 fix should be unsafe when it removes a `sep` with a possibly incorrect type
 
 ---
 
-_Issue opened by @dscorbett on 2025-10-16 12:55_
+_@dscorbett_
 
 ### Summary
 

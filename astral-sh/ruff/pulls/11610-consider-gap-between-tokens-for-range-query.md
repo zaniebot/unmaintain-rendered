@@ -13,14 +13,14 @@ head: dhruv/tokens-range-query
 created_at: 2024-05-30T05:54:38Z
 updated_at: 2024-05-30T10:05:04Z
 url: https://github.com/astral-sh/ruff/pull/11610
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # Consider "gap" between tokens for range query
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-05-30 05:54_
+_@dhruvmanila_
 
 ## Summary
 

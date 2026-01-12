@@ -15,14 +15,14 @@ head: ag/set-is-incomplete-playground
 created_at: 2026-01-07T17:14:20Z
 updated_at: 2026-01-09T14:53:56Z
 url: https://github.com/astral-sh/ruff/pull/22442
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [ty] Fix generally poor ranking in playground completions
 
 ---
 
-_Pull request opened by @BurntSushi on 2026-01-07 17:14_
+_@BurntSushi_
 
 We enabled [`CompletionList::isIncomplete`] in our LSP server a while back
 in order to have more of a say in how we rank and filter completions.

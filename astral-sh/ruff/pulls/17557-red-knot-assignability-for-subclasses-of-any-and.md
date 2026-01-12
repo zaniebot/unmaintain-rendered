@@ -13,14 +13,14 @@ head: david/subtype-of-any-assignability
 created_at: 2025-04-22T17:10:46Z
 updated_at: 2025-04-23T09:37:32Z
 url: https://github.com/astral-sh/ruff/pull/17557
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [red-knot] Assignability for subclasses of `Any` and `Unknown`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-22 17:10_
+_@sharkdp_
 
 ## Summary
 

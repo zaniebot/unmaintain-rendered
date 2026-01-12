@@ -13,14 +13,14 @@ head: alex/homogeneous-tuples
 created_at: 2025-05-09T22:29:23Z
 updated_at: 2025-05-13T02:11:18Z
 url: https://github.com/astral-sh/ruff/pull/17998
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # [ty] Understand homogeneous tuple annotations
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-09 22:29_
+_@AlexWaygood_
 
 ## Summary
 

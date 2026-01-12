@@ -13,14 +13,14 @@ head: sort-flat-index-dists
 created_at: 2025-10-25T02:41:48Z
 updated_at: 2025-10-27T01:53:40Z
 url: https://github.com/astral-sh/uv/pull/16446
-synced_at: 2026-01-10T06:36:16Z
+synced_at: 2026-01-12T16:12:15Z
 ```
 
 # Deterministically order `--find-links` distributions
 
 ---
 
-_Pull request opened by @terror on 2025-10-25 02:41_
+_@terror_
 
 Made to address this comment: https://github.com/astral-sh/uv/pull/16103#discussion_r2437498249
 

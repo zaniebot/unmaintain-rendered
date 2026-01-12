@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-04T17:09:49Z
 updated_at: 2025-11-04T17:11:39Z
 url: https://github.com/astral-sh/uv/issues/16593
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:34Z
 ```
 
 # Check if a package exists
 
 ---
 
-_Issue opened by @DhruvSrikanth on 2025-11-04 17:09_
+_@DhruvSrikanth_
 
 ### Question
 

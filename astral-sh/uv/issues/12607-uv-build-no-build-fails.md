@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-01T20:30:22Z
 updated_at: 2025-10-21T02:08:30Z
 url: https://github.com/astral-sh/uv/issues/12607
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:07Z
 ```
 
 # `uv build --no-build` fails
 
 ---
 
-_Issue opened by @zanieb on 2025-04-01 20:30_
+_@zanieb_
 
 ```
 ❯ uv build --no-build

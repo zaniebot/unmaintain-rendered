@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-29T18:28:40Z
 updated_at: 2023-08-29T18:57:43Z
 url: https://github.com/astral-sh/ruff/issues/6991
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # F821 On class's type in type signature within the same class.
 
 ---
 
-_Issue opened by @0x6d6e647a on 2023-08-29 18:28_
+_@0x6d6e647a_
 
 I'm using Ruff v0.0.286 in the following.
 

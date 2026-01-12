@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-10T18:42:56Z
 updated_at: 2024-06-17T15:52:59Z
 url: https://github.com/astral-sh/uv/issues/4209
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:48Z
 ```
 
 # ` uv venv --preview --python` with a new version of Python gives a garbled repl prompt
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-06-10 18:42_
+_@notatallshaw-gts_
 
 Perhaps I'm trying out this feature too quickly, and it's a known issue, but I was interested to see if I was likely able to drop using conda for local development.
 

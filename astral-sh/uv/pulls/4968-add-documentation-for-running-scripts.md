@@ -14,14 +14,14 @@ head: zb/docs-running-scripts
 created_at: 2024-07-10T16:58:10Z
 updated_at: 2024-07-15T21:59:40Z
 url: https://github.com/astral-sh/uv/pull/4968
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:33Z
 ```
 
 # Add documentation for running scripts
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-10 16:58_
+_@zanieb_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: cjm/cyclicp
 created_at: 2025-06-27T22:15:48Z
 updated_at: 2025-07-02T17:18:15Z
 url: https://github.com/astral-sh/ruff/pull/19003
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:29Z
 ```
 
 # [ty] Normalize recursive types using Any
 
 ---
 
-_Pull request opened by @carljm on 2025-06-27 22:15_
+_@carljm_
 
 ## Summary
 

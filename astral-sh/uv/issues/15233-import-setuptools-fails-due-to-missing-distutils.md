@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-12T09:03:39Z
 updated_at: 2025-08-12T13:58:26Z
 url: https://github.com/astral-sh/uv/issues/15233
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:06Z
 ```
 
 # "import setuptools" fails due to missing distutils
 
 ---
 
-_Issue opened by @Rick-McCoy on 2025-08-12 09:03_
+_@Rick-McCoy_
 
 ### Summary
 

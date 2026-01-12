@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-05T08:20:21Z
 updated_at: 2024-07-05T21:03:18Z
 url: https://github.com/astral-sh/uv/issues/4827
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:52Z
 ```
 
 # UV_OVERRIDE environment variable
 
 ---
 
-_Issue opened by @sbidoul on 2024-07-05 08:20_
+_@sbidoul_
 
 Hi,
 

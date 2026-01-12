@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-02T21:21:24Z
 updated_at: 2025-01-03T21:10:47Z
 url: https://github.com/astral-sh/uv/issues/10280
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:10Z
 ```
 
 # Jupyter Lab Formatter Installation
 
 ---
 
-_Issue opened by @deadb0d4 on 2025-01-02 21:21_
+_@deadb0d4_
 
 Hi, I'm enjoying uv so much these days. Here is my version:
 ```

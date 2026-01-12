@@ -13,14 +13,14 @@ head: fix-21082
 created_at: 2025-10-27T00:56:21Z
 updated_at: 2025-10-29T01:25:06Z
 url: https://github.com/astral-sh/ruff/pull/21087
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:16Z
 ```
 
 # [`flynt`] Fix static-join-to-f-string when mixing raw and non-raw strings (`FLY002`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-10-27 00:56_
+_@danparizher_
 
 ## Summary
 

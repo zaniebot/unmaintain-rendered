@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-13T15:18:25Z
 updated_at: 2025-02-14T13:56:58Z
 url: https://github.com/astral-sh/ruff/issues/16140
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Parse error AST lacks identifiers
 
 ---
 
-_Issue opened by @ndmitchell on 2025-02-13 15:18_
+_@ndmitchell_
 
 ### Description
 

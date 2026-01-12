@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-08T10:10:34Z
 updated_at: 2025-12-09T18:12:09Z
 url: https://github.com/astral-sh/uv/issues/17027
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:42Z
 ```
 
 # Document how to disable dev dependency installation in Docker builds
 
 ---
 
-_Issue opened by @aeroyorch on 2025-12-08 10:10_
+_@aeroyorch_
 
 ### Summary
 

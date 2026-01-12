@@ -12,14 +12,14 @@ head: f541-f-string-unescape
 created_at: 2023-02-16T20:43:41Z
 updated_at: 2023-02-17T22:56:26Z
 url: https://github.com/astral-sh/ruff/pull/2971
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Fix for F541 unescape f-string
 
 ---
 
-_Pull request opened by @sbrugman on 2023-02-16 20:43_
+_@sbrugman_
 
 Closes #2936
 

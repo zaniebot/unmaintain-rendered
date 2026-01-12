@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-10T08:13:33Z
 updated_at: 2025-07-14T01:17:54Z
 url: https://github.com/astral-sh/uv/issues/14534
-synced_at: 2026-01-10T01:57:33Z
+synced_at: 2026-01-12T16:01:50Z
 ```
 
 # Caching does not consider URLs (or redirects)
 
 ---
 
-_Issue opened by @danielpanteleit on 2025-07-10 08:13_
+_@danielpanteleit_
 
 ### Summary
 

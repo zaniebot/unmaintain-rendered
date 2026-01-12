@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-04T08:48:47Z
 updated_at: 2024-11-05T03:00:21Z
 url: https://github.com/astral-sh/uv/issues/8801
-synced_at: 2026-01-10T01:57:20Z
+synced_at: 2026-01-12T15:59:35Z
 ```
 
 # [discussion] Will uv consider to add groups information in uv.lock for dependencies?
 
 ---
 
-_Issue opened by @monchin on 2024-11-04 08:48_
+_@monchin_
 
 Hello, as PEP 735 is already supported by uv, I'm curious whether there is a plan to add groups information in `uv.lock` for dependencies? I think it would be great if we can realize which groups the packages belong to directly in `uv.lock` by just adding for example
 ```

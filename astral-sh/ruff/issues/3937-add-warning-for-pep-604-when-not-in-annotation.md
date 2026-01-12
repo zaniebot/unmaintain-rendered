@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-11T17:28:32Z
 updated_at: 2023-05-02T06:49:22Z
 url: https://github.com/astral-sh/ruff/issues/3937
-synced_at: 2026-01-10T11:09:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Add warning for PEP 604 when not in annotation
 
 ---
 
-_Issue opened by @wookie184 on 2023-04-11 17:28_
+_@wookie184_
 
 Ruff doesn't warn on this:
 ```python

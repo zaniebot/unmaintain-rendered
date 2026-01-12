@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-12-14T18:12:37Z
 updated_at: 2023-12-14T19:46:37Z
 url: https://github.com/astral-sh/ruff/issues/9135
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Auto-quoting fails when multiple members of a union are quoted
 
 ---
 
-_Issue opened by @charliermarsh on 2023-12-14 18:12_
+_@charliermarsh_
 
 Given:
 

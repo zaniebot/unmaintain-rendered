@@ -12,14 +12,14 @@ head: charlie/b014
 created_at: 2022-10-10T16:53:33Z
 updated_at: 2022-10-10T16:53:43Z
 url: https://github.com/astral-sh/ruff/pull/392
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Implement B014 from flake8-bugbear
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-10-10 16:53_
+_@charliermarsh_
 
 Part of #389.
 

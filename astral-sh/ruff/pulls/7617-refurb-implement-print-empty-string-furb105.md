@@ -13,14 +13,14 @@ head: print-empty-string
 created_at: 2023-09-23T13:27:30Z
 updated_at: 2023-09-28T19:59:12Z
 url: https://github.com/astral-sh/ruff/pull/7617
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # [`refurb`] Implement `print-empty-string` (`FURB105`)
 
 ---
 
-_Pull request opened by @tjkuson on 2023-09-23 13:27_
+_@tjkuson_
 
 ## Summary
 

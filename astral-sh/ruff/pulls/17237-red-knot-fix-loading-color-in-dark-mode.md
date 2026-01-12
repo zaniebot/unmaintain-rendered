@@ -14,14 +14,14 @@ head: micha/playground-loading-dark-mode
 created_at: 2025-04-06T17:24:11Z
 updated_at: 2025-04-06T17:30:23Z
 url: https://github.com/astral-sh/ruff/pull/17237
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Fix loading color in dark mode
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-04-06 17:24_
+_@MichaReiser_
 
 ## Summary
 

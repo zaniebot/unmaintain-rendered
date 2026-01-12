@@ -13,14 +13,14 @@ head: zb/ecosystem-fix
 created_at: 2024-01-30T16:32:43Z
 updated_at: 2024-01-30T16:46:03Z
 url: https://github.com/astral-sh/ruff/pull/9708
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:30Z
 ```
 
 # Always request the concise output format during ecosystem checks
 
 ---
 
-_Pull request opened by @zanieb on 2024-01-30 16:32_
+_@zanieb_
 
 Fixes a regression in the ecosystem checks from https://github.com/astral-sh/ruff/pull/9687 which was causing them to run for multiple hours due to the size of the output.
 

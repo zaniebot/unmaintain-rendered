@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2025-08-26T15:36:51Z
 updated_at: 2025-08-26T16:14:51Z
 url: https://github.com/astral-sh/ruff/pull/20099
-synced_at: 2026-01-10T17:46:21Z
+synced_at: 2026-01-12T15:56:54Z
 ```
 
 # [`flake8-use-pathlib`] Delete unused `Rule::OsSymlink` enabled check
 
 ---
 
-_Pull request opened by @chirizxc on 2025-08-26 15:36_
+_@chirizxc_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

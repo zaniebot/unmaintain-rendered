@@ -12,14 +12,14 @@ head: charlie/lifetime
 created_at: 2022-09-08T02:14:41Z
 updated_at: 2022-09-08T02:34:44Z
 url: https://github.com/astral-sh/ruff/pull/125
-synced_at: 2026-01-12T05:48:45Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Defer checking of function bodies
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-09-08 02:14_
+_@charliermarsh_
 
 This PR resolves #119 by deferring the traversal of function bodies until after traversing the rest of the module. This required introducing a lifetime parameter to `Visitor`, and tracking a bunch of additional state on the `Checker`. The borrow checker did not like this change, took many iterations...
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-23T10:20:57Z
 updated_at: 2023-08-25T22:26:31Z
 url: https://github.com/astral-sh/ruff/issues/6810
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Rules D210, RSE102 causes autofix error
 
 ---
 
-_Issue opened by @qarmin on 2023-08-23 10:20_
+_@qarmin_
 
 Ruff 0.0.285 (latest changes from main branch)
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-16T23:44:56Z
 updated_at: 2024-11-07T15:21:16Z
 url: https://github.com/astral-sh/uv/issues/3078
-synced_at: 2026-01-10T04:36:19Z
+synced_at: 2026-01-12T15:58:41Z
 ```
 
 # uv fails to resolve `apache-airflow[all]==2.8.4` where pip succeeds
 
 ---
 
-_Issue opened by @notatallshaw on 2024-04-16 23:44_
+_@notatallshaw_
 
 **Streps to reproduce**
 

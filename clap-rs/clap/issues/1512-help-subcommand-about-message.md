@@ -9,14 +9,14 @@ assignees: []
 created_at: 2019-06-26T10:01:54Z
 updated_at: 2020-02-04T13:11:33Z
 url: https://github.com/clap-rs/clap/issues/1512
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Help subcommand about message
 
 ---
 
-_Issue opened by @yakubin on 2019-06-26 10:01_
+_@yakubin_
 
 ### Rust Version
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-27T09:56:04Z
 updated_at: 2025-07-20T22:55:02Z
 url: https://github.com/astral-sh/uv/issues/14308
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # Using `tool.uv.dependency-groups` with a `uv.toml`
 
 ---
 
-_Issue opened by @mikeweltevrede on 2025-06-27 09:56_
+_@mikeweltevrede_
 
 ### Summary
 

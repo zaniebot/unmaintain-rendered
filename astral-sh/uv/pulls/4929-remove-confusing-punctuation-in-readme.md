@@ -13,14 +13,14 @@ head: readme-confusing-trailing-dot
 created_at: 2024-07-09T17:36:59Z
 updated_at: 2024-07-09T18:01:08Z
 url: https://github.com/astral-sh/uv/pull/4929
-synced_at: 2026-01-10T13:42:52Z
+synced_at: 2026-01-12T16:06:32Z
 ```
 
 # Remove confusing punctuation in readme
 
 ---
 
-_Pull request opened by @janosh on 2024-07-09 17:36_
+_@janosh_
 
 admittedly, nitpick PR but i initially misread the trailing dot in
 

@@ -13,14 +13,14 @@ head: group-some-npm-dependencies
 created_at: 2024-03-26T10:06:52Z
 updated_at: 2024-03-26T10:40:57Z
 url: https://github.com/astral-sh/ruff/pull/10607
-synced_at: 2026-01-10T22:47:02Z
+synced_at: 2026-01-12T15:55:32Z
 ```
 
 # Group some NPM dependency updates
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-03-26 10:06_
+_@MichaReiser_
 
 ## Summary
 

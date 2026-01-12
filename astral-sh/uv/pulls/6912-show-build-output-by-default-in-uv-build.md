@@ -13,14 +13,14 @@ head: charlie/build-show-output
 created_at: 2024-09-01T16:52:41Z
 updated_at: 2024-09-04T15:39:22Z
 url: https://github.com/astral-sh/uv/pull/6912
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:35Z
 ```
 
 # Show build output by default in `uv build`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-09-01 16:52_
+_@charliermarsh_
 
 ## Summary
 

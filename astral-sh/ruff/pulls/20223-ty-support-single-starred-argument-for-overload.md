@@ -13,14 +13,14 @@ head: dhruv/skip-filtering
 created_at: 2025-09-04T08:08:54Z
 updated_at: 2025-10-02T14:41:58Z
 url: https://github.com/astral-sh/ruff/pull/20223
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:56:57Z
 ```
 
 # [ty] Support single-starred argument for overload call
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-09-04 08:08_
+_@dhruvmanila_
 
 ## Summary
 

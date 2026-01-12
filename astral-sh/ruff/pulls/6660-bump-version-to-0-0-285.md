@@ -12,14 +12,14 @@ head: release/285
 created_at: 2023-08-17T19:28:05Z
 updated_at: 2023-08-17T20:46:30Z
 url: https://github.com/astral-sh/ruff/pull/6660
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Bump version to 0.0.285
 
 ---
 
-_Pull request opened by @zanieb on 2023-08-17 19:28_
+_@zanieb_
 
 Requires
 - https://github.com/astral-sh/ruff/pull/6655

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-09-10T08:13:22Z
 updated_at: 2023-09-10T16:28:16Z
 url: https://github.com/astral-sh/ruff/issues/7256
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # D417: Error if arguments listed in docstring are not vertically aligned with 'Args:'
 
 ---
 
-_Issue opened by @Laurent-Zerah on 2023-09-10 08:13_
+_@Laurent-Zerah_
 
 Following command:
 ```

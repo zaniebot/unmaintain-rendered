@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-08-05T19:37:56Z
 updated_at: 2025-08-08T17:39:39Z
 url: https://github.com/astral-sh/ty/issues/943
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Module level __getattr__ not respected
 
 ---
 
-_Issue opened by @pelme on 2025-08-05 19:37_
+_@pelme_
 
 ### Summary
 

@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-02-22T16:07:24Z
 updated_at: 2024-02-22T16:31:45Z
 url: https://github.com/astral-sh/uv/issues/1876
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Pip installs working depencies, uv doesnt.
 
 ---
 
-_Issue opened by @GJBoth on 2024-02-22 16:07_
+_@GJBoth_
 
 Hi, 
 

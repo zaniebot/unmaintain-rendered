@@ -12,14 +12,14 @@ head: charlie/box
 created_at: 2024-07-22T14:50:35Z
 updated_at: 2024-09-23T23:30:53Z
 url: https://github.com/astral-sh/uv/pull/5291
-synced_at: 2026-01-10T12:53:32Z
+synced_at: 2026-01-12T16:06:44Z
 ```
 
 # Use boxed slices for wheel filename tags
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-22 14:50_
+_@charliermarsh_
 
 ## Summary
 

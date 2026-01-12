@@ -13,14 +13,14 @@ head: zb/data-dir-toolchain
 created_at: 2024-05-23T16:40:38Z
 updated_at: 2024-05-27T03:54:51Z
 url: https://github.com/astral-sh/uv/pull/3797
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:51Z
 ```
 
 # Add persistent storage of installed toolchains
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-23 16:40_
+_@zanieb_
 
 Extends #3726 
 

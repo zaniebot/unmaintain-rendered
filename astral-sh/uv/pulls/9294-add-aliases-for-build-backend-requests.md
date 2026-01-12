@@ -13,14 +13,14 @@ head: zb/init-alias
 created_at: 2024-11-20T22:07:38Z
 updated_at: 2024-11-21T14:51:19Z
 url: https://github.com/astral-sh/uv/pull/9294
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:44Z
 ```
 
 # Add aliases for build backend requests
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-20 22:07_
+_@zanieb_
 
 I found it surprising we did not accept names like `hatchling` or `scikit-build`
 

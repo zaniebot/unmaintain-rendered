@@ -13,14 +13,14 @@ head: konsti/rename-second-direct-url-parsed-url
 created_at: 2024-04-22T14:26:17Z
 updated_at: 2024-04-22T14:38:28Z
 url: https://github.com/astral-sh/uv/pull/3187
-synced_at: 2026-01-10T14:43:32Z
+synced_at: 2026-01-12T16:05:29Z
 ```
 
 # Rename the second direct url to parsed url
 
 ---
 
-_Pull request opened by @konstin on 2024-04-22 14:26_
+_@konstin_
 
 Previously, we got `pypi_types::DirectUrl` (the pypa spec direct_url.json format) and `distribution_types::DirectUrl` (an enum of all the url types we support). This lead me to confusion, so i'm renaming the latter one to the more appropriate `ParsedUrl`.
 

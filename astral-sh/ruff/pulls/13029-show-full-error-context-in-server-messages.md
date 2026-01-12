@@ -13,14 +13,14 @@ head: dhruv/error-context
 created_at: 2024-08-21T09:54:13Z
 updated_at: 2024-08-21T10:08:41Z
 url: https://github.com/astral-sh/ruff/pull/13029
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Show full error context in server messages
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-08-21 09:54_
+_@dhruvmanila_
 
 ## Summary
 

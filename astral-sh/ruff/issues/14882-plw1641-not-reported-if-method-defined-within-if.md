@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-09T23:27:46Z
 updated_at: 2024-12-30T15:55:15Z
 url: https://github.com/astral-sh/ruff/issues/14882
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # (🐞) `PLW1641` not reported if method defined within `if`
 
 ---
 
-_Issue opened by @KotlinIsland on 2024-12-09 23:27_
+_@KotlinIsland_
 
 ```py
 class A:

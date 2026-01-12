@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-07-28T23:46:26Z
 updated_at: 2023-07-29T03:35:28Z
 url: https://github.com/astral-sh/ruff/issues/6163
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # SIM118 fixes a case in __contains__ which was using self, causing recusrion
 
 ---
 
-_Issue opened by @HexDecimal on 2023-07-28 23:46_
+_@HexDecimal_
 
 An issue similar to #4481, Ruff incorrectly marks a case of [SIM118](https://beta.ruff.rs/docs/rules/in-dict-keys/) as an error and as fixable when neither is the case.
 

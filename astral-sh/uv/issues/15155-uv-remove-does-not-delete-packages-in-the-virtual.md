@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-07T22:27:50Z
 updated_at: 2025-08-09T14:29:00Z
 url: https://github.com/astral-sh/uv/issues/15155
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:05Z
 ```
 
 # `uv remove` does not delete packages in the virtual environment.
 
 ---
 
-_Issue opened by @Mefamex on 2025-08-07 22:27_
+_@Mefamex_
 
 ### Summary
 

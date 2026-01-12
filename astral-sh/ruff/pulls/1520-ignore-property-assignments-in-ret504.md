@@ -12,14 +12,14 @@ head: charlie/ret
 created_at: 2022-12-31T23:04:09Z
 updated_at: 2022-12-31T23:04:13Z
 url: https://github.com/astral-sh/ruff/pull/1520
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Ignore property assignments in RET504
 
 ---
 
-_Pull request opened by @charliermarsh on 2022-12-31 23:04_
+_@charliermarsh_
 
 Resolves: #1517.
 

@@ -14,14 +14,14 @@ head: lint-preview-option
 created_at: 2023-10-17T06:48:32Z
 updated_at: 2024-01-16T10:03:15Z
 url: https://github.com/astral-sh/ruff/pull/8002
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # Add `lint.preview`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-17 06:48_
+_@MichaReiser_
 
 ## Summary
 

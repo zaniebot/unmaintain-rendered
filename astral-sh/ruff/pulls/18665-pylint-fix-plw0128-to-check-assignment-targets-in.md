@@ -14,14 +14,14 @@ head: redeclared-askrisk-bracket
 created_at: 2025-06-13T18:51:25Z
 updated_at: 2025-06-16T19:02:31Z
 url: https://github.com/astral-sh/ruff/pull/18665
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:23Z
 ```
 
 # [pylint] Fix `PLW0128` to check assignment targets in square brackets and after asterisks
 
 ---
 
-_Pull request opened by @njhearp on 2025-06-13 18:51_
+_@njhearp_
 
 ## Summary
 

@@ -14,14 +14,14 @@ head: charlie/isolated
 created_at: 2024-05-07T17:08:43Z
 updated_at: 2024-05-07T17:30:03Z
 url: https://github.com/astral-sh/uv/pull/3431
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:38Z
 ```
 
 # Use top-level `--isolated` for `uv run`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-07 17:08_
+_@charliermarsh_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-10T15:13:46Z
 updated_at: 2025-08-14T15:34:37Z
 url: https://github.com/astral-sh/ruff/issues/19845
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # SIM905 fix doesn’t treat U+001C..U+001F as white space
 
 ---
 
-_Issue opened by @dscorbett on 2025-08-10 15:13_
+_@dscorbett_
 
 ### Summary
 

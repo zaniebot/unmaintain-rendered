@@ -13,14 +13,14 @@ head: charlie/workspace-v
 created_at: 2024-04-16T00:21:17Z
 updated_at: 2024-04-17T17:59:51Z
 url: https://github.com/astral-sh/uv/pull/3049
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:23Z
 ```
 
 # Enable global configuration files
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-16 00:21_
+_@charliermarsh_
 
 ## Summary
 

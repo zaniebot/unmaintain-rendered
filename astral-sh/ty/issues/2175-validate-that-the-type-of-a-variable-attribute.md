@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-23T00:47:29Z
 updated_at: 2025-12-23T11:05:18Z
 url: https://github.com/astral-sh/ty/issues/2175
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Validate that the type of a variable/attribute/subscript remains consistent with its declared type following an augmented assignment operation
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2025-12-23 00:47_
+_@MeGaGiGaGon_
 
 ### Summary
 

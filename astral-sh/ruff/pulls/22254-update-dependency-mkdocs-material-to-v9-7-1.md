@@ -13,14 +13,14 @@ head: renovate/mkdocs-material-9.x
 created_at: 2025-12-29T16:11:54Z
 updated_at: 2025-12-29T16:25:14Z
 url: https://github.com/astral-sh/ruff/pull/22254
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:45Z
 ```
 
 # Update dependency mkdocs-material to v9.7.1
 
 ---
 
-_Pull request opened by @renovate on 2025-12-29 16:11_
+_@renovate_
 
 This PR contains the following updates:
 

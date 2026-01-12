@@ -13,14 +13,14 @@ head: zb/readme-work
 created_at: 2025-07-01T16:48:02Z
 updated_at: 2025-07-01T16:50:08Z
 url: https://github.com/astral-sh/ty/pull/745
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Drop the README transform and Rust cache from the docs publish workflow
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-01 16:48_
+_@zanieb_
 
 See failure at https://github.com/astral-sh/ty/actions/runs/16005039499/job/45149527655
 

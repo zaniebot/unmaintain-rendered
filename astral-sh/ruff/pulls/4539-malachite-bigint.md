@@ -12,14 +12,14 @@ head: malachite-bigint
 created_at: 2023-05-20T06:59:04Z
 updated_at: 2023-05-25T12:33:32Z
 url: https://github.com/astral-sh/ruff/pull/4539
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # malachite_bigint
 
 ---
 
-_Pull request opened by @youknowone on 2023-05-20 06:59_
+_@youknowone_
 
 test of https://github.com/RustPython/Parser/pull/18
 

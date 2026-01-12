@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-22T21:27:19Z
 updated_at: 2025-07-11T02:30:40Z
 url: https://github.com/astral-sh/uv/issues/12398
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # `uv pip install --system` not installing into python environment
 
 ---
 
-_Issue opened by @droidnoob on 2025-03-22 21:27_
+_@droidnoob_
 
 ### Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-28T13:39:54Z
 updated_at: 2025-06-26T05:59:04Z
 url: https://github.com/astral-sh/ruff/issues/12092
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # `generate-shell-completion` is a valid `ruff` command, but is not listed in `ruff help`
 
 ---
 
-_Issue opened by @tpgillam on 2024-06-28 13:39_
+_@tpgillam_
 
 As-of ruff 0.4.10, I've observed that:
 

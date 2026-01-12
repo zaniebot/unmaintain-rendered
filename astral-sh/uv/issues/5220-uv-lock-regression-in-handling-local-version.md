@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-19T14:21:10Z
 updated_at: 2024-07-19T21:56:10Z
 url: https://github.com/astral-sh/uv/issues/5220
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # uv lock: regression in handling local version identifiers
 
 ---
 
-_Issue opened by @ewianda on 2024-07-19 14:21_
+_@ewianda_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -11,14 +11,14 @@ head: LOG_DIR
 created_at: 2025-02-25T08:51:24Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/11774
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:00Z
 ```
 
 # Adds Persistent fils logs to testing
 
 ---
 
-_Pull request opened by @Choudhry18 on 2025-02-25 08:51_
+_@Choudhry18_
 
 ## Summary
 

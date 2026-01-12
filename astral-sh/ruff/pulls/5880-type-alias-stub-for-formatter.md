@@ -13,14 +13,14 @@ head: type_alias_stub_for_formatter
 created_at: 2023-07-19T11:36:16Z
 updated_at: 2023-07-19T15:28:08Z
 url: https://github.com/astral-sh/ruff/pull/5880
-synced_at: 2026-01-12T03:30:22Z
+synced_at: 2026-01-12T15:55:19Z
 ```
 
 # Type alias stub for formatter
 
 ---
 
-_Pull request opened by @konstin on 2023-07-19 11:36_
+_@konstin_
 
 **Summary** This replaces the `todo!()` with a type alias stub in the formatter. I added the tests from https://github.com/RustPython/Parser/blob/704eb40108239a8faf9bd1d4217e8dad0ac7edb3/parser/src/parser.rs#L901-L936 as ruff python formatter tests.
 

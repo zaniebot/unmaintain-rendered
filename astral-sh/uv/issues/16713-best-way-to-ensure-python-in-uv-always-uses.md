@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-12T21:36:40Z
 updated_at: 2025-11-21T23:00:59Z
 url: https://github.com/astral-sh/uv/issues/16713
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:36Z
 ```
 
 # Best way to ensure python in uv always uses system trust store?
 
 ---
 
-_Issue opened by @pboushy on 2025-11-12 21:36_
+_@pboushy_
 
 ### Question
 

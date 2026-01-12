@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-01-16T03:37:25Z
 updated_at: 2024-01-17T17:33:26Z
 url: https://github.com/astral-sh/ruff/issues/9542
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # [Linter panic] panicked at 'called `Option::unwrap()` in pycodestyle invalid_escape_sequence.rs
 
 ---
 
-_Issue opened by @rsyring on 2024-01-16 03:37_
+_@rsyring_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

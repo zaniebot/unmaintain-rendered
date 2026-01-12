@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-11T21:45:16Z
 updated_at: 2024-10-21T21:52:10Z
 url: https://github.com/astral-sh/uv/issues/7313
-synced_at: 2026-01-10T01:57:16Z
+synced_at: 2026-01-12T15:59:12Z
 ```
 
 # uv run and pyproject configuration
 
 ---
 
-_Issue opened by @patrickporto on 2024-09-11 21:45_
+_@patrickporto_
 
 I searched some similar issue but I didn't find anything.
 

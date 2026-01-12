@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-05-30T20:29:28Z
 updated_at: 2020-05-30T20:43:02Z
 url: https://github.com/clap-rs/clap/issues/1952
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:12Z
 ```
 
 # derive docs should link to derive/examples, where all the docs are
 
 ---
 
-_Issue opened by @FauxFaux on 2020-05-30 20:29_
+_@FauxFaux_
 
 ### Clap version
 

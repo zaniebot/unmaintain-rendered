@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-07T02:34:10Z
 updated_at: 2025-04-15T20:36:12Z
 url: https://github.com/astral-sh/uv/issues/12696
-synced_at: 2026-01-10T03:41:47Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # Failure to build cydifflib (Compatibility with CMake < 3.5 error)
 
 ---
 
-_Issue opened by @jlevy on 2025-04-07 02:34_
+_@jlevy_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/er
 created_at: 2024-11-21T19:33:16Z
 updated_at: 2024-11-26T20:06:01Z
 url: https://github.com/astral-sh/uv/pull/9335
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:45Z
 ```
 
 # Use rich diagnostics for build failures
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-21 19:33_
+_@charliermarsh_
 
 ## Summary
 

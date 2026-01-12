@@ -11,14 +11,14 @@ head: split-up007
 created_at: 2024-05-12T11:43:52Z
 updated_at: 2025-01-07T14:51:45Z
 url: https://github.com/astral-sh/ruff/pull/11379
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Split UP007 Union and Optional to two individual rules
 
 ---
 
-_Pull request opened by @blueraft on 2024-05-12 11:43_
+_@blueraft_
 
 Resolves https://github.com/astral-sh/ruff/issues/4858
 

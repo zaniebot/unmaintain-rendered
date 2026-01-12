@@ -12,14 +12,14 @@ head: zb/test-ex
 created_at: 2025-04-02T14:40:18Z
 updated_at: 2025-04-02T17:09:23Z
 url: https://github.com/astral-sh/uv/pull/12624
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:20Z
 ```
 
 # Add test case for explicit index with authenticate always
 
 ---
 
-_Pull request opened by @zanieb on 2025-04-02 14:40_
+_@zanieb_
 
 For #12611
 

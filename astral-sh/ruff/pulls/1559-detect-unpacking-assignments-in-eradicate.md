@@ -12,14 +12,14 @@ head: charlie/unpack
 created_at: 2023-01-02T19:05:52Z
 updated_at: 2023-01-02T19:05:59Z
 url: https://github.com/astral-sh/ruff/pull/1559
-synced_at: 2026-01-12T05:36:31Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Detect unpacking assignments in eradicate
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-02 19:05_
+_@charliermarsh_
 
 Resolves #1542.
 

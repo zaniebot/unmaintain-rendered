@@ -14,14 +14,14 @@ head: david/implicit-type-aliases-typing-union
 created_at: 2025-11-10T13:33:55Z
 updated_at: 2025-11-12T11:59:17Z
 url: https://github.com/astral-sh/ruff/pull/21363
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:57:21Z
 ```
 
 # [ty] Implicit type aliases: Add support for `typing.Union`
 
 ---
 
-_Pull request opened by @sharkdp on 2025-11-10 13:33_
+_@sharkdp_
 
 ## Summary
 

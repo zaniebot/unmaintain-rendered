@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-04T07:19:18Z
 updated_at: 2025-01-07T05:16:50Z
 url: https://github.com/astral-sh/ruff/issues/13238
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # Error on Neovim after upgrading to 0.6.3
 
 ---
 
-_Issue opened by @Zeioth on 2024-09-04 07:19_
+_@Zeioth_
 
 ## Description
 Ruff displays errors on neovim (installed using)

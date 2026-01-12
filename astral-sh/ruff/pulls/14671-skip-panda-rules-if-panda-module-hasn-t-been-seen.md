@@ -14,14 +14,14 @@ head: micha/disable-pd-rules-for-non-pd-code
 created_at: 2024-11-29T07:33:31Z
 updated_at: 2024-11-29T21:32:53Z
 url: https://github.com/astral-sh/ruff/pull/14671
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:48Z
 ```
 
 # Skip panda rules if panda module hasn't been seen
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-11-29 07:33_
+_@MichaReiser_
 
 ## Summary
 

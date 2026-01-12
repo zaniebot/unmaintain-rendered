@@ -13,14 +13,14 @@ head: david/schemastore-update
 created_at: 2025-10-17T18:58:45Z
 updated_at: 2025-10-17T19:01:55Z
 url: https://github.com/astral-sh/ty/pull/1391
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Only add the actual schema in schemastore PRs
 
 ---
 
-_Pull request opened by @sharkdp on 2025-10-17 18:58_
+_@sharkdp_
 
 Last time I ran this script, due to what I assume was a `npm` version mismatch, the `package-lock.json` file was updated while running `npm install` in the `schemastore`. Due to the use of `git commit -a`, it was accidentally included in the commit for the semi-automated schemastore PR. The solution here is to only add the actual file that we want to commit.
 

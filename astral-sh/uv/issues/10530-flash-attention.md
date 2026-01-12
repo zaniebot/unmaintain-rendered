@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-01-12T00:44:13Z
 updated_at: 2025-01-12T16:35:59Z
 url: https://github.com/astral-sh/uv/issues/10530
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:15Z
 ```
 
 # Flash Attention!
 
 ---
 
-_Issue opened by @dsantiago on 2025-01-12 00:44_
+_@dsantiago_
 
 I tried the Build Isolation documentation:
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-04T00:14:08Z
 updated_at: 2025-08-06T15:13:42Z
 url: https://github.com/astral-sh/ruff/issues/19135
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # PLC3002: false positive
 
 ---
 
-_Issue opened by @spaceone on 2025-07-04 00:14_
+_@spaceone_
 
 ### Summary
 

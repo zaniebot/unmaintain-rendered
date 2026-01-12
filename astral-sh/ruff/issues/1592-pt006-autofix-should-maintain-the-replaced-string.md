@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-03T10:18:11Z
 updated_at: 2023-01-03T15:26:00Z
 url: https://github.com/astral-sh/ruff/issues/1592
-synced_at: 2026-01-10T12:05:31Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # PT006 autofix: should maintain the replaced string's quote style instead of always using `"`
 
 ---
 
-_Issue opened by @bluetech on 2023-01-03 10:18_
+_@bluetech_
 
 Currently the PT006 autofix replaces e.g. `'first, second'` with `("first", "second")`. It would be better if it would maintain the string's quote style, in this example `('first', 'second')`.
 

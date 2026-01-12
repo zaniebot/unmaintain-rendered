@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-23T15:29:18Z
 updated_at: 2024-07-06T20:38:47Z
 url: https://github.com/astral-sh/uv/issues/1917
-synced_at: 2026-01-10T05:31:36Z
+synced_at: 2026-01-12T15:58:33Z
 ```
 
 # Use `std` for `uv-trampoline`
 
 ---
 
-_Issue opened by @MichaReiser on 2024-02-23 15:29_
+_@MichaReiser_
 
 The `uv-trampoline` is used by `uv` to generate exe binaries for python entrypoint scripts (launcher scripts). 
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-02T14:51:08Z
 updated_at: 2025-12-02T18:56:13Z
 url: https://github.com/astral-sh/uv/issues/16932
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:40Z
 ```
 
 # Possibility to input path to pyproject.toml and uv.lock
 
 ---
 
-_Issue opened by @korolenkowork on 2025-12-02 14:51_
+_@korolenkowork_
 
 ### Summary
 

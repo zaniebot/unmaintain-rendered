@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-08T01:35:43Z
 updated_at: 2024-11-08T03:45:21Z
 url: https://github.com/astral-sh/ruff/issues/14187
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Request: More autofixes for `duplicate-literal-member`/`PYI062`
 
 ---
 
-_Issue opened by @Avasam on 2024-11-08 01:35_
+_@Avasam_
 
 * A minimal code snippet that reproduces
 

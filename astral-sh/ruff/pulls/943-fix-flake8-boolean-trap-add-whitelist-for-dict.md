@@ -12,14 +12,14 @@ head: fix/893
 created_at: 2022-11-28T16:16:14Z
 updated_at: 2022-11-28T22:31:35Z
 url: https://github.com/astral-sh/ruff/pull/943
-synced_at: 2026-01-12T05:48:46Z
+synced_at: 2026-01-12T15:55:05Z
 ```
 
 # fix(flake8_boolean_trap): add whitelist for dict methods
 
 ---
 
-_Pull request opened by @pwoolvett on 2022-11-28 16:16_
+_@pwoolvett_
 
 This commit enables the skipping of FBT003 based on two conditions:
 

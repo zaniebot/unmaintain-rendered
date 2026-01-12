@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-24T10:19:27Z
 updated_at: 2025-04-04T08:05:34Z
 url: https://github.com/astral-sh/uv/issues/12423
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:01:02Z
 ```
 
 # installing pygame in a uv venv causes an error but not with pip3
 
 ---
 
-_Issue opened by @yashranjan1 on 2025-03-24 10:19_
+_@yashranjan1_
 
 ### Summary
 

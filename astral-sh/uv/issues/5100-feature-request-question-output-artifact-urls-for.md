@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-16T12:17:35Z
 updated_at: 2024-07-18T13:02:04Z
 url: https://github.com/astral-sh/uv/issues/5100
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:54Z
 ```
 
 # Feature Request / Question: Output artifact urls for pip compile
 
 ---
 
-_Issue opened by @jbw-vtl on 2024-07-16 12:17_
+_@jbw-vtl_
 
 Hi All,
 

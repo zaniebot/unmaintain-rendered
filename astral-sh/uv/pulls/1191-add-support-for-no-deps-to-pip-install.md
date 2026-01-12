@@ -13,14 +13,14 @@ head: charlie/no-deps
 created_at: 2024-01-30T19:30:45Z
 updated_at: 2024-01-30T19:54:58Z
 url: https://github.com/astral-sh/uv/pull/1191
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:29Z
 ```
 
 # Add support for `--no-deps` to `pip install`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-30 19:30_
+_@charliermarsh_
 
 ## Summary
 

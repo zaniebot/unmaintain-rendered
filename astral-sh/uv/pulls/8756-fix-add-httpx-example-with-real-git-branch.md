@@ -13,14 +13,14 @@ head: manzt/docs-fix-branch
 created_at: 2024-11-01T16:58:51Z
 updated_at: 2024-11-02T02:47:33Z
 url: https://github.com/astral-sh/uv/pull/8756
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:29Z
 ```
 
 # Fix `add httpx` example with real git branch
 
 ---
 
-_Pull request opened by @manzt on 2024-11-01 16:58_
+_@manzt_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-18T21:29:36Z
 updated_at: 2025-02-18T22:46:06Z
 url: https://github.com/astral-sh/uv/issues/11605
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # Mininum Python requirement from dependency greater than root project.
 
 ---
 
-_Issue opened by @jdumas on 2025-02-18 21:29_
+_@jdumas_
 
 ### Summary
 

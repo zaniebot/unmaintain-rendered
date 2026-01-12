@@ -13,14 +13,14 @@ head: charlie/core-metadata
 created_at: 2024-05-21T14:29:55Z
 updated_at: 2024-05-21T18:27:00Z
 url: https://github.com/astral-sh/uv/pull/3699
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:48Z
 ```
 
 # Rename `DistInfoMetadata` to `CoreMetadata`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-21 14:29_
+_@charliermarsh_
 
 ## Summary
 

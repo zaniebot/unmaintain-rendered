@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-06T08:18:39Z
 updated_at: 2025-02-06T19:52:39Z
 url: https://github.com/astral-sh/uv/issues/11274
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # uv selects an unavailable onnxruntime version (1.20.1) despite it not existing on PyPI for the given platform
 
 ---
 
-_Issue opened by @markovejnovic on 2025-02-06 08:18_
+_@markovejnovic_
 
 ### Summary
 

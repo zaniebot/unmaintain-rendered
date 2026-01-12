@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-07-24T15:48:02Z
 updated_at: 2023-07-24T16:37:25Z
 url: https://github.com/astral-sh/ruff/issues/6037
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Rule D413 produces a false positive for a section headed `Examples`.
 
 ---
 
-_Issue opened by @ghost on 2023-07-24 15:48_
+_@ghost_
 
 The bug is exhibited by the command
 ```shell

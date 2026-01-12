@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-13T20:49:19Z
 updated_at: 2025-08-13T20:49:25Z
 url: https://github.com/astral-sh/uv/issues/15260
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # uv should warn on Pyodide installation if Node is not available
 
 ---
 
-_Issue opened by @zanieb on 2025-08-13 20:49_
+_@zanieb_
 
 This installs but fails at runtime
 ```

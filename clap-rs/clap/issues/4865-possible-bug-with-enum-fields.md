@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-04-27T19:32:37Z
 updated_at: 2023-04-28T13:36:42Z
 url: https://github.com/clap-rs/clap/issues/4865
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Possible bug with enum fields
 
 ---
 
-_Issue opened by @nerdo on 2023-04-27 19:32_
+_@nerdo_
 
 ### Please complete the following tasks
 

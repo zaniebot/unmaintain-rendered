@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-09-20T07:09:18Z
 updated_at: 2025-09-22T08:34:11Z
 url: https://github.com/astral-sh/ty/issues/1215
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # `Callable` is a class
 
 ---
 
-_Issue opened by @KotlinIsland on 2025-09-20 07:09_
+_@KotlinIsland_
 
 ### Summary
 

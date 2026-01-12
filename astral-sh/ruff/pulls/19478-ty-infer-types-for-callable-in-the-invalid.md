@@ -14,14 +14,14 @@ head: remove-pull-type
 created_at: 2025-07-22T07:32:54Z
 updated_at: 2025-07-24T11:38:42Z
 url: https://github.com/astral-sh/ruff/pull/19478
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:40Z
 ```
 
 # [ty] Infer types for `Callable` in the invalid arguments case
 
 ---
 
-_Pull request opened by @lipefree on 2025-07-22 07:32_
+_@lipefree_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

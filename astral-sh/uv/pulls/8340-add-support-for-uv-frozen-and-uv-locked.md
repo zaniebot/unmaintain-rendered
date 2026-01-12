@@ -13,14 +13,14 @@ head: charlie/fro
 created_at: 2024-10-18T17:24:50Z
 updated_at: 2024-10-18T17:37:52Z
 url: https://github.com/astral-sh/uv/pull/8340
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:16Z
 ```
 
 # Add support for `UV_FROZEN` and `UV_LOCKED`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-18 17:24_
+_@charliermarsh_
 
 ## Summary
 

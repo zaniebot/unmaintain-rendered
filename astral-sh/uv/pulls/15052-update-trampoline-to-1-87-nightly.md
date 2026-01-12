@@ -13,14 +13,14 @@ head: trampoline-187-update
 created_at: 2025-08-04T03:42:29Z
 updated_at: 2025-09-27T22:38:52Z
 url: https://github.com/astral-sh/uv/pull/15052
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:33Z
 ```
 
 # Update trampoline to ~1.87 nightly
 
 ---
 
-_Pull request opened by @samypr100 on 2025-08-04 03:42_
+_@samypr100_
 
 ## Summary
 

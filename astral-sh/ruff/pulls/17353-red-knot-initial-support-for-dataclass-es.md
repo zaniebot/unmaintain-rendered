@@ -13,14 +13,14 @@ head: david/dataclasses
 created_at: 2025-04-11T14:28:57Z
 updated_at: 2025-04-15T18:33:07Z
 url: https://github.com/astral-sh/ruff/pull/17353
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:01Z
 ```
 
 # [red-knot] Initial support for `dataclass`es
 
 ---
 
-_Pull request opened by @sharkdp on 2025-04-11 14:28_
+_@sharkdp_
 
 ## Summary
 

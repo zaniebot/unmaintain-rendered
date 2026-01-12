@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-06T18:51:00Z
 updated_at: 2023-11-06T19:00:32Z
 url: https://github.com/astral-sh/ruff/issues/8522
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Not formatting/fixing isort warnings?
 
 ---
 
-_Issue opened by @vsalvino on 2023-11-06 18:51_
+_@vsalvino_
 
 Hello - testing out ruff, great work here!
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-10T12:37:21Z
 updated_at: 2025-08-13T05:06:46Z
 url: https://github.com/astral-sh/uv/issues/13378
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # What's the recommended way to install & run with 2 arch under MacOS?
 
 ---
 
-_Issue opened by @freelancerhc on 2025-05-10 12:37_
+_@freelancerhc_
 
 ### Question
 

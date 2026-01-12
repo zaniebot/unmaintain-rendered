@@ -13,14 +13,14 @@ head: charlie/docker
 created_at: 2024-04-20T02:21:06Z
 updated_at: 2024-04-21T16:02:49Z
 url: https://github.com/astral-sh/uv/pull/3155
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:27Z
 ```
 
 # Re-add Docker image to release pipeline
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-20 02:21_
+_@charliermarsh_
 
 ## Summary
 

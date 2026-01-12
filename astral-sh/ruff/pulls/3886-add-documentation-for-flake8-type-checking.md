@@ -13,14 +13,14 @@ head: flake8-type-checking-documentation
 created_at: 2023-04-05T16:22:24Z
 updated_at: 2023-04-05T17:53:38Z
 url: https://github.com/astral-sh/ruff/pull/3886
-synced_at: 2026-01-12T04:28:19Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Add documentation for flake8-type-checking
 
 ---
 
-_Pull request opened by @tjkuson on 2023-04-05 16:22_
+_@tjkuson_
 
 Add documentation to the flake8-type-checking rules that check for imports used only for type annotation that are not in a type-checking block.
 

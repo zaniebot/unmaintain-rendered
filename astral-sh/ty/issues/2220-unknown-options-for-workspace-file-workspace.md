@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-25T13:20:39Z
 updated_at: 2025-12-29T12:49:37Z
 url: https://github.com/astral-sh/ty/issues/2220
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # unknown options for workspace `file:///workspace` keeps popping up arbitrarily in VS Code
 
 ---
 
-_Issue opened by @epicwhale on 2025-12-25 13:20_
+_@epicwhale_
 
 ### Summary
 

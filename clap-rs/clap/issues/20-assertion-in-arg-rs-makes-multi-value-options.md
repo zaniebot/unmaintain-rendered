@@ -9,14 +9,14 @@ assignees: []
 created_at: 2015-03-19T04:32:07Z
 updated_at: 2018-08-02T03:29:36Z
 url: https://github.com/clap-rs/clap/issues/20
-synced_at: 2026-01-10T01:57:39Z
+synced_at: 2026-01-12T16:14:08Z
 ```
 
 # Assertion in arg.rs makes multi-value options illegal?
 
 ---
 
-_Issue opened by @archer884 on 2015-03-19 04:32_
+_@archer884_
 
 It's here: https://github.com/kbknapp/clap-rs/blob/master/src/args/arg.rs#L332
 

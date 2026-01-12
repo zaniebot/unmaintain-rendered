@@ -11,14 +11,14 @@ assignees: []
 created_at: 2021-09-24T15:33:55Z
 updated_at: 2021-10-16T04:00:55Z
 url: https://github.com/clap-rs/clap/issues/2785
-synced_at: 2026-01-10T01:57:45Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Section headings don't match contents
 
 ---
 
-_Issue opened by @stevenengler on 2021-09-24 15:33_
+_@stevenengler_
 
 ### Please complete the following tasks
 

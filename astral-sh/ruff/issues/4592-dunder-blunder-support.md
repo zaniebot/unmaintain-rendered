@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-05-23T01:58:14Z
 updated_at: 2024-01-04T04:03:04Z
 url: https://github.com/astral-sh/ruff/issues/4592
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # __dunder_blunder___ support
 
 ---
 
-_Issue opened by @gitpushdashf on 2023-05-23 01:58_
+_@gitpushdashf_
 
 Hi, everyone!
 

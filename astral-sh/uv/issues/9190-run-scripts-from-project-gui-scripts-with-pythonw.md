@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-18T09:18:42Z
 updated_at: 2024-11-18T09:36:49Z
 url: https://github.com/astral-sh/uv/issues/9190
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:44Z
 ```
 
 # run scripts from [project.gui-scripts] with pythonw on windows
 
 ---
 
-_Issue opened by @borco on 2024-11-18 09:18_
+_@borco_
 
 Scripts configured under `[project.gui-scripts]` should be run with `pythonw.exe` on Windows. However, they are run with `python.exe` and show a terminal console in addition to the application GUI window.
 

@@ -13,14 +13,14 @@ head: charlie/app
 created_at: 2024-01-26T14:19:25Z
 updated_at: 2024-01-26T14:47:03Z
 url: https://github.com/astral-sh/ruff/pull/9649
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Avoid rendering display-only rules as fixable
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-26 14:19_
+_@charliermarsh_
 
 Closes https://github.com/astral-sh/ruff/issues/9505.
 

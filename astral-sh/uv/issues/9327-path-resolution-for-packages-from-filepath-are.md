@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-11-21T16:19:23Z
 updated_at: 2024-11-22T01:03:25Z
 url: https://github.com/astral-sh/uv/issues/9327
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:47Z
 ```
 
 # Path resolution for packages from filepath are inconsistent
 
 ---
 
-_Issue opened by @Tibiritabara on 2024-11-21 16:19_
+_@Tibiritabara_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

@@ -13,14 +13,14 @@ head: charlie/never
 created_at: 2024-10-30T02:16:46Z
 updated_at: 2024-11-01T13:31:41Z
 url: https://github.com/astral-sh/ruff/pull/13984
-synced_at: 2026-01-10T20:59:37Z
+synced_at: 2026-01-12T15:55:46Z
 ```
 
 # Use `Never` instead of `None` for stores
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-30 02:16_
+_@charliermarsh_
 
 ## Summary
 

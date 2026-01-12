@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2025-03-15T13:37:26Z
 updated_at: 2025-04-14T08:00:31Z
 url: https://github.com/astral-sh/uv/pull/12186
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:09Z
 ```
 
 # docs: Mention env var PYTHONUNBUFFERED
 
 ---
 
-_Pull request opened by @quassy on 2025-03-15 13:37_
+_@quassy_
 
 ## Summary
 

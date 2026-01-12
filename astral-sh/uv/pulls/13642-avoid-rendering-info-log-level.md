@@ -14,14 +14,14 @@ head: konsti/avoid-rendering-info-log-level
 created_at: 2025-05-25T12:37:06Z
 updated_at: 2025-05-26T13:17:18Z
 url: https://github.com/astral-sh/uv/pull/13642
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:47Z
 ```
 
 # Avoid rendering info log level
 
 ---
 
-_Pull request opened by @konstin on 2025-05-25 12:37_
+_@konstin_
 
 We were previously rendering messages for the info level, carrying overhead in pubgrub which using `log::info!`. We avoid this by only configuring `LevelFilter::INFO` if the durations layer exists.
 

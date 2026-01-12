@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-29T23:39:43Z
 updated_at: 2024-05-04T21:12:43Z
 url: https://github.com/astral-sh/ruff/issues/11209
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Q000 is not enforced with  `inline-quotes = "single"`
 
 ---
 
-_Issue opened by @Borda on 2024-04-29 23:39_
+_@Borda_
 
 following my comment in https://github.com/astral-sh/ruff/issues/7834#issuecomment-2083830199 and https://github.com/OpenDevin/OpenDevin/pull/1425#discussion_r1582056596
 

@@ -13,14 +13,14 @@ head: zb/reflow-sorry
 created_at: 2025-01-28T20:52:30Z
 updated_at: 2025-01-29T14:21:35Z
 url: https://github.com/astral-sh/uv/pull/11040
-synced_at: 2026-01-10T11:45:25Z
+synced_at: 2026-01-12T16:09:38Z
 ```
 
 # Reflow CLI documentation comments
 
 ---
 
-_Pull request opened by @zanieb on 2025-01-28 20:52_
+_@zanieb_
 
 I'm sorry, but I was writing some new content here and the inconsistent wrapping was very hard to maintain and I didn't want to muddy the diff there with reflowing.
 

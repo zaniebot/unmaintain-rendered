@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-09T17:01:28Z
 updated_at: 2024-11-09T17:52:25Z
 url: https://github.com/astral-sh/ruff/issues/14228
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # `0.7.3` introduces false positives for invalid `# noqa` directives with `RUF100`
 
 ---
 
-_Issue opened by @BryceBeagle on 2024-11-09 17:01_
+_@BryceBeagle_
 
 I'm working on upgrading our codebase to use `ruff=0.7.3`, but there are some `RUF100` changes that start flagging
 some comments as being "Unused `noqa` directive"s.

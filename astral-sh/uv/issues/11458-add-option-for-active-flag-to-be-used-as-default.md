@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-12T18:40:47Z
 updated_at: 2025-02-12T18:42:45Z
 url: https://github.com/astral-sh/uv/issues/11458
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:37Z
 ```
 
 # Add option for `--active` flag to be used as default
 
 ---
 
-_Issue opened by @Nick-Hemenway on 2025-02-12 18:40_
+_@Nick-Hemenway_
 
 ### Summary
 

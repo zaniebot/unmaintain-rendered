@@ -13,14 +13,14 @@ head: renovate/dawidd6-action-download-artifact-6.x
 created_at: 2024-06-17T01:24:12Z
 updated_at: 2024-06-17T05:55:48Z
 url: https://github.com/astral-sh/ruff/pull/11894
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Update dawidd6/action-download-artifact action to v6
 
 ---
 
-_Pull request opened by @renovate on 2024-06-17 01:24_
+_@renovate_
 
 [![Mend Renovate](https://app.renovatebot.com/images/banner.svg)](https://renovatebot.com)
 

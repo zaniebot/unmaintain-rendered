@@ -13,14 +13,14 @@ head: pylock-format-no-editable
 created_at: 2025-06-05T03:01:32Z
 updated_at: 2025-06-06T15:00:57Z
 url: https://github.com/astral-sh/uv/pull/13852
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:10:54Z
 ```
 
 # PEP 751 uv export supports --no-editable
 
 ---
 
-_Pull request opened by @samypr100 on 2025-06-05 03:01_
+_@samypr100_
 
 ## Summary
 

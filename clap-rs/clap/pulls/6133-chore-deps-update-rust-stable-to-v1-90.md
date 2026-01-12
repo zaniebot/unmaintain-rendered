@@ -12,14 +12,14 @@ head: renovate/stable-1.x
 created_at: 2025-09-18T22:35:41Z
 updated_at: 2025-09-18T22:43:28Z
 url: https://github.com/clap-rs/clap/pull/6133
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # chore(deps): Update Rust Stable to v1.90
 
 ---
 
-_Pull request opened by @renovate on 2025-09-18 22:35_
+_@renovate_
 
 Coming soon: The Renovate bot (GitHub App) will be renamed to Mend. PRs from Renovate will soon appear from 'Mend'. Learn more [here](https://redirect.github.com/renovatebot/renovate/discussions/37842).
 

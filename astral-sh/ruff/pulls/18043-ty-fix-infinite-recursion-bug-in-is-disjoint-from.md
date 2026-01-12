@@ -14,14 +14,14 @@ head: fix-is_disjoint_from
 created_at: 2025-05-12T13:34:18Z
 updated_at: 2025-05-12T14:41:50Z
 url: https://github.com/astral-sh/ruff/pull/18043
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # [ty] fix infinite recursion bug in `is_disjoint_from`
 
 ---
 
-_Pull request opened by @mtshiba on 2025-05-12 13:34_
+_@mtshiba_
 
 ## Summary
 

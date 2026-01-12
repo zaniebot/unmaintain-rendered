@@ -13,14 +13,14 @@ head: charlie/implicit-concat
 created_at: 2023-08-11T19:24:50Z
 updated_at: 2023-08-14T13:55:36Z
 url: https://github.com/astral-sh/ruff/pull/6512
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add an implicit concatenation flag to string and bytes constants
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-11 19:24_
+_@charliermarsh_
 
 ## Summary
 

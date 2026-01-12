@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-19T16:23:45Z
 updated_at: 2025-06-19T20:41:54Z
 url: https://github.com/astral-sh/ty/issues/683
-synced_at: 2026-01-10T02:08:20Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # [panic] `infer_definition_types(Id(d67c)): execute: too many cycle iterations`
 
 ---
 
-_Issue opened by @remiconnesson on 2025-06-19 16:23_
+_@remiconnesson_
 
 # Minimal Repro
 

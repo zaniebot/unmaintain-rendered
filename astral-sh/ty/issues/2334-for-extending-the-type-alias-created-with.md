@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-05T03:16:58Z
 updated_at: 2026-01-05T07:48:42Z
 url: https://github.com/astral-sh/ty/issues/2334
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # For extending the type alias created with `TypeAlias` or an assignment statement, ty should also give error for consistency
 
 ---
 
-_Issue opened by @hyperkai on 2026-01-05 03:16_
+_@hyperkai_
 
 ### Summary
 

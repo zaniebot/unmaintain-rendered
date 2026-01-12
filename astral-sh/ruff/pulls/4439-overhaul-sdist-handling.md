@@ -13,14 +13,14 @@ head: reduce_sdist_size
 created_at: 2023-05-15T13:23:45Z
 updated_at: 2023-05-18T17:02:24Z
 url: https://github.com/astral-sh/ruff/pull/4439
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Overhaul sdist handling
 
 ---
 
-_Pull request opened by @konstin on 2023-05-15 13:23_
+_@konstin_
 
 This does three tings:
 

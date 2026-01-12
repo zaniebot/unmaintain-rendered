@@ -13,14 +13,14 @@ head: cfg
 created_at: 2025-03-30T21:19:27Z
 updated_at: 2025-04-01T10:53:43Z
 url: https://github.com/astral-sh/ruff/pull/17064
-synced_at: 2026-01-10T19:40:36Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # Control flow graph: setup
 
 ---
 
-_Pull request opened by @dylwil3 on 2025-03-30 21:19_
+_@dylwil3_
 
 This PR contains the scaffolding for a new control flow graph implementation, along with its application to the `unreachable` rule. At the moment, the implementation is a maximal over-approximation: no control flow is modeled and all statements are counted as reachable. With each additional statement type we support, this approximation will improve.
 

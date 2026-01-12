@@ -11,14 +11,14 @@ assignees: []
 created_at: 2015-10-28T22:57:31Z
 updated_at: 2015-10-29T11:40:14Z
 url: https://github.com/clap-rs/clap/issues/329
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Versionless subcommand setting does not take effect
 
 ---
 
-_Issue opened by @jimmycuadra on 2015-10-28 22:57_
+_@jimmycuadra_
 
 `AppSetting::VersionlessSubCommands` doesn't seem to disable the `-V`/`--version` options on subcommands as the docs describe:
 

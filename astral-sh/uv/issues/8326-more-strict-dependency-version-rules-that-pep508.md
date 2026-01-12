@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-18T11:43:45Z
 updated_at: 2024-10-21T09:26:58Z
 url: https://github.com/astral-sh/uv/issues/8326
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-12T15:59:24Z
 ```
 
 # More strict dependency version rules that PEP508
 
 ---
 
-_Issue opened by @Veritaris on 2024-10-18 11:43_
+_@Veritaris_
 
 command that was invoked: `uv lock`
 platform: `macOS Sonoma 14.6.1`

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2023-12-17T00:37:43Z
 updated_at: 2023-12-17T02:12:51Z
 url: https://github.com/astral-sh/ruff/pull/9167
-synced_at: 2026-01-10T23:31:11Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Fix typo in SemanticModel.parent_expression docstring
 
 ---
 
-_Pull request opened by @diceroll123 on 2023-12-17 00:37_
+_@diceroll123_
 
 Self-explanatory and self-contained! :)
 

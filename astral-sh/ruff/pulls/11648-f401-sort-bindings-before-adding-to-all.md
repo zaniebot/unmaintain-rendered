@@ -13,14 +13,14 @@ head: ruff.f401.nondet2
 created_at: 2024-05-31T19:27:37Z
 updated_at: 2024-05-31T20:38:57Z
 url: https://github.com/astral-sh/ruff/pull/11648
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:38Z
 ```
 
 # F401 sort bindings before adding to __all__
 
 ---
 
-_Pull request opened by @plredmond on 2024-05-31 19:27_
+_@plredmond_
 
 Sort the binding IDs before passing them to the add-to-`__all__` function to address #11619.
 

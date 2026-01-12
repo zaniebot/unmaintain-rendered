@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-07-03T12:19:26Z
 updated_at: 2025-01-07T06:34:32Z
 url: https://github.com/astral-sh/ruff/issues/12169
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # ruff binary varies from ASLR
 
 ---
 
-_Issue opened by @bmwiedemann on 2024-07-03 12:19_
+_@bmwiedemann_
 
 While working on [reproducible builds](https://reproducible-builds.org/) for [openSUSE](https://en.opensuse.org/openSUSE:Reproducible_Builds), I found that
 our `python-ruff` package varies from Address-Space-Layout-Randomization (ASLR).

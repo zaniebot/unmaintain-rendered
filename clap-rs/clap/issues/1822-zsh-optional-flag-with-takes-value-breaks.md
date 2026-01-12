@@ -13,14 +13,14 @@ assignees: []
 created_at: 2020-04-14T14:34:10Z
 updated_at: 2023-07-08T12:41:58Z
 url: https://github.com/clap-rs/clap/issues/1822
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # zsh: optional flag with takes_value breaks completions
 
 ---
 
-_Issue opened by @kpcyrd on 2020-04-14 14:34_
+_@kpcyrd_
 
 ### Make sure you completed the following tasks
 

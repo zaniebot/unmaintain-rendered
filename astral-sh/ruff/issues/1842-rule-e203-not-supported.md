@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-13T01:45:12Z
 updated_at: 2023-03-23T16:58:22Z
 url: https://github.com/astral-sh/ruff/issues/1842
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Rule E203 not supported? 
 
 ---
 
-_Issue opened by @gabohc on 2023-01-13 01:45_
+_@gabohc_
 
 When running flake8-to-ruff, it warns that 'E203'  is an unsupported prefix code. The docs say that ruff supports pycodestyle rules E (https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes).
 

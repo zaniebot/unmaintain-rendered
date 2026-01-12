@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-22T22:48:39Z
 updated_at: 2025-04-23T11:18:19Z
 url: https://github.com/astral-sh/uv/issues/13062
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:18Z
 ```
 
 # How to include 'dev' dependency-groups in uv pip compile?
 
 ---
 
-_Issue opened by @yx-altera on 2025-04-22 22:48_
+_@yx-altera_
 
 ### Question
 

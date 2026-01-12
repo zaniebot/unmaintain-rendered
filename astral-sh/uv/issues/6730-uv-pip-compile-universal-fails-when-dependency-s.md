@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-27T23:16:18Z
 updated_at: 2024-10-28T13:49:49Z
 url: https://github.com/astral-sh/uv/issues/6730
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:07Z
 ```
 
 # uv pip compile --universal fails when dependency's python-requires is incompatible with -p, even with markers
 
 ---
 
-_Issue opened by @alex on 2024-08-27 23:16_
+_@alex_
 
 ```
 ~ ❯❯❯ uv version

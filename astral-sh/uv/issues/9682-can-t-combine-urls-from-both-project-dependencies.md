@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-06T13:38:24Z
 updated_at: 2024-12-09T17:16:09Z
 url: https://github.com/astral-sh/uv/issues/9682
-synced_at: 2026-01-10T04:36:21Z
+synced_at: 2026-01-12T15:59:56Z
 ```
 
 # "Can't combine URLs from both `project.dependencies` and `tool.uv.sources`" when combining GitHub link and local path
 
 ---
 
-_Issue opened by @bersbersbers on 2024-12-06 13:38_
+_@bersbersbers_
 
 I would like to support editable installs of a package and one of its dependencies, if the dependencies are already checked out locally.
 

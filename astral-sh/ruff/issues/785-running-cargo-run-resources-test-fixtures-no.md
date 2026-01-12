@@ -9,14 +9,14 @@ assignees: []
 created_at: 2022-11-17T12:53:13Z
 updated_at: 2022-11-17T16:33:48Z
 url: https://github.com/astral-sh/ruff/issues/785
-synced_at: 2026-01-10T12:09:58Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Running `cargo run resources/test/fixtures --no-cache` return 131 errors
 
 ---
 
-_Issue opened by @JonathanPlasse on 2022-11-17 12:53_
+_@JonathanPlasse_
 
 Following `CONTRIBUTING.md`.
 I cloned the repo.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-03-14T02:18:00Z
 updated_at: 2018-08-02T03:30:03Z
 url: https://github.com/clap-rs/clap/issues/900
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # add support for short/long help
 
 ---
 
-_Issue opened by @kbknapp on 2017-03-14 02:18_
+_@kbknapp_
 
 This would allow a short help to displayed with `-h` but more detailed explanation in `--help`. Would like to support version text as in #899 and subcommand`s about as in #898
 

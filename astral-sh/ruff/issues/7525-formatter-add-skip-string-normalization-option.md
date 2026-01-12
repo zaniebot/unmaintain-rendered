@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-09-19T17:28:50Z
 updated_at: 2025-10-23T13:23:39Z
 url: https://github.com/astral-sh/ruff/issues/7525
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:47Z
 ```
 
 # Formatter: Add --skip-string-normalization option (parity with Black)?
 
 ---
 
-_Issue opened by @mikeckennedy on 2023-09-19 17:28_
+_@mikeckennedy_
 
 Hey folks. I see that Black added --skip-string-normalization ( https://github.com/psf/black/issues/118#issuecomment-393298377 ) but `ruff format --skip-string-normalization` leads to `error: unexpected argument '--skip-string-normalization' found`. Any chance of adding this feature to ruff format?
 

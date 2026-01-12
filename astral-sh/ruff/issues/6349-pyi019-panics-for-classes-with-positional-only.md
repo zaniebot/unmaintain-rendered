@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-04T18:18:43Z
 updated_at: 2023-08-04T18:37:09Z
 url: https://github.com/astral-sh/ruff/issues/6349
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `PYI019` panics for classes with positional-only, but no non-positional arguments
 
 ---
 
-_Issue opened by @charliermarsh on 2023-08-04 18:18_
+_@charliermarsh_
 
 Reported in Discord.
 

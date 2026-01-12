@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-04T12:56:26Z
 updated_at: 2024-03-05T21:13:26Z
 url: https://github.com/astral-sh/uv/issues/2153
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:35Z
 ```
 
 # For some python implementations uv expects a different `site-packages` path than it creates
 
 ---
 
-_Issue opened by @kvelicka on 2024-03-04 12:56_
+_@kvelicka_
 
 `uv` version: 0.1.13, installed from `pip`.
 

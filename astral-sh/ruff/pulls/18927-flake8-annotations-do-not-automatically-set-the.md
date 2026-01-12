@@ -11,14 +11,14 @@ head: fix-18886
 created_at: 2025-06-24T23:36:19Z
 updated_at: 2025-11-07T04:43:35Z
 url: https://github.com/astral-sh/ruff/pull/18927
-synced_at: 2026-01-10T16:53:55Z
+synced_at: 2026-01-12T15:56:28Z
 ```
 
 # [`flake8-annotations`] Do not automatically set the return type to `NoReturn` when raising `NotImplementedError`
 
 ---
 
-_Pull request opened by @danparizher on 2025-06-24 23:36_
+_@danparizher_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

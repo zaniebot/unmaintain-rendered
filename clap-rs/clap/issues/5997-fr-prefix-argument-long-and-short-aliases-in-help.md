@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-05-10T14:32:23Z
 updated_at: 2025-05-11T00:45:30Z
 url: https://github.com/clap-rs/clap/issues/5997
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # FR: Prefix argument long and short aliases in help output with -- and -
 
 ---
 
-_Issue opened by @cenviity on 2025-05-10 14:32_
+_@cenviity_
 
 ### Please complete the following tasks
 

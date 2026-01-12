@@ -13,14 +13,14 @@ assignees: []
 created_at: 2022-05-02T17:04:32Z
 updated_at: 2022-07-22T17:24:28Z
 url: https://github.com/clap-rs/clap/issues/3676
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # InvalidSubcommand and UnrecognizedSubcommand are redundant
 
 ---
 
-_Issue opened by @epage on 2022-05-02 17:04_
+_@epage_
 
 ### Please complete the following tasks
 

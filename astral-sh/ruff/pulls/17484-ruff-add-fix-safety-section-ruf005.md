@@ -13,14 +13,14 @@ head: document-fix-safety-collection-literal-conc
 created_at: 2025-04-19T19:34:23Z
 updated_at: 2025-04-26T21:43:03Z
 url: https://github.com/astral-sh/ruff/pull/17484
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`ruff`] add fix safety section (`RUF005`)
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-04-19 19:34_
+_@VascoSch92_
 
 The PR add the `fix safety` section for rule `RUF005` (#15584 ).
 

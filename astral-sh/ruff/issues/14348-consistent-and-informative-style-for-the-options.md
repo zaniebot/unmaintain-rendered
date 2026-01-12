@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-15T00:05:12Z
 updated_at: 2024-11-15T06:38:35Z
 url: https://github.com/astral-sh/ruff/issues/14348
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Consistent and informative style for the "Options" section in rule documentation
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-11-15 00:05_
+_@InSyncWithFoo_
 
 Currently, this is how the documentation for [`F821`](https://docs.astral.sh/ruff/rules/undefined-name/) is rendered in PyCharm and VSCode:
 

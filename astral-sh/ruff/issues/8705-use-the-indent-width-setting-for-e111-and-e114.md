@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-11-15T22:37:17Z
 updated_at: 2025-05-06T01:34:43Z
 url: https://github.com/astral-sh/ruff/issues/8705
-synced_at: 2026-01-10T11:09:51Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # Use the indent-width setting for E111 and E114
 
 ---
 
-_Issue opened by @NeilGirdhar on 2023-11-15 22:37_
+_@NeilGirdhar_
 
 [E111](https://docs.astral.sh/ruff/rules/indentation-with-invalid-multiple/) should probably use the indent-width setting?
 

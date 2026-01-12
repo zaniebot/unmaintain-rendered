@@ -10,16 +10,16 @@ assignees: []
 base: main
 head: fix/windows-special-filename-cache-clean
 created_at: 2025-12-26T18:49:00Z
-updated_at: 2026-01-07T17:02:47Z
+updated_at: 2026-01-10T17:38:50Z
 url: https://github.com/astral-sh/uv/pull/17241
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:40Z
 ```
 
 # fix: handle Windows special filenames in cache clean
 
 ---
 
-_Pull request opened by @blueberrycongee on 2025-12-26 18:49_
+_@blueberrycongee_
 
 ## Summary
 
@@ -99,7 +99,7 @@ Is this needed? All the changed code I see is behind `#[cfg(windows)]`
 
 ---
 
-_Review comment by @samypr100 on `crates/uv-cache/src/removal.rs`:364 on 2025-12-29 03:46_
+_Review comment by @samypr100 on `crates/uv-cache/src/removal.rs`:309 on 2025-12-29 03:46_
 
 I'd add a test in `crates/uv/tests/it/cache_clean.rs` for the OP scenario instead.
 
@@ -134,7 +134,7 @@ _@samypr100 reviewed on 2025-12-31 21:34_
 
 ---
 
-_Review comment by @samypr100 on `crates/uv-cache/src/removal.rs`:253 on 2025-12-31 21:34_
+_Review comment by @samypr100 on `crates/uv-cache/src/removal.rs`:261 on 2025-12-31 21:34_
 
 Thanks for the applying the changes.
 
@@ -184,7 +184,7 @@ _@konstin reviewed on 2026-01-05 12:19_
 
 ---
 
-_Review comment by @konstin on `crates/uv-cache/src/removal.rs`:253 on 2026-01-05 12:19_
+_Review comment by @konstin on `crates/uv-cache/src/removal.rs`:261 on 2026-01-05 12:19_
 
 Yes this should be a generic util in uv-fs
 

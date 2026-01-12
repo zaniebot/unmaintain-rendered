@@ -12,14 +12,14 @@ head: brent/ruf043-0.10
 created_at: 2025-03-12T03:04:47Z
 updated_at: 2025-05-01T15:30:54Z
 url: https://github.com/astral-sh/ruff/pull/16657
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T15:55:55Z
 ```
 
 # [`ruff`] Stabilize `pytest-raises-ambiguous-pattern` (`RUF043`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-03-12 03:04_
+_@ntBre_
 
 Summary
 --

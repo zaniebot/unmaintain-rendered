@@ -10,14 +10,14 @@ assignees: []
 created_at: 2026-01-06T07:32:06Z
 updated_at: 2026-01-10T02:19:30Z
 url: https://github.com/astral-sh/ty/issues/2354
-synced_at: 2026-01-10T03:05:43Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # VSCode extension: Renaming doesn't work sometimes (including ignoring used line ending style)
 
 ---
 
-_Issue opened by @MeGaGiGaGon on 2026-01-06 07:32_
+_@MeGaGiGaGon_
 
 ### Summary
 

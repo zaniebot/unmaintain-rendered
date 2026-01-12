@@ -12,14 +12,14 @@ head: rename-is-builtin
 created_at: 2024-04-17T09:57:49Z
 updated_at: 2024-04-18T10:11:45Z
 url: https://github.com/astral-sh/ruff/pull/10991
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Rename `SemanticModel::is_builtin` to `SemanticModel::has_builtin_binding`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-17 09:57_
+_@AlexWaygood_
 
 ## Summary
 

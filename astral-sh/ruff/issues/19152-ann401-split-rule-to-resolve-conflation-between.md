@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-07-05T01:41:19Z
 updated_at: 2025-11-07T08:58:59Z
 url: https://github.com/astral-sh/ruff/issues/19152
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ANN401: Split rule to resolve conflation between `arg: Any` and `**kwargs: Any`
 
 ---
 
-_Issue opened by @aaronsteers on 2025-07-05 01:41_
+_@aaronsteers_
 
 There's been some discussion about how `Any` and `ANN401` should behave with `*args` and `**kwargs`. Some of that is discussed here:
 - https://github.com/astral-sh/ruff/issues/677

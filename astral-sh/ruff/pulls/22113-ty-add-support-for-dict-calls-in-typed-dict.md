@@ -13,14 +13,14 @@ head: typed-dict-dict-call
 created_at: 2025-12-20T14:37:00Z
 updated_at: 2025-12-20T15:59:04Z
 url: https://github.com/astral-sh/ruff/pull/22113
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T15:57:41Z
 ```
 
 # [ty] Add support for dict(...) calls in typed dict contexts
 
 ---
 
-_Pull request opened by @Hugo-Polloli on 2025-12-20 14:37_
+_@Hugo-Polloli_
 
 ## Summary
 

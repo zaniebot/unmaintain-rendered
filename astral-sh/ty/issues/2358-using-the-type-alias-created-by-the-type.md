@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-06T09:23:01Z
 updated_at: 2026-01-06T09:32:41Z
 url: https://github.com/astral-sh/ty/issues/2358
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Using the type alias created by the type statement with `*Ts`, ty doesn't work properly, giving error
 
 ---
 
-_Issue opened by @hyperkai on 2026-01-06 09:23_
+_@hyperkai_
 
 ### Summary
 

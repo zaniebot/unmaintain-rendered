@@ -11,14 +11,14 @@ head: pieterh/ext-lint-4-ast-codegen
 created_at: 2025-12-02T20:06:28Z
 updated_at: 2026-01-07T01:50:42Z
 url: https://github.com/astral-sh/ruff/pull/21764
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:32Z
 ```
 
 # RFC [ruff][ext-lint] 4: codegen for the full AST
 
 ---
 
-_Pull request opened by @pieterh-oai on 2025-12-02 20:06_
+_@pieterh-oai_
 
 ## Summary
 

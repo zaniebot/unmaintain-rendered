@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-05T14:10:28Z
 updated_at: 2025-02-06T11:27:38Z
 url: https://github.com/astral-sh/uv/issues/11245
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:32Z
 ```
 
 # `uv build` always adds `--compatibility off` to build args
 
 ---
 
-_Issue opened by @jonded94 on 2025-02-05 14:10_
+_@jonded94_
 
 ### Question
 

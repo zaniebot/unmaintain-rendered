@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-02T05:09:00Z
 updated_at: 2024-07-02T16:40:57Z
 url: https://github.com/astral-sh/ruff/issues/12144
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # release 0.5.0 is different, was it intentional?
 
 ---
 
-_Issue opened by @alexeagle on 2024-07-02 05:09_
+_@alexeagle_
 
 I see that https://github.com/astral-sh/ruff?tab=readme-ov-file#usage still references `v0.5.0` so I wonder if the following was inadventent:
 

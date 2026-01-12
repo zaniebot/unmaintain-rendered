@@ -13,14 +13,14 @@ head: renovate/wiremock-0.x-lockfile
 created_at: 2025-03-03T02:46:46Z
 updated_at: 2025-03-03T03:35:52Z
 url: https://github.com/astral-sh/uv/pull/11909
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:03Z
 ```
 
 # Update Rust crate wiremock to v0.6.3
 
 ---
 
-_Pull request opened by @renovate on 2025-03-03 02:46_
+_@renovate_
 
 This PR contains the following updates:
 

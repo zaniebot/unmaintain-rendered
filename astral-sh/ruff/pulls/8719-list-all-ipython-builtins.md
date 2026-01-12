@@ -13,14 +13,14 @@ head: ipython-builtins-script
 created_at: 2023-11-16T12:32:50Z
 updated_at: 2023-11-16T18:06:26Z
 url: https://github.com/astral-sh/ruff/pull/8719
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:26Z
 ```
 
 # List all ipython builtins
 
 ---
 
-_Pull request opened by @konstin on 2023-11-16 12:32_
+_@konstin_
 
 I checked for ipython-specific builtins on python 3.11 using
 ```python

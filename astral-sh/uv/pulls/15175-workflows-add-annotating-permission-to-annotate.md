@@ -13,14 +13,14 @@ head: geofft/fix-annotate-permissions
 created_at: 2025-08-08T20:11:23Z
 updated_at: 2025-08-08T20:27:22Z
 url: https://github.com/astral-sh/uv/pull/15175
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:37Z
 ```
 
 # workflows: Add annotating permission to 'annotate uv' action
 
 ---
 
-_Pull request opened by @geofft on 2025-08-08 20:11_
+_@geofft_
 
 _No description provided._
 

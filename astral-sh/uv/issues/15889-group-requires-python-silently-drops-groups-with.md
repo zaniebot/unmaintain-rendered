@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-09-16T09:24:12Z
 updated_at: 2025-09-16T13:17:38Z
 url: https://github.com/astral-sh/uv/issues/15889
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:19Z
 ```
 
 # Group `requires-python` silently drops groups with `uv pip compile --group`
 
 ---
 
-_Issue opened by @konstin on 2025-09-16 09:24_
+_@konstin_
 
 **pyproject.toml**
 ```toml

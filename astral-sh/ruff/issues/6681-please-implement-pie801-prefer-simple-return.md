@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-08-18T19:54:50Z
 updated_at: 2024-04-12T02:09:06Z
 url: https://github.com/astral-sh/ruff/issues/6681
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # Please implement PIE801 (prefer-simple-return)
 
 ---
 
-_Issue opened by @nth10sd on 2023-08-18 19:54_
+_@nth10sd_
 
 From [flake8-pie](https://github.com/sbdchd/flake8-pie):
 

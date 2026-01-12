@@ -13,14 +13,14 @@ head: zb/add-help
 created_at: 2024-09-20T18:13:03Z
 updated_at: 2024-09-20T19:01:10Z
 url: https://github.com/astral-sh/uv/pull/7597
-synced_at: 2026-01-10T12:53:50Z
+synced_at: 2026-01-12T16:07:54Z
 ```
 
 # Adjust messaging for frozen hint on resolution failure during `uv add`
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-20 18:13_
+_@zanieb_
 
 The existing message has been driving me a little crazy :) it's too vague.
 

@@ -13,14 +13,14 @@ head: zb/uvx-alias-tip
 created_at: 2024-08-22T18:40:00Z
 updated_at: 2024-08-22T23:05:43Z
 url: https://github.com/astral-sh/uv/pull/6455
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:22Z
 ```
 
 # Clarify the `uv tool run`, `uvx`, and `uv run` relationships
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-22 18:40_
+_@zanieb_
 
 _No description provided._
 

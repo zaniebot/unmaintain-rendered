@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-13T08:12:27Z
 updated_at: 2025-12-15T07:11:20Z
 url: https://github.com/astral-sh/ruff/issues/21959
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # Slow startup
 
 ---
 
-_Issue opened by @lkpzxc on 2025-12-13 08:12_
+_@lkpzxc_
 
 ### Question
 

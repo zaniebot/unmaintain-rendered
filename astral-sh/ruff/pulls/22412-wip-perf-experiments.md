@@ -12,14 +12,14 @@ head: micro-opt
 created_at: 2026-01-06T05:26:09Z
 updated_at: 2026-01-09T23:48:14Z
 url: https://github.com/astral-sh/ruff/pull/22412
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # [WIP] perf experiments
 
 ---
 
-_Pull request opened by @dylwil3 on 2026-01-06 05:26_
+_@dylwil3_
 
 Don't mind me...
 

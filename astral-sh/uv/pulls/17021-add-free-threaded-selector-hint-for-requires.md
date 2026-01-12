@@ -11,14 +11,14 @@ head: freethreaded-selector-hint
 created_at: 2025-12-08T04:11:59Z
 updated_at: 2025-12-15T02:31:17Z
 url: https://github.com/astral-sh/uv/pull/17021
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:12:34Z
 ```
 
 # Add free-threaded selector hint for requires-python
 
 ---
 
-_Pull request opened by @kxzk on 2025-12-08 04:11_
+_@kxzk_
 
 ## Summary
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-19T08:42:57Z
 updated_at: 2025-11-07T11:57:14Z
 url: https://github.com/astral-sh/uv/issues/1681
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:58:31Z
 ```
 
 # Support `pip wheel` subcommand
 
 ---
 
-_Issue opened by @kvelicka on 2024-02-19 08:42_
+_@kvelicka_
 
 I've been trying `uv` on work projects to assess its coverage and suitability of being a full `pip`/`pip-tools` replacement for us. One of the features of pip that we use is `pip wheel`, which seems to not be supported by `uv` currently and I couln't find an open ticket discussing it, so I'm making one here.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-01-03T21:59:36Z
 updated_at: 2022-01-11T18:21:02Z
 url: https://github.com/clap-rs/clap/issues/3249
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # short argument doesn't get parsed with allow_hyphen_values
 
 ---
 
-_Issue opened by @crowlKats on 2022-01-03 21:59_
+_@crowlKats_
 
 ### Please complete the following tasks
 

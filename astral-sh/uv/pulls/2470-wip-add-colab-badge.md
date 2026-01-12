@@ -12,14 +12,14 @@ head: patch-1
 created_at: 2024-03-15T02:16:56Z
 updated_at: 2024-04-22T21:03:49Z
 url: https://github.com/astral-sh/uv/pull/2470
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:03Z
 ```
 
 # WIP: add-colab-badge
 
 ---
 
-_Pull request opened by @raybellwaves on 2024-03-15 02:16_
+_@raybellwaves_
 
 In writing https://github.com/astral-sh/uv/issues/2469 I created this. You are more than well to copy to you own notebook so you are the owner.
 

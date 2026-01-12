@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-20T10:18:30Z
 updated_at: 2025-02-20T11:26:16Z
 url: https://github.com/astral-sh/uv/issues/11659
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:43Z
 ```
 
 # differences between pip & uv for opencv
 
 ---
 
-_Issue opened by @nim65s on 2025-02-20 10:18_
+_@nim65s_
 
 ### Summary
 

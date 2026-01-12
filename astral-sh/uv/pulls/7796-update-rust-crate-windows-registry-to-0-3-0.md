@@ -12,14 +12,14 @@ head: renovate/windows-registry-0.x
 created_at: 2024-09-30T01:01:24Z
 updated_at: 2024-10-30T12:01:08Z
 url: https://github.com/astral-sh/uv/pull/7796
-synced_at: 2026-01-10T12:53:56Z
+synced_at: 2026-01-12T16:08:00Z
 ```
 
 # Update Rust crate windows-registry to 0.3.0
 
 ---
 
-_Pull request opened by @renovate on 2024-09-30 01:01_
+_@renovate_
 
 This PR contains the following updates:
 

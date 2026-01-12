@@ -12,14 +12,14 @@ head: shirt
 created_at: 2025-10-29T14:13:41Z
 updated_at: 2025-10-29T14:19:57Z
 url: https://github.com/clap-rs/clap/pull/6165
-synced_at: 2026-01-10T01:57:50Z
+synced_at: 2026-01-12T16:14:18Z
 ```
 
 # fix(help): Correctly calculate padding for short-only args 
 
 ---
 
-_Pull request opened by @epage on 2025-10-29 14:13_
+_@epage_
 
 This manifests in two ways
 - If a value is taken, we double the padding

@@ -13,14 +13,14 @@ head: david/fix-ipython-magic-panics
 created_at: 2024-11-13T19:47:04Z
 updated_at: 2024-11-13T20:01:32Z
 url: https://github.com/astral-sh/ruff/pull/14326
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Avoid panics for ipython magic commands
 
 ---
 
-_Pull request opened by @sharkdp on 2024-11-13 19:47_
+_@sharkdp_
 
 ## Summary
 

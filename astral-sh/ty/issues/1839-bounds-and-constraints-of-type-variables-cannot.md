@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-10T12:28:20Z
 updated_at: 2025-12-13T02:45:23Z
 url: https://github.com/astral-sh/ty/issues/1839
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Bounds and constraints of type variables cannot be generic
 
 ---
 
-_Issue opened by @mtshiba on 2025-12-10 12:28_
+_@mtshiba_
 
 ### Summary
 

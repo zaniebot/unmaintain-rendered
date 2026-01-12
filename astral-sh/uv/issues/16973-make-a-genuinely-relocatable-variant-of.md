@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-03T19:51:40Z
 updated_at: 2025-12-09T14:39:57Z
 url: https://github.com/astral-sh/uv/issues/16973
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T16:02:41Z
 ```
 
 # Make a genuinely relocatable variant of --relocatable (i.e. fix or remove activate.csh/nu)
 
 ---
 
-_Issue opened by @amluto on 2025-12-03 19:51_
+_@amluto_
 
 ### Summary
 

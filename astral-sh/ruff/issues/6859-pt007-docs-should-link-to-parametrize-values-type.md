@@ -12,14 +12,14 @@ assignees: []
 created_at: 2023-08-24T19:56:34Z
 updated_at: 2023-08-25T22:14:41Z
 url: https://github.com/astral-sh/ruff/issues/6859
-synced_at: 2026-01-10T11:09:49Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # `PT007` docs should link to `parametrize-values-type` config option
 
 ---
 
-_Issue opened by @jamesbraza on 2023-08-24 19:56_
+_@jamesbraza_
 
 Currently, `ruff==0.0.285`'s docs for [`pytest-parametrize-values-wrong-type`](https://beta.ruff.rs/docs/rules/pytest-parametrize-values-wrong-type/)/`PT007` links to [flake8-pytest-style.parametrize-values-row-type](https://beta.ruff.rs/docs/settings#flake8-pytest-style-parametrize-values-row-type).
 

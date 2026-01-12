@@ -13,14 +13,14 @@ head: fix-docs
 created_at: 2023-06-22T22:23:51Z
 updated_at: 2023-07-10T09:55:15Z
 url: https://github.com/astral-sh/ruff/pull/5320
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Fix `collection-literal-concatenation` documentation
 
 ---
 
-_Pull request opened by @tjkuson on 2023-06-22 22:23_
+_@tjkuson_
 
 ## Summary
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-03-24T18:50:11Z
 updated_at: 2023-08-21T08:26:25Z
 url: https://github.com/astral-sh/ruff/issues/3719
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # [Infinite loop] Very commonly used line with 4500 characters show infinite loop error
 
 ---
 
-_Issue opened by @qarmin on 2023-03-24 18:50_
+_@qarmin_
 
 Ruff  1bac206995043d7d533338b7f8b7db37f37bf43b
 

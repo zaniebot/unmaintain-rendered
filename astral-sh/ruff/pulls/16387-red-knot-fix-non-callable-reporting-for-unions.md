@@ -13,14 +13,14 @@ head: cjm/unioncall
 created_at: 2025-02-26T00:48:54Z
 updated_at: 2025-02-26T15:06:06Z
 url: https://github.com/astral-sh/ruff/pull/16387
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] fix non-callable reporting for unions
 
 ---
 
-_Pull request opened by @carljm on 2025-02-26 00:48_
+_@carljm_
 
 Minor follow-up to https://github.com/astral-sh/ruff/pull/16161
 

@@ -13,14 +13,14 @@ head: alex/type-ordering-assertions
 created_at: 2025-04-30T10:39:32Z
 updated_at: 2025-04-30T10:58:57Z
 url: https://github.com/astral-sh/ruff/pull/17734
-synced_at: 2026-01-10T19:03:00Z
+synced_at: 2026-01-12T15:56:05Z
 ```
 
 # [red-knot] Computing a type ordering for two non-normalized types is meaningless
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-04-30 10:39_
+_@AlexWaygood_
 
 ## Summary
 

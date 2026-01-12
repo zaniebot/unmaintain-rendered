@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-08-22T08:12:33Z
 updated_at: 2023-08-22T15:55:29Z
 url: https://github.com/astral-sh/ruff/issues/6758
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 #  Rule F401 causes autofix error
 
 ---
 
-_Issue opened by @qarmin on 2023-08-22 08:12_
+_@qarmin_
 
 Ruff 0.0.285
 

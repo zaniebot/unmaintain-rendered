@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-08-23T07:14:42Z
 updated_at: 2022-08-23T13:42:30Z
 url: https://github.com/clap-rs/clap/issues/4104
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # Arg::value_parser does not implicitly set Arg::takes_value
 
 ---
 
-_Issue opened by @wookietreiber on 2022-08-23 07:14_
+_@wookietreiber_
 
 ### Please complete the following tasks
 

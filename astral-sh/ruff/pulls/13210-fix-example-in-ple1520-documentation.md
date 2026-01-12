@@ -13,14 +13,14 @@ head: main
 created_at: 2024-09-02T09:45:43Z
 updated_at: 2024-09-02T11:19:43Z
 url: https://github.com/astral-sh/ruff/pull/13210
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # Fix example in PLE1520 documentation
 
 ---
 
-_Pull request opened by @Jinior on 2024-09-02 09:45_
+_@Jinior_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

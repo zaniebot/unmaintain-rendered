@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-28T21:15:48Z
 updated_at: 2026-01-08T18:27:35Z
 url: https://github.com/astral-sh/ty/issues/724
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:23Z
 ```
 
 # Comparison between generic types with the same bound fails with `unsupported-operator`
 
 ---
 
-_Issue opened by @cam-matsui on 2025-06-28 21:15_
+_@cam-matsui_
 
 ### Summary
 

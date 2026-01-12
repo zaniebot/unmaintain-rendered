@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-23T16:37:07Z
 updated_at: 2025-01-23T20:22:05Z
 url: https://github.com/astral-sh/uv/issues/10904
-synced_at: 2026-01-10T01:57:25Z
+synced_at: 2026-01-12T16:00:23Z
 ```
 
 # How to specify different sources for a package depending on the linux distribution version
 
 ---
 
-_Issue opened by @mscheltienne on 2025-01-23 16:37_
+_@mscheltienne_
 
 ### Question
 

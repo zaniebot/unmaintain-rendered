@@ -13,14 +13,14 @@ head: salsa-9-red_knot_python_semantic
 created_at: 2024-06-18T14:16:29Z
 updated_at: 2024-06-20T11:38:22Z
 url: https://github.com/astral-sh/ruff/pull/11926
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # [red-knot] Extract `red_knot_python_semantic` crate
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-06-18 14:16_
+_@MichaReiser_
 
 ## Summary
 

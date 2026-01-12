@@ -13,14 +13,14 @@ head: zb/ci-depot-linux
 created_at: 2024-11-19T14:36:05Z
 updated_at: 2024-11-20T10:56:47Z
 url: https://github.com/astral-sh/ruff/pull/14460
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # Use Depot 16-core runner for testing on Linux
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-19 14:36_
+_@zanieb_
 
 Reduces Linux test CI to 1m 40s (16 core) or 2m 56s (8 core)  to  from 4m 25s. Times are approximate, as runner performance is pretty variable.
 

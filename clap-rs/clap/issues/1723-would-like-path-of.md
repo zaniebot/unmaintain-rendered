@@ -10,14 +10,14 @@ assignees: []
 created_at: 2020-03-04T23:47:26Z
 updated_at: 2021-12-08T21:15:12Z
 url: https://github.com/clap-rs/clap/issues/1723
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Would like path_of
 
 ---
 
-_Issue opened by @njaard on 2020-03-04 23:47_
+_@njaard_
 
 ### Use case
 

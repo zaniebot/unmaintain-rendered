@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-21T18:47:51Z
 updated_at: 2024-10-31T04:22:12Z
 url: https://github.com/astral-sh/ruff/issues/10072
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # ERA001 false positive on examples in comments
 
 ---
 
-_Issue opened by @9999years on 2024-02-21 18:47_
+_@9999years_
 
 Ruff treats this as commented-out code, despite being an example.
 

@@ -13,14 +13,14 @@ head: zb/pep508-cache-key
 created_at: 2025-07-30T15:21:11Z
 updated_at: 2025-07-30T15:44:07Z
 url: https://github.com/astral-sh/uv/pull/14978
-synced_at: 2026-01-10T06:53:02Z
+synced_at: 2026-01-12T16:11:31Z
 ```
 
 # Implement `CacheKey` for all `Pep508Url` variants
 
 ---
 
-_Pull request opened by @zanieb on 2025-07-30 15:21_
+_@zanieb_
 
 Closes #14973 
 

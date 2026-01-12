@@ -13,14 +13,14 @@ head: ag/worktree-support
 created_at: 2024-12-10T18:55:00Z
 updated_at: 2024-12-10T21:23:23Z
 url: https://github.com/astral-sh/ruff/pull/14896
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # ruff: add worktree support to build.rs
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-12-10 18:55_
+_@BurntSushi_
 
 Without this, `cargo insta test` re-compiles every time it is run, even
 if there are no changes. With this, I can re-run `cargo insta test` (or

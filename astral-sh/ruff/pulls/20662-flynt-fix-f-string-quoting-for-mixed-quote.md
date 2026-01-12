@@ -14,14 +14,14 @@ head: fix-flynt-mixed-quote-join
 created_at: 2025-10-01T06:21:07Z
 updated_at: 2025-10-03T13:16:11Z
 url: https://github.com/astral-sh/ruff/pull/20662
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:07Z
 ```
 
 # [`flynt`] Fix f-string quoting for mixed quote joiners (`FLY002`)
 
 ---
 
-_Pull request opened by @TaKO8Ki on 2025-10-01 06:21_
+_@TaKO8Ki_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-23T20:17:37Z
 updated_at: 2025-07-24T11:09:50Z
 url: https://github.com/astral-sh/uv/issues/14856
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:57Z
 ```
 
 # Add a command for `uv activate` for cross platform environment activation
 
 ---
 
-_Issue opened by @kdheepak on 2025-07-23 20:17_
+_@kdheepak_
 
 
 Thanks for developing and maintaining `uv`! It is becoming an integral part of my workflow!

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-02T19:15:46Z
 updated_at: 2025-07-09T14:37:27Z
 url: https://github.com/astral-sh/ruff/issues/9794
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-12T15:54:49Z
 ```
 
 # PYI036 (bad-exit-annotation) triggers on seemingly appropriate annotations
 
 ---
 
-_Issue opened by @Sachaa-Thanasius on 2024-02-02 19:15_
+_@Sachaa-Thanasius_
 
 **Code snippet**
 For additional context: Importing from `types` outside of the `TYPE_CHECKING` block doesn't trigger this. However, I'd prefer not actually importing that at runtime ~~since it can be expensive~~. Curious if this kind of case is in scope for this rule.

@@ -13,14 +13,14 @@ head: use-crossbeam-channel
 created_at: 2024-04-24T13:48:42Z
 updated_at: 2024-04-24T14:06:48Z
 url: https://github.com/astral-sh/ruff/pull/11129
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # Use crossbeam-channel instead of crossbeam
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-04-24 13:48_
+_@MichaReiser_
 
 ## Summary
 

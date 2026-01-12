@@ -13,14 +13,14 @@ head: konsti/hint-at-required-environments
 created_at: 2025-05-21T12:28:44Z
 updated_at: 2025-06-06T19:15:53Z
 url: https://github.com/astral-sh/uv/pull/13575
-synced_at: 2026-01-10T11:10:41Z
+synced_at: 2026-01-12T16:10:45Z
 ```
 
 # Hint at `tool.uv.required-environments`
 
 ---
 
-_Pull request opened by @konstin on 2025-05-21 12:28_
+_@konstin_
 
 For the case where there was no matching wheel on sync, we previously added a note about which wheels are available vs. on which platform you are on. We extend this error message to link directly towards `tool.uv.required-environments`, which otherwise has a discovery problem.
 

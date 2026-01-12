@@ -14,14 +14,14 @@ head: konsti/contact-string
 created_at: 2024-10-24T09:18:51Z
 updated_at: 2024-10-24T15:25:53Z
 url: https://github.com/astral-sh/uv/pull/8520
-synced_at: 2026-01-10T12:54:11Z
+synced_at: 2026-01-12T16:08:21Z
 ```
 
 # Don't allow non-string email in authors
 
 ---
 
-_Pull request opened by @konstin on 2024-10-24 09:18_
+_@konstin_
 
 Previously, the case below would pass by matching the name variant, ignoring the invalid email address.
 

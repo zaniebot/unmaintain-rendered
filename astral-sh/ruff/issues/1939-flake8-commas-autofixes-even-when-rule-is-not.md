@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-01-18T00:37:59Z
 updated_at: 2023-01-18T01:09:03Z
 url: https://github.com/astral-sh/ruff/issues/1939
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # flake8-commas autofixes even when rule is not included in list of fixables
 
 ---
 
-_Issue opened by @rhkleijn on 2023-01-18 00:37_
+_@rhkleijn_
 
 Using version 0.0.224 of ruff I ran into the following with the flake8-commas rules:
 

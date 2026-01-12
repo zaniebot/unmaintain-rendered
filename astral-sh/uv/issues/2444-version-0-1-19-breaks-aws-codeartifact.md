@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-03-14T02:43:49Z
 updated_at: 2024-03-20T14:43:40Z
 url: https://github.com/astral-sh/uv/issues/2444
-synced_at: 2026-01-10T05:40:32Z
+synced_at: 2026-01-12T15:58:37Z
 ```
 
 # Version 0.1.19 breaks AWS CodeArtifact authentication
 
 ---
 
-_Issue opened by @tom-engineering on 2024-03-14 02:43_
+_@tom-engineering_
 
 `uv` version 0.1.19 gives a 401 error when connecting to a CodeArtifact repo, where 0.1.18 works fine.
 

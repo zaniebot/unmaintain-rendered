@@ -14,14 +14,14 @@ head: zb/docs-project-concept
 created_at: 2024-07-30T20:46:07Z
 updated_at: 2024-07-30T22:11:54Z
 url: https://github.com/astral-sh/uv/pull/5634
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:55Z
 ```
 
 # Improvements to the project concept docs
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-30 20:46_
+_@zanieb_
 
 _No description provided._
 

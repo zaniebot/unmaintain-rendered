@@ -12,14 +12,14 @@ assignees: []
 created_at: 2022-09-24T08:40:28Z
 updated_at: 2022-09-28T16:22:33Z
 url: https://github.com/clap-rs/clap/issues/4253
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # range method not found in `_AnonymousValueParser(usize)`
 
 ---
 
-_Issue opened by @pkolaczk on 2022-09-24 08:40_
+_@pkolaczk_
 
 ### Please complete the following tasks
 

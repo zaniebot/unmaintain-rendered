@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-03T10:34:04Z
 updated_at: 2025-04-09T06:55:21Z
 url: https://github.com/astral-sh/uv/issues/12648
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:09Z
 ```
 
 # Recent 0.6.12 is causing pipeline breaks with error  invalid command 'bdist_wheel'
 
 ---
 
-_Issue opened by @fervand1 on 2025-04-03 10:34_
+_@fervand1_
 
 ### Summary
 

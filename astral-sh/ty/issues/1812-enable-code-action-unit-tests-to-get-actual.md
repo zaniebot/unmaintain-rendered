@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-08T22:37:42Z
 updated_at: 2025-12-31T15:40:52Z
 url: https://github.com/astral-sh/ty/issues/1812
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:25Z
 ```
 
 # Enable code-action unit-tests to get actual diagnostics
 
 ---
 
-_Issue opened by @Gankra on 2025-12-08 22:37_
+_@Gankra_
 
 ### Summary
 

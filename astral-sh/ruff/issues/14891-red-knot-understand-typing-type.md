@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-10T15:56:38Z
 updated_at: 2024-12-11T11:01:40Z
 url: https://github.com/astral-sh/ruff/issues/14891
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] Understand `typing.Type`
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-12-10 15:56_
+_@InSyncWithFoo_
 
 Subtask of #14172.
 

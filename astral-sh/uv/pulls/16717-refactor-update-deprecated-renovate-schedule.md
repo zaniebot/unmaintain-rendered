@@ -13,14 +13,14 @@ head: update-deprecated-renovate-cron
 created_at: 2025-11-13T05:34:42Z
 updated_at: 2025-11-13T09:52:20Z
 url: https://github.com/astral-sh/uv/pull/16717
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:24Z
 ```
 
 # refactor: update deprecated renovate schedule syntax
 
 ---
 
-_Pull request opened by @CatBraaain on 2025-11-13 05:34_
+_@CatBraaain_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

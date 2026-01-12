@@ -13,14 +13,14 @@ head: sort-dunder-slots
 created_at: 2024-01-17T15:06:26Z
 updated_at: 2024-01-22T12:32:36Z
 url: https://github.com/astral-sh/ruff/pull/9564
-synced_at: 2026-01-10T22:57:09Z
+synced_at: 2026-01-12T15:55:29Z
 ```
 
 # Add a rule/autofix to sort `__slots__` and `__match_args__`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-01-17 15:06_
+_@AlexWaygood_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: rename-airflow-helper-internal
 created_at: 2025-09-25T01:41:37Z
 updated_at: 2025-09-30T19:56:27Z
 url: https://github.com/astral-sh/ruff/pull/20563
-synced_at: 2026-01-10T17:40:28Z
+synced_at: 2026-01-12T15:57:04Z
 ```
 
 # [`airflow`]: rename `AutoImport` as `Rename` (internal)
 
 ---
 
-_Pull request opened by @Lee-W on 2025-09-25 01:41_
+_@Lee-W_
 
 <!--
 Thank you for contributing to Ruff/ty! To help us out with reviewing, please consider the following:

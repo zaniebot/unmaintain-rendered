@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-01-07T20:18:26Z
 updated_at: 2022-01-11T18:21:08Z
 url: https://github.com/clap-rs/clap/issues/3268
-synced_at: 2026-01-10T01:57:46Z
+synced_at: 2026-01-12T16:14:14Z
 ```
 
 # Deprecated structopt macro argument
 
 ---
 
-_Issue opened by @1Dragoon on 2022-01-07 20:18_
+_@1Dragoon_
 
 It looks like 'settings =' has been deprecated. What is the correct way to do this now?
 

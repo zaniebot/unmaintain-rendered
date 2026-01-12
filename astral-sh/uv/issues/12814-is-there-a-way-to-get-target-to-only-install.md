@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-10T16:51:58Z
 updated_at: 2025-04-11T10:22:51Z
 url: https://github.com/astral-sh/uv/issues/12814
-synced_at: 2026-01-10T01:57:29Z
+synced_at: 2026-01-12T16:01:13Z
 ```
 
 # Is there a way to get --target to only install missing packages?
 
 ---
 
-_Issue opened by @LordAro on 2025-04-10 16:51_
+_@LordAro_
 
 ### Question
 

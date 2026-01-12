@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-17T21:32:55Z
 updated_at: 2023-01-27T13:10:04Z
 url: https://github.com/astral-sh/ruff/issues/799
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # N806 false-positive with a global variable
 
 ---
 
-_Issue opened by @actionless on 2022-11-17 21:32_
+_@actionless_
 
 ```python
 GLOBAL_VAR: str = 'foo'

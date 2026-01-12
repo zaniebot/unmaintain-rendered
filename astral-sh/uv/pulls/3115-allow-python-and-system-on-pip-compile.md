@@ -13,14 +13,14 @@ head: charlie/pip-compile
 created_at: 2024-04-18T04:45:03Z
 updated_at: 2024-04-18T06:41:55Z
 url: https://github.com/astral-sh/uv/pull/3115
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:26Z
 ```
 
 # Allow `--python` and `--system` on `pip compile`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-04-18 04:45_
+_@charliermarsh_
 
 ## Summary
 

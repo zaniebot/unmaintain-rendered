@@ -14,14 +14,14 @@ head: win-trampoline-symlinks
 created_at: 2024-02-21T11:21:02Z
 updated_at: 2024-02-22T15:10:04Z
 url: https://github.com/astral-sh/uv/pull/1803
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:44Z
 ```
 
 # Win Trampoline: Use Python executable path encoded in binary
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-02-21 11:21_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

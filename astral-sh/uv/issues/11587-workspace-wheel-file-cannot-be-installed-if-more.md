@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-18T06:58:03Z
 updated_at: 2025-02-19T13:57:13Z
 url: https://github.com/astral-sh/uv/issues/11587
-synced_at: 2026-01-10T01:57:26Z
+synced_at: 2026-01-12T16:00:41Z
 ```
 
 # Workspace wheel file cannot be installed if more than one workspace subpackage dependencies are specified
 
 ---
 
-_Issue opened by @boccileonardo on 2025-02-18 06:58_
+_@boccileonardo_
 
 ### Summary
 

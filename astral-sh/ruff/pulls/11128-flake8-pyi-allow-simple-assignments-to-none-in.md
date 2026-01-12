@@ -13,14 +13,14 @@ head: pyi-enums
 created_at: 2024-04-24T13:46:01Z
 updated_at: 2024-04-24T14:13:56Z
 url: https://github.com/astral-sh/ruff/pull/11128
-synced_at: 2026-01-10T22:37:01Z
+synced_at: 2026-01-12T15:55:34Z
 ```
 
 # [`flake8-pyi`] Allow simple assignments to `None` in enum class scopes (`PYI026`)
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-04-24 13:46_
+_@AlexWaygood_
 
 Fixes #11117
 

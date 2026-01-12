@@ -13,14 +13,14 @@ head: charlie/val
 created_at: 2024-01-19T05:39:50Z
 updated_at: 2024-01-19T05:48:56Z
 url: https://github.com/astral-sh/uv/pull/1002
-synced_at: 2026-01-10T15:39:03Z
+synced_at: 2026-01-12T16:04:21Z
 ```
 
 # Validate wheel metadata against filename
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-19 05:39_
+_@charliermarsh_
 
 Closes #983.
 

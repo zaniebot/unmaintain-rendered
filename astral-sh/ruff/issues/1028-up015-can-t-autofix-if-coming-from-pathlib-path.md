@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-04T09:57:16Z
 updated_at: 2023-01-11T04:27:51Z
 url: https://github.com/astral-sh/ruff/issues/1028
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # UP015 can't autofix if coming from pathlib.Path
 
 ---
 
-_Issue opened by @LefterisJP on 2022-12-04 09:57_
+_@LefterisJP_
 
 This is with `ruff==0.0.155`
 

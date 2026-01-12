@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-01T20:41:49Z
 updated_at: 2024-08-23T03:00:05Z
 url: https://github.com/astral-sh/uv/issues/5713
-synced_at: 2026-01-10T04:45:09Z
+synced_at: 2026-01-12T15:58:58Z
 ```
 
 # Reduce CI time
 
 ---
 
-_Issue opened by @zanieb on 2024-08-01 20:41_
+_@zanieb_
 
 Running tests in CI is now >8 minutes (and was previously <1 minute). We've done a lot to optimize this previously, e.g.:
 

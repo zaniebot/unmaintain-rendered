@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-12-27T00:27:23Z
 updated_at: 2025-12-27T00:27:23Z
 url: https://github.com/astral-sh/ty/issues/2233
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # Try eliminating `~AlwaysFalsy` and `~AlwaysTruthy` from intersections if they don't immediately simplify out
 
 ---
 
-_Issue opened by @carljm on 2025-12-27 00:27_
+_@carljm_
 
 They are rarely useful (this is a hypothesis -- to be confirmed or refuted by ecosystem tests), they make our displayed types more complex/confusing, and their tendency to preserve intersections instead of simpler types can cause other issues (e.g. most recently https://github.com/astral-sh/ty/issues/2200). Simplifying them out may improve performance due to more simple types instead of intersections (again a hypothesis to check on an actual PR.)
 

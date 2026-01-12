@@ -12,14 +12,14 @@ assignees: []
 created_at: 2021-05-05T10:44:51Z
 updated_at: 2022-11-29T12:41:32Z
 url: https://github.com/clap-rs/clap/issues/2468
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:13Z
 ```
 
 # Support non-Unix options (e.g.  find -exec, bash +O shopt, cmd.exe /c, gcc -Wl,)
 
 ---
 
-_Issue opened by @mkayaalp on 2021-05-05 10:44_
+_@mkayaalp_
 
 Child Tasks:
 - [ ] #3026 

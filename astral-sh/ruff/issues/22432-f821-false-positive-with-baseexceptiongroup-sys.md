@@ -9,14 +9,14 @@ assignees: []
 created_at: 2026-01-07T06:26:22Z
 updated_at: 2026-01-07T07:28:36Z
 url: https://github.com/astral-sh/ruff/issues/22432
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:58Z
 ```
 
 # F821 false positive with `BaseExceptionGroup` + `sys.version_info >= (3, 11)`
 
 ---
 
-_Issue opened by @Liam-DeVoe on 2026-01-07 06:26_
+_@Liam-DeVoe_
 
 ### Summary
 

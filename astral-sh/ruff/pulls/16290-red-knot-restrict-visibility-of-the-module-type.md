@@ -13,14 +13,14 @@ head: alex/inline-salsa-query
 created_at: 2025-02-20T20:39:58Z
 updated_at: 2025-02-21T10:55:23Z
 url: https://github.com/astral-sh/ruff/pull/16290
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [red-knot] Restrict visibility of the `module_type_symbols` function
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-02-20 20:39_
+_@AlexWaygood_
 
 (This PR is stacked on top of https://github.com/astral-sh/ruff/pull/16284; review that first.)
 

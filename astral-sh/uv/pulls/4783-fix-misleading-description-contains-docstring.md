@@ -13,14 +13,14 @@ head: charlie/requires-python-upper-bound
 created_at: 2024-07-03T16:46:29Z
 updated_at: 2024-07-03T18:28:41Z
 url: https://github.com/astral-sh/uv/pull/4783
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:27Z
 ```
 
 # Fix misleading description contains docstring
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-07-03 16:46_
+_@charliermarsh_
 
 ## Summary
 

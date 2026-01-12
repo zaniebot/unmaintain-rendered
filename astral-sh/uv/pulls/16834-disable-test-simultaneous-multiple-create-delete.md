@@ -12,14 +12,14 @@ head: zb/test-flake-ii
 created_at: 2025-11-24T14:57:23Z
 updated_at: 2025-11-24T15:16:28Z
 url: https://github.com/astral-sh/uv/pull/16834
-synced_at: 2026-01-10T05:58:11Z
+synced_at: 2026-01-12T16:12:28Z
 ```
 
 # Disable `test_simultaneous_multiple_create_delete_single_thread` on Windows
 
 ---
 
-_Pull request opened by @zanieb on 2025-11-24 14:57_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/16096
 

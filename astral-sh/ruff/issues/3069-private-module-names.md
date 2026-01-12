@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-02-20T21:17:13Z
 updated_at: 2023-02-20T21:28:51Z
 url: https://github.com/astral-sh/ruff/issues/3069
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Private module names
 
 ---
 
-_Issue opened by @WilliamJamieson on 2023-02-20 21:17_
+_@WilliamJamieson_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

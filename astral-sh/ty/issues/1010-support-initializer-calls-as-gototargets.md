@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T14:36:23Z
 updated_at: 2025-09-02T18:49:16Z
 url: https://github.com/astral-sh/ty/issues/1010
-synced_at: 2026-01-10T02:06:24Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # Support initializer calls as GotoTargets
 
 ---
 
-_Issue opened by @Gankra on 2025-08-15 14:36_
+_@Gankra_
 
 ```py
 class MyClass:

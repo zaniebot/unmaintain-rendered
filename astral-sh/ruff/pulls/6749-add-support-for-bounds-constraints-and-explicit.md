@@ -13,14 +13,14 @@ head: up040-generic-type-aliases
 created_at: 2023-08-22T00:40:02Z
 updated_at: 2023-09-15T01:11:25Z
 url: https://github.com/astral-sh/ruff/pull/6749
-synced_at: 2026-01-12T02:39:09Z
+synced_at: 2026-01-12T15:55:22Z
 ```
 
 # Add support for bounds, constraints, and explicit variance on generic type variables to UP040
 
 ---
 
-_Pull request opened by @nathanwhit on 2023-08-22 00:40_
+_@nathanwhit_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ head: patch-1
 created_at: 2024-12-21T02:43:33Z
 updated_at: 2024-12-22T19:38:04Z
 url: https://github.com/astral-sh/ruff/pull/15090
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:50Z
 ```
 
 # Fix type subscript on older python versions
 
 ---
 
-_Pull request opened by @aaron-skydio on 2024-12-21 02:43_
+_@aaron-skydio_
 
 ## Summary
 

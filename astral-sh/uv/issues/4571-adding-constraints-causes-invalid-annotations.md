@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-26T22:54:16Z
 updated_at: 2024-06-28T19:25:11Z
 url: https://github.com/astral-sh/uv/issues/4571
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Adding constraints causes invalid annotations (from extras) in uv pip compile 0.2.26
 
 ---
 
-_Issue opened by @notatallshaw-gts on 2024-06-26 22:54_
+_@notatallshaw-gts_
 
 When I upgraded to uv 0.2.26 there was a huge difference in the annotations produced by my requirements, at first I assumed this was bug fix and it was intentional, but focusing in on a single requirement it looked like it is a new bug, and after quite a bit of effort I now have a minimal reproducible example.
 

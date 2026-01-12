@@ -12,14 +12,14 @@ assignees: []
 created_at: 2020-04-09T10:05:06Z
 updated_at: 2021-12-09T22:14:20Z
 url: https://github.com/clap-rs/clap/issues/1801
-synced_at: 2026-01-10T01:57:44Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # required_unless, required_unless_one, and required_unless_all for ArgGroup
 
 ---
 
-_Issue opened by @AuroransSolis on 2020-04-09 10:05_
+_@AuroransSolis_
 
 ### Describe your use case
 

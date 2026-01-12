@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-01T14:27:34Z
 updated_at: 2025-08-20T13:08:45Z
 url: https://github.com/astral-sh/uv/issues/14394
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:48Z
 ```
 
 # Is it possible to upgrade just a single package if you change exclude-newer?
 
 ---
 
-_Issue opened by @alarthast on 2025-07-01 14:27_
+_@alarthast_
 
 ### Question
 

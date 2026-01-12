@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-07-01T12:15:16Z
 updated_at: 2024-07-10T05:00:25Z
 url: https://github.com/astral-sh/uv/issues/4689
-synced_at: 2026-01-10T01:57:10Z
+synced_at: 2026-01-12T15:58:51Z
 ```
 
 # `uv tool` should install the latest version of the tool
 
 ---
 
-_Issue opened by @konstin on 2024-07-01 12:15_
+_@konstin_
 
 In https://github.com/astral-sh/uv/issues/4685, the installation of azure-cli failed because the latest version was incompatible. Should `uv tool` force to installing the latest version of a tool instead? I wouldn't know when i'd want `uv tool install foo` to install an older version of foo.
 

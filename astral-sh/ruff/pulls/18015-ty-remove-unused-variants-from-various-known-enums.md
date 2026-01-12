@@ -14,14 +14,14 @@ head: alex/unused-variants
 created_at: 2025-05-11T09:03:22Z
 updated_at: 2025-05-12T17:19:11Z
 url: https://github.com/astral-sh/ruff/pull/18015
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # [ty] Remove unused variants from various `Known*` enums
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-11 09:03_
+_@AlexWaygood_
 
 ## Summary
 

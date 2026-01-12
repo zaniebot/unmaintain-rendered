@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-02T09:12:12Z
 updated_at: 2023-05-10T06:42:48Z
 url: https://github.com/astral-sh/ruff/issues/4183
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # Add `Applicability` to `Fix`
 
 ---
 
-_Issue opened by @MichaReiser on 2023-05-02 09:12_
+_@MichaReiser_
 
 Part of #4181 and depends on #4182
 

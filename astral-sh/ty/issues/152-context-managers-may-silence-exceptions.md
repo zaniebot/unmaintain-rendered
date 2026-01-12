@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-26T18:12:16Z
 updated_at: 2026-01-06T01:47:01Z
 url: https://github.com/astral-sh/ty/issues/152
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T15:54:22Z
 ```
 
 # context managers may silence exceptions
 
 ---
 
-_Issue opened by @carljm on 2025-03-26 18:12_
+_@carljm_
 
 _No description provided._
 

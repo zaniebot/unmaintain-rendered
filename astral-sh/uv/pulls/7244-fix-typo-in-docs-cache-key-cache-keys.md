@@ -13,14 +13,14 @@ head: main
 created_at: 2024-09-10T08:00:47Z
 updated_at: 2024-09-10T13:25:33Z
 url: https://github.com/astral-sh/uv/pull/7244
-synced_at: 2026-01-10T12:53:43Z
+synced_at: 2026-01-12T16:07:45Z
 ```
 
 # Fix typo in docs: cache-key -> cache-keys
 
 ---
 
-_Pull request opened by @vivienm on 2024-09-10 08:00_
+_@vivienm_
 
 ## Summary
 

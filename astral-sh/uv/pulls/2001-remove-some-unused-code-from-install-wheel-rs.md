@@ -13,14 +13,14 @@ head: charlie/install
 created_at: 2024-02-27T04:08:51Z
 updated_at: 2024-02-27T04:27:26Z
 url: https://github.com/astral-sh/uv/pull/2001
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:50Z
 ```
 
 # Remove some unused code from `install-wheel-rs`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-27 04:08_
+_@charliermarsh_
 
 I need to make a bunch of changes to this crate, and I'm finding that the existing unused interfaces are really getting in the way.
 

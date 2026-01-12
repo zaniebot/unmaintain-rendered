@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-10T16:20:39Z
 updated_at: 2024-09-18T03:24:00Z
 url: https://github.com/astral-sh/ruff/issues/13310
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:52Z
 ```
 
 # duplicate return statements after pre-commit run
 
 ---
 
-_Issue opened by @mpurusottamc on 2024-09-10 16:20_
+_@mpurusottamc_
 
 Some times, after running pre-commit, i notice duplicate return statements in the last function of the file.
 

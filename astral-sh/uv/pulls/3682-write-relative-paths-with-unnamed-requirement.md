@@ -13,14 +13,14 @@ head: charlie/rel
 created_at: 2024-05-21T00:09:38Z
 updated_at: 2025-04-22T05:33:46Z
 url: https://github.com/astral-sh/uv/pull/3682
-synced_at: 2026-01-10T11:10:33Z
+synced_at: 2026-01-12T16:05:47Z
 ```
 
 # Write relative paths with unnamed requirement syntax
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-21 00:09_
+_@charliermarsh_
 
 ## Summary
 

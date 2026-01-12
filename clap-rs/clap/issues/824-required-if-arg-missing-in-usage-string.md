@@ -10,14 +10,14 @@ assignees: []
 created_at: 2017-01-27T18:47:47Z
 updated_at: 2018-08-02T03:30:00Z
 url: https://github.com/clap-rs/clap/issues/824
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # required_if arg missing in usage string
 
 ---
 
-_Issue opened by @F0x06 on 2017-01-27 18:47_
+_@F0x06_
 
 Hi, first thank you for this awesome lib !
 

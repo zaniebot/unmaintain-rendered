@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-29T08:43:52Z
 updated_at: 2025-04-29T14:34:59Z
 url: https://github.com/astral-sh/uv/issues/13190
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:21Z
 ```
 
 # `uv pip` misinterprets `.devN` versions as equal to the base release version
 
 ---
 
-_Issue opened by @crasylph on 2025-04-29 08:43_
+_@crasylph_
 
 ### Summary
 

@@ -14,14 +14,14 @@ head: alex/python-symlink
 created_at: 2025-06-20T17:36:20Z
 updated_at: 2025-06-21T19:28:49Z
 url: https://github.com/astral-sh/ruff/pull/18827
-synced_at: 2026-01-10T18:39:09Z
+synced_at: 2026-01-12T15:56:26Z
 ```
 
 # [ty] Support `--python=<symlink to executable>`
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-20 17:36_
+_@AlexWaygood_
 
 ## Summary
 

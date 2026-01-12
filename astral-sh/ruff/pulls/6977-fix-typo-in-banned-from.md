@@ -13,14 +13,14 @@ head: charlie/typo
 created_at: 2023-08-29T13:21:48Z
 updated_at: 2023-08-29T13:39:10Z
 url: https://github.com/astral-sh/ruff/pull/6977
-synced_at: 2026-01-12T02:45:38Z
+synced_at: 2026-01-12T15:55:23Z
 ```
 
 # Fix typo in `banned-from`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-29 13:21_
+_@charliermarsh_
 
 Oops...
 

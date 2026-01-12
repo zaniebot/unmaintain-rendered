@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-03T15:20:02Z
 updated_at: 2024-12-06T00:33:39Z
 url: https://github.com/astral-sh/uv/issues/9608
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:54Z
 ```
 
 # `uv pip freeze` results in unsatisfiable requirements
 
 ---
 
-_Issue opened by @augustebaum on 2024-12-03 15:20_
+_@augustebaum_
 
 This seems like it might a known issue, but my search for similar issues has been unsuccessful so far.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T23:20:07Z
 updated_at: 2024-12-16T07:56:33Z
 url: https://github.com/astral-sh/ruff/issues/14995
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # Error - Bad CPU type in executable
 
 ---
 
-_Issue opened by @sr-murthy on 2024-12-15 23:20_
+_@sr-murthy_
 
 I'm running a Ruff linting step (`ruff check`) in a CI test job matrix on GitHub Actions which fails currently on all MacOS 13 x86_64 runners, for the Python versions 3.11-3.13,  with the following error:
 ```shell

@@ -12,14 +12,14 @@ head: fix-flake8todo-typo
 created_at: 2023-05-21T20:15:45Z
 updated_at: 2023-05-21T21:25:10Z
 url: https://github.com/astral-sh/ruff/pull/4566
-synced_at: 2026-01-12T03:50:03Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Fix Flake8Todo typo
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-05-21 20:15_
+_@JonathanPlasse_
 
 _No description provided._
 

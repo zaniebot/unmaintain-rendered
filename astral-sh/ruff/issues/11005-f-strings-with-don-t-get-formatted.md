@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-18T00:59:51Z
 updated_at: 2024-04-19T12:25:24Z
 url: https://github.com/astral-sh/ruff/issues/11005
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # f strings with `=` don't get formatted
 
 ---
 
-_Issue opened by @DetachHead on 2024-04-18 00:59_
+_@DetachHead_
 
 # before
 ```py

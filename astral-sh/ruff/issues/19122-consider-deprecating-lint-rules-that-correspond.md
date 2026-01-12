@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-03T15:13:15Z
 updated_at: 2025-10-02T12:39:32Z
 url: https://github.com/astral-sh/ruff/issues/19122
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # Consider deprecating lint rules that correspond to syntax errors
 
 ---
 
-_Issue opened by @ntBre on 2025-07-03 15:13_
+_@ntBre_
 
 Now that we stabilized the semantic syntax errors in 0.12, we could consider deprecating, and eventually removing, the current lint rules that correspond to `SyntaxError`s in CPython. These currently include `SemanticSyntaxError`s:
 

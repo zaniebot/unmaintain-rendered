@@ -13,14 +13,14 @@ head: konsti/pypa-gh-action-pypi-publish-release-tag
 created_at: 2025-10-08T06:42:46Z
 updated_at: 2025-10-09T13:34:45Z
 url: https://github.com/astral-sh/uv/pull/16176
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:12:09Z
 ```
 
 # Update pypa/gh-action-pypi-publish to release tag
 
 ---
 
-_Pull request opened by @konstin on 2025-10-08 06:42_
+_@konstin_
 
 Renovate has been complaining.
 

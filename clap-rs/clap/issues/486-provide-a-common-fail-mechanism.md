@@ -10,14 +10,14 @@ assignees: []
 created_at: 2016-04-18T00:20:32Z
 updated_at: 2018-08-02T03:29:49Z
 url: https://github.com/clap-rs/clap/issues/486
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Provide a common fail mechanism
 
 ---
 
-_Issue opened by @hgrecco on 2016-04-18 00:20_
+_@hgrecco_
 
 While contributing `cut` to redox's coreutils, I came across the `OptionExt` trait of [libextra](https://github.com/redox-os/libextra/blob/master/src/option.rs#L9). It is really nice as it provides a consistent way to exit a program when a problem occurs. Being clap a command line argument parser, I think it could be very useful if it provides such trait (and its implementation). 
 

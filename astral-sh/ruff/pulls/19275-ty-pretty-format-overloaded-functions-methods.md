@@ -13,14 +13,14 @@ head: ty-overloads-display
 created_at: 2025-07-11T06:10:17Z
 updated_at: 2025-07-28T07:39:02Z
 url: https://github.com/astral-sh/ruff/pull/19275
-synced_at: 2026-01-10T17:58:13Z
+synced_at: 2026-01-12T15:56:35Z
 ```
 
 # [ty] Pretty-format overloaded functions/methods/callables in hover
 
 ---
 
-_Pull request opened by @InSyncWithFoo on 2025-07-11 06:10_
+_@InSyncWithFoo_
 
 ## Summary
 

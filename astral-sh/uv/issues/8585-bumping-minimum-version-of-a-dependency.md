@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-26T04:14:54Z
 updated_at: 2024-10-28T20:46:27Z
 url: https://github.com/astral-sh/uv/issues/8585
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:30Z
 ```
 
 # Bumping minimum version of a dependency
 
 ---
 
-_Issue opened by @tjni on 2024-10-26 04:14_
+_@tjni_
 
 I have a use case to provide some automation to update a package A to version X across many repositories. Some goals:
 

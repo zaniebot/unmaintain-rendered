@@ -13,14 +13,14 @@ head: konsti/optional-reqwests
 created_at: 2025-02-12T15:59:24Z
 updated_at: 2025-02-17T09:37:58Z
 url: https://github.com/astral-sh/uv/pull/11448
-synced_at: 2026-01-10T11:10:38Z
+synced_at: 2026-01-12T16:09:51Z
 ```
 
 # Split uv-git and uv-git-types
 
 ---
 
-_Pull request opened by @konstin on 2025-02-12 15:59_
+_@konstin_
 
 We want to build `uv-build` without depending on the network crates. In preparation for that, we split uv-git into uv-git and uv-git-types, where only uv-git depends on reqwest, so that uv-build can use uv-git-types.
 

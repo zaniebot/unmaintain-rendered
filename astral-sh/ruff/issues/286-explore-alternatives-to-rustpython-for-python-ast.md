@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-09-29T19:38:15Z
 updated_at: 2023-05-18T15:55:44Z
 url: https://github.com/astral-sh/ruff/issues/286
-synced_at: 2026-01-10T11:09:42Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Explore alternatives to RustPython for Python AST parsing
 
 ---
 
-_Issue opened by @charliermarsh on 2022-09-29 19:38_
+_@charliermarsh_
 
 RustPython has been a good foundation, but Ruff is currently limited by what the RustPython parser does and does not support. See: #282, #54, #245.
 

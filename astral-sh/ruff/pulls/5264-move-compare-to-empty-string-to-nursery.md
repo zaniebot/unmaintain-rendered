@@ -12,14 +12,14 @@ head: charlie/nightly
 created_at: 2023-06-21T18:57:23Z
 updated_at: 2023-06-21T20:08:14Z
 url: https://github.com/astral-sh/ruff/pull/5264
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Move `compare-to-empty-string` to nursery
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-21 18:57_
+_@charliermarsh_
 
 ## Summary
 

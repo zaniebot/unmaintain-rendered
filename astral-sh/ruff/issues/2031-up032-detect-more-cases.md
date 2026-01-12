@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-20T15:49:40Z
 updated_at: 2025-03-16T02:10:52Z
 url: https://github.com/astral-sh/ruff/issues/2031
-synced_at: 2026-01-10T11:09:44Z
+synced_at: 2026-01-12T15:54:42Z
 ```
 
 # UP032: detect more cases
 
 ---
 
-_Issue opened by @spaceone on 2023-01-20 15:49_
+_@spaceone_
 
 UP032 could detect more cases when `.format()` is used and suggest to use a fstring.
 

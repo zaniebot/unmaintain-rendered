@@ -13,14 +13,14 @@ head: zb/ref-version-file
 created_at: 2025-06-17T13:57:02Z
 updated_at: 2025-06-20T20:31:33Z
 url: https://github.com/astral-sh/uv/pull/14107
-synced_at: 2026-01-10T11:10:42Z
+synced_at: 2026-01-12T16:11:01Z
 ```
 
 # Refactor `PythonVersionFile` global loading
 
 ---
 
-_Pull request opened by @zanieb on 2025-06-17 13:57_
+_@zanieb_
 
 I was looking into `uv tool` not supporting version files, and noticed this implementation was confusing and skipped handling like a tracing log if `--no-config` excludes selection a file. I've refactored it in preparation for the next change.
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-10-04T16:54:33Z
 updated_at: 2025-10-07T23:45:09Z
 url: https://github.com/astral-sh/ty/issues/1306
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T15:54:24Z
 ```
 
 # A nominal type from a stub file should be treated as equivalent to a nominal type from a `.py` file with the same module name
 
 ---
 
-_Issue opened by @AlexWaygood on 2025-10-04 16:54_
+_@AlexWaygood_
 
 ### Summary
 

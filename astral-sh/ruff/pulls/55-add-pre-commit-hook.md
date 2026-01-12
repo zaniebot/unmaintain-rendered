@@ -12,14 +12,14 @@ head: ft-pre-commit-hook
 created_at: 2022-08-31T11:17:36Z
 updated_at: 2022-09-02T12:47:08Z
 url: https://github.com/astral-sh/ruff/pull/55
-synced_at: 2026-01-12T06:00:50Z
+synced_at: 2026-01-12T15:55:04Z
 ```
 
 # Add pre-commit hook
 
 ---
 
-_Pull request opened by @arichtman on 2022-08-31 11:17_
+_@arichtman_
 
 For convenience I figured a pre-commit hook would be handy
 

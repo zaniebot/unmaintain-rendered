@@ -14,14 +14,14 @@ head: brent/fix-ruf037
 created_at: 2025-06-10T19:15:25Z
 updated_at: 2025-06-12T13:07:19Z
 url: https://github.com/astral-sh/ruff/pull/18614
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:22Z
 ```
 
 # [`ruff`] Handle extra arguments to `deque` (`RUF037`)
 
 ---
 
-_Pull request opened by @ntBre on 2025-06-10 19:15_
+_@ntBre_
 
 ## Summary
 

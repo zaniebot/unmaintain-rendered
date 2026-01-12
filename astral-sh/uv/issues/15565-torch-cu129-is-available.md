@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-28T00:59:39Z
 updated_at: 2025-08-28T01:28:10Z
 url: https://github.com/astral-sh/uv/issues/15565
-synced_at: 2026-01-10T01:57:35Z
+synced_at: 2026-01-12T16:02:12Z
 ```
 
 # torch cu129 is available
 
 ---
 
-_Issue opened by @sailing-innocent on 2025-08-28 00:59_
+_@sailing-innocent_
 
 ### Summary
 

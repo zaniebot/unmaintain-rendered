@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-03T15:25:11Z
 updated_at: 2024-02-26T21:12:12Z
 url: https://github.com/astral-sh/uv/issues/309
-synced_at: 2026-01-10T05:40:31Z
+synced_at: 2026-01-12T15:58:22Z
 ```
 
 # Confusing error messages on package resolution failure
 
 ---
 
-_Issue opened by @zanieb on 2023-11-03 15:25_
+_@zanieb_
 
 This issue is to collect all confusing error messages on package resolution failure.
 

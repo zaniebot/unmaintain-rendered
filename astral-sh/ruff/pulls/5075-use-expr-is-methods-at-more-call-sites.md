@@ -13,14 +13,14 @@ head: charlie/is
 created_at: 2023-06-14T03:55:34Z
 updated_at: 2023-06-14T04:21:18Z
 url: https://github.com/astral-sh/ruff/pull/5075
-synced_at: 2026-01-12T03:43:30Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Use Expr::is_* methods at more call sites
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-14 03:55_
+_@charliermarsh_
 
 _No description provided._
 

@@ -13,14 +13,14 @@ head: zb/installers
 created_at: 2024-07-03T04:48:53Z
 updated_at: 2024-07-03T19:13:40Z
 url: https://github.com/astral-sh/ruff/pull/12163
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # Add standalone installers to Ruff installation in README
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-03 04:48_
+_@zanieb_
 
 Note this is already included in our installation page at `docs/installation.md`
 

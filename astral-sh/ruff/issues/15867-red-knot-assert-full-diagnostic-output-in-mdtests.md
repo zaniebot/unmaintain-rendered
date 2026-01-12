@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-02-01T08:55:10Z
 updated_at: 2025-02-05T18:02:56Z
 url: https://github.com/astral-sh/ruff/issues/15867
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Assert full diagnostic output in mdtests
 
 ---
 
-_Issue opened by @MichaReiser on 2025-02-01 08:55_
+_@MichaReiser_
 
 ### Description
 

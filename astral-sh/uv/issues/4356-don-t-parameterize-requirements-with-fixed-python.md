@@ -9,14 +9,14 @@ assignees: []
 created_at: 2024-06-17T12:06:58Z
 updated_at: 2024-07-01T08:54:10Z
 url: https://github.com/astral-sh/uv/issues/4356
-synced_at: 2026-01-10T01:57:09Z
+synced_at: 2026-01-12T15:58:49Z
 ```
 
 # Don't parameterize requirements with fixed python version
 
 ---
 
-_Issue opened by @konstin on 2024-06-17 12:06_
+_@konstin_
 
 When debugging `uv pip install 'jsonschema>=3.0.0' 'reana-client>=0.8.0'` on python 3.12 from https://github.com/astral-sh/uv/issues/4333, the logs show that we parameterize some requirements on `python_version >= '3.12'`. We should only have/show `snakemake==7.9.0` instead of `snakemake{python_version >= '3.12'}==7.9.0`, given that the python version is fixed to 3.12 for this resolution and not a forked marker or similar parameter.
 

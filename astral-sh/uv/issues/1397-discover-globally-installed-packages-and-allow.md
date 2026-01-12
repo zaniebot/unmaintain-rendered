@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T00:06:25Z
 updated_at: 2025-12-02T10:47:04Z
 url: https://github.com/astral-sh/uv/issues/1397
-synced_at: 2026-01-10T01:57:02Z
+synced_at: 2026-01-12T15:58:27Z
 ```
 
 # Discover globally installed packages and allow them to satisfy requests
 
 ---
 
-_Issue opened by @BWindey on 2024-02-16 00:06_
+_@BWindey_
 
 This might be out of scope for this package manager, but I noticed that uv won't use the global packages with pip when installing something. For example, I installed my own package (from PyPI) in a virtual environment, both with pip and uv to see the difference. Pip noticed that the package, along with all its dependencies, were already present in the global packages (pip installed outside venv), and thus used those to only need to install them, but not download anymore. Uv did not use them, it downloaded everything from the internet.
 

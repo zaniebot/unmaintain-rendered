@@ -14,14 +14,14 @@ head: zb/cli-tag
 created_at: 2024-09-05T22:23:16Z
 updated_at: 2024-09-06T03:09:43Z
 url: https://github.com/astral-sh/uv/pull/7104
-synced_at: 2026-01-10T12:53:40Z
+synced_at: 2026-01-12T16:07:41Z
 ```
 
 # Put CLI changes in "Enhancements" section
 
 ---
 
-_Pull request opened by @zanieb on 2024-09-05 22:23_
+_@zanieb_
 
 These overlap too much, I think
 

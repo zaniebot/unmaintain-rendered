@@ -13,14 +13,14 @@ head: zb/uvx-windows-bin
 created_at: 2024-07-03T03:57:40Z
 updated_at: 2024-07-03T04:25:45Z
 url: https://github.com/astral-sh/uv/pull/4756
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:26Z
 ```
 
 # Add `uvx.exe` binary to Windows artifacts
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-03 03:57_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/4755
 

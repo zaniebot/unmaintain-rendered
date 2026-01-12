@@ -12,14 +12,14 @@ head: implement-b903-b907
 created_at: 2024-10-02T09:57:16Z
 updated_at: 2024-10-14T14:15:41Z
 url: https://github.com/astral-sh/ruff/pull/13600
-synced_at: 2026-01-10T20:59:36Z
+synced_at: 2026-01-12T15:55:44Z
 ```
 
 # [flake8-bugbear] Consider replacing f"'{foo}'" with f"{foo!r}" which is both easier to read and will escape quotes inside foo if that would appear (B907)
 
 ---
 
-_Pull request opened by @agpt8 on 2024-10-02 09:57_
+_@agpt8_
 
 B907: Consider replacing f"'{foo}'" with f"{foo!r}" which is both easier to read and will escape quotes inside foo if that would appear. The check tries to filter out any format specs that are invalid together with !r. If you’re using other conversion flags then e.g. f"'{foo!a}'" can be replaced with f"{ascii(foo)!r}". Not currently implemented for python<3.8 or str.format() calls.
 

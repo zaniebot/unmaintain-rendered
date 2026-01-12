@@ -12,14 +12,14 @@ head: implement-bandit-shell-injection-rules
 created_at: 2023-04-09T20:59:52Z
 updated_at: 2023-12-11T11:41:26Z
 url: https://github.com/astral-sh/ruff/pull/3924
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Implement flak8-bandit shell injection rules
 
 ---
 
-_Pull request opened by @robyoung on 2023-04-09 20:59_
+_@robyoung_
 
 This includes rules S602 - S607. Partially addresses #1646.
 

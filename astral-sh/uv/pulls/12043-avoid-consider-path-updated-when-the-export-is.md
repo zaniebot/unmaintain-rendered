@@ -13,14 +13,14 @@ head: joncholas/improve-update-shell
 created_at: 2025-03-07T13:24:29Z
 updated_at: 2025-03-08T14:45:06Z
 url: https://github.com/astral-sh/uv/pull/12043
-synced_at: 2026-01-10T11:10:39Z
+synced_at: 2026-01-12T16:10:06Z
 ```
 
 # Avoid consider PATH updated when the export is commented in the shellrc
 
 ---
 
-_Pull request opened by @JonCholas on 2025-03-07 13:24_
+_@JonCholas_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

@@ -13,14 +13,14 @@ assignees: []
 created_at: 2024-07-21T11:19:20Z
 updated_at: 2024-07-22T16:09:26Z
 url: https://github.com/astral-sh/uv/issues/5255
-synced_at: 2026-01-10T04:53:49Z
+synced_at: 2026-01-12T15:58:55Z
 ```
 
 # `uv init` creates unimportable package subdirectory
 
 ---
 
-_Issue opened by @InSyncWithFoo on 2024-07-21 11:19_
+_@InSyncWithFoo_
 
 Steps to reproduce:
 

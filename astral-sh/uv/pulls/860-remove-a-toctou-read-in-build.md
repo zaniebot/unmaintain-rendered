@@ -13,14 +13,14 @@ head: charlie/toctou
 created_at: 2024-01-09T20:25:50Z
 updated_at: 2024-01-09T20:33:10Z
 url: https://github.com/astral-sh/uv/pull/860
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:14Z
 ```
 
 # Remove a TOCTOU read in build
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-09 20:25_
+_@charliermarsh_
 
 We should just read and handle the not-found case, rather than checking if the file doesn't exist first.
 

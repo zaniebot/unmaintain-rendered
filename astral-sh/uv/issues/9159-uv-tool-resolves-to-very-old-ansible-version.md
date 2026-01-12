@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-16T01:55:25Z
 updated_at: 2024-11-16T03:24:49Z
 url: https://github.com/astral-sh/uv/issues/9159
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:43Z
 ```
 
 # `uv tool` resolves to very old Ansible version unless `--no-build` is set
 
 ---
 
-_Issue opened by @ketozhang on 2024-11-16 01:55_
+_@ketozhang_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

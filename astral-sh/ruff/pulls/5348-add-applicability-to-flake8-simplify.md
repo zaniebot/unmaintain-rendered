@@ -12,14 +12,14 @@ head: applicability_flake8_simplify
 created_at: 2023-06-23T22:38:03Z
 updated_at: 2023-06-23T23:17:15Z
 url: https://github.com/astral-sh/ruff/pull/5348
-synced_at: 2026-01-12T03:36:55Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Add Applicability to flake8_simplify
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-06-23 22:38_
+_@evanrittenhouse_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

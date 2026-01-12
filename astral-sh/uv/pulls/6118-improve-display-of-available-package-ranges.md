@@ -13,14 +13,14 @@ head: zb/availability-range-real
 created_at: 2024-08-15T16:03:13Z
 updated_at: 2024-08-15T17:28:46Z
 url: https://github.com/astral-sh/uv/pull/6118
-synced_at: 2026-01-10T13:09:50Z
+synced_at: 2026-01-12T16:07:13Z
 ```
 
 # Improve display of available package ranges
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-15 16:03_
+_@zanieb_
 
 Includes the changes from https://github.com/astral-sh/uv/pull/6071 but takes them way further.
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-12-14T06:47:44Z
 updated_at: 2025-12-15T06:30:57Z
 url: https://github.com/astral-sh/ty/issues/1881
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T15:54:26Z
 ```
 
 # "Go to Definition" for keyword arguments in function call
 
 ---
 
-_Issue opened by @injust on 2025-12-14 06:47_
+_@injust_
 
 basedpyright (I tested in Zed) supports "Go to Definition" (cmd-click or F12) for argument names in a function call.
 

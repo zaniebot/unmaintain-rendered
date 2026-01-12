@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-07T18:23:23Z
 updated_at: 2024-03-07T22:09:35Z
 url: https://github.com/astral-sh/ruff/issues/10278
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # E203 false positives for slices in format strings
 
 ---
 
-_Issue opened by @sciyoshi on 2024-03-07 18:23_
+_@sciyoshi_
 
 Sample code:
 

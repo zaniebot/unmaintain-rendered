@@ -14,14 +14,14 @@ head: comments-newline-handling
 created_at: 2023-06-06T07:35:40Z
 updated_at: 2023-06-07T12:49:46Z
 url: https://github.com/astral-sh/ruff/pull/4895
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:16Z
 ```
 
 # Correctly handle newlines after/before comments
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-06-06 07:35_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

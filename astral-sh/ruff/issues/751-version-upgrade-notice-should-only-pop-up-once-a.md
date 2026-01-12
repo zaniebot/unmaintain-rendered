@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-15T11:50:47Z
 updated_at: 2022-11-15T21:14:11Z
 url: https://github.com/astral-sh/ruff/issues/751
-synced_at: 2026-01-10T15:56:05Z
+synced_at: 2026-01-12T15:54:40Z
 ```
 
 # Version upgrade notice should only pop up once a day.
 
 ---
 
-_Issue opened by @marscher on 2022-11-15 11:50_
+_@marscher_
 
 When using Ruff in other tools, it'd be nice if one could turn off the "new version available" notice. It clutters the output badly, if Ruff is being invoked for every individual file (which is done by the IDE, or another embedding tool).
 

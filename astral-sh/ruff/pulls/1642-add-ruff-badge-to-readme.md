@@ -12,14 +12,14 @@ head: charlie/add-badge
 created_at: 2023-01-04T22:26:03Z
 updated_at: 2023-01-04T22:27:02Z
 url: https://github.com/astral-sh/ruff/pull/1642
-synced_at: 2026-01-12T05:36:32Z
+synced_at: 2026-01-12T15:55:06Z
 ```
 
 # Add Ruff badge to README
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-04 22:26_
+_@charliermarsh_
 
 Resolves #989.
 

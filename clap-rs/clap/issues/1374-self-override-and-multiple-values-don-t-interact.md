@@ -11,14 +11,14 @@ assignees: []
 created_at: 2018-11-08T00:39:21Z
 updated_at: 2021-08-14T09:41:40Z
 url: https://github.com/clap-rs/clap/issues/1374
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Self override and multiple values don't interact well together
 
 ---
 
-_Issue opened by @Elarnon on 2018-11-08 00:39_
+_@Elarnon_
 
 ### Affected Version of clap
 

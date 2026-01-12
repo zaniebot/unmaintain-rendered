@@ -13,14 +13,14 @@ head: zb/keyring-serial
 created_at: 2025-09-02T15:04:16Z
 updated_at: 2025-09-02T18:02:09Z
 url: https://github.com/astral-sh/uv/pull/15629
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:51Z
 ```
 
 # Run the `uv-keyring` tests serially
 
 ---
 
-_Pull request opened by @zanieb on 2025-09-02 15:04_
+_@zanieb_
 
 _No description provided._
 

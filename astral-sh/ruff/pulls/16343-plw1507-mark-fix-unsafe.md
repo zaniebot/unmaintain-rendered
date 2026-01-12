@@ -13,14 +13,14 @@ head: PLW1507
 created_at: 2025-02-24T08:49:51Z
 updated_at: 2025-02-24T12:42:45Z
 url: https://github.com/astral-sh/ruff/pull/16343
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # [PLW1507] Mark fix unsafe
 
 ---
 
-_Pull request opened by @VascoSch92 on 2025-02-24 08:49_
+_@VascoSch92_
 
 This PR addresses issue #16274 
 

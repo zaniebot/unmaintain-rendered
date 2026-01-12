@@ -10,14 +10,14 @@ assignees: []
 created_at: 2022-11-04T20:52:06Z
 updated_at: 2022-11-18T03:24:14Z
 url: https://github.com/clap-rs/clap/issues/4450
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:16Z
 ```
 
 # Invalid TLS cert on https://clap.rs/
 
 ---
 
-_Issue opened by @itzoey on 2022-11-04 20:52_
+_@itzoey_
 
 ### Please complete the following tasks
 

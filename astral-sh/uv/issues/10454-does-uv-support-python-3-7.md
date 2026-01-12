@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-10T02:52:30Z
 updated_at: 2025-01-10T03:11:30Z
 url: https://github.com/astral-sh/uv/issues/10454
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-12T16:00:14Z
 ```
 
 # does uv support python 3.7?
 
 ---
 
-_Issue opened by @robert8138 on 2025-01-10 02:52_
+_@robert8138_
 
 Hi all,
 

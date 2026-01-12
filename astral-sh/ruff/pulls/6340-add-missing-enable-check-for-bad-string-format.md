@@ -13,14 +13,14 @@ head: charlie/bad
 created_at: 2023-08-04T13:19:26Z
 updated_at: 2023-08-04T14:08:51Z
 url: https://github.com/astral-sh/ruff/pull/6340
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Add missing enable check for `bad-string-format-character`
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-08-04 13:19_
+_@charliermarsh_
 
 _No description provided._
 

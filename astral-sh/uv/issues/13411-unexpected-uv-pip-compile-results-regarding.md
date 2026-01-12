@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-05-12T14:56:24Z
 updated_at: 2025-05-12T15:48:19Z
 url: https://github.com/astral-sh/uv/issues/13411
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T16:01:27Z
 ```
 
 # unexpected uv pip compile results regarding python version requrements
 
 ---
 
-_Issue opened by @schenker on 2025-05-12 14:56_
+_@schenker_
 
 ### Question
 

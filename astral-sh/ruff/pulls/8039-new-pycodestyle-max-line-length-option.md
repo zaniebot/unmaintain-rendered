@@ -13,14 +13,14 @@ head: pycodestyle-max-line-length
 created_at: 2023-10-18T08:53:49Z
 updated_at: 2023-10-24T08:14:07Z
 url: https://github.com/astral-sh/ruff/pull/8039
-synced_at: 2026-01-12T02:32:41Z
+synced_at: 2026-01-12T15:55:25Z
 ```
 
 # New `pycodestyle.max-line-length` option
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-10-18 08:53_
+_@MichaReiser_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: zb/python-fill
 created_at: 2024-07-04T15:31:20Z
 updated_at: 2024-07-05T21:13:59Z
 url: https://github.com/astral-sh/uv/pull/4810
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:28Z
 ```
 
 # Fill Python requests with platform information during automatic fetches
 
 ---
 
-_Pull request opened by @zanieb on 2024-07-04 15:31_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/4800
 

@@ -14,14 +14,14 @@ head: dhruv/publish-diagnostics
 created_at: 2025-05-26T04:26:24Z
 updated_at: 2025-05-28T07:45:12Z
 url: https://github.com/astral-sh/ruff/pull/18309
-synced_at: 2026-01-10T18:51:02Z
+synced_at: 2026-01-12T15:56:16Z
 ```
 
 # [ty] Support publishing diagnostics in the server
 
 ---
 
-_Pull request opened by @dhruvmanila on 2025-05-26 04:26_
+_@dhruvmanila_
 
 ## Summary
 

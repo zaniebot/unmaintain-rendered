@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-08-19T05:37:58Z
 updated_at: 2023-08-19T05:53:15Z
 url: https://github.com/astral-sh/ruff/issues/6689
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:46Z
 ```
 
 # UP006 not catching anything
 
 ---
 
-_Issue opened by @Garrett-R on 2023-08-19 05:37_
+_@Garrett-R_
 
 ## Steps to repro
 

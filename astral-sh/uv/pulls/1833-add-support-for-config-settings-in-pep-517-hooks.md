@@ -14,14 +14,14 @@ head: charlie/config-setting
 created_at: 2024-02-21T21:32:47Z
 updated_at: 2024-02-23T00:53:46Z
 url: https://github.com/astral-sh/uv/pull/1833
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:45Z
 ```
 
 # Add support for `config_settings` in PEP 517 hooks
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-21 21:32_
+_@charliermarsh_
 
 ## Summary
 

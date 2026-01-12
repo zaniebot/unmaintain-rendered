@@ -13,14 +13,14 @@ head: zb/refactor-auth-store
 created_at: 2024-04-10T19:53:00Z
 updated_at: 2024-04-18T14:29:53Z
 url: https://github.com/astral-sh/uv/pull/2976
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:20Z
 ```
 
 # Rewrite `uv-auth`
 
 ---
 
-_Pull request opened by @zanieb on 2024-04-10 19:53_
+_@zanieb_
 
 Closes 
 

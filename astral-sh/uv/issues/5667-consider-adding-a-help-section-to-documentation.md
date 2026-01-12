@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-31T19:25:56Z
 updated_at: 2024-08-16T13:24:10Z
 url: https://github.com/astral-sh/uv/issues/5667
-synced_at: 2026-01-10T01:57:12Z
+synced_at: 2026-01-12T15:58:57Z
 ```
 
 # Consider adding a "Help" section to documentation
 
 ---
 
-_Issue opened by @zanieb on 2024-07-31 19:25_
+_@zanieb_
 
 This could include the help menu, version information, and link to the community section.
 

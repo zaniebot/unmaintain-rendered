@@ -13,14 +13,14 @@ head: fix-19922
 created_at: 2026-01-06T00:15:57Z
 updated_at: 2026-01-07T17:51:32Z
 url: https://github.com/astral-sh/ruff/pull/22410
-synced_at: 2026-01-10T16:30:32Z
+synced_at: 2026-01-12T15:57:49Z
 ```
 
 # Check required-version before parsing rules
 
 ---
 
-_Pull request opened by @jelle-openai on 2026-01-06 00:15_
+_@jelle-openai_
 
 ## Summary
 

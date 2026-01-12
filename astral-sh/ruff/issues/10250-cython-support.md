@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-06T16:22:12Z
 updated_at: 2024-08-13T08:01:11Z
 url: https://github.com/astral-sh/ruff/issues/10250
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # Cython support
 
 ---
 
-_Issue opened by @MichaReiser on 2024-03-06 16:22_
+_@MichaReiser_
 
 Originally requested in https://github.com/astral-sh/ruff/issues/1079
 

@@ -13,14 +13,14 @@ head: charlie/u
 created_at: 2024-08-30T13:11:44Z
 updated_at: 2024-08-30T13:50:27Z
 url: https://github.com/astral-sh/uv/pull/6865
-synced_at: 2026-01-10T12:53:36Z
+synced_at: 2026-01-12T16:07:34Z
 ```
 
 # Avoid stripping root for user path display
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-08-30 13:11_
+_@charliermarsh_
 
 ## Summary
 

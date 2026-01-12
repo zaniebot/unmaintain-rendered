@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-07-05T03:38:34Z
 updated_at: 2025-07-09T15:46:55Z
 url: https://github.com/astral-sh/uv/issues/14464
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:49Z
 ```
 
 # No way to add existing projects to a workspace
 
 ---
 
-_Issue opened by @kyle-basis on 2025-07-05 03:38_
+_@kyle-basis_
 
 ### Summary
 

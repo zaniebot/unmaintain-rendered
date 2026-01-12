@@ -13,14 +13,14 @@ head: fix/expose_default_resolver_provider
 created_at: 2024-02-20T16:22:29Z
 updated_at: 2024-02-20T16:34:20Z
 url: https://github.com/astral-sh/uv/pull/1764
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:43Z
 ```
 
 # fix: expose DefaultResolverProvider
 
 ---
 
-_Pull request opened by @baszalmstra on 2024-02-20 16:22_
+_@baszalmstra_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

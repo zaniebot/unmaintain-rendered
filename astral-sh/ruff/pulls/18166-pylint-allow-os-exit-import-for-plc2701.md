@@ -12,14 +12,14 @@ head: fix/PLC2701-os-exit-exception
 created_at: 2025-05-18T20:52:43Z
 updated_at: 2025-05-25T06:36:10Z
 url: https://github.com/astral-sh/ruff/pull/18166
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:13Z
 ```
 
 # [`Pylint`] Allow os._exit import for (`PLC2701`)
 
 ---
 
-_Pull request opened by @danparizher on 2025-05-18 20:52_
+_@danparizher_
 
 This change updates the PLC2701 rule to correctly identify os._exit as a non-private member, aligning its behavior with the SLF001 rule.
 

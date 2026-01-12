@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-08T20:59:20Z
 updated_at: 2025-03-18T11:06:11Z
 url: https://github.com/astral-sh/ruff/issues/16594
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Error trying to open the project in devcontainer in vscode
 
 ---
 
-_Issue opened by @OfekShilon on 2025-03-08 20:59_
+_@OfekShilon_
 
 ### Summary
 

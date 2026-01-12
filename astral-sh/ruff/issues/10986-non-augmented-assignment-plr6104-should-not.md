@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-16T22:00:16Z
 updated_at: 2024-04-16T22:55:18Z
 url: https://github.com/astral-sh/ruff/issues/10986
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `non-augmented-assignment` (`PLR6104`) should not trigger when the target is negated
 
 ---
 
-_Issue opened by @augustelalande on 2024-04-16 22:00_
+_@augustelalande_
 
 `non-augmented-assignment` (`PLR6104`) should not trigger when the target is negated
 

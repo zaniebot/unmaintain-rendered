@@ -12,14 +12,14 @@ head: doc-config-preference
 created_at: 2025-05-12T09:21:05Z
 updated_at: 2025-05-23T18:20:39Z
 url: https://github.com/astral-sh/ruff/pull/18034
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # Improve docs on config file precedence
 
 ---
 
-_Pull request opened by @timhoffm on 2025-05-12 09:21_
+_@timhoffm_
 
 When working with ruff, I fell into the trap of having `.ruff.toml` and `pyproject.toml` config files. It took me some time to find the precedence rules from the docs. This PR aims to make the docs slightly more clear.
 

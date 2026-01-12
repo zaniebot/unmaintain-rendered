@@ -9,14 +9,14 @@ assignees: []
 created_at: 2025-08-22T21:51:38Z
 updated_at: 2025-08-22T21:51:57Z
 url: https://github.com/astral-sh/uv/issues/15463
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T16:02:11Z
 ```
 
 # Update the Docker examples and guides to use `--no-install-local`
 
 ---
 
-_Issue opened by @zanieb on 2025-08-22 21:51_
+_@zanieb_
 
 > I think [this](https://docs.astral.sh/uv/guides/integration/docker/#non-editable-installs) section of the Docker tutorial should have this option instead of `--no-editable` now!
 

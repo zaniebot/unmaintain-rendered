@@ -14,14 +14,14 @@ head: ibraheem/progress-late-init
 created_at: 2025-05-12T16:27:26Z
 updated_at: 2025-05-12T19:07:57Z
 url: https://github.com/astral-sh/ruff/pull/18049
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:11Z
 ```
 
 # Avoid initializing progress bars early
 
 ---
 
-_Pull request opened by @ibraheemdev on 2025-05-12 16:27_
+_@ibraheemdev_
 
 ## Summary
 

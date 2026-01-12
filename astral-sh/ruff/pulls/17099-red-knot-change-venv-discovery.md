@@ -13,14 +13,14 @@ head: micha/venv-relative-to-project
 created_at: 2025-03-31T17:05:39Z
 updated_at: 2025-03-31T17:39:07Z
 url: https://github.com/astral-sh/ruff/pull/17099
-synced_at: 2026-01-10T19:40:37Z
+synced_at: 2026-01-12T15:56:00Z
 ```
 
 # [red-knot] Change venv discovery
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-03-31 17:05_
+_@MichaReiser_
 
 ## Summary
 

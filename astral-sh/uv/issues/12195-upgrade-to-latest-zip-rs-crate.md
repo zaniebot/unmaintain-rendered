@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-15T20:54:57Z
 updated_at: 2025-03-16T23:58:13Z
 url: https://github.com/astral-sh/uv/issues/12195
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:57Z
 ```
 
 # Upgrade to latest `zip-rs` crate
 
 ---
 
-_Issue opened by @charliermarsh on 2025-03-15 20:54_
+_@charliermarsh_
 
 _No description provided._
 

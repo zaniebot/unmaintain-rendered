@@ -13,14 +13,14 @@ head: remove-ruff-shrinking
 created_at: 2024-05-02T07:41:54Z
 updated_at: 2024-05-02T08:17:56Z
 url: https://github.com/astral-sh/ruff/pull/11242
-synced_at: 2026-01-10T22:37:02Z
+synced_at: 2026-01-12T15:55:37Z
 ```
 
 # Remove ruff-shrinking crate
 
 ---
 
-_Pull request opened by @MichaReiser on 2024-05-02 07:41_
+_@MichaReiser_
 
 ## Summary
 

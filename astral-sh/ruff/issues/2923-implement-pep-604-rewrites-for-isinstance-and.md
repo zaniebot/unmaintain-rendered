@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-02-15T14:41:49Z
 updated_at: 2023-03-03T22:14:32Z
 url: https://github.com/astral-sh/ruff/issues/2923
-synced_at: 2026-01-10T11:09:45Z
+synced_at: 2026-01-12T15:54:43Z
 ```
 
 # Implement PEP 604 rewrites for `isinstance` and `issubclass` checks
 
 ---
 
-_Issue opened by @michaeloliverx on 2023-02-15 14:41_
+_@michaeloliverx_
 
 PEP 604 introduced simplified syntax for union types e.g. `var: str | int` for which we already have support for in #369. It also allows this syntax to be used [inside `isinstance` and `issubclass` checks](https://peps.python.org/pep-0604/#isinstance-and-issubclass), it would be great if these could be autofixed too!
 

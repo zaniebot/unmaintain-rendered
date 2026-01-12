@@ -13,14 +13,14 @@ head: zb/build-backend-package
 created_at: 2024-11-05T19:02:21Z
 updated_at: 2024-11-06T01:27:10Z
 url: https://github.com/astral-sh/uv/pull/8837
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:31Z
 ```
 
 # Using `--build-backend` in `uv init` implies `--package`
 
 ---
 
-_Pull request opened by @zanieb on 2024-11-05 19:02_
+_@zanieb_
 
 _No description provided._
 

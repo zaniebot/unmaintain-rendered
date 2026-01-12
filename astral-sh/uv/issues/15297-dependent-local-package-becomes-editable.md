@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-08-15T04:39:54Z
 updated_at: 2025-08-25T14:17:17Z
 url: https://github.com/astral-sh/uv/issues/15297
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T16:02:07Z
 ```
 
 # Dependent local package becomes editable
 
 ---
 
-_Issue opened by @tonnico on 2025-08-15 04:39_
+_@tonnico_
 
 ### Summary
 

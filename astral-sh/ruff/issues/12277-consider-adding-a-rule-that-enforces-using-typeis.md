@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-07-10T14:50:31Z
 updated_at: 2024-08-10T13:18:46Z
 url: https://github.com/astral-sh/ruff/issues/12277
-synced_at: 2026-01-10T11:09:54Z
+synced_at: 2026-01-12T15:54:51Z
 ```
 
 # Consider adding a rule that enforces using TypeIs instead of TypeGuard
 
 ---
 
-_Issue opened by @ItsDrike on 2024-07-10 14:50_
+_@ItsDrike_
 
 In [PEP 742](https://peps.python.org/pep-0742/), a new `TypeIs` annotation has been added. This provides an alternative to `TypeGuard` , which supports proper type narrowing. In vast majority of cases, people should use `TypeIs` as opposed to `TypeGuard` and the use of `TypeGuard` in code is likely a mistake.
 

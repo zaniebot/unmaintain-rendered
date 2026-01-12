@@ -13,14 +13,14 @@ head: stmt-assert
 created_at: 2023-06-17T22:09:41Z
 updated_at: 2023-07-14T08:00:12Z
 url: https://github.com/astral-sh/ruff/pull/5168
-synced_at: 2026-01-12T03:30:21Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Format `assert` statement
 
 ---
 
-_Pull request opened by @cnpryer on 2023-06-17 22:09_
+_@cnpryer_
 
 ## Summary
 

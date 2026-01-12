@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-11-03T22:48:20Z
 updated_at: 2023-11-04T13:41:59Z
 url: https://github.com/astral-sh/ruff/issues/8483
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-12T15:54:48Z
 ```
 
 # E721 and memoryview
 
 ---
 
-_Issue opened by @hauntsaninja on 2023-11-03 22:48_
+_@hauntsaninja_
 
 ```
 λ cat x.py

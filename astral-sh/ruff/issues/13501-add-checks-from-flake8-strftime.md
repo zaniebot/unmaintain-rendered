@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-24T13:41:31Z
 updated_at: 2024-09-24T14:00:18Z
 url: https://github.com/astral-sh/ruff/issues/13501
-synced_at: 2026-01-10T11:09:55Z
+synced_at: 2026-01-12T15:54:53Z
 ```
 
 # Add checks from flake8-strftime
 
 ---
 
-_Issue opened by @wwuck on 2024-09-24 13:41_
+_@wwuck_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.

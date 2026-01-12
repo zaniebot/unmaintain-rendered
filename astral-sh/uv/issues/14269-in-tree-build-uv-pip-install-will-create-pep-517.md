@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-26T09:13:40Z
 updated_at: 2025-07-01T16:50:20Z
 url: https://github.com/astral-sh/uv/issues/14269
-synced_at: 2026-01-10T03:32:45Z
+synced_at: 2026-01-12T16:01:46Z
 ```
 
 # In-tree build `uv pip install .` will create PEP-517 venv twice which breaks build-requires (e.g., `cmake` / `ninja` with absolute path in first venv)
 
 ---
 
-_Issue opened by @XuehaiPan on 2025-06-26 09:13_
+_@XuehaiPan_
 
 ### Summary
 

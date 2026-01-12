@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-08-22T16:30:28Z
 updated_at: 2024-08-22T16:31:04Z
 url: https://github.com/astral-sh/uv/issues/6447
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Add example of `find-links` with `uv lock` for local wheels
 
 ---
 
-_Issue opened by @zanieb on 2024-08-22 16:30_
+_@zanieb_
 
 From [Discord](https://discord.com/channels/1039017663004942429/1276200914675568752/1276200914675568752)
 

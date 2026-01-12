@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-12-09T14:07:00Z
 updated_at: 2025-12-11T10:55:09Z
 url: https://github.com/astral-sh/uv/issues/17047
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T16:02:43Z
 ```
 
 # uv - incompatibility with repoflow
 
 ---
 
-_Issue opened by @Poil on 2025-12-09 14:07_
+_@Poil_
 
 ### Summary
 

@@ -13,14 +13,14 @@ head: charlie/norm
 created_at: 2024-06-12T14:08:20Z
 updated_at: 2024-06-12T14:25:45Z
 url: https://github.com/astral-sh/uv/pull/4271
-synced_at: 2026-01-10T13:54:02Z
+synced_at: 2026-01-12T16:06:07Z
 ```
 
 # Allow normalization to completely eliminate markers
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-12 14:08_
+_@charliermarsh_
 
 ## Summary
 

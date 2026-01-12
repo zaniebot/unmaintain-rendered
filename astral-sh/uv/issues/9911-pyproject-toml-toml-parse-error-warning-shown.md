@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-15T13:36:33Z
 updated_at: 2024-12-15T13:52:38Z
 url: https://github.com/astral-sh/uv/issues/9911
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-12T16:00:02Z
 ```
 
 # `pyproject.toml` TOML parse error/warning shown twice
 
 ---
 
-_Issue opened by @edmorley on 2024-12-15 13:36_
+_@edmorley_
 
 If `pyproject.toml` contains invalid TOML, eg:
 

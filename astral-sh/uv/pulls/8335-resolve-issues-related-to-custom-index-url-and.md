@@ -11,14 +11,14 @@ head: bug/8324-auth-error-google-artifactory
 created_at: 2024-10-18T15:20:30Z
 updated_at: 2024-10-20T16:15:03Z
 url: https://github.com/astral-sh/uv/pull/8335
-synced_at: 2026-01-10T12:54:07Z
+synced_at: 2026-01-12T16:08:16Z
 ```
 
 # Resolve issues related to custom index URL and environment variables
 
 ---
 
-_Pull request opened by @Aditya-PS-05 on 2024-10-18 15:20_
+_@Aditya-PS-05_
 
 closes #8324 
 

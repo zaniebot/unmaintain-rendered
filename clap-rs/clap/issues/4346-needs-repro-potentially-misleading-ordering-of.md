@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-10-04T14:49:24Z
 updated_at: 2022-11-08T16:13:17Z
 url: https://github.com/clap-rs/clap/issues/4346
-synced_at: 2026-01-10T01:57:48Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # [needs repro] potentially misleading ordering of usage in help output
 
 ---
 
-_Issue opened by @EverlastingBugstopper on 2022-10-04 14:49_
+_@EverlastingBugstopper_
 
 for a subcommand with some options and one positional required argument, the help output looks something like `my-cli my-subcommand [FLAGS] [OPTIONS] <my-positional>`. however, if you try to put flags before the positional, (`my-cli my-subcommand --my-arg my-arg-val my-positional-val`), you get a clap error that looks like this: 
 

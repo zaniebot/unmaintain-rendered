@@ -13,14 +13,14 @@ head: david/property-test-fixes
 created_at: 2024-12-10T19:39:03Z
 updated_at: 2024-12-10T19:57:45Z
 url: https://github.com/astral-sh/ruff/pull/14897
-synced_at: 2026-01-10T20:42:27Z
+synced_at: 2026-01-12T15:55:49Z
 ```
 
 # [red-knot] Property tests: account non-fully-static types
 
 ---
 
-_Pull request opened by @sharkdp on 2024-12-10 19:39_
+_@sharkdp_
 
 ## Summary
 

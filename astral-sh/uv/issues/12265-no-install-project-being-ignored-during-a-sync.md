@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-03-18T09:07:26Z
 updated_at: 2025-03-24T15:18:30Z
 url: https://github.com/astral-sh/uv/issues/12265
-synced_at: 2026-01-10T01:57:28Z
+synced_at: 2026-01-12T16:00:59Z
 ```
 
 # `--no-install-project` being ignored during a sync
 
 ---
 
-_Issue opened by @VERBOSE-01 on 2025-03-18 09:07_
+_@VERBOSE-01_
 
 ### Question
 

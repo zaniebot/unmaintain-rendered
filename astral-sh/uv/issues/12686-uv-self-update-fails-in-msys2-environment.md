@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-04-05T17:32:41Z
 updated_at: 2025-11-01T08:59:42Z
 url: https://github.com/astral-sh/uv/issues/12686
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:10Z
 ```
 
 # `uv self update` fails in MSYS2 environment
 
 ---
 
-_Issue opened by @wilson on 2025-04-05 17:32_
+_@wilson_
 
 ### Summary
 

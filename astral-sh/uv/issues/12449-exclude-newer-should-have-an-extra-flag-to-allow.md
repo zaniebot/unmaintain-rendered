@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-24T19:57:13Z
 updated_at: 2025-10-14T15:24:34Z
 url: https://github.com/astral-sh/uv/issues/12449
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-12T16:01:03Z
 ```
 
 # exclude-newer should have an extra flag to allow it to skip over packages that don't have publish date information.
 
 ---
 
-_Issue opened by @anrooo on 2025-03-24 19:57_
+_@anrooo_
 
 ### Summary
 

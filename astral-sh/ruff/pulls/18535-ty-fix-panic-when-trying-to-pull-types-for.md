@@ -14,14 +14,14 @@ head: alex/annotationlib-crash
 created_at: 2025-06-07T14:55:42Z
 updated_at: 2025-06-11T10:48:20Z
 url: https://github.com/astral-sh/ruff/pull/18535
-synced_at: 2026-01-10T18:45:04Z
+synced_at: 2026-01-12T15:56:20Z
 ```
 
 # [ty] Fix panic when trying to pull types for attribute expressions inside `Literal` type expressions
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-06-07 14:55_
+_@AlexWaygood_
 
 ## Summary
 

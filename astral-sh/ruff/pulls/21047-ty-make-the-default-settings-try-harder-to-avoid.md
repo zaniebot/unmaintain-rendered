@@ -14,14 +14,14 @@ head: gankra/sfinae
 created_at: 2025-10-23T14:46:03Z
 updated_at: 2025-10-30T15:30:03Z
 url: https://github.com/astral-sh/ruff/pull/21047
-synced_at: 2026-01-10T16:59:49Z
+synced_at: 2026-01-12T15:57:15Z
 ```
 
 # [ty] Make the default settings try harder to avoid crashes
 
 ---
 
-_Pull request opened by @Gankra on 2025-10-23 14:46_
+_@Gankra_
 
 This introduces a safe_mode to our settings type that tells our initialization code to more aggressively believe Settings Failure Is Not An Error. This allows the full settings initialization logic to be used as much as possible for the default database while trying to keep any discarded results as narrow as possible for graceful degradation.
 

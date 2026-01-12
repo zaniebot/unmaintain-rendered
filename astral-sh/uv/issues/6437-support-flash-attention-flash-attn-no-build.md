@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-22T14:04:48Z
 updated_at: 2025-10-28T14:32:51Z
 url: https://github.com/astral-sh/uv/issues/6437
-synced_at: 2026-01-10T03:23:52Z
+synced_at: 2026-01-12T15:59:04Z
 ```
 
 # Support flash attention `flash-attn --no-build-isolation` with `uv sync`
 
 ---
 
-_Issue opened by @vwxyzjn on 2024-08-22 14:04_
+_@vwxyzjn_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with uv.

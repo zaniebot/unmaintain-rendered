@@ -13,14 +13,14 @@ head: charlie/to-str
 created_at: 2025-01-18T19:34:39Z
 updated_at: 2025-01-18T19:45:20Z
 url: https://github.com/astral-sh/uv/pull/10741
-synced_at: 2026-01-10T11:45:07Z
+synced_at: 2026-01-12T16:09:27Z
 ```
 
 # Remove unnecessary clone on package name
 
 ---
 
-_Pull request opened by @charliermarsh on 2025-01-18 19:34_
+_@charliermarsh_
 
 _No description provided._
 

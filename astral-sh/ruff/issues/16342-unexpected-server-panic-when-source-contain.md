@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-02-24T08:46:07Z
 updated_at: 2025-02-24T08:46:07Z
 url: https://github.com/astral-sh/ruff/issues/16342
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # Unexpected server panic when source contain different newline characters
 
 ---
 
-_Issue opened by @dhruvmanila on 2025-02-24 08:46_
+_@dhruvmanila_
 
 ### Description
 

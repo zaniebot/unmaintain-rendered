@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-20T18:59:38Z
 updated_at: 2024-12-10T15:57:23Z
 url: https://github.com/astral-sh/uv/issues/9289
-synced_at: 2026-01-10T04:36:20Z
+synced_at: 2026-01-12T15:59:46Z
 ```
 
 # Multiple conflicting extras installed when using explicit index assignments
 
 ---
 
-_Issue opened by @anaoum on 2024-11-20 18:59_
+_@anaoum_
 
 When conflicting extra groups share a dependant, both extra groups seem to be installed.
 

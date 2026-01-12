@@ -13,14 +13,14 @@ head: benchmark-preview-rules
 created_at: 2023-11-28T05:07:19Z
 updated_at: 2023-11-29T04:26:26Z
 url: https://github.com/astral-sh/ruff/pull/8865
-synced_at: 2026-01-10T23:40:55Z
+synced_at: 2026-01-12T15:55:27Z
 ```
 
 # Add benchmark for running all rules including preview rules
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-11-28 05:07_
+_@MichaReiser_
 
 ## Summary
 

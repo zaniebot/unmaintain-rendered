@@ -12,14 +12,14 @@ head: docs/fix-typo-in-defining-index
 created_at: 2024-10-25T05:04:56Z
 updated_at: 2024-10-25T13:05:39Z
 url: https://github.com/astral-sh/uv/pull/8554
-synced_at: 2026-01-10T12:54:12Z
+synced_at: 2026-01-12T16:08:22Z
 ```
 
 # docs: fix typo
 
 ---
 
-_Pull request opened by @lukany on 2024-10-25 05:04_
+_@lukany_
 
 ## Summary
 

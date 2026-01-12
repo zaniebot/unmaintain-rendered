@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-05-05T04:46:04Z
 updated_at: 2023-07-10T01:29:31Z
 url: https://github.com/astral-sh/ruff/issues/4235
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # (🎁) Rule for providing keyword argument when non-meaningful literal is passed as positional argument
 
 ---
 
-_Issue opened by @KotlinIsland on 2023-05-05 04:46_
+_@KotlinIsland_
 
 For the following call:
 ```py

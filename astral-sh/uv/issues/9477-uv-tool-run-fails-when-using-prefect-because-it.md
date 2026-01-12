@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-27T17:00:39Z
 updated_at: 2024-12-25T09:16:51Z
 url: https://github.com/astral-sh/uv/issues/9477
-synced_at: 2026-01-10T01:57:22Z
+synced_at: 2026-01-12T15:59:51Z
 ```
 
 # `uv tool run` fails when using `prefect` because it can't find modules, despite working when run in activated venv.
 
 ---
 
-_Issue opened by @NicholasPini on 2024-11-27 17:00_
+_@NicholasPini_
 
 I have a uv package that has `prefect` and a bunch of other dependencies installed.
 `prefect` provides the command `prefect worker start --pool 'process-pool-test'`: this commands starts a worker process. If I go into my project, activate the venv, and run `prefect worker start --pool 'process-pool-test'`, I can start another script which runs the process deployed to this worker, and everything works correctly.

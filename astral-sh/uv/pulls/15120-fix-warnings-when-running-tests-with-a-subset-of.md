@@ -13,14 +13,14 @@ head: zb/fix-warn
 created_at: 2025-08-07T00:33:38Z
 updated_at: 2025-08-07T01:28:27Z
 url: https://github.com/astral-sh/uv/pull/15120
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:35Z
 ```
 
 # Fix warnings when running tests with a subset of features
 
 ---
 
-_Pull request opened by @zanieb on 2025-08-07 00:33_
+_@zanieb_
 
 We were getting dead code warnings on Windows tests because these were not properly feature gated.
 

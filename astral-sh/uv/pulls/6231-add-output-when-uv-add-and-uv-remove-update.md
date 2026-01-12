@@ -14,14 +14,14 @@ head: zb/output-add-remove
 created_at: 2024-08-19T20:51:17Z
 updated_at: 2024-08-19T21:29:34Z
 url: https://github.com/astral-sh/uv/pull/6231
-synced_at: 2026-01-10T13:09:51Z
+synced_at: 2026-01-12T16:07:17Z
 ```
 
 # Add output when `uv add` and `uv remove` update scripts
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-19 20:51_
+_@zanieb_
 
 Closes https://github.com/astral-sh/uv/issues/6214
 

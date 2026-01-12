@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-27T14:05:13Z
 updated_at: 2025-01-29T22:21:12Z
 url: https://github.com/astral-sh/uv/issues/10985
-synced_at: 2026-01-10T03:50:31Z
+synced_at: 2026-01-12T16:00:25Z
 ```
 
 # multiple versions of the same package can be installed in some cases when using conflicting extras
 
 ---
 
-_Issue opened by @BurntSushi on 2025-01-27 14:05_
+_@BurntSushi_
 
 > I found the problem by trying to reproduce the problem on a new repo. The problem is with package torchmetrics. When it is in the workspace package/dependency this case exists. I have yet not inspect what can be wrong with that package configuration.
 > 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-31T13:10:38Z
 updated_at: 2023-01-07T04:08:26Z
 url: https://github.com/astral-sh/ruff/issues/1511
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Move away from blackd in favor of single black invocations
 
 ---
 
-_Issue opened by @squiddy on 2022-12-31 13:10_
+_@squiddy_
 
 See black_compatibility_test.
 

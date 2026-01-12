@@ -13,14 +13,14 @@ head: cjm/bitset
 created_at: 2024-09-12T02:21:56Z
 updated_at: 2024-09-12T18:25:47Z
 url: https://github.com/astral-sh/ruff/pull/13333
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:43Z
 ```
 
 # [red-knot] add BitSet::is_empty and BitSet::union
 
 ---
 
-_Pull request opened by @carljm on 2024-09-12 02:21_
+_@carljm_
 
 Add `::is_empty` and `::union` methods to the `BitSet` implementation.
 

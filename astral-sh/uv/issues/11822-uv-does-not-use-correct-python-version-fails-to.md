@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-02-27T06:48:12Z
 updated_at: 2025-06-01T18:36:38Z
 url: https://github.com/astral-sh/uv/issues/11822
-synced_at: 2026-01-10T01:57:27Z
+synced_at: 2026-01-12T16:00:47Z
 ```
 
 # uv does not use correct Python version, fails to find wheel, tries to build package, fails
 
 ---
 
-_Issue opened by @Ark-kun on 2025-02-27 06:48_
+_@Ark-kun_
 
 ### Summary
 

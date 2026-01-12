@@ -13,14 +13,14 @@ head: konsti/json-metadata
 created_at: 2025-08-25T08:35:45Z
 updated_at: 2026-01-09T13:51:44Z
 url: https://github.com/astral-sh/uv/pull/15510
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T16:11:47Z
 ```
 
 # Add `METADATA.json` and `WHEEL.json` in uv build backend
 
 ---
 
-_Pull request opened by @konstin on 2025-08-25 08:35_
+_@konstin_
 
 https://discuss.python.org/t/pep-819-json-package-metadata/105558
 

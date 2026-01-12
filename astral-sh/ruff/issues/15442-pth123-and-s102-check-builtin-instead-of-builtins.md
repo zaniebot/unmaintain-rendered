@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-12T16:01:42Z
 updated_at: 2025-01-13T00:45:38Z
 url: https://github.com/astral-sh/ruff/issues/15442
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # PTH123 and S102 check `builtin` instead of `builtins`
 
 ---
 
-_Issue opened by @dscorbett on 2025-01-12 16:01_
+_@dscorbett_
 
 [`builtin-open` (PTH123)](https://docs.astral.sh/ruff/rules/builtin-open/) and [`exec-builtin` (S102)](https://docs.astral.sh/ruff/rules/exec-builtin/) check for the module `builtin`, but the standard library module is actually `builtins`. This causes false negatives and false positives in Ruff 0.9.1.
 

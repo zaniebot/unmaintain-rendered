@@ -9,14 +9,14 @@ assignees: []
 created_at: 2016-07-24T10:24:00Z
 updated_at: 2018-08-02T03:29:52Z
 url: https://github.com/clap-rs/clap/issues/600
-synced_at: 2026-01-10T01:57:40Z
+synced_at: 2026-01-12T16:14:09Z
 ```
 
 # Now that we have version and authors macros we should add App::new_with_defaults that uses both
 
 ---
 
-_Issue opened by @rtaycher on 2016-07-24 10:24_
+_@rtaycher_
 
 I think it's generally best to make cmdline parsing as simple and short as possible.
 

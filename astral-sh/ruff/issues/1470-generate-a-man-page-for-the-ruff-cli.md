@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-30T10:15:21Z
 updated_at: 2023-02-11T18:01:54Z
 url: https://github.com/astral-sh/ruff/issues/1470
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Generate a man page for the `ruff` CLI
 
 ---
 
-_Issue opened by @not-my-profile on 2022-12-30 10:15_
+_@not-my-profile_
 
 Ruff is already packaged for several Linux distributions and command-line tools on Linux are traditionally documented in man pages.
 

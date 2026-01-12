@@ -12,14 +12,14 @@ assignees: []
 created_at: 2018-03-18T06:17:20Z
 updated_at: 2022-10-10T13:24:06Z
 url: https://github.com/clap-rs/clap/issues/1210
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Support for single hyphen in long arguments
 
 ---
 
-_Issue opened by @kellpossible on 2018-03-18 06:17_
+_@kellpossible_
 
 Maintainer's notes:
 - This is blocked on pulling out the parser (https://github.com/clap-rs/clap/issues/2915) so we can then abstract  it and allow alternative syntaxes

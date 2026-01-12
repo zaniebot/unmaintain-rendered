@@ -14,14 +14,14 @@ assignees: []
 created_at: 2022-07-13T14:17:25Z
 updated_at: 2025-04-29T11:45:44Z
 url: https://github.com/clap-rs/clap/issues/3919
-synced_at: 2026-01-10T01:57:47Z
+synced_at: 2026-01-12T16:14:15Z
 ```
 
 # elvish support for native completions 
 
 ---
 
-_Issue opened by @epage on 2022-07-13 14:17_
+_@epage_
 
 See #3166 for more context
 - [code](https://github.com/clap-rs/clap/blob/master/clap_complete/src/env/shells.rs)

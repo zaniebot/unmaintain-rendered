@@ -11,14 +11,14 @@ assignees: []
 created_at: 2022-12-13T00:21:42Z
 updated_at: 2023-05-18T15:18:15Z
 url: https://github.com/astral-sh/ruff/issues/1224
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # Modify `find_local` to read from the filesystem exactly once
 
 ---
 
-_Issue opened by @charliermarsh on 2022-12-13 00:21_
+_@charliermarsh_
 
 _No description provided._
 

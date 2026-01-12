@@ -10,14 +10,14 @@ assignees: []
 created_at: 2023-01-09T12:47:44Z
 updated_at: 2023-01-10T04:27:08Z
 url: https://github.com/astral-sh/ruff/issues/1744
-synced_at: 2026-01-10T11:09:43Z
+synced_at: 2026-01-12T15:54:41Z
 ```
 
 # typing_extensions.Literal reimport is not "detected"
 
 ---
 
-_Issue opened by @ashb on 2023-01-09 12:47_
+_@ashb_
 
 As part of the Airflow project we have an `airflow.typing_compat` module that has this in it https://github.com/apache/airflow/blob/71306b31f1842ee2b1eb1cc2980b90f0fb6b11dc/airflow/typing_compat.py#L38-L41:
 

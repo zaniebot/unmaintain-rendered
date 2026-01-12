@@ -13,14 +13,14 @@ head: fix/split-static-string-py-whitespace
 created_at: 2025-08-10T21:05:21Z
 updated_at: 2025-08-14T15:34:50Z
 url: https://github.com/astral-sh/ruff/pull/19849
-synced_at: 2026-01-10T17:52:17Z
+synced_at: 2026-01-12T15:56:48Z
 ```
 
 # SIM905: Fix handling of U+001C..U+001F whitespace
 
 ---
 
-_Pull request opened by @RazerM on 2025-08-10 21:05_
+_@RazerM_
 
 Fixes #19845
 

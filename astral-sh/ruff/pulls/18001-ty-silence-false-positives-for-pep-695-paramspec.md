@@ -13,14 +13,14 @@ head: david/silence-paramspec-false-positives
 created_at: 2025-05-10T09:37:38Z
 updated_at: 2025-05-10T09:59:27Z
 url: https://github.com/astral-sh/ruff/pull/18001
-synced_at: 2026-01-10T18:57:03Z
+synced_at: 2026-01-12T15:56:10Z
 ```
 
 # [ty] Silence false positives for PEP-695 ParamSpec annotations
 
 ---
 
-_Pull request opened by @sharkdp on 2025-05-10 09:37_
+_@sharkdp_
 
 ## Summary
 

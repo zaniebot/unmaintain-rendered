@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-09-04T15:09:32Z
 updated_at: 2024-09-04T23:22:35Z
 url: https://github.com/astral-sh/uv/issues/7027
-synced_at: 2026-01-10T04:45:10Z
+synced_at: 2026-01-12T15:59:09Z
 ```
 
 # `.python-version` is created by default but this is not documented 
 
 ---
 
-_Issue opened by @my1e5 on 2024-09-04 15:09_
+_@my1e5_
 
 I think I'm right in saying that https://github.com/astral-sh/uv/pull/6869 has made the creation of a `.python-version` file happen by default if you run `uv init`.
 

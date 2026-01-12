@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-16T14:57:19Z
 updated_at: 2025-02-09T14:16:27Z
 url: https://github.com/astral-sh/uv/issues/1497
-synced_at: 2026-01-10T03:50:29Z
+synced_at: 2026-01-12T15:58:28Z
 ```
 
 # Cannot install the CPU version of torch
 
 ---
 
-_Issue opened by @Nishikoh on 2024-02-16 14:57_
+_@Nishikoh_
 
 I tried to install the CPU version of torch but could not.
 ```bash

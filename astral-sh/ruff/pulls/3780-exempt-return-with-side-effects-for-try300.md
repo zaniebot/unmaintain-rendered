@@ -14,14 +14,14 @@ head: exempt-return-with-side-effects-for-try300
 created_at: 2023-03-28T17:40:38Z
 updated_at: 2023-03-29T05:28:32Z
 url: https://github.com/astral-sh/ruff/pull/3780
-synced_at: 2026-01-12T04:39:45Z
+synced_at: 2026-01-12T15:55:13Z
 ```
 
 # Exempt return with side effects for TRY300
 
 ---
 
-_Pull request opened by @JonathanPlasse on 2023-03-28 17:40_
+_@JonathanPlasse_
 
 - Close #3778
 

@@ -13,14 +13,14 @@ head: charlie/q
 created_at: 2024-12-31T14:32:58Z
 updated_at: 2024-12-31T17:59:27Z
 url: https://github.com/astral-sh/uv/pull/10253
-synced_at: 2026-01-10T11:44:39Z
+synced_at: 2026-01-12T16:09:11Z
 ```
 
 # Avoid stripping query parameters from URLs
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-12-31 14:32_
+_@charliermarsh_
 
 ## Summary
 

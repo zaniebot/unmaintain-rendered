@@ -13,14 +13,14 @@ head: konsti/priorities-debugging
 created_at: 2025-01-22T12:01:05Z
 updated_at: 2025-01-23T16:09:48Z
 url: https://github.com/astral-sh/uv/pull/10853
-synced_at: 2026-01-10T11:45:14Z
+synced_at: 2026-01-12T16:09:31Z
 ```
 
 # All (virtual) packages must have a priority
 
 ---
 
-_Pull request opened by @konstin on 2025-01-22 12:01_
+_@konstin_
 
 To ensure deterministic resolution, each (virtual) package needs to be registered on discovery (as dependency of another package), before we query it for prioritization.
 

@@ -13,14 +13,14 @@ head: konsti/link-mode-for-builds-too
 created_at: 2024-04-12T14:56:17Z
 updated_at: 2024-04-15T08:49:42Z
 url: https://github.com/astral-sh/uv/pull/3016
-synced_at: 2026-01-10T14:43:31Z
+synced_at: 2026-01-12T16:05:22Z
 ```
 
 # Use link mode for builds, in `uv pip compile` and for `uv venv` seed packages
 
 ---
 
-_Pull request opened by @konstin on 2024-04-12 14:56_
+_@konstin_
 
 Use the user specified link mode for temporary build venvs, too. It seems consistent to respect the user's link mode for all installations we perform
 

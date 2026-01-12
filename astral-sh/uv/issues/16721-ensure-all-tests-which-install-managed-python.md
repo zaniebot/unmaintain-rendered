@@ -12,14 +12,14 @@ assignees: []
 created_at: 2025-11-13T14:10:59Z
 updated_at: 2025-11-13T14:16:17Z
 url: https://github.com/astral-sh/uv/issues/16721
-synced_at: 2026-01-10T03:23:55Z
+synced_at: 2026-01-12T16:02:37Z
 ```
 
 # Ensure all tests which install managed Python versions use the cache
 
 ---
 
-_Issue opened by @zanieb on 2025-11-13 14:10_
+_@zanieb_
 
 We have `TestContext::with_python_download_cache` which improves the performance of tests which download a managed Python version, but I'm not sure we use it everywhere. There are only a couple cases where we explicitly don't want to use this. Maybe we should have `with_managed_python_dirs` turn this on and have `without_python_download_cache` instead for the opt-out cases?
 

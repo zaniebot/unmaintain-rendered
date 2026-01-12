@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-06-26T01:29:10Z
 updated_at: 2024-07-08T18:59:22Z
 url: https://github.com/astral-sh/uv/issues/4536
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # Apply Absorption Law when normalizing markers
 
 ---
 
-_Issue opened by @charliermarsh on 2024-06-26 01:29_
+_@charliermarsh_
 
 E.g., `python_version < '3.11' or (python_version < '3.11' and implementation_name == 'cpython')` should be reduced to `python_version < '3.11'`.
 

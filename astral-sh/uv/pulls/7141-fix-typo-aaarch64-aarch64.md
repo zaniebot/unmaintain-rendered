@@ -13,14 +13,14 @@ head: fix-typo-aaarch64-apple-darwin
 created_at: 2024-09-06T22:11:51Z
 updated_at: 2024-09-06T23:25:46Z
 url: https://github.com/astral-sh/uv/pull/7141
-synced_at: 2026-01-10T12:53:41Z
+synced_at: 2026-01-12T16:07:42Z
 ```
 
 # Fix typo `aaarch64->aarch64`
 
 ---
 
-_Pull request opened by @janosh on 2024-09-06 22:11_
+_@janosh_
 
 copy pasted `--python-platform aaarch64-unknown-linux-gnu` [from the docs](https://docs.astral.sh/uv/reference/cli/#uv-pip-compile) and got
 

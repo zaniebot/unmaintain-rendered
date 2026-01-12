@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-03-21T09:26:06Z
 updated_at: 2025-03-26T18:14:41Z
 url: https://github.com/astral-sh/ruff/issues/16890
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:55Z
 ```
 
 # [red-knot] Playknot crashes when Red-knot panics
 
 ---
 
-_Issue opened by @cake-monotone on 2025-03-21 09:26_
+_@cake-monotone_
 
 https://playknot.ruff.rs/188faf78-ddb6-4559-8093-79c3a62cd9c2
 

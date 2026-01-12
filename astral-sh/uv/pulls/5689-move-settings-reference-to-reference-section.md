@@ -14,14 +14,14 @@ head: zb/docs-reference-settings
 created_at: 2024-08-01T15:04:31Z
 updated_at: 2024-08-01T16:20:32Z
 url: https://github.com/astral-sh/uv/pull/5689
-synced_at: 2026-01-10T13:37:23Z
+synced_at: 2026-01-12T16:06:57Z
 ```
 
 # Move settings reference to reference section
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-01 15:04_
+_@zanieb_
 
 Joining #5685 in a dedicated reference section
 

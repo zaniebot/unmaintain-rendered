@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-10-26T20:21:34Z
 updated_at: 2025-10-30T13:06:26Z
 url: https://github.com/astral-sh/uv/issues/16454
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T16:02:32Z
 ```
 
 # Cannot Automatically Load the Virtual Environment's Interpreter in VSCODE
 
 ---
 
-_Issue opened by @yiyuanli939 on 2025-10-26 20:21_
+_@yiyuanli939_
 
 ### Summary
 

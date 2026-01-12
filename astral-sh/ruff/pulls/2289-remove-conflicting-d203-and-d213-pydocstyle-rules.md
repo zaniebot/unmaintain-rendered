@@ -11,14 +11,14 @@ head: charlie/deprecate
 created_at: 2023-01-28T03:48:58Z
 updated_at: 2023-02-01T15:10:41Z
 url: https://github.com/astral-sh/ruff/pull/2289
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:07Z
 ```
 
 # Remove conflicting D203 and D213 pydocstyle rules
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-01-28 03:48_
+_@charliermarsh_
 
 These rules both have conflicting variants (`D203` conflicts with `D211`, and `D213` conflicts with `D212`). The most common error I see in Ruff is users hitting an infinite autofix iteration loop due to having pairs of these rules enabled (e.g., Ruff goes back-and-forth, adding and removing a newline between the docstring and the `class` definition, until you hit 100 iterations). We display a warning, but... it's just a bad experience, and it comes up way too often.
 

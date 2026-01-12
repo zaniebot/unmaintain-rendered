@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-04-30T05:22:02Z
 updated_at: 2025-04-30T11:06:51Z
 url: https://github.com/astral-sh/ruff/issues/17729
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # ruff format --check --silent still output the same log as with --quiet
 
 ---
 
-_Issue opened by @lephuongbg on 2025-04-30 05:22_
+_@lephuongbg_
 
 ### Summary
 

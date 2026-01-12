@@ -12,14 +12,14 @@ head: main
 created_at: 2023-06-10T16:53:14Z
 updated_at: 2023-06-12T16:10:24Z
 url: https://github.com/astral-sh/ruff/pull/5008
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Improve ruff_parse_simple to find UTF-8 violations
 
 ---
 
-_Pull request opened by @addisoncrump on 2023-06-10 16:53_
+_@addisoncrump_
 
 Improves the `ruff_parse_simple` fuzz harness by adding checks for parsed locations to ensure they all lie on UTF-8 character boundaries. This will allow for faster identification of issues like #5004.
 

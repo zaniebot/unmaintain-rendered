@@ -13,14 +13,14 @@ head: format_dev_perf
 created_at: 2023-08-11T09:24:56Z
 updated_at: 2023-08-11T14:13:59Z
 url: https://github.com/astral-sh/ruff/pull/6497
-synced_at: 2026-01-12T02:52:04Z
+synced_at: 2026-01-12T15:55:21Z
 ```
 
 # Use a faster diffing library for the formatter ecosystem checks
 
 ---
 
-_Pull request opened by @konstin on 2023-08-11 09:24_
+_@konstin_
 
 **Summary** Some files seems notoriously slow in the formatter (secons in debug mode). This time was however almost exclusively spent in the diff algorithm to collect the similarity index, so i replaced that. I kept `similar` for printing actual diff to avoid rewriting that too, with the disadvantage that we now have to diff libraries in format_dev.
 

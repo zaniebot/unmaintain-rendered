@@ -13,14 +13,14 @@ head: 0.5-fix-ecosystem
 created_at: 2024-06-25T12:15:03Z
 updated_at: 2024-06-25T12:48:26Z
 url: https://github.com/astral-sh/ruff/pull/12027
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [Ruff v0.5] Fix `ZeroDivisionError`s in the ecosystem check
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-06-25 12:15_
+_@AlexWaygood_
 
 Seen in CI in https://github.com/astral-sh/ruff/pull/12026
 

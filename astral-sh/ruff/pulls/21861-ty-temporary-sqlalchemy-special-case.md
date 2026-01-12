@@ -13,14 +13,14 @@ head: david/sqlalchemy-specialcase
 created_at: 2025-12-09T09:34:56Z
 updated_at: 2025-12-09T21:22:43Z
 url: https://github.com/astral-sh/ruff/pull/21861
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T15:57:35Z
 ```
 
 # [ty] Temporary SQLAlchemy special-case
 
 ---
 
-_Pull request opened by @sharkdp on 2025-12-09 09:34_
+_@sharkdp_
 
 ## Summary
 

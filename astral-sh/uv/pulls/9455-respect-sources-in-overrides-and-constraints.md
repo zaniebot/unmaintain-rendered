@@ -13,14 +13,14 @@ head: charlie/sources
 created_at: 2024-11-26T22:40:44Z
 updated_at: 2024-11-27T13:56:16Z
 url: https://github.com/astral-sh/uv/pull/9455
-synced_at: 2026-01-10T12:00:00Z
+synced_at: 2026-01-12T16:08:49Z
 ```
 
 # Respect sources in overrides and constraints
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-11-26 22:40_
+_@charliermarsh_
 
 ## Summary
 

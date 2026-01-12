@@ -14,14 +14,14 @@ head: memoized-once-cell
 created_at: 2023-09-18T19:49:30Z
 updated_at: 2023-09-18T19:58:56Z
 url: https://github.com/astral-sh/ruff/pull/7500
-synced_at: 2026-01-12T02:39:10Z
+synced_at: 2026-01-12T15:55:24Z
 ```
 
 # refactor: Use `OnceCell` in `Memoized`
 
 ---
 
-_Pull request opened by @MichaReiser on 2023-09-18 19:49_
+_@MichaReiser_
 
 ## Summary
 

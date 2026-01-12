@@ -13,14 +13,14 @@ head: konsti/thiserror-installed-dist
 created_at: 2024-12-06T12:12:04Z
 updated_at: 2024-12-06T12:43:16Z
 url: https://github.com/astral-sh/uv/pull/9676
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:08:55Z
 ```
 
 # Use `thiserror` in `InstalledDist`
 
 ---
 
-_Pull request opened by @konstin on 2024-12-06 12:12_
+_@konstin_
 
 Wanted to try something that didn't work, ended up removing that todo.
 

@@ -13,14 +13,14 @@ head: konsti/pg_config
 created_at: 2024-12-12T21:54:45Z
 updated_at: 2024-12-13T12:42:29Z
 url: https://github.com/astral-sh/uv/pull/9853
-synced_at: 2026-01-10T12:00:01Z
+synced_at: 2026-01-12T16:09:00Z
 ```
 
 # Remove test dependency on `pg_config`
 
 ---
 
-_Pull request opened by @konstin on 2024-12-12 21:54_
+_@konstin_
 
 By mocking the metadata of `psycopg-c`, we avoid a test dependency on `pg_config` for the warehouse ecosystem test.
 

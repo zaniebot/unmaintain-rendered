@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-06-19T21:51:44Z
 updated_at: 2025-12-12T17:58:21Z
 url: https://github.com/astral-sh/uv/issues/4420
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-12T15:58:50Z
 ```
 
 # uv pip compile of in file containing `--no-binary {pkg}` does not include that directive in requirements.txt
 
 ---
 
-_Issue opened by @philvarner on 2024-06-19 21:51_
+_@philvarner_
 
 This seems to be intended to be supported based on PR/issues:
 

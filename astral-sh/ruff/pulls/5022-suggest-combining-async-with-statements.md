@@ -12,14 +12,14 @@ head: thomas/issue-3025
 created_at: 2023-06-12T10:34:58Z
 updated_at: 2023-06-12T14:33:20Z
 url: https://github.com/astral-sh/ruff/pull/5022
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Suggest combining async with statements
 
 ---
 
-_Pull request opened by @Thomasdezeeuw on 2023-06-12 10:34_
+_@Thomasdezeeuw_
 
 ## Summary
 

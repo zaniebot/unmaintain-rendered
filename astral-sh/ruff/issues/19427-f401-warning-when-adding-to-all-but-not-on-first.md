@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-07-18T21:59:28Z
 updated_at: 2025-07-21T07:18:13Z
 url: https://github.com/astral-sh/ruff/issues/19427
-synced_at: 2026-01-10T11:09:59Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # F401 warning when adding to __all__, but not on first assignment
 
 ---
 
-_Issue opened by @mistydemeo on 2025-07-18 21:59_
+_@mistydemeo_
 
 ### Summary
 

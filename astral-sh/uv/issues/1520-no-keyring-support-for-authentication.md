@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-02-16T18:05:17Z
 updated_at: 2025-06-14T17:54:08Z
 url: https://github.com/astral-sh/uv/issues/1520
-synced_at: 2026-01-10T03:32:43Z
+synced_at: 2026-01-12T15:58:29Z
 ```
 
 # No keyring support for authentication
 
 ---
 
-_Issue opened by @AngellusMortis on 2024-02-16 18:05_
+_@AngellusMortis_
 
 It appears `uv` does not have support for keyring like pip does. 
 

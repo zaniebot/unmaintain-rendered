@@ -13,14 +13,14 @@ head: minor-improvement
 created_at: 2024-11-01T11:24:05Z
 updated_at: 2024-11-02T06:31:50Z
 url: https://github.com/astral-sh/uv/pull/8749
-synced_at: 2026-01-10T11:59:59Z
+synced_at: 2026-01-12T16:08:28Z
 ```
 
 # Improve and fix some documents
 
 ---
 
-_Pull request opened by @ShapelessCat on 2024-11-01 11:24_
+_@ShapelessCat_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

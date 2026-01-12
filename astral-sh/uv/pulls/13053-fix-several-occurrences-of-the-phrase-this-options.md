@@ -13,14 +13,14 @@ head: this-options
 created_at: 2025-04-22T12:22:08Z
 updated_at: 2025-04-22T13:20:01Z
 url: https://github.com/astral-sh/uv/pull/13053
-synced_at: 2026-01-10T11:10:40Z
+synced_at: 2026-01-12T16:10:32Z
 ```
 
 # Fix several occurrences of the phrase “This options”
 
 ---
 
-_Pull request opened by @musicinmybrain on 2025-04-22 12:22_
+_@musicinmybrain_
 
 <!--
 Thank you for contributing to uv! To help us out with reviewing, please consider the following:

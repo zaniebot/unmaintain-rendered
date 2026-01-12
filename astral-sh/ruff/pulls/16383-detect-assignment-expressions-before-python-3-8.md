@@ -13,14 +13,14 @@ head: brent/syntax-walrus-38
 created_at: 2025-02-25T20:31:53Z
 updated_at: 2025-02-28T22:13:49Z
 url: https://github.com/astral-sh/ruff/pull/16383
-synced_at: 2026-01-10T19:49:01Z
+synced_at: 2026-01-12T15:55:54Z
 ```
 
 # Detect assignment expressions before Python 3.8
 
 ---
 
-_Pull request opened by @ntBre on 2025-02-25 20:31_
+_@ntBre_
 
 ## Summary
 This PR is the first in a series derived from https://github.com/astral-sh/ruff/pull/16308, each of which add support

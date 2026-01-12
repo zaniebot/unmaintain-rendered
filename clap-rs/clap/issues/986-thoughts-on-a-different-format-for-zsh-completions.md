@@ -9,14 +9,14 @@ assignees: []
 created_at: 2017-06-10T05:29:00Z
 updated_at: 2018-08-02T03:30:08Z
 url: https://github.com/clap-rs/clap/issues/986
-synced_at: 2026-01-10T01:57:41Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # Thoughts on a different format for zsh completions?
 
 ---
 
-_Issue opened by @nerdrew on 2017-06-10 05:29_
+_@nerdrew_
 
 I have a custom zsh completion file for rustup that I like. I have attached my custom one and the clap generated completions. Objections to using a different zsh completion format?
 

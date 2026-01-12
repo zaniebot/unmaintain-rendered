@@ -14,14 +14,14 @@ head: charlie/call-path
 created_at: 2023-03-02T23:14:48Z
 updated_at: 2023-03-03T03:49:06Z
 url: https://github.com/astral-sh/ruff/pull/3314
-synced_at: 2026-01-12T04:39:44Z
+synced_at: 2026-01-12T15:55:12Z
 ```
 
 # Always include `@classmethod` and `@staticmethod` in decorator lists
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-03-02 23:14_
+_@charliermarsh_
 
 _No description provided._
 

@@ -14,14 +14,14 @@ head: charlie/egg
 created_at: 2024-05-05T23:07:23Z
 updated_at: 2024-05-06T13:47:29Z
 url: https://github.com/astral-sh/uv/pull/3380
-synced_at: 2026-01-10T14:37:54Z
+synced_at: 2026-01-12T16:05:36Z
 ```
 
 # Respect and enable uninstalls of existing `.egg-info` packages
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-05 23:07_
+_@charliermarsh_
 
 ## Summary
 

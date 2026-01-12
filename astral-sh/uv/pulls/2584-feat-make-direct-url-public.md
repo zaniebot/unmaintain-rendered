@@ -13,14 +13,14 @@ head: feat/direct-url-public
 created_at: 2024-03-21T08:23:53Z
 updated_at: 2024-03-22T14:15:49Z
 url: https://github.com/astral-sh/uv/pull/2584
-synced_at: 2026-01-10T14:49:08Z
+synced_at: 2026-01-12T16:05:07Z
 ```
 
 # feat: make direct_url public
 
 ---
 
-_Pull request opened by @tdejager on 2024-03-21 08:23_
+_@tdejager_
 
 
 ## Summary

@@ -13,14 +13,14 @@ head: charlie/sync-constraint
 created_at: 2024-05-22T16:24:14Z
 updated_at: 2024-05-22T16:30:55Z
 url: https://github.com/astral-sh/uv/pull/3741
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:49Z
 ```
 
 # Allow `--constraint` files in `pip sync`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-05-22 16:24_
+_@charliermarsh_
 
 ## Summary
 

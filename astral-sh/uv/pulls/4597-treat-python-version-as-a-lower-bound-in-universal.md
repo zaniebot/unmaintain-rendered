@@ -13,14 +13,14 @@ head: charlie/py
 created_at: 2024-06-27T18:29:01Z
 updated_at: 2024-06-27T18:41:47Z
 url: https://github.com/astral-sh/uv/pull/4597
-synced_at: 2026-01-10T13:48:28Z
+synced_at: 2026-01-12T16:06:20Z
 ```
 
 # Treat Python version as a lower bound in `--universal`
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-27 18:29_
+_@charliermarsh_
 
 ## Summary
 

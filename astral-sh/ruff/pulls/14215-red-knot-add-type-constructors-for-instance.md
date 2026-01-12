@@ -13,14 +13,14 @@ head: alex/type-constructors
 created_at: 2024-11-08T23:20:57Z
 updated_at: 2024-11-09T09:10:02Z
 url: https://github.com/astral-sh/ruff/pull/14215
-synced_at: 2026-01-10T20:50:57Z
+synced_at: 2026-01-12T15:55:47Z
 ```
 
 # [red-knot] Add `Type` constructors for `Instance`, `ClassLiteral` and `SubclassOf` variants
 
 ---
 
-_Pull request opened by @AlexWaygood on 2024-11-08 23:20_
+_@AlexWaygood_
 
 ## Summary
 

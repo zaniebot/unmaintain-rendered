@@ -13,14 +13,14 @@ head: remove-spaces
 created_at: 2024-09-22T16:44:59Z
 updated_at: 2024-09-24T02:41:55Z
 url: https://github.com/astral-sh/uv/pull/7623
-synced_at: 2026-01-10T12:53:51Z
+synced_at: 2026-01-12T16:07:55Z
 ```
 
 # Remove double whitespaces from the code
 
 ---
 
-_Pull request opened by @Stanley5249 on 2024-09-22 16:44_
+_@Stanley5249_
 
 ## Summary
 

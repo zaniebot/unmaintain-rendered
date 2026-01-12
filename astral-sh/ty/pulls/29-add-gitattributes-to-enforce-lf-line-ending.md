@@ -12,14 +12,14 @@ head: git-attributes
 created_at: 2025-05-05T14:35:51Z
 updated_at: 2025-07-08T10:39:20Z
 url: https://github.com/astral-sh/ty/pull/29
-synced_at: 2026-01-10T02:34:10Z
+synced_at: 2026-01-12T15:54:27Z
 ```
 
 # Add `.gitattributes` to enforce `lf` line ending
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-05-05 14:35_
+_@MichaReiser_
 
 _No description provided._
 

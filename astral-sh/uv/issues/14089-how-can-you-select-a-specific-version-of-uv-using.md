@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-16T19:46:27Z
 updated_at: 2025-06-16T19:56:19Z
 url: https://github.com/astral-sh/uv/issues/14089
-synced_at: 2026-01-10T01:57:32Z
+synced_at: 2026-01-12T16:01:43Z
 ```
 
 # How can you select a specific version of `uv` using `install.sh`?
 
 ---
 
-_Issue opened by @johnthagen on 2025-06-16 19:46_
+_@johnthagen_
 
 ### Question
 

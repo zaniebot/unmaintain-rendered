@@ -14,14 +14,14 @@ head: micha/delete-verbosity-rs
 created_at: 2025-02-10T16:02:34Z
 updated_at: 2025-02-10T16:06:07Z
 url: https://github.com/astral-sh/ruff/pull/16081
-synced_at: 2026-01-10T19:57:22Z
+synced_at: 2026-01-12T15:55:53Z
 ```
 
 # Delete left-over `verbosity.rs
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-02-10 16:02_
+_@MichaReiser_
 
 <!--
 Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:

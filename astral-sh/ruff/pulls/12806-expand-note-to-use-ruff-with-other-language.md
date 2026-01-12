@@ -13,14 +13,14 @@ head: kate-multiple-servers
 created_at: 2024-08-11T21:05:34Z
 updated_at: 2024-08-20T07:05:50Z
 url: https://github.com/astral-sh/ruff/pull/12806
-synced_at: 2026-01-10T21:38:32Z
+synced_at: 2026-01-12T15:55:42Z
 ```
 
 # Expand note to use Ruff with other language server in Kate
 
 ---
 
-_Pull request opened by @tfardet on 2024-08-11 21:05_
+_@tfardet_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: charlie/up028
 created_at: 2024-01-02T19:27:15Z
 updated_at: 2024-01-02T19:44:04Z
 url: https://github.com/astral-sh/ruff/pull/9364
-synced_at: 2026-01-10T23:07:18Z
+synced_at: 2026-01-12T15:55:28Z
 ```
 
 # Add fix safety note for yield-in-for-loop
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-01-02 19:27_
+_@charliermarsh_
 
 See: https://github.com/astral-sh/ruff/issues/8482.
 

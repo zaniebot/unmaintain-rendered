@@ -12,14 +12,14 @@ head: doc_fix_safety_for_readlings_in_for
 created_at: 2025-04-20T15:15:26Z
 updated_at: 2025-04-26T15:23:38Z
 url: https://github.com/astral-sh/ruff/pull/17498
-synced_at: 2026-01-10T19:33:02Z
+synced_at: 2026-01-12T15:56:02Z
 ```
 
 # [`refurb`] Add fix safety section (`FURB129`) 
 
 ---
 
-_Pull request opened by @Kalmaegi on 2025-04-20 15:15_
+_@Kalmaegi_
 
 
 ## Summary

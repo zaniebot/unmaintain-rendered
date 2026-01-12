@@ -13,14 +13,14 @@ head: micha/docs-format-preview
 created_at: 2025-01-08T12:43:52Z
 updated_at: 2025-01-08T13:10:06Z
 url: https://github.com/astral-sh/ruff/pull/15349
-synced_at: 2026-01-10T20:34:00Z
+synced_at: 2026-01-12T15:55:51Z
 ```
 
 # Update formatter preview documentation
 
 ---
 
-_Pull request opened by @MichaReiser on 2025-01-08 12:43_
+_@MichaReiser_
 
 ## Summary
 

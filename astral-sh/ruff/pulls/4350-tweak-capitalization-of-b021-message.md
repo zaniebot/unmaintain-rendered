@@ -12,14 +12,14 @@ head: charlie/f-string-docstring
 created_at: 2023-05-10T15:35:43Z
 updated_at: 2023-05-10T16:17:52Z
 url: https://github.com/astral-sh/ruff/pull/4350
-synced_at: 2026-01-12T03:56:39Z
+synced_at: 2026-01-12T15:55:15Z
 ```
 
 # Tweak capitalization of B021 message
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-05-10 15:35_
+_@charliermarsh_
 
 _No description provided._
 

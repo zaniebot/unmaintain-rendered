@@ -13,14 +13,14 @@ head: charlie/f632
 created_at: 2024-06-26T15:33:07Z
 updated_at: 2024-06-26T15:51:39Z
 url: https://github.com/astral-sh/ruff/pull/12049
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:40Z
 ```
 
 # [`pyflakes`] Stabilize detection of is comparisons to lists, etc. (`F632`)
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-06-26 15:33_
+_@charliermarsh_
 
 ## Summary
 

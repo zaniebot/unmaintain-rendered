@@ -9,14 +9,14 @@ assignees: []
 created_at: 2023-05-30T12:56:01Z
 updated_at: 2025-04-29T13:28:58Z
 url: https://github.com/astral-sh/ruff/issues/4725
-synced_at: 2026-01-10T11:09:47Z
+synced_at: 2026-01-12T15:54:44Z
 ```
 
 # ruff.toml doesn't work with [tool.ruff] hierarchy
 
 ---
 
-_Issue opened by @turnerm on 2023-05-30 12:56_
+_@turnerm_
 
 The `ruff` [documentation](https://beta.ruff.rs/docs/configuration/#using-rufftoml) states the following: 
 

@@ -12,14 +12,14 @@ assignees: []
 created_at: 2019-06-05T18:06:36Z
 updated_at: 2025-02-03T17:51:20Z
 url: https://github.com/clap-rs/clap/issues/1485
-synced_at: 2026-01-10T01:57:43Z
+synced_at: 2026-01-12T16:14:11Z
 ```
 
 # Add no_std compatibility
 
 ---
 
-_Issue opened by @elast0ny on 2019-06-05 18:06_
+_@elast0ny_
 
 ### Feature Request Summary
 Would it be possible to split clap argument parsing logic into a `no_std` "clap_core" crate or allow crates to toggle a `no_std` style feature.

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-09-29T05:34:30Z
 updated_at: 2024-10-16T20:11:56Z
 url: https://github.com/astral-sh/uv/issues/7775
-synced_at: 2026-01-10T01:57:17Z
+synced_at: 2026-01-12T15:59:16Z
 ```
 
 # [docs] `uv help tool upgrade` mentions `--refresh` and `--refresh-package` options that do not exist for it
 
 ---
 
-_Issue opened by @ilyagr on 2024-09-29 05:34_
+_@ilyagr_
 
 I am using `uv 0.4.17 (d2e7b40ce 2024-09-27)`.
 

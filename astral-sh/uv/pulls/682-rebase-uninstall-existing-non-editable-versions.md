@@ -12,14 +12,14 @@ head: konsti/charlie/migrate-to-editable
 created_at: 2023-12-18T09:23:59Z
 updated_at: 2023-12-18T14:48:33Z
 url: https://github.com/astral-sh/uv/pull/682
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:07Z
 ```
 
 # Rebase: Uninstall existing non-editable versions when installing editable requirements bug
 
 ---
 
-_Pull request opened by @konstin on 2023-12-18 09:23_
+_@konstin_
 
 Separate branch for rebasing #677 onto main because i don't trust the rebase enough to force push.
 

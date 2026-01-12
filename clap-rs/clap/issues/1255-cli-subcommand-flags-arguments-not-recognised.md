@@ -9,14 +9,14 @@ assignees: []
 created_at: 2018-04-19T10:41:03Z
 updated_at: 2018-08-02T03:30:22Z
 url: https://github.com/clap-rs/clap/issues/1255
-synced_at: 2026-01-10T01:57:42Z
+synced_at: 2026-01-12T16:14:10Z
 ```
 
 # CLI subcommand flags arguments not recognised after switching from NON-YAML approach to using the YAML file approach 
 
 ---
 
-_Issue opened by @ltfschoen on 2018-04-19 10:41_
+_@ltfschoen_
 
 ### Rust Version
 

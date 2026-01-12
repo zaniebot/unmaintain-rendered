@@ -12,14 +12,14 @@ head: charlie/test
 created_at: 2023-02-10T01:55:21Z
 updated_at: 2023-02-10T02:28:12Z
 url: https://github.com/astral-sh/ruff/pull/2703
-synced_at: 2026-01-12T04:52:00Z
+synced_at: 2026-01-12T15:55:10Z
 ```
 
 # Add test module a test-only module
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-02-10 01:55_
+_@charliermarsh_
 
 _No description provided._
 

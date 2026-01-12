@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-11-19T22:13:04Z
 updated_at: 2024-11-21T04:28:34Z
 url: https://github.com/astral-sh/uv/issues/9254
-synced_at: 2026-01-10T01:57:21Z
+synced_at: 2026-01-12T15:59:45Z
 ```
 
 # Virtual Environment Folder Configuration
 
 ---
 
-_Issue opened by @SDAravind on 2024-11-19 22:13_
+_@SDAravind_
 
 Is it possible to have dedicated virtual environment folder outside project and link it to the project similar to poetry venv folder setup. The reason I ask is, when we switch between windows, linux(wsl) system to work on same project this requires deletion of .venv for each OS and again create virtual environment.
 

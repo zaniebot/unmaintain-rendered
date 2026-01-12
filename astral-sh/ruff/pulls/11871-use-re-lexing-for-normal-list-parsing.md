@@ -13,14 +13,14 @@ head: dhruv/re-lexing-2
 created_at: 2024-06-14T12:41:20Z
 updated_at: 2024-06-18T06:44:42Z
 url: https://github.com/astral-sh/ruff/pull/11871
-synced_at: 2026-01-10T21:56:00Z
+synced_at: 2026-01-12T15:55:39Z
 ```
 
 # Use re-lexing for normal list parsing
 
 ---
 
-_Pull request opened by @dhruvmanila on 2024-06-14 12:41_
+_@dhruvmanila_
 
 ## Summary
 

@@ -12,14 +12,14 @@ head: zanie/root-message
 created_at: 2023-11-06T19:17:07Z
 updated_at: 2023-11-06T20:07:51Z
 url: https://github.com/astral-sh/uv/pull/344
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:53Z
 ```
 
 # Improve root message when version solving fails
 
 ---
 
-_Pull request opened by @zanieb on 2023-11-06 19:17_
+_@zanieb_
 
 Matching description at https://github.com/dart-lang/pub/blob/master/doc/solver.md#linear-error-reporting
 

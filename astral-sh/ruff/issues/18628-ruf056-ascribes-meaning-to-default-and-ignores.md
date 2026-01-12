@@ -11,14 +11,14 @@ assignees: []
 created_at: 2025-06-11T14:38:00Z
 updated_at: 2025-06-13T23:07:03Z
 url: https://github.com/astral-sh/ruff/issues/18628
-synced_at: 2026-01-10T11:09:58Z
+synced_at: 2026-01-12T15:54:56Z
 ```
 
 # RUF056 ascribes meaning to `default` and ignores extra arguments
 
 ---
 
-_Issue opened by @dscorbett on 2025-06-11 14:38_
+_@dscorbett_
 
 ### Summary
 

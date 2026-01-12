@@ -12,14 +12,14 @@ head: charlie/constraint
 created_at: 2024-02-18T02:24:55Z
 updated_at: 2024-02-21T18:13:51Z
 url: https://github.com/astral-sh/uv/pull/1621
-synced_at: 2026-01-10T14:54:43Z
+synced_at: 2026-01-12T16:04:40Z
 ```
 
 # Avoid early error for transistive constraints
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-18 02:24_
+_@charliermarsh_
 
 ## Summary
 

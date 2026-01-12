@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-15T14:24:07Z
 updated_at: 2025-02-02T18:56:53Z
 url: https://github.com/astral-sh/ruff/issues/15497
-synced_at: 2026-01-10T11:09:57Z
+synced_at: 2026-01-12T15:54:54Z
 ```
 
 # [red-knot] `version` command
 
 ---
 
-_Issue opened by @MichaReiser on 2025-01-15 14:24_
+_@MichaReiser_
 
 Similar to ruff:
 

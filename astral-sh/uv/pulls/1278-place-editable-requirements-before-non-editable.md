@@ -14,14 +14,14 @@ head: charlie/sort
 created_at: 2024-02-12T02:00:10Z
 updated_at: 2024-02-12T02:26:41Z
 url: https://github.com/astral-sh/uv/pull/1278
-synced_at: 2026-01-10T15:33:24Z
+synced_at: 2026-01-12T16:04:33Z
 ```
 
 # Place editable requirements before non-editable requirements
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-02-12 02:00_
+_@charliermarsh_
 
 ## Summary
 

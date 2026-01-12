@@ -11,14 +11,14 @@ head: filter-win
 created_at: 2025-08-24T11:59:16Z
 updated_at: 2025-08-24T16:16:47Z
 url: https://github.com/astral-sh/uv/pull/15479
-synced_at: 2026-01-10T06:44:33Z
+synced_at: 2026-01-12T16:11:45Z
 ```
 
 # Filter Python executables on Windows by Python version metadata
 
 ---
 
-_Pull request opened by @sunfkny on 2025-08-24 11:59_
+_@sunfkny_
 
 ## Summary
 

@@ -13,14 +13,14 @@ head: gankra/tyrel2
 created_at: 2026-01-07T21:02:24Z
 updated_at: 2026-01-07T21:53:42Z
 url: https://github.com/astral-sh/ty/pull/2381
-synced_at: 2026-01-10T02:34:11Z
+synced_at: 2026-01-12T15:54:28Z
 ```
 
 # Bump version to 0.0.10
 
 ---
 
-_Pull request opened by @Gankra on 2026-01-07 21:02_
+_@Gankra_
 
 _No description provided._
 

@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-22T12:08:26Z
 updated_at: 2024-03-11T22:07:37Z
 url: https://github.com/astral-sh/ruff/issues/5975
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # `Q001` incorrectly treats attribute docstrings as plain multiline strings
 
 ---
 
-_Issue opened by @vpoverennov on 2023-07-22 12:08_
+_@vpoverennov_
 
 [PEP-0257](https://peps.python.org/pep-0257/) defines attribute docstrings
 

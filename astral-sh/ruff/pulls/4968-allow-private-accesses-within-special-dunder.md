@@ -12,14 +12,14 @@ head: charlie/slf
 created_at: 2023-06-08T17:29:29Z
 updated_at: 2023-06-08T17:54:31Z
 url: https://github.com/astral-sh/ruff/pull/4968
-synced_at: 2026-01-12T03:43:29Z
+synced_at: 2026-01-12T15:55:17Z
 ```
 
 # Allow private accesses within special dunder methods
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-08 17:29_
+_@charliermarsh_
 
 ## Summary
 

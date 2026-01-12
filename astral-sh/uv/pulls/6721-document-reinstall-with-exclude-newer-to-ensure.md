@@ -13,14 +13,14 @@ head: docs-exclude-newer-downgrade
 created_at: 2024-08-27T20:06:39Z
 updated_at: 2024-10-09T23:03:32Z
 url: https://github.com/astral-sh/uv/pull/6721
-synced_at: 2026-01-10T12:53:34Z
+synced_at: 2026-01-12T16:07:30Z
 ```
 
 # document --reinstall with --exclude-newer to ensure downgrades
 
 ---
 
-_Pull request opened by @davidszotten on 2024-08-27 20:06_
+_@davidszotten_
 
 fixes #6676
 

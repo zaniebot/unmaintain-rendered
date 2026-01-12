@@ -14,14 +14,14 @@ head: zb/cli-ref-flags
 created_at: 2024-08-08T18:39:14Z
 updated_at: 2024-08-08T18:51:29Z
 url: https://github.com/astral-sh/uv/pull/5926
-synced_at: 2026-01-10T13:31:54Z
+synced_at: 2026-01-12T16:07:06Z
 ```
 
 # Add CLI flags to reference documentation
 
 ---
 
-_Pull request opened by @zanieb on 2024-08-08 18:39_
+_@zanieb_
 
 Oopsies, options are only arguments that take values in Clap-land
 

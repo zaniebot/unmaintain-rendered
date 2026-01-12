@@ -14,14 +14,14 @@ head: jtfm/venv-clear
 created_at: 2025-06-27T10:02:58Z
 updated_at: 2025-07-16T19:25:50Z
 url: https://github.com/astral-sh/uv/pull/14309
-synced_at: 2026-01-10T06:53:01Z
+synced_at: 2026-01-12T16:11:08Z
 ```
 
 # Require `uv venv --clear` before removing an existing directory
 
 ---
 
-_Pull request opened by @jtfmumm on 2025-06-27 10:02_
+_@jtfmumm_
 
 By default, `uv venv <venv-name>` currently removes the `<venv-name`> directory if it exists. This can be surprising behavior: not everyone expects an existing environment to be overwritten. This PR updates the default to fail if a non-empty `<venv-name>` directory already exists and neither `--allow-existing` nor the new `-c/--clear` option is provided (if a TTY is detected, it prompts first). If it's not a TTY, then uv will only warn and not fail for now — we'll make this an error in the future. I've also added a corresponding `UV_VENV_CLEAR` env var.
 

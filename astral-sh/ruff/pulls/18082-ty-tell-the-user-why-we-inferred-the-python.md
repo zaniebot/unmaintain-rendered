@@ -14,14 +14,14 @@ head: alex/tell-me-why-py-version
 created_at: 2025-05-14T01:23:45Z
 updated_at: 2025-05-21T15:06:29Z
 url: https://github.com/astral-sh/ruff/pull/18082
-synced_at: 2026-01-10T18:51:01Z
+synced_at: 2026-01-12T15:56:12Z
 ```
 
 # [ty] Tell the user why we inferred the Python version we inferred
 
 ---
 
-_Pull request opened by @AlexWaygood on 2025-05-14 01:23_
+_@AlexWaygood_
 
 ## Summary
 

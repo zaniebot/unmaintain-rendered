@@ -13,14 +13,14 @@ head: cjm/mrocycle
 created_at: 2025-03-13T01:03:56Z
 updated_at: 2025-03-13T15:16:05Z
 url: https://github.com/astral-sh/ruff/pull/16693
-synced_at: 2026-01-10T19:49:02Z
+synced_at: 2026-01-12T15:55:56Z
 ```
 
 # [red-knot] handle cycles in MRO/bases resolution
 
 ---
 
-_Pull request opened by @carljm on 2025-03-13 01:03_
+_@carljm_
 
 There can be semi-cyclic inheritance patterns (e.g. recursive generics) that are not technically inheritance cycles, but that can cause us to hit Salsa query cycles in evaluating a type's MRO. Add fixed-point handling to these MRO-related queries so we don't panic on these cycles.
 

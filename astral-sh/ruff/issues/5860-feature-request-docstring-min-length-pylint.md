@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-07-18T13:55:15Z
 updated_at: 2025-08-08T06:53:16Z
 url: https://github.com/astral-sh/ruff/issues/5860
-synced_at: 2026-01-10T11:09:48Z
+synced_at: 2026-01-12T15:54:45Z
 ```
 
 # Feature request: docstring-min-length (pylint)
 
 ---
 
-_Issue opened by @NoAchache on 2023-07-18 13:55_
+_@NoAchache_
 
 Hello,
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-03-12T01:18:04Z
 updated_at: 2024-03-12T04:35:42Z
 url: https://github.com/astral-sh/ruff/issues/10351
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-12T15:54:50Z
 ```
 
 # `Indexer` fails to identify continuation preceded by newline
 
 ---
 
-_Issue opened by @charliermarsh on 2024-03-12 01:18_
+_@charliermarsh_
 
 Given:
 

@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-06-10T20:14:48Z
 updated_at: 2025-06-10T20:24:31Z
 url: https://github.com/clap-rs/clap/issues/6033
-synced_at: 2026-01-10T01:57:49Z
+synced_at: 2026-01-12T16:14:17Z
 ```
 
 # Allow parsing env variables from `try_parse_from` parameter or similar
 
 ---
 
-_Issue opened by @tysm on 2025-06-10 20:14_
+_@tysm_
 
 ### Please complete the following tasks
 

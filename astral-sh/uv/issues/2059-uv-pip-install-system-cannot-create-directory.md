@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-02-28T22:03:08Z
 updated_at: 2024-07-14T16:20:49Z
 url: https://github.com/astral-sh/uv/issues/2059
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:34Z
 ```
 
 # `uv pip install --system` cannot create directory
 
 ---
 
-_Issue opened by @haarisr on 2024-02-28 22:03_
+_@haarisr_
 
 * A minimal code snippet that reproduces the bug.
 ```

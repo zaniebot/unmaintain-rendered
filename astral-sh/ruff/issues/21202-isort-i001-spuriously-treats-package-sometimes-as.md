@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-11-02T10:41:29Z
 updated_at: 2025-11-02T15:31:42Z
 url: https://github.com/astral-sh/ruff/issues/21202
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-12T15:54:57Z
 ```
 
 # Isort I001 spuriously treats package sometimes as first-party sometimes as third party if submodule has the same name as the package.
 
 ---
 
-_Issue opened by @Daraan on 2025-11-02 10:41_
+_@Daraan_
 
 ### Summary
 

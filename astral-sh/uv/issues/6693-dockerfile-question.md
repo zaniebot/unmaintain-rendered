@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-08-27T15:28:43Z
 updated_at: 2024-09-05T00:22:09Z
 url: https://github.com/astral-sh/uv/issues/6693
-synced_at: 2026-01-10T01:57:14Z
+synced_at: 2026-01-12T15:59:06Z
 ```
 
 # Dockerfile question
 
 ---
 
-_Issue opened by @itayporezky on 2024-08-27 15:28_
+_@itayporezky_
 
 [Dockerfile ](https://github.com/astral-sh/uv/blob/main/Dockerfile) basically builds the UV project and final step is to take the complete binary and add it as last layer on "scratch" image.
 

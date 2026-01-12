@@ -11,14 +11,14 @@ head: charlie/uint8
 created_at: 2023-06-23T03:30:50Z
 updated_at: 2023-06-25T21:51:47Z
 url: https://github.com/astral-sh/ruff/pull/5323
-synced_at: 2026-01-12T03:36:54Z
+synced_at: 2026-01-12T15:55:18Z
 ```
 
 # Avoid `uint8` format in SchemaStore JSON Schema
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-06-23 03:30_
+_@charliermarsh_
 
 The new `tabSize` property uses `uint8`, but SchemaStore rejects it. (I edited the generated PR manually.)
 

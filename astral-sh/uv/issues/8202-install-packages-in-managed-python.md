@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-10-15T08:59:44Z
 updated_at: 2024-12-26T16:54:19Z
 url: https://github.com/astral-sh/uv/issues/8202
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-12T15:59:22Z
 ```
 
 # Install packages in managed python
 
 ---
 
-_Issue opened by @ion-elgreco on 2024-10-15 08:59_
+_@ion-elgreco_
 
 Currently when you install packages with `--system` it will use the system installation. Is there a way to force to install packages in the managed installation without creating a venv?
 

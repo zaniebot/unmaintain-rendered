@@ -12,14 +12,14 @@ head: ag/version-refactor
 created_at: 2024-01-04T14:56:57Z
 updated_at: 2024-01-04T17:28:37Z
 url: https://github.com/astral-sh/uv/pull/780
-synced_at: 2026-01-10T15:44:44Z
+synced_at: 2026-01-12T16:04:11Z
 ```
 
 # pep440: some minor refactoring, mostly around error types
 
 ---
 
-_Pull request opened by @BurntSushi on 2024-01-04 14:56_
+_@BurntSushi_
 
 This PR does a bit of refactoring to the pep440 crate, and in
 particular around the erorr types. This PR is meant to be a precursor

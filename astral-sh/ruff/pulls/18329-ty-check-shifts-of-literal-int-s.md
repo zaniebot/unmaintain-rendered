@@ -13,14 +13,14 @@ head: shifts
 created_at: 2025-05-27T03:05:46Z
 updated_at: 2025-07-10T14:11:37Z
 url: https://github.com/astral-sh/ruff/pull/18329
-synced_at: 2026-01-10T18:33:12Z
+synced_at: 2026-01-12T15:56:17Z
 ```
 
 # [ty] Check shifts of `Literal` `int`s
 
 ---
 
-_Pull request opened by @brandtbucher on 2025-05-27 03:05_
+_@brandtbucher_
 
 Fixes astral-sh/ty#517.
 

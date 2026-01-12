@@ -10,14 +10,14 @@ assignees: []
 created_at: 2025-01-14T18:39:28Z
 updated_at: 2025-02-07T12:00:35Z
 url: https://github.com/astral-sh/uv/issues/10609
-synced_at: 2026-01-10T01:57:24Z
+synced_at: 2026-01-12T16:00:17Z
 ```
 
 # Problem adding external indexes
 
 ---
 
-_Issue opened by @duducp on 2025-01-14 18:39_
+_@duducp_
 
 I recently opened this issue https://github.com/astral-sh/uv/issues/10251 reporting a problem mapping an external pypi package. The problem itself was fixed, but I found a few other bugs related to it.
 

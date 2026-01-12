@@ -13,14 +13,14 @@ head: charlie/lock-dep-groups
 created_at: 2024-10-20T20:13:53Z
 updated_at: 2024-10-22T02:56:45Z
 url: https://github.com/astral-sh/uv/pull/8391
-synced_at: 2026-01-10T12:54:08Z
+synced_at: 2026-01-12T16:08:18Z
 ```
 
 # Rename dev dependencies to dependency groups in lockfile
 
 ---
 
-_Pull request opened by @charliermarsh on 2024-10-20 20:13_
+_@charliermarsh_
 
 ## Summary
 

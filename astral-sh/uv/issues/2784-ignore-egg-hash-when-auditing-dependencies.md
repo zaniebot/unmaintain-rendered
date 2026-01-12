@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-04-02T21:17:43Z
 updated_at: 2024-04-02T23:31:52Z
 url: https://github.com/astral-sh/uv/issues/2784
-synced_at: 2026-01-10T01:57:06Z
+synced_at: 2026-01-12T15:58:40Z
 ```
 
 # Ignore `#egg` hash when auditing dependencies
 
 ---
 
-_Issue opened by @charliermarsh on 2024-04-02 21:17_
+_@charliermarsh_
 
 E.g., this always reinstalls:
 

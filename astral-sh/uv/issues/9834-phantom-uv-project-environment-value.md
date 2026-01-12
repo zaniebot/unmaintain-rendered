@@ -10,14 +10,14 @@ assignees: []
 created_at: 2024-12-12T09:24:33Z
 updated_at: 2025-04-17T16:01:46Z
 url: https://github.com/astral-sh/uv/issues/9834
-synced_at: 2026-01-10T03:41:46Z
+synced_at: 2026-01-12T16:00:00Z
 ```
 
 # phantom UV_PROJECT_ENVIRONMENT value
 
 ---
 
-_Issue opened by @superlopuh on 2024-12-12 09:24_
+_@superlopuh_
 
 I'm trying to run `uv sync` in a temporarily-created virtualenv, and am getting a weird warning:
 

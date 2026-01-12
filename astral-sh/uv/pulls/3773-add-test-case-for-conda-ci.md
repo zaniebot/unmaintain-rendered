@@ -13,14 +13,14 @@ head: zb/debug-conda
 created_at: 2024-05-22T20:51:29Z
 updated_at: 2024-05-22T21:37:27Z
 url: https://github.com/astral-sh/uv/pull/3773
-synced_at: 2026-01-10T14:32:20Z
+synced_at: 2026-01-12T16:05:50Z
 ```
 
 # Add test case for Conda CI
 
 ---
 
-_Pull request opened by @zanieb on 2024-05-22 20:51_
+_@zanieb_
 
 Integration test coverage for #3769 
 

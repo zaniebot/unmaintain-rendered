@@ -12,14 +12,14 @@ head: charlie/tweak
 created_at: 2023-10-30T01:01:40Z
 updated_at: 2023-10-30T01:07:47Z
 url: https://github.com/astral-sh/uv/pull/224
-synced_at: 2026-01-10T15:50:28Z
+synced_at: 2026-01-12T16:03:48Z
 ```
 
 # Tweak response buffering
 
 ---
 
-_Pull request opened by @charliermarsh on 2023-10-30 01:01_
+_@charliermarsh_
 
 In my testing, we can both increase the number of concurrent requests and remove the `ready_chunks`.
 

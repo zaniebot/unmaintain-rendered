@@ -13,14 +13,14 @@ head: renovate/koalaman-shellcheck-0.x
 created_at: 2025-09-15T01:24:45Z
 updated_at: 2025-09-15T02:50:29Z
 url: https://github.com/astral-sh/uv/pull/15859
-synced_at: 2026-01-10T06:36:15Z
+synced_at: 2026-01-12T16:11:59Z
 ```
 
 # Update dependency koalaman/shellcheck to v0.11.0
 
 ---
 
-_Pull request opened by @renovate on 2025-09-15 01:24_
+_@renovate_
 
 This PR contains the following updates:
 

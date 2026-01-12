@@ -12,14 +12,14 @@ head: flake8_todo
 created_at: 2023-04-09T02:28:07Z
 updated_at: 2023-05-13T16:05:11Z
 url: https://github.com/astral-sh/ruff/pull/3921
-synced_at: 2026-01-12T03:50:02Z
+synced_at: 2026-01-12T15:55:14Z
 ```
 
 # Implement `flake8_todos`
 
 ---
 
-_Pull request opened by @evanrittenhouse on 2023-04-09 02:28_
+_@evanrittenhouse_
 
 Completes #3870
 

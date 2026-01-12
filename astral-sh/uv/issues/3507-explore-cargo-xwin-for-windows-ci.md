@@ -11,14 +11,14 @@ assignees: []
 created_at: 2024-05-10T14:39:02Z
 updated_at: 2024-05-17T02:15:04Z
 url: https://github.com/astral-sh/uv/issues/3507
-synced_at: 2026-01-10T05:31:37Z
+synced_at: 2026-01-12T15:58:44Z
 ```
 
 # Explore cargo-xwin for windows CI
 
 ---
 
-_Issue opened by @konstin on 2024-05-10 14:39_
+_@konstin_
 
 Our windows CI is currently slow and inconsistent in performance. We could run e.g. the windows clippy job with cargo-xwin and see if we can speed up at least the feedback cycle on clippy:
 

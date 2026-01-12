@@ -13,14 +13,14 @@ head: fix-1652
 created_at: 2026-01-02T01:45:40Z
 updated_at: 2026-01-09T17:59:15Z
 url: https://github.com/astral-sh/ruff/pull/22335
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T15:57:47Z
 ```
 
 # [ty] Publish diagnostics for all open files (#1652)
 
 ---
 
-_Pull request opened by @ficd0 on 2026-01-02 01:45_
+_@ficd0_
 
 This commit fixes https://github.com/astral-sh/ty/issues/1652, improving support for LSP clients that don't support pull diagnostics by doing the following:
 
