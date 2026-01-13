@@ -2,17 +2,18 @@
 number: 22407
 title: "[ty] Fix classmethod + contextmanager + Self"
 type: pull_request
-state: open
+state: merged
 author: eclbg
 labels:
   - ty
 assignees: []
+merged: true
 base: main
 head: classmethod-contextmanager-self-fix
 created_at: 2026-01-05T19:01:18Z
-updated_at: 2026-01-13T14:18:28Z
+updated_at: 2026-01-13T14:47:54Z
 url: https://github.com/astral-sh/ruff/pull/22407
-synced_at: 2026-01-13T14:32:13Z
+synced_at: 2026-01-13T15:29:24Z
 ```
 
 # [ty] Fix classmethod + contextmanager + Self
@@ -332,5 +333,29 @@ Good catch! So the `bind_self` needs to take in the type that `Self` specializes
 ---
 
 _@dcreager approved on 2026-01-13 14:15_
+
+---
+
+_Merged by @dcreager on 2026-01-13 14:29_
+
+---
+
+_Closed by @dcreager on 2026-01-13 14:29_
+
+---
+
+_@eclbg reviewed on 2026-01-13 14:47_
+
+---
+
+_Review comment by @eclbg on `crates/ty_python_semantic/src/types.rs`:2607 on 2026-01-13 14:47_
+
+Thanks! Much better :)
+
+---
+
+_Comment by @eclbg on 2026-01-13 14:47_
+
+Thanks for the review and for getting this merged!
 
 ---

@@ -2,18 +2,18 @@
 number: 17421
 title: Add nextest partitioning to Windows tests
 type: pull_request
-state: open
+state: merged
 author: zanieb
 labels:
   - internal
 assignees: []
-draft: true
+merged: true
 base: main
 head: claude/nextest-windows-ci-R34x3
 created_at: 2026-01-12T19:06:03Z
-updated_at: 2026-01-13T05:17:50Z
+updated_at: 2026-01-13T15:22:10Z
 url: https://github.com/astral-sh/uv/pull/17421
-synced_at: 2026-01-13T05:29:28Z
+synced_at: 2026-01-13T15:29:37Z
 ```
 
 # Add nextest partitioning to Windows tests
@@ -42,6 +42,8 @@ branch (3 shards): 21m 32s
 
 As in #875, we could explore moving the build step before the sharded test runs. The build is 3m of the runtime, but I think artifact transfer and runner startup time was too expensive last time and I don't expect it to be faster. It might save a bit on CI cost, but I'm not super worried about that.
 
+I chose three shards due to a reasonable reduction in per-shard runtime without a big increase in total runtime (compared to two shards). I think since half of the shard runtime is fixed build time (vs reducable test time), going up to more shards would be wasteful.
+
 We use a hash-based strategy for test splitting, which means adding tests will never move tests across shards.
 
 I moved _off_ of the Depot runner because the "checkout" setup is taking _way_ too long, about 120s more than the GitHub one which, once we split over multiple shards, overcomes the speed benefits of the Depot runners.
@@ -60,5 +62,41 @@ The downsides here are:
 ---
 
 _Label `internal` added by @zanieb on 2026-01-12 19:06_
+
+---
+
+_Marked ready for review by @zanieb on 2026-01-13 14:40_
+
+---
+
+_@zsol approved on 2026-01-13 14:56_
+
+---
+
+_Review comment by @konstin on `.github/workflows/test.yml`:143 on 2026-01-13 15:18_
+
+Do we need to set our own cache key for windows?
+
+---
+
+_Merged by @zanieb on 2026-01-13 15:20_
+
+---
+
+_Closed by @zanieb on 2026-01-13 15:20_
+
+---
+
+_@konstin reviewed on 2026-01-13 15:20_
+
+---
+
+_@zanieb reviewed on 2026-01-13 15:22_
+
+---
+
+_Review comment by @zanieb on `.github/workflows/test.yml`:143 on 2026-01-13 15:22_
+
+No, the host is included still. This just avoids the unique id from each shard being appended. (I verified this by looking at the generated cache key)
 
 ---

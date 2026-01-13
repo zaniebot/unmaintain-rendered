@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: toml-extra
 created_at: 2025-07-18T15:20:55Z
-updated_at: 2026-01-13T14:20:59Z
+updated_at: 2026-01-13T15:02:14Z
 url: https://github.com/astral-sh/uv/pull/14728
-synced_at: 2026-01-13T14:32:26Z
+synced_at: 2026-01-13T15:29:37Z
 ```
 
 # feat: Complete PEP 751 multi-use lock file implementation for pylock.toml
@@ -613,5 +613,15 @@ _@gaborbernat reviewed on 2026-01-13 14:20_
 _Review comment by @gaborbernat on `crates/uv-resolver/src/lock/export/pylock_toml.rs`:734 on 2026-01-13 14:20_
 
 It's mostly just encoding as machine readable toml what we already encoding as comment, and is part defined by the pep 🤔
+
+---
+
+_@konstin reviewed on 2026-01-13 15:02_
+
+---
+
+_Review comment by @konstin on `crates/uv-resolver/src/lock/export/pylock_toml.rs`:734 on 2026-01-13 15:02_
+
+Fair, but the PR is large enough that I appreciate everything we can break out into a separately reviewable and mergable PR.
 
 ---

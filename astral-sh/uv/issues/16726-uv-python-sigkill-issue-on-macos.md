@@ -9,9 +9,9 @@ labels:
   - needs-mre
 assignees: []
 created_at: 2025-11-13T17:28:28Z
-updated_at: 2026-01-12T10:34:20Z
+updated_at: 2026-01-13T15:15:21Z
 url: https://github.com/astral-sh/uv/issues/16726
-synced_at: 2026-01-12T16:02:37Z
+synced_at: 2026-01-13T15:29:30Z
 ```
 
 # UV Python SIGKILL Issue on macOS
@@ -405,5 +405,11 @@ EOF
 
 launchctl load ~/Library/LaunchAgents/com.mgrbyte.uv-python-signing.plist
 ```
+
+---
+
+_Comment by @zanieb on 2026-01-13 15:15_
+
+What version of `install_name_tool` do you have? My understanding is that ad-hoc code signing happens automatically in newer versions of `install_name_tool`.
 
 ---
