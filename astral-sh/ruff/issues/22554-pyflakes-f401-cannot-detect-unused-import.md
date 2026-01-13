@@ -4,12 +4,13 @@ title: "[`pyflakes`] `F401` cannot detect unused import"
 type: issue
 state: open
 author: chirizxc
-labels: []
+labels:
+  - question
 assignees: []
 created_at: 2026-01-13T16:56:16Z
-updated_at: 2026-01-13T17:29:50Z
+updated_at: 2026-01-13T20:04:22Z
 url: https://github.com/astral-sh/ruff/issues/22554
-synced_at: 2026-01-13T18:45:32Z
+synced_at: 2026-01-13T20:36:52Z
 ```
 
 # [`pyflakes`] `F401` cannot detect unused import
@@ -122,5 +123,27 @@ if TYPE_CHECKING:
 ```
 
 Here, too, we should propose removing imports first `from faststream._internal.broker import BrokerUsecase`
+
+---
+
+_Comment by @chirizxc on 2026-01-13 19:32_
+
+It seems that to verify https://github.com/astral-sh/ruff/issues/22554#issue-3809728941 requires more advanced logic, as there are quite a few false positives in the ecosystem, but with https://github.com/astral-sh/ruff/issues/22554#issuecomment-3745545262, after reviewing about 30 examples, no false positives were found. Can we start by considering changes to this behavior only, without touching https://github.com/astral-sh/ruff/issues/22554#issue-3809728941?
+
+---
+
+_Comment by @ntBre on 2026-01-13 20:04_
+
+I think this should trigger [redefined-while-unused (F811)](https://docs.astral.sh/ruff/rules/redefined-while-unused/#redefined-while-unused-f811) like the pyflakes diagnostic message rather than [unused-import (F401)](https://docs.astral.sh/ruff/rules/unused-import/#unused-import-f401). 
+
+I'm not sure if this is a bug or an intentional bias toward false negatives. For example, there's this check in F811:
+
+https://github.com/astral-sh/ruff/blob/55a335165ab126d50edb89e775c0c5c340cb8ae3/crates/ruff_linter/src/rules/pyflakes/rules/redefined_while_unused.rs#L131-L138
+
+which I think is where this code is being skipped.
+
+---
+
+_Label `question` added by @ntBre on 2026-01-13 20:04_
 
 ---

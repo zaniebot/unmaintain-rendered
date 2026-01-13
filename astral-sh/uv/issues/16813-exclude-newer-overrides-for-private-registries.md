@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-11-21T21:27:02Z
-updated_at: 2025-12-16T20:09:52Z
+updated_at: 2026-01-13T19:25:08Z
 url: https://github.com/astral-sh/uv/issues/16813
-synced_at: 2026-01-12T16:02:38Z
+synced_at: 2026-01-13T20:37:09Z
 ```
 
 # exclude-newer: overrides for private registries
@@ -101,5 +101,20 @@ _Comment by @javiertejero on 2025-12-12 14:06_
 we observed the same problem with AWS CodeArtifact, which does not support JSON API  - it would be great to have this `uv` setting  to skip validation for some additional private indexes
 
 UPDATE: I opened a ticket with AWS support and they will consider implementing JSON API but unfortunately there is not ETA yet
+
+---
+
+_Comment by @sumkincpp on 2026-01-13 19:25_
+
+As of #16854 specific packages can be excluded with following syntax -
+
+```yaml
+[tool.uv]
+exclude-newer-package = { pytorch = true } 
+```
+
+It's of course really usefull for packages stored in private registries, which should not normally require version/dependency cooldown.
+
+Good question if it really works with Gitlab, gonna test it with the next uv release!
 
 ---

@@ -8,9 +8,9 @@ labels:
   - Protocols
 assignees: []
 created_at: 2026-01-10T10:02:56Z
-updated_at: 2026-01-13T08:03:28Z
+updated_at: 2026-01-13T19:37:44Z
 url: https://github.com/astral-sh/ty/issues/2434
-synced_at: 2026-01-13T08:22:54Z
+synced_at: 2026-01-13T20:36:46Z
 ```
 
 # `"".join(typed_as_str)` should be typed as `str`, not `LiteralString`
@@ -100,7 +100,7 @@ _Comment by @carljm on 2026-01-13 02:01_
 
 This is two (related) reports in one. In the OP example, the type of `a` is irrelevant to the type of `page_lines`.
 
-In the case of `a`, I think ty's inference is fine; we do know that `a` is `Literal[""]` after `a = str()`, and it causes no harm to infer it as one. We should allow `a: str = str()` as an explicit upcast, and we will with #136. Other type checkers don't infer `str()` as `Literal[""]`, but they do infer `""` as `Literal[""]`; there's no practical difference.
+In the case of `a`, I think ty's inference is fine; we do know that `a` is `Literal[""]` after `a = str()`, and it causes no harm to infer it as such. We should allow `a: str = str()` as an explicit upcast, and we will with #136. Other type checkers don't infer `str()` as `Literal[""]`, but they do infer `""` as `Literal[""]`; there's no practical difference.
 
 The case of `page_lines` is more complex, because inserting an annotation `page_lines: list[str]` actually results in a type error, since we still infer the RHS as `list[LiteralString]`, which is not assignable to `list[str]`. Thus even #136 won't help here.
 
@@ -160,5 +160,15 @@ _Comment by @AlexWaygood on 2026-01-13 08:03_
 > I'm not sure how we'd apply bidirectional inference in this case, since `str.split("\n")` is not generic -- given the base type inferred as `LiteralString`, we are simply picking the right overload for `split()`.
 
 The idea is that we could potentially use advanced whole-of-scope bidirectional inference to avoid inferring LiteralString in the first place, and instead we could infer str there because of the fact that inferring the more precise type causes type errors later on in the scope.
+
+---
+
+_Comment by @carljm on 2026-01-13 19:35_
+
+> The idea is that we could potentially use advanced whole-of-scope bidirectional inference to avoid inferring LiteralString in the first place, and instead we could infer str there because of the fact that inferring the more precise type causes type errors later on in the scope.
+
+I'm skeptical that this will be a workable approach. The "whole-scope bidirectional inference" we've discussed so far in #1473  (which is already pretty ambitious IMO) at least has a pretty clear idea of exactly where we need to look ahead for relevant type contexts ("uses of this particular container"). Making inference decisions based on a much fuzzier concept of "does this cause type errors later on" (where the errors might be due to several inference steps beyond the type we are currently inferring) is I think a road we should not go down.
+
+In any case I think we should keep _this_ issue narrowly scoped to the wrong assignability of `str` to `Iterable[LiteralString]` causing us to pick the wrong overload of `str.join`, as outlined above. That's where we are going wrong relative to other type checkers in this case.
 
 ---

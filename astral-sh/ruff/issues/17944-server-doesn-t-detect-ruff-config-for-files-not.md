@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-05-08T11:12:40Z
-updated_at: 2026-01-13T18:01:26Z
+updated_at: 2026-01-13T19:30:52Z
 url: https://github.com/astral-sh/ruff/issues/17944
-synced_at: 2026-01-13T18:45:22Z
+synced_at: 2026-01-13T20:36:52Z
 ```
 
 # Server doesn't detect ruff config for files not under working directory of server
@@ -269,5 +269,11 @@ One possible way to fix issues 2. and 4. above is, during `session::Index::open_
 
 This seems to work, without negatively affecting editors like VS Code that open folders. I don't know if it would have other consequences. It's also not a fix for #20847. Should I open a PR for it?
 
+
+---
+
+_Comment by @ntBre on 2026-01-13 19:30_
+
+Thanks for looking into this! @MichaReiser or @dhruvmanila would know better than me if this sounds like a promising approach, but it probably wouldn't hurt to open a PR if you have something working locally. Then we could test it out too.
 
 ---

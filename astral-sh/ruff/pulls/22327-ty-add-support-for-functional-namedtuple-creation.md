@@ -11,9 +11,9 @@ assignees: []
 base: charlie/dyn-expression
 head: charlie/functional-namedtuple
 created_at: 2026-01-01T13:23:44Z
-updated_at: 2026-01-13T19:08:50Z
+updated_at: 2026-01-13T19:28:11Z
 url: https://github.com/astral-sh/ruff/pull/22327
-synced_at: 2026-01-13T19:37:28Z
+synced_at: 2026-01-13T20:37:03Z
 ```
 
 # [ty] Add support for functional `namedtuple` creation
@@ -1097,5 +1097,11 @@ _@charliermarsh reviewed on 2026-01-13 19:01_
 _Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/class.rs`:3868 on 2026-01-13 19:01_
 
 (I think this needs to be removed.)
+
+---
+
+_Comment by @carljm on 2026-01-13 19:26_
+
+Going to let @AlexWaygood handle review here -- lmk if there's anything you particularly want me to look at.
 
 ---

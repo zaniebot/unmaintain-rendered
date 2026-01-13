@@ -8,9 +8,9 @@ labels:
   - wish
 assignees: []
 created_at: 2026-01-10T22:44:38Z
-updated_at: 2026-01-13T06:58:34Z
+updated_at: 2026-01-13T19:39:15Z
 url: https://github.com/astral-sh/ty/issues/2437
-synced_at: 2026-01-13T07:25:22Z
+synced_at: 2026-01-13T20:36:46Z
 ```
 
 # `struct.unpack` inference
@@ -168,5 +168,11 @@ https://github.com/astral-sh/ruff/blob/99beabdde89651b72c3b297502e85c4efcf567f0/
 
 and here?
 https://github.com/astral-sh/ruff/blob/99beabdde89651b72c3b297502e85c4efcf567f0/crates/ty_python_semantic/src/types/call/bind.rs#L767
+
+---
+
+_Comment by @carljm on 2026-01-13 19:39_
+
+@sakgoyal yes, you identified exactly the right spots!
 
 ---

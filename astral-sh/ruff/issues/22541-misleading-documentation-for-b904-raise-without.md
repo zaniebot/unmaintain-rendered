@@ -8,9 +8,9 @@ labels:
   - documentation
 assignees: []
 created_at: 2026-01-12T22:45:34Z
-updated_at: 2026-01-13T19:14:43Z
+updated_at: 2026-01-13T19:45:22Z
 url: https://github.com/astral-sh/ruff/issues/22541
-synced_at: 2026-01-13T19:37:17Z
+synced_at: 2026-01-13T20:36:52Z
 ```
 
 # Misleading documentation for B904: raise-without-from-inside-except
@@ -76,5 +76,13 @@ Exactly, totally agree -- and with the way the docs are worded now, they might m
 _Comment by @ntBre on 2026-01-13 19:14_
 
 Do you have an example of the explicit chaining putting less information in the stack trace? Based on my experiments in the REPL and Zanie's comment on the other issue, the trace looks basically the same except for the phrasing. Is the effect more pronounced for longer chains?
+
+---
+
+_Comment by @amyreese on 2026-01-13 19:45_
+
+Hmm, you're right. The Python documentation you linked to is very misleading, and I feel like I've seen the behavior it describes, but I can't repro that. Looking at the [upstream commit for when B904 was added](https://github.com/PyCQA/flake8-bugbear/commit/b462a5e6926d12e344181d91cd9ba4f37773e45b), it looks like they reference Hypothesis and Trio as reasons for the rule. I've never used either, so 🤷🏻‍♀️.
+
+I'm still in the mindset that B904 is at best not useful, but perhaps not as counter-productive as I expected. 😅
 
 ---
