@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: pp/assume-tgz
 created_at: 2026-01-12T21:08:12Z
-updated_at: 2026-01-12T22:44:44Z
+updated_at: 2026-01-13T08:19:14Z
 url: https://github.com/astral-sh/uv/pull/17426
-synced_at: 2026-01-12T23:24:27Z
+synced_at: 2026-01-13T08:23:24Z
 ```
 
 # Assume tar.gz for packages without extension
@@ -53,5 +53,41 @@ I added test with installing a package without file extension..
 _Comment by @charliermarsh on 2026-01-12 22:44_
 
 Appreciate the contribution! Unfortunately I don't think it's correct to assume `.tar.gz` for extension-less URLs. I think the right fix here is that we need to respect `Content-Disposition` headers in these cases.
+
+---
+
+_Comment by @konstin on 2026-01-13 07:58_
+
+Not having the file name in the URL obscures what the underlying resource is: It can be a source archive, it can be wheel, and it could change in between downloads.
+
+> If extension is not specified, we assume it is a tar.gz file, as it's a common pattern for GitHub.
+
+Note that source tarballs from GitHub are not proper source distributions. They happen to work in pip and uv, but at least in uv that's more accidental than a proper feature and should not relied upon.
+
+---
+
+_Comment by @ppalucha on 2026-01-13 08:08_
+
+> Not having the file name in the URL obscures what the underlying resource is: It can be a source archive, it can be wheel, and it could change in between downloads.
+> 
+> > If extension is not specified, we assume it is a tar.gz file, as it's a common pattern for GitHub.
+> 
+> Note that source tarballs from GitHub are not proper source distributions. They happen to work in pip and uv, but at least in uv that's more accidental than a proper feature and should not relied upon.
+
+What if I update the code to use headers for deciding the content type?
+
+---
+
+_Comment by @konstin on 2026-01-13 08:08_
+
+Both of those problems remain when using headers.
+
+---
+
+_Comment by @ppalucha on 2026-01-13 08:19_
+
+> Both of those problems remain when using headers.
+
+If you get content-disposition header specifying a filename with extension, is it not enough?
 
 ---

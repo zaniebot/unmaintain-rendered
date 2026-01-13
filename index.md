@@ -16,7 +16,7 @@ GitHub issues and pull requests rendered as markdown.
 
 ### [astral-sh/ty](https://github.com/astral-sh/ty)
 
-- [Issues](astral-sh/ty/issues/) (4155)
+- [Issues](astral-sh/ty/issues/) (4157)
 - [Pull Requests](astral-sh/ty/pulls/) (792)
 
 ### [astral-sh/uv](https://github.com/astral-sh/uv)
@@ -39,4 +39,4 @@ GitHub issues and pull requests rendered as markdown.
 - [Issues](zanieb/unmaintain-test/issues/) (4)
 
 ---
-_Last updated: 2026-01-13 08:11:54 UTC_
+_Last updated: 2026-01-13 08:23:33 UTC_

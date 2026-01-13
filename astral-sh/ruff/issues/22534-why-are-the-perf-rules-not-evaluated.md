@@ -2,15 +2,15 @@
 number: 22534
 title: Why are the PERF rules not evaluated?
 type: issue
-state: open
+state: closed
 author: mosc9575
 labels:
   - question
 assignees: []
 created_at: 2026-01-12T15:50:21Z
-updated_at: 2026-01-12T18:56:10Z
+updated_at: 2026-01-13T07:55:17Z
 url: https://github.com/astral-sh/ruff/issues/22534
-synced_at: 2026-01-12T19:26:13Z
+synced_at: 2026-01-13T08:23:00Z
 ```
 
 # Why are the PERF rules not evaluated?
@@ -118,5 +118,15 @@ _Label `question` added by @MichaReiser on 2026-01-12 18:54_
 _Comment by @MichaReiser on 2026-01-12 18:55_
 
 [Playground](https://play.ruff.rs/6fe10380-245f-459d-8a64-edbb8da2a8ed) showing that it works when using `k` in the loop body
+
+---
+
+_Comment by @mosc9575 on 2026-01-13 07:55_
+
+Thanks for your fast and kind reply. My question is now solved and I will close this issue.
+
+---
+
+_Closed by @mosc9575 on 2026-01-13 07:55_
 
 ---

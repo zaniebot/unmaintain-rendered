@@ -2,17 +2,18 @@
 number: 22530
 title: "[ty] Improve log guidance message for Zed"
 type: pull_request
-state: open
+state: merged
 author: dhruvmanila
 labels:
   - server
 assignees: []
+merged: true
 base: main
 head: dhruv/log-guidance
 created_at: 2026-01-12T09:31:56Z
-updated_at: 2026-01-13T05:57:25Z
+updated_at: 2026-01-13T08:13:12Z
 url: https://github.com/astral-sh/ruff/pull/22530
-synced_at: 2026-01-13T06:27:11Z
+synced_at: 2026-01-13T08:23:11Z
 ```
 
 # [ty] Improve log guidance message for Zed
@@ -113,5 +114,17 @@ _Review comment by @dhruvmanila on `crates/ty_server/src/server/api.rs`:126 on 2
 I've made this change except:
 1. Used `ClientName` because there's already a `Client` struct
 2. Used `Other` instead of `Unknown` without storing the `String` for now, we can add it if it's needed
+
+---
+
+_Merged by @dhruvmanila on 2026-01-13 08:13_
+
+---
+
+_Closed by @dhruvmanila on 2026-01-13 08:13_
+
+---
+
+_Branch deleted on 2026-01-13 08:13_
 
 ---

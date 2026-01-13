@@ -8,9 +8,9 @@ labels:
   - type-inference
 assignees: []
 created_at: 2025-09-23T02:28:53Z
-updated_at: 2026-01-13T02:47:14Z
+updated_at: 2026-01-13T07:26:30Z
 url: https://github.com/astral-sh/ty/issues/1240
-synced_at: 2026-01-13T03:19:30Z
+synced_at: 2026-01-13T08:22:54Z
 ```
 
 # (mostly) stop unioning in `Unknown` type where there is no type annotation
@@ -183,5 +183,11 @@ _Comment by @carljm on 2026-01-13 02:44_
 I have a hard time imagining cases where you'd really want a global option that affects all of your code, rather than just annotating one specific container for which a too-narrow type is being inferred.
 
 (EDIT: I guess you did say "untyped code". #1473 should also remove many of the cases where this would be needed)
+
+---
+
+_Comment by @AndBoyS on 2026-01-13 07:26_
+
+@carljm yeah, I meant module-wise for example
 
 ---

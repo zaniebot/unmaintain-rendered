@@ -8,9 +8,9 @@ labels:
   - Protocols
 assignees: []
 created_at: 2026-01-10T10:02:56Z
-updated_at: 2026-01-13T02:05:51Z
+updated_at: 2026-01-13T08:03:28Z
 url: https://github.com/astral-sh/ty/issues/2434
-synced_at: 2026-01-13T02:20:57Z
+synced_at: 2026-01-13T08:22:54Z
 ```
 
 # `"".join(typed_as_str)` should be typed as `str`, not `LiteralString`
@@ -152,5 +152,13 @@ _Added to milestone `Stable` by @carljm on 2026-01-13 02:03_
 ---
 
 _Renamed from "`str` should not be assignable to `Iterable[LiteralString]`" to "`"".join(typed_as_str)` should be typed as `str`, not `LiteralString`" by @carljm on 2026-01-13 02:05_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-13 08:03_
+
+> I'm not sure how we'd apply bidirectional inference in this case, since `str.split("\n")` is not generic -- given the base type inferred as `LiteralString`, we are simply picking the right overload for `split()`.
+
+The idea is that we could potentially use advanced whole-of-scope bidirectional inference to avoid inferring LiteralString in the first place, and instead we could infer str there because of the fact that inferring the more precise type causes type errors later on in the scope.
 
 ---

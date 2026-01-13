@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: toml-extra
 created_at: 2025-07-18T15:20:55Z
-updated_at: 2026-01-12T23:42:54Z
+updated_at: 2026-01-13T08:15:26Z
 url: https://github.com/astral-sh/uv/pull/14728
-synced_at: 2026-01-13T00:22:57Z
+synced_at: 2026-01-13T08:23:24Z
 ```
 
 # feat: Complete PEP 751 multi-use lock file implementation for pylock.toml
@@ -553,5 +553,35 @@ _Renamed from "feat: Implement PEP 751 multi-use lock files with extras, depende
 ---
 
 _Renamed from "feat: Implement PEP 751 multi-use lock files with extras, groups, and environments" to "feat: Complete PEP 751 multi-use lock file implementation for pylock.toml" by @gaborbernat on 2026-01-12 23:39_
+
+---
+
+_@konstin reviewed on 2026-01-13 08:13_
+
+---
+
+_Review comment by @konstin on `crates/uv/tests/it/export.rs`:3881 on 2026-01-13 08:13_
+
+I was thinking about a specific scenario: there's conflicting extras a1 and a2, which depend on b[e1] and b[e2] respectively, so that we have an `"a1" in extras` that conditionally activates a `; extra == "e1"` dependency. This test should cover what the other new tests currently cover.
+
+---
+
+_@konstin reviewed on 2026-01-13 08:14_
+
+---
+
+_Review comment by @konstin on `crates/uv-resolver/src/lock/export/pylock_toml.rs`:734 on 2026-01-13 08:14_
+
+This should go in a different PR, it's a different change adding information that may change from version to version from adding fields that are always the same for a given resolution.
+
+---
+
+_@konstin reviewed on 2026-01-13 08:15_
+
+---
+
+_Review comment by @konstin on `crates/uv/tests/it/export.rs`:3881 on 2026-01-13 08:15_
+
+We should also text that installation covers the correct subset.
 
 ---

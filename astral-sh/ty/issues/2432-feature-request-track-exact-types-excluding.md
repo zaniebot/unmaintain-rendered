@@ -8,9 +8,9 @@ labels:
   - wish
 assignees: []
 created_at: 2026-01-10T05:01:30Z
-updated_at: 2026-01-13T04:00:30Z
+updated_at: 2026-01-13T07:52:51Z
 url: https://github.com/astral-sh/ty/issues/2432
-synced_at: 2026-01-13T04:30:28Z
+synced_at: 2026-01-13T08:22:54Z
 ```
 
 # feature request: track "exact" types (excluding subclasses)
@@ -74,7 +74,7 @@ Thanks for the report!
 
 ty does not consider `Obj` to be an always-truthy type, because there could be subclasses of it which define `__bool__` to sometimes return `False`. Instances of such subclasses would not necessarily be truthy, and are part of the type `Obj`.
 
-Of course in this case we could in theory tell that `a` cannot be an instance such a subclass, because we directly constructed an `Obj` instance just above. But making this distinction would require ty to track "exact" types (instance types that _don't_ include subclass instances). This would add a lot of complexity, and the usefulness of it is questionable, since it can only apply in limited scenarios, locally right after the construction of an instance from a concrete class.
+Of course in this case we could in theory tell that `a` cannot be an instance of such a subclass, because we directly constructed an `Obj` instance just above. But making this distinction would require ty to track "exact" types (instance types that _don't_ include subclass instances). This would add a lot of complexity, and the usefulness of it is questionable, since it can only apply in limited scenarios, locally right after the construction of an instance from a concrete class.
 
 Another workaround for this case would be to mark `Obj` as `@final` -- then ty will treat it as always truthy.
 

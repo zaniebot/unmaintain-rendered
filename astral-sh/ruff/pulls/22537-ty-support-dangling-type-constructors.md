@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/dyn-expression
 created_at: 2026-01-12T18:12:25Z
-updated_at: 2026-01-13T02:35:37Z
+updated_at: 2026-01-13T08:19:05Z
 url: https://github.com/astral-sh/ruff/pull/22537
-synced_at: 2026-01-13T03:19:47Z
+synced_at: 2026-01-13T08:23:11Z
 ```
 
 # [ty] Support 'dangling' `type(...)` constructors
@@ -845,5 +845,101 @@ index d7a93d8bcf..66543694ad 100644
          }
      }
 ```
+
+---
+
+_Comment by @MichaReiser on 2026-01-13 08:01_
+
+> The only other idea I had was to create a stable ID for the call:
+
+I don't think this works for ty as it has false-negatives if you alias an import like `from typing import NamedTuple as NT`
+
+
+We need to come up with another identifier that changes less often than an absolute node index or a text range, to limit the blast radius. There's really just been one pattern that we've been using for this and it is to make IDs relative to some Anchor other than the file root. 
+
+`AstIds`: IDs are assigned per scope rather than globally. This isolates IDs across scopes, so that changes in one scope don't invalidate the IDS of the entire file, but only IDs from within the changed scope
+
+To unblock this feature, I'm leaning towards doing the following:
+
+* If there's a `Definition`, store a `NodeIndex` that's relative to the `Definition`'s `NodeIndex`. This should give us a pretty stable ID that only changes when you modify the assignment itself. 
+* If there's no `Definition`, store a `NodeIndex` that's relative to the `FileScope`. This is far from ideal if the enclosing scope is the module scope because it's then the same as an absolute node index. But I fail to come up with a better anchor in that case, unless we'd consider anchoring it relative to the `InferenceRegion` (and storing it on the `DynamicClassLiteral`). 
+
+
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:4923 on 2026-01-13 08:02_
+
+I'd be inclined to store `ScopeId` here which contains both the `File` and `FileScopeId`
+
+---
+
+_@MichaReiser reviewed on 2026-01-13 08:02_
+
+---
+
+_@MichaReiser reviewed on 2026-01-13 08:05_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:4748 on 2026-01-13 08:05_
+
+Can you add a full snapshot diagnostic test showing how the header range gets highlighted? Because I think we should only highlight the `name` part rather than the entire `CallExression` (which can be very long) 
+
+---
+
+_@MichaReiser reviewed on 2026-01-13 08:07_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:676 on 2026-01-13 08:07_
+
+If you haven't done so already. Can you add a go to definition test for a dynamic class literal
+
+---
+
+_@AlexWaygood reviewed on 2026-01-13 08:11_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4748 on 2026-01-13 08:11_
+
+I think the vast majority of these calls specifically are very likely to fit into one line, just like the vast majority of class headers (and we usually highlight the full class header rather than just the class name in a diagnostic).
+
+We know that these calls take exactly 3 positional arguments (and, in some very rare edge cases, possibly some keyword arguments).
+
+---
+
+_@MichaReiser reviewed on 2026-01-13 08:15_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:4748 on 2026-01-13 08:15_
+
+I don't think this is the case, we use `Definition::focus_range` in various places (which won't apply for dynamic class literal but to the point that we don't highlight the entire class literal)
+
+https://github.com/astral-sh/ruff/blob/4abc5fe2f1a4023a9fa6d702f293f7e5e0ad1e07/crates/ty_python_semantic/src/types/diagnostic.rs#L4278-L4283
+
+
+
+---
+
+_@AlexWaygood reviewed on 2026-01-13 08:17_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4748 on 2026-01-13 08:17_
+
+Hmm, fair enough 
+
+---
+
+_@AlexWaygood reviewed on 2026-01-13 08:19_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4748 on 2026-01-13 08:19_
+
+(We do _also_ use `class.header_range()` in _many_ places, though)
 
 ---

@@ -2,15 +2,15 @@
 number: 1717
 title: "Zed: Unclear where to find the logs when ty crashes"
 type: issue
-state: open
+state: closed
 author: MichaReiser
 labels:
   - server
 assignees: []
 created_at: 2025-12-02T10:29:38Z
-updated_at: 2026-01-12T09:32:49Z
+updated_at: 2026-01-13T08:13:12Z
 url: https://github.com/astral-sh/ty/issues/1717
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-13T08:22:54Z
 ```
 
 # Zed: Unclear where to find the logs when ty crashes
@@ -46,5 +46,9 @@ One option is to handle this in Zed's extension. Another is to try to detect the
 _Comment by @dhruvmanila on 2026-01-12 09:32_
 
 https://github.com/astral-sh/ruff/pull/22530 could help?
+
+---
+
+_Closed by @dhruvmanila on 2026-01-13 08:13_
 
 ---

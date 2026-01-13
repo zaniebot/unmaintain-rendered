@@ -5,12 +5,12 @@ type: issue
 state: open
 author: ppalucha
 labels:
-  - bug
+  - needs-decision
 assignees: []
 created_at: 2026-01-12T20:30:56Z
-updated_at: 2026-01-12T22:38:32Z
+updated_at: 2026-01-13T07:59:15Z
 url: https://github.com/astral-sh/uv/issues/17425
-synced_at: 2026-01-12T23:24:19Z
+synced_at: 2026-01-13T08:23:16Z
 ```
 
 # Too strict PEP508 validation for URLs without file extension
@@ -69,5 +69,13 @@ _Label `bug` added by @ppalucha on 2026-01-12 20:30_
 _Comment by @ppalucha on 2026-01-12 22:38_
 
 I proposed a PR that fixes it, assuming we agree this is the right direction: https://github.com/astral-sh/uv/pull/17426
+
+---
+
+_Label `bug` removed by @konstin on 2026-01-13 07:59_
+
+---
+
+_Label `needs-decision` added by @konstin on 2026-01-13 07:59_
 
 ---
