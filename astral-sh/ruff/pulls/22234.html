@@ -647,10 +647,81 @@ class Foo4(ABCAnotherName):
 <p>Don't worry about squashing, we'll squash-merge at the end, so it's easier to keep all the commits for review in the meantime.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:68 on 2026-01-13 20:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    // Determine whether the class definition contains at least one argument.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:154 on 2026-01-13 20:25</div>
+            <div class="timeline-body"><p>What do you think about something like this:</p>
+<pre><code class="language-rust">        let delete_keyword = remove_argument(
+            keyword,
+            arguments,
+            Parentheses::Remove,
+            checker.source(),
+            checker.tokens(),
+        )?;
+
+        Ok(if position &gt; 0 {
+            // When the `abc.ABCMeta` is not the first keyword and `abc.ABC` is not
+            // in base classes put `abc.ABC` before the first keyword argument.
+            if has_abc {
+                Fix::applicable_edit(delete_keyword, applicability)
+            } else {
+                Fix::applicable_edits(
+                    delete_keyword,
+                    [
+                        Edit::insertion(format!(&quot;{binding}, &quot;), class_def.keywords()[0].start()),
+                        import_edit,
+                    ],
+                    applicability,
+                )
+            }
+        } else {
+            let edit_action = if has_abc {
+                // Class already inherits the `abc.ABC`, delete the `metaclass` keyword only.
+                delete_keyword
+            } else {
+                // Replace `metaclass` keyword by `abc.ABC`.
+                Edit::range_replacement(binding, keyword.range)
+            };
+
+            Fix::applicable_edits(edit_action, [import_edit], applicability)
+        })
+</code></pre>
+<p>I factored out the <code>delete_keyword</code> edit and got rid of the <code>Vec</code>s by using two different <code>Fix</code> constructors. I don't feel too strongly about the second part, but I think factoring out the shared deletion edit definitely makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs</code>:92 on 2026-01-13 20:32</div>
+            <div class="timeline-body"><p>I think this is a pre-existing issue, but I'm pretty sure the fix should also be unsafe if there are comments in the range of the deletion. For example,</p>
+<pre><code class="language-py">import abc
+
+
+class C(
+    other_kwarg=1,
+    # comment
+    metaclass=abc.ABCMeta,
+):
+    pass
+</code></pre>
+<p>This comment gets <a href="https://play.ruff.rs/f64dfdc1-811d-466f-8e49-0f400e1859d0">deleted</a> but wouldn't make the fix unsafe on main as far as I can tell.</p>
+<p>Feel free to fix that here if you want, or I can open an issue for follow-up. We usually use a pattern like this:</p>
+<p>https://github.com/astral-sh/ruff/blob/55a335165ab126d50edb89e775c0c5c340cb8ae3/crates/ruff_linter/src/rules/flake8_return/rules/function.rs#L406-L410</p>
+<p>We'd also need to update the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2026-01-13 20:34</div>
+            <div class="timeline-body"><p>Thank you! This looks great, I just had a couple of minor suggestions. I also noticed a potential issue with the fix safety, but I can turn that into a separate issue if you'd rather not update it here.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-13 20:27:27 UTC
+        Synced at 2026-01-13 21:26:56 UTC
     </footer>
 </body>
 </html>
