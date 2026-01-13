@@ -8,9 +8,9 @@ labels:
   - wish
 assignees: []
 created_at: 2026-01-10T22:44:38Z
-updated_at: 2026-01-13T04:33:31Z
+updated_at: 2026-01-13T06:58:34Z
 url: https://github.com/astral-sh/ty/issues/2437
-synced_at: 2026-01-13T05:28:59Z
+synced_at: 2026-01-13T07:25:22Z
 ```
 
 # `struct.unpack` inference
@@ -156,5 +156,17 @@ _Comment by @carljm on 2026-01-13 04:11_
 ---
 
 _Renamed from "Struct unpack inference" to "`struct.unpack` inference" by @dhruvmanila on 2026-01-13 04:33_
+
+---
+
+_Comment by @sakgoyal on 2026-01-13 06:58_
+
+> You'll want to look at KnownFunction
+
+I assume I have to add this case to here? I'm very new to rust so I apologize for dumb questions
+https://github.com/astral-sh/ruff/blob/99beabdde89651b72c3b297502e85c4efcf567f0/crates/ty_python_semantic/src/types/function.rs#L1353
+
+and here?
+https://github.com/astral-sh/ruff/blob/99beabdde89651b72c3b297502e85c4efcf567f0/crates/ty_python_semantic/src/types/call/bind.rs#L767
 
 ---

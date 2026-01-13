@@ -1,6 +1,6 @@
 ```yaml
 number: 2455
-title: not hasattr(...) causes conditional block to resolve self to Never
+title: "`not hasattr(...)` causes conditional block to resolve `self` to `Never`"
 type: issue
 state: open
 author: moschi
@@ -8,12 +8,12 @@ labels:
   - narrowing
 assignees: []
 created_at: 2026-01-12T08:08:37Z
-updated_at: 2026-01-13T02:08:44Z
+updated_at: 2026-01-13T06:31:17Z
 url: https://github.com/astral-sh/ty/issues/2455
-synced_at: 2026-01-13T02:20:57Z
+synced_at: 2026-01-13T07:25:22Z
 ```
 
-# not hasattr(...) causes conditional block to resolve self to Never
+# `not hasattr(...)` causes conditional block to resolve `self` to `Never`
 
 ---
 
@@ -60,5 +60,9 @@ Given that we don't (currently) distinguish between maybe-bound and definitely-b
 ---
 
 _Added to milestone `Stable` by @carljm on 2026-01-13 02:08_
+
+---
+
+_Renamed from "not hasattr(...) causes conditional block to resolve self to Never" to "`not hasattr(...)` causes conditional block to resolve `self` to `Never`" by @moschi on 2026-01-13 06:31_
 
 ---
