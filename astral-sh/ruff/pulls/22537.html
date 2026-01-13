@@ -804,10 +804,90 @@ index d7a93d8bcf..66543694ad 100644
 </code></pre>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-13 08:01</div>
+            <div class="timeline-body"><blockquote>
+<p>The only other idea I had was to create a stable ID for the call:</p>
+</blockquote>
+<p>I don't think this works for ty as it has false-negatives if you alias an import like <code>from typing import NamedTuple as NT</code></p>
+<p>We need to come up with another identifier that changes less often than an absolute node index or a text range, to limit the blast radius. There's really just been one pattern that we've been using for this and it is to make IDs relative to some Anchor other than the file root.</p>
+<p><code>AstIds</code>: IDs are assigned per scope rather than globally. This isolates IDs across scopes, so that changes in one scope don't invalidate the IDS of the entire file, but only IDs from within the changed scope</p>
+<p>To unblock this feature, I'm leaning towards doing the following:</p>
+<ul>
+<li>If there's a <code>Definition</code>, store a <code>NodeIndex</code> that's relative to the <code>Definition</code>'s <code>NodeIndex</code>. This should give us a pretty stable ID that only changes when you modify the assignment itself.</li>
+<li>If there's no <code>Definition</code>, store a <code>NodeIndex</code> that's relative to the <code>FileScope</code>. This is far from ideal if the enclosing scope is the module scope because it's then the same as an absolute node index. But I fail to come up with a better anchor in that case, unless we'd consider anchoring it relative to the <code>InferenceRegion</code> (and storing it on the <code>DynamicClassLiteral</code>).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4923 on 2026-01-13 08:02</div>
+            <div class="timeline-body"><p>I'd be inclined to store <code>ScopeId</code> here which contains both the <code>File</code> and <code>FileScopeId</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-13 08:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-13 08:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4748 on 2026-01-13 08:05</div>
+            <div class="timeline-body"><p>Can you add a full snapshot diagnostic test showing how the header range gets highlighted? Because I think we should only highlight the <code>name</code> part rather than the entire <code>CallExression</code> (which can be very long)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-13 08:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:676 on 2026-01-13 08:07</div>
+            <div class="timeline-body"><p>If you haven't done so already. Can you add a go to definition test for a dynamic class literal</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-13 08:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4748 on 2026-01-13 08:11</div>
+            <div class="timeline-body"><p>I think the vast majority of these calls specifically are very likely to fit into one line, just like the vast majority of class headers (and we usually highlight the full class header rather than just the class name in a diagnostic).</p>
+<p>We know that these calls take exactly 3 positional arguments (and, in some very rare edge cases, possibly some keyword arguments).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-13 08:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4748 on 2026-01-13 08:15</div>
+            <div class="timeline-body"><p>I don't think this is the case, we use <code>Definition::focus_range</code> in various places (which won't apply for dynamic class literal but to the point that we don't highlight the entire class literal)</p>
+<p>https://github.com/astral-sh/ruff/blob/4abc5fe2f1a4023a9fa6d702f293f7e5e0ad1e07/crates/ty_python_semantic/src/types/diagnostic.rs#L4278-L4283</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-13 08:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4748 on 2026-01-13 08:17</div>
+            <div class="timeline-body"><p>Hmm, fair enough</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-13 08:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4748 on 2026-01-13 08:19</div>
+            <div class="timeline-body"><p>(We do <em>also</em> use <code>class.header_range()</code> in <em>many</em> places, though)</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-13 03:22:13 UTC
+        Synced at 2026-01-13 08:25:28 UTC
     </footer>
 </body>
 </html>
