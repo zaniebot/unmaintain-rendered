@@ -8,9 +8,9 @@ labels:
   - narrowing
 assignees: []
 created_at: 2026-01-12T08:08:37Z
-updated_at: 2026-01-12T08:12:32Z
+updated_at: 2026-01-13T02:08:44Z
 url: https://github.com/astral-sh/ty/issues/2455
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-13T02:20:57Z
 ```
 
 # not hasattr(...) causes conditional block to resolve self to Never
@@ -48,5 +48,17 @@ ty 0.0.11
 ---
 
 _Label `narrowing` added by @AlexWaygood on 2026-01-12 08:11_
+
+---
+
+_Comment by @carljm on 2026-01-13 02:08_
+
+Thanks for the report!
+
+Given that we don't (currently) distinguish between maybe-bound and definitely-bound attributes, I guess we can't safely do negative narrowing on `hasattr`, only positive.
+
+---
+
+_Added to milestone `Stable` by @carljm on 2026-01-13 02:08_
 
 ---

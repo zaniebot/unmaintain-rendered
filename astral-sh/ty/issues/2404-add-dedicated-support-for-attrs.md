@@ -8,9 +8,9 @@ labels:
   - library
 assignees: []
 created_at: 2026-01-08T18:23:54Z
-updated_at: 2026-01-12T07:41:22Z
+updated_at: 2026-01-13T02:11:42Z
 url: https://github.com/astral-sh/ty/issues/2404
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-13T02:20:57Z
 ```
 
 # add dedicated support for attrs
@@ -44,5 +44,13 @@ As a starter (and the reason I came here): could y'all implement attrs's undersc
 I.e. defining an attribute called `_foo` creates an `__init__(self, foo)` because there's no such thing as a private argument and you wouldn't call your argument that yourself either (this goes back to attrs's philosophy of helping you to write classes the way _you_ would write them). This is currently by far my biggest annoyance with ty's LSP server.
 
 Should I open an subissue (hilariously I've never used that feature so not sure how)?
+
+---
+
+_Comment by @carljm on 2026-01-13 02:11_
+
+Filed https://github.com/astral-sh/ty/issues/2474!
+
+Don't thank us too much until we actually do it! We currently have this slated for stable, but there's a lot of stuff slated for stable -- this might end up being a next-Christmas present 😆 
 
 ---

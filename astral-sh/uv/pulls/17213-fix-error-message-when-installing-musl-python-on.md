@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: diyor/fix-python-install-error
 created_at: 2025-12-22T00:42:11Z
-updated_at: 2026-01-08T16:45:51Z
+updated_at: 2026-01-13T02:15:06Z
 url: https://github.com/astral-sh/uv/pull/17213
-synced_at: 2026-01-12T16:12:39Z
+synced_at: 2026-01-13T02:21:29Z
 ```
 
 # Fix error message when installing musl python on armv7
@@ -67,5 +67,9 @@ _Renamed from "Fix obsolete error message when installing python on armv7" to "F
 _Comment by @dijor0310 on 2026-01-08 16:45_
 
 Hi @zanieb, just bumping this thread. No rush at all, but let me know if I can further improve the PR or whether you need it at all.
+
+---
+
+_@zanieb approved on 2026-01-13 02:15_
 
 ---

@@ -5,13 +5,12 @@ type: issue
 state: open
 author: sakgoyal
 labels:
-  - question
   - wish
 assignees: []
 created_at: 2026-01-10T22:44:38Z
-updated_at: 2026-01-12T17:39:54Z
+updated_at: 2026-01-13T02:16:50Z
 url: https://github.com/astral-sh/ty/issues/2437
-synced_at: 2026-01-12T18:23:17Z
+synced_at: 2026-01-13T02:20:57Z
 ```
 
 # Struct unpack inference
@@ -116,5 +115,22 @@ Oh, is `get_unpack_type` an equivalent implementation of `struct.unpack` ?
 ---
 
 _Label `wish` added by @MichaReiser on 2026-01-12 17:39_
+
+---
+
+_Comment by @carljm on 2026-01-13 02:16_
+
+I think we could do this; it would make sense and be useful. It would involve special-casing `struct.unpack` with more specific behavior than is encoded in the typeshed stub for it. But given that no other type checker does it and it's a fairly narrow use case, it's not high on the priority list. Thanks @sakgoyal for the suggestion!
+
+> Oh, is `get_unpack_type` an equivalent implementation of `struct.unpack` ?
+
+No, it's a proof of concept that it's programmatically feasible to go from a `struct.unpack` format string to the appropriate type. IOW it's the core logic we would need to implement inside ty in order to do this.
+
+Examples of using `struct.unpack` can be found at https://docs.python.org/3/library/struct.html#examples
+
+
+---
+
+_Label `question` removed by @carljm on 2026-01-13 02:16_
 
 ---

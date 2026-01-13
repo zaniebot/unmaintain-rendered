@@ -2,16 +2,16 @@
 number: 2467
 title: "Generic class method \"does not satisfy upper bound\""
 type: issue
-state: open
+state: closed
 author: Jeremiah-England
 labels:
   - bug
   - generics
 assignees: []
 created_at: 2026-01-12T14:11:55Z
-updated_at: 2026-01-13T01:09:06Z
+updated_at: 2026-01-13T01:23:32Z
 url: https://github.com/astral-sh/ty/issues/2467
-synced_at: 2026-01-13T01:22:08Z
+synced_at: 2026-01-13T02:20:57Z
 ```
 
 # Generic class method "does not satisfy upper bound"
@@ -103,5 +103,9 @@ This bisects to https://github.com/astral-sh/ruff/pull/22105
 ---
 
 _Assigned to @carljm by @carljm on 2026-01-13 01:09_
+
+---
+
+_Closed by @carljm on 2026-01-13 01:23_
 
 ---

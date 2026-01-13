@@ -2,17 +2,18 @@
 number: 22542
 title: "[ty] Fix false positive for bounded type parameters with NewType"
 type: pull_request
-state: open
+state: merged
 author: carljm
 labels:
   - ty
 assignees: []
+merged: true
 base: main
 head: claude/fix-issue-2467-NNS0l
 created_at: 2026-01-13T01:08:54Z
-updated_at: 2026-01-13T01:13:56Z
+updated_at: 2026-01-13T01:23:33Z
 url: https://github.com/astral-sh/ruff/pull/22542
-synced_at: 2026-01-13T01:22:24Z
+synced_at: 2026-01-13T02:21:16Z
 ```
 
 # [ty] Fix false positive for bounded type parameters with NewType
@@ -224,5 +225,23 @@ _Review requested from @sharkdp by @carljm on 2026-01-13 01:13_
 ---
 
 _Review requested from @dcreager by @carljm on 2026-01-13 01:13_
+
+---
+
+_@ibraheemdev approved on 2026-01-13 01:22_
+
+Nice catch.
+
+---
+
+_Merged by @carljm on 2026-01-13 01:23_
+
+---
+
+_Closed by @carljm on 2026-01-13 01:23_
+
+---
+
+_Branch deleted on 2026-01-13 01:23_
 
 ---

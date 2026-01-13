@@ -8,13 +8,12 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
-draft: true
 base: charlie/dyn-expression
 head: charlie/functional-namedtuple
 created_at: 2026-01-01T13:23:44Z
-updated_at: 2026-01-12T21:39:25Z
+updated_at: 2026-01-13T02:13:40Z
 url: https://github.com/astral-sh/ruff/pull/22327
-synced_at: 2026-01-12T22:24:50Z
+synced_at: 2026-01-13T02:21:16Z
 ```
 
 # [ty] Add support for functional `namedtuple` creation
@@ -544,5 +543,9 @@ _Comment by @charliermarsh on 2026-01-12 02:22_
 _Comment by @charliermarsh on 2026-01-12 04:32_
 
 I _think_ the `pycryptodome` errors are correct: we now understand that the arguments need to be `Int`, but it's passing `IntegerBase`.
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-13 02:13_
 
 ---

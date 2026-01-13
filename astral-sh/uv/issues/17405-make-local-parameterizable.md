@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-11T15:12:07Z
-updated_at: 2026-01-12T23:58:27Z
+updated_at: 2026-01-13T02:08:32Z
 url: https://github.com/astral-sh/uv/issues/17405
-synced_at: 2026-01-13T00:22:50Z
+synced_at: 2026-01-13T02:21:22Z
 ```
 
 # Make .local Parameterizable
@@ -50,5 +50,17 @@ _Label `question` added by @zanieb on 2026-01-12 23:58_
 _Comment by @zanieb on 2026-01-12 23:58_
 
 Yeah using `XDG_*` is the appropriate pattern here.
+
+---
+
+_Comment by @muellert on 2026-01-13 01:50_
+
+I'm unconvinced. I've tried that for a different application, and it completely messed up my desktop configuration even though I was only setting these variables to where the configurations usually are (ie, ~/.config and ~/.local). Whether it'd work for non-interactive situations, I'll have to check separately. Also, if it was, why is it not enough for the --cache-dir, ie. XDG_CACHE_HOME?
+
+---
+
+_Comment by @zanieb on 2026-01-13 02:08_
+
+Have you reviewed https://docs.astral.sh/uv/reference/storage/ ?
 
 ---
