@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: ruf069
 created_at: 2025-12-20T15:36:26Z
-updated_at: 2026-01-12T21:45:47Z
+updated_at: 2026-01-13T08:31:11Z
 url: https://github.com/astral-sh/ruff/pull/22114
-synced_at: 2026-01-12T22:24:50Z
+synced_at: 2026-01-13T09:21:15Z
 ```
 
 # [ruff] Add RUF069 to detect duplicate entries in __all__
@@ -648,5 +648,38 @@ $ cargo run -p ruff -- check --preview --select RUF069 --fix - <<<'__all__ = ["A
 ```
 
 should work. If it _doesn't_ work, we should add an actual CLI test, but I think it's okay as long as the manual test works as expected.
+
+---
+
+_@MichaReiser reviewed on 2026-01-13 08:31_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__RUF069_RUF069.py.snap`:9 on 2026-01-13 08:31_
+
+It would be nice if we highlighted all definitions here, so that users don't need to scan the entire list to find the first definition, similar to what we do in ty
+
+
+```
+error[duplicate-base]: Duplicate base class `int`
+ --> simple.py:1:7
+  |
+1 | class Test(int, str, int): ...
+  |       ^^^^^^^^^^^^^^^^^^^
+  |
+info: The definition of class `Test` will raise `TypeError` at runtime
+ --> simple.py:1:12
+  |
+1 | class Test(int, str, int): ...
+  |            ---       ^^^ Class `int` later repeated here
+  |            |
+  |            Class `int` first included in bases list here
+  |
+info: rule `duplicate-base` is enabled by default
+```
+
+(except that I wouldn't highlight the entire definition)
+
+You can accomplish this by adding a secondary diagnostic annotation
 
 ---

@@ -4,14 +4,15 @@ title: "[flake8_bugbear] fix: improve docs for `no_explicit_stacklevel`"
 type: pull_request
 state: open
 author: caiquejjx
-labels: []
+labels:
+  - documentation
 assignees: []
 base: main
 head: fix-22395
 created_at: 2026-01-12T18:45:18Z
-updated_at: 2026-01-12T20:50:18Z
+updated_at: 2026-01-13T08:33:12Z
 url: https://github.com/astral-sh/ruff/pull/22538
-synced_at: 2026-01-12T21:25:53Z
+synced_at: 2026-01-13T09:21:15Z
 ```
 
 # [flake8_bugbear] fix: improve docs for `no_explicit_stacklevel`
@@ -75,5 +76,13 @@ Applied those changes and there is a link to the docs already so I didn't need t
 ---
 
 _Review requested from @dylwil3 by @caiquejjx on 2026-01-12 20:50_
+
+---
+
+_Label `documentation` added by @MichaReiser on 2026-01-13 08:33_
+
+---
+
+_Assigned to @dylwil3 by @MichaReiser on 2026-01-13 08:33_
 
 ---

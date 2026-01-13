@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: wld/improve-conformance-suite
 created_at: 2025-12-28T01:15:26Z
-updated_at: 2026-01-12T21:09:21Z
+updated_at: 2026-01-13T08:42:54Z
 url: https://github.com/astral-sh/ruff/pull/22231
-synced_at: 2026-01-12T21:25:53Z
+synced_at: 2026-01-13T09:21:15Z
 ```
 
 # [ty] Add a conformance script to compare ty diagnostics with expected errors
@@ -658,7 +658,7 @@ _@AlexWaygood reviewed on 2026-01-12 15:21_
 
 This is great!!
 
-I think for use in CI, another great feature would be if the in-depth sections below the summary table could link directly to each line where a diagnostic was added or removed. That would make it very easy for us to debug exactly why a diagnostic was being added or removed as the result of a PR. But that could always be done as a followup (either by you or me!)
+I think for use in CI, another great feature would be if the in-depth sections below the summary table could link directly to each line in the upstream repo where a diagnostic was added or removed. That would make it very easy for us to debug exactly why a diagnostic was being added or removed as the result of a PR. But that could always be done as a followup (either by you or me!)
 
 ---
 
@@ -783,5 +783,9 @@ _@WillDuke reviewed on 2026-01-12 21:09_
 _Review comment by @WillDuke on `scripts/conformance.py`:448 on 2026-01-12 21:09_
 
 I've added an outcome column with the emojis and updated the summary sentence. Happy to iterate on it further.
+
+---
+
+_Review requested from @AlexWaygood by @MichaReiser on 2026-01-13 08:31_
 
 ---

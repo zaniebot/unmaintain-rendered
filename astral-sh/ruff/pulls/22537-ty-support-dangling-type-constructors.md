@@ -7,12 +7,13 @@ author: charliermarsh
 labels:
   - ty
 assignees: []
+draft: true
 base: main
 head: charlie/dyn-expression
 created_at: 2026-01-12T18:12:25Z
-updated_at: 2026-01-13T08:19:05Z
+updated_at: 2026-01-13T08:37:24Z
 url: https://github.com/astral-sh/ruff/pull/22537
-synced_at: 2026-01-13T08:23:11Z
+synced_at: 2026-01-13T09:21:15Z
 ```
 
 # [ty] Support 'dangling' `type(...)` constructors
@@ -941,5 +942,27 @@ _@AlexWaygood reviewed on 2026-01-13 08:19_
 _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4748 on 2026-01-13 08:19_
 
 (We do _also_ use `class.header_range()` in _many_ places, though)
+
+---
+
+_@MichaReiser reviewed on 2026-01-13 08:22_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:4748 on 2026-01-13 08:22_
+
+Yeah, I think which one of the two it should be depends on the diagnostic. Is it something that only references the type (e.g. in a sub diagnostic), that's when higlighting the name only feels correct. Or is it something that is about the class's definition (including base classes), highlighting the entire header than seems more appropriate. 
+
+So what we have here might actually be okay but we might need a new method `name_range` in the future
+
+---
+
+_Converted to draft by @MichaReiser on 2026-01-13 08:36_
+
+---
+
+_Comment by @MichaReiser on 2026-01-13 08:37_
+
+Putting this back to draft to make it easier for reviewers to know when this is ready for review (and not one of GitHub's force push notifications ;))
 
 ---

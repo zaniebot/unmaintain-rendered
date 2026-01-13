@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: classmethod-contextmanager-self-fix
 created_at: 2026-01-05T19:01:18Z
-updated_at: 2026-01-12T19:20:10Z
+updated_at: 2026-01-13T08:34:12Z
 url: https://github.com/astral-sh/ruff/pull/22407
-synced_at: 2026-01-12T20:26:27Z
+synced_at: 2026-01-13T09:21:15Z
 ```
 
 # [ty] Fix classmethod + contextmanager + Self
@@ -299,5 +299,9 @@ crates/ty_python_semantic/resources/mdtest/call/methods.md:496 unexpected error:
 ---
 
 _Marked ready for review by @eclbg on 2026-01-12 19:18_
+
+---
+
+_Review requested from @dcreager by @MichaReiser on 2026-01-13 08:34_
 
 ---

@@ -9,9 +9,9 @@ labels:
   - wish
 assignees: []
 created_at: 2025-04-30T08:33:11Z
-updated_at: 2026-01-12T21:31:29Z
+updated_at: 2026-01-13T09:14:20Z
 url: https://github.com/astral-sh/uv/issues/13217
-synced_at: 2026-01-12T22:24:55Z
+synced_at: 2026-01-13T09:21:20Z
 ```
 
 # Retain history of package versions through updates
@@ -154,5 +154,11 @@ Git is very good with tracking and compressing changes.
 
 On the first thought it seems like a simpler choice but it just increases complexity. 
 Git already implements everything to keep track of histories.
+
+---
+
+_Comment by @juhaszp95 on 2026-01-13 09:14_
+
+I'm not quite sure what the best implementation might be, was just thinking of alternatives to git if that's not something the uv developers want to do. I'm not even sure how this is implemented in conda, but I agree with the sentiment that it's a useful conda feature, so if uv would want to be a replacement of conda, this would be a nice addition (without having to involve additional tools).
 
 ---

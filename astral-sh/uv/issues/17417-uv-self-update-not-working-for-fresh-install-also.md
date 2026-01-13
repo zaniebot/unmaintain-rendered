@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-12T15:21:50Z
-updated_at: 2026-01-12T15:54:37Z
+updated_at: 2026-01-13T08:43:44Z
 url: https://github.com/astral-sh/uv/issues/17417
-synced_at: 2026-01-12T16:13:59Z
+synced_at: 2026-01-13T09:21:21Z
 ```
 
 # uv self update not working for fresh install (also uvw.exe quarantined by Windows Defender)
@@ -102,5 +102,17 @@ yep!
 _Comment by @zanieb on 2026-01-12 15:54_
 
 Can you share `uv self update -vv`?
+
+---
+
+_Comment by @ryan-kipawa on 2026-01-13 08:43_
+
+> Can you share `uv self update -vv`?
+
+The issue with Windows Defender is no longer happening today, so this more or less produces no relevant output.
+
+I suppose the issue could be closed now and/or lumped into #17403 for future consideration.
+
+
 
 ---

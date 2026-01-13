@@ -7,9 +7,9 @@ author: nemowang2003
 labels: []
 assignees: []
 created_at: 2026-01-11T02:15:03Z
-updated_at: 2026-01-13T04:11:23Z
+updated_at: 2026-01-13T08:25:32Z
 url: https://github.com/astral-sh/ty/issues/2438
-synced_at: 2026-01-13T04:30:28Z
+synced_at: 2026-01-13T09:20:59Z
 ```
 
 # A global try-except block preceding a shadowing import causes incorrect type inference (Module | Object) in local scope
@@ -116,5 +116,13 @@ from .demo import demo
 
 # the reset remains same ...
 ```
+
+---
+
+_Comment by @AlexWaygood on 2026-01-13 08:25_
+
+> I'm pretty sure it's also related to the fact that this code is in an `__init__.py`. Having a variable named `demo` and a submodule named `demo` in `__init__.py` is pretty error-prone.
+
+X-ref #1676
 
 ---

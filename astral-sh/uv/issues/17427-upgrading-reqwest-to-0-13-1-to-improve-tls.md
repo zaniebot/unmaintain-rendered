@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2026-01-12T22:36:00Z
-updated_at: 2026-01-12T23:10:53Z
+updated_at: 2026-01-13T09:01:49Z
 url: https://github.com/astral-sh/uv/issues/17427
-synced_at: 2026-01-12T23:24:19Z
+synced_at: 2026-01-13T09:21:21Z
 ```
 
 # Upgrading `reqwest` to `0.13.1` to improve TLS experience
@@ -113,5 +113,21 @@ Per your code comment, this would break support for `SSL_CERT_FILE` and `SSL_CER
 _Comment by @zanieb on 2026-01-12 23:10_
 
 This would also break the functionality added in https://github.com/astral-sh/uv/pull/14816? cc @nilskch
+
+---
+
+_Comment by @nilskch on 2026-01-13 09:01_
+
+#14816 is not exposed to the uv cli. It's for library consumers only (or it at least was the case when I made the PR). We do not use `built_in_root_certs` anymore, so it would be fine for us making a breaking change here.
+
+https://github.com/astral-sh/uv/blob/4ee320b0a8c8d1764c32db54a511153092dc13e2/crates/uv-client/src/base_client.rs#L227-L231
+
+We now provide a `custom_client` (previously called `with_custom_client`, introduced in #15281):
+
+https://github.com/astral-sh/uv/blob/4ee320b0a8c8d1764c32db54a511153092dc13e2/crates/uv-client/src/base_client.rs#L191-L195
+
+I am not sure if this is a breaking change since I am not very familiar with the latest `reqwest` client APIs.
+
+cc @schmelczer
 
 ---
