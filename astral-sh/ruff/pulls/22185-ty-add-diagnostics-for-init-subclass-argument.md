@@ -11,9 +11,9 @@ merged: true
 base: main
 head: type-validate-init-subclass
 created_at: 2025-12-24T20:05:43Z
-updated_at: 2026-01-13T16:16:43Z
+updated_at: 2026-01-13T18:21:02Z
 url: https://github.com/astral-sh/ruff/pull/22185
-synced_at: 2026-01-13T16:27:36Z
+synced_at: 2026-01-13T18:48:31Z
 ```
 
 # [ty] Add diagnostics for `__init_subclass__` argument mismatch
@@ -211,5 +211,11 @@ _Comment by @AlexWaygood on 2026-01-13 16:16_
 > I wish we could make the diagnostics here a bit friendlier.
 
 I opened https://github.com/astral-sh/ty/issues/2482 to track this
+
+---
+
+_Comment by @AlexWaygood on 2026-01-13 18:21_
+
+(cc. @charliermarsh -- we discussed this PR a bit in https://github.com/astral-sh/ruff/pull/22291. It's now landed!)
 
 ---

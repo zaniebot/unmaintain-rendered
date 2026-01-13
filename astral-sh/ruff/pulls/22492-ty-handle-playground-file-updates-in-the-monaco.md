@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: fix-playground-completions
 created_at: 2026-01-10T13:37:09Z
-updated_at: 2026-01-13T08:50:58Z
+updated_at: 2026-01-13T18:19:45Z
 url: https://github.com/astral-sh/ruff/pull/22492
-synced_at: 2026-01-13T09:21:15Z
+synced_at: 2026-01-13T18:48:34Z
 ```
 
 # [ty] Handle playground file updates in the monaco editor onChange
@@ -116,5 +116,27 @@ _@MichaReiser reviewed on 2026-01-13 08:50_
 _Review comment by @MichaReiser on `playground/ty/src/Playground.tsx`:88 on 2026-01-13 08:50_
 
 I wonder if the fix is to move the lines above the `dispatchFiles` action. 
+
+---
+
+_@RasmusNygren reviewed on 2026-01-13 18:19_
+
+---
+
+_Review comment by @RasmusNygren on `playground/ty/src/Editor/Editor.tsx`:257 on 2026-01-13 18:19_
+
+It very much checks out that we update/do things out of order, that was my working hypotheses from the start as closing the completions and re-triggering them while in a faulty state fixes it.
+
+As for the details, React is very far from my strong suit, I just figured that it's impossible that monaco get this wrong which lead to this attempt (and that happened to work). I haven't really dug any deeper but I'm probably not the right person to do that either.
+
+---
+
+_Review comment by @RasmusNygren on `playground/ty/src/Playground.tsx`:88 on 2026-01-13 18:19_
+
+I tried that but unfortunately not :/
+
+---
+
+_@RasmusNygren reviewed on 2026-01-13 18:19_
 
 ---

@@ -8,13 +8,12 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
-draft: true
 base: charlie/dyn-expression
 head: charlie/functional-namedtuple
 created_at: 2026-01-01T13:23:44Z
-updated_at: 2026-01-13T14:39:54Z
+updated_at: 2026-01-13T18:18:04Z
 url: https://github.com/astral-sh/ruff/pull/22327
-synced_at: 2026-01-13T15:29:24Z
+synced_at: 2026-01-13T18:48:32Z
 ```
 
 # [ty] Add support for functional `namedtuple` creation
@@ -49,8 +48,8 @@ _Comment by @astral-sh-bot[bot] on 2026-01-01 13:25_
 <summary>Changes were detected when running ty on typing conformance tests</summary>
 
 ```diff
---- old-output.txt	2026-01-13 02:25:31.359335812 +0000
-+++ new-output.txt	2026-01-13 02:25:31.664338938 +0000
+--- old-output.txt	2026-01-13 18:13:33.938720175 +0000
++++ new-output.txt	2026-01-13 18:13:34.234720272 +0000
 @@ -753,6 +753,16 @@
  namedtuples_define_class.py:86:5: error[invalid-named-tuple] NamedTuple field without default value cannot follow field(s) with default value(s): Field `latitude` defined here without a default value
  namedtuples_define_class.py:125:19: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `float`
@@ -109,11 +108,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-01 13:26_
 
 ```diff
 pip (https://github.com/pypa/pip)
-+ src/pip/_vendor/urllib3/connectionpool.py:500:16: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ src/pip/_vendor/urllib3/util/url.py:357:16: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ src/pip/_vendor/urllib3/util/url.py:419:12: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ src/pip/_vendor/urllib3/util/url.py:150:9: error[invalid-assignment] Not enough values to unpack: Expected 7
 - Found 602 diagnostics
-+ Found 605 diagnostics
++ Found 603 diagnostics
 
 spack (https://github.com/spack/spack)
 + lib/spack/spack/test/directives.py:118:5: error[invalid-assignment] Object of type `dict[Unknown | Spec, Unknown | str]` is not assignable to attribute `licenses` of type `property`
@@ -205,15 +202,21 @@ alerta (https://github.com/alerta/alerta)
 - Found 555 diagnostics
 + Found 620 diagnostics
 
-tornado (https://github.com/tornadoweb/tornado)
-- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
-+ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
-
 cki-lib (https://gitlab.com/cki-project/cki-lib)
 + tests/test_messagequeue.py:792:32: error[invalid-argument-type] Argument to bound method `_consume_one` is incorrect: Expected `Item`, found `tuple[Literal[""], None, Literal[""], Literal["{}"], Literal[""], Literal[""]]`
 + tests/test_messagequeue.py:811:32: error[invalid-argument-type] Argument to bound method `_consume_one` is incorrect: Expected `Item`, found `tuple[Literal[""], None, Literal[""], Literal["{}"], Literal[""], Literal[""]]`
 - Found 240 diagnostics
 + Found 242 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
+
+urllib3 (https://github.com/urllib3/urllib3)
+- src/urllib3/connectionpool.py:1132:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/urllib3/connectionpool.py:1134:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 305 diagnostics
++ Found 303 diagnostics
 
 discord.py (https://github.com/Rapptz/discord.py)
 + discord/enums.py:97:5: error[invalid-assignment] Object of type `(self) -> Unknown` is not assignable to attribute `__repr__` of type `def __repr__(self) -> str`
@@ -235,96 +238,6 @@ mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
 - pymongo/synchronous/auth.py:360:48: error[invalid-assignment] Object of type `dict[str, ((credentials: @Todo, conn: Connection) -> None) | ((credentials: @Todo, conn: Connection, reauthenticate: bool) -> Mapping[str, Any] | None) | partial[None]]` is not assignable to `Mapping[str, (...) -> None]`
 + pymongo/synchronous/auth.py:360:48: error[invalid-assignment] Object of type `dict[str, ((credentials: MongoCredential, conn: Connection) -> None) | ((credentials: MongoCredential, conn: Connection, reauthenticate: bool) -> Mapping[str, Any] | None) | partial[None]]` is not assignable to `Mapping[str, (...) -> None]`
 
-vision (https://github.com/pytorch/vision)
-+ test/test_video_reader.py:39:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_video_reader.py:40:5: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_video_reader.py:41:5: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_video_reader.py:42:5: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-+ test/test_video_reader.py:43:5: error[unknown-argument] Argument `check_aframes` does not match any known parameter
-+ test/test_video_reader.py:44:5: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
-+ test/test_video_reader.py:48:44: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_video_reader.py:49:9: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_video_reader.py:50:9: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_video_reader.py:51:9: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-+ test/test_video_reader.py:52:9: error[unknown-argument] Argument `check_aframes` does not match any known parameter
-+ test/test_video_reader.py:53:9: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
-+ test/test_video_reader.py:55:60: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_video_reader.py:56:9: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_video_reader.py:57:9: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_video_reader.py:58:9: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-+ test/test_video_reader.py:59:9: error[unknown-argument] Argument `check_aframes` does not match any known parameter
-+ test/test_video_reader.py:60:9: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
-+ test/test_video_reader.py:62:47: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_video_reader.py:63:9: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_video_reader.py:64:9: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_video_reader.py:65:9: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-+ test/test_video_reader.py:66:9: error[unknown-argument] Argument `check_aframes` does not match any known parameter
-+ test/test_video_reader.py:67:9: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
-+ test/test_video_reader.py:69:37: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_video_reader.py:70:9: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_video_reader.py:71:9: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_video_reader.py:72:9: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-+ test/test_video_reader.py:73:9: error[unknown-argument] Argument `check_aframes` does not match any known parameter
-+ test/test_video_reader.py:74:9: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
-+ test/test_video_reader.py:76:37: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_video_reader.py:77:9: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_video_reader.py:78:9: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_video_reader.py:79:9: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-+ test/test_video_reader.py:80:9: error[unknown-argument] Argument `check_aframes` does not match any known parameter
-+ test/test_video_reader.py:81:9: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
-+ test/test_video_reader.py:83:24: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_video_reader.py:84:9: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_video_reader.py:85:9: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_video_reader.py:86:9: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-+ test/test_video_reader.py:88:9: error[unknown-argument] Argument `check_aframes` does not match any known parameter
-+ test/test_video_reader.py:89:9: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
-+ test/test_video_reader.py:91:24: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_video_reader.py:92:9: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_video_reader.py:93:9: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_video_reader.py:94:9: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-+ test/test_video_reader.py:96:9: error[unknown-argument] Argument `check_aframes` does not match any known parameter
-+ test/test_video_reader.py:97:9: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
-+ test/test_video_reader.py:99:24: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_video_reader.py:100:9: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_video_reader.py:101:9: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_video_reader.py:102:9: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-+ test/test_video_reader.py:104:9: error[unknown-argument] Argument `check_aframes` does not match any known parameter
-+ test/test_video_reader.py:105:9: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
-+ test/test_videoapi.py:52:44: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_videoapi.py:52:56: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_videoapi.py:52:70: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_videoapi.py:52:86: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-+ test/test_videoapi.py:53:60: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_videoapi.py:54:9: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_videoapi.py:54:23: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_videoapi.py:54:39: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-+ test/test_videoapi.py:56:47: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_videoapi.py:56:59: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_videoapi.py:56:73: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_videoapi.py:56:89: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-+ test/test_videoapi.py:57:37: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_videoapi.py:57:49: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_videoapi.py:57:63: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_videoapi.py:57:80: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-+ test/test_videoapi.py:58:37: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_videoapi.py:58:49: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_videoapi.py:58:63: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_videoapi.py:58:80: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-+ test/test_videoapi.py:59:24: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_videoapi.py:59:36: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_videoapi.py:59:51: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_videoapi.py:59:67: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-+ test/test_videoapi.py:60:24: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_videoapi.py:60:36: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_videoapi.py:60:51: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_videoapi.py:60:68: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-+ test/test_videoapi.py:61:24: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ test/test_videoapi.py:61:36: error[unknown-argument] Argument `duration` does not match any known parameter
-+ test/test_videoapi.py:61:51: error[unknown-argument] Argument `video_fps` does not match any known parameter
-+ test/test_videoapi.py:61:68: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
-- Found 1409 diagnostics
-+ Found 1495 diagnostics
-
 cloud-init (https://github.com/canonical/cloud-init)
 + tests/unittests/sources/test_smartos.py:806:5: error[invalid-assignment] Object of type `Literal[2882400018]` is not assignable to attribute `request_id` of type `property`
 + tests/unittests/sources/test_smartos.py:807:5: error[invalid-assignment] Object of type `Literal["value"]` is not assignable to attribute `metadata_value` of type `property`
@@ -338,6 +251,30 @@ cloud-init (https://github.com/canonical/cloud-init)
 - Found 1179 diagnostics
 + Found 1188 diagnostics
 
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | int | dict[str, Any] | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
+
 manticore (https://github.com/trailofbits/manticore)
 - manticore/platforms/evm.py:3016:16: warning[possibly-missing-attribute] Attribute `coinbase` may be missing on object of type `Unknown | None`
 + manticore/platforms/evm.py:3016:16: warning[possibly-missing-attribute] Attribute `coinbase` may be missing on object of type `Unknown | None | BlockHeader`
@@ -349,11 +286,6 @@ manticore (https://github.com/trailofbits/manticore)
 + manticore/platforms/evm.py:3025:16: warning[possibly-missing-attribute] Attribute `difficulty` may be missing on object of type `Unknown | None | BlockHeader`
 - manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None`
 + manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None | BlockHeader`
-
-scikit-build-core (https://github.com/scikit-build/scikit-build-core)
-- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-- Found 48 diagnostics
-+ Found 47 diagnostics
 
 pycryptodome (https://github.com/Legrandin/pycryptodome)
 + lib/Crypto/SelfTest/PublicKey/test_ECC_NIST.py:917:54: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `IntegerBase`
@@ -374,13 +306,31 @@ pycryptodome (https://github.com/Legrandin/pycryptodome)
 - Found 1321 diagnostics
 + Found 1336 diagnostics
 
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 48 diagnostics
++ Found 47 diagnostics
+
 dd-trace-py (https://github.com/DataDog/dd-trace-py)
 + ddtrace/vendor/psutil/__init__.py:1769:12: error[call-non-callable] Object of type `scputimes` is not callable
 + ddtrace/vendor/psutil/__init__.py:1888:16: error[call-non-callable] Object of type `scputimes` is not callable
 + ddtrace/vendor/psutil/_pslinux.py:547:12: error[call-non-callable] Object of type `scputimes` is not callable
 + ddtrace/vendor/psutil/_pslinux.py:565:25: error[call-non-callable] Object of type `scputimes` is not callable
-- Found 8399 diagnostics
-+ Found 8403 diagnostics
+- Found 8396 diagnostics
++ Found 8400 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
+- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
+- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_]`
+- static_frame/profile/__main__.py:2135:9: error[invalid-assignment] Object of type `dict[str, FunctionMetaData | None]` is not assignable to attribute `meta` of type `dict[str, FunctionMetaData] | None`
+- Found 1827 diagnostics
++ Found 1826 diagnostics
 
 jax (https://github.com/google/jax)
 + jax/_src/interpreters/ad.py:430:7: error[call-non-callable] Object of type `aval_method` is not callable
@@ -390,42 +340,22 @@ jax (https://github.com/google/jax)
 - jax/_src/pallas/mosaic/sc_primitives.py:215:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 + jax/_src/pallas/mosaic_gpu/pipeline.py:123:9: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -> Unknown, (index: slice[Any, Any, Any], /) -> tuple[Unknown, ...]]` cannot be called with key of type `tuple[Slice | Array, ...]` on object of type `aval_property`
 + jax/_src/pallas/mosaic_gpu/pipeline.py:136:9: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -> Unknown, (index: slice[Any, Any, Any], /) -> tuple[Unknown, ...]]` cannot be called with key of type `tuple[Slice | Array, ...]` on object of type `aval_property`
-- Found 2803 diagnostics
-+ Found 2802 diagnostics
-
-static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
-+ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
-- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
-+ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
-- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-- static_frame/profile/__main__.py:2135:9: error[invalid-assignment] Object of type `dict[str, FunctionMetaData | None]` is not assignable to attribute `meta` of type `dict[str, FunctionMetaData] | None`
-- Found 1827 diagnostics
-+ Found 1825 diagnostics
-
-pandas (https://github.com/pandas-dev/pandas)
-+ pandas/tests/frame/indexing/test_indexing.py:1409:16: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ pandas/tests/frame/indexing/test_indexing.py:1409:30: error[unknown-argument] Argument `first` does not match any known parameter
-+ pandas/tests/frame/indexing/test_indexing.py:1409:41: error[unknown-argument] Argument `second` does not match any known parameter
-+ pandas/tests/frame/test_constructors.py:1578:19: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ pandas/tests/frame/test_constructors.py:1578:31: error[invalid-argument-type] Argument is incorrect: Expected `Iterable[Unknown]`, found `Literal[1]`
-+ pandas/tests/frame/test_constructors.py:1578:34: error[too-many-positional-arguments] Too many positional arguments: expected 2, got 3
-+ pandas/tests/frame/test_constructors.py:1578:38: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ pandas/tests/frame/test_constructors.py:1578:50: error[invalid-argument-type] Argument is incorrect: Expected `Iterable[Unknown]`, found `Literal[2]`
-+ pandas/tests/frame/test_constructors.py:1578:53: error[too-many-positional-arguments] Too many positional arguments: expected 2, got 3
-- Found 3794 diagnostics
-+ Found 3803 diagnostics
-
-rotki (https://github.com/rotki/rotki)
-+ rotkehlchen/tests/utils/mock.py:73:16: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-+ rotkehlchen/tests/utils/mock.py:73:51: error[unknown-argument] Argument `version` does not match any known parameter
-- Found 2055 diagnostics
-+ Found 2057 diagnostics
+- Found 2853 diagnostics
++ Found 2852 diagnostics
 
 pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
 - pandas-stubs/_typing.pyi:1232:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - Found 5170 diagnostics
 + Found 5169 diagnostics
+
+rotki (https://github.com/rotki/rotki)
+- rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
+- rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
++ rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
+- Found 2059 diagnostics
++ Found 2058 diagnostics
 
 scipy (https://github.com/scipy/scipy)
 + scipy/optimize/_differentiable_functions.py:382:26: error[call-non-callable] Object of type `_FakeCounter` is not callable
@@ -482,8 +412,8 @@ scipy (https://github.com/scipy/scipy)
 - scipy/stats/_multicomp.py:70:22: warning[possibly-missing-attribute] Attribute `high` may be missing on object of type `@Todo | None`
 + scipy/stats/_multicomp.py:70:22: warning[possibly-missing-attribute] Attribute `high` may be missing on object of type `ConfidenceInterval | None`
 + scipy/stats/tests/test_generation/studentized_range_mpmath_ref.py:67:13: error[too-many-positional-arguments] Too many positional arguments: expected 6, got 8
-- Found 8081 diagnostics
-+ Found 8127 diagnostics
+- Found 8082 diagnostics
++ Found 8128 diagnostics
 
 
 ```
@@ -519,23 +449,21 @@ _Comment by @astral-sh-bot[bot] on 2026-01-02 16:55_
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | `missing-argument` | 107 | 0 | 0 |
-| `unknown-argument` | 72 | 0 | 0 |
-| `invalid-argument-type` | 30 | 0 | 5 |
-| `invalid-assignment` | 14 | 1 | 7 |
-| `possibly-missing-attribute` | 4 | 0 | 10 |
+| `invalid-argument-type` | 27 | 0 | 3 |
+| `invalid-assignment` | 15 | 1 | 2 |
+| `possibly-missing-attribute` | 1 | 0 | 9 |
 | `call-non-callable` | 7 | 0 | 0 |
-| `invalid-return-type` | 1 | 0 | 5 |
-| `unused-ignore-comment` | 0 | 5 | 0 |
+| `invalid-return-type` | 0 | 2 | 5 |
+| `unused-ignore-comment` | 0 | 6 | 0 |
 | `not-subscriptable` | 3 | 0 | 0 |
-| `too-many-positional-arguments` | 3 | 0 | 0 |
-| `unresolved-attribute` | 1 | 0 | 2 |
-| `invalid-await` | 2 | 0 | 0 |
 | `no-matching-overload` | 1 | 0 | 0 |
+| `too-many-positional-arguments` | 1 | 0 | 0 |
+| `unresolved-attribute` | 1 | 0 | 0 |
 | `unsupported-operator` | 1 | 0 | 0 |
-| **Total** | **246** | **6** | **29** |
+| **Total** | **164** | **9** | **19** |
 
 
-**[Full report with detailed diff](https://80b240b7.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://80b240b7.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://a3dfe79c.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://a3dfe79c.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -635,7 +563,7 @@ _Marked ready for review by @charliermarsh on 2026-01-13 02:23_
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:152 on 2026-01-13 12:47_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:177 on 2026-01-13 12:47_
 
 Calling `reveal_mro` on this class indicates that it's inferred from inheriting from the wrong kind of tuple on your branch currently:
 
@@ -677,7 +605,7 @@ interesting, did this come up in the ecosystem?
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:186 on 2026-01-13 13:02_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:211 on 2026-01-13 13:02_
 
 And this is because for `class Url(namedtuple("Url", "host port")): ...`, the inner "inline" `Url` class is a namedtuple class but the outer one is not. So it's really equivalent to doing
 
@@ -691,7 +619,7 @@ class Url(Url): ...
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:309 on 2026-01-13 13:02_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:379 on 2026-01-13 13:02_
 
 And again, this is because they aren't actually namedtuple classes, they just inherit from namedtuple classes
 
@@ -705,7 +633,7 @@ https://github.com/astral-sh/ruff/blob/990d0a899972a59cccdf69d57c56358773d2da5c/
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:522 on 2026-01-13 13:04_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:602 on 2026-01-13 13:04_
 
 same comment as above
 
@@ -992,5 +920,84 @@ A lot of this looks good, but I think there's a few places where you've introduc
 ---
 
 _Converted to draft by @charliermarsh on 2026-01-13 14:39_
+
+---
+
+_@charliermarsh reviewed on 2026-01-13 17:24_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/class.rs`:241 on 2026-01-13 17:24_
+
+Thank you, this is very helpful.
+
+---
+
+_@charliermarsh reviewed on 2026-01-13 17:40_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:230 on 2026-01-13 17:40_
+
+(Sorry, this is a vestige of a previous solution where I had to change the typeshed stub.)
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-13 18:05_
+
+---
+
+_@AlexWaygood reviewed on 2026-01-13 18:05_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:746 on 2026-01-13 18:05_
+
+actually, all dynamic namedtuples have an empty tuple generated for their `__slots__`:
+
+```pycon
+>>> from collections import namedtuple
+>>> n = namedtuple("n", "a b")
+>>> n.__slots__
+()
+```
+
+But `__slots__` must be non-empty for a class to be a disjoint base, so your code is correct here -- it's just the comment that's slightly incorrect
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/overrides.rs`:137 on 2026-01-13 18:12_
+
+this change is unnecessary: no tests fail if I revert this change. `CodeGeneratorKind::NamedTuple` is only understood as the code-generator kind for a class if the class has been created directly via `namedtuple()`. `class_kind` will be `None` for a class that inherits from a namedtuple class.
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:7571 on 2026-01-13 18:14_
+
+this change doesn't look necessary; no tests fail if I revert it
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:7627 on 2026-01-13 18:15_
+
+This change doesn't look necessary to me, and no tests fail if I revert it
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:690 on 2026-01-13 18:16_
+
+this change doesn't look necessary to me, and no tests fail if I revert it
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:602 on 2026-01-13 18:16_
+
+this conversation was marked as resolved but the confusing comment about `NamedTupleFallback.__getattr__` (which doesn't exist) is still here
+
+---
+
+_@AlexWaygood reviewed on 2026-01-13 18:18_
+
+I still don't think we need the new `directly_inherits_from_named_tuple_special_form()` method you've added; I can revert all the new uses of it and no tests pass. I think you only needed it in an earlier version because you had `CodeGeneratorKind::NamedTuple.matches(db, class)` returning `true` for all _subclasses_ of namedtuple classes as well as all namedtuple classes
 
 ---

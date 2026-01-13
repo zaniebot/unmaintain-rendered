@@ -2,7 +2,7 @@
 number: 1207
 title: include type parameters in display of generic callables
 type: issue
-state: open
+state: closed
 author: KotlinIsland
 labels:
   - good first issue
@@ -10,9 +10,9 @@ labels:
   - generics
 assignees: []
 created_at: 2025-09-19T03:48:41Z
-updated_at: 2025-12-30T17:37:59Z
+updated_at: 2026-01-13T17:29:10Z
 url: https://github.com/astral-sh/ty/issues/1207
-synced_at: 2026-01-12T15:54:24Z
+synced_at: 2026-01-13T18:43:46Z
 ```
 
 # include type parameters in display of generic callables
@@ -88,5 +88,9 @@ _Comment by @Abhi-2526 on 2025-12-30 17:37_
 
 @KotlinIsland  @TaKO8Ki  Is someone working on this? Or can I pick this up?
 
+
+---
+
+_Closed by @AlexWaygood on 2026-01-13 17:29_
 
 ---

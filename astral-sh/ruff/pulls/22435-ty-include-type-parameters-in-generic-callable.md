@@ -2,18 +2,19 @@
 number: 22435
 title: "[ty] Include type parameters in generic callable display"
 type: pull_request
-state: open
+state: merged
 author: bxff
 labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: main
 created_at: 2026-01-07T12:02:47Z
-updated_at: 2026-01-08T20:27:47Z
+updated_at: 2026-01-13T17:29:08Z
 url: https://github.com/astral-sh/ruff/pull/22435
-synced_at: 2026-01-12T15:57:49Z
+synced_at: 2026-01-13T18:48:34Z
 ```
 
 # [ty] Include type parameters in generic callable display
@@ -86,9 +87,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-07 12:19_
 <summary>Changes were detected when running ty on typing conformance tests</summary>
 
 ```diff
---- old-output.txt	2026-01-08 20:23:06.186588196 +0000
-+++ new-output.txt	2026-01-08 20:23:06.506590094 +0000
-@@ -462,7 +462,7 @@
+--- old-output.txt	2026-01-13 17:26:33.731951055 +0000
++++ new-output.txt	2026-01-13 17:26:34.088951937 +0000
+@@ -468,7 +468,7 @@
  generics_defaults.py:131:1: error[type-assertion-failure] Type `Any` does not match asserted type `int`
  generics_defaults.py:155:49: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `tuple[int | float, bool]`?
  generics_defaults.py:156:58: error[invalid-type-form] List literals are not allowed in this context in a type expression: Did you mean `list[bytes]`?
@@ -142,19 +143,33 @@ more-itertools (https://github.com/more-itertools/more-itertools)
 - more_itertools/recipes.py:1098:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], /) -> int | float | complex | ... omitted 3 union elements`, found `Overload[(base: int, exp: int, mod: int) -> int, (base: int, exp: Literal[0], mod: None = None) -> Literal[1], (base: int, exp: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], mod: None = None) -> int, (base: int, exp: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], mod: None = None) -> int | float, (base: int, exp: int, mod: None = None) -> Any, (base: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], exp: int | float, mod: None = None) -> int | float, (base: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], exp: int | float, mod: None = None) -> int | float | complex, (base: int | float, exp: int, mod: None = None) -> int | float, (base: int | float, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -> Any, (base: int | float | complex, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -> int | float | complex, (base: _SupportsPow2[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -> _T_co@pow, (base: _SupportsPow3NoneOnly[_E_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: None = None) -> _T_co@pow, (base: _SupportsPow3[_E_contra@pow, _M_contra@pow, _T_co@pow], exp: _E_contra@pow, mod: _M_contra@pow) -> _T_co@pow, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float, mod: None = None) -> Any, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float | complex, mod: None = None) -> int | float | complex]`
 + more_itertools/recipes.py:1098:18: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], /) -> int | float | complex | ... omitted 3 union elements`, found `Overload[(base: int, exp: int, mod: int) -> int, (base: int, exp: Literal[0], mod: None = None) -> Literal[1], (base: int, exp: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], mod: None = None) -> int, (base: int, exp: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], mod: None = None) -> int | float, (base: int, exp: int, mod: None = None) -> Any, (base: Literal[1, 2, 3, 4, 5, ... omitted 20 literals], exp: int | float, mod: None = None) -> int | float, (base: Literal[-1, -2, -3, -4, -5, ... omitted 15 literals], exp: int | float, mod: None = None) -> int | float | complex, (base: int | float, exp: int, mod: None = None) -> int | float, (base: int | float, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -> Any, (base: int | float | complex, exp: int | float | complex | _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], mod: None = None) -> int | float | complex, [_E_contra, _T_co](base: _SupportsPow2[_E_contra, _T_co], exp: _E_contra, mod: None = None) -> _T_co, [_E_contra, _T_co](base: _SupportsPow3NoneOnly[_E_contra, _T_co], exp: _E_contra, mod: None = None) -> _T_co, [_E_contra, _M_contra, _T_co](base: _SupportsPow3[_E_contra, _M_contra, _T_co], exp: _E_contra, mod: _M_contra) -> _T_co, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float, mod: None = None) -> Any, (base: _SupportsPow2[Any, Any] | _SupportsPow3[Any, Any, Any], exp: int | float | complex, mod: None = None) -> int | float | complex]`
 
+paasta (https://github.com/yelp/paasta)
+- paasta_tools/cli/fsm_cmd.py:44:5: error[invalid-assignment] Object of type `def symlink_aware_copyfile(...) -> Unknown` is not assignable to attribute `copyfile` of type `def copyfile[_StrOrBytesPathT](src: str | bytes | PathLike[str] | PathLike[bytes], dst: _StrOrBytesPathT@copyfile, *, follow_symlinks: bool = True) -> _StrOrBytesPathT@copyfile`
++ paasta_tools/cli/fsm_cmd.py:44:5: error[invalid-assignment] Object of type `def symlink_aware_copyfile(...) -> Unknown` is not assignable to attribute `copyfile` of type `def copyfile[_StrOrBytesPathT](src: str | bytes | PathLike[str] | PathLike[bytes], dst: _StrOrBytesPathT, *, follow_symlinks: bool = True) -> _StrOrBytesPathT`
+
 scrapy (https://github.com/scrapy/scrapy)
 - scrapy/utils/decorators.py:40:16: error[invalid-assignment] Object of type `(func: (**_P@deprecated) -> _T@deprecated) -> _T@deprecated` is not assignable to `def deco[**_P](func: (**_P@deprecated) -> _T@deprecated) -> (**_P@deprecated) -> _T@deprecated`
 + scrapy/utils/decorators.py:40:16: error[invalid-assignment] Object of type `(func: (**_P@deprecated) -> _T@deprecated) -> _T@deprecated` is not assignable to `def deco[**_P](func: (**_P@deprecated) -> _T) -> (**_P@deprecated) -> _T`
 
-paasta (https://github.com/yelp/paasta)
-- paasta_tools/cli/fsm_cmd.py:44:5: error[invalid-assignment] Object of type `def symlink_aware_copyfile(...) -> Unknown` is not assignable to attribute `copyfile` of type `def copyfile[_StrOrBytesPathT](src: str | bytes | PathLike[str] | PathLike[bytes], dst: _StrOrBytesPathT@copyfile, *, follow_symlinks: bool = True) -> _StrOrBytesPathT@copyfile`
-+ paasta_tools/cli/fsm_cmd.py:44:5: error[invalid-assignment] Object of type `def symlink_aware_copyfile(...) -> Unknown` is not assignable to attribute `copyfile` of type `def copyfile[_StrOrBytesPathT](src: str | bytes | PathLike[str] | PathLike[bytes], dst: _StrOrBytesPathT, *, follow_symlinks: bool = True) -> _StrOrBytesPathT`
+mypy (https://github.com/python/mypy)
+- mypy/typeshed/stdlib/multiprocessing/managers.pyi:328:39: error[invalid-type-form] Invalid subscript of object of type `Overload[(self, iterable: Iterable[_T@list], /) -> ListProxy[_T@list], (self) -> ListProxy[Any]]` in type expression
++ mypy/typeshed/stdlib/multiprocessing/managers.pyi:328:39: error[invalid-type-form] Invalid subscript of object of type `Overload[[_T](self, iterable: Iterable[_T], /) -> ListProxy[_T], (self) -> ListProxy[Any]]` in type expression
+- mypy/typeshed/stdlib/multiprocessing/managers.pyi:330:39: error[invalid-type-form] Invalid subscript of object of type `Overload[(self, iterable: Iterable[_T@list], /) -> ListProxy[_T@list], (self) -> ListProxy[Any]]` in type expression
++ mypy/typeshed/stdlib/multiprocessing/managers.pyi:330:39: error[invalid-type-form] Invalid subscript of object of type `Overload[[_T](self, iterable: Iterable[_T], /) -> ListProxy[_T], (self) -> ListProxy[Any]]` in type expression
 
 mitmproxy (https://github.com/mitmproxy/mitmproxy)
 - test/mitmproxy/proxy/layers/http/test_http3.py:89:41: error[invalid-type-form] Invalid subscript of object of type `def Placeholder[T](cls: type[T@Placeholder] = ...) -> T@Placeholder | _Placeholder[T@Placeholder]` in type expression
 + test/mitmproxy/proxy/layers/http/test_http3.py:89:41: error[invalid-type-form] Invalid subscript of object of type `def Placeholder[T](cls: type[T] = ...) -> T | _Placeholder[T]` in type expression
 - test/mitmproxy/proxy/layers/http/test_http3.py:91:35: error[invalid-type-form] Invalid subscript of object of type `def Placeholder[T](cls: type[T@Placeholder] = ...) -> T@Placeholder | _Placeholder[T@Placeholder]` in type expression
 + test/mitmproxy/proxy/layers/http/test_http3.py:91:35: error[invalid-type-form] Invalid subscript of object of type `def Placeholder[T](cls: type[T] = ...) -> T | _Placeholder[T]` in type expression
+
+psycopg (https://github.com/psycopg/psycopg)
+- psycopg/psycopg/_typeinfo.py:300:20: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: str | int) -> TypeInfo, (key: tuple[type[T@__getitem__], int]) -> T@__getitem__]` cannot be called with key of type `str | int | tuple[type, int]` on object of type `Self@get`
++ psycopg/psycopg/_typeinfo.py:300:20: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: str | int) -> TypeInfo, [T](key: tuple[type[T], int]) -> T]` cannot be called with key of type `str | int | tuple[type, int]` on object of type `Self@get`
+
+Tanjun (https://github.com/FasterSpeeding/Tanjun)
+- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
++ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
 
 pydantic (https://github.com/pydantic/pydantic)
 - pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
@@ -174,13 +189,13 @@ pydantic (https://github.com/pydantic/pydantic)
 - pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
 + pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
 
-psycopg (https://github.com/psycopg/psycopg)
-- psycopg/psycopg/_typeinfo.py:300:20: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: str | int) -> TypeInfo, (key: tuple[type[T@__getitem__], int]) -> T@__getitem__]` cannot be called with key of type `str | int | tuple[type, int]` on object of type `Self@get`
-+ psycopg/psycopg/_typeinfo.py:300:20: error[invalid-argument-type] Method `__getitem__` of type `Overload[(key: str | int) -> TypeInfo, [T](key: tuple[type[T], int]) -> T]` cannot be called with key of type `str | int | tuple[type, int]` on object of type `Self@get`
+trio (https://github.com/python-trio/trio)
+- src/trio/_core/_run.py:142:9: error[invalid-assignment] Object of type `def repr_callable[BaseExcT](fun: (BaseExcT@repr_callable, /) -> bool) -> str` is not assignable to attribute `repr_callable` of type `def repr_callable[BaseExcT_1](fun: (BaseExcT_1@repr_callable, /) -> bool) -> str`
++ src/trio/_core/_run.py:142:9: error[invalid-assignment] Object of type `def repr_callable[BaseExcT](fun: (BaseExcT, /) -> bool) -> str` is not assignable to attribute `repr_callable` of type `def repr_callable[BaseExcT_1](fun: (BaseExcT_1, /) -> bool) -> str`
 
-Tanjun (https://github.com/FasterSpeeding/Tanjun)
-- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
-+ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
+pyodide (https://github.com/pyodide/pyodide)
+- src/py/pyodide/webloop.py:980:5: error[invalid-assignment] Object of type `_Wrapped[(main: Coroutine[Any, Any, _T@run], *, debug: bool | None = None), _T@run, (main, *, debug=None, loop_factory=None), Unknown]` is not assignable to attribute `run` of type `def run[_T](main: Coroutine[Any, Any, _T@run], *, debug: bool | None = None) -> _T@run`
++ src/py/pyodide/webloop.py:980:5: error[invalid-assignment] Object of type `_Wrapped[(main: Coroutine[Any, Any, _T@run], *, debug: bool | None = None), _T@run, (main, *, debug=None, loop_factory=None), Unknown]` is not assignable to attribute `run` of type `def run[_T](main: Coroutine[Any, Any, _T], *, debug: bool | None = None) -> _T`
 
 freqtrade (https://github.com/freqtrade/freqtrade)
 - freqtrade/data/entryexitanalysis.py:58:57: error[invalid-argument-type] Method `__getitem__` of type `Overload[(idx: tuple[int | str | Timestamp | tuple[str | bytes | date | ... omitted 9 union elements, ...] | ((DataFrame, /) -> ScalarT@__getitem__), int | str | tuple[str | bytes | date | ... omitted 9 union elements, ...]]) -> str | bytes | date | ... omitted 9 union elements, (idx: ((DataFrame, /) -> ScalarT@__getitem__) | tuple[slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]] | Index[Any] | ... omitted 8 union elements, ScalarT@__getitem__ | None] | None) -> Series[Any], (idx: str | bytes | date | ... omitted 9 union elements) -> Series[Any] | DataFrame, (idx: tuple[str | bytes | date | ... omitted 9 union elements, slice[Any, Any, Any]]) -> Series[Any] | DataFrame, (key: slice[Any, Any, Any] | ndarray[tuple[Any, ...], dtype[integer[Any]]] | Index[Any] | ... omitted 8 union elements) -> DataFrame]` cannot be called with key of type `tuple[Hashable, Literal["enter_tag"]]` on object of type `_LocIndexerFrame[DataFrame]`
@@ -192,11 +207,9 @@ freqtrade (https://github.com/freqtrade/freqtrade)
 - freqtrade/strategy/strategy_helper.py:102:42: error[invalid-argument-type] Method `__getitem__` of type `bound method _AtIndexerFrame.__getitem__[ScalarT](key: tuple[int | str | Timestamp | tuple[str | bytes | date | ... omitted 9 union elements, ...] | ((DataFrame, /) -> ScalarT@__getitem__), int | str | tuple[str | bytes | date | ... omitted 9 union elements, ...]]) -> str | bytes | date | ... omitted 9 union elements` cannot be called with key of type `tuple[(str & ~AlwaysFalsy) | (bytes & ~AlwaysFalsy) | (date & ~AlwaysFalsy) | ... omitted 9 union elements, str]` on object of type `_AtIndexerFrame`
 + freqtrade/strategy/strategy_helper.py:102:42: error[invalid-argument-type] Method `__getitem__` of type `bound method _AtIndexerFrame.__getitem__[ScalarT](key: tuple[int | str | Timestamp | tuple[str | bytes | date | ... omitted 9 union elements, ...] | ((DataFrame, /) -> ScalarT), int | str | tuple[str | bytes | date | ... omitted 9 union elements, ...]]) -> str | bytes | date | ... omitted 9 union elements` cannot be called with key of type `tuple[(str & ~AlwaysFalsy) | (bytes & ~AlwaysFalsy) | (date & ~AlwaysFalsy) | ... omitted 9 union elements, str]` on object of type `_AtIndexerFrame`
 
-mypy (https://github.com/python/mypy)
-- mypy/typeshed/stdlib/multiprocessing/managers.pyi:328:39: error[invalid-type-form] Invalid subscript of object of type `Overload[(self, iterable: Iterable[_T@list], /) -> ListProxy[_T@list], (self) -> ListProxy[Any]]` in type expression
-+ mypy/typeshed/stdlib/multiprocessing/managers.pyi:328:39: error[invalid-type-form] Invalid subscript of object of type `Overload[[_T](self, iterable: Iterable[_T], /) -> ListProxy[_T], (self) -> ListProxy[Any]]` in type expression
-- mypy/typeshed/stdlib/multiprocessing/managers.pyi:330:39: error[invalid-type-form] Invalid subscript of object of type `Overload[(self, iterable: Iterable[_T@list], /) -> ListProxy[_T@list], (self) -> ListProxy[Any]]` in type expression
-+ mypy/typeshed/stdlib/multiprocessing/managers.pyi:330:39: error[invalid-type-form] Invalid subscript of object of type `Overload[[_T](self, iterable: Iterable[_T], /) -> ListProxy[_T], (self) -> ListProxy[Any]]` in type expression
+cloud-init (https://github.com/canonical/cloud-init)
+- tests/unittests/early_patches.py:33:1: error[invalid-assignment] Object of type `def wrapped_lru_cache(...) -> Unknown` is not assignable to attribute `lru_cache` of type `Overload[(maxsize: int | None = 128, typed: bool = False) -> ((...) -> _T@lru_cache, /) -> _lru_cache_wrapper[_T@lru_cache], (maxsize: (...) -> _T@lru_cache, typed: bool = False) -> _lru_cache_wrapper[_T@lru_cache]]`
++ tests/unittests/early_patches.py:33:1: error[invalid-assignment] Object of type `def wrapped_lru_cache(...) -> Unknown` is not assignable to attribute `lru_cache` of type `Overload[[_T](maxsize: int | None = 128, typed: bool = False) -> ((...) -> _T, /) -> _lru_cache_wrapper[_T], [_T](maxsize: (...) -> _T, typed: bool = False) -> _lru_cache_wrapper[_T]]`
 
 discord.py (https://github.com/Rapptz/discord.py)
 - discord/ext/commands/core.py:2358:32: error[invalid-argument-type] Argument to bound method `append` is incorrect: Expected `(Context[object], /) -> bool | Coroutine[Never, object, bool]`, found `def predicate[BotT](ctx: Context[BotT@predicate]) -> bool`
@@ -207,18 +220,6 @@ discord.py (https://github.com/Rapptz/discord.py)
 + discord/ext/commands/help.py:309:9: error[invalid-assignment] Object of type `def wrapped_get_commands(*, _original: () -> list[Command[Any, (...), Any]] = ...) -> list[Command[Any, (...), Any]]` is not assignable to attribute `get_commands` of type `def get_commands[Self](self) -> list[Command[Self, (...), Any]]`
 - discord/ext/commands/help.py:310:9: error[invalid-assignment] Object of type `def wrapped_walk_commands(*, _original: () -> Generator[Command[Any, (...), Any], None, None] = ...) -> Unknown` is not assignable to attribute `walk_commands` of type `def walk_commands(self) -> Generator[Command[Self@walk_commands, (...), Any], None, None]`
 + discord/ext/commands/help.py:310:9: error[invalid-assignment] Object of type `def wrapped_walk_commands(*, _original: () -> Generator[Command[Any, (...), Any], None, None] = ...) -> Unknown` is not assignable to attribute `walk_commands` of type `def walk_commands[Self](self) -> Generator[Command[Self, (...), Any], None, None]`
-
-trio (https://github.com/python-trio/trio)
-- src/trio/_core/_run.py:142:9: error[invalid-assignment] Object of type `def repr_callable[BaseExcT](fun: (BaseExcT@repr_callable, /) -> bool) -> str` is not assignable to attribute `repr_callable` of type `def repr_callable[BaseExcT_1](fun: (BaseExcT_1@repr_callable, /) -> bool) -> str`
-+ src/trio/_core/_run.py:142:9: error[invalid-assignment] Object of type `def repr_callable[BaseExcT](fun: (BaseExcT, /) -> bool) -> str` is not assignable to attribute `repr_callable` of type `def repr_callable[BaseExcT_1](fun: (BaseExcT_1, /) -> bool) -> str`
-
-pyodide (https://github.com/pyodide/pyodide)
-- src/py/pyodide/webloop.py:980:5: error[invalid-assignment] Object of type `_Wrapped[(main: Coroutine[Any, Any, _T@run], *, debug: bool | None = None), _T@run, (main, *, debug=None, loop_factory=None), Unknown]` is not assignable to attribute `run` of type `def run[_T](main: Coroutine[Any, Any, _T@run], *, debug: bool | None = None) -> _T@run`
-+ src/py/pyodide/webloop.py:980:5: error[invalid-assignment] Object of type `_Wrapped[(main: Coroutine[Any, Any, _T@run], *, debug: bool | None = None), _T@run, (main, *, debug=None, loop_factory=None), Unknown]` is not assignable to attribute `run` of type `def run[_T](main: Coroutine[Any, Any, _T], *, debug: bool | None = None) -> _T`
-
-cloud-init (https://github.com/canonical/cloud-init)
-- tests/unittests/early_patches.py:33:1: error[invalid-assignment] Object of type `def wrapped_lru_cache(...) -> Unknown` is not assignable to attribute `lru_cache` of type `Overload[(maxsize: int | None = 128, typed: bool = False) -> ((...) -> _T@lru_cache, /) -> _lru_cache_wrapper[_T@lru_cache], (maxsize: (...) -> _T@lru_cache, typed: bool = False) -> _lru_cache_wrapper[_T@lru_cache]]`
-+ tests/unittests/early_patches.py:33:1: error[invalid-assignment] Object of type `def wrapped_lru_cache(...) -> Unknown` is not assignable to attribute `lru_cache` of type `Overload[[_T](maxsize: int | None = 128, typed: bool = False) -> ((...) -> _T, /) -> _lru_cache_wrapper[_T], [_T](maxsize: (...) -> _T, typed: bool = False) -> _lru_cache_wrapper[_T]]`
 
 meson (https://github.com/mesonbuild/meson)
 - mesonbuild/utils/universal.py:1674:35: error[invalid-assignment] Object of type `Overload[(key: _T@extract_as_list, default: None = None, /) -> _U@extract_as_list | None, (key: _T@extract_as_list, default: _U@extract_as_list, /) -> _U@extract_as_list, (key: _T@extract_as_list, default: _T@get, /) -> _U@extract_as_list | _T@get]` is not assignable to `(_T@extract_as_list, /) -> _U@extract_as_list`
@@ -235,9 +236,9 @@ setuptools (https://github.com/pypa/setuptools)
 + setuptools/command/editable_wheel.py:420:19: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `(str | bytes, /) -> str | bytes`, found `Overload[(path: str) -> str, (path: bytes) -> bytes, [AnyStr](path: PathLike[AnyStr]) -> AnyStr]`
 
 scikit-build-core (https://github.com/scikit-build/scikit-build-core)
-- src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-- Found 48 diagnostics
-+ Found 47 diagnostics
++ src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 47 diagnostics
++ Found 48 diagnostics
 
 prefect (https://github.com/PrefectHQ/prefect)
 - src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
@@ -252,8 +253,21 @@ prefect (https://github.com/PrefectHQ/prefect)
 + src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
 - src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
 + src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
++ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
 - src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
 + src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
++ src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - src/prefect/task_runners.py:398:17: error[invalid-argument-type] Argument to bound method `submit` is incorrect: Expected `(**_P@run) -> _T@run`, found `def run[_T](main: Coroutine[Any, Any, _T@run], *, debug: bool | None = None) -> _T@run`
 + src/prefect/task_runners.py:398:17: error[invalid-argument-type] Argument to bound method `submit` is incorrect: Expected `(**_P@run) -> _T@run`, found `def run[_T](main: Coroutine[Any, Any, _T], *, debug: bool | None = None) -> _T`
 - src/prefect/task_runners.py:404:17: error[invalid-argument-type] Argument to bound method `submit` is incorrect: Expected `(**_P@run) -> _T@run`, found `def run_task_sync[**P, R](task: Task[P@run_task_sync, R@run_task_sync], task_run_id: UUID | None = None, task_run: TaskRun | None = None, parameters: dict[str, Any] | None = None, wait_for: PrefectFuture[Any] | Any | Iterable[PrefectFuture[Any] | Any] | None = None, return_type: Literal["state", "result"] = "result", dependencies: dict[str, set[RunInput]] | None = None, context: dict[str, Any] | None = None) -> R@run_task_sync | State[Any] | None`
@@ -274,6 +288,8 @@ prefect (https://github.com/PrefectHQ/prefect)
 + src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
 - src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
 + src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
+- Found 5365 diagnostics
++ Found 5370 diagnostics
 
 dd-trace-py (https://github.com/DataDog/dd-trace-py)
 - ddtrace/contrib/internal/asyncio/patch.py:39:12: error[invalid-argument-type] Argument to function `unwrap` is incorrect: Expected `WrappedFunction`, found `def create_task[_T](self, coro: Generator[Any, None, _T@create_task] | Coroutine[Any, Any, _T@create_task], *, name: object = None) -> Task[_T@create_task]`
@@ -288,32 +304,16 @@ jax (https://github.com/google/jax)
 + jax/_src/checkify.py:242:16: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(_SupportsShape[Never] | int | float | ... omitted 9 union elements, /) -> tuple[Any, ...] | tuple[int] | tuple[int, int]`, found `Overload[(a: _SupportsShape[Never]) -> tuple[Any, ...], [_ShapeT](a: _SupportsShape[_ShapeT]) -> _ShapeT, (a: int | float | complex | bytes | str) -> tuple[()], (a: list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]) -> tuple[int], (a: list[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]] | tuple[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...], ...]) -> tuple[int, int], (a: memoryview[int] | bytearray) -> tuple[int], (a: _Buffer | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]] | ... omitted 5 union elements) -> tuple[Any, ...]]`
 - jax/_src/checkify.py:1309:14: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(_SupportsShape[Never] | int | float | ... omitted 9 union elements, /) -> tuple[Any, ...] | tuple[int] | tuple[int, int]`, found `Overload[(a: _SupportsShape[Never]) -> tuple[Any, ...], (a: _SupportsShape[_ShapeT@shape]) -> _ShapeT@shape, (a: int | float | complex | bytes | str) -> tuple[()], (a: list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]) -> tuple[int], (a: list[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]] | tuple[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...], ...]) -> tuple[int, int], (a: memoryview[int] | bytearray) -> tuple[int], (a: _Buffer | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]] | ... omitted 5 union elements) -> tuple[Any, ...]]`
 + jax/_src/checkify.py:1309:14: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(_SupportsShape[Never] | int | float | ... omitted 9 union elements, /) -> tuple[Any, ...] | tuple[int] | tuple[int, int]`, found `Overload[(a: _SupportsShape[Never]) -> tuple[Any, ...], [_ShapeT](a: _SupportsShape[_ShapeT]) -> _ShapeT, (a: int | float | complex | bytes | str) -> tuple[()], (a: list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]) -> tuple[int], (a: list[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]] | tuple[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...], ...]) -> tuple[int, int], (a: memoryview[int] | bytearray) -> tuple[int], (a: _Buffer | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]] | ... omitted 5 union elements) -> tuple[Any, ...]]`
-- jax/_src/interpreters/partial_eval.py:2448:13: error[invalid-argument-type] Argument to function `foreach` is incorrect: Expected `(Var, None | DynamicJaxprTracer, /) -> Any`, found `Overload[(key: Var, default: None = None, /) -> _T@setdefault | None, (key: Var, default: DynamicJaxprTracer, /) -> DynamicJaxprTracer]`
-+ jax/_src/interpreters/partial_eval.py:2448:13: error[invalid-argument-type] Argument to function `foreach` is incorrect: Expected `(Var, None | DynamicJaxprTracer, /) -> Any`, found `Overload[[_T](key: Var, default: None = None, /) -> _T | None, (key: Var, default: DynamicJaxprTracer, /) -> DynamicJaxprTracer]`
-- jax/_src/lax/control_flow/solves.py:201:24: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(_SupportsShape[Never] | int | float | ... omitted 9 union elements, /) -> tuple[Any, ...] | tuple[int] | tuple[int, int]`, found `Overload[(a: _SupportsShape[Never]) -> tuple[Any, ...], (a: _SupportsShape[_ShapeT@shape]) -> _ShapeT@shape, (a: int | float | complex | bytes | str) -> tuple[()], (a: list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]) -> tuple[int], (a: list[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]] | tuple[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...], ...]) -> tuple[int, int], (a: memoryview[int] | bytearray) -> tuple[int], (a: _Buffer | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]] | ... omitted 5 union elements) -> tuple[Any, ...]]`
-+ jax/_src/lax/control_flow/solves.py:201:24: error[invalid-argument-type] Argument to function `safe_map` is incorrect: Expected `(_SupportsShape[Never] | int | float | ... omitted 9 union elements, /) -> tuple[Any, ...] | tuple[int] | tuple[int, int]`, found `Overload[(a: _SupportsShape[Never]) -> tuple[Any, ...], [_ShapeT](a: _SupportsShape[_ShapeT]) -> _ShapeT, (a: int | float | complex | bytes | str) -> tuple[()], (a: list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]) -> tuple[int], (a: list[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...]] | tuple[list[int | float | complex | bytes | str] | tuple[int | float | complex | bytes | str, ...], ...]) -> tuple[int, int], (a: memoryview[int] | bytearray) -> tuple[int], (a: _Buffer | _SupportsArray[dtype[Any]] | _NestedSequence[_SupportsArray[dtype[Any]]] | ... omitted 5 union elements) -> tuple[Any, ...]]`
-- 
+- jax/_src/interpreters/partial_eval.py:2549:13: error[invalid-argument-type] Argument to function `foreach` is incorrect: Expected `(Var, None | DynamicJaxprTracer, /) -> Any`, found `Overload[(key: Var, default: None = None, /) -> _T@setdefault | None, (key: Var, default: DynamicJaxprTracer, /) -> DynamicJaxprTracer]`
++ jax/_src/interpreters/partial_eval.py:2549:13: error[invalid-argument-type] Argument to function `foreach` is incorrect:
 
-... (truncated 56 lines) ...
+... (truncated 73 lines) ...
 ```
 
 </details>
 
 
-
-<details>
-<summary>Memory usage changes were detected when running on open source projects</summary>
-
-```diff
-prefect (https://github.com/PrefectHQ/prefect)
--     struct fields = ~54MB
-+     struct fields = ~52MB
-
-
-```
-
-</details>
-
+No memory usage changes detected ✅
 
 
 
@@ -654,5 +654,29 @@ _Comment by @astral-sh-bot[bot] on 2026-01-08 20:27_
 **[Full report with detailed diff](https://6829c456.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://6829c456.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_@AlexWaygood reviewed on 2026-01-13 17:25_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types.rs`:6902 on 2026-01-13 17:25_
+
+nice catch!
+
+---
+
+_@AlexWaygood approved on 2026-01-13 17:25_
+
+Thanks!
+
+---
+
+_Merged by @AlexWaygood on 2026-01-13 17:29_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-13 17:29_
 
 ---

@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-06-11T19:12:08Z
-updated_at: 2026-01-09T20:53:18Z
+updated_at: 2026-01-13T17:31:35Z
 url: https://github.com/astral-sh/uv/issues/13974
-synced_at: 2026-01-12T16:01:40Z
+synced_at: 2026-01-13T18:50:06Z
 ```
 
 # Add support for requesting indexes with `--index <name>`
@@ -78,5 +78,16 @@ Happy to hear other suggestions.
 ---
 
 _Assigned to @EliteTK by @EliteTK on 2026-01-09 20:53_
+
+---
+
+_Comment by @EliteTK on 2026-01-13 17:31_
+
+Two interesting quirks came up:
+
+1. We could technically allow `pyproject.toml` to reference `uv.toml` indices by name.
+2. We could include also include the index name in `uv-receipt.toml` for a tool, instead of the index URL, if it is installed.
+
+#1 seems like it could lead to surprises. I think #2 might be an okay idea. But for now, I'm going to not do/allow either of those... Just wanted to document this decision in case there were interesting objections to this choice.
 
 ---

@@ -9,9 +9,9 @@ labels:
   - formatter
 assignees: []
 created_at: 2026-01-10T14:53:50Z
-updated_at: 2026-01-12T21:34:27Z
+updated_at: 2026-01-13T18:12:35Z
 url: https://github.com/astral-sh/ruff/issues/22494
-synced_at: 2026-01-12T22:24:39Z
+synced_at: 2026-01-13T18:45:32Z
 ```
 
 # Range formatting semicolon-separated statements introduces whitespace
@@ -52,5 +52,13 @@ _Label `bug` added by @dylwil3 on 2026-01-10 14:54_
 ---
 
 _Label `formatter` added by @dylwil3 on 2026-01-10 14:54_
+
+---
+
+_Comment by @leonace924 on 2026-01-13 18:12_
+
+Hi @AlexWaygood nice to meet you
+I'd like to contribute on this project, is this good issue to take up?
+Thank you
 
 ---
