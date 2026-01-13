@@ -81,10 +81,188 @@ LSP-ruff: 2025-05-08 22:48:34.374117597 DEBUG Printer::print: enter
         <div class="timeline-entry">
             <div class="event">Label <span class="label">server</span> added by @ntBre on 2025-05-08 12:50</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ZedThree">@ZedThree</a> on 2026-01-13 18:01</div>
+            <div class="timeline-body"><p>Apologies if this is too much detail, just getting everything out of my head! Possible fix is below the line.</p>
+<p>A brief summary of the situation from other issues:</p>
+<ul>
+<li>when an editor opens a single file directly, <code>ruff server</code> gets an initial (default) workspace which is the current working directory</li>
+<li>for editors not launched from the terminal, the cwd is usually something like <code>/</code> or <code>~</code>, and since we don't want to scan the whole filesystem, only the cwd and above are scanned for config files (in <code>RuffSettingsIndex::new</code>), and then we bail without going deeper</li>
+<li>now, when we open a file not directly in the cwd we get one of two situations:<ul>
+<li>if the file is <em>under</em> the cwd, we use the settings from whatever config file was found in the cwd</li>
+<li>otherwise, we use the default settings</li>
+</ul>
+</li>
+</ul>
+<p>I have the following setup which I think demonstrates both this issue and the setup in #22536:</p>
+<pre><code>/tmp/mvce
+├── dir_0
+│   ├── dir_0_1
+│   │   ├── ruff.toml
+│   │   └── test_0_1.py
+│   ├── ruff.toml
+│   └── test_0.py
+└── dir_1
+    ├── ruff.toml
+    └── test_1.py
+</code></pre>
+<p>The three <code>.py</code> files are all identical:</p>
+<pre><code class="language-py">import os
+
+with open(&quot;foo&quot;) as f:
+    contents = f.read()
+</code></pre>
+<p>The config files are different, however:</p>
+<p><code>dir_0/ruff.toml</code>:</p>
+<pre><code class="language-toml">[lint]
+select = [&quot;FURB&quot;, &quot;F&quot;]
+preview = true
+</code></pre>
+<p>whereas both <code>dir_1/ruff.toml</code> and <code>dir_0_1/ruff.toml</code>:</p>
+<pre><code class="language-toml">[lint]
+select = [&quot;FURB&quot;]
+preview = false
+</code></pre>
+<p>So that <code>dir_0/test_0.py</code> has two warnings, but <code>dir_1/test_1.py</code> and <code>dir_0_1/test_0_1.py</code> have none -- unless the default settings are used for a file, in which case we get one warning for that file, <code>F401</code> on <code>import os</code>.</p>
+<p>Results summary (I've used nvim here, but this is consistent across editors):</p>
+<ol>
+<li><code>cd dir_0; nvim test_0.py</code> or <code>cd dir_1; nvim test_1.py</code> gives the expected warnings</li>
+<li><code>nvim dir_0/test_0.py</code> or <code>nvim dir_1/test_1.py</code> only gives one warning (bug)<ul>
+<li>this is the issue from #22536</li>
+</ul>
+</li>
+<li><code>cd dir_0; nvim test_0.py</code> then <code>:edit dir_0_1/test_0_1.py</code> gives two warnings (bug)   - this is because <code>dir_0/ruff.toml</code> is used instead of <code>dir_0_1/ruff.toml</code><ul>
+<li>this is <em>maybe</em> the same issue as #20847, with the parent directory taking precedence over the closer config file</li>
+</ul>
+</li>
+<li><code>cd dir_0; nvim test_0.py</code> then <code>:edit ../dir_1/test_1.py</code> gives one warning (bug)<ul>
+<li>as does the other way round</li>
+<li>this is the original situation in this issue</li>
+</ul>
+</li>
+</ol>
+<p>Details from the log file from running the above cases in order:</p>
+<details>
+
+<p>I've also added my own extra logging, mostly in <code>session::Index::open_text_document</code></p>
+<ol>
+<li><code>cd dir_0; nvim test_0.py</code></li>
+</ol>
+<pre><code> INFO No workspace(s) were provided during initialization. Using the current working directory as a default workspace: /tmp/mvce/dir_0
+ INFO No workspace options found for file:///tmp/mvce/dir_0, using default options
+DEBUG Negotiated position encoding: UTF8
+DEBUG Indexing settings for workspace: /tmp/mvce/dir_0
+DEBUG No `target-version` found in `ruff.toml`
+DEBUG No `pyproject.toml` with `requires-python` in same directory; `target-version` unspecified
+DEBUG Loaded settings from: `/tmp/mvce/dir_0/ruff.toml`
+ INFO Registering workspace: /tmp/mvce/dir_0
+ WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: enter
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: *** file:///tmp/mvce/dir_0/test_0.py is in index
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: **** contains key: true
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: *** has settings: true
+DEBUG request{id=2 method=&quot;textDocument/diagnostic&quot;}: enter
+DEBUG request{id=2 method=&quot;textDocument/diagnostic&quot;}: Included path via `include`: /tmp/mvce/dir_0/test_0.py
+DEBUG request{id=3 method=&quot;shutdown&quot;}: enter
+DEBUG request{id=3 method=&quot;shutdown&quot;}: Received shutdown request, waiting for shutdown notification
+DEBUG Received exit notification, exiting
+ INFO Server shut down
+</code></pre>
+<ol start="2">
+<li><code>nvim dir_0/test_0.py</code></li>
+</ol>
+<pre><code> INFO No workspace(s) were provided during initialization. Using the current working directory as a default workspace: /tmp/mvce
+ INFO No workspace options found for file:///tmp/mvce, using default options
+DEBUG Negotiated position encoding: UTF8
+DEBUG Indexing settings for workspace: /tmp/mvce
+ INFO Registering workspace: /tmp/mvce
+ WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: enter
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: *** file:///tmp/mvce/dir_0/test_0.py is in index
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: **** contains key: false
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: *** has settings: false
+DEBUG @@@ using fallback for &quot;/tmp/mvce/dir_0/test_0.py&quot;
+DEBUG request{id=2 method=&quot;textDocument/diagnostic&quot;}: enter
+DEBUG request{id=2 method=&quot;textDocument/diagnostic&quot;}: Included path via `include`: /tmp/mvce/dir_0/test_0.py
+DEBUG request{id=3 method=&quot;shutdown&quot;}: enter
+DEBUG request{id=3 method=&quot;shutdown&quot;}: Received shutdown request, waiting for shutdown notification
+DEBUG Received exit notification, exiting
+ INFO Server shut down
+</code></pre>
+<ol start="3">
+<li><code>cd dir_0; nvim test_0.py</code> then <code>:edit dir_0_1/test_0_1.py</code></li>
+</ol>
+<pre><code> INFO No workspace(s) were provided during initialization. Using the current working directory as a default workspace: /tmp/mvce/dir_0
+ INFO No workspace options found for file:///tmp/mvce/dir_0, using default options
+DEBUG Negotiated position encoding: UTF8
+DEBUG Indexing settings for workspace: /tmp/mvce/dir_0
+DEBUG No `target-version` found in `ruff.toml`
+DEBUG No `pyproject.toml` with `requires-python` in same directory; `target-version` unspecified
+DEBUG Loaded settings from: `/tmp/mvce/dir_0/ruff.toml`
+ INFO Registering workspace: /tmp/mvce/dir_0
+ WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: enter
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: *** file:///tmp/mvce/dir_0/test_0.py is in index
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: **** contains key: true
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: *** has settings: true
+DEBUG request{id=2 method=&quot;textDocument/diagnostic&quot;}: enter
+DEBUG request{id=2 method=&quot;textDocument/diagnostic&quot;}: Included path via `include`: /tmp/mvce/dir_0/test_0.py
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: enter
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: *** file:///tmp/mvce/dir_0/dir_0_1/test_0_1.py is in index
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: **** contains key: false
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: *** has settings: true
+DEBUG request{id=3 method=&quot;textDocument/diagnostic&quot;}: enter
+DEBUG request{id=3 method=&quot;textDocument/diagnostic&quot;}: Included path via `include`: /tmp/mvce/dir_0/dir_0_1/test_0_1.py
+DEBUG request{id=4 method=&quot;shutdown&quot;}: enter
+DEBUG request{id=4 method=&quot;shutdown&quot;}: Received shutdown request, waiting for shutdown notification
+DEBUG Received exit notification, exiting
+ INFO Server shut down
+</code></pre>
+<ol start="4">
+<li><code>cd dir_0; nvim test_0.py</code> then <code>:edit ../dir_1/test_1.py</code></li>
+</ol>
+<pre><code> INFO No workspace(s) were provided during initialization. Using the current working directory as a default workspace: /tmp/mvce/dir_0
+ INFO No workspace options found for file:///tmp/mvce/dir_0, using default options
+DEBUG Negotiated position encoding: UTF8
+DEBUG Indexing settings for workspace: /tmp/mvce/dir_0
+DEBUG No `target-version` found in `ruff.toml`
+DEBUG No `pyproject.toml` with `requires-python` in same directory; `target-version` unspecified
+DEBUG Loaded settings from: `/tmp/mvce/dir_0/ruff.toml`
+ INFO Registering workspace: /tmp/mvce/dir_0
+ WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: enter
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: *** file:///tmp/mvce/dir_0/test_0.py is in index
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: **** contains key: true
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: *** has settings: true
+DEBUG request{id=2 method=&quot;textDocument/diagnostic&quot;}: enter
+DEBUG request{id=2 method=&quot;textDocument/diagnostic&quot;}: Included path via `include`: /tmp/mvce/dir_0/test_0.py
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: enter
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: *** file:///tmp/mvce/dir_1/test_1.py is in index
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: **** contains key: false
+DEBUG notification{method=&quot;textDocument/didOpen&quot;}: *** has settings: false
+DEBUG @@@ using fallback for &quot;/tmp/mvce/dir_1/test_1.py&quot;
+DEBUG request{id=4 method=&quot;textDocument/diagnostic&quot;}: enter
+DEBUG request{id=4 method=&quot;textDocument/diagnostic&quot;}: Included path via `include`: /tmp/mvce/dir_1/test_1.py
+DEBUG request{id=5 method=&quot;shutdown&quot;}: enter
+DEBUG request{id=5 method=&quot;shutdown&quot;}: Received shutdown request, waiting for shutdown notification
+DEBUG Received exit notification, exiting
+ INFO Server shut down
+</code></pre>
+<ul>
+<li><code>**** contains key:</code> is <code>self.settings.contains_key(url.to_file_path()?.parent()?)</code></li>
+<li><code>@@@ using fallback</code> is in the <code>.unwrap_or_else</code> part of <code>RuffSettingsIndex::get</code>, during <code>Index::make_document_ref</code></li>
+</ul>
+</details>
+
+<hr />
+<p>One possible way to fix issues 2. and 4. above is, during <code>session::Index::open_text_document</code>, to check if <code>self.settings_for_url().ruff_settings</code> has our file's parent directory, and if not, to call <code>self.open_workspace_folder</code>.</p>
+<p>This seems to work, without negatively affecting editors like VS Code that open folders. I don't know if it would have other consequences. It's also not a fix for #20847. Should I open a PR for it?</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:52:41 UTC
+        Synced at 2026-01-13 18:27:35 UTC
     </footer>
 </body>
 </html>
