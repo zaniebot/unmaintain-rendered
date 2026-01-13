@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>feat: Add PEP 751 multi-use lock file support with extras and dependency groups markers - astral-sh/uv #14728</title>
+    <title>feat: Complete PEP 751 multi-use lock file implementation for pylock.toml - astral-sh/uv #14728</title>
     <link rel="stylesheet" href="../../../style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>feat: Add PEP 751 multi-use lock file support with extras and dependency groups markers</h1>
+    <h1>feat: Complete PEP 751 multi-use lock file implementation for pylock.toml</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -34,81 +34,296 @@
 </ul>
 <p>The lock file uses <strong>markers</strong> to indicate when each package should be installed, allowing installers to select the appropriate subset.</p>
 <h3>What This Implements</h3>
-<h4>1. Root-Level PEP 751 Metadata Fields</h4>
-<p>The <code>pylock.toml</code> output now includes the required PEP 751 metadata fields:</p>
+<p>This PR adds the missing PEP 751 metadata fields and marker syntax to enable full multi-use lock file support:</p>
 <ul>
-<li><code>extras</code>: All optional dependencies available in the project</li>
-<li><code>dependency-groups</code>: All dependency groups defined in the project</li>
-<li><code>default-groups</code>: Synthetic groups for default installation (currently empty per spec)</li>
+<li><strong><code>environments</code></strong>: Resolution forks showing which platform/Python combinations are supported</li>
+<li><strong><code>extras</code></strong>: List of available optional dependencies</li>
+<li><strong><code>dependency-groups</code></strong>: List of available dependency groups (PEP 735)</li>
+<li><strong><code>default-groups</code></strong>: Synthetic groups for default installation (currently empty per spec)</li>
+<li><strong><code>[tool.uv]</code></strong>: Tool metadata with version and command used to generate the lock</li>
+<li><strong>PEP 751 marker syntax</strong>: <code>'extra' in extras</code> and <code>'group' in dependency_groups</code> for root project dependencies</li>
 </ul>
-<h4>2. Dependency Markers for Extras and Groups</h4>
-<p>Package dependencies include markers using the appropriate syntax:</p>
-<ul>
-<li><strong>Root project extras/groups</strong>: Use PEP 751 container syntax (<code>'test' in extras</code>, <code>'dev' in dependency_groups</code>)</li>
-<li><strong>Transitive package extras</strong>: Use standard PEP 508 syntax (<code>extra == 'dotenv'</code>)</li>
-</ul>
-<p>Dependency markers are simplified relative to <code>requires-python</code>. Unconditional dependencies have no marker; conditional ones only include the additional constraints.</p>
-<h4>3. Marker Conversion</h4>
-<p>uv's internal lock format uses &quot;universal markers&quot; that encode extras and groups. The conversion logic:</p>
-<ul>
-<li>Identifies root project extras/groups and converts to PEP 751 syntax</li>
-<li>Preserves standard PEP 508 syntax for transitive package extras</li>
-<li>Simplifies markers by removing redundant <code>requires-python</code> constraints</li>
-</ul>
+<h3>Feature Examples</h3>
+<p>Each feature is shown individually below, followed by a complete example showing all features together.</p>
+<h4>1. <code>environments</code> Field</h4>
+<p>Shows which platform/Python version combinations the lock file was created for:</p>
+<p><strong>Input (<code>pyproject.toml</code>):</strong></p>
+<pre><code class="language-toml">[tool.uv]
+environments = [
+  &quot;sys_platform == 'darwin'&quot;,
+  &quot;sys_platform == 'linux'&quot;,
+]
+</code></pre>
+<p><strong>Output (<code>pylock.toml</code>):</strong></p>
+<pre><code class="language-toml">lock-version = &quot;1.0&quot;
+created-by = &quot;uv&quot;
+environments = [
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;sys_platform == 'linux'&quot;,
+]
+requires-python = &quot;&gt;=3.12&quot;
+</code></pre>
+<p>This allows consumers to check if the lock file is compatible with their target platform before attempting installation.</p>
+<hr />
+<h4>2. <code>extras</code> Field</h4>
+<p>Lists all optional dependencies available in the project:</p>
+<p><strong>Input (<code>pyproject.toml</code>):</strong></p>
+<pre><code class="language-toml">[project.optional-dependencies]
+test = [&quot;pytest&gt;=8.0&quot;]
+docs = [&quot;sphinx&gt;=7.0&quot;]
+</code></pre>
+<p><strong>Output (<code>pylock.toml</code>):</strong></p>
+<pre><code class="language-toml">lock-version = &quot;1.0&quot;
+created-by = &quot;uv&quot;
+requires-python = &quot;&gt;=3.12&quot;
+extras = [
+    &quot;docs&quot;,
+    &quot;test&quot;,
+]
+</code></pre>
+<p>Installers can use this to validate requested extras and show available options.</p>
+<hr />
+<h4>3. <code>dependency-groups</code> Field</h4>
+<p>Lists all dependency groups defined in the project (PEP 735):</p>
+<p><strong>Input (<code>pyproject.toml</code>):</strong></p>
+<pre><code class="language-toml">[dependency-groups]
+dev = [&quot;ruff&gt;=0.4.0&quot;]
+type = [&quot;mypy&gt;=1.10.0&quot;]
+</code></pre>
+<p><strong>Output (<code>pylock.toml</code>):</strong></p>
+<pre><code class="language-toml">lock-version = &quot;1.0&quot;
+created-by = &quot;uv&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependency-groups = [
+    &quot;dev&quot;,
+    &quot;type&quot;,
+]
+</code></pre>
+<p>Installers can use this to validate requested dependency groups and show available options.</p>
+<hr />
+<h4>4. <code>default-groups</code> Field</h4>
+<p>Synthetic groups representing default installation (currently always empty):</p>
+<p><strong>Output (<code>pylock.toml</code>):</strong></p>
+<pre><code class="language-toml">lock-version = &quot;1.0&quot;
+created-by = &quot;uv&quot;
+requires-python = &quot;&gt;=3.12&quot;
+extras = []
+dependency-groups = []
+default-groups = []
+</code></pre>
+<p>Per PEP 751, this is only needed when <code>packages.marker</code> necessitates synthetic groups for <code>project.dependencies</code>. This is an edge case; uv defaults to empty which is spec-compliant.</p>
+<hr />
+<h4>5. <code>[tool.uv]</code> Table</h4>
+<p>Records the uv version and command used to generate the lock file with portable paths:</p>
+<p><strong>Output (<code>pylock.toml</code>):</strong></p>
+<pre><code class="language-toml">[tool.uv]
+version = &quot;0.0.11&quot;
+command = [
+    &quot;uv&quot;,
+    &quot;export&quot;,
+    &quot;--format&quot;,
+    &quot;pylock.toml&quot;,
+]
+</code></pre>
+<p>Enables lock file regeneration and debugging by tracking exact tool version and command. Command paths are portable (just &quot;uv&quot;, not full path like <code>/usr/bin/uv</code>).</p>
+<hr />
+<h4>6. Root Project Extras with PEP 751 Markers</h4>
+<p>Root project dependencies use PEP 751 <code>'extra' in extras</code> syntax:</p>
+<p><strong>Input (<code>pyproject.toml</code>):</strong></p>
+<pre><code class="language-toml">[project]
+name = &quot;my-project&quot;
+dependencies = [&quot;flask&gt;=3.0&quot;]
+
+[project.optional-dependencies]
+test = [&quot;pytest&gt;=8.0&quot;]
+</code></pre>
+<p><strong>Output (<code>pylock.toml</code>):</strong></p>
+<pre><code class="language-toml">[[packages]]
+name = &quot;my-project&quot;
+dependencies = [
+    { name = &quot;flask&quot;, version = &quot;3.0.2&quot; },
+    { name = &quot;pytest&quot;, version = &quot;8.1.1&quot;, marker = &quot;'test' in extras&quot; },
+]
+directory = { path = &quot;.&quot;, editable = true }
+</code></pre>
+<p>The <code>pytest</code> dependency has marker <code>'test' in extras</code> indicating it's only installed when the <code>test</code> extra is requested.</p>
+<hr />
+<h4>7. Root Project Dependency Groups with PEP 751 Markers</h4>
+<p>Root project dependencies use PEP 751 <code>'group' in dependency_groups</code> syntax:</p>
+<p><strong>Input (<code>pyproject.toml</code>):</strong></p>
+<pre><code class="language-toml">[project]
+name = &quot;my-project&quot;
+dependencies = [&quot;flask&gt;=3.0&quot;]
+
+[dependency-groups]
+dev = [&quot;ruff&gt;=0.4.0&quot;]
+</code></pre>
+<p><strong>Output (<code>pylock.toml</code>):</strong></p>
+<pre><code class="language-toml">[[packages]]
+name = &quot;my-project&quot;
+dependencies = [
+    { name = &quot;flask&quot;, version = &quot;3.0.2&quot; },
+    { name = &quot;ruff&quot;, version = &quot;0.4.5&quot;, marker = &quot;'dev' in dependency_groups&quot; },
+]
+directory = { path = &quot;.&quot;, editable = true }
+</code></pre>
+<p>The <code>ruff</code> dependency has marker <code>'dev' in dependency_groups</code> indicating it's only installed when the <code>dev</code> dependency group is requested.</p>
+<hr />
+<h4>8. Transitive Package Extras with PEP 508 Markers</h4>
+<p>Transitive packages (not the root project) use standard PEP 508 <code>extra == 'name'</code> syntax:</p>
+<p><strong>Output (<code>pylock.toml</code>):</strong></p>
+<pre><code class="language-toml">[[packages]]
+name = &quot;flask&quot;
+version = &quot;3.0.2&quot;
+dependencies = [
+    { name = &quot;click&quot;, version = &quot;8.1.7&quot; },
+    { name = &quot;python-dotenv&quot;, version = &quot;1.0.1&quot;, marker = &quot;extra == 'dotenv'&quot; },
+]
+</code></pre>
+<p>The <code>python-dotenv</code> dependency uses PEP 508 syntax because it's a dependency of <code>flask</code>, not the root project.</p>
+<hr />
+<h3>Complete Example with All Features</h3>
+<p><strong>Input (<code>pyproject.toml</code>):</strong></p>
+<pre><code class="language-toml">[project]
+name = &quot;my-project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;flask&gt;=3.0&quot;]
+
+[project.optional-dependencies]
+test = [&quot;pytest&gt;=8.0&quot;]
+docs = [&quot;sphinx&gt;=7.0&quot;]
+
+[dependency-groups]
+dev = [&quot;ruff&gt;=0.4.0&quot;]
+type = [&quot;mypy&gt;=1.10.0&quot;]
+
+[tool.uv]
+environments = [
+  &quot;sys_platform == 'darwin'&quot;,
+  &quot;sys_platform == 'linux'&quot;,
+]
+</code></pre>
+<p><strong>Output (<code>pylock.toml</code>):</strong></p>
+<pre><code class="language-toml">lock-version = &quot;1.0&quot;
+created-by = &quot;uv&quot;
+environments = [
+    &quot;sys_platform == 'darwin'&quot;,
+    &quot;sys_platform == 'linux'&quot;,
+]
+requires-python = &quot;&gt;=3.12&quot;
+extras = [
+    &quot;docs&quot;,
+    &quot;test&quot;,
+]
+dependency-groups = [
+    &quot;dev&quot;,
+    &quot;type&quot;,
+]
+
+[tool.uv]
+version = &quot;0.0.11&quot;
+command = [
+    &quot;uv&quot;,
+    &quot;export&quot;,
+    &quot;--format&quot;,
+    &quot;pylock.toml&quot;,
+]
+
+[[packages]]
+name = &quot;my-project&quot;
+marker = &quot;sys_platform == 'darwin' or sys_platform == 'linux'&quot;
+dependencies = [
+    { name = &quot;flask&quot;, version = &quot;3.0.2&quot;, marker = &quot;sys_platform == 'darwin' or sys_platform == 'linux'&quot; },
+    { name = &quot;pytest&quot;, version = &quot;8.1.1&quot;, marker = &quot;(sys_platform == 'darwin' or sys_platform == 'linux') and 'test' in extras&quot; },
+    { name = &quot;sphinx&quot;, version = &quot;7.2.6&quot;, marker = &quot;(sys_platform == 'darwin' or sys_platform == 'linux') and 'docs' in extras&quot; },
+    { name = &quot;ruff&quot;, version = &quot;0.4.5&quot;, marker = &quot;(sys_platform == 'darwin' or sys_platform == 'linux') and 'dev' in dependency_groups&quot; },
+    { name = &quot;mypy&quot;, version = &quot;1.10.0&quot;, marker = &quot;(sys_platform == 'darwin' or sys_platform == 'linux') and 'type' in dependency_groups&quot; },
+]
+directory = { path = &quot;.&quot;, editable = true }
+
+[[packages]]
+name = &quot;flask&quot;
+version = &quot;3.0.2&quot;
+marker = &quot;sys_platform == 'darwin' or sys_platform == 'linux'&quot;
+dependencies = [
+    { name = &quot;click&quot;, version = &quot;8.1.7&quot;, marker = &quot;sys_platform == 'darwin' or sys_platform == 'linux'&quot; },
+]
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/.../flask-3.0.2-py3-none-any.whl&quot;, hashes = { sha256 = &quot;...&quot; } },
+]
+
+[[packages]]
+name = &quot;pytest&quot;
+version = &quot;8.1.1&quot;
+marker = &quot;(sys_platform == 'darwin' or sys_platform == 'linux') and 'test' in extras&quot;
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/.../pytest-8.1.1-py3-none-any.whl&quot;, hashes = { sha256 = &quot;...&quot; } },
+]
+
+[[packages]]
+name = &quot;ruff&quot;
+version = &quot;0.4.5&quot;
+marker = &quot;(sys_platform == 'darwin' or sys_platform == 'linux') and 'dev' in dependency_groups&quot;
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/.../ruff-0.4.5-py3-none-any.whl&quot;, hashes = { sha256 = &quot;...&quot; } },
+]
+</code></pre>
+<p><strong>Features demonstrated:</strong></p>
+<ol>
+<li><code>environments</code> lists platform markers</li>
+<li><code>extras</code> lists available extras</li>
+<li><code>dependency-groups</code> lists available groups</li>
+<li><code>[tool.uv]</code> records generation metadata</li>
+<li>Packages have combined platform + extras/groups markers</li>
+<li>Root project uses PEP 751 syntax (<code>'test' in extras</code>, <code>'dev' in dependency_groups</code>)</li>
+</ol>
+<hr />
 <h3>Marker Syntax Summary</h3>
 <p>| Dependency Type | Marker Syntax | Example |
 |----------------|---------------|---------|
 | Unconditional | <em>(no marker)</em> | <code>{ name = &quot;flask&quot;, version = &quot;3.0.2&quot; }</code> |
 | Platform-specific | PEP 508 | <code>marker = &quot;sys_platform == 'win32'&quot;</code> |
-| Root project extra | PEP 751 | <code>marker = &quot;'extra1' in extras&quot;</code> |
-| Root project group | PEP 751 | <code>marker = &quot;'test' in dependency_groups&quot;</code> |
+| Root project extra | PEP 751 | <code>marker = &quot;'test' in extras&quot;</code> |
+| Root project group | PEP 751 | <code>marker = &quot;'dev' in dependency_groups&quot;</code> |
 | Transitive extra | PEP 508 | <code>marker = &quot;extra == 'dotenv'&quot;</code> |</p>
-<h3>Marker Variations</h3>
-<h4>Unconditional dependencies (no marker)</h4>
-<pre><code class="language-toml">[[packages]]
-name = &quot;flask&quot;
-version = &quot;3.0.2&quot;
-dependencies = [
-    { name = &quot;blinker&quot;, version = &quot;1.7.0&quot; },
-    { name = &quot;click&quot;, version = &quot;8.1.7&quot; },
-    { name = &quot;itsdangerous&quot;, version = &quot;2.1.2&quot; },
-]
-</code></pre>
-<h4>Platform-specific dependencies (PEP 508 marker)</h4>
-<pre><code class="language-toml">[[packages]]
-name = &quot;click&quot;
-version = &quot;8.1.7&quot;
-dependencies = [
-    { name = &quot;colorama&quot;, version = &quot;0.4.6&quot;, marker = &quot;sys_platform == 'win32'&quot; },
-]
-</code></pre>
-<h4>Root project extras (PEP 751 syntax)</h4>
-<pre><code class="language-toml">[[packages]]
-name = &quot;project&quot;
-dependencies = [
-    { name = &quot;sortedcontainers&quot;, version = &quot;2.3.0&quot;, marker = &quot;'extra1' in extras&quot; },
-    { name = &quot;sortedcontainers&quot;, version = &quot;2.4.0&quot;, marker = &quot;'extra2' in extras&quot; },
-]
-</code></pre>
-<h4>Root project dependency groups (PEP 751 syntax)</h4>
-<pre><code class="language-toml">[[packages]]
-name = &quot;project&quot;
-dependencies = [
-    { name = &quot;pytest&quot;, version = &quot;8.1.1&quot;, marker = &quot;'test' in dependency_groups&quot; },
-    { name = &quot;mypy&quot;, version = &quot;1.0.0&quot;, marker = &quot;'dev' in dependency_groups&quot; },
-]
-</code></pre>
-<h4>Transitive package extras (PEP 508 syntax)</h4>
-<pre><code class="language-toml">[[packages]]
-name = &quot;flask&quot;
-version = &quot;3.0.2&quot;
-dependencies = [
-    { name = &quot;python-dotenv&quot;, version = &quot;1.0.1&quot;, marker = &quot;extra == 'dotenv'&quot; },
-]
-</code></pre>
+<hr />
+<h3>PEP 751 Compliance Status</h3>
+<h4>✅ Fully Implemented</h4>
+<p>All <strong>required</strong> fields:</p>
+<ul>
+<li><code>lock-version</code></li>
+<li><code>created-by</code></li>
+<li><code>[[packages]]</code> and <code>packages.name</code></li>
+</ul>
+<p>All <strong>optional</strong> core fields:</p>
+<ul>
+<li><code>environments</code> (resolution fork markers)</li>
+<li><code>requires-python</code></li>
+<li><code>extras</code></li>
+<li><code>dependency-groups</code></li>
+<li><code>default-groups</code> (empty by design, spec-compliant)</li>
+<li><code>[tool]</code> table with tool metadata</li>
+<li>All package source types (<code>vcs</code>, <code>directory</code>, <code>archive</code>, <code>sdist</code>, <code>wheels</code>)</li>
+<li>All sub-fields (<code>upload-time</code>, <code>hashes</code>, <code>marker</code>, <code>requires-python</code>, <code>dependencies</code>)</li>
+<li>PEP 751 marker syntax (<code>'extra' in extras</code>, <code>'group' in dependency_groups</code>)</li>
+<li>Installation from pylock.toml files via <code>uv pip install -r pylock.toml</code></li>
+</ul>
+<h4>⚠️ Not Yet Implemented (Optional Features)</h4>
+<ol>
+<li><p><strong><code>[[packages.attestation-identities]]</code></strong>: Not implemented. PEP 751 says tools &quot;SHOULD include the attestation identities found&quot; for supply chain security/provenance tracking.</p>
+</li>
+<li><p><strong><code>[packages.tool]</code></strong>: Not implemented. Allows package-level tool metadata (similar to root-level <code>[tool]</code> but per-package).</p>
+</li>
+</ol>
+<hr />
 <h3>Usage</h3>
 <pre><code class="language-bash"># Export a project to pylock.toml format
 uv export --format pylock.toml &gt; pylock.toml
+
+# Export with platform restrictions
+# (in pyproject.toml: tool.uv.environments = [&quot;sys_platform == 'linux'&quot;])
+uv export --format pylock.toml &gt; pylock.linux.toml
 
 # Install from the multi-use lock file (base dependencies only)
 uv pip install -r pylock.toml
@@ -117,7 +332,10 @@ uv pip install -r pylock.toml
 uv pip install -r pylock.toml --extra test --extra docs
 
 # Install with specific dependency groups
-uv pip install -r pylock.toml --group dev
+uv pip install -r pylock.toml --group dev --group type
+
+# Install with both extras and dependency groups
+uv pip install -r pylock.toml --extra test --group dev
 </code></pre>
 <p>Resolves #13060</p>
 </div>
@@ -230,10 +448,22 @@ uv pip install -r pylock.toml --group dev
         <div class="timeline-entry">
             <div class="event">Review requested from @konstin by @gaborbernat on 2026-01-12 19:59</div>
         </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "feat: Add PEP 751 multi-use lock file support with extras and dependency groups markers" to "feat: Add PEP 751 environments field and tool metadata to pylock.toml export" by @gaborbernat on 2026-01-12 23:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "feat: Add PEP 751 environments field and tool metadata to pylock.toml export" to "feat: Implement PEP 751 multi-use lock files with extras, dependency groups, and environments" by @gaborbernat on 2026-01-12 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "feat: Implement PEP 751 multi-use lock files with extras, dependency groups, and environments" to "feat: Implement PEP 751 multi-use lock files with extras, groups, and environments" by @gaborbernat on 2026-01-12 23:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "feat: Implement PEP 751 multi-use lock files with extras, groups, and environments" to "feat: Complete PEP 751 multi-use lock file implementation for pylock.toml" by @gaborbernat on 2026-01-12 23:39</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 22:17:02 UTC
+        Synced at 2026-01-13 00:27:01 UTC
     </footer>
 </body>
 </html>

@@ -14,7 +14,7 @@
     <h1>Emit diagnostics for generic class parameterized with a single-element tuple of types if the generic class accepts only a single type argument</h1>
 
     <div class="meta">
-        <span class="state-icon state-open"></span>
+        <span class="state-icon state-closed"></span>
         <a href="https://github.com/astral-sh/ty/issues/2448">#2448</a>
         opened by <a href="https://github.com/hyperkai">@hyperkai</a>
         on 2026-01-11 17:06
@@ -108,10 +108,26 @@ v2 = ('A', 'B', 'C') # No error
 <p>I understand that, but the relevant question is not whether we should treat <code>list[(int,)]</code> the same as <code>list[int,]</code>. I agree we should treat those two the same, and I said as much in https://github.com/astral-sh/ty/issues/2448#issuecomment-3735144048. The relevant question is whether we should treat <code>list[(int,)]</code> or <code>list[int,]</code> the same as <code>list[int]</code>.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-12 23:55</div>
+            <div class="timeline-body"><p><code>list[int,]</code> and <code>list[int]</code> are different in the AST, sure, but I don't think they should be treated differently in the type system. The &quot;fiction&quot; of type arguments is that you provide a comma-separated &quot;list&quot; (using the general meaning here, not the Python container type meaning) of N type arguments (very similar to function arguments) when specializing a generic type with N type parameters. For all N != 1, that syntactically means you provide a tuple. <code>list[int,]</code> is just generalizing that to the case of N == 1 also, instead of taking advantage of the &quot;special case&quot; of providing a non-tuple for N == 1. Visually, it just looks like a trailing comma, which in most cases where a &quot;list of things&quot; is expected (e.g. function arguments) is fine, and not semantically meaningful.</p>
+<p>Note that at runtime both result in exactly the same <code>GenericAlias</code> object -- runtime treats the non-tuple N == 1 case as a special case, and normalizes <code>__args__</code> to a length-1 tuple:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; list[int].__args__
+(&lt;class 'int'&gt;,)
+&gt;&gt;&gt; list[(int,)].__args__
+(&lt;class 'int'&gt;,)
+</code></pre>
+<p>I don't think there's any particular <em>reason</em> to use <code>list[(int,)]</code>, but I think there's no harm in allowing it, and it is more consistent to allow it than not. (This reminds me of the case of <code>Union[()]</code>, which raises an error at runtime, which I think was a bad choice -- there's no harm in interpreting it as <code>Never</code>, and it would be more consistent to do so.)</p>
+<p>Not closed to more discussion here if someone feels this is important, but I think our current behavior here is consistent and fine, and also shared by all other type checkers. And either way this is unimportant and not something we should spend more time on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-12 23:55</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:46 UTC
+        Synced at 2026-01-13 00:25:38 UTC
     </footer>
 </body>
 </html>
