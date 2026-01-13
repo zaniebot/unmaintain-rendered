@@ -2,16 +2,18 @@
 number: 2459
 title: Fix the docs links to the benchmark results
 type: pull_request
-state: open
+state: merged
 author: Iain-S
-labels: []
+labels:
+  - documentation
 assignees: []
+merged: true
 base: main
 head: fix/bar-chart-svg
 created_at: 2026-01-12T10:42:14Z
-updated_at: 2026-01-12T10:42:14Z
+updated_at: 2026-01-13T05:29:52Z
 url: https://github.com/astral-sh/ty/pull/2459
-synced_at: 2026-01-12T15:54:28Z
+synced_at: 2026-01-13T06:26:55Z
 ```
 
 # Fix the docs links to the benchmark results
@@ -58,5 +60,31 @@ npx prettier --prose-wrap always --write "**/*.md"
 ```
 
 after editing any markdown files. However, this changes 24 files, not only `index.md`. Should I run this as a separate commit, a separate PR or neither?
+
+---
+
+_@dhruvmanila approved on 2026-01-13 05:23_
+
+Thank you!
+
+---
+
+_Label `documentation` added by @dhruvmanila on 2026-01-13 05:24_
+
+---
+
+_Comment by @dhruvmanila on 2026-01-13 05:25_
+
+> However, this changes 24 files, not only `index.md`. Should I run this as a separate commit, a separate PR or neither?
+
+Let's leave that for now, I'm not sure about that as I don't think we enforce it in the CI (cc @zanieb)
+
+---
+
+_Merged by @dhruvmanila on 2026-01-13 05:29_
+
+---
+
+_Closed by @dhruvmanila on 2026-01-13 05:29_
 
 ---
