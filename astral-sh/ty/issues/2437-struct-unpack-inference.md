@@ -8,9 +8,9 @@ labels:
   - wish
 assignees: []
 created_at: 2026-01-10T22:44:38Z
-updated_at: 2026-01-13T02:16:50Z
+updated_at: 2026-01-13T04:11:32Z
 url: https://github.com/astral-sh/ty/issues/2437
-synced_at: 2026-01-13T02:20:57Z
+synced_at: 2026-01-13T04:30:28Z
 ```
 
 # Struct unpack inference
@@ -132,5 +132,25 @@ Examples of using `struct.unpack` can be found at https://docs.python.org/3/libr
 ---
 
 _Label `question` removed by @carljm on 2026-01-13 02:16_
+
+---
+
+_Comment by @sakgoyal on 2026-01-13 04:05_
+
+Sorry for the late response. 
+
+@carljm is correct. 
+
+My code was a proof of concept to show how you can infer the result type of the unpack given a format string. it can be used in the checker to provide more accurate return value types compared to just returning `Any`. 
+
+it is indeed a niche use case, but I dont think it would be *that* difficult to implement. 
+
+I will try to get it working myself, but no guarantees
+
+---
+
+_Comment by @carljm on 2026-01-13 04:11_
+
+@sakgoyal happy to look at a pull request! You'll want to look at KnownFunction for similar cases where we special case handling of a particular function. 
 
 ---

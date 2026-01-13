@@ -7,9 +7,9 @@ author: oconnor663
 labels: []
 assignees: []
 created_at: 2025-08-01T16:32:39Z
-updated_at: 2026-01-10T18:01:40Z
+updated_at: 2026-01-13T03:38:28Z
 url: https://github.com/astral-sh/ty/issues/927
-synced_at: 2026-01-12T15:54:24Z
+synced_at: 2026-01-13T04:30:28Z
 ```
 
 # nonlocal snapshot sweeping considers unrelated scopes, sweeps too much
@@ -100,5 +100,9 @@ This causes `ty` to silently ignore all type errors after the `assert`.
 
 There is a PR to fix this issue in astral-sh/ruff#19820.  But it seems dormant.
 I think that issue deserves a milestone tag.
+
+---
+
+_Added to milestone `Stable` by @carljm on 2026-01-13 03:38_
 
 ---

@@ -11,9 +11,9 @@ draft: true
 base: main
 head: claude/fix-issue-2470-n8CLn
 created_at: 2026-01-13T02:48:16Z
-updated_at: 2026-01-13T02:56:33Z
+updated_at: 2026-01-13T03:34:07Z
 url: https://github.com/astral-sh/ruff/pull/22543
-synced_at: 2026-01-13T03:19:47Z
+synced_at: 2026-01-13T04:30:45Z
 ```
 
 # [ty] Fix stack overflow with recursive type aliases containing tuple …
@@ -146,5 +146,17 @@ static-frame (https://github.com/static-frame/static-frame)
 No memory usage changes detected ✅
 
 
+
+---
+
+_@mtshiba approved on 2026-01-13 03:30_
+
+Yes, I came to the same conclusion in https://github.com/astral-sh/ruff/pull/22238/files#diff-8049ab5af787dba29daa389bbe2b691560c15461ef536f122b1beab112a4b48a.
+
+---
+
+_Comment by @carljm on 2026-01-13 03:34_
+
+@mtshiba Thank you! I was just thinking a few minutes ago "I remember @mtshiba had some PRs about recursion stuff, I should really go review those and see if he already found this fix" 😆 Sorry I've been so far behind on my review queue.
 
 ---

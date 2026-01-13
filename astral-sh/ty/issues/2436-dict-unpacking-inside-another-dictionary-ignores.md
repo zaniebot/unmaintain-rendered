@@ -9,9 +9,9 @@ labels:
   - bidirectional inference
 assignees: []
 created_at: 2026-01-10T13:40:07Z
-updated_at: 2026-01-10T20:15:18Z
+updated_at: 2026-01-13T03:37:21Z
 url: https://github.com/astral-sh/ty/issues/2436
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-13T04:30:28Z
 ```
 
 # Dict unpacking inside another dictionary ignores annotations
@@ -56,5 +56,9 @@ _Label `bug` added by @ibraheemdev on 2026-01-10 20:15_
 ---
 
 _Label `bidirectional inference` added by @ibraheemdev on 2026-01-10 20:15_
+
+---
+
+_Added to milestone `Stable` by @carljm on 2026-01-13 03:37_
 
 ---

@@ -9,9 +9,9 @@ labels:
   - bidirectional inference
 assignees: []
 created_at: 2025-11-03T21:58:50Z
-updated_at: 2026-01-10T08:59:17Z
+updated_at: 2026-01-13T03:44:10Z
 url: https://github.com/astral-sh/ty/issues/1473
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-13T04:30:28Z
 ```
 
 # better inference for generics not fully constrained at their construction
@@ -139,5 +139,13 @@ x.append(1)  # list[Unknown | int]
 ```
 
 I like the idea of explaining how type was constructed, maybe we can even have extra action in lsp like "explain type", where ty will show all code that determined the type
+
+---
+
+_Comment by @carljm on 2026-01-13 03:44_
+
+I think this discussion is more on-topic for #1240 than here. @npip99 you might be interested in https://github.com/astral-sh/ty/issues/1240#issuecomment-3729947824
+
+The plan outlined in the OP here is specifically about getting to a place where an empty array can be given a complete type, with no Unknowns, and with no need to require an explicit annotation either.
 
 ---
