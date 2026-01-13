@@ -14,7 +14,7 @@
     <h1>Django async_to_sync returns None</h1>
 
     <div class="meta">
-        <span class="state-icon state-open"></span>
+        <span class="state-icon state-closed"></span>
         <a href="https://github.com/astral-sh/ty/issues/2456">#2456</a>
         opened by <a href="https://github.com/andre-dasilva">@andre-dasilva</a>
         on 2026-01-12 08:29
@@ -36,10 +36,61 @@
 <p>0.0.11</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 01:17</div>
+            <div class="timeline-body"><p>Thanks for the report! I'm pretty sure this has the same root cause as https://github.com/astral-sh/ty/issues/2131 -- going to close it as duplicate, but we should double-check this case once that is fixed.</p>
+<p>Transcribed code (by Claude) for future reference:</p>
+<pre><code class="language-py">import asyncio
+from typing import Any, Awaitable, Callable, Coroutine, Optional, TypeVar, Union
+from typing_extensions import ParamSpec
+
+_P = ParamSpec(&quot;_P&quot;)
+_R = TypeVar(&quot;_R&quot;)
+
+
+# Simplified async_to_sync signature based on asgiref
+def async_to_sync(
+    awaitable: Optional[
+        Union[
+            Callable[_P, Coroutine[Any, Any, _R]],
+            Callable[_P, Awaitable[_R]],
+        ]
+    ] = None,
+    *,
+    force_new_loop: bool = False,
+) -&gt; Union[
+    Callable[
+        [Union[Callable[_P, Coroutine[Any, Any, _R]], Callable[_P, Awaitable[_R]]]],
+        Callable[_P, _R],
+    ],
+    Callable[_P, _R],
+]:
+    # Stub implementation
+    raise NotImplementedError()
+
+
+async def example() -&gt; int:
+    await asyncio.sleep(delay=1)
+    return 42
+
+
+def call_example() -&gt; int:
+    result = async_to_sync(awaitable=example)
+    reveal_type(result)
+    result = result()
+    reveal_type(result)
+    return result + 12
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-13 01:17</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:21:46 UTC
+        Synced at 2026-01-13 01:25:11 UTC
     </footer>
 </body>
 </html>
