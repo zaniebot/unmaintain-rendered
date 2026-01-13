@@ -10,9 +10,9 @@ draft: true
 base: main
 head: claude/abi-wheel-compatibility-35SSt
 created_at: 2026-01-13T18:01:13Z
-updated_at: 2026-01-13T21:19:32Z
+updated_at: 2026-01-13T23:27:41Z
 url: https://github.com/astral-sh/uv/pull/17442
-synced_at: 2026-01-13T21:36:42Z
+synced_at: 2026-01-13T23:35:46Z
 ```
 
 # Improve error message for abi3 wheels on free-threaded Python
@@ -35,5 +35,27 @@ _@zanieb reviewed on 2026-01-13 18:01_
 _Review comment by @zanieb on `crates/uv-platform-tags/src/tags.rs`:314 on 2026-01-13 18:01_
 
 This seems sort of questionable.
+
+---
+
+_@zanieb reviewed on 2026-01-13 23:22_
+
+---
+
+_Review comment by @zanieb on `crates/uv-installer/src/satisfies.rs`:473 on 2026-01-13 23:22_
+
+I think this should probably be "which is incompatible"?
+
+---
+
+_@zanieb reviewed on 2026-01-13 23:23_
+
+---
+
+_Review comment by @zanieb on `crates/uv-distribution-types/src/prioritized_distribution.rs`:230 on 2026-01-13 23:23_
+
+I think we should probably omit this latter part? It's included in the subsequent message.
+
+Maybe "a free-threaded compatible ABI tag"?
 
 ---

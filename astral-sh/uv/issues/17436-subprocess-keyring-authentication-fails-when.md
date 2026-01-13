@@ -2,15 +2,15 @@
 number: 17436
 title: "Subprocess Keyring authentication fails when using uv tool run with @latest qualifier"
 type: issue
-state: open
+state: closed
 author: Vaeyrun
 labels:
   - bug
 assignees: []
 created_at: 2026-01-13T10:47:39Z
-updated_at: 2026-01-13T22:09:13Z
+updated_at: 2026-01-13T22:31:07Z
 url: https://github.com/astral-sh/uv/issues/17436
-synced_at: 2026-01-13T22:36:13Z
+synced_at: 2026-01-13T23:35:38Z
 ```
 
 # Subprocess Keyring authentication fails when using uv tool run with @latest qualifier
@@ -91,5 +91,9 @@ _Label `bug` added by @Vaeyrun on 2026-01-13 10:47_
 _Comment by @zanieb on 2026-01-13 22:09_
 
 Thank you for the investigation!
+
+---
+
+_Closed by @zanieb on 2026-01-13 22:31_
 
 ---

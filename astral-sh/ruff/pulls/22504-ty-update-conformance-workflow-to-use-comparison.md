@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: wld/update-conformance-workflow
 created_at: 2026-01-11T17:55:59Z
-updated_at: 2026-01-13T22:24:05Z
+updated_at: 2026-01-13T22:49:54Z
 url: https://github.com/astral-sh/ruff/pull/22504
-synced_at: 2026-01-13T22:36:08Z
+synced_at: 2026-01-13T23:35:33Z
 ```
 
 # [ty] Update conformance workflow to use comparison script
@@ -102,5 +102,53 @@ _Closed by @WillDuke on 2026-01-13 22:21_
 ---
 
 _Reopened by @WillDuke on 2026-01-13 22:21_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-13 22:38_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+<details>
+<summary>Changes were detected when running ty on typing conformance tests</summary>
+
+```diff
+
+## Typing Conformance
+
+### Summary
+
+| Metric | Old | New | Diff | Outcome |
+|--------|-----|-----|------|---------|
+| True Positives  | 0 | 0 | +0 | ⏬ (❌) |
+| False Positives | 948 | 948 | +0 | ⏬ (✅) |
+| False Negatives | 1155 | 1155 | +0 | ⏬ (✅) |
+| Total Diagnostics | 948 | 948 | 0 | ⏬ |
+| Precision | 0.00% | 0.00% | +0.00% | ⏬ (❌) |
+| Recall | 0.00% | 0.00% | +0.00% | ⏬ (❌) |
+
+
+The percentage of diagnostics emitted that were expected errors held steady at 0.00%, and the percentage of expected errors that received a diagnostic held steady at 0.00%.
+
+
+```
+
+</details>
+
+
+
+
+---
+
+_Comment by @AlexWaygood on 2026-01-13 22:49_
+
+Ah, we may need to update some logic over on the astral-sh-bot end to get it to post the raw markdown outputted by the new script, rather than putting it all in a collapsible section.
+
+I think that repo is still closed-source, unfortunately, but I can take a look tomorrow.
 
 ---

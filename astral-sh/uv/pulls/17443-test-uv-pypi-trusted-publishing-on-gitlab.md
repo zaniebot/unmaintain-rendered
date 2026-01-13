@@ -4,14 +4,15 @@ title: Test uv+PyPI Trusted Publishing on Gitlab
 type: pull_request
 state: open
 author: woodruffw
-labels: []
+labels:
+  - internal
 assignees: []
 base: main
 head: ww/pypi-tp-gl-test
 created_at: 2026-01-13T19:14:18Z
-updated_at: 2026-01-13T22:19:40Z
+updated_at: 2026-01-13T23:22:17Z
 url: https://github.com/astral-sh/uv/pull/17443
-synced_at: 2026-01-13T22:36:21Z
+synced_at: 2026-01-13T23:35:46Z
 ```
 
 # Test uv+PyPI Trusted Publishing on Gitlab
@@ -105,5 +106,19 @@ _Review requested from @konstin by @woodruffw on 2026-01-13 22:19_
 ---
 
 _Review requested from @zsol by @woodruffw on 2026-01-13 22:19_
+
+---
+
+_Label `internal` added by @woodruffw on 2026-01-13 23:18_
+
+---
+
+_Review comment by @woodruffw on `.github/workflows/ci.yml`:259 on 2026-01-13 23:22_
+
+(Also noting that I reviewed this action's source. I considered trying to open-code this with GitLab's `glab` CLI instead, but this seemed simpler. We could always switch to that instead, though.)
+
+---
+
+_@woodruffw reviewed on 2026-01-13 23:22_
 
 ---

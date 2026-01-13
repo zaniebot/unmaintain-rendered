@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: patch-1
 created_at: 2026-01-13T21:16:38Z
-updated_at: 2026-01-13T21:32:07Z
+updated_at: 2026-01-13T22:53:37Z
 url: https://github.com/astral-sh/ruff/pull/22561
-synced_at: 2026-01-13T22:36:08Z
+synced_at: 2026-01-13T23:35:33Z
 ```
 
 # [`pandas-vet`] Make example error out-of-the-box (`PD002`)
@@ -83,5 +83,28 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 21:32_
 
 
 
+
+---
+
+_Review comment by @amyreese on `crates/ruff_linter/src/rules/pandas_vet/rules/inplace_argument.rs`:30 on 2026-01-13 22:53_
+
+I'd prefer names that are more generic
+
+```suggestion
+/// data = pd.read_csv("data.csv")
+/// data.sort_values("column", inplace=True)
+```
+
+---
+
+_Review comment by @amyreese on `crates/ruff_linter/src/rules/pandas_vet/rules/inplace_argument.rs`:37 on 2026-01-13 22:53_
+
+```suggestion
+/// data = pd.read_csv("data.csv").sort_values("column")
+```
+
+---
+
+_@amyreese reviewed on 2026-01-13 22:53_
 
 ---
