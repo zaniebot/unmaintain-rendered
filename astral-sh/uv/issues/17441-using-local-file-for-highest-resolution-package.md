@@ -2,15 +2,15 @@
 number: 17441
 title: Using local file for highest resolution, package index for lowest-direct
 type: issue
-state: open
+state: closed
 author: khoover
 labels:
   - enhancement
 assignees: []
 created_at: 2026-01-13T17:37:31Z
-updated_at: 2026-01-13T17:37:31Z
+updated_at: 2026-01-13T21:15:20Z
 url: https://github.com/astral-sh/uv/issues/17441
-synced_at: 2026-01-13T18:50:22Z
+synced_at: 2026-01-13T21:36:34Z
 ```
 
 # Using local file for highest resolution, package index for lowest-direct
@@ -34,5 +34,21 @@ _No response_
 ---
 
 _Label `enhancement` added by @khoover on 2026-01-13 17:37_
+
+---
+
+_Comment by @zanieb on 2026-01-13 21:13_
+
+I think you just want to use `--no-sources` for the lowest-direct case and have a path (or workspace) dependency otherwise, does that make sense?
+
+---
+
+_Comment by @khoover on 2026-01-13 21:15_
+
+Huh. Yeah, that would do it.
+
+---
+
+_Closed by @khoover on 2026-01-13 21:15_
 
 ---

@@ -8,9 +8,9 @@ labels:
   - documentation
 assignees: []
 created_at: 2025-06-27T00:38:35Z
-updated_at: 2026-01-13T19:24:58Z
+updated_at: 2026-01-13T21:17:06Z
 url: https://github.com/astral-sh/ruff/issues/18972
-synced_at: 2026-01-13T19:37:16Z
+synced_at: 2026-01-13T21:36:17Z
 ```
 
 # [`docs`] Some rule's examples do not trigger out-of-the-box
@@ -25,7 +25,7 @@ There are definitely false positives in here (rules who's examples rely on speci
 
 Once all of these are complete, I might work on a PR to add the checks to somewhere like `check_docs_formatted.py` so any future examples will be checked in CI.
 
-# Current progress: 51 complete, 1 in progress, 15 false positives, 2 issues with rules, 15 missing tooling, 15 need done
+# Current progress: 52 complete, 1 in progress, 16 false positives, 2 issues with rules, 15 missing tooling, 13 need done
 <details>
 <summary>
 
@@ -86,6 +86,7 @@ Once all of these are complete, I might work on a PR to add the checks to somewh
 |Refurb|FURB180|[metaclass_abcmeta.rs:24-27](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs#L24-L27)|Error code 0|#19672|
 |Refurb|FURB164|[unnecessary_from_float.rs:28-33](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/refurb/rules/unnecessary_from_float.rs#L28-L33)|Error code 0|#19673|
 |Refurb|FURB157|[verbose_decimal_constructor.rs:32-35](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/refurb/rules/verbose_decimal_constructor.rs#L32-L35)|Error code 0|#19695|
+|Ruff-specific rules|RUF103|[invalid_suppression_comment.rs:14-16](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/ruff/rules/invalid_suppression_comment.rs#L14-L16)|Error code 0|#22558|
 
 </details>
 
@@ -98,7 +99,7 @@ Once all of these are complete, I might work on a PR to add the checks to somewh
 
 |Group|Code|File|Issue|PR|
 |-------|------|----|-----|---|
-|Ruff-specific rules|RUF103|[invalid_suppression_comment.rs:14-16](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/ruff/rules/invalid_suppression_comment.rs#L14-L16)|Error code 0|#22558|
+|PandasVet|PD002|[inplace_argument.rs:27-29](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/pandas_vet/rules/inplace_argument.rs#L27-L29)|Error code 0|#22561|
 
 </details>
 
@@ -126,6 +127,7 @@ Once all of these are complete, I might work on a PR to add the checks to somewh
 |Pylint|PLR0904|[too_many_public_methods.rs:23-45](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/pylint/rules/too_many_public_methods.rs#L23-L45)|Error code 0|Example relies on non-default configuration|
 |Pylint|PLR0915|[too_many_statements.rs:24-40](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/pylint/rules/too_many_statements.rs#L24-L40)|Error code 0|Example is truncated for brevity|
 |Pylint|PLW0101|[unreachable.rs:20-25](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/pylint/rules/unreachable.rs#L20-L25)|Invalid rule code|Is test-only rule|
+|flake8-bugbear|B912|[map_without_explicit_strict.rs:27-29](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/flake8_bugbear/rules/map_without_explicit_strict.rs#L27-L29)|Error code 0|3.14 instead of 3.13|
 
 
 </details>
@@ -182,8 +184,6 @@ This section is for the `SyntaxError`s/missing errors that are due to the code u
 
 |Group|Code|File|Issue|
 |-------|------|----|-----|
-|flake8-bugbear|B912|[map_without_explicit_strict.rs:27-29](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/flake8_bugbear/rules/map_without_explicit_strict.rs#L27-L29)|Error code 0|
-|PandasVet|PD002|[inplace_argument.rs:27-29](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/pandas_vet/rules/inplace_argument.rs#L27-L29)|Error code 0|
 |Ruff|RUF032|[decimal_from_float_literal.rs:22-24](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/ruff/rules/decimal_from_float_literal.rs#L22-L24)|Error code 0|
 |Ruff|RUF026|[default_factory_kwarg.rs:43-46](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/ruff/rules/default_factory_kwarg.rs#L43-L46)|Error code 0|
 |Ruff|RUF056|[falsy_dict_get_fallback.rs:18-21](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/ruff/rules/falsy_dict_get_fallback.rs#L18-L21)|Error code 0|

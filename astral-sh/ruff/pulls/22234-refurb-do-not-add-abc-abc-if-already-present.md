@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: issue/17162/do-not-add-abc-if-already-added
 created_at: 2025-12-28T11:38:46Z
-updated_at: 2026-01-13T20:08:46Z
+updated_at: 2026-01-13T20:34:47Z
 url: https://github.com/astral-sh/ruff/pull/22234
-synced_at: 2026-01-13T20:37:03Z
+synced_at: 2026-01-13T21:36:29Z
 ```
 
 # [`refurb`] Do not add `abc.ABC` if already present (`FURB180`)
@@ -702,5 +702,90 @@ Thank you! I was on PTO last week, but I'm back now :) I'll take a look soon.
 > And since there are several commits here, do I need to squash them?
 
 Don't worry about squashing, we'll squash-merge at the end, so it's easier to keep all the commits for review in the meantime.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:68 on 2026-01-13 20:12_
+
+```suggestion
+    // Determine whether the class definition contains at least one argument.
+```
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:154 on 2026-01-13 20:25_
+
+What do you think about something like this:
+
+```rust
+        let delete_keyword = remove_argument(
+            keyword,
+            arguments,
+            Parentheses::Remove,
+            checker.source(),
+            checker.tokens(),
+        )?;
+
+        Ok(if position > 0 {
+            // When the `abc.ABCMeta` is not the first keyword and `abc.ABC` is not
+            // in base classes put `abc.ABC` before the first keyword argument.
+            if has_abc {
+                Fix::applicable_edit(delete_keyword, applicability)
+            } else {
+                Fix::applicable_edits(
+                    delete_keyword,
+                    [
+                        Edit::insertion(format!("{binding}, "), class_def.keywords()[0].start()),
+                        import_edit,
+                    ],
+                    applicability,
+                )
+            }
+        } else {
+            let edit_action = if has_abc {
+                // Class already inherits the `abc.ABC`, delete the `metaclass` keyword only.
+                delete_keyword
+            } else {
+                // Replace `metaclass` keyword by `abc.ABC`.
+                Edit::range_replacement(binding, keyword.range)
+            };
+
+            Fix::applicable_edits(edit_action, [import_edit], applicability)
+        })
+```
+
+I factored out the `delete_keyword` edit and got rid of the `Vec`s by using two different `Fix` constructors. I don't feel too strongly about the second part, but I think factoring out the shared deletion edit definitely makes sense.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/refurb/rules/metaclass_abcmeta.rs`:92 on 2026-01-13 20:32_
+
+I think this is a pre-existing issue, but I'm pretty sure the fix should also be unsafe if there are comments in the range of the deletion. For example,
+
+```py
+import abc
+
+
+class C(
+    other_kwarg=1,
+    # comment
+    metaclass=abc.ABCMeta,
+):
+    pass
+```
+
+This comment gets [deleted](https://play.ruff.rs/f64dfdc1-811d-466f-8e49-0f400e1859d0) but wouldn't make the fix unsafe on main as far as I can tell.
+
+Feel free to fix that here if you want, or I can open an issue for follow-up. We usually use a pattern like this:
+
+https://github.com/astral-sh/ruff/blob/55a335165ab126d50edb89e775c0c5c340cb8ae3/crates/ruff_linter/src/rules/flake8_return/rules/function.rs#L406-L410
+
+We'd also need to update the docs.
+
+---
+
+_@ntBre reviewed on 2026-01-13 20:34_
+
+Thank you! This looks great, I just had a couple of minor suggestions. I also noticed a potential issue with the fix safety, but I can turn that into a separate issue if you'd rather not update it here.
 
 ---

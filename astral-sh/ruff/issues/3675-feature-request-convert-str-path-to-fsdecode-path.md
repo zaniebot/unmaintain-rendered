@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2023-03-22T22:55:48Z
-updated_at: 2026-01-13T11:32:21Z
+updated_at: 2026-01-13T21:22:10Z
 url: https://github.com/astral-sh/ruff/issues/3675
-synced_at: 2026-01-13T12:25:00Z
+synced_at: 2026-01-13T21:36:16Z
 ```
 
 # Feature request: convert str(Path) to fsdecode(Path)
@@ -92,7 +92,7 @@ Since I was asked for my opinion, here's my opinionated opinion 😉:
 1. Never use `str(Path)`; can give you `None`
 2. Only use `PurePath.as_posix()` if you specifically need the path in a POSIX format
 3. Use `os.fsdecode(path)` if you need the string encoding of the `Path` object (don't need to use `os.fspath()` since `pathlib` doesn't deal in `bytes`), but you should avoid this as much as possible and only do it last-minute when you must
-4. To be fully generic/duck-typing, us `os.fspath()` anywhere you accept a path and don't care if it's a `str` or `bytes`, else use `os.fsdecode()` or `os.encode()`, respectively
+4. To be fully generic/duck-typing, us `os.fspath()` anywhere you accept a path and don't care if it's a `str` or `bytes`, else use `os.fsdecode()` or `os.fsencode()`, respectively
 5. To make this work you will need type hints
 
 ---
@@ -108,5 +108,13 @@ _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:29_
 _Comment by @ericrbg-harmonic on 2026-01-13 11:32_
 
 My understanding is that now we should be using `os.fspath` instead of `fsdecode`, fwiw
+
+---
+
+_Comment by @brettcannon on 2026-01-13 21:22_
+
+> My understanding is that now we should be using `os.fspath` instead of `fsdecode`, fwiw
+
+Who's "we" in that sentence?
 
 ---

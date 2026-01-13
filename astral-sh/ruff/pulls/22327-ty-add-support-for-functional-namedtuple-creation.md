@@ -11,9 +11,9 @@ assignees: []
 base: charlie/dyn-expression
 head: charlie/functional-namedtuple
 created_at: 2026-01-01T13:23:44Z
-updated_at: 2026-01-13T19:28:11Z
+updated_at: 2026-01-13T21:24:48Z
 url: https://github.com/astral-sh/ruff/pull/22327
-synced_at: 2026-01-13T20:37:03Z
+synced_at: 2026-01-13T21:36:29Z
 ```
 
 # [ty] Add support for functional `namedtuple` creation
@@ -1103,5 +1103,166 @@ _Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/class.
 _Comment by @carljm on 2026-01-13 19:26_
 
 Going to let @AlexWaygood handle review here -- lmk if there's anything you particularly want me to look at.
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:1374 on 2026-01-13 20:23_
+
+what's the reason that `DynamicNamedTupleLiteral::own_class_member`` returns `Option<PlaceAndQualifiers` whereas `DynamicClassLiteral::own_class_member` returns `Member`? It seems like they could both return `Member`?
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:2132 on 2026-01-13 20:26_
+
+but it seems like we still have false positives in other respects for tuples with unknown fields on this branch:
+
+```py
+from ty_extensions import reveal_mro
+from collections import namedtuple
+
+def f(x: str):
+    Point = namedtuple("Point", x)
+    p = Point(1, 2, 3)  # fine
+    reveal_type(p.whatever)  # revealed: Unknown, fine
+
+    p[0]  # error: [index-out-of-bounds], not fine
+    reveal_mro(Point)  # revealed: (<class 'Point'>, <class 'tuple[()]'>, <class 'object'>)
+```
+
+I think namedtuple classes with unknown fields need to be inferred as inheriting from `tuple[Unknown, ...]` in order for these false positives to be removed
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:2216 on 2026-01-13 20:27_
+
+Can you add a test that demonstrates that we correctly infer them as inheriting the ordering methods from their tuple base classes? We get the behaviour correct on this branch, but it's untested -- we correctly do not emit a diagnostic on this:
+
+```py
+from collections import namedtuple
+from functools import total_ordering
+
+@total_ordering
+class Point(namedtuple("Point", "x y")): ...
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:3257 on 2026-01-13 20:28_
+
+nice catch!
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:5192 on 2026-01-13 20:29_
+
+Avoiding duplicating the synthesis logic seems like a good idea, but I only see this function called from the dynamic namedtuple code path -- I don't think this comment is accurate right now
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:5411 on 2026-01-13 20:30_
+
+`tuple_base_type` implies to me that this is going to return a `Type`; maybe this could be renamed to
+
+```suggestion
+    pub(crate) fn tuple_base_class(self, db: &'db dyn Db) -> ClassType<'db> {
+```
+
+?
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6378 on 2026-01-13 20:35_
+
+shall we just import `ast::name::Name` at the top of the file, so that the type annotation doesn't have to be split over four lines? 😛
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6315 on 2026-01-13 20:37_
+
+should we also abort here if any of the positional arguments are starred expressions, or any of the keyword arguments are `**` arguments?
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6360 on 2026-01-13 20:38_
+
+I'm not sure you've added any tests for namedtuples that use `rename=True` or provide a value for the `defaults=` keyword parameter; can you add some?
+
+Also, I'm not sure we emit any errors here if the user provides a nonexistent keyword argument like `foobarbaz=42`
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6372 on 2026-01-13 20:41_
+
+We can't return `None` here because we've already inferred (and stored) some types, but returning `None` will cause us to infer all types for the expression again, which could cause us to panic. As soon as we've stored at least one type for the call expression, we have to do the signature checking for the whole call expression "manually".
+
+I also don't think it's _desirable_ to return `None` here, though. Can't we just use `<unknown>` for the name of the `collections.namedtuple` class, like we do for `type()` classes where a non-literal string is provided?
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6416 on 2026-01-13 20:42_
+
+can you add a test with a `Point = collections.namedtuple("Point", "x       y")`, and also one that uses a string with tabs in it? (Making sure that we infer the correct MRO in both cases)
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6417 on 2026-01-13 20:44_
+
+why are you using `exact_tuple_instance_spec()` here? I think `tuple_instance_spec()` should be fine?
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6510 on 2026-01-13 20:45_
+
+same here, I think `tuple_instance_spec` should be fine here?
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6532 on 2026-01-13 20:46_
+
+nah, we should use `Type::in_type_expression()` here rather than reimplementing that method :P
+
+---
+
+_@AlexWaygood reviewed on 2026-01-13 20:46_
+
+---
+
+_@charliermarsh reviewed on 2026-01-13 21:01_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6372 on 2026-01-13 21:01_
+
+Yes good call.
+
+---
+
+_@charliermarsh reviewed on 2026-01-13 21:14_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6416 on 2026-01-13 21:14_
+
+(Tab is causing me major problems because `mdformat` keeps removing it.)
+
+---
+
+_@AlexWaygood reviewed on 2026-01-13 21:16_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6416 on 2026-01-13 21:16_
+
+hahaha is there no suppression comment to tell it to away??
+
+---
+
+_@AlexWaygood reviewed on 2026-01-13 21:24_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6437 on 2026-01-13 21:24_
+
+can we move these imports to the top of the file?
 
 ---

@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-13T16:56:16Z
-updated_at: 2026-01-13T20:04:22Z
+updated_at: 2026-01-13T20:41:05Z
 url: https://github.com/astral-sh/ruff/issues/22554
-synced_at: 2026-01-13T20:36:52Z
+synced_at: 2026-01-13T21:36:17Z
 ```
 
 # [`pyflakes`] `F401` cannot detect unused import
@@ -145,5 +145,29 @@ which I think is where this code is being skipped.
 ---
 
 _Label `question` added by @ntBre on 2026-01-13 20:04_
+
+---
+
+_Comment by @chirizxc on 2026-01-13 20:41_
+
+> I think this should trigger [redefined-while-unused (F811)](https://docs.astral.sh/ruff/rules/redefined-while-unused/#redefined-while-unused-f811) like the pyflakes diagnostic message rather than [unused-import (F401)](https://docs.astral.sh/ruff/rules/unused-import/#unused-import-f401).
+> 
+> I'm not sure if this is a bug or an intentional bias toward false negatives. For example, there's this check in F811:
+> 
+> [ruff/crates/ruff_linter/src/rules/pyflakes/rules/redefined_while_unused.rs](https://github.com/astral-sh/ruff/blob/55a335165ab126d50edb89e775c0c5c340cb8ae3/crates/ruff_linter/src/rules/pyflakes/rules/redefined_while_unused.rs#L131-L138)
+> 
+> Lines 131 to 138 in [55a3351](/astral-sh/ruff/commit/55a335165ab126d50edb89e775c0c5c340cb8ae3)
+>  // If the bindings are in different forks, abort. 
+>  if shadowed.source.is_none_or(|left| { 
+>      binding 
+>          .source 
+>          .is_none_or(|right| !checker.semantic().same_branch(left, right)) 
+>  }) { 
+>      continue; 
+>  } 
+> 
+> which I think is where this code is being skipped.
+
+Hmm, I think so, it should be related to the rule about duplicates, but I think we can compare whether there are identical imports inside and outside the `typing.TYPE_CHECKING` block. I haven't found any errors related to this in the ecosystem, and I can't think of a case where we might encounter a false positive.
 
 ---

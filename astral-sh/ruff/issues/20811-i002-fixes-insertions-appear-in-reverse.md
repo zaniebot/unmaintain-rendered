@@ -2,15 +2,15 @@
 number: 20811
 title: I002 fixes’ insertions appear in reverse alphabetical order
 type: issue
-state: open
+state: closed
 author: dscorbett
 labels:
   - fixes
 assignees: []
 created_at: 2025-10-11T13:24:48Z
-updated_at: 2025-10-13T20:27:43Z
+updated_at: 2026-01-13T21:21:20Z
 url: https://github.com/astral-sh/ruff/issues/20811
-synced_at: 2026-01-12T15:54:57Z
+synced_at: 2026-01-13T21:36:17Z
 ```
 
 # I002 fixes’ insertions appear in reverse alphabetical order
@@ -47,5 +47,9 @@ But I think that's a little easier to deal with than #20787. An `IndexSet` might
 ---
 
 _Label `fixes` added by @ntBre on 2025-10-13 20:27_
+
+---
+
+_Closed by @ntBre on 2026-01-13 21:21_
 
 ---

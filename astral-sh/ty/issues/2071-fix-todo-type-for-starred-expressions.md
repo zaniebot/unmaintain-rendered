@@ -2,14 +2,14 @@
 number: 2071
 title: "Fix `Todo` type for starred expressions"
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels: []
 assignees: []
 created_at: 2025-12-18T14:13:15Z
-updated_at: 2026-01-12T17:56:40Z
+updated_at: 2026-01-13T21:09:31Z
 url: https://github.com/astral-sh/ty/issues/2071
-synced_at: 2026-01-12T18:23:17Z
+synced_at: 2026-01-13T21:36:11Z
 ```
 
 # Fix `Todo` type for starred expressions
@@ -35,5 +35,9 @@ _Removed from milestone `Stable` by @AlexWaygood on 2026-01-11 16:37_
 ---
 
 _Added to milestone `Pre-stable 1` by @AlexWaygood on 2026-01-11 16:37_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-13 21:09_
 
 ---

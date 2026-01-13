@@ -10,9 +10,9 @@ labels:
   - breaking
 assignees: []
 created_at: 2024-09-04T12:06:16Z
-updated_at: 2025-06-21T09:53:38Z
+updated_at: 2026-01-13T21:16:40Z
 url: https://github.com/astral-sh/uv/issues/7008
-synced_at: 2026-01-12T15:59:09Z
+synced_at: 2026-01-13T21:36:32Z
 ```
 
 # Idiomatic Windows paths
@@ -190,5 +190,43 @@ This ☝
 ---
 
 _Label `needs-decision` added by @zanieb on 2025-06-20 13:52_
+
+---
+
+_Comment by @brettcannon on 2026-01-13 21:04_
+
+One thing that uv doesn't make easy is a way to direct it to just put everything in a Dev Drive. It seems like at minimum I want the cache directory, but what about tools (i.e. do they also use the cache and so fall under the ["same FS as virtual environments" advice](https://docs.astral.sh/uv/reference/storage/#executable-directory:~:text=For%20optimal%20performance%2C%20the%20cache%20directory%20needs%20to%20be%20on%20the%20same%20filesystem%20as%20virtual%20environments.))? Or PBS installs? I would love to have an easy way to say "use this directory for whatever", or at least guidance on what you would expect to be put on the Dev Drive like what's listed at https://learn.microsoft.com/en-us/windows/dev-drive/#what-should-i-put-on-my-dev-drive .
+
+---
+
+_Comment by @2-5 on 2026-01-13 21:15_
+
+`F:\` is my DevDrive, and `F:\Package` is where I keep all the uv/npm/pip/cargo/... caches. This is the setup I use and it works, except self update:
+```
+UV_CACHE_DIR=F:\Package\uv\cache
+UV_INSTALL_DIR=F:\Package\uv\bin
+UV_TOOL_BIN_DIR=F:\Package\uv\bin
+UV_TOOL_DIR=F:\Package\uv\tool
+```
+It could definitely be easier, most other tools work with a single env var :)
+
+```
+HF_HOME=F:\Package\hf
+NPM_CONFIG_CACHE=F:\Package\npm
+NUGET_PACKAGES=F:\Package\nuget
+PIP_CACHE_DIR=F:\Package\pip
+YARN_GLOBAL_FOLDER=F:\Package\yarn
+
+CARGO_HOME=F:\Package\cargo
+RUSTUP_HOME=F:\Package\rustup
+
+GOCACHE=F:\Package\go\build
+GOPATH=F:\Package\go
+
+UV_CACHE_DIR=F:\Package\uv\cache
+UV_INSTALL_DIR=F:\Package\uv\bin
+UV_TOOL_BIN_DIR=F:\Package\uv\bin
+UV_TOOL_DIR=F:\Package\uv\tool
+```
 
 ---

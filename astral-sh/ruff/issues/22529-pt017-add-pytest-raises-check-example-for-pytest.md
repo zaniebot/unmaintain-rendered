@@ -2,15 +2,15 @@
 number: 22529
 title: "PT017: add `pytest.raises(..., check=...)` example (for pytest ≥ 8.4.0)"
 type: issue
-state: open
+state: closed
 author: harupy
 labels:
   - documentation
 assignees: []
 created_at: 2026-01-12T09:17:38Z
-updated_at: 2026-01-12T15:00:34Z
+updated_at: 2026-01-13T20:45:54Z
 url: https://github.com/astral-sh/ruff/issues/22529
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-13T21:36:17Z
 ```
 
 # PT017: add `pytest.raises(..., check=...)` example (for pytest ≥ 8.4.0)
@@ -77,5 +77,9 @@ _Label `question` removed by @ntBre on 2026-01-12 15:00_
 ---
 
 _Label `documentation` added by @ntBre on 2026-01-12 15:00_
+
+---
+
+_Closed by @ntBre on 2026-01-13 20:45_
 
 ---

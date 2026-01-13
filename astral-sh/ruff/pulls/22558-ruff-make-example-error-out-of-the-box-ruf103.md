@@ -11,9 +11,9 @@ merged: true
 base: main
 head: patch-1
 created_at: 2026-01-13T19:24:41Z
-updated_at: 2026-01-13T20:06:55Z
+updated_at: 2026-01-13T20:29:43Z
 url: https://github.com/astral-sh/ruff/pull/22558
-synced_at: 2026-01-13T20:37:04Z
+synced_at: 2026-01-13T21:36:29Z
 ```
 
 # [`ruff`] Make example error out-of-the-box (`RUF103`)
@@ -96,5 +96,9 @@ _Merged by @ntBre on 2026-01-13 20:06_
 ---
 
 _Closed by @ntBre on 2026-01-13 20:06_
+
+---
+
+_Branch deleted on 2026-01-13 20:29_
 
 ---

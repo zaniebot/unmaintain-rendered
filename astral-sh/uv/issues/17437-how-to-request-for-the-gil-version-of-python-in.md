@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-13T11:51:34Z
-updated_at: 2026-01-13T11:51:34Z
+updated_at: 2026-01-13T21:24:42Z
 url: https://github.com/astral-sh/uv/issues/17437
-synced_at: 2026-01-13T12:25:18Z
+synced_at: 2026-01-13T21:36:34Z
 ```
 
 # How to request for the GIL version of Python in `.python-version`?
@@ -48,5 +48,11 @@ uv 0.9.24
 ---
 
 _Label `question` added by @AngheloAlf on 2026-01-13 11:51_
+
+---
+
+_Comment by @zanieb on 2026-01-13 21:24_
+
+Thanks for the report, this is just a bug in our Python download matching logic.
 
 ---

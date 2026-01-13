@@ -6,12 +6,13 @@ state: open
 author: chirizxc
 labels: []
 assignees: []
+draft: true
 base: main
 head: F401
 created_at: 2026-01-13T19:11:09Z
-updated_at: 2026-01-13T19:23:09Z
+updated_at: 2026-01-13T21:22:46Z
 url: https://github.com/astral-sh/ruff/pull/22557
-synced_at: 2026-01-13T19:37:28Z
+synced_at: 2026-01-13T21:36:29Z
 ```
 
 # [WIP] pyflakes `F401`
@@ -412,5 +413,9 @@ _Comment by @codspeed-hq[bot] on 2026-01-13 19:15_
 
 [^skipped]: 23 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/chirizxc%3AF401?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).
 
+
+---
+
+_Converted to draft by @chirizxc on 2026-01-13 21:22_
 
 ---

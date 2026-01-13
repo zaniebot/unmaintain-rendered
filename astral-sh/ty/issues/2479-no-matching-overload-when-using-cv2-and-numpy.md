@@ -4,12 +4,13 @@ title: "`no-matching-overload` when using `cv2` and `numpy`"
 type: issue
 state: open
 author: Carrot-shreds
-labels: []
+labels:
+  - needs-info
 assignees: []
 created_at: 2026-01-13T10:56:34Z
-updated_at: 2026-01-13T11:24:08Z
+updated_at: 2026-01-13T20:29:42Z
 url: https://github.com/astral-sh/ty/issues/2479
-synced_at: 2026-01-13T12:24:56Z
+synced_at: 2026-01-13T21:36:12Z
 ```
 
 # `no-matching-overload` when using `cv2` and `numpy`
@@ -77,5 +78,19 @@ It seems like this problem was occured because ty do not think `dtype[integer[An
 ### Version
 
 ty 0.0.11 (830cb9cc6 2026-01-09)
+
+---
+
+_Comment by @carljm on 2026-01-13 20:28_
+
+I don't think that `dtype[integer[Any]] | dtype[floating[Any]]` should be assignable to `dtype[integer[Any] | floating[Any]]`.
+
+My testing suggests this is an issue of real type incompatibility between cv2 stubs and numpy stubs, at certain versions. Given a particular version of opencv-python and numpy, I'm seeing the same behavior for ty and pyright. Given `opencv-python==4.11.0.86`, both ty and pyright are fine with your code on numpy 1.x, error on numpy >=2,<2.3, and are fine again on numpy 2.3+. It looks like the numpy type annotation was changed in 2.x a way that makes it incompatible with opencv, and then changed back again in 2.3.
+
+Can you re-check  to ensure you are using the exact same numpy and opencv versions for testing pyright and testing ty? If you find a scenario where ty and pyright differ on this snippet, please provide the exact steps you are using to reproduce.
+
+---
+
+_Label `needs-info` added by @carljm on 2026-01-13 20:28_
 
 ---

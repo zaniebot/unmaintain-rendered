@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: ruf069
 created_at: 2025-12-20T15:36:26Z
-updated_at: 2026-01-13T08:31:11Z
+updated_at: 2026-01-13T20:48:01Z
 url: https://github.com/astral-sh/ruff/pull/22114
-synced_at: 2026-01-13T09:21:15Z
+synced_at: 2026-01-13T21:36:29Z
 ```
 
 # [ruff] Add RUF069 to detect duplicate entries in __all__
@@ -681,5 +681,17 @@ info: rule `duplicate-base` is enabled by default
 (except that I wouldn't highlight the entire definition)
 
 You can accomplish this by adding a secondary diagnostic annotation
+
+---
+
+_@ntBre reviewed on 2026-01-13 20:48_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__RUF069_RUF069.py.snap`:9 on 2026-01-13 20:48_
+
+Link to the secondary annotation helper for reference:
+
+https://github.com/astral-sh/ruff/blob/2245355931f66def488809a6b9b784f7c294bd49/crates/ruff_linter/src/checkers/ast/mod.rs#L3309-L3311
 
 ---

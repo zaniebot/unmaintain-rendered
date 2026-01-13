@@ -1,0 +1,34 @@
+```yaml
+number: 17444
+title: Use constants for latest Python versions in tests
+type: pull_request
+state: open
+author: zanieb
+labels:
+  - testing
+assignees: []
+base: main
+head: claude/hardcode-python-versions-BF591
+created_at: 2026-01-13T20:56:35Z
+updated_at: 2026-01-13T21:12:35Z
+url: https://github.com/astral-sh/uv/pull/17444
+synced_at: 2026-01-13T21:36:42Z
+```
+
+# Use constants for latest Python versions in tests
+
+---
+
+_@zanieb_
+
+_No description provided._
+
+---
+
+_Marked ready for review by @zanieb on 2026-01-13 21:01_
+
+---
+
+_Label `testing` added by @zanieb on 2026-01-13 21:02_
+
+---
