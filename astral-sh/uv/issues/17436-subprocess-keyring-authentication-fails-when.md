@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-13T10:47:39Z
-updated_at: 2026-01-13T10:47:39Z
+updated_at: 2026-01-13T22:09:13Z
 url: https://github.com/astral-sh/uv/issues/17436
-synced_at: 2026-01-13T11:27:37Z
+synced_at: 2026-01-13T22:36:13Z
 ```
 
 # Subprocess Keyring authentication fails when using uv tool run with @latest qualifier
@@ -85,5 +85,11 @@ macOS 15.7.3 M4
 ---
 
 _Label `bug` added by @Vaeyrun on 2026-01-13 10:47_
+
+---
+
+_Comment by @zanieb on 2026-01-13 22:09_
+
+Thank you for the investigation!
 
 ---

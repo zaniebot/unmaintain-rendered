@@ -2,7 +2,7 @@
 number: 19580
 title: TypeRelationError
 type: pull_request
-state: open
+state: closed
 author: MatthewMckee4
 labels:
   - ty
@@ -11,9 +11,9 @@ draft: true
 base: main
 head: type-relation-error
 created_at: 2025-07-27T22:44:40Z
-updated_at: 2025-10-29T15:05:27Z
+updated_at: 2026-01-13T21:43:28Z
 url: https://github.com/astral-sh/ruff/pull/19580
-synced_at: 2026-01-12T15:56:42Z
+synced_at: 2026-01-13T22:36:07Z
 ```
 
 # TypeRelationError
@@ -314,5 +314,9 @@ Sorry we haven't got back to you, that's on me :-( There's a lot of things to ju
 _Comment by @MatthewMckee4 on 2025-08-18 22:55_
 
 All good, when you want to revisit let me know and I can fix the merge conflicts 
+
+---
+
+_Closed by @MatthewMckee4 on 2026-01-13 21:43_
 
 ---

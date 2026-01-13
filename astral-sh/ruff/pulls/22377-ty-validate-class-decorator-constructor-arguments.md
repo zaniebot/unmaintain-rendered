@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/class-decorator-validate-args
 created_at: 2026-01-04T22:28:17Z
-updated_at: 2026-01-06T22:29:39Z
+updated_at: 2026-01-13T22:23:26Z
 url: https://github.com/astral-sh/ruff/pull/22377
-synced_at: 2026-01-12T15:57:48Z
+synced_at: 2026-01-13T22:36:08Z
 ```
 
 # [ty] Validate class decorator constructor arguments
@@ -346,5 +346,45 @@ _Comment by @Hugo-Polloli on 2026-01-06 22:29_
 
 #22124 is currently ready for review, but with a few questions in need of some guidance, so I would not say it's going to land very soon
 If this one ends up being merged before #22124, I'll do the necessary work to rebase and rework the PR so that we don't regress (haven't had the time to check how bad the conflict is yet)
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/decorators.md`:238 on 2026-01-09 15:43_
+
+"Class decorator" to me implies "decorator applies to a class" 😄
+
+```suggestion
+### Class, with wrong signature, used as a decorator
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/decorators.md`:262 on 2026-01-09 15:44_
+
+```suggestion
+When a class's constructor accepts the decorated function/class, no error is emitted:
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/decorators.md`:1 on 2026-01-09 15:45_
+
+Could you also add some examples of classes being used as decorators on other classes (🤯) e.g.
+
+```py
+class Foo:
+    def __init__(self, x: type): ...
+
+@Foo
+class Bar: ...
+
+reveal_type(Bar)  # revealed: Foo
+```
+
+---
+
+_@AlexWaygood reviewed on 2026-01-13 22:23_
+
+This isn't a full review but it looks like I got halfway through reviewing last week, so here's a partial review
 
 ---

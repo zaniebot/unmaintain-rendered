@@ -2,15 +2,15 @@
 number: 2479
 title: "`no-matching-overload` when using `cv2` and `numpy`"
 type: issue
-state: open
+state: closed
 author: Carrot-shreds
 labels:
   - needs-info
 assignees: []
 created_at: 2026-01-13T10:56:34Z
-updated_at: 2026-01-13T20:29:42Z
+updated_at: 2026-01-13T22:19:03Z
 url: https://github.com/astral-sh/ty/issues/2479
-synced_at: 2026-01-13T21:36:12Z
+synced_at: 2026-01-13T22:35:50Z
 ```
 
 # `no-matching-overload` when using `cv2` and `numpy`
@@ -92,5 +92,15 @@ Can you re-check  to ensure you are using the exact same numpy and opencv versio
 ---
 
 _Label `needs-info` added by @carljm on 2026-01-13 20:28_
+
+---
+
+_Comment by @carljm on 2026-01-13 22:19_
+
+Going to go ahead and close to keep the tracker actionable, but will happily reopen if you do have an example showing ty behavior differing on the same numpy/cv versions!
+
+---
+
+_Closed by @carljm on 2026-01-13 22:19_
 
 ---

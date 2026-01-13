@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: relax-attribute-narrowing
 created_at: 2026-01-07T16:36:08Z
-updated_at: 2026-01-07T17:03:34Z
+updated_at: 2026-01-13T21:34:33Z
 url: https://github.com/astral-sh/ruff/pull/22440
-synced_at: 2026-01-12T15:57:49Z
+synced_at: 2026-01-13T22:36:08Z
 ```
 
 # [ty] relax the attribute narrowing condition
@@ -565,5 +565,9 @@ _Review requested from @sharkdp by @mtshiba on 2026-01-07 17:03_
 ---
 
 _Review requested from @dcreager by @mtshiba on 2026-01-07 17:03_
+
+---
+
+_Review request for @AlexWaygood removed by @AlexWaygood on 2026-01-13 21:34_
 
 ---

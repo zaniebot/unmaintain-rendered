@@ -2,16 +2,16 @@
 number: 2416
 title: "Emit a diagnostic on an attempt to create a \"generic enum\""
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - runtime semantics
   - typing semantics
 assignees: []
 created_at: 2026-01-09T14:06:52Z
-updated_at: 2026-01-09T19:18:37Z
+updated_at: 2026-01-13T21:55:48Z
 url: https://github.com/astral-sh/ty/issues/2416
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-13T22:35:50Z
 ```
 
 # Emit a diagnostic on an attempt to create a "generic enum"
@@ -106,5 +106,9 @@ _Label `typing semantics` added by @AlexWaygood on 2026-01-09 14:14_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2026-01-09 19:18_
+
+---
+
+_Closed by @charliermarsh on 2026-01-13 21:55_
 
 ---

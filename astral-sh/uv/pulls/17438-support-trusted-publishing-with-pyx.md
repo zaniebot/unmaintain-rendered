@@ -10,9 +10,9 @@ draft: true
 base: main
 head: ww/pyx-tp-svc
 created_at: 2026-01-13T15:59:46Z
-updated_at: 2026-01-13T15:59:46Z
+updated_at: 2026-01-13T22:21:32Z
 url: https://github.com/astral-sh/uv/pull/17438
-synced_at: 2026-01-13T16:27:49Z
+synced_at: 2026-01-13T22:36:21Z
 ```
 
 # Support Trusted Publishing with pyx
@@ -35,7 +35,7 @@ TODOs:
 
 I'll add new publishing integration tests for the following scenarios:
 
-- [ ] Trusted Publishing between GitLab CI/CD <-> PyPI
+- [ ] Trusted Publishing between GitLab CI/CD <-> PyPI: #17443 
 - [ ] Trusted Publishing between GitHub Actions <-> pyx
 - [ ] Trusted Publishing between GitLab CI/CD <-> pyx
 

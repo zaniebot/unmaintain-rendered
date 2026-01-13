@@ -5,12 +5,12 @@ type: issue
 state: open
 author: AngheloAlf
 labels:
-  - question
+  - bug
 assignees: []
 created_at: 2026-01-13T11:51:34Z
-updated_at: 2026-01-13T21:24:42Z
+updated_at: 2026-01-13T21:36:06Z
 url: https://github.com/astral-sh/uv/issues/17437
-synced_at: 2026-01-13T21:36:34Z
+synced_at: 2026-01-13T22:36:13Z
 ```
 
 # How to request for the GIL version of Python in `.python-version`?
@@ -54,5 +54,13 @@ _Label `question` added by @AngheloAlf on 2026-01-13 11:51_
 _Comment by @zanieb on 2026-01-13 21:24_
 
 Thanks for the report, this is just a bug in our Python download matching logic.
+
+---
+
+_Label `question` removed by @zanieb on 2026-01-13 21:36_
+
+---
+
+_Label `bug` added by @zanieb on 2026-01-13 21:36_
 
 ---

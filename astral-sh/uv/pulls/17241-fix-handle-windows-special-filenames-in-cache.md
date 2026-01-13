@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix/windows-special-filename-cache-clean
 created_at: 2025-12-26T18:49:00Z
-updated_at: 2026-01-10T17:38:50Z
+updated_at: 2026-01-13T21:37:05Z
 url: https://github.com/astral-sh/uv/pull/17241
-synced_at: 2026-01-12T16:12:40Z
+synced_at: 2026-01-13T22:36:21Z
 ```
 
 # fix: handle Windows special filenames in cache clean
@@ -264,5 +264,13 @@ _Comment by @samypr100 on 2026-01-07 17:02_
 > WalkDir::new("\?\C:...") works correctly entry.path() automatically inherits the \?\ prefix Deletion with entry.path() succeeds without any fallback logic So converting to verbatim path once at the rm_rf entry point is cleaner. I can refactor to that approach if you'd prefer.
 
 Yes, please do so
+
+---
+
+_Assigned to @samypr100 by @zanieb on 2026-01-13 21:37_
+
+---
+
+_Assigned to @konstin by @zanieb on 2026-01-13 21:37_
 
 ---

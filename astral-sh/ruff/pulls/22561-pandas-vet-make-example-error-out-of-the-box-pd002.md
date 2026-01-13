@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: patch-1
 created_at: 2026-01-13T21:16:38Z
-updated_at: 2026-01-13T21:16:38Z
+updated_at: 2026-01-13T21:32:07Z
 url: https://github.com/astral-sh/ruff/pull/22561
-synced_at: 2026-01-13T21:36:29Z
+synced_at: 2026-01-13T22:36:08Z
 ```
 
 # [`pandas-vet`] Make example error out-of-the-box (`PD002`)
@@ -63,5 +63,25 @@ students = pd.read_csv("students.csv").sort_values("name")
 <!-- How was it tested? -->
 
 N/A, no functionality/tests affected
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-13 21:32_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
 
 ---

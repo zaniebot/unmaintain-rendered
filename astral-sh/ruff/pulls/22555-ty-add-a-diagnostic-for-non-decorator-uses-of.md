@@ -10,9 +10,9 @@ assignees: []
 base: charlie/dyn-diag
 head: charlie/ineffective-final
 created_at: 2026-01-13T17:10:52Z
-updated_at: 2026-01-13T17:55:03Z
+updated_at: 2026-01-13T22:22:37Z
 url: https://github.com/astral-sh/ruff/pull/22555
-synced_at: 2026-01-13T18:48:35Z
+synced_at: 2026-01-13T22:36:08Z
 ```
 
 # [ty] Add a diagnostic for non-decorator uses of final
@@ -175,5 +175,17 @@ _Comment by @AlexWaygood on 2026-01-13 17:42_
 the runtime decorator attempts to set a `__final__` attribute that can be used for runtime introspection -- I'm guessing that's the motivation for using it in that context? I don't think that should stop us from issuing an (easily suppressable) warning, however; it's going to be very rare that people use it for that purpose
 
 https://github.com/python/cpython/blob/fca7fec88ce0aeaa9b827346bd605a7b201c314e/Lib/typing.py#L2722-L2729
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/diagnostic.rs`:1764 on 2026-01-13 22:22_
+
+Some of this is technically not true. `typing.final` does have a runtime effect: it sets `__final__ = True` on the class. So I think we need to re-word this a bit more conservatively, to just say "type checkers won't understand this application of `final` or prevent subclassing."
+
+---
+
+_@carljm approved on 2026-01-13 22:22_
+
+Looks good, modulo the comment about making sure our rule description is accurate.
 
 ---

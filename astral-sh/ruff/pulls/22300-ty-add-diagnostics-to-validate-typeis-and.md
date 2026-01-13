@@ -7,12 +7,13 @@ author: charliermarsh
 labels:
   - ty
 assignees: []
+draft: true
 base: main
 head: charlie/type-is
 created_at: 2025-12-30T16:21:43Z
-updated_at: 2025-12-30T17:50:29Z
+updated_at: 2026-01-13T22:01:50Z
 url: https://github.com/astral-sh/ruff/pull/22300
-synced_at: 2026-01-12T15:57:46Z
+synced_at: 2026-01-13T22:36:08Z
 ```
 
 # [ty] Add diagnostics to validate `TypeIs` and `TypeGuard` definitions
@@ -184,5 +185,25 @@ _Review requested from @dcreager by @charliermarsh on 2025-12-30 16:45_
 ---
 
 _Renamed from "[ty] Add diagnostics to validate TypeIs and TypeGuard definitions" to "[ty] Add diagnostics to validate `TypeIs` and `TypeGuard` definitions" by @charliermarsh on 2025-12-30 16:50_
+
+---
+
+_@AlexWaygood reviewed on 2026-01-13 21:38_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/narrow/type_guards.md`:1 on 2026-01-13 21:38_
+
+hmm, can we either add some snapshots here or assert the error message in some of these `# error:` comments? Currently it's a bit hard to see why we're complaining about each line, and what the message presented to the user would be
+
+---
+
+_Comment by @AlexWaygood on 2026-01-13 21:44_
+
+The ecosystem diagnostics on mypy are weird, but I'm guessing it's the usual confusion of us not understanding the `object` class in mypy's vendored `builtins.pyi` file as the "real" `builtins.object` class, AKA equivalent to the `object` class in _our_ vendored `builtins.pyi` file
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-13 21:55_
 
 ---

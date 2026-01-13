@@ -8,9 +8,9 @@ labels:
   - wish
 assignees: []
 created_at: 2026-01-10T22:44:38Z
-updated_at: 2026-01-13T19:39:15Z
+updated_at: 2026-01-13T22:24:54Z
 url: https://github.com/astral-sh/ty/issues/2437
-synced_at: 2026-01-13T20:36:46Z
+synced_at: 2026-01-13T22:35:50Z
 ```
 
 # `struct.unpack` inference
@@ -174,5 +174,18 @@ https://github.com/astral-sh/ruff/blob/99beabdde89651b72c3b297502e85c4efcf567f0/
 _Comment by @carljm on 2026-01-13 19:39_
 
 @sakgoyal yes, you identified exactly the right spots!
+
+---
+
+_Comment by @sakgoyal on 2026-01-13 22:20_
+
+how can I test my code? 
+do I need to build the whole thing and run it manually or are there integrated tests somewhere?
+
+---
+
+_Comment by @carljm on 2026-01-13 22:24_
+
+@sakgoyal You want to write mdtests, see https://github.com/astral-sh/ruff/tree/main/crates/ty_python_semantic/resources/mdtest
 
 ---

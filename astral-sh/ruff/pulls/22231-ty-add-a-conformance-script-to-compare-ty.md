@@ -2,18 +2,19 @@
 number: 22231
 title: "[ty] Add a conformance script to compare ty diagnostics with expected errors"
 type: pull_request
-state: open
+state: merged
 author: WillDuke
 labels:
   - ci
   - ty
 assignees: []
+merged: true
 base: main
 head: wld/improve-conformance-suite
 created_at: 2025-12-28T01:15:26Z
-updated_at: 2026-01-13T16:45:01Z
+updated_at: 2026-01-13T22:20:16Z
 url: https://github.com/astral-sh/ruff/pull/22231
-synced_at: 2026-01-13T17:25:40Z
+synced_at: 2026-01-13T22:36:08Z
 ```
 
 # [ty] Add a conformance script to compare ty diagnostics with expected errors
@@ -424,7 +425,7 @@ Sure thing. I've updated this PR to include only the script change, and I've ope
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:22 on 2026-01-11 18:15_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:29 on 2026-01-11 18:15_
 
 Could you add a module docstring to the top here that describes what this script does and (briefly) how it works?
 
@@ -610,7 +611,7 @@ That's a great tip, thanks!
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:448 on 2026-01-12 14:58_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:503 on 2026-01-12 14:58_
 
 What do the terms "precision" and "recall" mean in this context? Also, I'd again prefer it if we spelled out "False positives", "Ture positives" and "False negatives" here
 
@@ -636,7 +637,7 @@ _Review comment by @AlexWaygood on `scripts/conformance.py`:381 on 2026-01-12 15
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:370 on 2026-01-12 15:19_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:355 on 2026-01-12 15:19_
 
 I ran this script locally to compare the results on https://github.com/astral-sh/ruff/pull/22317 with the results on `main`, and found the "True negatives" heading a bit confusing here:
 
@@ -666,7 +667,7 @@ _@WillDuke reviewed on 2026-01-12 16:47_
 
 ---
 
-_Review comment by @WillDuke on `scripts/conformance.py`:448 on 2026-01-12 16:47_
+_Review comment by @WillDuke on `scripts/conformance.py`:503 on 2026-01-12 16:47_
 
 More jargon! Precision is the fraction of diagnostics which are true errors (the number of true positives divided by the total number of diagnostics), while recall is the fraction of true errors for which ty raises a diagnostic. My goal was to give you a sense of how accurate ty is when it raises a diagnostic (precision) and how comprehensive its ability to detect errors is (recall).
 
@@ -678,7 +679,7 @@ _@WillDuke reviewed on 2026-01-12 16:49_
 
 ---
 
-_Review comment by @WillDuke on `scripts/conformance.py`:448 on 2026-01-12 16:49_
+_Review comment by @WillDuke on `scripts/conformance.py`:503 on 2026-01-12 16:49_
 
 If you'd like to keep these stats, I could include a sentence explaining what they mean in the output. 
 
@@ -688,7 +689,7 @@ _@AlexWaygood reviewed on 2026-01-12 17:00_
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:448 on 2026-01-12 17:00_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:503 on 2026-01-12 17:00_
 
 Yeah, these seem like useful statistics for sure! But rather than including them in the table, I think I'd prefer it if the script wrote out a descriptive sentence below the table: "The percentage of diagnostic emitted that were true positives increased from 49% to 51%", "The percentage of diagnostics emitted that were true positives held steady at 63%" or "The percentage of diagnostics emitted that were true positives fell from 78% to 74%", etc.
 
@@ -716,7 +717,7 @@ Maybe just `--tests-path`?
 
 ---
 
-_Review comment by @MichaReiser on `scripts/conformance.py`:448 on 2026-01-12 17:14_
+_Review comment by @MichaReiser on `scripts/conformance.py`:503 on 2026-01-12 17:14_
 
 I find sentences much harder to parse. It's what I like about codspeed. I can just look at the last column to see the result. 
 
@@ -734,7 +735,7 @@ _@AlexWaygood reviewed on 2026-01-12 17:39_
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:448 on 2026-01-12 17:39_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:503 on 2026-01-12 17:39_
 
 I'm fine with a jargony table and some documentation below it that explains the jargon :-)
 
@@ -746,7 +747,7 @@ _@AlexWaygood reviewed on 2026-01-12 17:40_
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:448 on 2026-01-12 17:40_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:503 on 2026-01-12 17:40_
 
 > I'm fine with a jargony table and some documentation below it that explains the jargon :-)
 
@@ -758,7 +759,7 @@ _@MichaReiser reviewed on 2026-01-12 18:04_
 
 ---
 
-_Review comment by @MichaReiser on `scripts/conformance.py`:448 on 2026-01-12 18:04_
+_Review comment by @MichaReiser on `scripts/conformance.py`:503 on 2026-01-12 18:04_
 
 This is what biomejs does https://github.com/biomejs/biome/pull/8361#issuecomment-3613423566
 
@@ -770,7 +771,7 @@ _@WillDuke reviewed on 2026-01-12 20:03_
 
 ---
 
-_Review comment by @WillDuke on `scripts/conformance.py`:370 on 2026-01-12 20:03_
+_Review comment by @WillDuke on `scripts/conformance.py`:355 on 2026-01-12 20:03_
 
 Along with those changes, I've also added a fourth category for new false negatives which are now rendered as "True positives removed 🫤"
 
@@ -780,7 +781,7 @@ _@WillDuke reviewed on 2026-01-12 21:09_
 
 ---
 
-_Review comment by @WillDuke on `scripts/conformance.py`:448 on 2026-01-12 21:09_
+_Review comment by @WillDuke on `scripts/conformance.py`:503 on 2026-01-12 21:09_
 
 I've added an outcome column with the emojis and updated the summary sentence. Happy to iterate on it further.
 
@@ -790,7 +791,7 @@ _Review requested from @AlexWaygood by @MichaReiser on 2026-01-13 08:31_
 
 ---
 
-_Review comment by @WillDuke on `scripts/conformance.py`:340 on 2026-01-13 09:29_
+_Review comment by @WillDuke on `scripts/conformance.py`:375 on 2026-01-13 09:29_
 
 Leaving a note to myself that I need to check if expected is present here
 
@@ -812,7 +813,7 @@ _@WillDuke reviewed on 2026-01-13 09:31_
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:380 on 2026-01-13 11:11_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:435 on 2026-01-13 11:11_
 
 ```suggestion
 def diff_format(
@@ -853,7 +854,7 @@ I think I'd also find the table easier to read if the up/down arrow came first -
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:329 on 2026-01-13 11:22_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:364 on 2026-01-13 11:22_
 
 nit
 
@@ -901,5 +902,109 @@ _@AlexWaygood reviewed on 2026-01-13 16:45_
 _Review comment by @AlexWaygood on `scripts/conformance.py`:438 on 2026-01-13 16:45_
 
 "Total diagnostics" works for me! I do also agree with Micha that it might be good to move it above "Precision" and "Recall" though
+
+---
+
+_Comment by @WillDuke on 2026-01-13 22:07_
+
+I've updated the format to create a table of diagnostics with links to the typing repository. The old behavior is available in case you want the local paths to the typing files to work in the terminal by passing `--format diff`.
+
+The command
+`uv run --no-sync scripts/conformance.py --tests-path ../typing/conformance/tests/ --old-ty uvx "ty@0.0.6"` now produces the following:
+
+## Typing Conformance
+
+### Summary
+
+| Metric | Old | New | Diff | Outcome |
+|--------|-----|-----|------|---------|
+| True Positives  | 636 | 646 | +10 | ⏫(✅) |
+| False Positives | 244 | 230 | -14 | ⏬(✅) |
+| False Negatives | 519 | 509 | -10 | ⏬(✅) |
+| Total Diagnostics | 880 | 876 | -4 | ⏬ |
+| Precision | 72.27% | 73.74% | +1.47% | ⏫(✅) |
+| Recall | 55.06% | 55.93% | +0.87% | ⏫(✅) |
+
+
+The percentage of diagnostics emitted that were expected errors increased from 72.27% to 73.74%, and the percentage of expected errors that received a diagnostic increased from 55.06% to 55.93%.
+
+## True positives added 🎉:
+
+| Location | Name | Message |
+|----------|------|---------|
+| [namedtuples_usage.py:43:5](https://github.com/python/typing/blob/main/conformance/tests/namedtuples_usage.py#L43) | not-subscriptable | not-subscriptable: Cannot delete subscript on object of type `Point` with no `__delitem__` method |
+| [narrowing_typeguard.py:128:20](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeguard.py#L128) | invalid-argument-type | invalid-argument-type: Argument to function `takes_callable_str` is incorrect: Expected `(object, /) -> str`, found `def simple_typeguard(val: object) -> TypeGuard[int]` |
+| [narrowing_typeguard.py:148:26](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeguard.py#L148) | invalid-argument-type | invalid-argument-type: Argument to function `takes_callable_str_proto` is incorrect: Expected `CallableStrProto`, found `def simple_typeguard(val: object) -> TypeGuard[int]` |
+| [narrowing_typeis.py:169:17](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeis.py#L169) | invalid-argument-type | invalid-argument-type: Argument to function `takes_typeguard` is incorrect: Expected `(object, /) -> TypeGuard[int]`, found `def is_int_typeis(val: object) -> TypeIs[int]` |
+| [narrowing_typeis.py:170:14](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeis.py#L170) | invalid-argument-type | invalid-argument-type: Argument to function `takes_typeis` is incorrect: Expected `(object, /) -> TypeIs[int]`, found `def is_int_typeguard(val: object) -> TypeGuard[int]` |
+| [typeddicts_class_syntax.py:29:5](https://github.com/python/typing/blob/main/conformance/tests/typeddicts_class_syntax.py#L29) | invalid-typed-dict-statement | invalid-typed-dict-statement: TypedDict class cannot have methods |
+| [typeddicts_class_syntax.py:33:5](https://github.com/python/typing/blob/main/conformance/tests/typeddicts_class_syntax.py#L33) | invalid-typed-dict-statement | invalid-typed-dict-statement: TypedDict class cannot have methods |
+| [typeddicts_class_syntax.py:38:5](https://github.com/python/typing/blob/main/conformance/tests/typeddicts_class_syntax.py#L38) | invalid-typed-dict-statement | invalid-typed-dict-statement: TypedDict class cannot have methods |
+| [typeddicts_extra_items.py:128:15](https://github.com/python/typing/blob/main/conformance/tests/typeddicts_extra_items.py#L128) | invalid-argument-type | invalid-argument-type: Cannot delete required key "name" from TypedDict `MovieEI` |
+| [typeddicts_operations.py:49:11](https://github.com/python/typing/blob/main/conformance/tests/typeddicts_operations.py#L49) | invalid-argument-type | invalid-argument-type: Cannot delete required key "name" from TypedDict `Movie` |
+
+## False positives removed 🎉:
+
+| Location | Name | Message |
+|----------|------|---------|
+| [constructors_call_init.py:25:1](https://github.com/python/typing/blob/main/conformance/tests/constructors_call_init.py#L25) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `Class1[int | float]` |
+| [constructors_call_init.py:75:1](https://github.com/python/typing/blob/main/conformance/tests/constructors_call_init.py#L75) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `Class5[int | float]` |
+| [constructors_call_new.py:24:1](https://github.com/python/typing/blob/main/conformance/tests/constructors_call_new.py#L24) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `Class1[int | float]` |
+| [namedtuples_define_class.py:121:1](https://github.com/python/typing/blob/main/conformance/tests/namedtuples_define_class.py#L121) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `Property[int | float]` |
+| [namedtuples_define_class.py:122:1](https://github.com/python/typing/blob/main/conformance/tests/namedtuples_define_class.py#L122) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `int | float` |
+| [namedtuples_define_class.py:123:1](https://github.com/python/typing/blob/main/conformance/tests/namedtuples_define_class.py#L123) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `int | float` |
+| [narrowing_typeguard.py:17:9](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeguard.py#L17) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `tuple[str, str]` |
+| [narrowing_typeguard.py:32:9](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeguard.py#L32) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `set[int]` |
+| [narrowing_typeguard.py:69:9](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeguard.py#L69) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `int` |
+| [narrowing_typeguard.py:73:9](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeguard.py#L73) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `int` |
+| [narrowing_typeguard.py:77:9](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeguard.py#L77) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `int` |
+| [narrowing_typeguard.py:81:9](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeguard.py#L81) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `int` |
+| [narrowing_typeguard.py:85:9](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeguard.py#L85) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `int` |
+| [narrowing_typeguard.py:89:9](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeguard.py#L89) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `B` |
+| [narrowing_typeguard.py:93:9](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeguard.py#L93) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `B` |
+| [narrowing_typeis.py:72:9](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeis.py#L72) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `int` |
+| [narrowing_typeis.py:76:9](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeis.py#L76) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `int` |
+| [narrowing_typeis.py:80:9](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeis.py#L80) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `int` |
+| [narrowing_typeis.py:92:9](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeis.py#L92) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `B` |
+| [narrowing_typeis.py:96:9](https://github.com/python/typing/blob/main/conformance/tests/narrowing_typeis.py#L96) | type-assertion-failure | type-assertion-failure: Argument does not have asserted type `B` |
+
+## False positives added 🫤:
+
+| Location | Name | Message |
+|----------|------|---------|
+| [constructors_call_type.py:19:55](https://github.com/python/typing/blob/main/conformance/tests/constructors_call_type.py#L19) | unused-ignore-comment | unused-ignore-comment: Unused blanket `type: ignore` directive |
+| [directives_type_ignore_file1.py:11:7](https://github.com/python/typing/blob/main/conformance/tests/directives_type_ignore_file1.py#L11) | unused-ignore-comment | unused-ignore-comment: Unused blanket `type: ignore` directive |
+| [directives_type_ignore_file1.py:14:17](https://github.com/python/typing/blob/main/conformance/tests/directives_type_ignore_file1.py#L14) | unused-ignore-comment | unused-ignore-comment: Unused blanket `type: ignore` directive |
+| [directives_type_ignore_file2.py:12:17](https://github.com/python/typing/blob/main/conformance/tests/directives_type_ignore_file2.py#L12) | unused-ignore-comment | unused-ignore-comment: Unused blanket `type: ignore` directive |
+| [directives_type_ignore_file2.py:7:1](https://github.com/python/typing/blob/main/conformance/tests/directives_type_ignore_file2.py#L7) | unused-ignore-comment | unused-ignore-comment: Unused blanket `type: ignore` directive |
+| [directives_type_ignore_file2.py:9:7](https://github.com/python/typing/blob/main/conformance/tests/directives_type_ignore_file2.py#L9) | unused-ignore-comment | unused-ignore-comment: Unused blanket `type: ignore` directive |
+
+
+
+---
+
+_@AlexWaygood approved on 2026-01-13 22:14_
+
+This is fantastic, thanks so much!!
+
+---
+
+_Comment by @WillDuke on 2026-01-13 22:16_
+
+> This is fantastic, thanks so much!!
+
+Sure thing, thanks for all of the speedy reviews!
+
+---
+
+_Merged by @AlexWaygood on 2026-01-13 22:19_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-13 22:19_
+
+---
+
+_Branch deleted on 2026-01-13 22:20_
 
 ---

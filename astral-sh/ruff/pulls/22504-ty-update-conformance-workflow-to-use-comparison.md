@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: wld/update-conformance-workflow
 created_at: 2026-01-11T17:55:59Z
-updated_at: 2026-01-12T18:46:29Z
+updated_at: 2026-01-13T22:24:05Z
 url: https://github.com/astral-sh/ruff/pull/22504
-synced_at: 2026-01-12T19:26:24Z
+synced_at: 2026-01-13T22:36:08Z
 ```
 
 # [ty] Update conformance workflow to use comparison script
@@ -94,5 +94,13 @@ _Comment by @WillDuke on 2026-01-12 18:46_
 > @WillDuke The CI job is currently failing because it can't find the file. Would you mind taking a look or would you prefer one of us doing the CI integration?
 
 CI is failing since `scripts/conformance.py` does not yet exist on main. Once #22231 merges, I can close and reopen this to check that the job starts working.
+
+---
+
+_Closed by @WillDuke on 2026-01-13 22:21_
+
+---
+
+_Reopened by @WillDuke on 2026-01-13 22:21_
 
 ---
