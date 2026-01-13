@@ -2,16 +2,16 @@
 number: 16846
 title: "Is there a workaround to exempt packages without an upload date from `exclude-newer`?"
 type: issue
-state: open
+state: closed
 author: SAI-Marko
 labels:
   - enhancement
   - configuration
 assignees: []
 created_at: 2025-11-25T15:39:42Z
-updated_at: 2025-11-26T13:15:34Z
+updated_at: 2026-01-13T01:00:08Z
 url: https://github.com/astral-sh/uv/issues/16846
-synced_at: 2026-01-12T16:02:39Z
+synced_at: 2026-01-13T01:22:29Z
 ```
 
 # Is there a workaround to exempt packages without an upload date from `exclude-newer`?
@@ -115,5 +115,9 @@ _Comment by @neutrinoceros on 2025-11-26 13:15_
 
 I don't know about the issue at stake, but this would *definitely* be useful in at least one case I know of.
 xref: https://github.com/astropy/astropy/issues/17788
+
+---
+
+_Closed by @zanieb on 2026-01-13 01:00_
 
 ---

@@ -9,9 +9,9 @@ labels:
   - generics
 assignees: []
 created_at: 2026-01-12T14:11:55Z
-updated_at: 2026-01-12T23:41:39Z
+updated_at: 2026-01-13T01:09:06Z
 url: https://github.com/astral-sh/ty/issues/2467
-synced_at: 2026-01-13T00:22:28Z
+synced_at: 2026-01-13T01:22:08Z
 ```
 
 # Generic class method "does not satisfy upper bound"
@@ -93,5 +93,15 @@ class C[T: K]:
 
 C(x=K(0)).g()
 ```
+
+---
+
+_Comment by @carljm on 2026-01-13 00:28_
+
+This bisects to https://github.com/astral-sh/ruff/pull/22105
+
+---
+
+_Assigned to @carljm by @carljm on 2026-01-13 01:09_
 
 ---

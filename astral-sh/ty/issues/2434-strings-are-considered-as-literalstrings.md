@@ -4,12 +4,13 @@ title: Strings are considered as LiteralStrings
 type: issue
 state: open
 author: Salamandar
-labels: []
+labels:
+  - bidirectional inference
 assignees: []
 created_at: 2026-01-10T10:02:56Z
-updated_at: 2026-01-12T08:13:19Z
+updated_at: 2026-01-13T01:07:04Z
 url: https://github.com/astral-sh/ty/issues/2434
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-13T01:22:08Z
 ```
 
 # Strings are considered as LiteralStrings
@@ -88,5 +89,9 @@ a = cast(str, str())
 ```
 
 But I realise that's not ideal.
+
+---
+
+_Label `bidirectional inference` added by @ibraheemdev on 2026-01-13 01:07_
 
 ---

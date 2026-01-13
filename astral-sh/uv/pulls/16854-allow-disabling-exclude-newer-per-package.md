@@ -2,17 +2,18 @@
 number: 16854
 title: "Allow disabling `exclude-newer` per package"
 type: pull_request
-state: open
+state: merged
 author: terror
 labels:
   - enhancement
 assignees: []
+merged: true
 base: main
 head: allow-disable-exclude-newer
 created_at: 2025-11-26T00:19:56Z
-updated_at: 2025-12-11T15:56:30Z
+updated_at: 2026-01-13T01:00:08Z
 url: https://github.com/astral-sh/uv/pull/16854
-synced_at: 2026-01-12T16:12:29Z
+synced_at: 2026-01-13T01:22:37Z
 ```
 
 # Allow disabling `exclude-newer` per package
@@ -182,7 +183,7 @@ _@zanieb reviewed on 2025-12-09 22:30_
 
 ---
 
-_Review comment by @zanieb on `crates/uv-resolver/src/exclude_newer.rs`:584 on 2025-12-09 22:30_
+_Review comment by @zanieb on `crates/uv-resolver/src/exclude_newer.rs`:583 on 2025-12-09 22:30_
 
 Should this match the other message, i.e., with "addition of exclude newer exception"?
 
@@ -192,7 +193,7 @@ _@zanieb reviewed on 2025-12-09 22:31_
 
 ---
 
-_Review comment by @zanieb on `crates/uv-resolver/src/exclude_newer.rs`:587 on 2025-12-09 22:31_
+_Review comment by @zanieb on `crates/uv-resolver/src/exclude_newer.rs`:586 on 2025-12-09 22:31_
 
 Maybe this should also say something like... "removal of exclude newer exception"?
 
@@ -235,5 +236,17 @@ _@terror reviewed on 2025-12-11 15:53_
 _Review comment by @terror on `crates/uv-resolver/src/exclude_newer.rs`:473 on 2025-12-11 15:53_
 
 Updated this! I believe we got all instances now.
+
+---
+
+_@zanieb approved on 2026-01-13 00:23_
+
+---
+
+_Merged by @zanieb on 2026-01-13 01:00_
+
+---
+
+_Closed by @zanieb on 2026-01-13 01:00_
 
 ---
