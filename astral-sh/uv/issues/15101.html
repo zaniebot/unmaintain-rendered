@@ -70,10 +70,81 @@ wheels = [
         <div class="timeline-entry">
             <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-08-06 09:07</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/graipher">@graipher</a> on 2026-01-13 16:54</div>
+            <div class="timeline-body"><p>I was about to post a similar issue, which occurs when following the <a href="https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies">docs regarding choosing a pytorch backend using extra markers</a>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;==3.13.*&quot;
+dependencies = []
+
+[project.optional-dependencies]
+cpu = [
+  &quot;torch&gt;=2.7.1&quot;,
+  &quot;torchvision&gt;=0.22.1&quot;,
+]
+cu130 = [
+  &quot;torch&gt;=2.7.1&quot;,
+  &quot;torchvision&gt;=0.22.1&quot;,
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = &quot;cpu&quot; },
+    { extra = &quot;cu130&quot; },
+  ],
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;pytorch-cu130&quot;
+url = &quot;https://download.pytorch.org/whl/cu130&quot;
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu130&quot;, extra = &quot;cu130&quot; },
+]
+torchvision = [
+  { index = &quot;pytorch-cpu&quot;, extra = &quot;cpu&quot; },
+  { index = &quot;pytorch-cu130&quot;, extra = &quot;cu130&quot; },
+]
+</code></pre>
+<p>This also leads to impossible marker branches (thankfully also as branches that do not matter):</p>
+<pre><code>...
+[[package]]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+source = { virtual = &quot;.&quot; }
+
+[package.optional-dependencies]
+cpu = [
+    { name = &quot;torch&quot;, version = &quot;2.9.1&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cpu&quot; }, marker = &quot;(sys_platform == 'darwin' and extra == 'extra-3-foo-cpu') or (extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130')&quot; },
+    { name = &quot;torch&quot;, version = &quot;2.9.1+cpu&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cpu&quot; }, marker = &quot;(sys_platform != 'darwin' and extra == 'extra-3-foo-cpu') or (extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130')&quot; },
+    { name = &quot;torchvision&quot;, version = &quot;0.24.1&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cpu&quot; }, marker = &quot;(sys_platform == 'darwin' and extra == 'extra-3-foo-cpu') or (sys_platform == 'linux' and extra == 'extra-3-foo-cpu') or (extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130')&quot; },
+    { name = &quot;torchvision&quot;, version = &quot;0.24.1+d801a34&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cpu&quot; }, marker = &quot;(sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-3-foo-cpu') or (sys_platform == 'darwin' and extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130') or (sys_platform == 'linux' and extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130')&quot; },
+]
+cu130 = [
+    { name = &quot;torch&quot;, version = &quot;2.9.1+cu130&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cu130&quot; } },
+    { name = &quot;torchvision&quot;, version = &quot;0.24.1&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cu130&quot; }, marker = &quot;(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-3-foo-cu130') or (platform_machine != 'aarch64' and extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130') or (platform_python_implementation != 'CPython' and extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130') or (sys_platform != 'linux' and extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130')&quot; },
+    { name = &quot;torchvision&quot;, version = &quot;0.24.1+cu130&quot;, source = { registry = &quot;https://download.pytorch.org/whl/cu130&quot; }, marker = &quot;(platform_machine != 'aarch64' and extra == 'extra-3-foo-cu130') or (platform_python_implementation != 'CPython' and extra == 'extra-3-foo-cu130') or (sys_platform != 'linux' and extra == 'extra-3-foo-cu130') or (extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130')&quot; },
+]
+...
+</code></pre>
+<p>Here e.g. <code>(sys_platform == 'darwin' and extra == 'extra-3-foo-cpu') or (extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130')</code> is equivalent to <code>sys_platform == 'darwin' and extra == 'extra-3-foo-cpu'</code> because of the configured <code>conflicts</code>.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:32:30 UTC
+        Synced at 2026-01-13 17:29:08 UTC
     </footer>
 </body>
 </html>

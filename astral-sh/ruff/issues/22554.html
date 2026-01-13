@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyflakes`] `F401` cannot detect unused import - astral-sh/ruff #22554</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyflakes</code>] <code>F401</code> cannot detect unused import</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/22554">#22554</a>
+        opened by <a href="https://github.com/chirizxc">@chirizxc</a>
+        on 2026-01-13 16:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chirizxc">@chirizxc</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I discovered this when I opened <a href="https://github.com/reagento/dishka/blob/6b36da4f15dc7e7eedf5ae5a4fc8469dfcfd78ff/src/dishka/integrations/faststream/faststream_06.py"><code>this*</code></a> in Pycharm</p>
+<p><img width="1002" height="752" alt="Image" src="https://github.com/user-attachments/assets/41527546-df91-4c3d-ac9b-d9471310d7c2" /></p>
+<p>PyCharm:</p>
+<p><img width="1509" height="806" alt="Image" src="https://github.com/user-attachments/assets/d72e74c7-0aa3-4b01-8b94-aced36666293" /></p>
+<p>Pyflakes:</p>
+<pre><code class="language-bash">❯ pyflakes xxx.py                                                                                                                              
+xxx.py:43:5: redefinition of unused 'Context' from line 23     
+</code></pre>
+<p>Ruff:</p>
+<pre><code class="language-bash">❯ ruff check xxx.py --select F401 --preview                                                                                                    
+All checks passed!
+</code></pre>
+<h3>Version</h3>
+<p><code>ruff 0.14.11 (c920cf8cd 2026-01-08)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chirizxc">@chirizxc</a> on 2026-01-13 17:00</div>
+            <div class="timeline-body"><p>a shorter example:</p>
+<pre><code class="language-py">from faststream import Context, FastStream
+from faststream.asgi import AsgiFastStream
+
+Application = FastStream | AsgiFastStream
+
+try:
+    # import works only if fastapi is installed
+    from faststream._internal.fastapi import Context, StreamRouter
+
+except ImportError:
+    from faststream import Context
+
+else:
+    Application |= StreamRouter
+
+
+Context(name=&quot;t&quot;)
+</code></pre>
+<p>Locally, I quickly tried to change this behavior, and the tests even passed, but it seemed like the first start took quite a long time🤔</p>
+<pre><code class="language-bash">❯ myruff check xxx.py
+F401 `faststream.Context` imported but unused; redefinition from previous import                                                               
+ --&gt; xxx.py:1:24
+  |
+1 | from faststream import Context, FastStream
+  |                        ^^^^^^^
+2 | from faststream.asgi import AsgiFastStream
+  |
+help: Remove unused import: `faststream.Context`
+
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-13 17:27:00 UTC
+    </footer>
+</body>
+</html>
