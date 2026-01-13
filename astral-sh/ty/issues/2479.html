@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`no-matching-overload` when using `cv2` and `numpy` - astral-sh/ty #2479</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>no-matching-overload</code> when using <code>cv2</code> and <code>numpy</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2479">#2479</a>
+        opened by <a href="https://github.com/Carrot-shreds">@Carrot-shreds</a>
+        on 2026-01-13 10:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Carrot-shreds">@Carrot-shreds</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Sample code</p>
+<pre><code>import cv2
+import numpy as np
+
+image = cv2.imread(&quot;image.png&quot;)
+if image is not None:
+    np.average(image)
+</code></pre>
+<p>It works good and no typing error with pyright</p>
+<p>But <code>ty check</code> got</p>
+<pre><code>error[no-matching-overload]: No overload of function `average` matches arguments
+ --&gt; src\Model\Data\test.py:6:5
+  |
+4 | image = cv2.imread(&quot;image.png&quot;) 
+5 | if image is not None:
+6 |     np.average(image)
+  |     ^^^^^^^^^^^^^^^^^
+  |
+info: First overload defined here
+   --&gt; .venv\Lib\site-packages\numpy\lib\_function_base_impl.pyi:145:5
+    |
+144 |   @overload
+145 |   def average(
+    |  _____^
+146 | |     a: _ArrayLikeFloat_co,
+147 | |     axis: None = None,
+148 | |     weights: _ArrayLikeFloat_co | None = None,
+149 | |     returned: L[False] = False,
+150 | |     *,
+151 | |     keepdims: L[False] | _NoValueType = ...,
+152 | | ) -&gt; floating: ...
+    | |_____________^
+153 |   @overload
+154 |   def average(
+    |
+info: Possible overloads for function `average`:
+info:   (a: _SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]]] | _NestedSequence[_SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]]]] | int | float | _NestedSequence[int | float], axis: None = None, weights: _SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]]] | _NestedSequence[_SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]]]] | int | ... omitted 3 union elements = None, returned: Literal[False] = False, *, keepdims: Literal[False] | _NoValueType = ...) -&gt; floating[Any]
+info:   (a: _SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]]] | _NestedSequence[_SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]]]] | int | float | _NestedSequence[int | float], axis: None = None, weights: _SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]]] | _NestedSequence[_SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]]]] | int | ... omitted 3 union elements = None, *, returned: Literal[True], keepdims: Literal[False] | _NoValueType = ...) -&gt; tuple[floating[Any], floating[Any]]
+info:   (a: _SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]] | dtype[complexfloating[Any, Any]]] | _NestedSequence[_SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]] | dtype[complexfloating[Any, Any]]]] | int | ... omitted 3 union elements, axis: None = None, weights: _SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]] | dtype[complexfloating[Any, Any]]] | _NestedSequence[_SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]] | dtype[complexfloating[Any, Any]]]] | int | ... omitted 4 union elements = None, returned: Literal[False] = False, *, keepdims: Literal[False] | _NoValueType = ...) -&gt; complexfloating[Any, Any]
+info:   (a: _SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]] | dtype[complexfloating[Any, Any]]] | _NestedSequence[_SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]] | dtype[complexfloating[Any, Any]]]] | int | ... omitted 3 union elements, axis: None = None, weights: _SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]] | dtype[complexfloating[Any, Any]]] | _NestedSequence[_SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]] | dtype[complexfloating[Any, Any]]]] | int | ... omitted 4 union elements = None, *, returned: Literal[True], keepdims: Literal[False] | _NoValueType = ...) -&gt; tuple[complexfloating[Any, Any], complexfloating[Any, Any]]
+info:   (a: _SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]] | dtype[complexfloating[Any, Any]]] | _NestedSequence[_SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]] | dtype[complexfloating[Any, Any]]]] | int | ... omitted 5 union elements, axis: SupportsIndex | Sequence[SupportsIndex] | None = None, weights: object = None, *, returned: Literal[True], keepdims: bool | bool[bool] | _NoValueType = ...) -&gt; tuple[Any, Any]
+info:   (a: _SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]] | dtype[complexfloating[Any, Any]]] | _NestedSequence[_SupportsArray[dtype[bool[bool]] | dtype[integer[Any]] | dtype[floating[Any]] | dtype[complexfloating[Any, Any]]]] | int | ... omitted 5 union elements, axis: SupportsIndex | Sequence[SupportsIndex] | None = None, weights: object = None, returned: bool | bool[bool] = False, *, keepdims: bool | bool[bool] | _NoValueType = ...) -&gt; Any
+info: rule `no-matching-overload` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>Most cv2 image functions like <code>imread</code>, <code>cvtColor</code> return <code>cv2.mat_wrapper.Mat | NumPyArrayNumeric</code> , and <code>NumPyArrayNumeric</code> were defined as <code>ndarray[Any, dtype[integer[Any] | floating[Any]]]</code>  in cv2.tying.
+It seems like this problem was occured because ty do not think <code>dtype[integer[Any] | floating[Any]]</code> equal to <code>dtype[integer[Any]] | dtype[floating[Any]]</code></p>
+<h3>Version</h3>
+<p>ty 0.0.11 (830cb9cc6 2026-01-09)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-13 11:30:12 UTC
+    </footer>
+</body>
+</html>
