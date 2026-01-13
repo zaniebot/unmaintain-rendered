@@ -2,15 +2,15 @@
 number: 16408
 title: "Support `--compile-bytecode` in `uv python install`"
 type: issue
-state: open
+state: closed
 author: konstin
 labels:
   - enhancement
 assignees: []
 created_at: 2025-10-22T11:22:01Z
-updated_at: 2025-12-11T16:32:54Z
+updated_at: 2026-01-13T17:22:27Z
 url: https://github.com/astral-sh/uv/issues/16408
-synced_at: 2026-01-12T16:02:31Z
+synced_at: 2026-01-13T17:25:46Z
 ```
 
 # Support `--compile-bytecode` in `uv python install`
@@ -95,5 +95,9 @@ _Label `enhancement` added by @konstin on 2025-10-22 11:22_
 ---
 
 _Assigned to @EliteTK by @EliteTK on 2025-12-11 16:32_
+
+---
+
+_Closed by @EliteTK on 2026-01-13 17:22_
 
 ---

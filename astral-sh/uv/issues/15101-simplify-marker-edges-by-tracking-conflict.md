@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-08-06T09:07:33Z
-updated_at: 2025-08-06T10:27:18Z
+updated_at: 2026-01-13T16:56:02Z
 url: https://github.com/astral-sh/uv/issues/15101
-synced_at: 2026-01-12T16:02:04Z
+synced_at: 2026-01-13T17:25:45Z
 ```
 
 # Simplify marker edges by tracking conflict reachability on nodes
@@ -72,5 +72,83 @@ The `six` marker is exactly the reachability of python-dateutil 2.8.0, we should
 ---
 
 _Label `enhancement` added by @konstin on 2025-08-06 09:07_
+
+---
+
+_Comment by @graipher on 2026-01-13 16:54_
+
+I was about to post a similar issue, which occurs when following the [docs regarding choosing a pytorch backend using extra markers](https://docs.astral.sh/uv/guides/integration/pytorch/#configuring-accelerators-with-optional-dependencies):
+
+```toml
+[project]
+name = "foo"
+version = "0.1.0"
+requires-python = "==3.13.*"
+dependencies = []
+
+[project.optional-dependencies]
+cpu = [
+  "torch>=2.7.1",
+  "torchvision>=0.22.1",
+]
+cu130 = [
+  "torch>=2.7.1",
+  "torchvision>=0.22.1",
+]
+
+[tool.uv]
+conflicts = [
+  [
+    { extra = "cpu" },
+    { extra = "cu130" },
+  ],
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu", extra = "cpu" },
+  { index = "pytorch-cu130", extra = "cu130" },
+]
+torchvision = [
+  { index = "pytorch-cpu", extra = "cpu" },
+  { index = "pytorch-cu130", extra = "cu130" },
+]
+```
+
+This also leads to impossible marker branches (thankfully also as branches that do not matter):
+
+```
+...
+[[package]]
+name = "foo"
+version = "0.1.0"
+source = { virtual = "." }
+
+[package.optional-dependencies]
+cpu = [
+    { name = "torch", version = "2.9.1", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'extra-3-foo-cpu') or (extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130')" },
+    { name = "torch", version = "2.9.1+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform != 'darwin' and extra == 'extra-3-foo-cpu') or (extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130')" },
+    { name = "torchvision", version = "0.24.1", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform == 'darwin' and extra == 'extra-3-foo-cpu') or (sys_platform == 'linux' and extra == 'extra-3-foo-cpu') or (extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130')" },
+    { name = "torchvision", version = "0.24.1+d801a34", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-3-foo-cpu') or (sys_platform == 'darwin' and extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130') or (sys_platform == 'linux' and extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130')" },
+]
+cu130 = [
+    { name = "torch", version = "2.9.1+cu130", source = { registry = "https://download.pytorch.org/whl/cu130" } },
+    { name = "torchvision", version = "0.24.1", source = { registry = "https://download.pytorch.org/whl/cu130" }, marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-3-foo-cu130') or (platform_machine != 'aarch64' and extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130') or (platform_python_implementation != 'CPython' and extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130') or (sys_platform != 'linux' and extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130')" },
+    { name = "torchvision", version = "0.24.1+cu130", source = { registry = "https://download.pytorch.org/whl/cu130" }, marker = "(platform_machine != 'aarch64' and extra == 'extra-3-foo-cu130') or (platform_python_implementation != 'CPython' and extra == 'extra-3-foo-cu130') or (sys_platform != 'linux' and extra == 'extra-3-foo-cu130') or (extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130')" },
+]
+...
+```
+
+Here e.g. `(sys_platform == 'darwin' and extra == 'extra-3-foo-cpu') or (extra == 'extra-3-foo-cpu' and extra == 'extra-3-foo-cu130')` is equivalent to `sys_platform == 'darwin' and extra == 'extra-3-foo-cpu'` because of the configured `conflicts`.
 
 ---

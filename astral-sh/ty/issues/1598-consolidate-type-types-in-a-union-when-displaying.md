@@ -9,9 +9,9 @@ labels:
   - diagnostics
 assignees: []
 created_at: 2025-11-20T11:48:53Z
-updated_at: 2025-12-18T14:30:09Z
+updated_at: 2026-01-13T17:19:07Z
 url: https://github.com/astral-sh/ty/issues/1598
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-13T17:25:23Z
 ```
 
 # Consolidate `type[]` types in a union when displaying them
@@ -61,5 +61,22 @@ _Assigned to @mahiro72 by @AlexWaygood on 2025-12-18 14:29_
 _Comment by @AlexWaygood on 2025-12-18 14:30_
 
 Please ping us if you need a hand with anything :-)
+
+---
+
+_Comment by @11happy on 2026-01-13 17:02_
+
+Hello @mahiro72 are you still working on this ? If not may I work on this ?
+Thank you
+
+---
+
+_Comment by @AlexWaygood on 2026-01-13 17:19_
+
+It's been a month -- @11happy feel free to take a look :-)
+
+---
+
+_Unassigned @mahiro72 by @AlexWaygood on 2026-01-13 17:19_
 
 ---

@@ -9,9 +9,9 @@ labels:
   - breaking
 assignees: []
 created_at: 2026-01-12T22:36:00Z
-updated_at: 2026-01-13T15:54:09Z
+updated_at: 2026-01-13T17:01:23Z
 url: https://github.com/astral-sh/uv/issues/17427
-synced_at: 2026-01-13T16:27:41Z
+synced_at: 2026-01-13T17:25:46Z
 ```
 
 # Upgrading `reqwest` to `0.13.1` to improve TLS experience
@@ -150,5 +150,47 @@ Feel free to open a pull request, but we'll need to defer it to a breaking relea
 ---
 
 _Label `breaking` added by @zanieb on 2026-01-13 15:54_
+
+---
+
+_Comment by @salmonsd on 2026-01-13 16:53_
+
+Understood, to be clear, this is a breaking change by default.
+
+However, if we want to continue supporting `SSL_CERT_FILE` AND `SSL_CERT_DIR`, we could extend the `ClientBuilder` using `tls_certs_merge` ([source](https://github.com/seanmonstar/reqwest/blob/10c31c2d87c29012219c20f58bb637898c7f76d8/src/async_impl/client.rs#L1846-L1857)).
+
+And then extend`base_client.rs` to merge the certs:
+
+```rust
+// Example Mockup, not proposed implementation
+let mut client_builder = ClientBuilder::new().tls_backend_rustls();
+
+let mut extra_certs = Vec::new();
+
+// Load from SSL_CERT_FILE
+if let Ok(cert_file) = env::var("SSL_CERT_FILE") {
+    if let Ok(cert_pem) = std::fs::read(&cert_file) {
+        if let Ok(cert) = Certificate::from_pem(&cert_pem) {
+            extra_certs.push(cert);
+        }
+    }
+}
+
+// Load from SSL_CERT_DIR
+if let Ok(cert_dir) = env::var("SSL_CERT_DIR") {
+    // ... load all .crt/.pem files and add to extra_certs
+}
+
+// Merge these certs WITH the OS certificate store
+if !extra_certs.is_empty() {
+    client_builder = client_builder.tls_certs_merge(extra_certs);
+}
+```
+
+---
+
+_Comment by @zanieb on 2026-01-13 17:01_
+
+Oh, we should aspire to do that — we really don't like breaking things :)
 
 ---

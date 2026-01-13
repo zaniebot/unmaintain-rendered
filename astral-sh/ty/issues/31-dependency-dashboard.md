@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2025-05-05T16:20:40Z
-updated_at: 2026-01-13T05:09:35Z
+updated_at: 2026-01-13T17:03:52Z
 url: https://github.com/astral-sh/ty/issues/31
-synced_at: 2026-01-13T05:28:58Z
+synced_at: 2026-01-13T17:25:23Z
 ```
 
 # Dependency Dashboard
@@ -41,7 +41,7 @@ Unlike deprecated packages with official notices, abandonment is detected by rel
 
 The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
 
- - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update prek dependencies (`mdformat-mkdocs`, `zizmorcore/zizmor-pre-commit`)
+ - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update prek dependencies (`astral-sh/uv-pre-commit`, `mdformat-mkdocs`, `zizmorcore/zizmor-pre-commit`)
 
 ## Detected Dependencies
 
@@ -185,7 +185,7 @@ The following updates are awaiting their schedule. To get an update now, click o
 
 <details><summary>.pre-commit-config.yaml (13)</summary>
 
- - `astral-sh/uv-pre-commit 0.9.21` → [Updates: `0.9.24`]
+ - `astral-sh/uv-pre-commit 0.9.21` → [Updates: `0.9.22`]
  - `pre-commit/pre-commit-hooks v6.0.0`
  - `astral-sh/ruff-pre-commit v0.14.10` → [Updates: `v0.14.11`]
  - `abravalheri/validate-pyproject v0.24.1`
