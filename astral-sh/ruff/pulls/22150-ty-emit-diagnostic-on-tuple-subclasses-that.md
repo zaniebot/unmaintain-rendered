@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: tuple-subclass-dunder-override
 created_at: 2025-12-22T23:50:02Z
-updated_at: 2026-01-12T18:29:45Z
+updated_at: 2026-01-13T13:47:57Z
 url: https://github.com/astral-sh/ruff/pull/22150
-synced_at: 2026-01-12T19:26:23Z
+synced_at: 2026-01-13T14:32:13Z
 ```
 
 # [ty] Emit diagnostic on tuple subclasses that override `__eq__`, `__ne__` or `__bool__` methods
@@ -476,5 +476,9 @@ _Review request for @carljm removed by @carljm on 2025-12-24 01:18_
 _Comment by @MichaReiser on 2025-12-29 09:37_
 
 Thank you for your work on this feature. Almost the entire team is out this week. It may take a few days before someone finds time to review your PR. Happy holidays.
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2026-01-13 13:47_
 
 ---

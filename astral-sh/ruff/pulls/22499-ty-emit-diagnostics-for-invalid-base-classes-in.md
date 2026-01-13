@@ -10,9 +10,9 @@ assignees: []
 base: charlie/dyn-expression
 head: charlie/dyn-diag
 created_at: 2026-01-10T19:08:39Z
-updated_at: 2026-01-13T02:26:46Z
+updated_at: 2026-01-13T14:21:42Z
 url: https://github.com/astral-sh/ruff/pull/22499
-synced_at: 2026-01-13T03:19:47Z
+synced_at: 2026-01-13T14:32:13Z
 ```
 
 # [ty] Emit diagnostics for invalid base classes in `type(...)`
@@ -190,5 +190,23 @@ _Converted to draft by @charliermarsh on 2026-01-12 20:39_
 ---
 
 _Marked ready for review by @charliermarsh on 2026-01-13 02:26_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-13 13:46_
+
+> ```diff
+> + src/async_utils/_graphs.py:49:18: warning[unsupported-base] Invalid base for class created via `type()`: Has type `<special-form 'typing.Protocol'>`
+> ```
+
+Shouldn't that be `unsupported-dynamic-base` rather than `unsupported-base`?
+
+---
+
+_Review request for @Gankra removed by @AlexWaygood on 2026-01-13 13:54_
+
+---
+
+_Review request for @MichaReiser removed by @AlexWaygood on 2026-01-13 13:54_
 
 ---

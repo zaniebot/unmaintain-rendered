@@ -7,12 +7,13 @@ author: charliermarsh
 labels:
   - ty
 assignees: []
+draft: true
 base: charlie/dyn-expression
 head: charlie/dyn-overload
 created_at: 2026-01-11T14:55:39Z
-updated_at: 2026-01-12T20:59:51Z
+updated_at: 2026-01-13T14:21:44Z
 url: https://github.com/astral-sh/ruff/pull/22502
-synced_at: 2026-01-12T21:25:53Z
+synced_at: 2026-01-13T14:32:13Z
 ```
 
 # [ty] Assume 3-argument form for variadics in type(...)
@@ -139,5 +140,23 @@ _Review requested from @sharkdp by @charliermarsh on 2026-01-12 20:54_
 ---
 
 _Review requested from @dcreager by @charliermarsh on 2026-01-12 20:54_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-13 14:01_
+
+I think this needs a rebase again -- it's hard to see what the changes are on this branch relative to the target branch
+
+---
+
+_Review requested from @MichaReiser by @charliermarsh on 2026-01-13 14:20_
+
+---
+
+_Review requested from @Gankra by @charliermarsh on 2026-01-13 14:20_
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-13 14:20_
 
 ---

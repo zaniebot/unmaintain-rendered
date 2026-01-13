@@ -5,15 +5,16 @@ type: pull_request
 state: open
 author: carljm
 labels:
+  - bug
   - ty
 assignees: []
 draft: true
 base: main
 head: claude/fix-issue-2470-n8CLn
 created_at: 2026-01-13T02:48:16Z
-updated_at: 2026-01-13T03:34:07Z
+updated_at: 2026-01-13T14:08:14Z
 url: https://github.com/astral-sh/ruff/pull/22543
-synced_at: 2026-01-13T04:30:45Z
+synced_at: 2026-01-13T14:32:13Z
 ```
 
 # [ty] Fix stack overflow with recursive type aliases containing tuple …
@@ -158,5 +159,9 @@ Yes, I came to the same conclusion in https://github.com/astral-sh/ruff/pull/222
 _Comment by @carljm on 2026-01-13 03:34_
 
 @mtshiba Thank you! I was just thinking a few minutes ago "I remember @mtshiba had some PRs about recursion stuff, I should really go review those and see if he already found this fix" 😆 Sorry I've been so far behind on my review queue.
+
+---
+
+_Label `bug` added by @AlexWaygood on 2026-01-13 14:08_
 
 ---

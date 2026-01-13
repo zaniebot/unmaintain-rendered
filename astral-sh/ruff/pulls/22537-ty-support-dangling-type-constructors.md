@@ -11,9 +11,9 @@ draft: true
 base: main
 head: charlie/dyn-expression
 created_at: 2026-01-12T18:12:25Z
-updated_at: 2026-01-13T13:15:58Z
+updated_at: 2026-01-13T14:21:53Z
 url: https://github.com/astral-sh/ruff/pull/22537
-synced_at: 2026-01-13T13:22:50Z
+synced_at: 2026-01-13T14:32:13Z
 ```
 
 # [ty] Support 'dangling' `type(...)` constructors
@@ -893,7 +893,7 @@ _@MichaReiser reviewed on 2026-01-13 08:07_
 
 ---
 
-_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:676 on 2026-01-13 08:07_
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/class.rs`:675 on 2026-01-13 08:07_
 
 If you haven't done so already. Can you add a go to definition test for a dynamic class literal
 
@@ -981,5 +981,11 @@ _Comment by @MichaReiser on 2026-01-13 13:15_
 > Do we need to store NodeIndex at all when we have a Definition?
 
 It depends on what you want to highlight. If not, that's even better.
+
+---
+
+_Comment by @charliermarsh on 2026-01-13 14:21_
+
+(Not ready for review, I will mark it as such.)
 
 ---

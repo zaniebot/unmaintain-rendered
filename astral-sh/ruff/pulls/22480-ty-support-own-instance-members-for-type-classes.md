@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/dyn-members
 created_at: 2026-01-09T15:56:47Z
-updated_at: 2026-01-13T12:01:39Z
+updated_at: 2026-01-13T13:58:57Z
 url: https://github.com/astral-sh/ruff/pull/22480
-synced_at: 2026-01-13T12:25:13Z
+synced_at: 2026-01-13T14:32:13Z
 ```
 
 # [ty] Support own instance members for `type(...)` classes
@@ -66,16 +66,16 @@ _Comment by @astral-sh-bot[bot] on 2026-01-09 16:06_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-return-type` | 1 | 1 | 5 |
-| `invalid-argument-type` | 2 | 2 | 1 |
-| `possibly-missing-attribute` | 3 | 0 | 1 |
-| `unused-ignore-comment` | 3 | 1 | 0 |
-| `invalid-await` | 2 | 0 | 0 |
+| `invalid-argument-type` | 62 | 0 | 0 |
+| `possibly-missing-attribute` | 9 | 0 | 3 |
+| `invalid-await` | 9 | 0 | 0 |
+| `invalid-return-type` | 0 | 0 | 5 |
 | `unresolved-attribute` | 0 | 0 | 2 |
-| **Total** | **11** | **4** | **9** |
+| `unused-ignore-comment` | 0 | 2 | 0 |
+| **Total** | **80** | **2** | **10** |
 
 
-**[Full report with detailed diff](https://dfb1a302.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://dfb1a302.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://84e10324.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://84e10324.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -118,36 +118,10 @@ prefect (https://github.com/PrefectHQ/prefect)
 - src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
 + src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
 
-static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
-+ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
-- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
-+ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
-- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
-+ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
-- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-+ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
-+ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_]`
-
 pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
-- pandas-stubs/_typing.pyi:1232:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 5170 diagnostics
-+ Found 5169 diagnostics
-
-rotki (https://github.com/rotki/rotki)
-+ rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
-+ rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
-- rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
-+ rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 2054 diagnostics
-+ Found 2055 diagnostics
-
-core (https://github.com/home-assistant/core)
-+ homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -> _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
-- Found 14495 diagnostics
-+ Found 14496 diagnostics
++ pandas-stubs/_typing.pyi:1232:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5169 diagnostics
++ Found 5170 diagnostics
 
 
 ```
@@ -250,7 +224,7 @@ _@AlexWaygood reviewed on 2026-01-10 13:09_
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:155 on 2026-01-10 13:09_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:175 on 2026-01-10 13:09_
 
 We don't support the PEP-728 `closed=True` keyword argument to `TypedDict` yet (https://typing.python.org/en/latest/spec/typeddict.html#openness) but we should add some x-failing tests here so we remember to update our behaviour when we do add support for them.
 
@@ -346,7 +320,7 @@ though we could also consider storing `members` as an `FxHashMap` (or `FxOrderMa
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:5017 on 2026-01-13 12:00_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:5014 on 2026-01-13 12:00_
 
 As I mentioned in a comment on one of your test files, I think this should invoke `own_class_member`, so that we don't emit false positives on types with dynamic namespaces
 
@@ -363,5 +337,21 @@ _Review request for @Gankra removed by @AlexWaygood on 2026-01-13 12:01_
 ---
 
 _Review request for @MichaReiser removed by @AlexWaygood on 2026-01-13 12:01_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/diagnostic.rs`:3146 on 2026-01-13 13:58_
+
+can you add some snapshots for this diagnostic so we can see what the annotations look like both when `bases_tuple_elts` is `Some()` and when it's `None`?
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/diagnostic.rs`:3102 on 2026-01-13 13:58_
+
+It seems like there's a lot of duplication of error messages etc. between this function and the one above it; is there no way to share more of the code between the two?
+
+---
+
+_@AlexWaygood reviewed on 2026-01-13 13:58_
 
 ---

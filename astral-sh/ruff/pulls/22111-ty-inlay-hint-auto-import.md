@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: inlay-hint-auto-import
 created_at: 2025-12-20T13:35:19Z
-updated_at: 2026-01-12T18:21:41Z
+updated_at: 2026-01-13T13:47:14Z
 url: https://github.com/astral-sh/ruff/pull/22111
-synced_at: 2026-01-12T19:26:23Z
+synced_at: 2026-01-13T14:32:13Z
 ```
 
 # [ty] Inlay hint auto import
@@ -532,5 +532,9 @@ _Review request for @sharkdp removed by @MichaReiser on 2026-01-09 11:23_
 ---
 
 _Review request for @dcreager removed by @MichaReiser on 2026-01-09 11:23_
+
+---
+
+_Review request for @AlexWaygood removed by @AlexWaygood on 2026-01-13 13:47_
 
 ---

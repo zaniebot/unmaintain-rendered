@@ -11,9 +11,9 @@ assignees: []
 base: charlie/dyn-expression
 head: charlie/functional-namedtuple
 created_at: 2026-01-01T13:23:44Z
-updated_at: 2026-01-13T02:29:25Z
+updated_at: 2026-01-13T14:21:42Z
 url: https://github.com/astral-sh/ruff/pull/22327
-synced_at: 2026-01-13T03:19:47Z
+synced_at: 2026-01-13T14:32:13Z
 ```
 
 # [ty] Add support for functional `namedtuple` creation
@@ -631,5 +631,361 @@ _Converted to draft by @charliermarsh on 2026-01-13 02:21_
 ---
 
 _Marked ready for review by @charliermarsh on 2026-01-13 02:23_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:152 on 2026-01-13 12:47_
+
+Calling `reveal_mro` on this class indicates that it's inferred from inheriting from the wrong kind of tuple on your branch currently:
+
+```py
+# Revealed MRO: (<class 'Url'>, <class 'Url'>, <class 'tuple[Unknown, ...]'>, <class 'object'>)
+reveal_mro(Url)
+```
+
+It should be inferred as having `tuple[str, str]` in its MRO, not `tuple[Unknown, ...]`. This means that unpacking `Url` instances doesn't work correctly:
+
+```py
+a, b = Url("foo", "bar")
+reveal_type(a)  # Unknown, should be str
+reveal_type(b)  # Unknown, should be str
+```
+
+neither does indexing:
+
+```py
+reveal_type(Url("a", "b")[0])  # revealed: Unknown, should be str
+```
+
+and we have false negatives on these two lines, both of which should cause us to emit diagnostics:
+
+```py
+a, b, c = Url("a", "b")
+Url("a", "b")[52]
+```
+
+all of this would be fixed if we had `tuple[str, str]` in the MRO instead of `tuple[Unknown, ...]`.
+
+---
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:220 on 2026-01-13 12:50_
+
+interesting, did this come up in the ecosystem?
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:186 on 2026-01-13 13:02_
+
+And this is because for `class Url(namedtuple("Url", "host port")): ...`, the inner "inline" `Url` class is a namedtuple class but the outer one is not. So it's really equivalent to doing
+
+```py
+class Url(NamedTuple):
+    host: str
+    port: int
+
+class Url(Url): ...
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:309 on 2026-01-13 13:02_
+
+And again, this is because they aren't actually namedtuple classes, they just inherit from namedtuple classes
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:230 on 2026-01-13 13:04_
+
+I'm confused, I don't see a `__getattr__` method here?
+
+https://github.com/astral-sh/ruff/blob/990d0a899972a59cccdf69d57c56358773d2da5c/crates/ty_vendored/vendor/typeshed/stdlib/_typeshed/_type_checker_internals.pyi#L54-L75
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:522 on 2026-01-13 13:04_
+
+same comment as above
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types.rs`:4033 on 2026-01-13 13:15_
+
+`.to_class_literal(db)` returns a type representing the class object `NamedTupleFallback` itself. But that's not what calling `namedtuple()` returns. It returns a subclass of `NamedTupleFallback`.
+
+Also, why are some of the annotated types so imprecise here? 😄 Typeshed gives much more precise types for most of these
+
+```suggestion
+                // collections.namedtuple(typename, field_names, ...)
+                Some(KnownFunction::NamedTuple) => {
+                    let str_type = KnownClass::Str.to_instance(db);
+                    let none_type = Type::none(db);
+
+                    let parameters = [
+                        Parameter::positional_or_keyword(Name::new_static("typename"))
+                            .with_annotated_type(str_type),
+                        Parameter::positional_or_keyword(Name::new_static("field_names"))
+                            .with_annotated_type(
+                                KnownClass::Iterable.to_specialized_instance(db, &[str_type]),
+                            ),
+                        // Additional optional parameters have defaults.
+                        Parameter::keyword_only(Name::new_static("rename"))
+                            .with_annotated_type(KnownClass::Bool.to_instance(db))
+                            .with_default_type(Type::BooleanLiteral(false)),
+                        Parameter::keyword_only(Name::new_static("defaults"))
+                            .with_annotated_type(UnionType::from_elements(
+                                db,
+                                [
+                                    KnownClass::Iterable
+                                        .to_specialized_instance(db, &[Type::any()]),
+                                    none_type,
+                                ],
+                            ))
+                            .with_default_type(none_type),
+                        Parameter::keyword_only(Name::new_static("module"))
+                            .with_annotated_type(UnionType::from_elements(
+                                db,
+                                [str_type, none_type],
+                            ))
+                            .with_default_type(none_type),
+                    ];
+
+                    let signature = Signature::new(
+                        Parameters::new(db, parameters),
+                        KnownClass::NamedTupleFallback.to_class_literal(db),
+                    );
+
+                    Binding::single(self, signature).into()
+                }
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types.rs`:4475 on 2026-01-13 13:17_
+
+should have an annotated type of `Iterable[tuple[str, Any]]`
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types.rs`:4478 on 2026-01-13 13:17_
+
+```suggestion
+                        KnownClass::NamedTupleFallback.to_subclass_of(db),
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:241 on 2026-01-13 13:39_
+
+I think you've got a bit confused here, and it's caused a lot of complexity for you elsewhere.
+
+For `class Url(namedtuple("Url", "host port")): ...`, the inner "inline" class is a namedtuple but the outer one is not -- the outer class is just a class that _inherits_ from a namedtuple class. It's equivalent to doing this:
+
+```py
+class Url(NamedTuple):
+    host: str
+    port: int
+
+class Url(Url): ...
+```
+
+`CodeGeneratorKind::NamedTuple.matches(db, cls, None)` should return `true` for the inner class and `false` for the outer class.
+
+You should get rid of this; doing so also allows you to get rid of the `directly_inherits_from_named_tuple_special_form` method you added elsewhere, too, because it's no longer necessary to distinguish between "different kinds of namedtuple classes". This diff causes some tests to fail regarding `__init__`, but I don't think they'll be too hard for you to fix:
+
+```diff
+diff --git a/crates/ty_python_semantic/src/types/class.rs b/crates/ty_python_semantic/src/types/class.rs
+index e547b0220b..e286141a76 100644
+--- a/crates/ty_python_semantic/src/types/class.rs
++++ b/crates/ty_python_semantic/src/types/class.rs
+@@ -231,14 +231,6 @@ impl<'db> CodeGeneratorKind<'db> {
+                 .contains(&Type::SpecialForm(SpecialFormType::NamedTuple))
+             {
+                 Some(CodeGeneratorKind::NamedTuple)
+-            } else if class
+-                .explicit_bases(db)
+-                .iter()
+-                .any(|base| matches!(base, Type::ClassLiteral(ClassLiteral::DynamicNamedTuple(_))))
+-            {
+-                // Class inherits from a functional namedtuple like:
+-                // class Url(NamedTuple("Url", [("host", str)])): ...
+-                Some(CodeGeneratorKind::NamedTuple)
+             } else if class.is_typed_dict(db) {
+                 Some(CodeGeneratorKind::TypedDict)
+             } else {
+@@ -2109,20 +2101,6 @@ impl<'db> StaticClassLiteral<'db> {
+         self.is_known(db, KnownClass::Tuple)
+     }
+ 
+-    /// Returns `true` if this class directly inherits from the `NamedTuple` special form
+-    /// using class syntax (e.g., `class Foo(NamedTuple): ...`).
+-    ///
+-    /// This is distinct from inheriting from a functional namedtuple like
+-    /// `class Foo(namedtuple("Foo", ...)): ...`, which creates a regular class.
+-    ///
+-    /// The distinction matters because:
+-    /// - Classes using class syntax cannot use `super()` or override `__new__`
+-    /// - Classes inheriting from functional namedtuples can do both
+-    pub(crate) fn directly_inherits_from_named_tuple_special_form(self, db: &'db dyn Db) -> bool {
+-        self.explicit_bases(db)
+-            .contains(&Type::SpecialForm(SpecialFormType::NamedTuple))
+-    }
+-
+     /// Returns `true` if this class inherits from a functional namedtuple
+     /// (`DynamicNamedTupleLiteral`) that has unknown fields.
+     ///
+@@ -7386,7 +7364,7 @@ impl KnownClass {
+                         // Check if the enclosing class directly inherits from NamedTuple special form,
+                         // which forbids the use of `super()`. Classes inheriting from functional
+                         // namedtuples (e.g., `class Foo(namedtuple(...)):`) can use `super()` normally.
+-                        if enclosing_class.directly_inherits_from_named_tuple_special_form(db) {
++                        if CodeGeneratorKind::NamedTuple.matches(db, enclosing_class.into(), None) {
+                             if let Some(builder) = context
+                                 .report_lint(&SUPER_CALL_IN_NAMED_TUPLE_METHOD, call_expression)
+                             {
+@@ -7442,7 +7420,11 @@ impl KnownClass {
+                         // which forbids the use of `super()`. Classes inheriting from functional
+                         // namedtuples (e.g., `class Foo(namedtuple(...)):`) can use `super()` normally.
+                         if let Some(enclosing_class) = nearest_enclosing_class(db, index, scope) {
+-                            if enclosing_class.directly_inherits_from_named_tuple_special_form(db) {
++                            if CodeGeneratorKind::NamedTuple.matches(
++                                db,
++                                enclosing_class.into(),
++                                None,
++                            ) {
+                                 if let Some(builder) = context
+                                     .report_lint(&SUPER_CALL_IN_NAMED_TUPLE_METHOD, call_expression)
+                                 {
+diff --git a/crates/ty_python_semantic/src/types/infer/builder.rs b/crates/ty_python_semantic/src/types/infer/builder.rs
+index cf1d72aee8..2c5e0c23c0 100644
+--- a/crates/ty_python_semantic/src/types/infer/builder.rs
++++ b/crates/ty_python_semantic/src/types/infer/builder.rs
+@@ -688,7 +688,7 @@ impl<'db, 'ast> TypeInferenceBuilder<'db, 'ast> {
+             //     - If the class is a protocol class: check for inheritance from a non-protocol class
+             //     - If the class is a NamedTuple class: check for multiple inheritance that isn't `Generic[]`
+             for (i, base_class) in class.explicit_bases(self.db()).iter().enumerate() {
+-                if class.directly_inherits_from_named_tuple_special_form(self.db())
++                if is_named_tuple
+                     && !matches!(
+                         base_class,
+                         Type::SpecialForm(SpecialFormType::NamedTuple)
+diff --git a/crates/ty_python_semantic/src/types/overrides.rs b/crates/ty_python_semantic/src/types/overrides.rs
+index 0e6086b924..15094518e8 100644
+--- a/crates/ty_python_semantic/src/types/overrides.rs
++++ b/crates/ty_python_semantic/src/types/overrides.rs
+@@ -131,10 +131,7 @@ fn check_class_declaration<'db>(
+     // `NamedTuple` classes have certain synthesized attributes (like `_asdict`, `_make`, etc.)
+     // that cannot be overwritten. Attempting to assign to these attributes (without type
+     // annotations) or define methods with these names will raise an `AttributeError` at runtime.
+-    //
+-    // This only applies to classes that directly inherit from the `NamedTuple` special form,
+-    // not to classes that inherit from functional namedtuples (which create regular classes).
+-    if literal.directly_inherits_from_named_tuple_special_form(db)
++    if class_kind == Some(CodeGeneratorKind::NamedTuple)
+         && configuration.check_prohibited_named_tuple_attrs()
+         && PROHIBITED_NAMEDTUPLE_ATTRS.contains(&member.name.as_str())
+         && let Some(symbol_id) = place_table(db, class_scope).symbol_id(&member.name)
+~/dev/ruff (charlie/functional-namedtuple)⚡ % gd
+diff --git a/crates/ty_python_semantic/src/types/class.rs b/crates/ty_python_semantic/src/types/class.rs
+index e547b0220b..e286141a76 100644
+--- a/crates/ty_python_semantic/src/types/class.rs
++++ b/crates/ty_python_semantic/src/types/class.rs
+@@ -231,14 +231,6 @@ impl<'db> CodeGeneratorKind<'db> {
+                 .contains(&Type::SpecialForm(SpecialFormType::NamedTuple))
+             {
+                 Some(CodeGeneratorKind::NamedTuple)
+-            } else if class
+-                .explicit_bases(db)
+-                .iter()
+-                .any(|base| matches!(base, Type::ClassLiteral(ClassLiteral::DynamicNamedTuple(_))))
+-            {
+-                // Class inherits from a functional namedtuple like:
+-                // class Url(NamedTuple("Url", [("host", str)])): ...
+-                Some(CodeGeneratorKind::NamedTuple)
+             } else if class.is_typed_dict(db) {
+                 Some(CodeGeneratorKind::TypedDict)
+             } else {
+@@ -2109,20 +2101,6 @@ impl<'db> StaticClassLiteral<'db> {
+         self.is_known(db, KnownClass::Tuple)
+     }
+ 
+-    /// Returns `true` if this class directly inherits from the `NamedTuple` special form
+-    /// using class syntax (e.g., `class Foo(NamedTuple): ...`).
+-    ///
+-    /// This is distinct from inheriting from a functional namedtuple like
+-    /// `class Foo(namedtuple("Foo", ...)): ...`, which creates a regular class.
+-    ///
+-    /// The distinction matters because:
+-    /// - Classes using class syntax cannot use `super()` or override `__new__`
+-    /// - Classes inheriting from functional namedtuples can do both
+-    pub(crate) fn directly_inherits_from_named_tuple_special_form(self, db: &'db dyn Db) -> bool {
+-        self.explicit_bases(db)
+-            .contains(&Type::SpecialForm(SpecialFormType::NamedTuple))
+-    }
+-
+     /// Returns `true` if this class inherits from a functional namedtuple
+     /// (`DynamicNamedTupleLiteral`) that has unknown fields.
+     ///
+@@ -7386,7 +7364,7 @@ impl KnownClass {
+                         // Check if the enclosing class directly inherits from NamedTuple special form,
+                         // which forbids the use of `super()`. Classes inheriting from functional
+                         // namedtuples (e.g., `class Foo(namedtuple(...)):`) can use `super()` normally.
+-                        if enclosing_class.directly_inherits_from_named_tuple_special_form(db) {
++                        if CodeGeneratorKind::NamedTuple.matches(db, enclosing_class.into(), None) {
+                             if let Some(builder) = context
+                                 .report_lint(&SUPER_CALL_IN_NAMED_TUPLE_METHOD, call_expression)
+                             {
+@@ -7442,7 +7420,11 @@ impl KnownClass {
+                         // which forbids the use of `super()`. Classes inheriting from functional
+                         // namedtuples (e.g., `class Foo(namedtuple(...)):`) can use `super()` normally.
+                         if let Some(enclosing_class) = nearest_enclosing_class(db, index, scope) {
+-                            if enclosing_class.directly_inherits_from_named_tuple_special_form(db) {
++                            if CodeGeneratorKind::NamedTuple.matches(
++                                db,
++                                enclosing_class.into(),
++                                None,
++                            ) {
+                                 if let Some(builder) = context
+                                     .report_lint(&SUPER_CALL_IN_NAMED_TUPLE_METHOD, call_expression)
+                                 {
+diff --git a/crates/ty_python_semantic/src/types/infer/builder.rs b/crates/ty_python_semantic/src/types/infer/builder.rs
+index cf1d72aee8..2c5e0c23c0 100644
+--- a/crates/ty_python_semantic/src/types/infer/builder.rs
++++ b/crates/ty_python_semantic/src/types/infer/builder.rs
+@@ -688,7 +688,7 @@ impl<'db, 'ast> TypeInferenceBuilder<'db, 'ast> {
+             //     - If the class is a protocol class: check for inheritance from a non-protocol class
+             //     - If the class is a NamedTuple class: check for multiple inheritance that isn't `Generic[]`
+             for (i, base_class) in class.explicit_bases(self.db()).iter().enumerate() {
+-                if class.directly_inherits_from_named_tuple_special_form(self.db())
++                if is_named_tuple
+                     && !matches!(
+                         base_class,
+                         Type::SpecialForm(SpecialFormType::NamedTuple)
+diff --git a/crates/ty_python_semantic/src/types/overrides.rs b/crates/ty_python_semantic/src/types/overrides.rs
+index 0e6086b924..15094518e8 100644
+--- a/crates/ty_python_semantic/src/types/overrides.rs
++++ b/crates/ty_python_semantic/src/types/overrides.rs
+@@ -131,10 +131,7 @@ fn check_class_declaration<'db>(
+     // `NamedTuple` classes have certain synthesized attributes (like `_asdict`, `_make`, etc.)
+     // that cannot be overwritten. Attempting to assign to these attributes (without type
+     // annotations) or define methods with these names will raise an `AttributeError` at runtime.
+-    //
+-    // This only applies to classes that directly inherit from the `NamedTuple` special form,
+-    // not to classes that inherit from functional namedtuples (which create regular classes).
+-    if literal.directly_inherits_from_named_tuple_special_form(db)
++    if class_kind == Some(CodeGeneratorKind::NamedTuple)
+         && configuration.check_prohibited_named_tuple_attrs()
+         && PROHIBITED_NAMEDTUPLE_ATTRS.contains(&member.name.as_str())
+         && let Some(symbol_id) = place_table(db, class_scope).symbol_id(&member.name)
+```
+
+---
+
+_@AlexWaygood requested changes on 2026-01-13 13:40_
+
+Not a full review yet, but this seems like enough comments to get you started ;)
+
+A lot of this looks good, but I think there's a few places where you've introduced unnecessary complexity
 
 ---

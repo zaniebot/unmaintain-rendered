@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2025-05-16T20:46:53Z
-updated_at: 2025-05-18T18:20:02Z
+updated_at: 2026-01-13T13:31:13Z
 url: https://github.com/astral-sh/ruff/issues/18143
-synced_at: 2026-01-12T15:54:56Z
+synced_at: 2026-01-13T14:32:02Z
 ```
 
 # PLC2701 treats `os._exit` as private, unlike SLF001
@@ -57,5 +57,13 @@ Are there any situations where we would need to expand on this?
 _Comment by @dscorbett on 2025-05-18 18:20_
 
 That solution could work. There are other underscore-initial public module members in the standard library, though, so the list will probably be expanded at some point.
+
+---
+
+_Comment by @manueljacob on 2026-01-13 13:31_
+
+> That solution could work. There are other underscore-initial public module members in the standard library, though, so the list will probably be expanded at some point.
+
+I think it would be useful to keep the list shared between SLF001 and PLC2701. I’m not familiar with the ruff code base. Maybe somewhere in `crates/ruff_python_stdlib`?
 
 ---
