@@ -217,10 +217,92 @@ def _(ns: MyNamespace):
 </code></pre>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/type.md</code>:1 on 2026-01-13 11:28</div>
+            <div class="timeline-body"><p>Could you add a test that we still emit these errors?</p>
+<pre><code class="language-py">from typing import Any
+
+class DisjointBase1:
+    __slots__ = (&quot;a&quot;,)
+
+class DisjointBase2:
+    __slots__ = (&quot;b&quot;,)
+
+def f(ns: dict[str, Any]):
+    cls1 = type(&quot;cls1&quot;, (DisjointBase1,), ns)
+    cls2 = type(&quot;cls2&quot;, (DisjointBase2,), ns)
+
+    # error: [instance-layout-conflict]
+    cls3 = type(&quot;cls3&quot;, (cls1, cls2), {})
+
+    # error: [instance-layout-conflict]
+    class Cls4(cls1, cls2): ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/decorators/total_ordering.md</code>:1 on 2026-01-13 11:30</div>
+            <div class="timeline-body"><p>If the <code>type()</code>-constructed class has a dynamic namespace, we should just assume that it provides a root ordering method (we should not emit an error if it's passed to <code>total_ordering()</code>). Can you add a test for that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4707 on 2026-01-13 11:32</div>
+            <div class="timeline-body"><p>Outdated comment -- we don't call it &quot;functional&quot; anymore, we call it &quot;dynamic&quot; now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/resources/mdtest/call/type.md</code>:1 on 2026-01-13 11:50</div>
+            <div class="timeline-body"><p>Your code looks like it handles &quot;partially dynamic&quot; namespaces pretty well, but I don't see any explicit tests for things like these:</p>
+<pre><code class="language-py">def f(extra_attrs: dict[str, Any], y: str):
+    X = type(&quot;X&quot;, (), {&quot;a&quot;: 42, **extra_attrs})
+
+    # Static attributes in the namespace dictionary have precise types,
+    # but the dictionary was not entirely static, so other attributes
+    # are still available and resolve to `Unknown`:
+    reveal_type(X().a)  # revealed: Literal[42]
+    reveal_type(X().whatever)  # revealed: Unknown
+
+    Y = type(&quot;Y&quot;, (), {&quot;a&quot;: 56, y: 72})
+    reveal_type(Y().a)  # revealed: Literal[42]
+    reveal_type(().whatever)  # revealed: Unknown
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:4957 on 2026-01-13 11:59</div>
+            <div class="timeline-body"><p>you could also do this as:</p>
+<pre><code class="language-suggestion">        // If the namespace is dynamic (not a literal dict) and the name isn't in `self.members`,
+        // return Unknown since we can't know what attributes might be defined.
+        self.members(db)
+            .iter()
+            .find_map(|(member_name, ty)| (name == member_name).then_some(*ty))
+            .or_else(|| self.has_dynamic_namespace(db).then(Type::unknown))
+            .map(Member::definitely_declared)
+            .unwrap_or_default()
+</code></pre>
+<p>though we could also consider storing <code>members</code> as an <code>FxHashMap</code> (or <code>FxOrderMap</code>/<code>BTreeMap</code> if Salsa doesn't like an <code>FxHashMap</code> as a field of an interned struct) -- then the lookup of <code>name</code> in <code>self.members</code> would be <code>O(1)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/types/class.rs</code>:5017 on 2026-01-13 12:00</div>
+            <div class="timeline-body"><p>As I mentioned in a comment on one of your test files, I think this should invoke <code>own_class_member</code>, so that we don't emit false positives on types with dynamic namespaces</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2026-01-13 12:01</div>
+            <div class="timeline-body"><p>LGTM</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @Gankra removed by @AlexWaygood on 2026-01-13 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @AlexWaygood on 2026-01-13 12:01</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-13 03:22:13 UTC
+        Synced at 2026-01-13 12:27:36 UTC
     </footer>
 </body>
 </html>
