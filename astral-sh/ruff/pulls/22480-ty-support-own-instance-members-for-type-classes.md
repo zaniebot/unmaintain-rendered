@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/dyn-members
 created_at: 2026-01-09T15:56:47Z
-updated_at: 2026-01-13T02:29:12Z
+updated_at: 2026-01-13T12:01:39Z
 url: https://github.com/astral-sh/ruff/pull/22480
-synced_at: 2026-01-13T03:19:47Z
+synced_at: 2026-01-13T12:25:13Z
 ```
 
 # [ty] Support own instance members for `type(...)` classes
@@ -266,5 +266,102 @@ class MyNamespace(TypedDict, closed=True):
 def _(ns: MyNamespace):
     X = type("X", (), ns)
 ```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:1 on 2026-01-13 11:28_
+
+Could you add a test that we still emit these errors?
+
+```py
+from typing import Any
+
+class DisjointBase1:
+    __slots__ = ("a",)
+
+class DisjointBase2:
+    __slots__ = ("b",)
+
+def f(ns: dict[str, Any]):
+    cls1 = type("cls1", (DisjointBase1,), ns)
+    cls2 = type("cls2", (DisjointBase2,), ns)
+
+    # error: [instance-layout-conflict]
+    cls3 = type("cls3", (cls1, cls2), {})
+
+    # error: [instance-layout-conflict]
+    class Cls4(cls1, cls2): ...
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/decorators/total_ordering.md`:1 on 2026-01-13 11:30_
+
+If the `type()`-constructed class has a dynamic namespace, we should just assume that it provides a root ordering method (we should not emit an error if it's passed to `total_ordering()`). Can you add a test for that?
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4707 on 2026-01-13 11:32_
+
+Outdated comment -- we don't call it "functional" anymore, we call it "dynamic" now
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:1 on 2026-01-13 11:50_
+
+Your code looks like it handles "partially dynamic" namespaces pretty well, but I don't see any explicit tests for things like these:
+
+```py
+def f(extra_attrs: dict[str, Any], y: str):
+    X = type("X", (), {"a": 42, **extra_attrs})
+
+    # Static attributes in the namespace dictionary have precise types,
+    # but the dictionary was not entirely static, so other attributes
+    # are still available and resolve to `Unknown`:
+    reveal_type(X().a)  # revealed: Literal[42]
+    reveal_type(X().whatever)  # revealed: Unknown
+
+    Y = type("Y", (), {"a": 56, y: 72})
+    reveal_type(Y().a)  # revealed: Literal[42]
+    reveal_type(().whatever)  # revealed: Unknown
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4957 on 2026-01-13 11:59_
+
+you could also do this as:
+
+```suggestion
+        // If the namespace is dynamic (not a literal dict) and the name isn't in `self.members`,
+        // return Unknown since we can't know what attributes might be defined.
+        self.members(db)
+            .iter()
+            .find_map(|(member_name, ty)| (name == member_name).then_some(*ty))
+            .or_else(|| self.has_dynamic_namespace(db).then(Type::unknown))
+            .map(Member::definitely_declared)
+            .unwrap_or_default()
+```
+
+though we could also consider storing `members` as an `FxHashMap` (or `FxOrderMap`/`BTreeMap` if Salsa doesn't like an `FxHashMap` as a field of an interned struct) -- then the lookup of `name` in `self.members` would be `O(1)`
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:5017 on 2026-01-13 12:00_
+
+As I mentioned in a comment on one of your test files, I think this should invoke `own_class_member`, so that we don't emit false positives on types with dynamic namespaces
+
+---
+
+_@AlexWaygood approved on 2026-01-13 12:01_
+
+LGTM
+
+---
+
+_Review request for @Gankra removed by @AlexWaygood on 2026-01-13 12:01_
+
+---
+
+_Review request for @MichaReiser removed by @AlexWaygood on 2026-01-13 12:01_
 
 ---

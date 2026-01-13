@@ -7,9 +7,9 @@ author: Carrot-shreds
 labels: []
 assignees: []
 created_at: 2026-01-13T10:56:34Z
-updated_at: 2026-01-13T10:56:34Z
+updated_at: 2026-01-13T11:24:08Z
 url: https://github.com/astral-sh/ty/issues/2479
-synced_at: 2026-01-13T11:27:15Z
+synced_at: 2026-01-13T12:24:56Z
 ```
 
 # `no-matching-overload` when using `cv2` and `numpy`
@@ -21,7 +21,7 @@ _@Carrot-shreds_
 ### Summary
 
 Sample code
-```
+```py
 import cv2
 import numpy as np
 

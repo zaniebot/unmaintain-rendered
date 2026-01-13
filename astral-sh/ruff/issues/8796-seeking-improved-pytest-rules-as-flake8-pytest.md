@@ -8,9 +8,9 @@ labels:
   - rule
 assignees: []
 created_at: 2023-11-20T21:00:09Z
-updated_at: 2025-03-24T01:29:42Z
+updated_at: 2026-01-13T11:41:47Z
 url: https://github.com/astral-sh/ruff/issues/8796
-synced_at: 2026-01-12T15:54:48Z
+synced_at: 2026-01-13T12:25:01Z
 ```
 
 # Seeking improved pytest rules, as `flake8-pytest-style` doesn't align with best practices
@@ -245,5 +245,17 @@ I'm not a big fan of PT009. I want to use `unittest` as it's in the Python stand
 _Comment by @eli-schwartz on 2025-03-24 01:29_
 
 I have a similar outlook but also I don't enable `PT*`
+
+---
+
+_Comment by @manueljacob on 2026-01-13 11:41_
+
+> I'll coordinate with pytest-core to get together a official set
+
+Any progress on that?
+
+Some of the concerns raised in the original report were fixed in the meantime. Can you edit it to make things clearer?
+
+PT019 (so far unmentioned in this issue) still uses the convention underlying removed rules PT004 / PT005. See https://github.com/astral-sh/ruff/issues/18119#issuecomment-3743860839 for analysis.
 
 ---

@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2023-03-22T22:55:48Z
-updated_at: 2023-07-10T01:29:07Z
+updated_at: 2026-01-13T11:32:21Z
 url: https://github.com/astral-sh/ruff/issues/3675
-synced_at: 2026-01-12T15:54:43Z
+synced_at: 2026-01-13T12:25:00Z
 ```
 
 # Feature request: convert str(Path) to fsdecode(Path)
@@ -102,5 +102,11 @@ _Renamed from "Feature request: convert str(Path) to fspath(Path)" to "Feature r
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:29_
+
+---
+
+_Comment by @ericrbg-harmonic on 2026-01-13 11:32_
+
+My understanding is that now we should be using `os.fspath` instead of `fsdecode`, fwiw
 
 ---

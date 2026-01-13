@@ -2,15 +2,15 @@
 number: 22539
 title: "\"Not an issue\": Python builtin is shadowed by method `str` A003"
 type: issue
-state: open
+state: closed
 author: hunterhogan
 labels:
   - question
 assignees: []
 created_at: 2026-01-12T22:13:29Z
-updated_at: 2026-01-12T22:24:52Z
+updated_at: 2026-01-13T11:40:47Z
 url: https://github.com/astral-sh/ruff/issues/22539
-synced_at: 2026-01-12T23:24:03Z
+synced_at: 2026-01-13T12:25:02Z
 ```
 
 # "Not an issue": Python builtin is shadowed by method `str` A003
@@ -186,5 +186,15 @@ The shadowning warning goes away if you change all `str` return types to `builti
 ---
 
 _Label `question` added by @MichaReiser on 2026-01-12 22:24_
+
+---
+
+_Comment by @hunterhogan on 2026-01-13 11:33_
+
+Thank you. I was worried that that was what I would need to do.
+
+---
+
+_Closed by @MichaReiser on 2026-01-13 11:40_
 
 ---

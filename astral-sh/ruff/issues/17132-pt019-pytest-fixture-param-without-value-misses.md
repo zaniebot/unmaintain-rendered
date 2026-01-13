@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2025-04-01T19:55:10Z
-updated_at: 2025-04-02T07:41:54Z
+updated_at: 2026-01-13T11:39:50Z
 url: https://github.com/astral-sh/ruff/issues/17132
-synced_at: 2026-01-12T15:54:55Z
+synced_at: 2026-01-13T12:25:01Z
 ```
 
 # PT019 `pytest-fixture-param-without-value` misses public fixture
@@ -71,5 +71,13 @@ The rule uses heuristics to detect fixtures, and we need to balance false positi
 ---
 
 _Label `question` added by @MichaReiser on 2025-04-02 07:41_
+
+---
+
+_Comment by @manueljacob on 2026-01-13 11:39_
+
+In the example, if the `test_something` function was not empty, rule ARG001 would complain about the unused parameter.
+
+PT019 in current form triggers if the fixture name starts with an underscore, regardless of whether the fixture value is used inside the test function or not. See also https://github.com/astral-sh/ruff/issues/18119#issuecomment-3743860839 for analysis.
 
 ---

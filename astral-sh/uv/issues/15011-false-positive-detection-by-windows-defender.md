@@ -8,9 +8,9 @@ labels:
   - external
 assignees: []
 created_at: 2025-08-01T02:12:51Z
-updated_at: 2026-01-07T08:31:57Z
+updated_at: 2026-01-13T11:35:41Z
 url: https://github.com/astral-sh/uv/issues/15011
-synced_at: 2026-01-12T16:02:02Z
+synced_at: 2026-01-13T12:25:18Z
 ```
 
 # False positive detection by Windows Defender removes uvw.exe
@@ -99,5 +99,17 @@ Main executable uv.exe is fine though, only uvw.exe is removed.
 _Comment by @fede-sal on 2026-01-07 08:31_
 
 Same here, this got reported as suspicious in a security audit. I'd consider it rather high priority given that it shouldn't be a lot of work to sign executables and that the risk is to lose usage from enterprises.
+
+---
+
+_Comment by @frerksaxen on 2026-01-13 11:23_
+
+Same here. Please fix asap.
+
+---
+
+_Comment by @ALERTua on 2026-01-13 11:35_
+
+Alas, counting on `uv` installation on Windows is impossible due to this issue.
 
 ---

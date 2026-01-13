@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: wld/improve-conformance-suite
 created_at: 2025-12-28T01:15:26Z
-updated_at: 2026-01-13T09:31:37Z
+updated_at: 2026-01-13T11:29:01Z
 url: https://github.com/astral-sh/ruff/pull/22231
-synced_at: 2026-01-13T10:30:16Z
+synced_at: 2026-01-13T12:25:13Z
 ```
 
 # [ty] Add a conformance script to compare ty diagnostics with expected errors
@@ -809,5 +809,77 @@ Should be {good}{down}
 ---
 
 _@WillDuke reviewed on 2026-01-13 09:31_
+
+---
+
+_Review comment by @AlexWaygood on `scripts/conformance.py`:380 on 2026-01-13 11:11_
+
+```suggestion
+def diff_format(
+    diff: float,
+    *,
+    greater_is_better: bool = True,
+    neutral: bool = False,
+    is_percentage: bool = False,
+):
+```
+
+---
+
+_Review comment by @AlexWaygood on `scripts/conformance.py`:438 on 2026-01-13 11:13_
+
+Is it good or bad if `Total` goes up? If neither, is it useful to have it at all?
+
+I find it a bit confusing currently, because a `Total` row at the bottom usually sums all of the above rows together if it's e.g. an excel spreadsheet. But here, that's not what it does (`(-1) + (-9) + 10 = 0`):
+
+<img width="1328" height="786" alt="image" src="https://github.com/user-attachments/assets/7ab139cb-1b3a-46a7-a401-0db1fba6be1c" />
+
+
+---
+
+_Review comment by @AlexWaygood on `scripts/conformance.py`:446 on 2026-01-13 11:14_
+
+```suggestion
+        " and the percentage of expected errors that received a diagnostic"
+```
+
+---
+
+_Review comment by @AlexWaygood on `scripts/conformance.py`:438 on 2026-01-13 11:22_
+
+I think I'd also find the table easier to read if the up/down arrow came first -- maybe something like this?
+
+<img width="1272" height="936" alt="image" src="https://github.com/user-attachments/assets/597def52-ab64-4da6-bbc6-9b4441eee14b" />
+
+---
+
+_Review comment by @AlexWaygood on `scripts/conformance.py`:329 on 2026-01-13 11:22_
+
+nit
+
+```suggestion
+        num_errors = sum(
+            1 for g in grouped_diagnostics if source.EXPECTED in g.sources  # ty:ignore[unsupported-operator]
+        )
+```
+
+---
+
+_@AlexWaygood reviewed on 2026-01-13 11:22_
+
+Love it
+
+---
+
+_@MichaReiser reviewed on 2026-01-13 11:29_
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:438 on 2026-01-13 11:29_
+
+We could move `Precision` and `Recall` after the total row.
+
+
+I also suggest always using a sign in the `Diff` column (+10) as it might otherwise be unclear what 0.74 means if there's no negative diff.
 
 ---

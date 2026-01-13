@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: bugfix/17406
 created_at: 2026-01-12T12:10:16Z
-updated_at: 2026-01-12T18:17:02Z
+updated_at: 2026-01-13T12:15:20Z
 url: https://github.com/astral-sh/uv/pull/17415
-synced_at: 2026-01-12T19:14:22Z
+synced_at: 2026-01-13T12:25:26Z
 ```
 
 # Fix error message to show free-threaded Python indicator
@@ -29,5 +29,11 @@ Fixes the issue 17406
 ---
 
 _Assigned to @zanieb by @zanieb on 2026-01-12 18:17_
+
+---
+
+_@AngheloAlf approved on 2026-01-13 12:15_
+
+It works great, thank you!
 
 ---

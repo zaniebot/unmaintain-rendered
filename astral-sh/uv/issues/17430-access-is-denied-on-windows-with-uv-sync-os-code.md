@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-12T23:30:15Z
-updated_at: 2026-01-12T23:33:37Z
+updated_at: 2026-01-13T11:23:07Z
 url: https://github.com/astral-sh/uv/issues/17430
-synced_at: 2026-01-13T00:22:50Z
+synced_at: 2026-01-13T12:25:18Z
 ```
 
 # Access is Denied on Windows with uv sync. OS Code Error -2147024891
@@ -48,5 +48,11 @@ _Label `bug` added by @peroksid on 2026-01-12 23:30_
 _Comment by @zanieb on 2026-01-12 23:33_
 
 Can you reproduce on the latest version too?
+
+---
+
+_Comment by @peroksid on 2026-01-13 11:23_
+
+Only up to 0.9.21. Can't try the newer versions because they are not available in the pypi proxy mirror.
 
 ---
