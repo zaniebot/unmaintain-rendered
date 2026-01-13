@@ -8,9 +8,9 @@ labels:
   - documentation
 assignees: []
 created_at: 2026-01-12T22:45:34Z
-updated_at: 2026-01-13T15:30:11Z
+updated_at: 2026-01-13T19:14:43Z
 url: https://github.com/astral-sh/ruff/issues/22541
-synced_at: 2026-01-13T16:27:25Z
+synced_at: 2026-01-13T19:37:17Z
 ```
 
 # Misleading documentation for B904: raise-without-from-inside-except
@@ -56,5 +56,25 @@ I see, sorry for the dupe!
 _Comment by @ntBre on 2026-01-13 15:30_
 
 No need to apologize! The other issue was closed, so thank you for reopening the discussion. I think [this comment](https://github.com/astral-sh/ruff/issues/8736#issuecomment-1816525873) about updating the docs is still relevant.
+
+---
+
+_Comment by @amyreese on 2026-01-13 18:41_
+
+IMO B904 is a bad lint rule, because `raise Foo from exc` actually puts *less* information in the resulting stack trace. That's fine if you as the developer have made a conscious choice that the original exception is not useful there, but in most cases, having that original context in the resulting stack trace is better, not worse.
+
+---
+
+_Comment by @shawnz-swiftly on 2026-01-13 18:44_
+
+> IMO B904 is a bad lint rule, because `raise Foo from exc` actually puts *less* information in the resulting stack trace. That's fine if you as the developer have made a conscious choice that the original exception is not useful there, but in most cases, having that original context in the resulting stack trace is better, not worse.
+
+Exactly, totally agree -- and with the way the docs are worded now, they might misleadingly have you believe that you're losing context if you *don't* do this!
+
+---
+
+_Comment by @ntBre on 2026-01-13 19:14_
+
+Do you have an example of the explicit chaining putting less information in the stack trace? Based on my experiments in the REPL and Zanie's comment on the other issue, the trace looks basically the same except for the phrasing. Is the effect more pronounced for longer chains?
 
 ---

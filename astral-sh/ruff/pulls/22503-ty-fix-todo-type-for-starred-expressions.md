@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: alex/starred-tuples-2
 created_at: 2026-01-11T16:35:18Z
-updated_at: 2026-01-13T18:01:24Z
+updated_at: 2026-01-13T19:24:46Z
 url: https://github.com/astral-sh/ruff/pull/22503
-synced_at: 2026-01-13T18:48:35Z
+synced_at: 2026-01-13T19:37:28Z
 ```
 
 # [ty] Fix `@Todo` type for starred expressions
@@ -378,5 +378,23 @@ _Review requested from @sharkdp by @AlexWaygood on 2026-01-12 18:06_
 ---
 
 _Review requested from @dcreager by @AlexWaygood on 2026-01-12 18:06_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:8436 on 2026-01-13 19:19_
+
+Can we add a comment here about why we need to ignore type context in this case?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:8832 on 2026-01-13 19:22_
+
+It's not clear to me what this is doing or why it's needed; a comment would be helpful.
+
+---
+
+_@carljm approved on 2026-01-13 19:24_
+
+Looks great, thank you!
 
 ---

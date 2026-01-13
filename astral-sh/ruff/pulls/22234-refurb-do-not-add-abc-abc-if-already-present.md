@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: issue/17162/do-not-add-abc-if-already-added
 created_at: 2025-12-28T11:38:46Z
-updated_at: 2026-01-03T07:27:43Z
+updated_at: 2026-01-13T18:43:05Z
 url: https://github.com/astral-sh/ruff/pull/22234
-synced_at: 2026-01-12T15:57:44Z
+synced_at: 2026-01-13T19:37:28Z
 ```
 
 # [`refurb`] Do not add `abc.ABC` if already present (`FURB180`)
@@ -686,5 +686,11 @@ _Marked ready for review by @akawd on 2026-01-03 07:24_
 _Comment by @akawd on 2026-01-03 07:27_
 
 And since there are several commits here, do I need to squash them?
+
+---
+
+_Comment by @akawd on 2026-01-13 18:43_
+
+Hello, @ntBre . Just a friendly reminder and request to take a look at this if possible.
 
 ---

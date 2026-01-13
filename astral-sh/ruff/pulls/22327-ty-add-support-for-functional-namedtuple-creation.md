@@ -11,9 +11,9 @@ assignees: []
 base: charlie/dyn-expression
 head: charlie/functional-namedtuple
 created_at: 2026-01-01T13:23:44Z
-updated_at: 2026-01-13T18:18:04Z
+updated_at: 2026-01-13T19:08:50Z
 url: https://github.com/astral-sh/ruff/pull/22327
-synced_at: 2026-01-13T18:48:32Z
+synced_at: 2026-01-13T19:37:28Z
 ```
 
 # [ty] Add support for functional `namedtuple` creation
@@ -48,8 +48,8 @@ _Comment by @astral-sh-bot[bot] on 2026-01-01 13:25_
 <summary>Changes were detected when running ty on typing conformance tests</summary>
 
 ```diff
---- old-output.txt	2026-01-13 18:13:33.938720175 +0000
-+++ new-output.txt	2026-01-13 18:13:34.234720272 +0000
+--- old-output.txt	2026-01-13 19:05:25.917935011 +0000
++++ new-output.txt	2026-01-13 19:05:26.236936825 +0000
 @@ -753,6 +753,16 @@
  namedtuples_define_class.py:86:5: error[invalid-named-tuple] NamedTuple field without default value cannot follow field(s) with default value(s): Field `latitude` defined here without a default value
  namedtuples_define_class.py:125:19: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `float`
@@ -107,11 +107,6 @@ _Comment by @astral-sh-bot[bot] on 2026-01-01 13:26_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
-pip (https://github.com/pypa/pip)
-+ src/pip/_vendor/urllib3/util/url.py:150:9: error[invalid-assignment] Not enough values to unpack: Expected 7
-- Found 602 diagnostics
-+ Found 603 diagnostics
-
 spack (https://github.com/spack/spack)
 + lib/spack/spack/test/directives.py:118:5: error[invalid-assignment] Object of type `dict[Unknown | Spec, Unknown | str]` is not assignable to attribute `licenses` of type `property`
 + lib/spack/spack/test/directives.py:119:5: error[invalid-assignment] Object of type `Literal["test_package"]` is not assignable to attribute `name` of type `property`
@@ -127,6 +122,11 @@ spack (https://github.com/spack/spack)
 + lib/spack/spack/test/test_suite.py:532:40: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `PackageBase`, found `MyPackage`
 - Found 4319 diagnostics
 + Found 4331 diagnostics
+
+pip (https://github.com/pypa/pip)
++ src/pip/_vendor/urllib3/util/url.py:150:9: error[invalid-assignment] Not enough values to unpack: Expected 7
+- Found 602 diagnostics
++ Found 603 diagnostics
 
 paasta (https://github.com/yelp/paasta)
 + paasta_tools/iptables.py:38:9: error[unresolved-attribute] Object of type `_RuleBase` has no attribute `validate`
@@ -202,31 +202,21 @@ alerta (https://github.com/alerta/alerta)
 - Found 555 diagnostics
 + Found 620 diagnostics
 
-cki-lib (https://gitlab.com/cki-project/cki-lib)
-+ tests/test_messagequeue.py:792:32: error[invalid-argument-type] Argument to bound method `_consume_one` is incorrect: Expected `Item`, found `tuple[Literal[""], None, Literal[""], Literal["{}"], Literal[""], Literal[""]]`
-+ tests/test_messagequeue.py:811:32: error[invalid-argument-type] Argument to bound method `_consume_one` is incorrect: Expected `Item`, found `tuple[Literal[""], None, Literal[""], Literal["{}"], Literal[""], Literal[""]]`
-- Found 240 diagnostics
-+ Found 242 diagnostics
-
-tornado (https://github.com/tornadoweb/tornado)
-- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
-+ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
-
 urllib3 (https://github.com/urllib3/urllib3)
 - src/urllib3/connectionpool.py:1132:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - src/urllib3/connectionpool.py:1134:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - Found 305 diagnostics
 + Found 303 diagnostics
 
-discord.py (https://github.com/Rapptz/discord.py)
-+ discord/enums.py:97:5: error[invalid-assignment] Object of type `(self) -> Unknown` is not assignable to attribute `__repr__` of type `def __repr__(self) -> str`
-+ discord/enums.py:98:5: error[invalid-assignment] Object of type `(self) -> Unknown` is not assignable to attribute `__str__` of type `def __str__(self) -> str`
-+ discord/enums.py:100:9: error[invalid-assignment] Object of type `(self, other) -> Unknown` is not assignable to attribute `__le__` of type `def __le__(self, value: tuple[Any, ...], /) -> bool`
-+ discord/enums.py:101:9: error[invalid-assignment] Object of type `(self, other) -> Unknown` is not assignable to attribute `__ge__` of type `def __ge__(self, value: tuple[Any, ...], /) -> bool`
-+ discord/enums.py:102:9: error[invalid-assignment] Object of type `(self, other) -> Unknown` is not assignable to attribute `__lt__` of type `def __lt__(self, value: tuple[Any, ...], /) -> bool`
-+ discord/enums.py:103:9: error[invalid-assignment] Object of type `(self, other) -> Unknown` is not assignable to attribute `__gt__` of type `def __gt__(self, value: tuple[Any, ...], /) -> bool`
-- Found 548 diagnostics
-+ Found 554 diagnostics
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
++ tests/test_messagequeue.py:792:32: error[invalid-argument-type] Argument to bound method `_consume_one` is incorrect: Expected `Item`, found `tuple[Literal[""], None, Literal[""], Literal["{}"], Literal[""], Literal[""]]`
++ tests/test_messagequeue.py:811:32: error[invalid-argument-type] Argument to bound method `_consume_one` is incorrect: Expected `Item`, found `tuple[Literal[""], None, Literal[""], Literal["{}"], Literal[""], Literal[""]]`
+- Found 240 diagnostics
++ Found 242 diagnostics
 
 mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
 - pymongo/asynchronous/auth.py:131:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `@Todo | None | bytes`
@@ -237,6 +227,16 @@ mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
 + pymongo/synchronous/auth.py:128:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `Any | None | bytes`
 - pymongo/synchronous/auth.py:360:48: error[invalid-assignment] Object of type `dict[str, ((credentials: @Todo, conn: Connection) -> None) | ((credentials: @Todo, conn: Connection, reauthenticate: bool) -> Mapping[str, Any] | None) | partial[None]]` is not assignable to `Mapping[str, (...) -> None]`
 + pymongo/synchronous/auth.py:360:48: error[invalid-assignment] Object of type `dict[str, ((credentials: MongoCredential, conn: Connection) -> None) | ((credentials: MongoCredential, conn: Connection, reauthenticate: bool) -> Mapping[str, Any] | None) | partial[None]]` is not assignable to `Mapping[str, (...) -> None]`
+
+discord.py (https://github.com/Rapptz/discord.py)
++ discord/enums.py:97:5: error[invalid-assignment] Object of type `(self) -> Unknown` is not assignable to attribute `__repr__` of type `def __repr__(self) -> str`
++ discord/enums.py:98:5: error[invalid-assignment] Object of type `(self) -> Unknown` is not assignable to attribute `__str__` of type `def __str__(self) -> str`
++ discord/enums.py:100:9: error[invalid-assignment] Object of type `(self, other) -> Unknown` is not assignable to attribute `__le__` of type `def __le__(self, value: tuple[Any, ...], /) -> bool`
++ discord/enums.py:101:9: error[invalid-assignment] Object of type `(self, other) -> Unknown` is not assignable to attribute `__ge__` of type `def __ge__(self, value: tuple[Any, ...], /) -> bool`
++ discord/enums.py:102:9: error[invalid-assignment] Object of type `(self, other) -> Unknown` is not assignable to attribute `__lt__` of type `def __lt__(self, value: tuple[Any, ...], /) -> bool`
++ discord/enums.py:103:9: error[invalid-assignment] Object of type `(self, other) -> Unknown` is not assignable to attribute `__gt__` of type `def __gt__(self, value: tuple[Any, ...], /) -> bool`
+- Found 548 diagnostics
++ Found 554 diagnostics
 
 cloud-init (https://github.com/canonical/cloud-init)
 + tests/unittests/sources/test_smartos.py:806:5: error[invalid-assignment] Object of type `Literal[2882400018]` is not assignable to attribute `request_id` of type `property`
@@ -251,30 +251,6 @@ cloud-init (https://github.com/canonical/cloud-init)
 - Found 1179 diagnostics
 + Found 1188 diagnostics
 
-prefect (https://github.com/PrefectHQ/prefect)
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
-- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
-+ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` on object of type `dict[str, Any]`
-- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
-+ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | int | dict[str, Any] | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
-- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
-- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
-+ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
-
 manticore (https://github.com/trailofbits/manticore)
 - manticore/platforms/evm.py:3016:16: warning[possibly-missing-attribute] Attribute `coinbase` may be missing on object of type `Unknown | None`
 + manticore/platforms/evm.py:3016:16: warning[possibly-missing-attribute] Attribute `coinbase` may be missing on object of type `Unknown | None | BlockHeader`
@@ -286,6 +262,43 @@ manticore (https://github.com/trailofbits/manticore)
 + manticore/platforms/evm.py:3025:16: warning[possibly-missing-attribute] Attribute `difficulty` may be missing on object of type `Unknown | None | BlockHeader`
 - manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None`
 + manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None | BlockHeader`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
++ ddtrace/vendor/psutil/__init__.py:1769:12: error[call-non-callable] Object of type `scputimes` is not callable
++ ddtrace/vendor/psutil/__init__.py:1888:16: error[call-non-callable] Object of type `scputimes` is not callable
++ ddtrace/vendor/psutil/_pslinux.py:547:12: error[call-non-callable] Object of type `scputimes` is not callable
++ ddtrace/vendor/psutil/_pslinux.py:565:25: error[call-non-callable] Object of type `scputimes` is not callable
+- Found 8396 diagnostics
++ Found 8400 diagnostics
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 48 diagnostics
++ Found 47 diagnostics
 
 pycryptodome (https://github.com/Legrandin/pycryptodome)
 + lib/Crypto/SelfTest/PublicKey/test_ECC_NIST.py:917:54: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `IntegerBase`
@@ -306,31 +319,11 @@ pycryptodome (https://github.com/Legrandin/pycryptodome)
 - Found 1321 diagnostics
 + Found 1336 diagnostics
 
-scikit-build-core (https://github.com/scikit-build/scikit-build-core)
-- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-- Found 48 diagnostics
-+ Found 47 diagnostics
-
-dd-trace-py (https://github.com/DataDog/dd-trace-py)
-+ ddtrace/vendor/psutil/__init__.py:1769:12: error[call-non-callable] Object of type `scputimes` is not callable
-+ ddtrace/vendor/psutil/__init__.py:1888:16: error[call-non-callable] Object of type `scputimes` is not callable
-+ ddtrace/vendor/psutil/_pslinux.py:547:12: error[call-non-callable] Object of type `scputimes` is not callable
-+ ddtrace/vendor/psutil/_pslinux.py:565:25: error[call-non-callable] Object of type `scputimes` is not callable
-- Found 8396 diagnostics
-+ Found 8400 diagnostics
-
 static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
-+ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
-- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
-+ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
-- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-+ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
-+ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
 - static_frame/profile/__main__.py:2135:9: error[invalid-assignment] Object of type `dict[str, FunctionMetaData | None]` is not assignable to attribute `meta` of type `dict[str, FunctionMetaData] | None`
-- Found 1827 diagnostics
-+ Found 1826 diagnostics
 
 jax (https://github.com/google/jax)
 + jax/_src/interpreters/ad.py:430:7: error[call-non-callable] Object of type `aval_method` is not callable
@@ -348,14 +341,10 @@ pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
 - Found 5170 diagnostics
 + Found 5169 diagnostics
 
-rotki (https://github.com/rotki/rotki)
-- rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
-- rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
-+ rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
-- Found 2059 diagnostics
-+ Found 2058 diagnostics
+core (https://github.com/home-assistant/core)
++ homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -> _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
+- Found 14502 diagnostics
++ Found 14503 diagnostics
 
 scipy (https://github.com/scipy/scipy)
 + scipy/optimize/_differentiable_functions.py:382:26: error[call-non-callable] Object of type `_FakeCounter` is not callable
@@ -449,21 +438,22 @@ _Comment by @astral-sh-bot[bot] on 2026-01-02 16:55_
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | `missing-argument` | 107 | 0 | 0 |
-| `invalid-argument-type` | 27 | 0 | 3 |
+| `invalid-argument-type` | 28 | 0 | 3 |
 | `invalid-assignment` | 15 | 1 | 2 |
-| `possibly-missing-attribute` | 1 | 0 | 9 |
+| `possibly-missing-attribute` | 4 | 0 | 10 |
 | `call-non-callable` | 7 | 0 | 0 |
-| `invalid-return-type` | 0 | 2 | 5 |
-| `unused-ignore-comment` | 0 | 6 | 0 |
+| `unused-ignore-comment` | 0 | 7 | 0 |
+| `invalid-return-type` | 0 | 1 | 4 |
 | `not-subscriptable` | 3 | 0 | 0 |
+| `unresolved-attribute` | 1 | 0 | 2 |
+| `invalid-await` | 2 | 0 | 0 |
 | `no-matching-overload` | 1 | 0 | 0 |
 | `too-many-positional-arguments` | 1 | 0 | 0 |
-| `unresolved-attribute` | 1 | 0 | 0 |
 | `unsupported-operator` | 1 | 0 | 0 |
-| **Total** | **164** | **9** | **19** |
+| **Total** | **170** | **9** | **21** |
 
 
-**[Full report with detailed diff](https://a3dfe79c.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://a3dfe79c.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://22b85d92.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://22b85d92.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -563,7 +553,7 @@ _Marked ready for review by @charliermarsh on 2026-01-13 02:23_
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:177 on 2026-01-13 12:47_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:178 on 2026-01-13 12:47_
 
 Calling `reveal_mro` on this class indicates that it's inferred from inheriting from the wrong kind of tuple on your branch currently:
 
@@ -999,5 +989,113 @@ this conversation was marked as resolved but the confusing comment about `NamedT
 _@AlexWaygood reviewed on 2026-01-13 18:18_
 
 I still don't think we need the new `directly_inherits_from_named_tuple_special_form()` method you've added; I can revert all the new uses of it and no tests pass. I think you only needed it in an earlier version because you had `CodeGeneratorKind::NamedTuple.matches(db, class)` returning `true` for all _subclasses_ of namedtuple classes as well as all namedtuple classes
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:178 on 2026-01-13 18:22_
+
+```suggestion
+from typing import NamedTuple
+from ty_extensions import reveal_mro
+
+class Url(NamedTuple("Url", [("host", str), ("path", str)])):
+    pass
+
+reveal_type(Url)  # revealed: <class 'Url'>
+reveal_mro(Url)  # revealed: (<class 'main.Url @ main.py:5:7'>, <class 'main.Url @ main.py:5:11'>, <class 'tuple[str, str]'>, <class 'object'>)
+```
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:602 on 2026-01-13 18:26_
+
+Ugh sorry, I fixed the above use but not this one.
+
+---
+
+_@charliermarsh reviewed on 2026-01-13 18:26_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:310 on 2026-01-13 18:27_
+
+```suggestion
+import collections
+from ty_extensions import reveal_mro
+
+# String field names (space-separated)
+Point1 = collections.namedtuple("Point", "x y")
+reveal_type(Point1)  # revealed: <class 'Point'>
+reveal_mro(Point1)  # revealed: (<class 'Point'>, tuple[Any, Any], <class 'object'>)
+
+# String field names (comma-separated also works at runtime)
+Point2 = collections.namedtuple("Point", "x, y")
+reveal_type(Point2)  # revealed: <class 'Point'>
+reveal_mro(Point2)  # revealed: (<class 'Point'>, tuple[Any, Any], <class 'object'>)
+
+# List of strings
+Point3 = collections.namedtuple("Point", ["x", "y"])
+reveal_type(Point3)  # revealed: <class 'Point'>
+reveal_mro(Point3)  # revealed: (<class 'Point'>, tuple[Any, Any], <class 'object'>)
+
+# Tuple of strings
+Point4 = collections.namedtuple("Point", ("x", "y"))
+reveal_type(Point4)  # revealed: <class 'Point'>
+reveal_mro(Point4)  # revealed: (<class 'Point'>, tuple[Any, Any], <class 'object'>)
+
+# Invalid: integer is not a valid typename
+# error: [invalid-argument-type]
+reveal_type(collections.namedtuple(123, ["x", "y"]))  # revealed: type[NamedTupleFallback]
+```
+
+---
+
+_@AlexWaygood reviewed on 2026-01-13 18:28_
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-13 18:29_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6282 on 2026-01-13 18:30_
+
+```suggestion
+    #[expect(clippy::type_complexity)]
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6502 on 2026-01-13 18:30_
+
+```suggestion
+    #[expect(clippy::type_complexity)]
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6542 on 2026-01-13 18:30_
+
+```suggestion
+    #[expect(clippy::type_complexity)]
+```
+
+---
+
+_@AlexWaygood reviewed on 2026-01-13 18:30_
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-13 18:58_
+
+---
+
+_@charliermarsh reviewed on 2026-01-13 19:01_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/class.rs`:3868 on 2026-01-13 19:01_
+
+(I think this needs to be removed.)
 
 ---

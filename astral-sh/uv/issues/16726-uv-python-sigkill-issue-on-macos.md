@@ -9,9 +9,9 @@ labels:
   - needs-mre
 assignees: []
 created_at: 2025-11-13T17:28:28Z
-updated_at: 2026-01-13T15:15:21Z
+updated_at: 2026-01-13T19:01:42Z
 url: https://github.com/astral-sh/uv/issues/16726
-synced_at: 2026-01-13T15:29:30Z
+synced_at: 2026-01-13T19:37:33Z
 ```
 
 # UV Python SIGKILL Issue on macOS
@@ -411,5 +411,27 @@ launchctl load ~/Library/LaunchAgents/com.mgrbyte.uv-python-signing.plist
 _Comment by @zanieb on 2026-01-13 15:15_
 
 What version of `install_name_tool` do you have? My understanding is that ad-hoc code signing happens automatically in newer versions of `install_name_tool`.
+
+---
+
+_Comment by @mgrbyte on 2026-01-13 18:54_
+
+`xcrun --show-sdk-version && /Library/Developer/CommandLineTools/usr/bin/install_name_tool`
+
+> SDK Version: 26.2 (macOS Sequoia 26.2)
+```text
+
+I have recently updated uv:
+ 
+- uv version: 0.9.22
+  - macOS SDK: 26.2 (Sequoia)
+  - Python installs: 3.11.14, 3.12.10, 3.13.3, 3.14.0a7
+  - Status: Working with the codesign workaround applied
+  - Still has com.apple.provenance attribute but re-signing cleared Gatekeeper's cache
+```
+ 
+The fix from PR #17123 should be in uv already (merged before 0.9.22), so any new Python installs should be automatically signed.  
+I can now remove my workaround, and not my call of course, think this issue can closed.
+Thanks!
 
 ---
