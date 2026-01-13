@@ -4,12 +4,13 @@ title: "Misleading documentation for B904: raise-without-from-inside-except"
 type: issue
 state: open
 author: shawnz
-labels: []
+labels:
+  - documentation
 assignees: []
 created_at: 2026-01-12T22:45:34Z
-updated_at: 2026-01-12T22:47:13Z
+updated_at: 2026-01-12T23:36:19Z
 url: https://github.com/astral-sh/ruff/issues/22541
-synced_at: 2026-01-12T23:24:03Z
+synced_at: 2026-01-13T00:22:34Z
 ```
 
 # Misleading documentation for B904: raise-without-from-inside-except
@@ -31,5 +32,17 @@ I prefer to chain exceptions wherever possible for the reason indicated: I want 
 There's an argument that explicit chaining produces a slightly nicer message in the traceback than implicit chaining (`The above exception was the direct cause of the following exception` vs `During handling of the above exception, another exception occurred`). But if that small difference is the whole reason for this rule's existence, I think that is a lot harder to justify all the boilerplate created as a result of applying this rule and I think the docs could be more clear about the limited benefit.
 
 Thanks, Shawn
+
+---
+
+_Comment by @ntBre on 2026-01-12 23:36_
+
+There are a couple of dunder attributes that are also set differently in implicit vs explicit chaining: https://docs.python.org/3/library/exceptions.html#exception-context, so it's not _just_ about the error message. But @amyreese may know better than me how common inspecting those would be. I think we could make the documentation more precise in any case and possibly include the link above and/or [PEP 3134](https://peps.python.org/pep-3134/), which has some additional context.
+
+There was some previous discussion of this in https://github.com/astral-sh/ruff/issues/8736, which was closed in https://github.com/astral-sh/ruff/pull/9680, but it doesn't look like the docs were updated.
+
+---
+
+_Label `documentation` added by @ntBre on 2026-01-12 23:36_
 
 ---

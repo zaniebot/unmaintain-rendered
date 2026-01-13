@@ -5,12 +5,12 @@ type: issue
 state: open
 author: muellert
 labels:
-  - enhancement
+  - question
 assignees: []
 created_at: 2026-01-11T15:12:07Z
-updated_at: 2026-01-12T10:34:24Z
+updated_at: 2026-01-12T23:58:27Z
 url: https://github.com/astral-sh/uv/issues/17405
-synced_at: 2026-01-12T16:02:50Z
+synced_at: 2026-01-13T00:22:50Z
 ```
 
 # Make .local Parameterizable
@@ -36,5 +36,19 @@ _Label `enhancement` added by @muellert on 2026-01-11 15:12_
 _Comment by @konstin on 2026-01-12 10:34_
 
 uv reads the `XDG_` variables, can you use those?
+
+---
+
+_Label `enhancement` removed by @zanieb on 2026-01-12 23:58_
+
+---
+
+_Label `question` added by @zanieb on 2026-01-12 23:58_
+
+---
+
+_Comment by @zanieb on 2026-01-12 23:58_
+
+Yeah using `XDG_*` is the appropriate pattern here.
 
 ---

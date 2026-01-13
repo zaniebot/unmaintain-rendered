@@ -8,9 +8,9 @@ labels:
   - documentation
 assignees: []
 created_at: 2026-01-12T12:16:43Z
-updated_at: 2026-01-12T12:19:50Z
+updated_at: 2026-01-13T00:13:52Z
 url: https://github.com/astral-sh/ty/issues/2462
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-13T00:22:28Z
 ```
 
 # Clarify beta status of ty
@@ -38,5 +38,19 @@ Thanks!
 ---
 
 _Label `documentation` added by @AlexWaygood on 2026-01-12 12:19_
+
+---
+
+_Comment by @carljm on 2026-01-13 00:12_
+
+We could add a notice about beta status in the README.
+
+The version number is intentional -- using a "pre-release" version number causes too many difficulties in practice for users wanting to try ty, and the usual reasons for preferring a pre-release version number do not apply when there has never yet been any "stable" release that users might want to prefer. We instead use the initial `0.0` to indicate that ty has not yet reached stable status. We won't switch to using a beta pre-release segment as defined by PEP 440, but this does not mean that the ty project is not still in beta.
+
+I guess the notice in the README could say something about the version number.
+
+---
+
+_Added to milestone `Pre-stable 1` by @carljm on 2026-01-13 00:13_
 
 ---

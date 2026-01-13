@@ -2,16 +2,18 @@
 number: 17372
 title: Use latest Pyodide version for each python version
 type: pull_request
-state: open
+state: merged
 author: ryanking13
-labels: []
+labels:
+  - bug
 assignees: []
+merged: true
 base: main
 head: pyodide-version-fetch
 created_at: 2026-01-09T06:40:20Z
-updated_at: 2026-01-11T03:40:18Z
+updated_at: 2026-01-12T23:59:27Z
 url: https://github.com/astral-sh/uv/pull/17372
-synced_at: 2026-01-12T16:12:45Z
+synced_at: 2026-01-13T00:22:58Z
 ```
 
 # Use latest Pyodide version for each python version
@@ -79,5 +81,21 @@ It's not like that's beautiful Python, but it might be nice for the pattern to b
 _Comment by @ryanking13 on 2026-01-11 03:40_
 
 @zanieb Sounds reasonable. I update the code to make it look similar to other finders.
+
+---
+
+_@zanieb approved on 2026-01-12 23:59_
+
+---
+
+_Label `bug` added by @zanieb on 2026-01-12 23:59_
+
+---
+
+_Merged by @zanieb on 2026-01-12 23:59_
+
+---
+
+_Closed by @zanieb on 2026-01-12 23:59_
 
 ---

@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-12T20:50:38Z
+updated_at: 2026-01-13T00:00:05Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-12T21:25:56Z
+synced_at: 2026-01-13T00:22:48Z
 ```
 
 # Dependency Dashboard
@@ -49,7 +49,8 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/console-0.x-lockfile -->Update Rust crate console to v0.16.2
  - [ ] <!-- unschedule-branch=renovate/h2-0.x-lockfile -->Update Rust crate h2 to v0.4.13
  - [ ] <!-- unschedule-branch=renovate/jiff-0.x-lockfile -->Update Rust crate jiff to v0.2.17
- - [ ] <!-- unschedule-branch=renovate/proc-macro2-1.x-lockfile -->Update Rust crate proc-macro2 to v1.0.104
+ - [ ] <!-- unschedule-branch=renovate/proc-macro2-1.x-lockfile -->Update Rust crate proc-macro2 to v1.0.105
+ - [ ] <!-- unschedule-branch=renovate/quote-1.x-lockfile -->Update Rust crate quote to v1.0.43
  - [ ] <!-- unschedule-branch=renovate/rcgen-0.x-lockfile -->Update Rust crate rcgen to v0.14.6
  - [ ] <!-- unschedule-branch=renovate/rkyv-0.x-lockfile -->Update Rust crate rkyv to v0.8.13
  - [ ] <!-- unschedule-branch=renovate/rmp-serde-1.x-lockfile -->Update Rust crate rmp-serde to v1.3.1
@@ -62,6 +63,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/tokio-rustls-0.x-lockfile -->Update Rust crate tokio-rustls to v0.26.4
  - [ ] <!-- unschedule-branch=renovate/tokio-stream-0.x-lockfile -->Update Rust crate tokio-stream to v0.1.18
  - [ ] <!-- unschedule-branch=renovate/tokio-util-0.x-lockfile -->Update Rust crate tokio-util to v0.7.18
+ - [ ] <!-- unschedule-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
  - [ ] <!-- unschedule-branch=renovate/pubgrub -->Update Rust crate version-ranges to v0.1.4
  - [ ] <!-- unschedule-branch=renovate/tokio-tracing-monorepo -->Update tokio-tracing monorepo (`tracing`, `tracing-subscriber`)
  - [ ] <!-- unschedule-branch=renovate/acj-freebsd-firecracker-action-0.x -->Update acj/freebsd-firecracker-action action to v0.8.0
@@ -107,9 +109,7 @@ The following updates await pending status checks. To force their creation now, 
 
  - [ ] <!-- approvePr-branch=renovate/embarkstudios-cargo-deny-action-2.x -->Update EmbarkStudios/cargo-deny-action action to v2.0.15
  - [ ] <!-- approvePr-branch=renovate/flate2-1.x-lockfile -->Update Rust crate flate2 to v1.1.8
- - [ ] <!-- approvePr-branch=renovate/quote-1.x-lockfile -->Update Rust crate quote to v1.0.43
  - [ ] <!-- approvePr-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
- - [ ] <!-- approvePr-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
  - [ ] <!-- approvePr-branch=renovate/data-encoding-2.x-lockfile -->Update Rust crate data-encoding to v2.10.0
  - [ ] <!-- approvePr-branch=renovate/indexmap-2.x-lockfile -->Update Rust crate indexmap to v2.13.0
  - [ ] <!-- approvePr-branch=renovate/whoami-2.x -->Update Rust crate whoami to v2

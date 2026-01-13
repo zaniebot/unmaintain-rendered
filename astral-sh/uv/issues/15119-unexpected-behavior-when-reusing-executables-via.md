@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2025-08-06T22:45:49Z
-updated_at: 2026-01-12T10:13:28Z
+updated_at: 2026-01-12T23:28:02Z
 url: https://github.com/astral-sh/uv/issues/15119
-synced_at: 2026-01-12T16:02:04Z
+synced_at: 2026-01-13T00:22:50Z
 ```
 
 # Unexpected behavior when reusing executables via --with-executables-from
@@ -120,5 +120,11 @@ Ah, I came to file an issue about this too, fortunately saw this already open.
 This actually prevents me from using `uv tool` with my Ansible installation. I rely on a custom `vault_password_file` setting, pointing to a Python script that uses `keyring` to fetch my `sudo` password on the target server, enabling `ansible-playbook` runs without entering the password. I need `keyring` installed not only in the same Python environment as Ansible, but many others as well, and `--force` won't be an option.
 
 Perhaps the `uv tool` docs could be more clear about this limitation in the **Python versions** and/or **Tool executables** section? I, for one, at least could not infer this from "Each tool environment is linked to a specific Python version".
+
+---
+
+_Comment by @zanieb on 2026-01-12 23:28_
+
+Why can't you install keyring in its own separate environment?
 
 ---

@@ -10,9 +10,9 @@ draft: true
 base: main
 head: charlie/val
 created_at: 2026-01-12T04:09:40Z
-updated_at: 2026-01-12T04:20:41Z
+updated_at: 2026-01-12T23:58:51Z
 url: https://github.com/astral-sh/uv/pull/17412
-synced_at: 2026-01-12T16:12:46Z
+synced_at: 2026-01-13T00:22:58Z
 ```
 
 # Skip uploads when validation reports 'Already uploaded'
@@ -29,5 +29,9 @@ If the file was already uploaded, `/validate` already tells us that.
 ---
 
 _Review requested from @konstin by @charliermarsh on 2026-01-12 04:16_
+
+---
+
+_@zanieb approved on 2026-01-12 23:58_
 
 ---

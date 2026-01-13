@@ -9,9 +9,9 @@ labels:
   - generics
 assignees: []
 created_at: 2026-01-12T14:11:55Z
-updated_at: 2026-01-12T23:04:57Z
+updated_at: 2026-01-12T23:41:39Z
 url: https://github.com/astral-sh/ty/issues/2467
-synced_at: 2026-01-12T23:23:57Z
+synced_at: 2026-01-13T00:22:28Z
 ```
 
 # Generic class method "does not satisfy upper bound"
@@ -71,5 +71,27 @@ _Label `generics` added by @carljm on 2026-01-12 23:04_
 ---
 
 _Added to milestone `Pre-stable 1` by @carljm on 2026-01-12 23:04_
+
+---
+
+_Comment by @carljm on 2026-01-12 23:41_
+
+Further minimized, the repro does not require dataclasses, but it does require the `NewType`:
+
+```py
+from typing import NewType
+
+K = NewType("K", int)
+
+class C[T: K]:
+    def __init__(self, x: T) -> None:
+        self.x = x
+
+    def g(self):
+        ...
+
+
+C(x=K(0)).g()
+```
 
 ---
