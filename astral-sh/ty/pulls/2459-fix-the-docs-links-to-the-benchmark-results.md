@@ -11,9 +11,9 @@ merged: true
 base: main
 head: fix/bar-chart-svg
 created_at: 2026-01-12T10:42:14Z
-updated_at: 2026-01-13T05:29:52Z
+updated_at: 2026-01-13T09:48:48Z
 url: https://github.com/astral-sh/ty/pull/2459
-synced_at: 2026-01-13T06:26:55Z
+synced_at: 2026-01-13T10:29:59Z
 ```
 
 # Fix the docs links to the benchmark results
@@ -86,5 +86,9 @@ _Merged by @dhruvmanila on 2026-01-13 05:29_
 ---
 
 _Closed by @dhruvmanila on 2026-01-13 05:29_
+
+---
+
+_Branch deleted on 2026-01-13 09:48_
 
 ---

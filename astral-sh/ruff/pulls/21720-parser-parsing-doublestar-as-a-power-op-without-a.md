@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: double_star_as_pow
 created_at: 2025-12-01T09:13:26Z
-updated_at: 2025-12-15T07:58:31Z
+updated_at: 2026-01-13T10:00:48Z
 url: https://github.com/astral-sh/ruff/pull/21720
-synced_at: 2026-01-12T15:57:31Z
+synced_at: 2026-01-13T10:30:16Z
 ```
 
 # parser: parsing doublestar as a power op without a left hand side
@@ -280,5 +280,121 @@ _Review comment by @11happy on `crates/ruff_python_parser/src/parser/expression.
 
 done 
 Thank you : )
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_python_parser/src/parser/expression.rs`:400 on 2026-01-13 10:00_
+
+I kept wondering why this branch is necessary and, in fact, removing it gives us the desired parsing. So I dont' think we need to do anything more here other than adding a few tests for it.
+
+However, the tests show that we mess up node ranges somehow:
+
+```
+Module(
+    ModModule {
+        node_index: NodeIndex(None),
+        range: 0..22,
+        body: [
+            Expr(
+                StmtExpr {
+                    node_index: NodeIndex(None),
+                    range: 0..22,
+                    value: DictComp(
+                        ExprDictComp {
+                            node_index: NodeIndex(None),
+                            range: 0..22,
+                            key: Name(
+                                ExprName {
+                                    node_index: NodeIndex(None),
+                                    range: 1..2,
+                                    id: Name("x"),
+                                    ctx: Load,
+                                },
+                            ),
+                            value: BinOp(
+                                ExprBinOp {
+                                    node_index: NodeIndex(None),
+                                    range: 4..7,
+                                    left: Name(
+                                        ExprName {
+                                            node_index: NodeIndex(None),
+                                            range: 3..3,
+                                            id: Name(""),
+                                            ctx: Invalid,
+                                        },
+                                    ),
+                                    op: Pow,
+                                    right: Name(
+                                        ExprName {
+                                            node_index: NodeIndex(None),
+                                            range: 6..7,
+                                            id: Name("y"),
+                                            ctx: Load,
+                                        },
+                                    ),
+                                },
+                            ),
+                            generators: [
+                                Comprehension {
+                                    range: 8..21,
+                                    node_index: NodeIndex(None),
+                                    target: Tuple(
+                                        ExprTuple {
+                                            node_index: NodeIndex(None),
+                                            range: 12..16,
+                                            elts: [
+                                                Name(
+                                                    ExprName {
+                                                        node_index: NodeIndex(None),
+                                                        range: 12..13,
+                                                        id: Name("x"),
+                                                        ctx: Store,
+                                                    },
+                                                ),
+                                                Name(
+                                                    ExprName {
+                                                        node_index: NodeIndex(None),
+                                                        range: 15..16,
+                                                        id: Name("y"),
+                                                        ctx: Store,
+                                                    },
+                                                ),
+                                            ],
+                                            ctx: Store,
+                                            parenthesized: false,
+                                        },
+                                    ),
+                                    iter: Name(
+                                        ExprName {
+                                            node_index: NodeIndex(None),
+                                            range: 20..21,
+                                            id: Name("z"),
+                                            ctx: Load,
+                                        },
+                                    ),
+                                    ifs: [],
+                                    is_async: false,
+                                },
+                            ],
+                        },
+                    ),
+                },
+            ),
+        ],
+    },
+)
+```
+
+See how the invalid `ExprName` has a range of `3..3` but the `ExprBinOp` has a range of `4..7`. Not sure why this is happening
+
+
+Which I think requires addressing https://github.com/astral-sh/ruff/blob/af623e1f9a0a99a471ab5a3a066bf8f1686e894d/crates/ruff_python_parser/src/parser/mod.rs#L278-L287
+
+
+
+
+---
+
+_@MichaReiser reviewed on 2026-01-13 10:00_
 
 ---

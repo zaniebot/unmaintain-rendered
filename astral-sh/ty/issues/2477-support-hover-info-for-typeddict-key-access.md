@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2026-01-13T08:52:47Z
-updated_at: 2026-01-13T08:54:46Z
+updated_at: 2026-01-13T10:17:49Z
 url: https://github.com/astral-sh/ty/issues/2477
-synced_at: 2026-01-13T09:20:59Z
+synced_at: 2026-01-13T10:29:59Z
 ```
 
 # Support hover info for TypedDict key access
@@ -49,5 +49,15 @@ This relates to #2189 (autocomplete for TypedDict keys)
 ---
 
 _Label `server` added by @AlexWaygood on 2026-01-13 08:54_
+
+---
+
+_Comment by @MichaReiser on 2026-01-13 10:17_
+
+Thank you. This is https://github.com/astral-sh/ty/issues/1410 but with a much better example than mine. I'll add it as a sub-issue
+
+---
+
+_Added to milestone `Stable` by @MichaReiser on 2026-01-13 10:17_
 
 ---

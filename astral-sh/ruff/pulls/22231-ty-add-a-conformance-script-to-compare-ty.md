@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: wld/improve-conformance-suite
 created_at: 2025-12-28T01:15:26Z
-updated_at: 2026-01-13T08:42:54Z
+updated_at: 2026-01-13T09:31:37Z
 url: https://github.com/astral-sh/ruff/pull/22231
-synced_at: 2026-01-13T09:21:15Z
+synced_at: 2026-01-13T10:30:16Z
 ```
 
 # [ty] Add a conformance script to compare ty diagnostics with expected errors
@@ -787,5 +787,27 @@ I've added an outcome column with the emojis and updated the summary sentence. H
 ---
 
 _Review requested from @AlexWaygood by @MichaReiser on 2026-01-13 08:31_
+
+---
+
+_Review comment by @WillDuke on `scripts/conformance.py`:340 on 2026-01-13 09:29_
+
+Leaving a note to myself that I need to check if expected is present here
+
+---
+
+_Review comment by @WillDuke on `scripts/conformance.py`:391 on 2026-01-13 09:30_
+
+Should be {bad}{up}
+
+---
+
+_Review comment by @WillDuke on `scripts/conformance.py`:395 on 2026-01-13 09:30_
+
+Should be {good}{down} 
+
+---
+
+_@WillDuke reviewed on 2026-01-13 09:31_
 
 ---
