@@ -1,6 +1,6 @@
 ```yaml
 number: 2437
-title: Struct unpack inference
+title: "`struct.unpack` inference"
 type: issue
 state: open
 author: sakgoyal
@@ -8,12 +8,12 @@ labels:
   - wish
 assignees: []
 created_at: 2026-01-10T22:44:38Z
-updated_at: 2026-01-13T04:11:32Z
+updated_at: 2026-01-13T04:33:31Z
 url: https://github.com/astral-sh/ty/issues/2437
-synced_at: 2026-01-13T04:30:28Z
+synced_at: 2026-01-13T05:28:59Z
 ```
 
-# Struct unpack inference
+# `struct.unpack` inference
 
 ---
 
@@ -152,5 +152,9 @@ I will try to get it working myself, but no guarantees
 _Comment by @carljm on 2026-01-13 04:11_
 
 @sakgoyal happy to look at a pull request! You'll want to look at KnownFunction for similar cases where we special case handling of a particular function. 
+
+---
+
+_Renamed from "Struct unpack inference" to "`struct.unpack` inference" by @dhruvmanila on 2026-01-13 04:33_
 
 ---

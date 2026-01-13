@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2025-05-05T16:20:40Z
-updated_at: 2026-01-13T02:14:48Z
+updated_at: 2026-01-13T05:09:35Z
 url: https://github.com/astral-sh/ty/issues/31
-synced_at: 2026-01-13T02:20:56Z
+synced_at: 2026-01-13T05:28:58Z
 ```
 
 # Dependency Dashboard
@@ -41,7 +41,7 @@ Unlike deprecated packages with official notices, abandonment is detected by rel
 
 The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
 
- - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update pre-commit hook zizmorcore/zizmor-pre-commit to v1.20.0
+ - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update prek dependencies (`mdformat-mkdocs`, `zizmorcore/zizmor-pre-commit`)
 
 ## Detected Dependencies
 
@@ -189,7 +189,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - `pre-commit/pre-commit-hooks v6.0.0`
  - `astral-sh/ruff-pre-commit v0.14.10` → [Updates: `v0.14.11`]
  - `abravalheri/validate-pyproject v0.24.1`
- - `mdformat-mkdocs ==5.1.1` → [Updates: `==5.1.3`]
+ - `mdformat-mkdocs ==5.1.1` → [Updates: `==5.1.2`]
  - `mdformat-footnote ==0.1.2`
  - `executablebooks/mdformat 1.0.0`
  - `igorshubovych/markdownlint-cli v0.47.0`

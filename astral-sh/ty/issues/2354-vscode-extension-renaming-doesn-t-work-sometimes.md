@@ -2,15 +2,15 @@
 number: 2354
 title: "VSCode extension: Renaming doesn't work sometimes (including ignoring used line ending style)"
 type: issue
-state: open
+state: closed
 author: MeGaGiGaGon
 labels:
   - server
 assignees: []
 created_at: 2026-01-06T07:32:06Z
-updated_at: 2026-01-10T02:19:30Z
+updated_at: 2026-01-13T04:39:48Z
 url: https://github.com/astral-sh/ty/issues/2354
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-13T05:28:59Z
 ```
 
 # VSCode extension: Renaming doesn't work sometimes (including ignoring used line ending style)
@@ -4894,5 +4894,9 @@ _Comment by @MeGaGiGaGon on 2026-01-10 02:09_
 ---
 
 _Renamed from "Renaming doesn't work sometimes (including ignoring used line ending style)" to "VSCode extension: Renaming doesn't work sometimes (including ignoring used line ending style)" by @MeGaGiGaGon on 2026-01-10 02:19_
+
+---
+
+_Closed by @dhruvmanila on 2026-01-13 04:39_
 
 ---
