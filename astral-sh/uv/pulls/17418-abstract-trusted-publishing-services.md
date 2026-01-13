@@ -2,17 +2,18 @@
 number: 17418
 title: Abstract Trusted Publishing services
 type: pull_request
-state: open
+state: merged
 author: woodruffw
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: ww/pyx-tp
 created_at: 2026-01-12T15:50:36Z
-updated_at: 2026-01-13T00:14:55Z
+updated_at: 2026-01-13T15:53:59Z
 url: https://github.com/astral-sh/uv/pull/17418
-synced_at: 2026-01-13T00:22:58Z
+synced_at: 2026-01-13T16:27:49Z
 ```
 
 # Abstract Trusted Publishing services
@@ -82,5 +83,17 @@ _@woodruffw reviewed on 2026-01-13 00:14_
 _Review comment by @woodruffw on `crates/uv-publish/src/trusted_publishing/pypi.rs`:3 on 2026-01-13 00:14_
 
 Yeah, will remove. I don't remember even putting backticks there 🤔
+
+---
+
+_Merged by @woodruffw on 2026-01-13 15:53_
+
+---
+
+_Closed by @woodruffw on 2026-01-13 15:53_
+
+---
+
+_Branch deleted on 2026-01-13 15:53_
 
 ---

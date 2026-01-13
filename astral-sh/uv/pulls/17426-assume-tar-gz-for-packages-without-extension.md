@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: pp/assume-tgz
 created_at: 2026-01-12T21:08:12Z
-updated_at: 2026-01-13T08:19:14Z
+updated_at: 2026-01-13T15:51:13Z
 url: https://github.com/astral-sh/uv/pull/17426
-synced_at: 2026-01-13T08:23:24Z
+synced_at: 2026-01-13T16:27:49Z
 ```
 
 # Assume tar.gz for packages without extension
@@ -89,5 +89,23 @@ _Comment by @ppalucha on 2026-01-13 08:19_
 > Both of those problems remain when using headers.
 
 If you get content-disposition header specifying a filename with extension, is it not enough?
+
+---
+
+_Comment by @woodruffw on 2026-01-13 15:51_
+
+> If you get content-disposition header specifying a filename with extension, is it not enough?
+
+Unfortunately I think it's not enough -- at the moment a disposition of `tar+gz` is a decent proxy for a "source archive," but as @konstin notes we can't clearly distinguish that from a well-formed sdist (and in the future, `tar+gz` could potentially signal a wheel or other distribution format as well).
+
+I think as a workaround, you could use one of GitHub's other archive endpoints, i.e. one that provides a suffix. For example, this should work:
+
+```
+https://github.com/pyro-ppl/pyro/archive/refs/heads/dev.zip
+```
+
+(I believe that that endpoint is also recommended in general, since I *think* it's not subject to the same global IP restrictions as the `api.github.com` ones.)
+
+This is potentially something that uv could provide a hint/suggestion on 🙂 
 
 ---

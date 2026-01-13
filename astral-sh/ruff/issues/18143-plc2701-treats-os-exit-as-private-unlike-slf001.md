@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2025-05-16T20:46:53Z
-updated_at: 2026-01-13T13:31:13Z
+updated_at: 2026-01-13T15:37:12Z
 url: https://github.com/astral-sh/ruff/issues/18143
-synced_at: 2026-01-13T14:32:02Z
+synced_at: 2026-01-13T16:27:25Z
 ```
 
 # PLC2701 treats `os._exit` as private, unlike SLF001
@@ -65,5 +65,11 @@ _Comment by @manueljacob on 2026-01-13 13:31_
 > That solution could work. There are other underscore-initial public module members in the standard library, though, so the list will probably be expanded at some point.
 
 I think it would be useful to keep the list shared between SLF001 and PLC2701. I’m not familiar with the ruff code base. Maybe somewhere in `crates/ruff_python_stdlib`?
+
+---
+
+_Comment by @ntBre on 2026-01-13 15:37_
+
+Yeah, this could probably fit in `ruff_python_stdlib`. I think it would also be okay to share a `pub(crate)` helper function between the two rules for now.
 
 ---

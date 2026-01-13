@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2026-01-02T19:44:53Z
-updated_at: 2026-01-12T23:16:38Z
+updated_at: 2026-01-13T16:05:43Z
 url: https://github.com/astral-sh/uv/issues/17310
-synced_at: 2026-01-12T23:24:19Z
+synced_at: 2026-01-13T16:27:41Z
 ```
 
 # Show package constraints (similar to `poetry show`)
@@ -56,5 +56,13 @@ _Label `enhancement` added by @jack-mcivor on 2026-01-02 19:44_
 _Comment by @powercoconola on 2026-01-12 23:16_
 
 Does `uv tree` solve your issue?
+
+---
+
+_Comment by @jack-mcivor on 2026-01-13 16:05_
+
+> Does uv tree solve your issue?
+
+I don't think so? AFAICT that shows installed versions, but does not display constraints at all
 
 ---

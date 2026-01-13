@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: konsti/clear-env-for-tests
 created_at: 2025-06-16T16:28:29Z
-updated_at: 2026-01-12T17:15:55Z
+updated_at: 2026-01-13T15:42:26Z
 url: https://github.com/astral-sh/uv/pull/14080
-synced_at: 2026-01-12T18:24:28Z
+synced_at: 2026-01-13T16:27:48Z
 ```
 
 # Clear known env vars for tests
@@ -128,5 +128,26 @@ _Reopened by @konstin on 2026-01-12 13:55_
 ---
 
 _Review requested from @EliteTK by @EliteTK on 2026-01-12 17:15_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-macros/src/lib.rs`:160 on 2026-01-13 14:57_
+
+This is a neat solution but I noticed that some of the environment variables in `crates/uv-static/src/env_vars.rs` are windows system variables like:
+
+* `APPDATA`
+* `LOCALAPPDATA`
+* `USERPROFILE`
+* `SYSTEMDRIVE`
+
+There's also `RUST_LOG` in there which was specifically [called out](https://github.com/astral-sh/uv/issues/9873#issuecomment-2542030355) in the original issue as something we should keep.
+
+---
+
+_@EliteTK approved on 2026-01-13 15:42_
+
+It fixes the test cases I could come up with, but see the comment for a small concern relating to some of the environment variables which are going to get unset. But the fact the windows tests don't fail suggests maybe that I am wrong about the importance of those variables.
+
+That being said I couldn't figure out how to get RUST_LOG to currently be respected by the things being ran even without these patches?
 
 ---

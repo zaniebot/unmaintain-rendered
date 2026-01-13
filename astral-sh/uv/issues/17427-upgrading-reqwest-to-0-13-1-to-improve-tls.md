@@ -6,11 +6,12 @@ state: open
 author: salmonsd
 labels:
   - enhancement
+  - breaking
 assignees: []
 created_at: 2026-01-12T22:36:00Z
-updated_at: 2026-01-13T09:01:49Z
+updated_at: 2026-01-13T15:54:09Z
 url: https://github.com/astral-sh/uv/issues/17427
-synced_at: 2026-01-13T09:21:21Z
+synced_at: 2026-01-13T16:27:41Z
 ```
 
 # Upgrading `reqwest` to `0.13.1` to improve TLS experience
@@ -129,5 +130,25 @@ https://github.com/astral-sh/uv/blob/4ee320b0a8c8d1764c32db54a511153092dc13e2/cr
 I am not sure if this is a breaking change since I am not very familiar with the latest `reqwest` client APIs.
 
 cc @schmelczer
+
+---
+
+_Comment by @salmonsd on 2026-01-13 15:51_
+
+> Per your code comment, this would break support for `SSL_CERT_FILE` and `SSL_CERT_DIR`?
+
+Correct, with `reqwest` moving to `rustls` w/ `rustls-platform-verifier`, `SSL_CERT_FILE` and `SSL_CERT_DIR` are ignored. With the exception of `Linux` using `native-tls`, which can use the `native-tls` backend. In that case, it has full `OpenSSL` support and that can use `SSL_CERT_FILE` and `SSL_CERT_DIR`.
+
+Happy to prove this out further, as needed, and PR it. Just let me know.
+
+---
+
+_Comment by @zanieb on 2026-01-13 15:54_
+
+Feel free to open a pull request, but we'll need to defer it to a breaking release. I'm also pretty worried about breaking `SSL_CERT_FILE` and `SSL_CERT_DIR` but I'm not sure we can do much about that long-term.
+
+---
+
+_Label `breaking` added by @zanieb on 2026-01-13 15:54_
 
 ---

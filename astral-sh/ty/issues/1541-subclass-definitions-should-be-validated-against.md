@@ -2,15 +2,15 @@
 number: 1541
 title: "Subclass definitions should be validated against superclass `__init_subclass__` definitions"
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - runtime semantics
 assignees: []
 created_at: 2025-11-13T20:20:16Z
-updated_at: 2025-11-13T20:20:16Z
+updated_at: 2026-01-13T16:15:53Z
 url: https://github.com/astral-sh/ty/issues/1541
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-13T16:27:19Z
 ```
 
 # Subclass definitions should be validated against superclass `__init_subclass__` definitions
@@ -59,5 +59,9 @@ _Added to milestone `Stable` by @AlexWaygood on 2025-11-13 20:20_
 ---
 
 _Label `runtime semantics` added by @AlexWaygood on 2025-11-13 20:20_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-13 16:15_
 
 ---

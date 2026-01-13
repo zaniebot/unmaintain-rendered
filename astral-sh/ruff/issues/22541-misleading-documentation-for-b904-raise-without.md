@@ -8,9 +8,9 @@ labels:
   - documentation
 assignees: []
 created_at: 2026-01-12T22:45:34Z
-updated_at: 2026-01-13T01:15:12Z
+updated_at: 2026-01-13T15:30:11Z
 url: https://github.com/astral-sh/ruff/issues/22541
-synced_at: 2026-01-13T01:22:13Z
+synced_at: 2026-01-13T16:27:25Z
 ```
 
 # Misleading documentation for B904: raise-without-from-inside-except
@@ -50,5 +50,11 @@ _Label `documentation` added by @ntBre on 2026-01-12 23:36_
 _Comment by @shawnz on 2026-01-13 01:15_
 
 I see, sorry for the dupe!
+
+---
+
+_Comment by @ntBre on 2026-01-13 15:30_
+
+No need to apologize! The other issue was closed, so thank you for reopening the discussion. I think [this comment](https://github.com/astral-sh/ruff/issues/8736#issuecomment-1816525873) about updating the docs is still relevant.
 
 ---

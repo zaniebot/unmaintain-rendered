@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/augmented-assignment-tcx
 created_at: 2026-01-12T22:16:03Z
-updated_at: 2026-01-12T22:37:49Z
+updated_at: 2026-01-13T15:48:17Z
 url: https://github.com/astral-sh/ruff/pull/22540
-synced_at: 2026-01-12T23:24:14Z
+synced_at: 2026-01-13T16:27:36Z
 ```
 
 # [ty] Use type context from augmented assignment dunder calls
@@ -214,5 +214,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-12 22:28_
 **[Full report with detailed diff](https://b2e74f52.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://b2e74f52.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_Review request for @AlexWaygood removed by @AlexWaygood on 2026-01-13 15:48_
 
 ---
