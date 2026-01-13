@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: micha/make-tracked-constraint-set-interned
 created_at: 2026-01-13T11:52:01Z
-updated_at: 2026-01-13T12:18:45Z
+updated_at: 2026-01-13T12:32:31Z
 url: https://github.com/astral-sh/ruff/pull/22545
-synced_at: 2026-01-13T12:25:13Z
+synced_at: 2026-01-13T13:22:50Z
 ```
 
 # [ty] Make `TrackedConstraintSet` interned
@@ -177,5 +177,17 @@ _Review requested from @dcreager by @MichaReiser on 2026-01-13 12:05_
 ---
 
 _Review request for @AlexWaygood removed by @AlexWaygood on 2026-01-13 12:18_
+
+---
+
+_Comment by @dcreager on 2026-01-13 12:31_
+
+> Given that these are only used in tests. Is there a significant downside if we use interned here? Or do we "somehow know" that we never call `new` in a cyclic query?
+
+I do not think that we know that. Regardless, these are only used in mdtests, so I don't think there's any downside to switching to interned.
+
+---
+
+_@dcreager approved on 2026-01-13 12:32_
 
 ---

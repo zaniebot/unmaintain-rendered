@@ -11,9 +11,9 @@ draft: true
 base: main
 head: charlie/dyn-expression
 created_at: 2026-01-12T18:12:25Z
-updated_at: 2026-01-13T08:37:24Z
+updated_at: 2026-01-13T13:15:58Z
 url: https://github.com/astral-sh/ruff/pull/22537
-synced_at: 2026-01-13T09:21:15Z
+synced_at: 2026-01-13T13:22:50Z
 ```
 
 # [ty] Support 'dangling' `type(...)` constructors
@@ -964,5 +964,22 @@ _Converted to draft by @MichaReiser on 2026-01-13 08:36_
 _Comment by @MichaReiser on 2026-01-13 08:37_
 
 Putting this back to draft to make it easier for reviewers to know when this is ready for review (and not one of GitHub's force push notifications ;))
+
+---
+
+_Comment by @charliermarsh on 2026-01-13 13:11_
+
+> If there's a Definition, store a NodeIndex that's relative to the Definition's NodeIndex. This should give us a pretty stable ID that only changes when you modify the assignment itself.
+
+Do we need to store `NodeIndex` at all when we have a `Definition`?
+
+
+---
+
+_Comment by @MichaReiser on 2026-01-13 13:15_
+
+> Do we need to store NodeIndex at all when we have a Definition?
+
+It depends on what you want to highlight. If not, that's even better.
 
 ---
