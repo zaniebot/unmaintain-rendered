@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type of `abs(5)` is `Unknown`.  Am I wrong to expect `int`? - astral-sh/ty #2483</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type of <code>abs(5)</code> is <code>Unknown</code>.  Am I wrong to expect <code>int</code>?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2483">#2483</a>
+        opened by <a href="https://github.com/jpgoldberg">@jpgoldberg</a>
+        on 2026-01-13 22:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jpgoldberg">@jpgoldberg</a></div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>ty version 0.0.11 on macOS (arm64) is telling me that the type of <code>abs(5)</code> is <code>Unknown</code> where I would have expected it to be <code>int</code>.</p>
+<p>I am not sure whether this is a bug or &quot;works as designed&quot;, as I don't really know what the <code>@abs</code> part in the type signature of <code>abs</code> means, but I do take</p>
+<p><code>def abs[_T](x: SupportsAbs[_T@abs], /) -&gt; _T@abs</code>.</p>
+<p>as suggesting that I should get an <code>int</code> when <code>_T</code> is an <code>int</code>. Also  I note that the type I am seeing for <code>int.__abs__</code> is <code>def __abs__(self: int) -&gt; int</code>.</p>
+<p>pyright and mypy appear to say <code>int</code>. (I haven't checked specific versions, but I only noticed this behavior after switching to ty in VSCode, so the more I write about this question, the more I think it will need to be changed to a bug report.</p>
+<h2>Steps to reproduce</h2>
+<p>Contents of <a href="https://github.com/user-attachments/files/24600877/ty_abs.py"><code>ty_abs.py</code></a></p>
+<pre><code class="language-python">from typing import reveal_type
+
+b = abs(5)
+reveal_type(b)  # Runtime int
+</code></pre>
+<p>ty version:</p>
+<pre><code class="language-console">% ty --version
+ty 0.0.11 (830cb9cc6 2026-01-09)
+</code></pre>
+<p>ty reveals type as Unknown:</p>
+<pre><code class="language-console">%  ty check ty_abs.py 
+info[revealed-type]: Revealed type
+ --&gt; ty_abs.py:4:13
+  |
+3 | b = abs(5)
+4 | reveal_type(b) # Runtime int
+  |             ^ `Unknown`
+  |
+
+Found 1 diagnostic
+</code></pre>
+<p>Runtime says <code>int</code>:</p>
+<pre><code class="language-console">% python ty_abs.py
+Runtime type is 'int'
+</code></pre>
+<h2>Other static type checkers</h2>
+<p>Mypy (1.19.1) says int:</p>
+<pre><code class="language-console">mypy --strict ty_abs.py 
+ty_abs.py:4: note: Revealed type is &quot;builtins.int&quot;
+Success: no issues found in 1 source file
+</code></pre>
+<p>As does pyright (1.1.408):</p>
+<pre><code class="language-console">% pyright ty_abs.py 
+/Users/jeffrey/src/jpgoldberg/Python-playground/ty_abs.py
+  /Users/jeffrey/src/jpgoldberg/Python-playground/ty_abs.py:4:13 - information: Type of &quot;b&quot; is &quot;int&quot;
+0 errors, 0 warnings, 1 information
+</code></pre>
+<h2>System information</h2>
+<ul>
+<li>Python: 3.13.3 (Also tested with 3.14.0)</li>
+<li>ty: ty 0.0.11 (830cb9cc6 2026-01-09)</li>
+<li>OS: macOS 26.1</li>
+<li>Chip: Apple M2 Pro</li>
+</ul>
+<h3>Version</h3>
+<p>ty 0.0.11 (830cb9cc6 2026-01-09)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @jpgoldberg on 2026-01-13 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-13 22:20</div>
+            <div class="timeline-body"><p>This is a bug but I'm pretty confident it's #1714</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-13 22:23</div>
+            <div class="timeline-body"><p>Yes, definitely #1714 -- there's a WIP PR for that, should be fixed soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2026-01-13 22:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-13 22:27:10 UTC
+    </footer>
+</body>
+</html>
