@@ -9,9 +9,9 @@ labels:
   - narrowing
 assignees: []
 created_at: 2025-11-14T21:24:41Z
-updated_at: 2026-01-12T01:40:20Z
+updated_at: 2026-01-13T02:22:49Z
 url: https://github.com/astral-sh/ty/issues/1566
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-13T03:19:30Z
 ```
 
 # Consider unsafely narrowing non-literal type to literal based on equality check
@@ -135,5 +135,11 @@ def get_config(name: str) -> int | None:
     # Do something else ...
     return None
 ```
+
+---
+
+_Comment by @carljm on 2026-01-13 02:22_
+
+@yilei The only thing ty needs in order to be happy with that already is for it to be `name: LiteralString` instead of `name: str`, which excludes badly-behaved `str` subclasses. Don't know if that's feasible for you or not.
 
 ---

@@ -2,16 +2,17 @@
 number: 17213
 title: Fix error message when installing musl python on armv7
 type: pull_request
-state: open
+state: merged
 author: dijor0310
 labels: []
 assignees: []
+merged: true
 base: main
 head: diyor/fix-python-install-error
 created_at: 2025-12-22T00:42:11Z
-updated_at: 2026-01-13T02:15:06Z
+updated_at: 2026-01-13T02:45:05Z
 url: https://github.com/astral-sh/uv/pull/17213
-synced_at: 2026-01-13T02:21:29Z
+synced_at: 2026-01-13T03:20:00Z
 ```
 
 # Fix error message when installing musl python on armv7
@@ -71,5 +72,13 @@ Hi @zanieb, just bumping this thread. No rush at all, but let me know if I can f
 ---
 
 _@zanieb approved on 2026-01-13 02:15_
+
+---
+
+_Merged by @zanieb on 2026-01-13 02:45_
+
+---
+
+_Closed by @zanieb on 2026-01-13 02:45_
 
 ---

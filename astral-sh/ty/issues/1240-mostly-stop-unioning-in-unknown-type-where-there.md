@@ -8,9 +8,9 @@ labels:
   - type-inference
 assignees: []
 created_at: 2025-09-23T02:28:53Z
-updated_at: 2026-01-10T09:04:56Z
+updated_at: 2026-01-13T02:47:14Z
 url: https://github.com/astral-sh/ty/issues/1240
-synced_at: 2026-01-12T15:54:24Z
+synced_at: 2026-01-13T03:19:30Z
 ```
 
 # (mostly) stop unioning in `Unknown` type where there is no type annotation
@@ -173,5 +173,15 @@ _Comment by @AndBoyS on 2026-01-10 09:04_
 > If there are users reading this who are concerned about this change, or feel that you have use cases that will be negatively affected, please reach out so we can discuss your use case!
 
 It will still be nice to have as an opt-in option for untyped code, since it will be a source of some false positives (from my experience, it will usually come from list of custom objects, like [CustomClass1(), CustomClass2(), ...])
+
+---
+
+_Comment by @carljm on 2026-01-13 02:44_
+
+@AndBoyS can you provide some realistic example code where you think you would use this option?
+
+I have a hard time imagining cases where you'd really want a global option that affects all of your code, rather than just annotating one specific container for which a too-narrow type is being inferred.
+
+(EDIT: I guess you did say "untyped code". #1473 should also remove many of the cases where this would be needed)
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: main
 created_at: 2026-01-09T03:50:06Z
-updated_at: 2026-01-09T19:48:36Z
+updated_at: 2026-01-13T02:33:49Z
 url: https://github.com/astral-sh/ruff/pull/22471
-synced_at: 2026-01-12T15:57:50Z
+synced_at: 2026-01-13T03:19:47Z
 ```
 
 # Add AIR301 deprecation rules for airflow.utils module classes
@@ -150,5 +150,11 @@ _Comment by @astral-sh-bot[bot] on 2026-01-09 19:48_
 
 
 
+
+---
+
+_Comment by @Lee-W on 2026-01-13 02:33_
+
+The list is not yet confirmed, and we're working on making it an AIR321 instead since some of them are 3.1.0+ instead of 3.0.0+
 
 ---

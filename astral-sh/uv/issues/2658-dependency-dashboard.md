@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-13T00:00:05Z
+updated_at: 2026-01-13T02:46:20Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-13T00:22:48Z
+synced_at: 2026-01-13T03:19:50Z
 ```
 
 # Dependency Dashboard
@@ -48,7 +48,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/clap-4.x-lockfile -->Update Rust crate clap to v4.5.54
  - [ ] <!-- unschedule-branch=renovate/console-0.x-lockfile -->Update Rust crate console to v0.16.2
  - [ ] <!-- unschedule-branch=renovate/h2-0.x-lockfile -->Update Rust crate h2 to v0.4.13
- - [ ] <!-- unschedule-branch=renovate/jiff-0.x-lockfile -->Update Rust crate jiff to v0.2.17
+ - [ ] <!-- unschedule-branch=renovate/jiff-0.x-lockfile -->Update Rust crate jiff to v0.2.18
  - [ ] <!-- unschedule-branch=renovate/proc-macro2-1.x-lockfile -->Update Rust crate proc-macro2 to v1.0.105
  - [ ] <!-- unschedule-branch=renovate/quote-1.x-lockfile -->Update Rust crate quote to v1.0.43
  - [ ] <!-- unschedule-branch=renovate/rcgen-0.x-lockfile -->Update Rust crate rcgen to v0.14.6
@@ -93,7 +93,6 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/wmi-0.x -->Update Rust crate wmi to 0.18.0
  - [ ] <!-- unschedule-branch=renovate/rust-1.x -->Update Rust to v1.92.0
  - [ ] <!-- unschedule-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.65.13
- - [ ] <!-- unschedule-branch=renovate/debian-13.x -->Update debian Docker tag to v13
  - [ ] <!-- unschedule-branch=renovate/fedora-44.x -->Update fedora Docker tag to v44
  - [ ] <!-- create-all-awaiting-schedule-prs -->🔐 **Create all awaiting schedule PRs at once** 🔐
 
@@ -112,6 +111,7 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
  - [ ] <!-- approvePr-branch=renovate/data-encoding-2.x-lockfile -->Update Rust crate data-encoding to v2.10.0
  - [ ] <!-- approvePr-branch=renovate/indexmap-2.x-lockfile -->Update Rust crate indexmap to v2.13.0
+ - [ ] <!-- approvePr-branch=renovate/debian-13.x -->Update debian Docker tag to v13
  - [ ] <!-- approvePr-branch=renovate/whoami-2.x -->Update Rust crate whoami to v2
 
 ## Open
@@ -929,7 +929,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 </details>
 
-<details><summary>.github/workflows/test-integration.yml (41)</summary>
+<details><summary>.github/workflows/test-integration.yml (43)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
@@ -940,6 +940,8 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
@@ -993,7 +995,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 </details>
 
-<details><summary>.github/workflows/test-system.yml (73)</summary>
+<details><summary>.github/workflows/test-system.yml (71)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
@@ -1038,8 +1040,6 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]

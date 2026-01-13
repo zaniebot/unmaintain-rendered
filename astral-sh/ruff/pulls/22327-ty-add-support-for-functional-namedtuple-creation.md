@@ -11,9 +11,9 @@ assignees: []
 base: charlie/dyn-expression
 head: charlie/functional-namedtuple
 created_at: 2026-01-01T13:23:44Z
-updated_at: 2026-01-13T02:13:40Z
+updated_at: 2026-01-13T02:29:25Z
 url: https://github.com/astral-sh/ruff/pull/22327
-synced_at: 2026-01-13T02:21:16Z
+synced_at: 2026-01-13T03:19:47Z
 ```
 
 # [ty] Add support for functional `namedtuple` creation
@@ -48,8 +48,8 @@ _Comment by @astral-sh-bot[bot] on 2026-01-01 13:25_
 <summary>Changes were detected when running ty on typing conformance tests</summary>
 
 ```diff
---- old-output.txt	2026-01-12 13:48:03.929800365 +0000
-+++ new-output.txt	2026-01-12 13:48:04.282801771 +0000
+--- old-output.txt	2026-01-13 02:25:31.359335812 +0000
++++ new-output.txt	2026-01-13 02:25:31.664338938 +0000
 @@ -753,6 +753,16 @@
  namedtuples_define_class.py:86:5: error[invalid-named-tuple] NamedTuple field without default value cannot follow field(s) with default value(s): Field `latitude` defined here without a default value
  namedtuples_define_class.py:125:19: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `float`
@@ -107,6 +107,13 @@ _Comment by @astral-sh-bot[bot] on 2026-01-01 13:26_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
+pip (https://github.com/pypa/pip)
++ src/pip/_vendor/urllib3/connectionpool.py:500:16: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ src/pip/_vendor/urllib3/util/url.py:357:16: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ src/pip/_vendor/urllib3/util/url.py:419:12: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 602 diagnostics
++ Found 605 diagnostics
+
 spack (https://github.com/spack/spack)
 + lib/spack/spack/test/directives.py:118:5: error[invalid-assignment] Object of type `dict[Unknown | Spec, Unknown | str]` is not assignable to attribute `licenses` of type `property`
 + lib/spack/spack/test/directives.py:119:5: error[invalid-assignment] Object of type `Literal["test_package"]` is not assignable to attribute `name` of type `property`
@@ -125,8 +132,8 @@ spack (https://github.com/spack/spack)
 
 paasta (https://github.com/yelp/paasta)
 + paasta_tools/iptables.py:38:9: error[unresolved-attribute] Object of type `_RuleBase` has no attribute `validate`
-- Found 1102 diagnostics
-+ Found 1103 diagnostics
+- Found 1101 diagnostics
++ Found 1102 diagnostics
 
 alerta (https://github.com/alerta/alerta)
 + alerta/database/backends/mongodb/base.py:455:26: error[missing-argument] No arguments provided for required parameters `where`, `sort`, `group`
@@ -197,25 +204,15 @@ alerta (https://github.com/alerta/alerta)
 - Found 555 diagnostics
 + Found 620 diagnostics
 
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
+
 cki-lib (https://gitlab.com/cki-project/cki-lib)
 + tests/test_messagequeue.py:792:32: error[invalid-argument-type] Argument to bound method `_consume_one` is incorrect: Expected `Item`, found `tuple[Literal[""], None, Literal[""], Literal["{}"], Literal[""], Literal[""]]`
 + tests/test_messagequeue.py:811:32: error[invalid-argument-type] Argument to bound method `_consume_one` is incorrect: Expected `Item`, found `tuple[Literal[""], None, Literal[""], Literal["{}"], Literal[""], Literal[""]]`
 - Found 240 diagnostics
 + Found 242 diagnostics
-
-Tanjun (https://github.com/FasterSpeeding/Tanjun)
-- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
-+ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
-
-mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
-- pymongo/asynchronous/auth.py:131:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `@Todo | None | bytes`
-+ pymongo/asynchronous/auth.py:131:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `Any | None | bytes`
-- pymongo/asynchronous/auth.py:365:69: error[invalid-assignment] Object of type `dict[str, ((credentials: @Todo, conn: AsyncConnection) -> CoroutineType[Any, Any, None]) | ((credentials: @Todo, conn: AsyncConnection, reauthenticate: bool) -> CoroutineType[Any, Any, Mapping[str, Any] | None]) | partial[CoroutineType[Any, Any, None]]]` is not assignable to `Mapping[str, (...) -> Coroutine[Any, Any, None]]`
-+ pymongo/asynchronous/auth.py:365:69: error[invalid-assignment] Object of type `dict[str, ((credentials: MongoCredential, conn: AsyncConnection) -> CoroutineType[Any, Any, None]) | ((credentials: MongoCredential, conn: AsyncConnection, reauthenticate: bool) -> CoroutineType[Any, Any, Mapping[str, Any] | None]) | partial[CoroutineType[Any, Any, None]]]` is not assignable to `Mapping[str, (...) -> Coroutine[Any, Any, None]]`
-- pymongo/synchronous/auth.py:128:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `@Todo | None | bytes`
-+ pymongo/synchronous/auth.py:128:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `Any | None | bytes`
-- pymongo/synchronous/auth.py:360:48: error[invalid-assignment] Object of type `dict[str, ((credentials: @Todo, conn: Connection) -> None) | ((credentials: @Todo, conn: Connection, reauthenticate: bool) -> Mapping[str, Any] | None) | partial[None]]` is not assignable to `Mapping[str, (...) -> None]`
-+ pymongo/synchronous/auth.py:360:48: error[invalid-assignment] Object of type `dict[str, ((credentials: MongoCredential, conn: Connection) -> None) | ((credentials: MongoCredential, conn: Connection, reauthenticate: bool) -> Mapping[str, Any] | None) | partial[None]]` is not assignable to `Mapping[str, (...) -> None]`
 
 discord.py (https://github.com/Rapptz/discord.py)
 + discord/enums.py:97:5: error[invalid-assignment] Object of type `(self) -> Unknown` is not assignable to attribute `__repr__` of type `def __repr__(self) -> str`
@@ -227,17 +224,105 @@ discord.py (https://github.com/Rapptz/discord.py)
 - Found 548 diagnostics
 + Found 554 diagnostics
 
-manticore (https://github.com/trailofbits/manticore)
-- manticore/platforms/evm.py:3016:16: warning[possibly-missing-attribute] Attribute `coinbase` may be missing on object of type `Unknown | None`
-+ manticore/platforms/evm.py:3016:16: warning[possibly-missing-attribute] Attribute `coinbase` may be missing on object of type `Unknown | None | BlockHeader`
-- manticore/platforms/evm.py:3019:16: warning[possibly-missing-attribute] Attribute `timestamp` may be missing on object of type `Unknown | None`
-+ manticore/platforms/evm.py:3019:16: warning[possibly-missing-attribute] Attribute `timestamp` may be missing on object of type `Unknown | None | BlockHeader`
-- manticore/platforms/evm.py:3022:16: warning[possibly-missing-attribute] Attribute `blocknumber` may be missing on object of type `Unknown | None`
-+ manticore/platforms/evm.py:3022:16: warning[possibly-missing-attribute] Attribute `blocknumber` may be missing on object of type `Unknown | None | BlockHeader`
-- manticore/platforms/evm.py:3025:16: warning[possibly-missing-attribute] Attribute `difficulty` may be missing on object of type `Unknown | None`
-+ manticore/platforms/evm.py:3025:16: warning[possibly-missing-attribute] Attribute `difficulty` may be missing on object of type `Unknown | None | BlockHeader`
-- manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None`
-+ manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None | BlockHeader`
+mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
+- pymongo/asynchronous/auth.py:131:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `@Todo | None | bytes`
++ pymongo/asynchronous/auth.py:131:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `Any | None | bytes`
+- pymongo/asynchronous/auth.py:365:69: error[invalid-assignment] Object of type `dict[str, ((credentials: @Todo, conn: AsyncConnection) -> CoroutineType[Any, Any, None]) | ((credentials: @Todo, conn: AsyncConnection, reauthenticate: bool) -> CoroutineType[Any, Any, Mapping[str, Any] | None]) | partial[CoroutineType[Any, Any, None]]]` is not assignable to `Mapping[str, (...) -> Coroutine[Any, Any, None]]`
++ pymongo/asynchronous/auth.py:365:69: error[invalid-assignment] Object of type `dict[str, ((credentials: MongoCredential, conn: AsyncConnection) -> CoroutineType[Any, Any, None]) | ((credentials: MongoCredential, conn: AsyncConnection, reauthenticate: bool) -> CoroutineType[Any, Any, Mapping[str, Any] | None]) | partial[CoroutineType[Any, Any, None]]]` is not assignable to `Mapping[str, (...) -> Coroutine[Any, Any, None]]`
+- pymongo/synchronous/auth.py:128:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `@Todo | None | bytes`
++ pymongo/synchronous/auth.py:128:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `Any | None | bytes`
+- pymongo/synchronous/auth.py:360:48: error[invalid-assignment] Object of type `dict[str, ((credentials: @Todo, conn: Connection) -> None) | ((credentials: @Todo, conn: Connection, reauthenticate: bool) -> Mapping[str, Any] | None) | partial[None]]` is not assignable to `Mapping[str, (...) -> None]`
++ pymongo/synchronous/auth.py:360:48: error[invalid-assignment] Object of type `dict[str, ((credentials: MongoCredential, conn: Connection) -> None) | ((credentials: MongoCredential, conn: Connection, reauthenticate: bool) -> Mapping[str, Any] | None) | partial[None]]` is not assignable to `Mapping[str, (...) -> None]`
+
+vision (https://github.com/pytorch/vision)
++ test/test_video_reader.py:39:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_video_reader.py:40:5: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_video_reader.py:41:5: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_video_reader.py:42:5: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
++ test/test_video_reader.py:43:5: error[unknown-argument] Argument `check_aframes` does not match any known parameter
++ test/test_video_reader.py:44:5: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
++ test/test_video_reader.py:48:44: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_video_reader.py:49:9: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_video_reader.py:50:9: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_video_reader.py:51:9: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
++ test/test_video_reader.py:52:9: error[unknown-argument] Argument `check_aframes` does not match any known parameter
++ test/test_video_reader.py:53:9: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
++ test/test_video_reader.py:55:60: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_video_reader.py:56:9: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_video_reader.py:57:9: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_video_reader.py:58:9: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
++ test/test_video_reader.py:59:9: error[unknown-argument] Argument `check_aframes` does not match any known parameter
++ test/test_video_reader.py:60:9: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
++ test/test_video_reader.py:62:47: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_video_reader.py:63:9: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_video_reader.py:64:9: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_video_reader.py:65:9: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
++ test/test_video_reader.py:66:9: error[unknown-argument] Argument `check_aframes` does not match any known parameter
++ test/test_video_reader.py:67:9: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
++ test/test_video_reader.py:69:37: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_video_reader.py:70:9: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_video_reader.py:71:9: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_video_reader.py:72:9: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
++ test/test_video_reader.py:73:9: error[unknown-argument] Argument `check_aframes` does not match any known parameter
++ test/test_video_reader.py:74:9: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
++ test/test_video_reader.py:76:37: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_video_reader.py:77:9: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_video_reader.py:78:9: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_video_reader.py:79:9: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
++ test/test_video_reader.py:80:9: error[unknown-argument] Argument `check_aframes` does not match any known parameter
++ test/test_video_reader.py:81:9: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
++ test/test_video_reader.py:83:24: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_video_reader.py:84:9: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_video_reader.py:85:9: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_video_reader.py:86:9: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
++ test/test_video_reader.py:88:9: error[unknown-argument] Argument `check_aframes` does not match any known parameter
++ test/test_video_reader.py:89:9: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
++ test/test_video_reader.py:91:24: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_video_reader.py:92:9: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_video_reader.py:93:9: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_video_reader.py:94:9: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
++ test/test_video_reader.py:96:9: error[unknown-argument] Argument `check_aframes` does not match any known parameter
++ test/test_video_reader.py:97:9: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
++ test/test_video_reader.py:99:24: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_video_reader.py:100:9: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_video_reader.py:101:9: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_video_reader.py:102:9: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
++ test/test_video_reader.py:104:9: error[unknown-argument] Argument `check_aframes` does not match any known parameter
++ test/test_video_reader.py:105:9: error[unknown-argument] Argument `check_aframe_pts` does not match any known parameter
++ test/test_videoapi.py:52:44: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_videoapi.py:52:56: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_videoapi.py:52:70: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_videoapi.py:52:86: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
++ test/test_videoapi.py:53:60: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_videoapi.py:54:9: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_videoapi.py:54:23: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_videoapi.py:54:39: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
++ test/test_videoapi.py:56:47: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_videoapi.py:56:59: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_videoapi.py:56:73: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_videoapi.py:56:89: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
++ test/test_videoapi.py:57:37: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_videoapi.py:57:49: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_videoapi.py:57:63: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_videoapi.py:57:80: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
++ test/test_videoapi.py:58:37: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_videoapi.py:58:49: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_videoapi.py:58:63: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_videoapi.py:58:80: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
++ test/test_videoapi.py:59:24: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_videoapi.py:59:36: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_videoapi.py:59:51: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_videoapi.py:59:67: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
++ test/test_videoapi.py:60:24: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_videoapi.py:60:36: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_videoapi.py:60:51: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_videoapi.py:60:68: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
++ test/test_videoapi.py:61:24: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ test/test_videoapi.py:61:36: error[unknown-argument] Argument `duration` does not match any known parameter
++ test/test_videoapi.py:61:51: error[unknown-argument] Argument `video_fps` does not match any known parameter
++ test/test_videoapi.py:61:68: error[unknown-argument] Argument `audio_sample_rate` does not match any known parameter
+- Found 1409 diagnostics
++ Found 1495 diagnostics
 
 cloud-init (https://github.com/canonical/cloud-init)
 + tests/unittests/sources/test_smartos.py:806:5: error[invalid-assignment] Object of type `Literal[2882400018]` is not assignable to attribute `request_id` of type `property`
@@ -252,44 +337,22 @@ cloud-init (https://github.com/canonical/cloud-init)
 - Found 1179 diagnostics
 + Found 1188 diagnostics
 
-prefect (https://github.com/PrefectHQ/prefect)
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
-+ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
-- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
-+ src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
-+ src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
-+ src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
-+ src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
-+ src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
-+ src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
-- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
-+ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
-- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
-+ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
-- src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
-+ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
-- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
-+ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
-- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
-- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
-+ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
-- Found 5362 diagnostics
-+ Found 5367 diagnostics
+manticore (https://github.com/trailofbits/manticore)
+- manticore/platforms/evm.py:3016:16: warning[possibly-missing-attribute] Attribute `coinbase` may be missing on object of type `Unknown | None`
++ manticore/platforms/evm.py:3016:16: warning[possibly-missing-attribute] Attribute `coinbase` may be missing on object of type `Unknown | None | BlockHeader`
+- manticore/platforms/evm.py:3019:16: warning[possibly-missing-attribute] Attribute `timestamp` may be missing on object of type `Unknown | None`
++ manticore/platforms/evm.py:3019:16: warning[possibly-missing-attribute] Attribute `timestamp` may be missing on object of type `Unknown | None | BlockHeader`
+- manticore/platforms/evm.py:3022:16: warning[possibly-missing-attribute] Attribute `blocknumber` may be missing on object of type `Unknown | None`
++ manticore/platforms/evm.py:3022:16: warning[possibly-missing-attribute] Attribute `blocknumber` may be missing on object of type `Unknown | None | BlockHeader`
+- manticore/platforms/evm.py:3025:16: warning[possibly-missing-attribute] Attribute `difficulty` may be missing on object of type `Unknown | None`
++ manticore/platforms/evm.py:3025:16: warning[possibly-missing-attribute] Attribute `difficulty` may be missing on object of type `Unknown | None | BlockHeader`
+- manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None`
++ manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None | BlockHeader`
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 48 diagnostics
++ Found 47 diagnostics
 
 pycryptodome (https://github.com/Legrandin/pycryptodome)
 + lib/Crypto/SelfTest/PublicKey/test_ECC_NIST.py:917:54: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `IntegerBase`
@@ -315,8 +378,8 @@ dd-trace-py (https://github.com/DataDog/dd-trace-py)
 + ddtrace/vendor/psutil/__init__.py:1888:16: error[call-non-callable] Object of type `scputimes` is not callable
 + ddtrace/vendor/psutil/_pslinux.py:547:12: error[call-non-callable] Object of type `scputimes` is not callable
 + ddtrace/vendor/psutil/_pslinux.py:565:25: error[call-non-callable] Object of type `scputimes` is not callable
-- Found 8473 diagnostics
-+ Found 8477 diagnostics
+- Found 8399 diagnostics
++ Found 8403 diagnostics
 
 jax (https://github.com/google/jax)
 + jax/_src/interpreters/ad.py:430:7: error[call-non-callable] Object of type `aval_method` is not callable
@@ -326,31 +389,42 @@ jax (https://github.com/google/jax)
 - jax/_src/pallas/mosaic/sc_primitives.py:215:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 + jax/_src/pallas/mosaic_gpu/pipeline.py:123:9: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -> Unknown, (index: slice[Any, Any, Any], /) -> tuple[Unknown, ...]]` cannot be called with key of type `tuple[Slice | Array, ...]` on object of type `aval_property`
 + jax/_src/pallas/mosaic_gpu/pipeline.py:136:9: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -> Unknown, (index: slice[Any, Any, Any], /) -> tuple[Unknown, ...]]` cannot be called with key of type `tuple[Slice | Array, ...]` on object of type `aval_property`
-- Found 2802 diagnostics
-+ Found 2801 diagnostics
+- Found 2803 diagnostics
++ Found 2802 diagnostics
 
 static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
-- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
-+ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
-- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
-+ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
+- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
++ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
 - static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-+ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
-+ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
 - static_frame/profile/__main__.py:2135:9: error[invalid-assignment] Object of type `dict[str, FunctionMetaData | None]` is not assignable to attribute `meta` of type `dict[str, FunctionMetaData] | None`
 - Found 1827 diagnostics
 + Found 1825 diagnostics
 
+pandas (https://github.com/pandas-dev/pandas)
++ pandas/tests/frame/indexing/test_indexing.py:1409:16: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ pandas/tests/frame/indexing/test_indexing.py:1409:30: error[unknown-argument] Argument `first` does not match any known parameter
++ pandas/tests/frame/indexing/test_indexing.py:1409:41: error[unknown-argument] Argument `second` does not match any known parameter
++ pandas/tests/frame/test_constructors.py:1578:19: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ pandas/tests/frame/test_constructors.py:1578:31: error[invalid-argument-type] Argument is incorrect: Expected `Iterable[Unknown]`, found `Literal[1]`
++ pandas/tests/frame/test_constructors.py:1578:34: error[too-many-positional-arguments] Too many positional arguments: expected 2, got 3
++ pandas/tests/frame/test_constructors.py:1578:38: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ pandas/tests/frame/test_constructors.py:1578:50: error[invalid-argument-type] Argument is incorrect: Expected `Iterable[Unknown]`, found `Literal[2]`
++ pandas/tests/frame/test_constructors.py:1578:53: error[too-many-positional-arguments] Too many positional arguments: expected 2, got 3
+- Found 3794 diagnostics
++ Found 3803 diagnostics
+
 rotki (https://github.com/rotki/rotki)
-- rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
-- rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
-+ rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
-- Found 2104 diagnostics
-+ Found 2103 diagnostics
++ rotkehlchen/tests/utils/mock.py:73:16: error[no-matching-overload] No overload of bound method `__init__` matches arguments
++ rotkehlchen/tests/utils/mock.py:73:51: error[unknown-argument] Argument `version` does not match any known parameter
+- Found 2055 diagnostics
++ Found 2057 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- pandas-stubs/_typing.pyi:1232:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5170 diagnostics
++ Found 5169 diagnostics
 
 scipy (https://github.com/scipy/scipy)
 + scipy/optimize/_differentiable_functions.py:382:26: error[call-non-callable] Object of type `_FakeCounter` is not callable
@@ -444,21 +518,23 @@ _Comment by @astral-sh-bot[bot] on 2026-01-02 16:55_
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | `missing-argument` | 107 | 0 | 0 |
-| `invalid-argument-type` | 28 | 2 | 5 |
+| `unknown-argument` | 72 | 0 | 0 |
+| `invalid-argument-type` | 30 | 0 | 5 |
 | `invalid-assignment` | 14 | 1 | 7 |
-| `possibly-missing-attribute` | 1 | 0 | 9 |
+| `possibly-missing-attribute` | 4 | 0 | 10 |
 | `call-non-callable` | 7 | 0 | 0 |
-| `unused-ignore-comment` | 2 | 5 | 0 |
-| `invalid-return-type` | 0 | 0 | 5 |
+| `invalid-return-type` | 1 | 0 | 5 |
+| `unused-ignore-comment` | 0 | 5 | 0 |
 | `not-subscriptable` | 3 | 0 | 0 |
+| `too-many-positional-arguments` | 3 | 0 | 0 |
+| `unresolved-attribute` | 1 | 0 | 2 |
+| `invalid-await` | 2 | 0 | 0 |
 | `no-matching-overload` | 1 | 0 | 0 |
-| `too-many-positional-arguments` | 1 | 0 | 0 |
-| `unresolved-attribute` | 1 | 0 | 0 |
 | `unsupported-operator` | 1 | 0 | 0 |
-| **Total** | **166** | **8** | **26** |
+| **Total** | **246** | **6** | **29** |
 
 
-**[Full report with detailed diff](https://eaefd911.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://eaefd911.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://80b240b7.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://80b240b7.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -547,5 +623,13 @@ I _think_ the `pycryptodome` errors are correct: we now understand that the argu
 ---
 
 _Marked ready for review by @charliermarsh on 2026-01-13 02:13_
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-13 02:21_
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-13 02:23_
 
 ---

@@ -2,14 +2,14 @@
 number: 17210
 title: Incorrect error message when installing Python on armv7l
 type: issue
-state: open
+state: closed
 author: zanieb
 labels: []
 assignees: []
 created_at: 2025-12-21T21:46:34Z
-updated_at: 2025-12-22T00:49:06Z
+updated_at: 2026-01-13T02:45:07Z
 url: https://github.com/astral-sh/uv/issues/17210
-synced_at: 2026-01-12T16:02:46Z
+synced_at: 2026-01-13T03:19:52Z
 ```
 
 # Incorrect error message when installing Python on armv7l
@@ -41,5 +41,9 @@ _@zanieb_
 _Comment by @dijor0310 on 2025-12-22 00:49_
 
 Opened a PR, please take a look. From what I can tell, we can now just remove the custom error handling block, as uv now **does** support musl distributions on aarch64. Let me know if I'm missing something :)
+
+---
+
+_Closed by @zanieb on 2026-01-13 02:45_
 
 ---
