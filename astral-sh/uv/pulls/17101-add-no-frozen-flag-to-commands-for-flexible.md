@@ -2,7 +2,7 @@
 number: 17101
 title: "add ```--no-frozen``` flag to commands for flexible lockfile management "
 type: pull_request
-state: open
+state: closed
 author: VictorHuu
 labels:
   - no-build
@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: victorh/add-no-frozen
 created_at: 2025-12-12T13:47:29Z
-updated_at: 2025-12-30T11:31:50Z
+updated_at: 2026-01-14T17:10:22Z
 url: https://github.com/astral-sh/uv/pull/17101
-synced_at: 2026-01-12T16:12:36Z
+synced_at: 2026-01-14T17:38:04Z
 ```
 
 # add ```--no-frozen``` flag to commands for flexible lockfile management 
@@ -84,5 +84,9 @@ Is everything ok with this PR? :)
 _Comment by @VictorHuu on 2025-12-30 11:31_
 
 @AndreuCodina still waiting for review now. CC @zanieb 
+
+---
+
+_Closed by @VictorHuu on 2026-01-14 17:10_
 
 ---

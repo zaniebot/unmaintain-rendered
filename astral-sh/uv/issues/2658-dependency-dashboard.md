@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-14T08:53:25Z
+updated_at: 2026-01-14T17:11:27Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-14T09:35:12Z
+synced_at: 2026-01-14T17:37:54Z
 ```
 
 # Dependency Dashboard
@@ -77,11 +77,12 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/assert_cmd-2.x-lockfile -->Update Rust crate assert_cmd to v2.1.1
  - [ ] <!-- unschedule-branch=renovate/backon-1.x-lockfile -->Update Rust crate backon to v1.6.0
  - [ ] <!-- unschedule-branch=renovate/bitflags-2.x-lockfile -->Update Rust crate bitflags to v2.10.0
- - [ ] <!-- unschedule-branch=renovate/criterion-4.x-lockfile -->Update Rust crate criterion to v4.2.0
+ - [ ] <!-- unschedule-branch=renovate/criterion-4.x-lockfile -->Update Rust crate criterion to v4.2.1
  - [ ] <!-- unschedule-branch=renovate/csv-1.x-lockfile -->Update Rust crate csv to v1.4.0
  - [ ] <!-- unschedule-branch=renovate/embed-manifest-1.x-lockfile -->Update Rust crate embed-manifest to v1.5.0
  - [ ] <!-- unschedule-branch=renovate/fs-err-3.x-lockfile -->Update Rust crate fs-err to v3.2.2
  - [ ] <!-- unschedule-branch=renovate/http-1.x-lockfile -->Update Rust crate http to v1.4.0
+ - [ ] <!-- unschedule-branch=renovate/indexmap-2.x-lockfile -->Update Rust crate indexmap to v2.13.0
  - [ ] <!-- unschedule-branch=renovate/insta-1.x-lockfile -->Update Rust crate insta to v1.46.0
  - [ ] <!-- unschedule-branch=renovate/junction-1.x-lockfile -->Update Rust crate junction to v1.3.0
  - [ ] <!-- unschedule-branch=renovate/reqwest-0.x -->Update Rust crate reqwest to 0.13.0
@@ -111,7 +112,6 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/flate2-1.x-lockfile -->Update Rust crate flate2 to v1.1.8
  - [ ] <!-- approvePr-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
  - [ ] <!-- approvePr-branch=renovate/data-encoding-2.x-lockfile -->Update Rust crate data-encoding to v2.10.0
- - [ ] <!-- approvePr-branch=renovate/indexmap-2.x-lockfile -->Update Rust crate indexmap to v2.13.0
  - [ ] <!-- approvePr-branch=renovate/debian-13.x -->Update debian Docker tag to v13
  - [ ] <!-- approvePr-branch=renovate/whoami-2.x -->Update Rust crate whoami to v2
 

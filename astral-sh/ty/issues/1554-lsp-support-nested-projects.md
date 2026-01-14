@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-11-14T13:38:35Z
-updated_at: 2026-01-09T09:22:14Z
+updated_at: 2026-01-14T16:45:16Z
 url: https://github.com/astral-sh/ty/issues/1554
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-14T17:37:34Z
 ```
 
 # LSP: Support nested projects
@@ -100,7 +100,7 @@ What I had in mind for uv-workspaces (where all projects use the same search pat
 
 _Comment by @MichaReiser on 2026-01-09 09:22_
 
-Clsoing in favor of 
+Closing in favor of https://github.com/astral-sh/ty/issues/2410
 
 ---
 

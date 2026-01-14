@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/functional-namedtuple
 created_at: 2026-01-01T13:23:44Z
-updated_at: 2026-01-14T15:43:36Z
+updated_at: 2026-01-14T17:07:22Z
 url: https://github.com/astral-sh/ruff/pull/22327
-synced_at: 2026-01-14T16:39:05Z
+synced_at: 2026-01-14T17:37:51Z
 ```
 
 # [ty] Add support for functional `namedtuple` creation
@@ -48,8 +48,8 @@ _Comment by @astral-sh-bot[bot] on 2026-01-01 13:25_
 <summary>Changes were detected when running ty on typing conformance tests</summary>
 
 ```diff
---- old-output.txt	2026-01-14 15:39:46.405181524 +0000
-+++ new-output.txt	2026-01-14 15:39:46.733181965 +0000
+--- old-output.txt	2026-01-14 17:03:27.870310683 +0000
++++ new-output.txt	2026-01-14 17:03:28.412310658 +0000
 @@ -753,6 +753,16 @@
  namedtuples_define_class.py:86:5: error[invalid-named-tuple] NamedTuple field without default value cannot follow field(s) with default value(s): Field `latitude` defined here without a default value
  namedtuples_define_class.py:125:19: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `float`
@@ -123,6 +123,11 @@ spack (https://github.com/spack/spack)
 - Found 4322 diagnostics
 + Found 4334 diagnostics
 
+paasta (https://github.com/yelp/paasta)
++ paasta_tools/iptables.py:38:9: error[unresolved-attribute] Object of type `_RuleBase` has no attribute `validate`
+- Found 1101 diagnostics
++ Found 1102 diagnostics
+
 alerta (https://github.com/alerta/alerta)
 + alerta/database/backends/mongodb/base.py:455:26: error[missing-argument] No arguments provided for required parameters `where`, `sort`, `group`
 + alerta/database/backends/mongodb/base.py:461:26: error[missing-argument] No arguments provided for required parameters `where`, `sort`, `group`
@@ -192,22 +197,21 @@ alerta (https://github.com/alerta/alerta)
 - Found 555 diagnostics
 + Found 620 diagnostics
 
-paasta (https://github.com/yelp/paasta)
-+ paasta_tools/iptables.py:38:9: error[unresolved-attribute] Object of type `_RuleBase` has no attribute `validate`
-- Found 1101 diagnostics
-+ Found 1102 diagnostics
-
-urllib3 (https://github.com/urllib3/urllib3)
-- src/urllib3/connectionpool.py:1132:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/urllib3/connectionpool.py:1134:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 305 diagnostics
-+ Found 303 diagnostics
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
 
 cki-lib (https://gitlab.com/cki-project/cki-lib)
 + tests/test_messagequeue.py:792:32: error[invalid-argument-type] Argument to bound method `_consume_one` is incorrect: Expected `Item`, found `tuple[Literal[""], None, Literal[""], Literal["{}"], Literal[""], Literal[""]]`
 + tests/test_messagequeue.py:811:32: error[invalid-argument-type] Argument to bound method `_consume_one` is incorrect: Expected `Item`, found `tuple[Literal[""], None, Literal[""], Literal["{}"], Literal[""], Literal[""]]`
 - Found 240 diagnostics
 + Found 242 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- src/urllib3/connectionpool.py:1132:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/urllib3/connectionpool.py:1134:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 305 diagnostics
++ Found 303 diagnostics
 
 mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
 - pymongo/asynchronous/auth.py:131:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `@Todo | None | bytes`
@@ -254,18 +258,16 @@ manticore (https://github.com/trailofbits/manticore)
 - manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None`
 + manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None | BlockHeader`
 
-dd-trace-py (https://github.com/DataDog/dd-trace-py)
-+ ddtrace/vendor/psutil/__init__.py:1769:12: error[call-non-callable] Object of type `scputimes` is not callable
-+ ddtrace/vendor/psutil/__init__.py:1888:16: error[call-non-callable] Object of type `scputimes` is not callable
-+ ddtrace/vendor/psutil/_pslinux.py:547:12: error[call-non-callable] Object of type `scputimes` is not callable
-+ ddtrace/vendor/psutil/_pslinux.py:565:25: error[call-non-callable] Object of type `scputimes` is not callable
-- Found 8394 diagnostics
-+ Found 8398 diagnostics
-
-scikit-build-core (https://github.com/scikit-build/scikit-build-core)
-+ src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-- Found 47 diagnostics
-+ Found 48 diagnostics
+jax (https://github.com/google/jax)
++ jax/_src/interpreters/ad.py:430:7: error[call-non-callable] Object of type `aval_method` is not callable
+- jax/_src/pallas/mosaic/sc_primitives.py:108:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- jax/_src/pallas/mosaic/sc_primitives.py:173:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- jax/_src/pallas/mosaic/sc_primitives.py:198:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- jax/_src/pallas/mosaic/sc_primitives.py:215:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ jax/_src/pallas/mosaic_gpu/pipeline.py:123:9: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -> Unknown, (index: slice[Any, Any, Any], /) -> tuple[Unknown, ...]]` cannot be called with key of type `tuple[Slice | Array, ...]` on object of type `aval_property`
++ jax/_src/pallas/mosaic_gpu/pipeline.py:136:9: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -> Unknown, (index: slice[Any, Any, Any], /) -> tuple[Unknown, ...]]` cannot be called with key of type `tuple[Slice | Array, ...]` on object of type `aval_property`
+- Found 2830 diagnostics
++ Found 2829 diagnostics
 
 pycryptodome (https://github.com/Legrandin/pycryptodome)
 + lib/Crypto/SelfTest/PublicKey/test_ECC_NIST.py:917:54: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `IntegerBase`
@@ -286,28 +288,38 @@ pycryptodome (https://github.com/Legrandin/pycryptodome)
 - Found 1321 diagnostics
 + Found 1336 diagnostics
 
-jax (https://github.com/google/jax)
-+ jax/_src/interpreters/ad.py:430:7: error[call-non-callable] Object of type `aval_method` is not callable
-- jax/_src/pallas/mosaic/sc_primitives.py:108:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- jax/_src/pallas/mosaic/sc_primitives.py:173:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- jax/_src/pallas/mosaic/sc_primitives.py:198:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- jax/_src/pallas/mosaic/sc_primitives.py:215:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ jax/_src/pallas/mosaic_gpu/pipeline.py:123:9: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -> Unknown, (index: slice[Any, Any, Any], /) -> tuple[Unknown, ...]]` cannot be called with key of type `tuple[Slice | Array, ...]` on object of type `aval_property`
-+ jax/_src/pallas/mosaic_gpu/pipeline.py:136:9: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -> Unknown, (index: slice[Any, Any, Any], /) -> tuple[Unknown, ...]]` cannot be called with key of type `tuple[Slice | Array, ...]` on object of type `aval_property`
-- Found 2830 diagnostics
-+ Found 2829 diagnostics
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 47 diagnostics
++ Found 48 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
++ ddtrace/vendor/psutil/__init__.py:1769:12: error[call-non-callable] Object of type `scputimes` is not callable
++ ddtrace/vendor/psutil/__init__.py:1888:16: error[call-non-callable] Object of type `scputimes` is not callable
++ ddtrace/vendor/psutil/_pslinux.py:547:12: error[call-non-callable] Object of type `scputimes` is not callable
++ ddtrace/vendor/psutil/_pslinux.py:565:25: error[call-non-callable] Object of type `scputimes` is not callable
+- Found 8396 diagnostics
++ Found 8400 diagnostics
 
 static-frame (https://github.com/static-frame/static-frame)
 - static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
-- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_ | Self@iloc]`
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
 + static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
-- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
-+ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
-+ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
+- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
 - static_frame/profile/__main__.py:2135:9: error[invalid-assignment] Object of type `dict[str, FunctionMetaData | None]` is not assignable to attribute `meta` of type `dict[str, FunctionMetaData] | None`
-- Found 1825 diagnostics
-+ Found 1823 diagnostics
+- Found 1827 diagnostics
++ Found 1824 diagnostics
+
+rotki (https://github.com/rotki/rotki)
+- rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
+- rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
++ rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
+- Found 2057 diagnostics
++ Found 2056 diagnostics
 
 core (https://github.com/home-assistant/core)
 - homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -> _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
@@ -406,22 +418,21 @@ _Comment by @astral-sh-bot[bot] on 2026-01-02 16:55_
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | `missing-argument` | 107 | 0 | 0 |
-| `invalid-argument-type` | 27 | 0 | 6 |
-| `invalid-assignment` | 14 | 1 | 7 |
-| `invalid-return-type` | 1 | 1 | 9 |
+| `invalid-argument-type` | 28 | 2 | 2 |
+| `invalid-assignment` | 14 | 1 | 2 |
 | `possibly-missing-attribute` | 1 | 0 | 9 |
+| `unused-ignore-comment` | 2 | 6 | 0 |
 | `call-non-callable` | 7 | 0 | 0 |
-| `unused-ignore-comment` | 0 | 6 | 0 |
+| `invalid-return-type` | 1 | 1 | 1 |
 | `not-subscriptable` | 3 | 0 | 0 |
-| `type-assertion-failure` | 2 | 0 | 0 |
 | `no-matching-overload` | 1 | 0 | 0 |
 | `too-many-positional-arguments` | 1 | 0 | 0 |
 | `unresolved-attribute` | 1 | 0 | 0 |
 | `unsupported-operator` | 1 | 0 | 0 |
-| **Total** | **166** | **8** | **31** |
+| **Total** | **167** | **10** | **14** |
 
 
-**[Full report with detailed diff](https://3dffe7d9.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://3dffe7d9.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://f335565e.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://f335565e.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -521,7 +532,7 @@ _Marked ready for review by @charliermarsh on 2026-01-13 02:23_
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:236 on 2026-01-13 12:47_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:256 on 2026-01-13 12:47_
 
 Calling `reveal_mro` on this class indicates that it's inferred from inheriting from the wrong kind of tuple on your branch currently:
 
@@ -960,7 +971,7 @@ I still don't think we need the new `directly_inherits_from_named_tuple_special_
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:236 on 2026-01-13 18:22_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:256 on 2026-01-13 18:22_
 
 ```suggestion
 from typing import NamedTuple
@@ -1147,7 +1158,7 @@ _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6703 on 2026-01-13 20:35_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6663 on 2026-01-13 20:35_
 
 shall we just import `ast::name::Name` at the top of the file, so that the type annotation doesn't have to be split over four lines? 😛
 
@@ -1167,7 +1178,7 @@ Also, I'm not sure we emit any errors here if the user provides a nonexistent ke
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6697 on 2026-01-13 20:41_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6666 on 2026-01-13 20:41_
 
 We can't return `None` here because we've already inferred (and stored) some types, but returning `None` will cause us to infer all types for the expression again, which could cause us to panic. As soon as we've stored at least one type for the call expression, we have to do the signature checking for the whole call expression "manually".
 
@@ -1175,7 +1186,7 @@ I also don't think it's _desirable_ to return `None` here, though. Can't we just
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6767 on 2026-01-13 20:42_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6703 on 2026-01-13 20:42_
 
 can you add a test with a `Point = collections.namedtuple("Point", "x       y")`, and also one that uses a string with tabs in it? (Making sure that we infer the correct MRO in both cases)
 
@@ -1207,7 +1218,7 @@ _@charliermarsh reviewed on 2026-01-13 21:01_
 
 ---
 
-_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6697 on 2026-01-13 21:01_
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6666 on 2026-01-13 21:01_
 
 Yes good call.
 
@@ -1217,7 +1228,7 @@ _@charliermarsh reviewed on 2026-01-13 21:14_
 
 ---
 
-_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6767 on 2026-01-13 21:14_
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6703 on 2026-01-13 21:14_
 
 (Tab is causing me major problems because `mdformat` keeps removing it.)
 
@@ -1227,7 +1238,7 @@ _@AlexWaygood reviewed on 2026-01-13 21:16_
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6767 on 2026-01-13 21:16_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6703 on 2026-01-13 21:16_
 
 hahaha is there no suppression comment to tell it to away??
 
@@ -1249,19 +1260,19 @@ and add a `reveal_mro` call too?
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:432 on 2026-01-13 21:47_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:452 on 2026-01-13 21:47_
 
 maybe also add `reveal_type(Point.__new__)` and `reveal_mro(Point)` calls?
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:459 on 2026-01-13 21:48_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:479 on 2026-01-13 21:48_
 
 maybe also add a `reveal_type(Person.__new__)` call?
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:514 on 2026-01-13 21:49_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:534 on 2026-01-13 21:49_
 
 worth adding `reveal_type` and `reveal_mro` calls for these?
 
@@ -1273,7 +1284,7 @@ Could you add a test for generic namedtuples defined using the functional syntax
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6495 on 2026-01-13 22:00_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6510 on 2026-01-13 22:00_
 
 we also need to emit a diagnostic in this method if too many arguments are provided, e.g.
 
@@ -1376,7 +1387,7 @@ _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6839 on 2026-01-14 13:22_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6756 on 2026-01-14 13:22_
 
 this panics with "attempt to subtract with overflow" on this test case, where there are more defaults than fields (which causes a runtime error, but we still shouldn't panic!!):
 
@@ -1407,7 +1418,7 @@ WARN A fatal error occurred while checking some files. Not all project files wer
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6495 on 2026-01-14 13:24_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6510 on 2026-01-14 13:24_
 
 As a followup PR, you could add diagnostics for the following errors that can occur at runtime:
 
@@ -1462,7 +1473,7 @@ _@charliermarsh reviewed on 2026-01-14 13:53_
 
 ---
 
-_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6839 on 2026-01-14 13:53_
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6756 on 2026-01-14 13:53_
 
 Nice, thank you!
 
@@ -1474,7 +1485,7 @@ we need to emit a diagnostic for an invalid type passed (any type not assignable
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6657 on 2026-01-14 14:39_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6617 on 2026-01-14 14:39_
 
 we need to emit a diagnostic for an invalid type passed (anything not assignable to `str | None`)
 
@@ -1484,7 +1495,7 @@ _Review requested from @AlexWaygood by @charliermarsh on 2026-01-14 14:39_
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6739 on 2026-01-14 14:43_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6678 on 2026-01-14 14:43_
 
 we need to emit a diagnostic if the type of `field_names` is outright invalid, e.g. `NT = namedtuple("NT", 21335)` or `NT = NamedTuple("NT", 12345)`
 
@@ -1513,7 +1524,7 @@ It looks like you skip inferring a type for `fields_arg` altogether if you're ab
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6716 on 2026-01-14 15:06_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6710 on 2026-01-14 15:06_
 
 Same here: we cannot skip the `self.infer_expression(fields_arg, TypeContext::default())` call if `self.extract_typing_namedtuple_fields_from_ast(fields_arg)` returns `Some()`. This needs to be moved above line 6706
 
@@ -1598,5 +1609,127 @@ For posterity the other thing I considered was doing the inference upfront then 
 ---
 
 _@charliermarsh reviewed on 2026-01-14 15:43_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6656 on 2026-01-14 16:48_
+
+Nit: match here?
+
+---
+
+_@charliermarsh reviewed on 2026-01-14 16:48_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6856 on 2026-01-14 16:49_
+
+Ahh... I think (broadly) this is what I was maybe missing?
+
+---
+
+_@charliermarsh reviewed on 2026-01-14 16:49_
+
+---
+
+_Comment by @charliermarsh on 2026-01-14 16:49_
+
+(LGTM.)
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6510 on 2026-01-14 16:50_
+
+@charliermarsh -- it looks like we currently only call this method from one location, and always pass in `None` for the `definition` parameter. It looks like no tests fail because of this, but I think it would be better for Salsa incrementality if we could use `DynamicClassAnchor::Definition` where possible for dynamic namedtuples -- we're currently just using `DynamicClassAnchor::ScopOffset` every time, I think
+
+---
+
+_@AlexWaygood reviewed on 2026-01-14 16:50_
+
+---
+
+_@AlexWaygood reviewed on 2026-01-14 16:50_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6856 on 2026-01-14 16:50_
+
+yup
+
+---
+
+_@AlexWaygood reviewed on 2026-01-14 16:50_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6656 on 2026-01-14 16:50_
+
+yeah, can do! do you wanna take over again and also fix https://github.com/astral-sh/ruff/pull/22327#discussion_r2691246458?
+
+---
+
+_@charliermarsh reviewed on 2026-01-14 16:51_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6510 on 2026-01-14 16:51_
+
+(I can fix that, let me know when you're done editing.)
+
+---
+
+_@charliermarsh reviewed on 2026-01-14 16:51_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6656 on 2026-01-14 16:51_
+
+Yes on it.
+
+---
+
+_@AlexWaygood reviewed on 2026-01-14 16:52_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6856 on 2026-01-14 16:52_
+
+(It's a bit sloppy of me to just call `.ok()` here TBH, it's possible we should be emitting diagnostics here... but I'm increasingly in a "let's just merge this already" mood on this one; the manual parsing for all this is nightmarishly complicated and we can always iterate on it in followups 😄)
+
+---
+
+_@AlexWaygood reviewed on 2026-01-14 16:52_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6510 on 2026-01-14 16:52_
+
+yup, over to you again!
+
+---
+
+_@AlexWaygood approved on 2026-01-14 17:04_
+
+let's go
+
+---
+
+_@charliermarsh reviewed on 2026-01-14 17:04_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6856 on 2026-01-14 17:04_
+
+Agreed I'm happy to follow-up on all of these with smaller PRs!
+
+---
+
+_@AlexWaygood reviewed on 2026-01-14 17:05_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6856 on 2026-01-14 17:05_
+
+tyty
 
 ---

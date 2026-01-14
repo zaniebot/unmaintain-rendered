@@ -7,12 +7,13 @@ author: charliermarsh
 labels:
   - ty
 assignees: []
+draft: true
 base: charlie/functional-namedtuple
 head: charlie/default-show
 created_at: 2026-01-14T15:50:41Z
-updated_at: 2026-01-14T15:53:42Z
+updated_at: 2026-01-14T17:06:25Z
 url: https://github.com/astral-sh/ruff/pull/22574
-synced_at: 2026-01-14T16:39:05Z
+synced_at: 2026-01-14T17:37:51Z
 ```
 
 # [ty] Show dynamic NamedTuple defaults in signature
@@ -123,5 +124,15 @@ static-frame (https://github.com/static-frame/static-frame)
 No memory usage changes detected ✅
 
 
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-14 16:51_
+
+---
+
+_Comment by @charliermarsh on 2026-01-14 17:06_
+
+(Will mark for review once upstream merges + rebased.)
 
 ---

@@ -9,9 +9,9 @@ labels:
   - server
 assignees: []
 created_at: 2026-01-05T18:13:03Z
-updated_at: 2026-01-06T15:44:33Z
+updated_at: 2026-01-14T16:48:03Z
 url: https://github.com/astral-sh/ty/issues/2352
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-14T17:37:34Z
 ```
 
 # Markdown code blocks rendering space as HTML code on Docstrings
@@ -118,5 +118,27 @@ This code block behavior is very similar to Obsidian. When adding a tab to a lin
 ---
 
 _Closed by @Gankra on 2026-01-06 15:44_
+
+---
+
+_Comment by @gabriel-abn on 2026-01-14 16:44_
+
+sorry for keep annoying you guys with these details lmao the rendering doing great
+
+i've been using the extension a lot and just noticed this:
+
+<img width="1291" height="741" alt="Image" src="https://github.com/user-attachments/assets/ff4e3f1f-0d53-4b87-894d-3cca29e0c26c" />
+
+i have an extra tab inside this dict notation and it rendered with the tags... if i remove them and keep all keys in the same column, they disappear...
+
+i noticed as well that strings with underscore ("_") are rendering with a ("\\")  after each one of them
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 16:47_
+
+No, this is great. Thank you
+
+Could you open a new issue and share the function with its docstring as code (not as an image)? That makes it easier for us to reproduce and track
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: claude/hide-uv-only-variables-BLWDl
 created_at: 2026-01-14T14:08:54Z
-updated_at: 2026-01-14T14:15:05Z
+updated_at: 2026-01-14T16:45:34Z
 url: https://github.com/astral-sh/uv/pull/17462
-synced_at: 2026-01-14T14:41:38Z
+synced_at: 2026-01-14T17:38:04Z
 ```
 
 # Avoid rendering `pyproject.toml` examples for more system-level settings
@@ -39,5 +39,9 @@ _Label `documentation` added by @zanieb on 2026-01-14 14:09_
 ---
 
 _Marked ready for review by @zanieb on 2026-01-14 14:15_
+
+---
+
+_Review requested from @konstin by @zanieb on 2026-01-14 16:45_
 
 ---

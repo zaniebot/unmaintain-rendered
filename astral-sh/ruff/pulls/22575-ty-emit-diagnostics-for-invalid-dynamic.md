@@ -7,12 +7,13 @@ author: charliermarsh
 labels:
   - ty
 assignees: []
+draft: true
 base: charlie/default-show
 head: charlie/func-diag
 created_at: 2026-01-14T16:04:29Z
-updated_at: 2026-01-14T16:34:42Z
+updated_at: 2026-01-14T17:06:32Z
 url: https://github.com/astral-sh/ruff/pull/22575
-synced_at: 2026-01-14T16:39:05Z
+synced_at: 2026-01-14T17:37:51Z
 ```
 
 # [ty] Emit diagnostics for invalid dynamic namedtuple fields
@@ -208,5 +209,15 @@ _Review requested from @sharkdp by @charliermarsh on 2026-01-14 16:34_
 ---
 
 _Review requested from @dcreager by @charliermarsh on 2026-01-14 16:34_
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-14 16:51_
+
+---
+
+_Comment by @charliermarsh on 2026-01-14 17:06_
+
+(Will mark for review once upstream merges + rebased + addressed Micha's initial comments.)
 
 ---

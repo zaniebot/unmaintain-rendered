@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: tk/pip-compile-missing-py-4
 created_at: 2025-12-29T12:59:39Z
-updated_at: 2026-01-14T16:26:02Z
+updated_at: 2026-01-14T16:47:16Z
 url: https://github.com/astral-sh/uv/pull/17249
-synced_at: 2026-01-14T16:39:18Z
+synced_at: 2026-01-14T17:38:04Z
 ```
 
 # Make `uv pip compile` attempt to download a specified `--python-version` if it can.
@@ -202,5 +202,45 @@ Mainly I was trying to avoid the situation you described here https://github.com
 I think it's possibly an idea to narrow things down to specifically transient network errors and nothing else.
 
 Or we can stick with the original approach of just failing hard - but it's kind of a breaking change in that sense.
+
+---
+
+_@zanieb reviewed on 2026-01-14 16:39_
+
+---
+
+_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1553 on 2026-01-14 16:39_
+
+I guess my thinking is that if we fail here we also won't succeed on the subsequent attempt with another Python version request
+
+---
+
+_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1553 on 2026-01-14 16:40_
+
+I agree it's nice for it not to be breaking though, thanks for providing the additional context.
+
+We might want to encode some of that in a comment.
+
+---
+
+_@zanieb reviewed on 2026-01-14 16:40_
+
+---
+
+_@EliteTK reviewed on 2026-01-14 16:45_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1553 on 2026-01-14 16:45_
+
+Re failing twice: I would agree it would _probably_ fail but I don't think we can assume it _will_ fail. At least that was my thinking in that regard. But it's also kind of a remote possibility to be really trying to cater for it.
+
+Would you like me to skip re-attempting a download on the without-patch-number path if the verbatim path fails (except if it fails with `NoDownloadFound` in which case it is worth re-trying)?
+
+---
+
+_Comment by @EliteTK on 2026-01-14 16:47_
+
+Heh... I just realised, what about if there's no default python version? We should probably _also_ attempt to download in that final case too...
 
 ---

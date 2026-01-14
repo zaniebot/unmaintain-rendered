@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: wld/update-conformance-workflow
 created_at: 2026-01-11T17:55:59Z
-updated_at: 2026-01-13T22:49:54Z
+updated_at: 2026-01-14T17:01:13Z
 url: https://github.com/astral-sh/ruff/pull/22504
-synced_at: 2026-01-13T23:35:33Z
+synced_at: 2026-01-14T17:37:51Z
 ```
 
 # [ty] Update conformance workflow to use comparison script
@@ -150,5 +150,19 @@ _Comment by @AlexWaygood on 2026-01-13 22:49_
 Ah, we may need to update some logic over on the astral-sh-bot end to get it to post the raw markdown outputted by the new script, rather than putting it all in a collapsible section.
 
 I think that repo is still closed-source, unfortunately, but I can take a look tomorrow.
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 16:36_
+
+@AlexWaygood I hope you don't mind but I went ahead and created https://github.com/astral-sh/astral-bot/pull/43
+
+---
+
+_Comment by @AlexWaygood on 2026-01-14 17:01_
+
+> @AlexWaygood I hope you don't mind but I went ahead and created [astral-sh/astral-bot#43](https://github.com/astral-sh/astral-bot/pull/43)
+
+I don't mind at all, thank you very much!!
 
 ---

@@ -4,14 +4,15 @@ title: Add actionable hint to unmanaged version error message
 type: pull_request
 state: open
 author: originell
-labels: []
+labels:
+  - error messages
 assignees: []
 base: main
 head: fix/python-download-hint
 created_at: 2026-01-14T11:59:17Z
-updated_at: 2026-01-14T16:28:00Z
+updated_at: 2026-01-14T16:38:54Z
 url: https://github.com/astral-sh/uv/pull/17461
-synced_at: 2026-01-14T16:39:18Z
+synced_at: 2026-01-14T17:38:04Z
 ```
 
 # Add actionable hint to unmanaged version error message
@@ -164,5 +165,9 @@ Maybe
 ---
 
 _@zanieb reviewed on 2026-01-14 16:28_
+
+---
+
+_Label `error messages` added by @zanieb on 2026-01-14 16:38_
 
 ---

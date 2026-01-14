@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: konsti/json-metadata
 created_at: 2025-08-25T08:35:45Z
-updated_at: 2026-01-09T13:51:44Z
+updated_at: 2026-01-14T16:46:26Z
 url: https://github.com/astral-sh/uv/pull/15510
-synced_at: 2026-01-12T16:11:47Z
+synced_at: 2026-01-14T17:38:04Z
 ```
 
 # Add `METADATA.json` and `WHEEL.json` in uv build backend
@@ -103,7 +103,7 @@ I'd say leave it as is, but it feels a bit odd to be using `Display` to handle s
 
 ---
 
-_Review comment by @EliteTK on `crates/uv-pypi-types/src/metadata/metadata23.rs`:354 on 2026-01-09 13:47_
+_Review comment by @EliteTK on `crates/uv-pypi-types/src/metadata/metadata23.rs`:359 on 2026-01-09 13:47_
 
 nit: I think this parsing and serialisation belongs in a `ProjectUrl` type. But I can see how that would be a bit of churn due to the overarching need for `IndexMap`.
 
@@ -115,5 +115,15 @@ Fun fact:
 
 This PR adds 88 (118) new instances of the word "preview" to uv. For a grand total of 1525 (1935) instances. (Counts in brackets are when just searching for "preview" rather than for words.)
 
+
+---
+
+_@konstin reviewed on 2026-01-14 16:44_
+
+---
+
+_Review comment by @konstin on `crates/uv-build-backend/src/lib.rs`:1826 on 2026-01-14 16:44_
+
+Added a separate test
 
 ---

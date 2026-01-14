@@ -11,9 +11,9 @@ merged: true
 base: main
 head: feature/custom-builtins
 created_at: 2025-12-17T12:30:23Z
-updated_at: 2025-12-23T13:48:42Z
+updated_at: 2026-01-14T17:17:43Z
 url: https://github.com/astral-sh/ruff/pull/22021
-synced_at: 2026-01-12T15:57:39Z
+synced_at: 2026-01-14T17:37:51Z
 ```
 
 # [ty] Support custom builtins
@@ -465,5 +465,17 @@ _Closed by @MichaReiser on 2025-12-23 13:48_
 ---
 
 _Branch deleted on 2025-12-23 13:48_
+
+---
+
+_Comment by @andrewgross on 2026-01-14 17:14_
+
+Very excited this got merged and the ref used in `ty`. Any chance there will be a new release soon so that `ruff` and my associated ruff pre commit hooks and also be aware of the file?
+
+---
+
+_Comment by @andrewgross on 2026-01-14 17:16_
+
+Nevermind, it is in place, guess I just need to figure out how to get `ruff` to use the same file as `ty`
 
 ---

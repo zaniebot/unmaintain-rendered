@@ -7,12 +7,13 @@ author: charliermarsh
 labels:
   - ty
 assignees: []
+draft: true
 base: charlie/functional-namedtuple
 head: charlie/slots
 created_at: 2026-01-14T15:45:07Z
-updated_at: 2026-01-14T15:50:53Z
+updated_at: 2026-01-14T17:02:11Z
 url: https://github.com/astral-sh/ruff/pull/22573
-synced_at: 2026-01-14T16:39:05Z
+synced_at: 2026-01-14T17:37:51Z
 ```
 
 # [ty] Synthesize an empty `__slots__` for named tuples
@@ -139,5 +140,13 @@ _Review requested from @sharkdp by @charliermarsh on 2026-01-14 15:50_
 ---
 
 _Review requested from @dcreager by @charliermarsh on 2026-01-14 15:50_
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-14 16:51_
+
+---
+
+_@AlexWaygood approved on 2026-01-14 17:02_
 
 ---
