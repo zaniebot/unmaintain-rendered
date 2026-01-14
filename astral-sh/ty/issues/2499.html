@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>*Unary* operators not correctly inherited with `NewType(..., float)` - astral-sh/ty #2499</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><em>Unary</em> operators not correctly inherited with <code>NewType(..., float)</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2499">#2499</a>
+        opened by <a href="https://github.com/jpgoldberg">@jpgoldberg</a>
+        on 2026-01-14 19:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jpgoldberg">@jpgoldberg</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>It appears that unary operators were not covered in the fix that resolved #2077, resulting in &quot;unsupported operator&quot; when I uses <code>-thing_of_type_Foo</code> where <code>Foo = NewType(&quot;Foo&quot;, float)</code>.</p>
+<p>Note that binary operators do <em>not</em> trigger this error with ty 0.0.11, but the unary <code>-</code> operator does.</p>
+<h2>How to reproduce</h2>
+<h3>Step 1: Create test file</h3>
+<p>Create a file like <code>ty_newtype.py</code> with the content:</p>
+<pre><code class="language-python">from typing import NewType
+
+Foo = NewType(&quot;Foo&quot;, float)
+
+x = float(0.2)
+y = -x  # No issues are reported here.
+
+f = Foo(0.2)
+g = 2.0 + f  # No issues reported here (since ty 0.0.10)
+h = -f  # ty says &quot;Unary operator `-` is not supported ...&quot;
+</code></pre>
+<h3>Step 2: Run <code>ty check</code> on iit</h3>
+<pre><code class="language-console"># ty check ty_newtype.py
+% ty check ty_newtype.py
+error[unsupported-operator]: Unary operator `-` is not supported for object of type `Foo`
+  --&gt; ty_newtype.py:10:5
+   |
+ 8 | f = Foo(0.2)
+ 9 | g = 2.0 + f  # No issues reported here (since ty 0.0.10)
+10 | h = -f  # ty says &quot;Unary operator `-` is not supported ...&quot;
+   |     ^^
+   |
+info: rule `unsupported-operator` is enabled by default
+
+Found 1 diagnostic
+
+</code></pre>
+<h2>Expected</h2>
+<p>&quot;Foo = NewType(&quot;Foo&quot;, float)&quot;</p>
+<h2>System info</h2>
+<ul>
+<li>ty: ty 0.0.11 (830cb9cc6 2026-01-09)</li>
+<li>OS: System Version: macOS 26.1 (25B78)</li>
+<li>HW: Apple M2 Pro</li>
+<li>Python: Python 3.14.2</li>
+</ul>
+<h3>Version</h3>
+<p>ty 0.0.11 (830cb9cc6 2026-01-09)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @oconnor663 by @MichaReiser on 2026-01-14 19:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-14 20:46:46 UTC
+    </footer>
+</body>
+</html>
