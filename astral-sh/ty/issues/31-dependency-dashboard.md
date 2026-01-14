@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2025-05-05T16:20:40Z
-updated_at: 2026-01-13T17:03:52Z
+updated_at: 2026-01-14T22:14:29Z
 url: https://github.com/astral-sh/ty/issues/31
-synced_at: 2026-01-13T17:25:23Z
+synced_at: 2026-01-14T22:42:17Z
 ```
 
 # Dependency Dashboard
@@ -41,7 +41,7 @@ Unlike deprecated packages with official notices, abandonment is detected by rel
 
 The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
 
- - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update prek dependencies (`astral-sh/uv-pre-commit`, `mdformat-mkdocs`, `zizmorcore/zizmor-pre-commit`)
+ - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update prek dependencies (`astral-sh/uv-pre-commit`, `crate-ci/typos`, `mdformat-mkdocs`, `zizmorcore/zizmor-pre-commit`)
 
 ## Detected Dependencies
 

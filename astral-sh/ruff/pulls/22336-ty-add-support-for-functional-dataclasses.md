@@ -2,7 +2,7 @@
 number: 22336
 title: "[ty] Add support for functional dataclasses"
 type: pull_request
-state: open
+state: closed
 author: charliermarsh
 labels:
   - ty
@@ -11,9 +11,9 @@ draft: true
 base: main
 head: charlie/functional-dataclass
 created_at: 2026-01-02T13:37:05Z
-updated_at: 2026-01-14T17:41:06Z
+updated_at: 2026-01-14T22:17:40Z
 url: https://github.com/astral-sh/ruff/pull/22336
-synced_at: 2026-01-14T18:48:06Z
+synced_at: 2026-01-14T22:42:35Z
 ```
 
 # [ty] Add support for functional dataclasses
@@ -173,5 +173,9 @@ _Comment by @codspeed-hq[bot] on 2026-01-02 14:12_
 
 [^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/charlie%2Ffunctional-dataclass?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
 
+
+---
+
+_Closed by @charliermarsh on 2026-01-14 22:17_
 
 ---
