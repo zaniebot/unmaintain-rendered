@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: konsti/clear-env-for-tests
 created_at: 2025-06-16T16:28:29Z
-updated_at: 2026-01-14T09:19:17Z
+updated_at: 2026-01-14T10:26:49Z
 url: https://github.com/astral-sh/uv/pull/14080
-synced_at: 2026-01-14T09:35:21Z
+synced_at: 2026-01-14T10:34:40Z
 ```
 
 # Clear known env vars for tests
@@ -28,6 +28,7 @@ We intentionally avoid clearing all env vars as some of them, especially on Wind
 Notable limitations are that this only affects tests that use `TestContext::add_shared_env` (default, can be opted-out).
 
 Fixed #9873
+Closes #17456
 
 ---
 
@@ -159,5 +160,9 @@ _@konstin reviewed on 2026-01-14 09:19_
 _Review comment by @konstin on `crates/uv-macros/src/lib.rs`:160 on 2026-01-14 09:19_
 
 I've added an allowlist with some cases you may want to modify, we can adjust that list as we go
+
+---
+
+_@EliteTK approved on 2026-01-14 10:26_
 
 ---

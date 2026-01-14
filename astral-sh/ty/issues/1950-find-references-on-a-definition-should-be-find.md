@@ -9,9 +9,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-12-16T18:27:53Z
-updated_at: 2025-12-16T19:24:18Z
+updated_at: 2026-01-14T09:42:52Z
 url: https://github.com/astral-sh/ty/issues/1950
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-14T10:34:11Z
 ```
 
 # find-references on a definition should be find-uses (not include self)
@@ -75,5 +75,15 @@ Same if you do find references on a function, r-a returns the function as well a
 _Comment by @Gankra on 2025-12-16 19:24_
 
 Hmm is cmd+click a different API than "find-references"? Or maybe it's one of those "they query a bunch of different ones with fallback" situtations?
+
+---
+
+_Comment by @GuilhermePSC on 2026-01-14 09:42_
+
+I'm currently exploring moving from pyright to ty, and it looks great! Thank you for all the efforts you put into this.
+I came across this issue because we also use PyCharm and the absence of a quick shortcut to "Go to usages" is a bit annoying. It's currently blocking adoption for me (maybe together with the [absence of full support to Pydantic](https://github.com/astral-sh/ty/issues/2403)).
+
+Do you have a timeline to solve this issue in https://github.com/astral-sh/ruff/pull/22012?
+
 
 ---

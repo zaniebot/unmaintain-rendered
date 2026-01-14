@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-05-08T11:12:40Z
-updated_at: 2026-01-13T19:30:52Z
+updated_at: 2026-01-14T09:31:41Z
 url: https://github.com/astral-sh/ruff/issues/17944
-synced_at: 2026-01-13T20:36:52Z
+synced_at: 2026-01-14T10:34:16Z
 ```
 
 # Server doesn't detect ruff config for files not under working directory of server
@@ -275,5 +275,16 @@ This seems to work, without negatively affecting editors like VS Code that open 
 _Comment by @ntBre on 2026-01-13 19:30_
 
 Thanks for looking into this! @MichaReiser or @dhruvmanila would know better than me if this sounds like a promising approach, but it probably wouldn't hurt to open a PR if you have something working locally. Then we could test it out too.
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 09:31_
+
+thanks for the detailed analysis
+
+
+> One possible way to fix issues 2. and 4. above is, during session::Index::open_text_document, to check if self.settings_for_url().ruff_settings has our file's parent directory, and if not, to call self.open_workspace_folder.
+
+I'm not convinced we should do this unless we have a very clear strategy for cleaning them up when the file is closed (or if the user adds that directory as a workspace folder). Given that all that's missing are the settings, I wonder if we could just try to discover the settings walking the file's ancestor directories and collect all configuration files instead.
 
 ---

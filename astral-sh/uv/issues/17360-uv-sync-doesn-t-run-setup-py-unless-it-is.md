@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-08T14:20:29Z
-updated_at: 2026-01-14T09:04:52Z
+updated_at: 2026-01-14T09:31:23Z
 url: https://github.com/astral-sh/uv/issues/17360
-synced_at: 2026-01-14T09:35:14Z
+synced_at: 2026-01-14T10:34:33Z
 ```
 
 # `uv sync` doesn't run setup.py unless it is manually touched/modified
@@ -72,5 +72,100 @@ Can you provide a minimal reproducible example for how it fails?
 _Comment by @kunaltyagi on 2026-01-14 09:04_
 
 Let me create one
+
+---
+
+_Comment by @kunaltyagi on 2026-01-14 09:31_
+
+<details>
+<summary>pyproject.toml</summary>
+
+```toml
+[project]
+name = "test_uv"
+version = "0.1.0"
+description = "Test UV"
+readme = "README.md"
+requires-python = "==3.12.*"
+dependencies = [
+]
+classifiers = ["Private :: Do Not Upload"]
+
+[build-system]
+requires = [
+  "cmake",
+  "setuptools",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["test_uv"]
+
+[tool.setuptools.package-dir]
+test_uv = "src/test_uv"
+
+[tool.uv]
+cache-keys = [{ dir = "csrc" }, {file = "setup.py"}, { file = "pyproject.toml" }]
+```
+
+</details>
+
+<details>
+<summary>setup.py</summary>
+
+```py
+from setuptools import Extension, setup
+
+print("****** Start setup.py ********")
+
+setup(
+    ext_modules=[
+        Extension(
+            name="foo",
+            sources=["csrc/foo.c"],
+        ),
+    ]
+)
+
+print("****** End setup.py ********")
+```
+
+</details>
+
+<details>
+<summary>Setup the structure</summary>
+
+```bash
+touch README.md
+mkdir -p src/test_uv
+touch src/test_uv/__init__.py
+mkdir -p csrc
+```
+
+</details>
+
+```sh
+echo "" > csrc/foo.c # to give a simple target
+uv sync # everything works
+echo "a" > csrc/foo.c # should make it not compile, BUT
+uv sync # no error in ~0.1ms
+touch setup.py # uv will try to compile it now
+uv sync  # see errors
+```
+
+Sample output:
+```
+k@machine:~/test_uv$ uv sync
+Resolved 1 package in 1ms
+      Built test-uv @ file:///home/kuntyagi/test_uv
+Prepared 1 package in 773ms
+Uninstalled 1 package in 0.38ms
+Installed 1 package in 1ms
+ ~ test-uv==0.1.0 (from file:///home/kuntyagi/test_uv)
+k@machine:~/test_uv$ echo "a" > csrc/foo.c # should make it not compile, BUT
+k@machine:~/test_uv$ uv sync # no error in ~0.1ms
+Resolved 1 package in 1ms
+Audited 1 package in 0.13ms
+```
 
 ---

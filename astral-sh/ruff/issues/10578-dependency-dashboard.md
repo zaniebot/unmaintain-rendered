@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-14T05:00:31Z
+updated_at: 2026-01-14T09:49:31Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-14T05:40:35Z
+synced_at: 2026-01-14T10:34:16Z
 ```
 
 # Dependency Dashboard
@@ -70,7 +70,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
  - [ ] <!-- unschedule-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
  - [ ] <!-- unschedule-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.65.15
- - [ ] <!-- unschedule-branch=renovate/npm-development-dependencies -->Update dependency typescript-eslint to v8.52.0
+ - [ ] <!-- unschedule-branch=renovate/npm-development-dependencies -->Update NPM Development dependencies (`typescript-eslint`, `vite`)
  - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update prek dependencies (`mdformat-mkdocs`, `zizmorcore/zizmor-pre-commit`)
  - [ ] <!-- unschedule-branch=renovate/codspeed-criterion-compat-4.x-lockfile -->Update Rust crate codspeed-criterion-compat to v4.2.0
  - [ ] <!-- unschedule-branch=renovate/divan-4.x-lockfile -->Update Rust crate divan to v4.2.0

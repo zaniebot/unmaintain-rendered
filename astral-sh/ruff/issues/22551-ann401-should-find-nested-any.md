@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-13T14:04:28Z
-updated_at: 2026-01-13T14:41:11Z
+updated_at: 2026-01-14T09:40:50Z
 url: https://github.com/astral-sh/ruff/issues/22551
-synced_at: 2026-01-13T15:29:13Z
+synced_at: 2026-01-14T10:34:17Z
 ```
 
 # ANN401 should find nested `Any`
@@ -36,5 +36,13 @@ The justification given for `ANN401` is that an absent annotation or an annotati
 ---
 
 _Label `question` added by @dylwil3 on 2026-01-13 14:41_
+
+---
+
+_Comment by @MartinBernstorff on 2026-01-14 09:40_
+
+Sorry about the lack of clarity. Yes, it's exactly `tuple[Any, Any]` I would want to lint with a (potentially new) rule. 
+
+Any use of `Any` in my codebase is _way_ too little information.
 
 ---

@@ -12,9 +12,9 @@ labels:
   - incompatibility
 assignees: []
 created_at: 2025-04-15T19:55:14Z
-updated_at: 2025-04-22T17:36:19Z
+updated_at: 2026-01-14T10:07:47Z
 url: https://github.com/astral-sh/ruff/issues/17558
-synced_at: 2026-01-12T15:54:56Z
+synced_at: 2026-01-14T10:34:16Z
 ```
 
 # Ruff extension does not respect lines-after-imports from ruff.toml
@@ -138,5 +138,25 @@ _Label `isort` added by @MichaReiser on 2025-04-22 17:36_
 ---
 
 _Label `help wanted` added by @MichaReiser on 2025-04-22 17:36_
+
+---
+
+_Comment by @juditnovak on 2026-01-14 10:07_
+
+Having taken a look at this issue, the problem seems to be the following.
+
+As hinted in the [docs (Sorting Imports)](https://docs.astral.sh/ruff/formatter/#sorting-imports), the `ruff` Linter and the Formatter work separate from each other.
+Accordingly, the Formatter doesn't seem to take into account Linter options.
+
+```
+ruff check --select I --fix
+```
+would indeed correctly sort imports, and apply `1` empty line after (when configured so). 
+
+But running `ruff format`, a hardcoded double-empty-line is inserted by the formatter after the top section of a module. (Decision is taken [here](https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_formatter/src/statement/suite.rs#L235-L240) and [then here](https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_formatter/src/statement/suite.rs#L275-L277).
+
+If my understanding is correct, the issue is more than a simple fix. There should be a concept on what (configuration) information may be shared between the Linter an the Formatter, and how (corresp. data structures, workflows, etc.)
+
+(If an initiative is welcome, of course, I'm glad to offer my contribution. But I guess the core contributors of the project may be involved in such design :-)  The documentation also suggests that there may be an ongoing effort perhaps?)
 
 ---

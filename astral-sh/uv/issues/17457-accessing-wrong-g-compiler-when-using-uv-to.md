@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-14T02:48:15Z
-updated_at: 2026-01-14T02:49:06Z
+updated_at: 2026-01-14T09:35:43Z
 url: https://github.com/astral-sh/uv/issues/17457
-synced_at: 2026-01-14T03:31:51Z
+synced_at: 2026-01-14T10:34:33Z
 ```
 
 # Accessing wrong g++ compiler when using uv to install the package qutip on linux redhat
@@ -101,5 +101,11 @@ _Label `bug` added by @BenjaminDAnjou on 2026-01-14 02:48_
 ---
 
 _Renamed from "Error using uv to install the package qutip on linux redhat" to "Accessing wrong g++ compiler when using uv to install the package qutip on linux redhat" by @BenjaminDAnjou on 2026-01-14 02:49_
+
+---
+
+_Comment by @konstin on 2026-01-14 09:35_
+
+CC @geofft @jjhelmus 
 
 ---

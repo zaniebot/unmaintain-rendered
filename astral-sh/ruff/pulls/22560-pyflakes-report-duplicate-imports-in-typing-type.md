@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: F811
 created_at: 2026-01-13T21:14:28Z
-updated_at: 2026-01-14T08:51:07Z
+updated_at: 2026-01-14T10:29:31Z
 url: https://github.com/astral-sh/ruff/pull/22560
-synced_at: 2026-01-14T09:35:09Z
+synced_at: 2026-01-14T10:34:28Z
 ```
 
 # [`pyflakes`] Report duplicate imports in `typing.TYPE_CHECKING` block `F811`
@@ -458,5 +458,21 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 ---
 
 _Label `rule` added by @MichaReiser on 2026-01-14 08:51_
+
+---
+
+_Comment by @chirizxc on 2026-01-14 09:45_
+
+I'm not sure how much this can be considered a false positive, but there is such code in mypy:
+
+* [import](https://github.com/python/mypy/blob/59257a28e9b42076b619ae5f2c699d446c875682/mypy/types.py#L3710-L3722)
+
+* [import in TYPE_CHECKING](https://github.com/python/mypy/blob/59257a28e9b42076b619ae5f2c699d446c875682/mypy/types.py#L101-L111)
+
+---
+
+_Comment by @chirizxc on 2026-01-14 10:29_
+
+Should the fix report mention that one of the imports is a duplicate and should be removed based on the code context? (instead of `format!("Remove runtime `{name}` import")`
 
 ---
