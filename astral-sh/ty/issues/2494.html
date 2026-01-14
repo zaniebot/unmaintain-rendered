@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`unused-ignore-comment` should not handle `type:` comments - astral-sh/ty #2494</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>unused-ignore-comment</code> should not handle <code>type:</code> comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2494">#2494</a>
+        opened by <a href="https://github.com/lypwig">@lypwig</a>
+        on 2026-01-14 14:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lypwig">@lypwig</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I work on a Django application and I use both ty and Pyright for type checking.</p>
+<p>I need to ignore typing on <code>Meta</code> classes, otherwise Pyright complains about <em>reportIncompatibleVariableOverride</em>:</p>
+<pre><code class="language-py">    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+</code></pre>
+<p>But this comment triggers ty rule <a href="https://docs.astral.sh/ty/reference/rules/#unused-ignore-comment"><code>unused-ignore-comment</code></a> (<em>Unused blanket <code>type: ignore</code> directive</em>), incorrectly because the directive IS actually used, by Pyright.</p>
+<h3>Version</h3>
+<p>ty 0.0.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-14 15:01</div>
+            <div class="timeline-body"><p>Thanks for the report! You can configure this by tweaking <a href="https://docs.astral.sh/ty/reference/configuration/#respect-type-ignore-comments">this setting</a>. This is stated in the docs that you link to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2026-01-14 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-14 15:02</div>
+            <div class="timeline-body"><p>I'll keep this open for now because I'm curious whether this setting works for them or if they want one that only disables <code>unused-ignore-comment</code> for <code>ty: ignore</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2026-01-14 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2026-01-14 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lypwig">@lypwig</a> on 2026-01-14 15:12</div>
+            <div class="timeline-body"><p>Ok thank you the <a href="https://docs.astral.sh/ty/reference/configuration/#respect-type-ignore-comments">respect-type-ignore-comments</a> settings works.</p>
+<p>I was not aware of this option, I think it should be mentioned in <a href="https://docs.astral.sh/ty/reference/rules/#unused-ignore-comment">unused-ignore-comment</a> rule documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-14 15:13</div>
+            <div class="timeline-body"><blockquote>
+<p>I was not aware of this option, I think it should be mentioned in <a href="https://docs.astral.sh/ty/reference/rules/#unused-ignore-comment">unused-ignore-comment</a> rule documentation.</p>
+</blockquote>
+<p>It's already mentioned as the last sentence in that documentation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lypwig">@lypwig</a> on 2026-01-14 15:24</div>
+            <div class="timeline-body"><blockquote>
+<p>It's already mentioned as the last sentence in that documentation</p>
+</blockquote>
+<p>Oh I'm so sorry I didn't pay attention.</p>
+<hr />
+<p>That said, I would like to suggest an other behavior.</p>
+<p>The <code>type: ignore</code> is actually handy because I don't have to ignore both ty and Pyright rules.</p>
+<p>I could ignore the ty rule with:</p>
+<pre><code class="language-py">class Meta:  # type: ignore[reportIncompatibleVariableOverride] # ty: ignore[unused-ignore-comment]
+</code></pre>
+<p>But the fact is the ty rule <code>reportIncompatibleVariableOverride</code> does not exist...</p>
+<p>So does it make sense for you to trigger <code>unused-ignore-comment</code> only if it an actual ty rule AND it is not used?</p>
+<p>And eventually add an other rule to check if <code>type:</code> is used with an unknown rule?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-14 15:33</div>
+            <div class="timeline-body"><blockquote>
+<p>So does it make sense for you to trigger unused-ignore-comment only if it an actual ty rule AND it is not used?</p>
+</blockquote>
+<p>That's exactly the feedback I was looking for :) Thank you. Yes, I think splitting the rules makes sense. We just didn't know if there's any demand for it, that's why we initially deferred it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2026-01-14 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2026-01-14 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Pre-stable 1" by @MichaReiser on 2026-01-14 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @MichaReiser on 2026-01-14 15:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-14 15:42:40 UTC
+    </footer>
+</body>
+</html>

@@ -14,7 +14,7 @@
     <h1>Narrowing of <code>int | Sequence[str]</code> with <code>isinstance(Sequence)</code> is not Sequence[str]</h1>
 
     <div class="meta">
-        <span class="state-icon state-open"></span>
+        <span class="state-icon state-closed"></span>
         <a href="https://github.com/astral-sh/ty/issues/2493">#2493</a>
         opened by <a href="https://github.com/henriquegemignani">@henriquegemignani</a>
         on 2026-01-14 14:29
@@ -49,10 +49,54 @@ Object of type `JsonType_RO` is not assignable to `Sequence[str]` (invalid-assig
 <p>ty 0.0.11 (830cb9cc6 2026-01-09)</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-14 14:33</div>
+            <div class="timeline-body"><p>Thanks! This is basically the same as #1578. ty is warning you here that it's entirely possible for an object to be an instance of both <code>int</code> and <code>Sequence</code> simultaneously: they're not disjoint types:</p>
+<pre><code class="language-py">&gt;&gt;&gt; from typing import Sequence
+&gt;&gt;&gt; class Foo(int, Sequence): ...
+... 
+&gt;&gt;&gt;
+</code></pre>
+<p>You can fix the diagnostic here by using <code>if not isinstance(value, int)</code> instead of <code>if isinstance(value, Sequence)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2026-01-14 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henriquegemignani">@henriquegemignani</a> on 2026-01-14 15:13</div>
+            <div class="timeline-body"><p>Is there a way to annotate that such subclass of <code>int</code> is not allowed? In the actual use in my code base it does already <code>if isinstance(value, int)</code>, but the actual type is <code>int | Mapping[str, JsonType_RO] | Sequence[JsonType_RO]</code> and adding a <code>not isinstance(value, Mapping)</code> doesn't work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-14 15:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a way to annotate that such subclass of <code>int</code> is not allowed?</p>
+</blockquote>
+<p>No, Python's type system doesn't currently support a way to annotate &quot;exact types&quot;, and we don't have any extensions to the type system for that currently in ty. Such types would unfortunately not be very useful unless you used them <em>everywhere</em>, but in most cases it isn't desirable to distinguish between &quot;any instance of <code>T</code>&quot;, and &quot;any object that is an instance of <em>exactly</em> <code>T</code>&quot;. So I think the use cases for types like this would actually turn out to be pretty limited, unfortunately.</p>
+<p>If you're willing to use the <code>ty_extensions</code> module, you could do something like this:</p>
+<pre><code class="language-py">from ty_extensions import Intersection, Not
+from collections.abc import Sequence
+
+type JsonType_RO = Intersection[int, Not[Sequence[object]]] | Sequence[str]
+
+
+def encode_a(value: JsonType_RO) -&gt; None:
+    if isinstance(value, Sequence):
+        sequence_value: Sequence[str] = value
+</code></pre>
+<p>But note that the ty_extensions module doesn't actually exist at runtime right now; you need to import it in an <code>if TYPE_CHECKING</code> block if you want to use it in a <code>.py</code> file.</p>
+<p>I'm curious to know more about this, though:</p>
+<blockquote>
+<p>adding a <code>not isinstance(value, Mapping)</code> doesn't work.</p>
+</blockquote>
+<p>Why doesn't that work in this case for you? Can you give another minimal example? :-)</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-14 14:44:21 UTC
+        Synced at 2026-01-14 15:42:40 UTC
     </footer>
 </body>
 </html>
