@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narrowing of `int | Sequence[str]` with `isinstance(Sequence)` is not Sequence[str] - astral-sh/ty #2493</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Narrowing of <code>int | Sequence[str]</code> with <code>isinstance(Sequence)</code> is not Sequence[str]</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2493">#2493</a>
+        opened by <a href="https://github.com/henriquegemignani">@henriquegemignani</a>
+        on 2026-01-14 14:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/henriquegemignani">@henriquegemignani</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Playground: https://play.ty.dev/6143bcb7-6aa9-405d-ba62-33a4ea7e764d</p>
+<p>Code:</p>
+<pre><code class="language-python">from collections.abc import Sequence
+
+type JsonType_RO = int | Sequence[str]
+
+
+def encode_a(value: JsonType_RO) -&gt; None:
+    if isinstance(value, Sequence):
+        sequence_value: Sequence[str] = value
+
+def encode_b(value: JsonType_RO) -&gt; None:
+    if isinstance(value, Sequence[str]):
+        sequence_value: Sequence[str] = value
+</code></pre>
+<p>Errors:</p>
+<pre><code>Object of type `(int &amp; Sequence[object]) | Sequence[str]` is not assignable to `Sequence[str]` (invalid-assignment) [Ln 8, Col 41]
+Object of type `JsonType_RO` is not assignable to `Sequence[str]` (invalid-assignment) [Ln 12, Col 41]
+</code></pre>
+<p>The main case is <code>encode_a</code>. I'd expect <code>value</code> to be narrowed to <code>Sequence[str]</code>, but that's not the case. As far as I could find, that should be valid typing. I tried to find some related issue, but no luck with search.</p>
+<p><code>encode_b</code> is just an attempt to investigate further, but it's interesting how that causes ty to not narrow at all.</p>
+<h3>Version</h3>
+<p>ty 0.0.11 (830cb9cc6 2026-01-09)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-14 14:44:21 UTC
+    </footer>
+</body>
+</html>
