@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: stable-ci
 created_at: 2026-01-14T00:42:38Z
-updated_at: 2026-01-14T03:31:41Z
+updated_at: 2026-01-14T11:28:39Z
 url: https://github.com/astral-sh/uv/pull/17456
-synced_at: 2026-01-14T04:30:51Z
+synced_at: 2026-01-14T11:33:40Z
 ```
 
 # Isolate test environment from user configuration
@@ -36,5 +36,45 @@ These were the one that I noticed and were a blocker for me to work on https://g
 _Comment by @zanieb on 2026-01-14 01:33_
 
 Overlaps with #14080 
+
+---
+
+_Review comment by @EliteTK on `CONTRIBUTING.md`:102 on 2026-01-14 11:05_
+
+There are many other tests than just `native-auth` which can fail if there's no clear internet connection but this (along with the example directly following it) reads a bit like an implication that only `native-auth` tests are affected.
+
+I would suggest:
+
+Mention that many tests need network access, in some cases access is needed to services which are beyond pypi etc, e.g. `pypi-proxy.fly.dev` etc. And explain that if you have a network configuration which causes some of tests to fail, and you wish to skip those tests locally, you can run tests without certain features (e.g. `native-auth`), or use nextest [filtersets](https://nexte.st/docs/filtersets/) to filter out specific tests.
+
+I think that would be sufficient for this section.
+
+---
+
+_Review comment by @EliteTK on `CONTRIBUTING.md`:122 on 2026-01-14 11:10_
+
+I appreciate the effort to be helpful but it seems a little beyond the scope of this document to explain (in a potentially fragile - e.g. if the firewall/proxy is configured weird - way) how to check for firewall/proxy restrictions.
+
+---
+
+_Review comment by @EliteTK on `CONTRIBUTING.md`:96 on 2026-01-14 11:14_
+
+I would just rename this to "Tests which require the network" (and ditto any referneces specifically to the scenario of a corporate firewall) as the problem is broader than just corporate firewalls and proxies. Some people may just want to run the tests in an offline environment.
+
+---
+
+_Review comment by @EliteTK on `crates/uv/tests/it/common/mod.rs`:1044 on 2026-01-14 11:26_
+
+I think for now let's drop this since, as mentioned already by @zanieb, #14080 will cover this.
+
+---
+
+_Review comment by @EliteTK on `crates/uv/tests/it/common/mod.rs`:1536 on 2026-01-14 11:28_
+
+Would this be necessary with #14080? I think if `$HOME` is set and `$XDG_CONFIG_HOME` is unset then the whole problem will be avoided?
+
+---
+
+_@EliteTK reviewed on 2026-01-14 11:28_
 
 ---

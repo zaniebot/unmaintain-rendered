@@ -7,9 +7,9 @@ author: frodera
 labels: []
 assignees: []
 created_at: 2026-01-14T03:43:21Z
-updated_at: 2026-01-14T09:27:32Z
+updated_at: 2026-01-14T11:19:11Z
 url: https://github.com/astral-sh/ty/issues/2487
-synced_at: 2026-01-14T09:34:52Z
+synced_at: 2026-01-14T11:33:10Z
 ```
 
 # Unable to pull `latest` (or any other) container image
@@ -46,5 +46,13 @@ _No response_
 _Comment by @MichaReiser on 2026-01-14 09:27_
 
 Thanks for reporting this. I changed the visibility, can you try again?
+
+---
+
+_Comment by @frodera on 2026-01-14 11:19_
+
+> Thanks for reporting this. I changed the visibility, can you try again?
+
+It works now! 👍🏻  Thanks @MichaReiser 
 
 ---

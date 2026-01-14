@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-11-21T21:27:02Z
-updated_at: 2026-01-13T19:25:08Z
+updated_at: 2026-01-14T10:35:45Z
 url: https://github.com/astral-sh/uv/issues/16813
-synced_at: 2026-01-13T20:37:09Z
+synced_at: 2026-01-14T11:33:32Z
 ```
 
 # exclude-newer: overrides for private registries
@@ -116,5 +116,23 @@ exclude-newer-package = { pytorch = true }
 It's of course really usefull for packages stored in private registries, which should not normally require version/dependency cooldown.
 
 Good question if it really works with Gitlab, gonna test it with the next uv release!
+
+---
+
+_Comment by @fellhorn on 2026-01-14 10:35_
+
+> As of [#16854](https://github.com/astral-sh/uv/pull/16854) specific packages can be excluded with following syntax -
+> 
+> [tool.uv]
+> exclude-newer-package = { pytorch = true } 
+
+Nit: One needs to set the value to `false` instead of `true` to disable `exclude-newer` for a specific package:
+
+```toml
+[tool.uv]
+exclude-newer-package = { pytorch = false } 
+```
+
+From what I can tell with GAR it works like a charm for registries that do not provide the `upload-time` metadata.
 
 ---

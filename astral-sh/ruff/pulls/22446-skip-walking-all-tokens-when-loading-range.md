@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: amy/suppression-perf-2
 created_at: 2026-01-07T22:39:17Z
-updated_at: 2026-01-14T08:48:07Z
+updated_at: 2026-01-14T11:16:32Z
 url: https://github.com/astral-sh/ruff/pull/22446
-synced_at: 2026-01-14T09:35:09Z
+synced_at: 2026-01-14T11:33:27Z
 ```
 
 # Skip walking all tokens when loading range suppressions
@@ -177,7 +177,7 @@ Can we resolve this comment?
 
 _Review comment by @MichaReiser on `crates/ruff_linter/src/suppression.rs`:449 on 2026-01-14 08:41_
 
-You need to change this to `after`
+You need to change this to `after`. The tests then pass
 
 ---
 
@@ -221,5 +221,27 @@ Finds the first token that ends after `offset`
 This is because `.after` finds the first token that ends after `offset` whereas `split_at` finds the first token that starts at or before `offset`
 
 We could change `split_at` to skip over tokens that fall directly on `offset` (e.g. a `Dedent` token with zero width). For now, I think it's fine to call this difference out in the comment
+
+---
+
+_@MichaReiser reviewed on 2026-01-14 11:15_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/src/suppression.rs`:402 on 2026-01-14 11:15_
+
+>  But I also don't fully understand how your logic here is working in this implementation, so I'm hoping I'm missing something
+
+It's not really any different from what you had in your implementation. The only difference is that it doesn't start from the start of the file. Instead, it starts from the first comment and then looks back to find the last indent. After this, the behavior is the same to what you had. Process the remaining indents
+
+---
+
+_@MichaReiser reviewed on 2026-01-14 11:16_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/src/suppression.rs`:472 on 2026-01-14 11:16_
+
+I'm not sure if we should/could move this out of the loop
 
 ---

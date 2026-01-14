@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: F811
 created_at: 2026-01-13T21:14:28Z
-updated_at: 2026-01-14T10:29:31Z
+updated_at: 2026-01-14T10:39:32Z
 url: https://github.com/astral-sh/ruff/pull/22560
-synced_at: 2026-01-14T10:34:28Z
+synced_at: 2026-01-14T11:33:27Z
 ```
 
 # [`pyflakes`] Report duplicate imports in `typing.TYPE_CHECKING` block `F811`
@@ -57,9 +57,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/components.py#L34'>disnake/components.py:34:24:</a> F811 [*] Import `TypeAlias` is duplicated in `typing.TYPE_CHECKING` block: `TypeAlias` redefined here
-+ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/types/interactions.py#L11'>disnake/types/interactions.py:11:24:</a> F811 [*] Import `TypeAlias` is duplicated in `typing.TYPE_CHECKING` block: `TypeAlias` redefined here
-+ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ui/_types.py#L9'>disnake/ui/_types.py:9:24:</a> F811 [*] Import `TypeAlias` is duplicated in `typing.TYPE_CHECKING` block: `TypeAlias` redefined here
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/components.py#L34'>disnake/components.py:34:24:</a> F811 Import `TypeAlias` is duplicated in `typing.TYPE_CHECKING` block: `TypeAlias` redefined here
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/types/interactions.py#L11'>disnake/types/interactions.py:11:24:</a> F811 Import `TypeAlias` is duplicated in `typing.TYPE_CHECKING` block: `TypeAlias` redefined here
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ui/_types.py#L9'>disnake/ui/_types.py:9:24:</a> F811 Import `TypeAlias` is duplicated in `typing.TYPE_CHECKING` block: `TypeAlias` redefined here
 </pre>
 
 </p>
@@ -71,17 +71,17 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/airflow-core/src/airflow/models/taskinstance.py#L103'>airflow-core/src/airflow/models/taskinstance.py:103:26:</a> F811 [*] Import `datetime` is duplicated in `typing.TYPE_CHECKING` block: `datetime` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/airflow-core/src/airflow/models/taskreschedule.py#L41'>airflow-core/src/airflow/models/taskreschedule.py:41:12:</a> F811 [*] Import `datetime` is duplicated in `typing.TYPE_CHECKING` block: `datetime` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/airflow-core/src/airflow/serialization/serialized_objects.py#L121'>airflow-core/src/airflow/serialization/serialized_objects.py:121:41:</a> F811 [*] Import `DagRunInfo` is duplicated in `typing.TYPE_CHECKING` block: `DagRunInfo` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/airflow-core/src/airflow/serialization/serialized_objects.py#L121'>airflow-core/src/airflow/serialization/serialized_objects.py:121:53:</a> F811 [*] Import `Timetable` is duplicated in `typing.TYPE_CHECKING` block: `Timetable` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/providers/amazon/src/airflow/providers/amazon/aws/auth_manager/aws_auth_manager.py#L60'>providers/amazon/src/airflow/providers/amazon/aws/auth_manager/aws_auth_manager.py:60:40:</a> F811 [*] Import `CLICommand` is duplicated in `typing.TYPE_CHECKING` block: `CLICommand` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/providers/amazon/src/airflow/providers/amazon/aws/triggers/dms.py#L26'>providers/amazon/src/airflow/providers/amazon/aws/triggers/dms.py:26:61:</a> F811 [*] Import `AwsGenericHook` is duplicated in `typing.TYPE_CHECKING` block: `AwsGenericHook` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/providers/cncf/kubernetes/src/airflow/providers/cncf/kubernetes/hooks/kubernetes.py#L53'>providers/cncf/kubernetes/src/airflow/providers/cncf/kubernetes/hooks/kubernetes.py:53:33:</a> F811 [*] Import `AsyncGenerator` is duplicated in `typing.TYPE_CHECKING` block: `AsyncGenerator` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/providers/common/compat/src/airflow/providers/common/compat/openlineage/utils/spark.py#L33'>providers/common/compat/src/airflow/providers/common/compat/openlineage/utils/spark.py:33:9:</a> F811 [*] Import `inject_parent_job_information_into_spark_properties` is duplicated in `typing.TYPE_CHECKING` block: `inject_parent_job_information_into_spark_properties` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/providers/common/compat/src/airflow/providers/common/compat/openlineage/utils/spark.py#L34'>providers/common/compat/src/airflow/providers/common/compat/openlineage/utils/spark.py:34:9:</a> F811 [*] Import `inject_transport_information_into_spark_properties` is duplicated in `typing.TYPE_CHECKING` block: `inject_transport_information_into_spark_properties` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/providers/databricks/src/airflow/providers/databricks/operators/databricks.py#L58'>providers/databricks/src/airflow/providers/databricks/operators/databricks.py:58:9:</a> F811 [*] Import `DatabricksWorkflowTaskGroup` is duplicated in `typing.TYPE_CHECKING` block: `DatabricksWorkflowTaskGroup` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/providers/fab/src/airflow/providers/fab/auth_manager/api_fastapi/routes/roles.py#L38'>providers/fab/src/airflow/providers/fab/auth_manager/api_fastapi/routes/roles.py:38:9:</a> F811 [*] Import `RoleBody` is duplicated in `typing.TYPE_CHECKING` block: `RoleBody` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/airflow-core/src/airflow/models/taskinstance.py#L103'>airflow-core/src/airflow/models/taskinstance.py:103:26:</a> F811 Import `datetime` is duplicated in `typing.TYPE_CHECKING` block: `datetime` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/airflow-core/src/airflow/models/taskreschedule.py#L41'>airflow-core/src/airflow/models/taskreschedule.py:41:12:</a> F811 Import `datetime` is duplicated in `typing.TYPE_CHECKING` block: `datetime` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/airflow-core/src/airflow/serialization/serialized_objects.py#L121'>airflow-core/src/airflow/serialization/serialized_objects.py:121:41:</a> F811 Import `DagRunInfo` is duplicated in `typing.TYPE_CHECKING` block: `DagRunInfo` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/airflow-core/src/airflow/serialization/serialized_objects.py#L121'>airflow-core/src/airflow/serialization/serialized_objects.py:121:53:</a> F811 Import `Timetable` is duplicated in `typing.TYPE_CHECKING` block: `Timetable` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/providers/amazon/src/airflow/providers/amazon/aws/auth_manager/aws_auth_manager.py#L60'>providers/amazon/src/airflow/providers/amazon/aws/auth_manager/aws_auth_manager.py:60:40:</a> F811 Import `CLICommand` is duplicated in `typing.TYPE_CHECKING` block: `CLICommand` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/providers/amazon/src/airflow/providers/amazon/aws/triggers/dms.py#L26'>providers/amazon/src/airflow/providers/amazon/aws/triggers/dms.py:26:61:</a> F811 Import `AwsGenericHook` is duplicated in `typing.TYPE_CHECKING` block: `AwsGenericHook` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/providers/cncf/kubernetes/src/airflow/providers/cncf/kubernetes/hooks/kubernetes.py#L53'>providers/cncf/kubernetes/src/airflow/providers/cncf/kubernetes/hooks/kubernetes.py:53:33:</a> F811 Import `AsyncGenerator` is duplicated in `typing.TYPE_CHECKING` block: `AsyncGenerator` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/providers/common/compat/src/airflow/providers/common/compat/openlineage/utils/spark.py#L33'>providers/common/compat/src/airflow/providers/common/compat/openlineage/utils/spark.py:33:9:</a> F811 Import `inject_parent_job_information_into_spark_properties` is duplicated in `typing.TYPE_CHECKING` block: `inject_parent_job_information_into_spark_properties` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/providers/common/compat/src/airflow/providers/common/compat/openlineage/utils/spark.py#L34'>providers/common/compat/src/airflow/providers/common/compat/openlineage/utils/spark.py:34:9:</a> F811 Import `inject_transport_information_into_spark_properties` is duplicated in `typing.TYPE_CHECKING` block: `inject_transport_information_into_spark_properties` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/providers/databricks/src/airflow/providers/databricks/operators/databricks.py#L58'>providers/databricks/src/airflow/providers/databricks/operators/databricks.py:58:9:</a> F811 Import `DatabricksWorkflowTaskGroup` is duplicated in `typing.TYPE_CHECKING` block: `DatabricksWorkflowTaskGroup` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/providers/fab/src/airflow/providers/fab/auth_manager/api_fastapi/routes/roles.py#L38'>providers/fab/src/airflow/providers/fab/auth_manager/api_fastapi/routes/roles.py:38:9:</a> F811 Import `RoleBody` is duplicated in `typing.TYPE_CHECKING` block: `RoleBody` redefined here
 ... 4 additional changes omitted for project
 </pre>
 
@@ -96,8 +96,8 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <pre>
 + <a href='https://github.com/apache/superset/blob/4f3403b1341ec908392c6e01814703a1d9121daf/superset/utils/webdriver.py#L527'>superset/utils/webdriver.py:527:9:</a> D400 First line should end with a period
 - <a href='https://github.com/apache/superset/blob/4f3403b1341ec908392c6e01814703a1d9121daf/superset/utils/webdriver.py#L527'>superset/utils/webdriver.py:527:9:</a> D400 First line should end with a period
-+ <a href='https://github.com/apache/superset/blob/4f3403b1341ec908392c6e01814703a1d9121daf/superset/utils/webdriver.py#L56'>superset/utils/webdriver.py:56:24:</a> F811 [*] Import `Any` is duplicated in `typing.TYPE_CHECKING` block: `Any` redefined here
-+ <a href='https://github.com/apache/superset/blob/4f3403b1341ec908392c6e01814703a1d9121daf/superset/utils/webdriver.py#L70'>superset/utils/webdriver.py:70:24:</a> F811 [*] Import `Any` is duplicated in `typing.TYPE_CHECKING` block: `Any` redefined here
++ <a href='https://github.com/apache/superset/blob/4f3403b1341ec908392c6e01814703a1d9121daf/superset/utils/webdriver.py#L56'>superset/utils/webdriver.py:56:24:</a> F811 Import `Any` is duplicated in `typing.TYPE_CHECKING` block: `Any` redefined here
++ <a href='https://github.com/apache/superset/blob/4f3403b1341ec908392c6e01814703a1d9121daf/superset/utils/webdriver.py#L70'>superset/utils/webdriver.py:70:24:</a> F811 Import `Any` is duplicated in `typing.TYPE_CHECKING` block: `Any` redefined here
 </pre>
 
 </p>
@@ -106,10 +106,10 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/ibis-project/ibis/blob/a5e7c2298d1582261c0963040a687c3987507c62/ibis/backends/duckdb/__init__.py#L1374'>ibis/backends/duckdb/__init__.py:1374:16:</a> F811 [*] Import `pyarrow_hotfix` is duplicated in `typing.TYPE_CHECKING` block: `pyarrow_hotfix` redefined here
-+ <a href='https://github.com/ibis-project/ibis/blob/a5e7c2298d1582261c0963040a687c3987507c62/ibis/backends/duckdb/__init__.py#L1416'>ibis/backends/duckdb/__init__.py:1416:16:</a> F811 [*] Import `pyarrow_hotfix` is duplicated in `typing.TYPE_CHECKING` block: `pyarrow_hotfix` redefined here
-+ <a href='https://github.com/ibis-project/ibis/blob/a5e7c2298d1582261c0963040a687c3987507c62/ibis/backends/polars/__init__.py#L25'>ibis/backends/polars/__init__.py:25:33:</a> F811 [*] Import `Iterable` is duplicated in `typing.TYPE_CHECKING` block: `Iterable` redefined here
-+ <a href='https://github.com/ibis-project/ibis/blob/a5e7c2298d1582261c0963040a687c3987507c62/ibis/backends/sqlite/__init__.py#L33'>ibis/backends/sqlite/__init__.py:33:12:</a> F811 [*] Import `sqlite3` is duplicated in `typing.TYPE_CHECKING` block: `sqlite3` redefined here
++ <a href='https://github.com/ibis-project/ibis/blob/511d686cdb2f57aa8fc78ab6880d089c0a908db5/ibis/backends/duckdb/__init__.py#L1374'>ibis/backends/duckdb/__init__.py:1374:16:</a> F811 Import `pyarrow_hotfix` is duplicated in `typing.TYPE_CHECKING` block: `pyarrow_hotfix` redefined here
++ <a href='https://github.com/ibis-project/ibis/blob/511d686cdb2f57aa8fc78ab6880d089c0a908db5/ibis/backends/duckdb/__init__.py#L1416'>ibis/backends/duckdb/__init__.py:1416:16:</a> F811 Import `pyarrow_hotfix` is duplicated in `typing.TYPE_CHECKING` block: `pyarrow_hotfix` redefined here
++ <a href='https://github.com/ibis-project/ibis/blob/511d686cdb2f57aa8fc78ab6880d089c0a908db5/ibis/backends/polars/__init__.py#L25'>ibis/backends/polars/__init__.py:25:33:</a> F811 Import `Iterable` is duplicated in `typing.TYPE_CHECKING` block: `Iterable` redefined here
++ <a href='https://github.com/ibis-project/ibis/blob/511d686cdb2f57aa8fc78ab6880d089c0a908db5/ibis/backends/sqlite/__init__.py#L33'>ibis/backends/sqlite/__init__.py:33:12:</a> F811 Import `sqlite3` is duplicated in `typing.TYPE_CHECKING` block: `sqlite3` redefined here
 </pre>
 
 </p>
@@ -118,15 +118,15 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/core/langchain_core/utils/uuid.py#L15'>libs/core/langchain_core/utils/uuid.py:15:22:</a> F811 [*] Import `UUID` is duplicated in `typing.TYPE_CHECKING` block: `UUID` redefined here
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/core/tests/unit_tests/language_models/chat_models/test_base.py#L47'>libs/core/tests/unit_tests/language_models/chat_models/test_base.py:47:51:</a> F811 [*] Import `LLMResult` is duplicated in `typing.TYPE_CHECKING` block: `LLMResult` redefined here
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/langchain/agents/middleware/_execution.py#L52'>libs/langchain_v1/langchain/agents/middleware/_execution.py:52:33:</a> F811 [*] Import `Mapping` is duplicated in `typing.TYPE_CHECKING` block: `Mapping` redefined here
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/langchain/agents/middleware/_execution.py#L52'>libs/langchain_v1/langchain/agents/middleware/_execution.py:52:42:</a> F811 [*] Import `Sequence` is duplicated in `typing.TYPE_CHECKING` block: `Sequence` redefined here
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/langchain/agents/middleware/_execution.py#L53'>libs/langchain_v1/langchain/agents/middleware/_execution.py:53:25:</a> F811 [*] Import `Path` is duplicated in `typing.TYPE_CHECKING` block: `Path` redefined here
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/langchain/agents/middleware/types.py#L20'>libs/langchain_v1/langchain/agents/middleware/types.py:20:33:</a> F811 [*] Import `Awaitable` is duplicated in `typing.TYPE_CHECKING` block: `Awaitable` redefined here
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py#L22'>libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py:22:25:</a> F811 [*] Import `Path` is duplicated in `typing.TYPE_CHECKING` block: `Path` redefined here
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py#L73'>libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py:73:61:</a> F811 [*] Import `HuggingFaceEndpoint` is duplicated in `typing.TYPE_CHECKING` block: `HuggingFaceEndpoint` redefined here
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py#L74'>libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py:74:61:</a> F811 [*] Import `HuggingFacePipeline` is duplicated in `typing.TYPE_CHECKING` block: `HuggingFacePipeline` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/core/langchain_core/utils/uuid.py#L15'>libs/core/langchain_core/utils/uuid.py:15:22:</a> F811 Import `UUID` is duplicated in `typing.TYPE_CHECKING` block: `UUID` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/core/tests/unit_tests/language_models/chat_models/test_base.py#L47'>libs/core/tests/unit_tests/language_models/chat_models/test_base.py:47:51:</a> F811 Import `LLMResult` is duplicated in `typing.TYPE_CHECKING` block: `LLMResult` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/langchain/agents/middleware/_execution.py#L52'>libs/langchain_v1/langchain/agents/middleware/_execution.py:52:33:</a> F811 Import `Mapping` is duplicated in `typing.TYPE_CHECKING` block: `Mapping` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/langchain/agents/middleware/_execution.py#L52'>libs/langchain_v1/langchain/agents/middleware/_execution.py:52:42:</a> F811 Import `Sequence` is duplicated in `typing.TYPE_CHECKING` block: `Sequence` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/langchain/agents/middleware/_execution.py#L53'>libs/langchain_v1/langchain/agents/middleware/_execution.py:53:25:</a> F811 Import `Path` is duplicated in `typing.TYPE_CHECKING` block: `Path` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/langchain/agents/middleware/types.py#L20'>libs/langchain_v1/langchain/agents/middleware/types.py:20:33:</a> F811 Import `Awaitable` is duplicated in `typing.TYPE_CHECKING` block: `Awaitable` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py#L22'>libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py:22:25:</a> F811 Import `Path` is duplicated in `typing.TYPE_CHECKING` block: `Path` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py#L73'>libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py:73:61:</a> F811 Import `HuggingFaceEndpoint` is duplicated in `typing.TYPE_CHECKING` block: `HuggingFaceEndpoint` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py#L74'>libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py:74:61:</a> F811 Import `HuggingFacePipeline` is duplicated in `typing.TYPE_CHECKING` block: `HuggingFacePipeline` redefined here
 </pre>
 
 </p>
@@ -135,8 +135,8 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/pandas-dev/pandas/blob/7f7bf9888c24900aa7d3c2e3838b3bff78eb72ea/pandas/core/dtypes/dtypes.py#L80'>pandas/core/dtypes/dtypes.py:80:23:</a> F811 [*] Import `pa` is duplicated in `typing.TYPE_CHECKING` block: `pa` redefined here
-+ <a href='https://github.com/pandas-dev/pandas/blob/7f7bf9888c24900aa7d3c2e3838b3bff78eb72ea/pandas/core/resample.py#L114'>pandas/core/resample.py:114:37:</a> F811 [*] Import `NDFrame` is duplicated in `typing.TYPE_CHECKING` block: `NDFrame` redefined here
++ <a href='https://github.com/pandas-dev/pandas/blob/ff0cd9a3a7d5d29344be7fb26aa457ce32763ad0/pandas/core/dtypes/dtypes.py#L80'>pandas/core/dtypes/dtypes.py:80:23:</a> F811 Import `pa` is duplicated in `typing.TYPE_CHECKING` block: `pa` redefined here
++ <a href='https://github.com/pandas-dev/pandas/blob/ff0cd9a3a7d5d29344be7fb26aa457ce32763ad0/pandas/core/resample.py#L114'>pandas/core/resample.py:114:37:</a> F811 Import `NDFrame` is duplicated in `typing.TYPE_CHECKING` block: `NDFrame` redefined here
 </pre>
 
 </p>
@@ -145,11 +145,11 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/prefecthq/prefect/blob/3d3ecf264b5ce01db50f70b9511476dc1bf35201/src/integrations/prefect-docker/prefect_docker/worker.py#L71'>src/integrations/prefect-docker/prefect_docker/worker.py:71:9:</a> F811 [*] Import `FlowRun` is duplicated in `typing.TYPE_CHECKING` block: `FlowRun` redefined here
-+ <a href='https://github.com/prefecthq/prefect/blob/3d3ecf264b5ce01db50f70b9511476dc1bf35201/src/prefect/flow_runs.py#L52'>src/prefect/flow_runs.py:52:46:</a> F811 [*] Import `PrefectClient` is duplicated in `typing.TYPE_CHECKING` block: `PrefectClient` redefined here
-+ <a href='https://github.com/prefecthq/prefect/blob/3d3ecf264b5ce01db50f70b9511476dc1bf35201/src/prefect/flows.py#L131'>src/prefect/flows.py:131:48:</a> F811 [*] Import `FlowRun` is duplicated in `typing.TYPE_CHECKING` block: `FlowRun` redefined here
-+ <a href='https://github.com/prefecthq/prefect/blob/3d3ecf264b5ce01db50f70b9511476dc1bf35201/src/prefect/tasks.py#L86'>src/prefect/tasks.py:86:33:</a> F811 [*] Import `TaskRunContext` is duplicated in `typing.TYPE_CHECKING` block: `TaskRunContext` redefined here
-+ <a href='https://github.com/prefecthq/prefect/blob/3d3ecf264b5ce01db50f70b9511476dc1bf35201/tests/deployment/test_flow_runs.py#L32'>tests/deployment/test_flow_runs.py:32:46:</a> F811 [*] Import `PrefectClient` is duplicated in `typing.TYPE_CHECKING` block: `PrefectClient` redefined here
++ <a href='https://github.com/prefecthq/prefect/blob/4e5d51078c91f7c550b9c432d9c7a027168e40e2/src/integrations/prefect-docker/prefect_docker/worker.py#L71'>src/integrations/prefect-docker/prefect_docker/worker.py:71:9:</a> F811 Import `FlowRun` is duplicated in `typing.TYPE_CHECKING` block: `FlowRun` redefined here
++ <a href='https://github.com/prefecthq/prefect/blob/4e5d51078c91f7c550b9c432d9c7a027168e40e2/src/prefect/flow_runs.py#L52'>src/prefect/flow_runs.py:52:46:</a> F811 Import `PrefectClient` is duplicated in `typing.TYPE_CHECKING` block: `PrefectClient` redefined here
++ <a href='https://github.com/prefecthq/prefect/blob/4e5d51078c91f7c550b9c432d9c7a027168e40e2/src/prefect/flows.py#L131'>src/prefect/flows.py:131:48:</a> F811 Import `FlowRun` is duplicated in `typing.TYPE_CHECKING` block: `FlowRun` redefined here
++ <a href='https://github.com/prefecthq/prefect/blob/4e5d51078c91f7c550b9c432d9c7a027168e40e2/src/prefect/tasks.py#L86'>src/prefect/tasks.py:86:33:</a> F811 Import `TaskRunContext` is duplicated in `typing.TYPE_CHECKING` block: `TaskRunContext` redefined here
++ <a href='https://github.com/prefecthq/prefect/blob/4e5d51078c91f7c550b9c432d9c7a027168e40e2/tests/deployment/test_flow_runs.py#L32'>tests/deployment/test_flow_runs.py:32:46:</a> F811 Import `PrefectClient` is duplicated in `typing.TYPE_CHECKING` block: `PrefectClient` redefined here
 </pre>
 
 </p>
@@ -158,7 +158,7 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/pypa/pip/blob/3e5ef6d259128f2539073b36c18e7103ce911ba9/tests/unit/resolution_resolvelib/test_provider.py#L24'>tests/unit/resolution_resolvelib/test_provider.py:24:58:</a> F811 [*] Import `Candidate` is duplicated in `typing.TYPE_CHECKING` block: `Candidate` redefined here
++ <a href='https://github.com/pypa/pip/blob/3e5ef6d259128f2539073b36c18e7103ce911ba9/tests/unit/resolution_resolvelib/test_provider.py#L24'>tests/unit/resolution_resolvelib/test_provider.py:24:58:</a> F811 Import `Candidate` is duplicated in `typing.TYPE_CHECKING` block: `Candidate` redefined here
 </pre>
 
 </p>
@@ -167,8 +167,8 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/python/mypy/blob/59257a28e9b42076b619ae5f2c699d446c875682/mypy/types.py#L3718'>mypy/types.py:3718:29:</a> F811 [*] Import `SyntheticTypeVisitor` is duplicated in `typing.TYPE_CHECKING` block: `SyntheticTypeVisitor` redefined here
-+ <a href='https://github.com/python/mypy/blob/59257a28e9b42076b619ae5f2c699d446c875682/mypy/types.py#L3721'>mypy/types.py:3721:20:</a> F811 [*] Import `TypeVisitor` is duplicated in `typing.TYPE_CHECKING` block: `TypeVisitor` redefined here
++ <a href='https://github.com/python/mypy/blob/c3c7eb1f065f3dffc42f574422ee895d63e1e65c/mypy/types.py#L3718'>mypy/types.py:3718:29:</a> F811 Import `SyntheticTypeVisitor` is duplicated in `typing.TYPE_CHECKING` block: `SyntheticTypeVisitor` redefined here
++ <a href='https://github.com/python/mypy/blob/c3c7eb1f065f3dffc42f574422ee895d63e1e65c/mypy/types.py#L3721'>mypy/types.py:3721:20:</a> F811 Import `TypeVisitor` is duplicated in `typing.TYPE_CHECKING` block: `TypeVisitor` redefined here
 </pre>
 
 </p>
@@ -177,10 +177,10 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/rotki/rotki/blob/732682e84e838c454cdf164d665196c36e2f5ee9/rotkehlchen/chain/ethereum/modules/sushiswap/decoder.py#L35'>rotkehlchen/chain/ethereum/modules/sushiswap/decoder.py:35:65:</a> F811 [*] Import `EvmEvent` is duplicated in `typing.TYPE_CHECKING` block: `EvmEvent` redefined here
-+ <a href='https://github.com/rotki/rotki/blob/732682e84e838c454cdf164d665196c36e2f5ee9/rotkehlchen/chain/evm/decoding/decoder.py#L102'>rotkehlchen/chain/evm/decoding/decoder.py:102:50:</a> F811 [*] Import `CounterpartyDetails` is duplicated in `typing.TYPE_CHECKING` block: `CounterpartyDetails` redefined here
-+ <a href='https://github.com/rotki/rotki/blob/732682e84e838c454cdf164d665196c36e2f5ee9/rotkehlchen/chain/evm/decoding/spark/decoder.py#L9'>rotkehlchen/chain/evm/decoding/spark/decoder.py:9:50:</a> F811 [*] Import `CounterpartyDetails` is duplicated in `typing.TYPE_CHECKING` block: `CounterpartyDetails` redefined here
-+ <a href='https://github.com/rotki/rotki/blob/732682e84e838c454cdf164d665196c36e2f5ee9/rotkehlchen/tests/unit/decoders/test_stakedao.py#L30'>rotkehlchen/tests/unit/decoders/test_stakedao.py:30:58:</a> F811 [*] Import `EthereumInquirer` is duplicated in `typing.TYPE_CHECKING` block: `EthereumInquirer` redefined here
++ <a href='https://github.com/rotki/rotki/blob/7390d9a81e6bcffe8c92785cc352b09bb9d8571e/rotkehlchen/chain/ethereum/modules/sushiswap/decoder.py#L35'>rotkehlchen/chain/ethereum/modules/sushiswap/decoder.py:35:65:</a> F811 Import `EvmEvent` is duplicated in `typing.TYPE_CHECKING` block: `EvmEvent` redefined here
++ <a href='https://github.com/rotki/rotki/blob/7390d9a81e6bcffe8c92785cc352b09bb9d8571e/rotkehlchen/chain/evm/decoding/decoder.py#L102'>rotkehlchen/chain/evm/decoding/decoder.py:102:50:</a> F811 Import `CounterpartyDetails` is duplicated in `typing.TYPE_CHECKING` block: `CounterpartyDetails` redefined here
++ <a href='https://github.com/rotki/rotki/blob/7390d9a81e6bcffe8c92785cc352b09bb9d8571e/rotkehlchen/chain/evm/decoding/spark/decoder.py#L9'>rotkehlchen/chain/evm/decoding/spark/decoder.py:9:50:</a> F811 Import `CounterpartyDetails` is duplicated in `typing.TYPE_CHECKING` block: `CounterpartyDetails` redefined here
++ <a href='https://github.com/rotki/rotki/blob/7390d9a81e6bcffe8c92785cc352b09bb9d8571e/rotkehlchen/tests/unit/decoders/test_stakedao.py#L30'>rotkehlchen/tests/unit/decoders/test_stakedao.py:30:58:</a> F811 Import `EthereumInquirer` is duplicated in `typing.TYPE_CHECKING` block: `EthereumInquirer` redefined here
 </pre>
 
 </p>
@@ -189,10 +189,10 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/python-trio/trio/blob/01243945fc3d46d4483acf486177389e59fdc6b6/src/trio/_core/_tests/test_ki.py#L31'>src/trio/_core/_tests/test_ki.py:31:9:</a> F811 [*] Import `AsyncIterator` is duplicated in `typing.TYPE_CHECKING` block: `AsyncIterator` redefined here
-+ <a href='https://github.com/python-trio/trio/blob/01243945fc3d46d4483acf486177389e59fdc6b6/src/trio/_core/_tests/test_ki.py#L32'>src/trio/_core/_tests/test_ki.py:32:9:</a> F811 [*] Import `Callable` is duplicated in `typing.TYPE_CHECKING` block: `Callable` redefined here
-+ <a href='https://github.com/python-trio/trio/blob/01243945fc3d46d4483acf486177389e59fdc6b6/src/trio/_core/_tests/test_ki.py#L34'>src/trio/_core/_tests/test_ki.py:34:9:</a> F811 [*] Import `Iterator` is duplicated in `typing.TYPE_CHECKING` block: `Iterator` redefined here
-+ <a href='https://github.com/python-trio/trio/blob/01243945fc3d46d4483acf486177389e59fdc6b6/src/trio/_tests/tools/test_sync_requirements.py#L20'>src/trio/_tests/tools/test_sync_requirements.py:20:25:</a> F811 [*] Import `Path` is duplicated in `typing.TYPE_CHECKING` block: `Path` redefined here
++ <a href='https://github.com/python-trio/trio/blob/01243945fc3d46d4483acf486177389e59fdc6b6/src/trio/_core/_tests/test_ki.py#L31'>src/trio/_core/_tests/test_ki.py:31:9:</a> F811 Import `AsyncIterator` is duplicated in `typing.TYPE_CHECKING` block: `AsyncIterator` redefined here
++ <a href='https://github.com/python-trio/trio/blob/01243945fc3d46d4483acf486177389e59fdc6b6/src/trio/_core/_tests/test_ki.py#L32'>src/trio/_core/_tests/test_ki.py:32:9:</a> F811 Import `Callable` is duplicated in `typing.TYPE_CHECKING` block: `Callable` redefined here
++ <a href='https://github.com/python-trio/trio/blob/01243945fc3d46d4483acf486177389e59fdc6b6/src/trio/_core/_tests/test_ki.py#L34'>src/trio/_core/_tests/test_ki.py:34:9:</a> F811 Import `Iterator` is duplicated in `typing.TYPE_CHECKING` block: `Iterator` redefined here
++ <a href='https://github.com/python-trio/trio/blob/01243945fc3d46d4483acf486177389e59fdc6b6/src/trio/_tests/tools/test_sync_requirements.py#L20'>src/trio/_tests/tools/test_sync_requirements.py:20:25:</a> F811 Import `Path` is duplicated in `typing.TYPE_CHECKING` block: `Path` redefined here
 </pre>
 
 </p>
@@ -201,12 +201,12 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/_option_set.py#L33'>nox/_option_set.py:33:33:</a> F811 [*] Import `Callable` is duplicated in `typing.TYPE_CHECKING` block: `Callable` redefined here
-+ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/_option_set.py#L33'>nox/_option_set.py:33:43:</a> F811 [*] Import `Iterable` is duplicated in `typing.TYPE_CHECKING` block: `Iterable` redefined here
-+ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/command.py#L29'>nox/command.py:29:33:</a> F811 [*] Import `Iterable` is duplicated in `typing.TYPE_CHECKING` block: `Iterable` redefined here
-+ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/command.py#L29'>nox/command.py:29:43:</a> F811 [*] Import `Mapping` is duplicated in `typing.TYPE_CHECKING` block: `Mapping` redefined here
-+ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/command.py#L29'>nox/command.py:29:52:</a> F811 [*] Import `Sequence` is duplicated in `typing.TYPE_CHECKING` block: `Sequence` redefined here
-+ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/tests/test_manifest.py#L36'>tests/test_manifest.py:36:33:</a> F811 [*] Import `Sequence` is duplicated in `typing.TYPE_CHECKING` block: `Sequence` redefined here
++ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/_option_set.py#L33'>nox/_option_set.py:33:33:</a> F811 Import `Callable` is duplicated in `typing.TYPE_CHECKING` block: `Callable` redefined here
++ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/_option_set.py#L33'>nox/_option_set.py:33:43:</a> F811 Import `Iterable` is duplicated in `typing.TYPE_CHECKING` block: `Iterable` redefined here
++ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/command.py#L29'>nox/command.py:29:33:</a> F811 Import `Iterable` is duplicated in `typing.TYPE_CHECKING` block: `Iterable` redefined here
++ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/command.py#L29'>nox/command.py:29:43:</a> F811 Import `Mapping` is duplicated in `typing.TYPE_CHECKING` block: `Mapping` redefined here
++ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/command.py#L29'>nox/command.py:29:52:</a> F811 Import `Sequence` is duplicated in `typing.TYPE_CHECKING` block: `Sequence` redefined here
++ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/tests/test_manifest.py#L36'>tests/test_manifest.py:36:33:</a> F811 Import `Sequence` is duplicated in `typing.TYPE_CHECKING` block: `Sequence` redefined here
 </pre>
 
 </p>
@@ -215,11 +215,11 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/pdm-project/pdm/blob/0a4e9a70ec4d18d701dd7927b0680bee088cd8ef/src/pdm/cli/commands/python.py#L20'>src/pdm/cli/commands/python.py:20:26:</a> F811 [*] Import `ArgumentParser` is duplicated in `typing.TYPE_CHECKING` block: `ArgumentParser` redefined here
-+ <a href='https://github.com/pdm-project/pdm/blob/0a4e9a70ec4d18d701dd7927b0680bee088cd8ef/src/pdm/installers/installers.py#L24'>src/pdm/installers/installers.py:24:35:</a> F811 [*] Import `WheelContentElement` is duplicated in `typing.TYPE_CHECKING` block: `WheelContentElement` redefined here
-+ <a href='https://github.com/pdm-project/pdm/blob/0a4e9a70ec4d18d701dd7927b0680bee088cd8ef/src/pdm/models/reporter.py#L15'>src/pdm/models/reporter.py:15:31:</a> F811 [*] Import `Progress` is duplicated in `typing.TYPE_CHECKING` block: `Progress` redefined here
-+ <a href='https://github.com/pdm-project/pdm/blob/0a4e9a70ec4d18d701dd7927b0680bee088cd8ef/src/pdm/resolver/providers.py#L34'>src/pdm/resolver/providers.py:34:57:</a> F811 [*] Import `LockedRepository` is duplicated in `typing.TYPE_CHECKING` block: `LockedRepository` redefined here
-+ <a href='https://github.com/pdm-project/pdm/blob/0a4e9a70ec4d18d701dd7927b0680bee088cd8ef/src/pdm/resolver/providers.py#L35'>src/pdm/resolver/providers.py:35:41:</a> F811 [*] Import `Requirement` is duplicated in `typing.TYPE_CHECKING` block: `Requirement` redefined here
++ <a href='https://github.com/pdm-project/pdm/blob/1d31c8dfc9df91591ceb961b86253efe283c86dd/src/pdm/cli/commands/python.py#L20'>src/pdm/cli/commands/python.py:20:26:</a> F811 Import `ArgumentParser` is duplicated in `typing.TYPE_CHECKING` block: `ArgumentParser` redefined here
++ <a href='https://github.com/pdm-project/pdm/blob/1d31c8dfc9df91591ceb961b86253efe283c86dd/src/pdm/installers/installers.py#L24'>src/pdm/installers/installers.py:24:35:</a> F811 Import `WheelContentElement` is duplicated in `typing.TYPE_CHECKING` block: `WheelContentElement` redefined here
++ <a href='https://github.com/pdm-project/pdm/blob/1d31c8dfc9df91591ceb961b86253efe283c86dd/src/pdm/models/reporter.py#L15'>src/pdm/models/reporter.py:15:31:</a> F811 Import `Progress` is duplicated in `typing.TYPE_CHECKING` block: `Progress` redefined here
++ <a href='https://github.com/pdm-project/pdm/blob/1d31c8dfc9df91591ceb961b86253efe283c86dd/src/pdm/resolver/providers.py#L34'>src/pdm/resolver/providers.py:34:57:</a> F811 Import `LockedRepository` is duplicated in `typing.TYPE_CHECKING` block: `LockedRepository` redefined here
++ <a href='https://github.com/pdm-project/pdm/blob/1d31c8dfc9df91591ceb961b86253efe283c86dd/src/pdm/resolver/providers.py#L35'>src/pdm/resolver/providers.py:35:41:</a> F811 Import `Requirement` is duplicated in `typing.TYPE_CHECKING` block: `Requirement` redefined here
 </pre>
 
 </p>
@@ -245,9 +245,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/components.py#L34'>disnake/components.py:34:24:</a> F811 [*] Import `TypeAlias` is duplicated in `typing.TYPE_CHECKING` block: `TypeAlias` redefined here
-+ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/types/interactions.py#L11'>disnake/types/interactions.py:11:24:</a> F811 [*] Import `TypeAlias` is duplicated in `typing.TYPE_CHECKING` block: `TypeAlias` redefined here
-+ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ui/_types.py#L9'>disnake/ui/_types.py:9:24:</a> F811 [*] Import `TypeAlias` is duplicated in `typing.TYPE_CHECKING` block: `TypeAlias` redefined here
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/components.py#L34'>disnake/components.py:34:24:</a> F811 Import `TypeAlias` is duplicated in `typing.TYPE_CHECKING` block: `TypeAlias` redefined here
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/types/interactions.py#L11'>disnake/types/interactions.py:11:24:</a> F811 Import `TypeAlias` is duplicated in `typing.TYPE_CHECKING` block: `TypeAlias` redefined here
++ <a href='https://github.com/DisnakeDev/disnake/blob/394227ce57cc5245784c2125f5689cdc68a675c1/disnake/ui/_types.py#L9'>disnake/ui/_types.py:9:24:</a> F811 Import `TypeAlias` is duplicated in `typing.TYPE_CHECKING` block: `TypeAlias` redefined here
 </pre>
 
 </p>
@@ -259,18 +259,18 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/airflow-core/src/airflow/models/taskinstance.py#L103'>airflow-core/src/airflow/models/taskinstance.py:103:26:</a> F811 [*] Import `datetime` is duplicated in `typing.TYPE_CHECKING` block: `datetime` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/airflow-core/src/airflow/models/taskreschedule.py#L41'>airflow-core/src/airflow/models/taskreschedule.py:41:12:</a> F811 [*] Import `datetime` is duplicated in `typing.TYPE_CHECKING` block: `datetime` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/airflow-core/src/airflow/serialization/serialized_objects.py#L121'>airflow-core/src/airflow/serialization/serialized_objects.py:121:41:</a> F811 [*] Import `DagRunInfo` is duplicated in `typing.TYPE_CHECKING` block: `DagRunInfo` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/airflow-core/src/airflow/serialization/serialized_objects.py#L121'>airflow-core/src/airflow/serialization/serialized_objects.py:121:53:</a> F811 [*] Import `Timetable` is duplicated in `typing.TYPE_CHECKING` block: `Timetable` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/providers/amazon/src/airflow/providers/amazon/aws/auth_manager/aws_auth_manager.py#L60'>providers/amazon/src/airflow/providers/amazon/aws/auth_manager/aws_auth_manager.py:60:40:</a> F811 [*] Import `CLICommand` is duplicated in `typing.TYPE_CHECKING` block: `CLICommand` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/providers/amazon/src/airflow/providers/amazon/aws/triggers/dms.py#L26'>providers/amazon/src/airflow/providers/amazon/aws/triggers/dms.py:26:61:</a> F811 [*] Import `AwsGenericHook` is duplicated in `typing.TYPE_CHECKING` block: `AwsGenericHook` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/providers/cncf/kubernetes/src/airflow/providers/cncf/kubernetes/hooks/kubernetes.py#L53'>providers/cncf/kubernetes/src/airflow/providers/cncf/kubernetes/hooks/kubernetes.py:53:33:</a> F811 [*] Import `AsyncGenerator` is duplicated in `typing.TYPE_CHECKING` block: `AsyncGenerator` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/providers/common/compat/src/airflow/providers/common/compat/openlineage/utils/spark.py#L33'>providers/common/compat/src/airflow/providers/common/compat/openlineage/utils/spark.py:33:9:</a> F811 [*] Import `inject_parent_job_information_into_spark_properties` is duplicated in `typing.TYPE_CHECKING` block: `inject_parent_job_information_into_spark_properties` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/providers/common/compat/src/airflow/providers/common/compat/openlineage/utils/spark.py#L34'>providers/common/compat/src/airflow/providers/common/compat/openlineage/utils/spark.py:34:9:</a> F811 [*] Import `inject_transport_information_into_spark_properties` is duplicated in `typing.TYPE_CHECKING` block: `inject_transport_information_into_spark_properties` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/providers/databricks/src/airflow/providers/databricks/operators/databricks.py#L58'>providers/databricks/src/airflow/providers/databricks/operators/databricks.py:58:9:</a> F811 [*] Import `DatabricksWorkflowTaskGroup` is duplicated in `typing.TYPE_CHECKING` block: `DatabricksWorkflowTaskGroup` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/providers/fab/src/airflow/providers/fab/auth_manager/api_fastapi/routes/roles.py#L38'>providers/fab/src/airflow/providers/fab/auth_manager/api_fastapi/routes/roles.py:38:9:</a> F811 [*] Import `RoleBody` is duplicated in `typing.TYPE_CHECKING` block: `RoleBody` redefined here
-+ <a href='https://github.com/apache/airflow/blob/e774790e6f88f4480b3c4926bdff00b358014614/providers/fab/src/airflow/providers/fab/auth_manager/api_fastapi/routes/roles.py#L39'>providers/fab/src/airflow/providers/fab/auth_manager/api_fastapi/routes/roles.py:39:9:</a> F811 [*] Import `RoleResponse` is duplicated in `typing.TYPE_CHECKING` block: `RoleResponse` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/airflow-core/src/airflow/models/taskinstance.py#L103'>airflow-core/src/airflow/models/taskinstance.py:103:26:</a> F811 Import `datetime` is duplicated in `typing.TYPE_CHECKING` block: `datetime` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/airflow-core/src/airflow/models/taskreschedule.py#L41'>airflow-core/src/airflow/models/taskreschedule.py:41:12:</a> F811 Import `datetime` is duplicated in `typing.TYPE_CHECKING` block: `datetime` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/airflow-core/src/airflow/serialization/serialized_objects.py#L121'>airflow-core/src/airflow/serialization/serialized_objects.py:121:41:</a> F811 Import `DagRunInfo` is duplicated in `typing.TYPE_CHECKING` block: `DagRunInfo` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/airflow-core/src/airflow/serialization/serialized_objects.py#L121'>airflow-core/src/airflow/serialization/serialized_objects.py:121:53:</a> F811 Import `Timetable` is duplicated in `typing.TYPE_CHECKING` block: `Timetable` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/providers/amazon/src/airflow/providers/amazon/aws/auth_manager/aws_auth_manager.py#L60'>providers/amazon/src/airflow/providers/amazon/aws/auth_manager/aws_auth_manager.py:60:40:</a> F811 Import `CLICommand` is duplicated in `typing.TYPE_CHECKING` block: `CLICommand` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/providers/amazon/src/airflow/providers/amazon/aws/triggers/dms.py#L26'>providers/amazon/src/airflow/providers/amazon/aws/triggers/dms.py:26:61:</a> F811 Import `AwsGenericHook` is duplicated in `typing.TYPE_CHECKING` block: `AwsGenericHook` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/providers/cncf/kubernetes/src/airflow/providers/cncf/kubernetes/hooks/kubernetes.py#L53'>providers/cncf/kubernetes/src/airflow/providers/cncf/kubernetes/hooks/kubernetes.py:53:33:</a> F811 Import `AsyncGenerator` is duplicated in `typing.TYPE_CHECKING` block: `AsyncGenerator` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/providers/common/compat/src/airflow/providers/common/compat/openlineage/utils/spark.py#L33'>providers/common/compat/src/airflow/providers/common/compat/openlineage/utils/spark.py:33:9:</a> F811 Import `inject_parent_job_information_into_spark_properties` is duplicated in `typing.TYPE_CHECKING` block: `inject_parent_job_information_into_spark_properties` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/providers/common/compat/src/airflow/providers/common/compat/openlineage/utils/spark.py#L34'>providers/common/compat/src/airflow/providers/common/compat/openlineage/utils/spark.py:34:9:</a> F811 Import `inject_transport_information_into_spark_properties` is duplicated in `typing.TYPE_CHECKING` block: `inject_transport_information_into_spark_properties` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/providers/databricks/src/airflow/providers/databricks/operators/databricks.py#L58'>providers/databricks/src/airflow/providers/databricks/operators/databricks.py:58:9:</a> F811 Import `DatabricksWorkflowTaskGroup` is duplicated in `typing.TYPE_CHECKING` block: `DatabricksWorkflowTaskGroup` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/providers/fab/src/airflow/providers/fab/auth_manager/api_fastapi/routes/roles.py#L38'>providers/fab/src/airflow/providers/fab/auth_manager/api_fastapi/routes/roles.py:38:9:</a> F811 Import `RoleBody` is duplicated in `typing.TYPE_CHECKING` block: `RoleBody` redefined here
++ <a href='https://github.com/apache/airflow/blob/76cc6de9ee4df1f4c0efe8ced271139d4e2c48a4/providers/fab/src/airflow/providers/fab/auth_manager/api_fastapi/routes/roles.py#L39'>providers/fab/src/airflow/providers/fab/auth_manager/api_fastapi/routes/roles.py:39:9:</a> F811 Import `RoleResponse` is duplicated in `typing.TYPE_CHECKING` block: `RoleResponse` redefined here
 ... 3 additional changes omitted for project
 </pre>
 
@@ -283,8 +283,8 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/superset/blob/4f3403b1341ec908392c6e01814703a1d9121daf/superset/utils/webdriver.py#L56'>superset/utils/webdriver.py:56:24:</a> F811 [*] Import `Any` is duplicated in `typing.TYPE_CHECKING` block: `Any` redefined here
-+ <a href='https://github.com/apache/superset/blob/4f3403b1341ec908392c6e01814703a1d9121daf/superset/utils/webdriver.py#L70'>superset/utils/webdriver.py:70:24:</a> F811 [*] Import `Any` is duplicated in `typing.TYPE_CHECKING` block: `Any` redefined here
++ <a href='https://github.com/apache/superset/blob/4f3403b1341ec908392c6e01814703a1d9121daf/superset/utils/webdriver.py#L56'>superset/utils/webdriver.py:56:24:</a> F811 Import `Any` is duplicated in `typing.TYPE_CHECKING` block: `Any` redefined here
++ <a href='https://github.com/apache/superset/blob/4f3403b1341ec908392c6e01814703a1d9121daf/superset/utils/webdriver.py#L70'>superset/utils/webdriver.py:70:24:</a> F811 Import `Any` is duplicated in `typing.TYPE_CHECKING` block: `Any` redefined here
 </pre>
 
 </p>
@@ -296,10 +296,10 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/ibis-project/ibis/blob/a5e7c2298d1582261c0963040a687c3987507c62/ibis/backends/duckdb/__init__.py#L1374'>ibis/backends/duckdb/__init__.py:1374:16:</a> F811 [*] Import `pyarrow_hotfix` is duplicated in `typing.TYPE_CHECKING` block: `pyarrow_hotfix` redefined here
-+ <a href='https://github.com/ibis-project/ibis/blob/a5e7c2298d1582261c0963040a687c3987507c62/ibis/backends/duckdb/__init__.py#L1416'>ibis/backends/duckdb/__init__.py:1416:16:</a> F811 [*] Import `pyarrow_hotfix` is duplicated in `typing.TYPE_CHECKING` block: `pyarrow_hotfix` redefined here
-+ <a href='https://github.com/ibis-project/ibis/blob/a5e7c2298d1582261c0963040a687c3987507c62/ibis/backends/polars/__init__.py#L25'>ibis/backends/polars/__init__.py:25:33:</a> F811 [*] Import `Iterable` is duplicated in `typing.TYPE_CHECKING` block: `Iterable` redefined here
-+ <a href='https://github.com/ibis-project/ibis/blob/a5e7c2298d1582261c0963040a687c3987507c62/ibis/backends/sqlite/__init__.py#L33'>ibis/backends/sqlite/__init__.py:33:12:</a> F811 [*] Import `sqlite3` is duplicated in `typing.TYPE_CHECKING` block: `sqlite3` redefined here
++ <a href='https://github.com/ibis-project/ibis/blob/511d686cdb2f57aa8fc78ab6880d089c0a908db5/ibis/backends/duckdb/__init__.py#L1374'>ibis/backends/duckdb/__init__.py:1374:16:</a> F811 Import `pyarrow_hotfix` is duplicated in `typing.TYPE_CHECKING` block: `pyarrow_hotfix` redefined here
++ <a href='https://github.com/ibis-project/ibis/blob/511d686cdb2f57aa8fc78ab6880d089c0a908db5/ibis/backends/duckdb/__init__.py#L1416'>ibis/backends/duckdb/__init__.py:1416:16:</a> F811 Import `pyarrow_hotfix` is duplicated in `typing.TYPE_CHECKING` block: `pyarrow_hotfix` redefined here
++ <a href='https://github.com/ibis-project/ibis/blob/511d686cdb2f57aa8fc78ab6880d089c0a908db5/ibis/backends/polars/__init__.py#L25'>ibis/backends/polars/__init__.py:25:33:</a> F811 Import `Iterable` is duplicated in `typing.TYPE_CHECKING` block: `Iterable` redefined here
++ <a href='https://github.com/ibis-project/ibis/blob/511d686cdb2f57aa8fc78ab6880d089c0a908db5/ibis/backends/sqlite/__init__.py#L33'>ibis/backends/sqlite/__init__.py:33:12:</a> F811 Import `sqlite3` is duplicated in `typing.TYPE_CHECKING` block: `sqlite3` redefined here
 </pre>
 
 </p>
@@ -311,15 +311,15 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/core/langchain_core/utils/uuid.py#L15'>libs/core/langchain_core/utils/uuid.py:15:22:</a> F811 [*] Import `UUID` is duplicated in `typing.TYPE_CHECKING` block: `UUID` redefined here
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/core/tests/unit_tests/language_models/chat_models/test_base.py#L47'>libs/core/tests/unit_tests/language_models/chat_models/test_base.py:47:51:</a> F811 [*] Import `LLMResult` is duplicated in `typing.TYPE_CHECKING` block: `LLMResult` redefined here
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/langchain/agents/middleware/_execution.py#L52'>libs/langchain_v1/langchain/agents/middleware/_execution.py:52:33:</a> F811 [*] Import `Mapping` is duplicated in `typing.TYPE_CHECKING` block: `Mapping` redefined here
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/langchain/agents/middleware/_execution.py#L52'>libs/langchain_v1/langchain/agents/middleware/_execution.py:52:42:</a> F811 [*] Import `Sequence` is duplicated in `typing.TYPE_CHECKING` block: `Sequence` redefined here
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/langchain/agents/middleware/_execution.py#L53'>libs/langchain_v1/langchain/agents/middleware/_execution.py:53:25:</a> F811 [*] Import `Path` is duplicated in `typing.TYPE_CHECKING` block: `Path` redefined here
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/langchain/agents/middleware/types.py#L20'>libs/langchain_v1/langchain/agents/middleware/types.py:20:33:</a> F811 [*] Import `Awaitable` is duplicated in `typing.TYPE_CHECKING` block: `Awaitable` redefined here
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py#L22'>libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py:22:25:</a> F811 [*] Import `Path` is duplicated in `typing.TYPE_CHECKING` block: `Path` redefined here
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py#L73'>libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py:73:61:</a> F811 [*] Import `HuggingFaceEndpoint` is duplicated in `typing.TYPE_CHECKING` block: `HuggingFaceEndpoint` redefined here
-+ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py#L74'>libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py:74:61:</a> F811 [*] Import `HuggingFacePipeline` is duplicated in `typing.TYPE_CHECKING` block: `HuggingFacePipeline` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/core/langchain_core/utils/uuid.py#L15'>libs/core/langchain_core/utils/uuid.py:15:22:</a> F811 Import `UUID` is duplicated in `typing.TYPE_CHECKING` block: `UUID` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/core/tests/unit_tests/language_models/chat_models/test_base.py#L47'>libs/core/tests/unit_tests/language_models/chat_models/test_base.py:47:51:</a> F811 Import `LLMResult` is duplicated in `typing.TYPE_CHECKING` block: `LLMResult` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/langchain/agents/middleware/_execution.py#L52'>libs/langchain_v1/langchain/agents/middleware/_execution.py:52:33:</a> F811 Import `Mapping` is duplicated in `typing.TYPE_CHECKING` block: `Mapping` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/langchain/agents/middleware/_execution.py#L52'>libs/langchain_v1/langchain/agents/middleware/_execution.py:52:42:</a> F811 Import `Sequence` is duplicated in `typing.TYPE_CHECKING` block: `Sequence` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/langchain/agents/middleware/_execution.py#L53'>libs/langchain_v1/langchain/agents/middleware/_execution.py:53:25:</a> F811 Import `Path` is duplicated in `typing.TYPE_CHECKING` block: `Path` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/langchain/agents/middleware/types.py#L20'>libs/langchain_v1/langchain/agents/middleware/types.py:20:33:</a> F811 Import `Awaitable` is duplicated in `typing.TYPE_CHECKING` block: `Awaitable` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py#L22'>libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py:22:25:</a> F811 Import `Path` is duplicated in `typing.TYPE_CHECKING` block: `Path` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py#L73'>libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py:73:61:</a> F811 Import `HuggingFaceEndpoint` is duplicated in `typing.TYPE_CHECKING` block: `HuggingFaceEndpoint` redefined here
++ <a href='https://github.com/langchain-ai/langchain/blob/3356d0555725c3e0bbb9408c2b3f554cad2a6ee2/libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py#L74'>libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py:74:61:</a> F811 Import `HuggingFacePipeline` is duplicated in `typing.TYPE_CHECKING` block: `HuggingFacePipeline` redefined here
 </pre>
 
 </p>
@@ -331,8 +331,8 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/pandas-dev/pandas/blob/7f7bf9888c24900aa7d3c2e3838b3bff78eb72ea/pandas/core/dtypes/dtypes.py#L80'>pandas/core/dtypes/dtypes.py:80:23:</a> F811 [*] Import `pa` is duplicated in `typing.TYPE_CHECKING` block: `pa` redefined here
-+ <a href='https://github.com/pandas-dev/pandas/blob/7f7bf9888c24900aa7d3c2e3838b3bff78eb72ea/pandas/core/resample.py#L114'>pandas/core/resample.py:114:37:</a> F811 [*] Import `NDFrame` is duplicated in `typing.TYPE_CHECKING` block: `NDFrame` redefined here
++ <a href='https://github.com/pandas-dev/pandas/blob/ff0cd9a3a7d5d29344be7fb26aa457ce32763ad0/pandas/core/dtypes/dtypes.py#L80'>pandas/core/dtypes/dtypes.py:80:23:</a> F811 Import `pa` is duplicated in `typing.TYPE_CHECKING` block: `pa` redefined here
++ <a href='https://github.com/pandas-dev/pandas/blob/ff0cd9a3a7d5d29344be7fb26aa457ce32763ad0/pandas/core/resample.py#L114'>pandas/core/resample.py:114:37:</a> F811 Import `NDFrame` is duplicated in `typing.TYPE_CHECKING` block: `NDFrame` redefined here
 </pre>
 
 </p>
@@ -344,11 +344,11 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/prefecthq/prefect/blob/3d3ecf264b5ce01db50f70b9511476dc1bf35201/src/integrations/prefect-docker/prefect_docker/worker.py#L71'>src/integrations/prefect-docker/prefect_docker/worker.py:71:9:</a> F811 [*] Import `FlowRun` is duplicated in `typing.TYPE_CHECKING` block: `FlowRun` redefined here
-+ <a href='https://github.com/prefecthq/prefect/blob/3d3ecf264b5ce01db50f70b9511476dc1bf35201/src/prefect/flow_runs.py#L52'>src/prefect/flow_runs.py:52:46:</a> F811 [*] Import `PrefectClient` is duplicated in `typing.TYPE_CHECKING` block: `PrefectClient` redefined here
-+ <a href='https://github.com/prefecthq/prefect/blob/3d3ecf264b5ce01db50f70b9511476dc1bf35201/src/prefect/flows.py#L131'>src/prefect/flows.py:131:48:</a> F811 [*] Import `FlowRun` is duplicated in `typing.TYPE_CHECKING` block: `FlowRun` redefined here
-+ <a href='https://github.com/prefecthq/prefect/blob/3d3ecf264b5ce01db50f70b9511476dc1bf35201/src/prefect/tasks.py#L86'>src/prefect/tasks.py:86:33:</a> F811 [*] Import `TaskRunContext` is duplicated in `typing.TYPE_CHECKING` block: `TaskRunContext` redefined here
-+ <a href='https://github.com/prefecthq/prefect/blob/3d3ecf264b5ce01db50f70b9511476dc1bf35201/tests/deployment/test_flow_runs.py#L32'>tests/deployment/test_flow_runs.py:32:46:</a> F811 [*] Import `PrefectClient` is duplicated in `typing.TYPE_CHECKING` block: `PrefectClient` redefined here
++ <a href='https://github.com/prefecthq/prefect/blob/4e5d51078c91f7c550b9c432d9c7a027168e40e2/src/integrations/prefect-docker/prefect_docker/worker.py#L71'>src/integrations/prefect-docker/prefect_docker/worker.py:71:9:</a> F811 Import `FlowRun` is duplicated in `typing.TYPE_CHECKING` block: `FlowRun` redefined here
++ <a href='https://github.com/prefecthq/prefect/blob/4e5d51078c91f7c550b9c432d9c7a027168e40e2/src/prefect/flow_runs.py#L52'>src/prefect/flow_runs.py:52:46:</a> F811 Import `PrefectClient` is duplicated in `typing.TYPE_CHECKING` block: `PrefectClient` redefined here
++ <a href='https://github.com/prefecthq/prefect/blob/4e5d51078c91f7c550b9c432d9c7a027168e40e2/src/prefect/flows.py#L131'>src/prefect/flows.py:131:48:</a> F811 Import `FlowRun` is duplicated in `typing.TYPE_CHECKING` block: `FlowRun` redefined here
++ <a href='https://github.com/prefecthq/prefect/blob/4e5d51078c91f7c550b9c432d9c7a027168e40e2/src/prefect/tasks.py#L86'>src/prefect/tasks.py:86:33:</a> F811 Import `TaskRunContext` is duplicated in `typing.TYPE_CHECKING` block: `TaskRunContext` redefined here
++ <a href='https://github.com/prefecthq/prefect/blob/4e5d51078c91f7c550b9c432d9c7a027168e40e2/tests/deployment/test_flow_runs.py#L32'>tests/deployment/test_flow_runs.py:32:46:</a> F811 Import `PrefectClient` is duplicated in `typing.TYPE_CHECKING` block: `PrefectClient` redefined here
 </pre>
 
 </p>
@@ -360,7 +360,7 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/pypa/pip/blob/3e5ef6d259128f2539073b36c18e7103ce911ba9/tests/unit/resolution_resolvelib/test_provider.py#L24'>tests/unit/resolution_resolvelib/test_provider.py:24:58:</a> F811 [*] Import `Candidate` is duplicated in `typing.TYPE_CHECKING` block: `Candidate` redefined here
++ <a href='https://github.com/pypa/pip/blob/3e5ef6d259128f2539073b36c18e7103ce911ba9/tests/unit/resolution_resolvelib/test_provider.py#L24'>tests/unit/resolution_resolvelib/test_provider.py:24:58:</a> F811 Import `Candidate` is duplicated in `typing.TYPE_CHECKING` block: `Candidate` redefined here
 </pre>
 
 </p>
@@ -372,8 +372,8 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/python/mypy/blob/59257a28e9b42076b619ae5f2c699d446c875682/mypy/types.py#L3718'>mypy/types.py:3718:29:</a> F811 [*] Import `SyntheticTypeVisitor` is duplicated in `typing.TYPE_CHECKING` block: `SyntheticTypeVisitor` redefined here
-+ <a href='https://github.com/python/mypy/blob/59257a28e9b42076b619ae5f2c699d446c875682/mypy/types.py#L3721'>mypy/types.py:3721:20:</a> F811 [*] Import `TypeVisitor` is duplicated in `typing.TYPE_CHECKING` block: `TypeVisitor` redefined here
++ <a href='https://github.com/python/mypy/blob/c3c7eb1f065f3dffc42f574422ee895d63e1e65c/mypy/types.py#L3718'>mypy/types.py:3718:29:</a> F811 Import `SyntheticTypeVisitor` is duplicated in `typing.TYPE_CHECKING` block: `SyntheticTypeVisitor` redefined here
++ <a href='https://github.com/python/mypy/blob/c3c7eb1f065f3dffc42f574422ee895d63e1e65c/mypy/types.py#L3721'>mypy/types.py:3721:20:</a> F811 Import `TypeVisitor` is duplicated in `typing.TYPE_CHECKING` block: `TypeVisitor` redefined here
 </pre>
 
 </p>
@@ -385,10 +385,10 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/rotki/rotki/blob/732682e84e838c454cdf164d665196c36e2f5ee9/rotkehlchen/chain/ethereum/modules/sushiswap/decoder.py#L35'>rotkehlchen/chain/ethereum/modules/sushiswap/decoder.py:35:65:</a> F811 [*] Import `EvmEvent` is duplicated in `typing.TYPE_CHECKING` block: `EvmEvent` redefined here
-+ <a href='https://github.com/rotki/rotki/blob/732682e84e838c454cdf164d665196c36e2f5ee9/rotkehlchen/chain/evm/decoding/decoder.py#L102'>rotkehlchen/chain/evm/decoding/decoder.py:102:50:</a> F811 [*] Import `CounterpartyDetails` is duplicated in `typing.TYPE_CHECKING` block: `CounterpartyDetails` redefined here
-+ <a href='https://github.com/rotki/rotki/blob/732682e84e838c454cdf164d665196c36e2f5ee9/rotkehlchen/chain/evm/decoding/spark/decoder.py#L9'>rotkehlchen/chain/evm/decoding/spark/decoder.py:9:50:</a> F811 [*] Import `CounterpartyDetails` is duplicated in `typing.TYPE_CHECKING` block: `CounterpartyDetails` redefined here
-+ <a href='https://github.com/rotki/rotki/blob/732682e84e838c454cdf164d665196c36e2f5ee9/rotkehlchen/tests/unit/decoders/test_stakedao.py#L30'>rotkehlchen/tests/unit/decoders/test_stakedao.py:30:58:</a> F811 [*] Import `EthereumInquirer` is duplicated in `typing.TYPE_CHECKING` block: `EthereumInquirer` redefined here
++ <a href='https://github.com/rotki/rotki/blob/7390d9a81e6bcffe8c92785cc352b09bb9d8571e/rotkehlchen/chain/ethereum/modules/sushiswap/decoder.py#L35'>rotkehlchen/chain/ethereum/modules/sushiswap/decoder.py:35:65:</a> F811 Import `EvmEvent` is duplicated in `typing.TYPE_CHECKING` block: `EvmEvent` redefined here
++ <a href='https://github.com/rotki/rotki/blob/7390d9a81e6bcffe8c92785cc352b09bb9d8571e/rotkehlchen/chain/evm/decoding/decoder.py#L102'>rotkehlchen/chain/evm/decoding/decoder.py:102:50:</a> F811 Import `CounterpartyDetails` is duplicated in `typing.TYPE_CHECKING` block: `CounterpartyDetails` redefined here
++ <a href='https://github.com/rotki/rotki/blob/7390d9a81e6bcffe8c92785cc352b09bb9d8571e/rotkehlchen/chain/evm/decoding/spark/decoder.py#L9'>rotkehlchen/chain/evm/decoding/spark/decoder.py:9:50:</a> F811 Import `CounterpartyDetails` is duplicated in `typing.TYPE_CHECKING` block: `CounterpartyDetails` redefined here
++ <a href='https://github.com/rotki/rotki/blob/7390d9a81e6bcffe8c92785cc352b09bb9d8571e/rotkehlchen/tests/unit/decoders/test_stakedao.py#L30'>rotkehlchen/tests/unit/decoders/test_stakedao.py:30:58:</a> F811 Import `EthereumInquirer` is duplicated in `typing.TYPE_CHECKING` block: `EthereumInquirer` redefined here
 </pre>
 
 </p>
@@ -400,10 +400,10 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/python-trio/trio/blob/01243945fc3d46d4483acf486177389e59fdc6b6/src/trio/_core/_tests/test_ki.py#L31'>src/trio/_core/_tests/test_ki.py:31:9:</a> F811 [*] Import `AsyncIterator` is duplicated in `typing.TYPE_CHECKING` block: `AsyncIterator` redefined here
-+ <a href='https://github.com/python-trio/trio/blob/01243945fc3d46d4483acf486177389e59fdc6b6/src/trio/_core/_tests/test_ki.py#L32'>src/trio/_core/_tests/test_ki.py:32:9:</a> F811 [*] Import `Callable` is duplicated in `typing.TYPE_CHECKING` block: `Callable` redefined here
-+ <a href='https://github.com/python-trio/trio/blob/01243945fc3d46d4483acf486177389e59fdc6b6/src/trio/_core/_tests/test_ki.py#L34'>src/trio/_core/_tests/test_ki.py:34:9:</a> F811 [*] Import `Iterator` is duplicated in `typing.TYPE_CHECKING` block: `Iterator` redefined here
-+ <a href='https://github.com/python-trio/trio/blob/01243945fc3d46d4483acf486177389e59fdc6b6/src/trio/_tests/tools/test_sync_requirements.py#L20'>src/trio/_tests/tools/test_sync_requirements.py:20:25:</a> F811 [*] Import `Path` is duplicated in `typing.TYPE_CHECKING` block: `Path` redefined here
++ <a href='https://github.com/python-trio/trio/blob/01243945fc3d46d4483acf486177389e59fdc6b6/src/trio/_core/_tests/test_ki.py#L31'>src/trio/_core/_tests/test_ki.py:31:9:</a> F811 Import `AsyncIterator` is duplicated in `typing.TYPE_CHECKING` block: `AsyncIterator` redefined here
++ <a href='https://github.com/python-trio/trio/blob/01243945fc3d46d4483acf486177389e59fdc6b6/src/trio/_core/_tests/test_ki.py#L32'>src/trio/_core/_tests/test_ki.py:32:9:</a> F811 Import `Callable` is duplicated in `typing.TYPE_CHECKING` block: `Callable` redefined here
++ <a href='https://github.com/python-trio/trio/blob/01243945fc3d46d4483acf486177389e59fdc6b6/src/trio/_core/_tests/test_ki.py#L34'>src/trio/_core/_tests/test_ki.py:34:9:</a> F811 Import `Iterator` is duplicated in `typing.TYPE_CHECKING` block: `Iterator` redefined here
++ <a href='https://github.com/python-trio/trio/blob/01243945fc3d46d4483acf486177389e59fdc6b6/src/trio/_tests/tools/test_sync_requirements.py#L20'>src/trio/_tests/tools/test_sync_requirements.py:20:25:</a> F811 Import `Path` is duplicated in `typing.TYPE_CHECKING` block: `Path` redefined here
 </pre>
 
 </p>
@@ -415,12 +415,12 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/_option_set.py#L33'>nox/_option_set.py:33:33:</a> F811 [*] Import `Callable` is duplicated in `typing.TYPE_CHECKING` block: `Callable` redefined here
-+ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/_option_set.py#L33'>nox/_option_set.py:33:43:</a> F811 [*] Import `Iterable` is duplicated in `typing.TYPE_CHECKING` block: `Iterable` redefined here
-+ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/command.py#L29'>nox/command.py:29:33:</a> F811 [*] Import `Iterable` is duplicated in `typing.TYPE_CHECKING` block: `Iterable` redefined here
-+ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/command.py#L29'>nox/command.py:29:43:</a> F811 [*] Import `Mapping` is duplicated in `typing.TYPE_CHECKING` block: `Mapping` redefined here
-+ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/command.py#L29'>nox/command.py:29:52:</a> F811 [*] Import `Sequence` is duplicated in `typing.TYPE_CHECKING` block: `Sequence` redefined here
-+ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/tests/test_manifest.py#L36'>tests/test_manifest.py:36:33:</a> F811 [*] Import `Sequence` is duplicated in `typing.TYPE_CHECKING` block: `Sequence` redefined here
++ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/_option_set.py#L33'>nox/_option_set.py:33:33:</a> F811 Import `Callable` is duplicated in `typing.TYPE_CHECKING` block: `Callable` redefined here
++ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/_option_set.py#L33'>nox/_option_set.py:33:43:</a> F811 Import `Iterable` is duplicated in `typing.TYPE_CHECKING` block: `Iterable` redefined here
++ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/command.py#L29'>nox/command.py:29:33:</a> F811 Import `Iterable` is duplicated in `typing.TYPE_CHECKING` block: `Iterable` redefined here
++ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/command.py#L29'>nox/command.py:29:43:</a> F811 Import `Mapping` is duplicated in `typing.TYPE_CHECKING` block: `Mapping` redefined here
++ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/nox/command.py#L29'>nox/command.py:29:52:</a> F811 Import `Sequence` is duplicated in `typing.TYPE_CHECKING` block: `Sequence` redefined here
++ <a href='https://github.com/wntrblm/nox/blob/f8edf5fec2c819ec502566d2005a8346c9363334/tests/test_manifest.py#L36'>tests/test_manifest.py:36:33:</a> F811 Import `Sequence` is duplicated in `typing.TYPE_CHECKING` block: `Sequence` redefined here
 </pre>
 
 </p>
@@ -432,11 +432,11 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 <p>
 
 <pre>
-+ <a href='https://github.com/pdm-project/pdm/blob/0a4e9a70ec4d18d701dd7927b0680bee088cd8ef/src/pdm/cli/commands/python.py#L20'>src/pdm/cli/commands/python.py:20:26:</a> F811 [*] Import `ArgumentParser` is duplicated in `typing.TYPE_CHECKING` block: `ArgumentParser` redefined here
-+ <a href='https://github.com/pdm-project/pdm/blob/0a4e9a70ec4d18d701dd7927b0680bee088cd8ef/src/pdm/installers/installers.py#L24'>src/pdm/installers/installers.py:24:35:</a> F811 [*] Import `WheelContentElement` is duplicated in `typing.TYPE_CHECKING` block: `WheelContentElement` redefined here
-+ <a href='https://github.com/pdm-project/pdm/blob/0a4e9a70ec4d18d701dd7927b0680bee088cd8ef/src/pdm/models/reporter.py#L15'>src/pdm/models/reporter.py:15:31:</a> F811 [*] Import `Progress` is duplicated in `typing.TYPE_CHECKING` block: `Progress` redefined here
-+ <a href='https://github.com/pdm-project/pdm/blob/0a4e9a70ec4d18d701dd7927b0680bee088cd8ef/src/pdm/resolver/providers.py#L34'>src/pdm/resolver/providers.py:34:57:</a> F811 [*] Import `LockedRepository` is duplicated in `typing.TYPE_CHECKING` block: `LockedRepository` redefined here
-+ <a href='https://github.com/pdm-project/pdm/blob/0a4e9a70ec4d18d701dd7927b0680bee088cd8ef/src/pdm/resolver/providers.py#L35'>src/pdm/resolver/providers.py:35:41:</a> F811 [*] Import `Requirement` is duplicated in `typing.TYPE_CHECKING` block: `Requirement` redefined here
++ <a href='https://github.com/pdm-project/pdm/blob/1d31c8dfc9df91591ceb961b86253efe283c86dd/src/pdm/cli/commands/python.py#L20'>src/pdm/cli/commands/python.py:20:26:</a> F811 Import `ArgumentParser` is duplicated in `typing.TYPE_CHECKING` block: `ArgumentParser` redefined here
++ <a href='https://github.com/pdm-project/pdm/blob/1d31c8dfc9df91591ceb961b86253efe283c86dd/src/pdm/installers/installers.py#L24'>src/pdm/installers/installers.py:24:35:</a> F811 Import `WheelContentElement` is duplicated in `typing.TYPE_CHECKING` block: `WheelContentElement` redefined here
++ <a href='https://github.com/pdm-project/pdm/blob/1d31c8dfc9df91591ceb961b86253efe283c86dd/src/pdm/models/reporter.py#L15'>src/pdm/models/reporter.py:15:31:</a> F811 Import `Progress` is duplicated in `typing.TYPE_CHECKING` block: `Progress` redefined here
++ <a href='https://github.com/pdm-project/pdm/blob/1d31c8dfc9df91591ceb961b86253efe283c86dd/src/pdm/resolver/providers.py#L34'>src/pdm/resolver/providers.py:34:57:</a> F811 Import `LockedRepository` is duplicated in `typing.TYPE_CHECKING` block: `LockedRepository` redefined here
++ <a href='https://github.com/pdm-project/pdm/blob/1d31c8dfc9df91591ceb961b86253efe283c86dd/src/pdm/resolver/providers.py#L35'>src/pdm/resolver/providers.py:35:41:</a> F811 Import `Requirement` is duplicated in `typing.TYPE_CHECKING` block: `Requirement` redefined here
 </pre>
 
 </p>

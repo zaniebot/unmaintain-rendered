@@ -7,9 +7,9 @@ author: flying-sheep
 labels: []
 assignees: []
 created_at: 2026-01-14T10:29:05Z
-updated_at: 2026-01-14T10:30:22Z
+updated_at: 2026-01-14T11:02:15Z
 url: https://github.com/astral-sh/ty/issues/2488
-synced_at: 2026-01-14T10:34:11Z
+synced_at: 2026-01-14T11:33:10Z
 ```
 
 # PEP 695 `type` statements breaks overload collapse
@@ -30,7 +30,7 @@ from typing import overload, Literal
 
 class Eager: ...
 class Lazy: ...
-type Array = Eager | Lazy
+type Array = Eager | Lazy  # these work: `Array = …`, `Array: TypeAlias = …`
 
 @overload
 def evaluate(x: Eager, /, *, eager: bool = False) -> Eager: ...
