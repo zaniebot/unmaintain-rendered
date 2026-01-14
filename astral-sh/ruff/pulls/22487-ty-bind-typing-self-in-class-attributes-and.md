@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/self
 created_at: 2026-01-09T23:24:18Z
-updated_at: 2026-01-10T17:28:32Z
+updated_at: 2026-01-14T14:20:33Z
 url: https://github.com/astral-sh/ruff/pull/22487
-synced_at: 2026-01-12T15:57:50Z
+synced_at: 2026-01-14T14:41:25Z
 ```
 
 # [ty] Bind `typing.Self` in class attributes and assignment
@@ -568,5 +568,9 @@ _Renamed from "[ty] Bind `typing.Self` in class attributes and assignment" to "[
 ---
 
 _Renamed from "[ty] Fix incorrect `Self` binding for bound methods stored as instance attributes" to "[ty] Bind `typing.Self` in class attributes and assignment" by @charliermarsh on 2026-01-10 17:21_
+
+---
+
+_Review request for @AlexWaygood removed by @AlexWaygood on 2026-01-14 14:20_
 
 ---

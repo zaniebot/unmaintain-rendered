@@ -2,17 +2,18 @@
 number: 17452
 title: "Only save Rust cache on `main` or when cache-relevant files change"
 type: pull_request
-state: open
+state: merged
 author: zanieb
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: zb/cache-smart-save-if
 created_at: 2026-01-13T22:51:04Z
-updated_at: 2026-01-14T09:20:37Z
+updated_at: 2026-01-14T13:35:48Z
 url: https://github.com/astral-sh/uv/pull/17452
-synced_at: 2026-01-14T09:35:22Z
+synced_at: 2026-01-14T14:41:38Z
 ```
 
 # Only save Rust cache on `main` or when cache-relevant files change
@@ -38,5 +39,17 @@ _Label `internal` added by @zanieb on 2026-01-13 23:20_
 ---
 
 _@konstin approved on 2026-01-14 09:20_
+
+---
+
+_Merged by @zanieb on 2026-01-14 13:35_
+
+---
+
+_Closed by @zanieb on 2026-01-14 13:35_
+
+---
+
+_Branch deleted on 2026-01-14 13:35_
 
 ---

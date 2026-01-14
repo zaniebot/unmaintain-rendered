@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: toml-extra
 created_at: 2025-07-18T15:20:55Z
-updated_at: 2026-01-13T16:19:37Z
+updated_at: 2026-01-14T14:28:22Z
 url: https://github.com/astral-sh/uv/pull/14728
-synced_at: 2026-01-13T16:27:48Z
+synced_at: 2026-01-14T14:41:38Z
 ```
 
 # feat: Complete PEP 751 multi-use lock file implementation for pylock.toml
@@ -41,7 +41,6 @@ This PR adds the missing PEP 751 metadata fields and marker syntax to enable ful
 - **`extras`**: List of available optional dependencies
 - **`dependency-groups`**: List of available dependency groups (PEP 735)
 - **`default-groups`**: Synthetic groups for default installation (currently empty per spec)
-- **`[tool.uv]`**: Tool metadata with version and command used to generate the lock
 - **PEP 751 marker syntax**: `'extra' in extras` and `'group' in dependency_groups` for root project dependencies
 
 ### Feature Examples
@@ -146,27 +145,7 @@ Per PEP 751, this is only needed when `packages.marker` necessitates synthetic g
 
 ---
 
-#### 5. `[tool.uv]` Table
-
-Records the uv version and command used to generate the lock file with portable paths:
-
-**Output (`pylock.toml`):**
-```toml
-[tool.uv]
-version = "0.0.11"
-command = [
-    "uv",
-    "export",
-    "--format",
-    "pylock.toml",
-]
-```
-
-Enables lock file regeneration and debugging by tracking exact tool version and command. Command paths are portable (just "uv", not full path like `/usr/bin/uv`).
-
----
-
-#### 6. Root Project Extras with PEP 751 Markers
+#### 5. Root Project Extras with PEP 751 Markers
 
 Root project dependencies use PEP 751 `'extra' in extras` syntax:
 
@@ -195,7 +174,7 @@ The `pytest` dependency has marker `'test' in extras` indicating it's only insta
 
 ---
 
-#### 7. Root Project Dependency Groups with PEP 751 Markers
+#### 6. Root Project Dependency Groups with PEP 751 Markers
 
 Root project dependencies use PEP 751 `'group' in dependency_groups` syntax:
 
@@ -224,7 +203,7 @@ The `ruff` dependency has marker `'dev' in dependency_groups` indicating it's on
 
 ---
 
-#### 8. Transitive Package Extras with PEP 508 Markers
+#### 7. Transitive Package Extras with PEP 508 Markers
 
 Transitive packages (not the root project) use standard PEP 508 `extra == 'name'` syntax:
 
@@ -286,15 +265,6 @@ dependency-groups = [
     "type",
 ]
 
-[tool.uv]
-version = "0.0.11"
-command = [
-    "uv",
-    "export",
-    "--format",
-    "pylock.toml",
-]
-
 [[packages]]
 name = "my-project"
 marker = "sys_platform == 'darwin' or sys_platform == 'linux'"
@@ -339,9 +309,8 @@ wheels = [
 1. `environments` lists platform markers
 2. `extras` lists available extras
 3. `dependency-groups` lists available groups
-4. `[tool.uv]` records generation metadata
-5. Packages have combined platform + extras/groups markers
-6. Root project uses PEP 751 syntax (`'test' in extras`, `'dev' in dependency_groups`)
+4. Packages have combined platform + extras/groups markers
+5. Root project uses PEP 751 syntax (`'test' in extras`, `'dev' in dependency_groups`)
 
 ---
 
@@ -372,7 +341,6 @@ All **optional** core fields:
 - `extras`
 - `dependency-groups`
 - `default-groups` (empty by design, spec-compliant)
-- `[tool]` table with tool metadata
 - All package source types (`vcs`, `directory`, `archive`, `sdist`, `wheels`)
 - All sub-fields (`upload-time`, `hashes`, `marker`, `requires-python`, `dependencies`)
 - PEP 751 marker syntax (`'extra' in extras`, `'group' in dependency_groups`)
@@ -410,6 +378,7 @@ uv pip install -r pylock.toml --extra test --group dev
 ```
 
 Resolves #13060
+
 
 ---
 

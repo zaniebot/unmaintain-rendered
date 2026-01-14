@@ -12,9 +12,9 @@ draft: true
 base: main
 head: konsti/error-on-authentication-error-in-check-url
 created_at: 2025-10-15T18:44:36Z
-updated_at: 2025-12-05T10:31:57Z
+updated_at: 2026-01-14T13:59:06Z
 url: https://github.com/astral-sh/uv/pull/16323
-synced_at: 2026-01-12T16:12:13Z
+synced_at: 2026-01-14T14:41:38Z
 ```
 
 # Error when there is an authentication failure in check URL
@@ -98,5 +98,9 @@ The question is basically which kind of failure is worse, check-url not working 
 ---
 
 _Converted to draft by @konstin on 2025-12-05 10:31_
+
+---
+
+_Added to milestone `v0.10.0` by @konstin on 2026-01-14 13:59_
 
 ---

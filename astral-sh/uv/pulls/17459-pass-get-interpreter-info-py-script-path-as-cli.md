@@ -4,14 +4,15 @@ title: "Pass `get_interpreter_info.py` script path as CLI instead of using -c op
 type: pull_request
 state: open
 author: ryanking13
-labels: []
+labels:
+  - needs-decision
 assignees: []
 base: main
 head: interpreter-info-run-script
 created_at: 2026-01-14T11:38:22Z
-updated_at: 2026-01-14T13:31:30Z
+updated_at: 2026-01-14T14:12:10Z
 url: https://github.com/astral-sh/uv/pull/17459
-synced_at: 2026-01-14T13:42:35Z
+synced_at: 2026-01-14T14:41:38Z
 ```
 
 # Pass `get_interpreter_info.py` script path as CLI instead of using -c option
@@ -71,5 +72,9 @@ I'll just note I'm very wary of changing this just for Pyodide, this is a brittl
 _Comment by @zanieb on 2026-01-14 13:31_
 
 I thought we didn't support Pyodide on Windows?
+
+---
+
+_Label `needs-decision` added by @konstin on 2026-01-14 14:12_
 
 ---

@@ -2,17 +2,17 @@
 number: 22502
 title: "[ty] Assume 3-argument form for variadics in type(...)"
 type: pull_request
-state: open
+state: closed
 author: charliermarsh
 labels:
   - ty
 assignees: []
-base: charlie/dyn-expression
+base: main
 head: charlie/dyn-overload
 created_at: 2026-01-11T14:55:39Z
-updated_at: 2026-01-14T02:16:51Z
+updated_at: 2026-01-14T14:03:29Z
 url: https://github.com/astral-sh/ruff/pull/22502
-synced_at: 2026-01-14T02:32:45Z
+synced_at: 2026-01-14T14:41:25Z
 ```
 
 # [ty] Assume 3-argument form for variadics in type(...)
@@ -172,5 +172,15 @@ _Review request for @MichaReiser removed by @AlexWaygood on 2026-01-13 21:23_
 _@ibraheemdev approved on 2026-01-14 02:16_
 
 This makes sense to me.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-14 11:26_
+
+This makes sense to me too but -- given that both overloads are now _heavily_ special-cased -- I think we can both simplify our code and improve error messages for our users if we just handle both overloads at the same time. Something like https://github.com/astral-sh/ruff/pull/22569?
+
+---
+
+_Closed by @charliermarsh on 2026-01-14 14:03_
 
 ---

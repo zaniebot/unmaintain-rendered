@@ -6,14 +6,14 @@ state: open
 author: zanieb
 labels:
   - bug
+  - breaking
 assignees: []
-draft: true
 base: main
 head: zb/tool-pyver
 created_at: 2025-06-17T17:27:18Z
-updated_at: 2025-10-08T15:04:52Z
+updated_at: 2026-01-14T13:56:43Z
 url: https://github.com/astral-sh/uv/pull/14112
-synced_at: 2026-01-12T16:11:02Z
+synced_at: 2026-01-14T14:41:38Z
 ```
 
 # Respect global Python version pins in `uv tool run` and `uv tool install`
@@ -80,5 +80,17 @@ _Comment by @jtfmumm on 2025-06-26 12:00_
 The behavior makes sense to me, and is consistent with how I was thinking about it before.
 
 
+
+---
+
+_Label `breaking` added by @zanieb on 2026-01-14 13:54_
+
+---
+
+_Added to milestone `v0.10.0` by @zanieb on 2026-01-14 13:54_
+
+---
+
+_Marked ready for review by @zanieb on 2026-01-14 13:56_
 
 ---

@@ -2,17 +2,18 @@
 number: 17451
 title: "Reduce cache contention due to `RUST_BACKTRACE` environment variable"
 type: pull_request
-state: open
+state: merged
 author: zanieb
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: zb/cache-standardize-rust-backtrace
 created_at: 2026-01-13T22:48:13Z
-updated_at: 2026-01-14T09:22:42Z
+updated_at: 2026-01-14T13:35:28Z
 url: https://github.com/astral-sh/uv/pull/17451
-synced_at: 2026-01-14T09:35:22Z
+synced_at: 2026-01-14T14:41:38Z
 ```
 
 # Reduce cache contention due to `RUST_BACKTRACE` environment variable
@@ -38,5 +39,17 @@ _Marked ready for review by @zanieb on 2026-01-13 23:19_
 ---
 
 _@konstin approved on 2026-01-14 09:22_
+
+---
+
+_Merged by @zanieb on 2026-01-14 13:35_
+
+---
+
+_Closed by @zanieb on 2026-01-14 13:35_
+
+---
+
+_Branch deleted on 2026-01-14 13:35_
 
 ---

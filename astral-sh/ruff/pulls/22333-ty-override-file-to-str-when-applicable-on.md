@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: type-module-dunder-file-str
 created_at: 2026-01-01T20:21:52Z
-updated_at: 2026-01-14T12:41:55Z
+updated_at: 2026-01-14T13:41:14Z
 url: https://github.com/astral-sh/ruff/pull/22333
-synced_at: 2026-01-14T13:42:22Z
+synced_at: 2026-01-14T14:41:25Z
 ```
 
 # [ty] Override `__file__` to str when applicable on imported modules
@@ -491,5 +491,28 @@ This looks pretty good, but the comment needs to be updated and I think we shoul
 ---
 
 _Assigned to @AlexWaygood by @AlexWaygood on 2026-01-14 12:41_
+
+---
+
+_@sinon reviewed on 2026-01-14 13:38_
+
+---
+
+_Review comment by @sinon on `crates/ty_python_semantic/src/place.rs`:1087 on 2026-01-14 13:38_
+
+> We could also possibly get rid of the exemption for stubs that you have here?
+
+Thanks for the added context, I mainly took this behaviour steer from an existing tests comment: https://github.com/astral-sh/ruff/blob/853bb006269e39f55c0d6cde5a05861d8202bbfe/crates/ty_python_semantic/resources/mdtest/scopes/moduletype_attrs.md?plain=1#L102-L104 so will update the comment on the existing test as that does become `str` (which matches runtime)
+
+
+---
+
+_@AlexWaygood reviewed on 2026-01-14 13:41_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/place.rs`:1087 on 2026-01-14 13:41_
+
+thanks, yeah, that makes sense!
 
 ---
