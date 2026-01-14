@@ -11,9 +11,9 @@ draft: true
 base: main
 head: catch-deprecated-imports-airflow-3_1
 created_at: 2026-01-04T21:44:45Z
-updated_at: 2026-01-14T04:27:12Z
+updated_at: 2026-01-14T04:33:31Z
 url: https://github.com/astral-sh/ruff/pull/22376
-synced_at: 2026-01-14T04:30:38Z
+synced_at: 2026-01-14T05:40:47Z
 ```
 
 # [`airflow`] Add ruff rules to catch deprecated Airflow imports for Airflow 3.1 (`AIR321`)
@@ -346,7 +346,6 @@ Below is the summary of changes.
 > airflow.sensors.base.poke_mode_only → airflow.sdk.bases.sensor.poke_mode_only
 3. Move from AIR301 to AIR321
 > airflow.secrets.cache.SecretCache → from airflow.sdk import SecretCache
-**TODO: i think i need to create a PR on Airflow side to add it into lazy import**
 4. Keep `_internal` modules and show a warning message to indicate these are internal API that may change without notice.
 5. Update the other rules to adapt for the new Replacement `SourceModuleMovedToSDK`
 

@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-13T17:30:11Z
+updated_at: 2026-01-14T05:00:31Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-13T18:45:01Z
+synced_at: 2026-01-14T05:40:35Z
 ```
 
 # Dependency Dashboard
@@ -66,6 +66,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/proc-macro2-1.x-lockfile -->Update Rust crate proc-macro2 to v1.0.105
  - [ ] <!-- unschedule-branch=renovate/quote-1.x-lockfile -->Update Rust crate quote to v1.0.43
  - [ ] <!-- unschedule-branch=renovate/serde_json-1.x-lockfile -->Update Rust crate serde_json to v1.0.149
+ - [ ] <!-- unschedule-branch=renovate/syn-2.x-lockfile -->Update Rust crate syn to v2.0.114
  - [ ] <!-- unschedule-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
  - [ ] <!-- unschedule-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
  - [ ] <!-- unschedule-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.65.15
@@ -82,7 +83,6 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/pyright-1.x-lockfile -->Update dependency pyright to v1.1.408
  - [ ] <!-- approvePr-branch=renovate/libc-0.x-lockfile -->Update Rust crate libc to v0.2.180
  - [ ] <!-- approvePr-branch=renovate/snapbox-0.x-lockfile -->Update Rust crate snapbox to v0.6.24
- - [ ] <!-- approvePr-branch=renovate/syn-2.x-lockfile -->Update Rust crate syn to v2.0.114
  - [ ] <!-- approvePr-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
  - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.7.0
  - [ ] <!-- approvePr-branch=renovate/tomli-2.x -->Update dependency tomli to v2.4.0
