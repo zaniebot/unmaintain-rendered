@@ -94,10 +94,64 @@ It seems like this problem was occured because ty do not think <code>dtype[integ
         <div class="timeline-entry">
             <div class="event">Closed by @carljm on 2026-01-13 22:19</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Carrot-shreds">@Carrot-shreds</a> on 2026-01-14 09:00</div>
+            <div class="timeline-body"><p>Thank you for your testing! It's indeed a problem related to these dependency version, instead of the type checker.</p>
+<p>I'm using python3.13 with the latest <code>opencv-python&gt;=4.12.0.88</code>, which lock the maximum verion of numpy to <code>numpy&lt;2.3.0</code>, so my numpy was degrade to <code>numpy&gt;=2.2.6</code> automatically. And it should be fixed in the next cv2 release.
+After i change my dependencies to <code>opencv-python&gt;=4.11.0.86</code>, <code>numpy&gt;=2.4.1</code>, the error was disappeared.</p>
+<p>About the difference of ty and pyright. Sorry I made a mistake that i didn't actually test the sample code with pyright, I just write another similar case as a sample and ty check it. I retest the sample with <code>numpy==2.2.6</code> and <code>opencv-python==4.12.0.88</code> using both pyright and ty. They all give the same &quot;no-matching-overload&quot; error as your result.</p>
+<p>But i also retest my actual project code, they do act differently.
+(In a new uv 3.13.9 env with numpy==2.2.6 and opencv-python==4.12.0.88)</p>
+<pre><code>import cv2
+import numpy as np
+...
+def func(img: np.ndarray):
+    if len(img.shape) != 2:
+        img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    if np.average(img) &lt; 128:
+        img = 255 - img
+    ...
+</code></pre>
+<pre><code>PS G:\code\Python\tytest&gt; uvx pyright --pythonpath .venv/Scripts/python main.py
+0 errors, 0 warnings, 0 informations
+</code></pre>
+<p>And <code>uvx ty check main.py</code> will got the same error as the sample code.</p>
+<p>I also found if I change the code like this, pyright will also give the error like ty.</p>
+<pre><code>import cv2
+import numpy as np
+...
+def func(image_in: np.ndarray):
+    if len(image_in.shape) != 2:
+        img = cv2.cvtColor(image_in, cv2.COLOR_RGB2GRAY)
+    else:
+        img = image_in
+    if np.average(img) &lt; 128:
+        img = 255 - img
+    ...
+</code></pre>
+<pre><code>PS G:\code\Python\tytest&gt; uvx pyright --pythonpath .venv/Scripts/python main.py
+g:\code\Python\tytest\main.py
+  g:\code\Python\tytest\main.py:12:8 - error: No overloads for &quot;average&quot; match the provided arguments (reportCallIssue)
+  g:\code\Python\tytest\main.py:12:19 - error: Argument of type &quot;MatLike | ndarray[Unknown, Unknown]&quot; cannot be assigned to parameter &quot;a&quot; of type &quot;_ArrayLikeComplex_co | _ArrayLikeObject_co&quot; in function &quot;average&quot;
+    Type &quot;MatLike | ndarray[Unknown, Unknown]&quot; is not assignable to type &quot;_ArrayLikeComplex_co | _ArrayLikeObject_co&quot;
+      Type &quot;NumPyArrayNumeric&quot; is not assignable to type &quot;_ArrayLikeComplex_co | _ArrayLikeObject_co&quot;
+        &quot;ndarray[Any, dtype[integer[Any] | floating[Any]]]&quot; is incompatible with protocol &quot;_SupportsArray[dtype[numpy.bool[builtins.bool]] | dtype[integer[Any]] | dtype[floating[Any]] | dtype[complexfloating[Any, Any]]]&quot;
+          &quot;__array__&quot; is an incompatible type
+            No overloaded function matches type &quot;() -&gt; ndarray[Any, _DType_co@_SupportsArray]&quot;
+        &quot;ndarray[Any, dtype[integer[Any] | floating[Any]]]&quot; is incompatible with protocol &quot;_NestedSequence[_SupportsArray[dtype[numpy.bool[builtins.bool]] | dtype[integer[Any]] | dtype[floating[Any]] | dtype[complexfloating[Any, Any]]]]&quot;
+          &quot;__reversed__&quot; is not present
+          &quot;count&quot; is not present
+    ... (reportArgumentType)
+2 errors, 0 warnings, 0 informations
+</code></pre>
+<p>I think the behaviour difference perhaps because pyright's default <code>typeCheckingMode=&quot;standard&quot;</code> is less strict than ty's strategy.
+Anyway, change the numpy version do solve the problem. Thanks again for teams wonderful working!</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-13 22:27:10 UTC
+        Synced at 2026-01-14 09:38:04 UTC
     </footer>
 </body>
 </html>
