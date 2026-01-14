@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best practices for type detection with two variable logic - astral-sh/ty #2496</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Best practices for type detection with two variable logic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2496">#2496</a>
+        opened by <a href="https://github.com/nadav7679">@nadav7679</a>
+        on 2026-01-14 17:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nadav7679">@nadav7679</a></div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi ty team, loving your work.</p>
+<p>I encountered quite a simple piece of logic that I can't seem to restructure in a way that passes ty check. I was wondering what is the best practice to handle it.</p>
+<p>The use case is something like this (also view it in this <a href="https://play.ty.dev/a94c53c4-a77d-49c7-8743-2b5e33669991">playground</a>):</p>
+<pre><code class="language-python3">from typing import reveal_type
+
+class A:
+    pass
+
+class B:
+    pass
+
+def f(
+        a: A | None,
+        b: B | None,
+) -&gt; A | B | tuple[A, B]:
+
+    if a is None and b is None:
+        raise
+
+    if a is None:
+        reveal_type(b) # B | None
+        return b
+    
+    if b is None:
+        return a
+
+    return (a, b)
+</code></pre>
+<p>Basically, the function <code>f</code> is allowed to be triggered with either <code>a</code>, <code>b</code>, or both, but is not allowed to be triggered with two <code>None</code>s. <code>ty</code> can't recognise this logic so it treats <code>b</code> as type <code>B | None</code> and displays this error when trying to return B:</p>
+<pre><code>Return type does not match returned value: expected `A | B | tuple[A, B]`, found `B | None` (invalid-return-type) [Ln 18, Col 16]
+</code></pre>
+<p>I tried playing around with it and couldn't find a good solution. I was wondering what's the best practice in these kinds of cases.</p>
+<p>Thanks!</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @nadav7679 on 2026-01-14 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implementing two variable type detection" to "Best practices for type detection with two variable logic" by @nadav7679 on 2026-01-14 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-14 17:11</div>
+            <div class="timeline-body"><p>It's maybe a bit weird, but we do support narrowing unions of tuples via subscript checks, and we also support narrowing of individual subscript elements, so you <em>could</em> do something like this:</p>
+<pre><code class="language-py">from typing import reveal_type
+
+class A:
+    value: int
+
+class B:
+    value: int
+
+def f(ab: tuple[A | None, B] | tuple[A, B | None]) -&gt; A | B | tuple[A, B]:
+
+    if ab[0] is None and ab[1] is None:
+        raise
+
+    if ab[0] is None:
+        # `ab` is narrowed to `tuple[A | None, B]` here
+        reveal_type(ab[1])  # revealed: B
+        return ab[1]
+    
+    if ab[1] is None:
+        # `ab` is narrowed to `tuple[A, B | None]` here
+        return ab[0]  # revealed: A
+
+    # at this point, `a[0]` has been narrowed to `A`
+    # and `a[1]` has been narrowed to `B`,
+    # (although we don't *currently* narrow the tuple as a whole
+    # to `tuple[A, B]` at this location)
+    return ab[0], ab[1]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-14 17:11</div>
+            <div class="timeline-body"><p>(also, thanks for the kind words!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-14 17:17</div>
+            <div class="timeline-body"><p>The more usual thing to do is probably not to wrap your variables in a tuple, but just use an <code>assert</code> to help the type checker out:</p>
+<pre><code class="language-py">from typing import reveal_type
+
+class A:
+    pass
+
+class B:
+    pass
+
+def f(
+    a: A | None,
+    b: B | None,
+) -&gt; A | B | tuple[A, B]:
+
+    if a is None and b is None:
+        raise
+
+    if a is None:
+        assert b is not None
+        reveal_type(b) # B
+        return b
+    
+    if b is None:
+        return a
+
+    return (a, b)
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-14 17:40:50 UTC
+    </footer>
+</body>
+</html>
