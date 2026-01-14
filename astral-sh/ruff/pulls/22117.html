@@ -169,10 +169,25 @@ scipy (https://github.com/scipy/scipy)
 <p>It feels like the general approach here is that we take the typevar upper bound (no matter what it is) and intersect it with the rest of the intersection elements, then iterate that intersection. (Or even more generally: always replace any typevar with its upper bound, for iteration purposes.) Once we are iterating a type, the fact that it's a typevar no longer matters: all that matters is the upper bound.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> requested changes on 2026-01-14 00:38</div>
+            <div class="timeline-body"><p>So I think the changes here were a step in the right direction, but didn't go far enough, and this is still buggy.</p>
+<p>Our DNF representation of types generally ensures that we can never have a union inside an intersection -- this should always be simplified by distributing the union across the intersection, potentially leading to simplifications of some elements, and resulting in a union-of-intersections. Here that rule is broken because we can have a typevar with union upper bound inside an intersection, and so we end up handling a union inside an intersection. What <em>should</em> happen in the tested case where we end up with effectively <code>(tuple[int, ...] | int) &amp; tuple[object, ...]</code> is that we distribute and get <code>(tuple[int, ...] &amp; tuple[object, ...]) | (int &amp; tuple[object, ...])</code>, which simplifies to <code>tuple[int, ...] | Never</code>, which simplifies to just <code>tuple[int, ...]</code>. This PR sort of simulates that by excluding all non-iterable parts of the union, but that solution is overfitted to the one example case. Consider this alternative case:</p>
+<pre><code class="language-py">def f[T: tuple[int, ...] | list[str]](x: T):
+    if isinstance(x, tuple):
+        reveal_type(x)
+        for item in x:
+            reveal_type(item) # should be `int` but this PR reveals `int | str`
+</code></pre>
+<p>Both elements of the union here are iterable, so the special case in this PR doesn't take effect and we end up wrongly considering <code>str</code> as possible. The question we should be asking is not &quot;which elements of the union are iterable&quot;, but &quot;what is the result of distributing the union over the intersection&quot;. If we asked that question in this second example, we would find that <code>list[str]</code> is disjoint from <code>tuple[object, ...]</code> so that intersection simplifies to <code>Never</code>, and we again would end up with just <code>tuple[int, ...]</code> and thus just <code>int</code>.</p>
+<p>I think the right implementation approach here will be to introduce a <code>flatten_typevars</code> function which takes a type and recursively maps over any unions or intersections, resolving any typevars found to their upper bound/constraints and rebuilding the union/intersection accordingly (but unlike our type mappings, it shouldn't otherwise descend into generic or nested types -- it should only flatten top-level typevars found directly in unions/intersections). We should call this on the type before we try to iterate it.</p>
+<p>Let me know if that doesn't make sense.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:18:18 UTC
+        Synced at 2026-01-14 01:36:13 UTC
     </footer>
 </body>
 </html>
