@@ -11,9 +11,9 @@ draft: true
 base: main
 head: catch-deprecated-imports-airflow-3_1
 created_at: 2026-01-04T21:44:45Z
-updated_at: 2026-01-07T04:19:40Z
+updated_at: 2026-01-14T04:27:12Z
 url: https://github.com/astral-sh/ruff/pull/22376
-synced_at: 2026-01-12T15:57:48Z
+synced_at: 2026-01-14T04:30:38Z
 ```
 
 # [`airflow`] Add ruff rules to catch deprecated Airflow imports for Airflow 3.1 (`AIR321`)
@@ -73,66 +73,66 @@ _Comment by @astral-sh-bot[bot] on 2026-01-04 21:53_
 ✅ ecosystem check detected no linter changes.
 
 ### Linter (preview)
-ℹ️ ecosystem check **detected linter changes**. (+469 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)
+ℹ️ ecosystem check **detected linter changes**. (+446 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)
 
-<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+469 -0 violations, +0 -0 fixes)</summary>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+446 -0 violations, +0 -0 fixes)</summary>
 <p>
 <pre>ruff check --no-cache --exit-zero --no-fix --output-format concise --preview --select ALL</pre>
 </p>
 <p>
 
 <pre>
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/airflow-core/tests/unit/ti_deps/deps/test_task_concurrency.py#L35'>airflow-core/tests/unit/ti_deps/deps/test_task_concurrency.py:35:16:</a> AIR321 `airflow.models.baseoperator.BaseOperator` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/dev/airflow_perf/scheduler_dag_execution_timing.py#L181'>dev/airflow_perf/scheduler_dag_execution_timing.py:181:24:</a> AIR321 [*] `airflow.utils.timezone.utcnow` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/kubernetes-tests/tests/kubernetes_tests/test_kubernetes_pod_operator.py#L59'>kubernetes-tests/tests/kubernetes_tests/test_kubernetes_pod_operator.py:59:20:</a> AIR321 [*] `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L83'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:83:27:</a> AIR321 [*] `airflow.utils.timezone.utcnow` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/alibaba/tests/unit/alibaba/cloud/log/test_oss_task_handler.py#L59'>providers/alibaba/tests/unit/alibaba/cloud/log/test_oss_task_handler.py:59:26:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/alibaba/tests/unit/alibaba/cloud/sensors/test_analyticdb_spark.py#L26'>providers/alibaba/tests/unit/alibaba/cloud/sensors/test_analyticdb_spark.py:26:16:</a> AIR321 [*] `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/src/airflow/providers/amazon/aws/executors/utils/exponential_backoff_retry.py#L72'>providers/amazon/src/airflow/providers/amazon/aws/executors/utils/exponential_backoff_retry.py:72:20:</a> AIR321 [*] `airflow.utils.timezone.utcnow` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/system/amazon/aws/example_mongo_to_s3.py#L45'>providers/amazon/tests/system/amazon/aws/example_mongo_to_s3.py:45:16:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/system/amazon/aws/example_mwaa.py#L121'>providers/amazon/tests/system/amazon/aws/example_mwaa.py:121:35:</a> AIR321 [*] `airflow.utils.timezone.utc` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/system/amazon/aws/example_mwaa.py#L151'>providers/amazon/tests/system/amazon/aws/example_mwaa.py:151:35:</a> AIR321 [*] `airflow.utils.timezone.utc` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py#L878'>providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py:878:77:</a> AIR321 `airflow.utils.timezone.utcnow` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L325'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:325:25:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L326'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:326:23:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L585'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:585:74:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L586'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:586:75:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L601'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:601:66:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L602'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:602:67:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L694'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:694:74:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L695'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:695:75:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L725'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:725:74:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L726'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:726:75:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L762'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:762:41:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L800'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:800:74:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L801'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:801:75:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L928'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:928:41:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L934'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:934:41:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L945'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:945:41:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L951'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:951:41:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L995'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:995:41:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py#L143'>providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py:143:26:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py#L197'>providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py:197:16:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py#L263'>providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py:263:26:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py#L336'>providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py:336:17:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py#L337'>providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py:337:42:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py#L391'>providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py:391:33:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L651'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:651:24:</a> AIR321 `airflow.utils.timezone.utcnow` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L652'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:652:42:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L676'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:676:27:</a> AIR321 `airflow.utils.timezone.utcnow` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L707'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:707:15:</a> AIR321 `airflow.utils.timezone.utcnow` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L796'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:796:17:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L803'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:803:17:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L804'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:804:17:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L832'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:832:17:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L839'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:839:17:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L840'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:840:17:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/transfers/test_s3_to_sftp.py#L47'>providers/amazon/tests/unit/amazon/aws/transfers/test_s3_to_sftp.py:47:16:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/amazon/tests/unit/amazon/aws/transfers/test_sftp_to_s3.py#L45'>providers/amazon/tests/unit/amazon/aws/transfers/test_sftp_to_s3.py:45:16:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/apache/flink/tests/unit/apache/flink/operators/test_flink_kubernetes.py#L200'>providers/apache/flink/tests/unit/apache/flink/operators/test_flink_kubernetes.py:200:51:</a> AIR321 [*] `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/apache/flink/tests/unit/apache/flink/sensors/test_flink_kubernetes.py#L886'>providers/apache/flink/tests/unit/apache/flink/sensors/test_flink_kubernetes.py:886:51:</a> AIR321 [*] `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-+ <a href='https://github.com/apache/airflow/blob/02a254df3dc98367856ad210ef9e77be810e9c09/providers/apache/hdfs/tests/unit/apache/hdfs/log/test_hdfs_task_handler.py#L37'>providers/apache/hdfs/tests/unit/apache/hdfs/log/test_hdfs_task_handler.py:37:16:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
-... 419 additional changes omitted for project
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/airflow-core/tests/unit/ti_deps/deps/test_task_concurrency.py#L35'>airflow-core/tests/unit/ti_deps/deps/test_task_concurrency.py:35:16:</a> AIR321 `airflow.models.baseoperator.BaseOperator` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/dev/airflow_perf/scheduler_dag_execution_timing.py#L181'>dev/airflow_perf/scheduler_dag_execution_timing.py:181:24:</a> AIR321 [*] `airflow.utils.timezone.utcnow` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/kubernetes-tests/tests/kubernetes_tests/test_kubernetes_pod_operator.py#L59'>kubernetes-tests/tests/kubernetes_tests/test_kubernetes_pod_operator.py:59:20:</a> AIR321 [*] `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/performance/src/performance_dags/performance_dag/performance_dag_utils.py#L83'>performance/src/performance_dags/performance_dag/performance_dag_utils.py:83:27:</a> AIR321 [*] `airflow.utils.timezone.utcnow` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/alibaba/tests/unit/alibaba/cloud/log/test_oss_task_handler.py#L59'>providers/alibaba/tests/unit/alibaba/cloud/log/test_oss_task_handler.py:59:26:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/alibaba/tests/unit/alibaba/cloud/sensors/test_analyticdb_spark.py#L26'>providers/alibaba/tests/unit/alibaba/cloud/sensors/test_analyticdb_spark.py:26:16:</a> AIR321 [*] `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/src/airflow/providers/amazon/aws/executors/utils/exponential_backoff_retry.py#L72'>providers/amazon/src/airflow/providers/amazon/aws/executors/utils/exponential_backoff_retry.py:72:20:</a> AIR321 [*] `airflow.utils.timezone.utcnow` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/system/amazon/aws/example_mongo_to_s3.py#L45'>providers/amazon/tests/system/amazon/aws/example_mongo_to_s3.py:45:16:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/system/amazon/aws/example_mwaa.py#L121'>providers/amazon/tests/system/amazon/aws/example_mwaa.py:121:35:</a> AIR321 [*] `airflow.utils.timezone.utc` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/system/amazon/aws/example_mwaa.py#L151'>providers/amazon/tests/system/amazon/aws/example_mwaa.py:151:35:</a> AIR321 [*] `airflow.utils.timezone.utc` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py#L878'>providers/amazon/tests/unit/amazon/aws/executors/ecs/test_ecs_executor.py:878:77:</a> AIR321 `airflow.utils.timezone.utcnow` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L325'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:325:25:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L326'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:326:23:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L585'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:585:74:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L586'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:586:75:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L601'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:601:66:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L602'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:602:67:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L694'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:694:74:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L695'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:695:75:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L725'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:725:74:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L726'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:726:75:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L762'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:762:41:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L800'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:800:74:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L801'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:801:75:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L928'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:928:41:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L934'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:934:41:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L945'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:945:41:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L951'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:951:41:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py#L995'>providers/amazon/tests/unit/amazon/aws/hooks/test_s3.py:995:41:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py#L143'>providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py:143:26:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py#L197'>providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py:197:16:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py#L263'>providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py:263:26:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py#L336'>providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py:336:17:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py#L337'>providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py:337:42:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py#L391'>providers/amazon/tests/unit/amazon/aws/log/test_cloudwatch_task_handler.py:391:33:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L651'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:651:24:</a> AIR321 `airflow.utils.timezone.utcnow` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L652'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:652:42:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L676'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:676:27:</a> AIR321 `airflow.utils.timezone.utcnow` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L707'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:707:15:</a> AIR321 `airflow.utils.timezone.utcnow` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L796'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:796:17:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L803'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:803:17:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L804'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:804:17:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L832'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:832:17:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L839'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:839:17:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/operators/test_s3.py#L840'>providers/amazon/tests/unit/amazon/aws/operators/test_s3.py:840:17:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/transfers/test_s3_to_sftp.py#L47'>providers/amazon/tests/unit/amazon/aws/transfers/test_s3_to_sftp.py:47:16:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/amazon/tests/unit/amazon/aws/transfers/test_sftp_to_s3.py#L45'>providers/amazon/tests/unit/amazon/aws/transfers/test_sftp_to_s3.py:45:16:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/apache/flink/tests/unit/apache/flink/operators/test_flink_kubernetes.py#L200'>providers/apache/flink/tests/unit/apache/flink/operators/test_flink_kubernetes.py:200:51:</a> AIR321 [*] `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/apache/flink/tests/unit/apache/flink/sensors/test_flink_kubernetes.py#L886'>providers/apache/flink/tests/unit/apache/flink/sensors/test_flink_kubernetes.py:886:51:</a> AIR321 [*] `airflow.utils.timezone.datetime` is removed in Airflow 3.1
++ <a href='https://github.com/apache/airflow/blob/acffa62713874bc64db3f6447840cf171114476f/providers/apache/hdfs/tests/unit/apache/hdfs/log/test_hdfs_task_handler.py#L37'>providers/apache/hdfs/tests/unit/apache/hdfs/log/test_hdfs_task_handler.py:37:16:</a> AIR321 `airflow.utils.timezone.datetime` is removed in Airflow 3.1
+... 396 additional changes omitted for project
 </pre>
 
 </p>
@@ -142,7 +142,7 @@ _Comment by @astral-sh-bot[bot] on 2026-01-04 21:53_
 
 | code | total | + violation | - violation | + fix | - fix |
 | ---- | ------- | --------- | -------- | ----- | ---- |
-| AIR321 | 469 | 469 | 0 | 0 | 0 |
+| AIR321 | 446 | 446 | 0 | 0 | 0 |
 
 </p>
 </details>
@@ -165,7 +165,7 @@ The test cases in this snapshot do not raise any violation. The `crates/ruff_lin
 
 ---
 
-_Review comment by @sjyangkevin on `crates/ruff_linter/src/rules/airflow/rules/removal_in_3_1.rs`:91 on 2026-01-04 21:57_
+_Review comment by @sjyangkevin on `crates/ruff_linter/src/rules/airflow/rules/removal_in_3_1.rs`:105 on 2026-01-04 21:57_
 
 At the moment, we are only checking for deprecated imports, but in future there could be more cases come in.
 
@@ -317,5 +317,43 @@ _Converted to draft by @sjyangkevin on 2026-01-06 13:16_
 _Comment by @sjyangkevin on 2026-01-06 13:38_
 
 @Lee-W and @amoghrajesh , thanks for the feedback! I have converted it into a draft. I will also happy to work on the fix after the further discussion.
+
+---
+
+_Review comment by @sjyangkevin on `crates/ruff_linter/src/rules/airflow/rules/suggested_to_update_3_0.rs`:1 on 2026-01-14 04:16_
+
+I noticed we also have some rules for module moved to task sdk. So, we can also refine those messages here using the new `SourceModuleMovedToSDK` Replacement. We might need to check which task sdk version.
+
+---
+
+_Review comment by @sjyangkevin on `crates/ruff_linter/src/rules/airflow/snapshots/ruff_linter__rules__airflow__tests__AIR301_AIR301_names.py.snap`:1 on 2026-01-14 04:16_
+
+This is moved to AIR321.
+
+---
+
+_@sjyangkevin reviewed on 2026-01-14 04:23_
+
+Hi @Lee-W and @amoghrajesh ,
+
+I've refined the rules based on the feedback. I not sure if we can make a rule a "warning" in ruff; currently, I introduce a new Replacement `SourceModuleMovedToSDK` which we can use to embed a warning message. Let me know if it is the right approach.
+
+Below is the summary of changes.
+1. Exclude the followings
+> airflow.utils.task_group.get_task_group_children_getter
+> airflow.utils.task_group.task_group_to_dict
+2. Fix Import Path in AIR311
+> airflow.sensors.base.poke_mode_only → airflow.sdk.bases.sensor.poke_mode_only
+3. Move from AIR301 to AIR321
+> airflow.secrets.cache.SecretCache → from airflow.sdk import SecretCache
+**TODO: i think i need to create a PR on Airflow side to add it into lazy import**
+4. Keep `_internal` modules and show a warning message to indicate these are internal API that may change without notice.
+5. Update the other rules to adapt for the new Replacement `SourceModuleMovedToSDK`
+
+Thanks!!
+
+---
+
+_Review requested from @amoghrajesh by @sjyangkevin on 2026-01-14 04:27_
 
 ---

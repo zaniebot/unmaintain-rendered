@@ -12,9 +12,9 @@ merged: true
 base: main
 head: main
 created_at: 2026-01-07T12:02:47Z
-updated_at: 2026-01-13T17:29:08Z
+updated_at: 2026-01-14T04:19:32Z
 url: https://github.com/astral-sh/ruff/pull/22435
-synced_at: 2026-01-13T18:48:34Z
+synced_at: 2026-01-14T04:30:38Z
 ```
 
 # [ty] Include type parameters in generic callable display
@@ -678,5 +678,21 @@ _Merged by @AlexWaygood on 2026-01-13 17:29_
 ---
 
 _Closed by @AlexWaygood on 2026-01-13 17:29_
+
+---
+
+_@bxff reviewed on 2026-01-14 04:18_
+
+---
+
+_Review comment by @bxff on `crates/ty_python_semantic/src/types.rs`:6902 on 2026-01-14 04:18_
+
+Thanks!
+
+---
+
+_Comment by @bxff on 2026-01-14 04:19_
+
+Thanks a lot for the merge! Any followup issues you'd like me to look into? @AlexWaygood 
 
 ---

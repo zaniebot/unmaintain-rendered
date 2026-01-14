@@ -11,9 +11,9 @@ merged: true
 base: main
 head: docs/pt017-check-parameter
 created_at: 2026-01-13T12:26:20Z
-updated_at: 2026-01-13T20:45:53Z
+updated_at: 2026-01-14T03:48:03Z
 url: https://github.com/astral-sh/ruff/pull/22546
-synced_at: 2026-01-13T21:36:29Z
+synced_at: 2026-01-14T04:30:38Z
 ```
 
 # [`flake8-pytest-style`] Add `check` parameter example to `PT017` docs
@@ -73,5 +73,9 @@ _Merged by @ntBre on 2026-01-13 20:45_
 ---
 
 _Closed by @ntBre on 2026-01-13 20:45_
+
+---
+
+_Branch deleted on 2026-01-14 03:48_
 
 ---
