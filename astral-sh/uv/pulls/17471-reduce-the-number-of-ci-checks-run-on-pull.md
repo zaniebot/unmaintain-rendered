@@ -4,14 +4,15 @@ title: Reduce the number of CI checks run on pull requests
 type: pull_request
 state: open
 author: zanieb
-labels: []
+labels:
+  - internal
 assignees: []
 base: main
 head: zb/investigate-ci
 created_at: 2026-01-14T17:22:43Z
-updated_at: 2026-01-14T17:27:26Z
+updated_at: 2026-01-14T18:33:54Z
 url: https://github.com/astral-sh/uv/pull/17471
-synced_at: 2026-01-14T17:38:04Z
+synced_at: 2026-01-14T18:36:23Z
 ```
 
 # Reduce the number of CI checks run on pull requests
@@ -41,5 +42,79 @@ I'm going to refactor all these checks in a follow-up
 ---
 
 _Marked ready for review by @zanieb on 2026-01-14 17:27_
+
+---
+
+_Label `internal` added by @zanieb on 2026-01-14 17:42_
+
+---
+
+_@zsol approved on 2026-01-14 18:15_
+
+I think we should run the smoke tests on all changes. They seem to be quick enough by reading them (I can't find any historical data for them easily)
+
+Otherwise LGTM
+
+---
+
+_Comment by @zanieb on 2026-01-14 18:33_
+
+Here's a nice Claude summary
+
+```
+
+  Job Runtimes by Workflow (from recent main branch run)
+  ┌──────────────────┬──────┬────────────┬─────────┐
+  │     Workflow     │ Jobs │ Total Time │ Avg/Job │
+  ├──────────────────┼──────┼────────────┼─────────┤
+  │ test-system      │ 30   │ 32m 58s    │ 1m 05s  │
+  ├──────────────────┼──────┼────────────┼─────────┤
+  │ test-integration │ 20   │ 15m 33s    │ 0m 46s  │
+  ├──────────────────┼──────┼────────────┼─────────┤
+  │ test-smoke       │ 6    │ 4m 18s     │ 0m 43s  │
+  ├──────────────────┼──────┼────────────┼─────────┤
+  │ test-ecosystem   │ 3    │ 1m 10s     │ 0m 23s  │
+  └──────────────────┴──────┴────────────┴─────────┘
+  Breakdown by Runner Type
+  ┌──────────────────┬─────────┬──────┬────────────┐
+  │     Workflow     │ Runner  │ Jobs │ Total Time │
+  ├──────────────────┼─────────┼──────┼────────────┤
+  │ test-system      │ linux   │ 16   │ 16m 16s    │
+  ├──────────────────┼─────────┼──────┼────────────┤
+  │ test-system      │ windows │ 8    │ 12m 07s    │
+  ├──────────────────┼─────────┼──────┼────────────┤
+  │ test-system      │ macos   │ 6    │ 4m 35s     │
+  ├──────────────────┼─────────┼──────┼────────────┤
+  │ test-integration │ linux   │ 12   │ 10m 33s    │
+  ├──────────────────┼─────────┼──────┼────────────┤
+  │ test-integration │ windows │ 7    │ 4m 47s     │
+  ├──────────────────┼─────────┼──────┼────────────┤
+  │ test-integration │ macos   │ 1    │ 0m 13s     │
+  ├──────────────────┼─────────┼──────┼────────────┤
+  │ test-smoke       │ windows │ 2    │ 1m 40s     │
+  ├──────────────────┼─────────┼──────┼────────────┤
+  │ test-smoke       │ macos   │ 1    │ 1m 28s     │
+  ├──────────────────┼─────────┼──────┼────────────┤
+  │ test-smoke       │ linux   │ 3    │ 1m 10s     │
+  ├──────────────────┼─────────┼──────┼────────────┤
+  │ test-ecosystem   │ linux   │ 3    │ 1m 10s     │
+  └──────────────────┴─────────┴──────┴────────────┘
+  Longest Running Jobs
+  ┌───────────────────────────────────────────┬──────────┐
+  │                    Job                    │ Duration │
+  ├───────────────────────────────────────────┼──────────┤
+  │ test-system / pyston on linux             │ 3m 54s   │
+  ├───────────────────────────────────────────┼──────────┤
+  │ test-system / conda3.11 on windows x86-64 │ 3m 12s   │
+  ├───────────────────────────────────────────┼──────────┤
+  │ test-system / conda3.8 on windows x86-64  │ 2m 46s   │
+  ├───────────────────────────────────────────┼──────────┤
+  │ test-system / python3.10 on windows x86   │ 2m 25s   │
+  ├───────────────────────────────────────────┼──────────┤
+  │ test-integration / uv_build               │ 2m 17s   │
+  ├───────────────────────────────────────────┼──────────┤
+  │ test-integration / pyenv on wsl           │ 2m 07s   │
+  └───────────────────────────────────────────┴──────────┘
+  ```
 
 ---
