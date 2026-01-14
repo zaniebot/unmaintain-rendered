@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-02T19:29:03Z
-updated_at: 2026-01-02T21:53:46Z
+updated_at: 2026-01-14T05:32:38Z
 url: https://github.com/astral-sh/uv/issues/17309
-synced_at: 2026-01-12T16:02:48Z
+synced_at: 2026-01-14T06:39:29Z
 ```
 
 # Conflicting Python Requirements when workspace members have different Python requirements
@@ -54,5 +54,11 @@ Closing due to problem solved.
 ---
 
 _Closed by @btakita on 2026-01-02 21:53_
+
+---
+
+_Comment by @AnhQuanTrl on 2026-01-14 05:32_
+
+just curious. how do you solve this?
 
 ---
