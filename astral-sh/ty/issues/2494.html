@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>`unused-ignore-comment` should not handle `type:` comments - astral-sh/ty #2494</title>
+    <title>`unused-ignore-comment` should not handle unknown rules - astral-sh/ty #2494</title>
     <link rel="stylesheet" href="../../../style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1><code>unused-ignore-comment</code> should not handle <code>type:</code> comments</h1>
+    <h1><code>unused-ignore-comment</code> should not handle unknown rules</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -103,10 +103,48 @@
         <div class="timeline-entry">
             <div class="event">Label <span class="label">good first issue</span> added by @MichaReiser on 2026-01-14 15:34</div>
         </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`unused-ignore-comment` should not handle `type:` comments" to "`unused-ignore-comment` should not handle unknown rules" by @lypwig on 2026-01-14 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-14 15:46</div>
+            <div class="timeline-body"><p>It's not clear to me exactly what behavior we intend to implement in this issue. What @lypwig proposes (basing the behavior of <code>unused-ignore-comment</code> on whether a code is used that we recognize or not, and then having a separate diagnostic for &quot;type: ignore with unknown code&quot;) does not sound to me like any behavior we'd previously discussed when we discussed &quot;splitting the rule.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-14 15:48</div>
+            <div class="timeline-body"><p>Yeah, sorry. I didn't read the response carefully enough.</p>
+<blockquote>
+<p>So does it make sense for you to trigger unused-ignore-comment only if it an actual ty rule AND it is not used?</p>
+</blockquote>
+<p>I don't feel comfortable with that because it assumes that no two type checkers have overlapping rule names.</p>
+<p>What I would suggest is that we make it a separate rule so that projects using multiple type checkers can disable the <code>type: ignore</code> one.</p>
+<blockquote>
+<p>And eventually add an other rule to check if type: is used with an unknown rule?</p>
+</blockquote>
+<p>I'm not sure how this would work if you use multiple type checkers as ty would warn about rules that it doesn't know but those might be pyright rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> removed by @MichaReiser on 2026-01-14 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2026-01-14 16:00</div>
+            <div class="timeline-body"><p>Yes, I agree with all of that.</p>
+<p>So then I just want to make sure that we properly understand @lypwig's use case, if we are going to take it as feedback in favor of two separate rules.</p>
+<p>@lypwig I'm not sure I understand this example:</p>
+<blockquote>
+<p>class Meta:  # type: ignore[reportIncompatibleVariableOverride] # ty: ignore[unused-ignore-comment]</p>
+</blockquote>
+<p>If you set <code>respect-type-ignore-comments: false</code>, then you wouldn't need any <code># ty: ignore</code> there.</p>
+<p>So can you clarify what is the problem you find with setting <code>respect-type-ignore-comments: false</code>? Is it that you have some <code>type: ignore</code> that should actually be respected by both ty and pyright? To me, in that case it actually seems better to use a separate <code>type: ignore</code> for pyright and <code>ty: ignore</code> for ty, because then you can use a rule code for both. If you use a single <code>type: ignore</code> to silence both, then (since pyright and ty don't share rule codes) it would have to be a blanket (code-less) ignore, which is more error-prone.</p>
+<p>(Somewhat separately, I do wonder about our current behavior of interpreting any <code>type: ignore</code> with an unrecognized code as a blanket <code>type: ignore</code>. It seems unlikely to me that that will be the desired behavior for anyone -- but I'm also not sure what would be a better behavior.)</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-14 15:42:40 UTC
+        Synced at 2026-01-14 16:42:20 UTC
     </footer>
 </body>
 </html>

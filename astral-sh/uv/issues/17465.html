@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>0.9.25 doesn't respect UV_PYTHON_INSTALL_DIR - astral-sh/uv #17465</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>0.9.25 doesn't respect UV_PYTHON_INSTALL_DIR</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17465">#17465</a>
+        opened by <a href="https://github.com/wm-eitc">@wm-eitc</a>
+        on 2026-01-14 15:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/wm-eitc">@wm-eitc</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Here's a snippet from a Dockerfile we build locally:</p>
+<pre><code>COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/bin/
+
+WORKDIR /work
+ENV UV_PYTHON_INSTALL_DIR=/work
+COPY pyproject.toml .python-version uv.lock ./
+
+RUN uv python install --install-dir . &amp;&amp; \
+    uv sync --locked --no-cache
+</code></pre>
+<p>and the log from building that container (using Kaniko):</p>
+<pre><code>INFO[0312] COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/bin/ 
+INFO[0313] Taking snapshot of files...                  
+INFO[0314] WORKDIR /work
+INFO[0314] Cmd: workdir
+INFO[0314] Changed working directory to /work
+INFO[0314] Creating directory /work with uid 4242 and gid 4242 
+INFO[0314] Taking snapshot of files...                  
+INFO[0314] ENV UV_PYTHON_INSTALL_DIR=/work
+INFO[0314] COPY pyproject.toml .python-version uv.lock ./ 
+INFO[0314] Taking snapshot of files...                  
+INFO[0314] RUN uv python install --install-dir . &amp;&amp;     uv sync --locked --no-cache 
+INFO[0314] Initializing snapshotter ...                 
+INFO[0314] Taking snapshot of full filesystem...        
+INFO[0315] Cmd: /bin/bash                               
+INFO[0315] Args: [-o pipefail -c uv python install --install-dir . &amp;&amp;     uv sync --locked --no-cache] 
+INFO[0315] Util.Lookup returned: &amp;{Uid:4242 Gid: Username: Name: HomeDir:/} 
+INFO[0315] Performing slow lookup of group ids for      
+INFO[0315] Running: [/bin/bash -o pipefail -c uv python install --install-dir . &amp;&amp;     uv sync --locked --no-cache] 
+error: failed to create directory `/.cache/uv`: Permission denied (os error 13)
+</code></pre>
+<p>Although we're setting <code>UV_PYTHON_INSTALL_DIR=/work</code>, <code>uv</code> is attempting to install in <code>/</code>. This is new behavior, version 0.9.24 did not exhibit this problem.</p>
+<h3>Platform</h3>
+<p>Ubuntu 24.04</p>
+<h3>Version</h3>
+<p>0.9.25</p>
+<h3>Python version</h3>
+<p>3.13</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @wm-eitc on 2026-01-14 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-14 15:48</div>
+            <div class="timeline-body"><p>Looking...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-14 15:56</div>
+            <div class="timeline-body"><p>I think this is failing from #17088 which now initializes the cache for <code>python install</code> operations. You can use <code>--no-cache</code> there or set a target <code>UV_CACHE_DIR</code>?</p>
+<p>Hence the error</p>
+<pre><code>error: failed to create directory `/.cache/uv`: Permission denied (os error 13)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @zanieb on 2026-01-14 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2026-01-14 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wm-eitc">@wm-eitc</a> on 2026-01-14 16:07</div>
+            <div class="timeline-body"><p>Yes, setting <code>--no-cache</code> fixes the issue. Thanks for the quick response!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @wm-eitc on 2026-01-14 16:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-14 16:42:58 UTC
+    </footer>
+</body>
+</html>
