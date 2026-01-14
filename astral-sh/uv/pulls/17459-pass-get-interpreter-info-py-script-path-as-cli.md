@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: interpreter-info-run-script
 created_at: 2026-01-14T11:38:22Z
-updated_at: 2026-01-14T12:06:36Z
+updated_at: 2026-01-14T13:31:30Z
 url: https://github.com/astral-sh/uv/pull/17459
-synced_at: 2026-01-14T12:44:12Z
+synced_at: 2026-01-14T13:42:35Z
 ```
 
 # Pass `get_interpreter_info.py` script path as CLI instead of using -c option
@@ -59,5 +59,17 @@ _Comment by @konstin on 2026-01-14 12:06_
 > However, the path `C://Users//uv//cache//path` is not available inside the Pyodide (Emscripten) environment, as Emscripten environment uses Unix-style path, mapping the Windows path to Unix path.
 
 Does this mean pyodide only support Unix paths on Windows, and what happens if I run e.g. a Python CLI script through a pyodide interpreter that gets called with a Windows path?
+
+---
+
+_Comment by @zanieb on 2026-01-14 13:29_
+
+I'll just note I'm very wary of changing this just for Pyodide, this is a brittle / sensitive part of uv.
+
+---
+
+_Comment by @zanieb on 2026-01-14 13:31_
+
+I thought we didn't support Pyodide on Windows?
 
 ---

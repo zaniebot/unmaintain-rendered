@@ -2,16 +2,16 @@
 number: 2147
 title: Improve rendering of ReST directives in docstrings
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - good first issue
   - server
 assignees: []
 created_at: 2025-12-21T16:44:09Z
-updated_at: 2026-01-11T23:23:28Z
+updated_at: 2026-01-14T12:33:09Z
 url: https://github.com/astral-sh/ty/issues/2147
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-14T13:42:04Z
 ```
 
 # Improve rendering of ReST directives in docstrings
@@ -65,5 +65,9 @@ https://github.com/astral-sh/ruff/blob/f9f7a6901bc78f7429c6b2393d747350ac704f33/
 _Comment by @AryanBagade on 2026-01-11 23:23_
 
 hey @Gankra can i work on it, been contributing to pyrefly owuld love to contribute here !!!
+
+---
+
+_Closed by @AlexWaygood on 2026-01-14 12:33_
 
 ---

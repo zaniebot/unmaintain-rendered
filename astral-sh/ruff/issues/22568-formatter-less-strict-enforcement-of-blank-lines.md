@@ -9,9 +9,9 @@ labels:
   - style
 assignees: []
 created_at: 2026-01-14T10:53:01Z
-updated_at: 2026-01-14T12:21:05Z
+updated_at: 2026-01-14T12:45:17Z
 url: https://github.com/astral-sh/ruff/issues/22568
-synced_at: 2026-01-14T12:43:48Z
+synced_at: 2026-01-14T13:42:10Z
 ```
 
 # Formatter: Less strict enforcement of blank lines
@@ -84,5 +84,13 @@ _Label `style` added by @MichaReiser on 2026-01-14 12:17_
 ---
 
 _Renamed from "Formatter: Support `--pyi` mode" to "Formatter: Less strict enforcement of blank lines" by @MichaReiser on 2026-01-14 12:18_
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 12:45_
+
+For markdown files. The solution is to change the language on the fenced code block from `py` to `pyi`. 
+
+Unfortunately, this might not always be a feasible option in ty if it's a fenced code block without a preceding file name (`**file.py**`). But it's probably feasible in many instances, which should be enough to mitigate the worst blank line regressions
 
 ---

@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: type-module-dunder-file-str
 created_at: 2026-01-01T20:21:52Z
-updated_at: 2026-01-08T15:41:46Z
+updated_at: 2026-01-14T12:41:55Z
 url: https://github.com/astral-sh/ruff/pull/22333
-synced_at: 2026-01-12T15:57:47Z
+synced_at: 2026-01-14T13:42:22Z
 ```
 
 # [ty] Override `__file__` to str when applicable on imported modules
@@ -419,5 +419,77 @@ Finished reviewing the eco-system impact (see PR description) I think everything
 ---
 
 _Renamed from "[ty] Override `__file__` to str on imported modules" to "[ty] Override `__file__` to str when applicable on imported modules" by @sinon on 2026-01-08 15:14_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/place.rs`:1087 on 2026-01-14 12:38_
+
+This comment is _nearly_ accurate!
+
+The way it works at runtime is that a pure-Python non-namespace-package module will always have `__file__` set to a string; a namespace-package module will always have `__file__` set to `None`, and a C extension might not have it set at all:
+
+```pycon
+% uv pip install google-cloud-ndb           
+Using Python 3.13.8 environment at: test-env
+Resolved 22 packages in 647ms
+Prepared 9 packages in 1.07s
+Installed 21 packages in 92ms
+ + certifi==2026.1.4
+ + charset-normalizer==3.4.4
+ + google-api-core==2.29.0
+ + google-auth==2.47.0
+ + google-cloud-core==2.5.0
+ + google-cloud-datastore==2.23.0
+ + google-cloud-ndb==2.4.0
+ + googleapis-common-protos==1.72.0
+ + grpcio==1.76.0
+ + grpcio-status==1.76.0
+ + idna==3.11
+ + proto-plus==1.27.0
+ + protobuf==6.33.4
+ + pyasn1==0.6.1
+ + pyasn1-modules==0.4.2
+ + pymemcache==4.0.0
+ + pytz==2025.2
+ + redis==6.4.0
+ + requests==2.32.5
+ + rsa==4.9.1
+ + urllib3==2.6.3
+(test-env) ~/dev % py
+Python 3.13.8 (main, Oct 10 2025, 12:46:18) [Clang 20.1.4 ] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import google
+>>> google.__file__ is None  # `google` is a namespace package
+True
+>>> 
+>>> import itertools
+>>> itertools.__file__  # `itertools` is a C extension
+Traceback (most recent call last):
+  File "<python-input-3>", line 1, in <module>
+    itertools.__file__
+AttributeError: module 'itertools' has no attribute '__file__'. Did you mean: '__name__'?
+```
+
+It looks to me like your code is correct for the namespace package case, because you only apply the special case here if `module.file(db)` is `Some()`, and `module.file(db)` will only be `None` if it's a namespace package. But the comment here needs to be revised, and you could also consider adding an explicit test for the namespace-package case. (Namespace packages are pure-Python packages that have no `__init__.py(i)` file in them -- they are _just_ directories that contain other Python modules/packages.)
+
+We could also possibly get rid of the exemption for stubs that you have here? The rationale for treating stubs separately is that they might represent C extensions, and C extensions won't necessarily set `__file__`. But that doesn't affect the _type_ of the `__file__` member, it just affects whether the module _has_ the `__file__` member to begin with. We could consider emitting a `possibly-unresolved-attribute` warning about that, but I think it would probably be too noisy: just because a module is represented by a stub file doesn't mean that it _definitely_ is a C extension, it just _could_ be a C extension.
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/place.rs`:1117 on 2026-01-14 12:41_
+
+nit: you could reduce indentation here by using let-chains :-)
+
+---
+
+_@AlexWaygood reviewed on 2026-01-14 12:41_
+
+Thank you, and sorry for the delayed review!!
+
+This looks pretty good, but the comment needs to be updated and I think we should add a test for namespace packages -- see my comment inline
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2026-01-14 12:41_
 
 ---

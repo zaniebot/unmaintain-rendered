@@ -11,9 +11,9 @@ assignees: []
 base: charlie/dyn-expression
 head: charlie/functional-namedtuple
 created_at: 2026-01-01T13:23:44Z
-updated_at: 2026-01-13T23:34:22Z
+updated_at: 2026-01-14T13:28:05Z
 url: https://github.com/astral-sh/ruff/pull/22327
-synced_at: 2026-01-14T00:34:17Z
+synced_at: 2026-01-14T13:42:21Z
 ```
 
 # [ty] Add support for functional `namedtuple` creation
@@ -1333,5 +1333,137 @@ you can grep for other uses of `in_type_expression` to see how we convert errors
 ---
 
 _@AlexWaygood reviewed on 2026-01-13 22:20_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:703 on 2026-01-14 12:57_
+
+Can you add a goto-definition test for dynamic namedtuples?
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:747 on 2026-01-14 13:07_
+
+I filed https://github.com/astral-sh/ty/issues/2490 so that we don't forget to followup on this.
+
+
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:829 on 2026-01-14 13:11_
+
+This doesn't actually fail at runtime:
+
+```py
+import dataclasses, typing
+
+@dataclasses.dataclass
+class Foo(typing.NamedTuple):
+    x: int
+```
+
+and neither does `dataclasses.dataclass(collections.namedtuple("A", ()))`. Ideally we'd either infer these accurately or emit a diagnostic on them. We can defer this to a followup, though, since I think it's already an issue with `typing.NamedTuple` on `main`
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:1694 on 2026-01-14 13:13_
+
+the docstring for this method says that this is a "helper function for `instance_member` that looks up the `name` attribute only on this class, not on its superclasses." But it looks like `DynamicNamedTupleLiteral::instance_member` falls back to the tuple superclass of the namedtuple -- it _does_ look up the member on superclasses, unlike the other branches in this method
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:5293 on 2026-01-14 13:15_
+
+Same question to https://github.com/astral-sh/ruff/pull/22537#discussion_r2690301674 about whether we need to store `scope` as a separate field here, or if that could be part of the `DynamicClassAnchor` enum
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:5389 on 2026-01-14 13:15_
+
+```suggestion
+    /// Compute the specialized tuple class that this namedtuple inherits from.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6520 on 2026-01-14 13:22_
+
+this panics with "attempt to subtract with overflow" on this test case, where there are more defaults than fields (which causes a runtime error, but we still shouldn't panic!!):
+
+```py
+import collections
+
+collections.namedtuple("Baz", "x y", defaults=("a", "b", "c"))
+```
+
+```
+error[panic]: Panicked at crates/ty_python_semantic/src/types/infer/builder.rs:6520:69 when checking `/Users/alexw/dev/ruff/foo.py`: `attempt to subtract with overflow`
+info: This indicates a bug in ty.
+info: If you could open an issue at https://github.com/astral-sh/ty/issues/new?title=%5Bpanic%5D, we'd be very appreciative!
+info: Platform: macos aarch64
+info: Version: ruff/0.14.10+336 (fe0f7289d 2026-01-13)
+info: Args: ["target/debug/ty", "check", "foo.py", "--python-version=3.14"]
+info: run with `RUST_BACKTRACE=1` environment variable to show the full backtrace information
+info: query stacktrace:
+   0: infer_scope_types(Id(1000))
+             at crates/ty_python_semantic/src/types/infer.rs:70
+   1: check_file_impl(Id(c00))
+             at crates/ty_project/src/lib.rs:554
+
+
+Found 1 diagnostic
+WARN A fatal error occurred while checking some files. Not all project files were analyzed. See the diagnostics list above for details.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6285 on 2026-01-14 13:24_
+
+As a followup PR, you could add diagnostics for the following errors that can occur at runtime:
+
+```pycon
+>>> import collections
+>>> Foo = collections.namedtuple("Foo", "x x")
+Traceback (most recent call last):
+  File "<python-input-11>", line 1, in <module>
+    Foo = collections.namedtuple("Foo", "x x")
+  File "/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/collections/__init__.py", line 415, in namedtuple
+    raise ValueError(f'Encountered duplicate field name: {name!r}')
+ValueError: Encountered duplicate field name: 'x'
+>>> collections.namedtuple("Bar", "_y _z")
+... 
+Traceback (most recent call last):
+  File "<python-input-12>", line 1, in <module>
+    collections.namedtuple("Bar", "_y _z")
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/collections/__init__.py", line 412, in namedtuple
+    raise ValueError('Field names cannot start with an underscore: '
+                     f'{name!r}')
+ValueError: Field names cannot start with an underscore: '_y'
+>>> collections.namedtuple("Baz", "x y", defaults=("a", "b", "c"))
+Traceback (most recent call last):
+  File "<python-input-13>", line 1, in <module>
+    collections.namedtuple("Baz", "x y", defaults=("a", "b", "c"))
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/alexw/.pyenv/versions/3.13.1/lib/python3.13/collections/__init__.py", line 422, in namedtuple
+    raise TypeError('Got more default values than field names')
+TypeError: Got more default values than field names
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6460 on 2026-01-14 13:27_
+
+at runtime it seems to only care if a truthy argument is passed in. We should emit an `invalid-argument-type` diagnostic if a non-bool is passed in, but for the purposes of checking whether we should apply `rename=True` semantics for parsing the call, I think this could just be
+
+```suggestion
+            let rename = rename_type.is_some_and(|ty| ty.bool(db).is_always_true())
+```
+
+---
+
+_@AlexWaygood requested changes on 2026-01-14 13:28_
+
+Looks good, but I found a panic 😄
 
 ---

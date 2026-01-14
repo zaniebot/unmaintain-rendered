@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: stable-ci
 created_at: 2026-01-14T00:42:38Z
-updated_at: 2026-01-14T11:28:39Z
+updated_at: 2026-01-14T13:28:06Z
 url: https://github.com/astral-sh/uv/pull/17456
-synced_at: 2026-01-14T11:33:40Z
+synced_at: 2026-01-14T13:42:35Z
 ```
 
 # Isolate test environment from user configuration
@@ -76,5 +76,65 @@ Would this be necessary with #14080? I think if `$HOME` is set and `$XDG_CONFIG_
 ---
 
 _@EliteTK reviewed on 2026-01-14 11:28_
+
+---
+
+_@gaborbernat reviewed on 2026-01-14 13:03_
+
+---
+
+_Review comment by @gaborbernat on `CONTRIBUTING.md`:102 on 2026-01-14 13:03_
+
+Fwiw fly.dev is especially sensitive as it allows hosting any code, so likely other corporate firewalls also ban it as opposed to other network requests (seems an easy place to host viruses and such 🤔 so in practice I think worth calling it out specifically). 
+
+---
+
+_@gaborbernat reviewed on 2026-01-14 13:03_
+
+---
+
+_Review comment by @gaborbernat on `CONTRIBUTING.md`:102 on 2026-01-14 13:03_
+
+Fwiw fly.dev is especially sensitive as it allows hosting any code, so likely other corporate firewalls also ban it as opposed to other network requests (seems an easy place to host viruses and such 🤔 so in practice I think worth calling it out specifically). 
+
+---
+
+_@EliteTK reviewed on 2026-01-14 13:06_
+
+---
+
+_Review comment by @EliteTK on `CONTRIBUTING.md`:102 on 2026-01-14 13:06_
+
+Yes I don't object to mentioning it, I just think the section shouldn't be entirely oriented around it.
+
+---
+
+_@gaborbernat reviewed on 2026-01-14 13:10_
+
+---
+
+_Review comment by @gaborbernat on `crates/uv/tests/it/common/mod.rs`:1536 on 2026-01-14 13:10_
+
+Didn't test it, so not sure as that pr is not merged yet. 
+
+---
+
+_@zanieb reviewed on 2026-01-14 13:27_
+
+---
+
+_Review comment by @zanieb on `CONTRIBUTING.md`:102 on 2026-01-14 13:27_
+
+We also hit fly.dev outside of native authentication tests.
+
+---
+
+_Review comment by @zanieb on `CONTRIBUTING.md`:102 on 2026-01-14 13:28_
+
+We could add a `fly-proxy` feature like we have for other tests which interact with a remote service
+
+---
+
+_@zanieb reviewed on 2026-01-14 13:28_
 
 ---

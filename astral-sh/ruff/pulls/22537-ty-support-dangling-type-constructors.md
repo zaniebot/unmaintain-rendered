@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/dyn-expression
 created_at: 2026-01-12T18:12:25Z
-updated_at: 2026-01-14T09:18:04Z
+updated_at: 2026-01-14T12:51:24Z
 url: https://github.com/astral-sh/ruff/pull/22537
-synced_at: 2026-01-14T09:35:09Z
+synced_at: 2026-01-14T13:42:22Z
 ```
 
 # [ty] Support 'dangling' `type(...)` constructors
@@ -1141,5 +1141,107 @@ _Review requested from @MichaReiser by @charliermarsh on 2026-01-13 16:39_
 _@MichaReiser approved on 2026-01-14 09:18_
 
 Thank you. The `DynamicClassLiteral` definition looks good to me. I didn't review the semantic typing changes.
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4735 on 2026-01-14 12:49_
+
+Do we need to store `scope` as a separate field, or could we do something like this (all tests pass):
+
+```diff
+diff --git a/crates/ty_python_semantic/src/types/class.rs b/crates/ty_python_semantic/src/types/class.rs
+index 5479d05080..f561ddd611 100644
+--- a/crates/ty_python_semantic/src/types/class.rs
++++ b/crates/ty_python_semantic/src/types/class.rs
+@@ -4731,9 +4731,6 @@ pub struct DynamicClassLiteral<'db> {
+     #[returns(deref)]
+     pub bases: Box<[ClassBase<'db>]>,
+ 
+-    /// The scope containing the `type()` call.
+-    pub scope: ScopeId<'db>,
+-
+     /// The anchor for this dynamic class, providing stable identity.
+     ///
+     /// - `Definition`: The `type()` call is assigned to a variable. The definition
+@@ -4776,7 +4773,7 @@ pub enum DynamicClassAnchor<'db> {
+     ///
+     /// The offset is relative to the enclosing scope's anchor node index.
+     /// For module scope, this is equivalent to an absolute index (anchor is 0).
+-    ScopeOffset(u32),
++    ScopeOffset { scope: ScopeId<'db>, offset: u32 },
+ }
+ 
+ impl get_size2::GetSize for DynamicClassLiteral<'_> {}
+@@ -4787,7 +4784,14 @@ impl<'db> DynamicClassLiteral<'db> {
+     pub(crate) fn definition(self, db: &'db dyn Db) -> Option<Definition<'db>> {
+         match self.anchor(db) {
+             DynamicClassAnchor::Definition(definition) => Some(definition),
+-            DynamicClassAnchor::ScopeOffset(_) => None,
++            DynamicClassAnchor::ScopeOffset { .. } => None,
++        }
++    }
++
++    pub(crate) fn scope(self, db: &'db dyn Db) -> ScopeId<'db> {
++        match self.anchor(db) {
++            DynamicClassAnchor::Definition(definition) => definition.scope(db),
++            DynamicClassAnchor::ScopeOffset { scope, .. } => scope,
+         }
+     }
+ 
+@@ -4814,7 +4818,7 @@ impl<'db> DynamicClassLiteral<'db> {
+                     .expect("DynamicClassAnchor::Definition should only be used for assignments")
+                     .range()
+             }
+-            DynamicClassAnchor::ScopeOffset(offset) => {
++            DynamicClassAnchor::ScopeOffset { offset, .. } => {
+                 // For dangling `type()` calls, compute the absolute index from the offset.
+                 let scope_anchor = scope.node(db).node_index().unwrap_or(NodeIndex::from(0));
+                 let anchor_u32 = scope_anchor
+@@ -5070,7 +5074,6 @@ impl<'db> DynamicClassLiteral<'db> {
+             db,
+             self.name(db).clone(),
+             self.bases(db),
+-            self.scope(db),
+             self.anchor(db),
+             self.members(db),
+             self.has_dynamic_namespace(db),
+diff --git a/crates/ty_python_semantic/src/types/infer/builder.rs b/crates/ty_python_semantic/src/types/infer/builder.rs
+index 43a4c4c073..bcf219a62b 100644
+--- a/crates/ty_python_semantic/src/types/infer/builder.rs
++++ b/crates/ty_python_semantic/src/types/infer/builder.rs
+@@ -6193,14 +6193,16 @@ impl<'db, 'ast> TypeInferenceBuilder<'db, 'ast> {
+             let call_u32 = call_node_index
+                 .as_u32()
+                 .expect("call node should not be NodeIndex::NONE");
+-            DynamicClassAnchor::ScopeOffset(call_u32 - anchor_u32)
++            DynamicClassAnchor::ScopeOffset {
++                scope,
++                offset: call_u32 - anchor_u32,
++            }
+         };
+ 
+         let dynamic_class = DynamicClassLiteral::new(
+             db,
+             name,
+             bases,
+-            scope,
+             anchor,
+             members,
+             has_dynamic_namespace,
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4710 on 2026-01-14 12:49_
+
+```suggestion
+/// This is a Salsa-interned struct. Two different `type()` calls always produce
+```
+
+---
+
+_@AlexWaygood approved on 2026-01-14 12:51_
+
+LGTM too! I _did_ review the semantic typing changes 😄
 
 ---

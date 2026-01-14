@@ -10,9 +10,9 @@ draft: true
 base: main
 head: pylock-tool-uv
 created_at: 2026-01-13T16:20:10Z
-updated_at: 2026-01-14T09:22:09Z
+updated_at: 2026-01-14T12:59:14Z
 url: https://github.com/astral-sh/uv/pull/17440
-synced_at: 2026-01-14T09:35:22Z
+synced_at: 2026-01-14T13:42:35Z
 ```
 
 # Add [tool.uv] metadata to pylock.toml export
@@ -85,5 +85,45 @@ _@konstin reviewed on 2026-01-14 09:22_
 _Review comment by @konstin on `crates/uv-resolver/src/lock/export/pylock_toml.rs`:985 on 2026-01-14 09:22_
 
 How is that PR dependent on the other PR?
+
+---
+
+_@gaborbernat reviewed on 2026-01-14 12:52_
+
+---
+
+_Review comment by @gaborbernat on `crates/uv-resolver/src/lock/export/pylock_toml.rs`:985 on 2026-01-14 12:52_
+
+The other one adds many tests that needs updating once it lands with contents of this. 
+
+---
+
+_@gaborbernat reviewed on 2026-01-14 12:52_
+
+---
+
+_Review comment by @gaborbernat on `crates/uv-resolver/src/lock/export/pylock_toml.rs`:985 on 2026-01-14 12:52_
+
+The other one adds many tests that needs updating once it lands with contents of this. 
+
+---
+
+_@konstin reviewed on 2026-01-14 12:57_
+
+---
+
+_Review comment by @konstin on `crates/uv-resolver/src/lock/export/pylock_toml.rs`:985 on 2026-01-14 12:57_
+
+I'm fine with waiting, but fwiw rebasing and `cargo insta test --accept` usually work well.
+
+---
+
+_@gaborbernat reviewed on 2026-01-14 12:59_
+
+---
+
+_Review comment by @gaborbernat on `crates/uv-resolver/src/lock/export/pylock_toml.rs`:985 on 2026-01-14 12:59_
+
+Yes but means there's some work that needs to be done, hence depends. 
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: ww/pypi-tp-gl-test
 created_at: 2026-01-13T19:14:18Z
-updated_at: 2026-01-14T08:24:22Z
+updated_at: 2026-01-14T13:17:19Z
 url: https://github.com/astral-sh/uv/pull/17443
-synced_at: 2026-01-14T08:36:39Z
+synced_at: 2026-01-14T13:42:35Z
 ```
 
 # Test uv+PyPI Trusted Publishing on Gitlab
@@ -136,5 +136,25 @@ Would this mean that two subsequent uv publish commands in the same job in a use
 _@zsol approved on 2026-01-14 08:24_
 
 This looks ok to me, but maybe it would be _slightly_ better if we would have a separate, parallel job for the non-github trusted publishing tests, so if they do fail at the point of getting the oidc token the rest of the tests would still run 
+
+---
+
+_@woodruffw reviewed on 2026-01-14 12:52_
+
+---
+
+_Review comment by @woodruffw on `scripts/publish/test_publish.py`:562 on 2026-01-14 12:52_
+
+Yep, exactly. There's ways we could potentially work around that within uv itself (e.g. we could stash the minted credential for reuse between invocations), but the limitation on OIDC token reuse is architectural/inside PyPI.
+
+In practice this doesn't generally bite users because all they do is a single `uv publish` invocation, plus must CI providers don't have this limitation (GitHub and all the others can acquire additional OIDC creds at runtime.)
+
+---
+
+_Comment by @woodruffw on 2026-01-14 13:17_
+
+> so if they do fail at the point of getting the oidc token the rest of the tests would still run
+
+Yeah, I was thinking about either sharding this across jobs with a matrix *or* changing it to use a more "traditional" pytest setup, so that we could run the entire suite without failing fast. I can look at that with a follow up.
 
 ---

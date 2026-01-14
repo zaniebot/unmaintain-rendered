@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix-17944-alt
 created_at: 2026-01-14T12:08:40Z
-updated_at: 2026-01-14T12:20:59Z
+updated_at: 2026-01-14T12:46:45Z
 url: https://github.com/astral-sh/ruff/pull/22570
-synced_at: 2026-01-14T12:43:59Z
+synced_at: 2026-01-14T13:42:22Z
 ```
 
 # [ruff server] Find config for files outside of open workspaces
@@ -95,5 +95,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 12:20_
 
 
 
+
+---
+
+_Review requested from @dhruvmanila by @MichaReiser on 2026-01-14 12:46_
 
 ---

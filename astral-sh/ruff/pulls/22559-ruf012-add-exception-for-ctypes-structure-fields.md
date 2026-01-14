@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix-22166
 created_at: 2026-01-13T20:59:00Z
-updated_at: 2026-01-13T23:10:38Z
+updated_at: 2026-01-14T12:42:36Z
 url: https://github.com/astral-sh/ruff/pull/22559
-synced_at: 2026-01-13T23:35:33Z
+synced_at: 2026-01-14T13:42:22Z
 ```
 
 # [RUF012] Add exception for `ctypes.Structure._fields_`
@@ -44,5 +44,25 @@ Can you add a test case to the snapshots demonstrating the expected passing case
 _Comment by @caiquejjx on 2026-01-13 23:10_
 
 @amyreese Done, thanks
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-14 09:00_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
 
 ---

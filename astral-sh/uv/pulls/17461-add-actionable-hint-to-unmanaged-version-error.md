@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: fix/python-download-hint
 created_at: 2026-01-14T11:59:17Z
-updated_at: 2026-01-14T12:02:14Z
+updated_at: 2026-01-14T13:31:37Z
 url: https://github.com/astral-sh/uv/pull/17461
-synced_at: 2026-01-14T12:44:12Z
+synced_at: 2026-01-14T13:42:35Z
 ```
 
 # Add actionable hint to unmanaged version error message
@@ -57,5 +57,41 @@ The current idea for the hint does not explicitly mention running `uv self updat
 ---
 
 _Review requested from @zanieb by @konstin on 2026-01-14 12:00_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-python/src/installation.rs`:165 on 2026-01-14 13:17_
+
+If the version request was for `Default` or `Any` and we're down this path then something else is likely broken and we should just not show this hint.
+
+---
+
+_Comment by @originell on 2026-01-14 13:21_
+
+note: initial ci run rightfully discovered an error in my snapshot. i updated that. the new failure doesn't seem to be related to my code. if it is, pls let me know and i'll adjust :) i'm not too familiar with the uv codebase and rust in general
+
+---
+
+_Review comment by @EliteTK on `crates/uv-python/src/installation.rs`:167 on 2026-01-14 13:29_
+
+This should say something closer to:
+
+"This version of uv is unaware of a managed Python download for {request}. Consider updating uv if the requested version is newer."
+
+Or something like that, I'm not 100% on the wording.
+
+"no ... is available" implies it's unavailable which we're contradicting by suggesting 
+
+---
+
+_Review comment by @EliteTK on `crates/uv/tests/it/sync.rs`:13287 on 2026-01-14 13:31_
+
+Use `.with_filtered_python_sources()` on the context instead. i.e. `let context = TestContext::new_with_versions(&["3.12"]).with_managed_python_dirs().with_filtered_python_sources()`.
+
+Then you can drop this.
+
+---
+
+_@EliteTK reviewed on 2026-01-14 13:31_
 
 ---

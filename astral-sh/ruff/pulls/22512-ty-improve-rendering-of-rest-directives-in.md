@@ -2,18 +2,19 @@
 number: 22512
 title: "[ty] Improve rendering of ReST directives in docstrings"
 type: pull_request
-state: open
+state: merged
 author: AryanBagade
 labels:
   - server
   - ty
 assignees: []
+merged: true
 base: main
 head: feat/improve-rest-directive-rendering
 created_at: 2026-01-12T00:10:54Z
-updated_at: 2026-01-14T12:26:45Z
+updated_at: 2026-01-14T12:33:08Z
 url: https://github.com/astral-sh/ruff/pull/22512
-synced_at: 2026-01-14T12:43:59Z
+synced_at: 2026-01-14T13:42:22Z
 ```
 
 # [ty] Improve rendering of ReST directives in docstrings
@@ -94,5 +95,13 @@ _Review request for @AlexWaygood removed by @AlexWaygood on 2026-01-12 08:24_
 _@AlexWaygood approved on 2026-01-14 12:26_
 
 Thank you!!
+
+---
+
+_Merged by @AlexWaygood on 2026-01-14 12:33_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-14 12:33_
 
 ---
