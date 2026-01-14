@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: tk/pip-compile-missing-py-4
 created_at: 2025-12-29T12:59:39Z
-updated_at: 2026-01-14T16:47:16Z
+updated_at: 2026-01-14T17:47:29Z
 url: https://github.com/astral-sh/uv/pull/17249
-synced_at: 2026-01-14T17:38:04Z
+synced_at: 2026-01-14T18:48:19Z
 ```
 
 # Make `uv pip compile` attempt to download a specified `--python-version` if it can.
@@ -242,5 +242,21 @@ Would you like me to skip re-attempting a download on the without-patch-number p
 _Comment by @EliteTK on 2026-01-14 16:47_
 
 Heh... I just realised, what about if there's no default python version? We should probably _also_ attempt to download in that final case too...
+
+---
+
+_@zanieb reviewed on 2026-01-14 17:47_
+
+---
+
+_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1553 on 2026-01-14 17:47_
+
+I probably would skip subsequent attempts, but I don't feel strongly.
+
+---
+
+_Comment by @zanieb on 2026-01-14 17:47_
+
+Yeah that makes sense
 
 ---

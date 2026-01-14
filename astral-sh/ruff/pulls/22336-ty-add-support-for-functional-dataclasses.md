@@ -8,12 +8,12 @@ labels:
   - ty
 assignees: []
 draft: true
-base: charlie/functional-namedtuple
+base: main
 head: charlie/functional-dataclass
 created_at: 2026-01-02T13:37:05Z
-updated_at: 2026-01-12T13:46:27Z
+updated_at: 2026-01-14T17:41:06Z
 url: https://github.com/astral-sh/ruff/pull/22336
-synced_at: 2026-01-12T15:57:47Z
+synced_at: 2026-01-14T18:48:06Z
 ```
 
 # [ty] Add support for functional dataclasses

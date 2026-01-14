@@ -2,17 +2,18 @@
 number: 17462
 title: "Avoid rendering `pyproject.toml` examples for more system-level settings"
 type: pull_request
-state: open
+state: merged
 author: zanieb
 labels:
   - documentation
 assignees: []
+merged: true
 base: main
 head: claude/hide-uv-only-variables-BLWDl
 created_at: 2026-01-14T14:08:54Z
-updated_at: 2026-01-14T16:45:34Z
+updated_at: 2026-01-14T18:18:36Z
 url: https://github.com/astral-sh/uv/pull/17462
-synced_at: 2026-01-14T17:38:04Z
+synced_at: 2026-01-14T18:48:19Z
 ```
 
 # Avoid rendering `pyproject.toml` examples for more system-level settings
@@ -43,5 +44,21 @@ _Marked ready for review by @zanieb on 2026-01-14 14:15_
 ---
 
 _Review requested from @konstin by @zanieb on 2026-01-14 16:45_
+
+---
+
+_@konstin approved on 2026-01-14 17:58_
+
+---
+
+_Review requested from @samypr100 by @zanieb on 2026-01-14 17:58_
+
+---
+
+_Merged by @zanieb on 2026-01-14 18:18_
+
+---
+
+_Closed by @zanieb on 2026-01-14 18:18_
 
 ---

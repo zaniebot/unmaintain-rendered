@@ -2,15 +2,15 @@
 number: 2490
 title: "Synthesize the `__slots__` attribute on namedtuple classes"
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - runtime semantics
 assignees: []
 created_at: 2026-01-14T13:06:45Z
-updated_at: 2026-01-14T13:23:08Z
+updated_at: 2026-01-14T18:22:29Z
 url: https://github.com/astral-sh/ty/issues/2490
-synced_at: 2026-01-14T13:42:04Z
+synced_at: 2026-01-14T18:47:49Z
 ```
 
 # Synthesize the `__slots__` attribute on namedtuple classes
@@ -50,5 +50,9 @@ I'm happy to take it as a follow-up.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2026-01-14 13:23_
+
+---
+
+_Closed by @charliermarsh on 2026-01-14 18:22_
 
 ---

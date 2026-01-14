@@ -7,13 +7,12 @@ author: zanieb
 labels:
   - cli
 assignees: []
-draft: true
 base: main
 head: zb/no-sources-package
 created_at: 2025-07-25T21:11:34Z
-updated_at: 2026-01-14T17:34:18Z
+updated_at: 2026-01-14T17:50:52Z
 url: https://github.com/astral-sh/uv/pull/14910
-synced_at: 2026-01-14T17:38:04Z
+synced_at: 2026-01-14T18:48:19Z
 ```
 
 # Add `--no-sources-package`
@@ -31,5 +30,9 @@ Related https://github.com/astral-sh/uv/issues/17441
 ---
 
 _Label `cli` added by @zanieb on 2025-07-25 21:11_
+
+---
+
+_Marked ready for review by @zanieb on 2026-01-14 17:50_
 
 ---

@@ -2,7 +2,7 @@
 number: 2415
 title: "Flaky(?) `import from` completions in the playground when there are statements below"
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - bug
@@ -10,9 +10,9 @@ labels:
   - completions
 assignees: []
 created_at: 2026-01-09T13:48:37Z
-updated_at: 2026-01-09T21:28:37Z
+updated_at: 2026-01-14T18:23:40Z
 url: https://github.com/astral-sh/ty/issues/2415
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-14T18:47:49Z
 ```
 
 # Flaky(?) `import from` completions in the playground when there are statements below
@@ -160,5 +160,9 @@ Looking at your video @BurntSushi. For me it looks sane as well when `from d<CUR
 _Comment by @MichaReiser on 2026-01-09 21:28_
 
 I can't observe the flickering but can now reproduce that dataclass isn't always suggested 
+
+---
+
+_Closed by @MichaReiser on 2026-01-14 18:23_
 
 ---

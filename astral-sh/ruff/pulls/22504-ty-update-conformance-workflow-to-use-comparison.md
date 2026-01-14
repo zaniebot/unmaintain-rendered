@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: wld/update-conformance-workflow
 created_at: 2026-01-11T17:55:59Z
-updated_at: 2026-01-14T17:01:13Z
+updated_at: 2026-01-14T18:18:55Z
 url: https://github.com/astral-sh/ruff/pull/22504
-synced_at: 2026-01-14T17:37:51Z
+synced_at: 2026-01-14T18:48:06Z
 ```
 
 # [ty] Update conformance workflow to use comparison script
@@ -126,9 +126,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:38_
 | Metric | Old | New | Diff | Outcome |
 |--------|-----|-----|------|---------|
 | True Positives  | 0 | 0 | +0 | ⏬ (❌) |
-| False Positives | 948 | 948 | +0 | ⏬ (✅) |
+| False Positives | 965 | 965 | +0 | ⏬ (✅) |
 | False Negatives | 1155 | 1155 | +0 | ⏬ (✅) |
-| Total Diagnostics | 948 | 948 | 0 | ⏬ |
+| Total Diagnostics | 965 | 965 | 0 | ⏬ |
 | Precision | 0.00% | 0.00% | +0.00% | ⏬ (❌) |
 | Recall | 0.00% | 0.00% | +0.00% | ⏬ (❌) |
 
@@ -164,5 +164,19 @@ _Comment by @AlexWaygood on 2026-01-14 17:01_
 > @AlexWaygood I hope you don't mind but I went ahead and created [astral-sh/astral-bot#43](https://github.com/astral-sh/astral-bot/pull/43)
 
 I don't mind at all, thank you very much!!
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 18:10_
+
+The script is failing right now. Is it because the results are identical on this PR?
+
+Edit: No, that's not it. It isn't finding the typing conformance tests
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 18:18_
+
+At the current pace, I'll be able to maybe merge this PR in 1h 😆 
 
 ---

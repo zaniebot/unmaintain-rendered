@@ -2,18 +2,19 @@
 number: 22327
 title: "[ty] Add support for functional `namedtuple` creation"
 type: pull_request
-state: open
+state: merged
 author: charliermarsh
 labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: charlie/functional-namedtuple
 created_at: 2026-01-01T13:23:44Z
-updated_at: 2026-01-14T17:07:22Z
+updated_at: 2026-01-14T17:41:08Z
 url: https://github.com/astral-sh/ruff/pull/22327
-synced_at: 2026-01-14T17:37:51Z
+synced_at: 2026-01-14T18:48:06Z
 ```
 
 # [ty] Add support for functional `namedtuple` creation

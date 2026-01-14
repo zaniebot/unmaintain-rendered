@@ -2,7 +2,7 @@
 number: 22492
 title: "[ty] Handle playground file updates in the monaco editor onChange"
 type: pull_request
-state: open
+state: closed
 author: RasmusNygren
 labels:
   - playground
@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: fix-playground-completions
 created_at: 2026-01-10T13:37:09Z
-updated_at: 2026-01-13T18:19:45Z
+updated_at: 2026-01-14T17:57:26Z
 url: https://github.com/astral-sh/ruff/pull/22492
-synced_at: 2026-01-13T18:48:34Z
+synced_at: 2026-01-14T18:48:06Z
 ```
 
 # [ty] Handle playground file updates in the monaco editor onChange
@@ -138,5 +138,15 @@ I tried that but unfortunately not :/
 ---
 
 _@RasmusNygren reviewed on 2026-01-13 18:19_
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 17:57_
+
+Thanks for working on this. You showed that the completions are fixed when subscribing to the editor directly, which helped a ton to identify the root cause. I'll close this in favor of https://github.com/astral-sh/ruff/pull/22576 as it requires fewer changes.
+
+---
+
+_Closed by @MichaReiser on 2026-01-14 17:57_
 
 ---

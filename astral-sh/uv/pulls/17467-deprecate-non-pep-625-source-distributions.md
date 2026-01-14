@@ -10,9 +10,9 @@ draft: true
 base: main
 head: ww/deprecate-non-pep625
 created_at: 2026-01-14T15:58:33Z
-updated_at: 2026-01-14T17:10:27Z
+updated_at: 2026-01-14T18:26:38Z
 url: https://github.com/astral-sh/uv/pull/17467
-synced_at: 2026-01-14T17:38:04Z
+synced_at: 2026-01-14T18:48:19Z
 ```
 
 # Deprecate non-PEP 625 source distributions
@@ -59,5 +59,54 @@ I have it in `build_wheel` locally ATM, just waiting for tests for complete. Doe
 
 Oh, I didn't realize we actually allowed wheels to also be xz/lzma 😅 -- I was looking at `WheelFilename` and could only find `.whl`, which should always imply ZIP unless we're doing something more nuanced under the hood?
 
+
+---
+
+_Comment by @konstin on 2026-01-14 17:54_
+
+zips can use a number of compression options, such as stored (no compression), DEFLATE (the default) but also LZMA. There's a list unter "Compression method" in https://users.cs.jmu.edu/buchhofp/forensics/formats/pkzip.html. There's nothing that says what kind of zips the wheel are, but generally, they are either DEFLATE (basically all published zips) or stored (e.g. for editables).
+
+---
+
+_@zanieb reviewed on 2026-01-14 18:02_
+
+---
+
+_Review comment by @zanieb on `crates/uv-distribution/src/distribution_database.rs`:384 on 2026-01-14 18:02_
+
+Note you could also use `warn_user_once`
+
+---
+
+_@zanieb reviewed on 2026-01-14 18:07_
+
+---
+
+_Review comment by @zanieb on `crates/uv-distribution/src/distribution_database.rs`:390 on 2026-01-14 18:07_
+
+This needs to include the dist name, I think?
+
+I'd say something like "`{dist}` is not a standards-compliant source distribution: expected extension `{}` but found `{}`. A future version of uv will reject source distributions that do not match the specification defined in PEP 625."
+
+---
+
+_Comment by @woodruffw on 2026-01-14 18:19_
+
+> zips can use a number of compression options, such as stored (no compression), DEFLATE (the default) but also LZMA. There's a list unter "Compression method" in [users.cs.jmu.edu/buchhofp/forensics/formats/pkzip.html](https://users.cs.jmu.edu/buchhofp/forensics/formats/pkzip.html). There's nothing that says what kind of zips the wheel are, but generally, they are either DEFLATE (basically all published zips) or stored (e.g. for editables).
+
+Ah yeah, sorry -- I misunderstood you to be saying that `.whl` could sometimes by a `.tar.xz`, not a ZIP with a different interior compression for a specific entry.
+
+So, there are two distinct things we want to warn on/deprecate:
+
+1. We want to deprecate non-PEP 625 sdists
+2. We want to deprecate non-DEFLATE/stored file entries in ZIPs (which will typically be wheels, but could also be sdists right now)
+
+This PR is focusing on (1) right now, but I could also do (2) (or in a follow-up).
+
+---
+
+_Comment by @konstin on 2026-01-14 18:26_
+
+(1) is definitely a good unit to merge on it's own. I'm mainly bringing up (2) cause we also need it to remove the xz/lzma dependencies.
 
 ---

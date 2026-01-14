@@ -2,16 +2,16 @@
 number: 1049
 title: Support the functional syntax for NamedTuples
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - typing semantics
   - namedtuples
 assignees: []
 created_at: 2025-08-19T11:34:20Z
-updated_at: 2025-12-31T20:09:34Z
+updated_at: 2026-01-14T17:41:07Z
 url: https://github.com/astral-sh/ty/issues/1049
-synced_at: 2026-01-12T15:54:24Z
+synced_at: 2026-01-14T18:47:48Z
 ```
 
 # Support the functional syntax for NamedTuples
@@ -56,5 +56,9 @@ _Label `namedtuples` added by @AlexWaygood on 2025-11-29 18:35_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-12-31 20:09_
+
+---
+
+_Closed by @charliermarsh on 2026-01-14 17:41_
 
 ---
