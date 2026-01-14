@@ -374,10 +374,72 @@ scipy (https://github.com/scipy/scipy)
         <div class="timeline-entry">
             <div class="event">Renamed from "[ty] Override `__file__` to str on imported modules" to "[ty] Override `__file__` to str when applicable on imported modules" by @sinon on 2026-01-08 15:14</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/place.rs</code>:1087 on 2026-01-14 12:38</div>
+            <div class="timeline-body"><p>This comment is <em>nearly</em> accurate!</p>
+<p>The way it works at runtime is that a pure-Python non-namespace-package module will always have <code>__file__</code> set to a string; a namespace-package module will always have <code>__file__</code> set to <code>None</code>, and a C extension might not have it set at all:</p>
+<pre><code class="language-pycon">% uv pip install google-cloud-ndb           
+Using Python 3.13.8 environment at: test-env
+Resolved 22 packages in 647ms
+Prepared 9 packages in 1.07s
+Installed 21 packages in 92ms
+ + certifi==2026.1.4
+ + charset-normalizer==3.4.4
+ + google-api-core==2.29.0
+ + google-auth==2.47.0
+ + google-cloud-core==2.5.0
+ + google-cloud-datastore==2.23.0
+ + google-cloud-ndb==2.4.0
+ + googleapis-common-protos==1.72.0
+ + grpcio==1.76.0
+ + grpcio-status==1.76.0
+ + idna==3.11
+ + proto-plus==1.27.0
+ + protobuf==6.33.4
+ + pyasn1==0.6.1
+ + pyasn1-modules==0.4.2
+ + pymemcache==4.0.0
+ + pytz==2025.2
+ + redis==6.4.0
+ + requests==2.32.5
+ + rsa==4.9.1
+ + urllib3==2.6.3
+(test-env) ~/dev % py
+Python 3.13.8 (main, Oct 10 2025, 12:46:18) [Clang 20.1.4 ] on darwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import google
+&gt;&gt;&gt; google.__file__ is None  # `google` is a namespace package
+True
+&gt;&gt;&gt; 
+&gt;&gt;&gt; import itertools
+&gt;&gt;&gt; itertools.__file__  # `itertools` is a C extension
+Traceback (most recent call last):
+  File &quot;&lt;python-input-3&gt;&quot;, line 1, in &lt;module&gt;
+    itertools.__file__
+AttributeError: module 'itertools' has no attribute '__file__'. Did you mean: '__name__'?
+</code></pre>
+<p>It looks to me like your code is correct for the namespace package case, because you only apply the special case here if <code>module.file(db)</code> is <code>Some()</code>, and <code>module.file(db)</code> will only be <code>None</code> if it's a namespace package. But the comment here needs to be revised, and you could also consider adding an explicit test for the namespace-package case. (Namespace packages are pure-Python packages that have no <code>__init__.py(i)</code> file in them -- they are <em>just</em> directories that contain other Python modules/packages.)</p>
+<p>We could also possibly get rid of the exemption for stubs that you have here? The rationale for treating stubs separately is that they might represent C extensions, and C extensions won't necessarily set <code>__file__</code>. But that doesn't affect the <em>type</em> of the <code>__file__</code> member, it just affects whether the module <em>has</em> the <code>__file__</code> member to begin with. We could consider emitting a <code>possibly-unresolved-attribute</code> warning about that, but I think it would probably be too noisy: just because a module is represented by a stub file doesn't mean that it <em>definitely</em> is a C extension, it just <em>could</em> be a C extension.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ty_python_semantic/src/place.rs</code>:1117 on 2026-01-14 12:41</div>
+            <div class="timeline-body"><p>nit: you could reduce indentation here by using let-chains :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2026-01-14 12:41</div>
+            <div class="timeline-body"><p>Thank you, and sorry for the delayed review!!</p>
+<p>This looks pretty good, but the comment needs to be updated and I think we should add a test for namespace packages -- see my comment inline</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2026-01-14 12:41</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:18:38 UTC
+        Synced at 2026-01-14 13:44:53 UTC
     </footer>
 </body>
 </html>
