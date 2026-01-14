@@ -10,9 +10,9 @@ assignees: []
 base: charlie/dyn-expression
 head: charlie/dyn-overload
 created_at: 2026-01-11T14:55:39Z
-updated_at: 2026-01-13T21:23:18Z
+updated_at: 2026-01-14T02:16:51Z
 url: https://github.com/astral-sh/ruff/pull/22502
-synced_at: 2026-01-13T21:36:29Z
+synced_at: 2026-01-14T02:32:45Z
 ```
 
 # [ty] Assume 3-argument form for variadics in type(...)
@@ -166,5 +166,11 @@ _Review request for @Gankra removed by @AlexWaygood on 2026-01-13 21:23_
 ---
 
 _Review request for @MichaReiser removed by @AlexWaygood on 2026-01-13 21:23_
+
+---
+
+_@ibraheemdev approved on 2026-01-14 02:16_
+
+This makes sense to me.
 
 ---

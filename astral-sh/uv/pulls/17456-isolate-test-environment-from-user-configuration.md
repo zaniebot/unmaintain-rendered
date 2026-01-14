@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: stable-ci
 created_at: 2026-01-14T00:42:38Z
-updated_at: 2026-01-14T00:43:53Z
+updated_at: 2026-01-14T01:33:42Z
 url: https://github.com/astral-sh/uv/pull/17456
-synced_at: 2026-01-14T01:33:41Z
+synced_at: 2026-01-14T02:32:58Z
 ```
 
 # Isolate test environment from user configuration
@@ -27,5 +27,11 @@ Isolates the test environment from user-specific configuration that can cause te
 - **User config files**: Set `XDG_CONFIG_HOME` in `with_real_home()` to prevent tests from reading user configuration files (like `.python-version`) that could override test-specified Python versions
 
 - **Documentation**: Add guidance to CONTRIBUTING.md for developers behind corporate firewalls that block access to external test services like `pypi-proxy.fly.dev`
+
+---
+
+_Comment by @zanieb on 2026-01-14 01:33_
+
+Overlaps with #14080 
 
 ---

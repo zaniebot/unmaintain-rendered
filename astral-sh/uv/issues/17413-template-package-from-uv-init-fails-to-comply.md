@@ -5,12 +5,12 @@ type: issue
 state: open
 author: martimlobao
 labels:
-  - bug
+  - needs-decision
 assignees: []
 created_at: 2026-01-12T09:43:57Z
-updated_at: 2026-01-12T12:31:22Z
+updated_at: 2026-01-14T01:37:07Z
 url: https://github.com/astral-sh/uv/issues/17413
-synced_at: 2026-01-12T16:02:50Z
+synced_at: 2026-01-14T02:32:50Z
 ```
 
 # Template package from `uv init` fails to comply with RUF067
@@ -50,5 +50,23 @@ Related:
 Which advocates that
 
 > `__init__.py` should not contain general purpose code
+
+---
+
+_Label `bug` removed by @zanieb on 2026-01-14 01:35_
+
+---
+
+_Label `needs-decision` added by @zanieb on 2026-01-14 01:35_
+
+---
+
+_Comment by @zanieb on 2026-01-14 01:37_
+
+I don't think this qualifies as a "bug" since it's working as intended.
+
+I'm not sure we should make up our own file name for a `main` function to go in. I think having it in an `__init__.py` is reasonable for an initialized project, though I'd probably move it elsewhere once I was further along.
+
+We can consider another pattern regardless.
 
 ---

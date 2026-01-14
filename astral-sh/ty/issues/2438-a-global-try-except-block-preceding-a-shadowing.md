@@ -7,9 +7,9 @@ author: nemowang2003
 labels: []
 assignees: []
 created_at: 2026-01-11T02:15:03Z
-updated_at: 2026-01-13T08:25:32Z
+updated_at: 2026-01-14T01:35:50Z
 url: https://github.com/astral-sh/ty/issues/2438
-synced_at: 2026-01-13T09:20:59Z
+synced_at: 2026-01-14T02:32:28Z
 ```
 
 # A global try-except block preceding a shadowing import causes incorrect type inference (Module | Object) in local scope
@@ -124,5 +124,21 @@ _Comment by @AlexWaygood on 2026-01-13 08:25_
 > I'm pretty sure it's also related to the fact that this code is in an `__init__.py`. Having a variable named `demo` and a submodule named `demo` in `__init__.py` is pretty error-prone.
 
 X-ref #1676
+
+---
+
+_Comment by @carljm on 2026-01-14 01:35_
+
+Wow, this one's a doozy. Nice find and report!
+
+The root cause here involves several factors:
+1. The try/except causes us to set AMBIGUOUS reachability for the remainder of the scope. This in itself is a bug: although some code within the try/except may be ambiguously reachable, the code after the try/except is definitely reachable.
+2. The line `from .demo import demo` causes us to insert two definitions of `demo` -- first one is a submodule-import (the `demo` submodule has now been implicitly imported and attached as an attribute on this package), and the second one is the actual import of the `demo` attribute from the `demo` submodule. The former definition is a binding only, the latter we currently consider both a binding and a declaration (though there are other bug reports suggesting we should reconsider this anyway, see #1836).
+3. When accessing a name from a nested scope, if there is a definitely-bound declaration, we privilege that and ignore bindings. So without the try/except, when we are considering everything definitely-reachable, we just use the "declaration" of the imported `demo` name, and ignore the "binding" of the submodule attribute.
+4. Otherwise, we look at all possibly-reachable declarations and bindings and union them together. This is intended to model the fact that we don't know where in the outer scope's control flow our nested scope could be called from. Effectively in this case we are modeling that `main()` might be called in between the attachment of the `demo` submodule attribute and the binding of the imported `demo` name. In this case that's a silly thing to model, since those two definitions are coming from the same statement.
+
+So if we do #1836, then the "bug" would always show up here, instead of being dependent on the `try/except`.
+If we fix (1) above (reachability of code after a try/except), then the bug would not be triggered by a `try/except`, but could still show up if we did something else to cause us to consider the import ambiguously reachable.
+Either way, I think we should fix (4) by just skipping the submodule-attachment (`ImportFromSubmodule`) definition altogether if it will be immediately shadowed by another definition of the same name, bound by the same import statement.
 
 ---
