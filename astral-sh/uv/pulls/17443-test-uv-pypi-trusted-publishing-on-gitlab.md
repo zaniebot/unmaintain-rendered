@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: ww/pypi-tp-gl-test
 created_at: 2026-01-13T19:14:18Z
-updated_at: 2026-01-13T23:22:17Z
+updated_at: 2026-01-14T08:24:22Z
 url: https://github.com/astral-sh/uv/pull/17443
-synced_at: 2026-01-13T23:35:46Z
+synced_at: 2026-01-14T08:36:39Z
 ```
 
 # Test uv+PyPI Trusted Publishing on Gitlab
@@ -120,5 +120,21 @@ _Review comment by @woodruffw on `.github/workflows/ci.yml`:259 on 2026-01-13 23
 ---
 
 _@woodruffw reviewed on 2026-01-13 23:22_
+
+---
+
+_@zsol reviewed on 2026-01-14 08:20_
+
+---
+
+_Review comment by @zsol on `scripts/publish/test_publish.py`:562 on 2026-01-14 08:20_
+
+Would this mean that two subsequent uv publish commands in the same job in a user's workflow fail the same way? If so, that's quite a severe limitation 
+
+---
+
+_@zsol approved on 2026-01-14 08:24_
+
+This looks ok to me, but maybe it would be _slightly_ better if we would have a separate, parallel job for the non-github trusted publishing tests, so if they do fail at the point of getting the oidc token the rest of the tests would still run 
 
 ---

@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: wsl_shebang
 created_at: 2025-04-23T15:29:13Z
-updated_at: 2026-01-12T17:29:40Z
+updated_at: 2026-01-14T08:27:53Z
 url: https://github.com/astral-sh/ruff/pull/17584
-synced_at: 2026-01-12T18:23:34Z
+synced_at: 2026-01-14T08:36:25Z
 ```
 
 # Allow EXE001 & EXE002 on WSL, fix issues with other cases of mounting non-unix filesystems
@@ -254,5 +254,17 @@ These all raise the bar of how closely I feel I need to review the changes compa
 Beyond that, I'm just not that familiar with Windows and don't have a Windows machine (easily) available for testing. The core change does look straightforward, but it's also a bit surprising to create a temporary file and check its permissions (assuming I'm understanding correctly) instead of calling `is_wsl` from a third-party crate.
 
 Hopefully that gives some context. That's why the PR looks complicated to review to me in its current form and why I haven't found a chance to prioritize it yet.
+
+---
+
+_Comment by @MusicalNinjaDad on 2026-01-14 08:17_
+
+Fully understand, and I sort of expected that answer ;)
+
+I'll restructure to make it easier to review.
+
+> The core change does look straightforward, but it's also a bit surprising to create a temporary file and check its permissions (assuming I'm understanding correctly) instead of calling is_wsl from a third-party crate.
+
+Correct - that's what the logic change does. Reason: `is_wsl()` returns `true` for all WSL users, the majority of whom use a normal ext4 filesystem, and therefore do not need the lints disabled. For all these users disabling the lints leads to nasty surprises if they assume that they are active (#10084). Doing it this way covers both types of WSL user, as well as linux users who are storing code on USB sticks etc. (#12941)
 
 ---
