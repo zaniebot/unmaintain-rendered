@@ -2,17 +2,18 @@
 number: 17474
 title: Add support for GCS request signing
 type: pull_request
-state: open
+state: merged
 author: charliermarsh
 labels:
   - preview
 assignees: []
+merged: true
 base: main
 head: charlie/gcs
 created_at: 2026-01-14T20:07:07Z
-updated_at: 2026-01-14T20:11:52Z
+updated_at: 2026-01-14T20:47:55Z
 url: https://github.com/astral-sh/uv/pull/17474
-synced_at: 2026-01-14T20:43:55Z
+synced_at: 2026-01-14T21:43:20Z
 ```
 
 # Add support for GCS request signing
@@ -41,5 +42,17 @@ _Review requested from @zanieb by @charliermarsh on 2026-01-14 20:11_
 ---
 
 _Label `preview` added by @charliermarsh on 2026-01-14 20:11_
+
+---
+
+_Merged by @charliermarsh on 2026-01-14 20:47_
+
+---
+
+_Closed by @charliermarsh on 2026-01-14 20:47_
+
+---
+
+_Branch deleted on 2026-01-14 20:47_
 
 ---

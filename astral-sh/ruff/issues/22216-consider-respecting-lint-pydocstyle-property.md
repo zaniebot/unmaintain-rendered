@@ -2,7 +2,7 @@
 number: 22216
 title: "Consider respecting `lint.pydocstyle.property-decorators` in `RUF066`"
 type: issue
-state: open
+state: closed
 author: ntBre
 labels:
   - rule
@@ -10,9 +10,9 @@ labels:
   - preview
 assignees: []
 created_at: 2025-12-26T23:16:00Z
-updated_at: 2025-12-26T23:16:00Z
+updated_at: 2026-01-14T21:02:25Z
 url: https://github.com/astral-sh/ruff/issues/22216
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-14T21:42:56Z
 ```
 
 # Consider respecting `lint.pydocstyle.property-decorators` in `RUF066`
@@ -36,5 +36,9 @@ _Label `configuration` added by @ntBre on 2025-12-26 23:16_
 ---
 
 _Label `preview` added by @ntBre on 2025-12-26 23:16_
+
+---
+
+_Closed by @ntBre on 2026-01-14 21:02_
 
 ---

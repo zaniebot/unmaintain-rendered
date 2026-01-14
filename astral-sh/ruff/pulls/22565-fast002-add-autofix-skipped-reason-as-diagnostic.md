@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: Extend_FAST002
 created_at: 2026-01-14T09:00:25Z
-updated_at: 2026-01-14T09:27:07Z
+updated_at: 2026-01-14T20:57:36Z
 url: https://github.com/astral-sh/ruff/pull/22565
-synced_at: 2026-01-14T09:35:09Z
+synced_at: 2026-01-14T21:43:07Z
 ```
 
 # FAST002 : add autofix skipped reason as diagnostic info
@@ -107,5 +107,19 @@ _@11happy reviewed on 2026-01-14 09:17_
 _Review comment by @11happy on `crates/ruff_linter/src/rules/fastapi/snapshots/ruff_linter__rules__fastapi__tests__fast-api-non-annotated-dependency_FAST002_0.py_py38.snap`:361 on 2026-01-14 09:17_
 
 I am also leaning towards making these subdiagnostics available in case of  verbose mode(-v)
+
+---
+
+_@ntBre reviewed on 2026-01-14 20:57_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/fastapi/snapshots/ruff_linter__rules__fastapi__tests__fast-api-non-annotated-dependency_FAST002_0.py_py38.snap`:361 on 2026-01-14 20:57_
+
+Hmm, yeah maybe this wasn't a great suggestion for a sub-diagnostic, sorry! We could also consider just adding a `Fix availability` note to the documentation instead.
+
+Alternatively, it might be more helpful to phrase the sub-diagnostic as a suggestion like "Reorder the arguments to enable an automatic fix" (but probably more specific than that).
+
+Just a couple of ideas, I'm curious what y'all think.
 
 ---

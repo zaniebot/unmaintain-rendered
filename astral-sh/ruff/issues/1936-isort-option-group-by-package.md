@@ -2,15 +2,15 @@
 number: 1936
 title: isort option group-by-package
 type: issue
-state: open
+state: closed
 author: nstarman
 labels:
   - isort
 assignees: []
 created_at: 2023-01-17T16:50:02Z
-updated_at: 2023-01-17T18:26:10Z
+updated_at: 2026-01-14T20:39:58Z
 url: https://github.com/astral-sh/ruff/issues/1936
-synced_at: 2026-01-12T15:54:41Z
+synced_at: 2026-01-14T21:42:54Z
 ```
 
 # isort option group-by-package
@@ -30,5 +30,9 @@ _Label `isort` added by @charliermarsh on 2023-01-17 18:26_
 _Comment by @charliermarsh on 2023-01-17 18:26_
 
 Acknowledged!
+
+---
+
+_Closed by @MichaReiser on 2026-01-14 20:39_
 
 ---

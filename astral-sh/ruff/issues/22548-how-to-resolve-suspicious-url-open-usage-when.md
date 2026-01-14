@@ -2,15 +2,15 @@
 number: 22548
 title: How to resolve suspicious-url-open-usage when passing a urllib.request.Request to urllib.request.urlopen
 type: issue
-state: open
+state: closed
 author: Jerakin
 labels:
   - question
 assignees: []
 created_at: 2026-01-13T13:03:02Z
-updated_at: 2026-01-14T14:37:26Z
+updated_at: 2026-01-14T21:19:26Z
 url: https://github.com/astral-sh/ruff/issues/22548
-synced_at: 2026-01-14T15:39:30Z
+synced_at: 2026-01-14T21:42:56Z
 ```
 
 # How to resolve suspicious-url-open-usage when passing a urllib.request.Request to urllib.request.urlopen
@@ -131,5 +131,15 @@ Fixing the import like in Micha's playground example reintroduces the error. One
 
 Otherwise I think we would have to extend the rule to try to resolve the value of the `req` argument. In which case, this may be a duplicate of https://github.com/astral-sh/ruff/issues/7918.
 
+
+---
+
+_Comment by @Jerakin on 2026-01-14 21:19_
+
+Looking at the comments in that issue I would treat it as a duplicate of https://github.com/astral-sh/ruff/issues/7918
+
+---
+
+_Closed by @Jerakin on 2026-01-14 21:19_
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: tk/pip-compile-missing-py-4
 created_at: 2025-12-29T12:59:39Z
-updated_at: 2026-01-14T17:47:29Z
+updated_at: 2026-01-14T21:09:08Z
 url: https://github.com/astral-sh/uv/pull/17249
-synced_at: 2026-01-14T18:48:19Z
+synced_at: 2026-01-14T21:43:20Z
 ```
 
 # Make `uv pip compile` attempt to download a specified `--python-version` if it can.
@@ -51,7 +51,7 @@ _@EliteTK reviewed on 2025-12-29 13:04_
 
 ---
 
-_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1563 on 2025-12-29 13:04_
+_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1511 on 2025-12-29 13:04_
 
 Should we use the same strategy when downloading?
 
@@ -75,7 +75,7 @@ _@zanieb reviewed on 2026-01-09 20:08_
 
 ---
 
-_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1563 on 2026-01-09 20:08_
+_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1511 on 2026-01-09 20:08_
 
 That seems technically correct, though I can't say it's definitely worth it without seeing the code.
 
@@ -95,7 +95,7 @@ _@EliteTK reviewed on 2026-01-09 20:47_
 
 ---
 
-_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1563 on 2026-01-09 20:47_
+_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1511 on 2026-01-09 20:47_
 
 I think it would just be a matter of shoving https://github.com/astral-sh/uv/pull/17249/changes/BASE..37d8cb6fd77ec752c265060db26b92c7584fa78c#diff-d02a01db770da7d68941d9e67624483d066f95310e5c1835dc0edc23f9af6e5cL1469 in a function and then calling it twice...
 
@@ -105,7 +105,7 @@ _@EliteTK reviewed on 2026-01-09 20:48_
 
 ---
 
-_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1563 on 2026-01-09 20:48_
+_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1511 on 2026-01-09 20:48_
 
 I don't know why github let me make a link and then produced whatever broken thing that was...
 
@@ -123,7 +123,7 @@ I guess the concern is like... if you wifi is off?
 
 ---
 
-_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1563 on 2026-01-09 21:32_
+_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1511 on 2026-01-09 21:32_
 
 Yeah, I think it's only the error handling that might be annoying? I think you should try it.
 
@@ -149,7 +149,7 @@ _@EliteTK reviewed on 2026-01-14 16:04_
 
 ---
 
-_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1563 on 2026-01-14 16:04_
+_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1511 on 2026-01-14 16:04_
 
 All done, I think the error handling didn't turn out too bad.
 
@@ -258,5 +258,17 @@ I probably would skip subsequent attempts, but I don't feel strongly.
 _Comment by @zanieb on 2026-01-14 17:47_
 
 Yeah that makes sense
+
+---
+
+_Comment by @EliteTK on 2026-01-14 21:09_
+
+Okay, I've refactored it all a little bit. Maybe the refactoring should have come first... Not sure.
+
+Let me know what you think.
+
+---
+
+_Review requested from @zanieb by @EliteTK on 2026-01-14 21:09_
 
 ---

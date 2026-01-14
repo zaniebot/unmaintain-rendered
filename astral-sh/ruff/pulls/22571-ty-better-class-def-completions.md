@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: better-class-def-completions
 created_at: 2026-01-14T14:28:57Z
-updated_at: 2026-01-14T14:47:44Z
+updated_at: 2026-01-14T20:47:03Z
 url: https://github.com/astral-sh/ruff/pull/22571
-synced_at: 2026-01-14T15:39:42Z
+synced_at: 2026-01-14T21:43:07Z
 ```
 
 # [ty] Better class def completions
@@ -75,5 +75,21 @@ _Review comment by @RasmusNygren on `crates/ty_ide/src/completion.rs`:853 on 202
 This leads to us calculating whether or not we're in a class def twice, here and in `add_argument_completions`. I think this is fine for now but we probably want to do some refactors here and store more information on the context such that we only run the detection once and can re-use that both to add completions and for ranking. Perhaps the `NonImportContext` can store another enum and track if we're in a class-def/raising_exception etc.
 
 Have you already thought about how to best scale this @BurntSushi ?
+
+---
+
+_Review request for @dcreager removed by @MichaReiser on 2026-01-14 20:47_
+
+---
+
+_Review request for @carljm removed by @MichaReiser on 2026-01-14 20:47_
+
+---
+
+_Review request for @sharkdp removed by @MichaReiser on 2026-01-14 20:47_
+
+---
+
+_Review requested from @BurntSushi by @MichaReiser on 2026-01-14 20:47_
 
 ---

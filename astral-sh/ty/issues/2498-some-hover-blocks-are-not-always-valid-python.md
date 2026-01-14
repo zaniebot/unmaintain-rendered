@@ -4,12 +4,13 @@ title: Some hover blocks are not always valid Python source
 type: issue
 state: open
 author: rchl
-labels: []
+labels:
+  - server
 assignees: []
 created_at: 2026-01-14T19:27:10Z
-updated_at: 2026-01-14T19:28:31Z
+updated_at: 2026-01-14T20:45:49Z
 url: https://github.com/astral-sh/ty/issues/2498
-synced_at: 2026-01-14T19:38:28Z
+synced_at: 2026-01-14T21:42:50Z
 ```
 
 # Some hover blocks are not always valid Python source
@@ -30,5 +31,9 @@ Perhaps `ty` can tell whether the snippet is a valid code or not and based on th
 ### Version
 
 0.0.10
+
+---
+
+_Label `server` added by @AlexWaygood on 2026-01-14 20:45_
 
 ---

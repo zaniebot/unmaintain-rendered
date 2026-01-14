@@ -2,15 +2,15 @@
 number: 21889
 title: "BLE001 (blind-except): false positive when logging via `warning`"
 type: issue
-state: open
+state: closed
 author: bentheiii
 labels:
   - rule
 assignees: []
 created_at: 2025-12-10T08:21:57Z
-updated_at: 2025-12-16T14:26:02Z
+updated_at: 2026-01-14T21:18:15Z
 url: https://github.com/astral-sh/ruff/issues/21889
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-14T21:42:56Z
 ```
 
 # BLE001 (blind-except): false positive when logging via `warning`
@@ -98,5 +98,9 @@ The question is, should I correct this as well?
 _Comment by @ntBre on 2025-12-16 14:26_
 
 I think it would be okay to try that change too and take a look at the ecosystem impact. I took a brief look through the git history and didn't see any reason we only consider literal `True`. We could at least try using [`Truthiness`](https://github.com/astral-sh/ruff/blob/0f373603ebd007196af4f211e14d421024a6b947/crates/ruff_python_ast/src/helpers.rs#L1201), which would only be a little more relaxed.
+
+---
+
+_Closed by @ntBre on 2026-01-14 21:18_
 
 ---

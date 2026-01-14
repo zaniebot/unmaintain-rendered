@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-14T10:33:49Z
-updated_at: 2026-01-14T10:37:06Z
+updated_at: 2026-01-14T21:09:51Z
 url: https://github.com/astral-sh/ty/issues/2489
-synced_at: 2026-01-14T11:33:10Z
+synced_at: 2026-01-14T21:42:50Z
 ```
 
 # ty should infer the type of the `cls` parameter of `__new__`
@@ -62,5 +62,17 @@ _Added to milestone `Pre-stable 1` by @AlexWaygood on 2026-01-14 10:36_
 _Comment by @AlexWaygood on 2026-01-14 10:37_
 
 Thanks! Hmm, I thought we'd fixed this a while back :(
+
+---
+
+_Comment by @ibraheemdev on 2026-01-14 21:05_
+
+It looks like this currently works for `@classmethod`, but not for `__new__`.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-14 21:09_
+
+Ah right, `__new__` is actuallly a staticmethod rather than a classmethod (but, like a classmethod, it always receives an object of `type[Self]` as its first argument)
 
 ---

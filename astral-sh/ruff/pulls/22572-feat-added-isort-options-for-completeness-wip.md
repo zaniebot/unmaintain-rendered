@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: isort-options
 created_at: 2026-01-14T15:34:41Z
-updated_at: 2026-01-14T20:23:16Z
+updated_at: 2026-01-14T20:43:04Z
 url: https://github.com/astral-sh/ruff/pull/22572
-synced_at: 2026-01-14T20:43:42Z
+synced_at: 2026-01-14T21:43:07Z
 ```
 
 # feat: added isort options for completeness (WIP)
@@ -78,5 +78,20 @@ Ah I see, thanks!
 There are a couple of general reasons mentioned in #13389 and its parent issue, #6190, related to the maintenance burden and potential conflicts with every new option. 
 
 I think the `line-length` setting here could be problematic, in particular, because it could conflict with our existing top-level [line-length](https://docs.astral.sh/ruff/settings/#line-length) setting. I'm not sure about the other two settings yet. Maybe @amyreese would have some insight.
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 20:43_
+
+> I think the line-length setting here could be problematic, in particular, because it could conflict with our existing top-level [line-length](https://docs.astral.sh/ruff/settings/#line-length) setting. I'm not sure about the other two settings yet. Maybe @amyreese would have some insight.
+
+Agree, I don't think we should add another `line-length` setting. It's also not clear to me why that would be necessary
+
+
+`group-by-package` is probably fine. Although I'm not sure how it interacts with all other settings. 
+
+
+`lexicographical` also seems mostly fine
+
 
 ---

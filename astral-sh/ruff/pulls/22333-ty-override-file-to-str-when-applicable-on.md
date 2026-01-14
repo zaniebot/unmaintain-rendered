@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: type-module-dunder-file-str
 created_at: 2026-01-01T20:21:52Z
-updated_at: 2026-01-14T20:27:31Z
+updated_at: 2026-01-14T21:24:59Z
 url: https://github.com/astral-sh/ruff/pull/22333
-synced_at: 2026-01-14T20:43:42Z
+synced_at: 2026-01-14T21:43:07Z
 ```
 
 # [ty] Override `__file__` to str when applicable on imported modules
@@ -590,5 +590,25 @@ _Review comment by @sinon on `crates/ty_python_semantic/src/place.rs`:1135 on 20
 This is existing behaviour on `main` probably preferable `str | None` (or could we infer `None`?), let me know if I should add a TODO, Issue or try and tackle in this PR.
 
 pyright is `str | None`, pyrefly/mypy is `str` and ty/zuban emit unknown-attr errors.
+
+---
+
+_@AlexWaygood reviewed on 2026-01-14 21:23_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/import/dunder_file_attribute.md`:63 on 2026-01-14 21:23_
+
+Ah -- no, _namespace_ packages do have `__file__`, but `__file__` is set to `None` for namespace packages. So I guess your logic in `crates/ty_python_semantic/src/place.rs` isn't _quite_ right. It's C extensions that don't necessarily have `__file__` set at all -- but we don't have a great way of knowing whether a module is a C extension or not right now.
+
+---
+
+_@AlexWaygood reviewed on 2026-01-14 21:24_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/scopes/moduletype_attrs.md`:102 on 2026-01-14 21:24_
+
+I think we _could_ keep _some_ version of the comment that states that for a stub file, we don't know whether it's a C extension or pure-Python module, and if it's a C extension then `__file__` might be unset entirely? But yes, I agree that the current version of the comment is more confusing than helpful
 
 ---

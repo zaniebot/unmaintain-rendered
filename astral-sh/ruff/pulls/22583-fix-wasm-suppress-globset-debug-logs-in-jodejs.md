@@ -2,16 +2,16 @@
 number: 22583
 title: "fix(wasm): suppress globset debug logs in jodejs build. Fixes #22535"
 type: pull_request
-state: open
+state: closed
 author: Jkhall81
 labels: []
 assignees: []
 base: main
 head: fix/wasm-globset-leak-22535
 created_at: 2026-01-14T20:25:55Z
-updated_at: 2026-01-14T20:37:43Z
+updated_at: 2026-01-14T20:49:37Z
 url: https://github.com/astral-sh/ruff/pull/22583
-synced_at: 2026-01-14T20:43:42Z
+synced_at: 2026-01-14T21:43:07Z
 ```
 
 # fix(wasm): suppress globset debug logs in jodejs build. Fixes #22535
@@ -110,5 +110,42 @@ If that's not possible (requires some research), then the better solution is to 
 ---
 
 _@MichaReiser reviewed on 2026-01-14 20:37_
+
+---
+
+_@Jkhall81 reviewed on 2026-01-14 20:39_
+
+---
+
+_Review comment by @Jkhall81 on `crates/ruff_wasm/Cargo.toml`:37 on 2026-01-14 20:39_
+
+ok
+
+---
+
+_Closed by @Jkhall81 on 2026-01-14 20:39_
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 20:46_
+
+The ideal solution here is probably to move the following call here
+
+https://github.com/astral-sh/ruff/blob/308373124d5e23802410a01fde10e2182c16d78a/crates/ruff_wasm/src/lib.rs#L115
+
+
+Into it's own function `init_logging(level)` and make it public. If you want logging, call the function after initializing the module. If you don't want logging to be enabled, don't. Do you want to give this a try?
+
+---
+
+_Comment by @Jkhall81 on 2026-01-14 20:49_
+
+Sure, I can give this a try later.
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 20:49_
+
+Or we do what's described here https://docs.rs/console_log/latest/console_log/#code-size
 
 ---

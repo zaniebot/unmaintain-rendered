@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-12-21T08:34:29Z
-updated_at: 2026-01-14T19:42:34Z
+updated_at: 2026-01-14T21:21:09Z
 url: https://github.com/astral-sh/ty/issues/2142
-synced_at: 2026-01-14T20:43:25Z
+synced_at: 2026-01-14T21:42:50Z
 ```
 
 # Align docs/type signatures (hover) of different types/objects
@@ -106,8 +106,8 @@ _Added to milestone `Stable` by @MichaReiser on 2025-12-22 17:13_
 
 _Comment by @michaelfortunato on 2026-01-14 19:42_
 
-Feel free to mute this comment if offtopic or a duplicate elsewhere--but would it be possible for hover info on class's to show documentation for the __init__ function ? That would make class usage easier. For instance, the way pyrefly does it is it detects if the class identifier is being used as a constructor (contains `()`) or not. 
-In the case that it is, Pyrefly shows me the signature for __init__ which is quite nice. 
+Feel free to mute this comment if offtopic or a duplicate elsewhere--but would it be possible for hover info on class's to show documentation for the `__init__` function ? That would make class usage easier. For instance, the way pyrefly does it is it detects if the class identifier is being used as a constructor (contains `()`) or not. 
+In the case that it is, Pyrefly shows me the signature for `__init__` which is quite nice. 
 
 <img width="535" height="360" alt="Image" src="https://github.com/user-attachments/assets/e747ba5a-43db-4ef4-babe-219a4b262e48" />
 
