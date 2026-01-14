@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pass `get_interpreter_info.py` script path as CLI instead of using -c option - astral-sh/uv #17459</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Pass <code>get_interpreter_info.py</code> script path as CLI instead of using -c option</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17459">#17459</a>
+        opened by <a href="https://github.com/ryanking13">@ryanking13</a>
+        on 2026-01-14 11:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ryanking13">@ryanking13</a></div>
+            <div class="timeline-body"><h2>Summary</h2>
+<ul>
+<li>Related to Pyodide support (#12729)</li>
+</ul>
+<p>We would like to make Pyodide interpreter work in Windows environment.</p>
+<p>Currently, interpreter information for the virtualenv is calculated by running the following script:</p>
+<p>https://github.com/astral-sh/uv/blob/f3add550afa44c59ea79ae371d4fc49802c44299/crates/uv-python/src/interpreter.rs#L954-L957</p>
+<p>The issue with it is that the local <code>sys.path</code> directory is not available in the Pyodide environment, especially when running in Windows.</p>
+<p>The code above generates the code such as</p>
+<pre><code class="language-py">import sys; sys.path = [&quot;C://Users//uv//cache//path&quot;] + sys.path; from python.get_interpreter_info import main; main()
+</code></pre>
+<p>However, the path <code>C://Users//uv//cache//path</code> is not available inside the Pyodide (Emscripten) environment, as Emscripten environment uses Unix-style path, mapping the Windows path to Unix path.</p>
+<p>Therefore, this PR changes the way the script is invoked. Passing the script directly to the python interpreter so that the path calculation can be handled by the interpreter.</p>
+<p>Please let me know if it doesn't seem like a right direction.</p>
+<h2>Test Plan</h2>
+<pre><code>cargo run -- venv
+cargo run -- venv --python pyodide-3.13.2-emscripten-wasm32-musl
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-14 12:06</div>
+            <div class="timeline-body"><blockquote>
+<p>However, the path <code>C://Users//uv//cache//path</code> is not available inside the Pyodide (Emscripten) environment, as Emscripten environment uses Unix-style path, mapping the Windows path to Unix path.</p>
+</blockquote>
+<p>Does this mean pyodide only support Unix paths on Windows, and what happens if I run e.g. a Python CLI script through a pyodide interpreter that gets called with a Windows path?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-14 12:36:20 UTC
+    </footer>
+</body>
+</html>

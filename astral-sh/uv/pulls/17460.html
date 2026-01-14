@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve create-python-mirror script - astral-sh/uv #17460</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve create-python-mirror script</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/17460">#17460</a>
+        opened by <a href="https://github.com/akx">@akx</a>
+        on 2026-01-14 11:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/akx">@akx</a></div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR improves the create-python-mirror script (stacked on @plucia-mitre's #16475) with a couple of extra switches that may be useful for creating limited mirrors of Python builds:</p>
+<ul>
+<li><code>--dry-run</code>, to see what would be downloaded</li>
+<li><code>--exclude</code>, to exclude e.g. <code>musl</code> or <code>debug</code> builds</li>
+<li><code>--only-latest-per-major-minor</code>, to only download the latest patch version per <code>MAJOR.MINOR</code> version.</li>
+</ul>
+<p>Summa summarum,</p>
+<pre><code>uv run crates/uv-python/fetch-download-metadata.py
+uv run scripts/create-python-mirror.py --name cpython --arch x86_64 --os linux --version '3.1[234].\d+$' --target python-downloads --exclude='freethreaded|musl|debug' --only-latest-per-major-minor --mirror-url=http://192.168.68.112:8080/ --save-metadata
+</code></pre>
+<p>happily generates a directory containing only the latest CPython 3.12/.13/.14 glibc builds, and it can be used as a download depot, as provable with</p>
+<pre><code>uv run -m http.server -d python-downloads 8080
+docker run -it --platform=linux/amd64 ghcr.io/astral-sh/uv:trixie-slim sh -c 'env UV_PYTHON_DOWNLOADS_JSON_URL=&quot;http://192.168.68.112:8080/download-metadata.json&quot; uv run --python=3.13 python'
+</code></pre>
+<p>(assuming your machine is <code>192.168.68.112</code> on the network 😇)</p>
+<h2>Test Plan</h2>
+<p>See above! 😄</p>
+<hr />
+<p>cc @MeitarR for #12838 and #17171</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-14 12:36:20 UTC
+    </footer>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[ruff server] Open new workspace when opening a file outside of current workspace - astral-sh/ruff #22567</title>
+    <title>[ruff server] Find config for files outside of open workspaces - astral-sh/ruff #22570</title>
     <link rel="stylesheet" href="../../../style.css">
 </head>
 <body>
@@ -11,21 +11,24 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>[ruff server] Open new workspace when opening a file outside of current workspace</h1>
+    <h1>[ruff server] Find config for files outside of open workspaces</h1>
 
     <div class="meta">
-        <span class="state-icon state-closed"></span>
-        <a href="https://github.com/astral-sh/ruff/pull/22567">#22567</a>
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22570">#22570</a>
         opened by <a href="https://github.com/ZedThree">@ZedThree</a>
-        on 2026-01-14 10:01
+        on 2026-01-14 12:08
     </div>
 
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/ZedThree">@ZedThree</a></div>
             <div class="timeline-body"><p>Fixes #17944</p>
-<h2>Summary</h2>
-<p>Here we check if we have settings for the file we're trying to open, as a proxy for checking if it's in an open workspace or not.</p>
+<p>There's two different routes we can go down for finding settings for such files:</p>
+<ul>
+<li>the file is below an open workspace, so we can add any settings we find to that workspace</li>
+<li>the file is not below an open workspace, in which case we can't cache them</li>
+</ul>
 <p>Given this filesystem layout:</p>
 <pre><code>.
 ├── dir_0
@@ -43,6 +46,7 @@
 <li>cwd in <code>dir_0</code>, opening <code>test_0.py</code> first, then <code>../dir_1/test_1.py</code> in same session</li>
 </ul>
 <p>without negatively affecting non-default workspaces (such as opening the folder in VS Code or <code>lsp-mode</code> in Emacs).</p>
+<p>The main downside to this approach is the lack of workspace for files in <code>dir_1</code> -- we can't share already parsed settings.</p>
 <hr />
 <p>This doesn't work for the situation where we're opening a file in a nested directory below the default workspace, where we <em>do</em> have a config file:</p>
 <pre><code>.
@@ -59,7 +63,10 @@
 </div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-14 10:09</div>
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2026-01-14 12:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/astral-sh-bot[bot]">@astral-sh-bot[bot]</a> on 2026-01-14 12:20</div>
             <div class="timeline-body"><!-- generated-comment ecosystem -->
 
 <h2><code>ruff-ecosystem</code> results</h2>
@@ -68,17 +75,6 @@
 <h3>Linter (preview)</h3>
 <p>✅ ecosystem check detected no linter changes.</p>
 </div>
-        </div>
-        <div class="timeline-entry">
-            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2026-01-14 10:09</div>
-            <div class="timeline-body"><p>As mentioned <a href="https://github.com/astral-sh/ruff/issues/17944#issuecomment-3748622248">here</a>, I don't think this is the right approach. Adding a workspace folder corresponds to VS Code's &quot;Add folder&quot; functionality and has a lot of implications. We shouldn't just &quot;add&quot; arbitrary folders when a user opens a file, especially not without cleaning them up.</p>
-</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2026-01-14 10:16</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="event">Closed by @ZedThree on 2026-01-14 12:07</div>
         </div>
     </div>
 
