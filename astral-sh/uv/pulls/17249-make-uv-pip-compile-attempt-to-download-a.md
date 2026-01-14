@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: tk/pip-compile-missing-py-4
 created_at: 2025-12-29T12:59:39Z
-updated_at: 2026-01-09T21:32:15Z
+updated_at: 2026-01-14T16:26:02Z
 url: https://github.com/astral-sh/uv/pull/17249
-synced_at: 2026-01-12T16:12:40Z
+synced_at: 2026-01-14T16:39:18Z
 ```
 
 # Make `uv pip compile` attempt to download a specified `--python-version` if it can.
@@ -51,7 +51,7 @@ _@EliteTK reviewed on 2025-12-29 13:04_
 
 ---
 
-_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1511 on 2025-12-29 13:04_
+_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1563 on 2025-12-29 13:04_
 
 Should we use the same strategy when downloading?
 
@@ -75,7 +75,7 @@ _@zanieb reviewed on 2026-01-09 20:08_
 
 ---
 
-_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1511 on 2026-01-09 20:08_
+_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1563 on 2026-01-09 20:08_
 
 That seems technically correct, though I can't say it's definitely worth it without seeing the code.
 
@@ -95,7 +95,7 @@ _@EliteTK reviewed on 2026-01-09 20:47_
 
 ---
 
-_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1511 on 2026-01-09 20:47_
+_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1563 on 2026-01-09 20:47_
 
 I think it would just be a matter of shoving https://github.com/astral-sh/uv/pull/17249/changes/BASE..37d8cb6fd77ec752c265060db26b92c7584fa78c#diff-d02a01db770da7d68941d9e67624483d066f95310e5c1835dc0edc23f9af6e5cL1469 in a function and then calling it twice...
 
@@ -105,7 +105,7 @@ _@EliteTK reviewed on 2026-01-09 20:48_
 
 ---
 
-_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1511 on 2026-01-09 20:48_
+_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1563 on 2026-01-09 20:48_
 
 I don't know why github let me make a link and then produced whatever broken thing that was...
 
@@ -123,12 +123,84 @@ I guess the concern is like... if you wifi is off?
 
 ---
 
-_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1511 on 2026-01-09 21:32_
+_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1563 on 2026-01-09 21:32_
 
 Yeah, I think it's only the error handling that might be annoying? I think you should try it.
 
 ---
 
 _@zanieb reviewed on 2026-01-09 21:32_
+
+---
+
+_@EliteTK reviewed on 2026-01-14 16:04_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1492 on 2026-01-14 16:04_
+
+I've made it so that any errors which come out of fill, find, or fetch are warned about (minimally) as opposed to being propagated, unless the request is for any version or a default version, in which case I feel like it's appropriate to reply with a download error if downloads were enabled.
+
+Let me know what you think.
+
+---
+
+_@EliteTK reviewed on 2026-01-14 16:04_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1563 on 2026-01-14 16:04_
+
+All done, I think the error handling didn't turn out too bad.
+
+---
+
+_@zanieb reviewed on 2026-01-14 16:05_
+
+---
+
+_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1553 on 2026-01-14 16:05_
+
+What kind of error cases are you imagining here?
+
+---
+
+_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1553 on 2026-01-14 16:06_
+
+In what case should we not just hard-fail?
+
+---
+
+_@zanieb reviewed on 2026-01-14 16:06_
+
+---
+
+_@EliteTK reviewed on 2026-01-14 16:06_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1553 on 2026-01-14 16:06_
+
+Network errors specifically. See the test for an example.
+
+---
+
+_@EliteTK reviewed on 2026-01-14 16:26_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-python/src/discovery.rs`:1553 on 2026-01-14 16:26_
+
+To expand, various errors from `PythonInstallation::fetch` (which include network errors due to e.g. WiFi being out) and two kinds of errors from `PythonDownloadRequest::fill`:
+* we can't figure out the libc variant
+* UV_PYTHON_<impl>_BUILD contains invalid UTF-8
+
+I considered if the fill errors should be hard-fail.
+
+Mainly I was trying to avoid the situation you described here https://github.com/astral-sh/uv/pull/17249#discussion_r2677677267 which I specifically tested and is what lead to this path.
+
+I think it's possibly an idea to narrow things down to specifically transient network errors and nothing else.
+
+Or we can stick with the original approach of just failing hard - but it's kind of a breaking change in that sense.
 
 ---

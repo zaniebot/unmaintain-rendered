@@ -2,16 +2,16 @@
 number: 2472
 title: Consider warning when an annotation should be narrower
 type: issue
-state: open
+state: closed
 author: jack-mcivor
 labels:
   - wish
   - lint
 assignees: []
 created_at: 2026-01-12T19:11:33Z
-updated_at: 2026-01-14T14:56:19Z
+updated_at: 2026-01-14T16:14:34Z
 url: https://github.com/astral-sh/ty/issues/2472
-synced_at: 2026-01-14T15:39:25Z
+synced_at: 2026-01-14T16:38:48Z
 ```
 
 # Consider warning when an annotation should be narrower
@@ -71,5 +71,15 @@ Thanks for the response. I thought about this, and I agree with your perspective
 I also tried to find some cases in real code where this would be useful, but didn't find anything very compelling. There were a number of places that `Mapping` could be converted to `dict` - but I can see the Mapping type has been chosen to ban mutation (just like you mentioned). There were a few cases of `tuple[T, ...] -> tuple[T, T]` or similar, but I don't think it's a big value add.
 
 One interesting case is suggesting `NewType`s instead of type aliases (or simple unaliased types like `int` or `MyClass`). I don't see an easy way to make this into a tool though, and your many of your points would stand here too.
+
+---
+
+_Comment by @carljm on 2026-01-14 16:14_
+
+Thanks for following up! Since it seems we don't really have a compelling case for this, I think I'll close it as "not planned" for now -- we can reopen if stronger arguments for it arrive.
+
+---
+
+_Closed by @carljm on 2026-01-14 16:14_
 
 ---

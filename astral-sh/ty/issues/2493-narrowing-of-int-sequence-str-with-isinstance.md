@@ -7,9 +7,9 @@ author: henriquegemignani
 labels: []
 assignees: []
 created_at: 2026-01-14T14:29:25Z
-updated_at: 2026-01-14T15:24:03Z
+updated_at: 2026-01-14T16:12:02Z
 url: https://github.com/astral-sh/ty/issues/2493
-synced_at: 2026-01-14T15:39:25Z
+synced_at: 2026-01-14T16:38:48Z
 ```
 
 # Narrowing of `int | Sequence[str]` with `isinstance(Sequence)` is not Sequence[str]
@@ -105,5 +105,44 @@ I'm curious to know more about this, though:
 > adding a `not isinstance(value, Mapping)` doesn't work.
 
 Why doesn't that work in this case for you? Can you give another minimal example? :-)
+
+---
+
+_Comment by @henriquegemignani on 2026-01-14 16:00_
+
+> Why doesn't that work in this case for you? Can you give another minimal example? :-)
+
+Funnily enough in my actual code-base doing this worked, but I'm not sure why it doesn't in the minimal example. https://play.ty.dev/a28ea65f-d286-4653-9f32-ea2c5398488c
+
+Edit: because I forgot an `else`...
+
+---
+
+_Comment by @carljm on 2026-01-14 16:12_
+
+I think the working version can even be simplified a bit more:
+
+```py
+from collections.abc import Sequence, Mapping
+
+type JsonObject_RO = Mapping[str, "JsonType_RO"]
+type JsonType_RO = int | JsonObject_RO | Sequence["JsonType_RO"]
+
+
+def encode_json_value(value: JsonType_RO) -> None:
+    if isinstance(value, int):
+        int_value: int = value
+
+    elif not isinstance(value, Mapping):
+        sequence_value: Sequence[JsonType_RO] = value
+
+    elif not isinstance(value, Sequence):
+        mapping_value: JsonObject_RO = value
+
+    else:
+        raise RuntimeError()
+```
+
+https://play.ty.dev/8bb7aa29-e0f6-43b0-aefc-1958933ec6b5
 
 ---

@@ -11,9 +11,9 @@ draft: true
 base: main
 head: catch-deprecated-imports-airflow-3_1
 created_at: 2026-01-04T21:44:45Z
-updated_at: 2026-01-14T09:28:59Z
+updated_at: 2026-01-14T16:21:36Z
 url: https://github.com/astral-sh/ruff/pull/22376
-synced_at: 2026-01-14T09:35:09Z
+synced_at: 2026-01-14T16:39:05Z
 ```
 
 # [`airflow`] Add ruff rules to catch deprecated Airflow imports for Airflow 3.1 (`AIR321`)
@@ -372,5 +372,32 @@ _@Lee-W reviewed on 2026-01-14 09:28_
 _Review comment by @Lee-W on `crates/ruff_linter/src/rules/airflow/snapshots/ruff_linter__rules__airflow__tests__AIR301_AIR301_names.py.snap`:1 on 2026-01-14 09:28_
 
 It might be worth checking how it works in Airflow 3.0.x. If the original path works fine, we're safe to move it to AIR321
+
+---
+
+_@sjyangkevin reviewed on 2026-01-14 16:09_
+
+---
+
+_Review comment by @sjyangkevin on `crates/ruff_linter/src/rules/airflow/snapshots/ruff_linter__rules__airflow__tests__AIR301_AIR301_names.py.snap`:1 on 2026-01-14 16:09_
+
+checked in 3.0.6, and the original path still working.
+
+<img width="1054" height="197" alt="Screenshot from 2026-01-14 11-08-38" src="https://github.com/user-attachments/assets/20331dba-541e-43da-b0a7-ccb507150c8d" />
+
+
+---
+
+_Comment by @sjyangkevin on 2026-01-14 16:20_
+
+> > I not sure if we can make a rule a "warning" in ruff
+> 
+> A Diagnotic without fix is basically a warning
+
+Thanks! The current implementation proposes a fix and include a warning message. I can refactor this to use a simple message to notify the module move, and include a message to tell these APIs are subject to change (don't encourage using these). So, we don't suggest fix for it. Which one do you think could be a better idea?
+
+Current Implementation suggest fixes and show warning message.
+<img width="1083" height="383" alt="Screenshot from 2026-01-14 11-17-28" src="https://github.com/user-attachments/assets/1d5b1bb5-5818-4048-aa6a-1071b46f534d" />
+
 
 ---

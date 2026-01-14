@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2026-01-13T17:37:31Z
-updated_at: 2026-01-14T15:25:25Z
+updated_at: 2026-01-14T16:32:51Z
 url: https://github.com/astral-sh/uv/issues/17441
-synced_at: 2026-01-14T15:39:47Z
+synced_at: 2026-01-14T16:39:11Z
 ```
 
 # Using local file for highest resolution, package index for lowest-direct
@@ -60,5 +60,13 @@ Actually, not fully. These libraries depend on PyTorch, where we need the custom
 ---
 
 _Reopened by @khoover on 2026-01-14 15:22_
+
+---
+
+_Comment by @zanieb on 2026-01-14 16:32_
+
+Somewhat related to https://github.com/astral-sh/uv/issues/7945
+
+Yeah I think you need `--no-sources-package <name>` or better, `--no-sources-local`
 
 ---

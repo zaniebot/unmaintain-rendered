@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: fix/python-download-hint
 created_at: 2026-01-14T11:59:17Z
-updated_at: 2026-01-14T15:30:35Z
+updated_at: 2026-01-14T16:28:00Z
 url: https://github.com/astral-sh/uv/pull/17461
-synced_at: 2026-01-14T15:39:55Z
+synced_at: 2026-01-14T16:39:18Z
 ```
 
 # Add actionable hint to unmanaged version error message
@@ -137,5 +137,32 @@ _@EliteTK reviewed on 2026-01-14 15:30_
 _Review comment by @EliteTK on `crates/uv-python/src/installation.rs`:167 on 2026-01-14 15:30_
 
 I am not sure about "support" there but maybe @zanieb can advise on this detail before you make any further changes. I don't want to end up being overly nitpicky here.
+
+---
+
+_Review comment by @originell on `crates/uv-python/src/installation.rs`:167 on 2026-01-14 15:37_
+
+True. "Support" might be too strong of a word here. 
+
+I don't think you are overly picky. Words are important.
+
+I'll also sit some more on this. :) 
+
+---
+
+_@originell reviewed on 2026-01-14 15:37_
+
+---
+
+_Review comment by @zanieb on `crates/uv/tests/it/sync.rs`:13291 on 2026-01-14 16:27_
+
+Maybe
+```suggestion
+    hint: uv embeds available Python downloads and may require an update to install new versions. Consider retrying on a newer version of uv.
+```
+
+---
+
+_@zanieb reviewed on 2026-01-14 16:28_
 
 ---

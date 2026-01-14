@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-11-21T21:27:02Z
-updated_at: 2026-01-14T10:35:45Z
+updated_at: 2026-01-14T16:13:02Z
 url: https://github.com/astral-sh/uv/issues/16813
-synced_at: 2026-01-14T11:33:32Z
+synced_at: 2026-01-14T16:39:11Z
 ```
 
 # exclude-newer: overrides for private registries
@@ -134,5 +134,28 @@ exclude-newer-package = { pytorch = false }
 ```
 
 From what I can tell with GAR it works like a charm for registries that do not provide the `upload-time` metadata.
+
+---
+
+_Comment by @acdha on 2026-01-14 16:12_
+
+I just tested https://github.com/astral-sh/uv/pull/16854 with uv 0.9.25 and it's working great. Thank you!
+
+In case this helps anyone else, in my global configuration, I had an exclusion for two tools which Homebrew manages so there's never the case where a tool like `prek` thinks the latest version of `uv` doesn't exist because it was just released:
+
+```toml
+exclude-newer = "P8D"
+exclude-newer-package = { uv = false, ruff = false }
+```
+
+In projects, I have something like this:
+
+```toml
+[tool.uv]
+exclude-newer = "P8D"
+exclude-newer-package = { internal-shared-library-hosted-on-gitlab = false }
+```
+
+The resulting lock file shows that uv is correctly combining the global and per-project settings to avoid locking incompatible versions.
 
 ---
