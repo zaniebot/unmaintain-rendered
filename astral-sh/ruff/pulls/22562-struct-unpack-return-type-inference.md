@@ -6,13 +6,12 @@ state: open
 author: sakgoyal
 labels: []
 assignees: []
-draft: true
 base: main
 head: structunpack
 created_at: 2026-01-13T22:55:50Z
-updated_at: 2026-01-14T02:12:28Z
+updated_at: 2026-01-14T02:40:19Z
 url: https://github.com/astral-sh/ruff/pull/22562
-synced_at: 2026-01-14T02:32:45Z
+synced_at: 2026-01-14T03:31:46Z
 ```
 
 # `struct.unpack` return type inference
@@ -216,12 +215,6 @@ Yeah.
 
 ---
 
-_@sakgoyal reviewed on 2026-01-14 02:10_
-
----
-
-_Review comment by @sakgoyal on `crates/ty_module_resolver/src/module.rs`:337 on 2026-01-14 02:10_
-
-Pretty sure I should not be adding both. I just did this so it ran at all. I think only `_struct` is needed
+_Marked ready for review by @sakgoyal on 2026-01-14 02:37_
 
 ---
