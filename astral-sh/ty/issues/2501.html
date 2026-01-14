@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index-out-of-bounds error after numpy reshape - astral-sh/ty #2501</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>index-out-of-bounds error after numpy reshape</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2501">#2501</a>
+        opened by <a href="https://github.com/ntjohnson1">@ntjohnson1</a>
+        on 2026-01-14 21:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntjohnson1">@ntjohnson1</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I didn't see discussion on numpy specific support or other index related edge cases.</p>
+<pre><code class="language-python">def example(data: int | Sequence[int | float]) -&gt; None:
+    if isinstance(data, Sequence):
+        np_data = np.array(data).reshape((1, -1))
+        if np_data.shape[1] not in (3, 4): # &lt;---
+            raise ValueError(f&quot;expected sequence of length of 3 or 4, received {np_data.shape[1]}&quot;)
+    return None
+</code></pre>
+<p><code>error[index-out-of-bounds]: Index 0 is out of bounds for tuple </code>tuple[()]<code> with length 0</code></p>
+<p>A simpler version does seem to infer the shape correctly.</p>
+<pre><code class="language-python">  a = [1]
+  b = np.array(a).reshape((1, -1))
+  c = b.shape[1]
+</code></pre>
+<p>This triggers an index-out-of-bounds error (it thinks shape is an empty tuple so shape[0] also doesn't work). Mypy appears to infer the output shape from the reshape call.</p>
+<p>Version <code>ty 0.0.11</code></p>
+<h3>Version</h3>
+<p>ty 0.0.11 (830cb9cc6 2026-01-09)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-14 22:45:51 UTC
+    </footer>
+</body>
+</html>
