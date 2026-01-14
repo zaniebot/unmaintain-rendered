@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ty] Fix flaky completions - astral-sh/ruff #22576</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ty] Fix flaky completions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/22576">#22576</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2026-01-14 17:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ty/issues/2415</p>
+<p>Thanks to @RasmusNygren for <a href="https://github.com/astral-sh/ruff/pull/22492">figuring out</a> that
+registering to the editor events solves the problem too. This made it much easier to identify the root cause.</p>
+<p>The root cause was that we didn't memoize the <code>onChange</code> callback. Each render passed a new
+instance. In turn, <a href="https://github.com/react-monaco-editor/react-monaco-editor/blob/3062386185b0fee4fb2aa5002e5ef5fdedc05dbb/src/editor.tsx#L63-L67">react-monaco</a> registers a new content change subscription on each render. However, it doesn't do so immediately; it only does so in an effect and effects run deferred (after the render). This delayed subscription was the reason that the <code>onChange</code> handler was triggered after the editor's completion request.</p>
+<p>The solution is relatively easy. Use <code>useCallback</code> in more places. This should also help to reduce unnecessary renders.</p>
+<h2>Test Plan</h2>
+<p>https://github.com/user-attachments/assets/84322a09-2875-494f-a9fb-eb8e3928a5ac</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">playground</span> added by @MichaReiser on 2026-01-14 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2026-01-14 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">playground</span> added by @MichaReiser on 2026-01-14 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ty</span> added by @MichaReiser on 2026-01-14 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Copilot by @MichaReiser on 2026-01-14 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2026-01-14 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2026-01-14 18:02</div>
+            <div class="timeline-body"><p>Cannot review the typescript, but v happy to confirm that this fixes the flakes for me locally!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/copilot-pull-request-reviewer[bot]">@copilot-pull-request-reviewer[bot]</a> reviewed on 2026-01-14 18:22</div>
+            <div class="timeline-body"><h2>Pull request overview</h2>
+<p>This PR fixes a flaky completions issue caused by unstable callback references that led to delayed subscription to editor content changes. The root cause was that <code>onChange</code> callbacks were recreated on each render, causing react-monaco to register new subscriptions in effects that ran after completion requests.</p>
+<p><strong>Changes:</strong></p>
+<ul>
+<li>Wrapped event handler callbacks in <code>useCallback</code> to maintain stable references across renders</li>
+<li>Reordered operations in <code>handleFileChanged</code> to update workspace before state</li>
+</ul>
+<h3>Reviewed changes</h3>
+<p>Copilot reviewed 2 out of 2 changed files in this pull request and generated no comments.</p>
+<p>| File | Description |
+| ---- | ----------- |
+| playground/ty/src/Playground.tsx | Wrapped <code>handleFileAdded</code>, <code>handleFileChanged</code>, <code>handleFileRenamed</code>, and <code>handleFileRemoved</code> in <code>useCallback</code> with appropriate dependencies; reordered workspace update before state update in <code>handleFileChanged</code> |
+| playground/ty/src/Editor/Chrome.tsx | Added <code>handleChange</code> wrapper with <code>useCallback</code> to pass stable reference to Editor component |</p>
+<hr />
+<p>💡 <a href="/astral-sh/ruff/new/main/.github/instructions?filename=*.instructions.md" class="Link--inTextBlock" target="_blank" rel="noopener noreferrer">Add Copilot custom instructions</a> for smarter, more guided reviews. <a href="https://docs.github.com/en/copilot/customizing-copilot/adding-repository-custom-instructions-for-github-copilot" class="Link--inTextBlock" target="_blank" rel="noopener noreferrer">Learn how to get started</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-14 18:23</div>
+            <div class="timeline-body"><p>I very much appreciated it @copilot how you can repeat the same as is written in the summary but make it even longer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2026-01-14 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2026-01-14 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2026-01-14 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Copilot">@Copilot</a> on 2026-01-14 18:23</div>
+            <div class="timeline-body"><p>@MichaReiser I've opened a new pull request, #22579, to work on those changes. Once the pull request is ready, I'll request review from you.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-14 18:38:46 UTC
+    </footer>
+</body>
+</html>
