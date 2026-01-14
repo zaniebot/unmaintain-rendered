@@ -2,16 +2,16 @@
 number: 2300
 title: Using the walrus operator together with callable causes TypeIs to be ignored.
 type: issue
-state: open
+state: closed
 author: phi-friday
 labels:
   - narrowing
   - callables
 assignees: []
 created_at: 2026-01-02T05:31:13Z
-updated_at: 2026-01-06T01:18:04Z
+updated_at: 2026-01-14T00:56:49Z
 url: https://github.com/astral-sh/ty/issues/2300
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-14T01:33:10Z
 ```
 
 # Using the walrus operator together with callable causes TypeIs to be ignored.
@@ -65,5 +65,9 @@ _Assigned to @charliermarsh by @charliermarsh on 2026-01-04 18:26_
 ---
 
 _Added to milestone `Stable` by @carljm on 2026-01-06 01:18_
+
+---
+
+_Closed by @charliermarsh on 2026-01-14 00:56_
 
 ---

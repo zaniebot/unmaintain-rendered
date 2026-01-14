@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/int-sec
 created_at: 2025-12-20T19:14:50Z
-updated_at: 2025-12-24T04:15:16Z
+updated_at: 2026-01-14T00:38:33Z
 url: https://github.com/astral-sh/ruff/pull/22117
-synced_at: 2026-01-12T15:57:42Z
+synced_at: 2026-01-14T01:33:27Z
 ```
 
 # [ty] Fix iteration over intersections with TypeVars whose bounds contain non-iterable types
@@ -192,5 +192,27 @@ _Comment by @carljm on 2025-12-24 02:14_
 The approach here feels not quite right to me? Lacking in generality. Like what if one of the iterable elements of the union upper bound is actually disjoint with another element in the intersection, and the whole thing ought to simplify to `Never`. Or even more complex variants of that.
 
 It feels like the general approach here is that we take the typevar upper bound (no matter what it is) and intersect it with the rest of the intersection elements, then iterate that intersection. (Or even more generally: always replace any typevar with its upper bound, for iteration purposes.) Once we are iterating a type, the fact that it's a typevar no longer matters: all that matters is the upper bound.
+
+---
+
+_@carljm requested changes on 2026-01-14 00:38_
+
+So I think the changes here were a step in the right direction, but didn't go far enough, and this is still buggy.
+
+Our DNF representation of types generally ensures that we can never have a union inside an intersection -- this should always be simplified by distributing the union across the intersection, potentially leading to simplifications of some elements, and resulting in a union-of-intersections. Here that rule is broken because we can have a typevar with union upper bound inside an intersection, and so we end up handling a union inside an intersection. What _should_ happen in the tested case where we end up with effectively `(tuple[int, ...] | int) & tuple[object, ...]` is that we distribute and get `(tuple[int, ...] & tuple[object, ...]) | (int & tuple[object, ...])`, which simplifies to `tuple[int, ...] | Never`, which simplifies to just `tuple[int, ...]`. This PR sort of simulates that by excluding all non-iterable parts of the union, but that solution is overfitted to the one example case. Consider this alternative case:
+
+```py
+def f[T: tuple[int, ...] | list[str]](x: T):
+    if isinstance(x, tuple):
+        reveal_type(x)
+        for item in x:
+            reveal_type(item) # should be `int` but this PR reveals `int | str`
+```
+
+Both elements of the union here are iterable, so the special case in this PR doesn't take effect and we end up wrongly considering `str` as possible. The question we should be asking is not "which elements of the union are iterable", but "what is the result of distributing the union over the intersection". If we asked that question in this second example, we would find that `list[str]` is disjoint from `tuple[object, ...]` so that intersection simplifies to `Never`, and we again would end up with just `tuple[int, ...]` and thus just `int`.
+
+I think the right implementation approach here will be to introduce a `flatten_typevars` function which takes a type and recursively maps over any unions or intersections, resolving any typevars found to their upper bound/constraints and rebuilding the union/intersection accordingly (but unlike our type mappings, it shouldn't otherwise descend into generic or nested types -- it should only flatten top-level typevars found directly in unions/intersections). We should call this on the type before we try to iterate it.
+
+Let me know if that doesn't make sense.
 
 ---

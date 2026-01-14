@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-13T22:19:40Z
-updated_at: 2026-01-13T22:23:36Z
+updated_at: 2026-01-14T01:00:01Z
 url: https://github.com/astral-sh/ty/issues/2483
-synced_at: 2026-01-13T22:35:50Z
+synced_at: 2026-01-14T01:33:10Z
 ```
 
 # Type of `abs(5)` is `Unknown`.  Am I wrong to expect `int`?
@@ -121,5 +121,11 @@ Yes, definitely #1714 -- there's a WIP PR for that, should be fixed soon.
 ---
 
 _Closed by @carljm on 2026-01-13 22:23_
+
+---
+
+_Comment by @jpgoldberg on 2026-01-14 01:00_
+
+Thank you! I will follow #1714. 
 
 ---

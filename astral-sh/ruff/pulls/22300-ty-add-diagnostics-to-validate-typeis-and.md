@@ -2,17 +2,18 @@
 number: 22300
 title: "[ty] Add diagnostics to validate `TypeIs` and `TypeGuard` definitions"
 type: pull_request
-state: open
+state: merged
 author: charliermarsh
 labels:
   - ty
 assignees: []
+merged: true
 base: main
 head: charlie/type-is
 created_at: 2025-12-30T16:21:43Z
-updated_at: 2026-01-13T23:31:04Z
+updated_at: 2026-01-14T01:24:08Z
 url: https://github.com/astral-sh/ruff/pull/22300
-synced_at: 2026-01-14T00:34:17Z
+synced_at: 2026-01-14T01:33:27Z
 ```
 
 # [ty] Add diagnostics to validate `TypeIs` and `TypeGuard` definitions
@@ -245,5 +246,23 @@ _Converted to draft by @charliermarsh on 2026-01-13 21:55_
 ---
 
 _Marked ready for review by @charliermarsh on 2026-01-13 23:28_
+
+---
+
+_@carljm approved on 2026-01-14 01:02_
+
+Looks great, thank you!
+
+---
+
+_Merged by @charliermarsh on 2026-01-14 01:24_
+
+---
+
+_Closed by @charliermarsh on 2026-01-14 01:24_
+
+---
+
+_Branch deleted on 2026-01-14 01:24_
 
 ---

@@ -2,7 +2,7 @@
 number: 2267
 title: validate TypeIs and TypeGuard definitions
 type: issue
-state: open
+state: closed
 author: carljm
 labels:
   - help wanted
@@ -10,9 +10,9 @@ labels:
   - conformance
 assignees: []
 created_at: 2025-12-29T23:14:51Z
-updated_at: 2026-01-06T17:02:28Z
+updated_at: 2026-01-14T01:24:07Z
 url: https://github.com/astral-sh/ty/issues/2267
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-14T01:33:10Z
 ```
 
 # validate TypeIs and TypeGuard definitions
@@ -173,5 +173,9 @@ _Comment by @carljm on 2026-01-06 17:02_
 @dangotbanned I'm not seeing anything there that I think should give us problems, but there definitely might be a bug. Can you also show some examples of using it that should work, particularly if they don't currently? (And in that case, might be good to open a new issue for it, too, since this issue is just about the validation.)
 
 (I realized yesterday that generic `TypeIs` functions are a case where a multi-argument `TypeIs` function can be sound and sensible -- so I was just wrong to suggest that they should be single-argument.)
+
+---
+
+_Closed by @charliermarsh on 2026-01-14 01:24_
 
 ---

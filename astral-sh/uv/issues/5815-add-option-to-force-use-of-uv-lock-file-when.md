@@ -9,9 +9,9 @@ labels:
   - needs-design
 assignees: []
 created_at: 2024-08-06T14:50:55Z
-updated_at: 2026-01-09T15:48:50Z
+updated_at: 2026-01-14T01:05:44Z
 url: https://github.com/astral-sh/uv/issues/5815
-synced_at: 2026-01-12T15:58:59Z
+synced_at: 2026-01-14T01:33:31Z
 ```
 
 # Add option to force use of `uv.lock` file when adding dependency or installing a tool
@@ -169,5 +169,11 @@ Should this not so obvious security gap be mentioned on this page? https://docs.
 _Comment by @MattiasDC on 2026-01-09 15:30_
 
 Just want to hop in here, mentioning that I'd like `uvx` to use the lockfile of the tool as I need my workflow to be reproducible. I tried a workaround with a requirement.txt and use it with `--with-requirements`
+
+---
+
+_Comment by @CarliJoy on 2026-01-14 01:05_
+
+This might be related to the [discussion here](https://discuss.python.org/t/pre-pep-add-ability-to-install-a-package-with-reproducible-dependencies/99497/)
 
 ---
