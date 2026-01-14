@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-02T19:29:03Z
-updated_at: 2026-01-14T05:32:38Z
+updated_at: 2026-01-14T18:49:02Z
 url: https://github.com/astral-sh/uv/issues/17309
-synced_at: 2026-01-14T06:39:29Z
+synced_at: 2026-01-14T19:44:23Z
 ```
 
 # Conflicting Python Requirements when workspace members have different Python requirements
@@ -60,5 +60,11 @@ _Closed by @btakita on 2026-01-02 21:53_
 _Comment by @AnhQuanTrl on 2026-01-14 05:32_
 
 just curious. how do you solve this?
+
+---
+
+_Comment by @btakita on 2026-01-14 18:48_
+
+@AnhQuanTrl I created a separate VirtualEnv for each package in the monorepo. And had no workspace members in the root package.
 
 ---

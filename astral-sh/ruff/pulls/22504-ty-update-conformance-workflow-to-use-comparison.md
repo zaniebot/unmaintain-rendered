@@ -2,18 +2,19 @@
 number: 22504
 title: "[ty] Update conformance workflow to use comparison script"
 type: pull_request
-state: open
+state: merged
 author: WillDuke
 labels:
   - ci
   - ty
 assignees: []
+merged: true
 base: main
 head: wld/update-conformance-workflow
 created_at: 2026-01-11T17:55:59Z
-updated_at: 2026-01-14T18:18:55Z
+updated_at: 2026-01-14T19:08:10Z
 url: https://github.com/astral-sh/ruff/pull/22504
-synced_at: 2026-01-14T18:48:06Z
+synced_at: 2026-01-14T19:42:39Z
 ```
 
 # [ty] Update conformance workflow to use comparison script
@@ -178,5 +179,19 @@ Edit: No, that's not it. It isn't finding the typing conformance tests
 _Comment by @MichaReiser on 2026-01-14 18:18_
 
 At the current pace, I'll be able to maybe merge this PR in 1h 😆 
+
+---
+
+_Merged by @MichaReiser on 2026-01-14 19:06_
+
+---
+
+_Closed by @MichaReiser on 2026-01-14 19:06_
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 19:08_
+
+Thank you, @WillDuke, for all your work on this. Having this is extremely valuable and will make our lives so much easier (and it will be such a great feeling seeing how we creep in on the conformance :))
 
 ---

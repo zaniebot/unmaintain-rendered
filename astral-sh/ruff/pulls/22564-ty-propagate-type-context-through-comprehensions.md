@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/comprehension-tcx
 created_at: 2026-01-14T01:49:08Z
-updated_at: 2026-01-14T02:00:21Z
+updated_at: 2026-01-14T19:22:24Z
 url: https://github.com/astral-sh/ruff/pull/22564
-synced_at: 2026-01-14T02:32:45Z
+synced_at: 2026-01-14T19:42:40Z
 ```
 
 # [ty] Propagate type context through comprehensions
@@ -74,15 +74,8 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 01:50_
 <!-- generated-comment typing_conformance_diagnostics_diff -->
 
 
-## Diagnostic diff on [typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
-
-
-<details>
-<summary>Changes were detected when running ty on typing conformance tests</summary>
-
-```diff
---- old-output.txt	2026-01-14 01:56:22.042639638 +0000
-+++ new-output.txt	2026-01-14 01:56:22.367640728 +0000
+--- old-output.txt	2026-01-14 19:22:17.076120834 +0000
++++ new-output.txt	2026-01-14 19:22:17.404123755 +0000
 @@ -20,7 +20,7 @@
  aliases_implicit.py:81:25: error[invalid-type-arguments] Type `str` is not assignable to upper bound `int | float` of type variable `TFloat@GoodTypeAlias12`
  aliases_implicit.py:107:9: error[invalid-type-form] Variable of type `list[Unknown | <class 'int'> | <class 'str'>]` is not allowed in a type expression
@@ -93,10 +86,8 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 01:50_
  aliases_implicit.py:114:9: error[invalid-type-form] Variable of type `Literal[3]` is not allowed in a type expression
  aliases_implicit.py:115:10: error[invalid-type-form] Variable of type `Literal[True]` is not allowed in a type expression
 
-```
 
-</details>
-
+[Typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
 
 
 

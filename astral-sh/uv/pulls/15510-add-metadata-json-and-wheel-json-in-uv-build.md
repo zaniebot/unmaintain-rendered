@@ -2,18 +2,19 @@
 number: 15510
 title: "Add `METADATA.json` and `WHEEL.json` in uv build backend"
 type: pull_request
-state: open
+state: merged
 author: konstin
 labels:
   - preview
   - build-backend
 assignees: []
+merged: true
 base: main
 head: konsti/json-metadata
 created_at: 2025-08-25T08:35:45Z
-updated_at: 2026-01-14T16:46:26Z
+updated_at: 2026-01-14T18:52:11Z
 url: https://github.com/astral-sh/uv/pull/15510
-synced_at: 2026-01-14T17:38:04Z
+synced_at: 2026-01-14T19:46:07Z
 ```
 
 # Add `METADATA.json` and `WHEEL.json` in uv build backend
@@ -125,5 +126,17 @@ _@konstin reviewed on 2026-01-14 16:44_
 _Review comment by @konstin on `crates/uv-build-backend/src/lib.rs`:1826 on 2026-01-14 16:44_
 
 Added a separate test
+
+---
+
+_Merged by @konstin on 2026-01-14 18:52_
+
+---
+
+_Closed by @konstin on 2026-01-14 18:52_
+
+---
+
+_Branch deleted on 2026-01-14 18:52_
 
 ---

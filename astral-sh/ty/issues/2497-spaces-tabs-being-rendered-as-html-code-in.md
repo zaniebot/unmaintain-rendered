@@ -5,12 +5,13 @@ type: issue
 state: open
 author: gabriel-abn
 labels:
+  - bug
   - server
 assignees: []
 created_at: 2026-01-14T17:09:41Z
-updated_at: 2026-01-14T18:30:45Z
+updated_at: 2026-01-14T19:18:48Z
 url: https://github.com/astral-sh/ty/issues/2497
-synced_at: 2026-01-14T18:47:49Z
+synced_at: 2026-01-14T19:38:28Z
 ```
 
 # Spaces/tabs being rendered as HTML code in Markdown code blocks
@@ -110,5 +111,13 @@ Awesome, thank you. Very much appreciated
 ---
 
 _Label `server` added by @AlexWaygood on 2026-01-14 18:30_
+
+---
+
+_Label `bug` added by @MichaReiser on 2026-01-14 19:18_
+
+---
+
+_Added to milestone `Pre-stable 1` by @MichaReiser on 2026-01-14 19:18_
 
 ---

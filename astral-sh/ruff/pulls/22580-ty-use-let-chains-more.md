@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: alex/let-chains
 created_at: 2026-01-14T18:25:41Z
-updated_at: 2026-01-14T18:36:03Z
+updated_at: 2026-01-14T19:09:27Z
 url: https://github.com/astral-sh/ruff/pull/22580
-synced_at: 2026-01-14T18:48:06Z
+synced_at: 2026-01-14T19:42:40Z
 ```
 
 # [ty] Use let-chains more
@@ -535,5 +535,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 18:36_
 **[Full report with detailed diff](https://0b43d6a3.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://0b43d6a3.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_@MichaReiser approved on 2026-01-14 19:09_
 
 ---

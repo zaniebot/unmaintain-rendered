@@ -2,17 +2,18 @@
 number: 17471
 title: Reduce the number of CI checks run on pull requests
 type: pull_request
-state: open
+state: merged
 author: zanieb
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: zb/investigate-ci
 created_at: 2026-01-14T17:22:43Z
-updated_at: 2026-01-14T18:33:54Z
+updated_at: 2026-01-14T19:12:14Z
 url: https://github.com/astral-sh/uv/pull/17471
-synced_at: 2026-01-14T18:36:23Z
+synced_at: 2026-01-14T19:46:16Z
 ```
 
 # Reduce the number of CI checks run on pull requests
@@ -116,5 +117,17 @@ Here's a nice Claude summary
   │ test-integration / pyenv on wsl           │ 2m 07s   │
   └───────────────────────────────────────────┴──────────┘
   ```
+
+---
+
+_Merged by @zanieb on 2026-01-14 19:12_
+
+---
+
+_Closed by @zanieb on 2026-01-14 19:12_
+
+---
+
+_Branch deleted on 2026-01-14 19:12_
 
 ---

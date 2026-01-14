@@ -8,13 +8,12 @@ labels:
   - bug
   - error messages
 assignees: []
-draft: true
 base: main
 head: claude/abi-wheel-compatibility-35SSt
 created_at: 2026-01-13T18:01:13Z
-updated_at: 2026-01-14T15:30:31Z
+updated_at: 2026-01-14T19:15:01Z
 url: https://github.com/astral-sh/uv/pull/17442
-synced_at: 2026-01-14T15:39:55Z
+synced_at: 2026-01-14T19:46:16Z
 ```
 
 # Improve error message for abi3 wheels on free-threaded Python
@@ -75,5 +74,9 @@ _Marked ready for review by @zanieb on 2026-01-14 14:54_
 ---
 
 _Converted to draft by @zanieb on 2026-01-14 14:56_
+
+---
+
+_Marked ready for review by @zanieb on 2026-01-14 19:15_
 
 ---
