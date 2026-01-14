@@ -8,9 +8,9 @@ labels:
   - needs-info
 assignees: []
 created_at: 2026-01-13T10:56:34Z
-updated_at: 2026-01-13T22:19:03Z
+updated_at: 2026-01-14T09:00:54Z
 url: https://github.com/astral-sh/ty/issues/2479
-synced_at: 2026-01-13T22:35:50Z
+synced_at: 2026-01-14T09:34:52Z
 ```
 
 # `no-matching-overload` when using `cv2` and `numpy`
@@ -102,5 +102,69 @@ Going to go ahead and close to keep the tracker actionable, but will happily reo
 ---
 
 _Closed by @carljm on 2026-01-13 22:19_
+
+---
+
+_Comment by @Carrot-shreds on 2026-01-14 09:00_
+
+Thank you for your testing! It's indeed a problem related to these dependency version, instead of the type checker.
+
+I'm using python3.13 with the latest `opencv-python>=4.12.0.88`, which lock the maximum verion of numpy to `numpy<2.3.0`, so my numpy was degrade to `numpy>=2.2.6` automatically. And it should be fixed in the next cv2 release.
+After i change my dependencies to `opencv-python>=4.11.0.86`, `numpy>=2.4.1`, the error was disappeared.
+
+About the difference of ty and pyright. Sorry I made a mistake that i didn't actually test the sample code with pyright, I just write another similar case as a sample and ty check it. I retest the sample with `numpy==2.2.6` and `opencv-python==4.12.0.88` using both pyright and ty. They all give the same "no-matching-overload" error as your result.
+
+But i also retest my actual project code, they do act differently.
+(In a new uv 3.13.9 env with numpy==2.2.6 and opencv-python==4.12.0.88)
+```
+import cv2
+import numpy as np
+...
+def func(img: np.ndarray):
+    if len(img.shape) != 2:
+        img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    if np.average(img) < 128:
+        img = 255 - img
+    ...
+```
+```
+PS G:\code\Python\tytest> uvx pyright --pythonpath .venv/Scripts/python main.py
+0 errors, 0 warnings, 0 informations
+```
+And `uvx ty check main.py` will got the same error as the sample code.
+
+I also found if I change the code like this, pyright will also give the error like ty.
+```
+import cv2
+import numpy as np
+...
+def func(image_in: np.ndarray):
+    if len(image_in.shape) != 2:
+        img = cv2.cvtColor(image_in, cv2.COLOR_RGB2GRAY)
+    else:
+        img = image_in
+    if np.average(img) < 128:
+        img = 255 - img
+    ...
+```
+```
+PS G:\code\Python\tytest> uvx pyright --pythonpath .venv/Scripts/python main.py
+g:\code\Python\tytest\main.py
+  g:\code\Python\tytest\main.py:12:8 - error: No overloads for "average" match the provided arguments (reportCallIssue)
+  g:\code\Python\tytest\main.py:12:19 - error: Argument of type "MatLike | ndarray[Unknown, Unknown]" cannot be assigned to parameter "a" of type "_ArrayLikeComplex_co | _ArrayLikeObject_co" in function "average"
+    Type "MatLike | ndarray[Unknown, Unknown]" is not assignable to type "_ArrayLikeComplex_co | _ArrayLikeObject_co"
+      Type "NumPyArrayNumeric" is not assignable to type "_ArrayLikeComplex_co | _ArrayLikeObject_co"
+        "ndarray[Any, dtype[integer[Any] | floating[Any]]]" is incompatible with protocol "_SupportsArray[dtype[numpy.bool[builtins.bool]] | dtype[integer[Any]] | dtype[floating[Any]] | dtype[complexfloating[Any, Any]]]"
+          "__array__" is an incompatible type
+            No overloaded function matches type "() -> ndarray[Any, _DType_co@_SupportsArray]"
+        "ndarray[Any, dtype[integer[Any] | floating[Any]]]" is incompatible with protocol "_NestedSequence[_SupportsArray[dtype[numpy.bool[builtins.bool]] | dtype[integer[Any]] | dtype[floating[Any]] | dtype[complexfloating[Any, Any]]]]"
+          "__reversed__" is not present
+          "count" is not present
+    ... (reportArgumentType)
+2 errors, 0 warnings, 0 informations
+```
+
+I think the behaviour difference perhaps because pyright's default `typeCheckingMode="standard"` is less strict than ty's strategy.
+Anyway, change the numpy version do solve the problem. Thanks again for teams wonderful working!
 
 ---

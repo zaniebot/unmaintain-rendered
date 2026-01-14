@@ -11,9 +11,9 @@ draft: true
 base: main
 head: catch-deprecated-imports-airflow-3_1
 created_at: 2026-01-04T21:44:45Z
-updated_at: 2026-01-14T04:33:31Z
+updated_at: 2026-01-14T09:28:59Z
 url: https://github.com/astral-sh/ruff/pull/22376
-synced_at: 2026-01-14T05:40:47Z
+synced_at: 2026-01-14T09:35:09Z
 ```
 
 # [`airflow`] Add ruff rules to catch deprecated Airflow imports for Airflow 3.1 (`AIR321`)
@@ -354,5 +354,23 @@ Thanks!!
 ---
 
 _Review requested from @amoghrajesh by @sjyangkevin on 2026-01-14 04:27_
+
+---
+
+_Comment by @Lee-W on 2026-01-14 09:28_
+
+>  I not sure if we can make a rule a "warning" in ruff
+
+A Diagnotic without fix is basically a warning
+
+---
+
+_@Lee-W reviewed on 2026-01-14 09:28_
+
+---
+
+_Review comment by @Lee-W on `crates/ruff_linter/src/rules/airflow/snapshots/ruff_linter__rules__airflow__tests__AIR301_AIR301_names.py.snap`:1 on 2026-01-14 09:28_
+
+It might be worth checking how it works in Airflow 3.0.x. If the original path works fine, we're safe to move it to AIR321
 
 ---

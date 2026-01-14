@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: zb/cache-standardize-rust-backtrace
 created_at: 2026-01-13T22:48:13Z
-updated_at: 2026-01-13T23:19:56Z
+updated_at: 2026-01-14T09:22:42Z
 url: https://github.com/astral-sh/uv/pull/17451
-synced_at: 2026-01-13T23:35:46Z
+synced_at: 2026-01-14T09:35:22Z
 ```
 
 # Reduce cache contention due to `RUST_BACKTRACE` environment variable
@@ -34,5 +34,9 @@ _Renamed from "Add RUST_BACKTRACE to workflow env for consistent cache keys" to 
 ---
 
 _Marked ready for review by @zanieb on 2026-01-13 23:19_
+
+---
+
+_@konstin approved on 2026-01-14 09:22_
 
 ---

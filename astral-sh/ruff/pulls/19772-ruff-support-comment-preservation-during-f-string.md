@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: fix(#19745)/RUF010-fix-deletes-comment
 created_at: 2025-08-05T20:59:42Z
-updated_at: 2025-08-06T17:15:03Z
+updated_at: 2026-01-14T09:12:18Z
 url: https://github.com/astral-sh/ruff/pull/19772
-synced_at: 2026-01-12T15:56:46Z
+synced_at: 2026-01-14T09:35:08Z
 ```
 
 # [`ruff`] Support comment preservation during f-string conversion (`RU…
@@ -107,5 +107,12 @@ nit: can you revert this? It makes the diff a lot easier to review if the existi
 ---
 
 _@ntBre requested changes on 2025-08-06 17:15_
+
+---
+
+_Comment by @leonace924 on 2026-01-14 09:12_
+
+I am taking this, @ntBre  cc: @MichaReiser 
+Thank you
 
 ---

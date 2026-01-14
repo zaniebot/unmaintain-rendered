@@ -6,11 +6,12 @@ state: open
 author: chirizxc
 labels:
   - question
+  - rule
 assignees: []
 created_at: 2026-01-13T16:56:16Z
-updated_at: 2026-01-13T20:41:05Z
+updated_at: 2026-01-14T08:52:21Z
 url: https://github.com/astral-sh/ruff/issues/22554
-synced_at: 2026-01-13T21:36:17Z
+synced_at: 2026-01-14T09:34:58Z
 ```
 
 # [`pyflakes`] `F401` cannot detect unused import
@@ -169,5 +170,9 @@ _Comment by @chirizxc on 2026-01-13 20:41_
 > which I think is where this code is being skipped.
 
 Hmm, I think so, it should be related to the rule about duplicates, but I think we can compare whether there are identical imports inside and outside the `typing.TYPE_CHECKING` block. I haven't found any errors related to this in the ecosystem, and I can't think of a case where we might encounter a false positive.
+
+---
+
+_Label `rule` added by @MichaReiser on 2026-01-14 08:52_
 
 ---

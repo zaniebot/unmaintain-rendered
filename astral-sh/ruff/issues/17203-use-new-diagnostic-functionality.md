@@ -9,9 +9,9 @@ labels:
   - diagnostics
 assignees: []
 created_at: 2025-04-04T12:56:51Z
-updated_at: 2025-12-31T15:54:20Z
+updated_at: 2026-01-14T09:01:30Z
 url: https://github.com/astral-sh/ruff/issues/17203
-synced_at: 2026-01-12T15:54:55Z
+synced_at: 2026-01-14T09:34:57Z
 ```
 
 # Use new diagnostic functionality
@@ -117,5 +117,12 @@ A003 Python builtin is shadowed by method `str` from line 14
 ```
 
 underlining the _use_ of the shadowed name and pointing back to the location in the message. We could now add a secondary annotation where the shadowing takes place, on line 14 in this case.
+
+---
+
+_Comment by @11happy on 2026-01-14 09:01_
+
+Linking the PR https://github.com/astral-sh/ruff/pull/22565
+Thank you : )
 
 ---

@@ -2,7 +2,7 @@
 number: 19351
 title: Linter diff test helper for testing different options
 type: issue
-state: open
+state: closed
 author: MichaReiser
 labels:
   - help wanted
@@ -10,9 +10,9 @@ labels:
   - testing
 assignees: []
 created_at: 2025-07-15T11:04:40Z
-updated_at: 2025-07-15T11:04:40Z
+updated_at: 2026-01-14T09:01:07Z
 url: https://github.com/astral-sh/ruff/issues/19351
-synced_at: 2026-01-12T15:54:56Z
+synced_at: 2026-01-14T09:34:57Z
 ```
 
 # Linter diff test helper for testing different options
@@ -38,5 +38,9 @@ _Label `linter` added by @MichaReiser on 2025-07-15 11:04_
 ---
 
 _Label `testing` added by @MichaReiser on 2025-07-15 11:04_
+
+---
+
+_Closed by @MichaReiser on 2026-01-14 09:01_
 
 ---

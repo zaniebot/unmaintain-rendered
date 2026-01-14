@@ -9,9 +9,9 @@ labels:
   - formatter
 assignees: []
 created_at: 2026-01-10T14:53:50Z
-updated_at: 2026-01-13T18:12:35Z
+updated_at: 2026-01-14T09:08:55Z
 url: https://github.com/astral-sh/ruff/issues/22494
-synced_at: 2026-01-13T18:45:32Z
+synced_at: 2026-01-14T09:34:58Z
 ```
 
 # Range formatting semicolon-separated statements introduces whitespace
@@ -60,5 +60,23 @@ _Comment by @leonace924 on 2026-01-13 18:12_
 Hi @AlexWaygood nice to meet you
 I'd like to contribute on this project, is this good issue to take up?
 Thank you
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 09:01_
+
+It's probably not the greatest "best first issue" as I don't have a sense for how hard it is to fix this issue and the range formatting code is a bit tricky. But I also don't want to discourage you from giving it a try. Something like https://github.com/astral-sh/ruff/issues/19745 or one off https://github.com/astral-sh/ruff/issues/17203 might be an easier first contribution.
+
+---
+
+_Comment by @leonace924 on 2026-01-14 09:05_
+
+Thank you @MichaReiser, but those issues are already linked to PR...
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 09:08_
+
+https://github.com/astral-sh/ruff/pull/19772 has been stale, it would be great to get a new PR with the feedback addressed
 
 ---

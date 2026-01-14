@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: amy/suppression-perf-2
 created_at: 2026-01-07T22:39:17Z
-updated_at: 2026-01-13T23:35:56Z
+updated_at: 2026-01-14T08:48:07Z
 url: https://github.com/astral-sh/ruff/pull/22446
-synced_at: 2026-01-14T00:34:17Z
+synced_at: 2026-01-14T09:35:09Z
 ```
 
 # Skip walking all tokens when loading range suppressions
@@ -166,5 +166,60 @@ _@amyreese reviewed on 2026-01-13 23:28_
 _Review comment by @amyreese on `crates/ruff_linter/src/suppression.rs`:402 on 2026-01-13 23:28_
 
 I tried building `split_at` and using it when loading tokens, but somehow it changes the logic, and I'm not seeing why. Running the tests results in snapshot changes that implies leading comments before indents are no longer getting loaded/matched correct. But I also don't fully understand how your logic here is working in this implementation, so I'm hoping I'm missing something. Any suggestion would be appreciated.
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/src/suppression.rs`:425 on 2026-01-14 08:20_
+
+Can we resolve this comment?
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/src/suppression.rs`:449 on 2026-01-14 08:41_
+
+You need to change this to `after`
+
+---
+
+_@MichaReiser reviewed on 2026-01-14 08:41_
+
+---
+
+_@MichaReiser reviewed on 2026-01-14 08:42_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_python_ast/src/token/tokens.rs`:203 on 2026-01-14 08:42_
+
+```suggestion
+        let (before, after) = self.raw.split_at(partition_point);
+```
+
+---
+
+_@MichaReiser reviewed on 2026-01-14 08:48_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_python_ast/src/token/tokens.rs`:195 on 2026-01-14 08:48_
+
+I think it's worth pointing out that `after` is different than calling `.after` (at least I think so).
+
+**`.after`**
+
+Finds the first token that ends after `offset`
+
+```
+           
+| 1 |  | 2 |     | 3|
+           - offset
+                 ^^^^ .after
+^^^^^ split_at before
+       ^^^^^^^^^^^^^^ split_at after        
+```
+
+This is because `.after` finds the first token that ends after `offset` whereas `split_at` finds the first token that starts at or before `offset`
+
+We could change `split_at` to skip over tokens that fall directly on `offset` (e.g. a `Dedent` token with zero width). For now, I think it's fine to call this difference out in the comment
 
 ---

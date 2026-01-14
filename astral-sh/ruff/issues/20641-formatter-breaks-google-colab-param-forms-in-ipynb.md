@@ -9,9 +9,9 @@ labels:
   - formatter
 assignees: []
 created_at: 2025-09-29T23:50:36Z
-updated_at: 2025-09-30T06:04:11Z
+updated_at: 2026-01-14T09:05:44Z
 url: https://github.com/astral-sh/ruff/issues/20641
-synced_at: 2026-01-12T15:54:57Z
+synced_at: 2026-01-14T09:34:57Z
 ```
 
 # Formatter breaks Google Colab `@param` forms in ipynb
@@ -73,5 +73,11 @@ _Label `configuration` added by @MichaReiser on 2025-09-30 06:04_
 ---
 
 _Label `formatter` added by @MichaReiser on 2025-09-30 06:04_
+
+---
+
+_Comment by @leonace924 on 2026-01-14 09:05_
+
+Is this fixed?
 
 ---

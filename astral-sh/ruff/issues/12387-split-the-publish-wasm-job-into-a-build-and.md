@@ -2,16 +2,16 @@
 number: 12387
 title: "Split the `publish_wasm` job into a build and publish step"
 type: issue
-state: open
+state: closed
 author: MichaReiser
 labels:
   - help wanted
   - ci
 assignees: []
 created_at: 2024-07-18T17:10:48Z
-updated_at: 2026-01-08T13:03:09Z
+updated_at: 2026-01-14T09:00:23Z
 url: https://github.com/astral-sh/ruff/issues/12387
-synced_at: 2026-01-12T15:54:51Z
+synced_at: 2026-01-14T09:34:57Z
 ```
 
 # Split the `publish_wasm` job into a build and publish step
@@ -82,5 +82,9 @@ This sounds about right to me
 > Automatically run build tests when crates/ruff_wasm/** or .github/workflows/build-wasm.yml is changed
 
 Changes to `build-wasm` do make sense to me. I'm not sure we want to run it on every `ruff_wasm` change. Maybe limit it to changes to the `package.json` `package-lock`.json`
+
+---
+
+_Closed by @MichaReiser on 2026-01-14 09:00_
 
 ---

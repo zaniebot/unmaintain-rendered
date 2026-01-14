@@ -4,14 +4,15 @@ title: "[`pyflakes`] Report duplicate imports in `typing.TYPE_CHECKING` block `F
 type: pull_request
 state: open
 author: chirizxc
-labels: []
+labels:
+  - rule
 assignees: []
 base: main
 head: F811
 created_at: 2026-01-13T21:14:28Z
-updated_at: 2026-01-13T22:14:02Z
+updated_at: 2026-01-14T08:51:07Z
 url: https://github.com/astral-sh/ruff/pull/22560
-synced_at: 2026-01-13T22:36:08Z
+synced_at: 2026-01-14T09:35:09Z
 ```
 
 # [`pyflakes`] Report duplicate imports in `typing.TYPE_CHECKING` block `F811`
@@ -453,5 +454,9 @@ _Comment by @astral-sh-bot[bot] on 2026-01-13 22:27_
 
 
 
+
+---
+
+_Label `rule` added by @MichaReiser on 2026-01-14 08:51_
 
 ---

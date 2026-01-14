@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: zb/cache-smart-save-if
 created_at: 2026-01-13T22:51:04Z
-updated_at: 2026-01-13T23:20:07Z
+updated_at: 2026-01-14T09:20:37Z
 url: https://github.com/astral-sh/uv/pull/17452
-synced_at: 2026-01-13T23:35:46Z
+synced_at: 2026-01-14T09:35:22Z
 ```
 
 # Only save Rust cache on `main` or when cache-relevant files change
@@ -34,5 +34,9 @@ _Marked ready for review by @zanieb on 2026-01-13 23:20_
 ---
 
 _Label `internal` added by @zanieb on 2026-01-13 23:20_
+
+---
+
+_@konstin approved on 2026-01-14 09:20_
 
 ---

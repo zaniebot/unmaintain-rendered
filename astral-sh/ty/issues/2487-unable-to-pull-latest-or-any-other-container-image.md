@@ -7,9 +7,9 @@ author: frodera
 labels: []
 assignees: []
 created_at: 2026-01-14T03:43:21Z
-updated_at: 2026-01-14T03:43:21Z
+updated_at: 2026-01-14T09:27:32Z
 url: https://github.com/astral-sh/ty/issues/2487
-synced_at: 2026-01-14T04:30:21Z
+synced_at: 2026-01-14T09:34:52Z
 ```
 
 # Unable to pull `latest` (or any other) container image
@@ -40,5 +40,11 @@ Error response from daemon: Head "https://ghcr.io/v2/astral-sh/ty/manifests/late
 ### Version
 
 _No response_
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 09:27_
+
+Thanks for reporting this. I changed the visibility, can you try again?
 
 ---

@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-08T14:20:29Z
-updated_at: 2026-01-08T18:19:59Z
+updated_at: 2026-01-14T09:04:52Z
 url: https://github.com/astral-sh/uv/issues/17360
-synced_at: 2026-01-12T16:02:49Z
+synced_at: 2026-01-14T09:35:14Z
 ```
 
 # `uv sync` doesn't run setup.py unless it is manually touched/modified
@@ -66,5 +66,11 @@ I don't think `dir` is working as expected. Files changed under the directory do
 _Comment by @konstin on 2026-01-08 18:19_
 
 Can you provide a minimal reproducible example for how it fails?
+
+---
+
+_Comment by @kunaltyagi on 2026-01-14 09:04_
+
+Let me create one
 
 ---

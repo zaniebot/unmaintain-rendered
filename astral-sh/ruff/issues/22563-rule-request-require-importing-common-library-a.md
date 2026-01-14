@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-14T00:05:32Z
-updated_at: 2026-01-14T08:07:40Z
+updated_at: 2026-01-14T08:57:39Z
 url: https://github.com/astral-sh/ruff/issues/22563
-synced_at: 2026-01-14T08:36:15Z
+synced_at: 2026-01-14T09:34:58Z
 ```
 
 # Rule Request: Require importing common library a certain way
@@ -49,5 +49,19 @@ Does https://docs.astral.sh/ruff/rules/unconventional-import-alias/ work for you
 ---
 
 _Label `question` added by @MichaReiser on 2026-01-14 08:07_
+
+---
+
+_Comment by @DeflateAwning on 2026-01-14 08:55_
+
+Neat! That's very close to what I was looking for.
+
+Do you know what libraries it currently applies to?
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 08:57_
+
+See https://docs.astral.sh/ruff/settings/#lint_flake8-import-conventions_aliases
 
 ---

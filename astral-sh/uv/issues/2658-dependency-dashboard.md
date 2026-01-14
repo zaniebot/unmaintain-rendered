@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-14T02:27:51Z
+updated_at: 2026-01-14T08:53:25Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-14T02:32:48Z
+synced_at: 2026-01-14T09:35:12Z
 ```
 
 # Dependency Dashboard
@@ -49,7 +49,6 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/async-compression-0.x-lockfile -->Update Rust crate async-compression to v0.4.36
  - [ ] <!-- unschedule-branch=renovate/clap-4.x-lockfile -->Update Rust crate clap to v4.5.54
  - [ ] <!-- unschedule-branch=renovate/console-0.x-lockfile -->Update Rust crate console to v0.16.2
- - [ ] <!-- unschedule-branch=renovate/h2-0.x-lockfile -->Update Rust crate h2 to v0.4.13
  - [ ] <!-- unschedule-branch=renovate/jiff-0.x-lockfile -->Update Rust crate jiff to v0.2.18
  - [ ] <!-- unschedule-branch=renovate/proc-macro2-1.x-lockfile -->Update Rust crate proc-macro2 to v1.0.105
  - [ ] <!-- unschedule-branch=renovate/quote-1.x-lockfile -->Update Rust crate quote to v1.0.43
@@ -58,7 +57,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/rmp-serde-1.x-lockfile -->Update Rust crate rmp-serde to v1.3.1
  - [ ] <!-- unschedule-branch=renovate/rustls-0.x-lockfile -->Update Rust crate rustls to v0.23.36
  - [ ] <!-- unschedule-branch=renovate/serde_json-1.x-lockfile -->Update Rust crate serde_json to v1.0.149
- - [ ] <!-- unschedule-branch=renovate/syn-2.x-lockfile -->Update Rust crate syn to v2.0.113
+ - [ ] <!-- unschedule-branch=renovate/syn-2.x-lockfile -->Update Rust crate syn to v2.0.114
  - [ ] <!-- unschedule-branch=renovate/target-lexicon-0.x-lockfile -->Update Rust crate target-lexicon to v0.13.4
  - [ ] <!-- unschedule-branch=renovate/test-log-0.x-lockfile -->Update Rust crate test-log to v0.2.19
  - [ ] <!-- unschedule-branch=renovate/tikv-jemallocator-0.x-lockfile -->Update Rust crate tikv-jemallocator to v0.6.1
@@ -180,7 +179,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `globset 0.4.15`
  - `globwalk 0.9.1`
  - `goblin 0.10.0`
- - `h2 0.4.7` → [Updates: `0.4.7`]
+ - `h2 0.4.7`
  - `hashbrown 0.16.0`
  - `hex 0.4.3`
  - `html-escape 0.2.13`

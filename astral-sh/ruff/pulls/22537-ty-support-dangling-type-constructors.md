@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/dyn-expression
 created_at: 2026-01-12T18:12:25Z
-updated_at: 2026-01-13T16:39:39Z
+updated_at: 2026-01-14T09:18:04Z
 url: https://github.com/astral-sh/ruff/pull/22537
-synced_at: 2026-01-13T17:25:40Z
+synced_at: 2026-01-14T09:35:09Z
 ```
 
 # [ty] Support 'dangling' `type(...)` constructors
@@ -1135,5 +1135,11 @@ _Review requested from @Gankra by @charliermarsh on 2026-01-13 16:30_
 ---
 
 _Review requested from @MichaReiser by @charliermarsh on 2026-01-13 16:39_
+
+---
+
+_@MichaReiser approved on 2026-01-14 09:18_
+
+Thank you. The `DynamicClassLiteral` definition looks good to me. I didn't review the semantic typing changes.
 
 ---

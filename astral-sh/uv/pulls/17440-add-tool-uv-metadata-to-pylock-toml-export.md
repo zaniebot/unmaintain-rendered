@@ -10,9 +10,9 @@ draft: true
 base: main
 head: pylock-tool-uv
 created_at: 2026-01-13T16:20:10Z
-updated_at: 2026-01-13T21:35:26Z
+updated_at: 2026-01-14T09:22:09Z
 url: https://github.com/astral-sh/uv/pull/17440
-synced_at: 2026-01-13T22:36:21Z
+synced_at: 2026-01-14T09:35:22Z
 ```
 
 # Add [tool.uv] metadata to pylock.toml export
@@ -75,5 +75,15 @@ _@gaborbernat reviewed on 2026-01-13 21:35_
 _Review comment by @gaborbernat on `crates/uv-resolver/src/lock/export/pylock_toml.rs`:985 on 2026-01-13 21:35_
 
 Yes I will do so however because this is dependent on my other PR I will do it once that lands. I actually initially added it there but then I was asked to split it out at the separate feature so open it here and mark it as draft until that one lands. 
+
+---
+
+_@konstin reviewed on 2026-01-14 09:22_
+
+---
+
+_Review comment by @konstin on `crates/uv-resolver/src/lock/export/pylock_toml.rs`:985 on 2026-01-14 09:22_
+
+How is that PR dependent on the other PR?
 
 ---

@@ -4,14 +4,15 @@ title: "[`pandas-vet`] Make example error out-of-the-box (`PD002`)"
 type: pull_request
 state: open
 author: MeGaGiGaGon
-labels: []
+labels:
+  - documentation
 assignees: []
 base: main
 head: patch-1
 created_at: 2026-01-13T21:16:38Z
-updated_at: 2026-01-13T23:54:18Z
+updated_at: 2026-01-14T08:50:07Z
 url: https://github.com/astral-sh/ruff/pull/22561
-synced_at: 2026-01-14T00:34:17Z
+synced_at: 2026-01-14T09:35:09Z
 ```
 
 # [`pandas-vet`] Make example error out-of-the-box (`PD002`)
@@ -130,5 +131,9 @@ import pandas as pd
 students_df = pd.read_csv("students.csv")
 students_df.ix[0]  # 0th row or row with label 0?
 ```
+
+---
+
+_Label `documentation` added by @MichaReiser on 2026-01-14 08:50_
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: konsti/clear-env-for-tests
 created_at: 2025-06-16T16:28:29Z
-updated_at: 2026-01-13T15:42:26Z
+updated_at: 2026-01-14T09:19:17Z
 url: https://github.com/astral-sh/uv/pull/14080
-synced_at: 2026-01-13T16:27:48Z
+synced_at: 2026-01-14T09:35:21Z
 ```
 
 # Clear known env vars for tests
@@ -149,5 +149,15 @@ _@EliteTK approved on 2026-01-13 15:42_
 It fixes the test cases I could come up with, but see the comment for a small concern relating to some of the environment variables which are going to get unset. But the fact the windows tests don't fail suggests maybe that I am wrong about the importance of those variables.
 
 That being said I couldn't figure out how to get RUST_LOG to currently be respected by the things being ran even without these patches?
+
+---
+
+_@konstin reviewed on 2026-01-14 09:19_
+
+---
+
+_Review comment by @konstin on `crates/uv-macros/src/lib.rs`:160 on 2026-01-14 09:19_
+
+I've added an allowlist with some cases you may want to modify, we can adjust that list as we go
 
 ---

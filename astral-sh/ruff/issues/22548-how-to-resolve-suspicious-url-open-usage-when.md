@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-13T13:03:02Z
-updated_at: 2026-01-13T15:49:19Z
+updated_at: 2026-01-14T09:11:15Z
 url: https://github.com/astral-sh/ruff/issues/22548
-synced_at: 2026-01-13T16:27:25Z
+synced_at: 2026-01-14T09:34:58Z
 ```
 
 # How to resolve suspicious-url-open-usage when passing a urllib.request.Request to urllib.request.urlopen
@@ -28,6 +28,8 @@ Ruff says I need to check the validity of the url when using request.urlopen
 However, how do I do that when passing in a Request object rather than a str url?
 
 ```python
+from urllib import request
+
 req = request.Request(
     "http://example.com",
     data={},
@@ -50,5 +52,28 @@ Based on a quick look at the rule implementation, I think passing a string liter
 ---
 
 _Label `question` added by @ntBre on 2026-01-13 15:49_
+
+---
+
+_Comment by @Jerakin on 2026-01-14 08:39_
+
+Yeah. I get the warning.
+
+Using ruff through PyCharm.
+
+<img width="432" height="259" alt="Image" src="https://github.com/user-attachments/assets/c75fd303-f919-4a09-9a9f-65cfca071c0b" />
+
+PyCharm Professional 2025.3.1
+Ruff used through the new "Python -> Tools -> Ruff" settings.
+Pointing to Ruff on my path `ruff 0.14.11`
+
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 09:11_
+
+@ntBre it requires the urllib import 
+
+https://play.ruff.rs/d389748f-f4d1-4a56-bea5-298c0f049c44
 
 ---

@@ -5,13 +5,14 @@ type: issue
 state: open
 author: TimoVink
 labels:
+  - help wanted
   - cli
   - diagnostics
 assignees: []
 created_at: 2026-01-13T22:49:33Z
-updated_at: 2026-01-13T22:50:19Z
+updated_at: 2026-01-14T08:56:54Z
 url: https://github.com/astral-sh/ty/issues/2484
-synced_at: 2026-01-13T23:35:16Z
+synced_at: 2026-01-14T09:34:52Z
 ```
 
 # Feature Request: SARIF Outputs
@@ -40,5 +41,22 @@ _Label `cli` added by @AlexWaygood on 2026-01-13 22:50_
 ---
 
 _Label `diagnostics` added by @AlexWaygood on 2026-01-13 22:50_
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 08:56_
+
+Thank you. We already support the github output format but adding this for Azure dev ops makes sense. 
+
+
+This requires porting https://github.com/astral-sh/ruff/blob/5b1d172906c143e3650d1fe0641a6ded45b6c62b/crates/ruff_linter/src/message/sarif.rs#L48 to `ruff_db` and generalizing it, so that it can be used by both Ruff and ty. Similar to what Brent did in https://github.com/astral-sh/ruff/pull/20117 and https://github.com/astral-sh/ruff/pull/20155
+
+---
+
+_Added to milestone `Stable` by @MichaReiser on 2026-01-14 08:56_
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2026-01-14 08:56_
 
 ---

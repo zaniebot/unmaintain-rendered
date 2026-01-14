@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: zb/release-workflow-names
 created_at: 2026-01-13T23:08:45Z
-updated_at: 2026-01-13T23:19:49Z
+updated_at: 2026-01-14T09:21:16Z
 url: https://github.com/astral-sh/uv/pull/17453
-synced_at: 2026-01-13T23:35:46Z
+synced_at: 2026-01-14T09:35:22Z
 ```
 
 # Update the binary build workflow names to just show targets
@@ -34,5 +34,9 @@ _Label `internal` added by @zanieb on 2026-01-13 23:09_
 ---
 
 _Marked ready for review by @zanieb on 2026-01-13 23:19_
+
+---
+
+_@konstin approved on 2026-01-14 09:21_
 
 ---
