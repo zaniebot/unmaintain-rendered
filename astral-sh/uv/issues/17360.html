@@ -63,10 +63,95 @@
             <div class="timeline-body"><p>Let me create one</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kunaltyagi">@kunaltyagi</a> on 2026-01-14 09:31</div>
+            <div class="timeline-body"><details>
+<summary>pyproject.toml</summary>
+
+<pre><code class="language-toml">[project]
+name = &quot;test_uv&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Test UV&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;==3.12.*&quot;
+dependencies = [
+]
+classifiers = [&quot;Private :: Do Not Upload&quot;]
+
+[build-system]
+requires = [
+  &quot;cmake&quot;,
+  &quot;setuptools&quot;,
+]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[tool.setuptools]
+packages = [&quot;test_uv&quot;]
+
+[tool.setuptools.package-dir]
+test_uv = &quot;src/test_uv&quot;
+
+[tool.uv]
+cache-keys = [{ dir = &quot;csrc&quot; }, {file = &quot;setup.py&quot;}, { file = &quot;pyproject.toml&quot; }]
+</code></pre>
+</details>
+
+<details>
+<summary>setup.py</summary>
+
+<pre><code class="language-py">from setuptools import Extension, setup
+
+print(&quot;****** Start setup.py ********&quot;)
+
+setup(
+    ext_modules=[
+        Extension(
+            name=&quot;foo&quot;,
+            sources=[&quot;csrc/foo.c&quot;],
+        ),
+    ]
+)
+
+print(&quot;****** End setup.py ********&quot;)
+</code></pre>
+</details>
+
+<details>
+<summary>Setup the structure</summary>
+
+<pre><code class="language-bash">touch README.md
+mkdir -p src/test_uv
+touch src/test_uv/__init__.py
+mkdir -p csrc
+</code></pre>
+</details>
+
+<pre><code class="language-sh">echo &quot;&quot; &gt; csrc/foo.c # to give a simple target
+uv sync # everything works
+echo &quot;a&quot; &gt; csrc/foo.c # should make it not compile, BUT
+uv sync # no error in ~0.1ms
+touch setup.py # uv will try to compile it now
+uv sync  # see errors
+</code></pre>
+<p>Sample output:</p>
+<pre><code>k@machine:~/test_uv$ uv sync
+Resolved 1 package in 1ms
+      Built test-uv @ file:///home/kuntyagi/test_uv
+Prepared 1 package in 773ms
+Uninstalled 1 package in 0.38ms
+Installed 1 package in 1ms
+ ~ test-uv==0.1.0 (from file:///home/kuntyagi/test_uv)
+k@machine:~/test_uv$ echo &quot;a&quot; &gt; csrc/foo.c # should make it not compile, BUT
+k@machine:~/test_uv$ uv sync # no error in ~0.1ms
+Resolved 1 package in 1ms
+Audited 1 package in 0.13ms
+</code></pre>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-14 09:38:43 UTC
+        Synced at 2026-01-14 10:38:04 UTC
     </footer>
 </body>
 </html>
