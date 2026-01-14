@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/implicit-cls-new
 created_at: 2026-01-14T21:27:18Z
-updated_at: 2026-01-14T21:37:44Z
+updated_at: 2026-01-14T23:16:27Z
 url: https://github.com/astral-sh/ruff/pull/22584
-synced_at: 2026-01-14T21:43:07Z
+synced_at: 2026-01-14T23:42:30Z
 ```
 
 # [ty] Infer implicit type of `self` in `__new__` methods
@@ -322,5 +322,22 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 21:37_
 **[Full report with detailed diff](https://e5a5129f.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://e5a5129f.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/annotations/self.md`:590 on 2026-01-14 23:16_
+
+The point of this test is that the usage of `Self` above should return a diagnostic, but it seems mildly confusing to introduce another unrelated diagnostic. Here's a version that doesn't introduce a diagnostic:
+
+```py
+    def __new__(cls, name, bases, dct) -> Self:
+        return cls(name, bases, dct)
+```
+
+---
+
+_@carljm approved on 2026-01-14 23:16_
+
+Thank you!
 
 ---

@@ -4,12 +4,13 @@ title: "*Unary* operators not correctly inherited with `NewType(..., float)`"
 type: issue
 state: open
 author: jpgoldberg
-labels: []
+labels:
+  - bug
 assignees: []
 created_at: 2026-01-14T19:43:06Z
-updated_at: 2026-01-14T20:01:39Z
+updated_at: 2026-01-14T23:20:49Z
 url: https://github.com/astral-sh/ty/issues/2499
-synced_at: 2026-01-14T20:43:25Z
+synced_at: 2026-01-14T23:42:12Z
 ```
 
 # *Unary* operators not correctly inherited with `NewType(..., float)`
@@ -82,5 +83,13 @@ ty 0.0.11 (830cb9cc6 2026-01-09)
 ---
 
 _Assigned to @oconnor663 by @MichaReiser on 2026-01-14 19:52_
+
+---
+
+_Added to milestone `Pre-stable 1` by @carljm on 2026-01-14 23:20_
+
+---
+
+_Label `bug` added by @carljm on 2026-01-14 23:20_
 
 ---

@@ -12,9 +12,9 @@ merged: true
 base: main
 head: wld/update-conformance-workflow
 created_at: 2026-01-11T17:55:59Z
-updated_at: 2026-01-14T19:08:10Z
+updated_at: 2026-01-14T23:32:10Z
 url: https://github.com/astral-sh/ruff/pull/22504
-synced_at: 2026-01-14T19:42:39Z
+synced_at: 2026-01-14T23:42:30Z
 ```
 
 # [ty] Update conformance workflow to use comparison script
@@ -193,5 +193,17 @@ _Closed by @MichaReiser on 2026-01-14 19:06_
 _Comment by @MichaReiser on 2026-01-14 19:08_
 
 Thank you, @WillDuke, for all your work on this. Having this is extremely valuable and will make our lives so much easier (and it will be such a great feeling seeing how we creep in on the conformance :))
+
+---
+
+_Comment by @WillDuke on 2026-01-14 23:31_
+
+> Thank you, @WillDuke, for all your work on this. Having this is extremely valuable and will make our lives so much easier (and it will be such a great feeling seeing how we creep in on the conformance :))
+
+Glad to hear it will be useful! Thank you for the great experience contributing to the project 😊
+
+---
+
+_Branch deleted on 2026-01-14 23:32_
 
 ---
