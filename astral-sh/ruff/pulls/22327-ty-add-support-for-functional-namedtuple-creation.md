@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/functional-namedtuple
 created_at: 2026-01-01T13:23:44Z
-updated_at: 2026-01-14T14:32:57Z
+updated_at: 2026-01-14T15:34:06Z
 url: https://github.com/astral-sh/ruff/pull/22327
-synced_at: 2026-01-14T14:41:25Z
+synced_at: 2026-01-14T15:39:41Z
 ```
 
 # [ty] Add support for functional `namedtuple` creation
@@ -48,8 +48,8 @@ _Comment by @astral-sh-bot[bot] on 2026-01-01 13:25_
 <summary>Changes were detected when running ty on typing conformance tests</summary>
 
 ```diff
---- old-output.txt	2026-01-14 14:31:30.517751563 +0000
-+++ new-output.txt	2026-01-14 14:31:30.860751595 +0000
+--- old-output.txt	2026-01-14 15:28:57.280728129 +0000
++++ new-output.txt	2026-01-14 15:28:57.855732110 +0000
 @@ -753,6 +753,16 @@
  namedtuples_define_class.py:86:5: error[invalid-named-tuple] NamedTuple field without default value cannot follow field(s) with default value(s): Field `latitude` defined here without a default value
  namedtuples_define_class.py:125:19: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `float`
@@ -209,6 +209,16 @@ urllib3 (https://github.com/urllib3/urllib3)
 - Found 305 diagnostics
 + Found 303 diagnostics
 
+discord.py (https://github.com/Rapptz/discord.py)
++ discord/enums.py:97:5: error[invalid-assignment] Object of type `(self) -> Unknown` is not assignable to attribute `__repr__` of type `def __repr__(self) -> str`
++ discord/enums.py:98:5: error[invalid-assignment] Object of type `(self) -> Unknown` is not assignable to attribute `__str__` of type `def __str__(self) -> str`
++ discord/enums.py:100:9: error[invalid-assignment] Object of type `(self, other) -> Unknown` is not assignable to attribute `__le__` of type `def __le__(self, value: tuple[Unknown, ...], /) -> bool`
++ discord/enums.py:101:9: error[invalid-assignment] Object of type `(self, other) -> Unknown` is not assignable to attribute `__ge__` of type `def __ge__(self, value: tuple[Unknown, ...], /) -> bool`
++ discord/enums.py:102:9: error[invalid-assignment] Object of type `(self, other) -> Unknown` is not assignable to attribute `__lt__` of type `def __lt__(self, value: tuple[Unknown, ...], /) -> bool`
++ discord/enums.py:103:9: error[invalid-assignment] Object of type `(self, other) -> Unknown` is not assignable to attribute `__gt__` of type `def __gt__(self, value: tuple[Unknown, ...], /) -> bool`
+- Found 546 diagnostics
++ Found 552 diagnostics
+
 mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
 - pymongo/asynchronous/auth.py:131:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `@Todo | None | bytes`
 + pymongo/asynchronous/auth.py:131:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `Any | None | bytes`
@@ -218,45 +228,6 @@ mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
 + pymongo/synchronous/auth.py:128:43: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bytes | bytearray`, found `Any | None | bytes`
 - pymongo/synchronous/auth.py:360:48: error[invalid-assignment] Object of type `dict[str, ((credentials: @Todo, conn: Connection) -> None) | ((credentials: @Todo, conn: Connection, reauthenticate: bool) -> Mapping[str, Any] | None) | partial[None]]` is not assignable to `Mapping[str, (...) -> None]`
 + pymongo/synchronous/auth.py:360:48: error[invalid-assignment] Object of type `dict[str, ((credentials: MongoCredential, conn: Connection) -> None) | ((credentials: MongoCredential, conn: Connection, reauthenticate: bool) -> Mapping[str, Any] | None) | partial[None]]` is not assignable to `Mapping[str, (...) -> None]`
-
-prefect (https://github.com/PrefectHQ/prefect)
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
-- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
-+ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
-- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
-+ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
-+ src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
-+ src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
-+ src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
-+ src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
-+ src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
-- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
-+ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
-- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
-+ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
-- src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` on object of type `dict[str, Any]`
-+ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
-- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | int | dict[str, Any] | ... omitted 5 union elements]`
-+ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
-- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, int | T@resolve_variables | float | ... omitted 5 union elements]`
-+ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
-- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[int | T@resolve_variables | float | ... omitted 5 union elements]`
-+ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
-- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
-+ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `int | T@resolve_variables | float | ... omitted 4 union elements`
-+ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
-- Found 5389 diagnostics
-+ Found 5394 diagnostics
 
 cloud-init (https://github.com/canonical/cloud-init)
 + tests/unittests/sources/test_smartos.py:806:5: error[invalid-assignment] Object of type `Literal[2882400018]` is not assignable to attribute `request_id` of type `property`
@@ -271,15 +242,41 @@ cloud-init (https://github.com/canonical/cloud-init)
 - Found 1166 diagnostics
 + Found 1175 diagnostics
 
-discord.py (https://github.com/Rapptz/discord.py)
-+ discord/enums.py:97:5: error[invalid-assignment] Object of type `(self) -> Unknown` is not assignable to attribute `__repr__` of type `def __repr__(self) -> str`
-+ discord/enums.py:98:5: error[invalid-assignment] Object of type `(self) -> Unknown` is not assignable to attribute `__str__` of type `def __str__(self) -> str`
-+ discord/enums.py:100:9: error[invalid-assignment] Object of type `(self, other) -> Unknown` is not assignable to attribute `__le__` of type `def __le__(self, value: tuple[Unknown, ...], /) -> bool`
-+ discord/enums.py:101:9: error[invalid-assignment] Object of type `(self, other) -> Unknown` is not assignable to attribute `__ge__` of type `def __ge__(self, value: tuple[Unknown, ...], /) -> bool`
-+ discord/enums.py:102:9: error[invalid-assignment] Object of type `(self, other) -> Unknown` is not assignable to attribute `__lt__` of type `def __lt__(self, value: tuple[Unknown, ...], /) -> bool`
-+ discord/enums.py:103:9: error[invalid-assignment] Object of type `(self, other) -> Unknown` is not assignable to attribute `__gt__` of type `def __gt__(self, value: tuple[Unknown, ...], /) -> bool`
-- Found 546 diagnostics
-+ Found 552 diagnostics
+manticore (https://github.com/trailofbits/manticore)
+- manticore/platforms/evm.py:3016:16: warning[possibly-missing-attribute] Attribute `coinbase` may be missing on object of type `Unknown | None`
++ manticore/platforms/evm.py:3016:16: warning[possibly-missing-attribute] Attribute `coinbase` may be missing on object of type `Unknown | None | BlockHeader`
+- manticore/platforms/evm.py:3019:16: warning[possibly-missing-attribute] Attribute `timestamp` may be missing on object of type `Unknown | None`
++ manticore/platforms/evm.py:3019:16: warning[possibly-missing-attribute] Attribute `timestamp` may be missing on object of type `Unknown | None | BlockHeader`
+- manticore/platforms/evm.py:3022:16: warning[possibly-missing-attribute] Attribute `blocknumber` may be missing on object of type `Unknown | None`
++ manticore/platforms/evm.py:3022:16: warning[possibly-missing-attribute] Attribute `blocknumber` may be missing on object of type `Unknown | None | BlockHeader`
+- manticore/platforms/evm.py:3025:16: warning[possibly-missing-attribute] Attribute `difficulty` may be missing on object of type `Unknown | None`
++ manticore/platforms/evm.py:3025:16: warning[possibly-missing-attribute] Attribute `difficulty` may be missing on object of type `Unknown | None | BlockHeader`
+- manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None`
++ manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None | BlockHeader`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | int | dict[str, Any] | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, int | T@resolve_variables | float | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[int | T@resolve_variables | float | ... omitted 5 union elements]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `int | T@resolve_variables | float | ... omitted 4 union elements`
 
 pycryptodome (https://github.com/Legrandin/pycryptodome)
 + lib/Crypto/SelfTest/PublicKey/test_ECC_NIST.py:917:54: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `IntegerBase`
@@ -308,23 +305,6 @@ dd-trace-py (https://github.com/DataDog/dd-trace-py)
 - Found 8394 diagnostics
 + Found 8398 diagnostics
 
-manticore (https://github.com/trailofbits/manticore)
-- manticore/platforms/evm.py:3016:16: warning[possibly-missing-attribute] Attribute `coinbase` may be missing on object of type `Unknown | None`
-+ manticore/platforms/evm.py:3016:16: warning[possibly-missing-attribute] Attribute `coinbase` may be missing on object of type `Unknown | None | BlockHeader`
-- manticore/platforms/evm.py:3019:16: warning[possibly-missing-attribute] Attribute `timestamp` may be missing on object of type `Unknown | None`
-+ manticore/platforms/evm.py:3019:16: warning[possibly-missing-attribute] Attribute `timestamp` may be missing on object of type `Unknown | None | BlockHeader`
-- manticore/platforms/evm.py:3022:16: warning[possibly-missing-attribute] Attribute `blocknumber` may be missing on object of type `Unknown | None`
-+ manticore/platforms/evm.py:3022:16: warning[possibly-missing-attribute] Attribute `blocknumber` may be missing on object of type `Unknown | None | BlockHeader`
-- manticore/platforms/evm.py:3025:16: warning[possibly-missing-attribute] Attribute `difficulty` may be missing on object of type `Unknown | None`
-+ manticore/platforms/evm.py:3025:16: warning[possibly-missing-attribute] Attribute `difficulty` may be missing on object of type `Unknown | None | BlockHeader`
-- manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None`
-+ manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None | BlockHeader`
-
-scikit-build-core (https://github.com/scikit-build/scikit-build-core)
-- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-- Found 48 diagnostics
-+ Found 47 diagnostics
-
 jax (https://github.com/google/jax)
 + jax/_src/interpreters/ad.py:430:7: error[call-non-callable] Object of type `aval_method` is not callable
 - jax/_src/pallas/mosaic/sc_primitives.py:108:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
@@ -337,19 +317,19 @@ jax (https://github.com/google/jax)
 + Found 2829 diagnostics
 
 static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
-- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
-+ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
-- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
++ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
+- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
+- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | ndarray[Never, Never] | ... omitted 6 union elements, TVDtype@Series]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
 - static_frame/profile/__main__.py:2135:9: error[invalid-assignment] Object of type `dict[str, FunctionMetaData | None]` is not assignable to attribute `meta` of type `dict[str, FunctionMetaData] | None`
-- Found 1827 diagnostics
-+ Found 1824 diagnostics
-
-pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
-- tests/frame/test_groupby.py:229:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
-- tests/frame/test_groupby.py:625:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
-- Found 4361 diagnostics
-+ Found 4359 diagnostics
+- Found 1825 diagnostics
++ Found 1826 diagnostics
 
 core (https://github.com/home-assistant/core)
 + homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -> _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
@@ -448,22 +428,23 @@ _Comment by @astral-sh-bot[bot] on 2026-01-02 16:55_
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | `missing-argument` | 107 | 0 | 0 |
-| `invalid-argument-type` | 27 | 0 | 2 |
+| `invalid-argument-type` | 28 | 0 | 2 |
 | `invalid-assignment` | 14 | 1 | 2 |
-| `possibly-missing-attribute` | 1 | 0 | 9 |
+| `possibly-missing-attribute` | 4 | 0 | 10 |
+| `invalid-await` | 2 | 0 | 6 |
 | `call-non-callable` | 7 | 0 | 0 |
-| `invalid-await` | 0 | 0 | 6 |
-| `unused-ignore-comment` | 0 | 6 | 0 |
-| `invalid-return-type` | 1 | 1 | 1 |
+| `invalid-return-type` | 1 | 3 | 3 |
+| `unused-ignore-comment` | 0 | 7 | 0 |
 | `not-subscriptable` | 3 | 0 | 0 |
+| `unresolved-attribute` | 1 | 0 | 2 |
+| `type-assertion-failure` | 0 | 2 | 0 |
 | `no-matching-overload` | 1 | 0 | 0 |
 | `too-many-positional-arguments` | 1 | 0 | 0 |
-| `unresolved-attribute` | 1 | 0 | 0 |
 | `unsupported-operator` | 1 | 0 | 0 |
-| **Total** | **164** | **8** | **20** |
+| **Total** | **170** | **13** | **25** |
 
 
-**[Full report with detailed diff](https://5a63e675.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://5a63e675.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://bb9276a1.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://bb9276a1.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -1189,7 +1170,7 @@ _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6663 on 2026-01-13 20:35_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6703 on 2026-01-13 20:35_
 
 shall we just import `ast::name::Name` at the top of the file, so that the type annotation doesn't have to be split over four lines? 😛
 
@@ -1209,7 +1190,7 @@ Also, I'm not sure we emit any errors here if the user provides a nonexistent ke
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6657 on 2026-01-13 20:41_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6697 on 2026-01-13 20:41_
 
 We can't return `None` here because we've already inferred (and stored) some types, but returning `None` will cause us to infer all types for the expression again, which could cause us to panic. As soon as we've stored at least one type for the call expression, we have to do the signature checking for the whole call expression "manually".
 
@@ -1217,7 +1198,7 @@ I also don't think it's _desirable_ to return `None` here, though. Can't we just
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6703 on 2026-01-13 20:42_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6761 on 2026-01-13 20:42_
 
 can you add a test with a `Point = collections.namedtuple("Point", "x       y")`, and also one that uses a string with tabs in it? (Making sure that we infer the correct MRO in both cases)
 
@@ -1249,7 +1230,7 @@ _@charliermarsh reviewed on 2026-01-13 21:01_
 
 ---
 
-_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6657 on 2026-01-13 21:01_
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6697 on 2026-01-13 21:01_
 
 Yes good call.
 
@@ -1259,7 +1240,7 @@ _@charliermarsh reviewed on 2026-01-13 21:14_
 
 ---
 
-_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6703 on 2026-01-13 21:14_
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6761 on 2026-01-13 21:14_
 
 (Tab is causing me major problems because `mdformat` keeps removing it.)
 
@@ -1269,7 +1250,7 @@ _@AlexWaygood reviewed on 2026-01-13 21:16_
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6703 on 2026-01-13 21:16_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6761 on 2026-01-13 21:16_
 
 hahaha is there no suppression comment to tell it to away??
 
@@ -1303,7 +1284,7 @@ maybe also add a `reveal_type(Person.__new__)` call?
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:499 on 2026-01-13 21:49_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:514 on 2026-01-13 21:49_
 
 worth adding `reveal_type` and `reveal_mro` calls for these?
 
@@ -1418,7 +1399,7 @@ _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6756 on 2026-01-14 13:22_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6833 on 2026-01-14 13:22_
 
 this panics with "attempt to subtract with overflow" on this test case, where there are more defaults than fields (which causes a runtime error, but we still shouldn't panic!!):
 
@@ -1504,8 +1485,107 @@ _@charliermarsh reviewed on 2026-01-14 13:53_
 
 ---
 
-_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6756 on 2026-01-14 13:53_
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6833 on 2026-01-14 13:53_
 
 Nice, thank you!
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6573 on 2026-01-14 14:38_
+
+we need to emit a diagnostic for an invalid type passed (any type not assignable to `Iterable[Any] | None`), e.g. `NT = namedtuple("NT", "x", defaults=123)`
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6657 on 2026-01-14 14:39_
+
+we need to emit a diagnostic for an invalid type passed (anything not assignable to `str | None`)
+
+---
+
+_Review requested from @AlexWaygood by @charliermarsh on 2026-01-14 14:39_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6733 on 2026-01-14 14:43_
+
+we need to emit a diagnostic if the type of `field_names` is outright invalid, e.g. `NT = namedtuple("NT", 21335)` or `NT = NamedTuple("NT", 12345)`
+
+---
+
+_@AlexWaygood reviewed on 2026-01-14 14:47_
+
+I feel like for this:
+
+```py
+from collections import namedtuple
+
+NT = namedtuple("NT", "x y", defaults=(0,))
+
+# revealed: `(cls: type, x: Any, y: Any = ...) -> NT`
+reveal_type(NT.__new__)
+```
+
+We should have enough information to reveal `y: Any = 0` rather than `y: Any = ...` there? But that's minor enough that I'm happy for it to be tackled as a followup 😄
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6748 on 2026-01-14 15:05_
+
+It looks like you skip inferring a type for `fields_arg` altogether if you're able to extract the fields from the raw AST. But we can't do that -- it's an important invariant for us that we _always_ infer and store a type for each sub-expression in any given scope that we're inferring types for. You need to move the `let fields_type = self.infer_expression(fields_arg, TypeContext::default());` statement above line 6742 -- then in the `extract_collections_namedtuple_fields_from_ast()` method, you need to use `self.expression_type()` to get the cached types of sub-nodes rather than calling `self.infer_expression()` inside that method
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6710 on 2026-01-14 15:06_
+
+Same here: we cannot skip the `self.infer_expression(fields_arg, TypeContext::default())` call if `self.extract_typing_namedtuple_fields_from_ast(fields_arg)` returns `Some()`. This needs to be moved above line 6706
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6950 on 2026-01-14 15:09_
+
+A list of lists and a tuple of lists also works at runtime; since we're looking at the raw AST here, we could allow this:
+
+```py
+typing.NamedTuple("NT", [["x", int], ["y", int]])
+```
+
+or this:
+
+```py
+typing.NamedTuple("NT", (["x", int], ["y", int]))
+```
+
+---
+
+_@AlexWaygood reviewed on 2026-01-14 15:10_
+
+Very close...
+
+---
+
+_@charliermarsh reviewed on 2026-01-14 15:17_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6748 on 2026-01-14 15:17_
+
+Ugh, of course. Thanks.
+
+---
+
+_@charliermarsh reviewed on 2026-01-14 15:32_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6748 on 2026-01-14 15:32_
+
+I think we have the same problem for `extract_typing_namedtuple_fields_from_ast`, hmm...
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6748 on 2026-01-14 15:34_
+
+Which is a little trickier because it contains a mix of regular and type expressions.
 
 ---

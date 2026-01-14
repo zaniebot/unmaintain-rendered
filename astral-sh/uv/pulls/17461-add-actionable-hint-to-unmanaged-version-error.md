@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: fix/python-download-hint
 created_at: 2026-01-14T11:59:17Z
-updated_at: 2026-01-14T13:31:37Z
+updated_at: 2026-01-14T15:30:35Z
 url: https://github.com/astral-sh/uv/pull/17461
-synced_at: 2026-01-14T13:42:35Z
+synced_at: 2026-01-14T15:39:55Z
 ```
 
 # Add actionable hint to unmanaged version error message
@@ -93,5 +93,49 @@ Then you can drop this.
 ---
 
 _@EliteTK reviewed on 2026-01-14 13:31_
+
+---
+
+_@originell reviewed on 2026-01-14 15:08_
+
+---
+
+_Review comment by @originell on `crates/uv-python/src/installation.rs`:165 on 2026-01-14 15:08_
+
+that makes sense. thanks for that! I changed it in the latest commit
+
+---
+
+_@originell reviewed on 2026-01-14 15:09_
+
+---
+
+_Review comment by @originell on `crates/uv-python/src/installation.rs`:167 on 2026-01-14 15:09_
+
+I get where you are going with this. I added another suggestion to the code. What do you think about:
+
+> This uv release may not support managed Python 3.100 yet. Update uv and retry.
+
+
+
+---
+
+_@originell reviewed on 2026-01-14 15:09_
+
+---
+
+_Review comment by @originell on `crates/uv/tests/it/sync.rs`:13287 on 2026-01-14 15:09_
+
+updated!
+
+---
+
+_@EliteTK reviewed on 2026-01-14 15:30_
+
+---
+
+_Review comment by @EliteTK on `crates/uv-python/src/installation.rs`:167 on 2026-01-14 15:30_
+
+I am not sure about "support" there but maybe @zanieb can advise on this detail before you make any further changes. I don't want to end up being overly nitpicky here.
 
 ---

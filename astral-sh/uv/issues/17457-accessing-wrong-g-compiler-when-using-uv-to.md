@@ -5,12 +5,12 @@ type: issue
 state: open
 author: BenjaminDAnjou
 labels:
-  - bug
+  - needs-mre
 assignees: []
 created_at: 2026-01-14T02:48:15Z
-updated_at: 2026-01-14T13:37:07Z
+updated_at: 2026-01-14T14:43:02Z
 url: https://github.com/astral-sh/uv/issues/17457
-synced_at: 2026-01-14T14:41:31Z
+synced_at: 2026-01-14T15:39:47Z
 ```
 
 # Accessing wrong g++ compiler when using uv to install the package qutip on linux redhat
@@ -262,5 +262,21 @@ Installed 4 packages in 69ms
 DEBUG Released lock at `/root/project/.venv/.lock`
 DEBUG Released lock at `/root/.cache/uv/.lock`
 ```
+
+---
+
+_Comment by @BenjaminDAnjou on 2026-01-14 14:42_
+
+So we managed to fix the problem. What we had to do was to explicitly delete all the `uv` packets (in `~/.local/share/uv`) and the `uv` cache (in `~/.cache/uv`), and the problem was fixed.
+
+It's hard to know exactly what happened. Maybe an interrupted process left in files that were supposed to be deleted after execution. In any case, I'll leave this here in case anyone has the same issue.
+
+---
+
+_Label `bug` removed by @konstin on 2026-01-14 14:43_
+
+---
+
+_Label `needs-mre` added by @konstin on 2026-01-14 14:43_
 
 ---

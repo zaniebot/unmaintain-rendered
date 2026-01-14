@@ -4,14 +4,15 @@ title: "`struct.unpack` return type inference"
 type: pull_request
 state: open
 author: sakgoyal
-labels: []
+labels:
+  - ty
 assignees: []
 base: main
 head: structunpack
 created_at: 2026-01-13T22:55:50Z
-updated_at: 2026-01-14T02:40:19Z
+updated_at: 2026-01-14T14:39:02Z
 url: https://github.com/astral-sh/ruff/pull/22562
-synced_at: 2026-01-14T03:31:46Z
+synced_at: 2026-01-14T15:39:42Z
 ```
 
 # `struct.unpack` return type inference
@@ -216,5 +217,9 @@ Yeah.
 ---
 
 _Marked ready for review by @sakgoyal on 2026-01-14 02:37_
+
+---
+
+_Label `ty` added by @ntBre on 2026-01-14 14:39_
 
 ---

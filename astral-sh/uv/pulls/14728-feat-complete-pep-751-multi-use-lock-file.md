@@ -6,12 +6,13 @@ state: open
 author: gaborbernat
 labels: []
 assignees: []
+draft: true
 base: main
 head: toml-extra
 created_at: 2025-07-18T15:20:55Z
-updated_at: 2026-01-14T14:28:22Z
+updated_at: 2026-01-14T14:56:37Z
 url: https://github.com/astral-sh/uv/pull/14728
-synced_at: 2026-01-14T14:41:38Z
+synced_at: 2026-01-14T15:39:54Z
 ```
 
 # feat: Complete PEP 751 multi-use lock file implementation for pylock.toml
@@ -582,5 +583,9 @@ _@konstin reviewed on 2026-01-13 15:02_
 _Review comment by @konstin on `crates/uv-resolver/src/lock/export/pylock_toml.rs`:734 on 2026-01-13 15:02_
 
 Fair, but the PR is large enough that I appreciate everything we can break out into a separately reviewable and mergable PR.
+
+---
+
+_Converted to draft by @gaborbernat on 2026-01-14 14:56_
 
 ---

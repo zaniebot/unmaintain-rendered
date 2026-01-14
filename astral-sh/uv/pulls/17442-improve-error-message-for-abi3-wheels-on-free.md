@@ -12,9 +12,9 @@ draft: true
 base: main
 head: claude/abi-wheel-compatibility-35SSt
 created_at: 2026-01-13T18:01:13Z
-updated_at: 2026-01-13T23:28:18Z
+updated_at: 2026-01-14T15:30:31Z
 url: https://github.com/astral-sh/uv/pull/17442
-synced_at: 2026-01-14T00:34:30Z
+synced_at: 2026-01-14T15:39:55Z
 ```
 
 # Improve error message for abi3 wheels on free-threaded Python
@@ -44,7 +44,7 @@ _@zanieb reviewed on 2026-01-13 23:22_
 
 ---
 
-_Review comment by @zanieb on `crates/uv-installer/src/satisfies.rs`:473 on 2026-01-13 23:22_
+_Review comment by @zanieb on `crates/uv-installer/src/satisfies.rs`:478 on 2026-01-13 23:22_
 
 I think this should probably be "which is incompatible"?
 
@@ -67,5 +67,13 @@ _Label `bug` added by @zanieb on 2026-01-13 23:28_
 ---
 
 _Label `error messages` added by @zanieb on 2026-01-13 23:28_
+
+---
+
+_Marked ready for review by @zanieb on 2026-01-14 14:54_
+
+---
+
+_Converted to draft by @zanieb on 2026-01-14 14:56_
 
 ---

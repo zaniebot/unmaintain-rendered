@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: zsol/jj-nyvrllosmoon
 created_at: 2025-12-04T18:00:18Z
-updated_at: 2025-12-08T12:21:43Z
+updated_at: 2026-01-14T14:55:16Z
 url: https://github.com/astral-sh/uv/pull/16983
-synced_at: 2026-01-12T16:12:33Z
+synced_at: 2026-01-14T15:39:55Z
 ```
 
 # Bail when trying to attach ambiguous credentials instead of picking an arbitrary one
@@ -123,5 +123,9 @@ uvx uv pip install --default-index http://localhost:8080 sniffio --no-cache
       hint: An index URL (http://localhost:8080/) could not be queried due to a lack of valid authentication credentials (401 Unauthorized).
 ```
 
+
+---
+
+_Added to milestone `v0.10.0` by @zsol on 2026-01-14 14:55_
 
 ---

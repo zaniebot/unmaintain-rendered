@@ -1,19 +1,19 @@
 ```yaml
 number: 2491
-title: VSCode outline messed up with TY extension
+title: VSCode outline messed up with ty extension
 type: issue
-state: open
+state: closed
 author: ErichMarx
 labels:
   - question
 assignees: []
 created_at: 2026-01-14T13:26:28Z
-updated_at: 2026-01-14T13:30:38Z
+updated_at: 2026-01-14T14:53:00Z
 url: https://github.com/astral-sh/ty/issues/2491
-synced_at: 2026-01-14T13:42:04Z
+synced_at: 2026-01-14T15:39:25Z
 ```
 
-# VSCode outline messed up with TY extension
+# VSCode outline messed up with ty extension
 
 ---
 
@@ -55,5 +55,20 @@ _Comment by @MichaReiser on 2026-01-14 13:30_
 I suspect that you're running both Pylance's and ty's LSP at the same time and VS Code then groups the results by extension. 
 
 Can you double check your [`python.languageServer`](https://code.visualstudio.com/docs/python/settings-reference#_intellisense-engine-settings) setting. Is it set to `None`?
+
+---
+
+_Comment by @ErichMarx on 2026-01-14 14:35_
+
+@MichaReiser Setting it to None did solve it.
+Thanks for the swift reply :)
+
+---
+
+_Renamed from "VSCode outline messed up with TY extension" to "VSCode outline messed up with ty extension" by @AlexWaygood on 2026-01-14 14:39_
+
+---
+
+_Closed by @MichaReiser on 2026-01-14 14:53_
 
 ---

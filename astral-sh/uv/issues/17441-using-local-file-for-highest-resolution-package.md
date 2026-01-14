@@ -2,15 +2,15 @@
 number: 17441
 title: Using local file for highest resolution, package index for lowest-direct
 type: issue
-state: closed
+state: open
 author: khoover
 labels:
   - enhancement
 assignees: []
 created_at: 2026-01-13T17:37:31Z
-updated_at: 2026-01-13T21:15:20Z
+updated_at: 2026-01-14T15:25:25Z
 url: https://github.com/astral-sh/uv/issues/17441
-synced_at: 2026-01-13T21:36:34Z
+synced_at: 2026-01-14T15:39:47Z
 ```
 
 # Using local file for highest resolution, package index for lowest-direct
@@ -50,5 +50,15 @@ Huh. Yeah, that would do it.
 ---
 
 _Closed by @khoover on 2026-01-13 21:15_
+
+---
+
+_Comment by @khoover on 2026-01-14 15:22_
+
+Actually, not fully. These libraries depend on PyTorch, where we need the custom source for getting the right wheels (although we may be fine with the default wheel that goes on PyPI, I'll try some stuff). So it's closer to "`--no-sources` for specific packages".
+
+---
+
+_Reopened by @khoover on 2026-01-14 15:22_
 
 ---
