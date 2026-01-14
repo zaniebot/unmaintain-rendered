@@ -2,14 +2,14 @@
 number: 2487
 title: "Unable to pull `latest` (or any other) container image"
 type: issue
-state: open
+state: closed
 author: frodera
 labels: []
 assignees: []
 created_at: 2026-01-14T03:43:21Z
-updated_at: 2026-01-14T11:19:11Z
+updated_at: 2026-01-14T12:21:42Z
 url: https://github.com/astral-sh/ty/issues/2487
-synced_at: 2026-01-14T11:33:10Z
+synced_at: 2026-01-14T12:43:42Z
 ```
 
 # Unable to pull `latest` (or any other) container image
@@ -54,5 +54,9 @@ _Comment by @frodera on 2026-01-14 11:19_
 > Thanks for reporting this. I changed the visibility, can you try again?
 
 It works now! 👍🏻  Thanks @MichaReiser 
+
+---
+
+_Closed by @MichaReiser on 2026-01-14 12:21_
 
 ---

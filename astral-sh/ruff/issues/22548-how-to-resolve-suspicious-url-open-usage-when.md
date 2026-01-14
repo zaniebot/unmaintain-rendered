@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-13T13:03:02Z
-updated_at: 2026-01-14T09:11:15Z
+updated_at: 2026-01-14T12:19:10Z
 url: https://github.com/astral-sh/ruff/issues/22548
-synced_at: 2026-01-14T09:34:58Z
+synced_at: 2026-01-14T12:43:48Z
 ```
 
 # How to resolve suspicious-url-open-usage when passing a urllib.request.Request to urllib.request.urlopen
@@ -75,5 +75,26 @@ _Comment by @MichaReiser on 2026-01-14 09:11_
 @ntBre it requires the urllib import 
 
 https://play.ruff.rs/d389748f-f4d1-4a56-bea5-298c0f049c44
+
+---
+
+_Comment by @Jerakin on 2026-01-14 12:18_
+
+That's seems to be the issue.
+Not using a `from urllib` pattern makes it work.
+
+```python
+import urllib
+
+req = urllib.request.Request(
+    "http://example.com",
+    data={},
+    headers={"Content-Type": "application/json"},
+)
+with (
+    request.urlopen(req, timeout=0.05) as resp,
+):
+    ...
+```
 
 ---

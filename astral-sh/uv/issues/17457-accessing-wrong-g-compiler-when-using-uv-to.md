@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-14T02:48:15Z
-updated_at: 2026-01-14T09:35:43Z
+updated_at: 2026-01-14T12:15:52Z
 url: https://github.com/astral-sh/uv/issues/17457
-synced_at: 2026-01-14T10:34:33Z
+synced_at: 2026-01-14T12:44:04Z
 ```
 
 # Accessing wrong g++ compiler when using uv to install the package qutip on linux redhat
@@ -58,7 +58,9 @@ Weirdly, this problem only occurs for the `qutip` package. The other packages I 
 
 Let me know what you think, and whether you think this is issue is more appropriately directed to the devs of `qutip`. This is a bit beyond me.
 
-For completeness, the output of `cat /etc/os-release` is:
+**UPDATE:** I managed to get someone else to try on the same machine, and they did not have the same issue. So there must be something in my environment that causes this issue when interacting with both `qutip` and `uv`. I will report back if I get more information.
+
+**OS INFO:** For completeness, the output of `cat /etc/os-release` is:
 
 ```
 NAME="Rocky Linux"

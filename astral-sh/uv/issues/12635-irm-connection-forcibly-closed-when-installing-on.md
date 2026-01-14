@@ -9,9 +9,9 @@ labels:
   - external
 assignees: []
 created_at: 2025-04-02T18:51:07Z
-updated_at: 2025-04-02T19:21:19Z
+updated_at: 2026-01-14T12:04:33Z
 url: https://github.com/astral-sh/uv/issues/12635
-synced_at: 2026-01-12T16:01:08Z
+synced_at: 2026-01-14T12:44:04Z
 ```
 
 # irm connection forcibly closed when installing on windows
@@ -50,5 +50,17 @@ Nothing has changed on our end, afaik.
 ---
 
 _Label `external` added by @zanieb on 2025-04-02 19:21_
+
+---
+
+_Comment by @RangerCoder99 on 2026-01-14 12:03_
+
+Same issue here :(
+
+---
+
+_Comment by @konstin on 2026-01-14 12:04_
+
+Can you share more details on your setup? To debug this, we need to figure why this happens for you, but not for other users.
 
 ---

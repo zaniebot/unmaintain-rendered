@@ -2,7 +2,7 @@
 number: 22566
 title: "Reformat mdtests without pyi mode (don't merge, I want to know if this is a deal breaker or not)"
 type: pull_request
-state: open
+state: closed
 author: MichaReiser
 labels:
   - do-not-merge
@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: micha/mdtest-no-pyi-mode
 created_at: 2026-01-14T09:48:37Z
-updated_at: 2026-01-14T10:56:27Z
+updated_at: 2026-01-14T12:17:06Z
 url: https://github.com/astral-sh/ruff/pull/22566
-synced_at: 2026-01-14T11:33:27Z
+synced_at: 2026-01-14T12:43:59Z
 ```
 
 # Reformat mdtests without pyi mode (don't merge, I want to know if this is a deal breaker or not)
@@ -98,5 +98,15 @@ _Renamed from "Reformat mdtests without pyi mode" to "Reformat mdtests without p
 ---
 
 _Label `do-not-merge` added by @MichaReiser on 2026-01-14 10:56_
+
+---
+
+_Comment by @MichaReiser on 2026-01-14 12:17_
+
+I'm coming to the conclusion that I feel very strongly about not having a pyi option https://github.com/astral-sh/ruff/issues/22568 and it's certainly a separate discussion from supporting formatting of fenced code blocks.
+
+---
+
+_Closed by @MichaReiser on 2026-01-14 12:17_
 
 ---

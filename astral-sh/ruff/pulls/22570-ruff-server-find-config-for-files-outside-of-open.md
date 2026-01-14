@@ -1,21 +1,21 @@
 ```yaml
-number: 22567
-title: "[ruff server] Open new workspace when opening a file outside of current workspace"
+number: 22570
+title: "[ruff server] Find config for files outside of open workspaces"
 type: pull_request
-state: closed
+state: open
 author: ZedThree
 labels:
   - server
 assignees: []
 base: main
-head: fix-17944
-created_at: 2026-01-14T10:01:25Z
-updated_at: 2026-01-14T12:07:23Z
-url: https://github.com/astral-sh/ruff/pull/22567
+head: fix-17944-alt
+created_at: 2026-01-14T12:08:40Z
+updated_at: 2026-01-14T12:20:59Z
+url: https://github.com/astral-sh/ruff/pull/22570
 synced_at: 2026-01-14T12:43:59Z
 ```
 
-# [ruff server] Open new workspace when opening a file outside of current workspace
+# [ruff server] Find config for files outside of open workspaces
 
 ---
 
@@ -23,9 +23,9 @@ _@ZedThree_
 
 Fixes #17944
 
-## Summary
-
-Here we check if we have settings for the file we're trying to open, as a proxy for checking if it's in an open workspace or not.
+There's two different routes we can go down for finding settings for such files:
+- the file is below an open workspace, so we can add any settings we find to that workspace
+- the file is not below an open workspace, in which case we can't cache them
 
 Given this filesystem layout:
 
@@ -47,6 +47,8 @@ This fixes:
 - cwd in `dir_0`, opening `test_0.py` first, then `../dir_1/test_1.py` in same session
 
 without negatively affecting non-default workspaces (such as opening the folder in VS Code or `lsp-mode` in Emacs).
+
+The main downside to this approach is the lack of workspace for files in `dir_1` -- we can't share already parsed settings.
 
 ---
 
@@ -72,7 +74,11 @@ I noticed that ty has e2e testing of its lsp server, but this hasn't been implem
 
 ---
 
-_Comment by @astral-sh-bot[bot] on 2026-01-14 10:09_
+_Label `server` added by @AlexWaygood on 2026-01-14 12:09_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-14 12:20_
 
 
 <!-- generated-comment ecosystem -->
@@ -89,19 +95,5 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 10:09_
 
 
 
-
----
-
-_@MichaReiser requested changes on 2026-01-14 10:09_
-
-As mentioned [here](https://github.com/astral-sh/ruff/issues/17944#issuecomment-3748622248), I don't think this is the right approach. Adding a workspace folder corresponds to VS Code's "Add folder" functionality and has a lot of implications. We shouldn't just "add" arbitrary folders when a user opens a file, especially not without cleaning them up.
-
----
-
-_Label `server` added by @AlexWaygood on 2026-01-14 10:16_
-
----
-
-_Closed by @ZedThree on 2026-01-14 12:07_
 
 ---
