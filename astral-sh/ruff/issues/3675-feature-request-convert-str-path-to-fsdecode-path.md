@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2023-03-22T22:55:48Z
-updated_at: 2026-01-13T21:22:10Z
+updated_at: 2026-01-13T23:46:06Z
 url: https://github.com/astral-sh/ruff/issues/3675
-synced_at: 2026-01-13T21:36:16Z
+synced_at: 2026-01-14T00:34:04Z
 ```
 
 # Feature request: convert str(Path) to fsdecode(Path)
@@ -116,5 +116,11 @@ _Comment by @brettcannon on 2026-01-13 21:22_
 > My understanding is that now we should be using `os.fspath` instead of `fsdecode`, fwiw
 
 Who's "we" in that sentence?
+
+---
+
+_Comment by @ericrbg-harmonic on 2026-01-13 23:46_
+
+Apologies, "we" was meant to be interpreted as "one", as in "one should", although a closer reading of [PEP 519](https://peps.python.org/pep-0519/) suggests that both have value (and possibly `fsdecode` is more specific for the string case?)
 
 ---

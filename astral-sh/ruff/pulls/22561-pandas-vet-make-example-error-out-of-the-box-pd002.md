@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: patch-1
 created_at: 2026-01-13T21:16:38Z
-updated_at: 2026-01-13T22:53:37Z
+updated_at: 2026-01-13T23:54:18Z
 url: https://github.com/astral-sh/ruff/pull/22561
-synced_at: 2026-01-13T23:35:33Z
+synced_at: 2026-01-14T00:34:17Z
 ```
 
 # [`pandas-vet`] Make example error out-of-the-box (`PD002`)
@@ -106,5 +106,29 @@ _Review comment by @amyreese on `crates/ruff_linter/src/rules/pandas_vet/rules/i
 ---
 
 _@amyreese reviewed on 2026-01-13 22:53_
+
+---
+
+_@MeGaGiGaGon reviewed on 2026-01-13 23:54_
+
+---
+
+_Review comment by @MeGaGiGaGon on `crates/ruff_linter/src/rules/pandas_vet/rules/inplace_argument.rs`:30 on 2026-01-13 23:54_
+
+I chose to leave the name since that matches how some of the other examples in pandas-vet are:
+https://docs.astral.sh/ruff/rules/pandas-use-of-dot-is-null/
+```py
+import pandas as pd
+
+animals_df = pd.read_csv("animals.csv")
+pd.isnull(animals_df)
+```
+https://docs.astral.sh/ruff/rules/pandas-use-of-dot-ix/ (The one I copied from)
+```py
+import pandas as pd
+
+students_df = pd.read_csv("students.csv")
+students_df.ix[0]  # 0th row or row with label 0?
+```
 
 ---

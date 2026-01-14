@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: fix/target-version-extended
 created_at: 2025-12-14T19:41:08Z
-updated_at: 2026-01-12T20:10:25Z
+updated_at: 2026-01-13T23:47:03Z
 url: https://github.com/astral-sh/ruff/pull/21980
-synced_at: 2026-01-12T20:26:27Z
+synced_at: 2026-01-14T00:34:16Z
 ```
 
 # fix: target-version fallback with extend
@@ -302,5 +302,27 @@ The two things I'd love to see are:
 
 1. A verification that the ecosystem changes are as expected (let me know if you need help with this)
 2. Have you done any testing in VSCode to see whether we need changes to `ruff_server`? See some of the discussion later in the original implementation here https://github.com/astral-sh/ruff/pull/16319 IIRC there was some work to ensure that the `ruff_server` configuration resolution was compatible with the CLI.
+
+---
+
+_Comment by @denyszhak on 2026-01-13 23:47_
+
+@dylwil3 
+
+On the VSCode test, after you question I tested with next setup by comparing the released v0.14.8 with my local build that includes this patch.
+
+Test setup:
+- ruff.toml → target-version = "py310"
+- .ruff.toml → select = ["UP040"]
+- main.py → uses type alias (py312+ only)
+- pyproject.toml → requires-python = ">=3.13"
+
+Before (released v0.14.8): 
+VSCode pointed to ruff@0.14.8
+UP040 was still reported, ignoring the target-version that confirmed the bug was present in both the CLI and .ruff_server.
+
+After (local build + fix): 
+VSCode pointed to my local ~/.cargo/bin/ruff
+UP040 no longer reported, as expected after the fix.
 
 ---

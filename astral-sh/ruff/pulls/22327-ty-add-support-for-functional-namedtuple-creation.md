@@ -11,9 +11,9 @@ assignees: []
 base: charlie/dyn-expression
 head: charlie/functional-namedtuple
 created_at: 2026-01-01T13:23:44Z
-updated_at: 2026-01-13T22:20:13Z
+updated_at: 2026-01-13T23:34:22Z
 url: https://github.com/astral-sh/ruff/pull/22327
-synced_at: 2026-01-13T22:36:08Z
+synced_at: 2026-01-14T00:34:17Z
 ```
 
 # [ty] Add support for functional `namedtuple` creation
@@ -48,8 +48,8 @@ _Comment by @astral-sh-bot[bot] on 2026-01-01 13:25_
 <summary>Changes were detected when running ty on typing conformance tests</summary>
 
 ```diff
---- old-output.txt	2026-01-13 21:46:56.907463753 +0000
-+++ new-output.txt	2026-01-13 21:46:57.434467452 +0000
+--- old-output.txt	2026-01-13 23:30:20.789529880 +0000
++++ new-output.txt	2026-01-13 23:30:21.116530273 +0000
 @@ -753,6 +753,16 @@
  namedtuples_define_class.py:86:5: error[invalid-named-tuple] NamedTuple field without default value cannot follow field(s) with default value(s): Field `latitude` defined here without a default value
  namedtuples_define_class.py:125:19: error[invalid-argument-type] Argument is incorrect: Expected `str`, found `float`
@@ -203,10 +203,6 @@ urllib3 (https://github.com/urllib3/urllib3)
 - Found 305 diagnostics
 + Found 303 diagnostics
 
-Tanjun (https://github.com/FasterSpeeding/Tanjun)
-- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
-+ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
-
 cki-lib (https://gitlab.com/cki-project/cki-lib)
 + tests/test_messagequeue.py:792:32: error[invalid-argument-type] Argument to bound method `_consume_one` is incorrect: Expected `Item`, found `tuple[Literal[""], None, Literal[""], Literal["{}"], Literal[""], Literal[""]]`
 + tests/test_messagequeue.py:811:32: error[invalid-argument-type] Argument to bound method `_consume_one` is incorrect: Expected `Item`, found `tuple[Literal[""], None, Literal[""], Literal["{}"], Literal[""], Literal[""]]`
@@ -233,18 +229,6 @@ discord.py (https://github.com/Rapptz/discord.py)
 - Found 548 diagnostics
 + Found 554 diagnostics
 
-manticore (https://github.com/trailofbits/manticore)
-- manticore/platforms/evm.py:3016:16: warning[possibly-missing-attribute] Attribute `coinbase` may be missing on object of type `Unknown | None`
-+ manticore/platforms/evm.py:3016:16: warning[possibly-missing-attribute] Attribute `coinbase` may be missing on object of type `Unknown | None | BlockHeader`
-- manticore/platforms/evm.py:3019:16: warning[possibly-missing-attribute] Attribute `timestamp` may be missing on object of type `Unknown | None`
-+ manticore/platforms/evm.py:3019:16: warning[possibly-missing-attribute] Attribute `timestamp` may be missing on object of type `Unknown | None | BlockHeader`
-- manticore/platforms/evm.py:3022:16: warning[possibly-missing-attribute] Attribute `blocknumber` may be missing on object of type `Unknown | None`
-+ manticore/platforms/evm.py:3022:16: warning[possibly-missing-attribute] Attribute `blocknumber` may be missing on object of type `Unknown | None | BlockHeader`
-- manticore/platforms/evm.py:3025:16: warning[possibly-missing-attribute] Attribute `difficulty` may be missing on object of type `Unknown | None`
-+ manticore/platforms/evm.py:3025:16: warning[possibly-missing-attribute] Attribute `difficulty` may be missing on object of type `Unknown | None | BlockHeader`
-- manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None`
-+ manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None | BlockHeader`
-
 cloud-init (https://github.com/canonical/cloud-init)
 + tests/unittests/sources/test_smartos.py:806:5: error[invalid-assignment] Object of type `Literal[2882400018]` is not assignable to attribute `request_id` of type `property`
 + tests/unittests/sources/test_smartos.py:807:5: error[invalid-assignment] Object of type `Literal["value"]` is not assignable to attribute `metadata_value` of type `property`
@@ -257,6 +241,35 @@ cloud-init (https://github.com/canonical/cloud-init)
 + tests/unittests/sources/test_smartos.py:837:31: error[not-subscriptable] Cannot subscript object of type `property` with no `__getitem__` method
 - Found 1166 diagnostics
 + Found 1175 diagnostics
+
+manticore (https://github.com/trailofbits/manticore)
+- manticore/platforms/evm.py:3016:16: warning[possibly-missing-attribute] Attribute `coinbase` may be missing on object of type `Unknown | None`
++ manticore/platforms/evm.py:3016:16: warning[possibly-missing-attribute] Attribute `coinbase` may be missing on object of type `Unknown | None | BlockHeader`
+- manticore/platforms/evm.py:3019:16: warning[possibly-missing-attribute] Attribute `timestamp` may be missing on object of type `Unknown | None`
++ manticore/platforms/evm.py:3019:16: warning[possibly-missing-attribute] Attribute `timestamp` may be missing on object of type `Unknown | None | BlockHeader`
+- manticore/platforms/evm.py:3022:16: warning[possibly-missing-attribute] Attribute `blocknumber` may be missing on object of type `Unknown | None`
++ manticore/platforms/evm.py:3022:16: warning[possibly-missing-attribute] Attribute `blocknumber` may be missing on object of type `Unknown | None | BlockHeader`
+- manticore/platforms/evm.py:3025:16: warning[possibly-missing-attribute] Attribute `difficulty` may be missing on object of type `Unknown | None`
++ manticore/platforms/evm.py:3025:16: warning[possibly-missing-attribute] Attribute `difficulty` may be missing on object of type `Unknown | None | BlockHeader`
+- manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None`
++ manticore/platforms/evm.py:3028:16: warning[possibly-missing-attribute] Attribute `gaslimit` may be missing on object of type `Unknown | None | BlockHeader`
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
++ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
++ src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
++ src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5364 diagnostics
++ Found 5369 diagnostics
 
 pycryptodome (https://github.com/Legrandin/pycryptodome)
 + lib/Crypto/SelfTest/PublicKey/test_ECC_NIST.py:917:54: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `IntegerBase`
@@ -293,33 +306,23 @@ jax (https://github.com/google/jax)
 - jax/_src/pallas/mosaic/sc_primitives.py:215:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 + jax/_src/pallas/mosaic_gpu/pipeline.py:123:9: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -> Unknown, (index: slice[Any, Any, Any], /) -> tuple[Unknown, ...]]` cannot be called with key of type `tuple[Slice | Array, ...]` on object of type `aval_property`
 + jax/_src/pallas/mosaic_gpu/pipeline.py:136:9: error[invalid-argument-type] Method `__getitem__` of type `Overload[(index: SupportsIndex, /) -> Unknown, (index: slice[Any, Any, Any], /) -> tuple[Unknown, ...]]` cannot be called with key of type `tuple[Slice | Array, ...]` on object of type `aval_property`
-- Found 2854 diagnostics
-+ Found 2853 diagnostics
+- Found 2853 diagnostics
++ Found 2852 diagnostics
 
 static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
-+ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
-- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
-+ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
-- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-+ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
-+ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_]`
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
+- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
+- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
 - static_frame/profile/__main__.py:2135:9: error[invalid-assignment] Object of type `dict[str, FunctionMetaData | None]` is not assignable to attribute `meta` of type `dict[str, FunctionMetaData] | None`
-- Found 1827 diagnostics
-+ Found 1826 diagnostics
-
-pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
-- pandas-stubs/_typing.pyi:1232:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ tests/frame/test_groupby.py:229:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
-+ tests/frame/test_groupby.py:625:15: error[type-assertion-failure] Type `Series[Any]` does not match asserted type `Series[str | bytes | int | ... omitted 12 union elements]`
-- Found 5168 diagnostics
-+ Found 5169 diagnostics
 
 core (https://github.com/home-assistant/core)
-+ homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -> _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
-- Found 14502 diagnostics
-+ Found 14503 diagnostics
+- homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -> _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
+- Found 14503 diagnostics
++ Found 14502 diagnostics
 
 scipy (https://github.com/scipy/scipy)
 + scipy/optimize/_differentiable_functions.py:382:26: error[call-non-callable] Object of type `_FakeCounter` is not callable
@@ -413,21 +416,22 @@ _Comment by @astral-sh-bot[bot] on 2026-01-02 16:55_
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | `missing-argument` | 107 | 0 | 0 |
-| `invalid-argument-type` | 28 | 2 | 5 |
-| `invalid-assignment` | 14 | 1 | 7 |
+| `invalid-argument-type` | 27 | 0 | 2 |
+| `invalid-assignment` | 14 | 1 | 2 |
 | `possibly-missing-attribute` | 1 | 0 | 9 |
-| `unused-ignore-comment` | 2 | 6 | 0 |
 | `call-non-callable` | 7 | 0 | 0 |
-| `invalid-return-type` | 0 | 0 | 5 |
+| `invalid-await` | 0 | 0 | 6 |
+| `unused-ignore-comment` | 0 | 6 | 0 |
+| `invalid-return-type` | 1 | 1 | 1 |
 | `not-subscriptable` | 3 | 0 | 0 |
 | `no-matching-overload` | 1 | 0 | 0 |
 | `too-many-positional-arguments` | 1 | 0 | 0 |
 | `unresolved-attribute` | 1 | 0 | 0 |
 | `unsupported-operator` | 1 | 0 | 0 |
-| **Total** | **166** | **9** | **26** |
+| **Total** | **164** | **8** | **20** |
 
 
-**[Full report with detailed diff](https://f5907629.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://f5907629.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://5a63e675.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://5a63e675.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -527,7 +531,7 @@ _Marked ready for review by @charliermarsh on 2026-01-13 02:23_
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:185 on 2026-01-13 12:47_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:236 on 2026-01-13 12:47_
 
 Calling `reveal_mro` on this class indicates that it's inferred from inheriting from the wrong kind of tuple on your branch currently:
 
@@ -966,7 +970,7 @@ I still don't think we need the new `directly_inherits_from_named_tuple_special_
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:185 on 2026-01-13 18:22_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:236 on 2026-01-13 18:22_
 
 ```suggestion
 from typing import NamedTuple
@@ -1153,7 +1157,7 @@ _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6416 on 2026-01-13 20:35_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6439 on 2026-01-13 20:35_
 
 shall we just import `ast::name::Name` at the top of the file, so that the type annotation doesn't have to be split over four lines? 😛
 
@@ -1173,7 +1177,7 @@ Also, I'm not sure we emit any errors here if the user provides a nonexistent ke
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6410 on 2026-01-13 20:41_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6433 on 2026-01-13 20:41_
 
 We can't return `None` here because we've already inferred (and stored) some types, but returning `None` will cause us to infer all types for the expression again, which could cause us to panic. As soon as we've stored at least one type for the call expression, we have to do the signature checking for the whole call expression "manually".
 
@@ -1181,7 +1185,7 @@ I also don't think it's _desirable_ to return `None` here, though. Can't we just
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6454 on 2026-01-13 20:42_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6478 on 2026-01-13 20:42_
 
 can you add a test with a `Point = collections.namedtuple("Point", "x       y")`, and also one that uses a string with tabs in it? (Making sure that we infer the correct MRO in both cases)
 
@@ -1213,7 +1217,7 @@ _@charliermarsh reviewed on 2026-01-13 21:01_
 
 ---
 
-_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6410 on 2026-01-13 21:01_
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6433 on 2026-01-13 21:01_
 
 Yes good call.
 
@@ -1223,7 +1227,7 @@ _@charliermarsh reviewed on 2026-01-13 21:14_
 
 ---
 
-_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6454 on 2026-01-13 21:14_
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6478 on 2026-01-13 21:14_
 
 (Tab is causing me major problems because `mdformat` keeps removing it.)
 
@@ -1233,7 +1237,7 @@ _@AlexWaygood reviewed on 2026-01-13 21:16_
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6454 on 2026-01-13 21:16_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6478 on 2026-01-13 21:16_
 
 hahaha is there no suppression comment to tell it to away??
 
@@ -1255,19 +1259,19 @@ and add a `reveal_mro` call too?
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:368 on 2026-01-13 21:47_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:432 on 2026-01-13 21:47_
 
 maybe also add `reveal_type(Point.__new__)` and `reveal_mro(Point)` calls?
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:385 on 2026-01-13 21:48_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:453 on 2026-01-13 21:48_
 
 maybe also add a `reveal_type(Person.__new__)` call?
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:415 on 2026-01-13 21:49_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/named_tuple.md`:487 on 2026-01-13 21:49_
 
 worth adding `reveal_type` and `reveal_mro` calls for these?
 

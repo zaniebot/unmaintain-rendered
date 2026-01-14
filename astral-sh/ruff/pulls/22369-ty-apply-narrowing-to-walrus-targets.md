@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/narorw
 created_at: 2026-01-04T18:38:00Z
-updated_at: 2026-01-09T14:58:50Z
+updated_at: 2026-01-13T23:44:09Z
 url: https://github.com/astral-sh/ruff/pull/22369
-synced_at: 2026-01-12T15:57:48Z
+synced_at: 2026-01-14T00:34:17Z
 ```
 
 # [ty] Apply narrowing to walrus targets
@@ -168,5 +168,17 @@ _Review requested from @dcreager by @charliermarsh on 2026-01-04 18:48_
 ---
 
 _Review request for @AlexWaygood removed by @AlexWaygood on 2026-01-09 14:58_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/narrow/type_guards.md`:511 on 2026-01-13 23:32_
+
+Also test `TypeGuard` here?
+
+---
+
+_@carljm approved on 2026-01-13 23:44_
+
+Looks good, thank you!
 
 ---

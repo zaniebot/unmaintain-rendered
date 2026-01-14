@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: amy/suppression-perf-2
 created_at: 2026-01-07T22:39:17Z
-updated_at: 2026-01-10T09:42:01Z
+updated_at: 2026-01-13T23:35:56Z
 url: https://github.com/astral-sh/ruff/pull/22446
-synced_at: 2026-01-12T15:57:49Z
+synced_at: 2026-01-14T00:34:17Z
 ```
 
 # Skip walking all tokens when loading range suppressions
@@ -50,6 +50,12 @@ _Comment by @astral-sh-bot[bot] on 2026-01-07 22:49_
 
 ### Linter (preview)
 ✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
 
 
 
@@ -98,7 +104,7 @@ let tokens = after_tokens
 
 ---
 
-_Review comment by @MichaReiser on `crates/ruff_linter/src/suppression.rs`:392 on 2026-01-10 09:18_
+_Review comment by @MichaReiser on `crates/ruff_linter/src/suppression.rs`:399 on 2026-01-10 09:18_
 
 I think we should clear indents after each iteration. We use it more as a scratch pad and we only use the same instance to avoid allocating multiple vecs`
 
@@ -109,7 +115,7 @@ I think we should clear indents after each iteration. We use it more as a scratc
 
 ---
 
-_Review comment by @MichaReiser on `crates/ruff_linter/src/suppression.rs`:448 on 2026-01-10 09:39_
+_Review comment by @MichaReiser on `crates/ruff_linter/src/suppression.rs`:455 on 2026-01-10 09:39_
 
 Nit: You could use let chains here
 
@@ -150,5 +156,15 @@ _Label `internal` removed by @MichaReiser on 2026-01-10 09:41_
 ---
 
 _Label `preview` added by @MichaReiser on 2026-01-10 09:42_
+
+---
+
+_@amyreese reviewed on 2026-01-13 23:28_
+
+---
+
+_Review comment by @amyreese on `crates/ruff_linter/src/suppression.rs`:402 on 2026-01-13 23:28_
+
+I tried building `split_at` and using it when loading tokens, but somehow it changes the logic, and I'm not seeing why. Running the tests results in snapshot changes that implies leading comments before indents are no longer getting loaded/matched correct. But I also don't fully understand how your logic here is working in this implementation, so I'm hoping I'm missing something. Any suggestion would be appreciated.
 
 ---

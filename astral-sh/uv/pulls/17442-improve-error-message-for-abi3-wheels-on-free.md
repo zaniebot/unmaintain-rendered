@@ -4,15 +4,17 @@ title: Improve error message for abi3 wheels on free-threaded Python
 type: pull_request
 state: open
 author: zanieb
-labels: []
+labels:
+  - bug
+  - error messages
 assignees: []
 draft: true
 base: main
 head: claude/abi-wheel-compatibility-35SSt
 created_at: 2026-01-13T18:01:13Z
-updated_at: 2026-01-13T23:27:41Z
+updated_at: 2026-01-13T23:28:18Z
 url: https://github.com/astral-sh/uv/pull/17442
-synced_at: 2026-01-13T23:35:46Z
+synced_at: 2026-01-14T00:34:30Z
 ```
 
 # Improve error message for abi3 wheels on free-threaded Python
@@ -57,5 +59,13 @@ _Review comment by @zanieb on `crates/uv-distribution-types/src/prioritized_dist
 I think we should probably omit this latter part? It's included in the subsequent message.
 
 Maybe "a free-threaded compatible ABI tag"?
+
+---
+
+_Label `bug` added by @zanieb on 2026-01-13 23:28_
+
+---
+
+_Label `error messages` added by @zanieb on 2026-01-13 23:28_
 
 ---

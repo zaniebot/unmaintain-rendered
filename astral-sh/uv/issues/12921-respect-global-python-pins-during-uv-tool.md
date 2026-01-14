@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-04-16T16:14:06Z
-updated_at: 2025-05-23T07:05:16Z
+updated_at: 2026-01-14T00:25:08Z
 url: https://github.com/astral-sh/uv/issues/12921
-synced_at: 2026-01-12T16:01:15Z
+synced_at: 2026-01-14T00:34:21Z
 ```
 
 # Respect --global Python pins during uv tool operations
@@ -56,5 +56,11 @@ It's really confusing and frustrating when the program doesn't do what the docum
 _Comment by @jtfmumm on 2025-05-23 07:05_
 
 @mikelei8291 Thank you for catching this. I've fixed the documentation.
+
+---
+
+_Comment by @mscuthbert on 2026-01-14 00:25_
+
+I'm pretty new to this, but will the `requires-python` of any surrounding pyproject.toml be respected by these configurations?
 
 ---
