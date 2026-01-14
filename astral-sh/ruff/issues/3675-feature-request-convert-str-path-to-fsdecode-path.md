@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2023-03-22T22:55:48Z
-updated_at: 2026-01-14T11:24:11Z
+updated_at: 2026-01-14T20:20:32Z
 url: https://github.com/astral-sh/ruff/issues/3675
-synced_at: 2026-01-14T11:33:14Z
+synced_at: 2026-01-14T20:43:28Z
 ```
 
 # Feature request: convert str(Path) to fsdecode(Path)
@@ -124,5 +124,13 @@ _Comment by @ericrbg-harmonic on 2026-01-13 23:46_
 Apologies, "we" was meant to be interpreted as "one", as in "one should", although a closer reading of [PEP 519](https://peps.python.org/pep-0519/) suggests that both have value (and possibly `fsdecode` is more specific for the string case?)
 
 E: and I missed your above comments, Brett - sorry 🤦 
+
+---
+
+_Comment by @brettcannon on 2026-01-14 20:20_
+
+> `fsdecode` is more specific for the string case?
+
+Correct. When I wrote PEP 519 approaching 10 years ago, there was still a need/desire to support paths in binary format on Unix OSs, but UTF-8 seems to have won that battle, so it isn't really a case I think much code is set up to handle.
 
 ---

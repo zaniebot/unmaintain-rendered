@@ -2,19 +2,20 @@
 number: 22580
 title: "[ty] Use let-chains more"
 type: pull_request
-state: open
+state: merged
 author: AlexWaygood
 labels:
   - internal
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: alex/let-chains
 created_at: 2026-01-14T18:25:41Z
-updated_at: 2026-01-14T19:09:27Z
+updated_at: 2026-01-14T19:56:09Z
 url: https://github.com/astral-sh/ruff/pull/22580
-synced_at: 2026-01-14T19:42:40Z
+synced_at: 2026-01-14T20:43:42Z
 ```
 
 # [ty] Use let-chains more
@@ -539,5 +540,17 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 18:36_
 ---
 
 _@MichaReiser approved on 2026-01-14 19:09_
+
+---
+
+_Merged by @AlexWaygood on 2026-01-14 19:56_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-14 19:56_
+
+---
+
+_Branch deleted on 2026-01-14 19:56_
 
 ---

@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: fix/exe003-uv-global-args-21753
 created_at: 2026-01-14T19:36:02Z
-updated_at: 2026-01-14T19:36:02Z
+updated_at: 2026-01-14T19:46:29Z
 url: https://github.com/astral-sh/ruff/pull/22582
-synced_at: 2026-01-14T19:42:40Z
+synced_at: 2026-01-14T20:43:42Z
 ```
 
 # flake8-executable: allow global flags in uv shebangs (EXE003)
@@ -29,5 +29,25 @@ Fixes #21753
 ## Test Plan
 
 - Added new test cases to `crates/ruff_linter/resources/test/fixtures/flake8_executable/EXE003_uv.py` covering `uv --quiet run` and `uv --offline run`.
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-14 19:46_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
 
 ---

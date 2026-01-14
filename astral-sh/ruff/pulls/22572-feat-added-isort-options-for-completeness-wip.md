@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: isort-options
 created_at: 2026-01-14T15:34:41Z
-updated_at: 2026-01-14T15:48:06Z
+updated_at: 2026-01-14T20:23:16Z
 url: https://github.com/astral-sh/ruff/pull/22572
-synced_at: 2026-01-14T16:39:05Z
+synced_at: 2026-01-14T20:43:42Z
 ```
 
 # feat: added isort options for completeness (WIP)
@@ -58,5 +58,25 @@ _Label `isort` added by @ntBre on 2026-01-14 15:48_
 ---
 
 _Label `configuration` added by @ntBre on 2026-01-14 15:48_
+
+---
+
+_Comment by @tonycoco on 2026-01-14 19:47_
+
+@ntBre talked about in reference to issue #13389. Google's styleguide requires some of these options and I just wanted to sketch out a commit so I can further Google's open-source projects to use the ruff formatter/linter. Is there any reason that these options wouldn't be included? The overhead is extremely minimal to support them fully as the committed changes are, in my opinion, very small.
+
+---
+
+_Comment by @ntBre on 2026-01-14 20:23_
+
+> @ntBre talked about in reference to issue #13389. Google's styleguide requires some of these options and I just wanted to sketch out a commit so I can further Google's open-source projects to use the ruff formatter/linter. 
+
+Ah I see, thanks!
+
+> Is there any reason that these options wouldn't be included? The overhead is extremely minimal to support them fully as the committed changes are, in my opinion, very small.
+
+There are a couple of general reasons mentioned in #13389 and its parent issue, #6190, related to the maintenance burden and potential conflicts with every new option. 
+
+I think the `line-length` setting here could be problematic, in particular, because it could conflict with our existing top-level [line-length](https://docs.astral.sh/ruff/settings/#line-length) setting. I'm not sure about the other two settings yet. Maybe @amyreese would have some insight.
 
 ---

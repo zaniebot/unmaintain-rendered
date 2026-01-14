@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2024-06-28T20:39:34Z
-updated_at: 2025-07-20T05:26:48Z
+updated_at: 2026-01-14T19:37:38Z
 url: https://github.com/astral-sh/uv/issues/4635
-synced_at: 2026-01-12T15:58:51Z
+synced_at: 2026-01-14T20:43:45Z
 ```
 
 # Doing `uv pip` into certain python environment (xonsh shell case)
@@ -74,7 +74,7 @@ _Comment by @anki-code on 2024-06-28 23:03_
 
 Thank you for the answer! This works awesome:
 ```xsh
-aliases['xuv'] = '$UV_PYTHON=@(__xonsh__.imp.sys.executable) uv pip @($args)'
+aliases['xuv'] = '$UV_PYTHON=@(@.imp.sys.executable) uv pip @($args)'
 xuv install lolcat
 # Installed 1 package
 xuv uninstall lolcat
