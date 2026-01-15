@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-15T13:00:27Z
+updated_at: 2026-01-15T15:45:11Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-15T13:52:08Z
+synced_at: 2026-01-15T15:50:25Z
 ```
 
 # Dependency Dashboard
@@ -863,13 +863,14 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 </details>
 
-<details><summary>.github/workflows/ci.yml (5)</summary>
+<details><summary>.github/workflows/ci.yml (6)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
  - `pypa/gh-action-pypi-publish v1.13.0@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e`
+ - `digital-blueprint/gitlab-pipeline-trigger-action v1.3.0@20e77989b24af658ba138a0aa5291bdc657f1505`
 
 </details>
 

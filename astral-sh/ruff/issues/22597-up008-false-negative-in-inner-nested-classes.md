@@ -4,12 +4,14 @@ title: UP008 false negative in inner (nested) classes
 type: issue
 state: open
 author: generalmimon
-labels: []
+labels:
+  - bug
+  - rule
 assignees: []
 created_at: 2026-01-15T13:09:16Z
-updated_at: 2026-01-15T13:09:16Z
+updated_at: 2026-01-15T15:44:12Z
 url: https://github.com/astral-sh/ruff/issues/22597
-synced_at: 2026-01-15T13:51:54Z
+synced_at: 2026-01-15T15:50:10Z
 ```
 
 # UP008 false negative in inner (nested) classes
@@ -44,6 +46,10 @@ i = Outer.Inner(5)
 By the way, Pylint's [`super-with-arguments`](https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/super-with-arguments.html) also has a problem only with `super(Outer, self)`, but not with `super(Outer.Inner, self)`:
 
 ```console
+$ pylint --version
+pylint 4.0.4
+astroid 4.0.3
+Python 3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]
 $ pylint --disable=all --enable=super-with-arguments test.py
 ************* Module test
 test.py:7:8: R1725: Consider using Python 3 style super() without arguments (super-with-arguments)
@@ -84,5 +90,19 @@ index 2f6d7cd2..65bf24ac 100644
 ### Version
 
 ruff 0.14.11
+
+---
+
+_Comment by @ntBre on 2026-01-15 15:44_
+
+Thanks for the report and the great write-up! This does seem like a bug.
+
+---
+
+_Label `bug` added by @ntBre on 2026-01-15 15:44_
+
+---
+
+_Label `rule` added by @ntBre on 2026-01-15 15:44_
 
 ---

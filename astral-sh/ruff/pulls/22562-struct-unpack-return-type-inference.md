@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: structunpack
 created_at: 2026-01-13T22:55:50Z
-updated_at: 2026-01-14T14:39:02Z
+updated_at: 2026-01-15T15:03:32Z
 url: https://github.com/astral-sh/ruff/pull/22562
-synced_at: 2026-01-14T15:39:42Z
+synced_at: 2026-01-15T15:50:21Z
 ```
 
 # `struct.unpack` return type inference
@@ -221,5 +221,9 @@ _Marked ready for review by @sakgoyal on 2026-01-14 02:37_
 ---
 
 _Label `ty` added by @ntBre on 2026-01-14 14:39_
+
+---
+
+_Review request for @AlexWaygood removed by @AlexWaygood on 2026-01-15 15:03_
 
 ---

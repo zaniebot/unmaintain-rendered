@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: 18775_sim910_sim911_unsafe_fix_comments
 created_at: 2026-01-15T13:55:18Z
-updated_at: 2026-01-15T14:27:39Z
+updated_at: 2026-01-15T15:17:43Z
 url: https://github.com/astral-sh/ruff/pull/22600
-synced_at: 2026-01-15T14:51:20Z
+synced_at: 2026-01-15T15:50:21Z
 ```
 
 # [flake8-simplify] Mark SIM910/SIM911 fix as unsafe when deleting comm…
@@ -85,5 +85,31 @@ Thanks for your PR
 > @BurntSushi @MichaReiser would you approve testing and review this PR? Thank you for your time
 
 Please give us some time before pinging maintainers. We already get a lot of notifications and more notifications doesn't help us to get things done faster. BurntSushi also doesn't work at this part of the code base at all.
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-15 15:15_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+
+---
+
+_Comment by @leonace924 on 2026-01-15 15:17_
+
+All testing passed!
 
 ---

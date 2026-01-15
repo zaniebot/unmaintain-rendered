@@ -2,16 +2,16 @@
 number: 1598
 title: "Consolidate `type[]` types in a union when displaying them"
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - help wanted
   - diagnostics
 assignees: []
 created_at: 2025-11-20T11:48:53Z
-updated_at: 2026-01-13T17:19:07Z
+updated_at: 2026-01-15T15:21:01Z
 url: https://github.com/astral-sh/ty/issues/1598
-synced_at: 2026-01-13T17:25:23Z
+synced_at: 2026-01-15T15:50:04Z
 ```
 
 # Consolidate `type[]` types in a union when displaying them
@@ -78,5 +78,9 @@ It's been a month -- @11happy feel free to take a look :-)
 ---
 
 _Unassigned @mahiro72 by @AlexWaygood on 2026-01-13 17:19_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-15 15:21_
 
 ---

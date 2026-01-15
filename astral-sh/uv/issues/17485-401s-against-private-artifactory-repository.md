@@ -1,0 +1,261 @@
+```yaml
+number: 17485
+title: 401s against private Artifactory repository
+type: issue
+state: open
+author: annettejanewilson
+labels:
+  - bug
+assignees: []
+created_at: 2026-01-15T15:28:39Z
+updated_at: 2026-01-15T15:31:05Z
+url: https://github.com/astral-sh/uv/issues/17485
+synced_at: 2026-01-15T15:50:27Z
+```
+
+# 401s against private Artifactory repository
+
+---
+
+_@annettejanewilson_
+
+### Summary
+
+When using uv with default settings to update from a JFrog Artifactory private repository, I see 401s on a cold start with no cache. I have the custom repository with a username and password specified in `~/.config/uv/uv.toml`. This is seen with commands like:
+
+```
+uv add mshell-python-core
+```
+ 
+If I retry the uv command it will always work on the second attempt.
+
+### Investigation with mitmproxy
+
+After investigating with mitmproxy, I found that what's happening is uv fires off a bunch of concurrent requests. The first of these first batch of requests succeed, but some of them will invariably fail with 401s, which are not retried. I _suspect_ that Artifactory sees it has no auth session for that user and so for every request it makes a request to an auth server, and then gets rate-limited for making too many requests against the same user. But once the first request succeeds it seems Artifactory caches the session for somewhere between 3 and 5 minutes, so all subsequent requests with the same credentials will succeed.
+
+### Workaround
+
+It's possible to work around this by setting `UV_CONCURRENT_DOWNLOADS=2` or lower. But this does make uv noticeably slower, when it's actually possible to use much higher concurrency, _after_ the first request has completed.
+
+It's also possible to work around it by first "prewarming" Artifactory by making any authenticated request, not necessarily with uv, and then immediately following up with a uv command.
+
+### Might not be fixable?
+
+I am not sure if there's anything uv can really do about this. It honestly seems like Artifactory's problem, since it could report 429 to tell uv to slow down, or it could pause the concurrent requests until the first auth request succeeds or fails. I'm not sure I could think of a clean way for uv to work around this. (I can think of dirty ways, like not making concurrent password-based requests until one has succeeded; or making limited attempts to retry 401s. But I'm not sure either is justified for a niche issue.) But I wanted to at least say what happened and report my findings, as even if you choose not to change anything, others struggling with the same problem might at least stumble on the report.
+
+### Example config and request
+
+In `~/.config/uv/uv.toml`:
+```
+[[index]]
+name = 'artifactory'
+url = 'https://AnnetteWilson:REDACTED@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple'
+default = true
+authenticate = 'always'
+```
+
+The command, applied to a fresh checkout and adding a package from the private repository.
+```
+$ uv -vv add mshell-python-core
+DEBUG uv 0.9.17 (Homebrew 2025-12-09)
+TRACE Checking lock for `/Users/AnnetteWilson/.cache/uv` at `/Users/AnnetteWilson/.cache/uv/.lock`
+DEBUG Acquired shared lock for `/Users/AnnetteWilson/.cache/uv`
+DEBUG Found project root: `/Users/AnnetteWilson/scratch/test-artifactory/mshell-fastapi-poc`
+DEBUG No workspace root found, using project root
+TRACE Checking lock for `/Users/AnnetteWilson/scratch/test-artifactory/mshell-fastapi-poc` at `/var/folders/vl/fw9lp49x6xz9kn8s6xk2cf940000gp/T/uv-065ce5aff50aeca1.lock`
+DEBUG Acquired exclusive lock for `/Users/AnnetteWilson/scratch/test-artifactory/mshell-fastapi-poc`
+DEBUG Reading Python requests from version file at `/Users/AnnetteWilson/scratch/test-artifactory/mshell-fastapi-poc/.python-version`
+DEBUG Using Python request `3.13.0` from version file at `.python-version`
+DEBUG Checking for Python environment at: `.venv`
+DEBUG Using request timeout of 30s
+DEBUG Searching for Python 3.13.0 in managed installations or search path
+DEBUG Searching for managed installations at `/Users/AnnetteWilson/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.13.0-macos-aarch64-none`
+TRACE Querying interpreter executable at /Users/AnnetteWilson/.local/share/uv/python/cpython-3.13.0-macos-aarch64-none/bin/python3.13
+DEBUG Found `cpython-3.13.0-macos-aarch64-none` at `/Users/AnnetteWilson/.local/share/uv/python/cpython-3.13.0-macos-aarch64-none/bin/python3.13` (managed installations)
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+DEBUG Assessing Python executable as base candidate: /Users/AnnetteWilson/.local/share/uv/python/cpython-3.13.0-macos-aarch64-none/bin/python3.13
+DEBUG Using base executable for virtual environment: /Users/AnnetteWilson/.local/share/uv/python/cpython-3.13.0-macos-aarch64-none/bin/python3.13
+DEBUG Released lock at `/var/folders/vl/fw9lp49x6xz9kn8s6xk2cf940000gp/T/uv-065ce5aff50aeca1.lock`
+TRACE Checking lock for `.venv` at `.venv/.lock`
+DEBUG Acquired exclusive lock for `.venv`
+TRACE Read credentials for index artifactory
+TRACE Caching credentials for https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi
+TRACE Caching credentials for https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: fastapi-poc @ file:///Users/AnnetteWilson/scratch/test-artifactory/mshell-fastapi-poc
+DEBUG No workspace root found, using project root
+DEBUG Resolving despite existing lockfile due to mismatched requirements for: `fastapi-poc==0.1.0`
+  Requested: {Requirement { name: PackageName("fastapi"), extras: [ExtraName("standard")], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "0.118.2" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("mshell-python-core"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("uvicorn"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "0.37.0" }]), index: None, conflict: None }, origin: None }}
+  Existing: {Requirement { name: PackageName("fastapi"), extras: [ExtraName("standard")], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "0.118.2" }]), index: None, conflict: None }, origin: None }, Requirement { name: PackageName("uvicorn"), extras: [], groups: [], marker: true, source: Registry { specifier: VersionSpecifiers([VersionSpecifier { operator: GreaterThanEqual, version: "0.37.0" }]), index: None, conflict: None }, origin: None }}
+TRACE Performing lookahead for fastapi-poc @ file:///Users/AnnetteWilson/scratch/test-artifactory/mshell-fastapi-poc
+TRACE Performing lookahead for fastapi-poc @ file:///Users/AnnetteWilson/scratch/test-artifactory/mshell-fastapi-poc
+DEBUG Solving with installed Python version: 3.13
+DEBUG Solving with target Python version: >=3.13
+TRACE Assigned packages:
+TRACE Chose package for decision: root. remaining choices:
+DEBUG Adding direct dependency: fastapi-poc*
+DEBUG Adding direct dependency: fastapi-poc:dev*
+TRACE Assigned packages: root==0a0.dev0
+TRACE Chose package for decision: fastapi-poc. remaining choices:
+DEBUG Searching for a compatible version of fastapi-poc @ file:///Users/AnnetteWilson/scratch/test-artifactory/mshell-fastapi-poc (*)
+DEBUG Adding direct dependency: fastapi[standard]>=0.118.2
+DEBUG Adding direct dependency: mshell-python-core*
+DEBUG Adding direct dependency: uvicorn>=0.37.0
+TRACE Assigned packages: root==0a0.dev0, fastapi-poc==0.1.0
+TRACE Chose package for decision: fastapi-poc:dev. remaining choices: uvicorn, fastapi, mshell-python-core
+DEBUG Searching for a compatible version of fastapi-poc @ file:///Users/AnnetteWilson/scratch/test-artifactory/mshell-fastapi-poc (*)
+DEBUG Adding direct dependency: fastapi-poc:dev==0.1.0
+TRACE Fetching metadata for fastapi from https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/fastapi/
+TRACE Assigned packages: root==0a0.dev0, fastapi-poc==0.1.0
+TRACE Chose package for decision: fastapi-poc:dev. remaining choices: uvicorn, fastapi, mshell-python-core
+DEBUG Searching for a compatible version of fastapi-poc @ file:///Users/AnnetteWilson/scratch/test-artifactory/mshell-fastapi-poc (==0.1.0)
+DEBUG Adding direct dependency: pytest>=8.4.2
+DEBUG Adding direct dependency: pytest-asyncio>=1.2.0
+DEBUG Adding direct dependency: pytest-cov>=6.0.0
+TRACE Assigned packages: root==0a0.dev0, fastapi-poc==0.1.0, fastapi-poc:dev==0.1.0
+TRACE Chose package for decision: fastapi[standard]. remaining choices: uvicorn, fastapi, pytest-cov, mshell-python-core, pytest, pytest-asyncio
+TRACE Fetching metadata for mshell-python-core from https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/mshell-python-core/
+TRACE Fetching metadata for uvicorn from https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/uvicorn/
+TRACE No cache entry exists for /Users/AnnetteWilson/.cache/uv/simple-v18/index/910bcb253c366901/fastapi.rkyv
+DEBUG No cache entry for: https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/fastapi/
+TRACE Sending fresh GET request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/fastapi/
+TRACE Handling request for https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/fastapi/ with authentication policy always
+TRACE Request for https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/fastapi/ already contains username and password
+TRACE No cache entry exists for /Users/AnnetteWilson/.cache/uv/simple-v18/index/910bcb253c366901/mshell-python-core.rkyv
+DEBUG No cache entry for: https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/mshell-python-core/
+TRACE Sending fresh GET request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/mshell-python-core/
+TRACE Handling request for https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/mshell-python-core/ with authentication policy always
+TRACE Request for https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/mshell-python-core/ already contains username and password
+TRACE Fetching metadata for pytest from https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest/
+TRACE Fetching metadata for pytest-asyncio from https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest-asyncio/
+TRACE Fetching metadata for pytest-cov from https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest-cov/
+TRACE No cache entry exists for /Users/AnnetteWilson/.cache/uv/simple-v18/index/910bcb253c366901/uvicorn.rkyv
+DEBUG No cache entry for: https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/uvicorn/
+TRACE Sending fresh GET request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/uvicorn/
+TRACE Handling request for https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/uvicorn/ with authentication policy always
+TRACE Request for https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/uvicorn/ already contains username and password
+TRACE No cache entry exists for /Users/AnnetteWilson/.cache/uv/simple-v18/index/910bcb253c366901/pytest.rkyv
+DEBUG No cache entry for: https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest/
+TRACE Sending fresh GET request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest/
+TRACE Handling request for https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest/ with authentication policy always
+TRACE Request for https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest/ already contains username and password
+TRACE No cache entry exists for /Users/AnnetteWilson/.cache/uv/simple-v18/index/910bcb253c366901/pytest-asyncio.rkyv
+DEBUG No cache entry for: https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest-asyncio/
+TRACE Sending fresh GET request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest-asyncio/
+TRACE Handling request for https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest-asyncio/ with authentication policy always
+TRACE Request for https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest-asyncio/ already contains username and password
+TRACE No cache entry exists for /Users/AnnetteWilson/.cache/uv/simple-v18/index/910bcb253c366901/pytest-cov.rkyv
+DEBUG No cache entry for: https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest-cov/
+TRACE Sending fresh GET request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest-cov/
+TRACE Handling request for https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest-cov/ with authentication policy always
+TRACE Request for https://AnnetteWilson:****@artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest-cov/ already contains username and password
+TRACE Considering retry of response HTTP 401 Unauthorized for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest-asyncio/
+TRACE Cannot retry nested reqwest middleware error
+DEBUG Indexes search failed because of status code failure: 401 Unauthorized
+TRACE Received package metadata for: pytest-asyncio
+TRACE Considering retry of response HTTP 401 Unauthorized for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest-cov/
+TRACE Cannot retry nested reqwest middleware error
+DEBUG Indexes search failed because of status code failure: 401 Unauthorized
+TRACE Received package metadata for: pytest-cov
+TRACE Considering retry of response HTTP 401 Unauthorized for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/mshell-python-core/
+TRACE Cannot retry nested reqwest middleware error
+DEBUG Indexes search failed because of status code failure: 401 Unauthorized
+TRACE Received package metadata for: mshell-python-core
+TRACE Considering retry of response HTTP 401 Unauthorized for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/fastapi/
+TRACE Cannot retry nested reqwest middleware error
+DEBUG Indexes search failed because of status code failure: 401 Unauthorized
+TRACE Received package metadata for: fastapi
+DEBUG Searching for a compatible version of fastapi[standard] (>=0.118.2)
+TRACE Selecting candidate for fastapi with range >=0.118.2 with 0 remote versions
+DEBUG No compatible version found for: fastapi[standard]
+DEBUG Recording unit propagation conflict of fastapi[standard] from incompatibility of (fastapi-poc)
+TRACE Assigned packages: root==0a0.dev0
+TRACE Chose package for decision: fastapi-poc. remaining choices: uvicorn, fastapi, pytest-cov, mshell-python-core, pytest, pytest-asyncio
+DEBUG Searching for a compatible version of fastapi-poc @ file:///Users/AnnetteWilson/scratch/test-artifactory/mshell-fastapi-poc (<0.1.0 | >0.1.0)
+DEBUG No compatible version found for: fastapi-poc
+TRACE Updating cached credentials for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest/ to Credentials(Basic { username: Username(Some("AnnetteWilson")), password: Some(****) })
+TRACE Response from https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/pytest/ is storable because it has a heuristically cacheable status code 200
+TRACE Received package metadata for: pytest
+TRACE Using preference pytest 8.4.2
+TRACE No cache entry exists for /Users/AnnetteWilson/.cache/uv/wheels-v5/index/910bcb253c366901/pytest/8.4.2-py3-none-any.msgpack
+DEBUG No cache entry for: https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl
+TRACE Sending fresh HEAD request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl
+TRACE Handling request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl with authentication policy always
+TRACE Request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is unauthenticated, checking cache
+TRACE Found cached credentials for URL https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl
+TRACE Request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is fully authenticated
+TRACE Response from https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is storable because it has a 'public' cache-control directive
+TRACE Getting metadata for pytest-8.4.2-py3-none-any.whl by range request
+TRACE Handling request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl with authentication policy always
+TRACE Request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is unauthenticated, checking cache
+TRACE Found cached credentials for URL https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl
+TRACE Request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is fully authenticated
+TRACE Considering retry of error: Error { kind: Zip(WheelFilename { name: PackageName("pytest"), version: "8.4.2", tags: Small { small: WheelTagSmall { python_tag: Python { major: 3, minor: None }, abi_tag: None, platform_tag: Any } } }, UpstreamReadError(Custom { kind: Other, error: HttpRangeRequestUnsupported })), retries: 0 }
+TRACE Cannot retry IO error `other error`, not a retryable IO error kind
+WARN Range requests not supported for pytest-8.4.2-py3-none-any.whl; streaming wheel
+TRACE No cache entry exists for /Users/AnnetteWilson/.cache/uv/wheels-v5/index/910bcb253c366901/pytest/8.4.2-py3-none-any.msgpack
+DEBUG No cache entry for: https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl
+TRACE Sending fresh GET request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl
+TRACE Handling request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl with authentication policy always
+TRACE Request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is unauthenticated, checking cache
+TRACE Found cached credentials for URL https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl
+TRACE Request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is fully authenticated
+TRACE Response from https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl is storable because it has a 'public' cache-control directive
+TRACE Received built distribution metadata for: pytest==8.4.2
+TRACE Updating cached credentials for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/uvicorn/ to Credentials(Basic { username: Username(Some("AnnetteWilson")), password: Some(****) })
+TRACE Response from https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple/uvicorn/ is storable because it has a heuristically cacheable status code 200
+TRACE Received package metadata for: uvicorn
+TRACE Using preference uvicorn 0.37.0
+TRACE No cache entry exists for /Users/AnnetteWilson/.cache/uv/wheels-v5/index/910bcb253c366901/uvicorn/0.37.0-py3-none-any.msgpack
+DEBUG No cache entry for: https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/85/cd/584a2ceb5532af99dd09e50919e3615ba99aa127e9850eafe5f31ddfdb9a/uvicorn-0.37.0-py3-none-any.whl
+TRACE Sending fresh GET request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/85/cd/584a2ceb5532af99dd09e50919e3615ba99aa127e9850eafe5f31ddfdb9a/uvicorn-0.37.0-py3-none-any.whl
+TRACE Handling request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/85/cd/584a2ceb5532af99dd09e50919e3615ba99aa127e9850eafe5f31ddfdb9a/uvicorn-0.37.0-py3-none-any.whl with authentication policy always
+TRACE Request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/85/cd/584a2ceb5532af99dd09e50919e3615ba99aa127e9850eafe5f31ddfdb9a/uvicorn-0.37.0-py3-none-any.whl is unauthenticated, checking cache
+TRACE Found cached credentials for URL https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/85/cd/584a2ceb5532af99dd09e50919e3615ba99aa127e9850eafe5f31ddfdb9a/uvicorn-0.37.0-py3-none-any.whl
+TRACE Request for https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/85/cd/584a2ceb5532af99dd09e50919e3615ba99aa127e9850eafe5f31ddfdb9a/uvicorn-0.37.0-py3-none-any.whl is fully authenticated
+TRACE Response from https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/packages/packages/85/cd/584a2ceb5532af99dd09e50919e3615ba99aa127e9850eafe5f31ddfdb9a/uvicorn-0.37.0-py3-none-any.whl is storable because it has a 'public' cache-control directive
+TRACE Received built distribution metadata for: uvicorn==0.37.0
+DEBUG Reverting changes to `pyproject.toml`
+DEBUG Reverting changes to `uv.lock`
+  × No solution found when resolving dependencies:
+TRACE Resolver derivation tree before reduction
+term root==0a0.dev0
+  root==0a0.dev0 depends on fastapi-poc*
+  term fastapi-poc*
+    term fastapi-poc==0.1.0
+      fastapi-poc==0.1.0 depends on fastapi[standard]>=0.118.2
+      no versions of fastapi[standard]>=0.118.2
+    no versions of fastapi-poc<0.1.0 | >0.1.0
+TRACE Resolver derivation tree after reduction
+term fastapi-poc==0.1.0
+  fastapi-poc==0.1.0 depends on fastapi[standard]>=0.118.2
+  no versions of fastapi[standard]>=0.118.2
+  ╰─▶ Because only fastapi[standard]<0.118.2 is available and your project depends on fastapi[standard]>=0.118.2, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: An index URL (https://artifactory.skyscannertools.net/artifactory/api/pypi/pypi/simple) could not be queried due to a lack of valid authentication credentials (401 Unauthorized).
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+DEBUG Released lock at `/Users/AnnetteWilson/scratch/test-artifactory/mshell-fastapi-poc/.venv/.lock`
+DEBUG Released lock at `/Users/AnnetteWilson/.cache/uv/.lock`
+```
+
+Despite the message, inspection of the outgoing requests reveals that the failing 401 requests have the exact same credentials as the successful 200 requests.
+
+### Platform
+
+Darwin 25.2.0 arm64
+
+### Version
+
+uv 0.9.17 (Homebrew 2025-12-09)
+
+### Python version
+
+Python 3.13.0
+
+---
+
+_Label `bug` added by @annettejanewilson on 2026-01-15 15:28_
+
+---

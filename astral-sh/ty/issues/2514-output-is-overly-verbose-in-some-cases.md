@@ -10,9 +10,9 @@ labels:
   - diagnostics
 assignees: []
 created_at: 2026-01-15T12:27:14Z
-updated_at: 2026-01-15T12:36:59Z
+updated_at: 2026-01-15T15:26:53Z
 url: https://github.com/astral-sh/ty/issues/2514
-synced_at: 2026-01-15T12:52:53Z
+synced_at: 2026-01-15T15:50:04Z
 ```
 
 # output is overly verbose in some cases
@@ -79,5 +79,9 @@ _Label `help wanted` added by @MichaReiser on 2026-01-15 12:32_
 _Comment by @danielgafni on 2026-01-15 12:36_
 
 I bet LLM providers love this bug :) 
+
+---
+
+_Added to milestone `Stable` by @carljm on 2026-01-15 15:26_
 
 ---

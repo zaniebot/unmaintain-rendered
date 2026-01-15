@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: tk/pip-compile-missing-py-4
 created_at: 2025-12-29T12:59:39Z
-updated_at: 2026-01-15T13:59:08Z
+updated_at: 2026-01-15T15:13:20Z
 url: https://github.com/astral-sh/uv/pull/17249
-synced_at: 2026-01-15T14:51:33Z
+synced_at: 2026-01-15T15:50:34Z
 ```
 
 # Make `uv pip compile` attempt to download a specified `--python-version` if it can.
@@ -416,5 +416,25 @@ _@EliteTK reviewed on 2026-01-15 13:59_
 _Review comment by @EliteTK on `crates/uv/tests/it/pip_compile.rs`:18284 on 2026-01-15 13:59_
 
 Yeah I was curious about your opinion on this. I'll render the chain. Do you know off the top of your head if we do that somewhere else already? (I know how to do it, the anyhow docs have a good example (even if this isn't an anyhow error))
+
+---
+
+_@zanieb reviewed on 2026-01-15 15:12_
+
+---
+
+_Review comment by @zanieb on `crates/uv-python/src/discovery.rs`:1513 on 2026-01-15 15:12_
+
+I have no qualms with the match as-is, it's just complex enough that it wasn't obvious that it hadn't been unpacked with this variable name choice.
+
+---
+
+_Review comment by @zanieb on `crates/uv/tests/it/pip_compile.rs`:18284 on 2026-01-15 15:13_
+
+`uv-warnings::write_error_chain`
+
+---
+
+_@zanieb reviewed on 2026-01-15 15:13_
 
 ---

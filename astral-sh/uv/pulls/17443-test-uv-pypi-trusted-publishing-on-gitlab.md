@@ -2,17 +2,18 @@
 number: 17443
 title: Test uv+PyPI Trusted Publishing on Gitlab
 type: pull_request
-state: open
+state: merged
 author: woodruffw
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: ww/pypi-tp-gl-test
 created_at: 2026-01-13T19:14:18Z
-updated_at: 2026-01-14T13:17:19Z
+updated_at: 2026-01-15T15:44:00Z
 url: https://github.com/astral-sh/uv/pull/17443
-synced_at: 2026-01-14T13:42:35Z
+synced_at: 2026-01-15T15:50:34Z
 ```
 
 # Test uv+PyPI Trusted Publishing on Gitlab
@@ -156,5 +157,17 @@ _Comment by @woodruffw on 2026-01-14 13:17_
 > so if they do fail at the point of getting the oidc token the rest of the tests would still run
 
 Yeah, I was thinking about either sharding this across jobs with a matrix *or* changing it to use a more "traditional" pytest setup, so that we could run the entire suite without failing fast. I can look at that with a follow up.
+
+---
+
+_Merged by @woodruffw on 2026-01-15 15:43_
+
+---
+
+_Closed by @woodruffw on 2026-01-15 15:43_
+
+---
+
+_Branch deleted on 2026-01-15 15:44_
 
 ---

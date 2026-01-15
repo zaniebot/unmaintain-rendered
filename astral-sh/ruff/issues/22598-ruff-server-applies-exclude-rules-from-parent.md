@@ -2,14 +2,16 @@
 number: 22598
 title: ruff server applies exclude rules from parent directory configuration
 type: issue
-state: open
+state: closed
 author: iggyfisk
-labels: []
+labels:
+  - bug
+  - server
 assignees: []
 created_at: 2026-01-15T13:47:03Z
-updated_at: 2026-01-15T13:47:03Z
+updated_at: 2026-01-15T14:56:24Z
 url: https://github.com/astral-sh/ruff/issues/22598
-synced_at: 2026-01-15T14:51:09Z
+synced_at: 2026-01-15T15:50:10Z
 ```
 
 # ruff server applies exclude rules from parent directory configuration
@@ -37,5 +39,31 @@ All of this works perfectly from the command line, and in VSCode it works perfec
 ### Version
 
 ruff 0.14.11, charliermarsh.ruff  2026.34.0, VSCode 1.108.1
+
+---
+
+_Comment by @ZedThree on 2026-01-15 14:51_
+
+Pretty sure this is a duplicate of #20847
+
+---
+
+_Comment by @ntBre on 2026-01-15 14:56_
+
+Thanks @ZedThree! I thought this sounded familiar, but was still looking for the other issue.
+
+And thank you @iggyfisk for the report and the nice write-up! But I'll close this as a duplicate of #20847 to consolidate discussion.
+
+---
+
+_Closed by @ntBre on 2026-01-15 14:56_
+
+---
+
+_Label `bug` added by @ntBre on 2026-01-15 14:56_
+
+---
+
+_Label `server` added by @ntBre on 2026-01-15 14:56_
 
 ---

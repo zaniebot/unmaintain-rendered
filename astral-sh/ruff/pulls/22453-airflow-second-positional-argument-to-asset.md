@@ -6,13 +6,14 @@ state: open
 author: sjyangkevin
 labels:
   - rule
+  - preview
 assignees: []
 base: main
 head: check-second-pos-arg-in-asset-dataset
 created_at: 2026-01-08T04:46:35Z
-updated_at: 2026-01-10T13:43:03Z
+updated_at: 2026-01-15T15:39:34Z
 url: https://github.com/astral-sh/ruff/pull/22453
-synced_at: 2026-01-12T15:57:50Z
+synced_at: 2026-01-15T15:50:21Z
 ```
 
 # [`airflow`] Second positional argument to Asset/Dataset should not be a dictionary (`AIR303`)
@@ -149,5 +150,45 @@ _@Lee-W reviewed on 2026-01-10 13:43_
 _Review comment by @Lee-W on `crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs`:1 on 2026-01-10 13:43_
 
 yep, I think so
+
+---
+
+_@sjyangkevin reviewed on 2026-01-15 15:09_
+
+---
+
+_Review comment by @sjyangkevin on `crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs`:1 on 2026-01-15 15:09_
+
+actually, I just checked again on this. As AIR303 is included in the release "0.14.11". If I understand correctly, the preview version should probably still be "0.14.11" as we first introduce the code/rules in that version. This PR adds one more rule on top of it.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs`:1 on 2026-01-15 15:27_
+
+This should be fine as 0.14.11. This field is for when the rule is first released, so you don't need to update it when modifying an existing rule (until we stabilize the rule) 👍 
+
+---
+
+_Label `preview` added by @ntBre on 2026-01-15 15:27_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs`:161 on 2026-01-15 15:35_
+
+There are a couple of other ways you could check this, if you want. The simplest is to check for `Expr::DictComp` (dict comprehension) as well as a dict literal. And then a more invasive check would be [`typing::is_dict`](https://github.com/astral-sh/ruff/blob/652783790aea7d8ad7dbd22b6960876f7c699928/crates/ruff_python_semantic/src/analyze/typing.rs#L1035), which will check if a variable binding can be resolved to a `dict` based on type annotations.
+
+It's okay with me if you want to restrict the check to dict literals and `dict()` calls, though. We should just add tests for these other cases if you add additional checks.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs`:143 on 2026-01-15 15:37_
+
+Is this argument positional-only? I think it could also be passed as a keyword based on the signature in the PR description. We could use `find_argument_value` if you want to handle the keyword case too.
+
+---
+
+_@ntBre reviewed on 2026-01-15 15:39_
+
+Thank you! This looks good to me overall, just a couple of minor suggestions about additional cases you could handle, if you want.
 
 ---

@@ -2,14 +2,14 @@
 number: 2492
 title: "Fix `@Todo` type for starred expression in a `class` statement"
 type: issue
-state: open
+state: closed
 author: AlexWaygood
 labels: []
 assignees: []
 created_at: 2026-01-14T14:26:30Z
-updated_at: 2026-01-15T04:06:31Z
+updated_at: 2026-01-15T15:17:14Z
 url: https://github.com/astral-sh/ty/issues/2492
-synced_at: 2026-01-15T04:51:36Z
+synced_at: 2026-01-15T15:50:04Z
 ```
 
 # Fix `@Todo` type for starred expression in a `class` statement
@@ -40,5 +40,9 @@ _Added to milestone `Stable` by @AlexWaygood on 2026-01-14 14:26_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2026-01-15 04:06_
+
+---
+
+_Closed by @charliermarsh on 2026-01-15 15:17_
 
 ---

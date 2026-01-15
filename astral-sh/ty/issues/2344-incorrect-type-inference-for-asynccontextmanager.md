@@ -9,9 +9,9 @@ labels:
   - callables
 assignees: []
 created_at: 2026-01-05T15:05:37Z
-updated_at: 2026-01-15T10:58:30Z
+updated_at: 2026-01-15T15:42:46Z
 url: https://github.com/astral-sh/ty/issues/2344
-synced_at: 2026-01-15T11:54:24Z
+synced_at: 2026-01-15T15:50:04Z
 ```
 
 # Incorrect type inference for asynccontextmanager's yielding Self
@@ -118,5 +118,11 @@ Same as https://github.com/astral-sh/ty/issues/2030 ?
 _Comment by @iyad-f on 2026-01-15 10:57_
 
 i guess [#22407](https://github.com/astral-sh/ruff/pull/22407) fixes this, so can close this issue
+
+---
+
+_Comment by @carljm on 2026-01-15 15:42_
+
+Interesting, it looks like https://github.com/astral-sh/ruff/pull/22407 fixed the OP example here, but did not fix my version. So it seems like there are multiple issues here. I will close this issue and split my snippet into a separate issue.
 
 ---

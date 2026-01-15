@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-04-29T12:25:55Z
-updated_at: 2025-05-06T08:38:43Z
+updated_at: 2026-01-15T14:52:09Z
 url: https://github.com/astral-sh/uv/issues/13192
-synced_at: 2026-01-12T16:01:21Z
+synced_at: 2026-01-15T15:50:26Z
 ```
 
 # compression not supported: 14
@@ -208,5 +208,11 @@ uv 0.7.2+24 (3218e364a 2025-05-05)
 _Comment by @konstin on 2025-05-06 08:38_
 
 I've moved this to a separate issue: #13310
+
+---
+
+_Comment by @konstin on 2026-01-15 14:52_
+
+Heads up, we're planning to deprecate to deprecate to xz/lzma support in wheels: https://github.com/astral-sh/uv/issues/16911. If you have a use case that requires it, please comment in #16911.
 
 ---

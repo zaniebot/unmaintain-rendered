@@ -10,9 +10,9 @@ labels:
   - namedtuples
 assignees: []
 created_at: 2026-01-15T12:14:38Z
-updated_at: 2026-01-15T13:37:31Z
+updated_at: 2026-01-15T15:33:53Z
 url: https://github.com/astral-sh/ty/issues/2512
-synced_at: 2026-01-15T13:51:48Z
+synced_at: 2026-01-15T15:50:04Z
 ```
 
 # Support generic functional NamedTuples/TypedDicts
@@ -69,5 +69,9 @@ _Label `namedtuples` added by @AlexWaygood on 2026-01-15 12:14_
 _Comment by @AlexWaygood on 2026-01-15 12:18_
 
 (We don't support functional TypedDicts at all yet, but I believe we will do soon!)
+
+---
+
+_Added to milestone `Stable` by @carljm on 2026-01-15 15:33_
 
 ---

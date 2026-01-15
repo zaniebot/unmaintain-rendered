@@ -1,22 +1,23 @@
 ```yaml
 number: 22592
-title: "[ty]: consolidate type[] types in a union when displaying "
+title: "[ty]: consolidate `type[]` types in a union when displaying them in diagnostics"
 type: pull_request
-state: open
+state: merged
 author: 11happy
 labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: ty_1
 created_at: 2026-01-15T08:49:17Z
-updated_at: 2026-01-15T09:27:31Z
+updated_at: 2026-01-15T15:21:00Z
 url: https://github.com/astral-sh/ruff/pull/22592
-synced_at: 2026-01-15T09:45:40Z
+synced_at: 2026-01-15T15:50:21Z
 ```
 
-# [ty]: consolidate type[] types in a union when displaying 
+# [ty]: consolidate `type[]` types in a union when displaying them in diagnostics
 
 ---
 
@@ -94,10 +95,6 @@ attrs (https://github.com/python-attrs/attrs)
 - tests/test_make.py:2872:17: error[invalid-assignment] Object of type `type[tests.test_make.TestAutoDetect.<locals of function 'test_total_ordering'>.C @ tests/test_make.py:2858:15] | type[tests.test_make.TestAutoDetect.<locals of function 'test_total_ordering'>.C @ tests/test_make.py:2858:15]` is not assignable to `<class 'tests.test_make.TestAutoDetect.<locals of function 'test_total_ordering'>.C @ tests/test_make.py:2858:15'>`
 + tests/test_make.py:2872:17: error[invalid-assignment] Object of type `type[tests.test_make.TestAutoDetect.<locals of function 'test_total_ordering'>.C @ tests/test_make.py:2858:15 | tests.test_make.TestAutoDetect.<locals of function 'test_total_ordering'>.C @ tests/test_make.py:2858:15]` is not assignable to `<class 'tests.test_make.TestAutoDetect.<locals of function 'test_total_ordering'>.C @ tests/test_make.py:2858:15'>`
 
-tornado (https://github.com/tornadoweb/tornado)
-- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
-+ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
-
 pydantic (https://github.com/pydantic/pydantic)
 - pydantic/types.py:491:12: error[invalid-return-type] Return type does not match returned value: expected `type[int] | type[float]`, found `<special-form 'typing.Annotated[int | float, <metadata>]'>`
 + pydantic/types.py:491:12: error[invalid-return-type] Return type does not match returned value: expected `type[int | float]`, found `<special-form 'typing.Annotated[int | float, <metadata>]'>`
@@ -105,16 +102,6 @@ pydantic (https://github.com/pydantic/pydantic)
 + pydantic/v1/main.py:1054:55: error[invalid-parameter-default] Default value of type `None` is not assignable to annotated parameter type `type[BaseModel | Dataclass]`
 
 prefect (https://github.com/PrefectHQ/prefect)
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
 - src/prefect/flow_runs.py:251:26: error[invalid-assignment] Object of type `type[AutomaticRunInput[@Todo]] | type[Unknown]` is not assignable to `type[T@apause_flow_run] | None`
 + src/prefect/flow_runs.py:251:26: error[invalid-assignment] Object of type `type[AutomaticRunInput[@Todo] | Unknown]` is not assignable to `type[T@apause_flow_run] | None`
 - src/prefect/flow_runs.py:405:26: error[invalid-assignment] Object of type `type[AutomaticRunInput[@Todo]] | type[Unknown]` is not assignable to `type[T@pause_flow_run] | None`
@@ -123,18 +110,10 @@ prefect (https://github.com/PrefectHQ/prefect)
 + src/prefect/flow_runs.py:557:26: error[invalid-assignment] Object of type `type[AutomaticRunInput[@Todo] | Unknown]` is not assignable to `type[T@asuspend_flow_run] | None`
 - src/prefect/flow_runs.py:682:26: error[invalid-assignment] Object of type `type[AutomaticRunInput[@Todo]] | type[Unknown]` is not assignable to `type[T@suspend_flow_run] | None`
 + src/prefect/flow_runs.py:682:26: error[invalid-assignment] Object of type `type[AutomaticRunInput[@Todo] | Unknown]` is not assignable to `type[T@suspend_flow_run] | None`
-- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
-+ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` on object of type `dict[str, Any]`
-- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
-+ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | int | dict[str, Any] | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, int | T@resolve_variables | float | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[int | T@resolve_variables | float | ... omitted 5 union elements]`
-- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
-- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
-+ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `int | T@resolve_variables | float | ... omitted 4 union elements`
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- tests/appsec/integrations/django_tests/django_app/views.py:120:27: error[invalid-argument-type] Argument to function `load` is incorrect: Expected `type[Loader] | type[BaseLoader] | type[FullLoader] | ... omitted 7 union elements`, found `Any | None`
++ tests/appsec/integrations/django_tests/django_app/views.py:120:27: error[invalid-argument-type] Argument to function `load` is incorrect: Expected `type[Loader | BaseLoader | FullLoader | ... omitted 7 types]`, found `Any | None`
 
 strawberry (https://github.com/strawberry-graphql/strawberry)
 - strawberry/types/field.py:350:28: error[invalid-assignment] Object of type `StrawberryType | type` is not assignable to `StrawberryType | type[WithStrawberryDefinition[StrawberryObjectDefinition]] | type[UNRESOLVED]`
@@ -425,9 +404,33 @@ scipy-stubs (https://github.com/scipy/scipy-stubs)
 + tests/constants/test_constants.pyi:190:1: error[type-assertion-failure] Type `type[int | float]` does not match asserted type `type[float]`
 - tests/constants/test_constants.pyi:191:1: error[type-assertion-failure] Type `type[int] | type[float]` does not match asserted type `type[float]`
 + tests/constants/test_constants.pyi:191:1: error[type-assertion-failure] Type `type[int | float]` does not match asserted type `type[float]`
-- tests/constants/t
+- tests/constants/test_constants.pyi:193:1: error[type-assertion-failure] Type `type[int] | type[float]` does not match asserted type `type[float]`
++ tests/constants/test_constants.pyi:193:1: error[type-assertion-failure] Type `type[int | float]` does not match asserted type `type[float]`
+- tests/constants/test_constants.pyi:194:1: error[type-assertion-failure] Type `type[int] | type[float]` does not match asserted type `type[float]`
++ tests/constants/test_constants.pyi:194:1: error[type-assertion-failure] Type `type[int | float]` does not match asserted type `type[float]`
+- tests/constants/test_constants.pyi:196:1: error[type-assertion-failure] Type `type[int] | type[float]` does not match asserted type `type[float]`
++ tests/constants/test_constants.pyi:196:1: error[type-assertion-failure] Type `type[int | float]` does not match asserted type `type[float]`
+- tests/constants/test_constants.pyi:197:1: error[type-assertion-failure] Type `type[int] | type[float]` does not match asserted type `type[float]`
++ tests/constants/test_constants.pyi:197:1: error[type-assertion-failure] Type `type[int | float]` does not match asserted type `type[float]`
+- tests/constants/test_constants.pyi:198:1: error[type-assertion-failure] Type `type[int] | type[float]` does not match asserted type `type[float]`
++ tests/constants/test_constants.pyi:198:1: error[type-assertion-failure] Type `type[int | float]` does not match asserted type `type[float]`
+- tests/sparse/test_sputils.pyi:21:1: error[type-assertion-failure] Type `type[signedinteger[_32Bit]] | type[signedinteger[_64Bit]]` does not match asserted type `Unknown`
++ tests/sparse/test_sputils.pyi:21:1: error[type-assertion-failure] Type `type[signedinteger[_32Bit] | signedinteger[_64Bit]]` does not match asserted type `Unknown`
 
-... (truncated 67 lines) ...
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
++ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
+- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
+- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
++ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
+- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
++ static_f
+
+... (truncated 48 lines) ...
 ```
 
 </details>
@@ -459,19 +462,37 @@ _Comment by @astral-sh-bot[bot] on 2026-01-15 09:22_
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | `type-assertion-failure` | 0 | 0 | 148 |
-| `invalid-argument-type` | 2 | 2 | 15 |
-| `invalid-assignment` | 0 | 0 | 6 |
+| `invalid-argument-type` | 0 | 1 | 19 |
+| `invalid-assignment` | 0 | 0 | 11 |
+| `invalid-return-type` | 0 | 3 | 5 |
 | `possibly-missing-attribute` | 0 | 3 | 3 |
-| `invalid-return-type` | 0 | 1 | 4 |
-| `unused-ignore-comment` | 1 | 2 | 0 |
 | `invalid-await` | 0 | 2 | 0 |
 | `unresolved-attribute` | 0 | 0 | 2 |
 | `invalid-parameter-default` | 0 | 0 | 1 |
-| **Total** | **3** | **10** | **179** |
+| `unused-ignore-comment` | 1 | 0 | 0 |
+| **Total** | **1** | **9** | **189** |
 
 
-**[Full report with detailed diff](https://6c8ae2e2.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://6c8ae2e2.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://2c199d5f.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://2c199d5f.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_@AlexWaygood approved on 2026-01-15 15:00_
+
+Thank you!
+
+---
+
+_Renamed from "[ty]: consolidate type[] types in a union when displaying " to "[ty]: consolidate `type[]` types in a union when displaying them in diagnostics" by @AlexWaygood on 2026-01-15 15:01_
+
+---
+
+_Merged by @AlexWaygood on 2026-01-15 15:20_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-15 15:20_
 
 ---

@@ -2,7 +2,7 @@
 number: 17482
 title: "auth-helper: only refresh pyx tokens expiring in 30 minutes"
 type: pull_request
-state: open
+state: closed
 author: zsol
 labels:
   - performance
@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: zsol/jj-purmswupkxso
 created_at: 2026-01-15T10:27:47Z
-updated_at: 2026-01-15T14:19:29Z
+updated_at: 2026-01-15T15:42:46Z
 url: https://github.com/astral-sh/uv/pull/17482
-synced_at: 2026-01-15T14:51:33Z
+synced_at: 2026-01-15T15:50:34Z
 ```
 
 # auth-helper: only refresh pyx tokens expiring in 30 minutes
@@ -145,5 +145,15 @@ I think I might expect `uv auth token` and `uv auth credential-helper` to take a
 _Comment by @zsol on 2026-01-15 14:19_
 
 I've changed the tolerance so it matches `uv auth token` for now. We can pontificate the merits of a command line flag later
+
+---
+
+_Comment by @zsol on 2026-01-15 15:42_
+
+These changes were merged into #17479 
+
+---
+
+_Closed by @zsol on 2026-01-15 15:42_
 
 ---

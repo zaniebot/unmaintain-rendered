@@ -2,14 +2,14 @@
 number: 2518
 title: Incorrect Type Inference for dict.get() with Non-Matching Default Value
 type: issue
-state: open
+state: closed
 author: shuangluoxss
 labels: []
 assignees: []
 created_at: 2026-01-15T14:44:13Z
-updated_at: 2026-01-15T14:44:13Z
+updated_at: 2026-01-15T14:46:50Z
 url: https://github.com/astral-sh/ty/issues/2518
-synced_at: 2026-01-15T14:51:03Z
+synced_at: 2026-01-15T15:50:04Z
 ```
 
 # Incorrect Type Inference for dict.get() with Non-Matching Default Value
@@ -44,5 +44,17 @@ playground link: https://play.ty.dev/2a34c232-5be9-4321-ae0b-cce8683258be
 ### Version
 
 ty 0.0.12 (4b74e4ded 2026-01-14)
+
+---
+
+_Comment by @AlexWaygood on 2026-01-15 14:46_
+
+Thanks for the report. If you explicitly annotate `res_dict` with `: dict[int, list[int]]`, [we emit the error that you expect](https://play.ty.dev/b204a4f1-ac5d-413d-9509-56d42e9f6355).
+
+We intend to soon change our behaviour here so that we will emit the expected error without an annotation too. You can follow https://github.com/astral-sh/ty/issues/1240 for updates on that.
+
+---
+
+_Closed by @AlexWaygood on 2026-01-15 14:46_
 
 ---
