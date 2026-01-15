@@ -7,13 +7,12 @@ author: zanieb
 labels:
   - preview
 assignees: []
-draft: true
 base: main
 head: claude/add-ulimit-adjustment-pbq7y
 created_at: 2026-01-14T14:49:11Z
-updated_at: 2026-01-14T21:26:07Z
+updated_at: 2026-01-15T05:41:06Z
 url: https://github.com/astral-sh/uv/pull/17464
-synced_at: 2026-01-14T21:43:20Z
+synced_at: 2026-01-15T05:50:48Z
 ```
 
 # Adjust the process ulimit to the maximum allowed on startup
@@ -43,5 +42,9 @@ _Review comment by @zanieb on `crates/uv-unix/src/resource_limits.rs`:27 on 2026
 ---
 
 _Label `preview` added by @zanieb on 2026-01-14 21:25_
+
+---
+
+_Marked ready for review by @zanieb on 2026-01-15 05:41_
 
 ---

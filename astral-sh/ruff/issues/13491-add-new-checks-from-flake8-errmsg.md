@@ -9,9 +9,9 @@ labels:
   - needs-design
 assignees: []
 created_at: 2024-09-24T05:10:03Z
-updated_at: 2024-09-25T07:04:12Z
+updated_at: 2026-01-15T04:53:29Z
 url: https://github.com/astral-sh/ruff/issues/13491
-synced_at: 2026-01-12T15:54:53Z
+synced_at: 2026-01-15T05:50:23Z
 ```
 
 # Add new checks from flake8-errmsg
@@ -96,5 +96,11 @@ _Comment by @MichaReiser on 2024-09-25 07:03_
 > Newbie Q: is EM104 redundant with EM105 though?
 
 I consider EM104 a less opinionated version of EM105. Having the rules separate allows some users to only opt in to the stylistic EM104 without requiring an exception message. But yes, the rule is redundant if both EM104 and EM105 are enabled. This is a great point.
+
+---
+
+_Comment by @michen00 on 2026-01-15 04:53_
+
+EM106 (Check for walrus assignment inside a `raise` call's arguments) has been added too ([henryiii/flake8-errmsg#60](https://github.com/henryiii/flake8-errmsg/pull/60)). I would love for `ruff` to support all of these.
 
 ---

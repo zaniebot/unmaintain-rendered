@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2026-01-14T19:27:10Z
-updated_at: 2026-01-14T20:45:49Z
+updated_at: 2026-01-15T05:15:21Z
 url: https://github.com/astral-sh/ty/issues/2498
-synced_at: 2026-01-14T21:42:50Z
+synced_at: 2026-01-15T05:50:18Z
 ```
 
 # Some hover blocks are not always valid Python source
@@ -35,5 +35,19 @@ Perhaps `ty` can tell whether the snippet is a valid code or not and based on th
 ---
 
 _Label `server` added by @AlexWaygood on 2026-01-14 20:45_
+
+---
+
+_Comment by @dhruvmanila on 2026-01-15 05:15_
+
+I think we use the `xml` language tag for such code blocks, I see the following hover content in Neovim:
+
+````
+```xml
+<module 'collections.abc'>
+```
+````
+
+Is it that your editor's syntax highlighting doesn't support XML tags correctly? Can you try opening a XML file with the above content and see how does your editor highlight that?
 
 ---

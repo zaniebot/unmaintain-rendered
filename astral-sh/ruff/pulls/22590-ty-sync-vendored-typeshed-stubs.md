@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: typeshedbot/sync-typeshed
 created_at: 2026-01-15T00:39:51Z
-updated_at: 2026-01-15T00:39:52Z
+updated_at: 2026-01-15T05:08:10Z
 url: https://github.com/astral-sh/ruff/pull/22590
-synced_at: 2026-01-15T01:41:26Z
+synced_at: 2026-01-15T05:50:35Z
 ```
 
 # [ty] Sync vendored typeshed stubs
@@ -46,5 +46,176 @@ _Review requested from @sharkdp by @github-actions[bot] on 2026-01-15 00:39_
 ---
 
 _Review requested from @dcreager by @github-actions[bot] on 2026-01-15 00:39_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-15 05:05_
+
+---
+
+_Reopened by @AlexWaygood on 2026-01-15 05:05_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-15 05:06_
+
+
+<!-- generated-comment typing_conformance_diagnostics_diff -->
+
+
+
+## Typing Conformance
+
+### Summary
+
+| Metric | Old | New | Diff | Outcome |
+|--------|-----|-----|------|---------|
+| True Positives  | 0 | 0 | +0 | ⏬ (❌) |
+| False Positives | 969 | 969 | +0 | ⏬ (✅) |
+| False Negatives | 1155 | 1155 | +0 | ⏬ (✅) |
+| Total Diagnostics | 969 | 969 | 0 | ⏬ |
+| Precision | 0.00% | 0.00% | +0.00% | ⏬ (❌) |
+| Recall | 0.00% | 0.00% | +0.00% | ⏬ (❌) |
+
+
+The percentage of diagnostics emitted that were expected errors held steady at 0.00%, and the percentage of expected errors that received a diagnostic held steady at 0.00%.
+
+
+
+[Typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
+
+
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-15 05:08_
+
+
+<!-- generated-comment mypy_primer -->
+
+
+## `mypy_primer` results
+
+
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+spack (https://github.com/spack/spack)
++ lib/spack/spack/oci/opener.py:432:61: warning[deprecated] The function `info` is deprecated: Deprecated since Python 3.9. Use `HTTPResponse.headers` attribute instead.
+- Found 4333 diagnostics
++ Found 4334 diagnostics
+
+pip (https://github.com/pypa/pip)
++ src/pip/_vendor/distlib/util.py:1473:41: error[invalid-argument-type] Argument to bound method `load_cert_chain` is incorrect: Expected `str | bytes | PathLike[str] | PathLike[bytes]`, found `str | bytes | PathLike[str] | PathLike[bytes] | None`
+- src/pip/_vendor/distlib/util.py:1473:41: error[unresolved-attribute] Object of type `Self@connect` has no attribute `cert_file`
+- src/pip/_vendor/distlib/util.py:1473:57: error[unresolved-attribute] Object of type `Self@connect` has no attribute `key_file`
++ src/pip/_vendor/distlib/util.py:1572:42: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- src/pip/_vendor/distlib/util.py:1572:75: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int | float | None`, found `str | Unknown`
+- src/pip/_vendor/distlib/util.py:1572:75: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `tuple[str, int] | None`, found `str | Unknown`
+- src/pip/_vendor/distlib/util.py:1572:75: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `SSLContext | None`, found `str | Unknown`
+- src/pip/_vendor/distlib/util.py:1572:75: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `bool | None`, found `str | Unknown`
+- src/pip/_vendor/distlib/util.py:1572:75: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `int`, found `str | Unknown`
+- Found 595 diagnostics
++ Found 590 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- beartype/claw/_importlib/_clawimpload.py:379:9: error[invalid-assignment] Object of type `def cache_from_source_beartype(...) -> str` is not assignable to attribute `cache_from_source` of type `def cache_from_source(path: str | PathLike[str], debug_override: bool | None = None, *, optimization: Any | None = None) -> str`
++ beartype/claw/_importlib/_clawimpload.py:379:9: error[invalid-assignment] Object of type `def cache_from_source_beartype(...) -> str` is not assignable to attribute `cache_from_source` of type `Overload[(path: str | PathLike[str], debug_override: bool, *, optimization: None = None) -> str, (path: str | PathLike[str], debug_override: None = None, *, optimization: Any | None = None) -> str]`
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- mitmproxy/addons/save.py:101:45: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `BinaryIO`, found `IO[Any]`
+- Found 2146 diagnostics
++ Found 2145 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- test/builtin_dataset_mocks.py:1245:18: error[parameter-already-assigned] Multiple values provided for parameter `cls` of function `__new__`
+- test/builtin_dataset_mocks.py:1246:18: error[parameter-already-assigned] Multiple values provided for parameter `cls` of function `__new__`
+- test/builtin_dataset_mocks.py:1247:18: error[parameter-already-assigned] Multiple values provided for parameter `cls` of function `__new__`
+- test/test_datasets.py:2693:18: error[parameter-already-assigned] Multiple values provided for parameter `cls` of function `__new__`
+- test/test_datasets.py:2694:18: error[parameter-already-assigned] Multiple values provided for parameter `cls` of function `__new__`
+- test/test_datasets.py:2695:18: error[parameter-already-assigned] Multiple values provided for parameter `cls` of function `__new__`
+- Found 1409 diagnostics
++ Found 1403 diagnostics
+
+trio (https://github.com/python-trio/trio)
++ src/trio/_core/_tests/test_asyncgen.py:309:38: warning[possibly-missing-attribute] Attribute `f_locals` may be missing on object of type `FrameType | None`
++ src/trio/_core/_tests/test_asyncgen.py:313:38: warning[possibly-missing-attribute] Attribute `f_locals` may be missing on object of type `FrameType | None`
++ src/trio/_util.py:301:18: warning[possibly-missing-attribute] Attribute `f_globals` may be missing on object of type `FrameType | None`
+- Found 486 diagnostics
++ Found 489 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
+- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 48 diagnostics
++ Found 47 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
++ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
+- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
+- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
+- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
+- Found 1825 diagnostics
++ Found 1821 diagnostics
+
+rotki (https://github.com/rotki/rotki)
++ rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
++ rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
+- rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
++ rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 2056 diagnostics
++ Found 2057 diagnostics
+
+
+```
+
+</details>
+
+
+
+<details>
+<summary>Memory usage changes were detected when running on open source projects</summary>
+
+```diff
+trio (https://github.com/python-trio/trio)
+-     struct fields = ~11MB
++     struct fields = ~12MB
+
+
+```
+
+</details>
+
+
+
 
 ---

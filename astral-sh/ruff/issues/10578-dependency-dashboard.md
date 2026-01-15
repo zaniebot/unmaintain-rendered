@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-15T00:20:00Z
+updated_at: 2026-01-15T05:06:03Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-15T00:42:01Z
+synced_at: 2026-01-15T05:50:22Z
 ```
 
 # Dependency Dashboard
@@ -62,6 +62,7 @@ The following updates are awaiting their schedule. To get an update now, click o
 
  - [ ] <!-- unschedule-branch=renovate/actions-checkout-digest -->Update actions/checkout digest to 0c366fd
  - [ ] <!-- unschedule-branch=renovate/mdformat-mkdocs-5.x -->Update dependency mdformat-mkdocs to v5.1.2
+ - [ ] <!-- unschedule-branch=renovate/pyright-1.x-lockfile -->Update dependency pyright to v1.1.408
  - [ ] <!-- unschedule-branch=renovate/jiff-0.x-lockfile -->Update Rust crate jiff to v0.2.18
  - [ ] <!-- unschedule-branch=renovate/proc-macro2-1.x-lockfile -->Update Rust crate proc-macro2 to v1.0.105
  - [ ] <!-- unschedule-branch=renovate/quote-1.x-lockfile -->Update Rust crate quote to v1.0.43
@@ -82,10 +83,10 @@ The following updates are awaiting their schedule. To get an update now, click o
 
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
 
- - [ ] <!-- approvePr-branch=renovate/pyright-1.x-lockfile -->Update dependency pyright to v1.1.408
  - [ ] <!-- approvePr-branch=renovate/libc-0.x-lockfile -->Update Rust crate libc to v0.2.180
  - [ ] <!-- approvePr-branch=renovate/snapbox-0.x-lockfile -->Update Rust crate snapbox to v0.6.24
  - [ ] <!-- approvePr-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
+ - [ ] <!-- approvePr-branch=renovate/actions-setup-node-6.x -->Update actions/setup-node action to v6.2.0
  - [ ] <!-- approvePr-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.7.0
  - [ ] <!-- approvePr-branch=renovate/tomli-2.x -->Update dependency tomli to v2.4.0
 
@@ -580,7 +581,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `actions/setup-node v6.1.0@395ad3262231945c25e8478fd5baf05154b1d79f`
+ - `actions/setup-node v6.1.0@395ad3262231945c25e8478fd5baf05154b1d79f` → [Updates: `v6.2.0`]
  - `jetli/wasm-pack-action v0.4.0@0d096b08b4e5a7de8c28de67e11e945404e9eefa`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `SebRollen/toml-action v1.2.0@b1b3628f55fc3a28208d4203ada8b737e9687876`
@@ -618,7 +619,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
- - `actions/setup-node v6.1.0@395ad3262231945c25e8478fd5baf05154b1d79f`
+ - `actions/setup-node v6.1.0@395ad3262231945c25e8478fd5baf05154b1d79f` → [Updates: `v6.2.0`]
  - `actions/cache v5.0.1@9255dc7a253b0ccc959486e2bca901246202afeb`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
@@ -632,7 +633,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `actions/setup-node v6.1.0@395ad3262231945c25e8478fd5baf05154b1d79f`
+ - `actions/setup-node v6.1.0@395ad3262231945c25e8478fd5baf05154b1d79f` → [Updates: `v6.2.0`]
  - `jetli/wasm-bindgen-action v0.2.0@20b33e20595891ab1a0ed73145d8a21fc96e7c29`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
@@ -709,7 +710,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 <details><summary>.github/workflows/publish-playground.yml (5)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-node v6.1.0@395ad3262231945c25e8478fd5baf05154b1d79f`
+ - `actions/setup-node v6.1.0@395ad3262231945c25e8478fd5baf05154b1d79f` → [Updates: `v6.2.0`]
  - `jetli/wasm-bindgen-action v0.2.0@20b33e20595891ab1a0ed73145d8a21fc96e7c29`
  - `cloudflare/wrangler-action v3.14.1@da0e0dfe58b7a431659754fdf3f186c529afbe65`
  - `node 24`
@@ -726,7 +727,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 <details><summary>.github/workflows/publish-ty-playground.yml (5)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-node v6.1.0@395ad3262231945c25e8478fd5baf05154b1d79f`
+ - `actions/setup-node v6.1.0@395ad3262231945c25e8478fd5baf05154b1d79f` → [Updates: `v6.2.0`]
  - `jetli/wasm-bindgen-action v0.2.0@20b33e20595891ab1a0ed73145d8a21fc96e7c29`
  - `cloudflare/wrangler-action v3.14.1@da0e0dfe58b7a431659754fdf3f186c529afbe65`
  - `node 24`
@@ -736,7 +737,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 <details><summary>.github/workflows/publish-wasm.yml (3)</summary>
 
  - `actions/download-artifact v7.0.0@37930b1c2abaa49bbe596cd826c3c89aef350131`
- - `actions/setup-node v6.1.0@395ad3262231945c25e8478fd5baf05154b1d79f`
+ - `actions/setup-node v6.1.0@395ad3262231945c25e8478fd5baf05154b1d79f` → [Updates: `v6.2.0`]
  - `node 24`
 
 </details>

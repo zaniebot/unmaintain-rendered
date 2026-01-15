@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: cjm/expand-type-alias
 created_at: 2026-01-15T00:28:15Z
-updated_at: 2026-01-15T00:42:03Z
+updated_at: 2026-01-15T05:04:22Z
 url: https://github.com/astral-sh/ruff/pull/22589
-synced_at: 2026-01-15T01:41:26Z
+synced_at: 2026-01-15T05:50:35Z
 ```
 
 # [ty] Fix PEP 695 type aliases not expanding in overload resolution
@@ -173,5 +173,41 @@ _Review requested from @sharkdp by @carljm on 2026-01-15 00:39_
 ---
 
 _Review requested from @dcreager by @carljm on 2026-01-15 00:39_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/src/types/call/arguments.rs`:415 on 2026-01-15 04:54_
+
+Can you add a unit test case for this branch at the bottom of this file?
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:188 on 2026-01-15 04:58_
+
+nit: Can you move the test case below "Expanding enums"? That's where the group of `expand_type` test cases are present
+
+---
+
+_Review comment by @dhruvmanila on `crates/ty_python_semantic/resources/mdtest/call/overloads.md`:221 on 2026-01-15 05:01_
+
+I think we should keep the test case simple and also add a test case where we're unpacking this value:
+
+```py
+@overload
+def evaluate(x: Eager) -> Eager: ...
+@overload
+def evaluate(x: Lazy) -> Lazy: ...
+
+
+def _(x: Array):
+    evaluate(x)
+    evaluate(*(x,))
+```
+
+---
+
+_@dhruvmanila approved on 2026-01-15 05:04_
+
+Looks good! I've a couple of minor suggestions but otherwise it's good to go
 
 ---

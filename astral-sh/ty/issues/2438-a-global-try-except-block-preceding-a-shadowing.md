@@ -4,12 +4,13 @@ title: "A global try-except block preceding a shadowing import causes incorrect 
 type: issue
 state: open
 author: nemowang2003
-labels: []
+labels:
+  - bug
 assignees: []
 created_at: 2026-01-11T02:15:03Z
-updated_at: 2026-01-14T01:35:50Z
+updated_at: 2026-01-15T05:19:52Z
 url: https://github.com/astral-sh/ty/issues/2438
-synced_at: 2026-01-14T02:32:28Z
+synced_at: 2026-01-15T05:50:18Z
 ```
 
 # A global try-except block preceding a shadowing import causes incorrect type inference (Module | Object) in local scope
@@ -140,5 +141,9 @@ The root cause here involves several factors:
 So if we do #1836, then the "bug" would always show up here, instead of being dependent on the `try/except`.
 If we fix (1) above (reachability of code after a try/except), then the bug would not be triggered by a `try/except`, but could still show up if we did something else to cause us to consider the import ambiguously reachable.
 Either way, I think we should fix (4) by just skipping the submodule-attachment (`ImportFromSubmodule`) definition altogether if it will be immediately shadowed by another definition of the same name, bound by the same import statement.
+
+---
+
+_Label `bug` added by @dhruvmanila on 2026-01-15 05:19_
 
 ---

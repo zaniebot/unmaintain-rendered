@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: interpreter-info-run-script
 created_at: 2026-01-14T11:38:22Z
-updated_at: 2026-01-14T14:12:10Z
+updated_at: 2026-01-15T05:02:27Z
 url: https://github.com/astral-sh/uv/pull/17459
-synced_at: 2026-01-14T14:41:38Z
+synced_at: 2026-01-15T05:50:48Z
 ```
 
 # Pass `get_interpreter_info.py` script path as CLI instead of using -c option
@@ -76,5 +76,26 @@ I thought we didn't support Pyodide on Windows?
 ---
 
 _Label `needs-decision` added by @konstin on 2026-01-14 14:12_
+
+---
+
+_Comment by @ryanking13 on 2026-01-15 05:02_
+
+> Does this mean pyodide only support Unix paths on Windows, and what happens if I run e.g. a Python CLI script through a pyodide interpreter that gets called with a Windows path?
+
+Our python CLI script converts all the Windows path to Unix path (e.g. `C:\\hello\\world` ==> `/hello/world`). We also mount the root `C` drive directory to work in that way.
+
+> I'll just note I'm very wary of changing this just for Pyodide, this is a brittle / sensitive part of uv.
+
+Sure, I understand that this is a very core part of UV and don't want to break any other cases. I would be happy to discuss more to find a better way to deal with this.
+
+> I thought we didn't support Pyodide on Windows?
+
+We didn't, but we (Pyodide, Cloudflare) are working on enabling Pyodide on Windows.
+
+
+
+
+
 
 ---
