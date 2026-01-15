@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emit a diagnostic on `NamedTuple` classes decorated with `@dataclass` - astral-sh/ty #2515</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Emit a diagnostic on <code>NamedTuple</code> classes decorated with <code>@dataclass</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2515">#2515</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2026-01-15 12:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
+            <div class="timeline-body"><p>If a user does this, it indicates that they're confused, because attempting to create an instance of a class like this always fails at runtime:</p>
+<pre><code class="language-py">from dataclasses import dataclass
+from typing import NamedTuple
+
+@dataclass
+class Foo(NamedTuple):
+    x: int
+    y: str
+
+# Both of these calls fail with `AttributeError: can't set attribute`
+Foo(42, &quot;y&quot;)
+Foo(x=42, y=&quot;y&quot;)
+</code></pre>
+<p>We don't model the semantics here correctly right now (we don't synthesize any of the <code>NamedTuple</code> generated methods on this class at all -- we think, for instance, that this class inherits its <code>__new__</code> method from <code>tuple</code>). But we don't need to model the semantics correctly if we detect that this is an error (which it is) and emit an appropriate diagnostic.</p>
+<p>We added a TODO for this in the code in https://github.com/astral-sh/ruff/commit/3e0299488e72fa80f59473565cf724041d0f3f3c, but I don't think we added any tests for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @AlexWaygood on 2026-01-15 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">runtime semantics</span> added by @AlexWaygood on 2026-01-15 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">typing semantics</span> added by @AlexWaygood on 2026-01-15 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">namedtuples</span> added by @AlexWaygood on 2026-01-15 12:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-15 12:44:18 UTC
+    </footer>
+</body>
+</html>
