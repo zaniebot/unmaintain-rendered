@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug: not deterministic reporting of `invalid-return-type` - astral-sh/ty #2507</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug: not deterministic reporting of <code>invalid-return-type</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2507">#2507</a>
+        opened by <a href="https://github.com/jeertmans">@jeertmans</a>
+        on 2026-01-15 08:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jeertmans">@jeertmans</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hello!</p>
+<p>I am not sure how to report this, but it appears that the output of <code>ty check</code> is not deterministic. I discovered this when trying to ignore a specific <code>invalid-return-type</code> diagnostic, that I didn't know how to fix. I enabled the <code>unused-ignore-comment</code> rule, and noticed that the rule would sometimes be triggered, sometimes not.</p>
+<pre><code>➜  DiffeRT git:(main) ✗ uv run ty check
+All checks passed!
+➜  DiffeRT git:(main) ✗ uv run ty check
+error[unused-ignore-comment]: Unused `ty: ignore` directive
+   --&gt; differt/src/differt/plotting/_utils.py:401:33
+    |
+399 |             registry[backend] = __wrapper__
+400 |
+401 |             return __wrapper__  # ty: ignore[invalid-return-type]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+402 |
+403 |         return _wrapper_
+    |
+help: Remove the unused suppression comment
+398 | 
+399 |             registry[backend] = __wrapper__
+400 | 
+    -             return __wrapper__  # ty: ignore[invalid-return-type]
+401 +             return __wrapper__
+402 | 
+403 |         return _wrapper_
+404 | 
+
+Found 1 diagnostic
+➜  DiffeRT git:(main) ✗ uv run ty check
+error[unused-ignore-comment]: Unused `ty: ignore` directive
+   --&gt; differt/src/differt/plotting/_utils.py:401:33
+    |
+399 |             registry[backend] = __wrapper__
+400 |
+401 |             return __wrapper__  # ty: ignore[invalid-return-type]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+402 |
+403 |         return _wrapper_
+    |
+help: Remove the unused suppression comment
+398 | 
+399 |             registry[backend] = __wrapper__
+400 | 
+    -             return __wrapper__  # ty: ignore[invalid-return-type]
+401 +             return __wrapper__
+402 | 
+403 |         return _wrapper_
+404 | 
+
+Found 1 diagnostic
+➜  DiffeRT git:(main) ✗ uv run ty check
+error[unused-ignore-comment]: Unused `ty: ignore` directive
+   --&gt; differt/src/differt/plotting/_utils.py:401:33
+    |
+399 |             registry[backend] = __wrapper__
+400 |
+401 |             return __wrapper__  # ty: ignore[invalid-return-type]
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+402 |
+403 |         return _wrapper_
+    |
+help: Remove the unused suppression comment
+398 | 
+399 |             registry[backend] = __wrapper__
+400 | 
+    -             return __wrapper__  # ty: ignore[invalid-return-type]
+401 +             return __wrapper__
+402 | 
+403 |         return _wrapper_
+404 | 
+
+Found 1 diagnostic
+➜  DiffeRT git:(main) ✗ uv run ty check
+All checks passed!
+</code></pre>
+<p>Removing the <code># ty: ignore[invalid-return-type]</code> comment does the opposite:</p>
+<pre><code>➜  DiffeRT git:(main) ✗ uv run ty check
+error[invalid-return-type]: Return type does not match returned value
+   --&gt; differt/src/differt/plotting/_utils.py:401:20
+    |
+399 |             registry[backend] = __wrapper__
+400 |
+401 |             return __wrapper__
+    |                    ^^^^^^^^^^^ expected `(**P@dispatch) -&gt; T@dispatch`, found `_Wrapped[P@dispatch, T@dispatch | SceneCanvas | matplotlib.figure.Figure | plotly.graph_objs._figure.Figure, P@dispatch, T@dispatch | SceneCanvas | matplotlib.figure.Figure | plotly.graph_objs._figure.Figure]`
+402 |
+403 |         return _wrapper_
+    |
+   ::: differt/src/differt/plotting/_utils.py:381:48
+    |
+379 |             )
+380 |
+381 |         def _wrapper_(impl: Callable[P, T]) -&gt; Callable[P, T]:
+    |                                                -------------- Expected `(**P@dispatch) -&gt; T@dispatch` because of return type
+382 |             # ruff: noqa: DOC201
+383 |             &quot;&quot;&quot;Actually register the backend implementation.&quot;&quot;&quot;
+    |
+info: rule `invalid-return-type` is enabled by default
+
+Found 1 diagnostic
+➜  DiffeRT git:(main) ✗ uv run ty check
+All checks passed!
+➜  DiffeRT git:(main) ✗ uv run ty check
+error[invalid-return-type]: Return type does not match returned value
+   --&gt; differt/src/differt/plotting/_utils.py:401:20
+    |
+399 |             registry[backend] = __wrapper__
+400 |
+401 |             return __wrapper__
+    |                    ^^^^^^^^^^^ expected `(**P@dispatch) -&gt; T@dispatch`, found `_Wrapped[P@dispatch, T@dispatch | SceneCanvas | matplotlib.figure.Figure | plotly.graph_objs._figure.Figure, P@dispatch, T@dispatch | SceneCanvas | matplotlib.figure.Figure | plotly.graph_objs._figure.Figure]`
+402 |
+403 |         return _wrapper_
+    |
+   ::: differt/src/differt/plotting/_utils.py:381:48
+    |
+379 |             )
+380 |
+381 |         def _wrapper_(impl: Callable[P, T]) -&gt; Callable[P, T]:
+    |                                                -------------- Expected `(**P@dispatch) -&gt; T@dispatch` because of return type
+382 |             # ruff: noqa: DOC201
+383 |             &quot;&quot;&quot;Actually register the backend implementation.&quot;&quot;&quot;
+    |
+info: rule `invalid-return-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>Do you have any idea if this is a bug from ty?</p>
+<h1>MWE</h1>
+<p>You can reproduce this bug by cloning my repository:</p>
+<pre><code class="language-bash">git clone https://github.com/jeertmans/DiffeRT.git --depth 1
+</code></pre>
+<p>You can avoid building the Rust code by downloading pre-built wheels:</p>
+<pre><code class="language-bash">sed -i 's/members = \[&quot;differt&quot;, &quot;differt-core&quot;\]/members = [&quot;differt&quot;]/g' pyproject.toml
+sed -i 's/^differt_core/# differt_core/g' differt/pyproject.toml
+</code></pre>
+<h3>Version</h3>
+<p>ty 0.0.12</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-15 08:50:12 UTC
+    </footer>
+</body>
+</html>
