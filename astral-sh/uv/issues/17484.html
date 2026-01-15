@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update system-configuration dependency to 0.7.0 to fix sandbox panic - astral-sh/uv #17484</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update system-configuration dependency to 0.7.0 to fix sandbox panic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/issues/17484">#17484</a>
+        opened by <a href="https://github.com/andersrennermalm">@andersrennermalm</a>
+        on 2026-01-15 14:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersrennermalm">@andersrennermalm</a></div>
+            <div class="timeline-body"><h2>Problem</h2>
+<p><code>uv run</code> panics when executed inside a macOS sandbox (Claude Code, OpenAI Codex) with:</p>
+<pre><code>thread 'main2' panicked at system-configuration-0.6.1/src/dynamic_store.rs:154:1:
+Attempted to create a NULL object.
+</code></pre>
+<h2>Root Cause</h2>
+<p>uv 0.9.25 uses <code>system-configuration</code> crate version <strong>0.6.1</strong>, which panics when the sandbox blocks access to <code>com.apple.SystemConfiguration.configd</code>.</p>
+<h2>Solution</h2>
+<p>The fix has been merged and released in <code>system-configuration</code> <strong>0.7.0</strong>:</p>
+<ul>
+<li>PR: https://github.com/mullvad/system-configuration-rs/pull/59</li>
+<li>Issue: https://github.com/mullvad/system-configuration-rs/issues/71</li>
+</ul>
+<p>Please update the <code>system-configuration</code> dependency from 0.6.1 to 0.7.0.</p>
+<h2>Related Issues</h2>
+<ul>
+<li>#16664 - macOS: <code>uv run</code> panics inside SystemConfiguration when sandboxed</li>
+<li>#16916 - <code>uv init</code> fails when called from Claude Code's sandbox on macOS</li>
+</ul>
+<h2>How to Verify the Fix</h2>
+<p>Users can test if a new uv version works in sandboxed environments:</p>
+<pre><code class="language-bash"># In Claude Code or other macOS sandbox:
+uv run python -c &quot;print('sandbox test passed')&quot;
+</code></pre>
+<p>If it prints <code>sandbox test passed</code> without panicking, the fix is working.</p>
+<h2>Environment</h2>
+<ul>
+<li>macOS 14+ (Sonoma)</li>
+<li>uv 0.9.25 (Homebrew 2026-01-13)</li>
+<li>Claude Code sandbox (seatbelt)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-15 14:46</div>
+            <div class="timeline-body"><p>Duplicate of #16916</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2026-01-15 14:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-15 15:54:09 UTC
+    </footer>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add debounce to pyx token refresh - astral-sh/uv #17479</title>
+    <title>Fix race condition while refreshing pyx tokens - astral-sh/uv #17479</title>
     <link rel="stylesheet" href="../../../style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Add debounce to pyx token refresh</h1>
+    <h1>Fix race condition while refreshing pyx tokens</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
@@ -23,14 +23,14 @@
     <div class="timeline">
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a></div>
-            <div class="timeline-body"><p>Prevent concurrent processes from all refreshing the token simultaneously by using a file lock and timestamp-based debounce. When a refresh is needed:</p>
+            <div class="timeline-body"><p>Prevent concurrent processes from all refreshing the token simultaneously by using a file lock. When a refresh is needed:</p>
 <ol>
 <li>Acquire an exclusive file lock (which will block if another process is refreshing)</li>
-<li>Check if another process recently refreshed (within 5 seconds)</li>
-<li>If so, re-read the tokens from disk instead of making another request</li>
-<li>Otherwise, perform the refresh and update the timestamp</li>
+<li>Re-read the tokens from disk and check if they are fresh enough, instead of making another request</li>
+<li>Otherwise, perform the refresh and update the cached tokens</li>
 </ol>
-<p>This prevents thundering herd issues when multiple concurrent processes are invoking <code>uv auth token</code> or <code>uv auth credential-helper</code> at the same time.</p>
+<p>This prevents thundering herd issues when multiple concurrent processes are invoking <code>uv auth token</code> or <code>uv auth helper</code> at the same time.</p>
+<p>Also, set the tolerance for <code>uv auth helper</code> to the same as <code>uv auth token</code> (5 minutes).</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -131,10 +131,25 @@ if __name__ == &quot;__main__&quot;:
 <p>However, with <code>-n 1000</code> I'm now running into the default <code>UV_LOCK_TIMEOUT</code> of five minutes</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zsol">@zsol</a> on <code>crates/uv/src/commands/auth/helper.rs</code>:95 on 2026-01-15 15:21</div>
+            <div class="timeline-body"><p>let's set this to <code>false</code> and ship :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zsol">@zsol</a> approved on 2026-01-15 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add debounce to pyx token refresh" to "Fix race condition while refreshing pyx tokens" by @zsol on 2026-01-15 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zsol on 2026-01-15 15:41</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-15 10:48:31 UTC
+        Synced at 2026-01-15 15:54:51 UTC
     </footer>
 </body>
 </html>

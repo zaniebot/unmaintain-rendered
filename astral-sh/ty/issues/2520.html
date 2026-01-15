@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>generic decorator on method annotated with Self solves to Unknown - astral-sh/ty #2520</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>generic decorator on method annotated with Self solves to Unknown</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2520">#2520</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2026-01-15 15:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-py">from typing import Self, TypeVar, Callable, Generic
+
+_T = TypeVar(&quot;_T&quot;)
+
+class Box(Generic[_T]):
+    def __init__(self, value: _T) -&gt; None:
+        self.value = value
+
+def boxify(func: Callable[..., _T]) -&gt; Callable[..., Box[_T]]:
+    def wrapper(*args, **kwargs) -&gt; Box[_T]:
+        return Box(func(*args, **kwargs))
+    return wrapper
+
+class Foo:
+    def no_decorator(self) -&gt; Self:
+        return self
+
+    @boxify
+    def with_decorator(self) -&gt; Self:
+        return self
+
+obj = Foo()
+reveal_type(obj.no_decorator())    # Foo
+reveal_type(obj.with_decorator())  # ty: Box[Unknown], pyright: Box[Foo]
+</code></pre>
+</blockquote>
+<p><em>Originally posted by @carljm in <a href="https://github.com/astral-sh/ty/issues/2344#issuecomment-3712554298">#2344</a></em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @carljm on 2026-01-15 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @carljm on 2026-01-15 15:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-15 15:53:28 UTC
+    </footer>
+</body>
+</html>
