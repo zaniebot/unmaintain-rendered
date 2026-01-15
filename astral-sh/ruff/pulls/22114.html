@@ -686,10 +686,49 @@ Found 2 errors.
             <div class="timeline-body"><p>It is possible to leave it as it is. However, if we decide to add more checks to the rule in the future, for example, to track <code>.append()</code>, we will have to change the code, and moving it to helpers may not be that useful.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leandrobbraga">@leandrobbraga</a> on 2026-01-15 22:18</div>
+            <div class="timeline-body"><blockquote>
+<p>In general, it seems that we also have <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/ruff/rules/sort_dunder_all.rs">code</a> that repeats in this rule. Should we move some functions to helpers and reuse them?</p>
+<p>Do something like this:</p>
+<pre><code class="language-rust">pub(crate) fn all_assignment&lt;F&gt;(
+    checker: &amp;Checker,
+    target: &amp;ast::Expr,
+    value: &amp;ast::Expr,
+    call: F,
+) where
+    F: FnOnce(&amp;Checker, &amp;[ast::Expr]),
+{
+
+    let ast::Expr::Name(ast::ExprName { id, .. }) = target else {
+        return;
+    };
+
+    if id != &quot;__all__&quot; {
+        return;
+    }
+
+    if !checker.semantic().current_scope().kind.is_module() {
+        return
+    }
+
+    let elts = match value {
+        ast::Expr::List(ast::ExprList { elts, .. }) =&gt; elts,
+        ast::Expr::Tuple(ast::ExprTuple { elts, .. }) =&gt; elts,
+        _ =&gt; return,
+    };
+
+    call(checker, elts);
+}
+</code></pre>
+</blockquote>
+<p>I guess we can defer this to later and have an specific MR for refactors.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-15 14:54:02 UTC
+        Synced at 2026-01-15 22:53:27 UTC
     </footer>
 </body>
 </html>
