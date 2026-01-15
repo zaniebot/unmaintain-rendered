@@ -2,16 +2,18 @@
 number: 17481
 title: Gate some tests added in 0.9.23 on the pypi feature
 type: pull_request
-state: open
+state: merged
 author: musicinmybrain
-labels: []
+labels:
+  - internal
 assignees: []
+merged: true
 base: main
 head: pypi-0.9.23
 created_at: 2026-01-15T07:31:04Z
-updated_at: 2026-01-15T07:31:04Z
+updated_at: 2026-01-15T10:40:19Z
 url: https://github.com/astral-sh/uv/pull/17481
-synced_at: 2026-01-15T07:48:40Z
+synced_at: 2026-01-15T10:44:26Z
 ```
 
 # Gate some tests added in 0.9.23 on the pypi feature
@@ -37,5 +39,21 @@ Makes it easier to run integration tests in offline environments by gating four 
 
 <!-- How was it tested? -->
 Applied as a patch to Fedora’s [`uv` package](https://src.fedoraproject.org/rpms/uv); built and ran integration tests in an offline environment.
+
+---
+
+_@konstin approved on 2026-01-15 10:40_
+
+---
+
+_Label `internal` added by @konstin on 2026-01-15 10:40_
+
+---
+
+_Merged by @konstin on 2026-01-15 10:40_
+
+---
+
+_Closed by @konstin on 2026-01-15 10:40_
 
 ---

@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: micha/fix-force-exclude-directories
 created_at: 2026-01-15T09:13:42Z
-updated_at: 2026-01-15T09:32:06Z
+updated_at: 2026-01-15T09:52:22Z
 url: https://github.com/astral-sh/ruff/pull/22595
-synced_at: 2026-01-15T09:45:40Z
+synced_at: 2026-01-15T10:44:13Z
 ```
 
 # [ty] Fix `--force-exclude` when excluding entire directories
@@ -197,5 +197,29 @@ _@MichaReiser reviewed on 2026-01-15 09:18_
 _Review comment by @MichaReiser on `crates/ty_project/src/walk.rs`:239 on 2026-01-15 09:18_
 
 This is not necessary because you can't walk a file but it feels more accurate to return skip in those instances.
+
+---
+
+_Review request for @dcreager removed by @MichaReiser on 2026-01-15 09:52_
+
+---
+
+_Review request for @carljm removed by @MichaReiser on 2026-01-15 09:52_
+
+---
+
+_Review request for @Gankra removed by @MichaReiser on 2026-01-15 09:52_
+
+---
+
+_Review request for @sharkdp removed by @MichaReiser on 2026-01-15 09:52_
+
+---
+
+_Review requested from @BurntSushi by @MichaReiser on 2026-01-15 09:52_
+
+---
+
+_Review requested from @Gankra by @MichaReiser on 2026-01-15 09:52_
 
 ---

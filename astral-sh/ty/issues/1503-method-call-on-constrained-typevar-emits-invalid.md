@@ -10,9 +10,9 @@ labels:
   - attribute access
 assignees: []
 created_at: 2025-11-08T10:14:55Z
-updated_at: 2025-12-26T09:11:31Z
+updated_at: 2026-01-15T09:59:11Z
 url: https://github.com/astral-sh/ty/issues/1503
-synced_at: 2026-01-12T15:54:25Z
+synced_at: 2026-01-15T10:43:56Z
 ```
 
 # Method call on constrained typevar emits invalid-argument-type
@@ -72,5 +72,51 @@ Num = TypeVar("Num", int, float)
 def add(x: Num, y: Num):
     return x + y  # ty emits an error here
 ```
+
+---
+
+_Comment by @danielgafni on 2026-01-15 09:59_
+
+Yeah this is super annoying. I'm using [Narwhals](https://narwhals-dev.github.io/narwhals/basics/dataframe/) and this bug basically kills the entire library. 
+
+```py
+from narwhals.typing import FrameT
+
+def fn(
+    frame: FrameT
+) -> FrameT:
+    return frame.with_columns(
+        nw.lit("hello world").alias("foo")
+    )
+```
+
+```
+error[invalid-argument-type]: Argument to bound method `with_columns` is incorrect
+ --> src/metaxy/example.py:6:12
+  |
+5 | def fn(frame: FrameT) -> FrameT:
+6 |     return frame.with_columns(nw.lit("hello world").alias("foo"))
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Argument type `FrameT@fn` does not satisfy upper bound `DataFrame[DataFrameT@DataFrame]` of type variable `Self`
+  |
+
+
+error[invalid-argument-type]: Argument to bound method `with_columns` is incorrect
+ --> src/metaxy/example.py:6:12
+  |
+5 | def fn(frame: FrameT) -> FrameT:
+6 |     return frame.with_columns(nw.lit("hello world").alias("foo"))
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Argument type `FrameT@fn` does not satisfy upper bound `LazyFrame[LazyFrameT@LazyFrame]` of type variable `Self`
+  |
+
+```
+
+I am using `ty==0.0.12`
+
+---
+
+P.S. `ty`'s output for this `ty check` call has been 3k lines long - is this expected? It's printing the entire Python module where the original source code is defined. 
+
+
+
 
 ---

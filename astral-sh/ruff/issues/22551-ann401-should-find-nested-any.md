@@ -2,15 +2,15 @@
 number: 22551
 title: "ANN401 should find nested `Any`"
 type: issue
-state: open
+state: closed
 author: MartinBernstorff
 labels:
   - question
 assignees: []
 created_at: 2026-01-13T14:04:28Z
-updated_at: 2026-01-14T09:40:50Z
+updated_at: 2026-01-15T10:08:11Z
 url: https://github.com/astral-sh/ruff/issues/22551
-synced_at: 2026-01-14T10:34:17Z
+synced_at: 2026-01-15T10:44:02Z
 ```
 
 # ANN401 should find nested `Any`
@@ -44,5 +44,21 @@ _Comment by @MartinBernstorff on 2026-01-14 09:40_
 Sorry about the lack of clarity. Yes, it's exactly `tuple[Any, Any]` I would want to lint with a (potentially new) rule. 
 
 Any use of `Any` in my codebase is _way_ too little information.
+
+---
+
+_Comment by @MichaReiser on 2026-01-15 09:57_
+
+I think this is https://github.com/astral-sh/ruff/issues/5871
+
+---
+
+_Comment by @MartinBernstorff on 2026-01-15 10:08_
+
+100%, sorry about the duplicate! Closing.
+
+---
+
+_Closed by @MartinBernstorff on 2026-01-15 10:08_
 
 ---

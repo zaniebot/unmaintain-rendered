@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: amy/suppression-perf-2
 created_at: 2026-01-07T22:39:17Z
-updated_at: 2026-01-15T01:05:16Z
+updated_at: 2026-01-15T09:44:06Z
 url: https://github.com/astral-sh/ruff/pull/22446
-synced_at: 2026-01-15T01:41:26Z
+synced_at: 2026-01-15T10:44:13Z
 ```
 
 # Skip walking all tokens when loading range suppressions
@@ -263,5 +263,62 @@ _@amyreese reviewed on 2026-01-15 00:48_
 _Review comment by @amyreese on `crates/ruff_linter/src/suppression.rs`:454 on 2026-01-15 00:48_
 
 Switched to using `matches!()`, but I don't think I can use the `if foo && let ... && matches!()` here because it actually needs to be `||` with the previous condition, and the compiler is complaining if I use `||` instead of `&&`, even with grouping parens.
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_python_ast/src/token/tokens.rs`:195 on 2026-01-15 09:44_
+
+The issue are zero-length tokens like a dedent
+
+```python
+if A:
+	pass
+
+a
+```
+
+```rust
+    #[test]
+    fn tokens_split_at_matches_before_and_after_zero_length() {
+        let offset = TextSize::new(13);
+        let tokens = new_tokens(
+            [
+                (TokenKind::If, 0..2),
+                (TokenKind::Name, 3..4),
+                (TokenKind::Colon, 4..5),
+                (TokenKind::Newline, 5..6),
+                (TokenKind::Indent, 6..7),
+                (TokenKind::Pass, 7..11),
+                (TokenKind::Newline, 11..12),
+                (TokenKind::NonLogicalNewline, 12..13),
+                (TokenKind::Dedent, 13..13),
+                (TokenKind::Name, 13..14),
+                (TokenKind::Newline, 14..14),
+            ]
+            .into_iter(),
+        );
+        let (before, after) = tokens.split_at(offset);
+        assert_eq!(before, tokens.before(offset));
+        assert_eq!(after, tokens.after(offset));
+    }
+```
+
+This panics because `after` is different
+
+```
+assertion `left == right` failed
+  left: [Dedent 13..13, Name 13..14, Newline 14..14]
+ right: [Name 13..14, Newline 14..14]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test token::tokens::tests::tokens_split_at_matches_before_and_after_zero_length ... FAILED
+```
+
+Note how `after` skips over the `Dedent` but `split_at` does not
+
+
+
+---
+
+_@MichaReiser reviewed on 2026-01-15 09:44_
 
 ---

@@ -2,17 +2,18 @@
 number: 14080
 title: Clear known env vars for tests
 type: pull_request
-state: open
+state: merged
 author: konstin
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: konsti/clear-env-for-tests
 created_at: 2025-06-16T16:28:29Z
-updated_at: 2026-01-14T13:18:32Z
+updated_at: 2026-01-15T10:40:34Z
 url: https://github.com/astral-sh/uv/pull/14080
-synced_at: 2026-01-14T13:42:34Z
+synced_at: 2026-01-15T10:44:25Z
 ```
 
 # Clear known env vars for tests
@@ -167,5 +168,17 @@ _@EliteTK approved on 2026-01-14 10:26_
 ---
 
 _@samypr100 approved on 2026-01-14 13:18_
+
+---
+
+_Merged by @konstin on 2026-01-15 10:40_
+
+---
+
+_Closed by @konstin on 2026-01-15 10:40_
+
+---
+
+_Branch deleted on 2026-01-15 10:40_
 
 ---

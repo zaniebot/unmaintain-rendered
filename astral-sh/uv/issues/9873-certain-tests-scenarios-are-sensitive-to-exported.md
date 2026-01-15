@@ -2,16 +2,16 @@
 number: 9873
 title: "Certain tests & scenarios are sensitive to exported environment variables"
 type: issue
-state: open
+state: closed
 author: pradyunsg
 labels:
   - help wanted
   - testing
 assignees: []
 created_at: 2024-12-13T16:19:10Z
-updated_at: 2025-01-13T18:12:53Z
+updated_at: 2026-01-15T10:40:33Z
 url: https://github.com/astral-sh/uv/issues/9873
-synced_at: 2026-01-12T16:00:01Z
+synced_at: 2026-01-15T10:44:17Z
 ```
 
 # Certain tests & scenarios are sensitive to exported environment variables
@@ -381,5 +381,9 @@ We can track the Clap output problems here.. we should just unset most variables
 ---
 
 _Reopened by @zanieb on 2025-01-13 18:12_
+
+---
+
+_Closed by @konstin on 2026-01-15 10:40_
 
 ---

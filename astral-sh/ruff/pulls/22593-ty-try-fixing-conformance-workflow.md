@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: wld/conformance-bugfix
 created_at: 2026-01-15T08:56:01Z
-updated_at: 2026-01-15T09:42:08Z
+updated_at: 2026-01-15T09:49:38Z
 url: https://github.com/astral-sh/ruff/pull/22593
-synced_at: 2026-01-15T09:45:40Z
+synced_at: 2026-01-15T10:44:13Z
 ```
 
 # [ty] Try fixing conformance workflow
@@ -655,5 +655,17 @@ _@AlexWaygood reviewed on 2026-01-15 09:36_
 _Review comment by @AlexWaygood on `.github/workflows/typing_conformance.yaml`:1 on 2026-01-15 09:36_
 
 On line 85, could you checkout the PR branch again before executing the Python script (after you've built the binary on the target branch)? Then I think the workflow would use the version of the script from this PR branch rather than the version on `main`
+
+---
+
+_Review request for @dcreager removed by @AlexWaygood on 2026-01-15 09:49_
+
+---
+
+_Review request for @carljm removed by @AlexWaygood on 2026-01-15 09:49_
+
+---
+
+_Review request for @sharkdp removed by @AlexWaygood on 2026-01-15 09:49_
 
 ---

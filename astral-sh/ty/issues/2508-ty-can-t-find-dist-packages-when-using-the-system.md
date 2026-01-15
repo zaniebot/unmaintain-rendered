@@ -1,18 +1,18 @@
 ```yaml
 number: 2508
-title: "Ty can't find dist-packages when using the system packages (not a venv) on Linux"
+title: "\"ty\" can't find dist-packages when using the system packages (not a venv) on Linux"
 type: issue
 state: open
 author: a-h-ismail
 labels: []
 assignees: []
 created_at: 2026-01-15T09:13:48Z
-updated_at: 2026-01-15T09:13:48Z
+updated_at: 2026-01-15T10:35:36Z
 url: https://github.com/astral-sh/ty/issues/2508
-synced_at: 2026-01-15T09:45:23Z
+synced_at: 2026-01-15T10:43:56Z
 ```
 
-# Ty can't find dist-packages when using the system packages (not a venv) on Linux
+# "ty" can't find dist-packages when using the system packages (not a venv) on Linux
 
 ---
 
@@ -65,5 +65,9 @@ Thank you
 ### Version
 
 ty 0.0.12
+
+---
+
+_Renamed from "Ty can't find dist-packages when using the system packages (not a venv) on Linux" to ""ty" can't find dist-packages when using the system packages (not a venv) on Linux" by @a-h-ismail on 2026-01-15 10:35_
 
 ---

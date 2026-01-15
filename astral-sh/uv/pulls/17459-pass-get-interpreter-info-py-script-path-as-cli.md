@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: interpreter-info-run-script
 created_at: 2026-01-14T11:38:22Z
-updated_at: 2026-01-15T08:29:52Z
+updated_at: 2026-01-15T10:18:45Z
 url: https://github.com/astral-sh/uv/pull/17459
-synced_at: 2026-01-15T08:47:30Z
+synced_at: 2026-01-15T10:44:26Z
 ```
 
 # Pass `get_interpreter_info.py` script path as CLI instead of using -c option
@@ -123,5 +123,11 @@ Pyodide runs inside a JavaScript sandbox, and cannot access the filesystem direc
 _Comment by @ryanking13 on 2026-01-15 08:28_
 
 I am trying a different approach that converts `sys.path` inside the Pyodide environment (https://github.com/pyodide/pyodide/pull/6059). If this works, the changes in uv would probably not be needed.
+
+---
+
+_Comment by @konstin on 2026-01-15 10:18_
+
+We generally assume that Windows interpreters can use Windows paths, and can e.g. use Windows paths inside a templated Python script.
 
 ---

@@ -1,61 +1,38 @@
 ```yaml
-number: 17479
-title: Add debounce to pyx token refresh
+number: 17482
+title: "auth-helper: only refresh pyx tokens expiring in 30 minutes"
 type: pull_request
 state: open
-author: zanieb
+author: zsol
 labels:
-  - bug
+  - performance
 assignees: []
-draft: true
 base: main
-head: claude/credential-helper-token-refresh-oq5GB
-created_at: 2026-01-14T23:39:06Z
-updated_at: 2026-01-15T10:12:36Z
-url: https://github.com/astral-sh/uv/pull/17479
+head: zsol/jj-purmswupkxso
+created_at: 2026-01-15T10:27:47Z
+updated_at: 2026-01-15T10:31:53Z
+url: https://github.com/astral-sh/uv/pull/17482
 synced_at: 2026-01-15T10:44:26Z
 ```
 
-# Add debounce to pyx token refresh
+# auth-helper: only refresh pyx tokens expiring in 30 minutes
 
 ---
 
-_@zanieb_
+_@zsol_
 
-Prevent concurrent processes from all refreshing the token simultaneously by using a file lock and timestamp-based debounce. When a refresh is needed:
+## Summary
 
-1. Acquire an exclusive file lock (which will block if another process is refreshing)
-2. Check if another process recently refreshed (within 5 seconds)
-3. If so, re-read the tokens from disk instead of making another request
-4. Otherwise, perform the refresh and update the timestamp
+`uv auth helper` currently passes in a tolerance of zero seconds to `pyx_store.access_token()` which forces a refresh every time. That is excessive.
 
-This prevents thundering herd issues when multiple concurrent processes are invoking `uv auth token` or `uv auth credential-helper` at the same time.
+This PR changes that behavior to allow for a tolerance of 30 minutes. This is more than the default for `uv auth token` (5 minutes), because bazel builds might run for a long time, so it might take a while for the bazel-native downloader to get to actually fetching the file (although currently bazel seems to call the auth helper directly before attempting a fetch).
 
----
+We might want to expose this as a CLI parameter in the future. 
 
-_Comment by @zanieb on 2026-01-15 00:12_
+## Test Plan
 
-cc @charliermarsh I think this is probably sound even if it's not causing the Bazel issue @zsol is going to look into?
+The following script exercises the credential helper concurrently:
 
----
-
-_Label `bug` added by @zanieb on 2026-01-15 05:45_
-
----
-
-_Review comment by @zsol on `crates/uv-auth/src/pyx.rs`:414 on 2026-01-15 09:54_
-
-I would version the contents of this lockfile, just in case we need to change its contents in future releases. It could be as simple as the first 2 bytes containing a version marker, followed by content
-
----
-
-_@zsol reviewed on 2026-01-15 09:54_
-
----
-
-_Comment by @zsol on 2026-01-15 09:58_
-
-This seems to resolve the issue I'm seeing, verified with the following simple script:
 ```python
 #!/usr/bin/env python3
 """Request pyx auth tokens from uv in concurrent attempts."""
@@ -132,8 +109,27 @@ if __name__ == "__main__":
     asyncio.run(main(args.invocations, args.uv))
 ```
 
-On my machine, calling this with `uv run $script -n 300` would consistently fail on uv 0.9.25, but never with this PR applied.
+Running this script with `-n 1000` takes about five minutes on my machine before this PR, and about two seconds after this PR.
 
-However, with `-n 1000` I'm now running into the default `UV_LOCK_TIMEOUT` of five minutes
+
+---
+
+_Label `performance` added by @zsol on 2026-01-15 10:28_
+
+---
+
+_Renamed from "auth-helper: don't force refresh the token" to "auth-helper: don't force refresh the pyx token" by @zsol on 2026-01-15 10:29_
+
+---
+
+_Renamed from "auth-helper: don't force refresh the pyx token" to "auth-helper: don't force refresh the pyx token unless it's about to expire in 30 minutes" by @zsol on 2026-01-15 10:30_
+
+---
+
+_Renamed from "auth-helper: don't force refresh the pyx token unless it's about to expire in 30 minutes" to "auth-helper: only refresh pyx tokens expiring in 30 minutes" by @zsol on 2026-01-15 10:30_
+
+---
+
+_Marked ready for review by @zsol on 2026-01-15 10:31_
 
 ---
