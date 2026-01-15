@@ -2,7 +2,7 @@
 number: 2510
 title: Supporting selecting specific rules in check mode
 type: issue
-state: open
+state: closed
 author: Feiyang472
 labels:
   - question
@@ -10,9 +10,9 @@ labels:
   - configuration
 assignees: []
 created_at: 2026-01-15T10:42:34Z
-updated_at: 2026-01-15T11:01:37Z
+updated_at: 2026-01-15T12:18:41Z
 url: https://github.com/astral-sh/ty/issues/2510
-synced_at: 2026-01-15T11:54:24Z
+synced_at: 2026-01-15T12:52:53Z
 ```
 
 # Supporting selecting specific rules in check mode
@@ -40,5 +40,15 @@ _Label `cli` added by @AlexWaygood on 2026-01-15 11:01_
 ---
 
 _Label `configuration` added by @AlexWaygood on 2026-01-15 11:01_
+
+---
+
+_Comment by @MichaReiser on 2026-01-15 12:18_
+
+Not directly, see https://github.com/astral-sh/ty/issues/2066 for some context. But we plan on introducing something like an `ALL` selector (https://github.com/astral-sh/ty/issues/174) so that you can deselect all default rules
+
+---
+
+_Closed by @MichaReiser on 2026-01-15 12:18_
 
 ---

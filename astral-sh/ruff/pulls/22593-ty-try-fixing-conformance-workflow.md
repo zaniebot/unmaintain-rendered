@@ -2,18 +2,19 @@
 number: 22593
 title: "[ty] Try fixing conformance workflow"
 type: pull_request
-state: open
+state: merged
 author: WillDuke
 labels:
   - ci
   - testing
 assignees: []
+merged: true
 base: main
 head: wld/conformance-bugfix
 created_at: 2026-01-15T08:56:01Z
-updated_at: 2026-01-15T11:37:03Z
+updated_at: 2026-01-15T12:38:14Z
 url: https://github.com/astral-sh/ruff/pull/22593
-synced_at: 2026-01-15T11:54:41Z
+synced_at: 2026-01-15T12:53:10Z
 ```
 
 # [ty] Try fixing conformance workflow
@@ -152,42 +153,6 @@ pegen (https://github.com/we-like-parsers/pegen)
 - Found 48 diagnostics
 + Found 47 diagnostics
 
-packaging (https://github.com/pypa/packaging)
-- src/packaging/pylock.py:106:52: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/packaging/pylock.py:179:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/packaging/pylock.py:191:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/packaging/pylock.py:278:21: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/packaging/pylock.py:346:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/packaging/pylock.py:374:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/packaging/pylock.py:388:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/packaging/pylock.py:416:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/packaging/pylock.py:429:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/packaging/pylock.py:457:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/packaging/pylock.py:517:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/packaging/pylock.py:525:90: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/packaging/pylock.py:526:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/packaging/pylock.py:567:22: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/packaging/pylock.py:568:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/packaging/pylock.py:606:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 23 diagnostics
-+ Found 7 diagnostics
-
-dacite (https://github.com/konradhalas/dacite)
-- dacite/config.py:8:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- dacite/config.py:11:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- dacite/data.py:2:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- dacite/data.py:4:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- dacite/dataclasses.py:17:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- dacite/dataclasses.py:18:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- dacite/generics.py:10:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- dacite/generics.py:12:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- dacite/types.py:5:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- dacite/types.py:7:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- dacite/types.py:47:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- dacite/types.py:62:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 22 diagnostics
-+ Found 10 diagnostics
-
 anyio (https://github.com/agronholm/anyio)
 - src/anyio/_backends/_asyncio.py:1128:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - src/anyio/_backends/_asyncio.py:2439:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
@@ -214,6 +179,47 @@ anyio (https://github.com/agronholm/anyio)
 - Found 92 diagnostics
 + Found 70 diagnostics
 
+packaging (https://github.com/pypa/packaging)
+- src/packaging/pylock.py:106:52: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/packaging/pylock.py:179:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/packaging/pylock.py:191:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/packaging/pylock.py:278:21: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/packaging/pylock.py:346:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/packaging/pylock.py:374:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/packaging/pylock.py:388:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/packaging/pylock.py:416:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/packaging/pylock.py:429:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/packaging/pylock.py:457:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/packaging/pylock.py:517:70: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/packaging/pylock.py:525:90: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/packaging/pylock.py:526:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/packaging/pylock.py:567:22: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/packaging/pylock.py:568:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/packaging/pylock.py:606:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 23 diagnostics
++ Found 7 diagnostics
+
+com2ann (https://github.com/ilevkivskyi/com2ann)
+- src/com2ann.py:668:26: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 10 diagnostics
++ Found 9 diagnostics
+
+dacite (https://github.com/konradhalas/dacite)
+- dacite/config.py:8:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dacite/config.py:11:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dacite/data.py:2:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dacite/data.py:4:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dacite/dataclasses.py:17:45: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dacite/dataclasses.py:18:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dacite/generics.py:10:55: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dacite/generics.py:12:66: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dacite/types.py:5:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dacite/types.py:7:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dacite/types.py:47:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- dacite/types.py:62:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 22 diagnostics
++ Found 10 diagnostics
+
 aioredis (https://github.com/aio-libs/aioredis)
 - aioredis/client.py:94:21: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - aioredis/client.py:4116:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
@@ -223,11 +229,6 @@ aioredis (https://github.com/aio-libs/aioredis)
 - aioredis/utils.py:45:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - Found 30 diagnostics
 + Found 24 diagnostics
-
-com2ann (https://github.com/ilevkivskyi/com2ann)
-- src/com2ann.py:668:26: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 10 diagnostics
-+ Found 9 diagnostics
 
 parso (https://github.com/davidhalter/parso)
 - parso/grammar.py:109:41: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
@@ -491,50 +492,6 @@ kornia (https://github.com/kornia/kornia)
 - Found 324 diagnostics
 + Found 101 diagnostics
 
-DateType (https://github.com/glyph/DateType)
-- src/datetype/__init__.py:29:64: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/datetype/__init__.py:518:52: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/datetype/__init__.py:606:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 8 diagnostics
-+ Found 5 diagnostics
-
-pip (https://github.com/pypa/pip)
-- src/pip/__pip-runner__.py:15:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/__pip-runner__.py:38:61: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_internal/network/session.py:525:87: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_internal/utils/misc.py:128:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_internal/utils/misc.py:130:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_internal/utils/misc.py:384:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_internal/utils/misc.py:557:22: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_internal/utils/unpacking.py:180:59: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_internal/vcs/versioncontrol.py:550:72: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_internal/wheel_builder.py:253:63: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_internal/wheel_builder.py:258:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/cachecontrol/adapter.py:128:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/cachecontrol/adapter.py:161:39: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/cachecontrol/adapter.py:167:26: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/cachecontrol/serialize.py:35:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/dependency_groups/_toml_compat.py:5:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/distro/distro.py:633:29: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/packaging/specifiers.py:248:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/pkg_resources/__init__.py:541:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/pkg_resources/__init__.py:1907:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/pkg_resources/__init__.py:1961:63: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/rich/color.py:616:54: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/rich/pretty.py:230:46: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/tomli/_parser.py:297:22: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/truststore/__init__.py:23:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/truststore/__init__.py:33:17: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/truststore/_api.py:80:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/truststore/_macos.py:295:42: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/truststore/_macos.py:311:20: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/truststore/_macos.py:334:20: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/truststore/_macos.py:364:22: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/truststore/_windows.py:420:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- src/pip/_vendor/truststore/_windows.py:510:36: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 595 diagnostics
-+ Found 562 diagnostics
-
 spack (https://github.com/spack/spack)
 - lib/spack/spack/builder.py:164:26: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - lib/spack/spack/builder.py:165:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
@@ -628,9 +585,44 @@ spack (https://github.com/spack/spack)
 - lib/spack/spack/vendor/jinja2/environment.py:693:51: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - lib/spack/spack/vendor/jinja2/environment.py:696:19: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - lib/spack/spack/vendor/jinja2/environment.py:912:72: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- lib/spa
+- lib/spack/spack/vendor/jinja2/environment.py:1171:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/environment.py:1186:25: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/environment.py:1243:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/environment.py:1289:56: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/environment.py:1346:52: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/environment.py:1495:48: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/environment.py:1529:69: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/environment.py:1561:60: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/environment.py:1609:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/environment.py:1656:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/exceptions.py:131:28: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/ext.py:14:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/ext.py:180:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/ext.py:199:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/ext.py:216:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/ext.py:241:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/ext.py:295:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/ext.py:302:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/filters.py:221:24: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/filters.py:619:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/filters.py:645:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/filters.py:1084:32: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/filters.py:1242:34: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/filters.py:1283:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/filters.py:1312:31: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/filters.py:1478:30: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/filters.py:1523:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/filters.py:1559:33: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/filters.py:1599:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/filters.py:1637:37: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/idtracking.py:137:43: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/lexer.py:459:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/lexer.py:531:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/lexer.py:578:65: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/meta.py:79:47: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- lib/spack/spack/vendor/jinja2/nativetypes.py:104:63: warning[unused-ignore-c
 
-... (truncated 9147 lines) ...
+... (truncated 9122 lines) ...
 ```
 
 </details>
@@ -693,5 +685,69 @@ I guess this is what the git error message suggests
 ```suggestion
             git switch - --detach
 ```
+
+---
+
+_Comment by @WillDuke on 2026-01-15 11:51_
+
+Thanks for the guidance, @AlexWaygood. For some reason, it had not occurred to me to switch the branch in the workflow itself. The script passed the new assertion that I added, so I'm just waiting for the bot to update now to confirm.
+
+---
+
+_@AlexWaygood reviewed on 2026-01-15 12:01_
+
+---
+
+_Review comment by @AlexWaygood on `scripts/conformance.py`:622 on 2026-01-15 12:01_
+
+(I think it's useful to keep this print statement anyway, so that we can see the report in the logs for the CI job even if the commenting bot fails to do its job!)
+
+---
+
+_@AlexWaygood reviewed on 2026-01-15 12:03_
+
+---
+
+_Review comment by @AlexWaygood on `.github/workflows/typing_conformance.yaml`:89 on 2026-01-15 12:03_
+
+If you move this a few lines higher so that it's inside the previous parenthesized expression, I think you wouldn't need to do any `cd`-ing
+
+---
+
+_Comment by @MichaReiser on 2026-01-15 12:21_
+
+I'll take this from here as I consider it important to have the typing conformance tests back. Thanks for following up on this so quickly and identifying the root cause.
+
+---
+
+_@AlexWaygood approved on 2026-01-15 12:25_
+
+---
+
+_Review comment by @MichaReiser on `.github/workflows/typing_conformance.yaml`:89 on 2026-01-15 12:28_
+
+I keep the parentheses because they help with readability but I switched to using relative paths in more places, to remove the need for cd-ing out of the directory
+
+---
+
+_@MichaReiser reviewed on 2026-01-15 12:28_
+
+---
+
+_@MichaReiser reviewed on 2026-01-15 12:29_
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:622 on 2026-01-15 12:29_
+
+It's also useful when the bot has to truncate the comment
+
+---
+
+_Merged by @MichaReiser on 2026-01-15 12:38_
+
+---
+
+_Closed by @MichaReiser on 2026-01-15 12:38_
 
 ---

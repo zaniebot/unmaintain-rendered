@@ -8,9 +8,9 @@ labels:
   - wish
 assignees: []
 created_at: 2026-01-12T16:18:53Z
-updated_at: 2026-01-15T08:44:56Z
+updated_at: 2026-01-15T12:00:27Z
 url: https://github.com/astral-sh/ruff/issues/22535
-synced_at: 2026-01-15T09:45:29Z
+synced_at: 2026-01-15T12:52:59Z
 ```
 
 # [ruff-wasm-nodejs] Debug output "built glob set" leaking to stdout from globset crate
@@ -83,5 +83,11 @@ _Label `wish` added by @MichaReiser on 2026-01-12 17:20_
 ---
 
 _Closed by @MichaReiser on 2026-01-15 08:44_
+
+---
+
+_Comment by @fschaeffler on 2026-01-15 12:00_
+
+Not gonna lie. Didn't expect a fix at all and in no way that quickly 😀 Thank you!
 
 ---

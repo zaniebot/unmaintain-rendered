@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-11T15:12:07Z
-updated_at: 2026-01-13T02:08:32Z
+updated_at: 2026-01-15T12:01:59Z
 url: https://github.com/astral-sh/uv/issues/17405
-synced_at: 2026-01-13T02:21:22Z
+synced_at: 2026-01-15T12:53:16Z
 ```
 
 # Make .local Parameterizable
@@ -62,5 +62,11 @@ I'm unconvinced. I've tried that for a different application, and it completely 
 _Comment by @zanieb on 2026-01-13 02:08_
 
 Have you reviewed https://docs.astral.sh/uv/reference/storage/ ?
+
+---
+
+_Comment by @muellert on 2026-01-15 12:01_
+
+I just did, and it suggests that I should set up something with symlinks and/or .env files. Not exactly what I was hoping for.
 
 ---

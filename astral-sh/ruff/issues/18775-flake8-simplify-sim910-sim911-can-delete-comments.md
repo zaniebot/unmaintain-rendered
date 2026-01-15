@@ -9,9 +9,9 @@ labels:
   - help wanted
 assignees: []
 created_at: 2025-06-19T00:40:13Z
-updated_at: 2025-06-19T09:38:16Z
+updated_at: 2026-01-15T12:28:06Z
 url: https://github.com/astral-sh/ruff/issues/18775
-synced_at: 2026-01-12T15:54:56Z
+synced_at: 2026-01-15T12:52:59Z
 ```
 
 # [flake8-simplify] SIM910/SIM911 can delete comments
@@ -77,5 +77,11 @@ _Label `fixes` added by @MichaReiser on 2025-06-19 09:38_
 ---
 
 _Label `help wanted` added by @MichaReiser on 2025-06-19 09:38_
+
+---
+
+_Comment by @leonace924 on 2026-01-15 12:28_
+
+@MichaReiser I assume this is still opening? may I take up this?
 
 ---

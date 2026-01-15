@@ -10,9 +10,9 @@ labels:
   - attribute access
 assignees: []
 created_at: 2025-11-08T10:14:55Z
-updated_at: 2026-01-15T09:59:11Z
+updated_at: 2026-01-15T12:21:04Z
 url: https://github.com/astral-sh/ty/issues/1503
-synced_at: 2026-01-15T10:43:56Z
+synced_at: 2026-01-15T12:52:53Z
 ```
 
 # Method call on constrained typevar emits invalid-argument-type
@@ -118,5 +118,13 @@ P.S. `ty`'s output for this `ty check` call has been 3k lines long - is this exp
 
 
 
+
+---
+
+_Comment by @MichaReiser on 2026-01-15 12:21_
+
+> P.S. ty's output for this ty check call has been 3k lines long - is this expected? It's printing the entire Python module where the original source code is defined.
+
+This is not expected. It would be great if this is tracked in a separte issue
 
 ---

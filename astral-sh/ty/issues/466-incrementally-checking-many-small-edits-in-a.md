@@ -10,9 +10,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-05-20T20:47:32Z
-updated_at: 2025-05-20T22:35:14Z
+updated_at: 2026-01-15T12:35:13Z
 url: https://github.com/astral-sh/ty/issues/466
-synced_at: 2026-01-12T15:54:23Z
+synced_at: 2026-01-15T12:52:52Z
 ```
 
 # Incrementally checking many small edits in a large context
@@ -68,5 +68,11 @@ Incremental parsing or finer-grained incrementality within a modified file is no
 ---
 
 _Closed by @breandan on 2025-05-20 22:35_
+
+---
+
+_Comment by @breandan on 2026-01-15 12:35_
+
+I spoke with @dcreager about this and I think your design is reasonable. You might also enjoy chatting with @MarisaKirisame about incrementalization.
 
 ---
