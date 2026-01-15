@@ -2,14 +2,14 @@
 number: 2504
 title: "ty seems to not understand that the decorator creates a dataclass and says can't find __init__"
 type: issue
-state: open
+state: closed
 author: pumetu
 labels: []
 assignees: []
 created_at: 2026-01-15T02:27:38Z
-updated_at: 2026-01-15T02:27:38Z
+updated_at: 2026-01-15T06:24:12Z
 url: https://github.com/astral-sh/ty/issues/2504
-synced_at: 2026-01-15T02:41:01Z
+synced_at: 2026-01-15T06:49:13Z
 ```
 
 # ty seems to not understand that the decorator creates a dataclass and says can't find __init__
@@ -58,5 +58,17 @@ Diagnostics:
 ### Version
 
 ty 0.0.11
+
+---
+
+_Comment by @carljm on 2026-01-15 06:24_
+
+Thanks for the report! This is expected behavior. Neither ty (nor any other Python type checker) can look through several layers of (un-annotated) decorator code here and figure out that `pytree_dataclass` turns the given class into a dataclass.
+
+But there is a type system feature that allows you to declare this to the type system: https://typing.python.org/en/latest/spec/dataclasses.html#the-dataclass-transform-decorator  You can apply this to `pytree_dataclass` and get the behavior you are looking for.
+
+---
+
+_Closed by @carljm on 2026-01-15 06:24_
 
 ---

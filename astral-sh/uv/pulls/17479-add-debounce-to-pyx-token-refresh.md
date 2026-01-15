@@ -4,15 +4,16 @@ title: Add debounce to pyx token refresh
 type: pull_request
 state: open
 author: zanieb
-labels: []
+labels:
+  - bug
 assignees: []
 draft: true
 base: main
 head: claude/credential-helper-token-refresh-oq5GB
 created_at: 2026-01-14T23:39:06Z
-updated_at: 2026-01-15T00:13:06Z
+updated_at: 2026-01-15T05:45:06Z
 url: https://github.com/astral-sh/uv/pull/17479
-synced_at: 2026-01-15T00:42:26Z
+synced_at: 2026-01-15T06:49:44Z
 ```
 
 # Add debounce to pyx token refresh
@@ -35,5 +36,9 @@ This prevents thundering herd issues when multiple concurrent processes are invo
 _Comment by @zanieb on 2026-01-15 00:12_
 
 cc @charliermarsh I think this is probably sound even if it's not causing the Bazel issue @zsol is going to look into?
+
+---
+
+_Label `bug` added by @zanieb on 2026-01-15 05:45_
 
 ---

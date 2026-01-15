@@ -2,14 +2,14 @@
 number: 2488
 title: "PEP 695 `type` statements breaks overload collapse"
 type: issue
-state: open
+state: closed
 author: flying-sheep
 labels: []
 assignees: []
 created_at: 2026-01-14T10:29:05Z
-updated_at: 2026-01-15T00:11:23Z
+updated_at: 2026-01-15T06:25:10Z
 url: https://github.com/astral-sh/ty/issues/2488
-synced_at: 2026-01-15T00:41:56Z
+synced_at: 2026-01-15T06:49:13Z
 ```
 
 # PEP 695 `type` statements breaks overload collapse
@@ -63,5 +63,9 @@ _Removed from milestone `Pre-stable 1` by @carljm on 2026-01-15 00:11_
 ---
 
 _Added to milestone `Stable` by @carljm on 2026-01-15 00:11_
+
+---
+
+_Closed by @carljm on 2026-01-15 06:25_
 
 ---

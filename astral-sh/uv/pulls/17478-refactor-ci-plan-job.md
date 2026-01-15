@@ -7,13 +7,12 @@ author: zanieb
 labels:
   - internal
 assignees: []
-draft: true
 base: main
 head: claude/refactor-ci-plan-job-CA3KE
 created_at: 2026-01-14T22:50:52Z
-updated_at: 2026-01-14T23:33:10Z
+updated_at: 2026-01-15T05:44:19Z
 url: https://github.com/astral-sh/uv/pull/17478
-synced_at: 2026-01-14T23:42:42Z
+synced_at: 2026-01-15T06:49:44Z
 ```
 
 # Refactor CI plan job
@@ -39,5 +38,16 @@ _Review comment by @github-advanced-security[bot] on `.github/workflows/ci.yml`:
 code injection via template expansion
 
 [Show more details](https://github.com/astral-sh/uv/security/code-scanning/230)
+
+---
+
+_Marked ready for review by @zanieb on 2026-01-15 05:43_
+
+---
+
+_Comment by @zanieb on 2026-01-15 05:44_
+
+I'm not in love with where I landed here but it does seem like an improvement?
+
 
 ---
