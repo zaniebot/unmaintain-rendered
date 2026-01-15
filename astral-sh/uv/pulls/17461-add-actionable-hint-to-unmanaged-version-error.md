@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix/python-download-hint
 created_at: 2026-01-14T11:59:17Z
-updated_at: 2026-01-14T16:38:54Z
+updated_at: 2026-01-15T07:33:16Z
 url: https://github.com/astral-sh/uv/pull/17461
-synced_at: 2026-01-14T17:38:04Z
+synced_at: 2026-01-15T07:48:40Z
 ```
 
 # Add actionable hint to unmanaged version error message
@@ -169,5 +169,17 @@ _@zanieb reviewed on 2026-01-14 16:28_
 ---
 
 _Label `error messages` added by @zanieb on 2026-01-14 16:38_
+
+---
+
+_@originell reviewed on 2026-01-15 07:33_
+
+---
+
+_Review comment by @originell on `crates/uv/tests/it/sync.rs`:13291 on 2026-01-15 07:33_
+
+this reads a lot better! 
+
+I'm curious to learn your reasoning for not explicitly using the word "update", i.e. "Consider updating to a newer version of uv"?
 
 ---

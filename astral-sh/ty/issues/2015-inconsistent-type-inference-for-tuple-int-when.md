@@ -9,9 +9,9 @@ labels:
   - type aliases
 assignees: []
 created_at: 2025-12-17T14:44:17Z
-updated_at: 2026-01-15T00:18:56Z
+updated_at: 2026-01-15T07:39:27Z
 url: https://github.com/astral-sh/ty/issues/2015
-synced_at: 2026-01-15T00:41:56Z
+synced_at: 2026-01-15T07:48:09Z
 ```
 
 # Inconsistent type inference for `tuple[int, ...]` when using `type` and `TypeAlias`
@@ -81,5 +81,11 @@ _Label `type aliases` added by @mtshiba on 2026-01-05 14:50_
 ---
 
 _Closed by @AlexWaygood on 2026-01-15 00:18_
+
+---
+
+_Comment by @tomasr8 on 2026-01-15 07:39_
+
+Thanks for the fix!
 
 ---

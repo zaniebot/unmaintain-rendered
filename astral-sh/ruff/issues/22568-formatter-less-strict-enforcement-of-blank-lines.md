@@ -6,12 +6,13 @@ state: open
 author: MichaReiser
 labels:
   - formatter
+  - needs-decision
   - style
 assignees: []
 created_at: 2026-01-14T10:53:01Z
-updated_at: 2026-01-15T05:05:24Z
+updated_at: 2026-01-15T07:02:10Z
 url: https://github.com/astral-sh/ruff/issues/22568
-synced_at: 2026-01-15T05:50:24Z
+synced_at: 2026-01-15T07:48:15Z
 ```
 
 # Formatter: Less strict enforcement of blank lines
@@ -100,5 +101,15 @@ _Comment by @leonace924 on 2026-01-15 05:05_
 Good morning @MichaReiser,
 would you assign me this issue as well?
 
+
+---
+
+_Comment by @MichaReiser on 2026-01-15 07:01_
+
+Sorry. This is not ready for implementation 
+
+---
+
+_Label `needs-decision` added by @MichaReiser on 2026-01-15 07:02_
 
 ---
