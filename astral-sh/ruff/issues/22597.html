@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP008 false negative in inner (nested) classes - astral-sh/ruff #22597</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP008 false negative in inner (nested) classes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/22597">#22597</a>
+        opened by <a href="https://github.com/generalmimon">@generalmimon</a>
+        on 2026-01-15 13:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/generalmimon">@generalmimon</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Playground link: https://play.ruff.rs/f9f8f76b-c468-4f4f-a3b8-0bca5850daf1</p>
+<pre><code class="language-python">class Base:
+    def __init__(self, foo):
+        self.foo = foo
+
+class Outer(Base):
+    def __init__(self, foo):
+        super(Outer, self).__init__(foo)  # UP008 issued as expected
+
+    class Inner(Base):
+        def __init__(self, foo):
+            super(Outer.Inner, self).__init__(foo)  # Bug: would also expect UP008, but it was not issued
+
+o = Outer(5)
+i = Outer.Inner(5)
+</code></pre>
+<hr />
+<p>By the way, Pylint's <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/super-with-arguments.html"><code>super-with-arguments</code></a> also has a problem only with <code>super(Outer, self)</code>, but not with <code>super(Outer.Inner, self)</code>:</p>
+<pre><code class="language-console">$ pylint --disable=all --enable=super-with-arguments test.py
+************* Module test
+test.py:7:8: R1725: Consider using Python 3 style super() without arguments (super-with-arguments)
+
+-----------------------------------
+Your code has been rated at 9.09/10
+</code></pre>
+<p>However, https://github.com/asottile/pyupgrade correctly upgrades both <code>super()</code> calls:</p>
+<pre><code class="language-console">$ pip freeze | grep -F pyupgrade
+pyupgrade==3.21.2
+$ cp test.py test-original.py
+$ pyupgrade test.py
+Rewriting test.py
+$ git diff --no-index test-original.py test.py
+diff --git 1/test-original.py 2/test.py
+index 2f6d7cd2..65bf24ac 100644
+--- 1/test-original.py
++++ 2/test.py
+@@ -4,11 +4,11 @@ class Base:
+ 
+ class Outer(Base):
+     def __init__(self, foo):
+-        super(Outer, self).__init__(foo)  # UP008 issued as expected
++        super().__init__(foo)  # UP008 issued as expected
+ 
+     class Inner(Base):
+         def __init__(self, foo):
+-            super(Outer.Inner, self).__init__(foo)  # Bug: would also expect UP008, but it was not issued
++            super().__init__(foo)  # Bug: would also expect UP008, but it was not issued
+ 
+ o = Outer(5)
+ i = Outer.Inner(5)
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.14.11</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-15 13:53:37 UTC
+    </footer>
+</body>
+</html>
