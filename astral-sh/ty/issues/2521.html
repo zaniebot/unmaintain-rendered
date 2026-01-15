@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced generic call argument inference - astral-sh/ty #2521</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Advanced generic call argument inference</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2521">#2521</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2026-01-15 16:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a></div>
+            <div class="timeline-body"><p>We currently only account for the call expression type annotation when inferring the arguments of a generic call. This means we cannot currently solve calls where arguments are dependent on one another, e.g.,</p>
+<pre><code class="language-py">def lst[T](x: T) -&gt; list[T]:
+    return [x]
+
+def f[T](x: T, y: list[T]) -&gt; T:
+    return x
+
+def _(x: int, y: int | str):
+    _: int | str = f(y, lst(x))
+    f(y, lst(x)) # Argument to function `f` is incorrect: Expected `list[int | str]`, found `list[int]`
+</code></pre>
+<p>Pyright handles the above case fine, but mypy seems to give up. I suspect pyright is using a heuristic where it infers &quot;simple&quot; argument expressions first, i.e., arguments that cannot be influenced by type context. However, this means it is not able to solve more advanced cases, e.g.,</p>
+<pre><code class="language-py">def lst[T](x: T) -&gt; list[T]:
+    return [x]
+
+def f[T](x: T, y: list[T], z: list[T]) -&gt; T:
+    return x
+
+def _(x: int, y: int | str, z: int | str | None):
+    _: int | str | None = f(y, lst(x), lst(z))
+    f(y, lst(x), lst(z)) # Argument to function `f` is incorrect: Expected `list[int | str | None]`, found `list[int]`
+</code></pre>
+<p>Another problem is that we consider the call expression type annotation even if it is covariant position, which can lead to false positives, e.g.,</p>
+<pre><code class="language-py">from typing import Sequence
+
+def lst[T](x: T) -&gt; list[T]:
+    return [x]
+
+def f[T](x: T, y: list[T], z: list[T]) -&gt; Sequence[T]:
+    return [x]
+
+def _(x: int, z: list[int]):
+    _: Sequence[int] = f(x, lst(x), z)
+    _: Sequence[int | str] = f(x, lst(x), z) # Argument to function `f` is incorrect: Expected `list[int | str]`, found `list[int]`
+</code></pre>
+<p>Another example with <code>TypedDict</code>:</p>
+<pre><code class="language-py">from typing import TypedDict
+
+class A(TypedDict):
+    a: int
+    b: int
+
+def lst[T](x: T) -&gt; list[T]:
+    return [x]
+
+def f[T](x: T, y: list[T]) -&gt; T:
+    return x
+
+def _(a: A):
+    _: A = f(a, lst({ &quot;a&quot;: 1, &quot;b&quot;: 2 }))
+    f(a, lst({ &quot;a&quot;: 1, &quot;b&quot;: 2 })) # Argument to function `f` is incorrect: Expected `list[B | dict[Unknown | str, Unknown | int]]`, found `list[dict[Unknown | str, Unknown | int]]`
+</code></pre>
+<p>We may be able to solve this problem completely by lazily inferring arguments as constraint sets, and unifying them after all arguments and type context has been inferred (cc @dcreager). We could also implement a simpler heuristic similar to pyright.</p>
+<p>Note that some of these false positives are being hidden by our <code>Unknown</code> unioning, and might start popping up more frequently after https://github.com/astral-sh/ty/issues/1240 is resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">generics</span> added by @ibraheemdev on 2026-01-15 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bidirectional inference</span> added by @ibraheemdev on 2026-01-15 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Stable" by @ibraheemdev on 2026-01-15 16:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-15 17:53:34 UTC
+    </footer>
+</body>
+</html>
