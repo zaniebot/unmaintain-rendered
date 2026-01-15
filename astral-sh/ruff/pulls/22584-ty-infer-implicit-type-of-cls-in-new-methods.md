@@ -2,18 +2,19 @@
 number: 22584
 title: "[ty] Infer implicit type of `cls` in `__new__` methods"
 type: pull_request
-state: open
+state: merged
 author: ibraheemdev
 labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: ibraheem/implicit-cls-new
 created_at: 2026-01-14T21:27:18Z
-updated_at: 2026-01-15T14:09:29Z
+updated_at: 2026-01-15T20:45:26Z
 url: https://github.com/astral-sh/ruff/pull/22584
-synced_at: 2026-01-15T14:51:20Z
+synced_at: 2026-01-15T21:12:57Z
 ```
 
 # [ty] Infer implicit type of `cls` in `__new__` methods
@@ -54,26 +55,11 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 21:28_
 <!-- generated-comment typing_conformance_diagnostics_diff -->
 
 
+## [Typing conformance results](https://github.com/python/typing/blob/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance/)
 
-## Typing Conformance
-
-### Summary
-
-| Metric | Old | New | Diff | Outcome |
-|--------|-----|-----|------|---------|
-| True Positives  | 0 | 0 | +0 | ⏬ (❌) |
-| False Positives | 969 | 969 | +0 | ⏬ (✅) |
-| False Negatives | 1155 | 1155 | +0 | ⏬ (✅) |
-| Total Diagnostics | 969 | 969 | 0 | ⏬ |
-| Precision | 0.00% | 0.00% | +0.00% | ⏬ (❌) |
-| Recall | 0.00% | 0.00% | +0.00% | ⏬ (❌) |
+No changes detected ✅
 
 
-The percentage of diagnostics emitted that were expected errors held steady at 0.00%, and the percentage of expected errors that received a diagnostic held steady at 0.00%.
-
-
-
-[Typing conformance tests](https://github.com/python/typing/tree/9f6d8ced7cd1c8d92687a4e9c96d7716452e471e/conformance)
 
 
 
@@ -98,6 +84,16 @@ parso (https://github.com/davidhalter/parso)
 - Found 199 diagnostics
 + Found 201 diagnostics
 
+pip (https://github.com/pypa/pip)
++ src/pip/_vendor/pygments/style.py:63:29: error[unresolved-attribute] Object of type `Self@__new__` has no attribute `styles`
++ src/pip/_vendor/pygments/style.py:64:17: error[unresolved-attribute] Object of type `Self@__new__` has no attribute `styles`
++ src/pip/_vendor/pygments/style.py:81:19: error[unresolved-attribute] Unresolved attribute `_styles` on type `Self@__new__`
++ src/pip/_vendor/pygments/style.py:83:22: error[unresolved-attribute] Object of type `Self@__new__` has no attribute `styles`
++ src/pip/_vendor/pygments/style.py:88:29: error[unresolved-attribute] Object of type `Self@__new__` has no attribute `styles`
++ src/pip/_vendor/pygments/style.py:96:33: error[unresolved-attribute] Object of type `Self@__new__` has no attribute `styles`
+- Found 588 diagnostics
++ Found 594 diagnostics
+
 spack (https://github.com/spack/spack)
 + lib/spack/spack/vendor/pyrsistent/_pclass.py:52:28: error[unresolved-attribute] Object of type `type[Self@__new__]` has no attribute `_pclass_fields`
 + lib/spack/spack/vendor/pyrsistent/_pclass.py:77:41: error[unresolved-attribute] Object of type `type[Self@__new__]` has no attribute `_pclass_invariants`
@@ -107,18 +103,8 @@ spack (https://github.com/spack/spack)
 + lib/spack/spack/vendor/typing_extensions.py:1176:13: error[unresolved-attribute] Unresolved attribute `__required_keys__` on type `Self@__new__`
 + lib/spack/spack/vendor/typing_extensions.py:1177:13: error[unresolved-attribute] Unresolved attribute `__optional_keys__` on type `Self@__new__`
 + lib/spack/spack/vendor/typing_extensions.py:1179:17: error[invalid-assignment] Object of type `Unknown | Literal[True]` is not assignable to attribute `__total__` on type `Self@__new__ & ~<Protocol with members '__total__'>`
-- Found 4334 diagnostics
-+ Found 4342 diagnostics
-
-pip (https://github.com/pypa/pip)
-+ src/pip/_vendor/pygments/style.py:63:29: error[unresolved-attribute] Object of type `Self@__new__` has no attribute `styles`
-+ src/pip/_vendor/pygments/style.py:64:17: error[unresolved-attribute] Object of type `Self@__new__` has no attribute `styles`
-+ src/pip/_vendor/pygments/style.py:81:19: error[unresolved-attribute] Unresolved attribute `_styles` on type `Self@__new__`
-+ src/pip/_vendor/pygments/style.py:83:22: error[unresolved-attribute] Object of type `Self@__new__` has no attribute `styles`
-+ src/pip/_vendor/pygments/style.py:88:29: error[unresolved-attribute] Object of type `Self@__new__` has no attribute `styles`
-+ src/pip/_vendor/pygments/style.py:96:33: error[unresolved-attribute] Object of type `Self@__new__` has no attribute `styles`
-- Found 602 diagnostics
-+ Found 608 diagnostics
+- Found 4339 diagnostics
++ Found 4347 diagnostics
 
 paasta (https://github.com/yelp/paasta)
 + paasta_tools/paastaapi/model_utils.py:194:13: error[unresolved-attribute] Object of type `type[Self@__new__]` has no attribute `discriminator`
@@ -128,13 +114,13 @@ paasta (https://github.com/yelp/paasta)
 + paasta_tools/paastaapi/model_utils.py:273:17: error[unresolved-attribute] Object of type `type[Self@__new__]` has no attribute `_composed_schemas`
 + paasta_tools/paastaapi/model_utils.py:274:17: error[unresolved-attribute] Object of type `type[Self@__new__]` has no attribute `_composed_schemas`
 + paasta_tools/paastaapi/model_utils.py:278:12: error[unresolved-attribute] Object of type `type[Self@__new__]` has no attribute `_composed_schemas`
-- Found 1102 diagnostics
-+ Found 1109 diagnostics
+- Found 1097 diagnostics
++ Found 1104 diagnostics
 
 scrapy (https://github.com/scrapy/scrapy)
 + scrapy/item.py:39:58: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `tuple[type, ...]`, found `tuple[object, ...]`
-- Found 1786 diagnostics
-+ Found 1787 diagnostics
+- Found 1788 diagnostics
++ Found 1789 diagnostics
 
 optuna (https://github.com/optuna/optuna)
 + optuna/testing/tempfile_pool.py:20:13: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_instance` on type `type[Self@__new__] & ~<Protocol with members '_instance'>`
@@ -153,60 +139,15 @@ mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
 - Found 447 diagnostics
 + Found 448 diagnostics
 
-cloud-init (https://github.com/canonical/cloud-init)
-+ cloudinit/lifecycle.py:52:16: error[invalid-return-type] Return type does not match returned value: expected `cloudinit.lifecycle.Version @ cloudinit/lifecycle.py:19:7`, found `cloudinit.lifecycle.Version @ cloudinit/lifecycle.py:20:5`
-- Found 1175 diagnostics
-+ Found 1176 diagnostics
-
 zope.interface (https://github.com/zopefoundation/zope.interface)
 + src/zope/interface/interface.py:651:9: error[unresolved-attribute] Unresolved attribute `__module` on type `Self@__new__`
 - Found 421 diagnostics
 + Found 422 diagnostics
 
-prefect (https://github.com/PrefectHQ/prefect)
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
-- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
-+ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
-- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
-+ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-- src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
-- src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
-- src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
-- src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
-- src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
-- src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
-- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
-+ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
-- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
-+ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
-+ src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ src/prefect/server/api/server.py:844:16: error[invalid-return-type] Return type does not match returned value: expected `Self@__new__`, found `SubprocessASGIServer`
-- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` on object of type `dict[str, Any]`
-+ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
-- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | int | dict[str, Any] | ... omitted 5 union elements]`
-+ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
-- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, int | T@resolve_variables | float | ... omitted 5 union elements]`
-+ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
-- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[int | T@resolve_variables | float | ... omitted 5 union elements]`
-+ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
-- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
-+ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `int | T@resolve_variables | float | ... omitted 4 union elements`
-+ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
-- Found 5408 diagnostics
-+ Found 5404 diagnostics
-
-aiohttp (https://github.com/aio-libs/aiohttp)
-+ aiohttp/helpers.py:136:16: error[invalid-return-type] Return type does not match returned value: expected `aiohttp.helpers.BasicAuth @ aiohttp/helpers.py:121:7`, found `aiohttp.helpers.BasicAuth @ aiohttp/helpers.py:121:17`
-- Found 180 diagnostics
-+ Found 181 diagnostics
+cloud-init (https://github.com/canonical/cloud-init)
++ cloudinit/lifecycle.py:52:16: error[invalid-return-type] Return type does not match returned value: expected `cloudinit.lifecycle.Version @ cloudinit/lifecycle.py:19:7`, found `cloudinit.lifecycle.Version @ cloudinit/lifecycle.py:20:5`
+- Found 1169 diagnostics
++ Found 1170 diagnostics
 
 manticore (https://github.com/trailofbits/manticore)
 + manticore/utils/event.py:37:40: warning[possibly-missing-attribute] Attribute `_published_events` may be missing on object of type `Unknown | Self@__new__`
@@ -214,20 +155,84 @@ manticore (https://github.com/trailofbits/manticore)
 - Found 11068 diagnostics
 + Found 11070 diagnostics
 
-ibis (https://github.com/ibis-project/ibis)
-+ ibis/common/bases.py:48:9: error[unresolved-attribute] Unresolved attribute `__abstractmethods__` on type `Self@__new__`
-- Found 4608 diagnostics
-+ Found 4609 diagnostics
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
++ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
++ src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
++ src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
++ src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
++ src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
+- src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ src/prefect/server/api/server.py:849:16: error[invalid-return-type] Return type does not match returned value: expected `Self@__new__`, found `SubprocessASGIServer`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
+- Found 5405 diagnostics
++ Found 5411 diagnostics
 
-pandas (https://github.com/pandas-dev/pandas)
-+ pandas/core/dtypes/dtypes.py:1066:26: error[unresolved-attribute] Object of type `BaseOffset` has no attribute `_period_dtype_code`
-- Found 3755 diagnostics
-+ Found 3756 diagnostics
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 46 diagnostics
++ Found 47 diagnostics
+
+aiohttp (https://github.com/aio-libs/aiohttp)
++ aiohttp/helpers.py:136:16: error[invalid-return-type] Return type does not match returned value: expected `aiohttp.helpers.BasicAuth @ aiohttp/helpers.py:121:7`, found `aiohttp.helpers.BasicAuth @ aiohttp/helpers.py:121:17`
+- Found 180 diagnostics
++ Found 181 diagnostics
 
 hydpy (https://github.com/hydpy-dev/hydpy)
 - hydpy/core/devicetools.py:1198:38: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - Found 665 diagnostics
 + Found 664 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
++ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bus[Any] | ndarray[Never, Never] | ... omitted 6 union elements, object_ | Self@iloc]`
+- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
++ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
+- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
++ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
+- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
+- static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
+- Found 1825 diagnostics
++ Found 1823 diagnostics
+
+pandas (https://github.com/pandas-dev/pandas)
++ pandas/core/dtypes/dtypes.py:1066:26: error[unresolved-attribute] Object of type `BaseOffset` has no attribute `_period_dtype_code`
+- Found 3757 diagnostics
++ Found 3758 diagnostics
+
+ibis (https://github.com/ibis-project/ibis)
++ ibis/common/bases.py:48:9: error[unresolved-attribute] Unresolved attribute `__abstractmethods__` on type `Self@__new__`
+- Found 4605 diagnostics
++ Found 4606 diagnostics
 
 sympy (https://github.com/sympy/sympy)
 + sympy/algebras/quaternion.py:137:36: error[invalid-argument-type] Argument to function `__new__` is incorrect: Expected `Basic`, found `Expr | int | float | complex`
@@ -260,26 +265,8 @@ sympy (https://github.com/sympy/sympy)
 + sympy/vector/basisdependent.py:225:9: error[invalid-assignment] Object of type `dict[Unknown, Unknown]` is not assignable to attribute `_components` on type `Expr & ~Mul`
 + sympy/vector/basisdependent.py:226:9: error[invalid-assignment] Object of type `Unknown` is not assignable to attribute `_sys` on type `Expr & ~Mul`
 + sympy/vector/orienters.py:132:12: error[unresolved-attribute] Object of type `type[Self@__new__]` has no attribute `_in_order`
-- Found 15583 diagnostics
-+ Found 15609 diagnostics
-
-static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
-+ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
-- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
-+ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
-+ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-- Found 1824 diagnostics
-+ Found 1825 diagnostics
-
-rotki (https://github.com/rotki/rotki)
-- rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
-- rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-+ rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
-+ rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
-- Found 2057 diagnostics
-+ Found 2056 diagnostics
+- Found 15597 diagnostics
++ Found 15623 diagnostics
 
 
 ```
@@ -397,5 +384,23 @@ _Comment by @AlexWaygood on 2026-01-15 14:09_
 I wouldn't necessarily characterise setting an attribute in `__new__` as "dynamically attaching" an attribute. I thought it was often considered best practice to set an attribute in `__new__`, and not have an `__init__` method at all, if you wanted instances of your class to be considered pseudo-immutable for outside consumers. (For example, the stdlib [`fractions.Fraction`](https://github.com/python/cpython/blob/3514ba2175764e4d746e6862e2fcfc06b5fcd6c2/Lib/fractions.py#L205-L206) class.)
 
 So I'd love to support recognising implicit instance attributes set in `__new__` at _some_ point. That said, I agree that it shouldn't block this PR being merged! Especially if mypy/pyright don't support it.
+
+---
+
+_Merged by @ibraheemdev on 2026-01-15 20:42_
+
+---
+
+_Closed by @ibraheemdev on 2026-01-15 20:42_
+
+---
+
+_Branch deleted on 2026-01-15 20:42_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-15 20:45_
+
+I opened https://github.com/astral-sh/ty/issues/2522 to track the new NamedTuple false positives 
 
 ---

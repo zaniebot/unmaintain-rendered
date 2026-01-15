@@ -2,17 +2,18 @@
 number: 22559
 title: "[`ruff`] Add exception for `ctypes.Structure._fields_` (`RUF012`)"
 type: pull_request
-state: open
+state: merged
 author: caiquejjx
 labels:
   - rule
 assignees: []
+merged: true
 base: main
 head: fix-22166
 created_at: 2026-01-13T20:59:00Z
-updated_at: 2026-01-15T19:49:19Z
+updated_at: 2026-01-15T20:50:01Z
 url: https://github.com/astral-sh/ruff/pull/22559
-synced_at: 2026-01-15T20:01:08Z
+synced_at: 2026-01-15T21:12:57Z
 ```
 
 # [`ruff`] Add exception for `ctypes.Structure._fields_` (`RUF012`)
@@ -84,5 +85,13 @@ I'm just waiting on the release today to finish to merge this.
 ---
 
 _Renamed from "[RUF012] Add exception for `ctypes.Structure._fields_`" to "[`ruff`] Add exception for `ctypes.Structure._fields_` (`RUF012`)" by @ntBre on 2026-01-15 19:49_
+
+---
+
+_Merged by @ntBre on 2026-01-15 20:50_
+
+---
+
+_Closed by @ntBre on 2026-01-15 20:50_
 
 ---

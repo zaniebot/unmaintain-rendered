@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-15T18:25:56Z
+updated_at: 2026-01-15T20:33:07Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-15T18:49:21Z
+synced_at: 2026-01-15T21:12:42Z
 ```
 
 # Dependency Dashboard
@@ -65,7 +65,8 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/salsa-digest -->Update salsa digest to c49e550
  - [ ] <!-- unschedule-branch=renovate/mdformat-mkdocs-5.x -->Update dependency mdformat-mkdocs to v5.1.2
  - [ ] <!-- unschedule-branch=renovate/pyright-1.x-lockfile -->Update dependency pyright to v1.1.408
- - [ ] <!-- unschedule-branch=renovate/ruff-0.x -->Update dependency ruff to v0.14.12
+ - [ ] <!-- unschedule-branch=renovate/ruff-0.x -->Update dependency ruff to v0.14.13
+ - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update prek dependencies (`astral-sh/ruff-pre-commit`, `crate-ci/typos`, `mdformat-mkdocs`, `zizmorcore/zizmor-pre-commit`)
  - [ ] <!-- unschedule-branch=renovate/jiff-0.x-lockfile -->Update Rust crate jiff to v0.2.18
  - [ ] <!-- unschedule-branch=renovate/libc-0.x-lockfile -->Update Rust crate libc to v0.2.180
  - [ ] <!-- unschedule-branch=renovate/proc-macro2-1.x-lockfile -->Update Rust crate proc-macro2 to v1.0.105
@@ -76,7 +77,6 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
  - [ ] <!-- unschedule-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.65.15
  - [ ] <!-- unschedule-branch=renovate/npm-development-dependencies -->Update NPM Development dependencies (`@cloudflare/workers-types`, `miniflare`, `typescript-eslint`, `vite`, `wrangler`)
- - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update prek dependencies (`crate-ci/typos`, `mdformat-mkdocs`, `zizmorcore/zizmor-pre-commit`)
  - [ ] <!-- unschedule-branch=renovate/codspeed-criterion-compat-4.x-lockfile -->Update Rust crate codspeed-criterion-compat to v4.2.1
  - [ ] <!-- unschedule-branch=renovate/divan-4.x-lockfile -->Update Rust crate divan to v4.2.1
  - [ ] <!-- unschedule-branch=renovate/indexmap-2.x-lockfile -->Update Rust crate indexmap to v2.13.0
@@ -87,6 +87,7 @@ The following updates are awaiting their schedule. To get an update now, click o
 
 The following updates await pending status checks. To force their creation now, click on a checkbox below.
 
+ - [ ] <!-- approvePr-branch=renovate/insta-1.x-lockfile -->Update Rust crate insta to v1.46.1
  - [ ] <!-- approvePr-branch=renovate/snapbox-0.x-lockfile -->Update Rust crate snapbox to v0.6.24
  - [ ] <!-- approvePr-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
  - [ ] <!-- approvePr-branch=renovate/actions-setup-node-6.x -->Update actions/setup-node action to v6.2.0
@@ -164,7 +165,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `indexmap 2.6.0` → [Updates: `2.6.0`]
  - `indicatif 0.18.0`
  - `indoc 2.0.4`
- - `insta 1.35.1`
+ - `insta 1.35.1` → [Updates: `1.35.1`]
  - `insta-cmd 0.6.0`
  - `is-macro 0.3.5`
  - `is-wsl 0.4.0`
@@ -1110,7 +1111,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 <details><summary>docs/requirements.txt (8)</summary>
 
  - `PyYAML ==6.0.3`
- - `ruff ==0.14.11` → [Updates: `==0.14.12`]
+ - `ruff ==0.14.11` → [Updates: `==0.14.13`]
  - `mkdocs ==1.6.1`
  - `mkdocs-material ==9.7.1`
  - `mkdocs-redirects ==1.2.2`

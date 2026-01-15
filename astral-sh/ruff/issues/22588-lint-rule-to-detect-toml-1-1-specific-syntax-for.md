@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-14T23:51:12Z
-updated_at: 2026-01-15T13:21:39Z
+updated_at: 2026-01-15T20:45:11Z
 url: https://github.com/astral-sh/ruff/issues/22588
-synced_at: 2026-01-15T13:51:54Z
+synced_at: 2026-01-15T21:12:43Z
 ```
 
 # Lint rule to detect TOML 1.1 specific syntax for `pyproject.toml`, `pylock.toml`, or any other Python packaging TOML file
@@ -59,5 +59,34 @@ Reading a `pyproject.toml` is needed for installing sdists (e.g. from pypi), arc
 So the answer is for a  `pyproject.toml` that uses TOML 1.1 specific syntax affect all 3 situations, PyPI installation, local building, and other situations. 
 
 That said, I didn't imagine the rule would be on by default unless there was real world reports of users having issues with TOML 1.1 specific syntax. I assumed it would be advocated by proponents as good practice, and users would opt in. 
+
+---
+
+_Comment by @amyreese on 2026-01-15 20:44_
+
+Yeah, the changes in TOML 1.1 allow multi-line table syntax that will fail to parse in TOML 1.0, eg:
+
+```toml
+[table]
+value = {
+  key = "value",
+  key2 = "value",
+}
+```
+
+which in TOML 1.0 would have to be written as:
+
+```toml
+[table]
+value = {key = "value", key2 = "value"}
+
+# OR
+
+[table.value]
+key = "value"
+key2 = "value"
+```
+
+The problem is that if users start using the new syntax before all of their tools (including any that rely on tomllib from stdlib) support TOML 1.1 syntax, then that will break any incompatible tools. Since cpython is highly unlikely to backport TOML 1.1 support to existing releases, then use of 1.1 syntax would most likely need to wait until Python 3.14 is EOL.
 
 ---

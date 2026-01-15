@@ -8,9 +8,9 @@ labels:
   - plugin
 assignees: []
 created_at: 2023-01-29T10:00:49Z
-updated_at: 2026-01-12T18:39:21Z
+updated_at: 2026-01-15T20:05:35Z
 url: https://github.com/astral-sh/ruff/issues/2323
-synced_at: 2026-01-12T19:26:11Z
+synced_at: 2026-01-15T21:12:41Z
 ```
 
 # Support flake8-annotations-complexity
@@ -131,5 +131,17 @@ I'd be curious to hear from @MichaReiser and @amyreese on these, but my initial 
 3. I think I probably would count this as additional complexity, but only one layer/level like the subscript version (assuming that _is_ how it works, I haven't looked at the PR yet)
 
 I'm also wondering if we should just make this a `RUF` rule instead of adding a new linter for one rule, but that kind of relates to point (1) as well. We don't have to answer that now and can recode it before landing the PR anyway.
+
+---
+
+_Comment by @danjones1618 on 2026-01-15 20:05_
+
+Thanks both. I also agree with the conclusions so far.
+
+I'll get the PR to implement the following:
+
+- Ignore `Annotated` types for complexity annotation
+- Consider PEP-604 union syntax as complex as the `Union` type
+- Leave it s one rule which we can revisit later or move to the `RUF` group
 
 ---

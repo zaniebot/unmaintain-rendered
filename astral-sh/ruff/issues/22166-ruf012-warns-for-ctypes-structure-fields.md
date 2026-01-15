@@ -2,15 +2,15 @@
 number: 22166
 title: RUF012 warns for ctypes Structure._fields_
 type: issue
-state: open
+state: closed
 author: behrmann
 labels:
   - rule
 assignees: []
 created_at: 2025-12-23T22:35:08Z
-updated_at: 2026-01-12T15:48:42Z
+updated_at: 2026-01-15T20:50:02Z
 url: https://github.com/astral-sh/ruff/issues/22166
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-15T21:12:43Z
 ```
 
 # RUF012 warns for ctypes Structure._fields_
@@ -71,5 +71,9 @@ Go for it! I'll assign you for now, but don't feel any pressure :)
 ---
 
 _Assigned to @caiquejjx by @ntBre on 2026-01-12 15:48_
+
+---
+
+_Closed by @ntBre on 2026-01-15 20:50_
 
 ---

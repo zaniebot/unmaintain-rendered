@@ -2,7 +2,7 @@
 number: 22338
 title: "[ty] Add support for functional TypedDicts"
 type: pull_request
-state: open
+state: closed
 author: charliermarsh
 labels:
   - ty
@@ -11,9 +11,9 @@ draft: true
 base: main
 head: charlie/functional-typeddict
 created_at: 2026-01-02T16:39:51Z
-updated_at: 2026-01-14T17:41:06Z
+updated_at: 2026-01-15T20:32:13Z
 url: https://github.com/astral-sh/ruff/pull/22338
-synced_at: 2026-01-14T18:48:06Z
+synced_at: 2026-01-15T21:12:57Z
 ```
 
 # [ty] Add support for functional TypedDicts
@@ -388,5 +388,9 @@ _Comment by @codspeed-hq[bot] on 2026-01-02 17:00_
 
 [^skipped]: 32 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/charlie%2Ffunctional-typeddict?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment&utm_content=archive).
 
+
+---
+
+_Closed by @charliermarsh on 2026-01-15 20:32_
 
 ---

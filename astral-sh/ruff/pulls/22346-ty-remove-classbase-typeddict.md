@@ -2,7 +2,7 @@
 number: 22346
 title: "[ty] Remove `ClassBase::TypedDict`"
 type: pull_request
-state: open
+state: closed
 author: charliermarsh
 labels:
   - ty
@@ -11,9 +11,9 @@ draft: true
 base: main
 head: charlie/typed-mro
 created_at: 2026-01-02T20:19:58Z
-updated_at: 2026-01-10T18:53:58Z
+updated_at: 2026-01-15T20:32:10Z
 url: https://github.com/astral-sh/ruff/pull/22346
-synced_at: 2026-01-12T15:57:47Z
+synced_at: 2026-01-15T21:12:57Z
 ```
 
 # [ty] Remove `ClassBase::TypedDict`
@@ -290,5 +290,9 @@ Okay, I can revisit later when we get to functional `TypedDict` if the value pre
 ---
 
 _Converted to draft by @charliermarsh on 2026-01-10 18:53_
+
+---
+
+_Closed by @charliermarsh on 2026-01-15 20:32_
 
 ---

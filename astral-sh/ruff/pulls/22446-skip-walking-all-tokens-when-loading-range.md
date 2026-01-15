@@ -2,18 +2,19 @@
 number: 22446
 title: Skip walking all tokens when loading range suppressions
 type: pull_request
-state: open
+state: merged
 author: amyreese
 labels:
   - performance
   - preview
 assignees: []
+merged: true
 base: main
 head: amy/suppression-perf-2
 created_at: 2026-01-07T22:39:17Z
-updated_at: 2026-01-15T17:36:45Z
+updated_at: 2026-01-15T20:35:28Z
 url: https://github.com/astral-sh/ruff/pull/22446
-synced_at: 2026-01-15T17:50:23Z
+synced_at: 2026-01-15T21:12:57Z
 ```
 
 # Skip walking all tokens when loading range suppressions
@@ -323,5 +324,17 @@ Note how `after` skips over the `Dedent` but `split_at` does not
 ---
 
 _@MichaReiser reviewed on 2026-01-15 09:44_
+
+---
+
+_Merged by @amyreese on 2026-01-15 20:35_
+
+---
+
+_Closed by @amyreese on 2026-01-15 20:35_
+
+---
+
+_Branch deleted on 2026-01-15 20:35_
 
 ---

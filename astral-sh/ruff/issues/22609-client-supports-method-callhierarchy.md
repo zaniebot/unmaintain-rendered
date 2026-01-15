@@ -4,12 +4,13 @@ title: "client:supports_method(callHierarchy/outgoingCalls) is incorrect"
 type: issue
 state: open
 author: bvdmitri
-labels: []
+labels:
+  - server
 assignees: []
 created_at: 2026-01-15T19:01:03Z
-updated_at: 2026-01-15T19:07:22Z
+updated_at: 2026-01-15T19:53:43Z
 url: https://github.com/astral-sh/ruff/issues/22609
-synced_at: 2026-01-15T20:00:57Z
+synced_at: 2026-01-15T21:12:43Z
 ```
 
 # client:supports_method(callHierarchy/outgoingCalls) is incorrect
@@ -35,5 +36,9 @@ TLDR:
 ### Version
 
   - Version: 0.14.11
+
+---
+
+_Label `server` added by @ntBre on 2026-01-15 19:53_
 
 ---

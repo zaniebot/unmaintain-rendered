@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: check-second-pos-arg-in-asset-dataset
 created_at: 2026-01-08T04:46:35Z
-updated_at: 2026-01-15T16:57:22Z
+updated_at: 2026-01-15T20:04:03Z
 url: https://github.com/astral-sh/ruff/pull/22453
-synced_at: 2026-01-15T17:50:23Z
+synced_at: 2026-01-15T21:12:57Z
 ```
 
 # [`airflow`] Second positional argument to Asset/Dataset should not be a dictionary (`AIR303`)
@@ -204,5 +204,21 @@ Thanks for the feedback!! If I understand the question correctly, and I think ye
 ```python
 Dataset("ds1", {"some_extra": 1})
 ```
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/airflow/rules/function_signature_change_in_3.rs`:143 on 2026-01-15 20:04_
+
+Ohhh okay, I think I understand. So you're not worried about a case like:
+
+```py
+Dataset("ds1", uri="...")
+```
+
+because that's still valid in the new API? The problem is specifically when the second positional argument is a dict. I think this is fine as-is then. Thanks!
+
+---
+
+_@ntBre reviewed on 2026-01-15 20:04_
 
 ---
