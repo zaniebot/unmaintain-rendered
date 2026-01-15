@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: ww/deprecate-non-pep625
 created_at: 2026-01-14T15:58:33Z
-updated_at: 2026-01-15T00:11:11Z
+updated_at: 2026-01-15T02:35:52Z
 url: https://github.com/astral-sh/uv/pull/17467
-synced_at: 2026-01-15T00:42:26Z
+synced_at: 2026-01-15T02:41:31Z
 ```
 
 # Deprecate non-PEP 625 source distributions
@@ -111,5 +111,27 @@ _Comment by @konstin on 2026-01-14 18:26_
 ---
 
 _Marked ready for review by @woodruffw on 2026-01-15 00:11_
+
+---
+
+_@zanieb reviewed on 2026-01-15 02:34_
+
+---
+
+_Review comment by @zanieb on `crates/uv/tests/it/lock.rs`:12672 on 2026-01-15 02:34_
+
+```suggestion
+    warning: workspace @ https://github.com/user-attachments/files/16592193/workspace.zip is not a standards-compliant source distribution: expected '.tar.gz' but found '.zip'. A future version of uv will reject source distributions that do not match the specification defined in PEP 625
+```
+
+---
+
+_Review comment by @zanieb on `crates/uv/tests/it/sync.rs`:9578 on 2026-01-15 02:35_
+
+`wsgiref==0.1.2` doesn't seem quite right here. I think we need the filename too?
+
+---
+
+_@zanieb reviewed on 2026-01-15 02:35_
 
 ---
