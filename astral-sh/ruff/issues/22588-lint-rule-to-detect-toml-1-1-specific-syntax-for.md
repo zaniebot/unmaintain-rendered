@@ -9,9 +9,9 @@ labels:
   - needs-decision
 assignees: []
 created_at: 2026-01-14T23:51:12Z
-updated_at: 2026-01-15T00:57:11Z
+updated_at: 2026-01-15T07:59:10Z
 url: https://github.com/astral-sh/ruff/issues/22588
-synced_at: 2026-01-15T01:41:15Z
+synced_at: 2026-01-15T08:47:06Z
 ```
 
 # Lint rule to detect TOML 1.1 specific syntax for `pyproject.toml`, `pylock.toml`, or any other Python packaging TOML file
@@ -41,5 +41,13 @@ _Label `needs-decision` added by @amyreese on 2026-01-15 00:54_
 _Comment by @amyreese on 2026-01-15 00:55_
 
 I like the idea, and this could be a good complement to RUF200.  I think the main concern is the list of files to check, because I think ruff only looks at `pyproject.toml` right now, and whether there's a good set of libraries and or mechanisms for detecting new toml features like this that won't require owning a toml implementation in ruff.
+
+---
+
+_Comment by @MichaReiser on 2026-01-15 07:59_
+
+Is the concernthat the pyproject.toml isn't backwards compatible when publishing to pypi or that local tools might start failing or is it something else?
+
+If it's the latter, this won't be a rule we can enable by default, because it's overly pedantic if you don't use any such tool (and then it is unnecessarily restrictive). 
 
 ---

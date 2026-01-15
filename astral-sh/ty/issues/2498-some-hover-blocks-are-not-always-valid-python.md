@@ -5,12 +5,13 @@ type: issue
 state: open
 author: rchl
 labels:
+  - bug
   - server
 assignees: []
 created_at: 2026-01-14T19:27:10Z
-updated_at: 2026-01-15T05:15:21Z
+updated_at: 2026-01-15T08:00:13Z
 url: https://github.com/astral-sh/ty/issues/2498
-synced_at: 2026-01-15T05:50:18Z
+synced_at: 2026-01-15T08:47:00Z
 ```
 
 # Some hover blocks are not always valid Python source
@@ -49,5 +50,31 @@ I think we use the `xml` language tag for such code blocks, I see the following 
 ````
 
 Is it that your editor's syntax highlighting doesn't support XML tags correctly? Can you try opening a XML file with the above content and see how does your editor highlight that?
+
+---
+
+_Comment by @MichaReiser on 2026-01-15 07:51_
+
+The issue is that an attribute without a name isn't valid in XML. So the editor's highlighting is correct. It's also not valid in any other XML like dialect that I'm aware of (HTML, JSX). 
+
+---
+
+_Label `bug` added by @MichaReiser on 2026-01-15 07:51_
+
+---
+
+_Added to milestone `Stable` by @MichaReiser on 2026-01-15 07:51_
+
+---
+
+_Comment by @rchl on 2026-01-15 07:57_
+
+Right, I've assumed the part about using python code block. But yeah, still not a valid source for chosen code block language.
+
+---
+
+_Comment by @MichaReiser on 2026-01-15 08:00_
+
+It's unfortunate that an LSP can't ship a custom syntax (at least to my knowledge)
 
 ---

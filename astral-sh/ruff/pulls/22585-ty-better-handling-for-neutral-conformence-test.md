@@ -2,18 +2,19 @@
 number: 22585
 title: "[ty] Better handling for neutral conformence test changes"
 type: pull_request
-state: open
+state: merged
 author: MichaReiser
 labels:
   - ci
   - ty
 assignees: []
+merged: true
 base: main
 head: micha/conformance-neutral
 created_at: 2026-01-14T21:41:00Z
-updated_at: 2026-01-14T21:58:34Z
+updated_at: 2026-01-15T07:53:13Z
 url: https://github.com/astral-sh/ruff/pull/22585
-synced_at: 2026-01-14T22:42:35Z
+synced_at: 2026-01-15T08:47:17Z
 ```
 
 # [ty] Better handling for neutral conformence test changes
@@ -70,5 +71,17 @@ _Comment by @astral-sh-bot[bot] on 2026-01-14 21:58_
 
 
 
+
+---
+
+_Merged by @MichaReiser on 2026-01-15 07:53_
+
+---
+
+_Closed by @MichaReiser on 2026-01-15 07:53_
+
+---
+
+_Branch deleted on 2026-01-15 07:53_
 
 ---

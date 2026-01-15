@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2026-01-15T06:22:37Z
-updated_at: 2026-01-15T06:22:37Z
+updated_at: 2026-01-15T07:52:22Z
 url: https://github.com/astral-sh/ty/issues/2505
-synced_at: 2026-01-15T06:49:13Z
+synced_at: 2026-01-15T08:47:00Z
 ```
 
 # Go-to for call expression should jump to the matching overload if possible
@@ -42,5 +42,11 @@ def _(a: A, b: B, ab: A | B):
 ---
 
 _Label `server` added by @dhruvmanila on 2026-01-15 06:22_
+
+---
+
+_Comment by @MichaReiser on 2026-01-15 07:52_
+
+This requires the same changes as https://github.com/astral-sh/ty/issues/886
 
 ---

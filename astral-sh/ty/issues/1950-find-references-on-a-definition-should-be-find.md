@@ -9,9 +9,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-12-16T18:27:53Z
-updated_at: 2026-01-14T09:42:52Z
+updated_at: 2026-01-15T08:29:54Z
 url: https://github.com/astral-sh/ty/issues/1950
-synced_at: 2026-01-14T10:34:11Z
+synced_at: 2026-01-15T08:47:00Z
 ```
 
 # find-references on a definition should be find-uses (not include self)
@@ -85,5 +85,9 @@ I came across this issue because we also use PyCharm and the absence of a quick 
 
 Do you have a timeline to solve this issue in https://github.com/astral-sh/ruff/pull/22012?
 
+
+---
+
+_Added to milestone `Pre-stable 1` by @MichaReiser on 2026-01-15 08:29_
 
 ---

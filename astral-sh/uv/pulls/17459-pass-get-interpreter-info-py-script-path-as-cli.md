@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: interpreter-info-run-script
 created_at: 2026-01-14T11:38:22Z
-updated_at: 2026-01-15T05:02:27Z
+updated_at: 2026-01-15T08:29:52Z
 url: https://github.com/astral-sh/uv/pull/17459
-synced_at: 2026-01-15T05:50:48Z
+synced_at: 2026-01-15T08:47:30Z
 ```
 
 # Pass `get_interpreter_info.py` script path as CLI instead of using -c option
@@ -97,5 +97,31 @@ We didn't, but we (Pyodide, Cloudflare) are working on enabling Pyodide on Windo
 
 
 
+
+---
+
+_Comment by @konstin on 2026-01-15 08:15_
+
+> Our python CLI script converts all the Windows path to Unix path (e.g. `C:\\hello\\world` ==> `/hello/world`). We also mount the root `C` drive directory to work in that way.
+
+Can you expand on where/how this conversion happens? It seems strange to me that an interpreter on Windows wouldn't accept a Windows path in `sys.path`.
+
+---
+
+_Comment by @ryanking13 on 2026-01-15 08:28_
+
+> Can you expand on where/how this conversion happens?
+
+We expand them [here](https://github.com/pyodide/pyodide/blob/ec22acf6230fa80a4e9b2d5ac9e766fd4ee974f5/src/templates/python_cli_entry.mjs#L60), which is a Node.js script which is executed when Pyodide python CLI entry is called.
+
+> It seems strange to me that an interpreter on Windows wouldn't accept a Windows path in sys.path.
+
+Pyodide runs inside a JavaScript sandbox, and cannot access the filesystem directly, In Node.js, we mount the host filesystem to Pyodide, and the filesystem path is converted to a Linux-style path regardless of the host filesystem.
+
+---
+
+_Comment by @ryanking13 on 2026-01-15 08:28_
+
+I am trying a different approach that converts `sys.path` inside the Pyodide environment (https://github.com/pyodide/pyodide/pull/6059). If this works, the changes in uv would probably not be needed.
 
 ---
