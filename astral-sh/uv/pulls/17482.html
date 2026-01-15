@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add debounce to pyx token refresh - astral-sh/uv #17479</title>
+    <title>auth-helper: only refresh pyx tokens expiring in 30 minutes - astral-sh/uv #17482</title>
     <link rel="stylesheet" href="../../../style.css">
 </head>
 <body>
@@ -11,48 +11,24 @@
         <a href="../../../index.html">Back to index</a>
     </div>
 
-    <h1>Add debounce to pyx token refresh</h1>
+    <h1>auth-helper: only refresh pyx tokens expiring in 30 minutes</h1>
 
     <div class="meta">
         <span class="state-icon state-open"></span>
-        <a href="https://github.com/astral-sh/uv/pull/17479">#17479</a>
-        opened by <a href="https://github.com/zanieb">@zanieb</a>
-        on 2026-01-14 23:39
+        <a href="https://github.com/astral-sh/uv/pull/17482">#17482</a>
+        opened by <a href="https://github.com/zsol">@zsol</a>
+        on 2026-01-15 10:27
     </div>
 
     <div class="timeline">
         <div class="timeline-entry">
-            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a></div>
-            <div class="timeline-body"><p>Prevent concurrent processes from all refreshing the token simultaneously by using a file lock and timestamp-based debounce. When a refresh is needed:</p>
-<ol>
-<li>Acquire an exclusive file lock (which will block if another process is refreshing)</li>
-<li>Check if another process recently refreshed (within 5 seconds)</li>
-<li>If so, re-read the tokens from disk instead of making another request</li>
-<li>Otherwise, perform the refresh and update the timestamp</li>
-</ol>
-<p>This prevents thundering herd issues when multiple concurrent processes are invoking <code>uv auth token</code> or <code>uv auth credential-helper</code> at the same time.</p>
-</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-15 00:12</div>
-            <div class="timeline-body"><p>cc @charliermarsh I think this is probably sound even if it's not causing the Bazel issue @zsol is going to look into?</p>
-</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2026-01-15 05:45</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="timeline-header">Review comment by <a href="https://github.com/zsol">@zsol</a> on <code>crates/uv-auth/src/pyx.rs</code>:414 on 2026-01-15 09:54</div>
-            <div class="timeline-body"><p>I would version the contents of this lockfile, just in case we need to change its contents in future releases. It could be as simple as the first 2 bytes containing a version marker, followed by content</p>
-</div>
-        </div>
-        <div class="timeline-entry">
-            <div class="timeline-header"><a href="https://github.com/zsol">@zsol</a> reviewed on 2026-01-15 09:54</div>
-            <div class="timeline-body"></div>
-        </div>
-        <div class="timeline-entry">
-            <div class="timeline-header">Comment by <a href="https://github.com/zsol">@zsol</a> on 2026-01-15 09:58</div>
-            <div class="timeline-body"><p>This seems to resolve the issue I'm seeing, verified with the following simple script:</p>
+            <div class="timeline-header"><a href="https://github.com/zsol">@zsol</a></div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><code>uv auth helper</code> currently passes in a tolerance of zero seconds to <code>pyx_store.access_token()</code> which forces a refresh every time. That is excessive.</p>
+<p>This PR changes that behavior to allow for a tolerance of 30 minutes. This is more than the default for <code>uv auth token</code> (5 minutes), because bazel builds might run for a long time, so it might take a while for the bazel-native downloader to get to actually fetching the file (although currently bazel seems to call the auth helper directly before attempting a fetch).</p>
+<p>We might want to expose this as a CLI parameter in the future.</p>
+<h2>Test Plan</h2>
+<p>The following script exercises the credential helper concurrently:</p>
 <pre><code class="language-python">#!/usr/bin/env python3
 &quot;&quot;&quot;Request pyx auth tokens from uv in concurrent attempts.&quot;&quot;&quot;
 
@@ -127,9 +103,23 @@ if __name__ == &quot;__main__&quot;:
     args = parser.parse_args()
     asyncio.run(main(args.invocations, args.uv))
 </code></pre>
-<p>On my machine, calling this with <code>uv run $script -n 300</code> would consistently fail on uv 0.9.25, but never with this PR applied.</p>
-<p>However, with <code>-n 1000</code> I'm now running into the default <code>UV_LOCK_TIMEOUT</code> of five minutes</p>
+<p>Running this script with <code>-n 1000</code> takes about five minutes on my machine before this PR, and about two seconds after this PR.</p>
 </div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @zsol on 2026-01-15 10:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "auth-helper: don't force refresh the token" to "auth-helper: don't force refresh the pyx token" by @zsol on 2026-01-15 10:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "auth-helper: don't force refresh the pyx token" to "auth-helper: don't force refresh the pyx token unless it's about to expire in 30 minutes" by @zsol on 2026-01-15 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "auth-helper: don't force refresh the pyx token unless it's about to expire in 30 minutes" to "auth-helper: only refresh pyx tokens expiring in 30 minutes" by @zsol on 2026-01-15 10:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zsol on 2026-01-15 10:31</div>
         </div>
     </div>
 

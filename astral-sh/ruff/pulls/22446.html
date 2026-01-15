@@ -214,10 +214,56 @@ while let Some(token) = tokens.next() {
             <div class="timeline-body"><p>Switched to using <code>matches!()</code>, but I don't think I can use the <code>if foo &amp;&amp; let ... &amp;&amp; matches!()</code> here because it actually needs to be <code>||</code> with the previous condition, and the compiler is complaining if I use <code>||</code> instead of <code>&amp;&amp;</code>, even with grouping parens.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/token/tokens.rs</code>:195 on 2026-01-15 09:44</div>
+            <div class="timeline-body"><p>The issue are zero-length tokens like a dedent</p>
+<pre><code class="language-python">if A:
+	pass
+
+a
+</code></pre>
+<pre><code class="language-rust">    #[test]
+    fn tokens_split_at_matches_before_and_after_zero_length() {
+        let offset = TextSize::new(13);
+        let tokens = new_tokens(
+            [
+                (TokenKind::If, 0..2),
+                (TokenKind::Name, 3..4),
+                (TokenKind::Colon, 4..5),
+                (TokenKind::Newline, 5..6),
+                (TokenKind::Indent, 6..7),
+                (TokenKind::Pass, 7..11),
+                (TokenKind::Newline, 11..12),
+                (TokenKind::NonLogicalNewline, 12..13),
+                (TokenKind::Dedent, 13..13),
+                (TokenKind::Name, 13..14),
+                (TokenKind::Newline, 14..14),
+            ]
+            .into_iter(),
+        );
+        let (before, after) = tokens.split_at(offset);
+        assert_eq!(before, tokens.before(offset));
+        assert_eq!(after, tokens.after(offset));
+    }
+</code></pre>
+<p>This panics because <code>after</code> is different</p>
+<pre><code>assertion `left == right` failed
+  left: [Dedent 13..13, Name 13..14, Newline 14..14]
+ right: [Name 13..14, Newline 14..14]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test token::tokens::tests::tokens_split_at_matches_before_and_after_zero_length ... FAILED
+</code></pre>
+<p>Note how <code>after</code> skips over the <code>Dedent</code> but <code>split_at</code> does not</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2026-01-15 09:44</div>
+            <div class="timeline-body"></div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-15 01:44:02 UTC
+        Synced at 2026-01-15 10:46:45 UTC
     </footer>
 </body>
 </html>
