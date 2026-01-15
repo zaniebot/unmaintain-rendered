@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: amy/suppression-perf-2
 created_at: 2026-01-07T22:39:17Z
-updated_at: 2026-01-14T23:56:25Z
+updated_at: 2026-01-15T01:05:16Z
 url: https://github.com/astral-sh/ruff/pull/22446
-synced_at: 2026-01-15T00:42:13Z
+synced_at: 2026-01-15T01:41:26Z
 ```
 
 # Skip walking all tokens when loading range suppressions
@@ -115,7 +115,7 @@ I think we should clear indents after each iteration. We use it more as a scratc
 
 ---
 
-_Review comment by @MichaReiser on `crates/ruff_linter/src/suppression.rs`:455 on 2026-01-10 09:39_
+_Review comment by @MichaReiser on `crates/ruff_linter/src/suppression.rs`:454 on 2026-01-10 09:39_
 
 Nit: You could use let chains here
 
@@ -253,5 +253,15 @@ _@amyreese reviewed on 2026-01-14 23:56_
 _Review comment by @amyreese on `crates/ruff_python_ast/src/token/tokens.rs`:195 on 2026-01-14 23:56_
 
 I don't think that's actually the case. I even added a test case that checks that the results from `split_at()` match what is returned from individual calls to both `before()` and `after()`.  https://github.com/astral-sh/ruff/pull/22446/changes/a457967e8f6f6ddf6907aba010fb5cbdaad0aa64#diff-22afd6bf6e8c02b1e9b264bd5f64b8937b237f2b34128576f559f2d70246b04eR574
+
+---
+
+_@amyreese reviewed on 2026-01-15 00:48_
+
+---
+
+_Review comment by @amyreese on `crates/ruff_linter/src/suppression.rs`:454 on 2026-01-15 00:48_
+
+Switched to using `matches!()`, but I don't think I can use the `if foo && let ... && matches!()` here because it actually needs to be `||` with the previous condition, and the compiler is complaining if I use `||` instead of `&&`, even with grouping parens.
 
 ---

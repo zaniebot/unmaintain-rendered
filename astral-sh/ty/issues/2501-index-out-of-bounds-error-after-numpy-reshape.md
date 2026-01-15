@@ -8,9 +8,9 @@ labels:
   - needs-info
 assignees: []
 created_at: 2026-01-14T21:43:29Z
-updated_at: 2026-01-15T00:38:14Z
+updated_at: 2026-01-15T00:57:50Z
 url: https://github.com/astral-sh/ty/issues/2501
-synced_at: 2026-01-15T00:41:56Z
+synced_at: 2026-01-15T01:41:09Z
 ```
 
 # index-out-of-bounds error after numpy reshape
@@ -129,5 +129,13 @@ All checks passed!
 (ty actually doesn't care about the Python version in the virtualenv, but explicitly passing `--python-version 3.11` to ty doesn't make any difference, either.)
 
 Is there any chance `ty` in your environment is resolving to some older ty elsewhere, rather than the 0.0.11 just installed in the venv?
+
+---
+
+_Comment by @ntjohnson1 on 2026-01-15 00:57_
+
+WEIRD restarting my shell and the standalone example stopped failing.
+
+It still fails running `uv run ty check` from root on my branch off rerun though (if I don't ignore the index-out-of-bounds rule). I'll probably have time to dig into this a bit more tomorrow to figure out what the disconnect is.
 
 ---

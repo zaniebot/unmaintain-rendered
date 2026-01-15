@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: thejchap/frozen-setattr
 created_at: 2025-11-13T14:48:35Z
-updated_at: 2026-01-07T02:41:05Z
+updated_at: 2026-01-15T01:12:12Z
 url: https://github.com/astral-sh/ruff/pull/21430
-synced_at: 2026-01-12T15:57:23Z
+synced_at: 2026-01-15T01:41:26Z
 ```
 
 # [ty] diagnostic on overridden `__setattr__` and `__delattr__` in frozen dataclasses
@@ -291,5 +291,11 @@ Thank you for your work on feature. Almost the entire team is out this week. It 
 _Comment by @thejchap on 2025-12-29 19:30_
 
 @MichaReiser thanks! Happy holidays 
+
+---
+
+_Comment by @thejchap on 2026-01-15 01:12_
+
+@AlexWaygood @MichaReiser hi! Just wanted to check on this one - I had been interested in continuing down this road on the diagnostics for overridden comparison dunder methods on order=True dataclasses as well so was curious on any feedback on the direction in this PR
 
 ---

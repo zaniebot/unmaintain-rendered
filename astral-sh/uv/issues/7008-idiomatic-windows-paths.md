@@ -10,9 +10,9 @@ labels:
   - breaking
 assignees: []
 created_at: 2024-09-04T12:06:16Z
-updated_at: 2026-01-15T00:38:04Z
+updated_at: 2026-01-15T00:49:12Z
 url: https://github.com/astral-sh/uv/issues/7008
-synced_at: 2026-01-15T00:42:17Z
+synced_at: 2026-01-15T01:41:30Z
 ```
 
 # Idiomatic Windows paths
@@ -242,5 +242,21 @@ _Comment by @refack on 2026-01-15 00:38_
 > One thing that uv doesn't make easy is a way to direct it to just put everything in a Dev Drive.
 
 ☝️ also this
+
+---
+
+_Comment by @refack on 2026-01-15 00:42_
+
+> This problems sounds more like [#11360](https://github.com/astral-sh/uv/issues/11360) or something specific to dev drives than Windows-specific paths in general
+
+I used to use a self-patched version of `uv` that respected XDG paths. It just worked.
+I stopped because y'all have amazing velocity, and it's hard to keep up. So now I do:
+
+<img width="609" height="809" alt="Image" src="https://github.com/user-attachments/assets/18d2afac-675a-4a28-bb23-9e95c44e0ede" />
+
+But I'm sure we can all agree this smells
+
+P.S. `E:\` is my dev drive
+P.P.S. the forward `/` slashes in the paths are overkill, and just give me funny looking paths like `C:/bin/var\vods\2026-01-13_19-41-07--ffmpeg.log` (which work, but areyoukiddingme)
 
 ---

@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: ruf069
 created_at: 2025-12-20T15:36:26Z
-updated_at: 2026-01-15T00:38:51Z
+updated_at: 2026-01-15T00:50:32Z
 url: https://github.com/astral-sh/ruff/pull/22114
-synced_at: 2026-01-15T00:42:13Z
+synced_at: 2026-01-15T01:41:26Z
 ```
 
 # [ruff] Add RUF069 to detect duplicate entries in __all__
@@ -97,7 +97,7 @@ _Comment by @astral-sh-bot[bot] on 2025-12-20 15:47_
 <p>
 
 <pre>
-+ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/query.py#L53'>src/bokeh/core/query.py:53:5:</a> RUF069 [*] `__all__` contains duplicate entries
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/query.py#L53'>src/bokeh/core/query.py:53:5:</a> RUF069 [*] `__all__` contains duplicate entries: `find` duplicated here
 </pre>
 
 </p>
@@ -109,8 +109,8 @@ _Comment by @astral-sh-bot[bot] on 2025-12-20 15:47_
 <p>
 
 <pre>
-+ <a href='https://github.com/langchain-ai/langchain/blob/2ef23882d236a4b03d5d14c57b07dce4ca90640f/libs/langchain/langchain_classic/document_loaders/__init__.py#L373'>libs/langchain/langchain_classic/document_loaders/__init__.py:373:5:</a> RUF069 [*] `__all__` contains duplicate entries
-+ <a href='https://github.com/langchain-ai/langchain/blob/2ef23882d236a4b03d5d14c57b07dce4ca90640f/libs/langchain/langchain_classic/document_loaders/__init__.py#L391'>libs/langchain/langchain_classic/document_loaders/__init__.py:391:5:</a> RUF069 [*] `__all__` contains duplicate entries
++ <a href='https://github.com/langchain-ai/langchain/blob/3899154daf9fcbcf3f2dc377d0528ab5bcbf5a29/libs/langchain/langchain_classic/document_loaders/__init__.py#L373'>libs/langchain/langchain_classic/document_loaders/__init__.py:373:5:</a> RUF069 [*] `__all__` contains duplicate entries: `AcreomLoader` duplicated here
++ <a href='https://github.com/langchain-ai/langchain/blob/3899154daf9fcbcf3f2dc377d0528ab5bcbf5a29/libs/langchain/langchain_classic/document_loaders/__init__.py#L391'>libs/langchain/langchain_classic/document_loaders/__init__.py:391:5:</a> RUF069 [*] `__all__` contains duplicate entries: `AsyncHtmlLoader` duplicated here
 </pre>
 
 </p>
@@ -122,9 +122,9 @@ _Comment by @astral-sh-bot[bot] on 2025-12-20 15:47_
 <p>
 
 <pre>
-+ <a href='https://github.com/python/typeshed/blob/4092415812a1febd044fcc1db6b93d25873f17dd/stubs/convertdate/convertdate/__init__.pyi#L45'>stubs/convertdate/convertdate/__init__.pyi:45:5:</a> RUF069 [*] `__all__` contains duplicate entries
-+ <a href='https://github.com/python/typeshed/blob/4092415812a1febd044fcc1db6b93d25873f17dd/stubs/reportlab/reportlab/lib/rltempfile.pyi#L4'>stubs/reportlab/reportlab/lib/rltempfile.pyi:4:30:</a> RUF069 [*] `__all__` contains duplicate entries
-+ <a href='https://github.com/python/typeshed/blob/4092415812a1febd044fcc1db6b93d25873f17dd/stubs/workalendar/workalendar/europe/__init__.pyi#L252'>stubs/workalendar/workalendar/europe/__init__.pyi:252:5:</a> RUF069 [*] `__all__` contains duplicate entries
++ <a href='https://github.com/python/typeshed/blob/cd8b26b0ceef26cd84ab614088140d48680ac7f7/stubs/convertdate/convertdate/__init__.pyi#L45'>stubs/convertdate/convertdate/__init__.pyi:45:5:</a> RUF069 [*] `__all__` contains duplicate entries: `mayan` duplicated here
++ <a href='https://github.com/python/typeshed/blob/cd8b26b0ceef26cd84ab614088140d48680ac7f7/stubs/reportlab/reportlab/lib/rltempfile.pyi#L4'>stubs/reportlab/reportlab/lib/rltempfile.pyi:4:30:</a> RUF069 [*] `__all__` contains duplicate entries: `get_rl_tempdir` duplicated here
++ <a href='https://github.com/python/typeshed/blob/cd8b26b0ceef26cd84ab614088140d48680ac7f7/stubs/workalendar/workalendar/europe/__init__.pyi#L252'>stubs/workalendar/workalendar/europe/__init__.pyi:252:5:</a> RUF069 [*] `__all__` contains duplicate entries: `Switzerland` duplicated here
 </pre>
 
 </p>
@@ -136,7 +136,7 @@ _Comment by @astral-sh-bot[bot] on 2025-12-20 15:47_
 <p>
 
 <pre>
-+ <a href='https://github.com/astropy/astropy/blob/e5da169679537858e758da8486638bc94c481025/astropy/table/__init__.py#L32'>astropy/table/__init__.py:32:5:</a> RUF069 [*] `__all__` contains duplicate entries
++ <a href='https://github.com/astropy/astropy/blob/8b9b5fe539846999c3e8430eb197cb3ad11c1647/astropy/table/__init__.py#L32'>astropy/table/__init__.py:32:5:</a> RUF069 [*] `__all__` contains duplicate entries: `conf` duplicated here
 </pre>
 
 </p>
