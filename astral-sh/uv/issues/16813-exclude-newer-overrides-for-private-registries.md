@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-11-21T21:27:02Z
-updated_at: 2026-01-14T16:13:02Z
+updated_at: 2026-01-15T19:22:20Z
 url: https://github.com/astral-sh/uv/issues/16813
-synced_at: 2026-01-14T16:39:11Z
+synced_at: 2026-01-15T20:01:13Z
 ```
 
 # exclude-newer: overrides for private registries
@@ -110,8 +110,9 @@ As of #16854 specific packages can be excluded with following syntax -
 
 ```yaml
 [tool.uv]
-exclude-newer-package = { pytorch = true } 
+exclude-newer-package = { pytorch = false } 
 ```
+**corrected
 
 It's of course really usefull for packages stored in private registries, which should not normally require version/dependency cooldown.
 

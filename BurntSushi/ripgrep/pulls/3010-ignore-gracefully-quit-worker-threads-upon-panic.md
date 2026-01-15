@@ -9,9 +9,9 @@ assignees: []
 base: master
 head: parallel-panic-quit
 created_at: 2025-03-06T04:03:41Z
-updated_at: 2025-11-27T13:34:31Z
+updated_at: 2026-01-15T19:30:39Z
 url: https://github.com/BurntSushi/ripgrep/pull/3010
-synced_at: 2026-01-12T18:23:14Z
+synced_at: 2026-01-15T20:00:48Z
 ```
 
 # ignore: gracefully quit worker threads upon panic in ParallelVisitor
@@ -93,7 +93,7 @@ And I am super glad to hear `ignore 0.5` is on the horizon!
 
 I would like you to know that as usual, it is extremely difficult to improve upon the kind of work you do. I have tried to argue with your comments in my head and largely failed. I have spent months investigating this, and I have had to introduce some immense complexity in order to make a pretty minor use case more robust. Great work.
 
-I'm also looking at the API, and while I'm not done with mine yet, I would absolutely recommend considering the use of [`ops::ControlFlow`](https://doc.rust-lang.org/std/ops/enum.ControlFlow.html), either internally or in the API. I think using `ControlFlow` may contain strictly more information than the untagged stop token. Personally, I have also separated the worker threads by category, and given each category individually configurable thread counts. I don't know if that will help performance, but I *do* think that the definition of "done" differs based upon whether the current node is a directory or not, which I think may justify slightly different looping techniques..
+I'm also looking at the API, and while I'm not done with mine yet, I would absolutely recommend considering the use of [`ops::ControlFlow`](https://doc.rust-lang.org/std/ops/enum.ControlFlow.html), either internally or in the API. I think using `ControlFlow` may contain strictly more information than the untagged stop token. Personally, I have also separated the worker threads by category, and given each category individually configurable thread counts. I don't know if that will help performance, but I *do* think that the definition of "done" differs based upon whether the current node is a directory or not, which I think may justify slightly different looping techniques.
 
 I also think the deadlock that occurred here is a symptom of a more general misalignment of the threading model to the input distribution. I think work stealing + *recursive* data generation (so each work item can always produce more) is necessarily prone to this deadlock. I do not have a proof of this, and I also do not have a more appropriate answer myself yet. I *do* understand that work stealing is a good approach to avoid having a single very large directory fill up its own queue. I *also* wonder whether there is any benefit to maximizing thread locality.
 

@@ -9,9 +9,9 @@ labels:
   - imports
 assignees: []
 created_at: 2025-12-16T23:42:39Z
-updated_at: 2025-12-27T19:31:19Z
+updated_at: 2026-01-15T19:24:48Z
 url: https://github.com/astral-sh/ty/issues/1967
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-15T20:00:50Z
 ```
 
 # Prefer *-stubs when finding packages
@@ -177,5 +177,54 @@ _Comment by @carljm on 2025-12-27 19:31_
 > If I understand the spec correctly that's only the case for third-party search paths (and they should be ignored for first-party or extra-paths?).
 
 Yeah, it looks like that is the intent of the spec. Would be interesting to see what other type checkers actually do here.
+
+---
+
+_Comment by @BryceBeagle on 2026-01-15 19:24_
+
+I believe that we're also encountering this -- we're using Bazel to execute `ty` and are making use of `--extra-search-path` to dynamically add 3rd party packages to the search path.
+
+Because Bazel/[`rules_python`](https://github.com/bazel-contrib/rules_python) does not set up a true Python virtual environment, I'm not aware of any other way to do this dynamically. We didn't have to do this special magic with `mypy` because it's a Python process and we just fiddled with `PYTHONPATH`/`sys.path` directly at start-up.
+
+```
+bazel-out/darwin_arm64-opt-exec-ST-a828a81199fe/bin/external/com_github__astral-sh__ty/ty-aarch64-apple-darwin/ty check \
+      --python external/python_3_10_aarch64-apple-darwin/bin/python3 \
+      --python-version 3.10 \
+      --color=always \
+      --extra-search-path external/pypi_root_darwin_arm64_protobuf/site-packages \
+      --extra-search-path external/pypi_root_darwin_arm64_grpcio/site-packages \
+      --extra-search-path external/pypi_root_darwin_arm64_typing_extensions/site-packages \
+      --extra-search-path external/pypi_root_darwin_arm64_nexus_rpc/site-packages \
+      --extra-search-path external/pypi_root_darwin_arm64_six/site-packages \
+      --extra-search-path external/pypi_root_darwin_arm64_python_dateutil/site-packages \
+      --extra-search-path external/pypi_root_darwin_arm64_types_protobuf/site-packages \
+...
+      --extra-search-path external/pypi_root_darwin_arm64_pyjwt/site-packages \
+      --extra-search-path external/pypi_root_darwin_arm64_datadog/site-packages \
+      --extra-search-path external/pypi_root_darwin_arm64_pyyaml/site-packages \
+      foobar/__init__.py \
+      foobar/blah__client_pb2.py \
+      foobar/blah_pb2.py \
+      foobar/blah_worker_pb2.py \
+      foobar/blah_pb2.pyi
+```
+
+The problem is that (unless I manually give some packages priority) the order of 3rd party packages originates from [Bazel's internal `depset` traversal algorithm](https://bazel.build/extending/depsets#order). And sometimes it selects the ~normal package (in this case `protobuf`) before the stubs package (in this case `types_protobuf`), resulting in errors 
+
+```
+error[unresolved-attribute]: Module `google.protobuf.timestamp_pb2` has no member `Timestamp`
+    --> foobar/blah_pb2.pyi:1845:29
+     |
+1843 |     def retried_things(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
+1844 |     @property
+1845 |     def started_at(self) -> google.protobuf.timestamp_pb2.Timestamp: ...
+     |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1846 |     def __init__(
+1847 |         self,
+     |
+info: rule `unresolved-attribute` is enabled by default
+```
+
+What I've done to get around this is have a hardcoded list of "known stubs packages" that I ensure get enumerated with `--extra-search-path` first when we construct the CLI args. But ideally I wouldn't have to do this
 
 ---
