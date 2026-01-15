@@ -6,13 +6,12 @@ state: open
 author: woodruffw
 labels: []
 assignees: []
-draft: true
 base: main
 head: ww/deprecate-non-pep625
 created_at: 2026-01-14T15:58:33Z
-updated_at: 2026-01-14T18:26:38Z
+updated_at: 2026-01-15T00:11:11Z
 url: https://github.com/astral-sh/uv/pull/17467
-synced_at: 2026-01-14T18:48:19Z
+synced_at: 2026-01-15T00:42:26Z
 ```
 
 # Deprecate non-PEP 625 source distributions
@@ -108,5 +107,9 @@ This PR is focusing on (1) right now, but I could also do (2) (or in a follow-up
 _Comment by @konstin on 2026-01-14 18:26_
 
 (1) is definitely a good unit to merge on it's own. I'm mainly bringing up (2) cause we also need it to remove the xz/lzma dependencies.
+
+---
+
+_Marked ready for review by @woodruffw on 2026-01-15 00:11_
 
 ---

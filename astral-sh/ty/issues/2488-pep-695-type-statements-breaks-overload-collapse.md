@@ -7,9 +7,9 @@ author: flying-sheep
 labels: []
 assignees: []
 created_at: 2026-01-14T10:29:05Z
-updated_at: 2026-01-14T11:02:15Z
+updated_at: 2026-01-15T00:11:23Z
 url: https://github.com/astral-sh/ty/issues/2488
-synced_at: 2026-01-14T11:33:10Z
+synced_at: 2026-01-15T00:41:56Z
 ```
 
 # PEP 695 `type` statements breaks overload collapse
@@ -51,5 +51,17 @@ ty 0.0.11 (830cb9cc6 2026-01-09)
 ---
 
 _Renamed from "PEP 695 `type` statements break overload collapse" to "PEP 695 `type` statements breaks overload collapse" by @flying-sheep on 2026-01-14 10:29_
+
+---
+
+_Added to milestone `Pre-stable 1` by @carljm on 2026-01-15 00:11_
+
+---
+
+_Removed from milestone `Pre-stable 1` by @carljm on 2026-01-15 00:11_
+
+---
+
+_Added to milestone `Stable` by @carljm on 2026-01-15 00:11_
 
 ---

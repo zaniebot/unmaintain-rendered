@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: type-module-dunder-file-str
 created_at: 2026-01-01T20:21:52Z
-updated_at: 2026-01-14T21:24:59Z
+updated_at: 2026-01-15T00:23:12Z
 url: https://github.com/astral-sh/ruff/pull/22333
-synced_at: 2026-01-14T21:43:07Z
+synced_at: 2026-01-15T00:42:13Z
 ```
 
 # [ty] Override `__file__` to str when applicable on imported modules
@@ -610,5 +610,9 @@ _@AlexWaygood reviewed on 2026-01-14 21:24_
 _Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/scopes/moduletype_attrs.md`:102 on 2026-01-14 21:24_
 
 I think we _could_ keep _some_ version of the comment that states that for a stub file, we don't know whether it's a C extension or pure-Python module, and if it's a C extension then `__file__` might be unset entirely? But yes, I agree that the current version of the comment is more confusing than helpful
+
+---
+
+_Review request for @carljm removed by @carljm on 2026-01-15 00:23_
 
 ---

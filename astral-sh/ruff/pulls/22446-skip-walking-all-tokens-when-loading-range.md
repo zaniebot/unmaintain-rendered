@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: amy/suppression-perf-2
 created_at: 2026-01-07T22:39:17Z
-updated_at: 2026-01-14T11:16:32Z
+updated_at: 2026-01-14T23:56:25Z
 url: https://github.com/astral-sh/ruff/pull/22446
-synced_at: 2026-01-14T11:33:27Z
+synced_at: 2026-01-15T00:42:13Z
 ```
 
 # Skip walking all tokens when loading range suppressions
@@ -243,5 +243,15 @@ _@MichaReiser reviewed on 2026-01-14 11:16_
 _Review comment by @MichaReiser on `crates/ruff_linter/src/suppression.rs`:472 on 2026-01-14 11:16_
 
 I'm not sure if we should/could move this out of the loop
+
+---
+
+_@amyreese reviewed on 2026-01-14 23:56_
+
+---
+
+_Review comment by @amyreese on `crates/ruff_python_ast/src/token/tokens.rs`:195 on 2026-01-14 23:56_
+
+I don't think that's actually the case. I even added a test case that checks that the results from `split_at()` match what is returned from individual calls to both `before()` and `after()`.  https://github.com/astral-sh/ruff/pull/22446/changes/a457967e8f6f6ddf6907aba010fb5cbdaad0aa64#diff-22afd6bf6e8c02b1e9b264bd5f64b8937b237f2b34128576f559f2d70246b04eR574
 
 ---

@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: ruf069
 created_at: 2025-12-20T15:36:26Z
-updated_at: 2026-01-13T20:48:01Z
+updated_at: 2026-01-15T00:38:51Z
 url: https://github.com/astral-sh/ruff/pull/22114
-synced_at: 2026-01-13T21:36:29Z
+synced_at: 2026-01-15T00:42:13Z
 ```
 
 # [ruff] Add RUF069 to detect duplicate entries in __all__
@@ -408,7 +408,7 @@ cc @chirizxc
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/resources/test/fixtures/ruff/RUF069.py`:22 on 2026-01-01 16:38_
+_Review comment by @ntBre on `crates/ruff_linter/resources/test/fixtures/ruff/RUF069.py`:23 on 2026-01-01 16:38_
 
 Let's throw in one multi-line case without comments.
 
@@ -693,5 +693,88 @@ _Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/snapshots/ruff_l
 Link to the secondary annotation helper for reference:
 
 https://github.com/astral-sh/ruff/blob/2245355931f66def488809a6b9b784f7c294bd49/crates/ruff_linter/src/checkers/ast/mod.rs#L3309-L3311
+
+---
+
+_Comment by @leandrobbraga on 2026-01-14 23:43_
+
+> Thank you! This is looking great. I just had a few more very small nits, and a couple of suggestions about additional tests (but I think they'll be handled well already).
+> 
+> I also think it might be worth manually testing the CLI to make sure cases with multiple deletions in the same assignment are fixed correctly. I think they should be, but we have a mechanism to [`isolate`](https://github.com/astral-sh/ruff/blob/e4ba29392bb768965ba16ba86aba7d482e4f2ea8/crates/ruff_diagnostics/src/fix.rs#L168) fixes if we need it. I think just testing something like:
+> 
+> ```shell
+> $ cargo run -p ruff -- check --preview --select RUF069 --fix - <<<'__all__ = ["A", "A", "B", "B"]'
+> ```
+> 
+> should work. If it _doesn't_ work, we should add an actual CLI test, but I think it's okay as long as the manual test works as expected.
+
+It does work:
+```console
+$ cargo run -p ruff -- check --preview --select RUF069 --fix - <<<'__all__ = ["A", "A", "B", "B"]'
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 8.98s
+     Running `target/debug/ruff check --preview --select RUF069 --fix -`
+warning: Detected debug build without --no-cache.
+__all__ = ["A", "B"]
+Found 2 errors (2 fixed, 0 remaining).
+```
+I also have tested it in the [crates/ruff_linter/resources/test/fixtures/ruff/RUF069.py](https://github.com/astral-sh/ruff/pull/22114/changes#diff-c23d55609dc272d6a87875a04cb84bfcc9ee07964e1bbb101b2506c6318e48cf) file and the fix works flawless.
+
+---
+
+_Review comment by @leandrobbraga on `crates/ruff_linter/src/rules/ruff/snapshots/ruff_linter__rules__ruff__tests__RUF069_RUF069.py.snap`:9 on 2026-01-15 00:28_
+
+What do you think about this?
+
+```console
+$ cargo run -p ruff -- check --preview --select RUF069 - <<<'__all__ = ["A", "A", "B", "B"]'
+RUF069 [*] `__all__` contains duplicate entries
+ --> -:1:12
+  |
+1 | __all__ = ["A", "A", "B", "B"]
+  |            ---  ^^^ `A` duplicated here
+  |            |
+  |            previous occurrence of `A` here
+  |
+help: Remove duplicate entries from `__all__`
+  - __all__ = ["A", "A", "B", "B"]
+1 + __all__ = ["A", "B", "B"]
+
+RUF069 [*] `__all__` contains duplicate entries
+ --> -:1:22
+  |
+1 | __all__ = ["A", "A", "B", "B"]
+  |                      ---  ^^^ `B` duplicated here
+  |                      |
+  |                      previous occurrence of `B` here
+  |
+help: Remove duplicate entries from `__all__`
+  - __all__ = ["A", "A", "B", "B"]
+1 + __all__ = ["A", "A", "B"]
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.
+```
+
+---
+
+_@leandrobbraga reviewed on 2026-01-15 00:28_
+
+---
+
+_Review requested from @MichaReiser by @leandrobbraga on 2026-01-15 00:37_
+
+---
+
+_Review requested from @ntBre by @leandrobbraga on 2026-01-15 00:37_
+
+---
+
+_Comment by @leandrobbraga on 2026-01-15 00:38_
+
+I should have addressed all concerns now, sorry for the delay
+
+---
+
+_Review requested from @chirizxc by @leandrobbraga on 2026-01-15 00:38_
 
 ---

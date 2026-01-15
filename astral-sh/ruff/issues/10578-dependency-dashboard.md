@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-14T22:18:38Z
+updated_at: 2026-01-15T00:20:00Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-14T22:42:23Z
+synced_at: 2026-01-15T00:42:01Z
 ```
 
 # Dependency Dashboard
@@ -833,7 +833,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `eslint-plugin-import ^2.31.0`
  - `eslint-plugin-react ^7.31.11`
  - `eslint-plugin-react-hooks ^7.0.0`
- - `prettier ^3.5.3`
+ - `prettier ^3.5.3` → [Updates: `^3.5.3`]
  - `tailwindcss ^4.0.14`
  - `typescript ^5.8.2`
  - `typescript-eslint ^8.26.1` → [Updates: `^8.26.1`]

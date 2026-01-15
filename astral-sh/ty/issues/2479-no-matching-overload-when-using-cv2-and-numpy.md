@@ -8,9 +8,9 @@ labels:
   - needs-info
 assignees: []
 created_at: 2026-01-13T10:56:34Z
-updated_at: 2026-01-14T09:00:54Z
+updated_at: 2026-01-14T23:54:44Z
 url: https://github.com/astral-sh/ty/issues/2479
-synced_at: 2026-01-14T09:34:52Z
+synced_at: 2026-01-15T00:41:56Z
 ```
 
 # `no-matching-overload` when using `cv2` and `numpy`
@@ -166,5 +166,11 @@ g:\code\Python\tytest\main.py
 
 I think the behaviour difference perhaps because pyright's default `typeCheckingMode="standard"` is less strict than ty's strategy.
 Anyway, change the numpy version do solve the problem. Thanks again for teams wonderful working!
+
+---
+
+_Comment by @carljm on 2026-01-14 23:54_
+
+Thanks for the additional analysis! Yes, it looks like the difference in behavior between pyright and mypy on your new example is because pyright loses some more specific type information from the call to `cv2.cvtColor`, because of the original `img: np.ndarray` annotation. When you switch to using two separate variables, pyright no longer loses that information and emits the same error as ty.
 
 ---

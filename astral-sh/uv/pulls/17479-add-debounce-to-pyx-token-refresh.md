@@ -10,9 +10,9 @@ draft: true
 base: main
 head: claude/credential-helper-token-refresh-oq5GB
 created_at: 2026-01-14T23:39:06Z
-updated_at: 2026-01-14T23:39:06Z
+updated_at: 2026-01-15T00:13:06Z
 url: https://github.com/astral-sh/uv/pull/17479
-synced_at: 2026-01-14T23:42:42Z
+synced_at: 2026-01-15T00:42:26Z
 ```
 
 # Add debounce to pyx token refresh
@@ -23,11 +23,17 @@ _@zanieb_
 
 Prevent concurrent processes from all refreshing the token simultaneously by using a file lock and timestamp-based debounce. When a refresh is needed:
 
-1. Acquire an exclusive lock on refresh.lock
+1. Acquire an exclusive file lock (which will block if another process is refreshing)
 2. Check if another process recently refreshed (within 5 seconds)
 3. If so, re-read the tokens from disk instead of making another request
 4. Otherwise, perform the refresh and update the timestamp
 
 This prevents thundering herd issues when multiple concurrent processes are invoking `uv auth token` or `uv auth credential-helper` at the same time.
+
+---
+
+_Comment by @zanieb on 2026-01-15 00:12_
+
+cc @charliermarsh I think this is probably sound even if it's not causing the Bazel issue @zsol is going to look into?
 
 ---

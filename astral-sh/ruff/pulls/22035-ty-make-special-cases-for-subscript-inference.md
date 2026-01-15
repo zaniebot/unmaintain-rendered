@@ -2,19 +2,20 @@
 number: 22035
 title: "[ty] Make special cases for subscript inference exhaustive"
 type: pull_request
-state: open
+state: merged
 author: AlexWaygood
 labels:
   - bug
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: alex/subscript-alias
 created_at: 2025-12-17T19:06:47Z
-updated_at: 2026-01-14T12:08:44Z
+updated_at: 2026-01-15T00:18:56Z
 url: https://github.com/astral-sh/ruff/pull/22035
-synced_at: 2026-01-14T12:43:59Z
+synced_at: 2026-01-15T00:42:13Z
 ```
 
 # [ty] Make special cases for subscript inference exhaustive
@@ -508,5 +509,23 @@ _Review requested from @sharkdp by @AlexWaygood on 2026-01-14 12:08_
 ---
 
 _Review requested from @dcreager by @AlexWaygood on 2026-01-14 12:08_
+
+---
+
+_@carljm approved on 2026-01-15 00:17_
+
+Looks good!
+
+---
+
+_Merged by @AlexWaygood on 2026-01-15 00:18_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-15 00:18_
+
+---
+
+_Branch deleted on 2026-01-15 00:18_
 
 ---

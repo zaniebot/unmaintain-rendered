@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/implicit-cls-new
 created_at: 2026-01-14T21:27:18Z
-updated_at: 2026-01-14T23:16:27Z
+updated_at: 2026-01-14T23:49:31Z
 url: https://github.com/astral-sh/ruff/pull/22584
-synced_at: 2026-01-14T23:42:30Z
+synced_at: 2026-01-15T00:42:13Z
 ```
 
 # [ty] Infer implicit type of `self` in `__new__` methods
@@ -339,5 +339,11 @@ The point of this test is that the usage of `Self` above should return a diagnos
 _@carljm approved on 2026-01-14 23:16_
 
 Thank you!
+
+---
+
+_Comment by @carljm on 2026-01-14 23:49_
+
+The new ecosystem diagnostics here are technically false positives, but they are also emitted by pyright and strict-mode mypy, and they look expected, in that it's known that we won't see attributes dynamically attached in `__new__` or in metaclasses.
 
 ---

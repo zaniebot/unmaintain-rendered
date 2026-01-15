@@ -10,9 +10,9 @@ labels:
   - breaking
 assignees: []
 created_at: 2024-09-04T12:06:16Z
-updated_at: 2026-01-14T09:05:07Z
+updated_at: 2026-01-15T00:38:04Z
 url: https://github.com/astral-sh/uv/issues/7008
-synced_at: 2026-01-14T09:35:12Z
+synced_at: 2026-01-15T00:42:17Z
 ```
 
 # Idiomatic Windows paths
@@ -234,5 +234,13 @@ UV_TOOL_DIR=F:\Package\uv\tool
 _Comment by @konstin on 2026-01-14 09:05_
 
 This problems sounds more like https://github.com/astral-sh/uv/issues/11360 or something specific to dev drives than Windows-specific paths in general (the same problem exists on Linux with multiple partitions). There's a wider problem that uv always puts cache and data in the user home, even if the project is on a different partition, where it's not clear if we should colocate other cache and data on the partition of the project.
+
+---
+
+_Comment by @refack on 2026-01-15 00:38_
+
+> One thing that uv doesn't make easy is a way to direct it to just put everything in a Dev Drive.
+
+☝️ also this
 
 ---

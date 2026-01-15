@@ -2,16 +2,16 @@
 number: 2015
 title: "Inconsistent type inference for `tuple[int, ...]` when using `type` and `TypeAlias`"
 type: issue
-state: open
+state: closed
 author: tomasr8
 labels:
   - bug
   - type aliases
 assignees: []
 created_at: 2025-12-17T14:44:17Z
-updated_at: 2026-01-05T14:50:31Z
+updated_at: 2026-01-15T00:18:56Z
 url: https://github.com/astral-sh/ty/issues/2015
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-15T00:41:56Z
 ```
 
 # Inconsistent type inference for `tuple[int, ...]` when using `type` and `TypeAlias`
@@ -77,5 +77,9 @@ Thanks for the report, definitely a bug.
 ---
 
 _Label `type aliases` added by @mtshiba on 2026-01-05 14:50_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-15 00:18_
 
 ---
