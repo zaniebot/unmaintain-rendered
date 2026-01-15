@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The `--force-exclude` flag is behaving differently to `ruff` - astral-sh/ty #2506</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>The <code>--force-exclude</code> flag is behaving differently to <code>ruff</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2506">#2506</a>
+        opened by <a href="https://github.com/btalb">@btalb</a>
+        on 2026-01-15 07:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/btalb">@btalb</a></div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Following on from https://github.com/astral-sh/ty/issues/1469, I expect the behaviour of <code>--force-exclude</code> to be the same for <code>ruff check</code> and <code>ty check</code> But what I'm seeing seems to differ (<code>ty</code> doesn't seem to obey the flag at all?).</p>
+<p>Below is an MVP where I run them both in a project with a file passed via CLI:</p>
+<pre><code>bt@FA-02090-LNX:~/repos/autonomy/DEV-3484-ruff-with-shebangs$ uvx ruff --version
+ruff 0.14.11
+bt@FA-02090-LNX:~/repos/autonomy/DEV-3484-ruff-with-shebangs$ uvx ty --version
+ty 0.0.12
+bt@FA-02090-LNX:~/repos/autonomy/DEV-3484-ruff-with-shebangs$ uvx ruff check --force-exclude -v out/amd64/install/_setup_util.py 
+[2026-01-15][16:56:48][ruff::resolve][DEBUG] Using configuration file (via parent) at: /home/bt/repos/autonomy/DEV-3484-ruff-with-shebangs/pyproject.toml
+[2026-01-15][16:56:48][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/home/bt/repos/autonomy/DEV-3484-ruff-with-shebangs/out&quot;
+[2026-01-15][16:56:48][ruff::commands::check][DEBUG] Identified files to lint in: 50.209µs
+warning: No Python files found under the given path(s)
+All checks passed!
+bt@FA-02090-LNX:~/repos/autonomy/DEV-3484-ruff-with-shebangs$ uvx ty check --force-exclude -v out/amd64/install/_setup_util.py 
+INFO Defaulting to python-platform `linux`
+INFO Python version: Python 3.12, platform: linux
+INFO Indexed 1 file(s) in 0.002s
+error[invalid-argument-type]: Argument to bound method `insert` is incorrect
+   --&gt; out/amd64/install/_setup_util.py:283:41
+    |
+282 |         if base_path not in CMAKE_PREFIX_PATH:
+283 |             CMAKE_PREFIX_PATH.insert(0, base_path)
+    |                                         ^^^^^^^^^ Expected `LiteralString`, found `str`
+284 |         CMAKE_PREFIX_PATH = os.pathsep.join(CMAKE_PREFIX_PATH)
+    |
+info: Method defined here
+    --&gt; stdlib/builtins.pyi:2865:9
+     |
+2863 |         &quot;&quot;&quot;Return number of occurrences of value.&quot;&quot;&quot;
+2864 |
+2865 |     def insert(self, index: SupportsIndex, object: _T, /) -&gt; None:
+     |         ^^^^^^                             ---------- Parameter declared here
+2866 |         &quot;&quot;&quot;Insert object before index.&quot;&quot;&quot;
+     |
+info: Union variant `bound method list[LiteralString].insert(index: SupportsIndex, object: LiteralString, /) -&gt; None` is incompatible with this call site
+info: Attempted to call union type `(bound method list[LiteralString].insert(index: SupportsIndex, object: LiteralString, /) -&gt; None) | (bound method list[Unknown].insert(index: SupportsIndex, object: Unknown, /) -&gt; None)`
+info: rule `invalid-argument-type` is enabled by default
+
+Found 1 diagnostic
+</code></pre>
+<p>And I've confirmed that when running without a file passed, <code>ty</code>'s use of <code>pyproject.toml</code> correctly excludes it:</p>
+<pre><code>bt@FA-02090-LNX:~/repos/autonomy/DEV-3484-ruff-with-shebangs$ uvx ty check -vvv |&amp; grep ' Checking file .*_setup_util.py'
+bt@FA-02090-LNX:~/repos/autonomy/DEV-3484-ruff-with-shebangs$ 
+</code></pre>
+<p>My excludes are specified in this part of the <code>pyproject.toml</code>:</p>
+<pre><code>[tool.ty.src]
+exclude = [
+  &quot;.git&quot;,
+  &quot;.ycm_extra_conf.py&quot;,
+  &quot;docker&quot;,
+  &quot;out&quot;,
+]
+</code></pre>
+<h3>Version</h3>
+<p>0.0.12</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-15 07:51:30 UTC
+    </footer>
+</body>
+</html>
