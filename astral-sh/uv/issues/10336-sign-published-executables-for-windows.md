@@ -9,9 +9,9 @@ labels:
   - releases
 assignees: []
 created_at: 2025-01-06T23:03:52Z
-updated_at: 2026-01-08T21:54:18Z
+updated_at: 2026-01-15T19:55:13Z
 url: https://github.com/astral-sh/uv/issues/10336
-synced_at: 2026-01-12T16:00:11Z
+synced_at: 2026-01-15T20:50:54Z
 ```
 
 # Sign published executables for Windows
@@ -154,5 +154,11 @@ So, after a lot of confusion and a bit more investigation, it looks like we have
 So I guess the question is, are these Microsoft rooted non-EV certificates sufficient or would it be a waste of effort to not go down the EV path?
 
 [^1]: Microsoft also have a guide: https://learn.microsoft.com/en-us/windows/msix/desktop/cicd-keyvault
+
+---
+
+_Comment by @mattculler on 2026-01-15 19:55_
+
+@EliteTK I asked my company's IT department, they said that we can use non-EV certs to add uv to our allowlist just fine.  I believe our endpoint protection software is CyberArk.  Can't speak for any other systems or companies though.
 
 ---

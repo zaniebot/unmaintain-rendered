@@ -2,17 +2,18 @@
 number: 14910
 title: "Add `--no-sources-package`"
 type: pull_request
-state: open
+state: merged
 author: zanieb
 labels:
   - cli
 assignees: []
+merged: true
 base: main
 head: zb/no-sources-package
 created_at: 2025-07-25T21:11:34Z
-updated_at: 2026-01-15T03:58:40Z
+updated_at: 2026-01-15T19:53:46Z
 url: https://github.com/astral-sh/uv/pull/14910
-synced_at: 2026-01-15T04:52:06Z
+synced_at: 2026-01-15T20:53:17Z
 ```
 
 # Add `--no-sources-package`
@@ -80,5 +81,17 @@ _@zanieb reviewed on 2026-01-15 03:58_
 _Review comment by @zanieb on `crates/uv-dispatch/src/lib.rs`:219 on 2026-01-15 03:58_
 
 I think I did this for some painful reason, but it was a while ago now. I'll look again.
+
+---
+
+_Merged by @zanieb on 2026-01-15 19:53_
+
+---
+
+_Closed by @zanieb on 2026-01-15 19:53_
+
+---
+
+_Branch deleted on 2026-01-15 19:53_
 
 ---

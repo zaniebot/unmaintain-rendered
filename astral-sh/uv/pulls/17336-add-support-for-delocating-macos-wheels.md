@@ -7,13 +7,12 @@ author: charliermarsh
 labels:
   - internal
 assignees: []
-draft: true
 base: main
 head: charlie/delocate
 created_at: 2026-01-06T15:14:48Z
-updated_at: 2026-01-15T19:33:05Z
+updated_at: 2026-01-15T20:27:49Z
 url: https://github.com/astral-sh/uv/pull/17336
-synced_at: 2026-01-15T20:01:21Z
+synced_at: 2026-01-15T20:53:28Z
 ```
 
 # Add support for delocating macOS wheels
@@ -300,7 +299,7 @@ That version is hardcoded both here and in https://github.com/astral-sh/uv/blob/
 
 ---
 
-_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:501 on 2026-01-12 10:41_
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:483 on 2026-01-12 10:41_
 
 We can avoid duplicating the RPATH/RECORD/writing logic by inverting this condition.
 
@@ -324,7 +323,7 @@ This looks a lot like `macos_deployment_target`, can we unify this into e.g. a `
 
 ---
 
-_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:23 on 2026-01-13 10:07_
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:24 on 2026-01-13 10:07_
 
 Currently, these fields aren't written beyond the default constructor. Do we anticipate that we will expose all of them?
 
@@ -350,37 +349,37 @@ This test doesn't cover the output of `list_wheel_dependencies`, the part that's
 
 ---
 
-_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:98 on 2026-01-13 11:21_
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:115 on 2026-01-13 11:21_
 
 We can avoid the unwrap with if-let for all `strip_prefix`
 
 ---
 
-_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:105 on 2026-01-13 11:31_
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:122 on 2026-01-13 11:31_
 
 The branches look the same to me
 
 ---
 
-_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:148 on 2026-01-13 11:38_
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:165 on 2026-01-13 11:38_
 
 Aren't we stripping any potential relative path here? 
 
 ---
 
-_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:136 on 2026-01-13 11:40_
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:128 on 2026-01-13 11:40_
 
 Is it intentional that we're using canonicalize as `is_file` check?
 
 ---
 
-_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:348 on 2026-01-13 11:43_
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:365 on 2026-01-13 11:43_
 
 Do we need to handle the error path here? This looks like a way to create a half-delocated wheel through a broken file somewhere in the dep tree
 
 ---
 
-_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:161 on 2026-01-13 11:45_
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:178 on 2026-01-13 11:45_
 
 Isn't it the other way round, libraries that the binary in the wheel depends on?
 
@@ -392,7 +391,7 @@ This flag is deprecated in the python delocate: https://github.com/matthew-brett
 
 ---
 
-_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:368 on 2026-01-13 12:00_
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:385 on 2026-01-13 12:00_
 
 We should be logging each edge here
 
@@ -438,13 +437,13 @@ Can you change the comment to explain what the `dependent_in_wheel.exists()` con
 
 ---
 
-_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:472 on 2026-01-13 12:24_
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:467 on 2026-01-13 12:24_
 
 Do we care about the `min_macos_version` of the libraries we vendor?
 
 ---
 
-_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:244 on 2026-01-13 12:34_
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:238 on 2026-01-13 12:34_
 
 I know I asked this in the last iteration too, but does this ensure that compressed tag sets are sorted?
 
@@ -456,13 +455,13 @@ We should delocate all modules in the wheel, not just the first one. It's a set 
 
 ---
 
-_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:725 on 2026-01-13 12:56_
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:756 on 2026-01-13 12:56_
 
 This should test wheel filename strings to wheel filename strings, so we can see the string formed output and whether the wheel filename are valid.
 
 ---
 
-_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:588 on 2026-01-13 13:14_
+_Review comment by @konstin on `crates/uv-delocate/src/delocate.rs`:614 on 2026-01-13 13:14_
 
 If we changed the tag, we must update the .dist-info/WHEELfile, otherwise we get bugs like https://github.com/astral-sh/uv/issues/16581
 
@@ -519,13 +518,13 @@ _@charliermarsh reviewed on 2026-01-15 18:58_
 
 ---
 
-_Review comment by @charliermarsh on `crates/uv-delocate/src/delocate.rs`:23 on 2026-01-15 18:58_
+_Review comment by @charliermarsh on `crates/uv-delocate/src/delocate.rs`:24 on 2026-01-15 18:58_
 
 I'm going to remove the two booleans.
 
 ---
 
-_Review comment by @charliermarsh on `crates/uv-delocate/src/delocate.rs`:136 on 2026-01-15 19:19_
+_Review comment by @charliermarsh on `crates/uv-delocate/src/delocate.rs`:128 on 2026-01-15 19:19_
 
 Yes!
 
@@ -535,12 +534,64 @@ _@charliermarsh reviewed on 2026-01-15 19:19_
 
 ---
 
-_Review comment by @charliermarsh on `crates/uv-delocate/src/delocate.rs`:161 on 2026-01-15 19:33_
+_Review comment by @charliermarsh on `crates/uv-delocate/src/delocate.rs`:178 on 2026-01-15 19:33_
 
 I think the comment is correct... The keys are external libraries (like `/usr/local/lib/libfoo.dylib`), and the values are wheel binaries (or other bundled libs) that depend on this external library... I will improve...
 
 ---
 
 _@charliermarsh reviewed on 2026-01-15 19:33_
+
+---
+
+_@charliermarsh reviewed on 2026-01-15 19:49_
+
+---
+
+_Review comment by @charliermarsh on `crates/uv-delocate/src/delocate.rs`:467 on 2026-01-15 19:49_
+
+We do -- I believe that's `libraries.keys().map(PathBuf::as_path).
+
+---
+
+_@charliermarsh reviewed on 2026-01-15 19:51_
+
+---
+
+_Review comment by @charliermarsh on `crates/uv-delocate/src/delocate.rs`:756 on 2026-01-15 19:51_
+
+I don't think I agree with this? That would be testing the wheel filename display, which shouldn't be tested here.
+
+---
+
+_@charliermarsh reviewed on 2026-01-15 19:54_
+
+---
+
+_Review comment by @charliermarsh on `crates/uv-delocate/src/delocate.rs`:529 on 2026-01-15 19:54_
+
+Doesn't this just control where we _put_ the dylibs? we're still iterating over all binaries in the entire wheel. 
+
+---
+
+_Review comment by @charliermarsh on `crates/uv-delocate/src/wheel.rs`:86 on 2026-01-15 20:07_
+
+(I thought we'd need to wrap the `File` in a buffered reader anyway, which was incorrect.)
+
+---
+
+_@charliermarsh reviewed on 2026-01-15 20:07_
+
+---
+
+_Review requested from @konstin by @charliermarsh on 2026-01-15 20:25_
+
+---
+
+_Review requested from @zanieb by @charliermarsh on 2026-01-15 20:25_
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-15 20:25_
 
 ---

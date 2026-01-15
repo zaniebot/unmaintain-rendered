@@ -10,9 +10,9 @@ labels:
   - breaking
 assignees: []
 created_at: 2024-09-04T12:06:16Z
-updated_at: 2026-01-15T00:49:12Z
+updated_at: 2026-01-15T20:44:13Z
 url: https://github.com/astral-sh/uv/issues/7008
-synced_at: 2026-01-15T01:41:30Z
+synced_at: 2026-01-15T20:50:37Z
 ```
 
 # Idiomatic Windows paths
@@ -258,5 +258,13 @@ But I'm sure we can all agree this smells
 
 P.S. `E:\` is my dev drive
 P.P.S. the forward `/` slashes in the paths are overkill, and just give me funny looking paths like `C:/bin/var\vods\2026-01-13_19-41-07--ffmpeg.log` (which work, but areyoukiddingme)
+
+---
+
+_Comment by @brettcannon on 2026-01-15 20:44_
+
+> This problems sounds more like [#11360](https://github.com/astral-sh/uv/issues/11360) or something specific to dev drives than Windows-specific paths in general (the same problem exists on Linux with multiple partitions).
+
+For me, it's the lack of XDG support on Windows to make this easy. After that is the lack of guidance for Dev Drive users. Do you want a new issue for the latter?
 
 ---

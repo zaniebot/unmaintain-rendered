@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: tk/pip-compile-missing-py-4
 created_at: 2025-12-29T12:59:39Z
-updated_at: 2026-01-15T18:31:04Z
+updated_at: 2026-01-15T20:17:53Z
 url: https://github.com/astral-sh/uv/pull/17249
-synced_at: 2026-01-15T18:49:46Z
+synced_at: 2026-01-15T20:53:27Z
 ```
 
 # Make `uv pip compile` attempt to download a specified `--python-version` if it can.
@@ -448,5 +448,15 @@ _Review comment by @EliteTK on `crates/uv/tests/it/pip_compile.rs`:18284 on 2026
 <img width="3483" height="642" alt="image" src="https://github.com/user-attachments/assets/b0109c40-eb6d-4c49-b293-846b6c34a518" />
 
 I'm not too sure about this formatting...
+
+---
+
+_@zanieb reviewed on 2026-01-15 20:17_
+
+---
+
+_Review comment by @zanieb on `crates/uv/tests/it/pip_compile.rs`:18284 on 2026-01-15 20:17_
+
+Shouldn't you be creating a fake top-level error so it's all one chain?
 
 ---

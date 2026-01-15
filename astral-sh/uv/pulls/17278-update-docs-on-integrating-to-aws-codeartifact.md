@@ -6,12 +6,13 @@ state: open
 author: jaltgen
 labels: []
 assignees: []
+draft: true
 base: main
 head: main
 created_at: 2025-12-31T10:40:53Z
-updated_at: 2026-01-05T22:56:00Z
+updated_at: 2026-01-15T20:21:37Z
 url: https://github.com/astral-sh/uv/pull/17278
-synced_at: 2026-01-12T16:12:41Z
+synced_at: 2026-01-15T20:53:27Z
 ```
 
 # Update docs on integrating to AWS CodeArtifact with currently working version
@@ -38,5 +39,9 @@ Implemented the code snippet in my CICD pipeline and successfully authenticated 
 _Comment by @zanieb on 2026-01-03 13:42_
 
 I think we need to understand more about why it wasn't working for you before we change anything here.
+
+---
+
+_Converted to draft by @zanieb on 2026-01-15 20:21_
 
 ---
